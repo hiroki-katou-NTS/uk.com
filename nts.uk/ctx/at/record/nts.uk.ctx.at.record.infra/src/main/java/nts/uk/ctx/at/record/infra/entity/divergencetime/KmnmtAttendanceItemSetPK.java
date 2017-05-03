@@ -1,4 +1,4 @@
-package nts.ctx.at.record.infra.entity.divergencetime;
+package nts.uk.ctx.at.record.infra.entity.divergencetime;
 
 import java.io.Serializable;
 
@@ -9,13 +9,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-@Embeddable
-@Getter
 @Setter
+@Getter
+@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmnmtDivergenceTimePK implements Serializable{
+public class KmnmtAttendanceItemSetPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/*会社ID*/
@@ -24,4 +23,7 @@ public class KmnmtDivergenceTimePK implements Serializable{
 	/*乖離時間ID*/
 	@Column(name = "DIVERGENCETIME_ID")
 	public int divTimeId;
+	/*勤怠項目ID*/
+	@Column(name = "ATTENDANCE_ID")
+	public int attendanceId;
 }

@@ -10,11 +10,11 @@ module kmk011.b.viewmodel {
         sel_002: KnockoutObservable<string>;
         columns: KnockoutObservableArray<any>;
         dataSource: KnockoutObservableArray<model.Item>;
-        currentCode: KnockoutObservable<any>;
+        currentCode: KnockoutObservable<string>;
         switchUSe3: KnockoutObservableArray<any>;
         requiredAtr: KnockoutObservable<any>;
         inp_A34: KnockoutObservable<string>;
-        divReasoncode: KnockoutObservable<number>;
+        divReasonCode: KnockoutObservable<string>;
         divReasonContent: KnockoutObservable<string>;
         enable: KnockoutObservable<boolean>;
         itemDivReason: KnockoutObservable<model.Item>;
@@ -27,33 +27,26 @@ module kmk011.b.viewmodel {
             self.label_005 = ko.observable(new model.Labels());
             self.label_006 = ko.observable(new model.Labels());
             self.sel_002 = ko.observable('');
-            self.currentCode = ko.observable(1);
+            self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'divReasoncode', width: 100  },
+                { headerText: 'コード', key: 'divReasonCode', width: 100  },
                 { headerText: '名称', key: 'divReasonContent', width: 150 }
             ]);
             self.dataSource = ko.observableArray([]);
-//            self.dataSource = ko.observableArray([
-//                new model.Item(1,'月曜日',1),
-//                 new model.Item(2,'火曜日',1) ,
-//                 new model.Item(3,'水曜日',0),
-//                 new model.Item(4,'木曜日',1),
-//                 new model.Item(5,'金曜日',0)
-//                ]);
             self.switchUSe3 = ko.observableArray([
                     { code: '1', name: '必須する' },
                     { code: '0', name: '必須しない' },
                 ]);
             self.requiredAtr = ko.observable(1);    
             self.inp_A34 = ko.observable('時間１');    
-            self.divReasoncode = ko.observable(1);
-            self.divReasonContent = ko.observable('日通会社');
+            self.divReasonCode = ko.observable('');
+            self.divReasonContent = ko.observable('');
             self.enable = ko.observable(true);
             self.itemDivReason = ko.observable(null);
-                        //subscribe currentCode
+            //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
                 self.itemDivReason(self.findItemDivTime(codeChanged));
-                self.divReasoncode(self.itemDivReason().divReasoncode);
+                self.divReasonCode(self.itemDivReason().divReasonCode);
                 self.divReasonContent(self.itemDivReason().divReasonContent);
                 if(self.itemDivReason().requiredAtr==1){
                     self.requiredAtr(true);
@@ -70,12 +63,13 @@ module kmk011.b.viewmodel {
          */
         startPage(): JQueryPromise<any> {
             var self = this;
+            self.currentCode('');
             var dfd = $.Deferred();
-//            var divTimeId = nts.uk.ui.windows.getShared("KMK011_divTimeId");
-            var divTimeId = '1';
+            var divTimeId = nts.uk.ui.windows.getShared("KMK011_divTimeId");
             service.getAllDivReason(divTimeId).done(function(lstDivReason: Array<model.Item>) {
                 self.dataSource(lstDivReason);
                 let reasonFirst = _.first(lstDivReason);
+                self.currentCode(reasonFirst.divReasonCode);
                 dfd.resolve();
             })
             return dfd.promise();
@@ -83,16 +77,16 @@ module kmk011.b.viewmodel {
         /**
          * find item Divergence Time is selected
          */
-        findItemDivTime(value: number): any {
+        findItemDivTime(value: string): any {
             let self = this;
             var itemModel = null;
             return _.find(self.dataSource(), function(obj: model.Item) {
-                return obj.divReasoncode == value;
+                return obj.divReasonCode == value;
             })
         }
         refreshData(){
             var self = this;
-            self.divReasoncode(null);
+            self.divReasonCode(null);
             self.divReasonContent("");
             self.requiredAtr(null);    
         }
@@ -122,11 +116,11 @@ module kmk011.b.viewmodel {
         }
         
         export class Item{
-            divReasoncode: number;
+            divReasonCode: string;
             divReasonContent: string;  
             requiredAtr: number;
-            constructor(divReasoncode: number,divReasonContent: string,requiredAtr: number){
-                this.divReasoncode = divReasoncode;
+            constructor(divReasonCode: string,divReasonContent: string,requiredAtr: number){
+                this.divReasonCode = divReasonCode;
                 this.divReasonContent = divReasonContent;    
                 this.requiredAtr = requiredAtr;
             }      

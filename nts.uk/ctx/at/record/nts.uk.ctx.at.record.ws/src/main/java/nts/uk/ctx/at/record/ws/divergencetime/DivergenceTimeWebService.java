@@ -21,7 +21,7 @@ public class DivergenceTimeWebService extends WebService{
 	
 	@POST
 	@Path("getalldivreason/{divTimeId}")
-	public List<DivergenceReasonDto> getAllHistory(@PathParam("divTimeId") String divTimeId){
+	public List<DivergenceReasonDto> getAllDivReason(@PathParam("divTimeId") String divTimeId){
 		return this.getAllDivReason.getAllDivReasonByCode(divTimeId);
 	}
 }

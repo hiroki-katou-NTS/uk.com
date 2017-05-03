@@ -1,4 +1,4 @@
-package nts.ctx.at.record.infra.entity.divergencetime;
+package nts.uk.ctx.at.record.infra.entity.divergencetime;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package nts.ctx.at.record.infra.entity.divergencetime;
+package nts.uk.ctx.at.record.infra.entity.divergencetime;
 
 import java.io.Serializable;
 
@@ -18,14 +18,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Setter
 @Getter
-public class KmnmtDivergenceReason extends UkJpaEntity implements Serializable {
+public class KmkmtDivergenceReason extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/*主キー*/
 	@EmbeddedId
-	public KmnmtDivergenceReasonPK kmnmtDivergenceReasonPK;
+	public KmkmtDivergenceReasonPK kmkmtDivergenceReasonPK;
 	/*乖離理由*/
-	@Column(name = "DIVERGENCETIME_REASON")
+	@Column(name = "DIVERGENCE_REASON")
 	public String divReason;
 	/*必須区分*/
 	@Column(name = "REQUIRED_ATR")

@@ -6,25 +6,25 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.ctx.at.record.infra.entity.divergencetime.KmnmtAttendanceItemSet;
-import nts.ctx.at.record.infra.entity.divergencetime.KmnmtDivergenceReason;
-import nts.ctx.at.record.infra.entity.divergencetime.KmnmtDivergenceTime;
-import nts.ctx.at.record.infra.entity.divergencetime.KmnmtDivergenceTimePK;
 import nts.uk.ctx.at.record.dom.divergencetime.AttendanceItem;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
+import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtAttendanceItemSet;
+import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtDivergenceTime;
+import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtDivergenceTimePK;
 
 @Stateless
-public class JpaDivergenceTimeReository extends JpaRepository implements DivergenceTimeRepository {
+public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
 
 	private final String SELECT_FROM_DIVTIME = "SELECT c FROM KmnmtDivergenceTime c";
 	private final String SELECT_ALL_DIVTIME = SELECT_FROM_DIVTIME 
 			+ " WHERE c.kmnmtDivergenceTimePK.companyId = :companyId";
-	private final String SELECT_FROM_DIVREASON = "SELECT c FROM KmnmtDivergenceReason c";
+	private final String SELECT_FROM_DIVREASON = "SELECT c FROM KmkmtDivergenceReason c";
 	private final String SELECT_ALL_DIVREASON = SELECT_FROM_DIVREASON
-			+ " WHERE c.kmnmtDivergenceReasonPK.companyId = :companyId"
-			+ " AND c.kmnmtDivergenceReasonPK.divTimeId = :divTimeId";
+			+ " WHERE c.kmkmtDivergenceReasonPK.companyId = :companyId"
+			+ " AND c.kmkmtDivergenceReasonPK.divTimeId = :divTimeId";
 	private final String SELECT_FROM_ATTENDANCEITEM = "SELCECT c FROM KmnmtAttendanceItemSet c";
 	private final String SELECT_ALL_ATTENDANTIEM = SELECT_FROM_ATTENDANCEITEM
 			+ " WHERE c.kmnmtAttendanceItemSetPK.companyId = :companyId"
@@ -43,11 +43,11 @@ public class JpaDivergenceTimeReository extends JpaRepository implements Diverge
 				entity.cancelErrInputReason);
 		return domain;
 	}
-	private static DivergenceReason toDomainDivReason(KmnmtDivergenceReason entity){
+	private static DivergenceReason toDomainDivReason(KmkmtDivergenceReason entity){
 		val domain = DivergenceReason.createSimpleFromJavaType(
-				entity.kmnmtDivergenceReasonPK.companyId,
-				entity.kmnmtDivergenceReasonPK.divTimeId,
-				entity.kmnmtDivergenceReasonPK.divReasonCode,
+				entity.kmkmtDivergenceReasonPK.companyId,
+				entity.kmkmtDivergenceReasonPK.divTimeId,
+				entity.kmkmtDivergenceReasonPK.divReasonCode,
 				entity.divReason,
 				entity.requiredAtr);
 		return domain;
@@ -88,9 +88,9 @@ public class JpaDivergenceTimeReository extends JpaRepository implements Diverge
 	 */
 	@Override
 	public List<DivergenceReason> getDivReasonByCode(String companyId, int divTimeId) {
-		return this.queryProxy().query(SELECT_ALL_DIVREASON, KmnmtDivergenceReason.class)
+		return this.queryProxy().query(SELECT_ALL_DIVREASON, KmkmtDivergenceReason.class)
 				.setParameter("companyId", companyId)
-				.setParameter("divTimeCode", divTimeId)
+				.setParameter("divTimeId", divTimeId)
 				.getList(c->toDomainDivReason(c));
 	}
 	/**
