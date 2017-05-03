@@ -55,9 +55,7 @@ public class SalaryOutputSetting extends DomainObject {
 		memento.setCategorySettings(this.categorySettings);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -69,9 +67,7 @@ public class SalaryOutputSetting extends DomainObject {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

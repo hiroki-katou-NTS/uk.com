@@ -1,30 +1,3 @@
-class TextEditorBindingHandler implements KnockoutBindingHandler {
-    constructor() {
-    }
-
-    init(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        ko.bindingHandlers['ntsTextEditor'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-
-        if (valueAccessor().valueUpdate) {
-            switch (valueAccessor().valueUpdate) {
-                case 'keyup':
-                    element.onkeyup = function() { valueAccessor().value(this.value); };
-                    break;
-                case 'keypress':
-                    element.onkeypress = function() { valueAccessor().value(this.value); };
-                    break;
-                case 'afterkeydown':
-                    element.onkeydown = function() { valueAccessor().value(this.value); };
-                    break;
-            }
-        }
-    }
-
-    update(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        ko.bindingHandlers['ntsTextEditor'].update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-    }
-}
-
 class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
     constructor() {
     }
@@ -33,7 +6,20 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
         ko.bindingHandlers['ntsCheckBox'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
         if (valueAccessor().helper) {
             var span = document.createElement('span');
-            span.innerHTML = '(' + valueAccessor().helper + ')';
+            if (typeof valueAccessor().helper == 'function') {
+                span.innerHTML = '(' + valueAccessor().helper() + ')';
+            }
+            else if (typeof valueAccessor().helper == 'string') {
+                span.innerHTML = '(' + valueAccessor().helper + ')';
+            } else if (typeof valueAccessor().helper == 'object') {
+                span.id = valueAccessor().helper.id;
+                if (typeof valueAccessor().helper.text == 'function') {
+                    span.innerHTML = '(' + valueAccessor().helper.text() + ')';
+                }
+                else if (typeof valueAccessor().helper.text == 'string') {
+                    span.innerHTML = '(' + valueAccessor().helper.text + ')';
+                }
+            }
             span.setAttribute('class', 'label helper');
             element.getElementsByTagName('label')[0].appendChild(span);
         }
@@ -41,19 +27,41 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
 
     update(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
         ko.bindingHandlers['ntsCheckBox'].update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
+        if (valueAccessor().helper) {
+            var span = document.createElement('span');
+            if (typeof valueAccessor().helper == 'function') {
+                span.innerHTML = '(' + valueAccessor().helper() + ')';
+            }
+            else if (typeof valueAccessor().helper == 'string') {
+                span.innerHTML = '(' + valueAccessor().helper + ')';
+            } else if (typeof valueAccessor().helper == 'object') {
+                span.id = valueAccessor().helper.id;
+
+                //remove child helper
+                $(".helper", element).remove();
+
+                if (typeof valueAccessor().helper.text == 'function') {
+                    span.innerHTML = '(' + valueAccessor().helper.text() + ')';
+                }
+                else if (typeof valueAccessor().helper.text == 'string') {
+                    span.innerHTML = '(' + valueAccessor().helper.text + ')';
+                }
+            }
+            span.setAttribute('class', 'label helper');
+            element.getElementsByTagName('label')[0].appendChild(span);
+        }
     }
 }
 
-ko.bindingHandlers['ntsTextEditor2'] = new TextEditorBindingHandler();
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
 
 Date.prototype["getWorkDays"] = function() {
     let workDays = 0, lastDate = moment(this).daysInMonth();
     for (let day = 1; day <= lastDate; day++) {
         let date = new Date(this.getFullYear(), this.getMonth(), day);
-        if(date.getDay() != 0 && date.getDay() != 6) {
-           workDays++; 
-        }         
+        if (date.getDay() != 0 && date.getDay() != 6) {
+            workDays++;
+        }
     }
     return workDays;
 }
@@ -72,7 +80,7 @@ Date.prototype["formatYearMonth"] = function(format) {
 
 String.prototype["formatYearMonth"] = function(format) {
     var match = this.match(/\d{4}|\d{2}|\d{1}/g);
-    if (match.length != 2) {
+    if (match.length < 2) {
         console.error('Input string is not correct!');
         return undefined;
     }
@@ -97,8 +105,8 @@ Number.prototype["getYearInYm"] = function() {
 }
 
 String.prototype["getYearInYm"] = function() {
-    var match = this.match(/\d{4}|\d{2}|\d{1}/g);
-    if (match.length != 2) {
+    var match = this.toString().match(/\d{4}|\d{2}|\d{1}/g);
+    if (match.length < 2) {
         console.error('Input string is not correct!');
     }
     return parseInt(match[0]);
@@ -175,14 +183,14 @@ module qmm005.common {
 
     interface ICheckBoxItem {
         text: string;
-        helper?: string;
+        helper?: any;
         enable?: boolean;
         checked?: boolean;
     }
 
     export class CheckBoxItem {
         text: string;
-        helper: string;
+        helper: any;
         enable: KnockoutObservable<boolean>;
         checked: KnockoutObservable<boolean>;
         constructor(param: ICheckBoxItem) {
@@ -195,8 +203,11 @@ module qmm005.common {
     }
 }
 
-// for develop
-var _ref = (window.location.href.indexOf('localhost') == -1) && new Date().getTime() || 'v1.0.0';
+// detect size of window
+(window.onresize = () => { window["large"] = window.outerWidth >= 1920; })();
+
+// 4dev
+var _ref = (window.location.href.indexOf('localhost') == -1) && 'v1.0.0' || new Date().getTime();
 
 var route = window.location.href
     .slice(0, window.location.href.lastIndexOf('/'))

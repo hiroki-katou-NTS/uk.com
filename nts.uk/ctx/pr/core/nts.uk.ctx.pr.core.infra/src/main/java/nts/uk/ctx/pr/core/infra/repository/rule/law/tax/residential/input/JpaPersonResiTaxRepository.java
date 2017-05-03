@@ -17,6 +17,13 @@ public class JpaPersonResiTaxRepository extends JpaRepository implements PersonR
 			+ "WHERE c.pprmtPersonResiTaxPK.companyCode = :CCD" + " AND c.pprmtPersonResiTaxPK.personId = :PID"
 			+ " AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
 
+	private final String SEL_5 = "SELECT c.pprmtPersonResiTaxPK.personId FROM PprmtPersonResiTax c "
+			+ "WHERE c.pprmtPersonResiTaxPK.companyCode = :CCD" + " AND c.residenceCode = :RESIDENCE_CD"
+			+ " AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
+
+	private final String UPD_2 = "UPDATE PprmtPersonResiTax c SET c.residenceCode = :RESIDENCE_CD WHERE  c.pprmtPersonResiTaxPK.companyCode = :CCD"
+			+ " AND c.pprmtPersonResiTaxPK.personId = :PID AND c.pprmtPersonResiTaxPK.yearKey = :Y_K";
+
 	private PprmtPersonResiTax toEntity(PersonResiTax domain) {
 		val entity = new PprmtPersonResiTax();
 
@@ -57,6 +64,10 @@ public class JpaPersonResiTaxRepository extends JpaRepository implements PersonR
 		return domain;
 	}
 
+	public static String convertpersonID(PprmtPersonResiTax entity) {
+		return entity.pprmtPersonResiTaxPK.personId;
+	}
+
 	@Override
 	public List<PersonResiTax> findAll(String companyCode, String personId, int yearKey) {
 		return this.queryProxy().query(SEL_1, PprmtPersonResiTax.class).setParameter("CCD", companyCode)
@@ -69,9 +80,21 @@ public class JpaPersonResiTaxRepository extends JpaRepository implements PersonR
 	}
 
 	@Override
-	public void remove(String companyCode, String personId, int yearKey ) {
-		PprmtPersonResiTaxPK  pprmtPersonResiTaxPK = new PprmtPersonResiTaxPK(companyCode,personId, yearKey);
+	public void remove(String companyCode, String personId, int yearKey) {
+		PprmtPersonResiTaxPK pprmtPersonResiTaxPK = new PprmtPersonResiTaxPK(companyCode, personId, yearKey);
 		this.commandProxy().remove(PprmtPersonResiTax.class, pprmtPersonResiTaxPK);
 	}
 
+	@Override
+	public List<?> findByResidenceCode(String companyCode, String residenceCode, int yearKey) {
+		return this.queryProxy().query(SEL_5, PprmtPersonResiTax.class).setParameter("CCD", companyCode)
+				.setParameter("RESIDENCE_CD", residenceCode).setParameter("Y_K", yearKey).getList();
+	}
+
+	@Override
+	public void updateResendence(String companyCode, String resendenceCode, String personID, int yearKey) {
+		this.getEntityManager().createQuery(UPD_2).setParameter("CCD", companyCode).setParameter("Y_K", yearKey)
+				.setParameter("PID", personID).setParameter("RESIDENCE_CD", resendenceCode).executeUpdate();
+
+	}
 }

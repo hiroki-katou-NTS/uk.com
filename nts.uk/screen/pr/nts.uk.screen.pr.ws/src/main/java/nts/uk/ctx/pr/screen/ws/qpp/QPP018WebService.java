@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.screen.ws.qpp;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,10 +11,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.screen.app.query.qpp018.SocialInsuranceQueryProcessor;
-import nts.uk.ctx.pr.screen.app.query.qpp018.dto.InsuranceOfficeDto;
-import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceQuery;
-import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceReportService;
+import nts.uk.file.pr.app.export.insurance.salary.SocialInsuQuery;
+import nts.uk.file.pr.app.export.insurance.salary.SocialInsuReportService;
 
 /**
  * The Class QPP018WebService.
@@ -27,23 +23,7 @@ public class QPP018WebService extends WebService {
 
     /** The report service. */
     @Inject
-    private SalarySocialInsuranceReportService reportService;
-    
-    /** The social insu query processor. */
-    @Inject
-    SocialInsuranceQueryProcessor socialInsuQueryProcessor;
-    
-    
-    /**
-     * Find all office.
-     *
-     * @return the list
-     */
-    @POST
-    @Path("findAllOffice")
-    public List<InsuranceOfficeDto> findAllOffice() {
-        return socialInsuQueryProcessor.findAllOffice();
-    }
+    private SocialInsuReportService reportService;
     
     /**
      * Export data to pdf.
@@ -53,7 +33,7 @@ public class QPP018WebService extends WebService {
      */
     @POST
     @Path("saveAsPdf")
-    public ExportServiceResult exportDataToPdf(SalarySocialInsuranceQuery query) {
+    public ExportServiceResult exportDataToPdf(SocialInsuQuery query) {
          return reportService.start(query);
     }
 }

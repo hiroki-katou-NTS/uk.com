@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.accumulatedpayment;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -37,13 +40,19 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator implements AccPaymentReportGenerator {
 
 	/** The Constant REPORT_FILE_NAME. */
-	private static final String REPORT_FILE_NAME = "AccumulatedPaymentReport.pdf";
+	private static final String REPORT_FILE_NAME = "QET002_";
+	
+	/** The Constant EXTENSION_PDF. */
+	private static final String EXTENSION_PDF = ".pdf";
+	
+	/** The Constant EXTENSION_EXCEL. */
+	private static final String EXTENSION_EXCEL = ".xlsx";
 
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "report/AccumulatedPaymentReport.xlsx";
+	private static final String TEMPLATE_FILE = "report/QET002.xlsx";
 
 	/** The Constant FIRST_ROW_INDEX. */
-	private static final int FIRST_ROW_INDEX = 12;
+	private static final int FIRST_ROW_INDEX = 9;
 
 	/** The Constant FIRST_COLUMN. */
 	private static final int FIRST_COLUMN = 0;
@@ -83,14 +92,23 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			Worksheet worksheet = worksheets.get(0);
 			Cells cells = worksheet.getCells();
 			
+			// Set header.
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd hh:mm");
+			worksheet.getPageSetup().setHeader(2, 
+					"&\"IPAPGothic\"&13 " + dateFormat.format(new Date()) + "\r\n&P ページ");
+			designer.getDesigner().setDataSource("Header", dataSource.getHeaderData());
+			DateFormat dateFM = new SimpleDateFormat("yyyyMMddhhssmm");
+			Date date = new Date();
+			String fileName = REPORT_FILE_NAME.concat(dateFM.format(date).toString()).concat(EXTENSION_EXCEL);
+
 			// Fill data
-			// List Item Data			
+			// List Item Data
 			int amountEmployee = accumulatedPaymentList.size();
 			int startIndex = 0;
-			int firstRowIndex = FIRST_ROW_INDEX;			
+			int firstRowIndex = FIRST_ROW_INDEX;
 			int numberOfPage = 0;
-			int rangeRows = AMOUNT_PER_PAGE;			
-			while(amountEmployee > 0){				
+			int rangeRows = AMOUNT_PER_PAGE;
+			while(amountEmployee > 0){
 				int endIndex = startIndex + AMOUNT_PER_PAGE;
 				List<AccPaymentItemData> subList = subAccList(accumulatedPaymentList, startIndex, endIndex);				
 				
@@ -119,7 +137,8 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			}			
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
-			designer.saveAsPdf(this.createNewFile(generatorContext, REPORT_FILE_NAME));
+//			designer.saveAsPdf(this.createNewFile(generatorContext, fileName));
+			designer.saveAsExcel(this.createNewFile(generatorContext, fileName));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -180,7 +199,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void createContent(Cells cells, int firstRowIndex,
 			List<AccPaymentItemData> accumulatedPaymentList){
-		for(int i = 0; i < accumulatedPaymentList.size(); i++, firstRowIndex++){
+		for(int i = 0; i < accumulatedPaymentList.size(); i++){
 			// Set Row height
 			cells.setRowHeightPixel(firstRowIndex, ROW_HEIGHT);
 			
@@ -198,8 +217,10 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			socialInsCell.setValue(accPayment.getSocialInsuranceAmount());	
 			
 			// Print Amount after tax deduction
+			double deductedTaxValue = taxAmountCell.getDoubleValue() - socialInsCell.getDoubleValue();
+			
 			Cell afterTaxDeductionCell = cells.get(firstRowIndex, COLUMN_INDEX[3]);
-			afterTaxDeductionCell.setValue(accPayment.getAmountAfterTaxDeduction());
+			afterTaxDeductionCell.setValue(deductedTaxValue);
 			
 			// Print Witholding Tax Amount
 			Cell widthHoldingTaxAmCell = cells.get(firstRowIndex, COLUMN_INDEX[4]);
@@ -220,6 +241,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 					setBackgroundcolor(oddCell);
 				}
 			}
+			firstRowIndex ++;
 		}
 	}
 
@@ -233,7 +255,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void createRange(Cells cells, int firstRow, int totalRow){
 		for(int i = FIRST_COLUMN; i<AMOUNT_COLUMN; i++){
-			Range range = cells.createRange(firstRow, i, totalRow, 1);			
+			Range range = cells.createRange(firstRow, i, totalRow, 1);
 			range.setOutlineBorders(CellBorderType.THIN, Color.getGray());
 		}
 	}
@@ -273,8 +295,6 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getGray());
 		cell.setStyle(style);
 	}
-
-
 	/**
 	 * Sets the backgroundcolor.
 	 *

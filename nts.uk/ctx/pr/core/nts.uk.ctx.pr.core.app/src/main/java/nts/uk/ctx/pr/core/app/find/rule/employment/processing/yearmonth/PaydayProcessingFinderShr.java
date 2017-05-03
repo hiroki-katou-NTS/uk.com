@@ -32,7 +32,7 @@ public class PaydayProcessingFinderShr implements IPaydayProcessingFinder {
 	public List<PaydayProcessingDto> getPaydayProcessing(int payBonusAtr) {
 		 String	companyCode = AppContexts.user().companyCode();
 
-		return repository.select1b(companyCode, payBonusAtr).stream()
+		return repository.select1(companyCode, payBonusAtr).stream()
 				.map(c -> new PaydayProcessingDto(c.getCompanyCode().v(), c.getProcessingNo().v(),
 						c.getProcessingName().v(), c.getDispSet().value, c.getCurrentProcessingYm().v(),
 						c.getBonusAtr().value, c.getBCurrentProcessingYm().v()))

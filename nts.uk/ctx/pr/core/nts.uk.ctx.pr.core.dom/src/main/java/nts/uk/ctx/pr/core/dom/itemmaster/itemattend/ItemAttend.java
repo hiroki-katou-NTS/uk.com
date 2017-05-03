@@ -7,12 +7,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
-import nts.uk.ctx.pr.core.dom.itemmaster.Memo;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeHigh;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeLow;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeHigh;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeLow;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
+import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class ItemAttend extends AggregateRoot {

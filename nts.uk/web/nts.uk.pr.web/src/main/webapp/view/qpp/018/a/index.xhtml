@@ -22,7 +22,7 @@
 					<button id="print-excution-log-button">印刷実行ログ</button>					
 				</div>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" data-bind="visible: true" style="display: none;">
 				<div id="detail-contents" style="margin-left: 20px">
 				<table id="tblDetail-contents">
 					<tbody>
@@ -39,7 +39,7 @@
 							</td>
 							<td colspan="2">
 								<div style="margin-top: 20px">
-									<label id="lblJapan-year" style="padding-left: 5px;">月度</label>
+									<label id="lblJapan-year" style="padding-left: 5px;" data-bind="text: japanYearmonth() + ' 月度'"></label>
 								</div>
 							</td>
 						</tr>							
@@ -60,7 +60,7 @@
 							<td>
 							</td>
 							<td colspan="3">
-							<div class="extract-condition-error"></div>
+							<div class="extract-condition-error" data-name="出力条件"></div>
 								<div style="margin-top: 20px" >
 									<div data-bind="ntsCheckBox: { checked: isEqual , text: '全て同じ' }" style="width: 100px;"></div>
 									<div data-bind="ntsCheckBox: { checked: isDeficient, text: '不足'  }" style="width: 100px;">	</div>

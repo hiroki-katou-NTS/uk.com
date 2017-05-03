@@ -51,10 +51,10 @@ module nts.uk.pr.view.qmm010.a {
                 self.isShowDirty = ko.observable(true);
             }
 
-            //function reset value viewmodel
+            //function reset value view model
             private resetValueLaborInsurance() {
                 var self = this;
-                if (self.dirty.isDirty() && self.isShowDirty() && self.typeAction() == TypeActionLaborInsuranceOffice.update) {
+                if (self.dirty.isDirty() && self.isShowDirty()) {
                     nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
                         self.isShowDirty(false);
                         self.onResetValueLaborInsurance();
@@ -74,7 +74,7 @@ module nts.uk.pr.view.qmm010.a {
                 self.typeAction(TypeActionLaborInsuranceOffice.add);
                 //reset value model
                 self.selectCodeLstlaborInsuranceOffice('');
-                self.laborInsuranceOfficeModel().setReadOnly(false);
+                self.beginSelectlaborInsuranceOffice('');
                 if (!self.isEmpty()) self.clearErrorSave();
                 self.dirty.reset();
                 self.isEnableDelete(false);
@@ -84,7 +84,6 @@ module nts.uk.pr.view.qmm010.a {
             //function clear message error
             private clearErrorSave() {
                 $('.save-error').ntsError('clear');
-                $('#btn_save').ntsError('clear');
             }
 
             //function read all SocialTnsuranceOffice
@@ -151,9 +150,10 @@ module nts.uk.pr.view.qmm010.a {
                         //reset List Labor Insurance Office
                         self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>(data);
                         self.selectCodeLstlaborInsuranceOffice(data[0].code);
-                        self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectCodeLstlaborInsuranceOffice: string) {
-                            self.showchangeLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
+                        self.selectCodeLstlaborInsuranceOffice.subscribe(function(code: string) {
+                            self.showchangeLaborInsuranceOffice(code);
                         });
+                        self.isEmpty(false);
                         self.detailLaborInsuranceOffice(data[0].code).done(function() {
                             self.isEnableDelete(true);
                             dfd.resolve(self);
@@ -193,7 +193,7 @@ module nts.uk.pr.view.qmm010.a {
                 }
             }
 
-            private validateData() {
+            private validateData(): boolean {
                 $("#inp_code").ntsEditor("validate");
                 $("#inp_name").ntsEditor("validate");
                 $("#inp_shortName").ntsEditor("validate");
@@ -209,17 +209,20 @@ module nts.uk.pr.view.qmm010.a {
                 $("#inp_officeNoA").ntsEditor("validate");
                 $("#inp_officeNoB").ntsEditor("validate");
                 $("#inp_officeNoC").ntsEditor("validate");
+                if ($('.nts-editor').ntsError("hasError")) {
+                    return true;
+                }
+                return false;
             }
-            //Function action button save Onclick
+            //Function action button save on click
             private saveLaborInsuranceOffice() {
                 var self = this;
 
                 self.clearErrorSave();
-                self.validateData();
-
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                if (self.validateData()) {
                     return;
                 }
+
                 //get ismode
                 if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
                     //is mode is add
@@ -243,27 +246,42 @@ module nts.uk.pr.view.qmm010.a {
             }
 
             //Function show view by change selection
-            private showchangeLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice: string) {
+            private showchangeLaborInsuranceOffice(code: string) {
                 var self = this;
-                if (selectionCodeLstLstLaborInsuranceOffice
-                    && selectionCodeLstLstLaborInsuranceOffice != '') {
-                    if (self.dirty.isDirty() && self.isShowDirty()
-                        && self.typeAction() == TypeActionLaborInsuranceOffice.update) {
-                        if (selectionCodeLstLstLaborInsuranceOffice !== self.selectCodeLstlaborInsuranceOffice()) {
+                if (code && code != '') {
+                    // type action add (new mode)
+                    if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
+                        if (self.dirty.isDirty() && self.isShowDirty()) {
                             nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
                                 self.isShowDirty(false);
                                 self.typeAction(TypeActionLaborInsuranceOffice.update);
-                                self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
-                                return;
+                                self.detailLaborInsuranceOffice(code);
                             }).ifNo(function() {
-                                //No action
+                                self.isShowDirty(false);
+                                self.selectCodeLstlaborInsuranceOffice(self.beginSelectlaborInsuranceOffice());
+                                self.isShowDirty(true);
                             });
+                        } else {
+                            self.typeAction(TypeActionLaborInsuranceOffice.update);
+                            self.detailLaborInsuranceOffice(code);
                         }
-                        self.selectCodeLstlaborInsuranceOffice(self.beginSelectlaborInsuranceOffice());
-                        return;
+                    } else {
+                        // type action update (update mode)
+                        if (self.dirty.isDirty() && self.isShowDirty()) {
+                            if (code !== self.selectCodeLstlaborInsuranceOffice()) {
+                                nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                                    self.isShowDirty(false);
+                                    self.typeAction(TypeActionLaborInsuranceOffice.update);
+                                    self.detailLaborInsuranceOffice(code);
+                                }).ifNo(function() {
+                                    self.selectCodeLstlaborInsuranceOffice(self.beginSelectlaborInsuranceOffice());
+                                });
+                            }
+                        } else {
+                            self.typeAction(TypeActionLaborInsuranceOffice.update);
+                            self.detailLaborInsuranceOffice(code);
+                        }
                     }
-                    self.typeAction(TypeActionLaborInsuranceOffice.update);
-                    self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
                 }
             }
 
@@ -275,15 +293,14 @@ module nts.uk.pr.view.qmm010.a {
                     //call service find labor insurance office
                     service.findLaborInsuranceOffice(code).done(data => {
                         if (self.isEmpty()) {
-                            self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectionCodeLstLstLaborInsuranceOffice: string) {
-                                self.showchangeLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
+                            self.selectCodeLstlaborInsuranceOffice.subscribe(function(code: string) {
+                                self.showchangeLaborInsuranceOffice(code);
                             });
                             self.isEmpty(false);
                         }
                         //set data labor insurance office
-                        self.selectCodeLstlaborInsuranceOffice(code);
                         self.laborInsuranceOfficeModel().updateData(data);
-                        self.laborInsuranceOfficeModel().setReadOnly(true);
+                        self.laborInsuranceOfficeModel().setEnable(false);
                         self.isEnableDelete(true);
                         self.clearErrorSave();
                         self.beginSelectlaborInsuranceOffice(code);
@@ -310,6 +327,9 @@ module nts.uk.pr.view.qmm010.a {
                     var code: string = self.selectCodeLstlaborInsuranceOffice();
                     if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
                         if (data != null && data.length > 0) {
+                            self.isEmpty(false);
+                            self.typeAction(TypeActionLaborInsuranceOffice.update);
+                            self.selectCodeLstlaborInsuranceOffice(self.laborInsuranceOfficeModel().code());
                             self.detailLaborInsuranceOffice(self.laborInsuranceOfficeModel().code());
                         } else {
                             self.newmodelEmptyData();
@@ -444,7 +464,6 @@ module nts.uk.pr.view.qmm010.a {
             officeNoC: KnockoutObservable<string>;
             textEditorOption: KnockoutObservable<any>;
             multilineeditor: KnockoutObservable<any>;
-            isReadOnly: KnockoutObservable<boolean>;
             isEnable: KnockoutObservable<boolean>;
 
             constructor() {
@@ -476,7 +495,6 @@ module nts.uk.pr.view.qmm010.a {
                         textalign: "left"
                     })),
                 });
-                this.isReadOnly = ko.observable(true);
                 this.isEnable = ko.observable(true);
             }
 
@@ -510,8 +528,11 @@ module nts.uk.pr.view.qmm010.a {
                         textalign: "left"
                     })),
                 });
-                this.isReadOnly(false);
                 this.isEnable(true);
+            }
+            
+            setEnable(isEnable: boolean ){
+                this.isEnable(isEnable);   
             }
 
             updateData(officeInfo: LaborInsuranceOfficeDto) {
@@ -547,10 +568,6 @@ module nts.uk.pr.view.qmm010.a {
                 }
             }
 
-            setReadOnly(readonly: boolean) {
-                this.isReadOnly(readonly);
-                this.isEnable(!readonly);
-            }
             setPostCode(postcode: PostCode) {
                 this.address1st(nts.uk.pr.view.base.postcode.service.toAddress(postcode));
                 this.kanaAddress1st(nts.uk.pr.view.base.postcode.service.toKana(postcode));

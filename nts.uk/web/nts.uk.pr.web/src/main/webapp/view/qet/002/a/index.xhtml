@@ -9,9 +9,9 @@
 		<ui:define name="htmlHead">
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" /> 			
-			<com:scriptfile path="service.js" /> 
+			<com:scriptfile path="qet002.a.vm.js" />
+			<com:scriptfile path="qet002.a.start.js" /> 			
+			<com:scriptfile path="qet002.a.service.js" /> 
 			<script type="text/javascript">
 				// TODO: Code validate.
 				__viewContext.primitiveValueConstraints.TargetYear = {
@@ -35,9 +35,9 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
-					<button id="select-employee-button" class="proceed" data-bind="click: printData">選択社員印刷ボタン</button>
-					<button id="print-excution-log-button">印刷実行ログボタン</button>
-					<label>累計支給額チェックリスト</label>
+					<button id="select-employee-button" class="proceed" data-bind="click: printData">選択した社員を印刷 （Excel)</button>
+					<button id="print-excution-log-button">印刷実行ログ</button>
+				<!-- 	<label>累計支給額チェックリスト</label> -->
 				</div>
 			</div>
 			<div id="contents-area">
@@ -56,7 +56,7 @@
 										enable: true}"></input> 
 										
 							<!-- 	<div id="target-year-input" data-bind="ntsDatePicker: {value: targetYear, startDate: '1900/01/01', endDate: '1999/12/30', dateFormat: 'yyyy/MM'}"></div>	 -->	
-								<span id="japan-year">(?????)</span>
+								<span id="japan-year" data-bind="text: japanYear">(?????)</span>
 							</div>
 							<div class="search-employee"></div>
 						</td>
@@ -90,7 +90,7 @@
 												},
 												constraint: 'UpperLimit',
 												enable: isUpperLimit()}" />
-										<label>以上</label>
+										<label>以下</label>
 									</div>
 								</div>
 							</div>

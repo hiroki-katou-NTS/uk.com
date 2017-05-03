@@ -17,7 +17,7 @@ public class ItemSalaryPeriodFinder {
 
 	public ItemSalaryPeriodDto find(String itemCode) {
 
-		Optional<ItemSalaryPeriod> itemOpt = this.itemSalaryPeriodRepo.find( itemCode);
+		Optional<ItemSalaryPeriod> itemOpt = this.itemSalaryPeriodRepo.find(AppContexts.user().companyCode(), itemCode);
 		if (!itemOpt.isPresent())
 			return null;
 		return ItemSalaryPeriodDto.fromDomain(itemOpt.get());

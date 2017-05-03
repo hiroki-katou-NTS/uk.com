@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 
 import java.math.BigDecimal;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
@@ -15,6 +16,7 @@ import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
  * The Class PensionAvgearn.
  */
 @Getter
+@EqualsAndHashCode(callSuper = true, of = { "historyId", "grade" })
 public class PensionAvgearn extends DomainObject {
 
 	/** The history id. */
@@ -22,7 +24,13 @@ public class PensionAvgearn extends DomainObject {
 	private String historyId;
 
 	/** The level code. */
-	private Integer levelCode;
+	private Integer grade;
+
+	/** The avg earn. */
+	private Long avgEarn;
+
+	/** The upper limit. */
+	private Long upperLimit;
 
 	/** The child contribution amount. */
 	private CommonAmount childContributionAmount;
@@ -44,23 +52,30 @@ public class PensionAvgearn extends DomainObject {
 
 	/** The personal pension. */
 	private PensionAvgearnValue personalPension;
-	
+
 	/**
-	 * Health insurance avgearn.
+	 * Instantiates a new pension avgearn.
+	 *
+	 * @param historyId
+	 *            the history id
 	 */
-	private PensionAvgearn() {
-	};
-	
+	private PensionAvgearn(String historyId) {
+		this.historyId = historyId;
+	}
+
 	// =================== Memento State Support Method ===================
+
 	/**
-	 * Instantiates a new health insurance rate.
+	 * Instantiates a new pension avgearn.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
 	public PensionAvgearn(PensionAvgearnGetMemento memento) {
 		this.historyId = memento.getHistoryId();
-		this.levelCode = memento.getLevelCode();
+		this.grade = memento.getGrade();
+		this.avgEarn = memento.getAvgEarn();
+		this.upperLimit = memento.getUpperLimit();
 		this.childContributionAmount = memento.getChildContributionAmount();
 		this.companyFund = memento.getCompanyFund();
 		this.companyFundExemption = memento.getCompanyFundExemption();
@@ -78,7 +93,9 @@ public class PensionAvgearn extends DomainObject {
 	 */
 	public void saveToMemento(PensionAvgearnSetMemento memento) {
 		memento.setHistoryId(this.historyId);
-		memento.setLevelCode(this.levelCode);
+		memento.setGrade(this.grade);
+		memento.setAvgEarn(this.avgEarn);
+		memento.setUpperLimit(this.upperLimit);
 		memento.setChildContributionAmount(this.childContributionAmount);
 		memento.setCompanyFund(this.companyFund);
 		memento.setCompanyFundExemption(this.companyFundExemption);
@@ -91,13 +108,15 @@ public class PensionAvgearn extends DomainObject {
 	/**
 	 * Copy with new history id.
 	 *
-	 * @param newHistoryId the new history id
+	 * @param newHistoryId
+	 *            the new history id
 	 * @return the pension avgearn
 	 */
 	public PensionAvgearn copyWithNewHistoryId(String newHistoryId) {
-		PensionAvgearn pensionAvgearn = new PensionAvgearn();
-		pensionAvgearn.historyId = newHistoryId;
-		pensionAvgearn.levelCode = this.levelCode;
+		PensionAvgearn pensionAvgearn = new PensionAvgearn(newHistoryId);
+		pensionAvgearn.grade = this.grade;
+		pensionAvgearn.avgEarn = this.avgEarn;
+		pensionAvgearn.upperLimit = this.upperLimit;
 		pensionAvgearn.personalFund = this.personalFund;
 		pensionAvgearn.personalFundExemption = this.personalFundExemption;
 		pensionAvgearn.personalPension = this.personalPension;
@@ -111,16 +130,21 @@ public class PensionAvgearn extends DomainObject {
 	/**
 	 * Creates the with intial.
 	 *
-	 * @param newHistoryId the new history id
-	 * @param levelCode the level code
+	 * @param newHistoryId
+	 *            the new history id
+	 * @param grade
+	 *            the level code
 	 * @return the object
 	 */
-	public static PensionAvgearn createWithIntial(String newHistoryId, Integer levelCode) {
-		PensionAvgearn pensionAvgearn = new PensionAvgearn();
-		pensionAvgearn.historyId = newHistoryId;
-		pensionAvgearn.levelCode = levelCode;
+	public static PensionAvgearn createWithIntial(String newHistoryId, Integer grade, Long avgEarn,
+			Long upperLimit) {
+		PensionAvgearn pensionAvgearn = new PensionAvgearn(newHistoryId);
+		pensionAvgearn.grade = grade;
+		pensionAvgearn.avgEarn = avgEarn;
+		pensionAvgearn.upperLimit = upperLimit;
 		CommonAmount defaultAmount = new CommonAmount(BigDecimal.ZERO);
-		PensionAvgearnValue defaultValue = new PensionAvgearnValue(defaultAmount, defaultAmount, defaultAmount);
+		PensionAvgearnValue defaultValue = new PensionAvgearnValue(defaultAmount, defaultAmount,
+				defaultAmount);
 		pensionAvgearn.personalFund = defaultValue;
 		pensionAvgearn.personalFundExemption = defaultValue;
 		pensionAvgearn.personalPension = defaultValue;
@@ -131,41 +155,4 @@ public class PensionAvgearn extends DomainObject {
 		return pensionAvgearn;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((historyId == null) ? 0 : historyId.hashCode());
-		result = prime * result + ((levelCode == null) ? 0 : levelCode.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof PensionAvgearn))
-			return false;
-		PensionAvgearn other = (PensionAvgearn) obj;
-		if (historyId == null) {
-			if (other.historyId != null)
-				return false;
-		} else if (!historyId.equals(other.historyId))
-			return false;
-		if (levelCode == null) {
-			if (other.levelCode != null)
-				return false;
-		} else if (!levelCode.equals(other.levelCode))
-			return false;
-		return true;
-	}
-	
 }

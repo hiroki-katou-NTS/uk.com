@@ -47,12 +47,8 @@ module nts.uk.pr.view.qmm008.c {
          * Function is used to load all InsuranceOfficeItem by key.
          */
         export function findInsuranceOffice(key: string): JQueryPromise<Array<model.finder.InsuranceOfficeItemDto>> {
-            var dfd = $.Deferred<Array<model.finder.InsuranceOfficeItemDto>>();
             var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-            nts.uk.request.ajax(findPath).done(function(data: any) {
-                dfd.resolve(data);
-            });
-            return dfd.promise();
+            return nts.uk.request.ajax(findPath);
         }
 
         /**
@@ -75,26 +71,16 @@ module nts.uk.pr.view.qmm008.c {
         * Function is used to load pension  data of Office by office code.
         */
         export function getPensionItemDetail(code: string): JQueryPromise<model.finder.PensionRateDto> {
-            var dfd = $.Deferred<model.finder.PensionRateDto>();
             var findPath = servicePath.getPensionItemDetail + "/" + code;
-            nts.uk.request.ajax(findPath).done(function(data :model.finder.PensionRateDto) {
-                var pensionRateDetailData: model.finder.PensionRateDto = data;
-                dfd.resolve(pensionRateDetailData);
-            });
-            return dfd.promise();
+            return nts.uk.request.ajax(findPath);
         }
 
         /**
         * Function is used to load health data of Office by office code.
         */
         export function getAllPensionOfficeItem(): JQueryPromise<Array<model.finder.OfficeItemDto>> {
-            var dfd = $.Deferred<Array<model.finder.OfficeItemDto>>();
             var findPath = servicePath.getAllPensionOfficeAndHistory;
-            nts.uk.request.ajax(findPath).done(function(data : Array<model.finder.OfficeItemDto>) {
-                var returnData: Array<model.finder.OfficeItemDto> = data;
-                dfd.resolve(returnData);
-            });
-            return dfd.promise();
+            return nts.uk.request.ajax(findPath);
         }
 
         /**

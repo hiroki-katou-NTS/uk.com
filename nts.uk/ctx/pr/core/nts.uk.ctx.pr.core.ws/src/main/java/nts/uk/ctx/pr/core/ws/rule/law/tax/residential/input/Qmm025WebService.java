@@ -21,28 +21,36 @@ import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.input.PersonResiTaxF
 public class Qmm025WebService extends WebService {
 	@Inject
 	private PersonResiTaxFinder personResiTaxFinder;
-	
+
 	@Inject
 	private RemovePersonResiTaxCommandHandler removePersonResiTaxCommandHandler;
-	
+
 	@Inject
 	private UpdatePersonResiTaxCommandHandler updatePersonResiTaxCommandHandler;
-	
+
 	@POST
 	@Path("findAll/{yearKey}")
-	public List<PersonResiTaxDto> findAll(@PathParam("yearKey") int yearKey){
+	public List<PersonResiTaxDto> findAll(@PathParam("yearKey") int yearKey) {
 		return this.personResiTaxFinder.findAll(yearKey);
 	}
-	
+
+	@POST
+	@Path("findAll/{yearKey}/{residenceCode}")
+	public List<String> findByResidenceCode(@PathParam("yearKey") int yearKey,
+			@PathParam("residenceCode") String residenceCode) {
+		return this.personResiTaxFinder.findByResidenceCode(residenceCode, yearKey);
+	}
+
 	@POST
 	@Path("remove")
-	public void remove(RemovePersonResiTaxCommand command){
+	public void remove(RemovePersonResiTaxCommand command) {
 		this.removePersonResiTaxCommandHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("update")
-	public void update(UpdatePersonResiTaxCommand command){
+	public void update(UpdatePersonResiTaxCommand command) {
 		this.updatePersonResiTaxCommandHandler.handle(command);
 	}
+
 }

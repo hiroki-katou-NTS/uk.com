@@ -31,14 +31,14 @@ module qmm034.a.viewmodel {
             self.startDate.subscribe(function(dateChange) {
                 if (self.countStartDateChange === 1) {
                     // event datePicker onchange
-                    if ($('#A_INP_003').ntsError("hasError")) {
-                        $("#A_INP_003").ntsError('clear');
+                    if ($('#txtStartDate').ntsError("hasError")) {
+                        $("#txtStartDate").ntsError('clear');
                     }
                 } else {
                     self.countStartDateChange = 1;
                 }
-                //self.currentEra().startDate(dateChange);
-                self.dateTime(nts.uk.time.yearInJapanEmpire(dateChange).toString());
+                self.currentEra().startDate(dateChange);
+                self.dateTime(nts.uk.time.yearInJapanEmpire(moment(dateChange, "YYYY/MM/DD").format()).toString());
             })
             self.currentCode.subscribe(function(codeChanged) {
                 if (!nts.uk.text.isNullOrEmpty(codeChanged) && self.currentCode() !== self.previousCurrentCode) {
@@ -59,6 +59,7 @@ module qmm034.a.viewmodel {
 
         processWhenCurrentCodeChange(codeChanged: any) {
             let self = this;
+            self.clearError();
             self.countStartDateChange += 1;
             self.currentEra(self.getEra(codeChanged));
             self.date(self.currentEra().startDate().toString());
@@ -83,7 +84,7 @@ module qmm034.a.viewmodel {
                 { headerText: 'KEY', key: 'eraHist', width: 50, hidden: true },
                 { headerText: '元号', key: 'eraName', width: 50 },
                 { headerText: '記号', key: 'eraMark', width: 50 },
-                { headerText: '開始年月日', key: 'startDate', width: 80 },
+                { headerText: '開始年月日', key: 'startDate', width: 80, isDateColumn: true, format: 'YYYY/MM/DD' },
             ]);
             self.currentEra = ko.observable((new EraModel('', '', moment.utc().toISOString(), 1, '', moment.utc().toISOString())));
             self.currentCode = ko.observable(null);
@@ -96,9 +97,9 @@ module qmm034.a.viewmodel {
         
         validateData() : boolean {
             $(".nts-editor").ntsEditor("validate");
-            $("#A_INP_003").ntsEditor("validate");
+            $("#txtStartDate").ntsEditor("validate");
             
-            if ($(".nts-editor").ntsError('hasError') || $("#A_INP_003").ntsError('hasError')) {
+            if ($(".nts-editor").ntsError('hasError') || $("#txtStartDate").ntsError('hasError')) {
                 return false;    
             }
             return true;
@@ -107,9 +108,9 @@ module qmm034.a.viewmodel {
         insertData(): any {
             let self = this;
             let eraName: string;
-            eraName = $('#A_INP_001').val();
+            eraName = $('#txtEraName').val();
             let eraMark: string;
-            eraMark = $('#A_INP_002').val();
+            eraMark = $('#txtEraMark').val();
             let startDate = self.startDate();
             let endDate: Date;
             let eraHist = self.currentEra().eraHist();
@@ -136,7 +137,7 @@ module qmm034.a.viewmodel {
                     dfd.resolve();
                 });
             }).fail(function(res) {
-                $("#A_INP_003").ntsError("set", res.message);
+                $("#txtStartDate").ntsError("set", res.message);
             });
             return dfd.promise();
 
@@ -155,7 +156,7 @@ module qmm034.a.viewmodel {
             $.when(qmm034.a.service.getAllEras()).done(function(data) {
                 self.items([]);
                 if (data.length > 0) {
-                    self.items(data);
+                    self.items(ko.toJS(data));
                     //self.date(self.currentEra().startDate().toString());
                     //self.currentCode(self.currentEra().eraHist());
                     self.isDeleteEnable(true);
@@ -170,9 +171,9 @@ module qmm034.a.viewmodel {
         deleteData() {
             let self = this;
             let eraName: string;
-            eraName = $('#A_INP_001').val();
+            eraName = $('#txtEraName').val();
             let eraMark: string;
-            eraMark = $('#A_INP_002').val();
+            eraMark = $('#txtEraMark').val();
             let eraHist: string = self.currentEra().eraHist();
             let startDate = self.startDate();
             let dfd = $.Deferred<any>();
@@ -220,7 +221,7 @@ module qmm034.a.viewmodel {
             // Resolve start page dfd after load all data.
             $.when(qmm034.a.service.getAllEras()).done(function(data: Array<EraModel>) {
                 if (data.length > 0) {
-                    self.items(data);
+                    self.items(ko.toJS(data));
                     self.currentEra(self.items()[0]);
                     self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
                     self.currentCode(self.currentEra().eraHist);
@@ -232,7 +233,7 @@ module qmm034.a.viewmodel {
 
                 dfd.resolve();
             }).fail(function(res) {
-                $("#A_INP_001").ntsError("set", res.message);
+                $("#txtEraName").ntsError("set", res.message);
             });
 
             return dfd.promise();
@@ -249,7 +250,7 @@ module qmm034.a.viewmodel {
             self.isUpdate(false);
             if (self.dirtyObject !== undefined)
                 self.dirtyObject.reset();
-            $("#A_INP_001").focus();
+            $("#txtEraName").focus();
         }
         
         startWithEmptyData() {
@@ -263,8 +264,8 @@ module qmm034.a.viewmodel {
         clearError() {
             if ($(".nts-editor").ntsError('hasError'))
                 $(".nts-editor").ntsError('clear');
-            if ($("#A_INP_003").ntsError('hasError'))
-                $("#A_INP_003").ntsError('clear');
+            if ($("#txtStartDate").ntsError('hasError'))
+                $("#txtStartDate").ntsError('clear');
         }
     }
 
@@ -280,8 +281,8 @@ module qmm034.a.viewmodel {
         constructor(eraName: string, eraMark: string, startDate: string, fixAttribute: number, eraHist: string, endDate: string) {
             this.eraName = ko.observable(eraName);
             this.eraMark = ko.observable(eraMark);
-            this.startDate = ko.observable(startDate);
-            this.endDate = ko.observable(endDate);
+            this.startDate = ko.observable(moment(startDate, "YYYY/MM/DD").format());
+            this.endDate = ko.observable(moment(endDate, "YYYY/MM/DD").format());
             this.fixAttribute = ko.observable(fixAttribute);
             this.eraHist = ko.observable(eraHist);
         }

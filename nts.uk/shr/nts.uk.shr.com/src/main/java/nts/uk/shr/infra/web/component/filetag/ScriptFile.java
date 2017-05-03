@@ -14,6 +14,8 @@ import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
+import org.apache.logging.log4j.util.Strings;
+
 @FacesComponent(tagName = "scriptfile", createTag = true)
 public class ScriptFile extends UIComponentBase {
 
@@ -69,8 +71,15 @@ public class ScriptFile extends UIComponentBase {
         
         String filePath = (String) this.getAttributes().get("path");
         
+        String of = (String) this.getAttributes().get("of");
+        
         if (filePath != null) {
-        	writeTag(rw, FileTagsHelper.buildPath(context, filePath));
+        	if(Strings.isEmpty(of)){
+        		writeTag(rw, FileTagsHelper.buildPath(context, filePath));
+        	}else{
+        		writeTag(rw, FileTagsHelper.buildPathOf(of, filePath));
+        	}
+        	
         } else {
         	String fileSet = (String) this.getAttributes().get("set");
             Optional<String> exclude = Optional.ofNullable(this.getAttributes().get("exclude"))
@@ -103,6 +112,6 @@ public class ScriptFile extends UIComponentBase {
         
         FILE_SETS.get(fileSet).stream()
                 .filter(filePath -> excludes.stream().noneMatch(ex -> filePath.contains(ex)))
-                .forEach(filePath -> writeTag(rw, FileTagsHelper.buildPath(context, filePath)));
+                .forEach(filePath -> writeTag(rw, FileTagsHelper.buildPathUsingComWeb(context, filePath)));
     }
 }

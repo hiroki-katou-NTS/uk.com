@@ -51,7 +51,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public String getHistoryId() {
-		return this.typeValue.getQismtHealthInsuRatePK().getHistId();
+		return this.typeValue.getHistId();
 	}
 
 	/*
@@ -62,7 +62,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public String getCompanyCode() {
-		return this.typeValue.getQismtHealthInsuRatePK().getCcd();
+		return this.typeValue.getCcd();
 	}
 
 	/*
@@ -73,7 +73,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public OfficeCode getOfficeCode() {
-		return new OfficeCode(this.typeValue.getQismtHealthInsuRatePK().getSiOfficeCd());
+		return new OfficeCode(this.typeValue.getSiOfficeCd());
 	}
 
 	/*
@@ -96,11 +96,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public CalculateMethod getAutoCalculate() {
-		if (this.typeValue.getKeepEntryFlg() == CalculateMethod.Auto.value) {
-			return CalculateMethod.Auto;
-		} else {
-			return CalculateMethod.Manual;
-		}
+		return CalculateMethod.valueOf(this.typeValue.getKeepEntryFlg());
 	}
 
 	/*
@@ -176,20 +172,19 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	@Override
 	public Set<HealthInsuranceRounding> getRoundingMethods() {
 		List<HealthInsuranceRounding> listRounding = new ArrayList<HealthInsuranceRounding>();
-		RoundingItem salaryRoundingItem = new RoundingItem();
-		RoundingItem bonusRoundingItem = new RoundingItem();
-		salaryRoundingItem
-				.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCPayHealthRoundAtr()));
-		salaryRoundingItem.setPersonalRoundAtr(
+		RoundingItem salaryRoundingItem = new RoundingItem(
+				RoundingMethod.valueOf(this.typeValue.getCPayHealthRoundAtr()),
 				RoundingMethod.valueOf(this.typeValue.getPPayHealthRoundAtr()));
-		bonusRoundingItem
-				.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCBnsHealthRoundAtr()));
-		bonusRoundingItem.setPersonalRoundAtr(
+
+		RoundingItem bonusRoundingItem = new RoundingItem(
+				RoundingMethod.valueOf(this.typeValue.getCBnsHealthRoundAtr()),
 				RoundingMethod.valueOf(this.typeValue.getPBnsHealthRoundAtr()));
+
 		HealthInsuranceRounding roundSalary = new HealthInsuranceRounding(PaymentType.Salary,
 				salaryRoundingItem);
 		HealthInsuranceRounding roundBonus = new HealthInsuranceRounding(PaymentType.Bonus,
 				bonusRoundingItem);
+
 		listRounding.add(roundSalary);
 		listRounding.add(roundBonus);
 		return new HashSet<HealthInsuranceRounding>(listRounding);

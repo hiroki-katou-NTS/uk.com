@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -74,6 +77,13 @@ public class CodeRefItemGenerator implements ItemGenerator {
 		// Get ref items.
 		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getCodeRefItem(optCodeRef.get());
 
+		// Check has items.
+		if (CollectionUtil.isEmpty(wtRefItems)) {
+			throw new BusinessException(new RawErrorMessage(
+					"Have not any items on demension  " + elementSetting.getDemensionNo().value
+							+ ": " + optCodeRef.get().getRefName()));
+		}
+
 		// Create map: unique code - old uuid.
 		@SuppressWarnings("unchecked")
 		List<CodeItem> codeItems = (List<CodeItem>) elementSetting.getItemList();
@@ -82,9 +92,12 @@ public class CodeRefItemGenerator implements ItemGenerator {
 
 		// Generate uuid of code items.
 		return wtRefItems.stream().map(item -> {
+			// Create code item
 			CodeItem codeItem = new CodeItem(item.getReferenceCode(), mapCodeItems.getOrDefault(
 					item.getReferenceCode(), new ElementId(IdentifierUtil.randomUniqueId())));
 			codeItem.setDisplayName(item.getDisplayName());
+
+			// Return
 			return codeItem;
 		}).collect(Collectors.toList());
 	}

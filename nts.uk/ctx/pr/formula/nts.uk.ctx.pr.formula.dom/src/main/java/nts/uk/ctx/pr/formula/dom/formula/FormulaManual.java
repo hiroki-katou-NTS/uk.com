@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.formula.dom.enums.ReferenceMonthAtr;
 import nts.uk.ctx.pr.formula.dom.enums.RoundDigit;
 import nts.uk.ctx.pr.formula.dom.enums.RoundMethod;
@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.FormulaContent;
  *
  */
 @Getter
-public class FormulaManual extends DomainObject {
+public class FormulaManual extends AggregateRoot {
 	
 	private String companyCode;
 	

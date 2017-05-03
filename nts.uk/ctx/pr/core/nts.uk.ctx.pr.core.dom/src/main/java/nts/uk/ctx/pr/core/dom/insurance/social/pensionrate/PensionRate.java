@@ -5,8 +5,9 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -85,7 +86,8 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 	/**
 	 * Instantiates a new pension rate.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public PensionRate(PensionRateGetMemento memento) {
 		this.historyId = memento.getHistoryId();
@@ -104,7 +106,8 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(PensionRateSetMemento memento) {
 		memento.setHistoryId(this.historyId);
@@ -120,7 +123,9 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 		memento.setRoundingMethods(this.roundingMethods);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getUuid()
 	 */
 	@Override
@@ -128,7 +133,9 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 		return this.historyId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getMasterCode()
 	 */
 	@Override
@@ -136,7 +143,9 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 		return this.getOfficeCode();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getStart()
 	 */
 	@Override
@@ -144,7 +153,9 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 		return this.getApplyRange().getStartMonth();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getEnd()
 	 */
 	@Override
@@ -152,29 +163,40 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 		return this.getApplyRange().getEndMonth();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#setStart(nts.arc.time.YearMonth)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#setStart(nts.arc.time.
+	 * YearMonth)
 	 */
 	@Override
 	public void setStart(YearMonth yearMonth) {
 		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#setEnd(nts.arc.time.YearMonth)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#setEnd(nts.arc.time.
+	 * YearMonth)
 	 */
 	@Override
 	public void setEnd(YearMonth yearMonth) {
 		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.time.YearMonth)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.
+	 * time.YearMonth)
 	 */
 	@Override
 	public PensionRate copyWithDate(YearMonth start) {
-		if(this.applyRange.getStartMonth().equals(start))
-		{
+		if (this.applyRange.getStartMonth().equals(start)) {
 			throw new BusinessException("ER011");
 		}
 		PensionRate newPensionRate = new PensionRate();
@@ -194,9 +216,12 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 	/**
 	 * Creates the with intial.
 	 *
-	 * @param companyCode the company code
-	 * @param officeCode the office code
-	 * @param startYearMonth the start year month
+	 * @param companyCode
+	 *            the company code
+	 * @param officeCode
+	 *            the office code
+	 * @param startYearMonth
+	 *            the start year month
 	 * @return the pension rate
 	 */
 	public static final PensionRate createWithIntial(String companyCode, OfficeCode officeCode,
@@ -214,32 +239,31 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 		pensionRate.roundingMethods = setDefaultRounding();
 		return pensionRate;
 	}
-	
+
 	/**
 	 * Sets the dafault fun rate items.
 	 *
 	 * @return the sets the
 	 */
 	private static Set<FundRateItem> setDafaultFunRateItems() {
-		Set<FundRateItem> setItems = new HashSet<FundRateItem>();
-		
-		PensionChargeRateItem charge = new PensionChargeRateItem();
-		charge.setCompanyRate(new Ins2Rate(BigDecimal.ZERO));
-		charge.setPersonalRate(new Ins2Rate(BigDecimal.ZERO));
-		
-		FundRateItem item1 = new FundRateItem(PaymentType.Salary,InsuranceGender.Male,charge,charge);
-		setItems.add(item1);
-		FundRateItem item2 = new FundRateItem(PaymentType.Salary,InsuranceGender.Female,charge,charge);
-		setItems.add(item2);
-		FundRateItem item3 = new FundRateItem(PaymentType.Salary,InsuranceGender.Unknow,charge,charge);
-		setItems.add(item3);
-		FundRateItem item4 = new FundRateItem(PaymentType.Bonus,InsuranceGender.Male,charge,charge);
-		setItems.add(item4);
-		FundRateItem item5 = new FundRateItem(PaymentType.Bonus,InsuranceGender.Female,charge,charge);
-		setItems.add(item5);
-		FundRateItem item6 = new FundRateItem(PaymentType.Bonus,InsuranceGender.Unknow,charge,charge);
-		setItems.add(item6);
-		return setItems;
+		PensionChargeRateItem defChargeRateItem = new PensionChargeRateItem(
+				new Ins2Rate(BigDecimal.ZERO), new Ins2Rate(BigDecimal.ZERO));
+
+		// Return
+		return Arrays
+				.asList(new FundRateItem(PaymentType.Salary, InsuranceGender.Male,
+								defChargeRateItem, defChargeRateItem),
+						new FundRateItem(PaymentType.Salary, InsuranceGender.Female,
+								defChargeRateItem, defChargeRateItem),
+						new FundRateItem(PaymentType.Salary, InsuranceGender.Unknow,
+								defChargeRateItem, defChargeRateItem),
+						new FundRateItem(PaymentType.Bonus, InsuranceGender.Male, 
+								defChargeRateItem, defChargeRateItem),
+						new FundRateItem(PaymentType.Bonus, InsuranceGender.Female,
+								defChargeRateItem, defChargeRateItem),
+						new FundRateItem(PaymentType.Bonus, InsuranceGender.Unknow,
+								defChargeRateItem, defChargeRateItem))
+				.stream().collect(Collectors.toSet());
 	}
 
 	/**
@@ -247,24 +271,25 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 	 *
 	 * @return the sets the
 	 */
-	private static Set<PensionPremiumRateItem> setDefaultPremiumRateItems(){
-		Set<PensionPremiumRateItem> setItems = new HashSet<PensionPremiumRateItem>();
-		PensionChargeRateItem charge = new PensionChargeRateItem();
-		charge.setCompanyRate(new Ins2Rate(BigDecimal.ZERO));
-		charge.setPersonalRate(new Ins2Rate(BigDecimal.ZERO));
-		PensionPremiumRateItem item1 = new PensionPremiumRateItem(PaymentType.Salary,InsuranceGender.Male,charge);
-		setItems.add(item1);
-		PensionPremiumRateItem item2 = new PensionPremiumRateItem(PaymentType.Salary,InsuranceGender.Female,charge);
-		setItems.add(item2);
-		PensionPremiumRateItem item3 = new PensionPremiumRateItem(PaymentType.Salary,InsuranceGender.Unknow,charge);
-		setItems.add(item3);
-		PensionPremiumRateItem item4 = new PensionPremiumRateItem(PaymentType.Bonus,InsuranceGender.Male,charge);
-		setItems.add(item4);
-		PensionPremiumRateItem item5 = new PensionPremiumRateItem(PaymentType.Bonus,InsuranceGender.Female,charge);
-		setItems.add(item5);
-		PensionPremiumRateItem item6 = new PensionPremiumRateItem(PaymentType.Bonus,InsuranceGender.Unknow,charge);
-		setItems.add(item6);
-		return setItems;
+	private static Set<PensionPremiumRateItem> setDefaultPremiumRateItems() {
+		PensionChargeRateItem defChargeRateItem = new PensionChargeRateItem(
+				new Ins2Rate(BigDecimal.ZERO), new Ins2Rate(BigDecimal.ZERO));
+
+		// Return
+		return Arrays.asList(
+				new PensionPremiumRateItem(PaymentType.Salary, InsuranceGender.Male,
+						defChargeRateItem),
+				new PensionPremiumRateItem(PaymentType.Salary, InsuranceGender.Female,
+						defChargeRateItem),
+				new PensionPremiumRateItem(PaymentType.Salary, InsuranceGender.Unknow,
+						defChargeRateItem),
+				new PensionPremiumRateItem(PaymentType.Bonus, InsuranceGender.Male,
+						defChargeRateItem),
+				new PensionPremiumRateItem(PaymentType.Bonus, InsuranceGender.Female,
+						defChargeRateItem),
+				new PensionPremiumRateItem(PaymentType.Bonus, InsuranceGender.Unknow,
+						defChargeRateItem))
+				.stream().collect(Collectors.toSet());
 	}
 
 	/**
@@ -274,22 +299,19 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 	 */
 	// init default rounding values
 	private static Set<PensionRateRounding> setDefaultRounding() {
-		Set<PensionRateRounding> setItems = new HashSet<PensionRateRounding>();
-		RoundingItem salRounding = new RoundingItem();
-		salRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
-		salRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
-		PensionRateRounding item1 = new PensionRateRounding(PaymentType.Salary, salRounding);
-		setItems.add(item1);
-		RoundingItem bnsRounding = new RoundingItem();
-		bnsRounding.setCompanyRoundAtr(RoundingMethod.Truncation);
-		bnsRounding.setPersonalRoundAtr(RoundingMethod.Truncation);
-		PensionRateRounding item2 = new PensionRateRounding(PaymentType.Bonus, bnsRounding);
-		setItems.add(item2);
+		RoundingItem defRounding = new RoundingItem(RoundingMethod.Truncation,
+				RoundingMethod.Truncation);
 
-		return setItems;
+		// Return
+		return Arrays
+				.asList(new PensionRateRounding(PaymentType.Salary, defRounding),
+						new PensionRateRounding(PaymentType.Bonus, defRounding))
+				.stream().collect(Collectors.toSet());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -300,7 +322,9 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -319,5 +343,5 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 			return false;
 		return true;
 	}
-	
+
 }

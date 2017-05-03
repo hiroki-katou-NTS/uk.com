@@ -9,11 +9,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateFindDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class HistoryAccidentInsuranceRateF‌inder.
@@ -23,7 +21,7 @@ public class AccidentInsuranceRateFinder {
 
 	/** The accident insurance rate repository. */
 	@Inject
-	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
+	private AccidentInsuranceRateRepository repository;
 
 	/**
 	 * Find.
@@ -32,27 +30,20 @@ public class AccidentInsuranceRateFinder {
 	 *            the history accident insurance rate find in dto
 	 * @return the history accident insurance rate dto
 	 */
-	public AccidentInsuranceRateFindOutDto find(String historyId) {
-
-		// get user login
-		LoginUserContext loginUserContext = AppContexts.user();
-
-		// get companyCode by user login
-		String companyCode = loginUserContext.companyCode();
+	public AccidentInsuranceRateFindDto find(String historyId) {
 
 		// call repository finder
-		AccidentInsuranceRateFindOutDto accidentInsuranceRateFindOutDto;
-		accidentInsuranceRateFindOutDto = new AccidentInsuranceRateFindOutDto();
-		// find by id
-		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate = accidentInsuranceRateRepo
-				.findById(companyCode, historyId);
+		AccidentInsuranceRateFindDto dto = new AccidentInsuranceRateFindDto();
 
-		//exist data finder
-		if (optionalAccidentInsuranceRate.isPresent()) {
-			optionalAccidentInsuranceRate.get().saveToMemento(accidentInsuranceRateFindOutDto);
+		// find by id
+		Optional<AccidentInsuranceRate> data = this.repository.findById(historyId);
+
+		// exist data finder
+		if (data.isPresent()) {
+			data.get().saveToMemento(dto);
 		}
-		// respone => .....
-		return accidentInsuranceRateFindOutDto;
+
+		return dto;
 	}
 
 }

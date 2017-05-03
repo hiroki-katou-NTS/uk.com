@@ -1,29 +1,29 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.entity.insurance.labor;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class QismtLaborInsuOffice.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "QISMT_LABOR_INSU_OFFICE")
-public class QismtLaborInsuOffice implements Serializable {
+public class QismtLaborInsuOffice extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,45 +31,6 @@ public class QismtLaborInsuOffice implements Serializable {
 	/** The qismt labor insu office PK. */
 	@EmbeddedId
 	protected QismtLaborInsuOfficePK qismtLaborInsuOfficePK;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	private long exclusVer;
 
 	/** The li office name. */
 	@Basic(optional = false)
@@ -156,22 +117,6 @@ public class QismtLaborInsuOffice implements Serializable {
 	/**
 	 * Instantiates a new qismt labor insu office.
 	 *
-	 * @param qismtLaborInsuOfficePK
-	 *            the qismt labor insu office PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param liOfficeName
-	 *            the li office name
-	 */
-	public QismtLaborInsuOffice(QismtLaborInsuOfficePK qismtLaborInsuOfficePK, long exclusVer, String liOfficeName) {
-		this.qismtLaborInsuOfficePK = qismtLaborInsuOfficePK;
-		this.exclusVer = exclusVer;
-		this.liOfficeName = liOfficeName;
-	}
-
-	/**
-	 * Instantiates a new qismt labor insu office.
-	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param liOfficeCd
@@ -210,6 +155,16 @@ public class QismtLaborInsuOffice implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.qismtLaborInsuOfficePK;
 	}
 
 }

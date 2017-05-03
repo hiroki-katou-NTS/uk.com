@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -65,20 +67,21 @@ public class StepItemGenerator implements ItemGenerator {
 		// Lower limit is always less than upper limit.
 		if (upperLimit.compareTo(lowerLimit) < 0) {
 			// TODO: need msg id.
-			throw new BusinessException("Lower limit must be always less than upper limit.");
+			throw new BusinessException(
+					new RawErrorMessage("Lower limit must be always less than upper limit."));
 		}
 
 		// Interval is greater than zero.
 		if (interval.compareTo(BigDecimal.ZERO) <= 0) {
 			// TODO: need msg id.
-			throw new BusinessException("Interval must be greater than zero.");
+			throw new BusinessException(new RawErrorMessage("Interval must be greater than zero."));
 		}
 
 		// Interval is invalid.
 		if (upperLimit.subtract(lowerLimit).add(minStep).doubleValue() < interval.doubleValue()) {
 			// TODO: need msg id.
-			throw new BusinessException(
-					"The range " + lowerLimit + " - " + upperLimit + " is not enough for 1 step");
+			throw new BusinessException(new RawErrorMessage(
+					"The range " + lowerLimit + " - " + upperLimit + " is not enough for 1 step"));
 		}
 
 		// Create map: unique code - old uuid.
@@ -125,6 +128,14 @@ public class StepItemGenerator implements ItemGenerator {
 
 			// Add start value of next item.
 			start = start.add(interval);
+		}
+
+		// Check has items.
+		if (CollectionUtil.isEmpty(items)) {
+			// TODO: need msg id.
+			throw new BusinessException(new RawErrorMessage(
+					"Have not any items on demension  " + elementSetting.getDemensionNo().value
+							+ ": " + elementSetting.getType().displayName));
 		}
 
 		// Return
@@ -207,14 +218,17 @@ public class StepItemGenerator implements ItemGenerator {
 	private BigDecimal getUnit(BigDecimal num) {
 		num = num.multiply(BigDecimal.valueOf(100d));
 
+		// Check number of decimal digits : number remainder 100
 		if (BigDecimal.ZERO.intValue() == num.remainder(BigDecimal.valueOf(100d)).intValue()) {
 			return UNIT_L1;
 		}
 
+		// Check number of decimal digits : number remainder 10
 		if (BigDecimal.ZERO.intValue() == num.remainder(BigDecimal.valueOf(10d)).intValue()) {
 			return UNIT_L2;
 		}
 
+		// Return default unit.
 		return UNIT_L3;
 	}
 }

@@ -69,7 +69,8 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String companyCode, String historyId, Long version) {
-		this.commandProxy().remove(QismtEmpInsuRate.class, new QismtEmpInsuRatePK(companyCode, historyId));
+		this.commandProxy().remove(QismtEmpInsuRate.class,
+			new QismtEmpInsuRatePK(companyCode, historyId));
 	}
 
 	/*
@@ -81,7 +82,8 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<UnemployeeInsuranceRate> findById(String companyCode, String historyId) {
-		return this.queryProxy().find(new QismtEmpInsuRatePK(companyCode, historyId), QismtEmpInsuRate.class)
+		return this.queryProxy()
+			.find(new QismtEmpInsuRatePK(companyCode, historyId), QismtEmpInsuRate.class)
 			.map(c -> this.toDomain(c));
 	}
 
@@ -112,8 +114,9 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// eq CompanyCode
-		lstpredicateWhere.add(criteriaBuilder
-			.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+			root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd),
+			companyCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -125,9 +128,8 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 
 		// exclude select
-		List<UnemployeeInsuranceRate> UnemployeeInsuranceRate = query.getResultList().stream()
-			.map(item -> this.toDomain(item)).collect(Collectors.toList());
-		return UnemployeeInsuranceRate;
+		return query.getResultList().stream().map(item -> this.toDomain(item))
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -138,22 +140,19 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 	 * @return the unemployee insurance rate
 	 */
 	private UnemployeeInsuranceRate toDomain(QismtEmpInsuRate entity) {
-		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate(
-			new JpaUnemployeeInsuranceRateGetMemento(entity));
-		return domain;
-
+		return new UnemployeeInsuranceRate(new JpaUnemployeeInsuranceRateGetMemento(entity));
 	}
 
 	/**
 	 * To entity.
 	 *
-	 * @param UnemployeeInsuranceRate
-	 *            the unemployee insurance rate
+	 * @param rate
+	 *            the rate
 	 * @return the qismt emp insu rate
 	 */
-	private QismtEmpInsuRate toEntity(UnemployeeInsuranceRate UnemployeeInsuranceRate) {
+	private QismtEmpInsuRate toEntity(UnemployeeInsuranceRate rate) {
 		QismtEmpInsuRate entity = new QismtEmpInsuRate();
-		UnemployeeInsuranceRate.saveToMemento(new JpaUnemployeeInsuranceRateSetMemento(entity));
+		rate.saveToMemento(new JpaUnemployeeInsuranceRateSetMemento(entity));
 		return entity;
 	}
 
@@ -165,8 +164,8 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 	 * company.CompanyCode, nts.arc.time.YearMonth)
 	 */
 	@Override
-	public Optional<UnemployeeInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,
-		String historyId) {
+	public Optional<UnemployeeInsuranceRate> findBetweenUpdate(String companyCode,
+		YearMonth yearMonth, String historyId) {
 
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -185,16 +184,18 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// eq CompanyCode
-		lstpredicateWhere.add(criteriaBuilder
-			.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+			root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd),
+			companyCode));
 
 		// not eq historyId
 		lstpredicateWhere.add(criteriaBuilder.notEqual(
-			root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.histId), historyId));
+			root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.histId),
+			historyId));
 
 		// le end
-		lstpredicateWhere
-			.add(criteriaBuilder.le(root.get(QismtEmpInsuRate_.endYm), yearMonth.previousMonth().v()));
+		lstpredicateWhere.add(
+			criteriaBuilder.le(root.get(QismtEmpInsuRate_.endYm), yearMonth.previousMonth().v()));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -206,12 +207,14 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 		List<QismtEmpInsuRate> lstQismtEmpInsuRate = query.getResultList();
 
+		// check exist data
 		if (CollectionUtil.isEmpty(lstQismtEmpInsuRate)) {
 			return Optional.empty();
 		}
 
-		// get fisrt data
-		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
+		// get first data
+		return Optional
+			.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 
 	/*
@@ -240,8 +243,9 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// eq CompanyCode
-		lstpredicateWhere.add(criteriaBuilder
-			.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+			root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd),
+			companyCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -253,12 +257,14 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 		List<QismtEmpInsuRate> lstQismtEmpInsuRate = query.getResultList();
 
+		// check exist data
 		if (CollectionUtil.isEmpty(lstQismtEmpInsuRate)) {
 			return Optional.empty();
 		}
 
-		// get fisrt data
-		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
+		// get first data
+		return Optional
+			.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 
 }

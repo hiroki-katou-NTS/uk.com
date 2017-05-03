@@ -13,7 +13,8 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpIn
 /**
  * The Class JpaUnemployeeInsuranceRateItemGetMemento.
  */
-public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsuranceRateItemGetMemento {
+public class JpaUnemployeeInsuranceRateItemGetMemento
+	implements UnemployeeInsuranceRateItemGetMemento {
 
 	/** The type value. */
 	private QismtEmpInsuRate typeValue;
@@ -29,7 +30,8 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 	 * @param careerGroup
 	 *            the career group
 	 */
-	public JpaUnemployeeInsuranceRateItemGetMemento(QismtEmpInsuRate typeValue, CareerGroup careerGroup) {
+	public JpaUnemployeeInsuranceRateItemGetMemento(QismtEmpInsuRate typeValue,
+		CareerGroup careerGroup) {
 		this.typeValue = typeValue;
 		this.careerGroup = careerGroup;
 	}
@@ -59,21 +61,26 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 		switch (this.careerGroup) {
 
 		case Agroforestry:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateGeneral().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(this.typeValue.getCEmpRateGeneral().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundGeneral()));
 			break;
 
 		case Other:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateOther().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(this.typeValue.getCEmpRateOther().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
 			break;
 
 		case Contruction:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getCEmpRateConst().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(this.typeValue.getCEmpRateConst().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundConst()));
+			break;
+		default:
 			break;
 		}
 		return unemployeeInsuranceRateItemSetting;
@@ -92,21 +99,26 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 		unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
 		switch (this.careerGroup) {
 		case Agroforestry:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateGeneral().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(this.typeValue.getPEmpRateGeneral().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundGeneral()));
 			break;
 
 		case Other:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateOther().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(this.typeValue.getPEmpRateOther().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
 			break;
 
 		case Contruction:
-			unemployeeInsuranceRateItemSetting.setRate(this.typeValue.getPEmpRateConst().doubleValue());
+			unemployeeInsuranceRateItemSetting
+				.setRate(this.typeValue.getPEmpRateConst().doubleValue());
 			unemployeeInsuranceRateItemSetting
 				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundConst()));
+			break;
+		default:
 			break;
 		}
 		return unemployeeInsuranceRateItemSetting;

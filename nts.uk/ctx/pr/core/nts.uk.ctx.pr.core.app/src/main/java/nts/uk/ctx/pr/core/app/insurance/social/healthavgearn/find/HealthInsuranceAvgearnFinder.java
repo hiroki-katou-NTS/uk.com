@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find;
@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
 
 /**
@@ -25,16 +26,22 @@ public class HealthInsuranceAvgearnFinder {
 	/**
 	 * Find.
 	 *
-	 * @param id the id
-	 * @return the list
+	 * @param id
+	 *            the id
+	 * @return the list health insurance avgearn dto
 	 */
-	public ListHealthInsuranceAvgearnDto find(String id) {
-		List<HealthInsuranceAvgearnDto> list = repository.findById(id).stream().map(domain -> {
-			HealthInsuranceAvgearnDto dto = HealthInsuranceAvgearnDto.builder().build();
-			domain.saveToMemento(dto);
-			return dto;
+	public HealthInsAvgearnsModel find(String id) {
+		List<HealthInsuranceAvgearn> listDomain = repository.findById(id);
+
+		// Map to list Dto.
+		List<HealthInsuranceAvgearnDto> listDto = listDomain.stream().map(domain -> {
+			HealthInsuranceAvgearnDto dto = new HealthInsuranceAvgearnDto();
+			return dto.fromDomain(domain);
 		}).collect(Collectors.toList());
-		ListHealthInsuranceAvgearnDto listHealthInsuranceAvgearnDto = ListHealthInsuranceAvgearnDto.builder().listHealthInsuranceAvgearnDto(list).historyId(id).build();
+		
+		HealthInsAvgearnsModel listHealthInsuranceAvgearnDto = HealthInsAvgearnsModel
+				.builder().listHealthInsuranceAvgearnDto(listDto).historyId(id).build();
+		
 		return listHealthInsuranceAvgearnDto;
 	}
 }

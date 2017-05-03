@@ -22,9 +22,9 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class AccidentInsuranceRateDeleteCommandHandler
-	extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
+		extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
 
-	/** The accident insurance rate repo. */
+	/** The repository. */
 	@Inject
 	private AccidentInsuranceRateRepository repository;
 
@@ -52,11 +52,11 @@ public class AccidentInsuranceRateDeleteCommandHandler
 		Optional<AccidentInsuranceRate> data = this.repository.findFirstData(companyCode);
 
 		// exist data remove
-		if (data.isPresent()
-			&& data.get().getHistoryId().equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
+		if (data.isPresent() && data.get().getHistoryId()
+				.equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
 
 			// history first
-			this.repository.remove(companyCode, command.getAccidentInsuranceRateDeleteDto().getCode());
+			this.repository.remove(command.getAccidentInsuranceRateDeleteDto().getCode());
 
 			// get first data (update)
 			Optional<AccidentInsuranceRate> dataFirst = this.repository.findFirstData(companyCode);

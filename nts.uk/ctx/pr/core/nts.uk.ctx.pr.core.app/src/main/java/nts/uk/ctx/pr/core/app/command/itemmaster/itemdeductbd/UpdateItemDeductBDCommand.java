@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 @Setter
 public class UpdateItemDeductBDCommand {
 	private String itemCode;
-	private String itemBreakdownCd;
+	private String itemBreakdownCode;
 	private String itemBreakdownName;
 	private String itemBreakdownAbName;
 	private String uniteCd;
@@ -30,7 +30,7 @@ public class UpdateItemDeductBDCommand {
 	private BigDecimal alRangeHigh;
 
 	public ItemDeductBD toDomain() {
-		return ItemDeductBD.createFromJavaType(this.itemCode, this.itemBreakdownCd, this.itemBreakdownName,
+		return ItemDeductBD.createFromJavaType(this.itemCode, this.itemBreakdownCode, this.itemBreakdownName,
 				this.itemBreakdownAbName, this.uniteCd, this.zeroDispSet, this.itemDispAtr, this.errRangeLowAtr,
 				this.errRangeLow, this.errRangeHighAtr, this.errRangeHigh, this.alRangeLowAtr, this.alRangeLow,
 				this.alRangeHighAtr, this.alRangeHigh);

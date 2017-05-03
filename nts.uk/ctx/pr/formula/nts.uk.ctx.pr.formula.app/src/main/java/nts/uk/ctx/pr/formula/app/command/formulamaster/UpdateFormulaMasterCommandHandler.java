@@ -28,6 +28,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaName;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaContent;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
 import nts.uk.ctx.pr.formula.dom.primitive.Money;
 import nts.uk.ctx.pr.formula.dom.primitive.PremiumRate;
 import nts.uk.ctx.pr.formula.dom.primitive.ReferenceItemCode;
@@ -114,7 +115,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 					EnumAdaptor.valueOf(command.getRoundDigit(), RoundDigit.class));
 		}
 		formulaMasterDomainService.update(command.getDifficultyAtr(), companyCode,
-				new FormulaCode(command.getFormulaCode()), command.getHistoryId(), listFormulaEasyCondition,
+				new FormulaCode(command.getFormulaCode()), new FormulaName(command.getFormulaName()) , command.getHistoryId(), listFormulaEasyCondition,
 				listFormulaEasyDetail, listFormulaEasyStandardItem, formulaManual);
 	}
 

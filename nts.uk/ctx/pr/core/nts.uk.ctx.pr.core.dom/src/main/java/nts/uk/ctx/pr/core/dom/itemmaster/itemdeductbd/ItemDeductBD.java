@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemName;
@@ -34,27 +36,32 @@ public class ItemDeductBD extends AggregateRoot {
 	private RangeAtr alRangeHighAtr;
 	private AlRangeHigh alRangeHigh;
 
-	
+	@Override
+	public void validate() {
+		super.validate();
+		if (StringUtil.isNullOrEmpty(this.itemCode.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemBreakdownCode.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemBreakdownName.v(), true)
+				|| StringUtil.isNullOrEmpty(this.itemBreakdownAbName.v(), true)) {
+			throw new BusinessException("ER001");
+		}
 
-	public static ItemDeductBD createFromJavaType(
-			String itemCode, String itemBreakdownCode, String itemBreakdownName, String itemBreakdownAbName, String uniteCode,
-			int zeroDispSet, int itemDispAtr, int errRangeLowAtr, BigDecimal errRangeLow, int errRangeHighAtr,
-			BigDecimal errRangeHigh, int alRangeLowAtr, BigDecimal alRangeLow, int alRangeHighAtr,
-			BigDecimal alRangeHigh
-	) {
+	}
+	
+	public static ItemDeductBD createFromJavaType(String itemCode, String itemBreakdownCode, String itemBreakdownName,
+			String itemBreakdownAbName, String uniteCode, int zeroDispSet, int itemDispAtr, int errRangeLowAtr,
+			BigDecimal errRangeLow, int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr,
+			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh) {
 		return new ItemDeductBD(new ItemCode(itemCode), new ItemCode(itemBreakdownCode),
-				new ItemName(itemBreakdownName), new ItemName(itemBreakdownAbName),
-				new UniteCode(uniteCode), EnumAdaptor.valueOf(zeroDispSet, DisplayAtr.class),
-				EnumAdaptor.valueOf(itemDispAtr, DisplayAtr.class), EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class),
-				new ErrRangeLow(errRangeLow), EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class),
-				new ErrRangeHigh(errRangeHigh), EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class),
-				new AlRangeLow(alRangeLow), EnumAdaptor.valueOf(alRangeHighAtr, RangeAtr.class),
-				new AlRangeHigh(alRangeHigh));
+				new ItemName(itemBreakdownName), new ItemName(itemBreakdownAbName), new UniteCode(uniteCode),
+				EnumAdaptor.valueOf(zeroDispSet, DisplayAtr.class), EnumAdaptor.valueOf(itemDispAtr, DisplayAtr.class),
+				EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class), new ErrRangeLow(errRangeLow),
+				EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class), new ErrRangeHigh(errRangeHigh),
+				EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class), new AlRangeLow(alRangeLow),
+				EnumAdaptor.valueOf(alRangeHighAtr, RangeAtr.class), new AlRangeHigh(alRangeHigh));
 	}
 
-
-
-	public ItemDeductBD( ItemCode itemCode, ItemCode itemBreakdownCode, ItemName itemBreakdownName,
+	public ItemDeductBD(ItemCode itemCode, ItemCode itemBreakdownCode, ItemName itemBreakdownName,
 			ItemName itemBreakdownAbName, UniteCode uniteCode, DisplayAtr zeroDispSet, DisplayAtr itemDispAtr,
 			RangeAtr errRangeLowAtr, ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr, ErrRangeHigh errRangeHigh,
 			RangeAtr alRangeLowAtr, AlRangeLow alRangeLow, RangeAtr alRangeHighAtr, AlRangeHigh alRangeHigh) {

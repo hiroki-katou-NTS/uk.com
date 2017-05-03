@@ -8,14 +8,18 @@ module nts.uk.pr.view.qpp018.a {
             isDeficient: KnockoutObservable<boolean>;
             isRedundant: KnockoutObservable<boolean>;
             insuranceOffice: KnockoutObservable<InsuranceOfficeModel>;
+            japanYearmonth: KnockoutComputed<string>;
             
             constructor() {
                 let self = this;
-                self.yearMonth = ko.observable(0);
+                self.yearMonth = ko.observable(null);
                 self.isEqual = ko.observable(true);
                 self.isDeficient = ko.observable(true);
                 self.isRedundant = ko.observable(true);
                 self.insuranceOffice = ko.observable(new InsuranceOfficeModel());
+                self.japanYearmonth = ko.computed(() => {
+                    return nts.uk.time.yearmonthInJapanEmpire(self.yearMonth()).toString();
+                })
             }
             
             /**
@@ -64,7 +68,7 @@ module nts.uk.pr.view.qpp018.a {
                 command.isEqual = self.isEqual();
                 command.isDeficient = self.isDeficient();
                 command.isRedundant = self.isRedundant();
-                command.insuranceOffices = self.insuranceOffice().getSelectedOffice();
+                command.officeCodes = self.insuranceOffice().getSelectedOffice();
                 return command;
             }
             
@@ -73,9 +77,7 @@ module nts.uk.pr.view.qpp018.a {
              */
             showDialogChecklistPrintSetting(): void {
                 nts.uk.ui.windows.setShared("socialInsuranceFeeChecklist", null);
-                nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" }).onClosed(() => {
-//                    let returnValue = nts.uk.ui.windows.getShared("printSettingValue");
-                });
+                nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" });
             }
             
             /**
@@ -84,18 +86,22 @@ module nts.uk.pr.view.qpp018.a {
             private validate(): boolean {
                 let self = this;
                 let isError = false;
-                if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
-                    $('.grid-error').ntsError('set', 'You must choose at least item of grid');
-                    isError = true;
-                }
+                // Validate year month
+                $('#date-picker').ntsEditor('validate');
                 if (!self.isEqual() && !self.isDeficient() && !self.isRedundant()){
                     // message ER001
-                    $('.extract-condition-error').ntsError('set', '必須の入力項目が入力されていません。');
+                    $('.extract-condition-error').ntsError('set', 'が入力されていません。');
+                    isError = true;
                 }
-                return isError;
+                if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
+                    $('.grid-error').ntsError('set', '社会保険事業所が入力されていません。');
+                    isError = true;
+                }
+                return isError || !nts.uk.ui._viewModel.errors.isEmpty();
             }
             
             private clearAllError(): void {
+                $('#date-picker').ntsError('clear')
                 $('.grid-error').ntsError('clear');
                 $('.extract-condition-error').ntsError('clear');
             }
@@ -153,17 +159,16 @@ module nts.uk.pr.view.qpp018.a {
                 self.selectedOfficeCodeList().push(code);
             }
             
-            getSelectedOffice(): InsuranceOffice[] {
+            getSelectedOffice(): String[] {
                 let self = this;
-                let offices: InsuranceOffice[] = [];
+                let officeCodes: String[] = [];
                 for(let i in self.selectedOfficeCodeList()) {
                     let code: string = self.selectedOfficeCodeList()[i];
-                    let office = self.getOfficeByCode(code);
-                    if (office) {
-                        offices.push(office);
+                    if (code) {
+                        officeCodes.push(code);
                     }
                 }
-                return offices;
+                return officeCodes;
             }
         
             getOfficeByCode(code: string): InsuranceOffice {

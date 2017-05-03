@@ -16,24 +16,14 @@ import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 @Getter
 public class SalaryAggregateItem extends DomainObject {
 
-	/** The code. */
-	private SalaryAggregateItemCode code;
-
-	/** The company code. */
-	private String companyCode;
+	
+	private SalaryAggregateItemHeader header;
 
 	/** The name. */
 	private SalaryAggregateItemName name;
 
 	/** The sub item codes. */
 	private Set<SalaryItem> subItemCodes;
-
-	/** The tax division. */
-	private TaxDivision taxDivision;
-
-	/** The item category. */
-	// TODO: need review with EAP.
-	private int itemCategory;
 
 	/**
 	 * Instantiates a new salary aggregate item.
@@ -42,12 +32,9 @@ public class SalaryAggregateItem extends DomainObject {
 	 */
 	public SalaryAggregateItem(SalaryAggregateItemGetMemento memento) {
 		super();
-		this.code = memento.getSalaryAggregateItemCode();
+		this.header = memento.getSalaryAggregateItemHeader();
 		this.name = memento.getSalaryAggregateItemName();
-		this.companyCode = memento.getCompanyCode();
 		this.subItemCodes = memento.getSubItemCodes();
-		this.taxDivision = memento.getTaxDivision();
-		this.itemCategory = memento.getItemCategory();
 	}
 
 	/**
@@ -56,12 +43,8 @@ public class SalaryAggregateItem extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(SalaryAggregateItemSetMemento memento) {
-		memento.setCompanyCode(this.companyCode);
-		memento.setSalaryAggregateItemCode(this.code);
+		memento.setSalaryAggregateItemHeader(this.header);
 		memento.setSalaryAggregateItemName(this.name);
 		memento.setSubItemCodes(this.subItemCodes);
-		memento.setTaxDivision(this.taxDivision);
-		memento.setItemCategory(this.itemCategory);
 	}
-
 }
