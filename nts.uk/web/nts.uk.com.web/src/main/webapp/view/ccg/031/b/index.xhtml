@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 800, height: 800 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.basic.dom.company.CompanyCode
+				nts.uk.ctx.basic.dom.company.CompanyName
+				nts.uk.ctx.basic.dom.company.CompanyNameAbb
+				nts.uk.ctx.basic.dom.company.CompanyNameKana
+				nts.uk.ctx.basic.dom.company.FaxNo
+				nts.uk.ctx.basic.dom.company.Postal
+				nts.uk.ctx.basic.dom.company.TelephoneNo
+				nts.uk.ctx.basic.dom.company.TermBeginMon
+				nts.uk.ctx.basic.dom.company.CorporateMyNumber
+				nts.uk.ctx.basic.dom.company.PresidentName
+				nts.uk.ctx.basic.dom.company.PresidentJobTitle
+				nts.uk.ctx.basic.dom.company.address.Address1
+				nts.uk.ctx.basic.dom.company.address.Address2
+				nts.uk.ctx.basic.dom.company.address.AddressKana1
+				nts.uk.ctx.basic.dom.company.address.AddressKana2
+				nts.uk.ctx.basic.dom.company.useset.UseSet
+  			</com:ValidatorScript>
+  			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="ccg031.b.service.js" />
+			<com:scriptfile path="ccg031.b.vm.js" />
+			<com:scriptfile path="ccg031.b.start.js" />
+			<com:stylefile path="../../common/common.css" />
+			<com:stylefile path="ccg031.b.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" class="cf">
+				<div class="label-area">
+					<label>選択位置：</label>
+					<label><span>上から</span><span data-bind="text: positionRow">1</span><span>マス目</span></label>
+					<label><span>左から</span><span data-bind="text: positionColumn">1</span><span>マス目</span></label>
+				</div>
+				<div class="part-area">
+					<div id="combo-box" class="animated-background" data-bind="ntsComboBox: {
+						options: listPartType,
+						optionsValue: 'value',
+						optionsText: 'fieldName',
+						value: selectedPartType,
+						enable: true,
+						columns: [{ prop: 'fieldName', length: 4 }]}"></div>
+					<div class="part-container">
+						<label class="label add-widget-label">追加したいダッシュボード…</label>
+						<div class="cf">
+							<div class="col-1 pull-left">
+								<div class="animated-background" style="height:350px; width:100%;">
+									<table id="toppage-part-list" data-bind="ntsGridList: {								
+										height: '100%',
+										width: '100%',
+										dataSource: listPart,
+										primaryKey: 'topPagePartID',
+										columns: listPartColumn,
+										multiple: false,
+										value: selectedPart}"></table>
+								</div>
+							</div>
+							<div class="col-2 pull-left">
+								<span class="caret-right caret-inline"></span>
+							</div>
+							<div class="col-3 pull-left">
+								<div class="widget-panel">
+									<div class="panel-header">
+										<span class="square green"></span>
+										<span class="title">選択したウィジェット情報</span>
+									</div>
+									<div class="panel-content">
+										<div class="valign-center control-group">
+											<div data-bind="ntsFormLabel: {required: true}">サイズ</div>
+											<label>Widget Size here</label>
+										</div>
+										<label>※サイズは固定で変更不可</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<div id="functions-area">
+				<button class="btn x-large btn-register proceed">決定</button>
+				<button id="btn btn-close">キャンセル</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

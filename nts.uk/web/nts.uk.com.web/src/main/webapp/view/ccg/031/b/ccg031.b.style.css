@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+
+.label-area {padding: 10px;}
+.part-area {padding: 10px 20px;}
+.part-container {padding: 15px; border: 1px solid #B1B1B1; border-radius: 7px;}
+.part-container .col-1 {width:270px;}
+.part-container .col-2 {width:50px;text-align:center;}
+.part-container .col-2 .caret-right:after {color:#E0F59E; border-width: 40px 25px; margin-top:25px;}
+.part-container .col-3 {width:270px;}
+
+.add-widget-label {margin-bottom: 15px;}
