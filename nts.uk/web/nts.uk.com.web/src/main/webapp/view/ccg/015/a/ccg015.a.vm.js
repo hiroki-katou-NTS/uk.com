@@ -27,6 +27,7 @@ var nts;
                                         a.service.loadDetailTopPage(selectedTopPageCode).done(function (data) {
                                             self.loadTopPageItemDetail(data);
                                         });
+                                        self.isNewMode(false);
                                     });
                                     self.languageListOption = ko.observableArray([
                                         new ItemCbbModel("0", "日本語"),
@@ -38,6 +39,15 @@ var nts;
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    self.loadTopPageList().done(function () {
+                                        dfd.resolve();
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadTopPageList = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    self.listTopPage([]);
                                     a.service.loadTopPage().done(function (data) {
                                         data.forEach(function (item, index) {
                                             self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
@@ -72,6 +82,7 @@ var nts;
                                         a.service.updateTopPage(self.collectData()).done(function () {
                                         });
                                     }
+                                    self.loadTopPageList();
                                 };
                                 ScreenModel.prototype.openMyPageSettingDialog = function () {
                                     nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
@@ -95,6 +106,7 @@ var nts;
                                 ScreenModel.prototype.newTopPage = function () {
                                     var self = this;
                                     self.topPageModel(new TopPageModel());
+                                    self.isNewMode(true);
                                 };
                                 ScreenModel.prototype.removeTopPage = function () {
                                     var self = this;

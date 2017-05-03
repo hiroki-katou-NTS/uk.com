@@ -24,6 +24,7 @@ module nts.uk.com.view.ccg015.a {
                     service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
                         self.loadTopPageItemDetail(data);
                     });
+                    self.isNewMode(false);
                 });
                 self.languageListOption = ko.observableArray([
                     new ItemCbbModel("0", "日本語"),
@@ -36,6 +37,18 @@ module nts.uk.com.view.ccg015.a {
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                self.loadTopPageList().done(function() {
+                    //TODO 
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            private loadTopPageList() : JQueryPromise<void>
+            {
+                var self = this;
+                var dfd = $.Deferred<void>();
+                self.listTopPage([]);
                 service.loadTopPage().done(function(data: Array<TopPageItemDto>) {
                     data.forEach(function(item, index) {
                         self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
@@ -87,7 +100,7 @@ module nts.uk.com.view.ccg015.a {
                 //check update or create
                 if (self.isNewMode()) {
                     service.registerTopPage(self.collectData()).done(function() {
-                        //register success
+                        //register success                     
                     });
                 }
                 else {
@@ -95,6 +108,8 @@ module nts.uk.com.view.ccg015.a {
                         //update success
                     });
                 }
+                self.loadTopPageList();
+                //TODO focus create item   
             }
             private openMyPageSettingDialog() {
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
@@ -123,6 +138,7 @@ module nts.uk.com.view.ccg015.a {
             private newTopPage() {
                 var self = this;
                 self.topPageModel(new TopPageModel());
+                self.isNewMode(true);
             }
             private removeTopPage() {
                 var self = this;
