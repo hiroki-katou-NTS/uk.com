@@ -6,10 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author LamDT
  */
+@NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
 public class CcgmtTopPagePartPK implements Serializable {
