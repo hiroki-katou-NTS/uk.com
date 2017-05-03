@@ -8,7 +8,7 @@
 
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 800, height: 800 };</script>
+			<script>var dialogSize = { width: 1280, height: 768 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.basic.dom.company.CompanyCode
 					nts.uk.ctx.basic.dom.company.CompanyName
@@ -30,6 +30,7 @@
 			<com:scriptfile path="ccg031.a.service.js" />
 			<com:scriptfile path="ccg031.a.vm.js" />
 			<com:scriptfile path="ccg031.a.start.js" />
+			<com:stylefile path="../../common/common.css" />
 			<com:stylefile path="ccg031.a.style.css" />
 		</ui:define>
 
@@ -45,42 +46,17 @@
 				<div class="placement-wraper">
 					<div class="cf">
 						<div class="placement-container">
-							<div class="placement-row cf">
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-							</div>
-							<div class="placement-row cf">
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-							</div>
-							<div class="placement-row cf">
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-							</div>
-							<div class="placement-row cf">
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-								<div class="placement-item"></div>
-							</div>
+							<com:ko-foreach bind="totalRowArray">
+								<div class="placement-row cf">
+									<com:ko-foreach bind="$parent.totalColumnArray">
+										<div class="placement-item" data-bind="click: $parents[1].openDialog.bind($parents[1].openDialog, $parent, $data)"></div>
+									</com:ko-foreach>
+								</div>
+							</com:ko-foreach>
 						</div>
-						<button class="btn-addcolumn">列<br/>の<br/>追<br/>加</button>
+						<button class="btn-addcolumn" data-bind="click: addColumn">列<br/>の<br/>追<br/>加</button>
 					</div>
-					<button class="btn-addrow">行の追加</button>
+					<button class="btn-addrow" data-bind="click: addRow">行の追加</button>
 				</div>
 			</div>
 		</ui:define>

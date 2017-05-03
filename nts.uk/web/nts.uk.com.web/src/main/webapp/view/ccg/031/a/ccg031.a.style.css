@@ -1,7 +1,8 @@
 @CHARSET "UTF-8";
 
 .placement-container {float:left; width: 960px; height: 640px; overflow:auto;}
-.placement-container.overflow {width: 977px; height: 657px;}
+.placement-container.overflow-y {width: 977px; margin-right:10px;}
+.placement-container.overflow-x {height: 657px; margin-bottom:10px;}
 .placement-row {overflow:visible; white-space:nowrap; font-size:0;}
 .placement-item {font-size:14px;font-size:1rem;display:inline-block; position:relative; background-color:#e0e0e0; width:150px; height:150px; margin: 0 10px 10px 0; border-radius: 10px; cursor: pointer; transition: background 0.1s, box-shadow 0.05s;}
 .placement-item:hover {background-color:#eaeaea;}
