@@ -9,8 +9,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
-import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtPaydayProcessing;
-import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtPaydayProcessingPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPaydayProcessing;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPaydayProcessingPK;
 
 @Stateless
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository

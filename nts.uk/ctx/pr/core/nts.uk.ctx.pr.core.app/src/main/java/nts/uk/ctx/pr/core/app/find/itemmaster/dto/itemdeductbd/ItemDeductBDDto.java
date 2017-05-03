@@ -11,10 +11,10 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 @AllArgsConstructor
 @Data
 public class ItemDeductBDDto {
-	private String itemBreakdownCd;
+	private String itemBreakdownCode;
 	private String itemBreakdownName;
 	private String itemBreakdownAbName;
-	private String uniteCd;
+	private String uniteCode;
 	private int zeroDispSet;
 	private int itemDispAtr;
 	private int errRangeLowAtr;
@@ -28,8 +28,8 @@ public class ItemDeductBDDto {
 
 	public static ItemDeductBDDto fromDomain(ItemDeductBD domain) {
 
-		return new ItemDeductBDDto(domain.getItemBreakdownCd().v(), domain.getItemBreakdownName().v(),
-				domain.getItemBreakdownAbName().v(), domain.getUniteCd().v(), domain.getZeroDispSet().value,
+		return new ItemDeductBDDto(domain.getItemBreakdownCode().v(), domain.getItemBreakdownName().v(),
+				domain.getItemBreakdownAbName().v(), domain.getUniteCode().v(), domain.getZeroDispSet().value,
 				domain.getItemDispAtr().value, domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(),
 				domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value,
 				domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value, domain.getAlRangeHigh().v());

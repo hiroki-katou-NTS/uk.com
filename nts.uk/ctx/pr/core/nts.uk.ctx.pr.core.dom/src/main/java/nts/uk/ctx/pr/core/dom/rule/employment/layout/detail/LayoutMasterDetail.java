@@ -20,7 +20,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.distribute.Distribut
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.distribute.DistributeSet;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.distribute.DistributeWay;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.AutoLineId;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
+import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 
 /**
  * 
@@ -76,7 +76,7 @@ public class LayoutMasterDetail extends AggregateRoot {
 	private PersonalWageCode personalWageCode;
 	/** 賃金テーブルコード */
 	@Getter
-	private WageTableCode wageTableCode;
+	private WtCode wageTableCode;
 
 	/** 共通金額 */
 	@Getter
@@ -112,7 +112,7 @@ public class LayoutMasterDetail extends AggregateRoot {
 				new RangeChecker(EnumAdaptor.valueOf(isErrorUseHigh, UseOrNot.class),
 						EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class), error),
 				EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class), new FormulaCode(formulaCode),
-				new PersonalWageCode(personalWageCode), new WageTableCode(wageTableCode),
+				new PersonalWageCode(personalWageCode), new WtCode(wageTableCode),
 				new CommonAmount(commonAmount), new ItemCode(setOffItemCode),
 				EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class));
 	}
@@ -164,7 +164,7 @@ public class LayoutMasterDetail extends AggregateRoot {
 			CategoryAtr categoryAtr, ItemCode itemCode, AutoLineId autoLineId, ItemPosColumn itemPosColumn,
 			RangeChecker rangeError, CalculationMethod calculationMethod, Distribute distribute, DisplayAtr displayAtr,
 			RangeChecker rangeAlarm, SumScopeAtr sumScopeAtr, ItemCode setOffItemCode, CommuteAtr commuteAtr,
-			FormulaCode formulaCode, PersonalWageCode personalWageCode, WageTableCode wageTableCode,
+			FormulaCode formulaCode, PersonalWageCode personalWageCode, WtCode wageTableCode,
 			CommonAmount commonAmount, String historyId) {
 
 		return new LayoutMasterDetail(companyCode, stmtCode, historyId, categoryAtr, itemCode, autoLineId,
@@ -281,7 +281,7 @@ public class LayoutMasterDetail extends AggregateRoot {
 			ItemCode itemCode, AutoLineId autoLineId, ItemPosColumn itemPosColumn, RangeChecker alarm,
 			CalculationMethod calculationMethod, Distribute distribute, DisplayAtr displayAtr, RangeChecker error,
 			SumScopeAtr sumScopeAtr, FormulaCode formulaCode, PersonalWageCode personalWageCode,
-			WageTableCode wageTableCode, CommonAmount commonAmount, ItemCode setOffItemCode, CommuteAtr commuteAtr) {
+			WtCode wageTableCode, CommonAmount commonAmount, ItemCode setOffItemCode, CommuteAtr commuteAtr) {
 		super();
 		this.companyCode = companyCode;
 		this.stmtCode = stmtCode;

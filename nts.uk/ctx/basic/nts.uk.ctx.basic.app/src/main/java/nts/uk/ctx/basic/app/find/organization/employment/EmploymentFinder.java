@@ -7,17 +7,22 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.basic.dom.organization.employment.EmploymentRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmploymentFinder {
 	@Inject
 	private EmploymentRepository repository;
+
+	
+	
 	/**
 	 * find all employments by company code
 	 * @param companyCode
 	 * @return
 	 */
-	public List<EmploymentDto> getAllEmployment(String companyCode){
+	public List<EmploymentDto> getAllEmployment(){
+		String companyCode = AppContexts.user().companyCode();
 		return this.repository.findAllEmployment(companyCode)
 				.stream().map(employ -> EmploymentDto.fromDomain(employ)).collect(Collectors.toList());
 	}
@@ -27,7 +32,8 @@ public class EmploymentFinder {
 	 * @param employmentCode
 	 * @return
 	 */
-	public Optional<EmploymentDto> getEmployment(String companyCode, String employmentCode){
+	public Optional<EmploymentDto> getEmployment(String employmentCode){
+		String companyCode = AppContexts.user().companyCode();
 		return this.repository.findEmployment(companyCode, employmentCode).map(employ -> EmploymentDto.fromDomain(employ));		
 	}
 	/**
@@ -36,7 +42,10 @@ public class EmploymentFinder {
 	 * @param displayFlg
 	 * @return
 	 */
-	public Optional<EmploymentDto> findEmpByDisplayFlg(String companyCode){
+	public Optional<EmploymentDto> findEmpByDisplayFlg(){
+		String companyCode = AppContexts.user().companyCode();
 		return this.repository.findEmploymnetByDisplayFlg(companyCode).map(employ -> EmploymentDto.fromDomain(employ));
 	}
+	
+	
 } 

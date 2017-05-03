@@ -1,9 +1,14 @@
 package nts.uk.ctx.basic.dom.company.address;
 
 import lombok.Getter;
-
+import nts.arc.layer.dom.DomainObject;
+/**
+ * 
+ * @author lanlt
+ *
+ */
 @Getter
-public class Address {
+public class Address  extends DomainObject{
 	
 	private Address1 address1;
 	

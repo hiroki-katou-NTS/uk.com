@@ -14,6 +14,8 @@ import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
+import org.apache.logging.log4j.util.Strings;
+
 @FacesComponent(tagName = "scriptfile", createTag = true)
 public class ScriptFile extends UIComponentBase {
 
@@ -21,25 +23,14 @@ public class ScriptFile extends UIComponentBase {
             "/lib/generic/jquery/jquery-3.1.1.js",
             "/lib/generic/jqueryui/jquery-ui.js",
             "/lib/generic/jquery/jquery.steps.js",
+            "/lib/generic/momentjs/moment.js",
+            "/lib/generic/momentjs/ja.js",
             "/lib/generic/lodash/lodash-4.16.6.min.js",
             "/lib/generic/knockoutjs/knockout-3.4.1.js",
             "/lib/generic/knockoutjs/knockout.mapping-2.4.1.js",
+            "/lib/generic/jquery/datepicker.js",
             "/lib/nittsu/iefix.js",
-            "/lib/nittsu/util.js",
-            "/lib/nittsu/text.js",
-            "/lib/nittsu/request.js",
-            "/lib/nittsu/ui/init.js",
-            "/lib/nittsu/ui/notify.js",
-            "/lib/nittsu/ui/validation.js",
-            "/lib/nittsu/ui/jquery-ext.js",
-            "/lib/nittsu/ui/ko-ext.js",
-            "/lib/nittsu/ui/errors.js",
-            "/lib/nittsu/ui/ui.js",
-            "/lib/nittsu/ui/dialog-options.js",
-            "/lib/nittsu/ui/textbox-options.js",
-            "/lib/nittsu/time.js",
-            "/lib/nittsu/number.js",
-            "/lib/generic/jquery/datepicker.js"
+            "/lib/nittsu/nts.uk.com.web.nittsu.bundles.js"
     }));
     
     private static Set<String> FILES_IGNITE = new LinkedHashSet<String>(Arrays.asList(new String[] {
@@ -80,8 +71,15 @@ public class ScriptFile extends UIComponentBase {
         
         String filePath = (String) this.getAttributes().get("path");
         
+        String of = (String) this.getAttributes().get("of");
+        
         if (filePath != null) {
-        	writeTag(rw, FileTagsHelper.buildPath(context, filePath));
+        	if(Strings.isEmpty(of)){
+        		writeTag(rw, FileTagsHelper.buildPath(context, filePath));
+        	}else{
+        		writeTag(rw, FileTagsHelper.buildPathOf(of, filePath));
+        	}
+        	
         } else {
         	String fileSet = (String) this.getAttributes().get("set");
             Optional<String> exclude = Optional.ofNullable(this.getAttributes().get("exclude"))
@@ -114,6 +112,6 @@ public class ScriptFile extends UIComponentBase {
         
         FILE_SETS.get(fileSet).stream()
                 .filter(filePath -> excludes.stream().noneMatch(ex -> filePath.contains(ex)))
-                .forEach(filePath -> writeTag(rw, FileTagsHelper.buildPath(context, filePath)));
+                .forEach(filePath -> writeTag(rw, FileTagsHelper.buildPathUsingComWeb(context, filePath)));
     }
 }

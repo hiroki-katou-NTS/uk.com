@@ -25,7 +25,7 @@ public class ItemAttendDto {
 	private String memo;
 
 	public static ItemAttendDto fromDomain(ItemAttend domain) {
-
+		
 		return new ItemAttendDto(domain.getAvePayAtr().value, domain.getItemAtr().value,
 				domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(), domain.getAlRangeHighAtr().value,
 				domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value, domain.getAlRangeLow().v(),

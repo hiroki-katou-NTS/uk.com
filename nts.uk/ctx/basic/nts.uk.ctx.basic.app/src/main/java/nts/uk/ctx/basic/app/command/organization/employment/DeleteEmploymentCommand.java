@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class DeleteEmploymentCommand {
 	private String employmentCode;
+	private int displayAtr;
 }

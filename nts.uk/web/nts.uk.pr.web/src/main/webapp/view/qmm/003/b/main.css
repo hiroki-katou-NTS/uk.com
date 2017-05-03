@@ -1,56 +1,35 @@
 @CHARSET "UTF-8";
-/* .outer {outline:1px solid #FF6138;}
-.fixed-height {height: 45px;}
-.control-group.valign-center > * { vertical-align: middle; }
-#header {
-	color: #ccc;
-}
-#area{
-	width: 330px;
-	height: 500px; 
-	margin-top: 2px;
-	margin-left:50px;
-} */
-/* div.ui-widget-header{
-	margin-top:0px;
-} */
+
 .icon.icon-searchbox {
 	position: relative;
-    top: 37px;
-    left: 45px;
-}
-body > div:nth-child(6) > div.ui-dialog-titlebar.ui-corner-all.ui-widget-header.ui-helper-clearfix.ui-draggable-handle{
-	margin-top:0px;
-}
-#treegrid2_container{
-	margin-top: 15px;
-    margin-left: 20px;
-    margin-right: 40px;
-}
-input.ntsSearchBox{
-	width: 250px;
-	margin-top: auto;
-	margin-left: 70px;
-}
-#contents-area > div:nth-child(3) > button{
-	width:60px;
+	top: 28px;
+	left: 25px;
 }
 
-#B_BTN_001{
-    width: 90px;
-    height: 50px;
-    margin-top: 20px;
-    margin-left: 120px;
-	
+#treegrid2_container {
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-right: 40px;
 }
-#B_SCH_001{
-	width: 450px;
+
+#contents-area {
+	padding-bottom: 0px !important;
 }
-#B_BTN_002{
+
+input.ntsSearchBox {
+	width: 195px !important;
+	margin-top: -15px !important;
+	margin-left: 30x;
+}
+
+#B_BTN_001 {
 	width: 80px;
-	margin-top: 25px;
-	margin-left: 20px;	
 	height: 40px;
+	margin-left: 80px;
 }
 
-
+#B_BTN_002 {
+	width: 80px;
+	margin-left: 10px;
+	height: 30px;
+}

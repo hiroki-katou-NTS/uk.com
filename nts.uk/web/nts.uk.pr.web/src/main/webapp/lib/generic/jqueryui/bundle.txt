@@ -1,5 +1,0 @@
-jQueryUI 1.12.1
-
-Core: all
-Interactions: all
-Widgets: all

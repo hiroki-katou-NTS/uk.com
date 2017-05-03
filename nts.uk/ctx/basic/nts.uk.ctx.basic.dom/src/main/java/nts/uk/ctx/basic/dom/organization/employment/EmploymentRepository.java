@@ -34,7 +34,7 @@ public interface EmploymentRepository {
 	 */
 	List<Employment> findAllEmployment(String companyCode);
 	/**
-	 * find employment by company code and display flag
+	 * find employment by company code and display flag =1
 	 * @param companyCode
 	 * @param displayFlg
 	 * @return

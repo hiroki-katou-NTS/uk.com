@@ -4,6 +4,12 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(20)
+
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 public class LineBankName extends StringPrimitiveValue<LineBankName> {
 	/**
 	 * serialVersionUID
@@ -11,7 +17,6 @@ public class LineBankName extends StringPrimitiveValue<LineBankName> {
 	private static final long serialVersionUID = 1L;
 
 	public LineBankName(String arg0) {
-		// TODO Auto-generated constructor stub
 		super(arg0);
 	}
 }

@@ -19,12 +19,21 @@ __viewContext.ready(function () {
             self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(2);
+            self.selectedCode = ko.observable(temp[2]);
+            self.selectedCode.subscribe(function (value){
+                console.log(value);        
+            });
             self.selectedCodes = ko.observableArray([]);
+            self.selectedCodes.subscribe(function (value){
+                console.log(value);        
+            });
             self.isEnable = ko.observable(true);
             self.isMulti = ko.observable(true);
             self.isMulti2 = ko.observable(true);
             self.isValidate = ko.observable(true);
+            $("#list-box").on("selectionChanging", function(){
+                return self.isValidate();    
+            });
         }
 
         addOptions() {
@@ -40,14 +49,16 @@ __viewContext.ready(function () {
         }
         
         selectAll() {
-            $('#list-box').ntsListBox('selectAll');
+            var self = this;
+            self.selectedCodes([10]);
         }
         
         /**
          * Clear options.
          */
         clearOptions() {
-            this.itemList([]);
+            var self = this;
+            self.itemList([]);
         }
         
         /**

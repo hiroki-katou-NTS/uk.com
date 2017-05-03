@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.employment.CloseDateNo;
@@ -28,20 +29,13 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 	protected void handle(CommandHandlerContext<UpdateEmploymentCommand> context) {
 		try{
 			UpdateEmploymentCommand command = context.getCommand();
-			String companyCode = AppContexts.user().companyCode();		
-			Employment employment = new Employment(companyCode,
-					new EmploymentCode(command.getEmploymentCode()),
-					new EmploymentName(command.getEmploymentName()),
-					new CloseDateNo(command.getCloseDateNo()),
-					new Memo(command.getMemo()),
-					new ProcessingNo(command.getProcessingNo()),
-					EnumAdaptor.valueOf( command.getStatutoryHolidayAtr(), ManageOrNot.class),
-					new EmploymentCode(command.getEmployementOutCd()),
-					EnumAdaptor.valueOf( command.getDisplayFlg(), ManageOrNot.class));
-			
-			this.repository.update(employment);
+			String companyCode = AppContexts.user().companyCode();	
+			Optional<Employment> employmentInf = repository.findEmployment(companyCode, command.getEmploymentCode());
+			if(!employmentInf.isPresent()){
+				throw new BusinessException("ER026");
+			}
 			//A_SEL_001にチェックが付いている場合
-			if(command.isChkDisplayFlg()){
+			if(command.getDisplayFlg() == 1){
 				Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
 				if(employmentByDisplayFlg.isPresent()){
 					//[雇用マスタ.UPD-2]を実施する
@@ -50,6 +44,16 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 					repository.update(employmentDisplay);
 				}
 			}
+			Employment employment = employmentInf.get();
+			employment.setEmploymentName(new EmploymentName(command.getEmploymentName()));
+			employment.setCloseDateNo(new CloseDateNo(command.getCloseDateNo()));
+			employment.setMemo(new Memo(command.getMemo()));
+			employment.setProcessingNo(new ProcessingNo(command.getProcessingNo()));
+			employment.setStatutoryHolidayAtr(EnumAdaptor.valueOf( command.getStatutoryHolidayAtr(), ManageOrNot.class));
+			employment.setEmployementOutCd(new EmploymentCode(command.getEmployementOutCd()));
+			employment.setDisplayFlg(EnumAdaptor.valueOf( command.getDisplayFlg(), ManageOrNot.class));
+			this.repository.update(employment);
+			
 		}
 		catch(Exception ex){
 			throw ex;
