@@ -37,7 +37,7 @@ public class DepartmentDto {
     private String depPath;
     
     /** The dep level. */
-    private int depLevel;
+    private Integer depLevel;
     
     public static DepartmentDto newDepartment(DepartmentDto otherDep, String yearMonth) {
         DepartmentDto dep = new DepartmentDto();

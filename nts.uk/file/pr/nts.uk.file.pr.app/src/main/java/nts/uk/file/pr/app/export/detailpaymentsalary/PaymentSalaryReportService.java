@@ -84,48 +84,48 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
     
     private SalaryPrintSettingDto findSalarySetting(PaymentSalaryQuery query) {
         SalaryPrintSettingDto dto = new SalaryPrintSettingDto();
-//        String companyCode = AppContexts.user().companyCode();
-//        SalaryPrintSetting salary = salaryPrintRepo.find(companyCode);
-//        
-//        dto.setShowPayment(salary.getShowPayment());
-//        dto.setSumPersonSet(salary.getSumPersonSet());
-//        dto.setSumMonthPersonSet(salary.getSumMonthPersonSet());
-//        dto.setSumEachDeprtSet(salary.getSumEachDeprtSet());
-//        dto.setSumMonthDeprtSet(salary.getSumMonthDeprtSet());
-//        dto.setSumDepHrchyIndexSet(salary.getSumDepHrchyIndexSet());
-//        dto.setSumMonthDepHrchySet(salary.getSumMonthDepHrchySet());
-//        List<Integer> listHierarchy = findHierarchy(salary);
-//        dto.setSelectedLevels(listHierarchy);
-//        dto.setTotalSet(salary.getTotalSet());
-//        dto.setMonthTotalSet(salary.getMonthTotalSet());
-//        
-//        // ===== SET OPTION REPORT =====
-//        dto.setOutputFormatType(query.getOutputFormatType());
-//        dto.setIsVerticalLine(query.getIsVerticalLine());
-//        dto.setIsHorizontalLine(query.getIsHorizontalLine());
-//        dto.setPageBreakSetting(query.getPageBreakSetting());
-//        dto.setHierarchy(query.getHierarchy());
-//        dto.setOutputLanguage(query.getOutputLanguage());
+        String companyCode = AppContexts.user().companyCode();
+        SalaryPrintSetting salary = salaryPrintRepo.find(companyCode);
+        
+        dto.setShowPayment(salary.getShowPayment());
+        dto.setSumPersonSet(salary.getSumPersonSet());
+        dto.setSumMonthPersonSet(salary.getSumMonthPersonSet());
+        dto.setSumEachDeprtSet(salary.getSumEachDeprtSet());
+        dto.setSumMonthDeprtSet(salary.getSumMonthDeprtSet());
+        dto.setSumDepHrchyIndexSet(salary.getSumDepHrchyIndexSet());
+        dto.setSumMonthDepHrchySet(salary.getSumMonthDepHrchySet());
+        List<Integer> listHierarchy = findHierarchy(salary);
+        dto.setSelectedLevels(listHierarchy);
+        dto.setTotalSet(salary.getTotalSet());
+        dto.setMonthTotalSet(salary.getMonthTotalSet());
+        
+        // ===== SET OPTION REPORT =====
+        dto.setOutputFormatType(query.getOutputFormatType());
+        dto.setIsVerticalLine(query.getIsVerticalLine());
+        dto.setIsHorizontalLine(query.getIsHorizontalLine());
+        dto.setPageBreakSetting(query.getPageBreakSetting());
+        dto.setHierarchy(query.getHierarchy());
+        dto.setOutputLanguage(query.getOutputLanguage());
         
         // TODO: fake value
-        dto.setShowPayment(true);
-        dto.setSumPersonSet(true);
-        dto.setSumMonthPersonSet(true);
-        dto.setSumEachDeprtSet(true);
-        dto.setSumMonthDeprtSet(true);
-        dto.setSumDepHrchyIndexSet(true);
-        dto.setSumMonthDepHrchySet(true);
-        List<Integer> listHierarchy = Arrays.asList(1, 3, 6); //findHierarchy(salary);
-        dto.setSelectedLevels(listHierarchy);
-        dto.setTotalSet(true);
-        dto.setMonthTotalSet(true);
-        
-        dto.setOutputFormatType("1");
-        dto.setIsVerticalLine(false);
-        dto.setIsHorizontalLine(true);
-        dto.setPageBreakSetting("2");
-        dto.setHierarchy("2");
-        dto.setOutputLanguage("1");
+//        dto.setShowPayment(true);
+//        dto.setSumPersonSet(true);
+//        dto.setSumMonthPersonSet(true);
+//        dto.setSumEachDeprtSet(true);
+//        dto.setSumMonthDeprtSet(true);
+//        dto.setSumDepHrchyIndexSet(true);
+//        dto.setSumMonthDepHrchySet(true);
+//        List<Integer> listHierarchy = Arrays.asList(1, 2, 5); //findHierarchy(salary);
+//        dto.setSelectedLevels(listHierarchy);
+//        dto.setTotalSet(true);
+//        dto.setMonthTotalSet(true);
+//        
+//        dto.setOutputFormatType("1");
+//        dto.setIsVerticalLine(false);
+//        dto.setIsHorizontalLine(false);
+//        dto.setPageBreakSetting("3");
+//        dto.setHierarchy("2");
+//        dto.setOutputLanguage("1");
         
         return dto;
     }
@@ -165,8 +165,6 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
     public PaymentSalaryReportData initData() {
         PaymentSalaryReportData rawData = fakeReportData();
         SalaryPrintSettingDto configure = findSalarySetting(null);
-        List<Integer> listHierarchy = Arrays.asList(1, 3, 6);
-        configure.setSelectedLevels(listHierarchy);
         rawData.setConfigure(configure);
 
 //        HeaderReportData header = findReportHeader();

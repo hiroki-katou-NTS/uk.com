@@ -55,15 +55,9 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportDat
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.SalaryPrintSettingDto;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
-/**
- * @author duongnd
- *
- */
 @Stateless
 public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerator
       implements PaymentSalaryInsuranceGenerator {
-
-//public class AsposePaymentSalaryReportGenerator {
 
   private static final String TEMPLATE_FILE = "/Users/mrken57/Work/UniversalK/project/export/qpp007/PaymentSalaryTemplate.xlsx";
   private static final String PATH = "/Users/mrken57/Work/UniversalK/project/export/qpp007/";
@@ -73,9 +67,9 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
   private static final String EXTENSION_EXCEL = ".xlsx";
   private static final String SHEET_NAME = "My sheet";
   
-  public static void main(String[] args) {
-      new AsposePaymentSalaryReportGenerator().testGeneratorReport();
-  }
+//  public static void main(String[] args) {
+//      new AsposePaymentSalaryReportGenerator().testGeneratorReport();
+//  }
   
   
   /*
@@ -115,7 +109,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
           DateFormat dateFormat = new SimpleDateFormat(PaymentConstant.DATE_TIME_FORMAT);
           Date date = new Date();
           String fileName = PATH + REPORT_FILE_NAME.concat(dateFormat.format(date).toString());
-          workbook.save(fileName.concat(EXTENSION_EXCEL));
+//          workbook.save(fileName.concat(EXTENSION_EXCEL));
           
           PdfSaveOptions saveOptions = new PdfSaveOptions(SaveFormat.PDF);
           saveOptions.setAllColumnsInOnePagePerSheet(true);
@@ -147,7 +141,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         pageSetup.setCenterVertically(false);
         pageSetup.setCenterHorizontally(false);
         
-        int totalColumns = printProcess.mapTitle.size();
+        int totalColumns = printProcess.totalColumn;
         
         // ===== SET HEADER =======
 //        pageSetup.setHeader(0,"&\"IPAPGothic\"&11 " + header.getNameCompany());
@@ -155,7 +149,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
 //        pageSetup.setHeader(2,"&\"IPAPGothic\"&11 " + dateFormat.format(new Date()) + "\n&P ページ");
         
         // merge row title report
-        printProcess.worksheet.getCells().merge(0, 0, 1, totalColumns);
+        printProcess.worksheet.getCells().merge(0, 0, 1, PaymentConstant.NUMBER_COLUMN_PAGE);
         
         // ======== SET PRINT AREA ========
         int lastColumn = totalColumns - PaymentConstant.NUMBER_ONE;
@@ -168,7 +162,9 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
     private void writeContent(PrintProcess printProcess, PaymentSalaryReportData reportData) {
         printProcess.indexRow = PaymentConstant.INDEX_ROW_CONTENT;
         printProcess.selectedLevels = reportData.getConfigure().getSelectedLevels();
-        printProcess.employees = reportData.getEmployees();
+        printProcess.employees = reportData.getEmployees().stream()
+                .filter(distinctByKey(p -> p.getCode()))
+                .collect(Collectors.toList());
         
         Map<EmployeeKey, Double> mapAmount = reportData.getMapEmployeeAmount();
         
@@ -222,8 +218,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         int indexRow = PaymentConstant.INDEX_ROW_TITLE;
         cells.setRowHeight(indexRow, PaymentConstant.ROW_HEIGHT_TITLE);
         Map<Integer, String> mapTitle = printProcess.mapTitle;
-        StyleModel styleModel = new StyleModel();
-        styleModel.setForegroundColor(PaymentConstant.LIGHT_BLUE_COLOR);
+        StyleModel styleModel = new StyleModel(PaymentConstant.LIGHT_BLUE_COLOR);
         for (int indexColumn : mapTitle.keySet()) {
             String item = mapTitle.get(indexColumn);
             Cell cell = cells.get(indexRow, indexColumn);
@@ -248,7 +243,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 .map(p -> p.getKey().getItemName())
                 .distinct()
                 .collect(Collectors.toList());
-        int indexRowHead = printProcess.indexRow;
+        printProcess.indexRowHeaderCategory = printProcess.indexRow;
         printProcess.indexRow++;
         int indexArr = 0;
         for (String itemName : itemNames) {
@@ -259,17 +254,18 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             calAmountByItemName(printProcess, itemName);
             
             // ===== UPDATE VARIABLE ====
+            printProcess.totalColumn = printProcess.indexColumn;
             printProcess.indexColumn = PaymentConstant.NUMBER_ZERO;
             printProcess.indexRow++;
             printProcess.isHasTitleRow = true;
             printProcess.mapAmountDepMonths = null;
             indexArr++;
         }
-        //write header category. Need to calculate index row of header category?
-        writeHeaderCategory(printProcess, indexRowHead);
+        // write header category. Need to calculate index row of header category?
+        writeHeaderCategory(printProcess);
     }
     
-    private void writeHeaderCategory(PrintProcess printProcess, int indexRowHead) {
+    private void writeHeaderCategory(PrintProcess printProcess) {
         String header;
         switch (printProcess.category) {
             case Payment :
@@ -288,12 +284,15 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 header = "";
         }
         Cells cells = printProcess.worksheet.getCells();
-        Cell cell = cells.get(indexRowHead, PaymentConstant.NUMBER_ZERO);
+        Cell cell = cells.get(printProcess.indexRowHeaderCategory, PaymentConstant.NUMBER_ZERO);
         cell.setValue(header);
         
+        int numberColumn = printProcess.totalColumn;
         StyleModel styleModel = new StyleModel();
-        int numberColumn = printProcess.mapTitle.size();
-        styleModel.drawLine(cells, numberColumn, indexRowHead);
+        styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
+        styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
+        styleModel.drawHorizontalEdgePage(cells, numberColumn, printProcess.indexRowHeaderCategory);
+        styleModel.drawBorderLineRow(cells, numberColumn, printProcess.indexRowHeaderCategory);
     }
     
     private void calAmountByItemName(PrintProcess printProcess, String itemName) {
@@ -360,7 +359,12 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
     private void writeItemName(PrintProcess printProcess, String itemName) {
         Cell cell = printProcess.worksheet.getCells().get(printProcess.indexRow, printProcess.indexColumn);
         cell.setValue(itemName);
+        
         StyleModel styleModel = new StyleModel();
+        styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
+        styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
+        styleModel.setBorderType(CellsBorderType.VerticalBorder);
+        
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
@@ -387,7 +391,11 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         SalaryPrintSettingDto configure = printProcess.configure;
         
         StyleModel styleModel = new StyleModel();
+        styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
+        styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
+        styleModel.setBorderType(CellsBorderType.VerticalBorder);
         styleModel.setFormatNumber(PaymentConstant.FORMAT_NUMBER);
+        
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
@@ -408,7 +416,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                     Cell cell = cells.get(indexRow, indexColumn);
                     cell.setValue(amount);
                     styleModel.drawBorderCell(cell);
-                    
+                    styleModel.drawBorderLastColPageIfNeed(cell);
                     // write title row
                     if (!printProcess.isHasTitleRow) {
                         String titleRow = yearMonth + "\n" + emp.getCode() + "\n" + emp.getName();
@@ -427,7 +435,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 Cell cellTotalMonthly = cells.get(indexRow, indexColumn);
                 cellTotalMonthly.setValue(totalAmountMonthly);
                 styleModel.drawBorderCell(cellTotalMonthly);
-                
+                styleModel.drawBorderLastColPageIfNeed(cellTotalMonthly);
                 // write title row
                 if (!printProcess.isHasTitleRow) {
                     String titleRow = yearMonth + "\nTotal Monthly\n" + emp.getCode() + "    " + emp.getName();
@@ -442,14 +450,15 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             Cell cellTotal = cells.get(indexRow, indexColumn);
             cellTotal.setValue(totalEmployee);
             styleModel.drawBorderCell(cellTotal);
-            
+            styleModel.drawBorderLastColPageIfNeed(cellTotal);
             // write title row
             if (!printProcess.isHasTitleRow) {
                 String titleRow = "個人計\n" + emp.getCode() + "    " + emp.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
             if (PaymentConstant.PAGE_BREAK_EMPLOYEE.equals(printProcess.configure.getPageBreakSetting())) {
-                indexColumn = breakPage(indexColumn);
+                styleModel.drawBorderRight(cellTotal);
+                indexColumn = breakPage(printProcess, indexColumn);
             } else {
                 indexColumn++;
             }
@@ -462,8 +471,13 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             List<String> codeEmps, DepartmentDto prevDep) {
         int indexRow = printProcess.indexRow;
         int indexColumn = printProcess.indexColumn;
+        
         StyleModel styleModel = new StyleModel();
+        styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
+        styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
+        styleModel.setBorderType(CellsBorderType.DoubleVerticalBorder);
         styleModel.setFormatNumber(PaymentConstant.FORMAT_NUMBER);
+        
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
@@ -478,6 +492,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             mapAmountDepMonths = new HashMap<>();
         }
         SalaryPrintSettingDto configure = printProcess.configure;
+        int totalEmp = 0;
         // write amount a department monthly.
         for (String yearMonth : printProcess.yearMonths) {
             double amountMonth = mapAmonutItemName.entrySet()
@@ -499,6 +514,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                     String titleRow = yearMonth + "\n部門月計\n" + prevDep.getCode() + "    " + prevDep.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
+                totalEmp += codeEmps.size();
                 // count number employee
                 String numberEmp = codeEmps.size() + "人";
                 printProcess.mapFooter.put(indexColumn, numberEmp);
@@ -517,7 +533,15 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 String titleRow = "\n部門計\n" + prevDep.getCode() + "    " + prevDep.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
-            indexColumn++;
+            String numberEmp = totalEmp + "人";
+            printProcess.mapFooter.put(indexColumn, numberEmp);
+            
+            if (PaymentConstant.PAGE_BREAK_DEPARTMENT.equals(printProcess.configure.getPageBreakSetting())) {
+                styleModel.drawBorderRight(cellTotal);
+                indexColumn = breakPage(printProcess, indexColumn);
+            } else {
+                indexColumn++;
+            }
         }
         printProcess.indexColumn = indexColumn;
         printProcess.mapTitle = mapTitle;
@@ -534,7 +558,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             tmpDeps.add(prevDep);
             if (currentDep.getDepLevel() == prevDep.getDepLevel()) {
                 calCumulateDepMonthly(printProcess, tmpDeps, prevDep);
-                newStack.push(currentDep);
+//                newStack.push(currentDep);
                 isEqualDepLevel = true;
                 // remove department code: C, D, E --> remove E (D contains E)
                 for (int i = 0; i < tmpDeps.size(); i++) {
@@ -566,8 +590,13 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         calCumulateDepMonthly(printProcess, tmpDeps, prevDep);
         Map<DepartmentDto, Double> mapAmountDepMonths = printProcess.mapAmountDepMonths;
         double totalCumulate = 0;
+        
         StyleModel styleModel = new StyleModel();
+        styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
+        styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
+        styleModel.setBorderType(CellsBorderType.DoubleVerticalBorder);
         styleModel.setFormatNumber(PaymentConstant.FORMAT_NUMBER);
+        
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
@@ -598,7 +627,14 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 String titleRow = "\n部門階層累計\n" + prevDep.getCode() + "        " + prevDep.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
-            indexColumn++;
+            
+            if (PaymentConstant.PAGE_BREAK_HIERARCHY_DEPARTMENT.equals(printProcess.configure.getPageBreakSetting())
+                    && printProcess.configure.getHierarchy().equals(prevDep.getDepLevel().toString())) {
+                styleModel.drawBorderRight(cellTotal);
+                indexColumn = breakPage(printProcess, indexColumn);
+            } else {
+                indexColumn++;
+            }
         }
         
         printProcess.indexColumn = indexColumn;
@@ -612,8 +648,13 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         Map<Integer, String> mapTitle = printProcess.mapTitle;
         Map<DepartmentDto, Double> mapAmountDepMonths = printProcess.mapAmountDepMonths;
         double totalCumulate = 0;
+        
         StyleModel styleModel = new StyleModel();
+        styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
+        styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
+        styleModel.setBorderType(CellsBorderType.DoubleVerticalBorder);
         styleModel.setFormatNumber(PaymentConstant.FORMAT_NUMBER);
+        
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
@@ -657,9 +698,6 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
     private void writeNumberEmployee(PrintProcess printProcess) {
         // write number employee footer report.
         Cells cells = printProcess.worksheet.getCells();
-        StyleModel styleModel = new StyleModel();
-        styleModel.setForegroundColor(PaymentConstant.LIGHT_BLUE_COLOR);
-        styleModel.drawLine(cells, printProcess.mapTitle.size(), printProcess.indexRow);
         
         Cell cellName = cells.get(printProcess.indexRow, PaymentConstant.NUMBER_ZERO);
         cellName.setValue("件数");
@@ -669,6 +707,14 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             Cell cell = cells.get(printProcess.indexRow, indexColum);
             cell.setValue(numberEmp);
         }
+        int numberColumn = printProcess.totalColumn;
+        
+        StyleModel styleModel = new StyleModel(PaymentConstant.LIGHT_BLUE_COLOR);
+        styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
+        styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
+        styleModel.drawHorizontalEdgePage(cells, numberColumn, printProcess.indexRow);
+        styleModel.drawBorderLineRow(cells, numberColumn, printProcess.indexRow);
+        
         printProcess.indexRow++;
     }
     
@@ -692,9 +738,19 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         printProcess.mapAmountDepMonths = mapAmountDepMonths;
     }
     
-    private int breakPage(int indexColumn) {
+    private int breakPage(PrintProcess printProcess, int indexColumn) {
         int numColumnExist = indexColumn % PaymentConstant.NUMBER_COLUMN_PAGE;
-        int numColumnBlank = PaymentConstant.NUMBER_COLUMN_PAGE - numColumnExist; 
+        int numColumnBlank = PaymentConstant.NUMBER_COLUMN_PAGE - numColumnExist;
+        
+        StyleModel styleModel = new StyleModel();
+        Cells cells = printProcess.worksheet.getCells();
+        
+        Cell cellStartPage = cells.get(printProcess.indexRowHeaderCategory, indexColumn - numColumnExist);
+        styleModel.drawBorderLeft(cellStartPage);
+        
+        Cell cellEndPage = cells.get(printProcess.indexRowHeaderCategory, indexColumn);
+        styleModel.drawBorderRight(cellEndPage);
+        
         return indexColumn + numColumnBlank;
     }
     
@@ -717,25 +773,30 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         private Color foregroundColor;
         private String formatNumber;
         private CellsBorderType borderType;
+        private boolean isVerticalBorder;
+        private boolean isHorizontalBorder;
         
         public StyleModel() {
             this.foregroundColor = Color.getWhite();
             this.borderType = CellsBorderType.CommonBorder;
+            this.isVerticalBorder = true;
+            this.isHorizontalBorder = true;
         }
         
-        public StyleModel(Color background, CellsBorderType cellBorder) {
+        public StyleModel(Color background) {
             this.foregroundColor = background;
-            this.borderType = cellBorder;
+            this.borderType = CellsBorderType.CommonBorder;
+            this.isVerticalBorder = true;
+            this.isHorizontalBorder = true;
         }
         
         public void drawTitleReport(Cell cell) {
-            Style style = this.getCellStyle(cell);
+            Style style = this.findStyleCell(cell, this.borderType);
             style.setHorizontalAlignment(TextAlignmentType.CENTER);
             cell.setStyle(style);
         }
         
-        public void drawLine(Cells cells, int numberColumn, int indexRow) {
-            this.drawBorderLineRow(cells, numberColumn, indexRow);
+        public void drawHorizontalEdgePage(Cells cells, int numberColumn, int indexRow) {
             Cell firstCellRow = cells.get(indexRow, 0);
             this.drawBorderLeft(firstCellRow);
             
@@ -745,7 +806,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         }
         
         public void drawBorderCell(Cell cell) {
-            Style style = this.getCellStyle(cell);
+            Style style = this.findStyleCell(cell, this.borderType);
             if (this.formatNumber != null) {
                 style.setCustom(this.formatNumber);
                 style.setHorizontalAlignment(TextAlignmentType.RIGHT);
@@ -754,84 +815,129 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         }
         
         public void drawDoubleBorder(Cell cell, CellsBorderType borderType) {
-            Style style = this.getCellStyle(cell, borderType);
+            Style style = this.findStyleCell(cell, borderType);
             cell.setStyle(style);
         }
         
         public void drawBorderLineRow(Cells cells, int numberColumn, int indexRow) {
             for (int i = 0; i < numberColumn; i++) {
-                Cell cell = cells.get(indexRow, i);
-                Style style = this.getCellStyle(cell, CellsBorderType.CategoryBorder);
-                cell.setStyle(style);
+                Cell cellAbove = cells.get(indexRow - 1, i);
+                Cell currentCell = cells.get(indexRow, i);
+                Cell cellBelow = cells.get(indexRow + 1, i);
                 
-                // draw border last and first column in page.
-                if ( i > PaymentConstant.NUMBER_ONE) { 
-                    Style newStyle = null;
-                    int indexReal = i + PaymentConstant.NUMBER_ONE;
-                    if (indexReal % PaymentConstant.NUMBER_COLUMN_PAGE == PaymentConstant.NUMBER_ZERO) {
-                        newStyle = this.getCellStyle(cell, CellsBorderType.RightBorder);
-                    } else if (indexReal % PaymentConstant.NUMBER_COLUMN_PAGE == PaymentConstant.NUMBER_ONE) {
-                        newStyle = this.getCellStyle(cell, CellsBorderType.LeftBorder);
-                    }
-                    if (newStyle != null) {
-                        cell.setStyle(newStyle);
-                    }
+                Style style = this.findStyleCell(currentCell, CellsBorderType.HorizontalBorder);
+                currentCell.setStyle(style);
+                
+                // draw border last and first column in a page.
+                this.drawBorderLastColPageIfNeed(currentCell);
+                
+                if (cellAbove.getValue() == null && currentCell.getValue() == null 
+                        && cellBelow.getValue() == null) {
+                    this.clearBorderColumnEmpty(cells, indexRow, i);
+                }
+                
+            }
+        }
+        
+        public void drawBorderLastColPageIfNeed(Cell cell) {
+            int indexColumn = cell.getColumn();
+            if ( indexColumn > PaymentConstant.NUMBER_ONE) {
+                Style newStyle = null;
+                int indexReal = indexColumn + PaymentConstant.NUMBER_ONE;
+                if (indexReal % PaymentConstant.NUMBER_COLUMN_PAGE == PaymentConstant.NUMBER_ZERO) {
+                    newStyle = this.findStyleCell(cell, CellsBorderType.RightBorder);
+                } else if (indexReal % PaymentConstant.NUMBER_COLUMN_PAGE == PaymentConstant.NUMBER_ONE) {
+                    newStyle = this.findStyleCell(cell, CellsBorderType.LeftBorder);
+                }
+                if (newStyle != null) {
+                    cell.setStyle(newStyle);
                 }
             }
         }
         
+        public void clearBorderColumnEmpty(Cells cells, int indexRow, int indexColumn) {
+            Cell prevCellAbove = cells.get(indexRow - 1, (indexColumn - 1) >= 0 ? (indexColumn - 1) : 0);
+            Cell nextCellAbove = cells.get(indexRow - 1, indexColumn + 1);
+            Cell currentCell = cells.get(indexRow, indexColumn);
+            Cell prevCellBelow = cells.get(indexRow + 1, (indexColumn - 1) >= 0 ? (indexColumn - 1) : 0);
+            Cell nextCellBelow = cells.get(indexRow + 1, indexColumn + 1);
+            
+            Style style = this.findStyleCell(currentCell, CellsBorderType.NoBorder);
+            style.setForegroundColor(Color.getWhite());
+            currentCell.setStyle(style);
+            if (prevCellAbove.getValue() != null || prevCellBelow.getValue() != null) {
+                Cell prevCell = cells.get(indexRow, (indexColumn - 1) >= 0 ? (indexColumn - 1) : 0);
+                Style styleLeft = this.findStyleCell(prevCell, CellsBorderType.RightBorder);
+                prevCell.setStyle(styleLeft);
+            }
+            
+            if (nextCellAbove.getValue() != null || nextCellBelow.getValue() != null) {
+                Cell nextCell = cells.get(indexRow, indexColumn + 1);
+                Style styleLeft = this.findStyleCell(nextCell, CellsBorderType.LeftBorder);
+                nextCell.setStyle(styleLeft);
+            }
+        }
+        
         public void drawBorderLeft(Cell cell) {
-            Style style = this.getCellStyle(cell, CellsBorderType.LeftBorder);
+            Style style = this.findStyleCell(cell, CellsBorderType.LeftBorder);
             cell.setStyle(style);
         }
         
         public void drawBorderRight(Cell cell) {
-            Style style = this.getCellStyle(cell, CellsBorderType.RightBorder);
+            Style style = this.findStyleCell(cell, CellsBorderType.RightBorder);
             cell.setStyle(style);
         }
         
-        private Style getCellStyle(Cell cell, CellsBorderType borderType){
+        private Style findStyleCell(Cell cell, CellsBorderType borderType) {
             Style style = cell.getStyle();
-            style = findBorder(cell, borderType);
             style.setForegroundColor(this.foregroundColor);
             style.setPattern(BackgroundType.SOLID);
             style.setTextWrapped(true);
-            return style;
-        }
-    
-        private Style getCellStyle(Cell cell){
-            Style style = cell.getStyle();
-            style = findBorder(cell, this.borderType);
-            style.setForegroundColor(this.foregroundColor);
-            style.setPattern(BackgroundType.SOLID);
-            style.setTextWrapped(true);
-            return style;
-        }
-        
-        private Style findBorder(Cell cell, CellsBorderType borderType) {
-            Style style = cell.getStyle();
+            
             switch (borderType) {
+                case NoBorder:
+                    style.setBorder(BorderType.LEFT_BORDER, CellBorderType.NONE, Color.getWhite());
+                    style.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getWhite());
+                    style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getWhite());
+                    style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getWhite());
+                    break;
                 case CommonBorder:
-                    style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
-                    style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-                    style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-                    style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+                    if (this.isVerticalBorder) {
+                        style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+                        style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+                    }
+                    if (this.isHorizontalBorder) {
+                        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+                        style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+                    }
                     break;
-                case DoubleLeftBorder:
-                    style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+                case VerticalBorder:
+                    if (this.isVerticalBorder) {
+                        style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+                        style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+                    }
                     break;
-                case DoubleRightBorder:
-                    style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
-                    break;
-                case CategoryBorder:
-                    style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-                    style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+                case HorizontalBorder:
+                    if (this.isHorizontalBorder) {
+                        style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+                        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+                    }
                     break;
                 case LeftBorder:
-                    style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+                    if (this.isVerticalBorder) {
+                        style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+                    }
                     break;
                 case RightBorder:
-                    style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+                    if (this.isVerticalBorder) {
+                        style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+                    }
+                    break;
+                case DoubleVerticalBorder:
+                    if (this.isVerticalBorder) {
+                        style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+                        style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+                    }
                     break;
                 default:
                     break;
@@ -841,18 +947,21 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
     }
     
     enum CellsBorderType {
+        NoBorder,
         CommonBorder,
-        DoubleLeftBorder,
-        DoubleRightBorder,
-        CategoryBorder,
+        VerticalBorder,
+        HorizontalBorder,
         LeftBorder,
-        RightBorder
+        RightBorder,
+        DoubleVerticalBorder
     }
     
     class PrintProcess {
         Worksheet worksheet;
         int indexRow = 0;
         int indexColumn = 0;
+        int indexRowHeaderCategory = 0;
+        int totalColumn = 0;
         boolean isForebackground = false;
         boolean isHasTitleRow = false;
 //        List<String> titleRows;
