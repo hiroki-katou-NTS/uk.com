@@ -12,7 +12,7 @@ public class DivergenceTime extends AggregateRoot{
 	/*乖離時間ID*/
 	private int divTimeId;
 	/*乖離時間使用設定*/
-	private DivergenceTimeUseSet divTimeUseSet;
+	private UseSetting divTimeUseSet;
 	/*アラーム時間*/
 	private Time alarmTime;
 	/*エラー時間*/
@@ -24,7 +24,7 @@ public class DivergenceTime extends AggregateRoot{
 
 	public DivergenceTime(String companyId, 
 						int divTimeId, 
-						DivergenceTimeUseSet divTimeUseSet, 
+						UseSetting divTimeUseSet, 
 						Time alarmTime,
 						Time errTime, 
 						InputSetting selectSet, 
@@ -51,7 +51,7 @@ public class DivergenceTime extends AggregateRoot{
 		return new DivergenceTime(
 				companyId, 
 				divTimeId, 
-				EnumAdaptor.valueOf(divTimeUseSet, DivergenceTimeUseSet.class),
+				EnumAdaptor.valueOf(divTimeUseSet, UseSetting.class),
 				new Time(BigDecimal.valueOf(alarmTime)), 
 				new Time(BigDecimal.valueOf(errTime)), 
 				InputSetting.convert(selectUseSet,cancelErrSelect), 

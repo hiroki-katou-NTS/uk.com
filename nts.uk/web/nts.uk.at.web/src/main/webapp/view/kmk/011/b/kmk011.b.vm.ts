@@ -48,7 +48,7 @@ module kmk011.b.viewmodel {
                 self.itemDivReason(self.findItemDivTime(codeChanged));
                 self.divReasonCode(self.itemDivReason().divReasonCode);
                 self.divReasonContent(self.itemDivReason().divReasonContent);
-                if(self.itemDivReason().requiredAtr==1){
+                if(self.itemDivReason().requiredAtr === 1){
                     self.requiredAtr(true);
                 }else{
                     self.requiredAtr(false);
@@ -61,7 +61,7 @@ module kmk011.b.viewmodel {
          * start page
          * get all divergence reason
          */
-        startPage(): JQueryPromise<any> {
+        startPage(): JQueryPromise<any>{
             var self = this;
             self.currentCode('');
             var dfd = $.Deferred();
@@ -89,6 +89,11 @@ module kmk011.b.viewmodel {
             self.divReasonCode(null);
             self.divReasonContent("");
             self.requiredAtr(null);    
+        }
+        addDivReason(){
+            var self = this;
+            var divReason = new model.Item(self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
+            service.addDivReason(divReason);
         }
     }
     export module model{ 

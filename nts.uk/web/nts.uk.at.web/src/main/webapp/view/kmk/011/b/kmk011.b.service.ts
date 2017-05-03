@@ -1,18 +1,33 @@
 module kmk011.b.service {
      var paths = {
-        getAllDivReason: "at/record/divergencetime/getalldivreason/"
+         getAllDivReason: "at/record/divergencetime/getalldivreason/",
+         addDivReason: "at/record/divergencetime/adddivreason",
+         aupdateDivReason: "at/record/divergencetime/updatedivreason",
+         deleteDivReason: "at/record/divergencetime/deletedivreason"
     }
 
     /**
-    * get all history
+    * get all divergence reason
     */
     export function getAllDivReason(divTimeId: string): JQueryPromise<Array<viewmodel.model.Item>> {
-        var dfd = $.Deferred<Array<viewmodel.model.Item>>();
-        nts.uk.request.ajax("at", paths.getAllDivReason + divTimeId).done(function(res: Array<viewmodel.model.Item>) {
-            dfd.resolve(res);
-        }).fail(function(res) {
-            dfd.reject(res);
-        })
-        return dfd.promise();
-    }   
+        return nts.uk.request.ajax("at", paths.getAllDivReason + divTimeId);
+    }  
+    /**
+    * add divergence reason
+    */ 
+    export function addDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>>{
+        return nts.uk.request.ajax("at", paths.addDivReason,divReason);
+    }
+    /**
+    * update divergence reason
+    */ 
+    export function updateDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>>{
+        return nts.uk.request.ajax("at", paths.addDivReason,divReason);
+    }
+    /**
+    * delete divergence reason
+    */ 
+    export function deleteDivReason(divReason: viewmodel.model.Item): JQueryPromise<Array<viewmodel.model.Item>>{
+        return nts.uk.request.ajax("at", paths.addDivReason,divReason);
+    }
 }

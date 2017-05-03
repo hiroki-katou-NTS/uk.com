@@ -19,6 +19,11 @@ public class DivergenceTimeWebService extends WebService{
 	@Inject
 	private DivergenceReasonFinder getAllDivReason;
 	
+	/**
+	 * get all divergence reason
+	 * @param divTimeId
+	 * @return
+	 */
 	@POST
 	@Path("getalldivreason/{divTimeId}")
 	public List<DivergenceReasonDto> getAllDivReason(@PathParam("divTimeId") String divTimeId){

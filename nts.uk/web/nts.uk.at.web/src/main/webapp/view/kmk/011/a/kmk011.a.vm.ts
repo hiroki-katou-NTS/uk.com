@@ -17,9 +17,10 @@ module kmk011.a.viewmodel {
         selectUse: KnockoutObservable<any>;
         selectSel: KnockoutObservable<any>;
         selectInp: KnockoutObservable<any>;
+        lstItemTime: KnockoutObservableArray<model.TimeItem>;
         divTimeName: KnockoutObservable<string>;
         inp_A36: KnockoutObservable<string>;
-        inp_A37: KnockoutObservable<string>;
+        timeItemName: KnockoutObservable<string>;
         alarmTime: KnockoutObservable<string>;
         errTime: KnockoutObservable<string>;
         inp_A314: KnockoutObservable<string>;
@@ -44,11 +45,16 @@ module kmk011.a.viewmodel {
                 { headerText: '名称', key: 'divTimeName', width: 150 }
             ]);
             self.dataSource = ko.observableArray([
-                new model.Item(1,'月曜日'),
+                 new model.Item(1,'月曜日'),
                  new model.Item(2,'火曜日') ,
                  new model.Item(3,'水曜日'),
                  new model.Item(4,'木曜日'),
                  new model.Item(5,'金曜日')
+                ]);
+            self.lstItemTime = ko.observableArray([
+                new model.TimeItem(1,'勤怠項目名称1'),
+                new model.TimeItem(2,'勤怠項目名称2'),
+                new model.TimeItem(3,'勤怠項目名称3')
                 ]);
             self.divergenceTimeObj = ko.observableArray([
                 new model.DivTime(1,1,8,9,0,0,1,0),
@@ -74,7 +80,8 @@ module kmk011.a.viewmodel {
             self.selectInp = ko.observable(self.divergenceTimeObj()[0].inpUseSet);
             self.divTimeName = ko.observable(self.dataSource()[0].divTimeName);    
             self.inp_A36 = ko.observable('富士大学');
-            self.inp_A37 = ko.observable('日通会社');
+            self.timeItemName = ko.observable('');
+            self.timeItemName(self.lstItemTime()[0].attendanceName + ' + ' +self.lstItemTime()[1].attendanceName+ ' + ' +self.lstItemTime()[2].attendanceName);
             self.alarmTime = ko.observable(self.divergenceTimeObj()[0].alarmTime.toString());
             self.errTime = ko.observable(self.divergenceTimeObj()[0].errTime.toString());
             self.inp_A314 = ko.observable('選択肢を設定');
@@ -200,6 +207,14 @@ module kmk011.a.viewmodel {
                 this.divTimeId = divTimeId;
                 this.divTimeName = divTimeName;    
             }      
+        }
+        export class TimeItem{
+            attendanceId: number;
+            attendanceName: string;
+            constructor(attendanceId: number, attendanceName: string){
+                this.attendanceId = attendanceId;
+                this.attendanceName = attendanceName;
+            }     
         }
     }
 }
