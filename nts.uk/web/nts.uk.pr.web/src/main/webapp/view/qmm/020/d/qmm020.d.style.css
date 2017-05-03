@@ -1,3 +1,9 @@
-.screen-d {
-	background-color: #ccc;
+.screen-d .contents-area:after {
+	content: '';
+	clear: both;
+	display: block;
+}
+
+.screen-d .left-content, .screen-d .right-content {
+	float: left;
 }

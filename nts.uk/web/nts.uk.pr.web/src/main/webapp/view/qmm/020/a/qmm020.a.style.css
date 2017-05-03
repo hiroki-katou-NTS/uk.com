@@ -61,10 +61,3 @@
 div[id^=tabpanel] .contents-area {
 	padding: 10px;
 }
-
-
-
-.screen-d .left-content,
-.screen-d .right-content {
-	float: left;
-}
