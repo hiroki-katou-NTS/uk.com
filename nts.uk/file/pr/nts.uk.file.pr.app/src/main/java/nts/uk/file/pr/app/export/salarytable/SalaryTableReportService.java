@@ -36,6 +36,8 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 	/** The repository. */
 	@Inject
 	private SalaryTableRepository repository;
+	
+	private static final int TWO_THOUSANDS = 2000;
 
 	/*
 	 * (non-Javadoc)
@@ -87,19 +89,20 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 	 * @return the map
 	 */
 	private Map<Denomination, Long> divisionDeno(Double paymentAmount, SalaryTableReportQuery query) {
-		Map<Denomination, Long> deno = new HashMap<Denomination, Long>();
+		Map<Denomination, Long> deno = new HashMap<>();
 		Double amount = paymentAmount;
 		for (Denomination d : Denomination.values()) {
 			if (amount >= d.deno) {
-				if((query.getSelectedUse2000yen() == 0) && (d.deno == 2000)){
-					deno.put(d, 0l);
+				if((query.getSelectedUse2000yen() == 0) && (d.deno == TWO_THOUSANDS)){
+					deno.put(d, 0L);
 					continue;
 				}
 				Long quantity = (long) (amount / d.deno);
 				deno.put(d, quantity);
 				amount = amount % d.deno;
-			} else {
-				deno.put(d, 0l);
+			} 
+			else {
+				deno.put(d, 0L);
 			}
 		}
 		return deno;

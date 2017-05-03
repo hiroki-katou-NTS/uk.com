@@ -54,15 +54,14 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
 
 		// get query
 		PaymentSalaryQuery query = context.getQuery();
-		query.setStartDate(201602);
-		query.setEndDate(201706);
 
 		if (this.repository.checkExport(companyCode, query)) {
 			throw new BusinessException("ER010");
 		}
 
 		List<Integer> selectedLevels = Arrays.asList(1, 3, 6);
-		PaymentSalaryReportData rawData = this.repository.exportPDFPaymentSalary(companyCode, query);
+		PaymentSalaryReportData rawData = this.repository.exportPDFPaymentSalary(companyCode,
+			query);
 
 		PaymentSalaryPrintSettingDto configure = new PaymentSalaryPrintSettingDto();
 		configure.setSelectedLevels(selectedLevels);

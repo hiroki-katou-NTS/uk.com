@@ -25,8 +25,13 @@
 			</div>
 			<div id="contents-area">
 				<div class="form-group no-margin-bottom">
-					<div id="D_LBL_001" data-bind="ntsFormLabel: { required: true, constraint: 'ProcessingName' }">支払日区分1</div>
-					<input type="text" id="D_INP_001" data-bind="ntsTextEditor: { value: inp001, constraint: 'ProcessingName', required: true, immediate: true }"/>
+					<div id="D_LBL_001"
+						data-bind="ntsFormLabel: { required: true, constraint: 'ProcessingName' }">支払日区分1</div>
+					<input type="text" id="D_INP_001"
+						data-bind="ntsTextEditor: { value: inp001, constraint: 'ProcessingName', required: true, immediate: true }" />
+					<div id="D_SEL_016" data-bind="ntsCheckBox: sel016"></div>
+					<button
+						data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
 				</div>
 				<hr />
 				<div>
@@ -41,14 +46,15 @@
 						optionsValue: 'index',
 						value: sel001,
 						optionsText: 'label',
-						editable: true,
+						editable: false,
 						enable: true,
 						columns: [{ prop: 'label', length: 4 }]}"></div>
 				</div>
 				<div class="form-group">
 					<div id="D_LBL_005" data-bind="ntsFormLabel: { required: true}">
 						個人情報の履歴参照日
-						<button id="">?</button>
+						<button
+							data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
 					</div>
 					<label id="D_LBL_006" class="label">支払月の</label>
 					<div id="D_SEL_002"
@@ -57,7 +63,7 @@
 						optionsValue: 'index',
 						value: sel002,
 						optionsText: 'label',
-						editable: true,
+						editable: false,
 						enable: true,
 						columns: [{ prop: 'label', length: 4 }]}"></div>
 					<label id="D_LBL_007">の</label>
@@ -67,13 +73,17 @@
 						optionsValue: 'index',
 						value: sel003,
 						optionsText: 'label',
-						editable: true,
+						editable: false,
 						enable: true,
 						columns: [{ prop: 'label', length: 4 }]}"></div>
 					<label id="D_LBL_008">を基準にします</label>
 				</div>
 				<div class="form-group">
-					<div id="D_LBL_009" data-bind="ntsFormLabel: { required: true}">経理締め日</div>
+					<div id="D_LBL_009" data-bind="ntsFormLabel: { required: true}">
+						経理締め日
+						<button
+							data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
+					</div>
 					<label id="D_LBL_010" class="label">処理月の</label>
 					<div id="D_SEL_004"
 						data-bind="ntsComboBox: {
@@ -81,7 +91,7 @@
 						optionsValue: 'index',
 						value: sel004,
 						optionsText: 'label',
-						editable: true,
+						editable: false,
 						enable: true,
 						columns: [{ prop: 'label', length: 4 }]}"></div>
 					<label id="D_LBL_011" class="label">の</label>
@@ -91,7 +101,7 @@
 							optionsValue: 'index',
 							value: sel005,
 							optionsText: 'label',
-							editable: true,
+							editable: false,
 							enable: true,
 							columns: [{ prop: 'label', length: 4 }]}"></div>
 					<label id="D_LBL_012" class="label">にします</label>
@@ -108,7 +118,7 @@
 								optionsValue: 'index',
 								value: sel006,
 								optionsText: 'label',
-								editable: true,
+								editable: false,
 								enable: true,
 								columns: [{ prop: 'label', length: 4 }]}"></div>
 						<label id="D_LBL_015">を印字する</label>
@@ -122,7 +132,7 @@
 								optionsValue: 'index',
 								value: sel007,
 								optionsText: 'label',
-								editable: true,
+								editable: false,
 								enable: true,
 								columns: [{ prop: 'label', length: 4 }]}"></div>
 						<label id="D_LBL_018">を徴収対象にします</label>
@@ -138,7 +148,7 @@
 									optionsValue: 'index',
 									value: sel008,
 									optionsText: 'label',
-									editable: true,
+									editable: false,
 									enable: true,
 									columns: [{ prop: 'label', length: 4 }]}"></div>
 							<div id="D_SEL_009"
@@ -147,7 +157,7 @@
 									optionsValue: 'index',
 									value: sel009,
 									optionsText: 'label',
-									editable: true,
+									editable: false,
 									enable: true,
 									columns: [{ prop: 'label', length: 4 }]}"></div>
 							<div id="D_SEL_010"
@@ -156,7 +166,7 @@
 									optionsValue: 'index',
 									value: sel010,
 									optionsText: 'label',
-									editable: true,
+									editable: false,
 									enable: true,
 									columns: [{ prop: 'label', length: 4 }]}"></div>
 						</div>
@@ -171,7 +181,7 @@
 									optionsValue: 'index',
 									value: sel011,
 									optionsText: 'label',
-									editable: true,
+									editable: false,
 									enable: true,
 									columns: [{ prop: 'label', length: 4 }]}"></div>
 							<div id="D_SEL_012"
@@ -180,14 +190,14 @@
 									optionsValue: 'index',
 									value: sel012,
 									optionsText: 'label',
-									editable: true,
+									editable: false,
 									enable: true,
 									columns: [{ prop: 'label', length: 4 }]}"></div>
 						</div>
 					</div>
 					<div>
 						<label id="D_LBL_024" class="label">※処理年月が同月の場合は、同じ年月の指定日を基準とします。</label>
-						<label id="D_LBL_025" class="label">「例）処理年月の直前の4月1日と指定した場合<br />2017年4月給与（賞与）の基準日→2017年4月1日」と表記
+						<label id="D_LBL_025" class="label">例）処理年月の直前の4月1日と指定した場合<br />2017年4月給与（賞与）の基準日→2017年4月1日
 						</label>
 					</div>
 					<div class="form-group">
@@ -200,7 +210,7 @@
 									optionsValue: 'index',
 									value: sel013,
 									optionsText: 'label',
-									editable: true,
+									editable: false,
 									enable: true,
 									columns: [{ prop: 'label', length: 4 }]}"></div>
 							<div id="D_SEL_014"
@@ -209,7 +219,7 @@
 									optionsValue: 'index',
 									value: sel014,
 									optionsText: 'label',
-									editable: true,
+									editable: false,
 									enable: true,
 									columns: [{ prop: 'label', length: 4 }]}"></div>
 							<div id="D_SEL_015"
@@ -218,7 +228,7 @@
 									optionsValue: 'index',
 									value: sel015,
 									optionsText: 'label',
-									editable: true,
+									editable: false,
 									enable: true,
 									columns: [{ prop: 'label', length: 4 }]}"></div>
 						</div>

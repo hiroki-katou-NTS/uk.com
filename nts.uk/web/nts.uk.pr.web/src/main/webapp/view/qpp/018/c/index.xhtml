@@ -37,7 +37,7 @@
 								</div>	
 								<button >?</button>
 								</div>
-								<div id="require-least-item"></div>
+								<div id="require-least-item" data-name ="入力項目"></div>
 								<div id="output-setting">
 		 							<div class="check-output" data-bind="ntsCheckBox: { checked: showDetail , text:'明細'}"></div>
 									<div class="check-output" data-bind="ntsCheckBox: { checked: showOffice , text:'事務所月計'}"></div>
@@ -52,11 +52,11 @@
 						<table id="tbl-function-buttons">
 							<tbody>
 								<tr>
-									<td>
-										<button id="configure-button" class="proceed" data-bind="click: saveConfigSetting" >設定</button>
+									<td> 
+										<button class="x-large proceed" data-bind="click: saveConfigSetting" >設定</button>
 									</td>
 									<td>
-										<button id="cancel-button" data-bind="click: closeDialog">キャンセル</button>
+										<button class="large" data-bind="click: closeDialog">キャンセル</button>
 									</td>
 								</tr>
 							</tbody>
