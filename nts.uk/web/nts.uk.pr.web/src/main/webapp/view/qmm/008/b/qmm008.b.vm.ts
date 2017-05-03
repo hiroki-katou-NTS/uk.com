@@ -33,8 +33,8 @@ module nts.uk.pr.view.qmm008.b {
 
             errorList: KnockoutObservableArray<any>;
             dirty: nts.uk.ui.DirtyChecker;
-            backupDataDirty : KnockoutObservable<HealthInsuranceRateDto>;
-            canOpenOfficeRegisterDialog : KnockoutObservable<boolean>;
+            backupDataDirty: KnockoutObservable<HealthInsuranceRateDto>;
+            canOpenOfficeRegisterDialog: KnockoutObservable<boolean>;
             constructor() {
                 super({
                     functionName: '健康保険',
@@ -77,7 +77,7 @@ module nts.uk.pr.view.qmm008.b {
                     { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
                     { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
                 ]);
-                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                 self.backupDataDirty = ko.observable<HealthInsuranceRateDto>();
                 self.canOpenOfficeRegisterDialog = ko.observable(true);
             } //end constructor
@@ -89,6 +89,8 @@ module nts.uk.pr.view.qmm008.b {
                 self.getAllRounding().done(function() {
                     // Resolve
                     dfd.resolve(null);
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
                 // Return.
                 return dfd.promise();
@@ -103,6 +105,8 @@ module nts.uk.pr.view.qmm008.b {
                     // Set list.
                     self.roundingList(data);
                     dfd.resolve(data);
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
                 // Return.
                 return dfd.promise();
@@ -235,28 +239,6 @@ module nts.uk.pr.view.qmm008.b {
                 return saveVal;
             }
 
-            public save() {
-                var self = this;
-                //check auto calculate
-                if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
-                    nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
-                        self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
-                        //update health
-                        service.updateHealthRate(self.healthCollectData()).done(function() {
-                            self.backupDataDirty(self.healthCollectData());
-                        }).fail();
-                    }).ifNo(function() {
-                    });
-                }
-                else {
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
-                    //update health
-                    service.updateHealthRate(self.healthCollectData()).done(function() {
-                        self.backupDataDirty(self.healthCollectData());
-                    }).fail();
-                }
-            }
-
             /**
              * Load History detail.
              */
@@ -275,24 +257,63 @@ module nts.uk.pr.view.qmm008.b {
                     self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                     self.isLoading(false);
                     dfd.resolve();
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
+
                 return dfd.promise();
 
             }
+
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-                // Validate.
-                $('.nts-input').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
-                    dfd.reject();
-                    return dfd.promise();
+
+                //check auto calculate
+                if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
+                    nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
+                        // Validate.
+                        $('.nts-input').ntsEditor('validate');
+                        if ($('.nts-input').ntsError('hasError')) {
+                            dfd.reject();
+                            return dfd.promise();
+                        }
+
+                        self.dirty.reset();
+
+                        //update health
+                        service.updateHealthRate(self.healthCollectData()).done(function() {
+                            self.backupDataDirty(self.healthCollectData());
+                        }).fail((res) => {
+                            nts.uk.ui.dialog.alert(res.message);
+                        });
+                    }).ifNo(function() {
+                    });
                 }
+                else {
+                    // Validate.
+                    $('.nts-input').ntsEditor('validate');
+                    if ($('.nts-input').ntsError('hasError')) {
+                        dfd.reject();
+                        return dfd.promise();
+                    }
+
+                    self.dirty.reset();
+
+                    //update health
+                    service.updateHealthRate(self.healthCollectData()).done(function() {
+                        self.backupDataDirty(self.healthCollectData());
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
+                }
+
                 dfd.resolve()
                 return dfd.promise();
             }
+
             clearErrors(): void {
-                if(nts.uk.ui._viewModel) {
+                if (nts.uk.ui._viewModel) {
                     $('.save-error').ntsError('clear');
                 }
             }
@@ -331,8 +352,7 @@ module nts.uk.pr.view.qmm008.b {
              */
             onRegistNew(): void {
                 var self = this;
-                if (self.canOpenOfficeRegisterDialog())
-                {
+                if (self.canOpenOfficeRegisterDialog()) {
                     self.OpenModalOfficeRegister();
                 }
                 self.isClickHistory(false);
@@ -343,7 +363,7 @@ module nts.uk.pr.view.qmm008.b {
                 var self = this;
                 return self.dirty.isDirty();
             }
-            
+
             public OpenModalOfficeRegisterWithDirtyCheck() {
                 var self = this;
                 if (self.dirty.isDirty()) {
