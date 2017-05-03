@@ -34,11 +34,6 @@
 	background-color: #CFF1A5;
 }
 
-table tr td {
-	padding: 0 2px;
-	border: 1px solid #cccccc;
-}
-
 #C_INP_001 {
 	margin-top: 20px;
 }
@@ -63,7 +58,13 @@ table tr td {
 	margin-right: 10px;
 }
 
-include('..\b\qmm020.b.main.css');
-include('..\c\qmm020.c.main.css');
-include('..\d\qmm020.d.main.css');
-include('..\e\qmm020.e.main.css');
+div[id^=tabpanel] .contents-area {
+	padding: 10px;
+}
+
+
+
+.screen-d .left-content,
+.screen-d .right-content {
+	float: left;
+}
