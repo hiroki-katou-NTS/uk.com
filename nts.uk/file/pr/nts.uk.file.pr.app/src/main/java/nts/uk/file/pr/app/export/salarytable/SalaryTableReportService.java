@@ -50,6 +50,12 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 
 		// Get Query
 		SalaryTableReportQuery query = context.getQuery();	
+		String[] personIds = { "99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002",
+				"99900000-0000-0000-0000-000000000003", "99900000-0000-0000-0000-000000000004",
+				"99900000-0000-0000-0000-000000000005", "99900000-0000-0000-0000-000000000006",
+				"99900000-0000-0000-0000-000000000007", "99900000-0000-0000-0000-000000000008",
+				"99900000-0000-0000-0000-000000000009", "99900000-0000-0000-0000-000000000010"};
+			query.setPIdList(Arrays.asList(personIds));
 
 		// Query data.
 		List<EmployeeData> items = this.repository.getItems(AppContexts.user().companyCode(), query);

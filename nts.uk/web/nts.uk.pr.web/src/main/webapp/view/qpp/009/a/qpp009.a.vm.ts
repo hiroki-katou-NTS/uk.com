@@ -1,6 +1,6 @@
 module qpp009.a.viewmodel {
     export class ScreenModel {
-        targetYear: KnockoutObservable<number>;
+        targetYear: KnockoutObservable<number>;//not to use
         outputDivisions: KnockoutObservableArray<SelectionModel>;
         selectedDivision: KnockoutObservable<string>;
         detailItemsSetting: KnockoutObservable<DetailItemsSetting>;
@@ -9,7 +9,7 @@ module qpp009.a.viewmodel {
         japanYearmonth: KnockoutObservable<string>;
 
         constructor() {
-            this.targetYear = ko.observable(2016);
+            this.targetYear = ko.observable(2016);//not to use
             this.outputDivisions = ko.observableArray<SelectionModel>([
                 new SelectionModel('UsuallyMonth', '通常月'),
                 new SelectionModel('PreliminaryMonth', '予備月')
