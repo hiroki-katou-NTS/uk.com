@@ -1,7 +1,5 @@
 module qmm020.d.viewmodel {
     export class ScreenModel {
-        
-        //SCREEN D with tree grid Search
         dataSourceDTree: any;
         selectedValueDTree: any;
         checkedValuesDTree: any;
@@ -9,7 +7,22 @@ module qmm020.d.viewmodel {
         //History List
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservableArray<string>;
-        
+
+        listBoxItem: any = {
+            options: [new ItemList({ code: '01', name: '2017~2019' }), new ItemList({ code: '02', name: '2019~9999' })],
+            multiple: false,
+            optionText: 'name',
+            optionValue: 'code',
+            value: ko.observable(''),
+            columns: [{ prop: 'name', length: 10 }]
+        };
+
+        treeGridItem: {
+            columns: [
+                {}
+            ]
+        };
+
         constructor() {
             var self = this;
             //List History 
@@ -41,7 +54,8 @@ module qmm020.d.viewmodel {
             //childField
             var childField = "childs";
             //columns for treegrid
-            var columns = [{ headerText: "", width: "250px", key: 'code', dataType: "string", hidden: true },
+            var columns = [
+                { headerText: "", width: "250px", key: 'code', dataType: "string", hidden: true },
                 { headerText: "コード/名称", key: 'nodeText', width: "230px", dataType: "string" },
                 { headerText: "", key: 'paymentDocCode', dataType: "string", hidden: true },
                 { headerText: "", key: 'paymentDocName', dataType: "string", hidden: true },
@@ -61,14 +75,14 @@ module qmm020.d.viewmodel {
             self.dataSourceDTree = dataDTree;
             //selectedValue(s) : depend on desire mode 'multiple' or 'single'. but array good for both case
             self.selectedValueDTree = ko.observableArray([]);
-            var $treegrid = $("#treegrid");
+            var $treegrid = $("#D_LST_002");
             self.selectedValueDTree.subscribe(function(newValue) {
                 $treegrid.igTreeGridSelection("clearSelection");
                 newValue.forEach(function(id) {
                     $treegrid.igTreeGridSelection("selectRowById", id);
                 });
             });
-            var treeGridId = "treegrid";
+            var treeGridId = "D_LST_002";
             $treegrid.igTreeGrid({
                 width: 800,
                 height: 300,
@@ -95,6 +109,7 @@ module qmm020.d.viewmodel {
                         checkBoxMode: "biState"
                     }]
             });
+
             $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview');
             $treegrid.on("selectChange", function() {
                 var scrollContainer = $("#" + treeGridId + "_scroll");
@@ -107,7 +122,7 @@ module qmm020.d.viewmodel {
                 }
             });
         }
-        
+
         openJDialog() {
             alert('J');
         }
@@ -140,13 +155,41 @@ module qmm020.d.viewmodel {
             self.childs = childs;
         }
     }
-    //Item of List History 
-     class ItemModel {
+
+    interface IItemTree {
         code: string;
         name: string;
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+        bonus: IItemList;
+        payment: IItemList;
+        childs: Array<IItemTree>;
+    }
+
+    class ItemTree {
+        code: string;
+        name: string;
+
+        bonus: ItemList;
+        payment: ItemList;
+        childs: Array<ItemTree>;
+        constructor(param: IItemTree) {
+            this.code = param.code;
+            this.name = param.code + ' ' + param.name;
+
+            this.childs = param.childs.map((c) => { return new ItemTree(c); });
+        }
+    }
+
+    interface IItemList {
+        code: string;
+        name: string;
+    }
+
+    class ItemList {
+        code: string;
+        name: string;
+        constructor(param: IItemList) {
+            this.code = param.code;
+            this.name = param.name;
         }
     }
 }

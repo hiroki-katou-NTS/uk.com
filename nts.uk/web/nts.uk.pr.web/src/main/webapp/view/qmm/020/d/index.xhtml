@@ -7,18 +7,7 @@
 			<div class="bg-green caret-right caret-background">
 				<button id="D_BTN_003" data-bind="">履歴追加</button>
 				<button id="D_BTN_004" data-bind="">履歴編集</button>
-				<div id="D_LST_001"
-					data-bind="ntsListBox: {
-						options: itemList, 
-						optionsValue: 'code', 
-						optionsText: 'name', 
-						multiple: false,	 
-						value: selectedCode, 
-						rows:4, 
-						required: true, 
-						columns: [{ prop: 'name', length: 10 }]
-					}">
-				</div>
+				<div id="D_LST_001" data-bind="ntsListBox: listBoxItem"></div>
 			</div>
 		</div>
 		<div class="right-content">
@@ -29,13 +18,14 @@
 			<!-- iG TreeGrid List -->
 			<div style="width: 800px;"
 				data-bind="ntsSearchBox: {
-								comId: 'treegrid', 
+								comId: 'D_LST_002', 
 								items: dataSourceDTree, 
 								selected: selectedValueDTree, 
 								selectedKey: 'code', 
 								fields: ['name', 'code'], 
 								childField: 'childs'}" />
-			<table id="treegrid"></table>
+								
+			<table id="D_LST_002"></table>
 		</div>
 	</div>
 </body>

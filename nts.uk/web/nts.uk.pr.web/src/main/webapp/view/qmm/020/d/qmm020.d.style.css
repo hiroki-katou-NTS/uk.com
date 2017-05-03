@@ -7,3 +7,33 @@
 .screen-d .left-content, .screen-d .right-content {
 	float: left;
 }
+
+.screen-d .left-content>.bg-green {
+	width: 250px;
+	height: 400px;
+	padding: 10px;
+}
+
+.screen-d .right-content {
+	padding-left: 35px;
+}
+
+.screen-d #D_BTN_003, .screen-d #D_BTN_004 {
+	margin-bottom: 10px;
+}
+
+.screen-d #D_BTN_004 {
+	float: right;
+}
+
+.screen-d #D_LST_001 {
+	width: 100%;
+}
+
+.screen-d .ntsSearchBox {
+	width: 300px !important;
+}
+
+.screen-d #D_LST_002_container {
+	margin-top: 10px;
+}
