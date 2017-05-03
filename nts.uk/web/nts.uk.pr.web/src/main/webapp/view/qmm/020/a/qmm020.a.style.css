@@ -57,7 +57,3 @@
 #B_LBL_002, #B_LBL_003 {
 	margin-right: 10px;
 }
-
-div[id^=tabpanel] .contents-area {
-	padding: 10px;
-}

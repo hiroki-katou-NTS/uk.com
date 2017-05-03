@@ -45,6 +45,7 @@ var nts;
                                     self.selectLstCodeCertifyGroupnPre = ko.observable('');
                                     self.isShowDirty = ko.observable(true);
                                 }
+                                //start page init data begin load page
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -55,6 +56,7 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                // find all Certification connection service
                                 ScreenModel.prototype.findAllCertification = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -64,6 +66,7 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                //find all CertifyGroup connection service
                                 ScreenModel.prototype.findAllCertifyGroup = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -88,6 +91,7 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                //detail CertifyGroup by code
                                 ScreenModel.prototype.findCertifyGroup = function (code) {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -128,8 +132,10 @@ var nts;
                                         });
                                     }
                                 };
+                                //show CertifyGroup (change event)
                                 ScreenModel.prototype.showchangeCertifyGroup = function (selectionCodeLstLstCertifyGroup) {
                                     var self = this;
+                                    // type action add (new mode)
                                     debugger;
                                     if (selectionCodeLstLstCertifyGroup) {
                                         if (self.typeAction() == TypeActionCertifyGroup.add) {
@@ -150,6 +156,7 @@ var nts;
                                             }
                                         }
                                         else {
+                                            // type action update (update mode)
                                             if (self.dirty.isDirty() && self.isShowDirty()) {
                                                 if (selectionCodeLstLstCertifyGroup !== self.selectLstCodeCertifyGroupnPre()) {
                                                     nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
@@ -168,18 +175,21 @@ var nts;
                                         }
                                     }
                                 };
+                                //reset value => begin add button
                                 ScreenModel.prototype.resetValueCertifyGroup = function () {
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                             self.onResetValueCertifyGroup();
                                         }).ifNo(function () {
+                                            //No action
                                         });
                                     }
                                     else {
                                         self.onResetValueCertifyGroup();
                                     }
                                 };
+                                //reset value => begin add button
                                 ScreenModel.prototype.onResetValueCertifyGroup = function () {
                                     var self = this;
                                     if (self.certifyGroupModel == null || self.certifyGroupModel == undefined) {
@@ -220,6 +230,7 @@ var nts;
                                         });
                                     }
                                 };
+                                //reload action
                                 ScreenModel.prototype.reloadDataByAction = function (code) {
                                     var self = this;
                                     l.service.findAllCertifyGroup().done(function (data) {
@@ -238,6 +249,7 @@ var nts;
                                         }
                                     });
                                 };
+                                //new mode empty data
                                 ScreenModel.prototype.newmodeEmptyData = function () {
                                     var self = this;
                                     l.service.findAllCertification().done(function (data) {
@@ -268,6 +280,7 @@ var nts;
                                 ScreenModel.prototype.closeCertifyGroup = function () {
                                     nts.uk.ui.windows.close();
                                 };
+                                //convert data model => Dto
                                 ScreenModel.prototype.convertDataModel = function () {
                                     var self = this;
                                     var certifyGroupDto = new CertifyGroupDto();
@@ -277,6 +290,7 @@ var nts;
                                     certifyGroupDto.certifies = self.certifyGroupModel().certifies();
                                     return certifyGroupDto;
                                 };
+                                //show message by connection service => respone error
                                 ScreenModel.prototype.showMessageSave = function (messageId) {
                                     var self = this;
                                     if (messageId == self.messageList()[0].messageId) {
@@ -294,10 +308,12 @@ var nts;
                                         $('#inp_code').ntsError('set', self.messageList()[5].message);
                                     }
                                 };
+                                //clear error view 
                                 ScreenModel.prototype.clearErrorSave = function () {
                                     $('.save-error').ntsError('clear');
                                     $('#btn_saveCertifyGroup').ntsError('clear');
                                 };
+                                //validate client
                                 ScreenModel.prototype.validateData = function () {
                                     $("#inp_code").ntsEditor("validate");
                                     $("#inp_name").ntsEditor("validate");

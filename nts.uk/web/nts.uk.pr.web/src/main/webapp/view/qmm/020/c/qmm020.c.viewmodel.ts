@@ -214,8 +214,7 @@ module qmm020.c.viewmodel {
                         totalItem.push(new TotalModel({ historyId: item.historyId, startEnd: item.startYm + ' ~ ' + item.endYm, endYm: item.endYm }));
                     });
                     self.itemTotalList(totalItem);
-                    debugger;
-                    //                    let max = _.maxBy(self.itemList(), (itemMax) => { return itemMax.endYm });
+                    //let max = _.maxBy(self.itemList(), (itemMax) => { return itemMax.endYm });
                     dfd.resolve();
                 } else {
                     dfd.resolve();

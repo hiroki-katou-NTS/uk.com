@@ -7,31 +7,14 @@ module qmm020.d.viewmodel {
         //History List
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservableArray<string>;
-
-        listBoxItem: any = {
-            options: [new ItemList({ code: '01', name: '2017~2019' }), new ItemList({ code: '02', name: '2019~9999' })],
-            multiple: false,
-            optionText: 'name',
-            optionValue: 'code',
-            value: ko.observable(''),
-            columns: [{ prop: 'name', length: 10 }]
-        };
-
-        treeGridItem: {
-            columns: [
-                {}
-            ]
-        };
-
+        listBoxItems: KnockoutObservableArray<ItemList> = ko.observableArray([]);
+        listBoxItemSelected: KnockoutObservable<string> = ko.observable('2');
+        
         constructor() {
             var self = this;
-            //List History 
             self.itemList = ko.observableArray([]);
             self.selectedCode = ko.observableArray([]);
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            //Screen D ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            //Search with tree grid
+
             var dataDTree = [new NodeDTree('0001', '部門0001', '0001', '給与明細書001', '0001', '賞与明細書001', []),
                 new NodeDTree('0003', '部門0003', '0003', '給与明細書003', '0003', '賞与明細書003', []),
                 new NodeDTree('0004', '部門0004', '0004', '給与明細書004', '0004', '賞与明細書004', []),
@@ -55,7 +38,7 @@ module qmm020.d.viewmodel {
             var childField = "childs";
             //columns for treegrid
             var columns = [
-                { headerText: "", width: "250px", key: 'code', dataType: "string", hidden: true },
+                { headerText: "", key: 'code', dataType: "string", hidden: true },
                 { headerText: "コード/名称", key: 'nodeText', width: "230px", dataType: "string" },
                 { headerText: "", key: 'paymentDocCode', dataType: "string", hidden: true },
                 { headerText: "", key: 'paymentDocName', dataType: "string", hidden: true },
@@ -63,11 +46,11 @@ module qmm020.d.viewmodel {
                 { headerText: "", key: 'bonusDocName', dataType: "string", hidden: true },
                 {
                     headerText: "給与明細書", key: "paymentDocCode", dataType: "string", width: "250px", unbound: true,
-                    template: "<input type='button' value='選択'/><label style='margin-left:5px;'>${paymentDocCode}</label><label style='margin-left:15px;'>${paymentDocName}</label>"
+                    template: "<input type='button' data-id='${paymentDocCode}' value='選択'/><label style='margin-left:5px;'>${paymentDocCode}</label><label style='margin-left:15px;'>${paymentDocName}</label>"
                 },
                 {
                     headerText: "賞与明細書", key: "bonusDocCode", dataType: "string", width: "250px", unbound: true,
-                    template: "<input type='button' value='選択'/><label style='margin-left:5px;'>${bonusDocCode}</label><label style='margin-left:15px;'>${bonusDocName}</label>"
+                    template: "<input type='button' data-id='${bonusDocCode}' value='選択'/><label style='margin-left:5px;'>${bonusDocCode}</label><label style='margin-left:15px;'>${bonusDocName}</label>"
                 },
             ];
             //dataSource that can be apply to SearchBox Binding
