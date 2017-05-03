@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.app.command.paymentdata;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,12 +10,13 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.app.command.paymentdata.base.CategoryCommandBase;
 import nts.uk.ctx.pr.core.app.command.paymentdata.base.DetailItemCommandBase;
 import nts.uk.ctx.pr.core.app.command.paymentdata.base.LineCommandBase;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
@@ -43,7 +43,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	private PaymentDateMasterRepository payDateMasterRepository;
 
 	@Inject
-	private ItemMasterRepository itemMasterRepository;
+	private ItemMasterV1Repository itemMasterRepository;
 
 	/** PAY BONUS ATTRIBUTE FIXED */
 	private static final int PAY_BONUS_ATR = 0;
@@ -55,10 +55,10 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		int baseYM = context.getCommand().getPaymentHeader().getProcessingYM();
 
 		Payment payment = context.getCommand().toDomain(companyCode);
-		LocalDate mPayDate = this.payDateMasterRepository
+		GeneralDate mPayDate = this.payDateMasterRepository
 				.find(companyCode, payment.getPayBonusAtr().value, payment.getProcessingYM().v(),
 						payment.getSparePayAtr().value, payment.getProcessingNo().v())
-				.map(d -> d.getStandardDate()).orElse(LocalDate.now());
+				.map(d -> d.getStandardDate()).orElse(GeneralDate.today());
 
 		payment.setStandardDate(mPayDate);
 
@@ -123,7 +123,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 					throw new BusinessException("入力にエラーがあります。");
 				}
 
-				ItemMaster mItem = this.itemMasterRepository
+				ItemMasterV1 mItem = this.itemMasterRepository
 						.find(payment.getCompanyCode().v(), item.getCategoryAtr(), item.getItemCode()).get();
 				
 				DetailItem detailItem = DetailItem.createFromJavaType(item.getItemCode(), item.getValue(),

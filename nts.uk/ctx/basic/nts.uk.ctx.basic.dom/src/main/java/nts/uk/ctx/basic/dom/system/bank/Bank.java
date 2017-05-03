@@ -1,10 +1,16 @@
 package nts.uk.ctx.basic.dom.system.bank;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.basic.dom.company.CompanyCode;
 import nts.uk.shr.com.primitive.Memo;
 
 public class Bank extends AggregateRoot {
+	/**
+	 * Company code
+	 */
 	@Getter
 	private String companyCode;
 	
@@ -21,7 +27,7 @@ public class Bank extends AggregateRoot {
 	private BankName bankName;
 	
 	/**
-	 * Bank name katakana
+	 * Bank name Katakana
 	 */
 	@Getter
 	private BankNameKana bankNameKana;
@@ -32,7 +38,29 @@ public class Bank extends AggregateRoot {
 	@Getter
 	private Memo memo;
 	
+	/**
+	 * Check validate data 
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.bankCode == null || StringUtil.isNullOrEmpty(this.bankCode.v(), true)) {
+			throw new BusinessException("ER001");
+		}
+		
+		if (this.bankName == null || StringUtil.isNullOrEmpty(this.bankName.v(), true)) {
+			throw new BusinessException("ER001");
+		}
+	}
 	
+	/**
+	 * 
+	 * @param companyCode
+	 * @param bankCode
+	 * @param bankName
+	 * @param bankNameKana
+	 * @param memo
+	 */
 	public Bank(String companyCode, BankCode bankCode, BankName bankName, BankNameKana bankNameKana, Memo memo) {
 		super();
 		this.companyCode = companyCode;

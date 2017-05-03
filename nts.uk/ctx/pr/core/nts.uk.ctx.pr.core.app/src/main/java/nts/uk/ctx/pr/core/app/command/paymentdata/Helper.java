@@ -6,14 +6,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.layout.category.LayoutMasterCategory;
-import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetail;
-import nts.uk.ctx.pr.core.dom.layout.detail.SumScopeAtr;
-import nts.uk.ctx.pr.core.dom.layout.line.LayoutMasterLine;
-import nts.uk.ctx.pr.core.dom.layout.line.LineDispAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.position.PrintPosCatalogLines;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.position.PrintPositionCategory;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategory;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.SumScopeAtr;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LineDispAtr;
 
 class Helper {
 
@@ -41,7 +41,7 @@ class Helper {
 		categoryList.forEach(category -> {
 			// find line
 			List<LayoutMasterLine> lines = lineList.stream()
-					.filter(x -> x.getCategoryAtr() == category.getCtAtr() && LineDispAtr.ENABLE == x.getLineDispayAttribute())
+					.filter(x -> x.getCategoryAtr() == category.getCtAtr() && LineDispAtr.ENABLE == x.getLineDisplayAttribute())
 					.collect(Collectors.toList());
 			
 			PrintPositionCategory printPositionCategory = new PrintPositionCategory(category.getCtAtr(), new PrintPosCatalogLines(lines.size()));

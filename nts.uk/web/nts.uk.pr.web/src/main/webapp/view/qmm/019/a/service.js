@@ -5,17 +5,19 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getAllLayout: "pr/proto/layout/findalllayout",
-                getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
+                getAllLayoutHead: "pr/proto/layout/findalllayoutHead",
+                getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
+                //            getLayoutInfor : "/pr/proto/layout/findlayout/{0}/{1}",
+                //            getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
                 getCategoryFull: "pr/proto/layout/findCategoies/full",
                 registerLayout: "pr/proto/layout/register"
             };
             /**
              * Get list payment date processing.
              */
-            function getAllLayout() {
+            function getAllLayoutHead() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getAllLayout)
+                nts.uk.request.ajax(paths.getAllLayoutHead)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -24,7 +26,37 @@ var qmm019;
                 });
                 return dfd.promise();
             }
-            service.getAllLayout = getAllLayout;
+            service.getAllLayoutHead = getAllLayoutHead;
+            /**
+             * Get list payment date processing.
+             */
+            function getAllLayoutHist() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getAllLayoutHist)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getAllLayoutHist = getAllLayoutHist;
+            //        /**
+            //         * Get layout master 
+            //         */
+            //        export function getLayout(stmtCode: string, historyId: string): JQueryPromise<model.LayoutMasterDto> {
+            //            var dfd = $.Deferred<any>();
+            //            var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
+            //            nts.uk.request.ajax(_path)
+            //                .done(function(res: any){
+            //                    dfd.resolve(res);
+            //                })
+            //                .fail(function(res) {
+            //                    dfd.reject(res);
+            //                })
+            //            return dfd.promise(); 
+            //        }
             /**
              * Get list payment date processing.
              */
@@ -43,9 +75,9 @@ var qmm019;
             /**
              * Get list getCategoryFull.
              */
-            function getCategoryFull(layoutCode, startYm) {
+            function getCategoryFull(layoutCode, historyId, startYm) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
+                nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + historyId + "/" + startYm)
                     .done(function (res) {
                     var result = _.map(res, function (category) {
                         return new model.Category(category.lines, category.categoryAtr);
@@ -97,7 +129,9 @@ var qmm019;
                             var sortedItemCodes = $("#" + line.rowId).sortable("toArray");
                             // Vì item mà required thì ko được sortable nên cần kiểm tra để thêm item này vào còn save.
                             if (line.hasRequiredItem) {
-                                var detailRequired = _.last(line.details);
+                                var detailRequired = _.find(line.details, function (requireItem) {
+                                    return requireItem.isRequired();
+                                });
                                 sortedItemCodes.push(detailRequired.itemCode());
                             }
                             var _loop_2 = function(item) {
@@ -178,6 +212,13 @@ var qmm019;
             */
             var model;
             (function (model) {
+                // layout head
+                var LayoutHeadDto = (function () {
+                    function LayoutHeadDto() {
+                    }
+                    return LayoutHeadDto;
+                }());
+                model.LayoutHeadDto = LayoutHeadDto;
                 // layout
                 var LayoutMasterDto = (function () {
                     function LayoutMasterDto() {
@@ -189,6 +230,7 @@ var qmm019;
                     function Category(lines, categoryAtr) {
                         this.hasSetting = false;
                         this.isRemoved = false;
+                        this.totalGrayLine = 0;
                         this.lines = ko.observableArray([]);
                         this.lines(_.map(lines, function (line) {
                             var details = _.map(line.details, function (detail) {
@@ -253,9 +295,9 @@ var qmm019;
                     Category.prototype.addLine = function () {
                         var _this = this;
                         var self = this;
-                        if (screenQmm019().totalNormalLineNumber() + screenQmm019().totalGrayLineNumber() === 10) {
-                            return this;
-                        }
+                        //if (screenQmm019().totalNormalLineNumber() + screenQmm019().totalGrayLineNumber() === 10) {return this;}
+                        nts.uk.ui.windows.setShared('totalNormalLineNumber', screenQmm019().totalNormalLineNumber());
+                        nts.uk.ui.windows.setShared('totalGrayLineNumber', self.totalGrayLine);
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml', { title: '明細レイアウトの作成＞＋行追加' }).onClosed(function () {
                             var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                             if (selectedCode === undefined)
@@ -361,6 +403,8 @@ var qmm019;
                         this.added = ko.observable(false);
                         this.isRequired = ko.observable(false);
                         this.isRemoved = false;
+                        //TODO-LamVT: bỏ rem khi đồng bộ sang develop
+                        //contextMenu : nts.uk.ui.contextmenu.ContextMenu;// context menu cho từng item
                         this.contextMenuClassId = "";
                         var self = this;
                         self.itemCode = ko.observable(itemObject.itemCode);
@@ -398,22 +442,14 @@ var qmm019;
                         self.contextMenuClassId = "context-menu-" + self.itemCode();
                         //Chỉ cho phép xóa những item khác dấu "+" và không phải là item required
                         if (!_.includes(self.contextMenuClassId, "itemTemp-") && !self.isRequired()) {
-                            //Setup context menu for item:
-                            self.contextMenu = new nts.uk.ui.contextmenu.ContextMenu("." + self.contextMenuClassId, [
-                                new nts.uk.ui.contextmenu.ContextMenuItem("delete", "削除", function (ui) {
-                                    self.setDelete(true);
-                                }, "", true),
-                                new nts.uk.ui.contextmenu.ContextMenuItem("undoDelete", "戻す", function (ui) {
-                                    self.setDelete(false);
-                                }, "", false)
-                            ]);
                         }
                     };
                     ItemDetail.prototype.setDelete = function (isDelete) {
                         var self = this;
                         self.isRemoved = isDelete;
-                        self.contextMenu.setVisibleItem(!isDelete, "delete");
-                        self.contextMenu.setVisibleItem(isDelete, "undoDelete");
+                        //TODO-LamVT: bỏ rem khi đồng bộ sang develop
+                        //                    self.contextMenu.setVisibleItem(!isDelete, "delete");
+                        //                    self.contextMenu.setVisibleItem(isDelete, "undoDelete");
                         if (isDelete) {
                             $("#" + self.itemCode()).addClass("item-isDeleting");
                         }
@@ -432,7 +468,9 @@ var qmm019;
                             itemCode: data.itemCode(),
                             isUpdate: data.itemAbName() === "+" ? false : true,
                             startYm: screenQmm019().layoutMaster().startYm,
-                            stmtCode: screenQmm019().layoutMaster().stmtCode
+                            stmtCode: screenQmm019().layoutMaster().stmtCode,
+                            isNotYetSave: data.added(),
+                            objectNotYetSave: data
                         };
                         nts.uk.ui.windows.setShared('param', param);
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml', { title: '項目の選択・設定', width: 1200, height: 670 }).onClosed(function () {
@@ -458,19 +496,19 @@ var qmm019;
                             self.itemAbName(itemResult.itemAbName);
                             self.sumScopeAtr(itemResult.sumScopeAtr);
                             //self.setOffItemCode(itemResult.setOffItemCode);
-                            //self.commuteAtr(itemResult.commuteAtr);
+                            self.commuteAtr(itemResult.commuteAtr);
                             self.calculationMethod(itemResult.calculationMethod);
                             self.distributeSet(itemResult.distributeSet);
                             self.distributeWay(itemResult.distributeWay);
                             self.personalWageCode(itemResult.personalWageCode);
                             self.isUseHighError(itemResult.isUseHighError ? 1 : 0);
-                            self.errRangeHigh(itemResult.errRangeHigh);
+                            self.errRangeHigh(itemResult.errRangeHigh === null ? 0 : itemResult.errRangeHigh);
                             self.isUseLowError(itemResult.isUseLowError ? 1 : 0);
-                            self.errRangeLow(itemResult.errRangeLow);
+                            self.errRangeLow(itemResult.errRangeLow === null ? 0 : itemResult.errRangeLow);
                             self.isUseHighAlam(itemResult.isUseHighAlam ? 1 : 0);
-                            self.alamRangeHigh(itemResult.alamRangeHigh);
+                            self.alamRangeHigh(itemResult.alamRangeHigh === null ? 0 : itemResult.alamRangeHigh);
                             self.isUseLowAlam(itemResult.isUseLowAlam ? 1 : 0);
-                            self.alamRangeLow(itemResult.alamRangeLow);
+                            self.alamRangeLow(itemResult.alamRangeLow === null ? 0 : itemResult.alamRangeLow);
                             return _this;
                         });
                     };

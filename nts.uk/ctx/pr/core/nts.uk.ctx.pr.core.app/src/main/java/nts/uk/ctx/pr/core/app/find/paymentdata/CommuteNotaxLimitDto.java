@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.paymentdata;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 import nts.uk.ctx.pr.core.dom.paymentdata.CommuNotaxLimit;
 
@@ -12,7 +14,7 @@ public class CommuteNotaxLimitDto {
 	private String commuNotaxLimitName;
 	
 	
-	private int commuNotaxLimitValue;
+	private BigDecimal commuNotaxLimitValue;
 	
 	public static CommuteNotaxLimitDto fromDomain(CommuNotaxLimit domain){
 		return new CommuteNotaxLimitDto(domain.getCommuNotaxLimitCode().v(), 

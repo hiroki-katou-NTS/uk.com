@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.TableEntity;
 
 /**
  * 
@@ -24,26 +25,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "CBKMT_BANK")
-@Data
-//@IdClass(CbkmtBankPK.class)
-public class CbkmtBank implements Serializable {
+public class CbkmtBank extends TableEntity implements Serializable {
 	
 	static final long serialVersionUID = 42L;
 	
 	@EmbeddedId
 	public CbkmtBankPK cbkmtBankPK;
 	
-
-//	@Column(name="CCD")
-//	@NotNull
-//	@Id
-//	public String companyCode;
-//
-//	@Column(name="BANK_CD")
-//	@NotNull
-//	@Id
-//	public String bankCode;
-
 	@Column(name = "BANK_NAME")
 	public String bankName;
 

@@ -1,8 +1,10 @@
 module qmm019.a {
     export module service {
         var paths: any = {
-            getAllLayout: "pr/proto/layout/findalllayout",
-            getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
+            getAllLayoutHead: "pr/proto/layout/findalllayoutHead",
+            getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
+//            getLayoutInfor : "/pr/proto/layout/findlayout/{0}/{1}",
+//            getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
             getCategoryFull: "pr/proto/layout/findCategoies/full",
             registerLayout: "pr/proto/layout/register"
         }
@@ -11,9 +13,9 @@ module qmm019.a {
         /**
          * Get list payment date processing.
          */
-        export function getAllLayout(): JQueryPromise<Array<model.LayoutMasterDto>> {
+        export function getAllLayoutHead(): JQueryPromise<Array<model.LayoutHeadDto>> {
             var dfd = $.Deferred<Array<any>>();
-            nts.uk.request.ajax(paths.getAllLayout)
+            nts.uk.request.ajax(paths.getAllLayoutHead)
                 .done(function(res: Array<any>) {
                     dfd.resolve(res);
                 })
@@ -23,6 +25,36 @@ module qmm019.a {
             return dfd.promise();
         }
         
+        /**
+         * Get list payment date processing.
+         */
+        export function getAllLayoutHist(): JQueryPromise<Array<model.LayoutMasterDto>> {
+            var dfd = $.Deferred<Array<any>>();
+            nts.uk.request.ajax(paths.getAllLayoutHist)
+                .done(function(res: Array<any>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        
+//        /**
+//         * Get layout master 
+//         */
+//        export function getLayout(stmtCode: string, historyId: string): JQueryPromise<model.LayoutMasterDto> {
+//            var dfd = $.Deferred<any>();
+//            var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
+//            nts.uk.request.ajax(_path)
+//                .done(function(res: any){
+//                    dfd.resolve(res);
+//                })
+//                .fail(function(res) {
+//                    dfd.reject(res);
+//                })
+//            return dfd.promise(); 
+//        }
         /**
          * Get list payment date processing.
          */
@@ -41,9 +73,9 @@ module qmm019.a {
         /**
          * Get list getCategoryFull.
          */
-        export function getCategoryFull(layoutCode, startYm): JQueryPromise<Array<model.Category>> {
+        export function getCategoryFull(layoutCode, historyId, startYm): JQueryPromise<Array<model.Category>> {
             var dfd = $.Deferred<Array<model.Category>>();
-            nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
+            nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + historyId + "/" + startYm)
                 .done(function(res: Array<model.Category>) {
                     var result = _.map(res, function(category: any) {
                         return new model.Category(category.lines, category.categoryAtr);
@@ -92,7 +124,9 @@ module qmm019.a {
                         let sortedItemCodes = $("#" + line.rowId).sortable("toArray");
                         // Vì item mà required thì ko được sortable nên cần kiểm tra để thêm item này vào còn save.
                         if (line.hasRequiredItem) {
-                            let detailRequired = _.last(line.details);
+                            let detailRequired = _.find(line.details, function(requireItem) {
+                                return requireItem.isRequired();    
+                            });
                             sortedItemCodes.push(detailRequired.itemCode());
                         }
                         for (let item of sortedItemCodes) {
@@ -162,6 +196,15 @@ module qmm019.a {
         */
         export module model {
             
+            // layout head
+            export class LayoutHeadDto {
+                companyCode: string;
+                stmtCode: string;
+                stmtName: string;
+                constructor() {
+                }
+            }
+            
             // layout
             export class LayoutMasterDto {
                 companyCode: string;
@@ -181,6 +224,7 @@ module qmm019.a {
                 categoryName: string;
                 hasSetting: boolean = false;
                 isRemoved: boolean = false;
+                totalGrayLine: number = 0;
                 
                 constructor(lines: Array<Line>, categoryAtr: number) {
                     this.lines = ko.observableArray([]);
@@ -242,7 +286,9 @@ module qmm019.a {
                 }
                 addLine(){
                     var self = this;
-                    if (screenQmm019().totalNormalLineNumber() + screenQmm019().totalGrayLineNumber() === 10) {return this;}
+                    //if (screenQmm019().totalNormalLineNumber() + screenQmm019().totalGrayLineNumber() === 10) {return this;}
+                    nts.uk.ui.windows.setShared('totalNormalLineNumber', screenQmm019().totalNormalLineNumber());
+                    nts.uk.ui.windows.setShared('totalGrayLineNumber', self.totalGrayLine);
                     
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml',{title: '明細レイアウトの作成＞＋行追加'}).onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
@@ -375,7 +421,8 @@ module qmm019.a {
                 isUseLowAlam: KnockoutObservable<number>;
                 alamRangeLow: KnockoutObservable<number>;
                 isRemoved: boolean = false;
-                contextMenu : nts.uk.ui.contextmenu.ContextMenu;// context menu cho từng item
+                //TODO-LamVT: bỏ rem khi đồng bộ sang develop
+                //contextMenu : nts.uk.ui.contextmenu.ContextMenu;// context menu cho từng item
                 contextMenuClassId : string = "";
                 
                 constructor(itemObject: any) {
@@ -418,21 +465,23 @@ module qmm019.a {
                     //Chỉ cho phép xóa những item khác dấu "+" và không phải là item required
                     if (!_.includes(self.contextMenuClassId, "itemTemp-") && !self.isRequired()) {
                         //Setup context menu for item:
-                        self.contextMenu = new nts.uk.ui.contextmenu.ContextMenu("." + self.contextMenuClassId, [
-                            new nts.uk.ui.contextmenu.ContextMenuItem("delete", "削除", (ui) => {
-                                    self.setDelete(true);
-                                }, "", true),
-                            new nts.uk.ui.contextmenu.ContextMenuItem("undoDelete", "戻す", (ui) => {
-                                    self.setDelete(false);
-                                }, "", false)
-                        ]);
+                        //TODO-LamVT: bỏ rem khi đồng bộ sang develop
+//                        self.contextMenu = new nts.uk.ui.contextmenu.ContextMenu("." + self.contextMenuClassId, [
+//                            new nts.uk.ui.contextmenu.ContextMenuItem("delete", "削除", (ui) => {
+//                                    self.setDelete(true);
+//                                }, "", true),
+//                            new nts.uk.ui.contextmenu.ContextMenuItem("undoDelete", "戻す", (ui) => {
+//                                    self.setDelete(false);
+//                                }, "", false)
+//                        ]);
                     }    
                 }
                 setDelete(isDelete : boolean) {
                     var self = this;
                     self.isRemoved = isDelete;
-                    self.contextMenu.setVisibleItem(!isDelete, "delete");
-                    self.contextMenu.setVisibleItem(isDelete, "undoDelete");
+                    //TODO-LamVT: bỏ rem khi đồng bộ sang develop
+//                    self.contextMenu.setVisibleItem(!isDelete, "delete");
+//                    self.contextMenu.setVisibleItem(isDelete, "undoDelete");
                     if (isDelete) {
                         $("#" + self.itemCode()).addClass("item-isDeleting");    
                     } else {
@@ -449,7 +498,9 @@ module qmm019.a {
                         itemCode: data.itemCode(),
                         isUpdate: data.itemAbName() === "+" ? false : true,
                         startYm: screenQmm019().layoutMaster().startYm,
-                        stmtCode: screenQmm019().layoutMaster().stmtCode
+                        stmtCode: screenQmm019().layoutMaster().stmtCode,
+                        isNotYetSave: data.added(),
+                        objectNotYetSave: data
                     };    
                     nts.uk.ui.windows.setShared('param', param);
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml',{title: '項目の選択・設定', width: 1200, height: 670}).onClosed(() => {
@@ -475,19 +526,19 @@ module qmm019.a {
                         self.itemAbName(itemResult.itemAbName);
                         self.sumScopeAtr(itemResult.sumScopeAtr);
                         //self.setOffItemCode(itemResult.setOffItemCode);
-                        //self.commuteAtr(itemResult.commuteAtr);
+                        self.commuteAtr(itemResult.commuteAtr);
                         self.calculationMethod(itemResult.calculationMethod);
                         self.distributeSet(itemResult.distributeSet);
                         self.distributeWay(itemResult.distributeWay);
                         self.personalWageCode(itemResult.personalWageCode);
                         self.isUseHighError(itemResult.isUseHighError ? 1 : 0);
-                        self.errRangeHigh(itemResult.errRangeHigh);
+                        self.errRangeHigh(itemResult.errRangeHigh === null ? 0 : itemResult.errRangeHigh);
                         self.isUseLowError(itemResult.isUseLowError ? 1 : 0);
-                        self.errRangeLow(itemResult.errRangeLow);
+                        self.errRangeLow(itemResult.errRangeLow === null ? 0 : itemResult.errRangeLow);
                         self.isUseHighAlam(itemResult.isUseHighAlam ? 1 : 0);
-                        self.alamRangeHigh(itemResult.alamRangeHigh);
+                        self.alamRangeHigh(itemResult.alamRangeHigh === null ? 0 : itemResult.alamRangeHigh);
                         self.isUseLowAlam(itemResult.isUseLowAlam ? 1 : 0);
-                        self.alamRangeLow(itemResult.alamRangeLow);
+                        self.alamRangeLow(itemResult.alamRangeLow === null ? 0 : itemResult.alamRangeLow);
                         
                         return this;
                     });

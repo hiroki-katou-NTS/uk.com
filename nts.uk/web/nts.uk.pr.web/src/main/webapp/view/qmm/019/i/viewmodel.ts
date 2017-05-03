@@ -16,8 +16,20 @@ module qmmm019.i.viewmodel {
 
         chooseItem() {
             var self = this;
-            nts.uk.ui.windows.setShared('selectedCode', self.selectedCode());
-            nts.uk.ui.windows.close();
+            let totalNormalLineNumber = Number(nts.uk.ui.windows.getShared('totalNormalLineNumber'));
+            let totalGrayLineNumber = Number(nts.uk.ui.windows.getShared('totalGrayLineNumber'))
+            if ((self.selectedCode() === "1" && totalNormalLineNumber === 10)
+                         || (self.selectedCode() === "2" && totalGrayLineNumber === 5)){
+                
+                let msg = self.selectedCode() === "1" ? "明細書に印字する行に行を追加できません。" : "明細書に印字しない行に行を追加できません。";
+                nts.uk.ui.dialog.alert(msg).then(function(){
+                    nts.uk.ui.windows.setShared('selectedCode', undefined);
+                    nts.uk.ui.windows.close();
+                });
+            } else {
+                nts.uk.ui.windows.setShared('selectedCode', self.selectedCode());
+                nts.uk.ui.windows.close();    
+            }
         }
 
         closeDialog() {

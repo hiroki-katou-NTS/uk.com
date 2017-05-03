@@ -2,7 +2,8 @@ module qmm019.f.service {
     var paths = {
         getItemsByCategory: "pr/proto/item/findall/bycategory/{0}",
         getItem: "pr/proto/item/find/{categoryAtr}/{itemCode}",
-        getLayoutMasterDetail: "pr/proto/layout/findlayoutdetail/{0}/{1}/{2}/{3}"
+        getLayoutMasterDetail: "pr/proto/layout/findlayoutdetail/{0}/{1}/{2}/{3}",
+        getPersonalWages: "pr/proto/personalwage/findalls/{0}"
     }
 
     export function getItemsByCategory(categoryAtr: number): JQueryPromise<Array<model.ItemDetailModel>> {
@@ -46,6 +47,19 @@ module qmm019.f.service {
             })
         return dfd.promise();
     }
+    
+    export function getListPersonalWages(categoryAtr : number): JQueryPromise<Array<model.PersonalWageNameDto>> {
+        var dfd = $.Deferred<Array<any>>();
+        var _path = nts.uk.text.format(paths.getPersonalWages, categoryAtr);
+        nts.uk.request.ajax(_path)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
 
     export module model {
         export class ItemDetailModel {
@@ -67,6 +81,13 @@ module qmm019.f.service {
             isUseLowAlam: number;
             alamRangeLow: number;
             taxAtr: number;
+        }
+        
+        export class PersonalWageNameDto {
+            companyCode: string;
+            categoryAtr: number;
+            personalWageCode: string;
+            personalWageName: string;
         }
     }
 }

@@ -5,6 +5,7 @@ module qmm019.d.viewmodel {
         itemList: KnockoutObservableArray<ItemModel>;
         isEnable: KnockoutObservable<boolean>;
         layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
+        historys: KnockoutObservableArray<service.model.LayoutHistoryDto>;
         selectStmtCode : KnockoutObservable<string>;
         selectStmtName : KnockoutObservable<string>;
         selectStartYm: KnockoutObservable<string>;
@@ -25,6 +26,7 @@ module qmm019.d.viewmodel {
             self.itemList = ko.observableArray([]);
             self.isEnable = ko.observable(true);
             self.layouts = ko.observableArray([]);
+            self.historys = ko.observableArray([]);
             self.selectStmtCode = ko.observable(null);
             self.selectStmtName = ko.observable(null);
             self.selectStartYm =  ko.observable(null);
@@ -56,8 +58,15 @@ module qmm019.d.viewmodel {
             //fill data to dialog
             service.getLayoutWithMaxStartYm().done(function(layout: Array<service.model.LayoutMasterDto>){
                 self.layouts(layout);
+                service.getHistoryWithMaxStart().done(function(layoutHistory: Array<service.model.LayoutHistoryDto>) {
+                    if (layoutHistory.length > 0) {
+                        self.historys(layoutHistory);
+                        console.log(layoutHistory);
+                    }
+                });
                 self.startDialog();
             });
+
             
              dfd.resolve();
             // Return.

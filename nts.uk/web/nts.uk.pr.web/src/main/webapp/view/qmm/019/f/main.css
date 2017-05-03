@@ -1,3 +1,6 @@
+body * {
+	vertical-align: middle;
+}
 .form-label input{
 	width:120px !important;
 }
@@ -8,12 +11,13 @@
 
 .left-content{
 	float: left;
-	width: 30%;
+	width: 360px;
 }
 
 .right-content{
 	float: right;
-	width: 60%;
+	width: 748px;
+	padding-top: 10px;
 }
 .clsLbl_010{
 	width: 100px;
@@ -38,4 +42,7 @@
 }
 button.nts-switch-button{
 	min-width: 120px;
+}
+span.nts-editor-wrapped {
+	display: inline-flex;
 }

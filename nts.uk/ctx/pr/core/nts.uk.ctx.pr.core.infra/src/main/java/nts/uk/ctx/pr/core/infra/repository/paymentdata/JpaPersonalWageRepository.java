@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWage;
 import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWageRepository;
 import nts.uk.ctx.pr.core.infra.entity.personalinfo.wage.PprmtPersonWage;
@@ -24,7 +24,7 @@ public class JpaPersonalWageRepository extends JpaRepository implements Personal
 	@Override
 	public List<PersonalWage> findAll(String companyCode, List<String> personIds, int baseYm) {
 		List<PersonalWage> results = new ArrayList<>();
-		ListUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
+		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
 			this.queryProxy().query(SELECT_LIST_BY_YEAR_MONTH, PprmtPersonWage.class)
 			.setParameter("ccd", companyCode).setParameter("pIds", personIdList).setParameter("baseYm", baseYm)
 			.getList().stream().forEach(e -> results.add(toDomain(e)));

@@ -24,7 +24,8 @@
 						<h2>Check is have in process data changed?</h2>
 						<!-- <div data-bind="with: numbereditor"> -->
 						<div>
-							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<input id="dirty-input" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<button data-bind="click: changeValue">Change</button>
 							<button data-bind="click: reset">Reset</button>
 							<button data-bind="click: checkDirty">Check dirty</button>
 							<button data-bind="click: reload">Load page</button>
