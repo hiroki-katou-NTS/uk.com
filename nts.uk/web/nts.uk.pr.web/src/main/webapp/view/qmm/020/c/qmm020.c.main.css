@@ -39,13 +39,3 @@ table tr td {
 	margin-top: 40px;
 	display: inline-block;
 }
-#B_LBL_002:before,
-#B_LBL_003:before{
-	content: '•';
-	padding-right: 5px;
-    margin-left: 10px;
-}
-#B_LBL_002,
-#B_LBL_003{
-	margin-right: 10px;
-}
