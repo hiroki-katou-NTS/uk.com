@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
@@ -59,7 +60,7 @@ public class UpdateFormulaHistoryCommandHandler extends CommandHandler<UpdateFor
 				}
 			}
 		} catch (Exception e) {
-			throw new BusinessException("OKボタンクリックで次の処理へ");
+			throw new BusinessException(new RawErrorMessage("OKボタンクリックで次の処理へ"));
 		}
 
 	}

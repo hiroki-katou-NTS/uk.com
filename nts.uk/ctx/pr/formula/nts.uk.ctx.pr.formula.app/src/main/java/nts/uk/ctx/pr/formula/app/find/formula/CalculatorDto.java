@@ -7,4 +7,6 @@ public class CalculatorDto {
 	
 	private String formula;
 	
+	private String result;
+	
 }

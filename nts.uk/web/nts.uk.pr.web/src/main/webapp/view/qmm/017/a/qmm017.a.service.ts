@@ -11,7 +11,9 @@ module nts.qmm017 {
             getListItemMaster: "pr/core/item/findall/category/",
             findOtherFormulas: "pr/formula/formulaMaster/findOtherFormulas/",
             getListWageTable: "pr/proto/wagetable/findbymonth/",
-            getFormulaEasyDetail: "pr/formula/formulaMaster/getFormulaEasyDetail/"
+            getFormulaEasyDetail: "pr/formula/formulaMaster/getFormulaEasyDetail/",
+            getListSystemVariable: "pr/formula/systemvariable/getAll",
+            getSimpleCalSetting: "pr/formula/simplecalsetting/getAll"
         }
 
         export function getAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
@@ -49,7 +51,7 @@ module nts.qmm017 {
                 })
             return dfd.promise();
         }
-        
+
         export function getFormulaEasyDetail(formulaCode: string, historyId: string, easyFormulaCode: string): JQueryPromise<model.FormulaEasyDetailDto> {
             var dfd = $.Deferred<model.FormulaEasyDetailDto>();
             nts.uk.request.ajax("pr", paths.getFormulaEasyDetail + formulaCode + "/" + historyId + "/" + easyFormulaCode)
@@ -129,11 +131,35 @@ module nts.qmm017 {
                 })
             return dfd.promise();
         }
-        
+
         export function getListWageTable(baseYm): JQueryPromise<Array<model.WageTableDto>> {
             var dfd = $.Deferred<Array<model.WageTableDto>>();
             nts.uk.request.ajax("pr", paths.getListWageTable + baseYm)
                 .done(function(res: Array<model.WageTableDto>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
+        export function getListSystemVariable(): JQueryPromise<Array<model.SystemVariableDto>> {
+            var dfd = $.Deferred<Array<model.SystemVariableDto>>();
+            nts.uk.request.ajax("pr", paths.getListSystemVariable)
+                .done(function(res: Array<model.SystemVariableDto>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        
+        export function getListSimpleCalSetting(): JQueryPromise<Array<model.SimpleCalSettingDto>> {
+            var dfd = $.Deferred<Array<model.SimpleCalSettingDto>>();
+            nts.uk.request.ajax("pr", paths.getSimpleCalSetting)
+                .done(function(res: Array<model.SimpleCalSettingDto>) {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {
@@ -200,14 +226,27 @@ module nts.qmm017 {
             baseValueDevision: number;
             premiumRate: number;
             roundProcessingDevision: number;
-            coefficientDivision: string;
+            coefficientDivision: number;
             coefficientFixedValue: number;
             adjustmentDevision: number;
             totalRounding: number;
-            maxLimitValue: number;
-            minLimitValue: number;
             referenceItemCodes: Array<string>;
             constructor() {
+                var self = this;
+                self.easyFormulaCode = '';
+                self.easyFormulaName = '';
+                self.easyFormulaTypeAtr = 0;
+                self.baseFixedAmount = 0;
+                self.baseAmountDevision = 0;
+                self.baseFixedValue = 0;
+                self.baseValueDevision = 0;
+                self.premiumRate = 0;
+                self.roundProcessingDevision = 0;
+                self.coefficientDivision = 0;
+                self.coefficientFixedValue = 0;
+                self.adjustmentDevision = 0;
+                self.totalRounding = 0;
+                self.referenceItemCodes = [];
             }
         }
 
@@ -219,16 +258,28 @@ module nts.qmm017 {
         export class PersonalUnitPriceDto {
             personalUnitPriceCode: string;
             personalUnitPriceName: string;
+            memo: string;
         }
 
         export class ItemMasterDto {
             itemCode: string;
             itemName: string;
         }
-        
+
         export class WageTableDto {
             code: string;
-            name: string;    
+            name: string;
+        }
+
+        export class SystemVariableDto {
+            systemVariableName: string;
+            systemVariableCode: string;
+            result: string;
+        }
+        
+        export class SimpleCalSettingDto {
+            itemCode: string;
+            itemName: string;
         }
     }
 }

@@ -75,34 +75,39 @@ public class FormulaSettingFinder {
 					if (detailDto != null) {
 						formulaEasyFinderDto.setEasyFormulaCode(detailDto.getEasyFormulaCode());
 						formulaEasyFinderDto.setEasyFormulaName(detailDto.getEasyFormulaName());
-//						formulaEasyFinderDto.setBaseFixedAmount(detailDto.getBaseFixedAmount());
-//						formulaEasyFinderDto.setBaseAmountDevision(detailDto.getBaseAmountDevision());
-//						formulaEasyFinderDto.setBaseFixedAmount(detailDto.getBaseFixedAmount());
-//						formulaEasyFinderDto.setBaseValueDevision(detailDto.getBaseValueDevision());
-//						formulaEasyFinderDto.setPremiumRate(detailDto.getPremiumRate());
-//						formulaEasyFinderDto.setRoundProcessingDevision(detailDto.getRoundProcessingDevision());
-//						formulaEasyFinderDto.setCoefficientDivision(detailDto.getCoefficientDivision());
-//						formulaEasyFinderDto.setCoefficientFixedValue(detailDto.getCoefficientFixedValue());
-//						formulaEasyFinderDto.setAdjustmentDevision(detailDto.getAdjustmentDevision());
-//						formulaEasyFinderDto.setTotalRounding(detailDto.getTotalRounding());
-//						formulaEasyFinderDto.setMaxLimitValue(detailDto.getMaxLimitValue());
-//						formulaEasyFinderDto.setMinLimitValue(detailDto.getMinLimitValue());
-//						formulaEasyFinderDto.setBaseFixedValue(detailDto.getBaseFixedValue());
-//						formulaEasyFinderDto.setEasyFormulaTypeAtr(detailDto.getEasyFormulaTypeAtr());
+						// formulaEasyFinderDto.setBaseFixedAmount(detailDto.getBaseFixedAmount());
+						// formulaEasyFinderDto.setBaseAmountDevision(detailDto.getBaseAmountDevision());
+						// formulaEasyFinderDto.setBaseFixedAmount(detailDto.getBaseFixedAmount());
+						// formulaEasyFinderDto.setBaseValueDevision(detailDto.getBaseValueDevision());
+						// formulaEasyFinderDto.setPremiumRate(detailDto.getPremiumRate());
+						// formulaEasyFinderDto.setRoundProcessingDevision(detailDto.getRoundProcessingDevision());
+						// formulaEasyFinderDto.setCoefficientDivision(detailDto.getCoefficientDivision());
+						// formulaEasyFinderDto.setCoefficientFixedValue(detailDto.getCoefficientFixedValue());
+						// formulaEasyFinderDto.setAdjustmentDevision(detailDto.getAdjustmentDevision());
+						// formulaEasyFinderDto.setTotalRounding(detailDto.getTotalRounding());
+						// formulaEasyFinderDto.setMaxLimitValue(detailDto.getMaxLimitValue());
+						// formulaEasyFinderDto.setMinLimitValue(detailDto.getMinLimitValue());
+						// formulaEasyFinderDto.setBaseFixedValue(detailDto.getBaseFixedValue());
+						// formulaEasyFinderDto.setEasyFormulaTypeAtr(detailDto.getEasyFormulaTypeAtr());
 					}
 
-//					// Select reference Code from FormulaEasyStandardItem
-//					List<FormulaEasyStandardItemDto> formulaEasyStandardItemDtos = formulaEasyStandardItemRepository
-//							.findAll(login.companyCode(), new FormulaCode(formulaCode), historyId,
-//									new EasyFormulaCode(f.getEasyFormulaCode()))
-//							.stream().map(dto -> FormulaEasyStandardItemDto.fromDomain(dto))
-//							.collect(Collectors.toList());
-//
-//					// set reference Code in List<String> referenceItemCodes
-//					formulaEasyFinderDto
-//							.setReferenceItemCodes(formulaEasyStandardItemDtos.stream().map(easyStandard -> {
-//								return easyStandard.getReferenceItemCode();
-//							}).collect(Collectors.toList()));
+					// // Select reference Code from FormulaEasyStandardItem
+					// List<FormulaEasyStandardItemDto>
+					// formulaEasyStandardItemDtos =
+					// formulaEasyStandardItemRepository
+					// .findAll(login.companyCode(), new
+					// FormulaCode(formulaCode), historyId,
+					// new EasyFormulaCode(f.getEasyFormulaCode()))
+					// .stream().map(dto ->
+					// FormulaEasyStandardItemDto.fromDomain(dto))
+					// .collect(Collectors.toList());
+					//
+					// // set reference Code in List<String> referenceItemCodes
+					// formulaEasyFinderDto
+					// .setReferenceItemCodes(formulaEasyStandardItemDtos.stream().map(easyStandard
+					// -> {
+					// return easyStandard.getReferenceItemCode();
+					// }).collect(Collectors.toList()));
 
 					easyFormulaFindDto.setFormulaEasyDetail(formulaEasyFinderDto);
 					easyFormula.add(easyFormulaFindDto);
@@ -114,11 +119,12 @@ public class FormulaSettingFinder {
 			Optional<FormulaManualDto> formulaManualDto = formulaManualRepository
 					.findByPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId)
 					.map(f -> FormulaManualDto.fromDomain(f));
-
-			formulaSettingDto.setFormulaContent(formulaManualDto.get().getFormulaContent());
-			formulaSettingDto.setReferenceMonthAtr(formulaManualDto.get().getReferenceMonthAtr());
-			formulaSettingDto.setRoundAtr(formulaManualDto.get().getRoundAtr());
-			formulaSettingDto.setRoundDigit(formulaManualDto.get().getRoundDigit());
+			if (formulaManualDto.isPresent()) {
+				formulaSettingDto.setFormulaContent(formulaManualDto.get().getFormulaContent());
+				formulaSettingDto.setReferenceMonthAtr(formulaManualDto.get().getReferenceMonthAtr());
+				formulaSettingDto.setRoundAtr(formulaManualDto.get().getRoundAtr());
+				formulaSettingDto.setRoundDigit(formulaManualDto.get().getRoundDigit());
+			}
 		}
 
 		return formulaSettingDto;

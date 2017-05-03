@@ -1,26 +1,20 @@
 module cmm011.a.service {
     var paths = {
-        getCodeOfDepWP: "basic/organization/getcode",
-        getAllDepartment: "basic/organization/getalldepartment",
-        getAllDepartmentByHistId: "basic/organization/getalldepbyhistid/",
-        getMemoByHistId: "basic/organization/getmemobyhistid/",
         getAllWorkPlace: "basic/organization/getallworkplace",
         getAllWorkPlaceByHistId: "basic/organization/getallwkpbyhistid/",
         getMemoWkpByHistId: "basic/organization/getmemowkpbyhistid/",
-        addDepartment: "basic/organization/adddepartment",
-        updateDepartment: "basic/organization/updatedepartment",
-        updatelistDepartment: "basic/organization/updatedepartment",
         updateEndDateofWkp: "basic/organization/updateenddateofwkp",
         updateEndDateByHistId: "basic/organization/updateenddatewkpbyhistoryid",
         deleteHistory: "basic/organization/deletehistorywkp",
         updateStartDateandEndDate: "basic/organization/updatestartdateandenddatewkp",
-        deleteDep: "basic/organization/deletedep",
+        deleteWorkPLace: "basic/organization/deleteworkplace",
         getAllWorkPLaceByHistId: "basic/organization/getallwkpbyhistid/",
         getMemoWorkPLaceByHistId: "basic/organization/getmemowkpbyhistid/",
         addWorkPlace: "basic/organization/addworkplace",
         updatelistWorkPLace: "basic/organization/updateworkplace",
+        getAllHistory: "basic/organization/getAllHistoryWorkPlace"
     }
-    
+
     export function upDateListWorkplace(listworkplace: any) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.updatelistWorkPLace, listworkplace).done(
@@ -45,9 +39,9 @@ module cmm011.a.service {
             })
         return dfd.promise();
     }
-    
+
     // add list WorkPlace
-     export function addListWorkPlace(listworkplace: any) {
+    export function addListWorkPlace(listworkplace: any) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.addWorkPlace, listworkplace).done(
             function(res: any) {
@@ -89,9 +83,10 @@ module cmm011.a.service {
         return dfd.promise();
     }
 
-    export function deleteDepartment(department: viewmodel.model.DepartmentDeleteDto) {
+
+    export function deleteWorkPalce(workplace: viewmodel.model.WorkPlaceDeleteDto) {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.deleteDep, department).done(
+        nts.uk.request.ajax("com", paths.deleteWorkPLace, workplace).done(
             function(res: any) {
                 dfd.resolve(res);
             })
@@ -139,29 +134,6 @@ module cmm011.a.service {
         return dfd.promise();
     }
 
-    export function addDepartment(department: any) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.addDepartment, department).done(
-            function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-
-    export function upDateDepartment(department: any) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.updateDepartment, department).done(
-            function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
 
     export function upDateEndDateWkp(obj: any) {
         var dfd = $.Deferred<Array<any>>();
@@ -174,64 +146,12 @@ module cmm011.a.service {
             })
         return dfd.promise();
     }
-
-    export function upDateListDepartment(listdepartment: any) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.updatelistDepartment, listdepartment).done(
-            function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-
-    export function addListDepartment(listdepartment: any) {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.addDepartment, listdepartment).done(
-            function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-
-    export function getCodeOfDepWP(): JQueryPromise<viewmodel.model.GetCodeDto> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax("com", paths.getCodeOfDepWP)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            }).fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-
     /**
-    * Get list dapartment tại listHistory[0].
-    */
-    export function getAllDepartment(): JQueryPromise<viewmodel.model.DepartmentQueryResult> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax("com", paths.getAllDepartment)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-
-
-    /**
-     * get list dapartment theo historyID
+     * get list History
      */
-    export function getAllDepartmentByHistId(historyId: string): JQueryPromise<Array<any>> {
+    export function getAllHistory(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.getAllDepartmentByHistId + historyId)
+        nts.uk.request.ajax("com", paths.getAllHistory)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
@@ -240,23 +160,9 @@ module cmm011.a.service {
             })
         return dfd.promise();
     }
-    /**
-     * get Memo theo historyID
-     */
-    export function getMemoByHistId(historyId: string): JQueryPromise<viewmodel.model.MemoDto> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax("com", paths.getMemoByHistId + historyId)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res: any) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
 
     /**
-   * Get list dapartment tại listHistory[0].
+   * Get list WorkPLace tแบกi listHistory[0].
    */
     export function getAllWorkplace(): JQueryPromise<viewmodel.model.WorkPlaceQueryResult> {
         var dfd = $.Deferred<any>();

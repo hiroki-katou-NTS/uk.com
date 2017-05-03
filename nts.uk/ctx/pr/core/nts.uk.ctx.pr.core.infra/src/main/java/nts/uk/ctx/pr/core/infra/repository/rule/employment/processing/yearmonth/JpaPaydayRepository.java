@@ -44,15 +44,26 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 	@Override
 	public BigDecimal select1(String companyCode, int processingNo, int payBonusAtr, int processingYm,
 			int sparePayAtr) {
-		return select3(companyCode, processingNo, payBonusAtr, processingYm, sparePayAtr).getNeededWorkDay().v();
+		Payday domain = select3(companyCode, processingNo, payBonusAtr, processingYm, sparePayAtr);
+		
+		if (domain == null) {
+			return new BigDecimal(-1);
+		} else {
+			return domain.getNeededWorkDay().v();
+		}
 	}
 
 	@Override
 	public Payday select3(String companyCode, int processingNo, int payBonusAtr, int processingYm, int sparePayAtr) {
-		return this.queryProxy().query(SELECT_ALL_1_3, QpdmtPayday.class).setParameter("companyCode", companyCode)
-				.setParameter("processingNo", processingNo).setParameter("payBonusAtr", payBonusAtr)
-				.setParameter("processingYm", processingYm).setParameter("sparePayAtr", sparePayAtr)
-				.getList(c -> toDomain(c)).get(0);
+		List<Payday> payDays = this.queryProxy().query(SELECT_ALL_1_3, QpdmtPayday.class)
+				.setParameter("companyCode", companyCode).setParameter("processingNo", processingNo)
+				.setParameter("payBonusAtr", payBonusAtr).setParameter("processingYm", processingYm)
+				.setParameter("sparePayAtr", sparePayAtr).getList(c -> toDomain(c));
+
+		if (payDays.isEmpty())
+			return null;
+		else
+			return payDays.get(0);
 	}
 
 	@Override
@@ -113,6 +124,14 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 	@Override
 	public void update1(Payday domain) {
 		this.commandProxy().update(toEntity(domain));
+	}
+
+	@Override
+	public void delete1(Payday domain) {
+		QpdmtPaydayPK qpdmtPaydayPK = new QpdmtPaydayPK(domain.getCompanyCode().v(), domain.getProcessingNo().v(),
+				domain.getPayBonusAtr().value, domain.getProcessingYm().v(), domain.getSparePayAtr().value);
+
+		this.commandProxy().remove(QpdmtPayday.class, qpdmtPaydayPK);
 	}
 
 	private Payday toDomain(QpdmtPayday entity) {

@@ -1,12 +1,12 @@
 package nts.uk.ctx.pr.formula.dom.repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaMaster;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
 
 /**
  * @author hungnm
@@ -30,13 +30,15 @@ public interface FormulaMasterRepository {
 	
 	Optional<FormulaMaster> findByCompanyCodeAndFormulaCode(String companyCode, FormulaCode formulaCode);
 	
-	List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> formulaCode, BigDecimal difficultyAtr);
+	List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> formulaCode);
 	
 	void add(FormulaMaster formulaMaster);
 	
-	void update(String companyCode, FormulaCode formulaCode);
+	void update(String companyCode, FormulaCode formulaCode, FormulaName formulaName);
 	
 	void remove(String companyCode, FormulaCode formulaCode);
 	
-	boolean isExistedFormula(String companyCode);
+	boolean isExistedFormulaByCompanyCode(String companyCode);
+	
+	boolean isExistedFormula(String companyCode, FormulaCode formulaCode);
 }

@@ -5,42 +5,53 @@ module qpp009.a.viewmodel {
         selectedDivision: KnockoutObservable<string>;
         detailItemsSetting: KnockoutObservable<DetailItemsSetting>;
         printSetting: KnockoutObservable<PrintSetting>;
-        yearMonth: KnockoutObservable<string>;
-        
+        yearMonth: KnockoutObservable<number>;
+        japanYearmonth: KnockoutObservable<string>;
+
         constructor() {
             this.targetYear = ko.observable(2016);
             this.outputDivisions = ko.observableArray<SelectionModel>([
-                    new SelectionModel('UsuallyMonth', '通常月'),
-                    new SelectionModel('PreliminaryMonth', '予備月')
-                ]);
+                new SelectionModel('UsuallyMonth', '通常月'),
+                new SelectionModel('PreliminaryMonth', '予備月')
+            ]);
             this.selectedDivision = ko.observable('UsuallyMonth');
             this.detailItemsSetting = ko.observable(new DetailItemsSetting());
             this.printSetting = ko.observable(new PrintSetting());
-            this.yearMonth=ko.observable('2016/12');
+            this.yearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
+            var self = this;
+            self.japanYearmonth = ko.observable('123');
+            
+            self.yearMonth.subscribe(function(yearmonth: number) {
+                console.log(yearmonth);
+                self.japanYearmonth(nts.uk.time.formatYearMonth(yearmonth));
+            });
+            //            this.japanYearmonth = ko.computed(() => {
+            //                    return nts.uk.text.format('（{0}）', nts.uk.time.yearmonthInJapanEmpire(this.yearMonth()).toString());
+            //            })
         }
-        
+
         /**
          * Start srceen.
          */
-        public start(): JQueryPromise<any>{
+        public start(): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             dfd.resolve();
             return dfd.promise();
         }
-        
+
         /**
          * Print report.
          */
         public printData() {
-            service.printService(this).done(function() {              
+            service.printService(this).done(function() {
             })
-            .fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
-            })
+                .fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                })
         }
-        
+
     }
-    
+
     /**
      * Class detail items setting.
      */
@@ -51,21 +62,21 @@ module qpp009.a.viewmodel {
         isCalculateTotal: KnockoutObservable<boolean>;
         AccumulatedLevelList: KnockoutObservableArray<SelectionDto>;
         selectedLevels: KnockoutObservableArray<number>;
-        
+
         constructor() {
             this.isPrintDetailItem = ko.observable(false);
             this.isPrintTotalOfDepartment = ko.observable(true);
             this.isPrintDepHierarchy = ko.observable(true);
             this.isCalculateTotal = ko.observable(true);
             this.AccumulatedLevelList = ko.observableArray<SelectionDto>([
-                    new SelectionDto(1, '1階層'),new SelectionDto(2, '2階層'),new SelectionDto(3, '3階層'),
-                    new SelectionDto(4, '4階層'), new SelectionDto(5, '5階層'), new SelectionDto(6, '6階層'),
-                    new SelectionDto(7, '7階層'), new SelectionDto(8, '8階層'), new SelectionDto(9, '9階層')
-                ]);
+                new SelectionDto(1, '1階層'), new SelectionDto(2, '2階層'), new SelectionDto(3, '3階層'),
+                new SelectionDto(4, '4階層'), new SelectionDto(5, '5階層'), new SelectionDto(6, '6階層'),
+                new SelectionDto(7, '7階層'), new SelectionDto(8, '8階層'), new SelectionDto(9, '9階層')
+            ]);
             this.selectedLevels = ko.observableArray<number>([1, 2, 3, 8, 9]);
         }
     }
-    
+
     /**
      * Class print setting.
      */
@@ -77,34 +88,34 @@ module qpp009.a.viewmodel {
         use2000yenSelection: KnockoutObservableArray<SelectionDto>;
         selectedUse2000yen: KnockoutObservable<number>;
         isBreakPageByAccumulated: KnockoutObservable<boolean>;
-        
+
         constructor() {
             this.specifyBreakPageList = ko.observableArray<SelectionDto>([
-                    new SelectionDto(1, 'なし'),
-                    new SelectionDto(2, '社員毎'),
-                    new SelectionDto(3, '部門ごと'),
-                    new SelectionDto(4, '部門階層'),
-                ])
+                new SelectionDto(1, 'なし'),
+                new SelectionDto(2, '社員毎'),
+                new SelectionDto(3, '部門ごと'),
+                new SelectionDto(4, '部門階層'),
+            ])
             this.selectedBreakPageCode = ko.observable(1);
             this.specifyBreakPageHierarchyList = ko.observableArray<SelectionDto>([
-                    new SelectionDto(1, '1'),new SelectionDto(2, '2'),new SelectionDto(3, '3'),
-                    new SelectionDto(4, '4'), new SelectionDto(5, '5'), new SelectionDto(6, '6'),
-                    new SelectionDto(7, '7'), new SelectionDto(8, '8'), new SelectionDto(9, '9')
-                ]);
+                new SelectionDto(1, '1'), new SelectionDto(2, '2'), new SelectionDto(3, '3'),
+                new SelectionDto(4, '4'), new SelectionDto(5, '5'), new SelectionDto(6, '6'),
+                new SelectionDto(7, '7'), new SelectionDto(8, '8'), new SelectionDto(9, '9')
+            ]);
             this.selectedBreakPageHierarchyCode = ko.observable(1);
             this.use2000yenSelection = ko.observableArray<SelectionDto>([
-                    new SelectionDto(1, '含める'),
-                    new SelectionDto(0, '含めない'),
-                ]);
+                new SelectionDto(1, '含める'),
+                new SelectionDto(0, '含めない'),
+            ]);
             this.selectedUse2000yen = ko.observable(0);
             var self = this;
-            this.isBreakPageByAccumulated = ko.computed(function(){
-               return self.selectedBreakPageCode() == 4;
+            this.isBreakPageByAccumulated = ko.computed(function() {
+                return self.selectedBreakPageCode() == 4;
             });
         }
     }
-    
-    export class SalaryChartResultViewModel{
+
+    export class SalaryChartResultViewModel {
         empCode: string;
         empName: string;
         paymentAmount: number;
@@ -114,8 +125,8 @@ module qpp009.a.viewmodel {
         depCode: string;
         depName: string;
         depPath: string;
-        constructor(empCode: string, empName: string, paymentAmount: number, empDesignation: string, 
-        depDesignation: string, totalDesignation: string, depCode: string, depName: string, depPath: string){
+        constructor(empCode: string, empName: string, paymentAmount: number, empDesignation: string,
+            depDesignation: string, totalDesignation: string, depCode: string, depName: string, depPath: string) {
             this.empCode = empCode;
             this.empName = empName;
             this.paymentAmount = paymentAmount;
@@ -127,24 +138,24 @@ module qpp009.a.viewmodel {
             this.depPath = depPath;
         }
     }
-        /**
-     * Class 出力区分.
-     */
+    /**
+ * Class 出力区分.
+ */
     export class SelectionModel {
         code: string;
         name: string;
-        
+
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
         }
     }
-    export class SelectionDto{
+    export class SelectionDto {
         code: number;
         name: string;
         constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
-        }     
+        }
     }
 }

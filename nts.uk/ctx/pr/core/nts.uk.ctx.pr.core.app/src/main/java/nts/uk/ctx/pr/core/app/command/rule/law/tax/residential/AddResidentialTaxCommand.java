@@ -17,6 +17,7 @@ import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResidentialTax;
 public class AddResidentialTaxCommand {
 	private String resiTaxCode;
 	private String resiTaxAutonomy;
+	private String resiTaxAutonomyKana;
 	private String prefectureCode;
 	private String resiTaxReportCode;
 	private String registeredName;
@@ -32,7 +33,7 @@ public class AddResidentialTaxCommand {
 	 */
 	public ResidentialTax toDomain(String companyCode){
 		return ResidentialTax.createFromJavaType(companyCode, resiTaxCode,
-				resiTaxAutonomy,prefectureCode,
+				resiTaxAutonomy, resiTaxAutonomyKana, prefectureCode,
 				resiTaxReportCode, registeredName,
 				companyAccountNo,companySpecifiedNo,
 				cordinatePostOffice, cordinatePostalCode, memo);

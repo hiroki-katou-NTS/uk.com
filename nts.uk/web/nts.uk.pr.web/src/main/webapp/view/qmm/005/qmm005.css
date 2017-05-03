@@ -17,14 +17,22 @@ hr {
 	box-sizing: border-box;
 }
 
-*, *:hover, *:active, *.focus {
+/**, *:hover, *:active, *.focus {
 	outline: none;
-	/* border-radius: 0 !important; */
+	 border-radius: 0 !important; 
+}*/
+
+#func-notifier-errors {
+	z-index: 999999999;
 }
 
 /* override tab css */
 .ui-widget.ui-tabs .ui-tabs-nav {
 	overflow: hidden;
+}
+
+div.form-label>label button {
+	line-height: 0;
 }
 
 div.form-group .ui-igcombo-wrapper {
@@ -69,15 +77,14 @@ table.table button:active {
 	box-shadow: 0 0 #999;
 }
 
-button:not(.ui-button),
-.btn:not(.ui-button){
+button:not (.ui-button ), .btn:not (.ui-button ){
 	min-width: 73px;
-	position:relative;
+	position: relative;
 }
 
-.btn:not(.ui-button){
-	display:inline-block;
-	padding:3px 7px;
+.btn:not (.ui-button ){
+	display: inline-block;
+	padding: 3px 7px;
 	line-height: 24px;
 	cursor: pointer;
 }
@@ -86,24 +93,38 @@ div.form-label, div.form-label.inline {
 	display: table-cell;
 	padding: 0 10px 0 8px;
 	vertical-align: middle;
-	position:relative;
+	position: relative;
 }
 
-div.form-label>label>button, div.form-label.inline>label>button{
-	position:absolute;
+div.form-label>label>button, div.form-label.inline>label>button {
+	position: absolute;
 }
 
 div.form-label>i {
 	margin: 0;
 }
 
-.verticle-align .ntsCheckBox span.label:not(.helper ){
-	min-width: 160px;
-}
+.verticle-align
+ 
+.ntsCheckBox
+ 
+span
+.label
+:not
+(
+.helper
+ 
+){
+min-width
+:
+ 
+160
+px
+;
 
+
+}
 input, div.form-group>.form-control {
-	line-height: 32px;
-	max-height: 32px;
 	padding: 0 5px;
 	border: 1px solid #999999;
 }
@@ -113,14 +134,28 @@ input, div.form-group>.form-control {
 }
 
 div.form-group>.form-label+.nts-editor-wrapped {
-	display:table-cell;
+	display: table-cell;
 	vertical-align: middle;
 }
 
-div.form-group.form-inline>*:not(.clear-fix ){
-	float: left;
-}
+div
+.form-group
+.form-inline
+>
+*
+:not
+(
+.clear-fix
+ 
+){
+float
+:
+ 
+left
+;
 
+
+}
 div.form-group.form-inline:after {
 	clear: both;
 }
@@ -134,10 +169,12 @@ div.form-group {
 	margin-bottom: 5px;
 	display: table;
 }
-div.form-group>*{
+
+div.form-group>* {
 	display: table-cell;
-	vertical-align: middle;	
+	vertical-align: middle;
 }
+
 div.form-group>.inline>* {
 	display: inline-block;
 }
@@ -198,6 +235,10 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	text-align: right !important;
 }
 
+.relative {
+	position: relative;
+}
+
 #functions-area {
 	height: 47px;
 	padding-top: 7px;
@@ -224,9 +265,12 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	background-image:
 		url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAATCAYAAAB7u5a2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJySURBVDhPnVVdbxJBFD2zsGCyFOTTB76eSGya+EgTWoyNiU30R/JHJDFpg8ALD/piqIm2llaxXYggy36Nc6dLycIq1LO5GZY7c+6Ze+/MsvNZgzMGkG0LLp4dZQ9z9xaGewmGkOfxg30zG/ysF4b+XYESPGcNruvi2V4VxVIeN3YTJv8pAiiedwmFFBtThl/6w2xuuFBDGjKRI0SUjNiL41EuIcNRAEX8ImOMb2lyPcJsB2n1uQiQXAvg20soFIKqqlvZArPZDCp7jHT4SIz+AOzSavCPpyquvnC8On6JTCbjuf4OzjmGwyHy+Tx6vR5SqRTK5TIsfouh+RY2n8ga+JQHKQyySCSCXC4n18znc3Q6HQwGA6E8JVL0QqaKduAjJ0VBIIJVo7mL0TAMtNttXF9fI6rkZA3CTPOn5fWbY2SzWY/yDrZto9lswrIs7x8/iJh81J6apqFWq8ldUf/7lAeBlI3HY4xGIzmummmacp4iWm0ymaDVakHXdTxS8pvJHwIm+jMajcq6EDaSk6JCoYBSqYRisbhmlAraneM4SKfTODysIxaLYeJ82pxzAuVzFaSSSLvdLvr9PpLJJOr1OhKJBKbOGXSrtV1aSP2q0eGhkQLE43EcHBx4xJ8xstpwV1uRTui2oKIRKAXUIaT8t/sVuv1eEJviEIlnkZYfFwyZbOq+GP8CqaUTWalUZBvSmplzLm7IU+EzxIw7zZL8w4mK4YXYInPlwk2gGuzvV7G7+1S+G+4Vbsx3QvFMvC2TwS6MBqcr1w4+I4HgguZJrIqUtieIB7i1TuDwqfD4S/ifXyIXyXANEWQxtJr3F5UfwB+8G2HvP6XKnQAAAABJRU5ErkJggg==');
 	background-repeat: no-repeat;
-	background-position-x: 5px;
-	background-position-y: 5px;
-	padding-left: 30px;
+    background-position-x: 10px;
+    background-position-y: 7px;
+    padding-left: 40px;
+    display: inline-block;
+    line-height: 32px;
+    padding-right: 10px;
 }
 
 #contents-area {
@@ -269,13 +313,18 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	background-color: rgb(226, 247, 159);
 }
 
-#contents-area table.table td.division > div {
-	display: block;
-	text-align: right;
+#contents-area table.table td.division>div {
+	position: relative;
 }
 
-#contents-area table.table td.division > div * {
+#contents-area table.table td.division>div * {
 	display: inline-block;
+}
+
+#contents-area table.table td.division>div>span+button {
+	position: absolute;
+	right: 0;
+	top: -7px;
 }
 
 #contents-area table.table td .ntsControl {
@@ -303,6 +352,10 @@ a, input, select, .form-control, div.form-group>input.form-control {
 
 #contents-area table.table button {
 	height: 30px;
+}
+
+#contents-area table.table button.hafl-width {
+	width: 75%;
 }
 
 #contents-area table.table button.full-width {

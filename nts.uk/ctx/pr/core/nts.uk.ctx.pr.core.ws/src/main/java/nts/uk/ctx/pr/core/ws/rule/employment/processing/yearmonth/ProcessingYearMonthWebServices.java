@@ -56,7 +56,7 @@ public class ProcessingYearMonthWebServices extends WebService {
 	private Qmm005aCommandHandler qmm005aUpdateCommandHandler;
 
 	@Inject
-	private Qmm005bCommandHandler qmm005bUpdateCommandHandler;
+	private Qmm005bCommandHandler qmm005bCommandHandler;
 
 	@POST
 	@Path("paydayrocessing/getbyccd")
@@ -116,7 +116,7 @@ public class ProcessingYearMonthWebServices extends WebService {
 	@Path("qmm005b/update")
 	public void qmm005bUpdate(Qmm005bCommand command) {
 		try {
-			qmm005bUpdateCommandHandler.handle(command);
+			qmm005bCommandHandler.handle(command);
 		} catch (Exception ex) {
 			throw ex;
 		}

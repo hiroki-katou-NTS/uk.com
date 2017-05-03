@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.personal;
 
+import java.util.Optional;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -20,6 +22,11 @@ public class UpdatePersonalUnitPriceCommandHander extends CommandHandler<UpdateP
 	protected void handle(CommandHandlerContext<UpdatePersonalUnitPriceCommand> context) {
 		UpdatePersonalUnitPriceCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
+		
+		Optional<PersonalUnitPrice> personalUnitPriceOp = personalUnitPriceRepository.find(companyCode, command.getPersonalUnitPriceCode());
+		if (!personalUnitPriceOp.isPresent()) {
+			throw new RuntimeException("Personal unit price not found");
+		}
 		
 		PersonalUnitPrice domain = PersonalUnitPrice.createFromJavaType(
 				companyCode,
