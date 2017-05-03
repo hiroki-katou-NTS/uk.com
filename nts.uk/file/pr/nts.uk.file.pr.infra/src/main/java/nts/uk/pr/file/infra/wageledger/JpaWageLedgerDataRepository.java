@@ -354,20 +354,24 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 					});
 				});
 				
+				// Create data object.
+				Object[] aggreateItemData = new Object[4];
+				QcamtItem masterItem = masterItemList.get(0);
+				masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v() + "_A";
+				masterItem.itemName = aggregateItem.getName().v();
+				aggreateItemData[1] = masterItem;
+				QstdtPaymentDetail paymentDetail = new QstdtPaymentDetail();
+				paymentDetail.qstdtPaymentDetailPK = new QstdtPaymentDetailPK();
+				paymentDetail.qstdtPaymentDetailPK.categoryATR = category.getCategory().value;
+				paymentDetail.qstdtPaymentDetailPK.companyCode = companyCode;
+				paymentDetail.qstdtPaymentDetailPK.personId = persionId;
+				paymentDetail.qstdtPaymentDetailPK.payBonusAttribute = category.getPaymentType().value;
+				paymentDetail.qstdtPaymentDetailPK.itemCode = aggregateItem.getSubject().getCode().v();
+				aggreateItemData[2] = aggregateItem.getShowNameZeroValue();
+				aggreateItemData[3] = aggregateItem.getShowValueZeroValue();
+				
 				// Check if none data for aggregate item.
 				if (aggregateValueMap.isEmpty()) {
-					Object[] aggreateItemData = new Object[2];
-					QcamtItem masterItem = masterItemList.get(0);
-					masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v() + "_A";
-					masterItem.itemName = aggregateItem.getName().v();
-					aggreateItemData[1] = masterItem;
-					QstdtPaymentDetail paymentDetail = new QstdtPaymentDetail();
-					paymentDetail.qstdtPaymentDetailPK = new QstdtPaymentDetailPK();
-					paymentDetail.qstdtPaymentDetailPK.categoryATR = category.getCategory().value;
-					paymentDetail.qstdtPaymentDetailPK.companyCode = companyCode;
-					paymentDetail.qstdtPaymentDetailPK.personId = persionId;
-					paymentDetail.qstdtPaymentDetailPK.payBonusAttribute = category.getPaymentType().value;
-					paymentDetail.qstdtPaymentDetailPK.itemCode = aggregateItem.getSubject().getCode().v();
 					paymentDetail.value = new BigDecimal(0);
 					aggreateItemData[0] = paymentDetail;
 					results.add(aggreateItemData);
@@ -376,19 +380,6 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 				
 				// Add item to result list.
 				aggregateValueMap.forEach((yearMonth, value) -> {
-					// Create new data object.
-					Object[] aggreateItemData = new Object[2];
-					QcamtItem masterItem = masterItemList.get(0);
-					masterItem.qcamtItemPK.itemCd = aggregateItem.getSubject().getCode().v() + "_A";
-					masterItem.itemName = aggregateItem.getName().v();
-					aggreateItemData[1] = masterItem;
-					QstdtPaymentDetail paymentDetail = new QstdtPaymentDetail();
-					paymentDetail.qstdtPaymentDetailPK = new QstdtPaymentDetailPK();
-					paymentDetail.qstdtPaymentDetailPK.categoryATR = category.getCategory().value;
-					paymentDetail.qstdtPaymentDetailPK.companyCode = companyCode;
-					paymentDetail.qstdtPaymentDetailPK.personId = persionId;
-					paymentDetail.qstdtPaymentDetailPK.payBonusAttribute = category.getPaymentType().value;
-					paymentDetail.qstdtPaymentDetailPK.itemCode = aggregateItem.getSubject().getCode().v();
 					paymentDetail.qstdtPaymentDetailPK.processingYM = yearMonth;
 					paymentDetail.value = new BigDecimal(value);
 					aggreateItemData[0] = paymentDetail;
@@ -769,6 +760,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 */
 	private ReportItemDto findItem(List<Object[]> results, List<QcamtItem> masterItems,
 			ItemData itemData, MonthData monthData) {
+		boolean isShowName = true;
+		boolean isShowValue = true;
 		
 		// Find master item
 		QcamtItem masterItem = masterItems.stream()
@@ -783,6 +776,10 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 					&& paymentDetail.qstdtPaymentDetailPK.payBonusAttribute == itemData.paymentType
 					&& paymentDetail.qstdtPaymentDetailPK.itemCode.equals(itemData.itemCode);
 		}).collect(Collectors.toList());
+		if (!itemDataResultList.isEmpty() && itemDataResultList.get(0).length > 2) {
+			isShowName = (Boolean) itemDataResultList.get(0)[2];
+			isShowValue = (Boolean) itemDataResultList.get(0)[3];
+		}
 
 		// Convert data.
 		List<MonthlyData> monthlyDatas = itemDataResultList.stream().map(data -> {
@@ -806,6 +803,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		return ReportItemDto.builder()
 				.name(masterItem.itemName)
 				.monthlyDatas(monthlyDatas)
+				.isShowName(isShowName)
+				.isShowValue(isShowValue)
 				.build();
 	}
 
