@@ -48,7 +48,8 @@ var nts;
                             }
                             service.updateTopPage = updateTopPage;
                             function deleteTopPage(topPageItemCode) {
-                                return nts.uk.request.ajax(servicePath.removeTopPage, topPageItemCode);
+                                var data = { topPageCode: topPageItemCode };
+                                return nts.uk.request.ajax(servicePath.removeTopPage, data);
                             }
                             service.deleteTopPage = deleteTopPage;
                         })(service = a.service || (a.service = {}));

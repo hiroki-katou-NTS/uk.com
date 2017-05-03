@@ -53,28 +53,31 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 self.topPageModel().topPageCode(data.topPageCode);
                 self.topPageModel().topPageName(data.topPageName);
-                if (data.placements) {
-                    data.placements.forEach(function(item, index) {
-                        var placementModel = new PlacementModel();
-                        var topPagePartModel = new TopPagePartModel();
-                        //set value for top page part
-                        topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
-                        topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
-                        topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
-                        topPagePartModel.width(item.topPagePart.width);
-                        topPagePartModel.height(item.topPagePart.height);
-
-                        placementModel.row(item.row);
-                        placementModel.column(item.column);
-                        placementModel.topPagePart(topPagePartModel);
-
-                        self.topPageModel().placement().push(placementModel);
-                    });
-                }
+                //TODO su dung service de lay layout rieng
+//                if (data.placements) {
+//                    data.placements.forEach(function(item, index) {
+//                        var placementModel = new PlacementModel();
+//                        var topPagePartModel = new TopPagePartModel();
+//                        //set value for top page part
+//                        topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
+//                        topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
+//                        topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
+//                        topPagePartModel.width(item.topPagePart.width);
+//                        topPagePartModel.height(item.topPagePart.height);
+//
+//                        placementModel.row(item.row);
+//                        placementModel.column(item.column);
+//                        placementModel.topPagePart(topPagePartModel);
+//
+//                        self.topPageModel().placement().push(placementModel);
+//                    });
+//                }
             }
             private collectData(): TopPageDto {
-                //TODO collect data from screen
-                return null;
+                var self = this;
+                //mock data
+                var data: TopPageDto = { topPageCode: self.topPageModel().topPageCode(), topPageName: self.topPageModel().topPageName(), languageNumber: 0, layoutId: "luid" };
+                return data;
             }
             private collectDataForCreateNew(): TopPageDto {
                 return null;

@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.infra.entity.toppage;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -13,7 +15,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "CCGMT_TOP_PAGE")
-public class CcgmtTopPage extends UkJpaEntity {
+public class CcgmtTopPage extends UkJpaEntity implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public CcgmtTopPagePK ccgmtTopPagePK;
@@ -24,7 +31,7 @@ public class CcgmtTopPage extends UkJpaEntity {
 	@Column(name = "LANG_NO")
 	public int languageNumber;
 
-	@Column(name = "LAYOUT_ID")
+	@Column(name = "LAYOUTID")
 	public String layoutId;
 
 	@Override

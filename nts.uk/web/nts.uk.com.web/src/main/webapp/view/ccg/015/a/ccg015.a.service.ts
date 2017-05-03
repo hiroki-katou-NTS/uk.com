@@ -48,7 +48,8 @@ module nts.uk.com.view.ccg015.a {
         * Function is used to delete Top Page.
         */
         export function deleteTopPage(topPageItemCode: string): JQueryPromise<model.TopPageDto> {
-            return nts.uk.request.ajax(servicePath.removeTopPage, topPageItemCode);
+            var data = {topPageCode: topPageItemCode}; 
+            return nts.uk.request.ajax(servicePath.removeTopPage, data);
         }
 
         export module model {
@@ -60,7 +61,8 @@ module nts.uk.com.view.ccg015.a {
                 topPageCode: string;
                 topPageName: string;
                 languageNumber: number;
-                placements: Array<PlacementDto>;
+                layoutId: string;
+//                placements: Array<PlacementDto>;
             }
             export interface PlacementDto {
                 row: number;

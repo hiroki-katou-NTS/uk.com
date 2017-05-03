@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class DeleteTopPageCommandHandler.
@@ -23,8 +24,9 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 	@Override
 	protected void handle(CommandHandlerContext<DeleteTopPageCommand> context) {
 		DeleteTopPageCommand command = context.getCommand();
+		String companyId = AppContexts.user().companyID();
 		//remove
-		topPageRepository.remove(command.getCompanyId(),command.getTopPageCode());
+		topPageRepository.remove(companyId,command.getTopPageCode());
 	}
 
 }
