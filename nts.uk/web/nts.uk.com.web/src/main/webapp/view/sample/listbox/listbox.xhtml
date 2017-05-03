@@ -35,7 +35,8 @@
 						<span data-bind="ntsCheckBox: { checked: isValidate }">Selected value changable</span>
 						<br />
 						<!-- Multiple is false -->
-						<b>Single Selected:</b><span data-bind="text: selectedCode()"></span><br/>
+						<b>Single Selected:</b><span data-bind="text: selectedCode()"></span>
+						<i><span data-bind="text: selectedCode().code"></span></i><br/>
 						<!-- Multiple is true -->
 						<b>Multi Selected:</b><span data-bind="text: selectedCodes()"></span><br />
 						<b>Selected:</b><span data-bind="text: selectedCodes().length"></span><br />
