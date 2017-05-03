@@ -1,4 +1,4 @@
-module qrm007.a.service {
+module kml001.d.service {
     var paths: any = {
         retirePayItemSelect: "pr/core/retirement/payitem/findBycompanyCode", //qremt_Retire_Pay_Item_SEL_1
         retirePayItemUpdate: "pr/core/retirement/payitem/update" //qremt_Retire_Pay_Item_UPD_1

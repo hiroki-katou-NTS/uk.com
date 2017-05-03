@@ -5,77 +5,59 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<body>
-		<ui:composition template="../../../../master/base.xhtml">
+		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemPrintName
-					nts.uk.shr.com.primitive.Memo
-   				</com:ValidatorScript>
+				<script>var dialogSize = { width: 460, height: 285 };</script>
 				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="qrm007.a.start.js" />
-				<com:scriptfile path="qrm007.a.viewmodel.js" />
-				<com:scriptfile path="qrm007.a.service.js" />
-				<com:stylefile path="qrm007.a.main.css" />
+				<com:scriptfile path="kml001.d.start.js" />
+				<com:scriptfile path="kml001.d.vm.js" />
+				<com:scriptfile path="kml001.d.service.js" />
+				<com:stylefile path="kml001.d.main.css" />
 			</ui:define>
 			
 			<ui:define name="content">
-				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button" data-bind="click: saveData, enable: $root.errors.isEmpty">登録</button>
-					<button>マスタ修正ログ</button>
-				</div>
 				<div id="contents-area">
-						<div class="pull-left">
-							<div class="caret-right caret-background bg-green">
-								<table id="lst-1" data-bind="ntsGridList: {
-										width: 550, height: 290,
-										options: retirementPayItemList,
-										optionsValue: 'itemCode',
-										columns: ko.observableArray([
-							                { headerText: 'コード', prop: 'itemCode', width: 50 },
-							                { headerText: '名称', prop: 'itemName', width: 145 },
-							                { headerText: '印刷用名称', prop: 'printName', width: 145 }]),
-										value: currentCode }">
-								</table>
-							</div>
+					<div>
+						<div class="label">履歴情報を確認し、削除または修正を行ってください。</div>
+					</div>
+					<div class="table">
+						<div class="cell column1">
+							<div data-bind="ntsFormLabel: { required: true }">編集方法選択</div>
 						</div>
-						<div>
-							<div class="table">
-								<div class="cell column1">
-									<div data-bind="ntsFormLabel: { required: true }">コード/名称</div>
-								</div>
-								<div class="cell">
-									<span data-bind="text: currentItem().itemCode"></span>
-									<span id="name-span" data-bind="text: currentItem().itemName"></span>
-								</div>
-							</div>
-							<div class="table">
-								<div class="cell column1">
-									<div data-bind="ntsFormLabel: { constraint: 'RetirementPayItemPrintName', required: true }">印刷用名称</div>
-								</div>
-								<div class="cell valign-center">
-									<div data-bind="with: currentItem">
-										<input id="inp-1" data-name="印刷用名称" class="data-required" data-bind="ntsTextEditor: {
-											value: printName,
-											constraint: 'RetirementPayItemPrintName',
-											option: { width: '110px' },
-											required: true}" />
+						<div class="cell">
+							<span class="ntsControl">
+								<label class="ntsRadioBox">
+									<input type="radio" name="textRadio" data-bind="checkedValue: false, checked: isUpdate, enable: true" />
+									<span class="box"></span><span class="label" data-bind="text: '履歴を削除する'"></span>
+								</label>
+							</span>
+							<span class="ntsControl">
+								<label class="ntsRadioBox">
+									<input type="radio" name="textRadio" data-bind="checkedValue: true, checked: isUpdate, enable: true" />
+									<span class="box"></span><span class="label" data-bind="text: '履歴を修正する'"></span>
+								</label>
+							</span>
+							<div id="dateTime-input">
+								<div data-bind="ntsFormLabel: { enable: isUpdate }">期間</div>
+								<div class="dateTime-input">
+									<div>
+										<input id="startDateInput" data-bind="ntsTextEditor: {
+											value: newStartDate,
+											option: { width: '90px' },
+											required: true,
+											enable: isUpdate }" />
 									</div>
 								</div>
-							</div>
-							<hr id="division" align="left"/>
-							<div class="table">
-								<div class="cell column1 valign-top">
-									<div class="right-column" data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">メモ</div>
-								</div>
-								<div class="cell">
-									<div data-bind="with: currentItem">
-										<textarea id="inp-2" data-name="メモ" data-bind="ntsMultilineEditor: {
-											value: memo,
-											constraint: 'Memo'}" />
-									</div>
-								</div>
+								<label class="dateInput isUpdate"> ~ </label>
+								<label class="dateInput isUpdate">9999/12/31</label>
 							</div>
 						</div>
+					</div>
+					<hr />
+					<div id="center-bottom" class="valign-center control-group">
+						<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog">決定</button>
+						<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">キャンセル</button>
+					</div>
 				</div>
 			</ui:define>
 		</ui:composition>

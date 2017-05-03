@@ -1,0 +1,133 @@
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+.control-group { margin: 10px; }
+.item-valign-top { vertical-align: top; }
+.halign-left { text-align: left; }
+.halign-right { text-align: right; }
+.halign-center { text-align: center; }
+.bg-green {background-color: #E0F59E;}
+
+#contents-area {
+	width: 1300px;
+}
+
+.table {
+	margin: 10px;
+}
+
+button {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.short-button {
+	width: 70px;
+}
+
+input, textarea {
+	border-radius: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+textarea { margin-left: 10px;}
+
+.pull-left {
+	width: 330px;
+	height: 680px;
+}
+
+.caret-background {
+	width: 240px; 
+	height: auto;
+	margin-left: 10px;
+	margin-top: 10px;
+	padding: 15px;
+}
+
+.dateControlBtn { width: 80px; }
+.dateControlBtn:FIRST-CHILD{ margin-left: 10px; }
+.dateControlBtn:LAST-CHILD{ margin-left: 50px; }
+
+#dateRange-list-container { 
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+.table:FIRST-CHILD {margin-top: 0px;}
+
+.column1 {
+	width: 250px;
+}
+
+#name-span {
+	margin-left: 15px;
+}
+
+#inp-2 {
+	width: 440px;
+	height: 100px;
+}
+#dateRange-list_dateRange {
+	display: none;
+}
+/*
+#dateRange-list td {
+	text-align: center;
+}
+*/
+#premium-set-tbl tr, th, td{ 
+	border: 1px solid black;
+}
+#premium-set-tbl td, th { 
+	height: 30px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+#premium-set-tbl th:FIRST-CHILD {
+	width: 180px;
+}
+#premium-set-tbl th:NTH-CHILD(2) {
+	width: 80px;
+}
+#premium-set-tbl th:LAST-CHILD {
+	width: 500px;
+}
+#formula {
+	width: 600px;
+	height: 140px;
+	background-color: #F2F2F2;
+}
+#formula {
+	width: 600px;
+	height: 140px;
+	background-color: #F2F2F2;
+}
+#formula >.table >.label:NTH-CHILD(1) {
+	margin-top: 10px;
+}
+#formula > hr { 
+	margin-top: -5px;
+	margin-left: 10px;
+	margin-bottom: -5px;
+	width: 500px;
+}
+#formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(1){
+	width: 300px;
+}
+#formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(1) > .label{
+	margin-left: 20px;
+	margin-bottom:5px;
+}
+#formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(1) > .label:NTH-CHILD(3){
+	margin-left: 40px;
+}
+#formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(1) > .label:NTH-CHILD(5){
+	margin-left: 40px;
+}
+#formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(2) {
+	width: 100px;
+}
+#formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(3) > .cell{
+	height: 30px;
+}
