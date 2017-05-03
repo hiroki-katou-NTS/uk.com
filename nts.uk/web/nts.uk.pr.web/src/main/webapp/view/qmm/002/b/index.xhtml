@@ -10,15 +10,15 @@
 			<script>var dialogSize = { width: 540, height: 600 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:scriptfile path="qmm002.b.start.js" />
+			<com:scriptfile path="qmm002.b.vm.js" />
+			<com:scriptfile path="qmm002.b.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>
-					<label id="lbl_001">「削除したい項目を選択してください。」を表示する。</label>
+					<label id="lbl_001">削除したい項目を選択してください。</label>
 				</div>
 				<div id="lst_001">
 					<div class="search-wrap" style="width: 500px;"
@@ -38,7 +38,7 @@
 									selectedValues: selectedCodes,								
 									optionsValue: 'treeCode',
 									optionsChild: 'childs',
-									optionsText: 'name',
+									optionsText: 'displayName',
 									multiple: true,
 									enable: true,										
 									showCheckBox: true}"

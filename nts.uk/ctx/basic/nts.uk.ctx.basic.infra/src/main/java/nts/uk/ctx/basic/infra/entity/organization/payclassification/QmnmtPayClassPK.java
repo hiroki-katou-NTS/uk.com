@@ -1,16 +1,18 @@
 package nts.uk.ctx.basic.infra.entity.organization.payclassification;
 
 import java.io.Serializable;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
+@Getter
+
 public class QmnmtPayClassPK implements Serializable{
 
 	/**
@@ -20,17 +22,11 @@ public class QmnmtPayClassPK implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name ="CCD")
-	public String companyCd;
+	public String companyCode;
 	
 	@Basic(optional = false)
 	@Column(name ="PAYCLASS_CD")
-	public String payClassCode;
+	public String payClassificationCode;
 
-	@Basic(optional = false)
-	@Column(name ="STR_D")
-	public String startDate;
-	
-	@Basic(optional = false)
-	@Column(name ="HIST_ID")
-	public String historyID;
+
 }

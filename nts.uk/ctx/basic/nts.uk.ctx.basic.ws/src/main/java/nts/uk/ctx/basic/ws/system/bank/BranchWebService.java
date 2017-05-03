@@ -28,29 +28,44 @@ public class BranchWebService extends WebService {
 	private RemoveBranchCommandHandler removeBranchCommandHandler;
 	
 	@Inject
-	private TranferBranchCommandHandler tranferBranchCommandHandler; 
+	private TranferBranchCommandHandler transferBranchCommandHandler; 
     
+	/**
+	 * add bank branch
+	 * @param command
+	 */
 	@POST
 	@Path("add")
 	public void add(AddBranchCommand command){
 	   this.addBranchCommandHandler.handle(command);
 	}
-	
+	 /**
+	  * update bank branch
+	  * @param command
+	  */
 	@POST
 	@Path("update")
 	public void update(UpdateBranchCommand command){
 	   this.updateBranchCommandHandler.handle(command);
 	}
 	
+	/**
+	 * remove bank branch
+	 * @param command
+	 */
 	@POST
 	@Path("remove")
 	public void remove(RemoveBranchCommand command){
 		this.removeBranchCommandHandler.handle(command);		
 	}
 	
+	/**
+	 * transfer bank branch
+	 * @param command
+	 */
 	@POST
-	@Path("tranfer")
+	@Path("transfer")
 	public void update(TranferBranchCommand command){
-	   this.tranferBranchCommandHandler.handle(command);
+	   this.transferBranchCommandHandler.handle(command);
 	}
 }

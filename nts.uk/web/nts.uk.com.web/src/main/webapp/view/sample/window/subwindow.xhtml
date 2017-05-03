@@ -7,7 +7,7 @@
 
     <body>
 		
-        <ui:composition template="../../../master/base.xhtml">
+        <ui:composition template="../../../master/dialog.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 400, height: 300 };</script>
             	
@@ -17,11 +17,14 @@
             </ui:define>
             
             <ui:define name="content">
+               	<div id="functions-area"><button>test</button></div>
             	<div id="contents-area">
 					<div id="content" class="cf">
 						<h1>Sub Window</h1>
 						<div id="parentInstruct"></div>
-						<input data-bind="value: modalValue"/>
+						<div data-bind="with: numbereditor2">
+							<input id="number-2" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+						</div>
 						<button data-bind="click: CloseModalSubWindow">Close me!</button>
             		</div>
            		</div>

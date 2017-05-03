@@ -37,33 +37,62 @@ public class BankWebService extends WebService {
 	@Inject
 	private RemoveListBankCommandHandler removeListBankCommandHandler;
 	
+	/**
+	 * add bank
+	 * @param command
+	 */
 	@POST
 	@Path("add")
 	public void add(AddBankCommand command) {
 		this.addBankCommandHandler.handle(command);
 	}
-
+    
+	/**
+	 * update bank
+	 * @param command
+	 */
 	@POST
 	@Path("update")
 	public void update(UpdateBankCommand command) {
 		this.updateBankCommandHandler.handle(command);
 	}
 	
+	/**
+	 * remove bank
+	 * @param command
+	 */
 	@POST
 	@Path("remove")
 	public void remove(RemoveBankCommand command) {
 		this.removeBankCommandHandler.handle(command);
 	}
 	
+	/**
+	 * find all bank
+	 * @return
+	 */
 	@POST
 	@Path("find/all")
 	public List<BankDto> findAll() {
 		return this.bankFinder.findAll();
 	}
 	
+	/**
+	 * remove list bank
+	 * @param command
+	 */
 	@POST
 	@Path("remove/list")
 	public void removeList(RemoveListBankCommand command){
 		this.removeListBankCommandHandler.handle(command);
+	}
+	
+	/**
+	 * find check exist bank
+	 */
+	@POST
+	@Path("find/check")
+	public void check() {
+       this.bankFinder.checkExistsBank();
 	}
 }

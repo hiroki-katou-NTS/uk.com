@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KeyBank {
 	private String bankCode;
-	private String branchCode;
+	private String branchId;
 }

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.PaydayProcessingRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayProcessingRepository;
 import nts.uk.ctx.pr.core.pub.rule.employment.processing.yearmonth.IPaydayProcessingPub;
 import nts.uk.ctx.pr.core.pub.rule.employment.processing.yearmonth.PaydayProcessingDto;
 

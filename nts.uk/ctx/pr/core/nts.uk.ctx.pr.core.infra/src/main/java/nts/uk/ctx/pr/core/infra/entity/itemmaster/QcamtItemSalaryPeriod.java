@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  *
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @NoArgsConstructor
 @Table(name = "QCAMT_ITEM_SALARY_PERIOD")
 @Entity
-public class QcamtItemSalaryPeriod extends TableEntity implements Serializable {
+public class QcamtItemSalaryPeriod extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -105,4 +105,8 @@ public class QcamtItemSalaryPeriod extends TableEntity implements Serializable {
         return "entity.itemmaster.QcamtItemSalaryPeriod[ qcamtItemSalaryPeriodPK=" + qcamtItemSalaryPeriodPK + " ]";
     }
     
+    @Override
+    protected QcamtItemSalaryPeriodPK getKey() {
+    	return this.qcamtItemSalaryPeriodPK;
+    }
 }

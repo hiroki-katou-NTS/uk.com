@@ -7,22 +7,21 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="CBKMT_LINE_BANK")
-public class CbkmtLineBank {
+public class CbkmtLineBank extends UkJpaEntity {
+
 	@EmbeddedId
 	public CbkmtLineBankPK cbkmtLineBankPK;
 	
 	@Column(name="LINE_BANK_NAME")
 	public String lineBankName;
 	
-	@Column(name="BANK_CD")
-	public String bankCode;
-	
-	@Column(name="BRANCH_CD")
-	public String branchCode;
+	@Column(name="BRANCH_ID")
+	public String branchId;
 	
 	@Column(name="ACCOUNT_ATR")
 	public int accountAtr;
@@ -65,5 +64,10 @@ public class CbkmtLineBank {
 	
 	@Column(name="MEMO")
 	public String memo;
+
+	@Override
+	protected CbkmtLineBankPK getKey() {
+		return this.cbkmtLineBankPK;
+	}
 	
 }

@@ -28,6 +28,8 @@
 						<h2>Overview</h2>
 						<button data-bind="click: addBoxes">Add Box</button>
 						<button data-bind="click: removeBoxes">Remove Box</button>
+						<input id="number-1" data-bind="ntsNumberEditor: {value: value}"/>
+						<button data-bind="click: enableCheckBox">Enable CheckBox</button>
 						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
 						<br/><br/>
 						<h3>Selected Values as objects</h3>
@@ -110,6 +112,12 @@
 													<b>Type:</b> boolean<br/>
 													<b>Default:</b> true<br/>
 													Set enable/disable for RadioBoxGroup control
+												</td>
+											</tr>
+											<tr>
+												<td>To enable / disable for each item seperate<br/><i>(optional)</i></td>
+												<td>
+													<b>Create property "enable" (KnockoutObservable -> boolean) in each item</b> 
 												</td>
 											</tr>
 										</tbody>

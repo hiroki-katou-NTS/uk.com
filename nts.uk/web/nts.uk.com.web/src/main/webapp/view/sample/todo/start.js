@@ -1,2 +1,0 @@
-__viewContext.ready(function () {
-});

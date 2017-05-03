@@ -16,22 +16,60 @@ td>.ui-igcombo-wrapper, td>.caret>.ui-igcombo-wrapper {
 	top: 0;
 }
 
-#C_SEL_001 {
+#A_SEL_001 {
 	width: 60px;
 }
 
-#C_SEL_002 {
+#A_SEL_002 {
 	width: 260px;
 }
 
-#C_SEL_003 {
+#A_SEL_003 {
 	width: 50px;
 }
 
-#C_SEL_004 {
+#A_SEL_004 {
 	width: 100px;
 }
 
-#C_SEL_005 {
+#A_SEL_005 {
 	width: 80px;
+}
+
+#A_LST_001 {
+	width: 853px;
+}
+
+#contents-area table.table th {
+	height: 32px;
+	width: initial;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(1) {
+	width: 25px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(2) {
+	width: 142px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(3) {
+	width: 65px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(4) {
+	width: 360px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(5) {
+	width: 5px;
+}
+
+#contents-area #A_LST_001.table tr:first-child th:nth-child(6) {
+	width: 266px;
+}
+
+
+#contents-area #A_LST_001.table tr:nth-child(2) th:nth-child(2) {
+	width: 55px;
 }

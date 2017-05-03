@@ -1,132 +1,256 @@
+/// <reference path="../qmm005.ts"/>
+/// <reference path="qmm005.a.start.ts" />
 module qmm005.a {
     export class ViewModel {
-        items: KnockoutObservableArray<TableRowItem>;
+        items: KnockoutObservableArray<TableRowItem> = ko.observableArray([]);
+        dirty: nts.uk.ui.DirtyChecker = new nts.uk.ui.DirtyChecker(this.items);
+
         constructor() {
             let self = this;
-            self.items = ko.observableArray([]);
             self.start();
         }
 
         start() {
             let self = this;
             let _records: Array<TableRowItem> = [];
+            /// get data from server
             services.getData().done(function(resp: Array<any>) {
+                /// repeat row (5 records paydayProcessing)
                 for (let i in resp) {
                     let index = parseInt(i) + 1;
-                    let _row = new TableRowItem(
-                        index,
-                        "",
-                        [{ index: -1, label: "" }],
-                        [{ index: -1, label: "" }],
-                        true,
-                        [{ index: -1, label: "" }],
-                        [{ index: -1, label: "" }]
-                    );
-                    _row.parent = self;
-                    let item = _.find(resp, function(o) { return o && o[0] && o[0].processingNo == index; });
+                    let _row = new TableRowItem({
+                        index: index,
+                        label: "",
+                        dispSet: false,
+                        sel001Data: [new common.SelectItem({ index: -1, label: "" })],
+                        sel002Data: [new common.SelectItem({ index: -1, label: "" })],
+                        sel003: true,
+                        sel004Data: [new common.SelectItem({ index: -1, label: "" })],
+                        sel005Data: [new common.SelectItem({ index: -1, label: "" })]
+                    });
+                    let item = _.find(resp, function(item) { return item && item.paydayProcessingDto && item.paydayProcessingDto.processingNo == index; });
+
                     if (item) {
-                        _row.index(item[0].processingNo);
-                        _row.label(item[0].processingName);
+                        _row.dispSet = item.paydayProcessingDto.dispSet;
 
-                        let currentProcessingYm = nts.uk.time.parseYearMonth(item[0].currentProcessingYm);
-                        _row.sel001(currentProcessingYm.year);
+                        _row.index(item.paydayProcessingDto.processingNo);
+                        _row.label(item.paydayProcessingDto.processingName);
 
-
-                        let _sel001Data: Array<common.SelectItem> = [new common.SelectItem({ index: currentProcessingYm.year, label: '' + currentProcessingYm.year })];
-                        _row.sel001Data(_sel001Data);
-
-
+                        let _sel001Data: Array<common.SelectItem> = [];
                         let _sel002Data: Array<common.SelectItem> = [];
+                        let _sel004Data: Array<common.SelectItem> = [];
+                        let _sel005Data: Array<common.SelectItem> = [];
+                        let cym = nts.uk.time.parseYearMonth(item.paydayProcessingDto.currentProcessingYm);
+                        let bcym = nts.uk.time.parseYearMonth(item.paydayProcessingDto.bcurrentProcessingYm);
+                        let cspd = 0, bcspdy = 0, cspdm = 0;
 
-                        if (item[1]) {
-                            for (let i in item[1]) {
-                                let index: number = parseInt(i) + 1,
-                                    rec: any = item[1][i],
+                        // Salary
+                        if (item.paydayDtos) {
+                            let payDays = _.orderBy(item.paydayDtos, ['processingYm'], ['desc']);
+                            for (let j = 0; j < payDays.length; j++) {
+                                let rec = payDays[j] as PaydayDto,
                                     payDate: Date = new Date(rec.payDate),
+                                    month: number = payDate.getMonth() + 1,
                                     stdDate: Date = new Date(rec.stdDate),
-                                    label: string = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(月)|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd");
-                                _sel002Data.push(new common.SelectItem({ index: index, label: label }));
-                            }
+                                    label: string = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(' + payDate['getDayJP']() + ')|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd"),
+                                    ym = nts.uk.time.parseYearMonth(rec.processingYm);
 
-                            if (_sel002Data.length) {
-                                _row.sel002Data(_sel002Data);
-                                _row.sel002(_sel002Data[0].index);
+                                if (ym.success) {
+                                    _sel001Data.push(new common.SelectItem({ index: ym.year, label: ym.year.toString(), value: ym.year }));
+                                }
+                                _sel002Data.push(new common.SelectItem({ index: parseInt(ym.year + '' + month), label: label, value: month }));
+
+                                if (payDate.getFullYear() === cym.year && month === cym.month) {
+                                    cspd = parseInt(cym.year + '' + month);
+                                }
                             }
                         }
-                        
-                        _row.sel003(item[0].bonusAtr);
 
-                        let bCurrentProcessingYm = nts.uk.time.parseYearMonth(item[0].bcurrentProcessingYm);
-                        _row.sel004(bCurrentProcessingYm.year);
+                        // Bonus
+                        if (item.paydayBonusDtos) {
+                            let payDays = _.orderBy(item.paydayBonusDtos, ['processingYm'], ['desc']);
+                            for (let j = 0; j < payDays.length; j++) {
+                                let rec = payDays[j] as PaydayDto;
+                                let pym = nts.uk.time.parseYearMonth(rec.processingYm);
+                                if (pym.success) {
+                                    _sel004Data.push(new common.SelectItem({ index: pym.year, label: pym.year.toString(), value: pym.year }));
+                                    _sel005Data.push(new common.SelectItem({ index: pym.month, label: pym.month.toString() + '月', value: pym.month }));
+                                }
+                            }
+                        }
 
-                        let _sel004Data = [{ index: bCurrentProcessingYm.year, label: '' + bCurrentProcessingYm.year }];
+
+                        // Filter duplicate data option
+                        _sel001Data = _.uniqWith(_sel001Data, _.isEqual);
+                        _row.sel001Data(_sel001Data);
+
+                        _sel002Data = _.uniqWith(_sel002Data, _.isEqual);
+                        _row.sel002Data(_sel002Data);
+
+                        _sel004Data = _.uniqWith(_sel004Data, _.isEqual);
                         _row.sel004Data(_sel004Data);
 
-                        _row.sel005(bCurrentProcessingYm.month);
-
-                        let _sel005Data = [{ index: bCurrentProcessingYm.month, label: bCurrentProcessingYm.month + '月' }];
+                        _sel005Data = _.uniqWith(_sel005Data, _.isEqual);
                         _row.sel005Data(_sel005Data);
+
+                        // Current processing year
+                        _row.sel001(cym.year || _sel001Data[0].value); // processing year
+                        _row.sel002(cspd || _sel002Data[0].value); // processing month
+                        _row.sel003(item.paydayProcessingDto.bonusAtr == 1 ? true : false); // Year has bonus?
+
+                        // bonus in year
+                        let bYear = _.find(_sel004Data, function(ii) { return ii.value == bcym.year; });
+                        if (bYear) {
+                            _row.sel004(bcym.year);
+                        }
+                        else if (_sel004Data[0]) {
+                            _row.sel004(_sel004Data[0].value);
+                        }
+
+                        // bonus in month
+                        let bMonth = _.find(_sel005Data, function(ii) { return ii.value == bcym.month; });
+                        if (bMonth) {
+                            _row.sel005(bcym.month);
+                        } else if (_sel005Data[0]) {
+                            _row.sel005(_sel005Data[0].value);
+                        }
                     }
                     _records.push(_row);
                 }
                 self.items(_records);
+
+                // Reset dirty on start success
+                self.dirty.reset();
+            });
+        }
+
+        saveData(item, event) {
+            let self = this, items = self.items();
+            var data: Array<PaydayProcessingDto> = [];
+            for (var i = 0, row; row = items[i] as TableRowItem; i++) {
+                if (row.label() != '') {
+                    // check error
+                    data.push({
+                        processingNo: row.index(),
+                        processingName: row.label(),
+                        dispSet: 0,
+                        currentProcessingYm: parseInt(row.sel002()['formatYearMonth']()),
+                        bonusAtr: row.sel003() === true ? 1 : 0,
+                        bcurrentProcessingYm: (row.sel004Data().length == 0 || row.sel005Data().length == 0) ? parseInt(row.sel002()['formatYearMonth']()) : parseInt((row.sel004() + '' + row.sel005())['formatYearMonth']())
+                    });
+                }
+            }
+            services.updatData({ paydayProcessings: data }).done(function(resp) {
+                self.start();
             });
         }
 
         // Navigate to qmp/005/b/index.xhtml
         btn002Click(item, event): void {
-            location.href = "../../../qmp/005/b/index.xhtml";
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
+                    //location.href = "../../../qmp/005/b/index.xhtml";
+                });
+            } else {
+                //location.href = "../../../qmp/005/b/index.xhtml";
+            }
         }
 
         btn003Click(item, event): void {
-
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
+                    //location.href = "../../../qmp/005/b/index.xhtml";
+                });
+            } else {
+                //location.href = "../../../qmp/005/b/index.xhtml";
+            }
         }
 
         btn004Click(item, event): void {
-
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
+                    //location.href = "../../../qmp/005/b/index.xhtml";
+                });
+            } else {
+                //location.href = "../../../qmp/005/b/index.xhtml";
+            }
         }
 
         btn005Click(item, event): void {
-
+            let self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。よろしいですか。?").ifYes(function() {
+                    //location.href = "../../../qmp/005/b/index.xhtml";
+                });
+            } else {
+                //location.href = "../../../qmp/005/b/index.xhtml";
+            }
         }
     }
 
+    interface ITableRowItem {
+        index: number;
+        label: string;
+        dispSet: boolean;
+        sel001Data: Array<common.SelectItem>;
+        sel002Data: Array<common.SelectItem>;
+        sel003: boolean;
+        sel004Data: Array<common.SelectItem>;
+        sel005Data: Array<common.SelectItem>;
+    }
+
     class TableRowItem {
-        parent: ViewModel;
-        index: KnockoutObservable<number>;
-        label: KnockoutObservable<string>;
-        sel001: KnockoutObservable<number>;
-        sel002: KnockoutObservable<number>;
-        sel003: KnockoutObservable<boolean>;
-        sel004: KnockoutObservable<number>;
-        sel005: KnockoutObservable<number>;
+        dispSet: boolean = false;
+        showDialog: KnockoutObservable<boolean> = ko.observable(false);
+        index: KnockoutObservable<number> = ko.observable(0);
+        label: KnockoutObservable<string> = ko.observable('');
+        sel001: KnockoutObservable<number> = ko.observable(0);
+        sel002: KnockoutObservable<number> = ko.observable(0);
+        sel003: KnockoutObservable<boolean> = ko.observable(false);
+        sel004: KnockoutObservable<number> = ko.observable(0);
+        sel005: KnockoutObservable<number> = ko.observable(0);
 
-        sel001Data: KnockoutObservableArray<SelectItem>;
-        sel002Data: KnockoutObservableArray<SelectItem>;
-        sel004Data: KnockoutObservableArray<SelectItem>;
-        sel005Data: KnockoutObservableArray<SelectItem>;
+        sel001Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
+        sel002Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
+        sel004Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
+        sel005Data: KnockoutObservableArray<common.SelectItem> = ko.observableArray([]);
 
-        constructor(index: number, label: string, sel001: Array<SelectItem>, sel002: Array<SelectItem>, sel003: boolean, sel004: Array<SelectItem>, sel005: Array<SelectItem>) {
-            this.index = ko.observable(index);
-            this.label = ko.observable(label);
+        constructor(param: ITableRowItem) {
+            let self = this;
+            self.index(param.index);
+            self.label(param.label);
 
-            this.sel001Data = ko.observableArray(sel001);
-            if (sel001[0])
-                this.sel001 = ko.observable(sel001[0].index);
+            self.dispSet = param.dispSet;
 
-            this.sel002Data = ko.observableArray(sel002);
-            if (sel002[0])
-                this.sel002 = ko.observable(sel002[0].index);
+            self.sel001Data(param.sel001Data);
+            if (param.sel001Data[0])
+                self.sel001(param.sel001Data[0].index);
 
-            this.sel003 = ko.observable(sel003);
+            self.sel002Data(param.sel002Data);
+            if (param.sel002Data[0])
+                self.sel002(param.sel002Data[0].index);
 
-            this.sel004Data = ko.observableArray(sel004);
-            if (sel004[0])
-                this.sel004 = ko.observable(sel004[0].index);
+            self.sel003(param.sel003);
 
-            this.sel005Data = ko.observableArray(sel005);
-            if (sel005[0])
-                this.sel005 = ko.observable(sel005[0].index);
+            self.sel004Data(param.sel004Data);
+            if (param.sel004Data[0])
+                self.sel004(param.sel004Data[0].index);
+
+            self.sel005Data(param.sel005Data);
+            if (param.sel005Data[0])
+                self.sel005(param.sel005Data[0].index);
+
+            self.sel001.subscribe(function(v) {
+                if (v) {
+                    let selected = _.find(self.sel002Data(), function(item) { return item.index == self.sel002(); });
+                    if (selected) {
+                        self.sel002(parseInt(v + '' + selected.value));
+                    }
+                }
+            });
         }
 
         enable(): boolean {
@@ -135,28 +259,62 @@ module qmm005.a {
 
         showModalDialogB(item, event): void {
             let self = this;
+            self.showDialog(true);
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: 1173, height: 645, title: '給与処理月を翌月へ更新  ' })
-                .onClosed(function() { self.parent.start(); });
+            console.log(window.innerWidth);
+            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: window["large"] ? 1025 : 1035, height: window["large"] ? 755 : 620, title: '支払日の設定', dialogClass: "no-close" })
+                .onClosed(function() {
+                    self.showDialog(false);
+                    __viewContext["viewModel"].start();
+                });
         }
 
         showModalDialogC(item, event): void {
             let self = this;
+            self.showDialog(true);
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 515, title: '給与処理月を翌月へ更新  ' })
-                .onClosed(function() { self.parent.start(); });
+            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 350, title: '処理区分の追加', dialogClass: "no-close" })
+                .onClosed(function() {
+                    self.showDialog(false);
+                    __viewContext["viewModel"].start();
+                });
         }
 
         showModalDialogD(item, event): void {
             let self = this;
+            self.showDialog(true);
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 515, title: '給与処理月を翌月へ更新  ' })
-                .onClosed(function() { self.parent.start(); });
+            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 370, title: '処理区分の編集', dialogClass: "no-close" })
+                .onClosed(function() {
+                    self.showDialog(false);
+                    __viewContext["viewModel"].start();
+                });
         }
     }
 
-    class SelectItem {
-        constructor(public index: number, public label: string) {
-        }
+    interface PaydayDto {
+        companyCode: string;
+        processingNo: number;
+        payBonusAtr: number;
+        processingYm: number;
+        sparePayAtr: number;
+        payDate: string;
+        stdDate: string;
+        accountingClosing: string;
+        socialInsLevyMon: number;
+        socialInsStdDate: string;
+        incomeTaxStdDate: string;
+        neededWorkDay: number;
+        empInsStdDate: string;
+        stmtOutputMon: number;
+    }
+
+    interface PaydayProcessingDto {
+        processingNo: number,
+        processingName: string,
+        dispSet: number,
+        currentProcessingYm: number,
+        bonusAtr: number,
+        bcurrentProcessingYm: number
     }
 }
