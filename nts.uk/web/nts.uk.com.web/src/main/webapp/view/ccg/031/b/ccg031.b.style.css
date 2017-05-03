@@ -8,4 +8,10 @@
 .part-container .col-2 .caret-right:after {color:#E0F59E; border-width: 40px 25px; margin-top:25px;}
 .part-container .col-3 {width:270px;}
 
+.label-lg
+.label-lg > * {font-size: 1.2rem;}
+.label-row {margin-left: 10px;}
+.label-column {margin-left: 15px;}
 .add-widget-label {margin-bottom: 15px;}
+
+.toppage-part-list-placeholder {height:350px; min-width:100%;}

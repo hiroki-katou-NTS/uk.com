@@ -38,9 +38,9 @@
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
 				<div class="label-area">
-					<label>選択位置：</label>
-					<label><span>上から</span><span data-bind="text: positionRow">1</span><span>マス目</span></label>
-					<label><span>左から</span><span data-bind="text: positionColumn">1</span><span>マス目</span></label>
+					<label class="label-lg">選択位置：</label>
+					<label class="label-lg label-row"><span>上から</span><span data-bind="text: positionRow">1</span><span>マス目</span></label>
+					<label class="label-lg label-column"><span>左から</span><span data-bind="text: positionColumn">1</span><span>マス目</span></label>
 				</div>
 				<div class="part-area">
 					<div id="combo-box" class="animated-background" data-bind="ntsComboBox: {
@@ -54,7 +54,7 @@
 						<label class="label add-widget-label">追加したいダッシュボード…</label>
 						<div class="cf">
 							<div class="col-1 pull-left">
-								<div class="animated-background" style="height:350px; width:100%;">
+								<div class="toppage-part-list-placeholder placeholder">
 									<table id="toppage-part-list" data-bind="ntsGridList: {								
 										height: '100%',
 										width: '100%',
@@ -90,7 +90,7 @@
 			</div>
 			<div id="functions-area">
 				<button class="btn x-large btn-register proceed">決定</button>
-				<button id="btn btn-close">キャンセル</button>
+				<button class="btn btn-close" data-bind="click: closeDialog">キャンセル</button>
 			</div>
 		</ui:define>
 	</ui:composition>

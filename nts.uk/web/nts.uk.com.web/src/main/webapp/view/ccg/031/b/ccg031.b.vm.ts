@@ -7,6 +7,7 @@ module ccg031.b.viewmodel {
         listPartType: KnockoutObservableArray<any>;
         selectedPartType: KnockoutObservable<any>;
         //TopPage Part
+        allPart: KnockoutObservableArray<any>;
         listPart: KnockoutObservableArray<any>;
         selectedPart: KnockoutObservable<any>;
         listPartColumn: any;
@@ -16,20 +17,24 @@ module ccg031.b.viewmodel {
         url: KnockoutObservable<string>;
 
         constructor() {
-            this.positionRow = ko.observable(null);
-            this.positionColumn = ko.observable(null);
-            this.listPartType = ko.observableArray([]);
-            this.selectedPartType = ko.observable(null);
-            this.listPart = ko.observableArray([]);
-            this.selectedPart = ko.observable(null);
-            this.listPartColumn = [
+            var self = this;
+            self.positionRow = ko.observable(null);
+            self.positionColumn = ko.observable(null);
+            self.listPartType = ko.observableArray([]);
+            self.selectedPartType = ko.observable(null);
+            console.log(self.selectedPartType());
+            //self.selectedPartType.subscribe((value) => { self.filterPartType(value); });
+            self.allPart = ko.observableArray([]);
+            self.listPart = ko.observableArray([]);
+            self.selectedPart = ko.observable(null);
+            self.listPartColumn = [
                 { headerText: "ID", key: "topPagePartID", dataType: "string", hidden: true },
                 { headerText: "コード", key: "code", dataType: "string" },
                 { headerText: "名称", key: "name", dataType: "string" },
             ];
-            this.urlWidth = ko.observable(null);
-            this.urlHeight = ko.observable(null);
-            this.url = ko.observable(null);
+            self.urlWidth = ko.observable(null);
+            self.urlHeight = ko.observable(null);
+            self.url = ko.observable(null);
         }
 
         /** Start Page */
@@ -43,13 +48,29 @@ module ccg031.b.viewmodel {
             service.findAll().done((data: any) => {
                 console.log(data);
                 self.listPartType(data.listTopPagePartType);
-                console.log(self.listPartType());
+                self.allPart(data.listTopPagePart);
+                self.listPart(data.listTopPagePart);
+                //self.selectedPartType(0);
                 dfd.resolve();
             }).fail((res) => {
                 dfd.fail();
             });
             return dfd.promise();
         }
+
+        /** Close Dialog */
+        filterPartType(partType: number): void {
+            var listPart = _.filter(this.allPart(), ['type', partType]);
+            this.listPart(listPart);
+            console.log(this.listPart());
+        }
+
+        /** Close Dialog */
+        closeDialog(): void {
+            this.selectedPartType(0);
+            //nts.uk.ui.windows.close();
+        }
+
     }
 
     /** TopPage Part */
