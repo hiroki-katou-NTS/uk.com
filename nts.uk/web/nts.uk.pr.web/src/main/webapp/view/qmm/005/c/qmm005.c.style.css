@@ -36,7 +36,15 @@
 }
 
 #C_LBL_018 {
-    padding: 0 0 10px 245px;
+	padding: 0 0 10px 245px;
+}
+
+#C_LBL_007, #C_LBL_011, #C_LBL_014, #C_LBL_017 {
+	padding-left: 10px;
+}
+
+#C_LBL_022, #C_LBL_026 {
+	padding-right: 10px;
 }
 
 #C_LBL_023, #C_LBL_024 {

@@ -11,7 +11,7 @@ module qet001.a.viewmodel {
         
         constructor() {
             this.targetYear = ko.observable(2016);
-            this.isAggreatePreliminaryMonth = ko.observable(true);
+            this.isAggreatePreliminaryMonth = ko.observable(false);
             this.layoutSelected = ko.observable(LayoutOutput.ONE_PAGE);
             this.isPageBreakIndicator = ko.observable(false);
             this.outputTypeSelected = ko.observable(OutputType.MASTER_ITEMS);
@@ -19,7 +19,7 @@ module qet001.a.viewmodel {
             this.outputSettingSelectedCode = ko.observable('');
             var self = this;
             self.japanTargetYear = ko.computed(function() {
-                return nts.uk.time.yearInJapanEmpire(self.targetYear()).toString();
+                return nts.uk.time.yearInJapanEmpire(self.targetYear().toString()).toString();
             })
         }
         
@@ -55,7 +55,7 @@ module qet001.a.viewmodel {
             nts.uk.ui.windows.setShared('selectedCode', this.outputSettingSelectedCode(), true);
             nts.uk.ui.windows.setShared('outputSettings', this.outputSettings(), true);
             var self = this;
-            nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" }).onClosed(function() {
+            nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定",  dialogClass: 'no-close' }).onClosed(function() {
                 if (nts.uk.ui.windows.getShared('isHasUpdate')) {
                     // Reload output setting list.
                     self.loadAllOutputSetting();
@@ -67,7 +67,7 @@ module qet001.a.viewmodel {
          * Open Aggregate item dialog.
          */
         public goToAggregateItemPage() {
-            nts.uk.ui.windows.sub.modeless("/view/qet/001/i/index.xhtml", { title: "明細書項目の集約設定" })
+            nts.uk.ui.windows.sub.modal("/view/qet/001/i/index.xhtml", { title: "明細書項目の集約設定", dialogClass: 'no-close' })
         }
         
         /**

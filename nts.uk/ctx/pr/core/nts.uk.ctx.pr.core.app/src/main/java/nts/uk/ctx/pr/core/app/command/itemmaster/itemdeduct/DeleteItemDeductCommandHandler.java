@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeductRespository;
 import nts.uk.shr.com.context.AppContexts;
+
 /**
  * @author sonnlb
  *
@@ -27,8 +28,8 @@ public class DeleteItemDeductCommandHandler extends CommandHandler<DeleteItemDed
 		String companyCode = AppContexts.user().companyCode();
 		val itemCode = context.getCommand().getItemCode();
 		if (!this.itemDeductRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
-		this.itemDeductRespository.delete( context.getCommand().getItemCode());
+			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
+		this.itemDeductRespository.delete(companyCode, context.getCommand().getItemCode());
 
 	}
 

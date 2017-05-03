@@ -5,6 +5,9 @@ module nts.uk.pr.view.qpp007.j {
     import SalaryItemDto = service.model.SalaryItemDto;
     import TaxDivision = nts.uk.pr.view.qpp007.c.viewmodel.TaxDivision;
 
+    const NUMBER_OF_ITEM = 10;
+    const AGGREGATE_CODE_LENGTH = 3;
+
     export module viewmodel {
 
         export class ScreenModel {
@@ -21,18 +24,17 @@ module nts.uk.pr.view.qpp007.j {
                     { id: TaxDivision.PAYMENT, title: '支給集計', content: '#tab-payment', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: TaxDivision.DEDUCTION, title: '控除集計', content: '#tab-deduction', enable: ko.observable(true), visible: ko.observable(true) },
                 ]);
-                self.aggregateItemTab = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
-                    { id: '001', title: '集計項目1', content: '#aggregate1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '002', title: '集計項目2', content: '#aggregate2', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '003', title: '集計項目3', content: '#aggregate3', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '004', title: '集計項目4', content: '#aggregate4', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '005', title: '集計項目5', content: '#aggregate5', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '006', title: '集計項目6', content: '#aggregate6', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '007', title: '集計項目7', content: '#aggregate7', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '008', title: '集計項目8', content: '#aggregate8', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '009', title: '集計項目9', content: '#aggregate9', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '010', title: '集計項目10', content: '#aggregate10', enable: ko.observable(true), visible: ko.observable(true) }
-                ]);
+                self.aggregateItemTab = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([]);
+                for (let i = 1; i <= NUMBER_OF_ITEM; i++) {
+                    let item: nts.uk.ui.NtsTabPanelModel = {
+                        id: String('000' + i).slice(-AGGREGATE_CODE_LENGTH),
+                        title: '集計項目' + i,
+                        content: '#aggregate' + i,
+                        enable: ko.observable(true),
+                        visible: ko.observable(true)
+                    };
+                    self.aggregateItemTab.push(item);
+                };
 
                 self.selectedDivision = ko.observable(TaxDivision.PAYMENT);
                 self.selectedAggregateItem = ko.observable('001');
@@ -48,6 +50,7 @@ module nts.uk.pr.view.qpp007.j {
                     self.onShowDataChange(selectedDivision, self.selectedAggregateItem());
                 });
             }
+
             /**
              * Start page.
              */
@@ -87,24 +90,28 @@ module nts.uk.pr.view.qpp007.j {
                 var dfd = $.Deferred<any>();
                 service.findSalaryAggregateItem(salaryAggregateItemInDto).done(data => {
                     self.salaryAggregateItemModel().convertDtoToData(data);
-                    var fullItemCodes: SalaryItemDto[];
-                    fullItemCodes = [];
-                    for (var i = 1; i <= 20; i++) {
-                        var salaryItemDto: SalaryItemDto = new SalaryItemDto();
-                        salaryItemDto.salaryItemCode = '' + i;
-                        salaryItemDto.salaryItemName = '基本給 ' + i;
-                        fullItemCodes.push(salaryItemDto);
-                    }
-                    self.salaryAggregateItemModel().setFullItemCode(fullItemCodes);
-                    dfd.resolve(self);
+
+                    service.findAllMasterItem().done(masterData => {
+                        var dataMasterModel: SalaryItemDto[];
+                        dataMasterModel = [];
+                        for (var item of masterData) {
+                            if (item.category == self.selectedDivision()) {
+                                dataMasterModel.push(item);
+                            }
+                        }
+                        self.salaryAggregateItemModel().setFullItemCode(dataMasterModel);
+                        dfd.resolve(self);
+                    });
                 }).fail(function(error: any) {
-                    
+
                 });
                 return dfd.promise();
             }
+
             public closeDialogBtnClicked() {
                 nts.uk.ui.windows.close();
             }
+
             private saveSalaryAggregateItem() {
                 $('#inpDisplayName').ntsEditor('validate');
                 if (!nts.uk.ui._viewModel.errors.isEmpty()) {
@@ -130,10 +137,9 @@ module nts.uk.pr.view.qpp007.j {
                     self.salaryAggregateItemModel().salaryAggregateItemName();
                 salaryAggregateItemSaveDto.subItemCodes = [];
                 for (var itemModel of self.salaryAggregateItemModel().subItemCodes()) {
-                    salaryAggregateItemSaveDto.subItemCodes.push(itemModel);
+                    salaryAggregateItemSaveDto.subItemCodes.push(itemModel.toDto());
                 }
                 salaryAggregateItemSaveDto.taxDivision = taxDivision;
-                salaryAggregateItemSaveDto.categoryCode = self.selectedAggregateItem();
 
                 service.saveSalaryAggregateItem(salaryAggregateItemSaveDto).done(function() {
                     //reload
@@ -144,6 +150,7 @@ module nts.uk.pr.view.qpp007.j {
             }
 
         }
+
         export class SalaryItemModel {
 
             salaryItemCode: string;
@@ -151,8 +158,16 @@ module nts.uk.pr.view.qpp007.j {
 
             //convert dto find => model
             convertDtoToData(salaryItemDto: SalaryItemDto) {
-                this.salaryItemCode = salaryItemDto.salaryItemCode;
-                this.salaryItemName = salaryItemDto.salaryItemName;
+                this.salaryItemCode = salaryItemDto.code;
+                this.salaryItemName = salaryItemDto.name;
+            }
+
+            toDto(): SalaryItemDto {
+                var dto: SalaryItemDto;
+                dto = new SalaryItemDto();
+                dto.code = this.salaryItemCode;
+                dto.name = this.salaryItemName;
+                return dto;
             }
         }
         export class SalaryAggregateItemModel {
@@ -205,7 +220,7 @@ module nts.uk.pr.view.qpp007.j {
                         var check: number;
                         check = 1;
                         for (var itemSub of this.subItemCodes()) {
-                            if (itemSub.salaryItemCode == item.salaryItemCode) {
+                            if (itemSub.salaryItemCode == item.code) {
                                 check = 0;
                                 break;
                             }

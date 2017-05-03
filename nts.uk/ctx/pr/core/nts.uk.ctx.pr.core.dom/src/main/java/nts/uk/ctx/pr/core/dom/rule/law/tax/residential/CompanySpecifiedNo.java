@@ -7,6 +7,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(15)
+/*@StringCharType(CharType.ALPHABET)*/
 public class CompanySpecifiedNo extends StringPrimitiveValue<CompanySpecifiedNo> {
 /**
  * contructors

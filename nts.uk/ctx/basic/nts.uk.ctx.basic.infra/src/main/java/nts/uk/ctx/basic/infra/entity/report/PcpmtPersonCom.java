@@ -5,10 +5,10 @@
 package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,6 +17,8 @@ import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class PcpmtPersonCom.
@@ -37,7 +39,8 @@ public class PcpmtPersonCom implements Serializable {
 	/** The ins date. */
 	@Column(name = "INS_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate insDate;
 
 	/** The ins ccd. */
 	@Column(name = "INS_CCD")
@@ -54,7 +57,8 @@ public class PcpmtPersonCom implements Serializable {
 	/** The upd date. */
 	@Column(name = "UPD_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate updDate;
 
 	/** The upd ccd. */
 	@Column(name = "UPD_CCD")
@@ -86,23 +90,27 @@ public class PcpmtPersonCom implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "STR_D")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date strD;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate strD;
 
 	/** The end D. */
 	@Column(name = "END_D")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date endD;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate endD;
 
 	/** The exp D. */
 	@Basic(optional = false)
 	@Column(name = "EXP_D")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date expD;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate expD;
 
 	/** The adopt date. */
 	@Column(name = "ADOPT_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date adoptDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate adoptDate;
 
 	/** The com cellphone. */
 	@Column(name = "COM_CELLPHONE")
@@ -136,7 +144,8 @@ public class PcpmtPersonCom implements Serializable {
 	/** The retire pay str. */
 	@Column(name = "RETIRE_PAY_STR")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date retirePayStr;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	private GeneralDate retirePayStr;
 
 	/** The regular com. */
 	@Basic(optional = false)

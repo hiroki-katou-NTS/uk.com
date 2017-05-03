@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 
 import java.util.List;
@@ -18,22 +22,21 @@ public interface PensionAvgearnRepository {
 	void update(List<PensionAvgearn> pensionAvgearns, String ccd, String officeCd);
 
 	/**
-	 * Removes the.
-	 *
-	 * @param histId the hist id
-	 * @param ccd the ccd
-	 * @param officeCd the office cd
-	 * @param pensionGrade the pension grade
-	 */
-	void remove(String histId, String ccd, String officeCd, Integer pensionGrade);
-
-	/**
 	 * Find.
 	 *
 	 * @param historyId the history id
 	 * @return the list
 	 */
-	List<PensionAvgearn> find(String historyId);
+	List<PensionAvgearn> findById(String historyId);
+
+	/**
+	 * Findby office code.
+	 *
+	 * @param companyCode the company code
+	 * @param officeCodes the office codes
+	 * @return the list
+	 */
+	List<PensionAvgearn> findbyOfficeCodes(String companyCode, List<String> officeCodes);
 
 	/**
 	 * Find.

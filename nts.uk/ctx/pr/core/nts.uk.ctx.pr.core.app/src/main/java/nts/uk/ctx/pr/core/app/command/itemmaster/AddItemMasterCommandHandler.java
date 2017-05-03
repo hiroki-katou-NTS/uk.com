@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
@@ -36,52 +37,96 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 	private ItemAttendRespository itemAttendRespository;
 
 	protected void handle(CommandHandlerContext<AddItemMasterCommand> context) {
+
 		String companyCode = AppContexts.user().companyCode();
-		int CategoryAtr = context.getCommand().getCategoryAtr();
+
+		int categoryAtr = context.getCommand().getCategoryAtr();
+
 		ItemMaster itemMaster = context.getCommand().toDomain();
+
 		// validate
 		itemMaster.validate();
+		// because add new from client item Code is not alphalnumberic
+		itemMaster.validateAddNew();
+
 		String itemCode = itemMaster.getItemCode().v();
-		if (this.itemMasterRepository.find(companyCode, CategoryAtr, itemCode).isPresent())
-			throw new BusinessException(" 明細書名が入力されていません。");
+
+		if (this.itemMasterRepository.find(companyCode, categoryAtr, itemCode).isPresent()) {
+			throw new BusinessException(new RawErrorMessage("入力したコードは既に存在しています。\r\nを確認してください。")); // ER005
+		}
+
 		itemMasterRepository.add(itemMaster);
+
 		// add sub item after add ItemMaster
-		switch (CategoryAtr) {
+		switch (categoryAtr) {
+
 		case 0:
+
 			// if item Category 支給
-			addItemSalary(context);
+			addItemSalary(companyCode, context);
 			break;
+
 		case 1:
+
 			// 控除
-			addItemDeduct(context);
+			addItemDeduct(companyCode, context);
 			break;
+
 		case 2:
+
 			// 勤怠
 			addItemAttend(companyCode, context);
 			break;
+
 		}
 
 	}
 
+	// add new Item Attend of this Item Master
 	private void addItemAttend(String companyCode, CommandHandlerContext<AddItemMasterCommand> context) {
+
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
+
 		context.getCommand().getItemAttend().setItemCode(itemCode);
+
 		// use interface for add sub item
+		if (this.itemAttendRespository.find(companyCode, itemCode).isPresent()) {
+			throw new BusinessException(new RawErrorMessage("入力したコードは既に存在しています。\r\nを確認してください。")); // ER005
+		}
+
 		this.itemAttendRespository.add(companyCode, context.getCommand().getItemAttend().toDomain());
 
 	}
 
-	private void addItemDeduct(CommandHandlerContext<AddItemMasterCommand> context) {
+	// add new Item Deduct of this Item Master
+	private void addItemDeduct(String companyCode, CommandHandlerContext<AddItemMasterCommand> context) {
+
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
+
 		context.getCommand().getItemDeduct().setItemCode(itemCode);
-		this.itemDeductRespository.add(context.getCommand().getItemDeduct().toDomain());
+		// use interface for add sub item
+
+		if (this.itemDeductRespository.find(companyCode, itemCode).isPresent()) {
+			throw new BusinessException(new RawErrorMessage("入力したコードは既に存在しています。\r\nを確認してください。")); // ER005
+		}
+
+		this.itemDeductRespository.add(companyCode, context.getCommand().getItemDeduct().toDomain());
 
 	}
 
-	private void addItemSalary(CommandHandlerContext<AddItemMasterCommand> context) {
+	// add new Item Salary of this Item Master
+	private void addItemSalary(String companyCode, CommandHandlerContext<AddItemMasterCommand> context) {
+
 		String itemCode = context.getCommand().toDomain().getItemCode().v();
+
 		context.getCommand().getItemSalary().setItemCode(itemCode);
-		this.itemSalaryRespository.add(context.getCommand().getItemSalary().toDomain());
+
+		// use interface for add sub item
+		if (this.itemSalaryRespository.find(companyCode, itemCode).isPresent()) {
+			throw new BusinessException(new RawErrorMessage("入力したコードは既に存在しています。\r\nを確認してください。")); // ER005
+		}
+
+		this.itemSalaryRespository.add(companyCode, context.getCommand().getItemSalary().toDomain());
 
 	}
 

@@ -18,6 +18,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommand;
@@ -128,46 +130,52 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		Optional<WtHistory> optWageTableHistory = this.wtHistoryRepo.findHistoryByUuid(id);
 
 		// Check exist.
-		if (optWageTableHistory.isPresent()) {
-			WtHistory wtHistory = optWageTableHistory.get();
-
-			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(wtHistory.getCompanyCode(),
-					wtHistory.getWageTableCode().v());
-
-			// Check exist.
-			if (optWageTable.isPresent()) {
-				WtHead wageTableHead = optWageTable.get();
-				WtHeadDto headDto = new WtHeadDto();
-				headDto.fromDomain(wageTableHead);
-
-				// Set demension name
-				headDto.getElements().stream().forEach(item -> {
-					item.setDemensionName(this.wtElementService.getDemensionName(companyCode,
-							item.getReferenceCode(), ElementType.valueOf(item.getType())));
-				});
-
-				model.setHead(headDto);
-			}
-
-			// Create map demension no - name
-			Map<Integer, String> mapDemensionNames = model.getHead().getElements().stream().collect(
-					Collectors.toMap(WtElementDto::getDemensionNo, WtElementDto::getDemensionName));
-
-			WtHistoryDto historyDto = new WtHistoryDto();
-
-			// Get current setting with exist items.
-			List<ElementSetting> currentSettings = elementItemFactory.generate(companyCode,
-					wtHistory.getHistoryId(), wtHistory.getElementSettings());
-
-			historyDto.fromDomain(wtHistory, currentSettings);
-
-			// Set demension name
-			historyDto.getElements().stream().forEach(item -> {
-				item.setDemensionName(mapDemensionNames.get(item.getDemensionNo()));
-			});
-
-			model.setHistory(historyDto);
+		if (!optWageTableHistory.isPresent()) {
+			// TODO: Find msg id
+			throw new BusinessException(new RawErrorMessage("History is not exist."));
 		}
+
+		WtHistory wtHistory = optWageTableHistory.get();
+
+		Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(wtHistory.getCompanyCode(),
+				wtHistory.getWageTableCode().v());
+
+		// Check exist.
+		if (!optWageTable.isPresent()) {
+			// TODO: Find msg id
+			throw new BusinessException(new RawErrorMessage("History is not exist."));
+		}
+
+		WtHead wageTableHead = optWageTable.get();
+		WtHeadDto headDto = new WtHeadDto();
+		headDto.fromDomain(wageTableHead);
+
+		// Set demension name
+		headDto.getElements().stream().forEach(item -> {
+			item.setDemensionName(this.wtElementService.getDemensionName(companyCode,
+					item.getReferenceCode(), ElementType.valueOf(item.getType())));
+		});
+
+		model.setHead(headDto);
+
+		// Create map demension no - name
+		Map<Integer, String> mapDemensionNames = model.getHead().getElements().stream().collect(
+				Collectors.toMap(WtElementDto::getDemensionNo, WtElementDto::getDemensionName));
+
+		WtHistoryDto historyDto = new WtHistoryDto();
+
+		// Get current setting with exist items.
+		List<ElementSetting> currentSettings = elementItemFactory.generate(companyCode,
+				wtHistory.getHistoryId(), wtHistory.getElementSettings());
+
+		historyDto.fromDomain(wtHistory, currentSettings);
+
+		// Set demension name
+		historyDto.getElements().stream().forEach(item -> {
+			item.setDemensionName(mapDemensionNames.get(item.getDemensionNo()));
+		});
+
+		model.setHistory(historyDto);
 
 		// Return
 		return model;
@@ -342,6 +350,13 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 			// Put demension name
 			Optional<WtElement> optWtElement = this.wtElementRepo
 					.findByHistoryId(input.getHistoryId());
+
+			// Check exist
+			if (!optWtElement.isPresent()) {
+				// TODO: Pls add msg id
+				throw new BusinessException(new RawErrorMessage("Element is not exist."));
+			}
+
 			elementSettingDto.setDemensionName(this.wtElementService.getDemensionName(companyCode,
 					optWtElement.get().getReferenceCode(), item.getType()));
 
@@ -400,7 +415,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		items.add(new DemensionItemDto(ElementType.CERTIFICATION));
 
 		/** The working day. */
-		items.add(new DemensionItemDto(ElementType.WORKING_DAY));
+		items.add(new DemensionItemDto(ElementType.WITHOUT_WORKING_DAY));
 
 		/** The come late. */
 		items.add(new DemensionItemDto(ElementType.COME_LATE));
