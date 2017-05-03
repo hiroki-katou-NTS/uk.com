@@ -24,6 +24,7 @@ module nts.uk.com.view.ccg015.a {
                     service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
                         self.loadTopPageItemDetail(data);
                     });
+                    self.isNewMode(false);
                 });
                 self.languageListOption = ko.observableArray([
                     new ItemCbbModel("0", "日本語"),
@@ -36,6 +37,18 @@ module nts.uk.com.view.ccg015.a {
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                self.loadTopPageList().done(function() {
+                    //TODO 
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            private loadTopPageList() : JQueryPromise<void>
+            {
+                var self = this;
+                var dfd = $.Deferred<void>();
+                self.listTopPage([]);
                 service.loadTopPage().done(function(data: Array<TopPageItemDto>) {
                     data.forEach(function(item, index) {
                         self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
@@ -53,28 +66,31 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 self.topPageModel().topPageCode(data.topPageCode);
                 self.topPageModel().topPageName(data.topPageName);
-                if (data.placements) {
-                    data.placements.forEach(function(item, index) {
-                        var placementModel = new PlacementModel();
-                        var topPagePartModel = new TopPagePartModel();
-                        //set value for top page part
-                        topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
-                        topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
-                        topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
-                        topPagePartModel.width(item.topPagePart.width);
-                        topPagePartModel.height(item.topPagePart.height);
-
-                        placementModel.row(item.row);
-                        placementModel.column(item.column);
-                        placementModel.topPagePart(topPagePartModel);
-
-                        self.topPageModel().placement().push(placementModel);
-                    });
-                }
+                //TODO su dung service de lay layout rieng
+//                if (data.placements) {
+//                    data.placements.forEach(function(item, index) {
+//                        var placementModel = new PlacementModel();
+//                        var topPagePartModel = new TopPagePartModel();
+//                        //set value for top page part
+//                        topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
+//                        topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
+//                        topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
+//                        topPagePartModel.width(item.topPagePart.width);
+//                        topPagePartModel.height(item.topPagePart.height);
+//
+//                        placementModel.row(item.row);
+//                        placementModel.column(item.column);
+//                        placementModel.topPagePart(topPagePartModel);
+//
+//                        self.topPageModel().placement().push(placementModel);
+//                    });
+//                }
             }
             private collectData(): TopPageDto {
-                //TODO collect data from screen
-                return null;
+                var self = this;
+                //mock data
+                var data: TopPageDto = { topPageCode: self.topPageModel().topPageCode(), topPageName: self.topPageModel().topPageName(), languageNumber: 0, layoutId: "luid" };
+                return data;
             }
             private collectDataForCreateNew(): TopPageDto {
                 return null;
@@ -84,7 +100,7 @@ module nts.uk.com.view.ccg015.a {
                 //check update or create
                 if (self.isNewMode()) {
                     service.registerTopPage(self.collectData()).done(function() {
-                        //register success
+                        //register success                     
                     });
                 }
                 else {
@@ -92,6 +108,8 @@ module nts.uk.com.view.ccg015.a {
                         //update success
                     });
                 }
+                self.loadTopPageList();
+                //TODO focus create item   
             }
             private openMyPageSettingDialog() {
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
@@ -120,6 +138,7 @@ module nts.uk.com.view.ccg015.a {
             private newTopPage() {
                 var self = this;
                 self.topPageModel(new TopPageModel());
+                self.isNewMode(true);
             }
             private removeTopPage() {
                 var self = this;

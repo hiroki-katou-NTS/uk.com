@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +17,8 @@ import nts.uk.ctx.sys.portal.infra.entity.toppage.CcgmtTopPagePK;
 @Stateless
 public class JpaTopPageRepository extends JpaRepository implements TopPageRepository {
 
-	private final String GET_ALL_TOP_PAGE = "SELECT t FROM CcgmtTopPage t WHERE t.CcgmtTopPagePK.cid = :companyId";
-	private final String GET_BY_CODE = "SELECT b FROM CcgmtTopPage b WHERE b.CcgmtTopPagePK.cid = :companyId AND b.CcgmtTopPagePK.topPageCode = :topPageCode";
+	private final String GET_ALL_TOP_PAGE = "SELECT t FROM CcgmtTopPage t WHERE t.ccgmtTopPagePK.cid = :companyId";
+	private final String GET_BY_CODE = "SELECT b FROM CcgmtTopPage b WHERE b.ccgmtTopPagePK.cid = :companyId AND b.ccgmtTopPagePK.topPageCode = :topPageCode";
 
 	/*
 	 * (non-Javadoc)
@@ -30,16 +29,9 @@ public class JpaTopPageRepository extends JpaRepository implements TopPageReposi
 	 */
 	@Override
 	public List<TopPage> findAll(String companyId) {
-		// Mock data
-		List<TopPage> lstTopPage = new ArrayList<TopPage>();
-		lstTopPage.add(TopPage.createFromJavaType("1", "001", "id", "no", 0));
-		lstTopPage.add(TopPage.createFromJavaType("1", "002", "id", "2", 0));
-		lstTopPage.add(TopPage.createFromJavaType("1", "003", "id", "4", 0));
-		lstTopPage.add(TopPage.createFromJavaType("1", "004", "id", "5", 0));
-		return lstTopPage;
-		// return this.queryProxy().query(GET_ALL_TOP_PAGE, CcgmtTopPage.class)
-		// .setParameter("companyId", companyId)
-		// .getList(t -> toDomain(t));
+		 return this.queryProxy().query(GET_ALL_TOP_PAGE, CcgmtTopPage.class)
+		 .setParameter("companyId", companyId)
+		 .getList(t -> toDomain(t));
 	}
 
 	/*
@@ -51,20 +43,10 @@ public class JpaTopPageRepository extends JpaRepository implements TopPageReposi
 	 */
 	@Override
 	public Optional<TopPage> findByCode(String companyId, String topPageCode) {
-		List<TopPage> lstTopPage = new ArrayList<TopPage>();
-		lstTopPage.add(TopPage.createFromJavaType("1", "001", "id", "no", 0));
-		lstTopPage.add(TopPage.createFromJavaType("1", "002", "id", "2", 0));
-		lstTopPage.add(TopPage.createFromJavaType("1", "003", "id", "4", 0));
-		lstTopPage.add(TopPage.createFromJavaType("1", "004", "id", "5", 0));
-		TopPage tp = lstTopPage.stream().filter(item -> {
-			return item.getTopPageCode().v().equals(topPageCode);
-		}).findAny().orElse(null);
-		;
-		return Optional.of(tp);
-		// return this.queryProxy().query(GET_BY_CODE, CcgmtTopPage.class)
-		// .setParameter("companyId", companyId)
-		// .setParameter("topPageCode", topPageCode)
-		// .getSingle(t -> toDomain(t));
+		 return this.queryProxy().query(GET_BY_CODE, CcgmtTopPage.class)
+		 .setParameter("companyId", companyId)
+		 .setParameter("topPageCode", topPageCode)
+		 .getSingle(t -> toDomain(t));
 	}
 
 	/*
@@ -76,7 +58,8 @@ public class JpaTopPageRepository extends JpaRepository implements TopPageReposi
 	 */
 	@Override
 	public void add(TopPage topPage) {
-		this.commandProxy().insert(toEntity(topPage));
+		CcgmtTopPage entity = toEntity(topPage);
+		this.commandProxy().insert(entity);
 	}
 
 	/*
@@ -88,7 +71,8 @@ public class JpaTopPageRepository extends JpaRepository implements TopPageReposi
 	 */
 	@Override
 	public void update(TopPage topPage) {
-		this.commandProxy().update(toEntity(topPage));
+		CcgmtTopPage entity = toEntity(topPage);
+		this.commandProxy().update(entity);
 	}
 
 	/*

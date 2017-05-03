@@ -6,8 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class CcgmtTopPagePK implements Serializable {
 	
@@ -19,7 +21,7 @@ public class CcgmtTopPagePK implements Serializable {
 	public String cid;
 
 	/** The top page code. */
-	@Column(name = "TOP_PAGE_CODE")
+	@Column(name = "TOP_PAGE_CD")
 	public String topPageCode;
 
 }

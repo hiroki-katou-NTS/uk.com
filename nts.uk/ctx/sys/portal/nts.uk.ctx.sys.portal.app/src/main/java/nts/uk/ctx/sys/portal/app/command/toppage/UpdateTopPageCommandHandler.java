@@ -9,6 +9,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class UpdateTopPageCommandHandler.
@@ -26,7 +27,8 @@ public class UpdateTopPageCommandHandler extends CommandHandler<UpdateTopPageCom
 	@Override
 	protected void handle(CommandHandlerContext<UpdateTopPageCommand> context) {
 		UpdateTopPageCommand command = context.getCommand();
-		Optional<TopPage> findTopPage = topPageRepository.findByCode(command.getCompanyId(),command.getTopPageCode());
+		String companyId = AppContexts.user().companyID();
+		Optional<TopPage> findTopPage = topPageRepository.findByCode(companyId,command.getTopPageCode());
 		//if exist top page -> update 
 		if(findTopPage.isPresent())
 		{

@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class TopPageWs.
@@ -50,7 +51,7 @@ public class TopPageWs extends WebService {
 	@POST
 	@Path("findAll")
 	public List<TopPageItemDto> findAll() {
-		String companyId = "";
+		String companyId = AppContexts.user().companyID();
 		return topPageFinder.findAll(companyId);
 	}
 
@@ -63,7 +64,7 @@ public class TopPageWs extends WebService {
 	@POST
 	@Path("topPageDetail/{topPageCode}")
 	public TopPageDto getTopPageDetail(@PathParam("topPageCode") String topPageCode) {
-		String companyId = "";
+		String companyId = AppContexts.user().companyID();
 		return topPageFinder.findByCode(companyId, topPageCode, "0");
 	}
 
@@ -95,7 +96,7 @@ public class TopPageWs extends WebService {
 	 * @param command the command
 	 */
 	@POST
-	@Path("delete")
+	@Path("remove")
 	public void deleteTopPage(DeleteTopPageCommand command) {
 		deleteTopPageCommandHandler.handle(command);
 	}

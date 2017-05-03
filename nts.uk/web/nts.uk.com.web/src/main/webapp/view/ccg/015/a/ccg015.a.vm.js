@@ -27,6 +27,7 @@ var nts;
                                         a.service.loadDetailTopPage(selectedTopPageCode).done(function (data) {
                                             self.loadTopPageItemDetail(data);
                                         });
+                                        self.isNewMode(false);
                                     });
                                     self.languageListOption = ko.observableArray([
                                         new ItemCbbModel("0", "日本語"),
@@ -38,6 +39,15 @@ var nts;
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    self.loadTopPageList().done(function () {
+                                        dfd.resolve();
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadTopPageList = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    self.listTopPage([]);
                                     a.service.loadTopPage().done(function (data) {
                                         data.forEach(function (item, index) {
                                             self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
@@ -53,24 +63,11 @@ var nts;
                                     var self = this;
                                     self.topPageModel().topPageCode(data.topPageCode);
                                     self.topPageModel().topPageName(data.topPageName);
-                                    if (data.placements) {
-                                        data.placements.forEach(function (item, index) {
-                                            var placementModel = new PlacementModel();
-                                            var topPagePartModel = new TopPagePartModel();
-                                            topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
-                                            topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
-                                            topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
-                                            topPagePartModel.width(item.topPagePart.width);
-                                            topPagePartModel.height(item.topPagePart.height);
-                                            placementModel.row(item.row);
-                                            placementModel.column(item.column);
-                                            placementModel.topPagePart(topPagePartModel);
-                                            self.topPageModel().placement().push(placementModel);
-                                        });
-                                    }
                                 };
                                 ScreenModel.prototype.collectData = function () {
-                                    return null;
+                                    var self = this;
+                                    var data = { topPageCode: self.topPageModel().topPageCode(), topPageName: self.topPageModel().topPageName(), languageNumber: 0, layoutId: "luid" };
+                                    return data;
                                 };
                                 ScreenModel.prototype.collectDataForCreateNew = function () {
                                     return null;
@@ -85,6 +82,7 @@ var nts;
                                         a.service.updateTopPage(self.collectData()).done(function () {
                                         });
                                     }
+                                    self.loadTopPageList();
                                 };
                                 ScreenModel.prototype.openMyPageSettingDialog = function () {
                                     nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
@@ -108,6 +106,7 @@ var nts;
                                 ScreenModel.prototype.newTopPage = function () {
                                     var self = this;
                                     self.topPageModel(new TopPageModel());
+                                    self.isNewMode(true);
                                 };
                                 ScreenModel.prototype.removeTopPage = function () {
                                     var self = this;
