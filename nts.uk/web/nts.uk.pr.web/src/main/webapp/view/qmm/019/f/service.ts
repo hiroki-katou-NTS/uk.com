@@ -1,6 +1,6 @@
 module qmm019.f.service {
     var paths = {
-        getItemsByCategory: "pr/proto/item/findall/bycategory/{0}",
+        getItemsByCategory: "pr/core/item/findall/category/{0}",
         getItem: "pr/proto/item/find/{categoryAtr}/{itemCode}",
         getLayoutMasterDetail: "pr/proto/layout/findlayoutdetail/{0}/{1}/{2}/{3}",
         getPersonalWages: "pr/proto/personalwage/findalls/{0}"

@@ -57,11 +57,11 @@ public class LayoutMasterCategoryFinder {
 									&& d.getCategoryAtr() == line.getCategoryAtr() && d.getItemPosColumn() == posColumn)
 							.findFirst().orElse(
 									 new LayoutMasterDetailDto(layoutCd,
-									 category.getCategoryAtr(), "itemTemp-" +String.valueOf(i),
-									 line.getAutoLineId(), i , 0, "+",
+									 category.getCategoryAtr(), "itemTemp-" + String.valueOf(i),
+									 line.getAutoLineId(), i , 0, "",
 									 0, 0, 0, 0, "", "", "", BigDecimal.ZERO,
 									 0, BigDecimal.ZERO, 0, BigDecimal.ZERO,
-									 0, BigDecimal.ZERO, 0, BigDecimal.ZERO));
+									 0, BigDecimal.ZERO, 0, BigDecimal.ZERO, "+"));
 					detail9Items.add(item);
 				}
 
