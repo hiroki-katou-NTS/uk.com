@@ -18,7 +18,7 @@ module qpp014.b.viewmodel {
             self.viewmodelg = new qpp014.g.viewmodel.ScreenModel(data);
             self.viewmodelh = new qpp014.h.viewmodel.ScreenModel(data);
             self.data = data;
-            
+
             //sparePayAtr not transfer value in screen d, so tranfer it here
             self.viewmodeld.sparePayAtr.subscribe(function(newValue) {
                 nts.uk.ui.windows.setShared("sparePayAtr", newValue, true);
@@ -43,9 +43,14 @@ module qpp014.b.viewmodel {
 
         /**
          * back to screen J
+         * AL004
          */
         backToScreenA(): void {
-            nts.uk.request.jump("/view/qpp/014/a/index.xhtml");
+            nts.uk.ui.dialog.confirm("処理を中断します。\r\n よろしいですか？").ifYes(function() {
+                nts.uk.request.jump("/view/qpp/014/a/index.xhtml");
+            }).ifNo(function() {
+                return;
+            })
         }
 
         /**

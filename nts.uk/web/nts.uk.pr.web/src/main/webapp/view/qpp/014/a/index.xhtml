@@ -17,23 +17,23 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-			</div>
+			<div id="functions-area"></div>
 			<div id="contents-area" class="cf">
-				
+
 				<div id="screenA">
 					<div id="divLine">
 						<div id="A_LBL_003" data-bind="ntsFormLabel: {required: true}">対象となる処理区分を選択</div>
 						<div id="A_SEL_001"
 							data-bind="ntsComboBox: {
-									options: a_SEL_001_items,
-									optionsValue: 'processingNo',
-									value: a_SEL_001_itemSelected,
-									editable: false,
-									enable: true,
-									columns: [
-										{ prop: 'process', length: 1 },
-									]}">
+							options: a_SEL_001_items ,
+							optionsValue: 'processingNo',
+							value: a_SEL_001_itemSelected ,
+							optionsText: 'label',
+							editable: false ,
+							enable: true ,
+							columns: [
+								{ prop: 'label', length: 15 },
+							]}">
 						</div>
 					</div>
 					<div id="divLine2">

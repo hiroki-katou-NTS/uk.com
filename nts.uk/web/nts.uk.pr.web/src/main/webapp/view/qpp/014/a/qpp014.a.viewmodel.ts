@@ -1,13 +1,13 @@
 // TreeGrid Node
 module qpp014.a.viewmodel {
     export class ScreenModel {
-        a_SEL_001_items: KnockoutObservableArray<shr.viewmodelbase.PayDayProcessing>;
-        a_SEL_001_itemSelected: KnockoutObservable<any>;
+        a_SEL_001_items: KnockoutObservableArray<PayDayProcessing>;
+        a_SEL_001_itemSelected: KnockoutObservable<number>;
 
         constructor() {
             var self = this;
             self.a_SEL_001_items = ko.observableArray([]);
-            self.a_SEL_001_itemSelected = ko.observable();
+            self.a_SEL_001_itemSelected = ko.observable(0);
         }
 
         startPage(): JQueryPromise<any> {
@@ -15,8 +15,6 @@ module qpp014.a.viewmodel {
             var dfd = $.Deferred();
             self.findAll().done(function() {
                 dfd.resolve();
-            }).fail(function(res) {
-                dfd.reject(res);
             });
             return dfd.promise();
         }
@@ -31,9 +29,12 @@ module qpp014.a.viewmodel {
             qpp014.a.service.findAll(1)
                 .done(function(data) {
                     if (data.length > 0) {
-                        self.a_SEL_001_items(data);
-                        self.a_SEL_001_itemSelected(self.a_SEL_001_items()[0]);
-                        self.a_SEL_001_itemSelected().process = ' ' + self.a_SEL_001_itemSelected().processingNo + ' : ' + self.a_SEL_001_itemSelected().processingName;
+                        _.forEach(data, function(x) {
+                            self.a_SEL_001_items().push(new PayDayProcessing(x.processingNo, x.processingName, x.dispSet, x.currentProcessingYm,
+                                x.bonusAtr, x.bcurrentProcessingYm));
+                        });
+                        self.a_SEL_001_items(_.sortBy(self.a_SEL_001_items(), 'currentProcessingYm'));
+                        self.a_SEL_001_itemSelected(self.a_SEL_001_items()[0].processingNo);
                     } else {
                         nts.uk.ui.dialog.alert("対象データがありません。");//ER010
                     }
@@ -53,6 +54,27 @@ module qpp014.a.viewmodel {
                 return x.processingNo === self.a_SEL_001_itemSelected();
             });
             nts.uk.request.jump("/view/qpp/014/b/index.xhtml", data);
+        }
+    }
+
+    export class PayDayProcessing {
+        processingNo: number;
+        processingName: string;
+        displaySet: number;
+        currentProcessingYm: number;
+        bonusAtr: number;
+        bcurrentProcessingYm: number;
+        label: string;
+
+        constructor(processingNo: number, processingName: string,
+            displaySet: number, currentProcessingYm: number, bonusAtr: number, bcurrentProcessingYm: number) {
+            this.processingNo = processingNo;
+            this.processingName = processingName;
+            this.displaySet = displaySet;
+            this.currentProcessingYm = currentProcessingYm;
+            this.bonusAtr = bonusAtr;
+            this.bcurrentProcessingYm = bcurrentProcessingYm;
+            this.label = this.processingNo + ' : ' + this.processingName;
         }
     }
 };
