@@ -39,7 +39,7 @@ public class InsertUpdatePaycompConfirmCommandHandler extends CommandHandler<Ins
 					c.getItemCode(), c.getProcessingYMEarlier(), c.getProcessingYMLater(), c.getCategoryAtr(),
 					c.getValueDifference(), c.getReasonDifference(), c.getConfirmedStatus());
 			Optional<PaycompConfirm> paycompConfirmFilter = paycompConfirmList.stream().filter(
-					p -> p.getCategoryAtr().value == c.getCategoryAtr() && p.getItemCode().v().equals(c.getItemCode()))
+					p -> p.getEmployeeCode().v().equals(c.getEmployeeCode()) && p.getCategoryAtr().value == c.getCategoryAtr() && p.getItemCode().v().equals(c.getItemCode()))
 					.findFirst();
 
 			if (paycompConfirmFilter.isPresent()) {

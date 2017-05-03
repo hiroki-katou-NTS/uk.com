@@ -1,6 +1,7 @@
 module qpp008.g.viewmodel {
     export class ScreenModel {
         detailDifferentList: Array<DetailsEmployeer>;
+        detailDifferentListKO: KnockoutObservableArray<DetailsEmployeer>;
         comparativeDateEarlier: string;
         comparativeDateLater: string;
         numberOfPeople: number;
@@ -11,9 +12,12 @@ module qpp008.g.viewmodel {
         confirmedSqueezingSwitch: KnockoutObservableArray<ItemModel>;
         selectedconfirmedCode: KnockoutObservable<number>;
 
+        detailDifferentListDirty: nts.uk.ui.DirtyChecker;
+
         constructor() {
             let self = this;
             self.detailDifferentList = new Array();
+            self.detailDifferentListKO = ko.observableArray(self.detailDifferentList);
             self.comparativeDateEarlier = "2017/02";
             self.comparativeDateLater = "2017/03";
             self.numberOfPeople = 2;
@@ -32,10 +36,11 @@ module qpp008.g.viewmodel {
                 new ItemModel(2, '確認済み'),
             ]);
             self.selectedconfirmedCode = ko.observable(0);
-            self.initIggrid(self.detailDifferentList);
+            self.initIggrid();
+            self.detailDifferentListDirty = new nts.uk.ui.DirtyChecker(self.detailDifferentListKO);
         }
 
-        initIggrid(data: Array<DetailsEmployeer>) {
+        initIggrid() {
             let self = this;
             /*iggrid*/
             let _isDataBound = false;
@@ -58,10 +63,11 @@ module qpp008.g.viewmodel {
 
             $("#grid-comparing-different").igGrid({
                 primaryKey: "selectId",
-                dataSource: data,
+                dataSource: self.detailDifferentList,
                 width: "100%",
                 autoGenerateColumns: false,
                 responseDataKey: "selectId",
+                autoCommit: true,
                 columns: [
                     { headerText: "", key: "selectId", dataType: "number", hidden: true },
                     { headerText: "社員コード", key: "employeeCode", dataType: "string", width: "10%" },
@@ -107,6 +113,15 @@ module qpp008.g.viewmodel {
                     { name: "Paging", type: "local", pageSize: 10 },
                 ]
             });
+
+            $("#grid-comparing-different").bind("iggridpagingpageindexchanged", function() {
+                $("#grid-comparing-different").igGrid({ dataSource: self.detailDifferentList });
+            });
+
+            $("#grid-comparing-different").bind("iggridpagingpagesizechanging", function() {
+                $("#grid-comparing-different").igGrid({ dataSource: self.detailDifferentList });
+            });
+
             $("#grid-comparing-different").on("change", ".reasonDifference-text", function(evt: any) {
                 let $element = $(this);
                 let selectedValue = $element.val();
@@ -132,7 +147,9 @@ module qpp008.g.viewmodel {
                     return new DetailsEmployeer(item, i);
                 });
                 self.detailDifferentList = mapDetailDiff;
-                self.initIggrid(self.detailDifferentList);
+                self.detailDifferentListKO(self.detailDifferentList);
+                self.detailDifferentListDirty.reset();
+                $("#grid-comparing-different").igGrid({ dataSource: self.detailDifferentList });
                 dfd.resolve();
             }).fail(function(error: any) {
 
@@ -167,6 +184,7 @@ module qpp008.g.viewmodel {
             });
             $("#grid-comparing-different").igGrid({ dataSource: self.detailDifferentList });
             $("#grid-comparing-different").igGrid("dataBind");
+            self.detailDifferentListKO(self.detailDifferentList);
         }
 
         unCheckedAllComfirmStatus() {
@@ -176,6 +194,7 @@ module qpp008.g.viewmodel {
             });
             $("#grid-comparing-different").igGrid({ dataSource: self.detailDifferentList });
             $("#grid-comparing-different").igGrid("dataBind");
+            self.detailDifferentListKO(self.detailDifferentList);
         }
 
         refineComparingDifferrent() {
@@ -206,10 +225,14 @@ module qpp008.g.viewmodel {
             let paycompConfirmList = _.map(self.detailDifferentList, function(item) {
                 return new PaycompConfirmModel(item, processingYMEarlier, processingYMLater);
             });
-            let insertUpdateData = new  InsetUpdatePaycompConfirmModel(paycompConfirmList, self.employeerIDSelection);
+            let insertUpdateData = new InsetUpdatePaycompConfirmModel(paycompConfirmList, self.employeerIDSelection);
             service.insertUpdatePaycompConfirm(insertUpdateData).fail(function(error: any) {
-                alert("update Error");
+               
             });
+        }
+
+        closeDialog() {
+            nts.uk.ui.windows.close();
         }
 
     }

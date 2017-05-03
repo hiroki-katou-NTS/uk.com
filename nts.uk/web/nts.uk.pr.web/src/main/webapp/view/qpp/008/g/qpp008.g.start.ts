@@ -1,7 +1,8 @@
 module qpp008.g {
     __viewContext.ready(function() {
-        var screenModel = new qpp008.g.viewmodel.ScreenModel();
+        let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
+            nts.uk.ui.confirmSave(screenModel.detailDifferentListDirty);
             __viewContext.bind(screenModel);
         });
     });

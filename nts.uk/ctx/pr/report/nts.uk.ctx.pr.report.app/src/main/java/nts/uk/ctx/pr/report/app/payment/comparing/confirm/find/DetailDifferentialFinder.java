@@ -49,9 +49,11 @@ public class DetailDifferentialFinder {
 			}
 
 			Optional<PaycompConfirm> payCompComfirmFilter = payCompComfirm.stream()
-					.filter(c -> c.getCategoryAtr().value == s.getCategoryAtr().value
-							&& s.getCompanyCode().equals(c.getItemCode().v()))
+					.filter(c -> s.getEmployeeCode().v().equals(c.getEmployeeCode().v())
+							&& s.getCategoryAtr().value == c.getCategoryAtr().value
+							&& s.getItemCode().v().equals(c.getItemCode().v()))
 					.findFirst();
+
 			if (payCompComfirmFilter.isPresent()) {
 				valueDifference = payCompComfirmFilter.get().getValueDifference().v();
 				reasonDifference = payCompComfirmFilter.get().getReasonDifference().v();
@@ -65,8 +67,9 @@ public class DetailDifferentialFinder {
 		/** start detailDifferential2 map detailDifferential1 */
 		List<DetailDifferential> detailDifferential2Map = detailDifferential2.stream().map(s -> {
 			Optional<PaycompConfirm> payCompComfirmFilter = payCompComfirm.stream()
-					.filter(c -> c.getCategoryAtr().value == s.getCategoryAtr().value
-							&& s.getCompanyCode().equals(c.getItemCode().v()))
+					.filter(c -> s.getEmployeeCode().v().equals(c.getEmployeeCode().v())
+							&& c.getCategoryAtr().value == s.getCategoryAtr().value
+							&& s.getItemCode().v().equals(c.getItemCode().v()))
 					.findFirst();
 			BigDecimal comparisonValue1 = new BigDecimal(-1);
 			int registrationStatus1 = 2;
