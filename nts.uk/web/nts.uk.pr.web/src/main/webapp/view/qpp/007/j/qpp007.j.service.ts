@@ -2,7 +2,8 @@ module nts.uk.pr.view.qpp007.j {
     export module service {
         var paths: any = {
             findSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/findSalaryAggregateItem",
-            saveSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/save"
+            saveSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/save",
+            findAllMasterItem: "ctx/pr/report/masteritem/findAll"
         };
 
         //connection server find Salary Aggregate Item
@@ -20,12 +21,20 @@ module nts.uk.pr.view.qpp007.j {
             return nts.uk.request.ajax(paths.saveSalaryAggregateItem, data);
         }
 
+        //connection server find all
+        export function findAllMasterItem(): JQueryPromise<model.SalaryItemDto[]> {
+            //call server service
+            return nts.uk.request.ajax(paths.findAllMasterItem);
+        }
+
 
         export module model {
 
             export class SalaryItemDto {
-                salaryItemCode: string;
-                salaryItemName: string;
+                code: string;
+                name: string;
+                category: string;
+                
             }
 
             export class SalaryAggregateItemFindDto {
@@ -54,8 +63,6 @@ module nts.uk.pr.view.qpp007.j {
                 /** The tax division. */
                 taxDivision: number;
 
-                /** The category code. */
-                categoryCode: string;
             }
         }
     }

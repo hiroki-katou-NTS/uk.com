@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHeader;
@@ -48,11 +49,11 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 			if (difficultyAtr == 0) {
 				this.formulaEasyHeaderRepository.add(formulaEasyHead);
 			}
-			if ((difficultyAtr == 1 || difficultyAtr == 0) && previousFormulaHistoryUpdate != null) {
+			if (previousFormulaHistoryUpdate != null) {
 				this.formulaHistoryRepository.update(previousFormulaHistoryUpdate);
 			}
 		} catch (Exception e) {
-			throw new BusinessException("OKボタンクリックで次の処理へ");
+			throw new BusinessException(new RawErrorMessage("OKボタンクリックで次の処理へ"));
 		}
 	}
 
@@ -84,12 +85,12 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 				// update history by historyId of last history, startDate = startDate input
 				if (lastFormulaHistory.isPresent()) {
 					this.formulaHistoryRepository.update(new FormulaHistory(companyCode, new FormulaCode(formulaCode),
-							lastFormulaHistory.get().getHistoryId(), new YearMonth(startDate),
+							lastFormulaHistory.get().getHistoryId(), lastFormulaHistory.get().getStartDate(),
 							new YearMonth(GeneralDate.max().year() * 100 + GeneralDate.max().month())));
 				}
 			}
 		} catch (Exception e) {
-			throw new BusinessException("OKボタンクリックで次の処理へ");
+			throw new BusinessException(new RawErrorMessage("OKボタンクリックで次の処理へ"));
 		}
 	}
 

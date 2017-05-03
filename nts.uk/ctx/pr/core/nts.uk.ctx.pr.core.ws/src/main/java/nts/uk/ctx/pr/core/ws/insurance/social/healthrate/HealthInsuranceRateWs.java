@@ -14,10 +14,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuranceCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuranceCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuRateCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuRateCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuRateCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuRateCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceOfficeItemDto;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateDto;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateFinder;
@@ -47,11 +47,11 @@ public class HealthInsuranceRateWs
 
 	/** The update health insurance command handler. */
 	@Inject
-	private UpdateHealthInsuranceCommandHandler updateHealthInsuranceCommandHandler;
+	private UpdateHealthInsuRateCommandHandler updateHealthInsuranceCommandHandler;
 
 	/** The delete health insurance command handler. */
 	@Inject
-	private DeleteHealthInsuranceCommandHandler deleteHealthInsuranceCommandHandler;
+	private DeleteHealthInsuRateCommandHandler deleteHealthInsuranceCommandHandler;
 
 	/** The social insurance office repository. */
 	@Inject
@@ -99,7 +99,7 @@ public class HealthInsuranceRateWs
 	 */
 	@POST
 	@Path("update")
-	public void update(UpdateHealthInsuranceCommand command) {
+	public void update(UpdateHealthInsuRateCommand command) {
 		updateHealthInsuranceCommandHandler.handle(command);
 	}
 
@@ -112,7 +112,7 @@ public class HealthInsuranceRateWs
 	// remove by historyId
 	@POST
 	@Path("remove")
-	public void remove(DeleteHealthInsuranceCommand command) {
+	public void remove(DeleteHealthInsuRateCommand command) {
 		deleteHealthInsuranceCommandHandler.handle(command);
 	}
 

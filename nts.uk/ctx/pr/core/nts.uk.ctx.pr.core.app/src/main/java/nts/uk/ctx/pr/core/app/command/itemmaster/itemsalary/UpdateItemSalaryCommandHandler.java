@@ -24,8 +24,8 @@ public class UpdateItemSalaryCommandHandler extends CommandHandler<UpdateItemSal
 		val companyCode = AppContexts.user().companyCode();
 		String itemCode = context.getCommand().getItemCode();
 		if (!this.itemSalaryRespository.find(companyCode, itemCode).isPresent())
-			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
-		this.itemSalaryRespository.update(context.getCommand().toDomain());
+			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
+		this.itemSalaryRespository.update(companyCode, context.getCommand().toDomain());
 
 	}
 

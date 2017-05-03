@@ -16,7 +16,6 @@ var nts;
                     }
                     return EditorOptionBase;
                 }());
-                option_1.EditorOptionBase = EditorOptionBase;
                 var TextEditorOption = (function (_super) {
                     __extends(TextEditorOption, _super);
                     function TextEditorOption(option) {

@@ -55,21 +55,21 @@ module nts.uk.pr.view.qmm007.a {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-                // Clear errors.
-                self.clearErrors();
                 // Validate.
                 self.validate();
                 // Return if has error.
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                if ($('.nts-input').ntsError('hasError')) {
                     dfd.reject();
                     return dfd.promise();
                 }
+
                 if (self.isNewMode()) {
                     service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(res => {
                         dfd.resolve(res.uuid);
                         self.dirtyChecker.reset();
                     }).fail(res => {
                         dfd.reject();
+                        self.clearErrors();
                         self.setMessages(res.messageId);
                     });
                 } else {
@@ -78,6 +78,7 @@ module nts.uk.pr.view.qmm007.a {
                         self.dirtyChecker.reset();
                     }).fail(res => {
                         dfd.reject();
+                        self.clearErrors();
                         self.setMessages(res.messageId);
                     });
                 }

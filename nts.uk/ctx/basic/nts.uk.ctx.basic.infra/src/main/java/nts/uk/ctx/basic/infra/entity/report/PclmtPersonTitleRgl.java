@@ -15,12 +15,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Getter;
 import lombok.Setter;
 
 /**
  * The Class PclmtPersonTitleRgl.
  */
 @Setter
+@Getter
 @Entity
 @Table(name = "PCLMT_PERSON_TITLE_RGL")
 public class PclmtPersonTitleRgl implements Serializable {

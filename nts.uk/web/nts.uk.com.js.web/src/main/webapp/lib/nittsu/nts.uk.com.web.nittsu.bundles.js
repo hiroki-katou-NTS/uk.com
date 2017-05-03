@@ -1507,7 +1507,8 @@ var nts;
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
             var WEB_APP_NAME = {
                 com: 'nts.uk.com.web',
-                pr: 'nts.uk.pr.web'
+                pr: 'nts.uk.pr.web',
+                at: 'nts.uk.at.web'
             };
             var QueryString = (function () {
                 function QueryString() {
@@ -3073,6 +3074,7 @@ var nts;
                                 mousePos = null;
                                 dragSelectRange = [];
                                 $(window).unbind('mousemove.NtsGridListDragging');
+                                $grid.triggerHandler('selectionchanged');
                                 clearInterval(timerAutoScroll);
                             });
                         });
@@ -3105,18 +3107,12 @@ var nts;
                         $grid.bind('iggridselectionrowselectionchanged', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
-                        $grid.on('mouseup', function () {
-                            $grid.triggerHandler('selectionchanged');
-                        });
                     }
                     function unsetupDragging($grid) {
-                        var dragSelectRange = [];
-                        var mousePos = null;
                         $grid.unbind('mousedown');
                     }
                     function unsetupSelectingEvents($grid) {
                         $grid.unbind('iggridselectionrowselectionchanged');
-                        $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
                 var ntsListBox;
@@ -3522,8 +3518,12 @@ var nts;
                             column.formatter = function (value, rowObj) {
                                 var update = function (val) {
                                     if ($self.data("igGrid") !== null) {
-                                        $self.igGridUpdating("setCellValue", rowObj[$self.igGrid("option", "primaryKey")], column.key, val);
+                                        var rowId = rowObj[$self.igGrid("option", "primaryKey")];
+                                        $self.igGridUpdating("setCellValue", rowId, column.key, val);
+                                        var updatedRow = $self.igGrid("rowById", rowId, false);
                                         $self.igGrid("commit");
+                                        if (updatedRow !== undefined)
+                                            $self.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
                                     }
                                 };
                                 var data = {
@@ -3553,6 +3553,11 @@ var nts;
                             return column;
                         });
                         options.columns = columns;
+                        if (_.find(options.features, function (feature) {
+                            return feature.name === "Updating";
+                        }) === undefined) {
+                            options.features.push({ name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none' });
+                        }
                         $(this).igGrid(options);
                     };
                     function getControl(name) {
@@ -4749,7 +4754,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_4) {
             var koExtentions;
             (function (koExtentions) {
                 var ListBoxBindingHandler = (function () {
@@ -4764,7 +4769,8 @@ var nts;
                         var isMultiSelect = ko.unwrap(data.multiple);
                         var enable = ko.unwrap(data.enable);
                         var columns = data.columns;
-                        var gridId = $(element).attr("id");
+                        var elementId = $(element).attr("id");
+                        var gridId = elementId;
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             gridId = nts.uk.util.randomId();
                         }
@@ -4793,14 +4799,21 @@ var nts;
                             container.data("fullValue", true);
                         }
                         else {
+                            var isHaveKey_1 = false;
                             iggridColumns = _.map(columns, function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                                 c["width"] = c["length"] * maxWidthCharacter + 20;
                                 c["headerText"] = '';
                                 c["columnCssClass"] = 'nts-column';
                                 width += c["length"] * maxWidthCharacter + 20;
+                                if (optionValue === c["key"]) {
+                                    isHaveKey_1 = true;
+                                }
                                 return c;
                             });
+                            if (!isHaveKey_1) {
+                                iggridColumns.push({ "key": optionValue, "width": 10 * maxWidthCharacter + 20, "headerText": '', "columnCssClass": 'nts-column', 'hidden': true });
+                            }
                         }
                         var gridHeaderHeight = 24;
                         container.igGrid({
@@ -4813,28 +4826,16 @@ var nts;
                             features: features
                         });
                         container.ntsGridList('setupSelecting');
-                        container.bind('iggridselectionrowselectionchanging', function () {
+                        container.bind('iggridselectionrowselectionchanging', function (evt, ui) {
                             if (container.data("enable") === false) {
                                 return false;
                             }
-                            var itemSelected;
-                            if (container.igGridSelection('option', 'multipleSelection')) {
-                                var selected = container.ntsGridList('getSelected');
-                                if (selected) {
-                                    itemSelected = _.map(selected, function (s) { return s.id; });
-                                }
-                                else {
-                                    itemSelected = [];
-                                }
-                            }
-                            else {
-                                var selected = container.ntsGridList('getSelected');
-                                if (selected) {
-                                    itemSelected = selected.id;
-                                }
-                                else {
-                                    itemSelected = ('');
-                                }
+                            var itemSelected = ui.row.id;
+                            var dataSource = container.igGrid('option', "dataSource");
+                            if (container.data("fullValue")) {
+                                itemSelected = _.find(dataSource, function (d) {
+                                    return d[optionValue].toString() === itemSelected.toString();
+                                });
                             }
                             var changingEvent = new CustomEvent("selectionChanging", {
                                 detail: itemSelected,
@@ -4842,8 +4843,8 @@ var nts;
                                 cancelable: true,
                             });
                             container.data("chaninged", true);
-                            document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                            if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
+                            document.getElementById(elementId).dispatchEvent(changingEvent);
+                            if (changingEvent.returnValue !== undefined && changingEvent.returnValue === false) {
                                 return false;
                             }
                         });
@@ -4867,6 +4868,21 @@ var nts;
                                     itemSelected = ('');
                                 }
                             }
+                            container.data("selected", itemSelected);
+                            var isMultiOld = container.igGridSelection('option', 'multipleSelection');
+                            if (container.data("fullValue")) {
+                                var dataSource = container.igGrid('option', "dataSource");
+                                if (isMultiOld) {
+                                    itemSelected = _.filter(dataSource, function (d) {
+                                        itemSelected.indexOf(d[optionValue].toString()) >= 0;
+                                    });
+                                }
+                                else {
+                                    itemSelected = _.find(dataSource, function (d) {
+                                        return d[optionValue].toString() === itemSelected.toString();
+                                    });
+                                }
+                            }
                             if (container.data("chaninged") !== true) {
                                 var changingEvent = new CustomEvent("selectionChanging", {
                                     detail: itemSelected,
@@ -4880,21 +4896,10 @@ var nts;
                                     return false;
                                 }
                             }
-                            container.data("selected", itemSelected);
                             container.data("chaninged", false);
-                            var isMultiOld = container.igGridSelection('option', 'multipleSelection');
-                            if (container.data("fullValue")) {
-                                var dataSource = container.igGrid('option', "dataSource");
-                                if (isMultiOld) {
-                                    itemSelected = _.map(dataSource, optionValue);
-                                }
-                                else {
-                                    itemSelected = _.find(dataSource, function (d) {
-                                        return d[optionValue].toString() === itemSelected.toString();
-                                    });
-                                }
+                            if (!_.isEqual(itemSelected, data.value())) {
+                                data.value(itemSelected);
                             }
-                            data.value(itemSelected);
                         });
                         container.setupSearchScroll("igGrid", true);
                         container.data("multiple", isMultiSelect);
@@ -4912,15 +4917,17 @@ var nts;
                         var columns = data.columns;
                         var rows = data.rows;
                         var container = $(element).find(".ntsListBox");
+                        if (container.data("enable") !== enable) {
+                            if (!enable) {
+                                container.ntsGridList('unsetupSelecting');
+                                container.addClass("disabled");
+                            }
+                            else {
+                                container.ntsGridList('setupSelecting');
+                                container.removeClass("disabled");
+                            }
+                        }
                         container.data("enable", enable);
-                        if (!enable) {
-                            container.ntsGridList('unsetupSelecting');
-                            container.addClass("disabled");
-                        }
-                        else {
-                            container.ntsGridList('setupSelecting');
-                            container.removeClass("disabled");
-                        }
                         var currentSource = container.igGrid('option', 'dataSource');
                         if (!_.isEqual(currentSource, options)) {
                             var currentSources = options.slice();
@@ -4959,11 +4966,29 @@ var nts;
                         }
                         else {
                             var currentSelectedItems = container.ntsGridList('getSelected');
-                            var isEqual = _.isEqualWith(currentSelectedItems, dataValue, function (current, newVal) {
-                                if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
-                                    return true;
+                            if (isMultiOld) {
+                                if (currentSelectedItems) {
+                                    currentSelectedItems = _.map(currentSelectedItems, function (s) { return s.id; });
                                 }
-                            });
+                                else {
+                                    currentSelectedItems = [];
+                                }
+                                if (dataValue) {
+                                    dataValue = _.map(dataValue, function (s) { return s.toString(); });
+                                }
+                            }
+                            else {
+                                if (currentSelectedItems) {
+                                    currentSelectedItems = currentSelectedItems.id;
+                                }
+                                else {
+                                    currentSelectedItems = ('');
+                                }
+                                if (dataValue) {
+                                    dataValue = dataValue.toString();
+                                }
+                            }
+                            var isEqual = _.isEqual(currentSelectedItems, dataValue);
                             if (!isEqual) {
                                 container.ntsGridList('setSelected', dataValue);
                             }
@@ -4973,7 +4998,7 @@ var nts;
                     return ListBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5212,7 +5237,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_4) {
+        (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsSwapListBindingHandler = (function () {
@@ -5302,7 +5327,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid1)
                             .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
-                            .setDataSource(originalSource)
+                            .setDataSource(data.dataSource)
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -5313,7 +5338,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid2)
                             .searchControl($swap.find(".ntsSwapSearchRight").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
-                            .setDataSource(data.value())
+                            .setDataSource(data.value)
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -5874,28 +5899,28 @@ var nts;
                     ListItemTransporter.prototype.update = function () {
                         switch (this.determineDirection()) {
                             case "firstToSecond":
-                                this.move(this.firstList, this.secondList);
+                                this.move(this.firstList(), this.secondList());
                                 break;
                             case "secondToFirst":
-                                this.move(this.secondList, this.firstList);
+                                this.move(this.secondList(), this.firstList());
                                 break;
                             case "insideFirst":
-                                this.move(this.firstList, this.firstList);
+                                this.move(this.firstList(), this.firstList());
                                 break;
                             case "insideSecond":
-                                this.move(this.secondList, this.secondList);
+                                this.move(this.secondList(), this.secondList());
                                 break;
                         }
                     };
                     ListItemTransporter.prototype.getFirst = function () {
-                        return this.firstList;
+                        return this.firstList();
                     };
                     ListItemTransporter.prototype.getSecond = function () {
-                        return this.secondList;
+                        return this.secondList();
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
+            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5980,7 +6005,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_5) {
+        (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
                 var TabPanelBindingHandler = (function () {
@@ -6039,7 +6064,7 @@ var nts;
                     return TabPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6048,7 +6073,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_6) {
+        (function (ui_7) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsTreeGridViewBindingHandler = (function () {
@@ -6160,7 +6185,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6169,7 +6194,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_7) {
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsUpDownBindingHandler = (function () {
@@ -6400,7 +6425,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6483,7 +6508,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_8) {
+        (function (ui_9) {
             var option;
             (function (option_2) {
                 var DialogOption = (function () {
@@ -6599,9 +6624,9 @@ var nts;
                     function ErrorDialogWithTabOption(option) {
                         _super.call(this);
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ui_8.errors.ErrorHeader("tab", "タブ", 90, true),
-                            new ui_8.errors.ErrorHeader("location", "エラー箇所", 115, true),
-                            new ui_8.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                            new ui_9.errors.ErrorHeader("tab", "タブ", 90, true),
+                            new ui_9.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new ui_9.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -6629,7 +6654,7 @@ var nts;
                     return DialogButton;
                 }());
                 option_2.DialogButton = DialogButton;
-            })(option = ui_8.option || (ui_8.option = {}));
+            })(option = ui_9.option || (ui_9.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

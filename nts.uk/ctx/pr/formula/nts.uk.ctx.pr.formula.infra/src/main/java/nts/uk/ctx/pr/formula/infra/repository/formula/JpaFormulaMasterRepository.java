@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.formula.infra.repository.formula;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaMaster;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaMasterRepository;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormula;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaPK;
@@ -19,6 +21,8 @@ import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaPK;
 public class JpaFormulaMasterRepository extends JpaRepository implements FormulaMasterRepository {
 
 	private static final String FIND_ALL_BY_COMPANYCODE;
+
+	private static final String IS_EXISTED_BY_COMPANYCODE;
 
 	private static final String IS_EXISTED_FORMULA;
 
@@ -29,8 +33,15 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM QcfmtFormula a ");
 		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
-		IS_EXISTED_FORMULA = builderString.toString();
+		IS_EXISTED_BY_COMPANYCODE = builderString.toString();
 
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM QcfmtFormula a ");
+		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaPK.formulaCd = :formulaCd ");
+		IS_EXISTED_FORMULA = builderString.toString();
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormula a ");
@@ -42,8 +53,7 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormula a ");
 		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
-		builderString.append("AND a.qcfmtFormulaPK.formulaCd IN :formulaCd ");
-		builderString.append("WHERE a.difficultyAtr = :difficultyAtr ");
+		builderString.append("AND a.qcfmtFormulaPK.formulaCd = :formulaCd ");
 		builderString.append("ORDER BY a.qcfmtFormulaPK.ccd, a.qcfmtFormulaPK.formulaCd ");
 		FIND_FORMULA_NAME_BY_CODES = builderString.toString();
 	}
@@ -76,9 +86,13 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 	}
 
 	@Override
-	public void update(String companyCode, FormulaCode formulaCode) {
-		this.commandProxy().update(
-				toEntity(this.findByCompanyCodeAndFormulaCode(companyCode, new FormulaCode(formulaCode.v())).get()));
+	public void update(String companyCode, FormulaCode formulaCode, FormulaName formulaName) {
+		FormulaMaster domain = this.findByCompanyCodeAndFormulaCode(companyCode, new FormulaCode(formulaCode.v()))
+				.map(formula -> {
+					FormulaMaster newDomain = new FormulaMaster(companyCode, formulaCode, formula.getDifficultyAtr(), formulaName);
+					return newDomain;
+				}).get();
+		this.commandProxy().update(toEntity(domain));
 	}
 
 	private FormulaMaster toDomain(QcfmtFormula qcfmtFormula) {
@@ -100,17 +114,26 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 	}
 
 	@Override
-	public boolean isExistedFormula(String companyCode) {
-		return this.queryProxy().query(IS_EXISTED_FORMULA, long.class).setParameter("companyCode", companyCode)
+	public boolean isExistedFormulaByCompanyCode(String companyCode) {
+		return this.queryProxy().query(IS_EXISTED_BY_COMPANYCODE, long.class).setParameter("companyCode", companyCode)
 				.getSingle().get() > 0;
 	}
 
 	@Override
-	public List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> formulaCode, BigDecimal difficultyAtr ) {
-		return this.queryProxy().query(FIND_FORMULA_NAME_BY_CODES, QcfmtFormula.class)
-				.setParameter("companyCode", companyCode).setParameter("formulaCd", formulaCode)
-				.setParameter("difficultyAtr", difficultyAtr)
-				.getList(f -> toDomain(f));
+	public boolean isExistedFormula(String companyCode, FormulaCode formulaCode ) {
+		return this.queryProxy().query(IS_EXISTED_FORMULA, long.class).setParameter("companyCode", companyCode).setParameter("formulaCd", formulaCode)
+				.getSingle().get() > 0;
+	}
+
+	@Override
+	public List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> lstFormulaCode) {
+		List<FormulaMaster> lstFormula = new ArrayList<>();
+		for (FormulaCode formulaCode : lstFormulaCode) {
+			lstFormula.add(this.queryProxy().query(FIND_FORMULA_NAME_BY_CODES, QcfmtFormula.class)
+					.setParameter("companyCode", companyCode).setParameter("formulaCd", formulaCode)
+					.getSingle(f -> toDomain(f)).get());
+		}
+		return lstFormula;
 	}
 
 }

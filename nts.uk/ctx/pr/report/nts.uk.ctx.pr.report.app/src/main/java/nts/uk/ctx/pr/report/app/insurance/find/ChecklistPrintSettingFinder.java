@@ -14,6 +14,9 @@ import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSetting;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class ChecklistPrintSettingFinder.
+ */
 @Stateless
 public class ChecklistPrintSettingFinder {
 

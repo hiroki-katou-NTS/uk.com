@@ -28,6 +28,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaName;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaContent;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
 import nts.uk.ctx.pr.formula.dom.primitive.Money;
 import nts.uk.ctx.pr.formula.dom.primitive.PremiumRate;
 import nts.uk.ctx.pr.formula.dom.primitive.ReferenceItemCode;
@@ -50,7 +51,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 	protected void handle(CommandHandlerContext<UpdateFormulaMasterCommand> context) {
 		UpdateFormulaMasterCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-
+		
 		List<FormulaEasyCondition> listFormulaEasyCondition = new ArrayList<>();
 		List<FormulaEasyDetail> listFormulaEasyDetail = new ArrayList<>();
 		List<FormulaEasyStandardItem> listFormulaEasyStandardItem = new ArrayList<>();
@@ -68,7 +69,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 			}).collect(Collectors.toList());
 
 			command.getEasyFormulaDto().forEach(easyFormulaDto -> {
-				if (easyFormulaDto.getFixFormulaAtr() == 1) {
+				if (easyFormulaDto.getFixFormulaAtr() == 1 &&  easyFormulaDto.getFormulaDetail().getBaseAmountDevision() != null) {
 					FormulaEasyDetail formulaEasyDetail = new FormulaEasyDetail(companyCode,
 							new FormulaCode(command.getFormulaCode()), command.getHistoryId(),
 							new EasyFormulaCode(easyFormulaDto.getEasyFormulaCode()),
@@ -90,8 +91,10 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 							EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getAdjustmentDevision().intValue(),
 									AdjustmentAtr.class),
 							EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getTotalRounding().intValue(),
-									RoundAtr.class),
-							null, null);
+									RoundAtr.class));
+					
+					formulaEasyDetail.validate();	
+					
 					listFormulaEasyDetail.add(formulaEasyDetail);
 				}
 			});
@@ -114,7 +117,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 					EnumAdaptor.valueOf(command.getRoundDigit(), RoundDigit.class));
 		}
 		formulaMasterDomainService.update(command.getDifficultyAtr(), companyCode,
-				new FormulaCode(command.getFormulaCode()), command.getHistoryId(), listFormulaEasyCondition,
+				new FormulaCode(command.getFormulaCode()), new FormulaName(command.getFormulaName()) , command.getHistoryId(), listFormulaEasyCondition,
 				listFormulaEasyDetail, listFormulaEasyStandardItem, formulaManual);
 	}
 

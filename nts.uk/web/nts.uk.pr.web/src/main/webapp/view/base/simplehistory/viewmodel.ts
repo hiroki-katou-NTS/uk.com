@@ -125,7 +125,7 @@ module nts.uk.pr.view.base.simplehistory {
 
                     // resolve.
                     dfd.resolve();
-                }).fail(dfd.fail);
+                }).fail(dfd.reject);
 
                 return dfd.promise();
             }

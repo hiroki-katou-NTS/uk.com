@@ -2,10 +2,11 @@ module nts.uk.request {
     
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
     
-    export type WebAppId = 'com' | 'pr';
+    export type WebAppId = 'com' | 'pr' | 'at';
     const WEB_APP_NAME = {
         com: 'nts.uk.com.web',
-        pr: 'nts.uk.pr.web'
+        pr: 'nts.uk.pr.web',
+        at: 'nts.uk.at.web'
     };
     
     export class QueryString {
@@ -28,7 +29,7 @@ module nts.uk.request {
             }
             return instance;
         }
- 
+
         static build(entriesObj: { [key: string]: any }) {
             var instance = new QueryString();
 

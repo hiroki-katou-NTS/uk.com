@@ -7,13 +7,13 @@
  */
 package nts.uk.file.pr.app.export.insurance.data;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * The Class SocialInsuranceItemDto.
  *
- * @author duongnd
  */
 
 @Setter

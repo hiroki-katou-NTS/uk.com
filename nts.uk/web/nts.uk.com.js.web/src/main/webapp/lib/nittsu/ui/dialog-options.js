@@ -17,7 +17,6 @@ var nts;
                     }
                     return DialogOption;
                 }());
-                option_1.DialogOption = DialogOption;
                 var ConfirmDialogOption = (function (_super) {
                     __extends(ConfirmDialogOption, _super);
                     function ConfirmDialogOption(option) {
@@ -153,7 +152,6 @@ var nts;
                     ;
                     return DialogButton;
                 }());
-                option_1.DialogButton = DialogButton;
             })(option = ui_1.option || (ui_1.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

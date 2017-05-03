@@ -1,9 +1,9 @@
 module kdl024.service {
     var paths = {
-        getExternalBudgetList: "at/budget/findallexternalbudget",
-        insertExternalBudget: "at/budget/insertexternalbudget",
-        updateExternalBudget: "at/budget/updateexternalbudget",
-        deleteExternalBudget: "at/budget/deleteexternalbudget"
+        getExternalBudgetList: "at/schedule/budget/findallexternalbudget",
+        insertExternalBudget: "at/schedule/budget/insertexternalbudget",
+        updateExternalBudget: "at/schedule/budget/updateexternalbudget",
+        deleteExternalBudget: "at/schedule/budget/deleteexternalbudget"
     }
     /**
      * get list External Budget
@@ -11,8 +11,7 @@ module kdl024.service {
     export function getListExternalBudget(): JQueryPromise<Array<model.ExternalBudgetDto>> {
         var dfd = $.Deferred<Array<any>>();
         debugger;
-        //TODO-- service Get List
-        nts.uk.request.ajax(paths.getExternalBudgetList)
+        nts.uk.request.ajax("at", paths.getExternalBudgetList)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
@@ -25,17 +24,17 @@ module kdl024.service {
      * Update Budget
      * 
      */
-    export function updateExternalBudget(updateBudgetCmd : any){
-        var dfd= $.Deferred<Array<any>>();  
+    export function updateExternalBudget(updateBudgetCmd: any) {
+        var dfd = $.Deferred<Array<any>>();
         //TODO --> update List
         return dfd.promise();
-    } 
+    }
 
     export module model {
-        export class ExternalBudgetDto{
-            externalBudgetCode : string;
-            externalBudgetName : string;
-            attribute :number;
+        export class ExternalBudgetDto {
+            externalBudgetCode: string;
+            externalBudgetName: string;
+            attribute: number;
             unit: number;
         }
     }

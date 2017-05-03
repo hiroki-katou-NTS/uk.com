@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -43,19 +44,19 @@ public class AddDepartmentCommandHandler extends CommandHandler<List<AddDepartme
 		String companyCode = AppContexts.user().companyCode();
 		String newhistoryId = IdentifierUtil.randomUniqueId();
 		if (context.getCommand().size() == 1) {
-
+			// truong hop add 1 department.
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 			try {
 				startDate1 = formatter.parse(context.getCommand().get(0).getStartDate());
 				endDate1 = formatter.parse(context.getCommand().get(0).getEndDate());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			GeneralDate startDate = GeneralDate.legacyDate(startDate1);
 			GeneralDate endDate = GeneralDate.legacyDate(endDate1);
 
 			Department department = null;
+			// truong hop add 1 Dep khi them moi 1 lich su rong.
 			if (context.getCommand().get(0).getHistoryId() == null) {
 				department = new Department(companyCode,
 						new DepartmentCode(context.getCommand().get(0).getDepartmentCode()), endDate,
@@ -67,13 +68,13 @@ public class AddDepartmentCommandHandler extends CommandHandler<List<AddDepartme
 				String historyId = department.getHistoryId();
 				addMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
 			} else {
-
+				// truong hop  add 1 dep khi click nut them moi 1 dep.
 				if (departmentRepository.isDuplicateDepartmentCode(companyCode,
 						context.getCommand().get(0).getHistoryId(),
 						new DepartmentCode(context.getCommand().get(0).getDepartmentCode()))) {
-					throw new BusinessException("ER026");
+					throw new BusinessException("ER005");
 				}
-				
+
 				department = new Department(companyCode,
 						new DepartmentCode(context.getCommand().get(0).getDepartmentCode()),
 						context.getCommand().get(0).getHistoryId(), endDate,
@@ -88,19 +89,15 @@ public class AddDepartmentCommandHandler extends CommandHandler<List<AddDepartme
 			departmentRepository.add(department);
 
 		} else {
-
-			System.out.print("");
+			// truong hop add 1 list dep khi them moi 1 lich su tu lich su cu.
 			for (int i = 0; i < context.getCommand().size(); i++) {
-
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 				try {
 					startDate1 = formatter.parse(context.getCommand().get(i).getStartDate());
 					endDate1 = formatter.parse(context.getCommand().get(i).getEndDate());
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 				GeneralDate startDate = GeneralDate.legacyDate(startDate1);
 				GeneralDate endDate = GeneralDate.legacyDate(endDate1);
 
