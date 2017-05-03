@@ -390,8 +390,10 @@ module nts.qmm017 {
             // when all done
             $.when(treeHistoryPromise, buildComboBoxUseMasterPromise)
                 .done(function() {
-                    self.treeGridHistory().singleSelectedCode(self.treeGridHistory().items()[0].childs[0].code);
-                    self.bindDataByChanging(self.treeGridHistory().items()[0].childs[0].code);
+                    if (self.treeGridHistory().items().length > 0) {
+                        self.treeGridHistory().singleSelectedCode(self.treeGridHistory().items()[0].childs[0].code);
+                        self.bindDataByChanging(self.treeGridHistory().items()[0].childs[0].code);
+                    }
                     dfdStart.resolve();
                 })
                 .fail(function() {
@@ -570,6 +572,9 @@ module nts.qmm017 {
             var self = this;
             if (self.isNewMode()) {
                 let referenceMasterNo = null;
+                $("#inp-formulaName").focus();
+                $("#start-date-inp-input").focus();
+                $("#inp-formulaCode").focus();
                 if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 0) {
                     referenceMasterNo = 0;
                 } else if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === '1') {
@@ -594,7 +599,7 @@ module nts.qmm017 {
                     return formula.code === command.formulaCode;
                 });
                 if (existedFormula) {
-//                    nts.uk.ui.dialog.alert("入力した計算式コードは既に存在しています。\r\n計算式コードを確認してください。");
+                    //                    nts.uk.ui.dialog.alert("入力した計算式コードは既に存在しています。\r\n計算式コードを確認してください。");
                     $('#inp-formulaCode').ntsError('set', '入力した計算式コードは既に存在しています。\r\n計算式コードを確認してください。');
                 } else {
                     service.registerFormulaMaster(command)
@@ -602,14 +607,14 @@ module nts.qmm017 {
                             self.start();
                         })
                         .fail(function(res) {
-//                            nts.uk.ui.dialog.alert(res);
-                            if(command.formulaCode == null){
+                            //                            nts.uk.ui.dialog.alert(res);
+                            if (command.formulaCode == null) {
                                 $('#inp-formulaCode').ntsError('set', 'が入力されていません。');
                             }
-                            if(command.formulaName == null){
+                            if (command.formulaName == null) {
                                 $('#inp-formulaName').ntsError('set', 'が入力されていません。');
                             }
-                            if(command.startDate == null){
+                            if (command.startDate == null) {
                                 $('#start-date-inp').ntsError('set', 'が入力されていません。');
                             }
                         });
