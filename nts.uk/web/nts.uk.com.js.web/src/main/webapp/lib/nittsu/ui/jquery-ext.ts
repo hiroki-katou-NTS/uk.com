@@ -213,23 +213,16 @@ module nts.uk.ui.jqueryExtentions {
             let selectedValue: any = params[0][2];   
             let $row = $($grid.igGrid("rowById", rowId));
             let $parent = $row.find(".ntsControl");
-//            let currentElement = _.find($parent.find(".nts-switch-button"), function (e){
-//                return $(e).hasClass('selected');    
-//            });
-//            let currentSelect = currentElement === undefined ? undefined : $(currentElement).attr('data-value');
             let currentSelect = $parent.attr('data-value');  
             if(selectedValue !== currentSelect){   
-//                let $tr = $parent.closest("tr");   
                 let rowKey = $row.attr("data-id");
                 $parent.find(".nts-switch-button").removeClass("selected");   
                 let element = _.find($parent.find(".nts-switch-button"), function (e){
-                    return selectedValue === $(e).attr('data-value');    
+                    return selectedValue.toString() === $(e).attr('data-value').toString();    
                 });
                 if(element !== undefined){
-                    $(element).addClass('selected');
+                    $(element).addClass('selected'); 
                     $parent.attr('data-value', selectedValue);
-//                    let $scroll = $("#" + $grid.attr("id") + "_scrollContainer")
-//                    let currentPosition = $scroll[0].scrollTop;
                     $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);  
                     $grid.igGrid("commit");  
                     if ($grid.igGrid("hasVerticalScrollbar")) {
