@@ -43,18 +43,15 @@ module qmm019.a {
             self.categories = ko.observableArray([new service.model.Category([], 0)]);
 
             self.singleSelectedCode.subscribe(function(codeChanged) {
-                console.log(codeChanged);
                 var layoutFind = _.find(self.layouts(), function(layout) {
                     return layout.stmtCode === codeChanged.split(';')[0] && layout.startYm === parseInt(codeChanged.split(';')[1]);
                 });
                 var layoutHead = _.find(self.layoutsMax(), function(layoutHead) {
                     return layoutHead.stmtCode === codeChanged.split(';')[0];
                 });
-                console.log(layoutHead);
                 if (layoutFind !== undefined && layoutHead != undefined) {
                     self.layoutMaster(layoutFind);
                     self.layoutHead(ko.mapping.fromJS(layoutHead));
-                    console.log(layoutFind);
                     self.layoutMaster((layoutFind));
                     self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                     self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
@@ -151,9 +148,7 @@ module qmm019.a {
                 if (layouts.length > 0) {
 
                     self.layouts(layouts);
-                    console.log(layouts);
                     service.getAllLayoutHead().done(function(layoutsMax: Array<service.model.LayoutHeadDto>) {
-                        console.log(layoutsMax);
                         self.layoutsMax(layoutsMax);
                         self.buildTreeDataSource();
                         //let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
