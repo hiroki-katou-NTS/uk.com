@@ -8,7 +8,6 @@ import nts.uk.ctx.sys.portal.dom.enums.PermissionDivision;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
-import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
 
 /**
  * The Class MyPageSettingBaseCommand.
@@ -41,7 +40,7 @@ public class MyPageSettingBaseCommand {
 	 * @return the my page setting
 	 */
 	public MyPageSetting toDomain() {
-		return new MyPageSetting(new CompanyId(companyId), UseDivision.valueOf(useMyPage),
+		return new MyPageSetting(companyId, UseDivision.valueOf(useMyPage),
 				UseDivision.valueOf(useWidget), UseDivision.valueOf(useDashboard), UseDivision.valueOf(useFlowMenu),
 				PermissionDivision.valueOf(externalUrlPermission), this.topPagePartUseSettingDto.stream().map(item -> {
 					return TopPagePartUseSetting.createFromJavaType(item.companyId, item.partItemCode,

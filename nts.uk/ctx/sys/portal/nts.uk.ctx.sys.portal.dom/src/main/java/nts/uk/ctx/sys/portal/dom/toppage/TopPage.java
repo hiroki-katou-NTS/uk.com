@@ -3,9 +3,6 @@ package nts.uk.ctx.sys.portal.dom.toppage;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
-import nts.uk.ctx.sys.portal.dom.toppage.primitive.TopPageCode;
-import nts.uk.ctx.sys.portal.dom.toppage.primitive.TopPageName;
 
 /**
  * The Class TopPage.
@@ -15,7 +12,7 @@ import nts.uk.ctx.sys.portal.dom.toppage.primitive.TopPageName;
 public class TopPage extends AggregateRoot {
 	
 	/** The company id. */
-	private CompanyId companyId;
+	private String companyId;
 	
 	/** The top page code. */
 	private TopPageCode topPageCode;
@@ -41,7 +38,7 @@ public class TopPage extends AggregateRoot {
 	 */
 	public static TopPage createFromJavaType(String companyId, String topPageCode, String layoutId, String topPageName,
 			Integer languageNumber) {
-		return new TopPage(new CompanyId(companyId), new TopPageCode(topPageCode), layoutId,
+		return new TopPage(companyId, new TopPageCode(topPageCode), layoutId,
 				new TopPageName(topPageName), languageNumber);
 	}
 }

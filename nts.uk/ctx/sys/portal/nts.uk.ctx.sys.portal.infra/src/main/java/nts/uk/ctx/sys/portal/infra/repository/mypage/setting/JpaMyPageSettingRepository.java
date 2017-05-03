@@ -14,7 +14,6 @@ import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
-import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.CcgmtMyPageSet;
@@ -34,17 +33,17 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 
 		// mock data
 		List<TopPagePartUseSetting> lstPagePartSettingItem = new ArrayList<TopPagePartUseSetting>();
-		TopPagePartUseSetting item1 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("w1"),new TopPagePartName("PartName"),
+		TopPagePartUseSetting item1 = new TopPagePartUseSetting("001", new TopPagePartCode("w1"),new TopPagePartName("PartName"),
 				UseDivision.Use, TopPagePartType.Widget);
-		TopPagePartUseSetting item2 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("d1"),new TopPagePartName("PartName"),
+		TopPagePartUseSetting item2 = new TopPagePartUseSetting("001", new TopPagePartCode("d1"),new TopPagePartName("PartName"),
 				UseDivision.NotUse, TopPagePartType.DashBoard);
-		TopPagePartUseSetting item3 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("d2"),new TopPagePartName("PartName"),
+		TopPagePartUseSetting item3 = new TopPagePartUseSetting("001", new TopPagePartCode("d2"),new TopPagePartName("PartName"),
 				UseDivision.NotUse, TopPagePartType.DashBoard);
-		TopPagePartUseSetting item4 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("f1"),new TopPagePartName("PartName"),
+		TopPagePartUseSetting item4 = new TopPagePartUseSetting("001", new TopPagePartCode("f1"),new TopPagePartName("PartName"),
 				UseDivision.Use, TopPagePartType.FolowMenu);
-		TopPagePartUseSetting item5 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("f2"),new TopPagePartName("PartName"),
+		TopPagePartUseSetting item5 = new TopPagePartUseSetting("001", new TopPagePartCode("f2"),new TopPagePartName("PartName"),
 				UseDivision.NotUse, TopPagePartType.FolowMenu);
-		TopPagePartUseSetting item6 = new TopPagePartUseSetting(new CompanyId("001"), new TopPagePartCode("d3"),new TopPagePartName("PartName"),
+		TopPagePartUseSetting item6 = new TopPagePartUseSetting("001", new TopPagePartCode("d3"),new TopPagePartName("PartName"),
 				UseDivision.NotUse, TopPagePartType.DashBoard);
 
 		lstPagePartSettingItem.add(item1);
@@ -54,7 +53,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 		lstPagePartSettingItem.add(item5);
 		lstPagePartSettingItem.add(item6);
 
-		MyPageSetting mps = new MyPageSetting(new CompanyId("001"), UseDivision.Use, UseDivision.NotUse, UseDivision.Use,
+		MyPageSetting mps = new MyPageSetting("001", UseDivision.Use, UseDivision.NotUse, UseDivision.Use,
 				UseDivision.NotUse, PermissionDivision.Allow, lstPagePartSettingItem);
 		return Optional.of(mps);
 		
@@ -119,7 +118,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 * @return the ccgmt my page set
 	 */
 	private CcgmtMyPageSet myPageSetToEntity(MyPageSetting domain) {
-		CcgmtMyPageSet entity = new CcgmtMyPageSet(domain.getCompanyId().v(),domain.getUseMyPage().value,domain.getUseWidget().value,
+		CcgmtMyPageSet entity = new CcgmtMyPageSet(domain.getCompanyId(),domain.getUseMyPage().value,domain.getUseWidget().value,
 				domain.getUseDashboard().value,domain.getUseFlowMenu().value,domain.getExternalUrlPermission().value);
 		return entity;
 	}
@@ -132,7 +131,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 */
 	private List<CcgmtPartItemSet> partItemSetToEntity(List<TopPagePartUseSetting> lstTopPagePartUseSetting) {
 		List<CcgmtPartItemSet> lstEntity = lstTopPagePartUseSetting.stream().map(item -> {
-			CcgmtPartItemSetPK key = new CcgmtPartItemSetPK(item.getCompanyId().v(), item.getTopPagePartCode().v(),
+			CcgmtPartItemSetPK key = new CcgmtPartItemSetPK(item.getCompanyId(), item.getTopPagePartCode().v(),
 					item.getTopPagePartName().v());
 			CcgmtPartItemSet entity = new CcgmtPartItemSet(key, item.getUseDivision().value);
 			return entity;

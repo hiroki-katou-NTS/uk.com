@@ -7,7 +7,6 @@ import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.PermissionDivision;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
-import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
 
 /**
  * The Class MyPageSetting.
@@ -17,7 +16,7 @@ import nts.uk.ctx.sys.portal.dom.primitive.CompanyId;
 public class MyPageSetting extends AggregateRoot {
 
 	/** The company id. */
-	private CompanyId companyId;
+	private String companyId;
 
 	/** The use my page. */
 	private UseDivision useMyPage;
@@ -48,7 +47,7 @@ public class MyPageSetting extends AggregateRoot {
 	 * @param externalUrlPermission the external url permission
 	 * @param topPagePartUseSetting the top page part use setting
 	 */
-	public MyPageSetting(CompanyId companyId, UseDivision useMyPage, UseDivision useWidget, UseDivision useDashboard,
+	public MyPageSetting(String companyId, UseDivision useMyPage, UseDivision useWidget, UseDivision useDashboard,
 			UseDivision useFlowMenu, PermissionDivision externalUrlPermission,
 			List<TopPagePartUseSetting> topPagePartUseSetting) {
 		super();
@@ -75,7 +74,7 @@ public class MyPageSetting extends AggregateRoot {
 	 */
 	public static MyPageSetting createFromJavaType(String CompanyId, Integer useMyPage, Integer useWidget,
 			Integer useDashboard, Integer useFlowMenu, Integer externalUrlPermission,List<TopPagePartUseSetting> topPagePartUseSetting) {
-		return new MyPageSetting(new CompanyId(CompanyId), UseDivision.valueOf(useMyPage),
+		return new MyPageSetting(CompanyId, UseDivision.valueOf(useMyPage),
 				UseDivision.valueOf(useWidget), UseDivision.valueOf(useDashboard), UseDivision.valueOf(useFlowMenu),
 				PermissionDivision.valueOf(externalUrlPermission), topPagePartUseSetting);
 	}
