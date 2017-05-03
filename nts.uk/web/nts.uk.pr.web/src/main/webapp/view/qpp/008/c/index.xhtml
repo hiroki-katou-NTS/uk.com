@@ -28,11 +28,15 @@
 
 		<ui:define name="content">
 			<div id="functions-area" class="function-area">
-				<button id="C_BTN_001" data-bind="click: createButtonClick">新規</button>
-				<button id="C_BTN_002" class="proceed"
-					data-bind="click: insertUpdateData, enable: $root.errors.isEmpty" >登録</button>
-				<button id="C_BTN_003" class="danger" data-bind="click: deleteConfirm,  enable: isEnableDeleteBtn">削除</button>
-				<button id="C_BTN_004" data-bind="click: closeDialog">閉じる</button>
+				<div id = "functions-area-content">
+					<button id="C_BTN_001" data-bind="click: createButtonClick">新規</button>
+					<button id="C_BTN_002" class="proceed"
+						data-bind="click: insertUpdateData, enable: $root.errors.isEmpty">登録</button>
+					<button id="C_BTN_003" class="danger"
+						data-bind="click: deleteConfirm,  enable: isEnableDeleteBtn">削除</button>
+					<button id="C_BTN_004" data-bind="click: closeDialog">閉じる</button>
+				</div>
+
 			</div>
 			<div id="contents-area">
 				<div class="nts-left-content bg-green caret-right caret-background">

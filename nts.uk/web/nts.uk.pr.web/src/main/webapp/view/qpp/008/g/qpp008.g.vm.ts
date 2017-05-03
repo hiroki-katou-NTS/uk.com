@@ -226,8 +226,10 @@ module qpp008.g.viewmodel {
                 return new PaycompConfirmModel(item, processingYMEarlier, processingYMLater);
             });
             let insertUpdateData = new InsetUpdatePaycompConfirmModel(paycompConfirmList, self.employeerIDSelection);
-            service.insertUpdatePaycompConfirm(insertUpdateData).fail(function(error: any) {
-               
+            service.insertUpdatePaycompConfirm(insertUpdateData).done(function() {
+                self.detailDifferentListDirty.reset();
+            }).fail(function(error: any) {
+
             });
         }
 

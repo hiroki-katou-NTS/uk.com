@@ -2,6 +2,7 @@ module qpp008.b.viewmodel {
     export class ScreenModel {
         printSetting: KnockoutObservable<PrintSettingModel>;
         hrchyIndexArray: KnockoutComputed<Array<number>>;
+        hrchyIndexList: KnockoutObservableArray<HrchyIndexModel>;
         /* SwictchButton*/
         roundingRules: KnockoutObservableArray<any>;
         roundingRules1: KnockoutObservableArray<any>;
@@ -13,6 +14,10 @@ module qpp008.b.viewmodel {
             let self = this;
             self.printSetting = ko.observable(new PrintSettingModel(null));
             self.printSettingDirty = new nts.uk.ui.DirtyChecker(self.printSetting);
+            self.hrchyIndexList = ko.observableArray([]);
+            for (let i = 1; i < 10; i++) {
+                self.hrchyIndexList.push(new HrchyIndexModel(i, i + " 階層", true));
+            }
             /*Switch*/
             //B_SEL_010
             self.roundingRules = ko.observableArray([
@@ -28,14 +33,30 @@ module qpp008.b.viewmodel {
             self.hrchyIndexArray = ko.computed(function() {
                 let itemsDetail = [0, 0, 0, 0, 0];
                 let hrchyIndexSelect = self.printSetting().hrchyIndexSelectId().sort();
+                let newHrchyIndexList = new Array();
+                let enable = true;
+                if (hrchyIndexSelect.length >= 5) {
+                    enable = false
+                }
+                for (let i = 1; i < 10; i++) {
+                    newHrchyIndexList.push(new HrchyIndexModel(i, i + " 階層", enable));
+                }
                 _.forEach(hrchyIndexSelect, function(item, i) {
                     for (let x = 0; x < 5; x++) {
                         if (itemsDetail[x] === 0 && i < 5) {
                             itemsDetail[x] = item;
+                            _.find(newHrchyIndexList, function(o) {
+                                if(o.id === item){
+                                    o.enable(true);
+                                    return true;
+                                }
+                                return false; 
+                            });
                             break;
                         }
                     }
                 });
+                self.hrchyIndexList(newHrchyIndexList);
                 return itemsDetail;
             }, self).extend({ deferred: true });
         }
@@ -52,7 +73,7 @@ module qpp008.b.viewmodel {
         loadData() {
             let self = this;
             let dfd = $.Deferred();
-            service.getComparingPrintSet().done(function(data: PrintSettingMapping) {
+            service.getComparingPrintSet().done(function(data: any) {
                 self.printSetting(new PrintSettingModel(data));
                 self.printSettingDirty.reset();
                 dfd.resolve();
@@ -62,8 +83,8 @@ module qpp008.b.viewmodel {
 
         configurationPrintSetting(): any {
             let self = this;
-            service.insertUpdateData(new ConfigPrintSettingModel(self.printSetting(), self.hrchyIndexArray())).done(function(){
-                 self.loadData();
+            service.insertUpdateData(new ConfigPrintSettingModel(self.printSetting(), self.hrchyIndexArray())).done(function() {
+                self.loadData();
             });
         }
 
@@ -92,13 +113,9 @@ module qpp008.b.viewmodel {
         totalSet: KnockoutObservable<boolean> = ko.observable(true);
         sumEachDeprtSet: KnockoutObservable<boolean> = ko.observable(false);
         sumDepHrchyIndexSet: KnockoutObservable<boolean> = ko.observable(false);
-        hrchyIndexList: KnockoutObservableArray<HrchyIndexModel> = ko.observableArray([]);
         hrchyIndexSelectId: KnockoutObservableArray<number> = ko.observableArray([]);
-        constructor(settingMapping: PrintSettingMapping) {
+        constructor(settingMapping: any) {
             let self = this;
-            for (let i = 1; i < 10; i++) {
-                self.hrchyIndexList.push(new HrchyIndexModel(i, i + " 階層"));
-            }
             if (settingMapping) {
                 self.plushBackColor(settingMapping.plushBackColor);
                 self.minusBackColor(settingMapping.minusBackColor);
@@ -120,43 +137,12 @@ module qpp008.b.viewmodel {
     export class HrchyIndexModel {
         id: number;
         name: string;
-        constructor(id: number, name: string) {
+        enable: KnockoutObservable<boolean>
+        constructor(id: number, name: string, enable: boolean) {
             let self = this;
             self.id = id;
             self.name = name;
-        }
-    }
-
-    export class PrintSettingMapping {
-        plushBackColor: string;
-        minusBackColor: string;
-        showItemIfCfWithNull: number;
-        showItemIfSameValue: number;
-        showPayment: number;
-        totalSet: number;
-        sumEachDeprtSet: number;
-        sumDepHrchyIndexSet: number;
-        hrchyIndex1: number;
-        hrchyIndex2: number;
-        hrchyIndex3: number;
-        hrchyIndex4: number;
-        hrchyIndex5: number;
-        constructor(plushBackColor: string, minusBackColor: string, showItemIfCfWithNull: number, showItemIfSameValue: number, showPayment: number,
-            totalSet: number, sumEachDeprtSet: number, sumDepHrchyIndexSet: number, hrchyIndex1: number, hrchyIndex2: number,
-            hrchyIndex3: number, hrchyIndex4: number, hrchyIndex5: number) {
-            this.plushBackColor = plushBackColor;
-            this.minusBackColor = minusBackColor;
-            this.showItemIfCfWithNull = showItemIfCfWithNull;
-            this.showItemIfSameValue = showItemIfSameValue;
-            this.showPayment = showPayment;
-            this.totalSet = totalSet;
-            this.sumEachDeprtSet = sumEachDeprtSet;
-            this.sumDepHrchyIndexSet = sumDepHrchyIndexSet;
-            this.hrchyIndex1 = hrchyIndex1;
-            this.hrchyIndex2 = hrchyIndex2;
-            this.hrchyIndex3 = hrchyIndex3;
-            this.hrchyIndex4 = hrchyIndex4;
-            this.hrchyIndex5 = hrchyIndex5;
+            self.enable = ko.observable(enable);
         }
     }
 

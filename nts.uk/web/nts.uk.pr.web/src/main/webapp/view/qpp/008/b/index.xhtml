@@ -23,7 +23,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="contents-area-boder">
-					<div data-bind="with: printSetting">						
+					<div data-bind="with: printSetting">
 						<div class="div-title-content ">
 							<span class="label" id="B_LBL_001">明細・合計出力設定</span> <span
 								class="label" id="B_LBL_002">※ 2017/04/01 の部門構成で集計します。</span>
@@ -54,12 +54,13 @@
 										<div class="div-checkbox-child">
 											<span class="label" id="B_LBL_003">累計したい%部門%の階層を指定（最大５つ）</span>
 											<div class="tableCheckBoxChild">
-												<div class="col-100px" style="" data-bind="ntsMultiCheckBox: {
-														options: hrchyIndexList,
+												<div class="col-100px" style=""
+													data-bind="ntsMultiCheckBox: {
+														options: $parent.hrchyIndexList,
 														optionsValue: 'id',
 														optionsText: 'name',
-															value: hrchyIndexSelectId,
-															enable: true
+														value: hrchyIndexSelectId,
+														enable: true
 														}">
 												</div>
 											</div>
