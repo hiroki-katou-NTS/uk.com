@@ -399,8 +399,9 @@ module nts.uk.ui.jqueryExtentions {
                     mousePos = null;
                     dragSelectRange = [];
                     $(window).unbind('mousemove.NtsGridListDragging');
+                    $grid.triggerHandler('selectionchanged');  
                     clearInterval(timerAutoScroll);
-                });
+                }); 
             });
 
             function updateSelections() {
