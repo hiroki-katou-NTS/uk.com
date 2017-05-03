@@ -30,7 +30,7 @@ module qmm020.c.viewmodel {
             var self = this;
             let dfd = $.Deferred<any>();
             self.itemList = ko.observableArray([]);
-            self.selectedCode = ko.observable('');
+            self.selectedCode = ko.observable();
             self.isEnable = ko.observable(true);
             self.selectedList = ko.observableArray([]);
             self.employeeTotal = ko.observableArray([]);
@@ -60,6 +60,7 @@ module qmm020.c.viewmodel {
             self.selectedCode.subscribe(function(codeChange) {
                 //let x =  self.getEmpName();
                 //self.itemAllotSetting([]);
+                self.getHist();
                 service.getEmployeeDetail(ko.toJS(codeChange)).done(function(data: Array<IModel>) {
                     let employeeItems: Array<IModel> = [];
                     if (data && data.length > 0) {
@@ -89,7 +90,7 @@ module qmm020.c.viewmodel {
                         dfd.resolve();
                     }
 
-                    self.itemAllotSetting(employeeItems);
+//                    self.itemAllotSetting(employeeItems);
                     dfd.resolve();
 
                 }).fail(function(res) {
@@ -97,6 +98,7 @@ module qmm020.c.viewmodel {
                     alert(res);
                 });
                 dfd.promise();
+                self.currentItem(self.getHist(codeChange));
             });
             // init columns and title for grid
             self.LoadData([]);
@@ -120,11 +122,11 @@ module qmm020.c.viewmodel {
                     { headerText: "", key: "bonusDetailName", dataType: "string", hidden: true },
                     {
                         headerText: "邨ｦ荳取�守ｴｰ譖ｸ", key: "paymentDetailCode", dataType: "string", width: "250px", unbound: true,
-                        template: "<input type='button' data-bind='click: abc' class='" + "C_BTN_001" + "' value='驕ｸ謚�'/><label style='margin-left:5px;'>${paymentDetailCode}</label><label style='margin-left:15px;'>${paymentDetailName}</label>"
+                        template: "<input type='button' data-name='${paymentDetailCode}' class='" + "C_BTN_001" + "' value='驕ｸ謚�'/><label style='margin-left:5px;'>${paymentDetailCode}</label><label style='margin-left:15px;'>${paymentDetailName}</label>"
                     },
                     {
                         headerText: "雉樔ｸ取�守ｴｰ譖ｸ", key: "bonusDetailCode", dataType: "string", width: "20%", unbound: true,
-                        template: "<input type='button' data-bind='click: abc' class='" + "C_BTN_002" + "' value='驕ｸ謚�'/><label style='margin-left:5px;'>${bonusDetailCode}</label><label style='margin-left:15px;'>${bonusDetailName}</label>"
+                        template: "<input type='button' data-name='${bonusDetailName}' class='" + "C_BTN_002" + "' value='驕ｸ謚�'/><label style='margin-left:5px;'>${bonusDetailCode}</label><label style='margin-left:15px;'>${bonusDetailName}</label>"
                     },
                 ],
                 features: [{
@@ -148,9 +150,10 @@ module qmm020.c.viewmodel {
         //find histId to subscribe
         getHist(value: any) {
             let self = this;
-            return _.find(self.itemList(), function(item: EmployeeSettingHeaderModel) {
-                return item.historyId === value;
+            let rtHist = _.find(ko.toJS(self.itemTotalList()), function(item: IModel) {
+                return item.historyId == value;
             });
+            return rtHist;
         }
         //find employeeName initiation
         getEmpName(value: any) {
@@ -187,14 +190,13 @@ module qmm020.c.viewmodel {
             service.getEmployeeName().done(function(data: Array<IModel>) {
                 let employeeItem: Array<TotalModel> = [];
                 if (data && data.length > 0) {
-
-                    _.map(data, function(item) {
+                    _.forEach(data, function(item) {
                         employeeItem.push({ historyId: item.historyId, employmentCode: item.employmentCode, employmentName: item.employmentName });
                     });
                     dfd.resolve();
                 }
                 self.employeeTotal(employeeItem);
-                self.currentItem(employeeItem.employmentName);
+               // self.currentItem(employeeItem.employmentName);
                 // Set datafor grid
                 $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
                 console.log(self.dataSource);
@@ -211,7 +213,7 @@ module qmm020.c.viewmodel {
             service.getEmployeeAllotHeaderList().done(function(data: Array<IModel>) {
                 if (data.length > 0) {
                     _.forEach(data, function(item) {
-                        totalItem.push(new TotalModel({ historyId: item.historyId, startEnd: item.startYm + ' ~ ' + item.endYm, endYm: item.endYm }));
+                        totalItem.push(new TotalModel({ historyId: item.historyId, startEnd: item.startYm + ' ~ ' + item.endYm, endYm: item.endYm, startYm: item.startYm }));
                     });
                     self.itemTotalList(totalItem);
                     debugger;
@@ -480,7 +482,8 @@ module qmm020.c.viewmodel {
 $(function() {
     $(document).on("click", ".C_BTN_001", function() {
         var self = this;
-        var valueShareMDialog = __viewContext.viewModel.viewmodelC.currentItem().startYm();
+        alert($(this).data('name'));
+        var valueShareMDialog = ko.mapping.toJS(__viewContext.viewModel.viewmodelC.currentItem().startYm);
         //debugger;
         nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
         nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
