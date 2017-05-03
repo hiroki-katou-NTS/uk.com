@@ -16,7 +16,7 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeId
 	 * @return
 	 */
-	List<DivergenceReason> getDivReasonByCode(String companyId, String divTimeId);
+	List<DivergenceReason> getDivReasonByCode(String companyId, int divTimeId);
 	/**
 	 * get all attendance item
 	 * @param companyId

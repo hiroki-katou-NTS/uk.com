@@ -7,8 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+		<script>var dialogSize = { width: 980, height: 500 };</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.basic.dom.organization.position.JobName
+				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
 				nts.uk.shr.com.primitive.Memo
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -19,23 +20,26 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="function_area">
-				<!-- B1_1 -->
-				<button id="btn_001" class="button separate-button fix-button">新規</button>
+				<!-- B1_1: Button New -->
+				<button id="btn_001" class="button separate-button fix-button"
+						data-bind="click: refreshData">新規</button>
+				<!-- B1_2: Button Registration -->
 				<button id="btn_002" class="button proceed separate-button fix-button">登録</button>
-				<button id="btn_005" class="button danger separate-button fix-button">削除</button>		
+				<!-- B1_3: Button Delete -->
+				<button id="btn_005" class="button danger separate-button fix-button">削除</button>	
+				<!-- B1_4: Button Close -->	
 				<button id="btn_004" class="button separate-button fix-button">閉じる</button>
 			</div>
-			
 			<div id="content-area">
-				<div id="left-content" class="bg-green caret-right caret-background">
-					<div class="cf" >
-						<div style="float:left">																					
+				<div id="left-content" style="float:left" class="bg-green caret-right caret-background">
+					<div class="cf">
+					<div style="float:left; margin: 20px" >																					
 							<table id="single-list" 
 								data-bind="ntsGridList:{
-									width: 300,
-									height: 450,
+									width: 280,
+									height: 250,
 									options: dataSource,								
-									optionsValue: 'divTimeId',
+									optionsValue: 'divReasoncode',
 									columns: columns,
 									multiple: false,
 									value: currentCode,
@@ -43,35 +47,30 @@
 								class="cf">
 							</table>
 						</div>
-					</div>
-				</div>
-				<div id="right-content">
+						</div>  
+				</div> 
+				<div id="right-content" style="float: left;">
 					<table >
 						<colgroup>
 							<col width="180px" />
 							<col width="*" />
 						</colgroup>
-						<tr >
-							<td class = " row">
-							<!-- B3_1 -->
-								<div data-bind="ntsFormLabel: { constraint: 'JobName', required: true }">対象項目</div>
+						<tr class = "row">
+							<td>
+							<!-- B3_1: Label -->
+								<div data-bind="ntsFormLabel: {required: true }">対象項目</div>
 							</td>
 							<td>
-								<div >
-									<!-- B3_2 -->
-									<div id="inp_002" style="padding-right: 20px;">
-										<input data-bind="ntsTextEditor: {
-	                                           value: inp_A36,
-	                                           constraint: 'JobName'}" />
-									</div>
-									<!-- B3_3 -->
- 									<div id="inp_003" style="width: 30px">
-										<input data-bind="ntsTextEditor: {
-	                                           value: inp_A37,
-	                                           constraint: 'JobName'
-	                                           }" />
-									</div> 
+								<!-- B3_2: Divergence Reason Code -->
+								<div id="inp_002">
+									<input style="width: 30px" data-bind="ntsTextEditor: {
+                                           value: divReasoncode}" />
 								</div>
+								<!-- B3_3: Divergence Reason Content -->
+								<div id="inp_003">
+								<input data-bind="ntsTextEditor: {
+                                          value: divReasonContent}" />
+								</div> 
 							</td>
 						</tr>
 						
@@ -86,7 +85,7 @@
 									options: switchUSe3,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectUse,
+									value: requiredAtr,
 									enable: true }">
 								</div>
 								<!-- B3_6 -->

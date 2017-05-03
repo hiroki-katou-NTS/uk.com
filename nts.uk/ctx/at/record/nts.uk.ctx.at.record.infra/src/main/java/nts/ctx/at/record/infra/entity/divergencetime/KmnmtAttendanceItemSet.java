@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name="KMNMT_ATTENDANCE_ITEM_SET")
+@Table(name="KMKMT_ATTENDANCE_ITEM_SET")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KmnmtAttendanceItemSet extends UkJpaEntity implements Serializable{

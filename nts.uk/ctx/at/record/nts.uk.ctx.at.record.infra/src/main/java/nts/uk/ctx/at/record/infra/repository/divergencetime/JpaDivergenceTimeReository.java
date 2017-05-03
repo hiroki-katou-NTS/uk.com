@@ -83,14 +83,14 @@ public class JpaDivergenceTimeReository extends JpaRepository implements Diverge
 	/**
 	 * get all divergence reason
 	 * @param companyId
-	 * @param divTimeCode
+	 * @param divTimeId
 	 * @return
 	 */
 	@Override
-	public List<DivergenceReason> getDivReasonByCode(String companyId, String divTimeCode) {
+	public List<DivergenceReason> getDivReasonByCode(String companyId, int divTimeId) {
 		return this.queryProxy().query(SELECT_ALL_DIVREASON, KmnmtDivergenceReason.class)
 				.setParameter("companyId", companyId)
-				.setParameter("divTimeCode", divTimeCode)
+				.setParameter("divTimeCode", divTimeId)
 				.getList(c->toDomainDivReason(c));
 	}
 	/**

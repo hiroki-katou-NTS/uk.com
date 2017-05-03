@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.basic.dom.organization.position.JobName
+				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
 				nts.uk.shr.com.primitive.Memo
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -19,7 +19,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="function_area">
-				<!-- A1_1 -->
+				<!-- A1_1: Button Registration -->
 				<button id="btn_001" class="button proceed separate-button fix-button">登録</button>
 			</div>
 			
@@ -54,9 +54,9 @@
 								<div data-bind="ntsFormLabel: {}">使用設定</div>
 							</td>
 							<td>
-							<!-- A3_2 -->
+							<!-- A3_2: Setting Use -->
 								<div class="cf" data-bind="ntsSwitchButton: {
-									options: switchUSe1,
+									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectUse,
@@ -65,38 +65,32 @@
 							</td>
 						</tr>
 						<tr>
-							<td class = " row" data-bind="with: label_003" >
+							<td class = "row" data-bind="with: label_003" >
 								<!--A3_3 -->
-								<div data-bind="ntsFormLabel: { constraint: 'JobName', required: true }">名称</div>
+								<div data-bind="ntsFormLabel: {required: true }">名称</div>
 							</td>
 							<td>	
-								<!-- A3_4 -->														
-									<div id="inp_002" style="width: 15px">
-										<input data-bind="ntsTextEditor: {
-                                           value: inp_A34,
-                                           constraint: 'JobName',
-                                           enable: false}" />
-									</div>
+								<!-- A3_4: Divergence Time Name -->														
+								<input style="width: 60px" data-bind="ntsTextEditor: {
+                                         value: divTimeName,
+                                         enable: false}" />
 							</td>
 						</tr>	
 						<tr >
 							<td class = " row">
 							<!-- A3_5 -->
-								<div data-bind="ntsFormLabel: { constraint: 'JobName', required: true }">対象項目</div>
+								<div data-bind="ntsFormLabel: {required: true }">対象項目</div>
 							</td>
 							<td>
 								<div >
 									<!-- A3_6 -->
-									<div id="inp_002" style="padding-right: 20px;">
-										<input data-bind="ntsTextEditor: {
-	                                           value: inp_A36,
-	                                           constraint: 'JobName'}" />
+									<div id="inp_002">
+										<button id="inp_002" class="button separate-button fix-button">選択</button>
 									</div>
 									<!-- A3_7 -->
- 									<div id="inp_003" style="width: 30px">
+ 									<div id="inp_003">
 										<input style="width: 80px" data-bind="ntsTextEditor: {
 	                                           value: inp_A37,
-	                                           constraint: 'JobName'
 	                                           }" />
 									</div> 
 								</div>
@@ -109,12 +103,9 @@
 							</td>
 							<td>
 							<!-- A3_9 -->
-								<div style="width: 15px">
-									<input data-bind="ntsTextEditor: {
-                                          value: inp_A39,
-                                          constraint: 'JobName',
-                                          enable: true}" />
-								</div>
+								<input style="width: 50px" data-bind="ntsTextEditor: {
+                                         value: alarmTime,
+                                         enable: true}" />
 							</td>
 						</tr>
 						<tr class = " row">
@@ -124,40 +115,36 @@
 							</td>
 							<td>
 							<!-- A3_11 -->
-								<div style="width: 15px">
-									<input data-bind="ntsTextEditor: {
-                                          value: inp_A311,
-                                          constraint: 'JobName',
+									<input style="width: 50px" data-bind="ntsTextEditor: {
+                                          value: errTime,
                                           enable: true}" />
-								</div>
 							</td>
 						</tr>
-						<tr class = " row">
+						<tr >
 							<td>
 							<!-- A3_12 -->
 								<div data-bind="ntsFormLabel: {}">乖離理由の選択</div>
 							</td>
 							<td>
 								<div>
-									<!-- A3_13 -->
+									<!-- A3_13: Set use select -->
 									<div id="inp_006" class="cf" data-bind="ntsSwitchButton: {
-										options: switchUSe2,
+										options: selectUseSet,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectUse,
+										value: selectSel,
 										enable: true }">
 									</div>
 									<!-- A3_14 -->
- 									<div id="inp_003" style="width: 30px">
-										<input data-bind="ntsTextEditor: {
-	                                           value: inp_A314,
-	                                           constraint: 'JobName'
-	                                           }" />
+ 									<div id="inp_006" >
+ 									<!-- Open Dialog Divergence Reason -->
+										<button id="inp_003" class="button separate-button fix-button" 
+											data-bind="click: openBDialog">選択肢を設定</button>
 									</div> 
 								</div>
-								<!-- A3_15 -->
-								<div data-bind="ntsCheckBox:{
-									checked: checked,
+								<!-- A3_15: Check error(select) -->
+								<div style="margin-bottom: 10px" data-bind="ntsCheckBox:{
+									checked: checkErrInput,
 									 enable: enable,
 									  text: '日別実績の修正で乖離理由が選択された場合、エラー／アラームの色を消す'}">
 								 </div>
@@ -169,17 +156,17 @@
 								<div data-bind="ntsFormLabel: {}">乖離理由の入力</div>
 							</td>
 							<td>
-							<!-- A3_17 -->
+							<!-- A3_17: Set use input -->
 								<div class="cf" data-bind="ntsSwitchButton: {
-									options: switchUSe3,
+									options: inputUseSet,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectUse,
+									value: selectInp,
 									enable: true }">
 								</div>
-								<!-- A3_18 -->
+								<!-- A3_18: Check err (input) -->
 								<div data-bind="ntsCheckBox:{
-									checked: checked,
+									checked: checkErrInput,
 									 enable: enable,
 									  text: '日別実績の修正で乖離理由が入力された場合、エラー／アラームの色を消す'}">
 								 </div>
