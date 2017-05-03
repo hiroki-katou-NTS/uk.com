@@ -435,7 +435,7 @@ module nts.uk.pr.view.qmm008.b {
                 this.startMonth = ko.observable("");
                 this.endMonth = ko.observable("");
                 this.officeCode = ko.observable('');
-                this.autoCalculate = ko.observable(1);
+                this.autoCalculate = ko.observable(0);
                 this.rateItems = ko.observable(new HealthInsuranceRateItemModel());
                 this.roundingMethods = ko.observable(new HealthInsuranceRoundingModel());
                 this.maxAmount = ko.observable(0);
