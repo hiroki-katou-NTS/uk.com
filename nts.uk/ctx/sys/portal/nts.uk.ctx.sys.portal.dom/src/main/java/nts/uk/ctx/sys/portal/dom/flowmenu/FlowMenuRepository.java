@@ -14,7 +14,7 @@ public interface FlowMenuRepository {
 	 * @param companyID
 	 * @return
 	 */
-	List<FlowMenu> findAll(String companyID);
+	List<FlowMenuTopPagePart> findAll(String companyID);
 
 	/**
 	 * Find by code
@@ -23,7 +23,7 @@ public interface FlowMenuRepository {
 	 * @param toppagePartID
 	 * @return
 	 */
-	Optional<FlowMenu> findByCode(String companyID, String toppagePartID);
+	Optional<FlowMenuTopPagePart> findByCode(String companyID, String toppagePartID);
 
 	/**
 	 * Add

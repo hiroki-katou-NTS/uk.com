@@ -23,8 +23,9 @@ public class FlowMenuFinder {
 	}
 	
 	public Optional<FlowMenuDto> getFlowMenu(String toppagePartID) {
-		String companyID = AppContexts.user().companyID();
-		return this.repository.findByCode(companyID, toppagePartID).map(flow -> FlowMenuDto.fromDomain(flow));
+//		String companyID = AppContexts.user().companyID();
+//		return this.repository.findByCode(companyID, toppagePartID).map(flow -> FlowMenuDto.fromDomain(flow));
+		return null;
 	}
 	
 }

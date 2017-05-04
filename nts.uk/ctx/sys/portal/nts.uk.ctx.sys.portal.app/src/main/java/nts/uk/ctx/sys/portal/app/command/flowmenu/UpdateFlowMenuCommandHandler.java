@@ -20,6 +20,6 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
-		repository.update(context.getCommand().toDomain());
+		//repository.update(context.getCommand().toDomain());
 	}
 }

@@ -7,14 +7,10 @@ public enum DefClassAtr {
 	/* Default screen */
 	Default(1);
 
-	private int value;
+	public int value;
 
-	DefClassAtr(int type) {
+	private DefClassAtr(int type) {
 		this.value = type;
-	}
-
-	public int getValue() {
-		return this.value;
 	}
 
 }

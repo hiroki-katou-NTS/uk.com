@@ -8,7 +8,9 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
 
 
 @Stateless
@@ -16,14 +18,15 @@ import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 public class CreateFlowMenuCommandHandler extends CommandHandler<CreateFlowMenuCommand> {
 	
 	@Inject
-	public FlowMenuRepository   repository;
+	public FlowMenuRepository repository;
+	
+	@Inject
+	public TopPagePartRepository repositoryTop;
 
 	@Override
 	protected void handle(CommandHandlerContext<CreateFlowMenuCommand> context) {
-		repository.add(context.getCommand().toDomain());	
-	}
-	
-	
-
-	
+		String topPagePartId = IdentifierUtil.randomUniqueId();
+		repository.add(context.getCommand().toDomain(topPagePartId));
+		repositoryTop.add(context.getCommand().toTopPagePart(topPagePartId));
+	}	
 }

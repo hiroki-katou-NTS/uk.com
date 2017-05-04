@@ -21,7 +21,7 @@ module ccg030.a.viewmodel {
             //Grid list
             self.items = ko.observableArray([]);
             for (let i = 1; i < 100; i++) {
-                this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i % 3 === 0));
+                this.items.push(new ItemModel('00' + i, '基本給', "description "));
             }
             self.columns = ko.observableArray([
                 { headerText: '既定', key: 'default', width: 50 },
@@ -100,24 +100,48 @@ module ccg030.a.viewmodel {
         
         //登録ボタンを押す時
         registryFlowMenu(){
-            //新規の時    
+            var self = this;
+            var flowMenu = new model.flowMenu();
+            flowMenu.topPageCode = self.toppagepartcode.value();
+            flowMenu.topPageName = self.toppagepartname.value();
+            flowMenu.fileName = self.fileName();
+            flowMenu.widthSize = +self.width.value();
+            flowMenu.heightSize = +self.height.value();
+            //新規の時
+            if(self.toppagepartcode.enableCode){
+                service.craeteFlowMenu(flowMenu).done(function(){                    
+                }).fail(function(res){
+                    nts.uk.ui.dialog.alert(res.message);
+                })
+            }
         }
     }
     
     class ItemModel {
         code: string;
         name: string;
-        description: string;
-        other1: string;
-        other2: string;
-        deletable: boolean;
-        switchValue: boolean;
-        constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
+        defaultStr: string;
+        
+        constructor(code: string, name: string, defaultStr: string) {
             this.code = code;
             this.name = name;
-            this.description = description;
-            this.other1 = other1;
-            this.other2 = other2 || other1;
+            this.defaultStr = defaultStr;
         }
     }
+    export module model{
+        export class flowMenu{
+            topPageCode: string;
+            topPageName: string;
+            fileName: string;
+            widthSize: number;
+            heightSize: number;
+            constructor(topPageCode: string, topPageName: string, fileName: string, widthSize: number, heightSize: number){
+                this.topPageCode = topPageCode;
+                this.topPageName = topPageName;
+                this.fileName = fileName;
+                this.widthSize = widthSize;
+                this.heightSize = heightSize;
+            }
+        }
+   }
 }

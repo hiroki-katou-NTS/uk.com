@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -18,12 +19,15 @@ public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuC
 
 	@Inject
 	public FlowMenuRepository repository;
+	@Inject
+	public TopPagePartRepository repositoryTop;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteFlowMenuCommand> context) {
 		String companyID = AppContexts.user().companyID();
-		repository.remove(companyID, context.getCommand().getToppagePartID());
-				
+		String topPagePartId = context.getCommand().getToppagePartID();
+		repository.remove(companyID, topPagePartId);
+		repositoryTop.remove(companyID, topPagePartId);
 	}
 	
 }

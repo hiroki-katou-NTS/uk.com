@@ -10,20 +10,14 @@ import nts.uk.shr.com.context.AppContexts;
 @Value
 public class UpdateFlowMenuCommand {
 		
-	private String toppagePartID;
-	
-	private String fileID;
-	
+	//top page code
+	private String topPageCode;
+	//top page name
+	private String topPageName;
+	//width size
+	private int widthSize;
+	//height size
+	private int heightSize;
+	// file name
 	private String fileName;
-	
-	private int defClassAtr;
-	
-	public FlowMenu toDomain (){
-		return FlowMenu.createFromJavaType(
-			AppContexts.user().companyID(),
-			this.toppagePartID,
-			this.fileID,
-			this.fileName,
-			this.defClassAtr);
-	}
 }

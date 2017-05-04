@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuTopPagePart;
 import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenu;
 import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenuPK;
 
@@ -21,17 +22,33 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 	private final String SELECT= "SELECT c FROM CcgmtFlowMenu c";
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtFlowMenu c WHERE c.ccgmtFlowMenuPK.companyID = :companyID AND c.ccgmtFlowMenuPK.toppagePartID = :toppagePartID";
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.ccgmtFlowMenuPK.companyID = :companyID";
+	
+	private final String SELECT_FLOWMENU = "SELECT m.ccgmtFlowMenuPK.toppagePartID,  m.fileName, m.defClassAtr, t.code, t.name, t.topPagePartType, t.width, t.height "
+			+ "FROM CcgmtFlowMenu m "
+			+ "INNER JOIN CcgmtTopPagePart t "
+			+ "ON m.ccgmtFlowMenuPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID "
+			+ "AND m.ccgmtFlowMenuPK.companyID = :companyId";
 	/**
 	 * Get List FlowMenu
 	 * @param companyID
 	 * @return List of FlowMenu
 	 */
 	@Override
-	public List<FlowMenu> findAll(String companyID) {
+	public List<FlowMenuTopPagePart> findAll(String companyID) {
 		return this.queryProxy()
-				.query(SELECT_ALL_BY_COMPANY, CcgmtFlowMenu.class)
-				.setParameter("companyID", companyID)
-				.getList(c -> toDomain(c));
+				.query(SELECT_FLOWMENU, Object[].class)
+				.setParameter("companyId", companyID)
+				.getList(c -> {
+					String toppagePartID = (String) c[0];
+					String fileName = (String) c[1];
+					int defClassAtr = Integer.valueOf(c[2].toString());
+					String code = (String) c[3];
+					String name = (String) c[4];
+					int type = Integer.valueOf(c[5].toString());
+					int widthSize = Integer.valueOf(c[6].toString());
+					int heightSize = Integer.valueOf(c[7].toString());
+					return FlowMenuTopPagePart.createFromJavaType(toppagePartID, fileName, defClassAtr, code, name, type, widthSize, heightSize);
+				});
 	}
 	/**
 	 * Get Optional FlowMenu
@@ -40,12 +57,13 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 	 * @return Optinal FlowMenu
 	 */
 	@Override
-	public Optional<FlowMenu> findByCode(String companyID, String toppagePartID) {
-		return this.queryProxy()
-				.query(SELECT_SINGLE, CcgmtFlowMenu.class)
-				.setParameter("companyID", companyID)
-				.setParameter("toppagePartID", toppagePartID)
-				.getSingle(c -> toDomain(c));
+	public Optional<FlowMenuTopPagePart> findByCode(String companyID, String toppagePartID) {
+//		return this.queryProxy()
+//				.query(SELECT_SINGLE, CcgmtFlowMenu.class)
+//				.setParameter("companyID", companyID)
+//				.setParameter("toppagePartID", toppagePartID)
+//				.getSingle(c -> toDomain(c));
+		return null;
 	}
 	/**
 	 * Add
@@ -92,7 +110,7 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 		return new CcgmtFlowMenu(
 			new CcgmtFlowMenuPK(domain.getCompanyID(), domain.getToppagePartID()),
 			domain.getFileID(), domain.getFileName().v(),
-			domain.getDefClassAtr().getValue()
+			domain.getDefClassAtr().value
 		);
 	}
 
