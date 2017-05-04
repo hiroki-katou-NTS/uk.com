@@ -6,34 +6,17 @@ package nts.uk.ctx.pr.report.dom.payment.contact;
 
 import java.util.Set;
 
-import nts.arc.time.YearMonth;
-import nts.uk.shr.com.primitive.sample.ProcessingNo;
-
 /**
  * The Interface ContactItemsSettingSetMemento.
  */
 public interface ContactItemsSettingSetMemento {
 
 	/**
-	 * Sets the company code.
+	 * Sets the contact items code.
 	 *
-	 * @param companyCode the new company code
+	 * @param contactItemsCode the new contact items code
 	 */
-	void setCompanyCode(String companyCode);
-
-	/**
-	 * Sets the processing no.
-	 *
-	 * @param processingNo the new processing no
-	 */
-	 void setProcessingNo(ProcessingNo processingNo);
-
-	/**
-	 * Sets the processing ym.
-	 *
-	 * @param yearMonth the new processing ym
-	 */
-	void setProcessingYm(YearMonth yearMonth);
+	void setContactItemsCode(ContactItemsCode contactItemsCode);
 
 	/**
 	 * Sets the initial cp comment.
