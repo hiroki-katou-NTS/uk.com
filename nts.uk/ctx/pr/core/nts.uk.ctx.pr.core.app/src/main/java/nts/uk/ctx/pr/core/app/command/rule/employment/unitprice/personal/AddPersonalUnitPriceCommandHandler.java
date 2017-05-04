@@ -24,13 +24,7 @@ public class AddPersonalUnitPriceCommandHandler extends CommandHandler<AddPerson
 	protected void handle(CommandHandlerContext<AddPersonalUnitPriceCommand> context) {
 		AddPersonalUnitPriceCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		if (StringUtil.isNullOrEmpty(command.getPersonalUnitPriceCode(), true)) {
-			throw new BusinessException("ER001");
-		}
 
-		if (StringUtil.isNullOrEmpty(command.getPersonalUnitPriceName(), true)) {
-			throw new BusinessException("ER001");
-		}
 		PersonalUnitPrice domain = PersonalUnitPrice.createFromJavaType(
 				companyCode,
 				command.getPersonalUnitPriceCode().trim(),
@@ -47,6 +41,9 @@ public class AddPersonalUnitPriceCommandHandler extends CommandHandler<AddPerson
 				command.getPaymentSettingType(),
 				command.getUnitPriceAtr());
 	    
+		// validate
+		domain.validate();
+		
 	    Optional<PersonalUnitPrice> unitPrice = personalUnitPriceRepository.find(companyCode, command.getPersonalUnitPriceCode());
 		if (unitPrice.isPresent()) {
 			throw new BusinessException("ER005");

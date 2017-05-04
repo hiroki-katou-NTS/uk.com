@@ -48,19 +48,19 @@ public class AddWorkPlaceCommandHandler extends CommandHandler<List<AddWorkPlace
 		List<WorkPlace> listDep = new ArrayList<WorkPlace>();
 		String newhistoryId = IdentifierUtil.randomUniqueId();
 		if (context.getCommand().size() == 1) {
-
+			// truong hop add 1 workplace
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 			try {
 				startDate1 = formatter.parse(context.getCommand().get(0).getStartDate());
 				endDate1 = formatter.parse(context.getCommand().get(0).getEndDate());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			GeneralDate startDate = GeneralDate.legacyDate(startDate1);
 			GeneralDate endDate = GeneralDate.legacyDate(endDate1);
 
 			WorkPlace workPlace = null;
+			// truong hop add 1 WorkPLace khi them moi 1 lich su rong.
 			if (context.getCommand().get(0).getHistoryId() == null) {
 				workPlace = new WorkPlace(companyCode,
 						new WorkPlaceCode(context.getCommand().get(0).getWorkPlaceCode()), endDate,
@@ -81,11 +81,11 @@ public class AddWorkPlaceCommandHandler extends CommandHandler<List<AddWorkPlace
 				String historyId = workPlace.getHistoryId();
 				addMemo(companyCode, historyId, context.getCommand().get(0).getMemo());
 			} else {
-
+				// truong hop  add 1 workplace khi click nut them moi 1 dep.
 				if (workPlaceRepository.isDuplicateWorkPlaceCode(companyCode,
 						new WorkPlaceCode(context.getCommand().get(0).getWorkPlaceCode()),
 						context.getCommand().get(0).getHistoryId())) {
-					throw new BusinessException("ER026");
+					throw new BusinessException("ER005");
 				}
 
 				workPlace = new WorkPlace(companyCode,
@@ -109,8 +109,7 @@ public class AddWorkPlaceCommandHandler extends CommandHandler<List<AddWorkPlace
 			}
 			workPlaceRepository.add(workPlace);
 		} else {
-
-			System.out.print("");
+			// truong hop add 1 list workplace khi them moi 1 lich su tu lich su cu.
 			for (int i = 0; i < context.getCommand().size(); i++) {
 
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
@@ -118,7 +117,6 @@ public class AddWorkPlaceCommandHandler extends CommandHandler<List<AddWorkPlace
 					startDate1 = formatter.parse(context.getCommand().get(i).getStartDate());
 					endDate1 = formatter.parse(context.getCommand().get(i).getEndDate());
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 

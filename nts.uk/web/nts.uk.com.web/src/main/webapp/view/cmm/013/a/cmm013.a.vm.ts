@@ -297,11 +297,11 @@ module cmm013.a.viewmodel {
                     self.getHistory(dfd, selectedHistory);
                     self.referenceSettings = ko.observable(0);
                 }).fail(function(error: any) {
-                    if (error.message === "ER005") {
-                        alert("入力した*は既に存在しています。\r\n職位コードを確認してください。");
+                    if (error.messageId === "ER005") {
+                        nts.uk.ui.dialog.alert("入力したコードは既に存在しています。\r\n職位コードを確認してください。");
                     }
-                    if (error.message === "ER026") {
-                        alert("更新対象のデータが存在しません。");
+                    if (error.messageId === "ER026") {
+                       nts.uk.ui.dialog.alert("更新対象のデータが存在しません。");
                     }
                 });
                 return dfd.promise();
