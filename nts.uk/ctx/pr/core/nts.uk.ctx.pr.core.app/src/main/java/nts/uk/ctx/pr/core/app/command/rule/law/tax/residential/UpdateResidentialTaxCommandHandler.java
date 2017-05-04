@@ -28,12 +28,13 @@ public class UpdateResidentialTaxCommandHandler extends CommandHandler<UpdateRes
 		 String companyCode = AppContexts.user().companyCode();
 		 if(update.getResiTaxCode().isEmpty() || update.getResiTaxAutonomy().isEmpty()){
 			 throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。")); 
-		 }
-		 this.resiTaxRepository.update(ResidentialTax.createFromJavaType(
+		 }	 
+    ResidentialTax resiTax = ResidentialTax.createFromJavaType(
 				 companyCode, update.getCompanyAccountNo(), update.getCompanySpecifiedNo(),
 					update.getCordinatePostOffice(), update.getCordinatePostalCode(), update.getMemo(), 
 					update.getPrefectureCode(), update.getRegisteredName(), update.getResiTaxAutonomy(), 
-					update.getResiTaxCode(), update.getResiTaxReportCode()));
+					update.getResiTaxAutonomyKana(),update.getResiTaxCode(), 
+					update.getResiTaxReportCode());
+		 this.resiTaxRepository.update(resiTax);
 	}
-
 }

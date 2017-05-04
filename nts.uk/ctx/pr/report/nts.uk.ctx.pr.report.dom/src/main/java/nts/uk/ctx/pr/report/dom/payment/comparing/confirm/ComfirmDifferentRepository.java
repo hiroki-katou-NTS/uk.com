@@ -10,7 +10,7 @@ public interface ComfirmDifferentRepository {
 
 	List<PaycompConfirm> getPayCompComfirm(String companyCode, List<String> personIDs, int processYMEarly, int processYMLater);
 
-	void insertComparingPrintSet(PaycompConfirm paycompConfirm);
+	void insertComparingPrintSet(List<PaycompConfirm> paycompConfirmList);
 
-	void updateComparingPrintSet(PaycompConfirm paycompConfirm);
+	void updateComparingPrintSet(List<PaycompConfirm> paycompConfirmList);
 }

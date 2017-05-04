@@ -132,7 +132,7 @@ module cmm008.a.viewmodel{
                 }
                 def.resolve(self.isUseKtSet());
             }).fail(function(res: any){
-                nts.uk.ui.dialog.alert(res.message);
+                nts.uk.ui.dialog.alert(res.messageId);
                 def.reject();
             });
             return def.promise();
@@ -309,7 +309,7 @@ module cmm008.a.viewmodel{
                     })
                 }).fail(function(error: any){
                     var newMess = _.find(self.lstMessage(), function(mess){
-                        return  mess.messCode === error.message;
+                        return  mess.messCode === error.messageId;
                     })
                     nts.uk.ui.dialog.alert(newMess.messName.split('*').join('コード'));    
                     self.isEnable(true);
@@ -323,7 +323,7 @@ module cmm008.a.viewmodel{
                     })
                 }).fail(function(res){
                     var newMess = _.find(self.lstMessage(), function(mess){
-                        return  mess.messCode === res.message;
+                        return  mess.messCode === res.messageId;
                     })
                     nts.uk.ui.dialog.alert(newMess.messName);    
                 })                
@@ -426,7 +426,7 @@ module cmm008.a.viewmodel{
                     })
                 }).fail(function(res: any){
                     var delMess = _.find(self.lstMessage(), function(mess){
-                        return  mess.messCode === res.message;
+                        return  mess.messCode === res.messageId;
                     })
                     nts.uk.ui.dialog.alert(delMess.messName);
                 })    

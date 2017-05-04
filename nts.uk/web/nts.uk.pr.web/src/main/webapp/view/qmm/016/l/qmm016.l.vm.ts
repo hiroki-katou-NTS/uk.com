@@ -20,11 +20,13 @@ module nts.uk.pr.view.qmm016.l {
             lstCertifyGroup: KnockoutObservableArray<CertifyGroupFindOutDto>;
             columnsLstCertifyGroup: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             selectCodeLstLstCertifyGroup: KnockoutObservable<string>;
+            selectLstCodeCertifyGroupnPre: KnockoutObservable<string>;
             lstCertification: CertificationFindInDto[];
             //Info CertifyGroup (DTO View)
             certifyGroupModel: KnockoutObservable<CertifyGroupModel>;
             textEditorOption: KnockoutObservable<option.TextEditorOption>;
             isEmpty: KnockoutObservable<boolean>;
+            isShowDirty: KnockoutObservable<boolean>;
             messageList: KnockoutObservableArray<any>;
             dirty: nts.uk.ui.DirtyChecker;
 
@@ -50,6 +52,8 @@ module nts.uk.pr.view.qmm016.l {
                 self.showDelete = ko.observable(true);
                 self.certifyGroupModel = ko.observable(new CertifyGroupModel(new CertifyGroupDto()));
                 self.dirty = new nts.uk.ui.DirtyChecker(self.certifyGroupModel);
+                self.selectLstCodeCertifyGroupnPre = ko.observable('');
+                self.isShowDirty = ko.observable(true);
             }
 
             //start page init data begin load page
@@ -84,9 +88,12 @@ module nts.uk.pr.view.qmm016.l {
                     if (data != null && data.length > 0) {
                         self.lstCertifyGroup = ko.observableArray<CertifyGroupFindOutDto>(data);
                         self.selectCodeLstLstCertifyGroup(data[0].code);
-                        self.selectCodeLstLstCertifyGroup.subscribe(function(selectionCodeLstLstCertifyGroup: string) {
-                            self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
-                        });
+                        if (self.isEmpty()) {
+                            self.selectCodeLstLstCertifyGroup.subscribe(function(code: string) {
+                                self.showchangeCertifyGroup(code);
+                            });
+                            self.isEmpty(false);
+                        }
                         self.detailCertifyGroup(data[0].code);
                         dfd.resolve(self);
                     } else {
@@ -120,8 +127,8 @@ module nts.uk.pr.view.qmm016.l {
                     service.findCertifyGroup(code).done(data => {
                         if (self.isEmpty()) {
                             self.selectCodeLstLstCertifyGroup(code);
-                            self.selectCodeLstLstCertifyGroup.subscribe(function(selectionCodeLstLstCertifyGroup: string) {
-                                self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
+                            self.selectCodeLstLstCertifyGroup.subscribe(function(code: string) {
+                                self.showchangeCertifyGroup(code);
                             });
                             self.isEmpty(false);
                         }
@@ -134,6 +141,8 @@ module nts.uk.pr.view.qmm016.l {
                         self.showDelete(true);
                         service.findAllCertification().done(dataCertification => {
                             self.certifyGroupModel().setLstCertification(dataCertification);
+                            self.selectLstCodeCertifyGroupnPre(code);
+                            self.isShowDirty(true);
                             self.dirty.reset();
                         }).fail(function() {
                             self.dirty.reset();
@@ -145,7 +154,39 @@ module nts.uk.pr.view.qmm016.l {
             //show CertifyGroup (change event)
             private showchangeCertifyGroup(selectionCodeLstLstCertifyGroup: string) {
                 var self = this;
-                self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                // type action add (new mode)
+                if (self.typeAction() == TypeActionCertifyGroup.add) {
+                    if (self.dirty.isDirty() && self.isShowDirty()) {
+                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                            self.isShowDirty(false);
+                            self.typeAction(TypeActionCertifyGroup.update);
+                            self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                        }).ifNo(function() {
+                            self.isShowDirty(false);
+                            self.selectCodeLstLstCertifyGroup(self.selectLstCodeCertifyGroupnPre());
+                            self.isShowDirty(true);
+                        });
+                    } else {
+                        self.typeAction(TypeActionCertifyGroup.update);
+                        self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                    }
+                } else {
+                    // type action update (update mode)
+                    if (self.dirty.isDirty() && self.isShowDirty()) {
+                        if (selectionCodeLstLstCertifyGroup !== self.selectLstCodeCertifyGroupnPre()) {
+                            nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                                self.isShowDirty(false);
+                                self.typeAction(TypeActionCertifyGroup.update);
+                                self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                            }).ifNo(function() {
+                                self.selectCodeLstLstCertifyGroup(self.selectLstCodeCertifyGroupnPre());
+                            });
+                        }
+                    } else {
+                        self.typeAction(TypeActionCertifyGroup.update);
+                        self.detailCertifyGroup(selectionCodeLstLstCertifyGroup);
+                    }
+                }
             }
 
             //reset value => begin add button

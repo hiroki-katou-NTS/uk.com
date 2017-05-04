@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.CategoryAtr;
@@ -14,7 +13,6 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ItemCode;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 public class PaycompConfirm extends AggregateRoot {
 
 	private String companyCode;
@@ -44,5 +42,4 @@ public class PaycompConfirm extends AggregateRoot {
 				EnumAdaptor.valueOf(confirmedStatus, ConfirmedStatus.class), new ValueDifference(valueDifference),
 				new ReasonDifference(reasonDifference));
 	}
-
 }

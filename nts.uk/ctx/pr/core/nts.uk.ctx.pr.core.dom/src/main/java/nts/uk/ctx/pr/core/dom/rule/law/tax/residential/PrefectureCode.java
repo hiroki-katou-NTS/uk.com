@@ -7,12 +7,7 @@ public class PrefectureCode extends StringPrimitiveValue<PrefectureCode> {
 
 	public PrefectureCode(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 
