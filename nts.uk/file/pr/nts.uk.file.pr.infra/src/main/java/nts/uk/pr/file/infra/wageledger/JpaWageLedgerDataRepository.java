@@ -85,27 +85,27 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 
 	/** The Constant HEADER_QUERY_STRING. */
 	private static final String HEADER_QUERY_STRING = "SELECT p, pc, pd, cd, pt "
-			+ "FROM PbsmtPersonBase p, "
-			+ "PcpmtPersonCom pc, "
-			+ "PogmtPersonDepRgl pd, "
-			+ "CmnmtDep cd, "
-			+ "PclmtPersonTitleRgl pt "
-			+ "WHERE pc.pcpmtPersonComPK.pid = p.pid "
-			+ "AND pd.pogmtPersonDepRglPK.pid = p.pid "
-			+ "AND cd.cmnmtDepPK.departmentCode = pd.depcd "
-			+ "AND pt.pclmtPersonTitleRglPK.pid = p.pid "
-			+ "AND p.pid IN :personIds "
+			+ "FROM PbsmtPersonBase p "
+			+ "LEFT JOIN PcpmtPersonCom pc"
+			+ " ON pc.pcpmtPersonComPK.pid = p.pid "
+			+ "LEFT JOIN PogmtPersonDepRgl pd"
+			+ " ON pd.pogmtPersonDepRglPK.pid = p.pid "
+			+ "LEFT JOIN CmnmtDep cd"
+			+ " ON cd.cmnmtDepPK.departmentCode = pd.depcd "
+			+ "LEFT JOIN PclmtPersonTitleRgl pt"
+			+ " ON pt.pclmtPersonTitleRglPK.pid = p.pid "
+			+ "WHERE p.pid IN :personIds "
 			+ "AND pc.pcpmtPersonComPK.ccd = :companyCode "
 			+ "AND pd.strD <= :baseDate "
 			+ "AND pd.endD >= :baseDate ";
 	
 	/** The Constant ALL_DETAIL_DATA_QUERY_STRING. */
 	private static final String ALL_DETAIL_DATA_QUERY_STRING = "SELECT d, m "
-			+ "FROM QcamtItem m, "
-			+ "QstdtPaymentDetail d "
-			+ "WHERE d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd "
-			+ "AND d.qstdtPaymentDetailPK.companyCode = m.qcamtItemPK.ccd "
-			+ "AND m.qcamtItemPK.ccd = :companyCode "
+			+ "FROM QcamtItem m "
+			+ "LEFT JOIN QstdtPaymentDetail d"
+			+ " ON d.qstdtPaymentDetailPK.itemCode = m.qcamtItemPK.itemCd"
+			+ " AND d.qstdtPaymentDetailPK.companyCode = m.qcamtItemPK.ccd "
+			+ "WHERE m.qcamtItemPK.ccd = :companyCode "
 			+ "AND d.qstdtPaymentDetailPK.personId in :personIds "
 			+ "AND d.qstdtPaymentDetailPK.processingYM >= :startProcessingYM "
 			+ "AND d.qstdtPaymentDetailPK.processingYM <= :endProcessingYM "
@@ -117,11 +117,11 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	
 	/** The Constant POSITION_QUERY_STRING. */
 	private static final String POSITION_QUERY_STRING = "SELECT jt "
-			+ "FROM CmnmtJobHist jh, "
-			+ "CmnmtJobTitle jt "
+			+ "FROM CmnmtJobHist jh "
+			+ "LEFT JOIN CmnmtJobTitle jt"
+			+ " ON jt.cmnmtJobTitlePK.historyId = jh.cmnmtJobHistPK.historyId "
 			+ "WHERE jt.cmnmtJobTitlePK.companyCode = :companyCode "
 			+ "AND jt.cmnmtJobTitlePK.jobCode IN :jobCode "
-			+ "AND jt.cmnmtJobTitlePK.historyId = jh.cmnmtJobHistPK.historyId "
 			+ "AND jh.startDate <= :baseDate "
 			+ "AND jh.endDate >= :baseDate";
 	
@@ -138,7 +138,13 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 					+ "AND ph.qstdtPaymentHeaderPK.sparePayAtr = 0 "
 					+ "AND ph.qstdtPaymentHeaderPK.processingYM >= :startProcessingYM "
 					+ "AND ph.qstdtPaymentHeaderPK.processingYM <= :endProcessingYM "
-					+ "AND ph.qstdtPaymentHeaderPK.payBonusAtr = :paymentType";;
+					+ "AND ph.qstdtPaymentHeaderPK.payBonusAtr = :paymentType";
+	
+	/** The Constant BEFORE_END_YEAR_DATA_QUERY_STRING. */
+	private static final String BEFORE_END_YEAR_DATA_QUERY_STRING = "SELECT ph FROM QyedtYearendDetail ph "
+			+ "WHERE ph.qyedtYearendDetailPK.ccd = :companyCode "
+			+ "AND ph.qyedtYearendDetailPK.pid IN :personIds "
+			+ "AND ph.qyedtYearendDetailPK.yearK = :year";
 
 	/** The Constant TOTAL_TAX_ITEM_CODE. */
 	private static final String TOTAL_TAX_ITEM_CODE = "F001";
@@ -492,14 +498,9 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 	 */
 	private Map<String, BeforeEndYearData> findBeforeEndYearData(String companyCode, WageLedgerReportQuery queryData) {
 		EntityManager em = this.getEntityManager();
-		// Create Year Month.
-		String queryString = "SELECT ph FROM QyedtYearendDetail ph "
-				+ "WHERE ph.qyedtYearendDetailPK.ccd = :companyCode "
-				+ "AND ph.qyedtYearendDetailPK.pid IN :personIds "
-				+ "AND ph.qyedtYearendDetailPK.yearK = :year";
 		
 		// Create Query.
-		TypedQuery<QyedtYearendDetail> query = em.createQuery(queryString, QyedtYearendDetail.class)
+		TypedQuery<QyedtYearendDetail> query = em.createQuery(BEFORE_END_YEAR_DATA_QUERY_STRING, QyedtYearendDetail.class)
 				.setParameter("companyCode", companyCode)
 				.setParameter("year", queryData.targetYear);
 		// Query data.
