@@ -2936,7 +2936,7 @@ var nts;
                             var rowKey = $row.attr("data-id");
                             $parent.find(".nts-switch-button").removeClass("selected");
                             var element = _.find($parent.find(".nts-switch-button"), function (e) {
-                                return selectedValue === $(e).attr('data-value');
+                                return selectedValue.toString() === $(e).attr('data-value').toString();
                             });
                             if (element !== undefined) {
                                 $(element).addClass('selected');
@@ -3074,6 +3074,7 @@ var nts;
                                 mousePos = null;
                                 dragSelectRange = [];
                                 $(window).unbind('mousemove.NtsGridListDragging');
+                                $grid.triggerHandler('selectionchanged');
                                 clearInterval(timerAutoScroll);
                             });
                         });
