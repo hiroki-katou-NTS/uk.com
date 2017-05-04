@@ -92,3 +92,8 @@
 .screen-d .ui-iggrid-rowselector-class{
 	width: 0px !important;
 }
+
+.screen-d .d-btn-001,
+.screen-d .d-btn-002 {
+	margin-right: 5px;
+}
