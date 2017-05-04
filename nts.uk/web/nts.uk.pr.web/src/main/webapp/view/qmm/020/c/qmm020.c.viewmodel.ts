@@ -56,7 +56,7 @@ module qmm020.c.viewmodel {
             this.columns = ko.observableArray([
                 { headerText: '', prop: 'startEnd', width: 200 }
             ]);
-            
+
             self.selectedCode.subscribe(function(codeChange) {
                 //let x =  self.getEmpName();
                 //self.itemAllotSetting([]);
@@ -90,7 +90,7 @@ module qmm020.c.viewmodel {
                         dfd.resolve();
                     }
 
-//                    self.itemAllotSetting(employeeItems);
+                    //                    self.itemAllotSetting(employeeItems);
                     dfd.resolve();
 
                 }).fail(function(res) {
@@ -196,7 +196,7 @@ module qmm020.c.viewmodel {
                     dfd.resolve();
                 }
                 self.employeeTotal(employeeItem);
-               // self.currentItem(employeeItem.employmentName);
+                // self.currentItem(employeeItem.employmentName);
                 // Set datafor grid
                 $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
                 console.log(self.dataSource);
@@ -487,7 +487,15 @@ $(function() {
         nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
         nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
             //get selected code from M dialog
+            var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
+
+            __viewContext.viewModel.viewmodelC.currentItem().paymentDetailCode(stmtCodeSelected);
             //get Name payment Name
+            service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
+                self.currentItem().payName(stmtName);
+            }).fail(function(res) {
+                alert(res);
+            });
         });
     });
 })

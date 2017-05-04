@@ -3,68 +3,43 @@
 <html>
 <body>
 	<div class="contents-area">
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
-		<!-- LEFT -->
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
-		<div style="margin-left: 10px;" class="left-content">
-			<div class="bg-green caret-right caret-background"
-				style="float: left; width: 250px; height: 300px; margin: 20px 50px;">
-				<button id="C_BTN_003" style="margin: 20px 20px"
-					data-bind="click:openJDialog">陞ｻ雎�髴托ｽｽ陷�</button>
-				<button id="C_BTN_004" style="margin: 20px 20px"
-					data-bind="click:openKDialog">陞ｻ雎�驍ｱ�ｽｨ鬮ｮ</button>
-				<div style="margin: 10px 20px;">
-					<div style="width: 250px;" id="C_LST_002"
-						data-bind="ntsListBox: {
-									options: itemTotalList,
-									optionsValue: 'id',
-									optionsText: 'startEnd',
-									value: selectedCode,
-									enable: isEnable(),
-									rows:5,
-									required: true,
-									columns: [
-										{ prop: 'startEnd', length: 12 }
-									]}">
-					</div>
-					<!-- <table id="single-list"
-						data-bind="ntsGridList: {
-									width: 550,
-									height: 110,
-									dataSource: itemTotalList,
-									primaryKey: 'historyId',
-									columns: columns,
-									multiple: false,
-									value: selectedCode
-								}"></table> -->
+		<div class="left-content">
+			<div class="bg-green caret-right caret-background">
+				<div class= "C_BTN_34">
+					<button id="C_BTN_003" data-bind="click:openJDialog">履歴追加ボタン</button>
+					<button id="C_BTN_004" data-bind="click:openKDialog">履歴編集ボタン</button>
 				</div>
-
+				<div id="C_LST_002"
+					data-bind="ntsListBox: {
+						options: itemTotalList,
+						optionsValue: 'id',
+						optionsText: 'startEnd',
+						value: selectedCode,
+						enable: isEnable(),
+						rows:5,
+						required: true,
+						columns: [
+							{ prop: 'startEnd', length: 12 }
+						]}">
+				</div>
 			</div>
 		</div>
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
-		<!-- RIGHT -->
-		<!-- ~~~~~~~~~~~~~~~~~~~~~~ -->
-		<div style="margin: 10px 20px;" class="right-content">
+		<div class="right-content">
 			<div class="form-label">
-				<label id="LBL_004">髮�逕ｨ縺ｫ譏守ｴｰ譖ｸ繧堤ｴ舌★縺代ｋ</label>
-				<HR
-					style="display: block; margin-top: 1.2em; margin-left: -1em; width: 800px;" />
-				<br></br>
+				<label id="LBL_004">鬮ｮ�ｿｽ騾包ｽｨ邵ｺ�ｽｫ隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ郢ｧ蝣､�ｽｴ闊娯�邵ｺ莉｣�ｽ�</label>
+				<hr />
 			</div>
-			<div class="cf">
-				<div style="float: left; width: 600px;">
-					<div
-						data-bind="ntsSearchBox: {
+			<div>
+				<div class="searchBox"
+					data-bind="ntsSearchBox: {
 											mode: 'igGrid', 
 											comId: 'C_LST_001', 
 											items: dataSource, 
 											selected: selectedList, 
 											selectedKey: 'ID', 
 											fields: ['Name', 'ID']}" />
-					<BR />
-					<table id="C_LST_001" class="cf"></table>
-					<br />
-				</div>
+				<table id="C_LST_001" class="cf"></table>
+				<br />
 			</div>
 		</div>
 	</div>
