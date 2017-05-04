@@ -101,12 +101,15 @@ module qmm019.a {
             self.totalNormalLineNumber(0);
             self.totalGrayLineNumber(0);
             for (let category of self.categories()) {
+                category.totalGrayLine = 0;
                 for (let line of category.lines()) {
                     if (line.isRemoved || category.isRemoved) continue;
-                    if (!line.isDisplayOnPrint)
+                    if (!line.isDisplayOnPrint) {
                         self.totalGrayLineNumber(self.totalGrayLineNumber() + 1);
-                    else
+                        category.totalGrayLine += 1;
+                    } else { 
                         self.totalNormalLineNumber(self.totalNormalLineNumber() + 1);
+                    }    
                 }
             }
             self.totalNormalLine(self.totalNormalLineNumber() + "行");
