@@ -5,24 +5,20 @@
 package nts.uk.ctx.pr.report.dom.payment.contact;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * The Class PersonalComment.
+ * The Class MonthEmComment.
  */
 @Getter
-public class PersonalComment extends AggregateRoot {
+public class EmpComment {
 
-	/** The company code. */
-	private String companyCode;
+	/** The emp cd. */
+	private String empCd;
 
-	/** The employee code. */
-	private String employeeCode;
+	/** The comment. */
+	private ReportComment initialComment;
 
-	/** The comment initial. */
-	private CommentInitial commentInitial;
-
-	/** The comment month. */
-	private CommentMonth commentMonth;
+	/** The comment month cp. */
+	private ReportComment monthlyComment;
 
 }

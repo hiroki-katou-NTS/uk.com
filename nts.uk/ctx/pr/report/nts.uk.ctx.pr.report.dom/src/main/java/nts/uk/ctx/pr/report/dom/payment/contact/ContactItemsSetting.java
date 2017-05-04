@@ -9,6 +9,7 @@ import java.util.Set;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
+import nts.uk.shr.com.primitive.sample.ProcessingNo;
 
 /**
  * The Class ContactItemsSetting.
@@ -20,24 +21,48 @@ public class ContactItemsSetting extends AggregateRoot {
 	private String companyCode;
 
 	/** The processing no. */
-	private int processingNo;
-
-	/** The pay bonus atr. */
-	private PayBonusAtr payBonusAtr;
+	private ProcessingNo processingNo;
 
 	/** The processing ym. */
 	private YearMonth processingYm;
 
-	/** The spare pay attr. */
-	private SparePayAtr sparePayAttr;
-
 	/** The comment initial cp. */
-	private CommentInitialCp commentInitialCp;
+	private ReportComment initialCpComment;
 
 	/** The comment month cp. */
-	private CommentMonthCp commentMonthCp;
+	private ReportComment monthCpComment;
 
-	/** The personal comments. */
-	private Set<PersonalComment> personalComments;
+	/** The month em comments. */
+	private Set<EmpComment> monthEmComments;
 
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new contact items setting.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public ContactItemsSetting(ContactItemsSettingGetMemento memento) {
+		this.companyCode = memento.getCompanyCode();
+		this.processingNo = memento.getProcessingNo();
+		this.processingYm = memento.getProcessingYm();
+		this.initialCpComment = memento.getInitialCpComment();
+		this.monthCpComment = memento.getMonthCpComment();
+		this.monthEmComments = memento.getMonthEmComments();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(ContactItemsSettingSetMemento memento) {
+		memento.setCompanyCode(this.companyCode);
+		memento.setProcessingNo(this.processingNo);
+		memento.setProcessingYm(this.processingYm);
+		memento.setInitialCpComment(this.initialCpComment);
+		memento.setMonthCpComment(this.monthCpComment);
+		memento.setMonthEmComments(this.monthEmComments);
+	}
 }

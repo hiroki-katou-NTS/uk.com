@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class CommentInitial.
  */
 @StringMaxLength(100)
-public class CommentInitial extends StringPrimitiveValue<CommentInitial> {
+public class ReportComment extends StringPrimitiveValue<ReportComment> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -22,7 +22,7 @@ public class CommentInitial extends StringPrimitiveValue<CommentInitial> {
 	 * @param rawValue
 	 *            the raw value
 	 */
-	public CommentInitial(String rawValue) {
+	public ReportComment(String rawValue) {
 		super(rawValue);
 	}
 

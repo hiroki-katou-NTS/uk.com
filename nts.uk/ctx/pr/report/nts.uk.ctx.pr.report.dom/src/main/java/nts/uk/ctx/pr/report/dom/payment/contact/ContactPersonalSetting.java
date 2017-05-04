@@ -5,30 +5,32 @@
 package nts.uk.ctx.pr.report.dom.payment.contact;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
+import nts.uk.shr.com.primitive.sample.ProcessingNo;
 
 /**
- * The Class ContactPersonalSetting.
+ * The Class PersonalComment.
  */
 @Getter
-public class ContactPersonalSetting {
+public class ContactPersonalSetting extends AggregateRoot {
+
 	/** The company code. */
 	private String companyCode;
+
+	/** The processing no. */ // ??????
+	private ProcessingNo processingNo;
+
+	// PAY_BONUS_ATR = 0
+	// SPARE_PAY_ATR = 0
+
+	/** The processing ym. */
+	private YearMonth processingYm;
 
 	/** The employee code. */
 	private String employeeCode;
 
-	/** The comment. */
-	private CommentPersonalSetting comment;
+	/** The initial comment. */
+	private ReportComment comment;
 
-	/** The pay bonus atr. */
-	private PayBonusAtr payBonusAtr;
-
-	/** The person id. */
-	private String personId;
-
-	/** The processing no. */
-	private int processingNo;
-
-	/** The spare pay atr. */
-	private SparePayAtr sparePayAtr;
 }
