@@ -11,6 +11,8 @@ module ccg014.a.viewmodel {
         // text editor2
         texteditor2: any;
         simpleValue2: KnockoutObservable<string>;
+        // OpenDdialogB
+        titleMenuCD: KnockoutObservableArray<TitleMenuCD>; 
         constructor() {
             var self = this;
             //Grid list
@@ -31,7 +33,7 @@ module ccg014.a.viewmodel {
             constraint: 'ResidenceCode',
             option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                 textmode: "text",
-                placeholder: "Placeholder for text editor",
+                placeholder: "",
                 width: "100px",
                 textalign: "left"
             })),
@@ -44,7 +46,7 @@ module ccg014.a.viewmodel {
             constraint: 'ResidenceCode',
             option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                 textmode: "text",
-                placeholder: "Placeholder for text editor",
+                placeholder: "",
                 width: "100px",
                 textalign: "left"
             })),
@@ -60,8 +62,15 @@ module ccg014.a.viewmodel {
             dfd.resolve();
             return dfd.promise();
          }
+         openBDialog() {
+               nts.uk.ui.windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: '他のタイトルメニューのコピー', dialogClass: "no-close" }).onClosed();
+            }
+        open030A_Dialog() {
+               nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: 'フローメニューの設定', dialogClass: "no-close" }).onClosed();
+            }
+        
     }
-}
+
 
 class ItemModel {
     code: string;

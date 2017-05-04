@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 700, height: 300 };</script>
+			<com:ValidatorScript>
+					
+					nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuCD
+					nts.uk.ctx.sys.portal.dom.titlemenu.Name
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg014.b.style.css" />
+			<com:scriptfile path="ccg014.b.start.js" />
+			<com:scriptfile path="ccg014.b.vm.js" />
+			<com:scriptfile path="ccg014.b.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="row1">
+					<span style="text-align: center;">コピー元情報：</span>
+					<div data-bind="ntsFormLabel: {}">コード/名称</div>
+				</div>
+				<div class="row2" style="margin-top: 5px;">
+					<span style="text-align: center;">コピー元情報：</span>
+					<div
+						data-bind="ntsFormLabel: { constraint: 'TitleMenuCD',constraint: 'Name', required: true }">コード/名称</div>
+					<div id= "textcode" data-bind="with: titlecode">
+						<input
+							data-bind="ntsTextEditor: {
+								value: value,
+								constraint: 'TitleMenuCD',
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+					</div>
+					<div id= "textname" data-bind="with: titlename">
+						<input
+							data-bind="ntsTextEditor: {
+								value: value,
+								constraint: 'Name',
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+					</div>
+				</div>
+
+				<div class="button">
+					<hr style="width: 100%;" />
+				<button id="registration" class="proceed x-large">登録</button>
+				<button id="cancel" data-bind ="click :  cancel_Dialog">キャンセル</button>
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

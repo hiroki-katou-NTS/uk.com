@@ -1,0 +1,8 @@
+#left-content { margin-left: 20px; margin-top: 12px; padding: 20px; float: left; width: 30%; }
+#right-content {padding-left: 94px; float: left; margin-top: 32px;}
+#textcode {display: inline; margin-left: 50px;}
+#textname {display: inline;}
+#filedown {margin-top: 50px; margin-left: 150px;}
+.valign-center.control-group {margin-top: 20px;}
+#fileup{margin-left: 55px;}
+#textwidth, #textheight {display: inline-block;}

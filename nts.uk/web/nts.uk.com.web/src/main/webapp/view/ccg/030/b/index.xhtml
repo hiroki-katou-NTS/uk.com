@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 900, height: 700 };</script>
+
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg030.b.style.css" />
+			<com:scriptfile path="ccg030.b.start.js" />
+			<com:scriptfile path="ccg030.b.vm.js" />
+			<com:scriptfile path="ccg030.b.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" class="cf">
+				<div class="preview"></div>
+				<hr style="width: 100%;" />
+				<button id="btnclose" data-bind="click : closeDialog" style= "margin-left: 50%;">閉じる</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
