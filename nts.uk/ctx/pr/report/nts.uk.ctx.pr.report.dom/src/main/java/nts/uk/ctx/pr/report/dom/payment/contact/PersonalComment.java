@@ -5,30 +5,24 @@
 package nts.uk.ctx.pr.report.dom.payment.contact;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * The Class ContactPersonalSetting.
+ * The Class PersonalComment.
  */
 @Getter
-public class ContactPersonalSetting {
+public class PersonalComment extends AggregateRoot {
+
 	/** The company code. */
 	private String companyCode;
 
 	/** The employee code. */
 	private String employeeCode;
 
-	/** The comment. */
-	private CommentPersonalSetting comment;
+	/** The comment initial. */
+	private CommentInitial commentInitial;
 
-	/** The pay bonus atr. */
-	private PayBonusAtr payBonusAtr;
+	/** The comment month. */
+	private CommentMonth commentMonth;
 
-	/** The person id. */
-	private String personId;
-
-	/** The processing no. */
-	private int processingNo;
-
-	/** The spare pay atr. */
-	private SparePayAtr sparePayAtr;
 }

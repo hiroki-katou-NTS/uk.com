@@ -5,15 +5,15 @@
 package nts.uk.ctx.pr.report.dom.payment.contact;
 
 /**
- * The Enum PayBonusAtr.
+ * The Enum SparePayAtr.
  */
-public enum PayBonusAtr {
+public enum SparePayAtr {
 
-	/** The Salary. */
-	Salary(0, "Salary"),
+	/** The Normal. */
+	Normal(0, "Normal"),
 
-	/** The Bonuses. */
-	Bonuses(1, "Bonuses");
+	/** The Preliminary. */
+	Preliminary(1, "Preliminary");
 
 	/** The value. */
 	public int value;
@@ -22,17 +22,17 @@ public enum PayBonusAtr {
 	public String description;
 
 	/** The Constant values. */
-	private final static PayBonusAtr[] values = PayBonusAtr.values();
+	private final static SparePayAtr[] values = SparePayAtr.values();
 
 	/**
-	 * Payment type.
+	 * Pay bonus atr.
 	 *
 	 * @param value
 	 *            the value
 	 * @param description
 	 *            the description
 	 */
-	private PayBonusAtr(int value, String description) {
+	private SparePayAtr(int value, String description) {
 		this.value = value;
 		this.description = description;
 	}
@@ -42,16 +42,16 @@ public enum PayBonusAtr {
 	 *
 	 * @param value
 	 *            the value
-	 * @return the pay bonus atr
+	 * @return the spare pay atr
 	 */
-	public static PayBonusAtr valueOf(Integer value) {
+	public static SparePayAtr valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (PayBonusAtr val : PayBonusAtr.values) {
+		for (SparePayAtr val : SparePayAtr.values) {
 			if (val.value == value) {
 				return val;
 			}
