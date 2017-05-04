@@ -53,7 +53,6 @@ module qmm019.a {
                 if (layoutFind !== undefined && layoutHead != undefined) {
                     self.layoutMaster(layoutFind);
                     self.layoutHead(ko.mapping.fromJS(layoutHead));
-                    self.layoutMaster((layoutFind));
                     self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                     self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
                     service.getCategoryFull(layoutFind.stmtCode, layoutFind.historyId, layoutFind.startYm)
@@ -171,6 +170,7 @@ module qmm019.a {
                                         returnItem = _.find(lineFind.details, function(item) {
                                             return item.itemCode() === $(itemWillBeMoved).attr("id");
                                         }); 
+                                        //Update autolineId mới
                                         returnItem.autoLineId(senderLineFind.autoLineId);
                                         
                                         _.remove(lineFind.details, function(item) {
@@ -181,6 +181,7 @@ module qmm019.a {
                                         comeInItem = _.find(senderLineFind.details, function(item) {
                                             return item.itemCode() === $(ui.item).attr("id");
                                         }); 
+                                        //Update autolineId mới
                                         comeInItem.autoLineId(lineFind.autoLineId);
                                         
                                         _.remove(senderLineFind.details, function(item) {
@@ -214,6 +215,7 @@ module qmm019.a {
                                         }
                                     }
                                     
+                                    //update datasource
                                     lineFind.details.push(comeInItem);
                                     senderLineFind.details.push(returnItem);
                                     
@@ -295,18 +297,30 @@ module qmm019.a {
 
         registerLayout() {
             var self = this;
-            service.registerLayout(self.layoutMaster(), self.categories()).done(function(res) {
-                service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().historyId, self.layoutMaster().startYm)
-                    .done(function(listResult: Array<service.model.Category>) {
-                        self.categories(listResult);
-                        self.checkKintaiKiji();
-                        self.bindSortable();
-                    });
-            }).fail(function(err) {
-                alert(err);
-            });
+            if (self.validateOnRegister()) {
+                service.registerLayout(self.layoutMaster(), self.categories()).done(function(res) {
+                    service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().historyId, self.layoutMaster().startYm)
+                        .done(function(listResult: Array<service.model.Category>) {
+                            self.categories(listResult);
+                            self.checkKintaiKiji();
+                            self.bindSortable();
+                        });
+                }).fail(function(err) {
+                    alert(err);
+                });
+            }
         }
 
+        validateOnRegister() {
+            let self = this;
+            if (self.layoutMaster().stmtName.length === 0) {
+                nts.uk.ui.dialog.alert("明細書名が入力されていません。");
+                return false;
+            }
+            
+            return true;
+        }
+        
         addKintaiCategory() {
             var self = this;
             let category: service.model.Category = new service.model.Category([], 2);
