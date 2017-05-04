@@ -10,8 +10,9 @@ div[id^=tabpanel] .contents-area {
 
 div[id^=tabpanel] div.contents-area>.left-content, 
 div[id^=tabpanel] div.contents-area>.right-content {
-	position: relative;
-	display: table-cell;
+	position: relative;    
+	display: block;
+    float: left;
 }
 
 div[id^=tabpanel] div.contents-area>.left-content:before {
