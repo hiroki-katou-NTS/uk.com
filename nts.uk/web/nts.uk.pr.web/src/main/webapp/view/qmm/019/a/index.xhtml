@@ -90,11 +90,7 @@
 	            				<label id="A_LBL_002">コード/名称</label>
 	           				</div>
 	           				<label style="width: 150px" id="A_LBL_003" data-bind="text: singleSelectedCode() === null ? '' : singleSelectedCode().split(';')[0]">01</label>
-							<input id="A_INP_002" data-bind="ntsTextEditor: {
-										value: layoutHead().stmtName ,
-										constraint: 'LayoutName',
-										required: true,
-										enable: allowClick()}" />
+							<input id="A_INP_002" data-bind="ntsTextEditor: {value: layoutHead().stmtName, constraint: 'LayoutName',required: true, enable: allowClick()}" />
 	           				<label id="A_LBL_004">（　レーザープリンター　A4　縦向き　最大３人　）</label>
             			</div>
             			<div class="flex valign-center">
@@ -146,17 +142,6 @@
 									            						? 'button-with-text li-on-row ' 
 									            						: 'li-on-row ' }">
 									            </span>
-<!-- 									            <span data-bind="click: itemClick,  -->
-<!-- 									            			text: itemAbName, -->
-<!-- 									            			attr: { -->
-<!-- 									            				id: itemCode, -->
-<!-- 									            				'data-itemcode': itemCode, -->
-<!-- 									            				class: isRequired()  -->
-<!-- 									            					? 'fixed-button ui-state-disabled li-on-row ' + contextMenuClassId  -->
-<!-- 									            					: itemAbName() !== '+'  -->
-<!-- 									            						? 'button-with-text li-on-row ' + contextMenuClassId -->
-<!-- 									            						: 'li-on-row ' + contextMenuClassId}"> -->
-<!-- 									            </span> -->
 											</div>
 										</div>
 									</div>

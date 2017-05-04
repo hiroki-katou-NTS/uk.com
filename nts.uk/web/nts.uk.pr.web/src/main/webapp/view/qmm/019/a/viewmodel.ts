@@ -26,6 +26,7 @@ module qmm019.a {
         totalGrayLineNumber: KnockoutObservable<number> = ko.observable(0);
         allowClick: KnockoutObservable<boolean> = ko.observable(true);
         firstLayoutCode: string = ""; //Dùng cho select item đầu tiên.
+        previousItemPosition : number = 0; //Vị trí của item trước khi bị move giữa các row.
 
         constructor() {
             var self = this;
@@ -126,9 +127,108 @@ module qmm019.a {
         }
         bindSortable() {
             var self = this;
-            $(".row").sortable({
-                items: "span:not(.ui-state-disabled)"
+            _.forEach(self.categories(), function(category) {
+                _.forEach(category.lines(), function(line) {
+                    $("#" + line.rowId).sortable({
+                        items: "span:not(.ui-state-disabled)",
+                        connectWith: ".categoryAtr" + line.categoryAtr,
+                        receive: function(event, ui){
+                            if (ui.sender !== null) {
+                                //Trả ra vị trí index của item vừa được move đến trong array span
+                                let getItemIndex = $(this).find(".one-line").find("span").index(ui.item);
+                                //get item ở sau item vừa được move đến (get by index) -> di chuyển nó đến vị trí cũ của item vừa bị move
+                                let itemWillBeMoved = $(this).find(".one-line").find("span")[getItemIndex + 1];
+                                if ($(itemWillBeMoved).hasClass("fixed-button") || itemWillBeMoved === undefined) {
+                                    //nếu item sẽ dùng đề move bù lại thằng vừa kéo đi -> mà là dạng fixed-button
+                                    //hoặc là undefined thì nhảy lên lấy thằng index trước đó
+                                    itemWillBeMoved = $(this).find(".one-line").find("span")[getItemIndex - 1];
+                                }
+                                //thực hiện move item mới vào chỗ của thằng vừa kéo đi
+                                if (screenQmm019().previousItemPosition === 8) {
+                                    //Nếu vị trí để insert vào là số 8 thì dùng cái này ↓
+                                    $(itemWillBeMoved).insertAfter($(ui.sender[0]).find(".one-line").find("span")[7]);
+                                } else {
+                                    $(itemWillBeMoved).insertBefore($(ui.sender[0]).find(".one-line").find("span")[screenQmm019().previousItemPosition]);  
+                                }
+                                
+                                let currentCategoryId = $(this).parent().parent().attr("id");
+                                let thisLineId = $(this).attr("id");
+                                let senderLineId = $(ui.sender).attr("id");
+                                let comeInItem : service.model.ItemDetail, returnItem : service.model.ItemDetail;
+                                
+                                let categoryFind = _.find(screenQmm019().categories(), function(categoryItem) {
+                                    return categoryItem.categoryAtr === Number(currentCategoryId);
+                                });
+                                if (categoryFind !== undefined) {
+                                    let lineFind = _.find(categoryFind.lines(), function(lineItem) {
+                                        return lineItem.rowId === thisLineId;
+                                    });
+                                    let senderLineFind = _.find(categoryFind.lines(), function(lineItem) {
+                                        return lineItem.rowId === senderLineId;
+                                    });
+                                    
+                                    if (lineFind !== undefined) {
+                                        returnItem = _.find(lineFind.details, function(item) {
+                                            return item.itemCode() === $(itemWillBeMoved).attr("id");
+                                        }); 
+                                        returnItem.autoLineId(senderLineFind.autoLineId);
+                                        
+                                        _.remove(lineFind.details, function(item) {
+                                            return item.itemCode() === $(itemWillBeMoved).attr("id");
+                                        }); 
+                                    }
+                                    if (senderLineFind !== undefined) {
+                                        comeInItem = _.find(senderLineFind.details, function(item) {
+                                            return item.itemCode() === $(ui.item).attr("id");
+                                        }); 
+                                        comeInItem.autoLineId(lineFind.autoLineId);
+                                        
+                                        _.remove(senderLineFind.details, function(item) {
+                                            return item.itemCode() === $(ui.item).attr("id");
+                                        }); 
+                                    }
+                                    let comeInItemFound = true, returnItemFound = true;
+                                    //Tạo id mới cho comeInItem và returnItem
+                                    for(let i: number = 1; i <= 9; i++) {
+                                        //Tìm xem nếu id mới chưa có thì set
+                                        if (_.includes(comeInItem.itemCode(), "itemTemp-") && comeInItemFound ) {
+                                            let comeInItemFind = _.find(lineFind.details, function(item) {
+                                                return item.itemCode() === "itemTemp-" + i;
+                                            }); 
+                                            if (comeInItemFind === undefined) {
+                                                comeInItemFound = false;
+                                                comeInItem.itemCode("itemTemp-" + i);
+                                            }
+                                        }
+                                        if (_.includes(returnItem.itemCode(), "itemTemp-") && returnItemFound ) { 
+                                            let returnItemFind = _.find(senderLineFind.details, function(item) {
+                                                return item.itemCode() === "itemTemp-" + i;
+                                            }); 
+                                            if (returnItemFind === undefined) {
+                                                returnItemFound = false;
+                                                returnItem.itemCode("itemTemp-" + i);
+                                            }
+                                        }
+                                        if (!comeInItemFound && !returnItemFound) {
+                                            break;    
+                                        }
+                                    }
+                                    
+                                    lineFind.details.push(comeInItem);
+                                    senderLineFind.details.push(returnItem);
+                                    
+                                }
+                                
+                            }
+                        },
+                        start: function( event, ui ) {
+                            self.previousItemPosition = $(this).find(".one-line").find("span").index(ui.item);
+                        }
+                    });
+                })
             });
+            
+            //Setting sortable giữa các dòng với nhau
             $(".all-line").sortable({
                 items: ".row"
             });

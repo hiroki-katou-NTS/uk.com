@@ -422,7 +422,7 @@ module qmm019.a {
                 alamRangeLow: KnockoutObservable<number>;
                 isRemoved: boolean = false;
                 //TODO-LamVT: bỏ rem khi đồng bộ sang develop
-                //contextMenu : nts.uk.ui.contextmenu.ContextMenu;// context menu cho từng item
+                contextMenu : nts.uk.ui.contextmenu.ContextMenu;// context menu cho từng item
                 contextMenuClassId : string = "";
                 
                 constructor(itemObject: any) {
@@ -466,22 +466,22 @@ module qmm019.a {
                     if (!_.includes(self.contextMenuClassId, "itemTemp-") && !self.isRequired()) {
                         //Setup context menu for item:
                         //TODO-LamVT: bỏ rem khi đồng bộ sang develop
-//                        self.contextMenu = new nts.uk.ui.contextmenu.ContextMenu("." + self.contextMenuClassId, [
-//                            new nts.uk.ui.contextmenu.ContextMenuItem("delete", "削除", (ui) => {
-//                                    self.setDelete(true);
-//                                }, "", true),
-//                            new nts.uk.ui.contextmenu.ContextMenuItem("undoDelete", "戻す", (ui) => {
-//                                    self.setDelete(false);
-//                                }, "", false)
-//                        ]);
+                        self.contextMenu = new nts.uk.ui.contextmenu.ContextMenu("." + self.contextMenuClassId, [
+                            new nts.uk.ui.contextmenu.ContextMenuItem("delete", "削除", (ui) => {
+                                    self.setDelete(true);
+                                }, "", true),
+                            new nts.uk.ui.contextmenu.ContextMenuItem("undoDelete", "戻す", (ui) => {
+                                    self.setDelete(false);
+                                }, "", false)
+                        ]);
                     }    
                 }
                 setDelete(isDelete : boolean) {
                     var self = this;
                     self.isRemoved = isDelete;
                     //TODO-LamVT: bỏ rem khi đồng bộ sang develop
-//                    self.contextMenu.setVisibleItem(!isDelete, "delete");
-//                    self.contextMenu.setVisibleItem(isDelete, "undoDelete");
+                    self.contextMenu.setVisibleItem(!isDelete, "delete");
+                    self.contextMenu.setVisibleItem(isDelete, "undoDelete");
                     if (isDelete) {
                         $("#" + self.itemCode()).addClass("item-isDeleting");    
                     } else {
