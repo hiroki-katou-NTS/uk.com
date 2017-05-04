@@ -16,7 +16,6 @@ import lombok.Setter;
 /**
  * The Class PaymentSalaryReportData.
  *
- * @author duongnd
  */
 
 @Setter
@@ -33,5 +32,5 @@ public class PaymentSalaryReportData {
     private Map<EmployeeKey, Double> mapEmployeeAmount;
     
     /** The configure. */
-    private PaymentSalaryPrintSettingDto configure;
+    private SalaryPrintSettingDto configure;
 }

@@ -15,7 +15,7 @@ import com.aspose.cells.Color;
  *
  * @author duongnd
  */
-public class ReportConstant {
+public class PaymentConstant {
     
     /** The Constant DATE_TIME_FORMAT. */
     public static final String DATE_TIME_FORMAT = "yyyyMMddHHmmss";
@@ -27,18 +27,18 @@ public class ReportConstant {
     public static final String FORMAT_NUMBER = "#,##0_);(#,##0)";
     
     /** The Constant ROW_HEIGHT_TITLE. */
-    public static final int ROW_HEIGHT_TITLE = 45;
+    public static final int ROW_HEIGHT_TITLE = 50;
     
     /** The Constant COLUMN_WITH. */
     public static final int COLUMN_WITH = 18;
     
-    public static final int INDEX_ROW_TITLE = 0;
+    public static final int INDEX_ROW_TITLE = 5;
     
     /** The Constant INDEX_FIRST_COLUMN. */
     public static final int INDEX_FIRST_COLUMN = 0;
     
     /** The Constant INDEX_ROW_CONTENT. */
-    public static final int INDEX_ROW_CONTENT = 1;
+    public static final int INDEX_ROW_CONTENT = 6;
     
     /** The Constant NUMBER_ZERO. */
     public static final int NUMBER_ZERO = 0;
@@ -47,13 +47,16 @@ public class ReportConstant {
     public static final int NUMBER_ONE = 1;
     
     /** The Constant NUMBER_COLUMN_PAGE. */
-    public static final int NUMBER_COLUMN_PAGE = 15;
+    public static final int NUMBER_COLUMN_PAGE = 13;
     
     /** The Constant LIGHT_BLUE_COLOR. */
     public static final Color LIGHT_BLUE_COLOR = Color.fromArgb(197, 241, 247);
     
     /** The Constant LIGHT_GREEN_COLOR. */
     public static final Color LIGHT_GREEN_COLOR = Color.fromArgb(199, 243, 145);
+    
+    /** The Constant HEADER. */
+    public static final String HEADER = "HEADER";
     
     /** The Constant OUTPUT_FORMAT_TYPE_DETAIL. */
     public static final String OUTPUT_FORMAT_TYPE_DETAIL = "1";

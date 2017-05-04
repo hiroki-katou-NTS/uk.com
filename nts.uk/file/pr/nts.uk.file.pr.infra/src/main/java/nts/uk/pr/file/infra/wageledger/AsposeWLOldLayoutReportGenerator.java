@@ -63,10 +63,12 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 *  nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData)
 	 */
 	@Override
-	public void generate(FileGeneratorContext fileContext, List<WLOldLayoutReportData> reportDatas, WageLedgerReportQuery query) {
+	public void generate(FileGeneratorContext fileContext, List<WLOldLayoutReportData> reportDatas,
+			WageLedgerReportQuery query) {
 		// Generate report.
-		List<AsposeCellsReportContext> reportFiles = reportDatas.stream()
-				.map(data -> this.generateReport(fileContext, data, query)).collect(Collectors.toList());
+		final List<AsposeCellsReportContext> reportFiles = reportDatas.stream()
+				.map(data -> this.generateReport(data, query))
+				.collect(Collectors.toList());
 		
 		// Save report to file PDF.
 		try {
@@ -94,7 +96,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param query the query
 	 * @return the aspose cells report context
 	 */
-	private AsposeCellsReportContext generateReport(FileGeneratorContext fileContext, WLOldLayoutReportData reportData,
+	private AsposeCellsReportContext generateReport(WLOldLayoutReportData reportData,
 			WageLedgerReportQuery query) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			

@@ -7,11 +7,32 @@
  */
 package nts.uk.file.pr.app.export.detailpaymentsalary.data;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class HeaderReportData.
  *
- * @author duongnd
  */
+@Setter
+@Getter
 public class HeaderReportData {
-
+    
+    /** The name company. */
+    private String nameCompany;
+    
+    /** The tile report */
+    private String titleReport;
+    
+    /** The department. */
+    private String department;
+    
+    /** The category. */
+    private String category;
+    
+    /** The position. */
+    private String position;
+    
+    /** The year month. */
+    private String targetYearMonth;
 }
