@@ -47,7 +47,9 @@
 						primaryKey: 'code',
 						primaryText: 'name',
 						childDataKey: 'childs',
-						headers: listTreeHeaders,
+						columns: [{ headerText: 'Code', key: 'code', dataType: 'string', hidden: false },
+									{ headerText: 'Name', key: 'name', dataType: 'string', hidden: false },
+									{ headerText: 'Name', key: 'name', dataType: 'string', hidden: false }],
 						dataSource: listTreeItems,
 						value: listTreeItemSelected }"
 					class="cf"></table>

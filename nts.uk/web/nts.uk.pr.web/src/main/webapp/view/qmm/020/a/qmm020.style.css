@@ -6,6 +6,7 @@
 
 div[id^=tabpanel] .contents-area {
 	padding: 20px 0 0 20px;
+	min-width: 1116px;
 }
 
 div[id^=tabpanel] div.contents-area>.left-content, 
