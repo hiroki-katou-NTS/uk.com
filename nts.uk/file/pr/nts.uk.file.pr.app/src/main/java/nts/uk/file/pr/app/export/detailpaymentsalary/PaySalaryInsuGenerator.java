@@ -11,10 +11,15 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportData;
 
 /**
- * @author duongnd
- *
+ * The Interface PaySalaryInsuGenerator.
  */
-public interface PaymentSalaryInsuranceGenerator {
+public interface PaySalaryInsuGenerator {
 
+    /**
+     * Generate.
+     *
+     * @param fileContext the file context
+     * @param reportData the report data
+     */
     void generate(FileGeneratorContext fileContext, PaymentSalaryReportData reportData);
 }

@@ -15,7 +15,6 @@ import lombok.Setter;
 /**
  * The Class DepartmentDto.
  *
- * @author duongnd
  */
 
 @AllArgsConstructor
@@ -25,7 +24,7 @@ import lombok.Setter;
 public class DepartmentDto {
 
     /** The year month. */
-    private String yearMonth;
+    private Integer yearMonth;
     
     /** The code. */
     private String code;
@@ -39,7 +38,7 @@ public class DepartmentDto {
     /** The dep level. */
     private Integer depLevel;
     
-    public static DepartmentDto newDepartment(DepartmentDto otherDep, String yearMonth) {
+    public static DepartmentDto newDepartment(DepartmentDto otherDep, Integer yearMonth) {
         DepartmentDto dep = new DepartmentDto();
         dep.yearMonth = yearMonth;
         dep.code = otherDep.code;

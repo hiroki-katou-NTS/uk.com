@@ -37,11 +37,11 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
 
     /** The generator. */
     @Inject
-    private PaymentSalaryInsuranceGenerator generator;
+    private PaySalaryInsuGenerator generator;
 
     /** The repository. */
     @Inject
-    private PaymentSalaryReportRepository repository;
+    private PaySalaryReportRepository repository;
 
     @Inject
     private SalaryPrintSettingRepository salaryPrintRepo;
@@ -123,7 +123,7 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
 //        dto.setOutputFormatType("1");
 //        dto.setIsVerticalLine(false);
 //        dto.setIsHorizontalLine(false);
-//        dto.setPageBreakSetting("3");
+//        dto.setPageBreakSetting("1");
 //        dto.setHierarchy("2");
 //        dto.setOutputLanguage("1");
         
@@ -228,8 +228,8 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         depCode.add("K");
 
         List<Integer> depLevels = Arrays.asList(1, 1, 2, 3, 4, 2, 3, 2, 3, 1);
-        List<String> yearMonths = Arrays.asList("2016/01", "2016/02");
-        for (String yearMonth : yearMonths) {
+        List<Integer> yearMonths = Arrays.asList(201601, 201602);
+        for (Integer yearMonth : yearMonths) {
             for (int i = 0; i < depCode.size(); i++) {
                 DepartmentDto dep = new DepartmentDto();
                 dep.setYearMonth(yearMonth);

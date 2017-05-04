@@ -25,7 +25,7 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
-import nts.uk.file.pr.app.export.detailpaymentsalary.PaymentSalaryReportRepository;
+import nts.uk.file.pr.app.export.detailpaymentsalary.PaySalaryReportRepository;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.DepartmentDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeKey;
@@ -36,8 +36,8 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
  * The Class JpaPaymentSalaryReportRepository.
  */
 @Stateless
-public class JpaPaymentSalaryReportRepository extends JpaRepository
-	implements PaymentSalaryReportRepository {
+public class JpaPaySalaryReportRepository extends JpaRepository
+	implements PaySalaryReportRepository {
 
 	public static final int PAY_BONUS_ATR = 0;
 	public static final int SPARE_PAY_ATR = 0;
@@ -110,7 +110,7 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository
 			key.setEmployeeCode(com.getScd());
 			key.setItemName(item.itemName);
 			key.setSalaryCategory(SalaryCategory.valueOf(detail.qstdtPaymentDetailPK.categoryATR));
-			key.setYearMonth(String.valueOf(detail.qstdtPaymentDetailPK.processingYM));
+			key.setYearMonth(detail.qstdtPaymentDetailPK.processingYM);
 			if (!mapEmployeeAmount.containsKey(key)) {
 				mapEmployeeAmount.put(key, detail.value.doubleValue());
 			}
@@ -151,7 +151,7 @@ public class JpaPaymentSalaryReportRepository extends JpaRepository
 			departmentDto.setName(dep.getDepName());
 			departmentDto.setDepLevel(dep.getHierarchyId().length() / LENGTH_LEVEL);
 			departmentDto.setDepPath(dep.getHierarchyId());
-			departmentDto.setYearMonth(dep.getStartDate().yearMonth().v().toString());
+			departmentDto.setYearMonth(dep.getStartDate().yearMonth().v());
 			dto.setDepartment(departmentDto);
 			return dto;
 		}).collect(Collectors.toList());

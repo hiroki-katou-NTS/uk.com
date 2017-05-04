@@ -14,7 +14,6 @@ import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 /**
  * The Class EmployeeKey.
  *
- * @author duongnd
  */
 
 @Setter
@@ -22,7 +21,7 @@ import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 public class EmployeeKey {
     
     /** The year month. */
-    private String yearMonth;
+    private Integer yearMonth;
     
     /** The employee code. */
     private String employeeCode;

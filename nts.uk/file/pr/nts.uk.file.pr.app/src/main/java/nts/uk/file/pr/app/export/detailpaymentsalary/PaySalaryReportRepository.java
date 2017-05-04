@@ -10,7 +10,7 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
 /**
  * The Interface PaymentSalaryReportRepository.
  */
-public interface PaymentSalaryReportRepository {
+public interface PaySalaryReportRepository {
 
 	/**
 	 * Export PDF payment salary.
