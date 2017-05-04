@@ -1,16 +1,12 @@
 module qmm020.d.viewmodel {
     export class ScreenModel {
-        dataSourceDTree: any;
-        selectedValueDTree: any;
-        checkedValuesDTree: any;
-        singleSelectedCodeDTree: any;
-        //History List
+        
         listBoxItems: KnockoutObservableArray<ItemList> = ko.observableArray([]);
         listBoxItemSelected: KnockoutObservable<string> = ko.observable('0');
 
         listTreeItems: KnockoutObservableArray<ItemTree> = ko.observableArray([]);
         listTreeItemSelected: KnockoutObservable<string> = ko.observable('0');
-        listTreeHeaders: KnockoutObservableArray<string> = ko.observableArray(['Field 1', 'Field 2', 'Field 3', 'Field 4']);
+        
         constructor() {
             var self = this;
             self.listBoxItems([
@@ -25,6 +21,7 @@ module qmm020.d.viewmodel {
                 new ItemTree({ code: '002', name: 'Name 0002' }),
                 new ItemTree({ code: '003', name: 'Name 0003' })
             ]);
+            self.listTreeItemSelected('002');
         }
 
         openJDialog() {
