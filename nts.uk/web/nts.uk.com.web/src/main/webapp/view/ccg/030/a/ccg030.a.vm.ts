@@ -3,30 +3,35 @@ module ccg030.a.viewmodel {
         // Grid list
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
-        currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
+        currentCode: KnockoutObservable<string>;
         toppagepartcode: any;
         toppagepartname: any;
         width: any;
         height: any;
+        fileName: KnockoutObservable<string>;
+        enableDeleteMenu: KnockoutObservable<boolean>;
+        enableDeleteFile: KnockoutObservable<boolean>;
+        enableDownload: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
+            self.fileName = ko.observable("未設定");
+            self.enableDeleteMenu = ko.observable(true);
+            self.enableDeleteFile = ko.observable(true);
+            self.enableDownload = ko.observable(true);
             //Grid list
             self.items = ko.observableArray([]);
             for (let i = 1; i < 100; i++) {
                 this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i % 3 === 0));
             }
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                { headerText: '名称', key: 'name', width: 150, hidden: true },
-                { headerText: '説明', key: 'description', width: 150 },
-                { headerText: '説明1', key: 'other1', width: 150 }
+                { headerText: '既定', key: 'default', width: 50 },
+                { headerText: 'コード', key: 'code', width: 80　},
+                { headerText: '名称', key: 'name', width: 230　}                
             ]);
-            self.currentCodeList = ko.observableArray([]);
+            self.currentCode = ko.observable("");
             //editor  Toppage part Code, Toppage part Name
             self.toppagepartcode = {
                 value: ko.observable(''),
-                constraint: 'TopPagePartCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     filldirection: "right",
                     fillcharacter: "0",
@@ -35,13 +40,10 @@ module ccg030.a.viewmodel {
                     width: "30px",
                     textalign: "left"
                 })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
+                enableCode: ko.observable(true),
             };
             self.toppagepartname = {
                 value: ko.observable(''),
-                constraint: 'TopPagePartName',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     filldirection: "right",
                     fillcharacter: "0",
@@ -50,19 +52,14 @@ module ccg030.a.viewmodel {
                     width: "100px",
                     textalign: "left"
                 })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
             };
+            //横のサイズ
             self.width = {
                 value: ko.observable(''),
-                constraint: 'width',
-                required: ko.observable(true),
             };
+            //縦のサイズ
             self.height = {
                 value: ko.observable(''),
-                constraint: 'height',
-                required: ko.observable(true),
             };
 
         }
@@ -80,6 +77,30 @@ module ccg030.a.viewmodel {
         }
         closeDialog(): any {
             nts.uk.ui.windows.close();
+        }
+        //新規ボタンをクリックする時
+        createNewFlowMenu(){
+            var self = this;
+            self.toppagepartcode.value("");
+            self.toppagepartcode.enableCode(true);
+            self.toppagepartname.value("");
+            self.currentCode("");
+            self.fileName("未設定");
+            self.enableDeleteFile(false);
+            self.enableDeleteMenu(false);
+            self.enableDownload(false);
+            self.width.value("");
+            self.height.value("");
+        }
+        
+        //削除ボタンを押す時
+        deleteNewFlowMenu(){
+            
+        }
+        
+        //登録ボタンを押す時
+        registryFlowMenu(){
+            //新規の時    
         }
     }
     
