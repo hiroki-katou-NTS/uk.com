@@ -114,7 +114,7 @@ module qmm019.f.viewmodel {
                                     distributeWay: ko.observable(data.distributeWay),
                                     personalWageCode: ko.observable(data.personalWageCode),
                                     sumScopeAtr: ko.observable(data.sumScopeAtr),
-                                    taxAtr: ko.observable(itemDto.taxAtr)
+                                    taxAtr: ko.observable(data.taxAtr)
                                 };
                             } else {
                                 item = {
