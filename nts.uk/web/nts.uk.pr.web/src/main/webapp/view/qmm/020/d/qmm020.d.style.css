@@ -45,6 +45,12 @@
 	padding-left: 40px;
 }
 
+.screen-d .date-label #D_LBL_002 {
+	padding-left: 10px;
+	min-width: 200px;
+	display: inline-block;
+}
+
 .screen-d #D_LST_001, .screen-d #D_LST_001_grid_container, .screen-d #D_LST_001_grid_virtualContainer,
 	.screen-d #D_LST_001_grid_displayContainer, .screen-d  #D_LST_001 #D_LST_001_grid td
 	{

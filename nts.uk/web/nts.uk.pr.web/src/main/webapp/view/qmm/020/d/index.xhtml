@@ -9,7 +9,7 @@
 				<button id="D_BTN_004" data-bind="">履歴編集</button>
 				<div id="D_LST_001"
 					data-bind="ntsListBox: {
-					options: [{code: '1', name: '2016/04 ~ 9999/12'},{code: '2', name: '2015/04 ~ 2016/03'}],
+					options: listBoxItems,
 					optionsValue: 'code',
 					optionsText: 'name',
 					value: listBoxItemSelected,
@@ -26,19 +26,31 @@
 			</div>
 			<hr />
 			<div class="date-label">
-				<label id="D_LBL_002">部門基準日</label> <label id="D_LBL_003"></label>
+				<label id="D_LBL_002">部門基準日</label> <label id="D_LBL_003">2016/04/01</label>
 			</div>
 			<div class="content-box">
 				<div style="width: 800px;"
 					data-bind="ntsSearchBox: {
 								comId: 'D_LST_002', 
-								items: dataSourceDTree, 
-								selected: selectedValueDTree, 
+								items: listTreeItems, 
+								selected: listTreeItemSelected, 
 								selectedKey: 'code', 
 								fields: ['name', 'code'], 
 								childField: 'childs'}" />
 
-				<table id="D_LST_002"></table>
+				<table id="D_LST_002"
+					data-bind="ntsTreeGridView:{
+						width: 800,
+						enable: true,
+						multiple: false,
+						showCheckBox: false,
+						primaryKey: 'code',
+						primaryText: 'name',
+						childDataKey: 'childs',
+						headers: listTreeHeaders,
+						dataSource: listTreeItems,
+						value: listTreeItemSelected }"
+					class="cf"></table>
 			</div>
 		</div>
 	</div>
