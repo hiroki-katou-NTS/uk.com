@@ -18,7 +18,8 @@ var nts;
                         var isMultiSelect = ko.unwrap(data.multiple);
                         var enable = ko.unwrap(data.enable);
                         var columns = data.columns;
-                        var gridId = $(element).attr("id");
+                        var elementId = $(element).attr("id");
+                        var gridId = elementId;
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             gridId = nts.uk.util.randomId();
                         }
@@ -91,8 +92,8 @@ var nts;
                                 cancelable: true,
                             });
                             container.data("chaninged", true);
-                            document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                            if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
+                            document.getElementById(elementId).dispatchEvent(changingEvent);
+                            if (changingEvent.returnValue !== undefined && changingEvent.returnValue === false) {
                                 return false;
                             }
                         });

@@ -98,7 +98,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid1)
                             .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
-                            .setDataSource(data.dataSource)
+                            .setDataSource(originalSource)
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -109,7 +109,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid2)
                             .searchControl($swap.find(".ntsSwapSearchRight").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
-                            .setDataSource(data.value)
+                            .setDataSource(data.value())
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -141,7 +141,7 @@ var nts;
                             features: features
                         });
                         if (data.draggable === true) {
-                            this.swapper.enableDragDrop();
+                            this.swapper.enableDragDrop(data.value);
                             if (data.multipleDrag && data.multipleDrag.left === true) {
                                 this.swapper.Model.swapParts[0].$listControl.addClass("multiple-drag");
                             }
@@ -186,9 +186,11 @@ var nts;
                         });
                         if (!_.isEqual(currentSource, newSources)) {
                             this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                            this.swapper.Model.transportBuilder.setFirst(newSources);
                         }
                         if (!_.isEqual(currentSelectedList, newSelectedList)) {
                             this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                            this.swapper.Model.transportBuilder.setSecond(newSelectedList);
                         }
                     };
                     NtsSwapListBindingHandler.prototype.makeBindings = function () {
@@ -225,7 +227,7 @@ var nts;
                         enumerable: true,
                         configurable: true
                     });
-                    SwapHandler.prototype.handle = function (parts) {
+                    SwapHandler.prototype.handle = function (parts, value) {
                         var self = this;
                         var model = this.model;
                         for (var id in parts) {
@@ -244,7 +246,7 @@ var nts;
                                     self._beforeStop.call(this, model, evt, ui);
                                 },
                                 update: function (evt, ui) {
-                                    self._update.call(this, model, evt, ui);
+                                    self._update.call(this, model, evt, ui, value);
                                 }
                             };
                             this.model.swapParts[parts[id]].initDraggable(options);
@@ -328,7 +330,7 @@ var nts;
                             $(this).sortable("cancel");
                         }
                     };
-                    SwapHandler.prototype._update = function (model, evt, ui) {
+                    SwapHandler.prototype._update = function (model, evt, ui, value) {
                         if (ui.item.closest("table").length === 0)
                             return;
                         model.transportBuilder.directTo(model.receiver(ui)).update();
@@ -341,11 +343,12 @@ var nts;
                             model.swapParts[0].bindData(model.transportBuilder.getFirst());
                             model.swapParts[1].bindData(model.transportBuilder.getSecond());
                         }
+                        value(model.transportBuilder.getSecond());
                         setTimeout(function () { model.dropDone(); }, 0);
                     };
-                    SwapHandler.prototype.enableDragDrop = function (parts) {
+                    SwapHandler.prototype.enableDragDrop = function (value, parts) {
                         parts = parts || [0, 1];
-                        this.model.enableDrag(this, parts, this.handle);
+                        this.model.enableDrag(this, value, parts, this.handle);
                     };
                     return SwapHandler;
                 }());
@@ -514,6 +517,7 @@ var nts;
                     };
                     GridSwapPart.prototype.bindIn = function (src) {
                         this.$listControl.igGrid("option", "dataSource", src);
+                        this.$listControl.igGrid("dataBind");
                     };
                     return GridSwapPart;
                 }(SwapPart));
@@ -554,11 +558,11 @@ var nts;
                                 : self.swapParts[1].$listControl).igGrid("virtualScrollTo", self.transportBuilder.outcomeIndex + 1);
                         }, 0);
                     };
-                    GridSwapList.prototype.enableDrag = function (ctx, parts, cb) {
+                    GridSwapList.prototype.enableDrag = function (ctx, value, parts, cb) {
                         var self = this;
                         for (var idx in parts) {
                             this.swapParts[parts[idx]].$listControl.on("iggridrowsrendered", function (evt, ui) {
-                                cb.call(ctx, parts);
+                                cb.call(ctx, parts, value);
                             });
                         }
                     };
@@ -573,9 +577,10 @@ var nts;
                         });
                         var selectedIds = selectedRows.map(function (row) { return row.id; });
                         this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
-                            .target(selectedIds).toAdjacent(destList[destList.length - 1][this.swapParts[0].primaryKey]).update();
+                            .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
                         this.swapParts[0].bindData(this.transportBuilder.getFirst());
                         this.swapParts[1].bindData(this.transportBuilder.getSecond());
+                        value(this.transportBuilder.getSecond());
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
                         setTimeout(function () {
@@ -624,6 +629,8 @@ var nts;
                         return this;
                     };
                     ListItemTransporter.prototype.toAdjacent = function (adjId) {
+                        if (adjId === null)
+                            adjId = "ceil";
                         this.adjacentIncomeId = adjId;
                         return this;
                     };
@@ -668,24 +675,30 @@ var nts;
                     ListItemTransporter.prototype.update = function () {
                         switch (this.determineDirection()) {
                             case "firstToSecond":
-                                this.move(this.firstList(), this.secondList());
+                                this.move(this.firstList, this.secondList);
                                 break;
                             case "secondToFirst":
-                                this.move(this.secondList(), this.firstList());
+                                this.move(this.secondList, this.firstList);
                                 break;
                             case "insideFirst":
-                                this.move(this.firstList(), this.firstList());
+                                this.move(this.firstList, this.firstList);
                                 break;
                             case "insideSecond":
-                                this.move(this.secondList(), this.secondList());
+                                this.move(this.secondList, this.secondList);
                                 break;
                         }
                     };
                     ListItemTransporter.prototype.getFirst = function () {
-                        return this.firstList();
+                        return this.firstList;
                     };
                     ListItemTransporter.prototype.getSecond = function () {
-                        return this.secondList();
+                        return this.secondList;
+                    };
+                    ListItemTransporter.prototype.setFirst = function (first) {
+                        this.firstList = first;
+                    };
+                    ListItemTransporter.prototype.setSecond = function (second) {
+                        this.secondList = second;
                     };
                     return ListItemTransporter;
                 }());
