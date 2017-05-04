@@ -75,9 +75,9 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 
 		List<EmployeeData> empList = this.createData(query1);
 
-		if (items == null) {
-			items = empList;
-		}
+//		if (items == null) {
+//			items = empList;
+//		}
 
 		// Create header object.
 
@@ -85,7 +85,7 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 		val dataSource = SalaryTableDataSource.builder().salaryChartHeader(null).employeeList(items).build();
 
 		// Call generator.
-		this.generator.generate(context.getGeneratorContext(), dataSource, query1);
+		this.generator.generate(context.getGeneratorContext(), dataSource, query);
 	}
 	
 	/**
