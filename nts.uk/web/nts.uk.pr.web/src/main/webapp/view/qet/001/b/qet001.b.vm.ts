@@ -239,6 +239,7 @@ module qet001.b.viewmodel {
          */
         public save() {
             var self = this;
+            self.clearError();
             // Validate.
             self.validate();
             if (self.hasError()) {
@@ -251,12 +252,7 @@ module qet001.b.viewmodel {
                     self.outputSettings().outputSettingSelectedCode(self.outputSettingDetail().settingCode());
                 });
             }).fail(function(res) {
-                self.clearError();
-                if (res.messageId == 'ER026') {
-                    $('#register-button').ntsError('set', res.message);
-                } else {
-                    $('#code-input').ntsError('set', '入力したコードは既に存在しています。↵コードを確認してください。');
-                }
+                $('#code-input').ntsError('set', res.message);
             });
         }
         
@@ -396,8 +392,8 @@ module qet001.b.viewmodel {
         reloadReportItems: () => void;
         
         constructor (aggregateItems: service.Item[], masterItem: service.Item[], outputSetting?: WageLedgerOutputSetting) {
-            this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
-            this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
+            this.settingCode = ko.observable(outputSetting ? outputSetting.code : '');
+            this.settingName = ko.observable(outputSetting ? outputSetting.name : '');
             this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.isOnceSheetPerPerson : false);
             this.categorySettingTabs = ko.observableArray([
                 { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment', 
@@ -414,9 +410,9 @@ module qet001.b.viewmodel {
                     enable: ko.observable(true), visible: ko.observable(true) },
             ]);
             this.selectedCategory = ko.observable('tab-salary-payment');
-            this.isCreateMode = ko.observable(outputSetting == undefined);
-            var categorySetting : CategorySetting[] = [];
-            if (outputSetting == undefined) {
+            this.isCreateMode = ko.observable(!outputSetting);
+            var categorySetting : CategorySetting[];
+            if (!outputSetting) {
                 categorySetting = this.convertCategorySettings(aggregateItems, masterItem);
             } else {
                 categorySetting = this.convertCategorySettings(aggregateItems, masterItem, outputSetting.categorySettings);
@@ -496,7 +492,7 @@ module qet001.b.viewmodel {
             // exclude item contain in setting.
             var masterSettingItemCode: string[] = [];
             var aggregateSettingItemCode : string[] = [];
-            if (categorySetting != undefined) {
+            if (categorySetting) {
                 masterSettingItemCode = categorySetting.outputItems
                     .filter(item => !item.isAggregateItem)
                     .map((item) => {
@@ -508,7 +504,7 @@ module qet001.b.viewmodel {
                         return item.code;
                     });
             }
-            this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
+            this.outputItems = ko.observableArray(categorySetting ? categorySetting.outputItems : []);
             var aggregateItemsExcluded = aggregateItems.filter((item) => aggregateSettingItemCode.indexOf(item.code) == -1);
             var masterItemsExcluded = masterItems.filter((item) => masterSettingItemCode.indexOf(item.code) == -1);
             this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
@@ -517,7 +513,7 @@ module qet001.b.viewmodel {
             this.aggregateItemSelected = ko.observable(null);
             this.masterItemSelected = ko.observable(null);
             var self = this;
-            self.outputItemCache = categorySetting != undefined ? categorySetting.outputItems : [];
+            self.outputItemCache = categorySetting ? categorySetting.outputItems : [];
             self.outputItems.subscribe(function(items) {
                 self.outputItemCache = items;
             });
@@ -572,7 +568,7 @@ module qet001.b.viewmodel {
          */
         public masterItemToDisplay() {
             // If master item is unselected => return.
-            if (this.masterItemSelected() == undefined || this.masterItemSelected() == null) {
+            if (!this.masterItemSelected()) {
                 return;
             }
             var self = this;
@@ -594,7 +590,7 @@ module qet001.b.viewmodel {
         
         public aggregateItemToDisplay() {
             // If master item is unselected => return.
-            if (this.aggregateItemSelected() == undefined || this.aggregateItemSelected() == null) {
+            if (!this.aggregateItemSelected()) {
                 return;
             }
             var self = this;
@@ -618,7 +614,7 @@ module qet001.b.viewmodel {
          * Get full category name by category and payment type.
          */
         private getFullCategoryName(category: string, paymentType: string) : string {
-            var categoryName = '';
+            var categoryName;
             switch(category) {
                 case Category.PAYMENT:
                     categoryName = '支給';

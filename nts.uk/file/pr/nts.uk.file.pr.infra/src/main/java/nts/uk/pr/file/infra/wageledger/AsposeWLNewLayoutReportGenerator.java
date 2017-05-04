@@ -70,9 +70,11 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 *   nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery)
 	 */
 	@Override
-	public void generate(FileGeneratorContext fileContext, List<WLNewLayoutReportData> reportDatas, WageLedgerReportQuery query) {
+	public void generate(FileGeneratorContext fileContext, List<WLNewLayoutReportData> reportDatas,
+			WageLedgerReportQuery query) {
 		// Generate report.
-		List<AsposeCellsReportContext> reportFiles = reportDatas.stream().map(data -> this.generateReport(fileContext, data, query))
+		final List<AsposeCellsReportContext> reportFiles = reportDatas.stream()
+				.map(data -> this.generateReport(data, query))
 				.collect(Collectors.toList());
 		
 		// Save report to file PDF.
@@ -88,7 +90,8 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			
 			// Save to PDF.
 			reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		
@@ -102,7 +105,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param query the query
 	 * @return the aspose cells report context
 	 */
-	private AsposeCellsReportContext generateReport(FileGeneratorContext fileContext, WLNewLayoutReportData reportData,
+	private AsposeCellsReportContext generateReport(WLNewLayoutReportData reportData,
 			WageLedgerReportQuery query) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 
@@ -293,8 +296,8 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		Cells cells = ws.getCells();
 		int totalItemData = reportItems.size();
 		int fromIndex = 0;
-		Map<Integer, GeneralDate> paymentDateMap = printData.isSalaryPath ? printData.reportData.salaryPaymentDateMap
-				: printData.reportData.bonusPaymentDateMap;
+		final Map<Integer, GeneralDate> paymentDateMap = printData.isSalaryPath
+				? printData.reportData.salaryPaymentDateMap : printData.reportData.bonusPaymentDateMap;
 		
 		// Fill content name cell.
 		Cell contentNameCell = cells.get(printData.currentRow, printData.currentColumn);
@@ -368,8 +371,8 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		// Fill item data cells.
 		Map<Integer, MonthlyData> dataMap = item.monthlyDatas.stream()
 				.collect(Collectors.toMap(d -> d.month, Function.identity()));
-		Map<Integer, GeneralDate> paymentDateMap = printData.isSalaryPath ? printData.reportData.salaryPaymentDateMap
-				: printData.reportData.bonusPaymentDateMap;
+		Map<Integer, GeneralDate> paymentDateMap = printData.isSalaryPath
+				? printData.reportData.salaryPaymentDateMap : printData.reportData.bonusPaymentDateMap;
 		if (paymentDateMap == null) {
 			paymentDateMap = new HashMap<>();
 		}
@@ -440,13 +443,12 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		printData.currentColumn++;
 		
 		// Fill content header.
-		Map<Integer, GeneralDate> paymentDateMap = printData.isSalaryPath ? printData.reportData.salaryPaymentDateMap
-				: printData.reportData.bonusPaymentDateMap;
+		Map<Integer, GeneralDate> paymentDateMap = printData.isSalaryPath
+				? printData.reportData.salaryPaymentDateMap : printData.reportData.bonusPaymentDateMap;
 		if (paymentDateMap == null) {
 			paymentDateMap = new HashMap<>();
 		}
-		for (Integer month : paymentDateMap.keySet()) {
-			GeneralDate paymentDate = paymentDateMap.get(month);
+		paymentDateMap.forEach((month, paymentDate) -> {
 			// Month cell.
 			Cell monthCell = cells.get(monthRow, printData.currentColumn);
 			monthCell.setValue(month + " 月");
@@ -459,7 +461,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			
 			// Next Column.
 			printData.currentColumn++;
-		}
+		});
 		
 		// Next Row.
 		printData.currentRow++;
