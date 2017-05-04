@@ -7,7 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-			<script>var dialogSize = { width: 900, height: 700 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="qmm020.style.css" />
 			<com:scriptfile path="qmm020.a.start.js" />
@@ -230,11 +229,11 @@
 				</div>-->
 			</div>
 			<div id="tabpanel-7" role="tabpanel" style="display: none;">
-				<div class="sidebar-content-header" data-bind="with: modelA">
+				<div class="sidebar-content-header">
 					<span class="title">個人</span>
 					<button class="proceed">登録</button>
 					<button>個人の設定状況確認</button>
-					<button id="A_BTN_003" data-bind="click:openLDialog">利用単位の設定</button>
+					<button id="A_BTN_003" data-bind="click: $parent.viewmodelA.openMainLDialog">利用単位の設定</button>
 					<button>マスタ修正ログ</button>
 				</div>
 				<div class="contents-area">Content 7</div>

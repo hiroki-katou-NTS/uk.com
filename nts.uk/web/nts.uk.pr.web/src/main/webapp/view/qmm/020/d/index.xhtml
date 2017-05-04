@@ -41,14 +41,15 @@
 				<table id="D_LST_002"
 					data-bind="ntsTreeGridView:{
 						width: 800,
+						height: 550,
 						enable: true,
 						multiple: false,
 						showCheckBox: false,
 						primaryKey: 'code',
 						primaryText: 'name',
 						childDataKey: 'childs',
-						columns: [{ headerText: 'Code', key: 'code', dataType: 'string', hidden: false },
-									{ headerText: 'Name', key: 'name', dataType: 'string', hidden: false },
+						columns: [{ headerText: '', key: 'code', dataType: 'string', hidden: true },
+									{ headerText: 'Name', key: 'name', dataType: 'string', hidden: false, width: '400px' },
 									{ headerText: 'Name', key: 'name', dataType: 'string', hidden: false }],
 						dataSource: listTreeItems,
 						value: listTreeItemSelected }"

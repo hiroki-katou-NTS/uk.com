@@ -1,16 +1,25 @@
-table, th, td {
-    padding : 5px;
+.caution {
+	padding: 15px;
 }
-#F_INP_001, #F_INP_003{
-	width: 70px !important;	
-	padding-left: 0px !important;
+
+#functions-area {
+	display: none;
 }
-#F_BTN_001{
-	margin-left: 150px;
+
+#contents-area #J_LBL_001 {
+	display: block;
+	line-height: 40px;
+	font-size: 1.3em;
 }
-#F_BTN_002{
-	margin-left: 30px;
+
+#contents-area .dialog-button-group {
+	text-align: center;
+	border-top: 1px solid #ccc;
+	padding-top: 10px;
+	margin-top: 10px;
 }
-.caution{
-	padding : 15px;
+
+#contents-area .dialog-button-group #J_BTN_001,
+#contents-area .dialog-button-group #J_BTN_003 {
+	
 }
