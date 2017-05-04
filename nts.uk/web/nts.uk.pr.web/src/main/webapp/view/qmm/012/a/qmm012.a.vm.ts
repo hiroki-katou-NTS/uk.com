@@ -28,7 +28,7 @@ module qmm012.a.viewmodel {
                         text = "社員から徴収する金額の種類を登録します。"
                         break;
                     case 2:
-                        text = "社員の勤怠実績（日数・回数,時間）の種類を登録します"
+                        text = "社員の勤怠実績（日数・回数,時間）の種類を登録します。"
                         break;
                 }
                 return text;

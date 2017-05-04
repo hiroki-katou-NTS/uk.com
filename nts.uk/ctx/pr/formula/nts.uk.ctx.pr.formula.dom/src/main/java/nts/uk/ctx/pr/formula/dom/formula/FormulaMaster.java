@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.formula.dom.enums.DifficultyAtr;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
@@ -24,6 +26,16 @@ public class FormulaMaster extends AggregateRoot {
 	private FormulaName formulaName;
 
 	private DifficultyAtr difficultyAtr;
+
+	/**
+	 * @param formulaCode
+	 * @param formulaName
+	 */
+	public FormulaMaster(FormulaCode formulaCode, FormulaName formulaName) {
+		super();
+		this.formulaCode = formulaCode;
+		this.formulaName = formulaName;
+	}
 
 	/**
 	 * @param companyCode
@@ -51,14 +63,12 @@ public class FormulaMaster extends AggregateRoot {
 				EnumAdaptor.valueOf(difficultyAtr.intValue(), DifficultyAtr.class),
 				new FormulaName(formulaName));
 	}
+	
+	public void validate(){
+		super.validate();
 
-	/**
-	 * @param formulaCode
-	 * @param formulaName
-	 */
-	public FormulaMaster(FormulaCode formulaCode, FormulaName formulaName) {
-		super();
-		this.formulaCode = formulaCode;
-		this.formulaName = formulaName;
+		if (StringUtil.isNullOrEmpty(formulaCode.v(), true) || StringUtil.isNullOrEmpty(formulaName.v(), true)) {
+			throw new BusinessException("ER001");
+		}
 	}
 }

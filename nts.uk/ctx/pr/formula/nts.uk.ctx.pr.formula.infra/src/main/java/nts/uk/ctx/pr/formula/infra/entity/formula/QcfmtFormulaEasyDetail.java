@@ -58,12 +58,6 @@ public class QcfmtFormulaEasyDetail extends UkJpaEntity implements Serializable{
 	
 	@Column(name = "F_ROUND_ATR")
 	public BigDecimal totalRounding;
-	
-	@Column(name = "MIN_LIMIT_VALUE")
-	public BigDecimal minLimitValue;
-	
-	@Column(name = "MAX_LIMIT_VALUE	")
-	public BigDecimal maxLimitValue;
 
 	@Override
 	protected Object getKey() {

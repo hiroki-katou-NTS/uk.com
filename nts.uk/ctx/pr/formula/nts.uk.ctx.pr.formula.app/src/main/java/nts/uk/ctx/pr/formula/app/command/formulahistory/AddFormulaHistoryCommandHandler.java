@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
@@ -13,7 +14,6 @@ import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.formula.dom.enums.ConditionAtr;
 import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
-import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyCondition;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHeader;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaHistory;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;

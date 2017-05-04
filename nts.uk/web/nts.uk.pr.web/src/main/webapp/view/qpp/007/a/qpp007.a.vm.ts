@@ -128,7 +128,7 @@ module nts.uk.pr.view.qpp007.a {
                 let self = this;
                 // Validate
                 self.validate();
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
                 let command = self.toJsObject();
@@ -145,7 +145,7 @@ module nts.uk.pr.view.qpp007.a {
                 let self = this;
                 // Validate
                 self.validate();
-                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
             }
