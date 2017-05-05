@@ -1,6 +1,5 @@
 module qpp009.a.viewmodel {
     export class ScreenModel {
-        targetYear: KnockoutObservable<number>;//not to use
         outputDivisions: KnockoutObservableArray<SelectionModel>;
         selectedDivision: KnockoutObservable<string>;
         detailItemsSetting: KnockoutObservable<DetailItemsSetting>;
@@ -9,7 +8,6 @@ module qpp009.a.viewmodel {
         japanYearmonth: KnockoutObservable<string>;
 
         constructor() {
-            this.targetYear = ko.observable(2016);//not to use
             this.outputDivisions = ko.observableArray<SelectionModel>([
                 new SelectionModel('UsuallyMonth', '通常月'),
                 new SelectionModel('PreliminaryMonth', '予備月')
@@ -18,16 +16,11 @@ module qpp009.a.viewmodel {
             this.detailItemsSetting = ko.observable(new DetailItemsSetting());
             this.printSetting = ko.observable(new PrintSetting());
             this.yearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
-            var self = this;
-            self.japanYearmonth = ko.observable('123');
-            
-            self.yearMonth.subscribe(function(yearmonth: number) {
-                console.log(yearmonth);
-                self.japanYearmonth(nts.uk.time.formatYearMonth(yearmonth));
-            });
-            //            this.japanYearmonth = ko.computed(() => {
-            //                    return nts.uk.text.format('（{0}）', nts.uk.time.yearmonthInJapanEmpire(this.yearMonth()).toString());
-            //            })
+
+            this.japanYearmonth = ko.computed(() => {
+                return nts.uk.time.yearmonthInJapanEmpire(self.yearMonth()).toString();
+            })
+
         }
 
         /**

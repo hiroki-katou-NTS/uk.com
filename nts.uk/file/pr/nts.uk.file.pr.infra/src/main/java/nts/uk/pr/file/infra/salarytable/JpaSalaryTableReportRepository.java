@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.salarytable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,8 +30,7 @@ import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
 @Stateless
 public class JpaSalaryTableReportRepository extends JpaRepository implements SalaryTableRepository {
 	private static final int PAY_BONUS_ATR = 0;
-	private static final int CTR_ATR_CHECK = 4;
-	private static final int CTR_ATR_PRINT = 3;
+	private static final int CTR_ATR_3 = 3;
 	private static final int ONE_THOUSAND = 1000;
 	private static final int ONE = 1;
 	private static final int VALUE_0 = 0;
@@ -95,20 +95,15 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 //			+ "AND pd.value != :VALUE "
 //			+ "";//0
 	private static final String BANK_ACC_JOIN_PAYMENT_DETAIL_QUERY = "SELECT ba, pd "
-			+ "FROM PbamtPersonBankAccount ba "
-			+ "JOIN  QstdtPaymentDetail pd "
-			+ "ON ba.pbamtPersonBankAccountPK.companyCode = :CCD "
+			+ "FROM PbamtPersonBankAccount ba, "
+			+ "QstdtPaymentDetail pd "
+			+ "WHERE ba.pbamtPersonBankAccountPK.companyCode = :CCD "
 			+ "AND ba.pbamtPersonBankAccountPK.personId IN :PIDs "
-			+ "AND ((ba.useSet1 = :ONE "
-			+ "AND ba.paymentMethod1 = :ONE) "
-			+ "OR (ba.useSet2 = :ONE "
-			+ "AND ba.paymentMethod2 = :ONE) "
-			+ "OR (ba.useSet3 = :ONE "
-			+ "AND ba.paymentMethod3 = :ONE) "
-			+ "OR (ba.useSet4 = :ONE "
-			+ "AND ba.paymentMethod4 = :ONE) "
-			+ "OR (ba.useSet5 = :ONE "
-			+ "AND ba.paymentMethod5 = :ONE)) "
+			+ "AND ((ba.useSet1 = :ONE AND ba.paymentMethod1 = :ONE) "
+			+ "OR (ba.useSet2 = :ONE AND ba.paymentMethod2 = :ONE) "
+			+ "OR (ba.useSet3 = :ONE AND ba.paymentMethod3 = :ONE) "
+			+ "OR (ba.useSet4 = :ONE AND ba.paymentMethod4 = :ONE) "
+			+ "OR (ba.useSet5 = :ONE AND ba.paymentMethod5 = :ONE)) "
 			+ "AND pd.qstdtPaymentDetailPK.companyCode = ba.pbamtPersonBankAccountPK.companyCode "
 			+ "AND pd.qstdtPaymentDetailPK.personId = ba.pbamtPersonBankAccountPK.personId "
 			+ "AND pd.qstdtPaymentDetailPK.processingYM = :ProcessingYM "
@@ -156,31 +151,27 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 			+ "d.depName, d.hierarchyId, SUM(pd.value) "// missing dep info
 			+ "FROM PbsmtPersonBase pb "
 			+ "LEFT JOIN PcpmtPersonCom pc "
-			+ "ON pb.pid IN :PIDs "
-			+ "AND pc.pcpmtPersonComPK.ccd = :CCD "
-			+ "AND pc.pcpmtPersonComPK.pid = pb.pid "
+			+ "ON pc.pcpmtPersonComPK.pid = pb.pid "
 			+ "LEFT JOIN PogmtPersonDepRgl pdr "
-			+ "ON pdr.pogmtPersonDepRglPK.ccd = :CCD "
-			+ "AND pdr.pogmtPersonDepRglPK.pid = pb.pid "
-			+ "AND pdr.strD >= :BASE_YMD "
-			+ "AND pdr.endD <= :BASE_YMD "
+			+ "ON pdr.pogmtPersonDepRglPK.pid = pb.pid "
 			+ "LEFT JOIN CmnmtDep d "
-			+ "ON d.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd "
-			+ "AND d.startDate >= :BASE_YMD "
-			+ "AND d.endDate <= :BASE_YMD "
-			+ "AND d.cmnmtDepPK.departmentCode = pdr.depcd "
+			+ "ON d.cmnmtDepPK.departmentCode = pdr.depcd "
 			+ "LEFT JOIN PbamtPersonBankAccount ba "
-			+ "ON ba.pbamtPersonBankAccountPK.companyCode = d.cmnmtDepPK.companyCode "
-			+ "AND ba.pbamtPersonBankAccountPK.personId = pb.pid "
-			+ "AND ba.startYearMonth >= :BASE_YM "
-			+ "AND ba.endYearMonth <= :BASE_YM "
+			+ "ON ba.pbamtPersonBankAccountPK.personId = pb.pid "
 			+ "LEFT JOIN QstdtPaymentDetail pd "
-			+ "ON pd.qstdtPaymentDetailPK.companyCode = pc.pcpmtPersonComPK.ccd "
-			+ "AND pd.qstdtPaymentDetailPK.personId = pc.pcpmtPersonComPK.pid "
+			+ "ON pd.qstdtPaymentDetailPK.personId = pc.pcpmtPersonComPK.pid "
+			+ "WHERE pb.pid IN :PIDs "
+			+ "AND pc.pcpmtPersonComPK.ccd = :CCD "
+			+ "AND pdr.strD <= :BASE_YMD "
+			+ "AND pdr.endD >= :BASE_YMD "
+			+ "AND d.startDate <= :BASE_YMD "
+			+ "AND d.endDate >= :BASE_YMD "
+			+ "AND ba.startYearMonth <= :BASE_YM "
+			+ "AND ba.endYearMonth >= :BASE_YM "
 			+ "AND pd.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "
 			+ "AND pd.qstdtPaymentDetailPK.processingYM = :ProcessingYM "
 			+ "AND pd.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR "//0
-			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "//3 (NOT 4)
+			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "
 			+ "AND ((ba.useSet1 = :ONE AND ba.paymentMethod1 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F304) "
 			+ "OR (ba.useSet2 = :ONE AND ba.paymentMethod2 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F305) "
 			+ "OR (ba.useSet3 = :ONE AND ba.paymentMethod3 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F306) "
@@ -224,9 +215,8 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 		EntityManager em = this.getEntityManager();
 		Query sqlQuery = em.createQuery(PAYMENT_HEADER_QUERY);
 		sqlQuery.setParameter("CCD", companyCode);
-		sqlQuery.setParameter("ProcessingYM", query.getTargetYear());
+		sqlQuery.setParameter("ProcessingYM", query.getYearMonth());
 		sqlQuery.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR);
-		sqlQuery.setParameter("ProcessingYM", query.getTargetYear());
 		// Get Result List
 		List<Object[]> resultList = new ArrayList<>();
 		CollectionUtil.split(query.getPIdList(), ONE_THOUSAND,
@@ -239,10 +229,10 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 		EntityManager em = this.getEntityManager();
 		Query sqlQuery = em.createQuery(BANK_ACC_JOIN_PAYMENT_DETAIL_QUERY);
 		sqlQuery.setParameter("CCD", companyCode);
-		sqlQuery.setParameter("ProcessingYM", query.getTargetYear());
+		sqlQuery.setParameter("ProcessingYM", query.getYearMonth());
 		sqlQuery.setParameter("ONE", ONE);
 		sqlQuery.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR);
-		sqlQuery.setParameter("CTR_ATR", CTR_ATR_CHECK);
+		sqlQuery.setParameter("CTR_ATR", CTR_ATR_3);
 		sqlQuery.setParameter("VALUE", VALUE_0);
 		sqlQuery.setParameter("ITEM_CD_F304", ITEM_CD_F304);
 		sqlQuery.setParameter("ITEM_CD_F305", ITEM_CD_F305);
@@ -263,16 +253,17 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 		Query sqlQuery = em.createQuery(QUERY_STRING);
 		sqlQuery.setParameter("CCD", companyCode);
 		sqlQuery.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR);
-		sqlQuery.setParameter("ProcessingYM", query.getTargetYear());
-		sqlQuery.setParameter("CTR_ATR", CTR_ATR_PRINT);
+		sqlQuery.setParameter("ProcessingYM", query.getYearMonth());
+		sqlQuery.setParameter("CTR_ATR", CTR_ATR_3);
 		sqlQuery.setParameter("SPARE_PAY_ATR", SPARE_PAY_ATR);
 		sqlQuery.setParameter("BASE_YMD", GeneralDate.today());
-		sqlQuery.setParameter("BASE_YM", query.getTargetYear());
+		sqlQuery.setParameter("BASE_YM", query.getYearMonth());
 		sqlQuery.setParameter("ITEM_CD_F304", ITEM_CD_F304);
 		sqlQuery.setParameter("ITEM_CD_F305", ITEM_CD_F305);
 		sqlQuery.setParameter("ITEM_CD_F306", ITEM_CD_F306);
 		sqlQuery.setParameter("ITEM_CD_F307", ITEM_CD_F307);
 		sqlQuery.setParameter("ITEM_CD_F308", ITEM_CD_F308);
+		sqlQuery.setParameter("ONE", ONE);
 		
 		// Get Result List
 		List<Object[]> resultList = new ArrayList<>();
@@ -286,7 +277,8 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 			Object[] objItr = itemItr.next();
 			String empCode = (String) objItr[1];
 			String empName = (String) objItr[2];
-			Double paymentAmount = (Double) objItr[6];
+			BigDecimal sumValues = (BigDecimal) objItr[6];
+			Double paymentAmount = sumValues.doubleValue();
 			String depCode = (String) objItr[3];
 			String depName = (String) objItr[4];
 			String depPath = (String) objItr[5];

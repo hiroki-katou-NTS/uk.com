@@ -69,20 +69,29 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 			query1.setSelectedUse2000yen(0);
 			query1.setIsPrintDepHierarchy(true);
 			query1.setSelectedLevels(selectedLevels);
-			query1.setTargetYear(2016);
+			query1.setYearMonth(2016);
 			query1.setSelectedBreakPageHierarchyCode(4);
 			query1.setIsPrintDetailItem(true);
 
 		List<EmployeeData> empList = this.createData(query1);
 
-//		if (items == null) {
-//			items = empList;
-//		}
+		if (items == null) {
+			items = empList;
+			query = query1;
+		}
+		
+		// Division Denomination
+		items.stream().forEach(emp -> {
+			emp.setDenomination(divisionDeno(emp.getPaymentAmount(), context.getQuery()));
+		});
 
 		// Create header object.
 
 		// Create Data Source
-		val dataSource = SalaryTableDataSource.builder().salaryChartHeader(null).employeeList(items).build();
+		val dataSource = SalaryTableDataSource.builder()
+				.salaryChartHeader(null)
+				.employeeList(items)
+				.build();
 
 		// Call generator.
 		this.generator.generate(context.getGeneratorContext(), dataSource, query);

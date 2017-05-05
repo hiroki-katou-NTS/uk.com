@@ -40,13 +40,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator implements AccPaymentReportGenerator {
 
 	/** The Constant REPORT_FILE_NAME. */
-	private static final String REPORT_FILE_NAME = "QET002_";
-	
-	/** The Constant EXTENSION_PDF. */
-	private static final String EXTENSION_PDF = ".pdf";
-	
-	/** The Constant EXTENSION_EXCEL. */
-	private static final String EXTENSION_EXCEL = ".xlsx";
+	private static final String REPORT_FILE_NAME = "QET002.xlsx";
 
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/QET002.xlsx";
@@ -97,10 +91,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			worksheet.getPageSetup().setHeader(2, 
 					"&\"IPAPGothic\"&13 " + dateFormat.format(new Date()) + "\r\n&P ページ");
 			designer.getDesigner().setDataSource("Header", dataSource.getHeaderData());
-			DateFormat dateFM = new SimpleDateFormat("yyyyMMddhhssmm");
-			Date date = new Date();
-			String fileName = REPORT_FILE_NAME.concat(dateFM.format(date).toString()).concat(EXTENSION_EXCEL);
-
+			
 			// Fill data
 			// List Item Data
 			int amountEmployee = accumulatedPaymentList.size();
@@ -137,8 +128,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			}			
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
-//			designer.saveAsPdf(this.createNewFile(generatorContext, fileName));
-			designer.saveAsExcel(this.createNewFile(generatorContext, fileName));
+			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
