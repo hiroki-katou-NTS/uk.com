@@ -1,47 +1,37 @@
 module kml001.b.viewmodel {
     export class ScreenModel {
-        items: KnockoutObservableArray<ItemModel>;
-        columns2: KnockoutObservableArray<NtsGridListColumn>;
+        extraTimeItemList: KnockoutObservableArray<ExtraTimeItem>;
         constructor() {
-            this.items = ko.observableArray([]);
-            
-            for(let i = 1; i < 100; i++) {
-                this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i%3 === 0, "2010/1/1"));
-            }
-            
-            this.columns2 = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                { headerText: '名称', key: 'name', width: 150 },
-                { headerText: '説明', key: 'description', width: 150 },
-                { headerText: '説明1', key: 'other1', width: 150 }, 
-                { headerText: '説明2', key: 'other2', width: 150 },
-                { headerText: 'Switch', key: 'switchValue', width: 300, controlType: 'switch' }
-            ]);
-            this.switchOptions = ko.observableArray([
-                { code: "1", name: '四捨五入' },
-                { code: "2", name: '切り上げ' },
-                { code: "3", name: '切り捨て' }
-            ]);
-            this.currentCode = ko.observable();
+            var self = this;
+            self.extraTimeItemList = ko.observableArray([
+                new ExtraTimeItem('','1','Item1','0001',1),
+                new ExtraTimeItem('','2','Item2','0002',1),
+                new ExtraTimeItem('','3','Item3','0003',1),
+                new ExtraTimeItem('','4','Item4','0004',0),
+                new ExtraTimeItem('','5','Item5','0005',0),
+                new ExtraTimeItem('','6','Item6','0006',0),
+                new ExtraTimeItem('','7','Item7','0007',0),
+                new ExtraTimeItem('','8','Item8','0008',0),
+                new ExtraTimeItem('','9','Item9','0009',0),
+                new ExtraTimeItem('','10','Item10','0010',0)
+            ]);   
         }
         
     }
-    class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        other1: string;
-        other2: string;
-        deletable: boolean;
-        switchValue: boolean;
-        constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-            this.other1 = other1;
-            this.other2 = other2 || other1;    
-            this.deletable = deletable;    
-            this.switchValue = ((code % 3) + 1).toString(); 
+    
+    class ExtraTimeItem {
+        companyID: KnockoutObservable<string>;
+        extraItemID: KnockoutObservable<string>; 
+        name: KnockoutObservable<string>;
+        timeItemID: KnockoutObservable<string>;
+        useClassification: KnockoutObservable<number>;
+        constructor(companyID: string, extraItemID: string, name: string, timeItemID: string, useClassification: number) {
+            var self = this;
+            self.extraItemID = ko.observable(extraItemID);
+            self.companyID = ko.observable(companyID);
+            self.useClassification = ko.observable(useClassification);
+            self.timeItemID = ko.observable(timeItemID);
+            self.name = ko.observable(name);
         }
     }
 }

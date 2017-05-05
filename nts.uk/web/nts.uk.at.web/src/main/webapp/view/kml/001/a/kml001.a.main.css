@@ -76,13 +76,19 @@ textarea { margin-left: 10px;}
 	text-align: center;
 }
 */
-#premium-set-tbl tr, th, td{ 
-	border: 1px solid black;
+#premium-set-tbl tr, th, td { 
+	border: 1px solid #999999
 }
 #premium-set-tbl td, th { 
 	height: 30px;
 	padding-left: 5px;
 	padding-right: 5px;
+}
+#premium-set-tbl th { 
+	background-color: #C7F391;
+}
+#premium-set-tbl tbody tr td:FIRST-CHILD { 
+	background-color: #EDFAC2;
 }
 #premium-set-tbl th:FIRST-CHILD {
 	width: 180px;

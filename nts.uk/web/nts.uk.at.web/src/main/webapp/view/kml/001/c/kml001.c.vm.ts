@@ -9,13 +9,18 @@ module kml001.c.viewmodel {
             self.lastestStartDate = ko.observable(nts.uk.ui.windows.getShared('lastestStartDate'));
             self.newStartDate = ko.observable();
             self.newStartDate.subscribe(function(value){
-                if(self.newStartDate() < self.lastestStartDate()) $("#startDateInput").ntsError('set', "ERR");     
+                if(self.errorStartDate()) $("#startDateInput").ntsError('set', "ERR");     
             });
         }
         
-        submitAndCloseDialog(){
+        errorStartDate(): boolean {
             var self = this;
-            if(self.newStartDate()== null) $("#startDateInput").ntsError('set', "ERR"); 
+            return ((self.newStartDate()== null)||(self.newStartDate() < self.lastestStartDate()));     
+        }
+        
+        submitAndCloseDialog(): void {
+            var self = this;
+            if(self.errorStartDate()) $("#startDateInput").ntsError('set', "ERR"); 
             else {
                 nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
                 nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());
@@ -23,7 +28,8 @@ module kml001.c.viewmodel {
             }
         }
         
-        closeDialog(){
+        closeDialog(): void {
+            $("#startDateInput").ntsError('clear');
             nts.uk.ui.windows.close();   
         }
     }

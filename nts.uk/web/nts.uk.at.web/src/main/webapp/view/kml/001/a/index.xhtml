@@ -11,6 +11,7 @@
 					nts.uk.shr.com.primitive.Memo
    				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="../shr/kml001.shr.vmbase.js" />
 				<com:scriptfile path="kml001.a.start.js" />
 				<com:scriptfile path="kml001.a.vm.js" />
 				<com:scriptfile path="kml001.a.service.js" />
@@ -117,56 +118,30 @@
 											<th>人件費計算用時間</th>
 										</tr>
 									</thead>
-									<tbody>
+									<tbody data-bind="foreach: premiumSettingList">
 										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
-										</tr>
-										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
-										</tr>
-										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
-										</tr>
-										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
-										</tr>
-										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
-										</tr>
-										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
-										</tr>
-										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
-										</tr>
-										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
-										</tr>
-										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
-										</tr>
-										<tr>
-											<td>a</td>
-											<td>b</td>
-											<td>c</td>
+											<td data-bind="text: $parent.extraTimeItemList()[$index()].name()"></td>
+											<td>
+												<input class="data-required" data-bind="ntsNumberEditor: {
+													value: premiumRate,
+													constraint: 'Memo',
+													option: { width: '110px' },
+													required: true, 
+													enable: true }" />	
+											</td>
+											<td>
+												<div class="cell">
+													<button class="small">Small</button>
+												</div>
+												<div class="cell">
+													<input class="data-required" data-bind="ntsNumberEditor: {
+													value: timeItemID,
+													constraint: 'Memo',
+													option: { width: '110px' },
+													required: true, 
+													enable: true }" />	
+												</div>
+											</td>
 										</tr>
 									</tbody>
 								</table>
