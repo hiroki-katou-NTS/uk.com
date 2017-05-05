@@ -1,6 +1,7 @@
 module nts.uk.pr.view.ccg015.b {
     export module viewmodel {
         import MyPageSettingDto = nts.uk.pr.view.ccg015.b.service.model.MyPageSettingDto;
+        import TopPagePartUseSettingItemDto = nts.uk.pr.view.ccg015.b.service.model.TopPagePartUseSettingItemDto;
         export class ScreenModel {
             useDivisionOptions: KnockoutObservableArray<any>;
             permissionDivisionOptions: KnockoutObservableArray<any>;
@@ -11,6 +12,7 @@ module nts.uk.pr.view.ccg015.b {
             myPageSettingModel: KnockoutObservable<MyPageSettingModel>;
             columns: KnockoutObservable<any>;
             currentCode: KnockoutObservable<any>;
+            data: KnockoutObservable<MyPageSettingDto>;
             constructor() {
                 var self = this;
                 self.useDivisionOptions = ko.observableArray([
@@ -36,20 +38,34 @@ module nts.uk.pr.view.ccg015.b {
                     { headerText: "マイページ利用設定", key: 'useItem', width: "200px", controlType: 'switch' }
                 ]);
                 this.currentCode = ko.observable("w1");
+                self.data = ko.observable(null);
+                self.selectedTab.subscribe(function() {
+                    self.data(self.collectData());
+                    self.setData(self.data());
+                });
             }
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                var companyId: string;
-                service.loadMyPageSetting(companyId).done(function(data: MyPageSettingDto) {
-                    //TODO convert data to Model
-                    self.loadDataToScreen(data);
-                    dfd.resolve();
-                });
+                dfd.resolve();
                 return dfd.promise();
             }
-            private loadDataToScreen(data: MyPageSettingDto) {
+            initData() {
                 var self = this;
+                var companyId: string;
+                service.loadMyPageSetting("123456789ABC-0001").done(function(data: MyPageSettingDto) {
+                    self.data(data);
+                    self.loadDataToScreen(data).done(function() {
+                        self.setData(data);
+                    });
+                    self.selectedTab("tab_dash_board");
+                    self.selectedTab("tab_flow_menu");
+                    self.selectedTab("tab_widget");
+                });
+            }
+            private loadDataToScreen(data: MyPageSettingDto): JQueryPromise<void> {
+                var self = this;
+                var dfd = $.Deferred<void>();
                 //reset item
                 self.myPageSettingModel().topPagePartSettingItems()[0].settingItems([]);
                 self.myPageSettingModel().topPagePartSettingItems()[1].settingItems([]);
@@ -71,6 +87,75 @@ module nts.uk.pr.view.ccg015.b {
                     if (item.partType == TopPagePartsType.FolowMenu) {
                         self.myPageSettingModel().topPagePartSettingItems()[2].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision));
                     }
+                });
+                dfd.resolve();
+                return dfd.promise();
+            }
+            private setData(data: MyPageSettingDto) {
+                data.topPagePartUseSettingDto.forEach(function(item, index) {
+                    if (item.partType == TopPagePartsType.Widget) {
+                        $("#widget-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
+                    }
+                    if (item.partType == TopPagePartsType.Dashboard) {
+                        $("#dashboard-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
+                    }
+                    if (item.partType == TopPagePartsType.FolowMenu) {
+                        $("table#flow-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
+                    }
+                });
+            }
+
+            private collectData(): MyPageSettingDto {
+                var self = this;
+                var items: Array<TopPagePartUseSettingItemDto> = [];
+
+                var collectData: MyPageSettingDto = {
+                    companyId: "",
+                    useMyPage: self.myPageSettingModel().useMyPage(),
+                    useWidget: self.myPageSettingModel().topPagePartSettingItems()[0].usePart(),
+                    useDashboard: self.myPageSettingModel().topPagePartSettingItems()[1].usePart(),
+                    useFlowMenu: self.myPageSettingModel().topPagePartSettingItems()[2].usePart(),
+                    externalUrlPermission: self.myPageSettingModel().topPagePartSettingItems()[3].usePart(),
+                    topPagePartUseSettingDto: []
+                }
+                self.myPageSettingModel().topPagePartSettingItems().forEach(function(item, index) {
+                    item.settingItems().forEach(function(item2, index2) {
+                        if (item2.useItem != UseType.Use && item2.useItem != UseType.NotUse) {
+                            var settingItem: TopPagePartUseSettingItemDto = {
+                                companyId: "",
+                                partItemCode: item2.itemCode,
+                                partItemName: item2.itemName,
+                                useDivision: item2.useItem(),
+                                partType: self.convertPartType(item.partType())
+                            }
+                        }
+                        else {
+                            var settingItem: TopPagePartUseSettingItemDto = {
+                                companyId: "",
+                                partItemCode: item2.itemCode,
+                                partItemName: item2.itemName,
+                                useDivision: item2.useItem,
+                                partType: self.convertPartType(item.partType())
+                            }
+                        }
+                        items.push(settingItem);
+                    });
+                });
+                collectData.topPagePartUseSettingDto = items;
+                return collectData;
+            }
+            private convertPartType(partType: number) {
+                switch (partType) {
+                    case 0: return "Widget";
+                    case 1: return "DashBoard";
+                    case 2: return "FolowMenu";
+                    default: return "Widget";
+                }
+            }
+            private updateMyPageSetting() {
+                var self = this;
+                service.updateMyPageSetting(self.collectData()).done(function() {
+                    //TODO after update 
                 });
             }
         }
@@ -106,6 +191,15 @@ module nts.uk.pr.view.ccg015.b {
             static Widget = "Widget";
             static Dashboard = "DashBoard";
             static FolowMenu = "FolowMenu";
+        }
+        export enum TopPagePartsEnum {
+            Widget = 0,
+            Dashboard = 1,
+            FolowMenu = 2
+        }
+        export enum UseType {
+            Use = 1,
+            NotUse = 0,
         }
     }
 }

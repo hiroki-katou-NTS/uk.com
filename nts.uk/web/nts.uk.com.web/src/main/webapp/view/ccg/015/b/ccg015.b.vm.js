@@ -38,19 +38,34 @@ var nts;
                                         { headerText: "マイページ利用設定", key: 'useItem', width: "200px", controlType: 'switch' }
                                     ]);
                                     this.currentCode = ko.observable("w1");
+                                    self.data = ko.observable(null);
+                                    self.selectedTab.subscribe(function () {
+                                        self.data(self.collectData());
+                                        self.setData(self.data());
+                                    });
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    var companyId;
-                                    b.service.loadMyPageSetting(companyId).done(function (data) {
-                                        self.loadDataToScreen(data);
-                                        dfd.resolve();
-                                    });
+                                    dfd.resolve();
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.initData = function () {
+                                    var self = this;
+                                    var companyId;
+                                    b.service.loadMyPageSetting("123456789ABC-0001").done(function (data) {
+                                        self.data(data);
+                                        self.loadDataToScreen(data).done(function () {
+                                            self.setData(data);
+                                        });
+                                        self.selectedTab("tab_dash_board");
+                                        self.selectedTab("tab_flow_menu");
+                                        self.selectedTab("tab_widget");
+                                    });
                                 };
                                 ScreenModel.prototype.loadDataToScreen = function (data) {
                                     var self = this;
+                                    var dfd = $.Deferred();
                                     self.myPageSettingModel().topPagePartSettingItems()[0].settingItems([]);
                                     self.myPageSettingModel().topPagePartSettingItems()[1].settingItems([]);
                                     self.myPageSettingModel().topPagePartSettingItems()[2].settingItems([]);
@@ -69,6 +84,72 @@ var nts;
                                         if (item.partType == TopPagePartsType.FolowMenu) {
                                             self.myPageSettingModel().topPagePartSettingItems()[2].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision));
                                         }
+                                    });
+                                    dfd.resolve();
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.setData = function (data) {
+                                    data.topPagePartUseSettingDto.forEach(function (item, index) {
+                                        if (item.partType == TopPagePartsType.Widget) {
+                                            $("#widget-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
+                                        }
+                                        if (item.partType == TopPagePartsType.Dashboard) {
+                                            $("#dashboard-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
+                                        }
+                                        if (item.partType == TopPagePartsType.FolowMenu) {
+                                            $("table#flow-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
+                                        }
+                                    });
+                                };
+                                ScreenModel.prototype.collectData = function () {
+                                    var self = this;
+                                    var items = [];
+                                    var collectData = {
+                                        companyId: "",
+                                        useMyPage: self.myPageSettingModel().useMyPage(),
+                                        useWidget: self.myPageSettingModel().topPagePartSettingItems()[0].usePart(),
+                                        useDashboard: self.myPageSettingModel().topPagePartSettingItems()[1].usePart(),
+                                        useFlowMenu: self.myPageSettingModel().topPagePartSettingItems()[2].usePart(),
+                                        externalUrlPermission: self.myPageSettingModel().topPagePartSettingItems()[3].usePart(),
+                                        topPagePartUseSettingDto: []
+                                    };
+                                    self.myPageSettingModel().topPagePartSettingItems().forEach(function (item, index) {
+                                        item.settingItems().forEach(function (item2, index2) {
+                                            if (item2.useItem != UseType.Use && item2.useItem != UseType.NotUse) {
+                                                var settingItem = {
+                                                    companyId: "",
+                                                    partItemCode: item2.itemCode,
+                                                    partItemName: item2.itemName,
+                                                    useDivision: item2.useItem(),
+                                                    partType: self.convertPartType(item.partType())
+                                                };
+                                            }
+                                            else {
+                                                var settingItem = {
+                                                    companyId: "",
+                                                    partItemCode: item2.itemCode,
+                                                    partItemName: item2.itemName,
+                                                    useDivision: item2.useItem,
+                                                    partType: self.convertPartType(item.partType())
+                                                };
+                                            }
+                                            items.push(settingItem);
+                                        });
+                                    });
+                                    collectData.topPagePartUseSettingDto = items;
+                                    return collectData;
+                                };
+                                ScreenModel.prototype.convertPartType = function (partType) {
+                                    switch (partType) {
+                                        case 0: return "Widget";
+                                        case 1: return "DashBoard";
+                                        case 2: return "FolowMenu";
+                                        default: return "Widget";
+                                    }
+                                };
+                                ScreenModel.prototype.updateMyPageSetting = function () {
+                                    var self = this;
+                                    b.service.updateMyPageSetting(self.collectData()).done(function () {
                                     });
                                 };
                                 return ScreenModel;
@@ -109,6 +190,17 @@ var nts;
                                 return TopPagePartsType;
                             }());
                             viewmodel.TopPagePartsType = TopPagePartsType;
+                            (function (TopPagePartsEnum) {
+                                TopPagePartsEnum[TopPagePartsEnum["Widget"] = 0] = "Widget";
+                                TopPagePartsEnum[TopPagePartsEnum["Dashboard"] = 1] = "Dashboard";
+                                TopPagePartsEnum[TopPagePartsEnum["FolowMenu"] = 2] = "FolowMenu";
+                            })(viewmodel.TopPagePartsEnum || (viewmodel.TopPagePartsEnum = {}));
+                            var TopPagePartsEnum = viewmodel.TopPagePartsEnum;
+                            (function (UseType) {
+                                UseType[UseType["Use"] = 1] = "Use";
+                                UseType[UseType["NotUse"] = 0] = "NotUse";
+                            })(viewmodel.UseType || (viewmodel.UseType = {}));
+                            var UseType = viewmodel.UseType;
                         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
                     })(b = ccg015.b || (ccg015.b = {}));
                 })(ccg015 = view.ccg015 || (view.ccg015 = {}));

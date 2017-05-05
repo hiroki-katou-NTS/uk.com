@@ -32,14 +32,14 @@
 						<div id="tab-panel" class="cf"
 							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab, direction: 'vertical' }">
 							<div id="widget" data-bind="if: $parent.selectedTab() == 'tab_widget'">
-								<com:ko tag="template" bind="{name: 'tab-template', data: topPagePartSettingItems()[0]}"></com:ko>
+								<com:ko tag="template" bind="{name: 'widget-template', data: topPagePartSettingItems()[0]}"></com:ko>
 							</div>
 							<div id="dash_board" data-bind="if: $parent.selectedTab() == 'tab_dash_board'">
-								<com:ko tag="template" bind="{name: 'tab-template', data: topPagePartSettingItems()[1]}"></com:ko>
+								<com:ko tag="template" bind="{name: 'dashboard-template', data: topPagePartSettingItems()[1]}"></com:ko>
 							</div>
 							<div id="flow_menu" data-bind="if: $parent.selectedTab() == 'tab_flow_menu'">
-								<com:ko tag="template" bind="{name: 'tab-template', data: topPagePartSettingItems()[2]}"></com:ko>
-							</div>
+								<com:ko tag="template" bind="{name: 'flow-template', data: topPagePartSettingItems()[2]}"></com:ko>
+							</div>	
 							<div id="url" data-bind="if: $parent.selectedTab() == 'tab_url'">
 								<com:ko tag="template" bind="{name: 'tab-URL-template', data: topPagePartSettingItems()[3]}"></com:ko>
 							</div>
@@ -48,12 +48,12 @@
 				</div>
 				<hr />
 				<div id="this-functions-area" class="control-group halign-center">
-					<button class="btn-default proceed x-large">決定</button>
+					<button data-bind = "click : updateMyPageSetting" class="btn-default proceed x-large">決定</button>
 					<button onclick="nts.uk.ui.windows.close()">キャンセル</button>
 				</div>
 			</div>
-			<script type="text/html" id="tab-template">
-					<div style="float:left;" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+			<script type="text/html" id="widget-template">
+					<div style="float:left;" id="widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>利用区分<br /></label>
 					</div>
 					<div style="float:left;" class="cf"
@@ -64,7 +64,61 @@
 						value: usePart,
 						enable: true }"></div>
 					<div>
-						<table id="single-list" data-bind="ntsGridList: {	
+						<table id="widget-list" data-bind="ntsGridList: {	
+								showNumbering: true,							
+								height: 350,
+								dataSource: settingItems,
+								primaryKey: 'itemCode',
+								columns: $parents[1].columns,
+								multiple: false,
+								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
+								value: $parents[1].currentCode
+							}"
+							class="cf"></table>
+					</div>
+			
+			</script>
+			
+			<script type="text/html" id="dashboard-template">
+					<div style="float:left;" id="dashboard_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>利用区分<br /></label>
+					</div>
+					<div style="float:left;" class="cf"
+						data-bind="ntsSwitchButton: {
+						options: $parents[1].useDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: usePart,
+						enable: true }"></div>
+					<div>
+						<table id="dashboard-list" data-bind="ntsGridList: {	
+								showNumbering: true,							
+								height: 350,
+								dataSource: settingItems,
+								primaryKey: 'itemCode',
+								columns: $parents[1].columns,
+								multiple: false,
+								features: [{name: 'Switch', options: $parents[1].useDivisionOptions, optionsValue: 'code', optionsText: 'name'}],
+								value: $parents[1].currentCode
+							}"
+							class="cf"></table>
+					</div>
+			
+			</script>
+			
+			<script type="text/html" id="flow-template">
+					<div style="float:left;" id="flow_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
+						<label>利用区分<br /></label>
+					</div>
+					<div style="float:left;" class="cf"
+						data-bind="ntsSwitchButton: {
+						options: $parents[1].useDivisionOptions,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: usePart,
+						enable: true }"></div>
+					<div>
+						<table id="flow-list" data-bind="ntsGridList: {	
 								showNumbering: true,							
 								height: 350,
 								dataSource: settingItems,

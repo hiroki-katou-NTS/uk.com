@@ -145,6 +145,7 @@ module nts.uk.com.view.ccg015.a {
                 service.deleteTopPage(self.toppageSelectedCode()).done(function() {
                     //delete success
                 }).fail();
+                self.loadTopPageList();
             }
         }
         export class Node {

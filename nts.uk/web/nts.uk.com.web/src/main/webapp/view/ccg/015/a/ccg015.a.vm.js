@@ -112,6 +112,7 @@ var nts;
                                     var self = this;
                                     a.service.deleteTopPage(self.toppageSelectedCode()).done(function () {
                                     }).fail();
+                                    self.loadTopPageList();
                                 };
                                 return ScreenModel;
                             }());

@@ -33,7 +33,7 @@ public class CcgmtMyPageSet extends UkJpaEntity {
 	public int useDashBoardAtr;
 
 	/** The use folow menu atr. */
-	@Column(name = "USE_FOLOW_MENU_ATR")
+	@Column(name = "USE_FLOW_MENU_ATR")
 	public int useFolowMenuAtr;
 
 	/** The external url permission atr. */
