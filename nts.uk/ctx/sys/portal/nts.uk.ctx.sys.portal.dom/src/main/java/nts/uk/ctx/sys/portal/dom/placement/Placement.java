@@ -48,4 +48,13 @@ public class Placement extends DomainObject {
 			ExternalUrl.createFromJavaType(url, width, height)
 		);
 	}
+	
+	/** Check Placement is an ExternalUrl type */
+	public boolean isExternalUrl() {
+		if (externalUrl.isPresent()) {
+			return true;
+		}
+		return false;
+	}
+
 }

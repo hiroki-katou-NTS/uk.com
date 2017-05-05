@@ -58,6 +58,21 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	public void remove(String companyID, String placementID) {
 		this.commandProxy().remove(CcgmtPlacement.class, new CcgmtPlacementPK(companyID, placementID));
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#removeAll(String companyID, List<String> placementIDs)
+	 */
+	@Override
+	public void removeAll(String companyID, List<String> placementIDs) {
+		List<CcgmtPlacementPK> listCcgmtPlacementPK = new ArrayList<CcgmtPlacementPK>();
+		for (String placementID : placementIDs) {
+			listCcgmtPlacementPK.add(new CcgmtPlacementPK(companyID, placementID));
+		}
+		this.commandProxy().removeAll(CcgmtPlacement.class, listCcgmtPlacementPK);
+	}
 
 	/*
 	 * (non-Javadoc)
