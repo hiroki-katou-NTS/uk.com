@@ -64,37 +64,25 @@ module nts.uk.pr.view.qpp021.h {
                                 },
                                 {
                                     columnKey: 'commentMonth',
-                                    editorProvider: new (<any>$.ig).NtsNumberEditor(),
-                                    editorOptions: {
-                                        option: {
-                                        },
-                                        required: true
-                                    },
                                     readOnly: false
                                 },
                                 {
                                     columnKey: 'commentInit',
-                                    editorProvider: new (<any>$.ig).NtsNumberEditor(),
-                                    editorOptions: {
-                                        option: {
-                                        },
-                                        required: true
-                                    },
                                     readOnly: false
                                 },
                                 {
                                     columnKey: 'groupCalTypeText',
                                     readOnly: true
                                 }
-                            ],
+                            ]
                         }
                     ],
                     autoCommit: true,
                     columns: [
                         { headerText: 'コード', dataType: 'string', key: 'empCd', width: '10%', columnCssClass: "bgIgCol" },
                         { headerText: '名称', dataType: 'string', key: 'empName', width: '10%', columnCssClass: "bgIgCol" },
-                        { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'commentMonth', width: '40%', columnCssClass: "halign-right" },
-                        { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'commentInit', width: '40%', columnCssClass: "halign-right" }
+                        { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'commentMonth', width: '40%', columnCssClass: "halign-right" },
+                        { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'commentInit', width: '40%', columnCssClass: "halign-right" }
                     ]
                 });
             }
@@ -103,15 +91,15 @@ module nts.uk.pr.view.qpp021.h {
         class CommentPersonModel {
             empCd: string;
             empName: string;
-            commentInit: KnockoutObservable<number>;
-            commentMonth: KnockoutObservable<number>;
+            commentInit: string;
+            commentMonth: string;
             groupCalTypeText: string;
 
             setupData(dto: EmploymentDto) {
                 this.empCd = dto.employmentCode;
                 this.empName = dto.employmentName;
-                this.commentInit = ko.observable(0);
-                this.commentMonth = ko.observable(0);
+                this.commentInit = '';
+                this.commentMonth = '';
             }
         }
     }

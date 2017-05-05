@@ -59,35 +59,25 @@ var nts;
                                                     },
                                                     {
                                                         columnKey: 'commentMonth',
-                                                        editorProvider: new $.ig.NtsNumberEditor(),
-                                                        editorOptions: {
-                                                            option: {},
-                                                            required: true
-                                                        },
                                                         readOnly: false
                                                     },
                                                     {
                                                         columnKey: 'commentInit',
-                                                        editorProvider: new $.ig.NtsNumberEditor(),
-                                                        editorOptions: {
-                                                            option: {},
-                                                            required: true
-                                                        },
                                                         readOnly: false
                                                     },
                                                     {
                                                         columnKey: 'groupCalTypeText',
                                                         readOnly: true
                                                     }
-                                                ],
+                                                ]
                                             }
                                         ],
                                         autoCommit: true,
                                         columns: [
                                             { headerText: 'コード', dataType: 'string', key: 'empCd', width: '10%', columnCssClass: "bgIgCol" },
                                             { headerText: '名称', dataType: 'string', key: 'empName', width: '10%', columnCssClass: "bgIgCol" },
-                                            { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'commentMonth', width: '40%', columnCssClass: "halign-right" },
-                                            { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'commentInit', width: '40%', columnCssClass: "halign-right" }
+                                            { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'commentMonth', width: '40%', columnCssClass: "halign-right" },
+                                            { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'commentInit', width: '40%', columnCssClass: "halign-right" }
                                         ]
                                     });
                                 };
@@ -100,8 +90,8 @@ var nts;
                                 CommentPersonModel.prototype.setupData = function (dto) {
                                     this.empCd = dto.employmentCode;
                                     this.empName = dto.employmentName;
-                                    this.commentInit = ko.observable(0);
-                                    this.commentMonth = ko.observable(0);
+                                    this.commentInit = '';
+                                    this.commentMonth = '';
                                 };
                                 return CommentPersonModel;
                             }());
