@@ -50,13 +50,18 @@ module nts.uk.com.view.ccg015.a {
                 var dfd = $.Deferred<void>();
                 self.listTopPage([]);
                 service.loadTopPage().done(function(data: Array<TopPageItemDto>) {
-                    data.forEach(function(item, index) {
-                        self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
-                        dfd.resolve();
-                    });
-                    if (self.listTopPage().length > 0) {
-                        self.toppageSelectedCode(self.listTopPage()[0].code);
+                    if (data.length > 0) {
+                        data.forEach(function(item, index) {
+                            self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
+                        });
+                        if (self.listTopPage().length > 0) {
+                            self.toppageSelectedCode(self.listTopPage()[0].code);
+                        }
                     }
+                    else {
+                        self.newTopPage();
+                    }
+                    dfd.resolve();
                 });
                 return dfd.promise();
             }
@@ -100,12 +105,12 @@ module nts.uk.com.view.ccg015.a {
                 //check update or create
                 if (self.isNewMode()) {
                     service.registerTopPage(self.collectData()).done(function() {
-                        //register success                     
+                        //TODO register success  show msg_15                      
                     });
                 }
                 else {
                     service.updateTopPage(self.collectData()).done(function() {
-                        //update success
+                        //TODO register success  show msg_15  
                     });
                 }
                 self.loadTopPageList();
@@ -135,6 +140,9 @@ module nts.uk.com.view.ccg015.a {
                 });
 
             }
+            private openFlowMenuSetting() {
+                //TODO    
+            }
             private newTopPage() {
                 var self = this;
                 self.topPageModel(new TopPageModel());
@@ -142,10 +150,35 @@ module nts.uk.com.view.ccg015.a {
             }
             private removeTopPage() {
                 var self = this;
-                service.deleteTopPage(self.toppageSelectedCode()).done(function() {
-                    //delete success
-                }).fail();
-                self.loadTopPageList();
+                nts.uk.ui.dialog.confirm("//TODO #Msg_18").ifYes(function() {
+                    var removeCode = self.toppageSelectedCode();
+                    var removeIndex = self.getIndexOfRemoveItem(removeCode);
+                    var listLength = self.listTopPage().length;
+                    service.deleteTopPage(self.toppageSelectedCode()).done(function() {
+                        //delete success
+                    }).fail();
+                    self.loadTopPageList().done(function() {
+                        var lst = self.listTopPage();
+                        if (removeIndex < listLength-1) {
+                            self.toppageSelectedCode(lst[removeIndex].code);
+                        }
+                        else {
+                            self.toppageSelectedCode(lst[removeIndex - 1].code);
+                        }
+                    });
+                }).ifNo(function() {
+
+                });
+            }
+            private getIndexOfRemoveItem(code:string):number{
+                var self = this;
+                var ind = 0;
+                self.listTopPage().forEach(function(item, index) {
+                    if (item.code == code) {
+                        ind = index;
+                    } 
+                });
+                return ind;    
             }
         }
         export class Node {
