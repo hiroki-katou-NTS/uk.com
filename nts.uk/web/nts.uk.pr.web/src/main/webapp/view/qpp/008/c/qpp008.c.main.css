@@ -4,7 +4,7 @@
 }
 
 #functions-area-content {
-	width: 1000px;
+	width: 900px;
 }
 
 .function-area {
@@ -18,7 +18,7 @@
 	margin-top: 15px;
 	height: 600px;
 	display: inline-flex;
-	max-width: 1300px;
+	max-width: 1250px;
 }
 
 .caret-background.caret-right:after {
@@ -42,7 +42,7 @@
 }
 
 .nts-right-content {
-	padding: 0px 15px;
+	padding-left: 15px;
 	width: 975px;
 	float: left;
 }
@@ -104,11 +104,11 @@
 
 .divRightBottom {
 	padding-top: 5px;
-	width: 975px;
+	width: 950px;
 }
 
 .div-right-bottom-right {
-	width: 700px;
+	width: 685px;
 	float: left;
 	height: auto;
 }
@@ -144,7 +144,7 @@
 }
 
 .tabPanel {
-	width: 680px;
+	width: 665px;
 	height: 500px;
 }
 
