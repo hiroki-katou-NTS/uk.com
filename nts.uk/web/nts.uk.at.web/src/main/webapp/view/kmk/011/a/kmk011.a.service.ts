@@ -1,32 +1,27 @@
 module kmk011.a.service {
     var paths = {
-        getAllDivTimeName: "",
-        getAllDivTime: ""
+        getAllDivTimeName: "at/record/divergencetime/?",
+        getAllDivTime: "at/record/divergencetime/getalldivtime",
+        updateDivTime: "at/record/divergencetime/updatedivtime"
     }
 
     /**
     * get all divergence time name
     */
     export function getAllDivTimeName(): JQueryPromise<Array<model.DivergenceTimeItem>> {
-        var dfd = $.Deferred<Array<model.DivergenceTimeItem>>();
-        nts.uk.request.ajax("at", paths.getAllDivTimeName).done(function(res: Array<model.DivergenceTimeItem>) {
-            dfd.resolve(res);
-        }).fail(function(res) {
-            dfd.reject(res);
-        })
-        return dfd.promise();
+        return nts.uk.request.ajax("at", paths.getAllDivTimeName);
     }
-        /**
+    /**
     * get all divergence time
     */
-    export function getAllDivTime(): JQueryPromise<Array<model.DivergenceTimeItem>> {
-        var dfd = $.Deferred<Array<model.DivergenceTimeItem>>();
-        nts.uk.request.ajax("at", paths.getAllDivTimeName).done(function(res: Array<model.DivergenceTimeItem>) {
-            dfd.resolve(res);
-        }).fail(function(res) {
-            dfd.reject(res);
-        })
-        return dfd.promise();
+    export function getAllDivTime(): JQueryPromise<Array<model.DivergenceTime>>{
+        return nts.uk.request.ajax("at", paths.getAllDivTime);
+    }
+    /**
+     * update divergence time
+     */
+    export function updateDivTime(divTime: model.DivergenceTime):JQueryPromise<Array<model.DivergenceTimeItem>>{
+        return nts.uk.request.ajax("at", paths.updateDivTime, divTime);
     }
     export module model {
         export class DivergenceTime {

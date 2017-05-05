@@ -16,9 +16,11 @@ module kmk011.b.viewmodel {
         inp_A34: KnockoutObservable<string>;
         divReasonCode: KnockoutObservable<string>;
         divReasonContent: KnockoutObservable<string>;
-        enable: KnockoutObservable<boolean>;
+        enableCode: KnockoutObservable<boolean>;
         itemDivReason: KnockoutObservable<model.Item>;
-        
+        divTimeId: KnockoutObservable<string>;
+        index_of_itemDelete: any;
+        objectOld: any;
         constructor() {
             var self = this;
             self.label_002 = ko.observable(new model.Labels());
@@ -37,23 +39,25 @@ module kmk011.b.viewmodel {
                     { code: '1', name: '必須する' },
                     { code: '0', name: '必須しない' },
                 ]);
-            self.requiredAtr = ko.observable(1);    
+            self.requiredAtr = ko.observable(0);    
             self.inp_A34 = ko.observable('時間１');    
             self.divReasonCode = ko.observable('');
             self.divReasonContent = ko.observable('');
-            self.enable = ko.observable(true);
+            self.enableCode = ko.observable(false);
             self.itemDivReason = ko.observable(null);
+            self.divTimeId = ko.observable(null);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
                 self.itemDivReason(self.findItemDivTime(codeChanged));
-                self.divReasonCode(self.itemDivReason().divReasonCode);
-                self.divReasonContent(self.itemDivReason().divReasonContent);
-                if(self.itemDivReason().requiredAtr === 1){
-                    self.requiredAtr(true);
+                if(self.itemDivReason()===undefined||self.itemDivReason()==null){
+                    return;
                 }else{
-                    self.requiredAtr(false);
+                    self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
+                    self.enableCode(false);
+                    self.divReasonCode(self.itemDivReason().divReasonCode);
+                    self.divReasonContent(self.itemDivReason().divReasonContent);
+                    self.requiredAtr(self.itemDivReason().requiredAtr);
                 }
-
             });
         }
         
@@ -65,11 +69,16 @@ module kmk011.b.viewmodel {
             var self = this;
             self.currentCode('');
             var dfd = $.Deferred();
-            var divTimeId = nts.uk.ui.windows.getShared("KMK011_divTimeId");
-            service.getAllDivReason(divTimeId).done(function(lstDivReason: Array<model.Item>) {
-                self.dataSource(lstDivReason);
-                let reasonFirst = _.first(lstDivReason);
-                self.currentCode(reasonFirst.divReasonCode);
+            self.divTimeId(nts.uk.ui.windows.getShared("KMK011_divTimeId"));
+            service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
+                if(lstDivReason=== undefined || lstDivReason.length == 0){
+                    self.dataSource();
+                    self.enableCode(true);
+                }else{
+                    self.dataSource(lstDivReason);
+                    let reasonFirst = _.first(lstDivReason);
+                    self.currentCode(reasonFirst.divReasonCode);
+                }
                 dfd.resolve();
             })
             return dfd.promise();
@@ -88,12 +97,116 @@ module kmk011.b.viewmodel {
             var self = this;
             self.divReasonCode(null);
             self.divReasonContent("");
-            self.requiredAtr(null);    
+            self.requiredAtr(0);
+            self.enableCode(true);
+        }
+        RegistrationDivReason(){
+            var self = this;
+            if(self.enableCode()==false){
+                let objectNew = self.divReasonCode()+ self.divReasonContent()+self.requiredAtr();
+                console.log(objectNew);
+                if(self.objectOld==objectNew){
+                    return;
+                }else{
+                    if(self.checkInput()){
+                        self.updateDivReason();
+                    }else{
+                        return;
+                    }
+                }
+            }else
+            if(self.enableCode()==true){//add divergence
+                if(self.checkInput()){
+                    self.addDivReason();
+                }else{
+                    return;
+                }
+            }
         }
         addDivReason(){
             var self = this;
-            var divReason = new model.Item(self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
-            service.addDivReason(divReason);
+            var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
+            service.addDivReason(divReason).done(function() {
+                    self.getAllDivReasonNew();
+                }).fail(function(res) {
+                    alert(res.message);
+                    dfd.reject(res);
+                });
+        }
+        updateDivReason(){
+            var self = this;
+            var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
+            service.updateDivReason(divReason).done(function() {
+                    self.getAllDivReasonNew();
+                }).fail(function(res) {
+                    alert(res.message);
+                    dfd.reject(res);
+                });
+        }
+        //get all divergence reason new
+        getAllDivReasonNew(){
+            var self = this;
+            var dfd = $.Deferred<any>();
+            self.dataSource();
+            service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
+                self.currentCode('');
+                self.dataSource(lstDivReason);
+                self.enableCode(false);
+                self.currentCode(self.divReasonCode());
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+        }
+        //delete divergence reason
+        deleteDivReason(){
+            var self = this;
+            let divReason = self.itemDivReason();
+            self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
+            service.deleteDivReason(divReason).done(function(){
+                self.getDivReasonList_afterDelete();
+            });
+        }
+        //get list divergence reason after Delete 1 divergence reason
+        getDivReasonList_afterDelete(): any {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            self.dataSource();
+            service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
+                self.dataSource(lstDivReason);
+
+                if (self.dataSource().length > 0) {
+                    if (self.index_of_itemDelete === self.dataSource().length) {
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].divReasonCode)
+                    } else {
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete].divReasonCode)
+                    }
+
+                } else {
+                    self.refreshData();
+                }
+
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+
+        }
+        /**
+         * check input: divergence reason code and divergence reason content
+         */
+        checkInput(): boolean {
+            var self = this;
+            if (self.divTimeId() == '' || self.divReasonContent() == '') {
+                alert("nhap day du thong tin");
+                return false;
+            } else {
+                return true;
+            }
         }
     }
     export module model{ 
@@ -110,21 +223,13 @@ module kmk011.b.viewmodel {
             }
         }
     
-        export class BoxModel {
-            id: number;
-            name: string;
-            constructor(id, name) {
-                var self = this;
-                self.id = id;
-                self.name = name;
-            }
-        }
-        
         export class Item{
+            divTimeId: number;
             divReasonCode: string;
             divReasonContent: string;  
             requiredAtr: number;
-            constructor(divReasonCode: string,divReasonContent: string,requiredAtr: number){
+            constructor(divTimeId: number,divReasonCode: string,divReasonContent: string,requiredAtr: number){
+                this.divTimeId = divTimeId;
                 this.divReasonCode = divReasonCode;
                 this.divReasonContent = divReasonContent;    
                 this.requiredAtr = requiredAtr;

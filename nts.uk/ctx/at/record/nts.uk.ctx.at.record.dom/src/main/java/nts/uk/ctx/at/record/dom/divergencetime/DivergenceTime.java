@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
@@ -58,5 +59,19 @@ public class DivergenceTime extends AggregateRoot{
 				InputSetting.convert(inputUseSet,cancelErrInput));
 				
 	}
-	
+	public static boolean checkAlarmErrTime(int alarmTime,
+													int errTime){
+//		Time alartTimeNew = new Time(BigDecimal.valueOf(alarmTime));
+//		Time errTimeNew = new Time(BigDecimal.valueOf(errTime));
+		if(alarmTime==errTime){
+			if(alarmTime==0) return true;
+			else return false;
+		}else
+		if(alarmTime<errTime){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
 }

@@ -110,6 +110,7 @@ module kmk011.a.viewmodel {
                 self.selectUse(self.itemDivTime().divTimeUseSet);
                 self.selectSel(self.itemDivTime().selUseSet);
                 self.selectInp(self.itemDivTime().inpUseSet);
+                self.divTimeId(self.itemDivTime().divTimeId);
                 if(self.itemDivTime().cancelErrInpReason==1){
                     self.checkErrInput(true);
                 }else{
@@ -148,6 +149,7 @@ module kmk011.a.viewmodel {
         openBDialog(){
             var self = this;
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
+            console.log(self.divTimeId());
             nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', })    
         }
     }

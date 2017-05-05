@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DivergenceTimeFinder {
@@ -14,7 +15,8 @@ public class DivergenceTimeFinder {
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
 	
-	public List<DivergenceTimeDto> getAllDivTime(String companyId){
+	public List<DivergenceTimeDto> getAllDivTime(){
+		String companyId = AppContexts.user().companyCode();
 		List<DivergenceTimeDto> lst = this.divTimeRepo.getAllDivTime(companyId).stream()
 				.map(c->DivergenceTimeDto.fromDomain(c))
 				.collect(Collectors.toList());
