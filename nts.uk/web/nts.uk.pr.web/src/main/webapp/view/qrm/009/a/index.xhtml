@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+   				</com:ValidatorScript>
+				<com:stylefile path="main.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+					<button id="A_BTN_001" class="proceed">選択した社員を印刷(PDF)</button>
+					<button id="A_BTN_002">印刷実行ログ</button>
+				</div>
+				<div id="contents-area">
+				<div class="left-content"></div>
+				<div class="right-content">
+					
+				</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
