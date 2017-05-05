@@ -109,7 +109,7 @@
 									value: currentPersonCost().memo,
 									constraint: 'Memo'}" />
 							</div>
-							<div class="table">
+							<div class="table" id="premium-set-div">
 								<table id="premium-set-tbl">
 									<thead>
 										<tr>
@@ -119,13 +119,13 @@
 										</tr>
 									</thead>
 									<tbody data-bind="foreach: premiumSettingList">
-										<tr>
+										<tr data-bind="css: { notUse: $parent.extraTimeItemList()[$index()].useClassification() == 0 }">
 											<td data-bind="text: $parent.extraTimeItemList()[$index()].name()"></td>
 											<td>
 												<input class="data-required" data-bind="ntsNumberEditor: {
 													value: premiumRate,
 													constraint: 'Memo',
-													option: { width: '110px' },
+													option: { width: '40px' },
 													required: true, 
 													enable: true }" />	
 											</td>
@@ -137,7 +137,7 @@
 													<input class="data-required" data-bind="ntsNumberEditor: {
 													value: timeItemID,
 													constraint: 'Memo',
-													option: { width: '110px' },
+													option: { width: '450px' },
 													required: true, 
 													enable: true }" />	
 												</div>

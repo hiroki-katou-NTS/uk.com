@@ -28,11 +28,11 @@ module kml001.a.viewmodel {
                 new ExtraTimeItem('','2','Item2','0002',1),
                 new ExtraTimeItem('','3','Item3','0003',1),
                 new ExtraTimeItem('','4','Item4','0004',0),
-                new ExtraTimeItem('','5','Item5','0005',0),
-                new ExtraTimeItem('','6','Item6','0006',0),
+                new ExtraTimeItem('','5','Item5','0005',1),
+                new ExtraTimeItem('','6','Item6','0006',1),
                 new ExtraTimeItem('','7','Item7','0007',0),
                 new ExtraTimeItem('','8','Item8','0008',0),
-                new ExtraTimeItem('','9','Item9','0009',0),
+                new ExtraTimeItem('','9','Item9','0009',1),
                 new ExtraTimeItem('','10','Item10','0010',0)
             ]);
             self.premiumSettingList = ko.observableArray([
@@ -59,7 +59,11 @@ module kml001.a.viewmodel {
          * 
          */
         premiumDialog() {
-            nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定" });
+            var self = this;
+            nts.uk.ui.windows.setShared('extraTimeItemList', self.extraTimeItemList());
+            nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                        
+            });
         }
         
         /**
@@ -100,9 +104,10 @@ module kml001.a.viewmodel {
         editDialog() {
             var self = this;
             let beforeIndex = _.findIndex(self.personCostList(), function(o) { return o.startDate() == self.currentPersonCost().startDate(); })-1;
-            nts.uk.ui.windows.setShared('size', _.size(self.personCostList()));
+            let size = _.size(self.personCostList());
+            nts.uk.ui.windows.setShared('size', size);
             nts.uk.ui.windows.setShared('beforeStartDate', (beforeIndex>=0)?self.personCostList()[beforeIndex].startDate():"1900/1/1");
-            nts.uk.ui.windows.setShared('currentEndDate', self.currentPersonCost().endDate());
+            nts.uk.ui.windows.setShared('currentEndDate', (size>0)?self.currentPersonCost().endDate():"9999/12/31");
             nts.uk.ui.windows.sub.modal("/view/kml/001/d/index.xhtml", { title: "履歴の編集", dialogClass: "no-close" }).onClosed(function() {
                 let isUpdate: boolean = nts.uk.ui.windows.getShared('isUpdate');
                 if(isUpdate==true) {

@@ -56,8 +56,8 @@
 				</table>
 				<hr />
 				<div id="center-bottom" class="valign-center control-group">
-					<button class="x-large proceed center-e">決定</button>
-					<button class="ui-dialog-titlebar-close">キャンセル</button>
+					<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">決定</button>
+					<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">キャンセル</button>
 				</div>
 			</div>
 		</ui:define>
