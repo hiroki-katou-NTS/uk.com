@@ -18,8 +18,8 @@ module qpp008.g.viewmodel {
             let self = this;
             self.detailDifferentList = new Array();
             self.detailDifferentListKO = ko.observableArray(self.detailDifferentList);
-            self.comparativeDateEarlier = "2017/02";
-            self.comparativeDateLater = "2017/03";
+            self.comparativeDateEarlier = nts.uk.ui.windows.getShared('qpp008_processingYMEarlierValue');
+            self.comparativeDateLater = nts.uk.ui.windows.getShared('qpp008_processingYMLaterValue');
             self.numberOfPeople = 2;
             self.employeerIDSelection = new Array("999000000000000000000000000000000001", "999000000000000000000000000000000002");
 
@@ -138,7 +138,7 @@ module qpp008.g.viewmodel {
         }
         startPage(): JQueryPromise<any> {
             let self = this;
-            let processingYMEarlier = Number(self.comparativeDateEarlier.trim().replace("/", ""));
+             let processingYMEarlier = Number(self.comparativeDateEarlier.trim().replace("/", ""));
             let processingYMLater = Number(self.comparativeDateLater.trim().replace("/", ""));
             let dfd = $.Deferred();
             self.detailDifferentList = new Array();

@@ -15,7 +15,6 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFor
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetailRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormHeader;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormHeaderRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.FormName;
 import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped
@@ -38,9 +37,10 @@ public class UpdateComparingFormCommandHandler extends CommandHandler<UpdateComp
 		if (!comparingFormHeader.isPresent()) {
 			throw new BusinessException("2");
 		}
+		ComparingFormHeader newComparingFormHeader = ComparingFormHeader.createFromJavaType(companyCode,
+				updateCommand.getFormCode(), updateCommand.getFormName());
 
-		comparingFormHeader.get().setFormName(new FormName(updateCommand.getFormName()));
-		this.comparingFormHeaderRepository.updateComparingFormHeader(comparingFormHeader.get());
+		this.comparingFormHeaderRepository.updateComparingFormHeader(newComparingFormHeader);
 		this.comparingFormDetailRepository.deleteComparingFormDetail(companyCode, updateCommand.getFormCode());
 
 		List<ComparingFormDetail> comparingFormDetailList = updateCommand

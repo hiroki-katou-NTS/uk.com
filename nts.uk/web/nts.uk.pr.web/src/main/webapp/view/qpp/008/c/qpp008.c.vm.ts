@@ -337,6 +337,8 @@ module qpp008.c.viewmodel {
         }
 
         closeDialog(): any {
+            let self = this;
+            nts.uk.ui.windows.setShared('qpp008_form_header_code', self.currentCode(), true);
             nts.uk.ui.windows.close();
         }
 
