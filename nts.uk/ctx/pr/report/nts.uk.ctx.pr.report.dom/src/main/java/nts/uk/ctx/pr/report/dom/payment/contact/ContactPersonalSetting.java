@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.payment.contact;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.primitive.sample.ProcessingNo;
@@ -11,6 +12,7 @@ import nts.uk.shr.com.primitive.sample.ProcessingNo;
 /**
  * The Class ContactPersonalSetting.
  */
+@Getter
 public class ContactPersonalSetting extends AggregateRoot {
 
 	/** The pay bonus atr. */
