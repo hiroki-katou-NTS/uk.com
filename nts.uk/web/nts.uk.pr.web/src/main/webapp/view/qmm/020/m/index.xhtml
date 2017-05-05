@@ -16,31 +16,30 @@
 		</ui:define>
 		<ui:define name="content">
 			<div class="contents-area">
-				<div data-bind="ntsFormLabel: {}">紐ずける明細書を選択してください。</div>				
-				<div
-					data-bind="ntsSearchBox: {
-								comId: 'D_LST_002', 
-								items: listTreeItems, 
-								selected: listTreeItemSelected, 
-								selectedKey: 'code', 
-								fields: ['name', 'code'], 
-								childField: 'childs'}" />
-				<table id="M_LST_001"
-					data-bind="ntsGridList: {
-										height: 200,
-										options: items,
-										optionsValue: 'code',
-										columns: columns,
+				<label id="M_LBL_001">紐ずける明細書を選択してください。</label>
+				<div class="form-group">
+					<div id="M_INP_001"
+						data-bind="ntsSearchBox: {
+										comId: 'M_LST_001', 
+										selectedKey: 'code', 
+										items: listItemDataSources, 
+										selected: listItemSelected,
+										fields: ['name', 'code']}" />
+					<table id="M_LST_001"
+						data-bind="ntsGridList: {
+										height: 300,
 										multiple: false,
-										value: currentCodeList
-									}"
-					class="cf">
-				</table>
+										optionsValue: 'code',
+										value: listItemSelected,
+										columns: listItemColumns,
+										options: listItemDataSources }">
+					</table>
+				</div>
 			</div>
 			<div class="dialog-button-group">
-				<button class="x-large proceed" id="F_BTN_001"
+				<button class="x-large" id="M_BTN_001"
 					data-bind="click: selectStmtCode, enable: $root.errors.isEmpty">選択</button>
-				<button class="large" id="F_BTN_002" data-bind="click: closeDialog">キャンセル</button>
+				<button class="large" id="M_BTN_002" data-bind="click: closeDialog">キャンセル</button>
 			</div>
 		</ui:define>
 	</ui:composition>

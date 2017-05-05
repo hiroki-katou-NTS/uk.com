@@ -6,9 +6,23 @@ module qmm020.d.viewmodel {
         listTreeItems: KnockoutObservableArray<ItemTree> = ko.observableArray([]);
         listTreeItemSelected: KnockoutObservable<string> = ko.observable('0');
         listTreeColumns: Array<any> = [];
+        dirty: nts.uk.ui.DirtyChecker = new nts.uk.ui.DirtyChecker(this.listTreeItems);
 
         constructor() {
             var self = this;
+
+            self.listTreeColumns = [{ headerText: '', key: 'code', dataType: 'string', hidden: true },
+                { headerText: 'コード/名称', key: 'name', dataType: 'string', hidden: false, width: '450px', template: '<span>${code} ${name}</span>' },
+                { headerText: '給与明細書', key: 'bonus', dataType: 'object', hidden: false, width: '250px', template: '<button class="d-btn-001" onclick="__viewContext.viewModel.viewmodelD.openMDialog()">選択</button><span>${bonus.code} ${bonus.name}</span>' },
+                { headerText: '賞与明細書', key: 'payment', dataType: 'object', hidden: false, width: '250px', template: '<button class="d-btn-002" onclick="__viewContext.viewModel.viewmodelD.openMDialog()">選択</button><span>${payment.code} ${payment.name}</span>' }];
+
+            self.start();
+        }
+
+        start() {
+            let self = this;
+
+            // replace below code by service            
             self.listBoxItems([
                 new ItemList({ code: '1', name: '2016/04 ~ 9999/12' }),
                 new ItemList({ code: '2', name: '2015/04 ~ 2016/03' }),
@@ -45,24 +59,22 @@ module qmm020.d.viewmodel {
             ]);
             self.listTreeItemSelected('002');
 
-            self.listTreeColumns = [{ headerText: '', key: 'code', dataType: 'string', hidden: true },
-                { headerText: 'コード/名称', key: 'name', dataType: 'string', hidden: false, width: '450px', template: '<span>${code} ${name}</span>' },
-                { headerText: '給与明細書', key: 'bonus', dataType: 'object', hidden: false, width: '250px', template: '<button class="d-btn-001" onclick="__viewContext.viewModel.viewmodelD.openMDialog()">選択</button><span>${bonus.code} ${bonus.name}</span>' },
-                { headerText: '賞与明細書', key: 'payment', dataType: 'object', hidden: false, width: '250px', template: '<button class="d-btn-002" onclick="__viewContext.viewModel.viewmodelD.openMDialog()">選択</button><span>${payment.code} ${payment.name}</span>' }];
+            // reset dirty check
+            self.dirty.reset();
         }
 
         openJDialog() {
             alert('J');
         }
-        
+
         openKDialog() {
             alert('K');
         }
-        
+
         openMDialog() {
             let self = this;
-            
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '明細書の選択', dialogClass: "no-close" });
+
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" });
         }
     }
 
