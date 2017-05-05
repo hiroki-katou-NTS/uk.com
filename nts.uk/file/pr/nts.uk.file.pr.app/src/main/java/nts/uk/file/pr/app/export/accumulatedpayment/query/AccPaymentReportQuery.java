@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.accumulatedpayment.query;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -22,7 +24,7 @@ public class AccPaymentReportQuery {
 	private Integer targetYear;
 
 	/** The emp id list. */
-	private List<String> empIdList;
+	private List<String> pIdList;
 	
 	/** The is lower limit. */
 	private Boolean isLowerLimit;
@@ -31,8 +33,11 @@ public class AccPaymentReportQuery {
 	private Boolean isUpperLimit;
 
 	/** The lower limit value. */
-	private Long lowerLimitValue;
+	private BigDecimal lowerLimitValue;
 
 	/** The upper limit value. */
-	private Long upperLimitValue;
+	private BigDecimal upperLimitValue;
+	
+	/** The base date. */
+	private Date baseDate;
 }

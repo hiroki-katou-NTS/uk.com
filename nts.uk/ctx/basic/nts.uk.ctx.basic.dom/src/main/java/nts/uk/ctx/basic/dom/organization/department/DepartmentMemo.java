@@ -1,10 +1,11 @@
 package nts.uk.ctx.basic.dom.organization.department;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.primitive.Memo;
 
 @Getter
-public class DepartmentMemo {
+public class DepartmentMemo extends AggregateRoot{
 
 	private final String companyCode;
 

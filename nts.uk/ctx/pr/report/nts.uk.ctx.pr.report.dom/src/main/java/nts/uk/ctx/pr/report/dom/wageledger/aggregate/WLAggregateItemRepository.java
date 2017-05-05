@@ -56,6 +56,15 @@ public interface WLAggregateItemRepository {
 			WLCategory category, PaymentType paymentType);
 	
 	/**
+	 * Find by codes.
+	 *
+	 * @param companyCode the company code
+	 * @param itemCode the item code
+	 * @return the list
+	 */
+	List<WLAggregateItem> findByCodes(String companyCode, List<String> itemCode);
+	
+	/**
 	 * Checks if is exist.
 	 *
 	 * @param code the code

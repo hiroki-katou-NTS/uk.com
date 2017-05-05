@@ -1,6 +1,7 @@
-#C_LBL_003 {
+#C_LBL_ENDYMD {
 	padding-right: 20px;
-	margin-left: 5px;
+	margin-left: 18px;
+	margin-top: 5px;
 }
 
 #C_LBL_002 {
@@ -15,12 +16,12 @@
 	padding-right: 20px;
 }
 
-#INP_001 {
+#INP_STARTYMD {
 	width: 102px !important;
 	padding-left: 0px !important;
 }
 
-.C_INP_001 {
+.C_INP_STARTYMD {
 	padding-left: 96px;
 }
 
@@ -38,7 +39,7 @@
 	margin-left: 150px;
 }
 
-#BTN_001 {
+#BTN_DECIDE {
 	margin-right: 20px;
 }
 

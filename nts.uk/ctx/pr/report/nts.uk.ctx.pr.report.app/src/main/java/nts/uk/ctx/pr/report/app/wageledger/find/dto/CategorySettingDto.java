@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItem;
  * The Class CategorySettingDto.
  */
 @Builder
-public class CategorySettingDto implements WLCategorySettingSetMemento{
+public class CategorySettingDto implements WLCategorySettingSetMemento {
 	
 	/** The category. */
 	public WLCategory category;
@@ -57,6 +57,6 @@ public class CategorySettingDto implements WLCategorySettingSetMemento{
 			SettingItemDto itemDto = SettingItemDto.builder().build();
 			item.saveToMemento(itemDto);
 			return itemDto;
-		}).collect(Collectors.toList());
+		}).sorted((a, b) -> Integer.compare(a.orderNumber, b.orderNumber)).collect(Collectors.toList());
 	}
 }
