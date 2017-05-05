@@ -12,14 +12,21 @@ var nts;
                     (function (h) {
                         var service;
                         (function (service) {
+                            var paths = {
+                                findAllEmployee: "basic/organization/employment/findallemployments"
+                            };
+                            function findAllEmployee() {
+                                return nts.uk.request.ajax("com", paths.findAllEmployee);
+                            }
+                            service.findAllEmployee = findAllEmployee;
                             var model;
                             (function (model) {
-                                var SocialInsuranceOfficeImportDto = (function () {
-                                    function SocialInsuranceOfficeImportDto() {
+                                var EmploymentDto = (function () {
+                                    function EmploymentDto() {
                                     }
-                                    return SocialInsuranceOfficeImportDto;
+                                    return EmploymentDto;
                                 }());
-                                model.SocialInsuranceOfficeImportDto = SocialInsuranceOfficeImportDto;
+                                model.EmploymentDto = EmploymentDto;
                             })(model = service.model || (service.model = {}));
                         })(service = h.service || (h.service = {}));
                     })(h = qpp021.h || (qpp021.h = {}));

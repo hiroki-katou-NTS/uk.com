@@ -8,12 +8,17 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" />
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" of="/nts.uk.com.js.web" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" of="/nts.uk.com.js.web" />
 			<com:stylefile path="qpp021.h.style.css" />
 			<com:scriptfile path="qpp021.h.start.js" />
 			<com:scriptfile path="qpp021.h.service.js" />
+			<com:scriptfile path="grid.editor.js" />
 			<com:scriptfile path="qpp021.h.vm.js" />
+			<com:ValidatorScript>
+			    nts.uk.ctx.pr.report.dom.payment.contact.ReportComment
+			</com:ValidatorScript>
+			
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">

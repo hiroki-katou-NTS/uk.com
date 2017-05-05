@@ -1,36 +1,38 @@
 module nts.uk.pr.view.qpp021.h {
 
     import option = nts.uk.ui.option;
-    import SocialInsuranceOfficeImportDto = service.model.SocialInsuranceOfficeImportDto;
+    import EmploymentDto = service.model.EmploymentDto;
 
     export module viewmodel {
         export class ScreenModel {
 
             igGrid: any;
-            igGridDataSource: KnockoutObservableArray<ItemViewModel>;
+            igGridDataSource: KnockoutObservableArray<CommentPersonModel>;
 
             constructor() {
-                var self = this;
-                var item: ItemViewModel;
-                item = new ItemViewModel();
-                item.uuid ='12321323223';
-                item.groupName = 'NAME';
-                item.name = 'name';
-                item.amount = ko.observable(6);
-                item.groupCalTypeText = '323ds2f3d';
-                var itemarr : ItemViewModel[];
-                itemarr = [];
-                itemarr.push(item);
-               self.igGridDataSource = ko.observableArray(itemarr);
-                self.initIgGrid();
-                
+
             }
 
             //start page
             startPage(): JQueryPromise<this> {
                 var self = this;
                 var dfd = $.Deferred<this>();
-                dfd.resolve(self);
+                service.findAllEmployee().done(data => {
+                    var itemarr: CommentPersonModel[];
+                    itemarr = [];
+                    data.forEach(employee => {
+                        var item: CommentPersonModel;
+                        item = new CommentPersonModel();
+                        item.setupData(employee);
+                        itemarr.push(item);
+                    });
+                    self.igGridDataSource = ko.observableArray(itemarr);
+                    self.initIgGrid();
+                    dfd.resolve(self);
+                }).fail(function() {
+
+                });
+
                 return dfd.promise();
             }
 
@@ -42,8 +44,8 @@ module nts.uk.pr.view.qpp021.h {
                 self.igGrid = ko.observable({
                     dataSource: self.igGridDataSource,
                     width: '100%',
-                    primaryKey: 'uuid',
-                    height: '250px',
+                    primaryKey: 'empCd',
+                    height: '750px',
                     features: [
                         {
                             name: 'Updating',
@@ -53,48 +55,64 @@ module nts.uk.pr.view.qpp021.h {
                             enableDeleteRow: false,
                             columnSettings: [
                                 {
-                                    columnKey: 'uuid',
+                                    columnKey: 'empCd',
                                     readOnly: true
                                 },
                                 {
-                                    columnKey: 'name',
+                                    columnKey: 'empName',
                                     readOnly: true
                                 },
                                 {
-                                    columnKey: 'amount',
+                                    columnKey: 'commentMonth',
+                                    editorProvider: new (<any>$.ig).NtsNumberEditor(),
                                     editorOptions: {
-                                        constraint: 'WtValue',
                                         option: {
                                         },
                                         required: true
                                     },
                                     readOnly: false
+                                },
+                                {
+                                    columnKey: 'commentInit',
+                                    editorProvider: new (<any>$.ig).NtsNumberEditor(),
+                                    editorOptions: {
+                                        option: {
+                                        },
+                                        required: true
+                                    },
+                                    readOnly: false
+                                },
+                                {
+                                    columnKey: 'groupCalTypeText',
+                                    readOnly: true
                                 }
                             ],
                         }
                     ],
                     autoCommit: true,
                     columns: [
-                        { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true },
-                        { headerText: 'コード', dataType: 'string', key: 'code', width: '10%', columnCssClass: "bgIgCol" },
-                        { headerText: '名称', dataType: 'string', key: 'name', width: '10%', columnCssClass: "bgIgCol" },
-                        { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'amount', width: '40%', columnCssClass: "halign-right" },
-                        { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'amount', width: '40%', columnCssClass: "halign-right" }
+                        { headerText: 'コード', dataType: 'string', key: 'empCd', width: '10%', columnCssClass: "bgIgCol" },
+                        { headerText: '名称', dataType: 'string', key: 'empName', width: '10%', columnCssClass: "bgIgCol" },
+                        { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'commentMonth', width: '40%', columnCssClass: "halign-right" },
+                        { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'commentInit', width: '40%', columnCssClass: "halign-right" }
                     ]
                 });
             }
         }
 
-        class ItemViewModel {
-            uuid: string;
-            groupName: string;
-            name: string;
-            amount: KnockoutObservable<number>;
+        class CommentPersonModel {
+            empCd: string;
+            empName: string;
+            commentInit: KnockoutObservable<number>;
+            commentMonth: KnockoutObservable<number>;
             groupCalTypeText: string;
 
-            /**
-             * Constructor.
-             */
+            setupData(dto: EmploymentDto) {
+                this.empCd = dto.employmentCode;
+                this.empName = dto.employmentName;
+                this.commentInit = ko.observable(0);
+                this.commentMonth = ko.observable(0);
+            }
         }
     }
 }

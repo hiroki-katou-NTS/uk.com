@@ -14,24 +14,24 @@ var nts;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
                                 function ScreenModel() {
-                                    var self = this;
-                                    var item;
-                                    item = new ItemViewModel();
-                                    item.uuid = '12321323223';
-                                    item.groupName = 'NAME';
-                                    item.name = 'name';
-                                    item.amount = ko.observable(6);
-                                    item.groupCalTypeText = '323ds2f3d';
-                                    var itemarr;
-                                    itemarr = [];
-                                    itemarr.push(item);
-                                    self.igGridDataSource = ko.observableArray(itemarr);
-                                    self.initIgGrid();
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    dfd.resolve(self);
+                                    h.service.findAllEmployee().done(function (data) {
+                                        var itemarr;
+                                        itemarr = [];
+                                        data.forEach(function (employee) {
+                                            var item;
+                                            item = new CommentPersonModel();
+                                            item.setupData(employee);
+                                            itemarr.push(item);
+                                        });
+                                        self.igGridDataSource = ko.observableArray(itemarr);
+                                        self.initIgGrid();
+                                        dfd.resolve(self);
+                                    }).fail(function () {
+                                    });
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.initIgGrid = function () {
@@ -39,8 +39,8 @@ var nts;
                                     self.igGrid = ko.observable({
                                         dataSource: self.igGridDataSource,
                                         width: '100%',
-                                        primaryKey: 'uuid',
-                                        height: '250px',
+                                        primaryKey: 'empCd',
+                                        height: '750px',
                                         features: [
                                             {
                                                 name: 'Updating',
@@ -50,42 +50,60 @@ var nts;
                                                 enableDeleteRow: false,
                                                 columnSettings: [
                                                     {
-                                                        columnKey: 'uuid',
+                                                        columnKey: 'empCd',
                                                         readOnly: true
                                                     },
                                                     {
-                                                        columnKey: 'name',
+                                                        columnKey: 'empName',
                                                         readOnly: true
                                                     },
                                                     {
-                                                        columnKey: 'amount',
+                                                        columnKey: 'commentMonth',
+                                                        editorProvider: new $.ig.NtsNumberEditor(),
                                                         editorOptions: {
-                                                            constraint: 'WtValue',
                                                             option: {},
                                                             required: true
                                                         },
                                                         readOnly: false
+                                                    },
+                                                    {
+                                                        columnKey: 'commentInit',
+                                                        editorProvider: new $.ig.NtsNumberEditor(),
+                                                        editorOptions: {
+                                                            option: {},
+                                                            required: true
+                                                        },
+                                                        readOnly: false
+                                                    },
+                                                    {
+                                                        columnKey: 'groupCalTypeText',
+                                                        readOnly: true
                                                     }
                                                 ],
                                             }
                                         ],
                                         autoCommit: true,
                                         columns: [
-                                            { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true },
-                                            { headerText: 'コード', dataType: 'string', key: 'code', width: '10%', columnCssClass: "bgIgCol" },
-                                            { headerText: '名称', dataType: 'string', key: 'name', width: '10%', columnCssClass: "bgIgCol" },
-                                            { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'amount', width: '40%', columnCssClass: "halign-right" },
-                                            { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'amount', width: '40%', columnCssClass: "halign-right" }
+                                            { headerText: 'コード', dataType: 'string', key: 'empCd', width: '10%', columnCssClass: "bgIgCol" },
+                                            { headerText: '名称', dataType: 'string', key: 'empName', width: '10%', columnCssClass: "bgIgCol" },
+                                            { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'commentMonth', width: '40%', columnCssClass: "halign-right" },
+                                            { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'text', key: 'commentInit', width: '40%', columnCssClass: "halign-right" }
                                         ]
                                     });
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            var ItemViewModel = (function () {
-                                function ItemViewModel() {
+                            var CommentPersonModel = (function () {
+                                function CommentPersonModel() {
                                 }
-                                return ItemViewModel;
+                                CommentPersonModel.prototype.setupData = function (dto) {
+                                    this.empCd = dto.employmentCode;
+                                    this.empName = dto.employmentName;
+                                    this.commentInit = ko.observable(0);
+                                    this.commentMonth = ko.observable(0);
+                                };
+                                return CommentPersonModel;
                             }());
                         })(viewmodel = h.viewmodel || (h.viewmodel = {}));
                     })(h = qpp021.h || (qpp021.h = {}));
