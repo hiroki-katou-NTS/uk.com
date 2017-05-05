@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingSetMemento;
@@ -28,6 +29,7 @@ import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmtPK;
  * The Class JpaLaborInsuranceOfficeSetMemento.
  */
 @Stateless
+@Getter
 public class JpaContactItemsSettingSetMemento implements ContactItemsSettingSetMemento {
 
 	/** The pay bonus atr. */
@@ -60,6 +62,8 @@ public class JpaContactItemsSettingSetMemento implements ContactItemsSettingSetM
 	 */
 	public JpaContactItemsSettingSetMemento() {
 		super();
+		this.commentInitialCp = new QctmtCpInitialCmt();
+		this.commentMonthCp = new QcmtCommentMonthCp();
 	}
 
 	/**
@@ -70,6 +74,7 @@ public class JpaContactItemsSettingSetMemento implements ContactItemsSettingSetM
 	 */
 	@Override
 	public void setContactItemsCode(ContactItemsCode contactItemsCode) {
+
 		contactItemsCode.saveToMemento(new JpaContactItemsCodeSetMemento(this.commentMonthCp));
 		QctmtCpInitialCmtPK pk = new QctmtCpInitialCmtPK();
 		pk.setCcd(contactItemsCode.getCompanyCode());

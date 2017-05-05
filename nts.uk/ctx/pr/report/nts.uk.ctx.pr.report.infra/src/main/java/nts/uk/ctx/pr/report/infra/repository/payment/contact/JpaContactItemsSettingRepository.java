@@ -4,23 +4,33 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.payment.contact;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm_;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEmPK_;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSetting;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository;
-import nts.uk.ctx.pr.report.dom.payment.contact.ReportComment;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QcmtCommentMonthCp;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QcmtCommentMonthCpPK;
-import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCpInitialCmtPK;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCpInitialCmt;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCpInitialCmtPK;
 
 /**
- * The Class this.
+ * The Class JpaContactItemsSettingRepository.
  */
 @Stateless
 public class JpaContactItemsSettingRepository extends JpaRepository
@@ -32,6 +42,14 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 	/** The spare pay atr. */
 	public static int SPARE_PAY_ATR = 0;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository#
+	 * findByCode(nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode,
+	 * java.util.List)
+	 */
 	@Override
 	public ContactItemsSetting findByCode(ContactItemsCode code, List<String> empCds) {
 		Optional<QcmtCommentMonthCp> commentMonthCp = this.findCommentMonthCp(code);
@@ -39,12 +57,13 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 		if (commentMonthCp.isPresent()) {
 			jpa.setCommentMonthCp(commentMonthCp.get());
 		}
-		
+
 		Optional<QctmtCpInitialCmt> commentInitCp = this.findCommentInitCp(code);
-		
-		if(commentInitCp.isPresent()){
+
+		if (commentInitCp.isPresent()) {
 			jpa.setCommentInitialCp(commentInitCp.get());
 		}
+		jpa.setCommentMonthEmps(this.findCommentMonthEmp(code, empCds));
 		return new ContactItemsSetting(jpa);
 	}
 
@@ -65,7 +84,8 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 	/**
 	 * Find comment init cp.
 	 *
-	 * @param code the code
+	 * @param code
+	 *            the code
 	 * @return the optional
 	 */
 	private Optional<QctmtCpInitialCmt> findCommentInitCp(ContactItemsCode code) {
@@ -74,31 +94,56 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 			QctmtCpInitialCmt.class);
 	}
 
+	private List<QctmtCommentMonthEm> findCommentMonthEmp(ContactItemsCode code,
+		List<String> empCds) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call QISMT_LABOR_INSU_OFFICE (QismtLaborInsuOffice SQL)
+		CriteriaQuery<QctmtCommentMonthEm> cq = criteriaBuilder
+			.createQuery(QctmtCommentMonthEm.class);
+
+		// root data
+		Root<QctmtCommentMonthEm> root = cq.from(QctmtCommentMonthEm.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq CompanyCode
+		lstpredicateWhere.add(criteriaBuilder.equal(
+			root.get(QctmtCommentMonthEm_.qctmtCommentMonthEmPK).get(QctmtCommentMonthEmPK_.ccd),
+			code.getCompanyCode()));
+
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// creat query
+		TypedQuery<QctmtCommentMonthEm> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository#
+	 * save(nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSetting)
+	 */
 	@Override
 	public void save(ContactItemsSetting contactItemsSetting) {
-		this.saveInitialCpComment(contactItemsSetting.getContactItemsCode(),
-			contactItemsSetting.getInitialCpComment());
-	}
 
-	/**
-	 * Save initial cp comment.
-	 *
-	 * @param code
-	 *            the code
-	 * @param initialCpComment
-	 *            the initial cp comment
-	 */
-	private void saveInitialCpComment(ContactItemsCode code, ReportComment initialCpComment) {
-		QcmtCommentMonthCp entity = new QcmtCommentMonthCp();
-		QcmtCommentMonthCpPK pk = new QcmtCommentMonthCpPK();
-		pk.setCcd(code.getCompanyCode());
-		pk.setPayBonusAtr(PAY_BONUS_ATR);
-		pk.setProcessingNo(code.getProcessingNo().v());
-		pk.setProcessingYm(code.getProcessingYm().v());
-		pk.setSparePayAtr(SPARE_PAY_ATR);
-		entity.setQcmtCommentMonthCpPK(pk);
-		entity.setComment(initialCpComment.v());
-		this.commandProxy().update(entity);
+		JpaContactItemsSettingSetMemento jpa = new JpaContactItemsSettingSetMemento();
+		contactItemsSetting.saveToMemento(jpa);
+		this.commandProxy().update(jpa.getCommentInitialCp());
+		this.commandProxy().updateAll(jpa.getCommentInitialEmps());
+		this.commandProxy().updateAll(jpa.getCommentMonthEmps());
+		this.commandProxy().update(jpa.getCommentMonthCp());
 	}
-
 }

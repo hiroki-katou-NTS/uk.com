@@ -5,14 +5,11 @@
 package nts.uk.ctx.pr.report.app.payment.contact.find.dto;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Set;
-
-import java.util.stream.Collectors;
-
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.app.payment.contact.command.dto.EmpCommentDto;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
@@ -30,7 +27,19 @@ import nts.uk.ctx.pr.report.dom.payment.contact.ReportComment;
  * @param empCommentDtos
  *            the new emp comment dtos
  */
+
+/**
+ * Sets the emp comment dtos.
+ *
+ * @param empCommentDtos the new emp comment dtos
+ */
 @Setter
+
+/**
+ * Gets the emp comment dtos.
+ *
+ * @return the emp comment dtos
+ */
 
 /**
  * Gets the emp comment dtos.
@@ -116,8 +125,7 @@ public class ContactItemsSettingOut implements ContactItemsSettingSetMemento {
 	/**
 	 * Merge data.
 	 *
-	 * @param dto
-	 *            the dto
+	 * @param dto the dto
 	 */
 	public void mergeData(List<EmpCommentFindDto> dto) {
 		if (CollectionUtil.isEmpty(this.empCommentDtos)) {
@@ -148,7 +156,14 @@ public class ContactItemsSettingOut implements ContactItemsSettingSetMemento {
 				}
 				return empCommentDto;
 			}).collect(Collectors.toList());
+			this.empCommentDtos = dataNew;
 		}
-
+	}
+	
+	/**
+	 * Instantiates a new contact items setting out.
+	 */
+	public ContactItemsSettingOut(){
+		super();
 	}
 }
