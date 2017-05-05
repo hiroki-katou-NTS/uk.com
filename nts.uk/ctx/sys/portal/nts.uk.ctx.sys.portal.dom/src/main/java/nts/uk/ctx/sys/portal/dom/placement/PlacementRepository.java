@@ -36,6 +36,14 @@ public interface PlacementRepository {
 	void remove(String companyID, String placementID);
 
 	/**
+	 * Remove all Placement
+	 *
+	 * @param companyID
+	 * @param placementID
+	 */
+	void removeAll(String companyID, List<String> placementIDs);
+	
+	/**
 	 * Add a Placement
 	 *
 	 * @param placement
