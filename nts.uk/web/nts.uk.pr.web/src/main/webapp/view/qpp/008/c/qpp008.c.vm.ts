@@ -116,9 +116,21 @@ module qpp008.c.viewmodel {
             let self = this;
             self.items2 = ko.computed(function() {
                 let itemsDetail = new Array();
-                itemsDetail = itemsDetail.concat(self.currentCodeListSwap());
-                itemsDetail = itemsDetail.concat(self.currentCodeListSwap1());
-                itemsDetail = itemsDetail.concat(self.currentCodeListSwap3());
+                itemsDetail = itemsDetail.concat(_.map(self.currentCodeListSwap(), function(itemMaster) {
+                    itemMaster.categoryAtrName = "支";
+                    itemMaster.categoryAtr = 0;
+                    return itemMaster
+                }));
+                itemsDetail = itemsDetail.concat(_.map(self.currentCodeListSwap1(), function(itemMaster) {
+                    itemMaster.categoryAtrName = "控";
+                    itemMaster.categoryAtr = 1;
+                    return itemMaster
+                }));
+                itemsDetail = itemsDetail.concat(_.map(self.currentCodeListSwap3(), function(itemMaster) {
+                    itemMaster.categoryAtrName = "記";
+                    itemMaster.categoryAtr = 3;
+                    return itemMaster
+                }));
                 return itemsDetail;
             }, self).extend({ deferred: true });
 
@@ -198,7 +210,7 @@ module qpp008.c.viewmodel {
                 }
                 self.isEnableDeleteBtn(true);
                 self.items2Dirty.reset();
-                if (isReload) {   
+                if (isReload) {
                     self.currentCode(self.items()[0].formCode)
                 } else if (!nts.uk.text.isNullOrEmpty(reloadCode)) {
                     self.currentCode(reloadCode)
@@ -337,6 +349,8 @@ module qpp008.c.viewmodel {
         }
 
         closeDialog(): any {
+            let self = this;
+            nts.uk.ui.windows.setShared('qpp008_form_header_code', self.currentCode(), true);
             nts.uk.ui.windows.close();
         }
 
