@@ -107,11 +107,11 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 	}
 	
 	private CcgmtFlowMenu toEntity(FlowMenu domain) {
-		return new CcgmtFlowMenu(
-			new CcgmtFlowMenuPK(domain.getCompanyID(), domain.getToppagePartID()),
-			domain.getFileID(), domain.getFileName().v(),
-			domain.getDefClassAtr().value
-		);
+		return new CcgmtFlowMenu(new CcgmtFlowMenuPK(domain.getCompanyID(), 
+				domain.getToppagePartID()),
+				domain.getFileID(), 
+				domain.getFileName().v(),
+				domain.getDefClassAtr().value);
 	}
 
 }

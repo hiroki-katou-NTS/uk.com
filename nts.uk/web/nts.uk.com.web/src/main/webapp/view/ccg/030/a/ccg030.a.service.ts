@@ -4,6 +4,6 @@ module ccg030.a.service {
     }
     
     export function craeteFlowMenu(flowMenu: viewmodel.model.flowMenu){
-        return nts.uk.request.ajax("at", paths.createFlowMenu, flowMenu);
+        return nts.uk.request.ajax("com", paths.createFlowMenu, flowMenu);
     }
 }
