@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.payment.contact;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * The Interface ContactItemsSettingRepository.
@@ -17,5 +17,5 @@ public interface ContactItemsSettingRepository {
 	 * @param code the code
 	 * @return the optional
 	 */
-	Optional<ContactItemsSetting> findByCode(ContactItemsCode code);
+	ContactItemsSetting findByCode(ContactItemsCode code, List<String> empCds);
 }

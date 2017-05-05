@@ -5,12 +5,13 @@
 package nts.uk.ctx.pr.report.infra.repository.payment.contact;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.Setter;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingGetMemento;
 import nts.uk.ctx.pr.report.dom.payment.contact.EmpComment;
@@ -27,15 +28,19 @@ import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmt;
 public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetMemento {
 
 	/** The comment month cp. */
+	@Setter
 	private QcmtCommentMonthCp commentMonthCp;
 
 	/** The comment initial cp. */
+	@Setter
 	private QctmtCpInitialCmt commentInitialCp;
 
 	/** The comment month emps. */
+	@Setter
 	private List<QctmtCommentMonthEm> commentMonthEmps;
 
 	/** The comment initial emps. */
+	@Setter
 	private List<QctmtEmInitialCmt> commentInitialEmps;
 
 	/**
@@ -44,13 +49,8 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 	 * @param commentMonthCp
 	 *            the comment month cp
 	 */
-	public JpaContactItemsSettingGetMemento(QcmtCommentMonthCp commentMonthCp,
-		QctmtCpInitialCmt commentInitialCp, List<QctmtCommentMonthEm> commentMonthEmps,
-		List<QctmtEmInitialCmt> commentInitialEmps) {
-		this.commentMonthCp = commentMonthCp;
-		this.commentInitialCp = commentInitialCp;
-		this.commentMonthEmps = commentMonthEmps;
-		this.commentInitialEmps = commentInitialEmps;
+	public JpaContactItemsSettingGetMemento() {
+		super();
 	}
 
 	/**
@@ -90,12 +90,28 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 	 */
 	@Override
 	public Set<EmpComment> getMonthEmComments() {
-		
-		return this.commentMonthEmps.stream().map(comment -> {
+		Map<String, EmpComment> mapEmpComment = this.commentMonthEmps.stream().map(comment -> {
 			EmpComment empComment = new EmpComment();
 			empComment.setEmpCd(comment.getQctmtCommentMonthEmPK().getCcd());
 			empComment.setMonthlyComment(new ReportComment(comment.getComment()));
 			return empComment;
+		}).collect(Collectors.toMap(empComment -> empComment.getEmpCd(), empComment -> empComment));
+		this.commentInitialEmps.stream().forEach(comment -> {
+			EmpComment empComment = mapEmpComment.get(comment.getQctmtEmInitialCmtPK().getEmpCd());
+			if (empComment == null) {
+				empComment = new EmpComment();
+				empComment.setEmpCd(comment.getQctmtEmInitialCmtPK().getCcd());
+				empComment.setInitialComment(new ReportComment(comment.getComment()));
+				mapEmpComment.put(comment.getQctmtEmInitialCmtPK().getEmpCd(), empComment);
+			} else {
+				empComment.setInitialComment(new ReportComment(comment.getComment()));
+				mapEmpComment.replace(comment.getQctmtEmInitialCmtPK().getEmpCd(), empComment);
+			}
+		});
+
+		Set<String> setEmpCd = mapEmpComment.keySet();
+		return setEmpCd.stream().map(item -> {
+			return mapEmpComment.get(item);
 		}).collect(Collectors.toSet());
 	}
 

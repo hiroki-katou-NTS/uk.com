@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.Setter;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingSetMemento;
 import nts.uk.ctx.pr.report.dom.payment.contact.EmpComment;
@@ -36,14 +37,19 @@ public class JpaContactItemsSettingSetMemento implements ContactItemsSettingSetM
 	public static int SPARE_PAY_ATR = 0;
 
 	/** The comment month cp. */
+	@Setter
 	private QcmtCommentMonthCp commentMonthCp;
 
 	/** The comment initial cp. */
+	@Setter
 	private QctmtCpInitialCmt commentInitialCp;
 
+	/** The comment month emps. */
+	@Setter
 	private List<QctmtCommentMonthEm> commentMonthEmps;
 
 	/** The comment initial emps. */
+	@Setter
 	private List<QctmtEmInitialCmt> commentInitialEmps;
 
 	/**
@@ -52,13 +58,8 @@ public class JpaContactItemsSettingSetMemento implements ContactItemsSettingSetM
 	 * @param commentMonthCp
 	 *            the comment month cp
 	 */
-	public JpaContactItemsSettingSetMemento(QcmtCommentMonthCp commentMonthCp,
-		QctmtCpInitialCmt commentInitialCp) {
-		this.commentMonthCp = commentMonthCp;
-		this.commentInitialCp = commentInitialCp;
-		this.commentMonthEmps = new ArrayList<>();
-		this.commentInitialEmps = new ArrayList<>();
-
+	public JpaContactItemsSettingSetMemento() {
+		super();
 	}
 
 	/**

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.payment.contact;
 
+import lombok.Setter;
+import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCodeGetMemento;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QcmtCommentMonthCp;
@@ -15,6 +17,7 @@ import nts.uk.shr.com.primitive.sample.ProcessingNo;
 public class JpaContactItemsCodeGetMemento implements ContactItemsCodeGetMemento {
 
 	/** The comment month cp. */
+	@Setter
 	private QcmtCommentMonthCp commentMonthCp;
 
 	/**
@@ -35,7 +38,10 @@ public class JpaContactItemsCodeGetMemento implements ContactItemsCodeGetMemento
 	 */
 	@Override
 	public String getCompanyCode() {
-		return this.commentMonthCp.getQcmtCommentMonthCpPK().getCcd();
+		if (commentMonthCp != null) {
+			return this.commentMonthCp.getQcmtCommentMonthCpPK().getCcd();
+		}
+		return null;
 	}
 
 	/*
@@ -46,7 +52,11 @@ public class JpaContactItemsCodeGetMemento implements ContactItemsCodeGetMemento
 	 */
 	@Override
 	public ProcessingNo getProcessingNo() {
-		return new ProcessingNo(this.commentMonthCp.getQcmtCommentMonthCpPK().getProcessingNo());
+		if (commentMonthCp != null) {
+			return new ProcessingNo(
+				this.commentMonthCp.getQcmtCommentMonthCpPK().getProcessingNo());
+		}
+		return new ProcessingNo(0);
 	}
 
 	/*
@@ -57,7 +67,11 @@ public class JpaContactItemsCodeGetMemento implements ContactItemsCodeGetMemento
 	 */
 	@Override
 	public YearMonth getProcessingYm() {
-		return YearMonth.of(this.commentMonthCp.getQcmtCommentMonthCpPK().getProcessingYm());
+		if (commentMonthCp != null) {
+			return YearMonth.of(this.commentMonthCp.getQcmtCommentMonthCpPK().getProcessingYm());
+		}
+		return YearMonth.of(DateTimeConstraints.LIMIT_YEAR.min(),
+			DateTimeConstraints.LIMIT_MONTH.min());
 	}
 
 }
