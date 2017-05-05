@@ -2,16 +2,18 @@ package nts.uk.pr.file.infra.comparingsalarybonus;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
 import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormDetail;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetail;
 import nts.uk.file.pr.app.export.comparingsalarybonus.ComparingSalaryBonusQueryRepository;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusHeaderReportData;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.PaymentDetail;
-import nts.uk.pr.file.infra.paymentdata.result.DetailItemDto;
 
 /**
  * The class JpaComparingSalaryBonusQueryRepository
@@ -45,6 +47,10 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 			+ " AND d.qstdtPaymentDetailPK.personId IN :personId"
 			+ " AND  d.qstdtPaymentDetailPK.payBonusAttribute = :payBonusAttribute"
 			+ " AND  d.qstdtPaymentDetailPK.processingYM =:processingYM";
+	private final String SELECT_CALLED_DETAIL = "SELECT c.emp, d.depName, d.hierarchyId, c.jobtitle FROM  CmnmtCalled c"
+			+ " INNER JOIN  CmnmtDep  d "
+			+ " ON c.ccd = d.cmnmtDepPK.companyCode "
+			+ " WHERE c.ccd =:ccd" ;
 	
 
 	/**
@@ -75,29 +81,35 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 				registrationStatus2, confirmedStatus);
 	}
 	
-	private PaymentDetail toDomain(Object[] paymentDetail) {
-        String companyCode = (String)paymentDetail[0];
-		String personId   = (String)paymentDetail[1];
-		int processingNo = (int)paymentDetail[2];
-		int payBonusAtr = (int)paymentDetail[3];
-		int processingYm =(int)paymentDetail[4];
-		int sparePayAtr = (int)paymentDetail[5];
-		int ctgAtr= (int)paymentDetail[6];
-		String itemCode =(String)paymentDetail[7];
-		int val = (int)paymentDetail[8];
-		int correctFlg = (int)paymentDetail[9];
-		int taxAtr = (int)paymentDetail[10];
-		int limitMny = (int)paymentDetail[11];
-		int socialInsAtr = (int)paymentDetail[12];
-		int laborInsAtr = (int)paymentDetail[13];
-		int fixPayAtr = (int)paymentDetail[14];
-		int deductAtr = (int)paymentDetail[15];
-		int itemAtr = (int)paymentDetail[16];
-		int commuAllowTaxImpose = (int)paymentDetail[17];
-		int commuAllowMonth = (int)paymentDetail[18];
-		int commuAllowFraction = (int)paymentDetail[19];
-		int printLinePos = (int)paymentDetail[20];
-		int itemPosColumn= (int)paymentDetail[21];
+	/**
+	 * convert To Domain PaymentDetail from entity
+	 * 
+	 * @param entity
+	 * @return PaymentDetail
+	 */
+	private static PaymentDetail toDomain(QstdtPaymentDetail entity) {
+        String companyCode = entity.qstdtPaymentDetailPK.companyCode;
+		String personId   = entity.qstdtPaymentDetailPK.personId;
+		int processingNo = entity.qstdtPaymentDetailPK.processingNo;
+		int payBonusAtr = entity.qstdtPaymentDetailPK.payBonusAttribute;
+		int processingYm =entity.qstdtPaymentDetailPK.processingYM;
+		int sparePayAtr = entity.qstdtPaymentDetailPK.sparePayAttribute;
+		int ctgAtr= entity.qstdtPaymentDetailPK.categoryATR;
+		String itemCode =entity.qstdtPaymentDetailPK.itemCode;
+		BigDecimal val = entity.value;
+		int correctFlg = entity.correctFlag;
+		int taxAtr = entity.taxATR;
+		int limitMny = entity.limitAmount;
+		int socialInsAtr = entity.socialInsurranceAttribute;
+		int laborInsAtr = entity.laborSubjectAttribute;
+		int fixPayAtr = entity.fixPayATR;
+		int deductAtr = entity.deductAttribute;
+		int itemAtr = entity.itemAtr;
+		BigDecimal commuAllowTaxImpose = entity.commuteAllowTaxImpose;
+		BigDecimal commuAllowMonth = entity.commuteAllowMonth;
+		BigDecimal commuAllowFraction = entity.commuteAllowFraction;
+		int printLinePos = entity.printLinePosition;
+		int itemPosColumn= entity.columnPosition;
 		
 		return new PaymentDetail(companyCode, personId, processingNo, 
 				payBonusAtr, processingYm, sparePayAtr, ctgAtr, 
@@ -105,6 +117,23 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 				socialInsAtr, laborInsAtr, fixPayAtr, deductAtr,
 				itemAtr, commuAllowTaxImpose, commuAllowMonth, 
 				commuAllowFraction, printLinePos, itemPosColumn);
+	}
+	
+	/**
+	 * convert To Domain DetailDifferential from entity
+	 * 
+	 * @param entity
+	 * @return DetailDifferential
+	 */
+	private static ComparingSalaryBonusHeaderReportData convertToDomainComparingSalaryBonusHeaderReportData(Object[] headerReport) {
+		 String nameCompany = (String)headerReport[0];
+		 String titleReport = "";
+		 String nameDeparment = (String)headerReport[1];
+		 String typeDeparment = (String)headerReport[2];
+		 String postion = (String)headerReport[3];
+		 String targetYearMonth = "2016/02";
+		return new ComparingSalaryBonusHeaderReportData (nameCompany, titleReport, nameDeparment,
+				typeDeparment, postion, targetYearMonth);
 	}
 
 	/**
@@ -170,12 +199,19 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 
 	@Override
 	public List<PaymentDetail> getPaymentDetail(String companyCode, List<String> personIds, int payBonusAttr, int processingYm) {
-		return this.queryProxy().query(SELECT_PAYMENT_DETAIL, Object[].class)
-				.setParameter("companyCode", companyCode)
+		return this.queryProxy().query(SELECT_PAYMENT_DETAIL, QstdtPaymentDetail.class)
+				.setParameter("ccd", companyCode)
 				.setParameter("personId", personIds)
 				.setParameter("payBonusAttribute", payBonusAttr)
 				.setParameter("processingYM", processingYm)
 				.getList(x ->toDomain(x));
+	}
+
+	@Override
+	public List<ComparingSalaryBonusHeaderReportData> getReportHeader(String companyCode) {
+		return this.queryProxy().query(SELECT_CALLED_DETAIL, Object[].class)
+				.setParameter("ccd", companyCode)
+				.getList(c-> convertToDomainComparingSalaryBonusHeaderReportData(c));
 	}
 
 }

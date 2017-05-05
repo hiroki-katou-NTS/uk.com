@@ -1,14 +1,19 @@
 package nts.uk.file.pr.app.export.comparingsalarybonus.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Value;
 /**
  * ComparingSalaryBonusHeaderReportData
  * @author lanlt
  *
  */
-@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
+@Getter
 public class ComparingSalaryBonusHeaderReportData {
 	
 	/** The name company. */

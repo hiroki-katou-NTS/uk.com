@@ -1,5 +1,7 @@
 package nts.uk.file.pr.app.export.comparingsalarybonus.data;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 @Value
 public class PaymentDetail {
@@ -11,7 +13,7 @@ public class PaymentDetail {
 	int sparePayAtr;
 	int ctgAtr;
 	String itemCode;
-	int val;
+	BigDecimal val;
 	int correctFlg;
 	int taxAtr;
 	int limitMny;
@@ -20,9 +22,9 @@ public class PaymentDetail {
 	int fixPayAtr;
 	int deductAtr;
 	int itemAtr;
-	int commuAllowTaxImpose;
-	int commuAllowMonth;
-	int commuAllowFraction;
+	BigDecimal commuAllowTaxImpose;
+	BigDecimal commuAllowMonth;
+	BigDecimal commuAllowFraction;
 	int printLinePos;
 	int itemPosColumn;
 	/**
@@ -50,9 +52,9 @@ public class PaymentDetail {
 	 * @param itemPosColumn
 	 */
 	public PaymentDetail(String companyCode, String personId, int processingNo, int payBonusAtr, int processingYm,
-			int sparePayAtr, int ctgAtr, String itemCode, int val, int correctFlg, int taxAtr, int limitMny,
-			int socialInsAtr, int laborInsAtr, int fixPayAtr, int deductAtr, int itemAtr, int commuAllowTaxImpose,
-			int commuAllowMonth, int commuAllowFraction, int printLinePos, int itemPosColumn) {
+			int sparePayAtr, int ctgAtr, String itemCode, BigDecimal val, int correctFlg, int taxAtr, int limitMny,
+			int socialInsAtr, int laborInsAtr, int fixPayAtr, int deductAtr, int itemAtr, BigDecimal commuAllowTaxImpose,
+			BigDecimal commuAllowMonth, BigDecimal commuAllowFraction, int printLinePos, int itemPosColumn) {
 		super();
 		this.companyCode = companyCode;
 		this.personId = personId;

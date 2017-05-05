@@ -12,4 +12,7 @@ import lombok.Setter;
 @Setter
 public class ComparingSalaryBonusReportData {
 	ComparingSalaryBonusHeaderReportData headerData;
+	HeaderTable  headerTable;
+	DeparmentInf deparmentInf;
+	EmployeeInf employeeInf;
 }
