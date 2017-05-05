@@ -29,7 +29,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " AND i.qcamtItemPK.itemCd = c.qstmtStmtLayoutDetailPk.itemCd"
 			+ " AND i.qcamtItemPK.ctgAtr = c.qstmtStmtLayoutDetailPk.ctgAtr)"
 			+ " WHERE c.qstmtStmtLayoutDetailPk.historyId = :historyId";
-	
+
 	private final String SELECT_DETAIL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" + " AND c.strYm = :strYm"
 			+ " AND c.qstmtStmtLayoutDetailPk.itemCd = :itemCd";
@@ -48,10 +48,11 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" + " AND c.endYm = :endYm";
 	private final String SELECT_ALL_DETAILS_BEFORE1 = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutDetailPk.historyId = :historyId";
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.historyId = :historyId";
 	private final String SELECT_ALL_DETAILS_BEFORE2 = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" ;
+			+ " AND c.qstmtStmtLayoutDetailPk.historyId = :historyId";
 
 	private final String FIND_ONLY_ALL = "SELECT c FROM QstmtStmtLayoutDetail c"
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
@@ -92,9 +93,9 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		// 今回、対応対象外 ↓
 		entity.formulaCd = "000";
 		entity.wageTableCd = "000";
-		//Lanlt remove
-		//entity.commonMny =0;
-		 entity.commonMny = new BigDecimal('0');
+		// Lanlt remove
+		// entity.commonMny =0;
+		entity.commonMny = new BigDecimal('0');
 		// 今回、対応対象外 ↑
 		entity.setoffItemCd = domain.getSetOffItemCode().v();
 		entity.commuteAtr = domain.getCommuteAtr().value;
@@ -238,8 +239,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	public List<LayoutMasterDetail> getDetails(String historyId) {
 		@SuppressWarnings("unchecked")
 		List<Object[]> objects = this.getEntityManager().createQuery(SELECT_ALL_BY_HISTORY_ID)
-				.setParameter("historyId", historyId)
-				.getResultList();
+				.setParameter("historyId", historyId).getResultList();
 
 		return objects.stream().map(c -> toDomainJoin(String.valueOf(c[0]), (QstmtStmtLayoutDetail) c[1]))
 				.collect(Collectors.toList());
@@ -248,21 +248,19 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	@Override
 	public List<LayoutMasterDetail> getDetailsByCategory(String historyId, int categoryAtr) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS_BY_CATEGORY1, QstmtStmtLayoutDetail.class)
-			.setParameter("historyId", historyId)
-		    .setParameter("ctgAtr", categoryAtr).getList(c -> toDomain(c));
+				.setParameter("historyId", historyId).setParameter("ctgAtr", categoryAtr).getList(c -> toDomain(c));
 	}
 
 	@Override
 	public List<LayoutMasterDetail> getDetailsBefore(String companyCd, String stmtCd, String historyId) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE1, QstmtStmtLayoutDetail.class)
-				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).setParameter("historyId", historyId)
-				.getList(c -> toDomain(c));
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
+				.setParameter("historyId", historyId).getList(c -> toDomain(c));
 	}
 
 	@Override
-	public List<LayoutMasterDetail> getDetailsBefore(String companyCd, String stmtCd) {
+	public List<LayoutMasterDetail> getDetailsBefore(String companyCd, String historyId) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE2, QstmtStmtLayoutDetail.class)
-				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
-				.getList(c -> toDomain(c));
+				.setParameter("companyCd", companyCd).setParameter("historyId", historyId).getList(c -> toDomain(c));
 	}
 }

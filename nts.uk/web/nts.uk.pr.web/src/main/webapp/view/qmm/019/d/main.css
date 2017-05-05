@@ -1,53 +1,65 @@
-#LBL_007{
+#LBL_007 {
 	padding-right: 20px;
 	margin-left: 5px;
 }
-#LBL_005{
+
+#LBL_005 {
 	padding-right: 100px;
 }
-#LBL_002{
+
+#LBL_002 {
 	margin-right: 65px;
 }
-#LBL_003{
+
+#LBL_003 {
 	padding-right: 20px;
 }
-#INP_001{
-	width: 70px !important;	
+
+#INP_001 {
+	width: 70px !important;
 	padding-left: 0px !important;
 }
-.inlineInfor{
+
+.inlineInfor {
 	display: flex;
 }
 
-#SEL_001{
+#SEL_001 {
 	margin-left: 20px;
 	margin-top: 5px;
 	width: 270px;
 }
-.label009{
+
+.label009 {
 	margin-left: 150px;
 }
 
-.bottomStype{
+.bottomStype {
 	margin-top: 20px;
 	margin-left: 350px;
 }
-#BTN_001{
+
+#BTN_001 {
 	margin-right: 20px;
-
 }
 
-.lstBox{
+.lstBox {
 	border: 2px solid gray;
-    margin-left: 150px;
-    padding-top: 5px;
-    width: 750px;
-    height: 205px;
-    margin-top: 10px;
+	margin-left: 110px;
+	padding-top: 5px;
+	width: 705px;
+	height: 197px;
+	margin-top: 10px;
 }
-#header{
+
+#header {
 	display: none;
 }
-.timeInput{
+
+.timeInput {
 	display: flex;
+}
+
+#func-notifier-errors {
+	top: 5px !important;
 }

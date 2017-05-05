@@ -53,10 +53,10 @@ module qmm019.d.viewmodel {
             //list data
             self.buildItemList();
             $('#LST_001').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
+              //  console.log('Selecting value:' + (<any>event.originalEvent).detail);
             })
             $('#LST_001').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
+              //  console.log('Selected value:' + (<any>event.originalEvent).detail)
             })
             //fill data to dialog
             service.getLayoutWithMaxStartYm().done(function(layout: Array<service.model.LayoutMasterDto>){
