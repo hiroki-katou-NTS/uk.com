@@ -21,10 +21,12 @@ module nts.uk.com.view.ccg015.a {
                 ]);
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
-                    service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
-                        self.loadTopPageItemDetail(data);
-                    });
-                    self.isNewMode(false);
+                    if (selectedTopPageCode) {
+                        service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
+                            self.loadTopPageItemDetail(data);
+                        });
+                        self.isNewMode(false);
+                    }
                 });
                 self.languageListOption = ko.observableArray([
                     new ItemCbbModel("0", "日本語"),
@@ -142,13 +144,34 @@ module nts.uk.com.view.ccg015.a {
                 });
 
             }
-            private openFlowMenuSetting() {
-                //TODO    
+            private openFlowMenuSettingDialog() {
+                var self = this;
+                nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
+                nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
+                nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
+                    height: 650, width: 1300,
+                    title: "$$$$$$$$",
+                    dialogClass: 'no-close'
+                }).onClosed(() => {
+                    //TODO on Close dialog
+                });
+            }
+            
+            private openLayoutSettingDialog() {
+                var self = this;
+                nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
+                    height: 650, width: 1300,
+                    title: "$$$$$$$$",
+                    dialogClass: 'no-close'
+                }).onClosed(() => {
+                    //TODO on Close dialog
+                });
             }
             private newTopPage() {
                 var self = this;
                 self.topPageModel(new TopPageModel());
                 self.isNewMode(true);
+                self.toppageSelectedCode("");
             }
             private removeTopPage() {
                 var self = this;

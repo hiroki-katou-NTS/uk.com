@@ -24,10 +24,12 @@ var nts;
                                     ]);
                                     self.isNewMode = ko.observable(true);
                                     self.toppageSelectedCode.subscribe(function (selectedTopPageCode) {
-                                        a.service.loadDetailTopPage(selectedTopPageCode).done(function (data) {
-                                            self.loadTopPageItemDetail(data);
-                                        });
-                                        self.isNewMode(false);
+                                        if (selectedTopPageCode) {
+                                            a.service.loadDetailTopPage(selectedTopPageCode).done(function (data) {
+                                                self.loadTopPageItemDetail(data);
+                                            });
+                                            self.isNewMode(false);
+                                        }
                                     });
                                     self.languageListOption = ko.observableArray([
                                         new ItemCbbModel("0", "日本語"),
@@ -110,12 +112,31 @@ var nts;
                                     }).onClosed(function () {
                                     });
                                 };
-                                ScreenModel.prototype.openFlowMenuSetting = function () {
+                                ScreenModel.prototype.openFlowMenuSettingDialog = function () {
+                                    var self = this;
+                                    nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
+                                    nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
+                                    nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
+                                        height: 650, width: 1300,
+                                        title: "$$$$$$$$",
+                                        dialogClass: 'no-close'
+                                    }).onClosed(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.openLayoutSettingDialog = function () {
+                                    var self = this;
+                                    nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
+                                        height: 650, width: 1300,
+                                        title: "$$$$$$$$",
+                                        dialogClass: 'no-close'
+                                    }).onClosed(function () {
+                                    });
                                 };
                                 ScreenModel.prototype.newTopPage = function () {
                                     var self = this;
                                     self.topPageModel(new TopPageModel());
                                     self.isNewMode(true);
+                                    self.toppageSelectedCode("");
                                 };
                                 ScreenModel.prototype.removeTopPage = function () {
                                     var self = this;

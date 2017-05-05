@@ -23,11 +23,11 @@
 				<button data-bind="click: newTopPage" id="btn_new" class="btnStyle">新規</button>
 				<button data-bind="click: saveTopPage" class="proceed btnStyle"
 					id="btn_save">登録</button>
-				<button data-bind=" click: copyTopPage" id="btn_printing">コピー</button>
-				<button data-bind=" click: openFlowMenuSetting" id="btn_readFromSocialTnsuranceOffice">フローメニューの設定</button>
+				<button data-bind=" click: copyTopPage ,enable: !isNewMode()" id="btn_printing">コピー</button>
+				<button data-bind=" click: openFlowMenuSettingDialog" id="btn_readFromSocialTnsuranceOffice">フローメニューの設定</button>
 				<button id="btn_masterCorrectionLog"
 					data-bind="click: openMyPageSettingDialog">マイページの設定</button>
-				<button data-bind="click: removeTopPage" class="danger btnStyle"
+				<button data-bind="click: removeTopPage,enable: !isNewMode()" class="danger btnStyle"
 					id="btn_delete">削除</button>
 			</div>
 			<div id="contents-area" data-bind="visible: true"
@@ -92,7 +92,7 @@
 										class="tr120 save-error" data-name="コード"
 										data-bind="ntsTextEditor: {
 											value: topPageCode,
-											enable: true,
+											enable: $parent.isNewMode(),
 											required:true,
 											constraint: 'TopPageCode'}" />
 									</td>
@@ -107,7 +107,7 @@
 								</tr>
 
 								<tr>
-									<td><button class="x-large">レイアウト設定</button></td>
+									<td><button data-bind=" click: $parent.openLayoutSettingDialog ,enable: !$parent.isNewMode()" class="x-large">レイアウト設定</button></td>
 								</tr>
 							</table>
 
