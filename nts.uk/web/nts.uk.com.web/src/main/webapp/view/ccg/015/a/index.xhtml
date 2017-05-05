@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
+  			</com:ValidatorScript>
 			<com:stylefile path="ccg015.a.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg015.a.start.js" />
@@ -89,14 +93,16 @@
 										data-bind="ntsTextEditor: {
 											value: topPageCode,
 											enable: true,
-											required:true}" />
+											required:true,
+											constraint: 'TopPageCode'}" />
 									</td>
 									<td><input id="inp_name" data-name="名称"
 										class="tr240 save-error"
 										data-bind="ntsTextEditor: {
 											value: topPageName,
 											enable: true,
-											required:true}" />
+											required:true,
+											constraint: 'TopPageName'}" />
 									</td>
 								</tr>
 

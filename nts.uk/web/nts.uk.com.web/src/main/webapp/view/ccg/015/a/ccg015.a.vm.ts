@@ -113,7 +113,9 @@ module nts.uk.com.view.ccg015.a {
                         //TODO register success  show msg_15  
                     });
                 }
-                self.loadTopPageList();
+                self.loadTopPageList().done(function(){
+                self.toppageSelectedCode(self.collectData().topPageCode);
+                });
                 //TODO focus create item   
             }
             private openMyPageSettingDialog() {

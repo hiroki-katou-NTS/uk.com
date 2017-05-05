@@ -87,7 +87,9 @@ var nts;
                                         a.service.updateTopPage(self.collectData()).done(function () {
                                         });
                                     }
-                                    self.loadTopPageList();
+                                    self.loadTopPageList().done(function () {
+                                        self.toppageSelectedCode(self.collectData().topPageCode);
+                                    });
                                 };
                                 ScreenModel.prototype.openMyPageSettingDialog = function () {
                                     nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
