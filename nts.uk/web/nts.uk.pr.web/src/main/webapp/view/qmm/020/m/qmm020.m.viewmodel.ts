@@ -30,15 +30,15 @@ module qmm020.m.viewmodel {
             var self = this;
             var dfd = $.Deferred();
 
-            var currentBaseYM = parseInt(nts.uk.ui.windows.getShared('valMDialog'));
+            var currentBaseYM = parseInt(nts.uk.ui.windows.getShared('valMDialog')) || 201710;
 
             //get Allot History
-            service.getAllAllotLayoutHist(currentBaseYM).done(function(layoutHistory: Array<service.model.LayoutHistoryDto>) {
+            service.getAllAllotLayoutHist(currentBaseYM).done(function(layoutHistory: Array<ILayoutHistoryModel>) {
                 if (layoutHistory.length > 0) {
-                    let _histItems: Array<HistModel> = [];
+                    let _histItems: Array<LayoutHistoryModel> = [];
 
                     _.forEach(layoutHistory, function(layoutHist, i) {
-                        _histItems.push(new HistModel(layoutHist));
+                        _histItems.push(new LayoutHistoryModel(layoutHist));
                     });
 
                     let _items: Array<ItemModel> = [];
@@ -81,17 +81,17 @@ module qmm020.m.viewmodel {
         }
     }
 
-    interface IHistModel {
+    interface ILayoutHistoryModel {
         startYm: string;
         endYm: string;
         stmtCode: string;
     }
 
-    class HistModel {
+    class LayoutHistoryModel {
         startYm: string;
         endYm: string;
         stmtCode: string;
-        constructor(param: IHistModel) {
+        constructor(param: ILayoutHistoryModel) {
             this.startYm = param.startYm;
             this.endYm = param.endYm;
             this.stmtCode = param.stmtCode;
