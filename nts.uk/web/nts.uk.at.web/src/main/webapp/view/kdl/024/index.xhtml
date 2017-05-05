@@ -15,14 +15,14 @@
 			<com:scriptfile path="kdl024.service.js" />
 			<com:scriptfile path="kdl024.vm.js" />
 			<com:ValidatorScript>
-				nts.uk.shr.com.primitive.PersonId
-				nts.uk.shr.com.primitive.sample.ResidenceCode
+				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd
+				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetName
 			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="btnNew" class="btnMenu" data-bind="click: addNew">新規</button>
-				<button id="btnSave" class="btnMenu proceed" data-bind="click: update">登録</button>
+				<button id="btnSave" class="btnMenu proceed" data-bind="click: update, enable: $root.errors.isEmpty">登録</button>
 				<button id="btnDel" class="btnMenu delete_btn btn_width danger"
 					data-bind="click: del" style="margin-left: 60px;">削除</button>
 				<button id="btnClose" class="btnMenu" data-bind="">閉じる</button>
@@ -50,7 +50,7 @@
 							<td>
 								<div id="divInfo"
 									data-bind="ntsFormLabel: {
-													constraint: ['ResidenceCode','ResidenceCode'] ,
+													constraint: ['ExternalBudgetCd','ExternalBudgetName'] ,
 													required: true, 
 													inline:false, 
 													enable:true }">
@@ -59,7 +59,7 @@
 							<td>
 								<input id="inpCode" data-bind="ntsTextEditor: {
  													value: currentItem().externalBudgetCode,
-													enable: isEnableInp}" />
+													enable: isEnableInp}" class="save-error" data-name="BudgetCode"/>
 								<input id="inpName" data-bind="ntsTextEditor: {
  													value:currentItem().externalBudgetName, 
  													enable: true } 

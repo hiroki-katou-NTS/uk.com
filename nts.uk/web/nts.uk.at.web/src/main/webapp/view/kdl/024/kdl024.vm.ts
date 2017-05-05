@@ -60,9 +60,9 @@ module kdl024.viewmodel {
             var dfd = $.Deferred<any>();
             //get list budget   
             service.getListExternalBudget().done(function(lstBudget: any) {
+                let _items: Array<TempItem> = [];
                 if (lstBudget.length > 0) {
                     self.isNew = false;
-                    let _items: Array<TempItem> = [];
                     for (let i in lstBudget) {
                         let item = lstBudget[i];
                         _items.push(new TempItem(item.externalBudgetCode, item.externalBudgetName, item.budgetAtr, item.unitAtr));
@@ -76,7 +76,11 @@ module kdl024.viewmodel {
                     //current Code
                     self.currentItem().externalBudgetCode(lstBudget[0].externalBudgetCode);
                 } else {
-                    addNew();
+                    self.isNew = true;
+                    self.currentSource = _items;
+                    self.currentItem().setSource(_items);
+                    $("#inpCode").prop("disabled", false);
+                    $('#inpCode').focus();
                     dfd.resolve();
                 }
             }).fail(function(res) {
@@ -88,27 +92,36 @@ module kdl024.viewmodel {
         update() {
             var self = this;
             if (self.isNew) {
-                service.insertExternalBudget(self.currentItem()).done(function() {
-                }).fail(function(res) {
-                    alert(res);
-                });
-                //restart
-                self.currentSource.push(new TempItem(
-                    self.currentItem().externalBudgetCode(),
-                    self.currentItem().externalBudgetName(),
-                    self.currentItem().budgetAtr(),
-                    self.currentItem().unitAtr()
-                ));
-                //Reset list Source 
-                self.items([]);
-                //Re Add list source
-                self.items(self.currentSource);
-                self.isNew = false;
+                let newCode: string = $('#inpCode').val();
+                let current = _.find(self.currentSource, function(item) { return item.externalBudgetCode == newCode });
+                if (current) {
+                    $('#inpCode').ntsError('set', '入力したコードは、既に登録されています。');
+                } else {
+                    service.insertExternalBudget(self.currentItem()).done(function() {
+                        nts.uk.ui.dialog.alert("登録しました。")；
+                    }).fail(function(res) {
+                        alert(res);
+                    });
+                    //restart
+                    self.currentSource.push(new TempItem(
+                        self.currentItem().externalBudgetCode(),
+                        self.currentItem().externalBudgetName(),
+                        self.currentItem().budgetAtr(),
+                        self.currentItem().unitAtr()
+                    ));
+                    //Reset list Source 
+                    self.items([]);
+                    //Re Add list source    
+                    self.items(self.currentSource);
+                    self.isNew = false;
+                }
             } else {
                 service.updateExternalBudget(self.currentItem()).done(function() {
+                    nts.uk.ui.dialog.alert("登録しました。")；
                 }).fail(function(res) {
                     alert(res);
                 });
+                //Restart screen
                 self.start();
             }
             //enable button Del 
@@ -119,7 +132,7 @@ module kdl024.viewmodel {
             var self = this;
             self.isEnableInp = ko.observable(true);
             //current Code, 何にも、項目選択している。
-            self.currentItem().externalBudgetCode('@');
+            self.currentItem().externalBudgetCode(null);
             $('#inpName').val('');
             $('#inpCode').val('');
             $('#inpCode').focus();

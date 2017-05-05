@@ -36,9 +36,9 @@ var kdl024;
                 var self = this;
                 var dfd = $.Deferred();
                 kdl024.service.getListExternalBudget().done(function (lstBudget) {
+                    var _items = [];
                     if (lstBudget.length > 0) {
                         self.isNew = false;
-                        var _items = [];
                         for (var i in lstBudget) {
                             var item = lstBudget[i];
                             _items.push(new TempItem(item.externalBudgetCode, item.externalBudgetName, item.budgetAtr, item.unitAtr));
@@ -49,7 +49,11 @@ var kdl024;
                         self.currentItem().externalBudgetCode(lstBudget[0].externalBudgetCode);
                     }
                     else {
-                        addNew();
+                        self.isNew = true;
+                        self.currentSource = _items;
+                        self.currentItem().setSource(_items);
+                        $("#inpCode").prop("disabled", false);
+                        $('#inpCode').focus();
                         dfd.resolve();
                     }
                 }).fail(function (res) {
@@ -60,17 +64,26 @@ var kdl024;
             ScreenModel.prototype.update = function () {
                 var self = this;
                 if (self.isNew) {
-                    kdl024.service.insertExternalBudget(self.currentItem()).done(function () {
-                    }).fail(function (res) {
-                        alert(res);
-                    });
-                    self.currentSource.push(new TempItem(self.currentItem().externalBudgetCode(), self.currentItem().externalBudgetName(), self.currentItem().budgetAtr(), self.currentItem().unitAtr()));
-                    self.items([]);
-                    self.items(self.currentSource);
-                    self.isNew = false;
+                    var newCode_1 = $('#inpCode').val();
+                    var current = _.find(self.currentSource, function (item) { return item.externalBudgetCode == newCode_1; });
+                    if (current) {
+                        $('#inpCode').ntsError('set', '入力したコードは、既に登録されています。');
+                    }
+                    else {
+                        kdl024.service.insertExternalBudget(self.currentItem()).done(function () {
+                            nts.uk.ui.dialog.alert("登録しました。");
+                        }).fail(function (res) {
+                            alert(res);
+                        });
+                        self.currentSource.push(new TempItem(self.currentItem().externalBudgetCode(), self.currentItem().externalBudgetName(), self.currentItem().budgetAtr(), self.currentItem().unitAtr()));
+                        self.items([]);
+                        self.items(self.currentSource);
+                        self.isNew = false;
+                    }
                 }
                 else {
                     kdl024.service.updateExternalBudget(self.currentItem()).done(function () {
+                        nts.uk.ui.dialog.alert("登録しました。");
                     }).fail(function (res) {
                         alert(res);
                     });
@@ -81,7 +94,7 @@ var kdl024;
             ScreenModel.prototype.addNew = function () {
                 var self = this;
                 self.isEnableInp = ko.observable(true);
-                self.currentItem().externalBudgetCode('@');
+                self.currentItem().externalBudgetCode(null);
                 $('#inpName').val('');
                 $('#inpCode').val('');
                 $('#inpCode').focus();
