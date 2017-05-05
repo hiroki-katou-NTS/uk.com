@@ -29,4 +29,6 @@ public class UpdateFormulaMasterCommand {
 	private int roundAtr;
 
 	private int roundDigit;
+	
+	
 }

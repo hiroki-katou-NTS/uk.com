@@ -82,7 +82,9 @@ module nts.uk.pr.view.qmm011.a {
                         convertRes.push(UnemployeeInsuranceHistoryDto);
                     }
                     dfd.resolve(convertRes);
-                })
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });
             return dfd.promise();
         }
 
@@ -96,7 +98,9 @@ module nts.uk.pr.view.qmm011.a {
                     UnemployeeInsuranceHistoryDto = new model.UnemployeeInsuranceHistoryDto();
                     UnemployeeInsuranceHistoryDto.setDataHistory(res);
                     dfd.resolve(UnemployeeInsuranceHistoryDto);
-                })
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });
             return dfd.promise();
         }
 
@@ -115,10 +119,9 @@ module nts.uk.pr.view.qmm011.a {
                     unemployeeInsuranceRateDto.rateItems = res.rateItems;
                     unemployeeInsuranceRateDto.version = res.version;
                     dfd.resolve(unemployeeInsuranceRateDto);
-                })
-                .fail(function(res: any) {
+                }).fail(function(res) {
                     dfd.reject(res);
-                })
+                });
             return dfd.promise();
 
         }
@@ -167,10 +170,9 @@ module nts.uk.pr.view.qmm011.a {
                         convertRes.push(AccidentInsuranceHistoryDto);
                     }
                     dfd.resolve(convertRes);
-                })
-                .fail(function(res: any) {
+                }).fail(function(res) {
                     dfd.reject(res);
-                })
+                });
             return dfd.promise();
         }
 
@@ -185,10 +187,9 @@ module nts.uk.pr.view.qmm011.a {
                     AccidentInsuranceHistoryDto.setDataHistory(res);
                     dfd.resolve(AccidentInsuranceHistoryDto);
                     //xyz
-                })
-                .fail(function(res: any) {
+                }).fail(function(res) {
                     dfd.reject(res);
-                })
+                });
             return dfd.promise();
         }
 
@@ -207,8 +208,7 @@ module nts.uk.pr.view.qmm011.a {
                     accidentInsuranceRateDto.version = res.version;
                     dfd.resolve(accidentInsuranceRateDto);
                     //xyz
-                })
-                .fail(function(res: any) {
+                }).fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
@@ -347,8 +347,7 @@ module nts.uk.pr.view.qmm011.a {
                 .done(function(res: model.InsuranceBusinessTypeDto) {
                     dfd.resolve(res);
                     //xyz
-                })
-                .fail(function(res: any) {
+                }).fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();

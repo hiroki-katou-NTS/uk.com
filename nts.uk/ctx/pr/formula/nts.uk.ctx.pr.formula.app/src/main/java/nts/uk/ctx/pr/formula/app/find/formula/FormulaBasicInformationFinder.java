@@ -57,6 +57,8 @@ public class FormulaBasicInformationFinder {
 
 			formulaBasicInformationDto.setConditionAtr(formulaEasyHeader.isPresent() ? formulaEasyHeader.get().getConditionAtr().intValue() : null);
 			formulaBasicInformationDto.setRefMasterNo(formulaEasyHeader.isPresent() ? formulaEasyHeader.get().getReferenceMasterNo().intValue() : null);
+			
+			//master
 		}
 
 		return formulaBasicInformationDto;

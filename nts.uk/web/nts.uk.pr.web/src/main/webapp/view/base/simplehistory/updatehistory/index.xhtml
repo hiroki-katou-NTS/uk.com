@@ -70,7 +70,7 @@
 								data-bind="ntsDatePicker: {
 									value: startYearMonth, 
 									dateFormat: 'yyyy/MM', 
-									disabled: actionType() == 'DELETE'}"/>
+									disabled: actionType() == 'DELETE', required: true}"/>
 								<label data-bind="text: ' ~ '　+ endYearMonth"/>
 							</div>
 						</td>

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.ws.wageledger;
@@ -29,20 +29,20 @@ import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
  */
 @Path("ctx/pr/report/wageledger/aggregateitem")
 @Produces("application/json")
-public class AggregateItemWebservice extends WebService{
-	
+public class AggregateItemWebservice extends WebService {
+
 	/** The finder. */
 	@Inject
 	private AggregateItemFinder finder;
-	
-	/** The save command. */
+
+	/** The save command handler. */
 	@Inject
 	private AggregateItemSaveCommandHandler saveCommandHandler;
-	
-	/** The remove command. */
+
+	/** The remove command handler. */
 	@Inject
 	private AggregateItemRemoveCommandHandler removeCommandHandler;
-	
+
 	/**
 	 * Find all.
 	 *
@@ -53,11 +53,11 @@ public class AggregateItemWebservice extends WebService{
 	public List<HeaderSettingDto> findAll() {
 		return this.finder.findAll();
 	}
-	
+
 	/**
 	 * Find aggregate item detail.
 	 *
-	 * @param code the code
+	 * @param subject the subject
 	 * @return the aggregate item dto
 	 */
 	@POST
@@ -65,7 +65,7 @@ public class AggregateItemWebservice extends WebService{
 	public AggregateItemDto findAggregateItemDetail(ItemSubjectDto subject) {
 		return this.finder.findDetail(subject);
 	}
-	
+
 	/**
 	 * Find by category and payment type.
 	 *
@@ -77,9 +77,9 @@ public class AggregateItemWebservice extends WebService{
 	@Path("findByCate/{category}/{paymentType}")
 	public List<HeaderSettingDto> findByCategoryAndPaymentType(@PathParam("category") WLCategory category,
 			@PathParam("paymentType") PaymentType paymentType) {
-		return this.finder.findByCategoryAndPaymentType(category,paymentType);
+		return this.finder.findByCategoryAndPaymentType(category, paymentType);
 	}
-	
+
 	/**
 	 * Save.
 	 *
@@ -90,7 +90,7 @@ public class AggregateItemWebservice extends WebService{
 	public void save(AggregateItemSaveCommand command) {
 		this.saveCommandHandler.handle(command);
 	}
-	
+
 	/**
 	 * Removes the.
 	 *

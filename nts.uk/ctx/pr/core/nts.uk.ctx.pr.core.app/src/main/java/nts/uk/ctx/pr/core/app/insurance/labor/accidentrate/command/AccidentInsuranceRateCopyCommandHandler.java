@@ -24,7 +24,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class AccidentInsuranceRateCopyCommandHandler
-	extends CommandHandler<AccidentInsuranceRateCopyCommand> {
+		extends CommandHandler<AccidentInsuranceRateCopyCommand> {
 
 	/** The accident insurance rate repo. */
 	@Inject
@@ -56,15 +56,15 @@ public class AccidentInsuranceRateCopyCommandHandler
 
 		// get domain by action request
 		AccidentInsuranceRate insuranceRate = AccidentInsuranceRate.createWithIntial(companyCode,
-			YearMonth.of(command.getStartMonth()));
+				YearMonth.of(command.getStartMonth()));
 
 		// not copy default
 		if (!command.isAddNew() && command.getHistoryIdCopy() != null
-			&& command.getHistoryIdCopy().length() > 0) {
+				&& command.getHistoryIdCopy().length() > 0) {
 
 			// add new with start historyId
-			Optional<AccidentInsuranceRate> data = this.repository.findById(companyCode,
-				command.getHistoryIdCopy());
+			Optional<AccidentInsuranceRate> data = this.repository
+					.findById(command.getHistoryIdCopy());
 
 			// Check exist.
 			if (data.isPresent()) {
