@@ -352,6 +352,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param monthList the month list
 	 */
 	private boolean fillItemData(ReportItemDto item, PrintData printData) {
+		
 		Worksheet ws = printData.reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
 		Color backgroundColor = printData.isGreenRow ? GREEN_COLOR : null;

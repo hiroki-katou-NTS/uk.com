@@ -4,7 +4,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-import javax.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -16,7 +15,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class AggregateTableEntity extends TableEntity {
+public abstract class AggregateTableEntity extends UkJpaEntity {
     
     /**
      * version
