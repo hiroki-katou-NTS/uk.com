@@ -1,90 +1,117 @@
 module ccg014.a.viewmodel {
     export class ScreenModel {
-        // Grid list
-        items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
-        // text editor1
-        texteditor1: any;
-        simpleValue1: KnockoutObservable<string>;
-        // text editor2
-        texteditor2: any;
-        simpleValue2: KnockoutObservable<string>;
+        // TitleMenu List
+        listTitleMenu: KnockoutObservableArray<any>;
+        selectedTitleMenuCode: KnockoutObservable<string>;
+        columns: KnockoutObservableArray<any>;
+        // TitleMenu Details
+        selectedTitleMenu: KnockoutObservable<model.TitleMenu>;
+        isCreate: KnockoutObservable<boolean>;
         // OpenDdialogB
-        titleMenuCD: KnockoutObservableArray<TitleMenuCD>; 
+        titleMenuCD: KnockoutObservableArray<string>;
+        name: KnockoutObservableArray<string>
         constructor() {
             var self = this;
-            //Grid list
-            self.items = ko.observableArray([]);
-            for (let i = 1; i < 100; i++) {
-                this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i % 3 === 0));
-            }
+            // TitleMenu List
+            self.listTitleMenu = ko.observableArray([]);
+            self.selectedTitleMenuCode = ko.observable(null);
+            self.selectedTitleMenuCode.subscribe((value) => {
+                self.findSelectedTitleMenu(value);
+            });
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                { headerText: '名称', key: 'name', width: 150, hidden: true },
-                { headerText: '説明', key: 'description', width: 150 },
-                { headerText: '説明1', key: 'other1', width: 150 }
+               
+                { headerText: 'コード', key: 'titleMenuCD', width: 100 },
+                { headerText: '名称', key: 'name', width: 150 }
             ]);
-            self.currentCodeList = ko.observableArray([]);
-            // text editor
-            self.texteditor1 = {
-            value: ko.observable(''),
-            constraint: 'ResidenceCode',
-            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                textmode: "text",
-                placeholder: "",
-                width: "100px",
-                textalign: "left"
-            })),
-            required: ko.observable(true),
-            enable: ko.observable(true),
-            readonly: ko.observable(false)
-        };
-            self.texteditor2 = {
-            value: ko.observable(''),
-            constraint: 'ResidenceCode',
-            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                textmode: "text",
-                placeholder: "",
-                width: "100px",
-                textalign: "left"
-            })),
-            required: ko.observable(true),
-            enable: ko.observable(true),
-            readonly: ko.observable(false)
-        };
+            // TitleMenu Details
+            self.selectedTitleMenu = ko.observable(null);
+            self.isCreate = ko.observable(null);
+            self.isCreate.subscribe((value) => {
+                self.changeInitMode(value);
+            });
         }
 
+        /** Start Page */
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            /** Get list TitleMenu*/
+            service.getAllTitleMenu().done(function(listTitleMenu: Array<model.TitleMenu>) {
+                console.log(listTitleMenu);
+                self.listTitleMenu(listTitleMenu);
+                if (listTitleMenu.length > 0) {
+                    self.selectFirstTitleMenu();
+                    self.isCreate(false);
+                }
+                else {
+                    self.isCreate(true);
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            });
             dfd.resolve();
             return dfd.promise();
-         }
-         openBDialog() {
-               nts.uk.ui.windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: '他のタイトルメニューのコピー', dialogClass: "no-close" }).onClosed();
+        }
+
+        /** Get Selected TitleMenu */
+        findSelectedTitleMenu(titleMenuCD: string) {
+            var self = this;
+            var selectedTitleMenu = _.find(self.listTitleMenu(), ['titleMenuCD', titleMenuCD]);
+            if (selectedTitleMenu !== undefined) {
+                self.isCreate(false);
+                self.selectedTitleMenu(new model.TitleMenu(selectedTitleMenu.titleMenuCD, selectedTitleMenu.name, selectedTitleMenu.layoutID));
             }
+            else {
+                self.selectedTitleMenu(new model.TitleMenu("", "", ""));
+            }
+        }
+
+        /** Get First TitleMenu */
+        selectFirstTitleMenu() {
+            var self = this;
+            var fistTitleMenu = _.head(self.listTitleMenu());
+            if (fistTitleMenu !== undefined)
+                self.selectedTitleMenuCode(fistTitleMenu.titleMenuCD);
+            else
+                self.selectedTitleMenuCode(null);
+        }
+
+        /** Create Button Click */
+        createButtonClick() {
+            this.isCreate(true);
+        }
+
+        /** Init Mode */
+        changeInitMode(isCreate: boolean) {
+            var self = this;
+            if (isCreate === true) {
+                self.selectedTitleMenuCode(null);
+                $("#titleMenuCD").focus();
+            }
+        }
+
+        /** Open Dialog */
+        openBDialog() {
+            nts.uk.ui.windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: '他のタイトルメニューのコピー', dialogClass: "no-close" });
+        }
+
+        /** Open 030A Dialog */
         open030A_Dialog() {
-               nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: 'フローメニューの設定', dialogClass: "no-close" }).onClosed();
-            }
-        
+            nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: 'フローメニューの設定', dialogClass: "no-close" });
+        }
     }
 
-
-class ItemModel {
-    code: string;
-    name: string;
-    description: string;
-    other1: string;
-    other2: string;
-    deletable: boolean;
-    switchValue: boolean;
-    constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
-        this.code = code;
-        this.name = name;
-        this.description = description;
-        this.other1 = other1;
-        this.other2 = other2 || other1;
+    export module model {
+        export class TitleMenu {
+            titleMenuCD: KnockoutObservable<string>;
+            name: KnockoutObservable<string>;
+            layoutID: KnockoutObservable<string>;
+            constructor(titleMenuCD: string, name: string, layoutID: string) {
+                this.titleMenuCD = ko.observable(titleMenuCD);
+                this.name = ko.observable(name);
+                this.layoutID = ko.observable(layoutID);
+            }
+        }
     }
 }

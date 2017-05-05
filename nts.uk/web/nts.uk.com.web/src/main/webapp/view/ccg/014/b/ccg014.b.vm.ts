@@ -52,4 +52,5 @@ module ccg014.b.viewmodel {
             nts.uk.ui.windows.close();
         }
     }
+    export module model{}
 }
