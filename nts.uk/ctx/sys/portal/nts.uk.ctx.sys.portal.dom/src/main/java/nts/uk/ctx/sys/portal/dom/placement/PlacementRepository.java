@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.placement;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,13 @@ public interface PlacementRepository {
 	 * @param placement
 	 */
 	void add(Placement placement);
+	
+	/**
+	 * Add Collection&lt;Placement&gt;
+	 *
+	 * @param placements
+	 */
+	void addAll(Collection<Placement> placements);
 
 	/**
 	 * update a Placement

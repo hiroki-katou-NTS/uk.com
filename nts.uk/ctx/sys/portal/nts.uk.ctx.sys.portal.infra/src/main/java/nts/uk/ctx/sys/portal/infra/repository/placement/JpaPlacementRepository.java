@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.infra.repository.placement;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,6 +74,17 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	 * (non-Javadoc)
 	 * 
 	 * @see
+	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#addAll(Collection<Placement>)
+	 */
+	@Override
+	public void addAll(Collection<Placement> placements) {
+		this.commandProxy().insert(toEntity(placements));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
 	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#update(nts.uk.ctx.sys.portal.dom.placement.Placement)
 	 */
 	@Override
@@ -91,7 +104,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 			entity.column, entity.row,
 			entity.externalUrl, entity.width, entity.height);
 	}
-	
+
 	/**
 	 * Convert domain to entity
 	 * 
@@ -113,5 +126,18 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 			domain.getLayoutID(), domain.getColumn().v(), domain.getRow().v(),
 			width, height, externalUrl, domain.getToppagePartID());
 	}
-	
+
+	/**
+	 * Convert Collection domain to Collection entity
+	 * 
+	 * @param placements Collection CcgmtPlacement
+	 * @return Collection CcgmtPlacement
+	 */
+	private Collection<CcgmtPlacement> toEntity(Collection<Placement> placements) {
+		List<CcgmtPlacement> entities = new ArrayList<CcgmtPlacement>();
+		for (Placement placement : placements) {
+			entities.add(toEntity(placement));
+		}
+		return entities;
+	}
 }
