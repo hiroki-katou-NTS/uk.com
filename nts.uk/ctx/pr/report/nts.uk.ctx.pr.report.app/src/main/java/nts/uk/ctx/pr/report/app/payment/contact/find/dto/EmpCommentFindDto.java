@@ -4,25 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.payment.contact.find.dto;
 
-import java.util.List;
-
-import lombok.Getter;
 import lombok.Setter;
 
+import lombok.Getter;
+
 /**
- * The Class ContactItemsSettingFindDto.
+ * The Class EmpCommentFindDto.
  */
 @Getter
 @Setter
-public class ContactItemsSettingFindDto {
+public class EmpCommentFindDto {
 
-	/** The emp comment finds. */
-	private List<EmpCommentFindDto> empCommentFinds;
+	/** The employee code. */
+	private String employeeCode;
 
-	/** The processing no. */
-	private int processingNo;
-
-	/** The processing ym. */
-	private int processingYm;
-
+	/** The employee name. */
+	private String employeeName;
 }

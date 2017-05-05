@@ -4,11 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.payment.contact.find;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.report.app.payment.contact.find.dto.ContactItemsSettingFindDto;
+import nts.uk.ctx.pr.report.app.payment.contact.find.dto.ContactItemsSettingOut;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCodeGetMemento;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSetting;
@@ -34,7 +38,7 @@ public class ContactItemsSettingFinder {
 	 *            the find dto
 	 * @return the contact items setting
 	 */
-	public ContactItemsSetting finder(ContactItemsSettingFindDto findDto) {
+	public ContactItemsSettingOut finder(ContactItemsSettingFindDto findDto) {
 
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -43,23 +47,33 @@ public class ContactItemsSettingFinder {
 
 		String companyCode = loginUserContext.companyCode();
 
-		return this.repository.findByCode(new ContactItemsCode(new ContactItemsCodeGetMemento() {
+		List<String> empCds = findDto.getEmpCommentFinds().stream().map(item -> {
+			return item.getEmployeeCode();
+		}).collect(Collectors.toList());
 
-			@Override
-			public YearMonth getProcessingYm() {
-				return YearMonth.of(findDto.getProcessingYm());
-			}
+		ContactItemsSetting contactItemsSetting = this.repository
+			.findByCode(new ContactItemsCode(new ContactItemsCodeGetMemento() {
 
-			@Override
-			public ProcessingNo getProcessingNo() {
-				return new ProcessingNo(findDto.getProcessingNo());
-			}
+				@Override
+				public YearMonth getProcessingYm() {
+					return YearMonth.of(findDto.getProcessingYm());
+				}
 
-			@Override
-			public String getCompanyCode() {
-				return companyCode;
-			}
-		}), findDto.getEmpCds());
+				@Override
+				public ProcessingNo getProcessingNo() {
+					return new ProcessingNo(findDto.getProcessingNo());
+				}
+
+				@Override
+				public String getCompanyCode() {
+					return companyCode;
+				}
+			}), empCds);
+
+		ContactItemsSettingOut dto = new ContactItemsSettingOut();
+		contactItemsSetting.saveToMemento(dto);
+		dto.mergeData(findDto.getEmpCommentFinds());
+		return dto;
 	}
 
 }

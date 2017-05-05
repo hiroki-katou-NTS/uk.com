@@ -18,4 +18,11 @@ public interface ContactItemsSettingRepository {
 	 * @return the optional
 	 */
 	ContactItemsSetting findByCode(ContactItemsCode code, List<String> empCds);
+
+	/**
+	 * Save.
+	 *
+	 * @param contactItemsSetting the contact items setting
+	 */
+	void save(ContactItemsSetting contactItemsSetting);
 }

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.payment.contact;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingGetMemento;
 import nts.uk.ctx.pr.report.dom.payment.contact.EmpComment;
@@ -70,7 +72,10 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 	 */
 	@Override
 	public ReportComment getInitialCpComment() {
-		return new ReportComment(this.commentInitialCp.getComment());
+		if (this.commentInitialCp != null) {
+			return new ReportComment(this.commentInitialCp.getComment());
+		}
+		return new ReportComment("");
 	}
 
 	/**
@@ -80,7 +85,10 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 	 */
 	@Override
 	public ReportComment getMonthCpComment() {
-		return new ReportComment(this.commentMonthCp.getComment());
+		if (this.commentMonthCp != null) {
+			return new ReportComment(this.commentMonthCp.getComment());
+		}
+		return new ReportComment("");
 	}
 
 	/**
@@ -90,6 +98,10 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 	 */
 	@Override
 	public Set<EmpComment> getMonthEmComments() {
+		if(CollectionUtil.isEmpty(this.commentMonthEmps) && CollectionUtil.isEmpty(this.commentInitialEmps)){
+			return new HashSet<>();
+		}
+		
 		Map<String, EmpComment> mapEmpComment = this.commentMonthEmps.stream().map(comment -> {
 			EmpComment empComment = new EmpComment();
 			empComment.setEmpCd(comment.getQctmtCommentMonthEmPK().getCcd());
