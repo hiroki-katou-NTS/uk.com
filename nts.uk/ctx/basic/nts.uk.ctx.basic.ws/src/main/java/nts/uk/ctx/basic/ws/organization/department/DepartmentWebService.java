@@ -10,11 +10,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.organization.department.AddDepartmentCommand;
 import nts.uk.ctx.basic.app.command.organization.department.AddDepartmentCommandHandler;
-import nts.uk.ctx.basic.app.command.organization.department.AddDepartmentMemoCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.department.UpdateStartDateandEndDateHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.department.RemoveDepartmentCommand;
 import nts.uk.ctx.basic.app.command.organization.department.RemoveDepartmentCommandHandler;
@@ -28,8 +26,6 @@ import nts.uk.ctx.basic.app.find.organization.department.DepartmentFinder;
 import nts.uk.ctx.basic.app.find.organization.department.DepartmentHistoryDto;
 import nts.uk.ctx.basic.app.find.organization.department.DepartmentMemoDto;
 import nts.uk.ctx.basic.app.find.organization.department.DepartmentQueryResult;
-import nts.uk.ctx.basic.dom.organization.department.Department;
-import nts.uk.ctx.basic.dom.organization.department.DepartmentMemo;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("basic/organization")
