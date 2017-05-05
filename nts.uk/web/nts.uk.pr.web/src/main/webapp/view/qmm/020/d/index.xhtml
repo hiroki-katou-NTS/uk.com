@@ -29,7 +29,7 @@
 				<label id="D_LBL_002">部門基準日</label> <label id="D_LBL_003">2016/04/01</label>
 			</div>
 			<div class="content-box">
-				<div style="width: 800px;"
+				<div
 					data-bind="ntsSearchBox: {
 								comId: 'D_LST_002', 
 								items: listTreeItems, 
@@ -40,19 +40,17 @@
 
 				<table id="D_LST_002"
 					data-bind="ntsTreeGridView:{
-						width: 800,
+						width: 1010,
+						height: 550,
 						enable: true,
 						multiple: false,
 						showCheckBox: false,
 						primaryKey: 'code',
 						primaryText: 'name',
 						childDataKey: 'childs',
-						columns: [{ headerText: 'Code', key: 'code', dataType: 'string', hidden: false },
-									{ headerText: 'Name', key: 'name', dataType: 'string', hidden: false },
-									{ headerText: 'Name', key: 'name', dataType: 'string', hidden: false }],
+						columns: listTreeColumns,
 						dataSource: listTreeItems,
-						value: listTreeItemSelected }"
-					class="cf"></table>
+						value: listTreeItemSelected }"></table>
 			</div>
 		</div>
 	</div>

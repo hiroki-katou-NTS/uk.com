@@ -1,15 +1,13 @@
 module qmm020.m.service {
-    //duong dan   
-    var paths = {
-        getLayoutHistory: "pr/core/allot/findallotlayouthistory/{0}",
-        getLayoutName: "pr/core/allot/findcompanyallotlayoutname/{0}"
-    }
+    let paths = {
+        getLayoutHistory: "pr/core/allot/findallotlayouthistory",
+        getLayoutName: "pr/core/allot/findcompanyallotlayoutname"
+    };
 
-    export function getAllAllotLayoutHist(baseYm: number): JQueryPromise<Array<model.LayoutHistoryDto>> {
-        var dfd = $.Deferred<Array<any>>();
-        var _path = nts.uk.text.format(paths.getLayoutHistory, baseYm);
-        nts.uk.request.ajax(_path)
-            .done(function(res: Array<any>) {
+    export function getAllAllotLayoutHist(baseYm: number): JQueryPromise<Array<ILayoutHistoryDto>> {
+        var dfd = $.Deferred();
+        nts.uk.request.ajax(paths.getLayoutHistory, { baseYm: baseYm })
+            .done(function(res: Array<ILayoutHistoryDto>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -17,34 +15,22 @@ module qmm020.m.service {
             })
         return dfd.promise();
     }
-    
-    /**
-     * Get layout master name 
-     */
-    export function getAllotLayoutName(stmtCode :string): JQueryPromise<string> {
+
+    export function getAllotLayoutName(stmtCode: string): JQueryPromise<string> {
         var dfd = $.Deferred<any>();
-        var _path = nts.uk.text.format(paths.getLayoutName, stmtCode);
-        var options = {
-            dataType: 'text',
-            contentType: 'text/plain'
-        };
-        nts.uk.request.ajax(_path, undefined , options)
-            .done(function(res: string){
+        nts.uk.request.ajax(paths.getLayoutName, { stmtCode: stmtCode }, { dataType: 'text', contentType: 'text/plain' })
+            .done(function(res: string) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
                 dfd.reject(res);
             })
-        return dfd.promise(); 
+        return dfd.promise();
     }
-    
-    export module model {
-        // layout
-        export class LayoutHistoryDto {
-            startYm: string;
-            endYm: string;
-            stmtCode: string;
-        }
+
+    interface ILayoutHistoryDto {
+        startYm: string;
+        endYm: string;
+        stmtCode: string;
     }
-    
 }
