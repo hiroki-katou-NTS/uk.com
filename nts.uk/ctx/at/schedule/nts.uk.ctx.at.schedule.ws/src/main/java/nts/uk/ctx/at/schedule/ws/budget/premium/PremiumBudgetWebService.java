@@ -23,7 +23,7 @@ import nts.uk.ctx.at.schedule.app.find.budget.premium.PremiumBudgetFinder;
  *
  */
 
-@Path("at/")
+@Path("at/budget/premium")
 @Produces("application/json")
 public class PremiumBudgetWebService extends WebService{
 	

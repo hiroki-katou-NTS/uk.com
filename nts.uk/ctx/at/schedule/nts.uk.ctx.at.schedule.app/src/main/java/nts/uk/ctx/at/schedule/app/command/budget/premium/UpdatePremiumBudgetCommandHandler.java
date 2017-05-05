@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.budget.premium;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -39,7 +40,8 @@ public class UpdatePremiumBudgetCommandHandler extends CommandHandler<UpdatePrem
 						new Memo(budgetCommand.getMemo()), 
 						EnumAdaptor.valueOf(budgetCommand.getUnitprice(), UnitPrice.class), 
 						budgetCommand.getStartDate(), 
-						budgetCommand.getEndDate()
+						budgetCommand.getEndDate(),
+						Collections.EMPTY_LIST
 				)
 		);
 		
