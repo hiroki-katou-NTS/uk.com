@@ -197,18 +197,26 @@ module qpp008.a.viewmodel {
                 readonly: ko.observable(false)
             };
         }
-        
+
         /**
          *  to JSon Object
          */
         private toJSObjet(): any {
             let self = this;
             let command: any = {};
-            command.month1 = self.yearmontheditor1.value();
-            command.month2 = self.yearmontheditor2.value();
+            //command.formCode = self.selectedCodeCbb1();
+            command.employeeCodeList = self.columnsLeft();
+            var str = self.yearmontheditor1.value();
+            var res = str.split("/");
+            command.month1 = Number(res[0] + res[1]);
+            str = self.yearmontheditor2.value();
+            res = str.split("/");
+            command.month2 = Number(res[0] + res[1]);
+            command.formCode = '114';
             command.payBonusAttr = 0;
             command.employeeCodeList = self.currentCodeListLeft();
             return command;
+            
         }
 
 
@@ -221,7 +229,7 @@ module qpp008.a.viewmodel {
             let command: any;
             command = self.toJSObjet();
             service.saveAsPdf(command).done(function() {
-                   console.log(command);
+                console.log(command);
             }).fail(function(res: any) {
                 console.log(res.message);
             });

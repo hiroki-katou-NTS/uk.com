@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.comparingsalarybonus.ComparingSalaryBonusGenerator;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusReportData;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DeparmentInf;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
@@ -39,14 +40,12 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 
 
 	@Override
-	public void generate(FileGeneratorContext fileContext, ComparingSalaryBonusReportData reportData) {
+	public void generate(FileGeneratorContext fileContext, ComparingSalaryBonusReportData reportData, DeparmentInf depInf) {
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 			reportContext.setDataSource(HEADER, Arrays.asList(reportData.getHeaderData()));
 			reportContext.processDesigner();
-			reportContext.setDataSource(HEADERTABLE, Arrays.asList(reportData.getHeaderTable()));
+			reportContext.setDataSource(DEPARTMENT, Arrays.asList(depInf));
 			reportContext.processDesigner();
-//			reportContext.setDataSource(DEPARTMENT, Arrays.asList(reportData.getDeparmentInf()));
-//			reportContext.processDesigner();
 //			reportContext.setDataSource(EMPLOYEE, Arrays.asList(reportData.getEmployeeInf()));
 //			reportContext.processDesigner();
 			DateFormat dateFormat = new SimpleDateFormat(DATE_TIME_FORMAT);

@@ -41,17 +41,13 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 
 	private final String SELECT_PAYCOMP_FORM_DETAIL = "SELECT c FROM QlsptPaycompFormDetail as c WHERE "
 			+ "c.paycompFormDetailPK.companyCode = :companyCode AND c.paycompFormDetailPK.formCode =:formCode";
-	
+
 	private final String SELECT_PAYMENT_DETAIL = "SELECT d FROM  QstdtPaymentDetail d"
-			+ " WHERE d.qstdtPaymentDetailPK.companyCode = :ccd "
-			+ " AND d.qstdtPaymentDetailPK.personId IN :personId"
+			+ " WHERE d.qstdtPaymentDetailPK.companyCode = :ccd " + " AND d.qstdtPaymentDetailPK.personId IN :personId"
 			+ " AND  d.qstdtPaymentDetailPK.payBonusAttribute = :payBonusAttribute"
 			+ " AND  d.qstdtPaymentDetailPK.processingYM =:processingYM";
 	private final String SELECT_CALLED_DETAIL = "SELECT c.emp, d.depName, d.hierarchyId, c.jobtitle FROM  CmnmtCalled c"
-			+ " INNER JOIN  CmnmtDep  d "
-			+ " ON c.ccd = d.cmnmtDepPK.companyCode "
-			+ " WHERE c.ccd =:ccd" ;
-	
+			+ " INNER JOIN  CmnmtDep  d " + " ON c.ccd = d.cmnmtDepPK.companyCode " + " WHERE c.ccd =:ccd";
 
 	/**
 	 * convert To Domain ComparingFormDetail from entity
@@ -80,7 +76,7 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 				categoryAtr, comparisonValue1, comparisonValue2, valueDifference, reasonDifference, registrationStatus1,
 				registrationStatus2, confirmedStatus);
 	}
-	
+
 	/**
 	 * convert To Domain PaymentDetail from entity
 	 * 
@@ -88,14 +84,14 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 	 * @return PaymentDetail
 	 */
 	private static PaymentDetail toDomain(QstdtPaymentDetail entity) {
-        String companyCode = entity.qstdtPaymentDetailPK.companyCode;
-		String personId   = entity.qstdtPaymentDetailPK.personId;
+		String companyCode = entity.qstdtPaymentDetailPK.companyCode;
+		String personId = entity.qstdtPaymentDetailPK.personId;
 		int processingNo = entity.qstdtPaymentDetailPK.processingNo;
 		int payBonusAtr = entity.qstdtPaymentDetailPK.payBonusAttribute;
-		int processingYm =entity.qstdtPaymentDetailPK.processingYM;
+		int processingYm = entity.qstdtPaymentDetailPK.processingYM;
 		int sparePayAtr = entity.qstdtPaymentDetailPK.sparePayAttribute;
-		int ctgAtr= entity.qstdtPaymentDetailPK.categoryATR;
-		String itemCode =entity.qstdtPaymentDetailPK.itemCode;
+		int ctgAtr = entity.qstdtPaymentDetailPK.categoryATR;
+		String itemCode = entity.qstdtPaymentDetailPK.itemCode;
 		BigDecimal val = entity.value;
 		int correctFlg = entity.correctFlag;
 		int taxAtr = entity.taxATR;
@@ -109,31 +105,38 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 		BigDecimal commuAllowMonth = entity.commuteAllowMonth;
 		BigDecimal commuAllowFraction = entity.commuteAllowFraction;
 		int printLinePos = entity.printLinePosition;
-		int itemPosColumn= entity.columnPosition;
-		
-		return new PaymentDetail(companyCode, personId, processingNo, 
-				payBonusAtr, processingYm, sparePayAtr, ctgAtr, 
-				itemCode, val, correctFlg, taxAtr, limitMny, 
-				socialInsAtr, laborInsAtr, fixPayAtr, deductAtr,
-				itemAtr, commuAllowTaxImpose, commuAllowMonth, 
-				commuAllowFraction, printLinePos, itemPosColumn);
+		int itemPosColumn = entity.columnPosition;
+
+		return new PaymentDetail(companyCode, personId, processingNo, payBonusAtr, processingYm, sparePayAtr, ctgAtr,
+				itemCode, val, correctFlg, taxAtr, limitMny, socialInsAtr, laborInsAtr, fixPayAtr, deductAtr, itemAtr,
+				commuAllowTaxImpose, commuAllowMonth, commuAllowFraction, printLinePos, itemPosColumn);
 	}
-	
+
 	/**
 	 * convert To Domain DetailDifferential from entity
 	 * 
 	 * @param entity
 	 * @return DetailDifferential
 	 */
-	private static ComparingSalaryBonusHeaderReportData convertToDomainComparingSalaryBonusHeaderReportData(Object[] headerReport) {
-		 String nameCompany = (String)headerReport[0];
-		 String titleReport = "";
-		 String nameDeparment = (String)headerReport[1];
-		 String typeDeparment = (String)headerReport[2];
-		 String postion = (String)headerReport[3];
-		 String targetYearMonth = "2016/02";
-		return new ComparingSalaryBonusHeaderReportData (nameCompany, titleReport, nameDeparment,
-				typeDeparment, postion, targetYearMonth);
+	private static ComparingSalaryBonusHeaderReportData convertToDomainComparingSalaryBonusHeaderReportData(
+			Object[] headerReport) {
+		String nameCompany = (String) headerReport[0];
+		String titleReport = "";
+		String nameDeparment = (String) headerReport[1];
+		String typeDeparment = (String) headerReport[2];
+		String postion = (String) headerReport[3];
+		String targetYearMonth = "2016/02";
+		String itemName = null;
+		String month1 = null;
+		String month2 = null;
+		String differentSalary= null;
+		String registrationStatus1 = null;
+		String registrationStatus2= null;
+		String reason= null;
+		String confirmed = null;
+
+		return new ComparingSalaryBonusHeaderReportData(nameCompany, titleReport, nameDeparment, typeDeparment, postion,
+				targetYearMonth,itemName,month1,month2,differentSalary, registrationStatus1,registrationStatus2,reason,confirmed);
 	}
 
 	/**
@@ -149,14 +152,10 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 	@Override
 	public List<DetailDifferential> getDetailDifferentialWithEarlyYM(String companyCode, List<String> personIDs,
 			int processingEarlyYM, int categoryATR, int payBonusAttribute, String itemCode) {
-		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class)
-				.setParameter("ccd", companyCode)
-				.setParameter("personId", personIDs)
-				.setParameter("categoryATR", categoryATR)
-				.setParameter("payBonusAttribute", payBonusAttribute)
-				.setParameter("itemCode", itemCode)
-				.setParameter("processingYM", processingEarlyYM)
-				.getList(s -> {
+		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
+				.setParameter("personId", personIDs).setParameter("categoryATR", categoryATR)
+				.setParameter("payBonusAttribute", payBonusAttribute).setParameter("itemCode", itemCode)
+				.setParameter("processingYM", processingEarlyYM).getList(s -> {
 					String employeeCode = s[0].toString();
 					String employeeName = employeeCode.substring(0, 10);
 					String itemName = s[2].toString();
@@ -171,47 +170,41 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 							registrationStatus2, 0);
 				});
 	}
+
 	@Override
 	public List<DetailDifferential> getDetailDifferentialWithLaterYM(String companyCode, List<String> personIDs,
-			int processingLaterYM, int categoryATR, int payBonusAttribute, String itemCode) {	
-		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class)
-					.setParameter("ccd", companyCode)
-					.setParameter("personId", personIDs)
-					.setParameter("categoryATR", categoryATR)
-					.setParameter("payBonusAttribute", payBonusAttribute)
-					.setParameter("itemCode", itemCode)
-					.setParameter("processingYM", processingLaterYM)
-					.getList(s -> {
-						String employeeCode = s[0].toString();
-						String employeeName = employeeCode.substring(0, 10);
-						String itemName = s[2].toString();
-						int categoryAtr = Integer.valueOf(s[3].toString());
-						BigDecimal comparisonValue1 = BigDecimal.valueOf(Double.valueOf(s[4].toString()));
-						BigDecimal comparisonValue2 = BigDecimal.valueOf(0);
-						int registrationStatus1 = Integer.valueOf(s[5].toString());
-						int registrationStatus2 = 0;
-						String companyCd = s[6].toString();
-						return convertToDomainDetailDifferential(companyCd, employeeCode, employeeName, itemCode, itemName,
-								categoryAtr, comparisonValue1, comparisonValue2, new BigDecimal(0), "", registrationStatus1,
-								registrationStatus2, 0);
-					});
+			int processingLaterYM, int categoryATR, int payBonusAttribute, String itemCode) {
+		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
+				.setParameter("personId", personIDs).setParameter("categoryATR", categoryATR)
+				.setParameter("payBonusAttribute", payBonusAttribute).setParameter("itemCode", itemCode)
+				.setParameter("processingYM", processingLaterYM).getList(s -> {
+					String employeeCode = s[0].toString();
+					String employeeName = employeeCode.substring(0, 10);
+					String itemName = s[2].toString();
+					int categoryAtr = Integer.valueOf(s[3].toString());
+					BigDecimal comparisonValue1 = BigDecimal.valueOf(Double.valueOf(s[4].toString()));
+					BigDecimal comparisonValue2 = BigDecimal.valueOf(0);
+					int registrationStatus1 = Integer.valueOf(s[5].toString());
+					int registrationStatus2 = 0;
+					String companyCd = s[6].toString();
+					return convertToDomainDetailDifferential(companyCd, employeeCode, employeeName, itemCode, itemName,
+							categoryAtr, comparisonValue1, comparisonValue2, new BigDecimal(0), "", registrationStatus1,
+							registrationStatus2, 0);
+				});
 	}
 
 	@Override
-	public List<PaymentDetail> getPaymentDetail(String companyCode, List<String> personIds, int payBonusAttr, int processingYm) {
-		return this.queryProxy().query(SELECT_PAYMENT_DETAIL, QstdtPaymentDetail.class)
-				.setParameter("ccd", companyCode)
-				.setParameter("personId", personIds)
-				.setParameter("payBonusAttribute", payBonusAttr)
-				.setParameter("processingYM", processingYm)
-				.getList(x ->toDomain(x));
+	public List<PaymentDetail> getPaymentDetail(String companyCode, List<String> personIds, int payBonusAttr,
+			int processingYm) {
+		return this.queryProxy().query(SELECT_PAYMENT_DETAIL, QstdtPaymentDetail.class).setParameter("ccd", companyCode)
+				.setParameter("personId", personIds).setParameter("payBonusAttribute", payBonusAttr)
+				.setParameter("processingYM", processingYm).getList(x -> toDomain(x));
 	}
 
 	@Override
 	public List<ComparingSalaryBonusHeaderReportData> getReportHeader(String companyCode) {
-		return this.queryProxy().query(SELECT_CALLED_DETAIL, Object[].class)
-				.setParameter("ccd", companyCode)
-				.getList(c-> convertToDomainComparingSalaryBonusHeaderReportData(c));
+		return this.queryProxy().query(SELECT_CALLED_DETAIL, Object[].class).setParameter("ccd", companyCode)
+				.getList(c -> convertToDomainComparingSalaryBonusHeaderReportData(c));
 	}
 
 }
