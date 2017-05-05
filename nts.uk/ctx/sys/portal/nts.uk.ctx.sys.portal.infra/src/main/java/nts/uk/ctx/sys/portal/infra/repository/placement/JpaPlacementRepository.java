@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.infra.repository.placement;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +58,21 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	public void remove(String companyID, String placementID) {
 		this.commandProxy().remove(CcgmtPlacement.class, new CcgmtPlacementPK(companyID, placementID));
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#removeAll(String companyID, List<String> placementIDs)
+	 */
+	@Override
+	public void removeAll(String companyID, List<String> placementIDs) {
+		List<CcgmtPlacementPK> listCcgmtPlacementPK = new ArrayList<CcgmtPlacementPK>();
+		for (String placementID : placementIDs) {
+			listCcgmtPlacementPK.add(new CcgmtPlacementPK(companyID, placementID));
+		}
+		this.commandProxy().removeAll(CcgmtPlacement.class, listCcgmtPlacementPK);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -68,6 +85,17 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 		this.commandProxy().insert(toEntity(placement));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#addAll(Collection<Placement>)
+	 */
+	@Override
+	public void addAll(Collection<Placement> placements) {
+		this.commandProxy().insert(toEntity(placements));
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -91,7 +119,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 			entity.column, entity.row,
 			entity.externalUrl, entity.width, entity.height);
 	}
-	
+
 	/**
 	 * Convert domain to entity
 	 * 
@@ -113,5 +141,18 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 			domain.getLayoutID(), domain.getColumn().v(), domain.getRow().v(),
 			width, height, externalUrl, domain.getToppagePartID());
 	}
-	
+
+	/**
+	 * Convert Collection domain to Collection entity
+	 * 
+	 * @param placements Collection CcgmtPlacement
+	 * @return Collection CcgmtPlacement
+	 */
+	private Collection<CcgmtPlacement> toEntity(Collection<Placement> placements) {
+		List<CcgmtPlacement> entities = new ArrayList<CcgmtPlacement>();
+		for (Placement placement : placements) {
+			entities.add(toEntity(placement));
+		}
+		return entities;
+	}
 }
