@@ -25,6 +25,12 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 			+ " ON m.ccgmtFlowMenuPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID "
 			+ " AND m.ccgmtFlowMenuPK.companyID = :companyId";
 	private final String FLOWMENU_BY_TOPPAGEPARTID = SELECT_FLOWMENU + " AND m.ccgmtFlowMenuPK.toppagePartID = :topPagePartId";
+	
+	private final String FLOWMENU_INFOR = "SELECT c from CcgmtFlowMenu c "
+			+ " WHERE c.ccgmtFlowMenuPK.companyID = :companyId "
+			+ " AND c.ccgmtFlowMenuPK.toppagePartID = :topPagePartId";
+	
+	
 	/**
 	 * Get List FlowMenu
 	 * @param companyID
@@ -122,5 +128,21 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 				domain.getFileName().v(),
 				domain.getDefClassAtr().value);
 	}
-
+	@Override
+	public Optional<FlowMenu> getFlowMenu(String companyId, String topPagePartId) {
+		return this.queryProxy()
+				.query(FLOWMENU_INFOR, CcgmtFlowMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("topPagePartId", topPagePartId)
+				.getSingle(c ->  toDomain(c));
+		
+	}
+	
+	private FlowMenu toDomain(CcgmtFlowMenu entity){
+		return FlowMenu.createFromJavaType(entity.ccgmtFlowMenuPK.companyID, 
+				entity.ccgmtFlowMenuPK.toppagePartID, 
+				entity.fileID, 
+				entity.fileName, 
+				entity.defClassAtr);
+	}
 }

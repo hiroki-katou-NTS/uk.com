@@ -48,5 +48,6 @@ public interface FlowMenuRepository {
 	 * @param toppagePartID
 	 */
 	void remove(String companyID, String toppagePartID);
-
+	
+	Optional<FlowMenu> getFlowMenu(String companyId, String topPagePartId);
 }
