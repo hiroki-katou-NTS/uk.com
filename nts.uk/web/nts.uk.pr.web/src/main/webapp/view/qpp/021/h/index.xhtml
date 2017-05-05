@@ -8,8 +8,12 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" of="/nts.uk.com.js.web" />
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" of="/nts.uk.com.js.web" />
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
+				of="/nts.uk.com.js.web" />
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
+				of="/nts.uk.com.js.web" />
 			<com:stylefile path="qpp021.h.style.css" />
 			<com:scriptfile path="qpp021.h.start.js" />
 			<com:scriptfile path="qpp021.h.service.js" />
@@ -17,26 +21,26 @@
 			<com:ValidatorScript>
 			    nts.uk.ctx.pr.report.dom.payment.contact.ReportComment
 			</com:ValidatorScript>
-			
+
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<button id="btn_addUnemployeeInsuranceHistory" class="proceed btnStyle" >登録</button>
+				<button id="btn_saveContactItemsSetting" class="proceed btnStyle"
+					data-bind="click: saveContactItemsSetting">登録</button>
 				<button id="btn_addUnemployeeInsuranceHistory">閉じる</button>
 				<hr />
 				<div id="content">
 					<div id="lable_yearmonth">
-						<span class="label with-image"> 
-							<i class="image image-calendar" /> 
-							<span>処理する給与明細書の年月</span>
-						</span> 
-						<span data-bind="ntsFormLabel: { required: true }">2017/04</span>
+						<span class="label with-image"> <i
+							class="image image-calendar" /> <span>処理する給与明細書の年月</span>
+						</span> <span data-bind="ntsFormLabel: { required: true }">2017/04</span>
 					</div>
 					<br />
-					<div data-bind="ntsFormLabel: {required: false}" id="label_notification">
+					<div data-bind="ntsFormLabel: {required: false}"
+						id="label_notification">
 						<label>全社員向けの連絡事項</label>
 					</div>
-					
+
 					<div id="comment_notification">
 						<table>
 							<tr class="bg-green">
@@ -44,16 +48,24 @@
 								<td>毎月の給与明細書に印刷する連絡事項</td>
 							</tr>
 							<tr>
-								<td>
-									<input class="comment-data"></input>
-								</td>
-								<td>
-									<input class="comment-data"></input>
-								</td>
+								<td><input class="comment-data"
+									data-bind="ntsTextEditor: {value: monthCpComment,
+											constraint: 'ReportComment', 
+											option: textEditorOption,
+											enable: true,
+											immediate: false,
+											required:false}"></input></td>
+								<td><input class="comment-data"
+									data-bind="ntsTextEditor: {value: initialCpComment,
+											constraint: 'ReportComment', 
+											option: textEditorOption,
+											enable: true,
+											immediate: false,
+											required:false}"></input></td>
 							</tr>
 						</table>
 					</div>
-					
+
 					<div id="comment_person">
 						<table data-bind="igGrid: igGrid" id="comment_person_table"></table>
 					</div>

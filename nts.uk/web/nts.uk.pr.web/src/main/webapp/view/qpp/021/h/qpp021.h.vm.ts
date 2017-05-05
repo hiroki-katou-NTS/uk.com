@@ -2,15 +2,25 @@ module nts.uk.pr.view.qpp021.h {
 
     import option = nts.uk.ui.option;
     import EmploymentDto = service.model.EmploymentDto;
+    import EmpCommentDto = service.model.EmpCommentDto;
+    import ContactItemsSettingDto = service.model.ContactItemsSettingDto;
+    import ContactItemsSettingFindDto = service.model.ContactItemsSettingFindDto;
+    import EmpCommentFindDto = service.model.EmpCommentFindDto;
 
     export module viewmodel {
         export class ScreenModel {
 
             igGrid: any;
             igGridDataSource: KnockoutObservableArray<CommentPersonModel>;
+            initialCpComment: KnockoutObservable<string>;
+            monthCpComment: KnockoutObservable<string>;
+            textEditorOption: KnockoutObservable<any>;
 
             constructor() {
-
+                var self = this;
+                self.initialCpComment = ko.observable('');
+                self.monthCpComment = ko.observable('');
+                this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
             }
 
             //start page
@@ -18,17 +28,39 @@ module nts.uk.pr.view.qpp021.h {
                 var self = this;
                 var dfd = $.Deferred<this>();
                 service.findAllEmployee().done(data => {
-                    var itemarr: CommentPersonModel[];
-                    itemarr = [];
-                    data.forEach(employee => {
-                        var item: CommentPersonModel;
-                        item = new CommentPersonModel();
-                        item.setupData(employee);
-                        itemarr.push(item);
-                    });
-                    self.igGridDataSource = ko.observableArray(itemarr);
-                    self.initIgGrid();
-                    dfd.resolve(self);
+
+                    var dto: ContactItemsSettingFindDto;
+                    dto = new ContactItemsSettingFindDto();
+                    dto.processingNo = 1;
+                    dto.processingYm = 201705;
+
+                    var empCommentFinds: EmpCommentFindDto[];
+                    empCommentFinds = [];
+
+                    data.forEach(item => {
+                        var empComment: EmpCommentFindDto;
+                        empComment = new EmpCommentFindDto();
+                        empComment.employeeCode = item.employmentCode;
+                        empComment.employeeName = item.employmentName;
+                        empCommentFinds.push(empComment);
+                    })
+                    dto.empCommentFinds = empCommentFinds;
+                    service.findContactItemSettings(dto).done(output => {
+                        var itemarr: CommentPersonModel[];
+                        itemarr = [];
+                        output.empCommentDtos.forEach(employee => {
+                            var item: CommentPersonModel;
+                            item = new CommentPersonModel();
+                            item.setupData(employee);
+                            itemarr.push(item);
+                        });
+                        self.initialCpComment(output.initialCpComment);
+                        self.monthCpComment(output.monthCpComment);
+                        self.igGridDataSource = ko.observableArray(itemarr);
+                        self.initIgGrid();
+                        dfd.resolve(self);
+                    })
+
                 }).fail(function() {
 
                 });
@@ -36,6 +68,38 @@ module nts.uk.pr.view.qpp021.h {
                 return dfd.promise();
             }
 
+            saveContactItemsSetting(): void {
+                var self = this;
+                service.saveContactItemSettings(self.collectData()).done(function() {
+                    //load data    
+                }).fail(function() {
+
+                });
+            }
+
+
+            collectData(): ContactItemsSettingDto {
+                var self = this;
+                var dto: ContactItemsSettingDto;
+                dto = new ContactItemsSettingDto();
+                dto.processingNo = 1;
+                dto.processingYm = 201705;
+                dto.initialCpComment = self.initialCpComment();
+                dto.monthCpComment = self.monthCpComment();
+                var empCommentDtos: EmpCommentDto[];
+                empCommentDtos = [];
+                for (var item of self.igGridDataSource()) {
+                    var empCommentDto: EmpCommentDto;
+                    empCommentDto = new EmpCommentDto();
+                    empCommentDto.empCd = item.empCd;
+                    empCommentDto.employeeName = item.empName;
+                    empCommentDto.initialComment = item.initialComment;
+                    empCommentDto.monthlyComment = item.monthlyComment;
+                    empCommentDtos.push(empCommentDto);
+                }
+                dto.empCommentDtos = empCommentDtos;
+                return dto;
+            }
 
             initIgGrid(): void {
                 var self = this;
@@ -63,11 +127,11 @@ module nts.uk.pr.view.qpp021.h {
                                     readOnly: true
                                 },
                                 {
-                                    columnKey: 'commentMonth',
+                                    columnKey: 'monthlyComment',
                                     readOnly: false
                                 },
                                 {
-                                    columnKey: 'commentInit',
+                                    columnKey: 'initialComment',
                                     readOnly: false
                                 },
                                 {
@@ -81,8 +145,8 @@ module nts.uk.pr.view.qpp021.h {
                     columns: [
                         { headerText: 'コード', dataType: 'string', key: 'empCd', width: '10%', columnCssClass: "bgIgCol" },
                         { headerText: '名称', dataType: 'string', key: 'empName', width: '10%', columnCssClass: "bgIgCol" },
-                        { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'commentMonth', width: '40%', columnCssClass: "halign-right" },
-                        { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'commentInit', width: '40%', columnCssClass: "halign-right" }
+                        { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'monthlyComment', width: '40%', columnCssClass: "halign-right" },
+                        { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'initialComment', width: '40%', columnCssClass: "halign-right" }
                     ]
                 });
             }
@@ -91,15 +155,15 @@ module nts.uk.pr.view.qpp021.h {
         class CommentPersonModel {
             empCd: string;
             empName: string;
-            commentInit: string;
-            commentMonth: string;
+            initialComment: string;
+            monthlyComment: string;
             groupCalTypeText: string;
 
-            setupData(dto: EmploymentDto) {
-                this.empCd = dto.employmentCode;
-                this.empName = dto.employmentName;
-                this.commentInit = '';
-                this.commentMonth = '';
+            setupData(dto: EmpCommentDto) {
+                this.empCd = dto.empCd;
+                this.empName = dto.employeeName;
+                this.monthlyComment = dto.monthlyComment;
+                this.initialComment = dto.initialComment;
             }
         }
     }

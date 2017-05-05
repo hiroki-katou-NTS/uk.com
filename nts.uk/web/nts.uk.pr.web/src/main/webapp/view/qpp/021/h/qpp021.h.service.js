@@ -13,12 +13,23 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                findAllEmployee: "basic/organization/employment/findallemployments"
+                                findAllEmployee: "basic/organization/employment/findallemployments",
+                                findContactItemSettings: "ctx/pr/report/payment/contact/item/findSettings",
+                                saveContactItemSettings: "ctx/pr/report/payment/contact/item/save"
                             };
                             function findAllEmployee() {
                                 return nts.uk.request.ajax("com", paths.findAllEmployee);
                             }
                             service.findAllEmployee = findAllEmployee;
+                            function findContactItemSettings(dto) {
+                                return nts.uk.request.ajax(paths.findContactItemSettings, dto);
+                            }
+                            service.findContactItemSettings = findContactItemSettings;
+                            function saveContactItemSettings(dto) {
+                                var data = { dto: dto };
+                                return nts.uk.request.ajax(paths.saveContactItemSettings, data);
+                            }
+                            service.saveContactItemSettings = saveContactItemSettings;
                             var model;
                             (function (model) {
                                 var EmploymentDto = (function () {
@@ -27,6 +38,30 @@ var nts;
                                     return EmploymentDto;
                                 }());
                                 model.EmploymentDto = EmploymentDto;
+                                var EmpCommentDto = (function () {
+                                    function EmpCommentDto() {
+                                    }
+                                    return EmpCommentDto;
+                                }());
+                                model.EmpCommentDto = EmpCommentDto;
+                                var ContactItemsSettingDto = (function () {
+                                    function ContactItemsSettingDto() {
+                                    }
+                                    return ContactItemsSettingDto;
+                                }());
+                                model.ContactItemsSettingDto = ContactItemsSettingDto;
+                                var EmpCommentFindDto = (function () {
+                                    function EmpCommentFindDto() {
+                                    }
+                                    return EmpCommentFindDto;
+                                }());
+                                model.EmpCommentFindDto = EmpCommentFindDto;
+                                var ContactItemsSettingFindDto = (function () {
+                                    function ContactItemsSettingFindDto() {
+                                    }
+                                    return ContactItemsSettingFindDto;
+                                }());
+                                model.ContactItemsSettingFindDto = ContactItemsSettingFindDto;
                             })(model = service.model || (service.model = {}));
                         })(service = h.service || (h.service = {}));
                     })(h = qpp021.h || (qpp021.h = {}));
