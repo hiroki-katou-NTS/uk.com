@@ -1,16 +1,87 @@
 table, th, td {
-    padding : 5px;
+	padding: 5px;
 }
-#F_INP_001, #F_INP_003{
-	width: 70px !important;	
+
+.a, .b {
+	width: 200px;
+	display: inline-block;
+}
+
+.row1a, .row1b {
+	width: 200px;
+	display: inline-block;
+}
+
+.row1b1, .row1b2, .row1b3 {
+	width: 200px;
+	display: inline-block;
+}
+
+.form-label inline required, .row2 {
+	width: 200px;
+	display: inline-block;
+}
+
+.row3 {
+	width: 200px;
+	display: inline-block;
+}
+
+#F_INP_001, #F_INP_003 {
+	width: 70px !important;
 	padding-left: 0px !important;
 }
-#F_BTN_001{
+
+#F_BTN_001 {
 	margin-left: 150px;
 }
-#F_BTN_002{
+
+#F_BTN_002 {
 	margin-left: 30px;
 }
-.caution{
-	padding : 15px;
+
+.caution {
+	padding: 15px;
+}
+
+.functions-area {
+	text-align: center;
+	border-top: 1px solid #ccc;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	background-color: #fff;
+	padding: 10px 0;
+}
+
+.contents-area {
+	padding: 10px;
+	margin-bottom: 71px;
+}
+
+#J_LBL_002, #J_LBL_004, #J_LBL_006 {
+	width: 120px;
+}
+
+#J_INP_001 {
+	width: 120px;
+}
+
+.form-group-radio {
+	padding-top: 10px;
+}
+.form-group-radio:after{
+	display: block;
+	clear: both;
+	content: '';
+}
+
+.form-group-radio>#J_LBL_004,
+.form-group-radio>#J_LBL_004+div {
+	float: left;
+}
+#J_caution{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left: 15px;
 }

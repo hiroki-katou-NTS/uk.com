@@ -268,7 +268,7 @@ module qmm020.c.viewmodel {
 
             nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
 
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ霑ｽ蜉�' })
+            nts.uk.ui.windows.sub.modal('../j/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ霑ｽ蜉�' })
                 .onClosed(function() {
                     let returnJDialog: string = nts.uk.ui.windows.getShared('returnJDialog');
                     var modeRadio = returnJDialog.split("~")[0];

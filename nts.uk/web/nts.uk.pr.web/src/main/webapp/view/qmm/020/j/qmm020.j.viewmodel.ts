@@ -13,13 +13,16 @@ module qmm020.j.viewmodel {
         selectedValue: KnockoutObservable<any>;
         //focus input
         isSelected: KnockoutObservable<boolean>;
+        maxYm: KnockoutObservable<any>;
 
         constructor() {
             var self = this;
+            self.selectedValue = ko.observable(2);
             self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
             //Default radio selected radio 1
             self.selectedValue = ko.observable(1);
             self.isSelected = ko.observable(true);
+            self.maxYm = ko.observable('abc');
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
             //Tab Selected
             self.valueShareJDialog = ko.observable(nts.uk.ui.windows.getShared('valJDialog'));
@@ -33,8 +36,6 @@ module qmm020.j.viewmodel {
             if(self.valueShareJDialog().split("~")[0] === "2") {               
                 nts.uk.ui.windows.getSelf().setHeight(450);
                 $('#J_INP_003').hide();
-                //$('#J_LBL_006').parent().hide();
-                //$('#J_INP_002').hide();               
             }
 //             {
 //                //Set height to Sub Windows
@@ -50,10 +51,11 @@ module qmm020.j.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            var maxDate: number = Number(self.valueShareJDialog().split("~")[1]);
+            var maxDate: number = Number(self.valueShareJDialog().split("~" )[1]);
             self.selectStartYm(nts.uk.time.formatYearMonth(maxDate));
             //Hien thi lable RadioBoxs
             self.txtCopyHistory = "最新の履歴（" + nts.uk.time.formatYearMonth(maxDate) + "）から引き継ぐ";
+            self.maxYm = nts.uk.time.formatYearMonth(maxDate);
             dfd.resolve();
             // Return.
             return dfd.promise();
