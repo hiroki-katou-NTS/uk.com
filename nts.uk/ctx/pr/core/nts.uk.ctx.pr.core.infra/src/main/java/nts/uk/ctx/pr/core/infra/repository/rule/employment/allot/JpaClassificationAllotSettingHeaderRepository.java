@@ -3,13 +3,11 @@ package nts.uk.ctx.pr.core.infra.repository.rule.employment.allot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.basic.dom.organization.employment.Employment;
-import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
-import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmpPK;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingHeader;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingHeaderRepository;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotHCl;
