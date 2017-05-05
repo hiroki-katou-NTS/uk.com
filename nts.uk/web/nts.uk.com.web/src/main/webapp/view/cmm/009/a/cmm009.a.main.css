@@ -6,28 +6,28 @@
 	margin: 5px;
 }
 
-#A_BTN_001 {
+#A_BTN_REGISTER {
 	margin-left: 19px;
 	width: 75px;
 }
 
-#A_BTN_002 {
+#A_BTN_PRINT_CHART {
 	margin-left: 10px;
 	width: 110px;
 }
 
-#A_BTN_003 {
+#A_BTN_LOG {
 	margin-left: 15px;
 	width: 110px;
 }
 
-#A_BTN_004 {
+#A_BTN_DELETE {
 	margin-left: 40px;
 	width: 80px;
 }
 
-#A_BTN_006 {
-	margin-left: 100px;
+#A_BTN_OPENDDIALOG {
+	margin-left: 66px;
 }
 
 #A_LBL_002 {
@@ -64,9 +64,6 @@ button.search-btn {
 	width: 40%;
 }
 
-.ntsListBox {
-	overflow-y: scroll;
-}
 
 .ntsListBox .nts-list-box .ui-selected {
 	background: #F39814;
@@ -92,8 +89,7 @@ button.search-btn {
 }
 
 #treegrid1_container {
-	overflow-y: scroll;
-	overflow-x: scroll;
+	    border: 1px solid #ccc;
 }
 
 .input_002 {
@@ -124,18 +120,18 @@ button.search-btn {
 	height: 80px;
 }
 
-.A_INP_008 {
+.A_INP_MEMO {
 	width: 400px;
 	height: 73px;
 }
 
 .sub_table {
-	width: 97px;
-	height: 354px;
-	background: #F3F3F3;
-	margin-top: 62px;
-	border: 8px solid white;
-	border-left: none;
+    width: 97px;
+    height: 376px;
+    background: #F3F3F3;
+    margin-top: 62px;
+    border: 5px solid white;
+    border-left: none;
 }
 
 .bt_insert_up {
@@ -171,6 +167,6 @@ div.upDown-container {
 	height: 145px !important;
 }
 
-#A_INP_003{
+#A_INP_DEPNAME{
 	width: 242px !important;
 }

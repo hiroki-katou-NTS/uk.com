@@ -30,19 +30,17 @@ module qmm003.e.viewmodel {
             nts.uk.ui.windows.setShared('yes', self.yes, true);
             if (self.resiTaxCodeLeft() && self.resiTaxCodeRight() && self.year()) {
                 service.updateAllReportCode(self.resiTaxCodeLeft(), self.resiTaxCodeRight(), self.year()).done(function(data: any) {
+                    nts.uk.ui.windows.close();
                 }).fail(function(res: any) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
-                nts.uk.ui.windows.close();
             } else {
-                if (!self.year()) {
+                if (nts.uk.text.isNullOrEmpty(self.year())) {
                     //error 07, 01
                     nts.uk.ui.dialog.alert("対象年度  が入力されていません。");
-                } else if (!self.resiTaxCodeLeft() && self.resiTaxCodeRight()) {
+                } else if (self.resiTaxCodeLeft().length === 0 || nts.uk.text.isNullOrEmpty(self.resiTaxCodeRight())) {
                     //error 07
                     nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
-                } else  if (!self.resiTaxCodeLeft() && self.resiTaxCodeRight() && !self.year()){
-                    nts.uk.ui.dialog.alert("対象年度 が入力されていません。 \n\r 住民税納付先コード が選択されていません。");
                 }
 
             }

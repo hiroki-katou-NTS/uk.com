@@ -96,10 +96,6 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 		entity.coefficientFixedValue = formulaEasyDetail.getCoefficientFixedValue().v();
 		entity.adjustmentDevision = new BigDecimal(formulaEasyDetail.getAdjustmentDevision().value);
 		entity.totalRounding = new BigDecimal(formulaEasyDetail.getTotalRounding().value);
-		entity.minLimitValue = formulaEasyDetail.getMinValue() != null ? formulaEasyDetail.getMinValue().v()
-				: new BigDecimal(1);
-		entity.maxLimitValue = formulaEasyDetail.getMaxValue() != null ? formulaEasyDetail.getMaxValue().v()
-				: new BigDecimal(2);
 
 		return entity;
 	}
@@ -115,8 +111,7 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 				qcfmtFormulaEasyDetail.baseValueDevision, qcfmtFormulaEasyDetail.premiumRate,
 				qcfmtFormulaEasyDetail.roundProcessingDevision, qcfmtFormulaEasyDetail.coefficientDivision,
 				qcfmtFormulaEasyDetail.coefficientFixedValue, qcfmtFormulaEasyDetail.adjustmentDevision,
-				qcfmtFormulaEasyDetail.totalRounding, qcfmtFormulaEasyDetail.minLimitValue,
-				qcfmtFormulaEasyDetail.maxLimitValue);
+				qcfmtFormulaEasyDetail.totalRounding);
 
 		return formulaEasyDetail;
 	}

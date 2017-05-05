@@ -117,7 +117,7 @@ module cmm014.a.viewmodel {
                     service.addClassification(classification).done(function() {
                         self.getClassificationList_first();
                     }).fail(function(res) {
-                        if (res.message == "ER05") {
+                        if (res.messageId == "ER05") {
                             alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
                         }
                         dfd.reject(res);
@@ -131,7 +131,7 @@ module cmm014.a.viewmodel {
                             self.itemdata_update(classification_update);
                             self.getClassificationList_afterUpdateClassification();
                         }).fail(function(res) {
-                            if (res.message == "ER026") {
+                            if (res.messageId == "ER026") {
                                 alert("更新対象のデータが存在しません。");
                             }
                             dfd.reject(res);
@@ -146,7 +146,7 @@ module cmm014.a.viewmodel {
                             self.dirty.reset();
                             self.getClassificationList_afterAddClassification();
                         }).fail(function(res) {
-                            if (res.message == "ER05") {
+                            if (res.messageId == "ER05") {
                                 alert("入力したコードは既に存在しています。\r\n コードを確認してください。");
                             }
                             dfd.reject(res);
@@ -172,7 +172,7 @@ module cmm014.a.viewmodel {
                     service.removeClassification(item).done(function(res) {
                         self.getClassificationList_aftefDelete();
                     }).fail(function(res) {
-                        if (res.message == "ER06") {
+                        if (res.messageId == "ER06") {
                             alert("対象データがありません。");
                         }
                         dfd.reject(res);
@@ -278,7 +278,7 @@ module cmm014.a.viewmodel {
                 self.currentCode(self.itemdata_add().classificationCode);
                 dfd.resolve();
             }).fail(function(error) {
-                alert(error.message);
+                alert(error.messageId);
             })
             return dfd.promise();
 

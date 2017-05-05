@@ -22,11 +22,10 @@ public class UpdateEndDateByHistoryIdCommandHandler extends CommandHandler<Strin
 
 	@Inject
 	private DepartmentRepository departmentRepository;
-	// private DepartmentDomainService departmentDomainService;
 
 	@Override
 	protected void handle(CommandHandlerContext<String> context) {
-		// TODO Auto-generated method stub
+		// update enddate of History when insert 1 history.
 		String companyCode = AppContexts.user().companyCode();
 		Date endDate1 = new Date();
 		if (!departmentRepository.isExistHistory(companyCode, context.getCommand().toString())) {
@@ -36,7 +35,6 @@ public class UpdateEndDateByHistoryIdCommandHandler extends CommandHandler<Strin
 		try {
 			endDate1 = formatter.parse("9999/12/31");
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		GeneralDate endDate = GeneralDate.legacyDate(endDate1);

@@ -30,7 +30,8 @@ module nts.uk.ui.koExtentions {
 //            var required = ko.unwrap(data.required) || false;
             var columns: Array<any> = data.columns;
             // Container
-            let gridId = $(element).attr("id");
+            let elementId = $(element).attr("id");
+            let gridId = elementId;
             if(nts.uk.util.isNullOrUndefined(gridId)){
                 gridId = nts.uk.util.randomId();        
             } else {
@@ -94,7 +95,7 @@ module nts.uk.ui.koExtentions {
              
             
             container.bind('iggridselectionrowselectionchanging', (evt, ui) => {
-                console.log(ui);
+//                console.log(ui);
                 if(container.data("enable") === false){ 
                     return false;        
                 }
@@ -114,15 +115,15 @@ module nts.uk.ui.koExtentions {
                 
                 container.data("chaninged", true);
                 
-                document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                
-                if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
+                document.getElementById(elementId).dispatchEvent(changingEvent);
+                 
+                if (changingEvent.returnValue !== undefined && changingEvent.returnValue === false) {
                     return false;    
                 }
             });
 
             container.bind('selectionchanged', () => {
-                console.log(ui);
+//                console.log(ui);
                 let itemSelected;
                 if (container.igGridSelection('option', 'multipleSelection')) {
                     let selected: Array<any> = container.ntsGridList('getSelected');
