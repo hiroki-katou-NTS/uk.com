@@ -15,5 +15,5 @@ public interface ComparingSalaryBonusGenerator {
 	 * @param query
 	 *            the query
 	 */
-	void generate(FileGeneratorContext generatorContext, ComparingSalaryBonusReportData salaryBonusReportData, DeparmentInf depInf);
+	void generate(FileGeneratorContext generatorContext, ComparingSalaryBonusReportData salaryBonusReportData);
 }

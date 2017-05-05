@@ -1,5 +1,7 @@
 package nts.uk.file.pr.app.export.comparingsalarybonus.data;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,5 +59,6 @@ public class ComparingSalaryBonusHeaderReportData {
 	
 	/** 確認済 **/
 	private String confirmed;
+    private DeparmentInf depInf;
 
 }

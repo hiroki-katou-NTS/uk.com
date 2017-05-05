@@ -13,6 +13,7 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormDetail;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetail;
 import nts.uk.file.pr.app.export.comparingsalarybonus.ComparingSalaryBonusQueryRepository;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusHeaderReportData;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DeparmentInf;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.PaymentDetail;
 
 /**
@@ -134,9 +135,11 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 		String registrationStatus2= null;
 		String reason= null;
 		String confirmed = null;
+		DeparmentInf depInf = null;
 
 		return new ComparingSalaryBonusHeaderReportData(nameCompany, titleReport, nameDeparment, typeDeparment, postion,
-				targetYearMonth,itemName,month1,month2,differentSalary, registrationStatus1,registrationStatus2,reason,confirmed);
+				targetYearMonth,itemName,month1,month2,differentSalary, registrationStatus1,registrationStatus2,reason,confirmed
+				, depInf);
 	}
 
 	/**

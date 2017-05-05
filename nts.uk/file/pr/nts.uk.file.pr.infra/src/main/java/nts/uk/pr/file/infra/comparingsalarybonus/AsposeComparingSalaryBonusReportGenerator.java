@@ -28,26 +28,14 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	private static final String DATE_TIME_FORMAT = "yyyyMMddHHmmss";
 	/** The Constant HEADER. */
 	private static final String HEADER = "HEADER";
-	
-	/** The Constant HEADER TABLE. */
-	private static final String HEADERTABLE = "HEADERTABLE";
-	
-	/** The Constant DEPARTMENT. */
-	private static final String DEPARTMENT = "DEPARTMENT";
-	
-	/** The Constant EMPLOYEE. */
-	private static final String EMPLOYEE = "EMPLOYEE";
-
 
 	@Override
-	public void generate(FileGeneratorContext fileContext, ComparingSalaryBonusReportData reportData, DeparmentInf depInf) {
+	public void generate(FileGeneratorContext fileContext, ComparingSalaryBonusReportData reportData) {
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 			reportContext.setDataSource(HEADER, Arrays.asList(reportData.getHeaderData()));
+			reportContext.setDataSource("department", Arrays.asList(reportData.getDeparmentInf().get(0)));
+			reportContext.setDataSource("employee", Arrays.asList(reportData.getEmployeeInf().get(0)));
 			reportContext.processDesigner();
-			reportContext.setDataSource(DEPARTMENT, Arrays.asList(depInf));
-			reportContext.processDesigner();
-//			reportContext.setDataSource(EMPLOYEE, Arrays.asList(reportData.getEmployeeInf()));
-//			reportContext.processDesigner();
 			DateFormat dateFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
 			Date date = new Date();
 			String fileName = REPORT_FILE_NAME.concat(dateFormat.format(date).toString()).concat(EXTENSION);
