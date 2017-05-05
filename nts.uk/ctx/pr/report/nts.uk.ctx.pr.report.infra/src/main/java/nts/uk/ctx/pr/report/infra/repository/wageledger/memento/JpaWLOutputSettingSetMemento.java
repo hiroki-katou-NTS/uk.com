@@ -13,6 +13,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingSetMemento;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHead;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHeadPK;
+import nts.uk.ctx.pr.report.infra.util.JpaUtil;
 
 /**
  * The Class JpaWLOutputSettingSetMemento.
@@ -26,7 +27,7 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	private WLOutputSettingCode code;
 	
 	/** The entity. */
-	protected QlsptLedgerFormHead entity;
+	private QlsptLedgerFormHead entity;
 	
 	/**
 	 * Instantiates a new jpa WL output setting set memento.
@@ -80,9 +81,7 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	 */
 	@Override
 	public void setOnceSheetPerPerson(Boolean onceSheetPerPerson) {
-		// 1 => true.
-		// 0 => false.
-		this.entity.setPrint1pageByPersonSet(onceSheetPerPerson ? 1 : 0);
+		this.entity.setPrint1pageByPersonSet(JpaUtil.boolean2Short(onceSheetPerPerson));
 	}
 
 	/* (non-Javadoc)

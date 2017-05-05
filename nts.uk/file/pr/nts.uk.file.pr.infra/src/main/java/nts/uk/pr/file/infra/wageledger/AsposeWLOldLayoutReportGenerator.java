@@ -67,7 +67,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 			WageLedgerReportQuery query) {
 		// Generate report.
 		final List<AsposeCellsReportContext> reportFiles = reportDatas.stream()
-				.map(data -> this.generateReport(data, query))
+				.map(data -> this.generateReport(data))
 				.collect(Collectors.toList());
 		
 		// Save report to file PDF.
@@ -96,8 +96,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param query the query
 	 * @return the aspose cells report context
 	 */
-	private AsposeCellsReportContext generateReport(WLOldLayoutReportData reportData,
-			WageLedgerReportQuery query) {
+	private AsposeCellsReportContext generateReport(WLOldLayoutReportData reportData) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			
 			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
