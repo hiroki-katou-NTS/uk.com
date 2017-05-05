@@ -26,7 +26,8 @@ public class UpdateStartDateAndEndDateByHistoryIdCommandHandler
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateStartDateandEndDateHistoryCommand> context) {
-		// TODO Auto-generated method stub
+		// update StartDate of History item When click edit history button
+		// and update endDate of History 
 		String companyCode = AppContexts.user().companyCode();
 		Date startDate1 = new Date();
 		Date endDate1 = new Date();
@@ -37,7 +38,6 @@ public class UpdateStartDateAndEndDateByHistoryIdCommandHandler
 		try {
 			startDate1 = formatter.parse(context.getCommand().getNewStartDate());
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		GeneralDate startDate = GeneralDate.legacyDate(startDate1);
@@ -50,7 +50,6 @@ public class UpdateStartDateAndEndDateByHistoryIdCommandHandler
 			try {
 				endDate1 = formatter.parse(context.getCommand().getNewEndDate());
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			GeneralDate endDate = GeneralDate.legacyDate(endDate1);

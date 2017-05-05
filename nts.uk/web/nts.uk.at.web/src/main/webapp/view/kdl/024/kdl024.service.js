@@ -3,19 +3,15 @@ var kdl024;
     var service;
     (function (service) {
         var paths = {
-            getExternalBudgetList: "at/budget/findallexternalbudget",
-            insertExternalBudget: "at/budget/insertexternalbudget",
-            updateExternalBudget: "at/budget/updateexternalbudget",
-            deleteExternalBudget: "at/budget/deleteexternalbudget"
+            getExternalBudgetList: "at/schedule/budget/findallexternalbudget",
+            insertExternalBudget: "at/schedule/budget/insertexternalbudget",
+            updateExternalBudget: "at/schedule/budget/updateexternalbudget",
+            deleteExternalBudget: "at/schedule/budget/deleteexternalbudget"
         };
-        /**
-         * get list External Budget
-         */
         function getListExternalBudget() {
             var dfd = $.Deferred();
             debugger;
-            //TODO-- service Get List
-            nts.uk.request.ajax(paths.getExternalBudgetList)
+            nts.uk.request.ajax("at", paths.getExternalBudgetList)
                 .done(function (res) {
                 dfd.resolve(res);
             })
@@ -25,13 +21,8 @@ var kdl024;
             return dfd.promise();
         }
         service.getListExternalBudget = getListExternalBudget;
-        /**
-         * Update Budget
-         *
-         */
         function updateExternalBudget(updateBudgetCmd) {
             var dfd = $.Deferred();
-            //TODO --> update List
             return dfd.promise();
         }
         service.updateExternalBudget = updateExternalBudget;

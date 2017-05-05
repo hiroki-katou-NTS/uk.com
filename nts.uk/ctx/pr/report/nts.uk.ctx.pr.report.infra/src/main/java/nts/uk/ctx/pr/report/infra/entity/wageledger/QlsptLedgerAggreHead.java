@@ -51,7 +51,7 @@ public class QlsptLedgerAggreHead extends UkJpaEntity implements Serializable {
 
 	/** The disp zero atr. */
 	@Basic(optional = false)
-	@Column(name = "DISP_ZERO_ATR")
+	@Column(name = "DISP_ZERO_SET")
 	private int dispZeroAtr;
 
 	/** The qlspt ledger aggre detail list. */

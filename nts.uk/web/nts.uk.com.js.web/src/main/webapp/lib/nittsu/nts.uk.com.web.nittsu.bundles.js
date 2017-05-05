@@ -1507,7 +1507,8 @@ var nts;
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
             var WEB_APP_NAME = {
                 com: 'nts.uk.com.web',
-                pr: 'nts.uk.pr.web'
+                pr: 'nts.uk.pr.web',
+                at: 'nts.uk.at.web'
             };
             var QueryString = (function () {
                 function QueryString() {
@@ -2935,7 +2936,7 @@ var nts;
                             var rowKey = $row.attr("data-id");
                             $parent.find(".nts-switch-button").removeClass("selected");
                             var element = _.find($parent.find(".nts-switch-button"), function (e) {
-                                return selectedValue === $(e).attr('data-value');
+                                return selectedValue.toString() === $(e).attr('data-value').toString();
                             });
                             if (element !== undefined) {
                                 $(element).addClass('selected');
@@ -3073,6 +3074,7 @@ var nts;
                                 mousePos = null;
                                 dragSelectRange = [];
                                 $(window).unbind('mousemove.NtsGridListDragging');
+                                $grid.triggerHandler('selectionchanged');
                                 clearInterval(timerAutoScroll);
                             });
                         });
@@ -3105,18 +3107,12 @@ var nts;
                         $grid.bind('iggridselectionrowselectionchanged', function () {
                             $grid.triggerHandler('selectionchanged');
                         });
-                        $grid.on('mouseup', function () {
-                            $grid.triggerHandler('selectionchanged');
-                        });
                     }
                     function unsetupDragging($grid) {
-                        var dragSelectRange = [];
-                        var mousePos = null;
                         $grid.unbind('mousedown');
                     }
                     function unsetupSelectingEvents($grid) {
                         $grid.unbind('iggridselectionrowselectionchanged');
-                        $grid.off('mouseup');
                     }
                 })(ntsGridList || (ntsGridList = {}));
                 var ntsListBox;
@@ -4773,7 +4769,8 @@ var nts;
                         var isMultiSelect = ko.unwrap(data.multiple);
                         var enable = ko.unwrap(data.enable);
                         var columns = data.columns;
-                        var gridId = $(element).attr("id");
+                        var elementId = $(element).attr("id");
+                        var gridId = elementId;
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             gridId = nts.uk.util.randomId();
                         }
@@ -4802,14 +4799,21 @@ var nts;
                             container.data("fullValue", true);
                         }
                         else {
+                            var isHaveKey_1 = false;
                             iggridColumns = _.map(columns, function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                                 c["width"] = c["length"] * maxWidthCharacter + 20;
                                 c["headerText"] = '';
                                 c["columnCssClass"] = 'nts-column';
                                 width += c["length"] * maxWidthCharacter + 20;
+                                if (optionValue === c["key"]) {
+                                    isHaveKey_1 = true;
+                                }
                                 return c;
                             });
+                            if (!isHaveKey_1) {
+                                iggridColumns.push({ "key": optionValue, "width": 10 * maxWidthCharacter + 20, "headerText": '', "columnCssClass": 'nts-column', 'hidden': true });
+                            }
                         }
                         var gridHeaderHeight = 24;
                         container.igGrid({
@@ -4839,8 +4843,8 @@ var nts;
                                 cancelable: true,
                             });
                             container.data("chaninged", true);
-                            document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                            if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
+                            document.getElementById(elementId).dispatchEvent(changingEvent);
+                            if (changingEvent.returnValue !== undefined && changingEvent.returnValue === false) {
                                 return false;
                             }
                         });
@@ -5366,7 +5370,7 @@ var nts;
                             features: features
                         });
                         if (data.draggable === true) {
-                            this.swapper.enableDragDrop();
+                            this.swapper.enableDragDrop(data.value);
                             if (data.multipleDrag && data.multipleDrag.left === true) {
                                 this.swapper.Model.swapParts[0].$listControl.addClass("multiple-drag");
                             }
@@ -5411,9 +5415,11 @@ var nts;
                         });
                         if (!_.isEqual(currentSource, newSources)) {
                             this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                            this.swapper.Model.transportBuilder.setFirst(newSources);
                         }
                         if (!_.isEqual(currentSelectedList, newSelectedList)) {
                             this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                            this.swapper.Model.transportBuilder.setSecond(newSelectedList);
                         }
                     };
                     NtsSwapListBindingHandler.prototype.makeBindings = function () {
@@ -5450,7 +5456,7 @@ var nts;
                         enumerable: true,
                         configurable: true
                     });
-                    SwapHandler.prototype.handle = function (parts) {
+                    SwapHandler.prototype.handle = function (parts, value) {
                         var self = this;
                         var model = this.model;
                         for (var id in parts) {
@@ -5469,7 +5475,7 @@ var nts;
                                     self._beforeStop.call(this, model, evt, ui);
                                 },
                                 update: function (evt, ui) {
-                                    self._update.call(this, model, evt, ui);
+                                    self._update.call(this, model, evt, ui, value);
                                 }
                             };
                             this.model.swapParts[parts[id]].initDraggable(options);
@@ -5553,7 +5559,7 @@ var nts;
                             $(this).sortable("cancel");
                         }
                     };
-                    SwapHandler.prototype._update = function (model, evt, ui) {
+                    SwapHandler.prototype._update = function (model, evt, ui, value) {
                         if (ui.item.closest("table").length === 0)
                             return;
                         model.transportBuilder.directTo(model.receiver(ui)).update();
@@ -5566,11 +5572,12 @@ var nts;
                             model.swapParts[0].bindData(model.transportBuilder.getFirst());
                             model.swapParts[1].bindData(model.transportBuilder.getSecond());
                         }
+                        value(model.transportBuilder.getSecond());
                         setTimeout(function () { model.dropDone(); }, 0);
                     };
-                    SwapHandler.prototype.enableDragDrop = function (parts) {
+                    SwapHandler.prototype.enableDragDrop = function (value, parts) {
                         parts = parts || [0, 1];
-                        this.model.enableDrag(this, parts, this.handle);
+                        this.model.enableDrag(this, value, parts, this.handle);
                     };
                     return SwapHandler;
                 }());
@@ -5739,6 +5746,7 @@ var nts;
                     };
                     GridSwapPart.prototype.bindIn = function (src) {
                         this.$listControl.igGrid("option", "dataSource", src);
+                        this.$listControl.igGrid("dataBind");
                     };
                     return GridSwapPart;
                 }(SwapPart));
@@ -5779,11 +5787,11 @@ var nts;
                                 : self.swapParts[1].$listControl).igGrid("virtualScrollTo", self.transportBuilder.outcomeIndex + 1);
                         }, 0);
                     };
-                    GridSwapList.prototype.enableDrag = function (ctx, parts, cb) {
+                    GridSwapList.prototype.enableDrag = function (ctx, value, parts, cb) {
                         var self = this;
                         for (var idx in parts) {
                             this.swapParts[parts[idx]].$listControl.on("iggridrowsrendered", function (evt, ui) {
-                                cb.call(ctx, parts);
+                                cb.call(ctx, parts, value);
                             });
                         }
                     };
@@ -5801,6 +5809,7 @@ var nts;
                             .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
                         this.swapParts[0].bindData(this.transportBuilder.getFirst());
                         this.swapParts[1].bindData(this.transportBuilder.getSecond());
+                        value(this.transportBuilder.getSecond());
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
                         setTimeout(function () {
@@ -5913,6 +5922,12 @@ var nts;
                     };
                     ListItemTransporter.prototype.getSecond = function () {
                         return this.secondList;
+                    };
+                    ListItemTransporter.prototype.setFirst = function (first) {
+                        this.firstList = first;
+                    };
+                    ListItemTransporter.prototype.setSecond = function (second) {
+                        this.secondList = second;
                     };
                     return ListItemTransporter;
                 }());

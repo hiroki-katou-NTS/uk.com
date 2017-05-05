@@ -66,8 +66,8 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository
 
 		// to entity data
 		lstInsuranceBusinessType.forEach(businessType -> {
-			businessType
-				.saveToMemento(new JpaInsuranceBusinessTypeSetMemento(entity, businessType.getBizOrder()));
+			businessType.saveToMemento(
+				new JpaInsuranceBusinessTypeSetMemento(entity, businessType.getBizOrder()));
 		});
 
 		return entity;

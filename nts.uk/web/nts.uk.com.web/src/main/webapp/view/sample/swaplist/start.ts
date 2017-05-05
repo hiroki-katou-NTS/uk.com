@@ -11,9 +11,6 @@ __viewContext.ready(function() {
             this.itemsSwap = ko.observableArray([]);
             
             var array = [];
-            for (var i = 0; i < 10000; i++) {
-                array.push(new ItemModel(i, '基本給', "description"));
-            }
             this.itemsSwap(array);
 
             this.columns = ko.observableArray([
@@ -21,15 +18,27 @@ __viewContext.ready(function() {
                 { headerText: '名称', key: 'name', width: 150 }
             ]);
             var x = [];
-            x.push(_.cloneDeep(array[0]));
-            x.push(_.cloneDeep(array[1]));
-            x.push(_.cloneDeep(array[2]));
+//            x.push(_.cloneDeep(array[0]));
+//            x.push(_.cloneDeep(array[1]));
+//            x.push(_.cloneDeep(array[2]));
             this.currentCodeListSwap = ko.observableArray(x);
+            this.currentCodeListSwap.subscribe(function (value) {
+                console.log(value); 
+            });
             this.test = ko.observableArray([]);
         }
         
         remove(){
             this.itemsSwap.shift();            
+        }
+        
+        bindSource (){
+            let self = this;
+            let array = [];
+            for (var i = 0; i < 10000; i++) {
+                array.push(new ItemModel(i, '基本給', "description"));
+            }    
+            self.itemsSwap(array);
         }
         
     }
@@ -47,7 +56,10 @@ __viewContext.ready(function() {
         }
     }
 
-
-    this.bind(new ScreenModel());
+    var screen;
+    this.bind(screen = new ScreenModel());
+    $("#check").on("click", function() {
+        var a = screen.x;
+    });
 
 });

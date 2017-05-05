@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.command;
@@ -12,6 +12,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
@@ -23,29 +24,38 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateItemSaveCommand> {
-	
+
 	/** The repository. */
 	@Inject
 	private WLAggregateItemRepository repository;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<AggregateItemSaveCommand> context) {
 		val companyCode = AppContexts.user().companyCode();
 		val command = context.getCommand();
-		
+
 		// Validate required items.
 		ItemSubjectDto subjectItem = command.getSubject();
 		if (subjectItem.getCode() == null || subjectItem.getCode().equals("")) {
-			throw new BusinessException("コードが入力されていません。");
+			throw new BusinessException("ER001");
 		}
 		if (command.getName() == null || command.getName().equals("")) {
-			throw new BusinessException("名称が入力されていません。");
+			throw new BusinessException("ER001");
 		}
-		
+
+		// Validate item selection
+		if (CollectionUtil.isEmpty(command.getSubItems())) {
+			throw new BusinessException("ER007");
+		}
+
 		// Convert command to Domain.
 		WLItemSubject subject = command.getSubject().toDomain(companyCode);
 		subject.validate();
@@ -56,24 +66,24 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 			if (aggregateItem == null) {
 				throw new BusinessException("ER026");
 			}
-			
+
 			// Convert to domain.
 			aggregateItem = command.toDomain(companyCode);
 			// Update.
 			this.repository.update(aggregateItem);
 			return;
 		}
-		
+
 		// In case create.
 		// Check duplicate code.
 		if (this.repository.isExist(subject)) {
-			throw new BusinessException("入力したコードは既に存在しています。\r\nコードを確認してください。");
+			throw new BusinessException("ER005");
 		}
-		
+
 		// Convert to domain.
 		val aggregateItem = command.toDomain(companyCode);
 		this.repository.create(aggregateItem);
 		return;
 	}
-	
+
 }

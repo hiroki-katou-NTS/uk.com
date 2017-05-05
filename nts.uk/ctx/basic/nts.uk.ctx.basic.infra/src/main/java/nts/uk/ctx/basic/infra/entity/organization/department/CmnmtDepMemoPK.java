@@ -18,9 +18,6 @@ import lombok.Setter;
 @Embeddable
 public class CmnmtDepMemoPK implements Serializable {
 
-	/**
-	 * serialVersionUID
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "CCD")

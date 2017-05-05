@@ -1,7 +1,7 @@
 module qmm013.a.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         itemList: KnockoutObservableArray<any>;
         currentItem: KnockoutObservable<PersonalUnitPrice>;

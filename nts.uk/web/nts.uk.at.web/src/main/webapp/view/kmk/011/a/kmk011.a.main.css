@@ -33,15 +33,15 @@
     margin-top:10px;
 }
 #inp_002{
+	width: 100px;
 	float: left;
 }
 #inp_006{
 	float: left;
 }
 #inp_003 {
-	float: left;
+	float: center;
 	margin-left: 30px;
-	
 }
 .inp_004 {
 	padding-bottom: 20px;

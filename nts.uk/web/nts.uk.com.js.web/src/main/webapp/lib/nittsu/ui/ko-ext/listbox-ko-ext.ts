@@ -30,7 +30,8 @@ module nts.uk.ui.koExtentions {
 //            var required = ko.unwrap(data.required) || false;
             var columns: Array<any> = data.columns;
             // Container
-            let gridId = $(element).attr("id");
+            let elementId = $(element).attr("id");
+            let gridId = elementId;
             if(nts.uk.util.isNullOrUndefined(gridId)){
                 gridId = nts.uk.util.randomId();        
             } else {
@@ -62,14 +63,21 @@ module nts.uk.ui.koExtentions {
                 width += 10 * maxWidthCharacter + 20;    
                 container.data("fullValue", true);
             } else {
+                let isHaveKey = false;
                 iggridColumns = _.map(columns, c => {
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                     c["width"] = c["length"] * maxWidthCharacter + 20;
                     c["headerText"] = '';
                     c["columnCssClass"] = 'nts-column';
                     width += c["length"] * maxWidthCharacter + 20;
+                    if (optionValue === c["key"]) {
+                         isHaveKey = true;   
+                    }
                     return c;
-                });    
+                });   
+                if (!isHaveKey) {
+                    iggridColumns.push({"key": optionValue, "width": 10 * maxWidthCharacter + 20, "headerText": '', "columnCssClass": 'nts-column', 'hidden': true});        
+                } 
             }
 
             var gridHeaderHeight = 24;
@@ -87,6 +95,7 @@ module nts.uk.ui.koExtentions {
              
             
             container.bind('iggridselectionrowselectionchanging', (evt, ui) => {
+//                console.log(ui);
                 if(container.data("enable") === false){ 
                     return false;        
                 }
@@ -106,14 +115,15 @@ module nts.uk.ui.koExtentions {
                 
                 container.data("chaninged", true);
                 
-                document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                
-                if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
+                document.getElementById(elementId).dispatchEvent(changingEvent);
+                 
+                if (changingEvent.returnValue !== undefined && changingEvent.returnValue === false) {
                     return false;    
                 }
             });
 
             container.bind('selectionchanged', () => {
+//                console.log(ui);
                 let itemSelected;
                 if (container.igGridSelection('option', 'multipleSelection')) {
                     let selected: Array<any> = container.ntsGridList('getSelected');
