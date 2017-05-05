@@ -1,6 +1,3 @@
-/**
- * @author hieult
- */
 package nts.uk.ctx.sys.portal.ws.titlemenu;
 
 import java.util.List;
@@ -18,7 +15,9 @@ import nts.uk.ctx.sys.portal.app.command.titlemenu.UpdateTitleMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.titlemenu.UpdateTitleMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.titlemenu.TitleMenuDto;
 import nts.uk.ctx.sys.portal.app.find.titlemenu.TitleMenuFinder;
-
+/**
+ * @author hieult
+ */
 @Path("sys/portal/titlemenu")
 @Produces("application/json")
 public class TitleMenuWebservice extends WebService {
@@ -59,6 +58,8 @@ public class TitleMenuWebservice extends WebService {
 	public void deleteTitleMenu(DeleteTitleMenuCommand command) {
 		this.deleteTitleMenu.handle(command);
 	}
+	
+		
 	@POST
 	@Path("update")
 	public void updateTitleMenu(UpdateTitleMenuCommand command) {
