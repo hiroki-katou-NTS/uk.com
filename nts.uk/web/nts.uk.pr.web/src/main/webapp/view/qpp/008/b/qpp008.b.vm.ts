@@ -46,11 +46,11 @@ module qpp008.b.viewmodel {
                         if (itemsDetail[x] === 0 && i < 5) {
                             itemsDetail[x] = item;
                             _.find(newHrchyIndexList, function(o) {
-                                if(o.id === item){
+                                if (o.id === item) {
                                     o.enable(true);
                                     return true;
                                 }
-                                return false; 
+                                return false;
                             });
                             break;
                         }
@@ -84,7 +84,8 @@ module qpp008.b.viewmodel {
         configurationPrintSetting(): any {
             let self = this;
             service.insertUpdateData(new ConfigPrintSettingModel(self.printSetting(), self.hrchyIndexArray())).done(function() {
-                self.loadData();
+                self.printSettingDirty.reset();
+                nts.uk.ui.windows.close();
             });
         }
 
