@@ -64,17 +64,26 @@ module qmm020.d.viewmodel {
         }
 
         openJDialog() {
-            alert('J');
+            let self = this;
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" });
         }
 
         openKDialog() {
-            alert('K');
+            let self = this;
+
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { width: 485, height: 550, title: '履歴の編集', dialogClass: "no-close" });
         }
 
         openMDialog() {
             let self = this;
-
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" });
+            let currentItemTree = _.find(self.listTreeItems(), function(item) { return item.code == self.listTreeItemSelected(); });
+            if (!!currentItemTree) {
+                currentItemTree.dialog(true);
+            }
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
+                .onClosed(function() {
+                    currentItemTree.dialog(false);
+                });
         }
     }
 
@@ -93,6 +102,7 @@ module qmm020.d.viewmodel {
         bonus: ItemList;
         payment: ItemList;
         childs: Array<ItemTree>;
+        dialog: KnockoutObservable<boolean> = ko.observable(false);
         constructor(param: IItemTree) {
             this.code = param.code;
             this.name = param.name;

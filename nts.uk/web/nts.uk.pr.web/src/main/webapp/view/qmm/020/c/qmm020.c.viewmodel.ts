@@ -199,8 +199,6 @@ module qmm020.c.viewmodel {
                 // self.currentItem(employeeItem.employmentName);
                 // Set datafor grid
                 $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
-                console.log(self.dataSource);
-                console.log('111111111111111111111111111111111111111');
                 dfd.resolve();
 
             }).fail(function(res) {
@@ -226,13 +224,10 @@ module qmm020.c.viewmodel {
                 alert(res);
             });
 
-            console.log((self.itemTotalList()));
             service.getAllotEmployeeMaxDate().done(function(itemMax: number) {
                 let maxDate: TotalModel = _.find(self.itemTotalList(), function(obj) { return parseInt(obj.endYm()) == itemMax; });
                 self.maxDate = (maxDate.startYm || "").toString();
                 self.maxItem(maxDate);
-                console.log(self.maxItem());
-                console.log(self.maxDate);
                 dfd.resolve();
             }).fail(function(res) {
                 alert(res);

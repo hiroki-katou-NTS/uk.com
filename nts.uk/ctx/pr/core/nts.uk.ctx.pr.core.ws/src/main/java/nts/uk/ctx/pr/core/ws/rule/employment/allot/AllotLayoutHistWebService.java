@@ -5,28 +5,28 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.AllotLayoutHistFinder;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHistoryDto;
 
-@Path("pr/core/allot")
+@Path("pr/core")
 @Produces("application/json")
-public class AllotLayoutHistWebService {
-	@Inject 
+public class AllotLayoutHistWebService extends WebService {
+	@Inject
 	private AllotLayoutHistFinder find;
+
 	@POST
-	@Path("findallotlayouthistory/{baseYm}")
-	public List<LayoutHistoryDto> GetAllAllotLayoutHistory(@PathParam("baseYm") int baseYm){
-		List<LayoutHistoryDto> test = this.find.getSel1LayoutHistory(baseYm);;
-		return test;
+	@Path("allot/findallotlayouthistory1")
+	public List<LayoutHistoryDto> GetAllAllotLayoutHistory() {
+		return this.find.getSel1LayoutHistory(201707);
 	}
-	
+
 	@POST
-	@Path("findcompanyallotlayoutname/{stmtCode}")
+	@Path("allot/findcompanyallotlayoutname")
 	@Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
-	public String GetAllotLayoutName(@PathParam("stmtCode") String stmtCode){
+	public String GetAllotLayoutName(String stmtCode) {
 		return this.find.getAllotLayoutName(stmtCode);
 	}
 }
