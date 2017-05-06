@@ -34,7 +34,7 @@ public class MyPageSettingWs extends WebService {
 	 * @return the my page setting detail
 	 */
 	@POST
-	@Path("myPageSetting/{companyId}")
+	@Path("getMyPageSetting/{companyId}")
 	public MyPageSettingDto getMyPageSettingDetail(@PathParam("companyId") String companyId) {
 		return myPageSettingFinder.findByCompanyId(companyId);
 	}
@@ -45,7 +45,7 @@ public class MyPageSettingWs extends WebService {
 	 * @param command the command
 	 */
 	@POST
-	@Path("myPageSetting/update")
+	@Path("updateMyPageSetting")
 	public void updateMyPageSetting(UpdateMyPageSettingCommand command) {
 		myPageSettingCommandHandler.handle(command);
 	}

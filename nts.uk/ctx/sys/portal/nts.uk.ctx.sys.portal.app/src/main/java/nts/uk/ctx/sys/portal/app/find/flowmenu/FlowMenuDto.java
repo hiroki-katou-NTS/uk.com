@@ -15,9 +15,9 @@ public class FlowMenuDto {
 	
 	private int defClassAtr;
 	
-	private String code;
+	private String topPageCode;
 	
-	private String name;
+	private String topPageName;
 	
 	private int type;
 	

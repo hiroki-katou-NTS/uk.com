@@ -14,6 +14,7 @@ var nts;
                             var screenModel = new b.viewmodel.ScreenModel();
                             screenModel.start().done(function () {
                                 __viewContext.bind(screenModel);
+                                screenModel.initData();
                             });
                         });
                     })(b = ccg015.b || (ccg015.b = {}));

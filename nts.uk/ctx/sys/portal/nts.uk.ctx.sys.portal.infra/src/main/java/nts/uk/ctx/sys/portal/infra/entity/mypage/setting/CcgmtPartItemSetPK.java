@@ -21,11 +21,11 @@ public class CcgmtPartItemSetPK implements Serializable {
 	public String cid;
 
 	/** The top page part code. */
-	@Column(name = "TOP_PAGE_PART_CODE")
-	public String topPagePartCode;
+	@Column(name = "PART_ITEM_CODE")
+	public String partItemCode;
 	
 
 	/** The top page part type. */
-	@Column(name = "TOP_PAGE_PART_TYPE")
-	public String topPagePartType;
+	@Column(name = "PART_TYPE")
+	public int partType;
 }

@@ -13,7 +13,8 @@ var nts;
                         var service;
                         (function (service) {
                             var servicePath = {
-                                loadMyPageSetting: "/mypage/myPageSetting"
+                                loadMyPageSetting: "/mypage/getMyPageSetting",
+                                updateMyPageSetting: "/mypage/updateMyPageSetting"
                             };
                             function loadMyPageSetting(CompanyId) {
                                 var self = this;
@@ -25,6 +26,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.loadMyPageSetting = loadMyPageSetting;
+                            function updateMyPageSetting(data) {
+                                return nts.uk.request.ajax(servicePath.updateMyPageSetting, data);
+                            }
+                            service.updateMyPageSetting = updateMyPageSetting;
                         })(service = b.service || (b.service = {}));
                     })(b = ccg015.b || (ccg015.b = {}));
                 })(ccg015 = view.ccg015 || (view.ccg015 = {}));

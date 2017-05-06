@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
+  			</com:ValidatorScript>
 			<com:stylefile path="ccg015.a.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg015.a.start.js" />
@@ -19,11 +23,11 @@
 				<button data-bind="click: newTopPage" id="btn_new" class="btnStyle">新規</button>
 				<button data-bind="click: saveTopPage" class="proceed btnStyle"
 					id="btn_save">登録</button>
-				<button data-bind=" click: copyTopPage" id="btn_printing">コピー</button>
-				<button id="btn_readFromSocialTnsuranceOffice">フローメニューの設定</button>
+				<button data-bind=" click: copyTopPage ,enable: !isNewMode()" id="btn_printing">コピー</button>
+				<button data-bind=" click: openFlowMenuSettingDialog" id="btn_readFromSocialTnsuranceOffice">フローメニューの設定</button>
 				<button id="btn_masterCorrectionLog"
 					data-bind="click: openMyPageSettingDialog">マイページの設定</button>
-				<button data-bind="click: removeTopPage" class="danger btnStyle"
+				<button data-bind="click: removeTopPage,enable: !isNewMode()" class="danger btnStyle"
 					id="btn_delete">削除</button>
 			</div>
 			<div id="contents-area" data-bind="visible: true"
@@ -88,20 +92,22 @@
 										class="tr120 save-error" data-name="コード"
 										data-bind="ntsTextEditor: {
 											value: topPageCode,
-											enable: true,
-											required:true}" />
+											enable: $parent.isNewMode(),
+											required:true,
+											constraint: 'TopPageCode'}" />
 									</td>
 									<td><input id="inp_name" data-name="名称"
 										class="tr240 save-error"
 										data-bind="ntsTextEditor: {
 											value: topPageName,
 											enable: true,
-											required:true}" />
+											required:true,
+											constraint: 'TopPageName'}" />
 									</td>
 								</tr>
 
 								<tr>
-									<td><button class="x-large">レイアウト設定</button></td>
+									<td><button data-bind=" click: $parent.openLayoutSettingDialog ,enable: !$parent.isNewMode()" class="x-large">レイアウト設定</button></td>
 								</tr>
 							</table>
 

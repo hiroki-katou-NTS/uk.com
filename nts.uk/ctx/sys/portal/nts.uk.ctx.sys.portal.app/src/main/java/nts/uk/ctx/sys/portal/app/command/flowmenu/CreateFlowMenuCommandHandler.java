@@ -26,6 +26,8 @@ public class CreateFlowMenuCommandHandler extends CommandHandler<CreateFlowMenuC
 	@Override
 	protected void handle(CommandHandlerContext<CreateFlowMenuCommand> context) {
 		String topPagePartId = IdentifierUtil.randomUniqueId();
+		//check code
+		
 		repository.add(context.getCommand().toDomain(topPagePartId));
 		repositoryTop.add(context.getCommand().toTopPagePart(topPagePartId));
 	}	

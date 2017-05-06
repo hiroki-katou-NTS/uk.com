@@ -24,10 +24,12 @@ var nts;
                                     ]);
                                     self.isNewMode = ko.observable(true);
                                     self.toppageSelectedCode.subscribe(function (selectedTopPageCode) {
-                                        a.service.loadDetailTopPage(selectedTopPageCode).done(function (data) {
-                                            self.loadTopPageItemDetail(data);
-                                        });
-                                        self.isNewMode(false);
+                                        if (selectedTopPageCode) {
+                                            a.service.loadDetailTopPage(selectedTopPageCode).done(function (data) {
+                                                self.loadTopPageItemDetail(data);
+                                            });
+                                            self.isNewMode(false);
+                                        }
                                     });
                                     self.languageListOption = ko.observableArray([
                                         new ItemCbbModel("0", "日本語"),
@@ -49,13 +51,18 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.listTopPage([]);
                                     a.service.loadTopPage().done(function (data) {
-                                        data.forEach(function (item, index) {
-                                            self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
-                                            dfd.resolve();
-                                        });
-                                        if (self.listTopPage().length > 0) {
-                                            self.toppageSelectedCode(self.listTopPage()[0].code);
+                                        if (data.length > 0) {
+                                            data.forEach(function (item, index) {
+                                                self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
+                                            });
+                                            if (self.listTopPage().length > 0) {
+                                                self.toppageSelectedCode(self.listTopPage()[0].code);
+                                            }
                                         }
+                                        else {
+                                            self.newTopPage();
+                                        }
+                                        dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
@@ -82,7 +89,9 @@ var nts;
                                         a.service.updateTopPage(self.collectData()).done(function () {
                                         });
                                     }
-                                    self.loadTopPageList();
+                                    self.loadTopPageList().done(function () {
+                                        self.toppageSelectedCode(self.collectData().topPageCode);
+                                    });
                                 };
                                 ScreenModel.prototype.openMyPageSettingDialog = function () {
                                     nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
@@ -103,15 +112,61 @@ var nts;
                                     }).onClosed(function () {
                                     });
                                 };
+                                ScreenModel.prototype.openFlowMenuSettingDialog = function () {
+                                    var self = this;
+                                    nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
+                                    nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
+                                    nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
+                                        height: 650, width: 1300,
+                                        title: "$$$$$$$$",
+                                        dialogClass: 'no-close'
+                                    }).onClosed(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.openLayoutSettingDialog = function () {
+                                    var self = this;
+                                    nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
+                                        height: 650, width: 1300,
+                                        title: "$$$$$$$$",
+                                        dialogClass: 'no-close'
+                                    }).onClosed(function () {
+                                    });
+                                };
                                 ScreenModel.prototype.newTopPage = function () {
                                     var self = this;
                                     self.topPageModel(new TopPageModel());
                                     self.isNewMode(true);
+                                    self.toppageSelectedCode("");
                                 };
                                 ScreenModel.prototype.removeTopPage = function () {
                                     var self = this;
-                                    a.service.deleteTopPage(self.toppageSelectedCode()).done(function () {
-                                    }).fail();
+                                    nts.uk.ui.dialog.confirm("//TODO #Msg_18").ifYes(function () {
+                                        var removeCode = self.toppageSelectedCode();
+                                        var removeIndex = self.getIndexOfRemoveItem(removeCode);
+                                        var listLength = self.listTopPage().length;
+                                        a.service.deleteTopPage(self.toppageSelectedCode()).done(function () {
+                                        }).fail();
+                                        self.loadTopPageList().done(function () {
+                                            var lst = self.listTopPage();
+                                            if (removeIndex < listLength - 1) {
+                                                self.toppageSelectedCode(lst[removeIndex].code);
+                                            }
+                                            else {
+                                                self.toppageSelectedCode(lst[removeIndex - 1].code);
+                                            }
+                                        });
+                                    }).ifNo(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.getIndexOfRemoveItem = function (code) {
+                                    var self = this;
+                                    var ind = 0;
+                                    self.listTopPage().forEach(function (item, index) {
+                                        if (item.code == code) {
+                                            ind = index;
+                                        }
+                                    });
+                                    return ind;
                                 };
                                 return ScreenModel;
                             }());

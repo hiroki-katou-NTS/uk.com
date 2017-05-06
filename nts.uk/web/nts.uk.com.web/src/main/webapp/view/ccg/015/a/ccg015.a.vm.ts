@@ -21,10 +21,12 @@ module nts.uk.com.view.ccg015.a {
                 ]);
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
-                    service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
-                        self.loadTopPageItemDetail(data);
-                    });
-                    self.isNewMode(false);
+                    if (selectedTopPageCode) {
+                        service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
+                            self.loadTopPageItemDetail(data);
+                        });
+                        self.isNewMode(false);
+                    }
                 });
                 self.languageListOption = ko.observableArray([
                     new ItemCbbModel("0", "日本語"),
@@ -50,13 +52,18 @@ module nts.uk.com.view.ccg015.a {
                 var dfd = $.Deferred<void>();
                 self.listTopPage([]);
                 service.loadTopPage().done(function(data: Array<TopPageItemDto>) {
-                    data.forEach(function(item, index) {
-                        self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
-                        dfd.resolve();
-                    });
-                    if (self.listTopPage().length > 0) {
-                        self.toppageSelectedCode(self.listTopPage()[0].code);
+                    if (data.length > 0) {
+                        data.forEach(function(item, index) {
+                            self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
+                        });
+                        if (self.listTopPage().length > 0) {
+                            self.toppageSelectedCode(self.listTopPage()[0].code);
+                        }
                     }
+                    else {
+                        self.newTopPage();
+                    }
+                    dfd.resolve();
                 });
                 return dfd.promise();
             }
@@ -100,15 +107,17 @@ module nts.uk.com.view.ccg015.a {
                 //check update or create
                 if (self.isNewMode()) {
                     service.registerTopPage(self.collectData()).done(function() {
-                        //register success                     
+                        //TODO register success  show msg_15                      
                     });
                 }
                 else {
                     service.updateTopPage(self.collectData()).done(function() {
-                        //update success
+                        //TODO register success  show msg_15  
                     });
                 }
-                self.loadTopPageList();
+                self.loadTopPageList().done(function(){
+                self.toppageSelectedCode(self.collectData().topPageCode);
+                });
                 //TODO focus create item   
             }
             private openMyPageSettingDialog() {
@@ -135,16 +144,66 @@ module nts.uk.com.view.ccg015.a {
                 });
 
             }
+            private openFlowMenuSettingDialog() {
+                var self = this;
+                nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
+                nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
+                nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
+                    height: 650, width: 1300,
+                    title: "$$$$$$$$",
+                    dialogClass: 'no-close'
+                }).onClosed(() => {
+                    //TODO on Close dialog
+                });
+            }
+            
+            private openLayoutSettingDialog() {
+                var self = this;
+                nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
+                    height: 650, width: 1300,
+                    title: "$$$$$$$$",
+                    dialogClass: 'no-close'
+                }).onClosed(() => {
+                    //TODO on Close dialog
+                });
+            }
             private newTopPage() {
                 var self = this;
                 self.topPageModel(new TopPageModel());
                 self.isNewMode(true);
+                self.toppageSelectedCode("");
             }
             private removeTopPage() {
                 var self = this;
-                service.deleteTopPage(self.toppageSelectedCode()).done(function() {
-                    //delete success
-                }).fail();
+                nts.uk.ui.dialog.confirm("//TODO #Msg_18").ifYes(function() {
+                    var removeCode = self.toppageSelectedCode();
+                    var removeIndex = self.getIndexOfRemoveItem(removeCode);
+                    var listLength = self.listTopPage().length;
+                    service.deleteTopPage(self.toppageSelectedCode()).done(function() {
+                        //delete success
+                    }).fail();
+                    self.loadTopPageList().done(function() {
+                        var lst = self.listTopPage();
+                        if (removeIndex < listLength-1) {
+                            self.toppageSelectedCode(lst[removeIndex].code);
+                        }
+                        else {
+                            self.toppageSelectedCode(lst[removeIndex - 1].code);
+                        }
+                    });
+                }).ifNo(function() {
+
+                });
+            }
+            private getIndexOfRemoveItem(code:string):number{
+                var self = this;
+                var ind = 0;
+                self.listTopPage().forEach(function(item, index) {
+                    if (item.code == code) {
+                        ind = index;
+                    } 
+                });
+                return ind;    
             }
         }
         export class Node {
