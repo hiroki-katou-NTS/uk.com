@@ -1,18 +1,13 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.allot;
 
-import java.math.BigDecimal;
-import java.text.Bidi;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.basic.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingHeader;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingHeaderRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.CompanyAllotSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

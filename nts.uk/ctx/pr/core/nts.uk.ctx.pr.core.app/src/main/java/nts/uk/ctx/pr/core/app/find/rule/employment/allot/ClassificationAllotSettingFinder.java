@@ -1,18 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.rule.employment.allot;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import nts.uk.ctx.pr.core.ac.basic.classification.ClassificationAdaptor;
-import nts.uk.ctx.pr.core.ac.basic.classification.ClassificationDto;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSetting;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingRespository;
-import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ClassificationAllotSettingFinder {
 //	
