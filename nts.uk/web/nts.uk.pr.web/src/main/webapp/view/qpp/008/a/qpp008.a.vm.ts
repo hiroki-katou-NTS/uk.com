@@ -32,8 +32,8 @@ module qpp008.a.viewmodel {
             self._init();
 
             self.textLbl006 = ko.observable(nts.uk.time.formatDate(new Date(), "yyyy/MM/dd"));
-            self.processingYMEarlierValue = ko.observable('');
-            self.processingYMLaterValue = ko.observable('');
+            self.processingYMEarlierValue = ko.observable('2017/03');
+            self.processingYMLaterValue = ko.observable('2017/04');
 
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);

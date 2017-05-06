@@ -21,7 +21,7 @@ module qpp008.g.viewmodel {
             self.comparativeDateEarlier = nts.uk.ui.windows.getShared('qpp008_processingYMEarlierValue');
             self.comparativeDateLater = nts.uk.ui.windows.getShared('qpp008_processingYMLaterValue');
             self.numberOfPeople = 2;
-            self.employeerIDSelection = new Array("999000000000000000000000000000000001", "999000000000000000000000000000000002");
+            self.employeerIDSelection = new Array("99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002");
 
             self.itemCategoryChecked = ko.observableArray([
                 new ItemModel(0, '支給'),
