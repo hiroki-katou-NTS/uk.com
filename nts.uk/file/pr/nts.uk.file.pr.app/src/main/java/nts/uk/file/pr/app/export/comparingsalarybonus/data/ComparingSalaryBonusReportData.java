@@ -1,5 +1,7 @@
 package nts.uk.file.pr.app.export.comparingsalarybonus.data;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -13,6 +15,6 @@ import lombok.Setter;
 public class ComparingSalaryBonusReportData {
 	ComparingSalaryBonusHeaderReportData headerData;
 	HeaderTable  headerTable;
-	DeparmentInf deparmentInf;
-	EmployeeInf employeeInf;
+	List<DeparmentInf> deparmentInf;
+	List<EmployeeInf> employeeInf;
 }

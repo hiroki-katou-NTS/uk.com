@@ -69,16 +69,16 @@ module qpp008.a.viewmodel {
             self.statusRegisterSelectCode = ko.observableArray([]);
 
             self.employyerList = ko.observableArray([
-                new Employee("99900000-0000-0000-0000-000000000001", "A", "A"),
-                new Employee("99900000-0000-0000-0000-000000000002", "B", "B"),
-                new Employee("99900000-0000-0000-0000-000000000003", "C", "C"),
-                new Employee("99900000-0000-0000-0000-000000000004", "D", "D"),
-                new Employee("99900000-0000-0000-0000-000000000005", "E", "E"),
-                new Employee("99900000-0000-0000-0000-000000000006", "F", "F"),
-                new Employee("99900000-0000-0000-0000-000000000007", "G", "G"),
-                new Employee("99900000-0000-0000-0000-000000000008", "H", "H"),
-                new Employee("99900000-0000-0000-0000-000000000009", "I", "I"),
-                new Employee("99900000-0000-0000-0000-000000000010", "K", "K")
+                new Employee("99900000-0000-0000-0000-000000000001", "A", ""),
+                new Employee("99900000-0000-0000-0000-000000000002", "B", ""),
+                new Employee("99900000-0000-0000-0000-000000000003", "c", ""),
+                new Employee("99900000-0000-0000-0000-000000000004", "d", ""),
+                new Employee("99900000-0000-0000-0000-000000000005", "f", ""),
+                new Employee("99900000-0000-0000-0000-000000000006", "g", ""),
+                new Employee("99900000-0000-0000-0000-000000000007", "h", ""),
+                new Employee("99900000-0000-0000-0000-000000000008", "k", ""),
+                new Employee("99900000-0000-0000-0000-000000000009", "t", ""),
+                new Employee("99900000-0000-0000-0000-0000000000010", "A", "")
             ]);
             self.employyerColumns = ko.observableArray([
                 { headerText: '社員CD', prop: 'code', width: 200 },
@@ -118,11 +118,7 @@ module qpp008.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            let dfd = $.Deferred();
-            self.loadComparingFormHeader().done(function() {
-                dfd.resolve();
-            });
-            return dfd.promise();
+            return self.loadComparingFormHeader();
         }
 
         loadComparingFormHeader() {
@@ -145,10 +141,12 @@ module qpp008.a.viewmodel {
         private toJSObjet(): any {
             let self = this;
             let command: any = {};
-            command.month1 = Number(self.processingYMEarlierValue().trim().replace("/", ""));
-            command.month2 = Number(self.processingYMLaterValue().trim().replace("/", ""));
-            command.payBonusAttr = 0;
+            //command.formCode = self.selectedCodeCbb1();
             command.employeeCodeList = self.employyerCurrentCodeList();
+            command.month1 = self.processingYMEarlierValue().trim().replace("/","");
+            command.month2 = self.processingYMLaterValue().trim().replace("/", "");
+            command.formCode = '114';
+            command.payBonusAttr = 0;
             return command;
         }
         /**
