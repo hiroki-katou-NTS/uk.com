@@ -21,7 +21,7 @@ public class DivergenceReasonDto {
 					domain.getDivTimeId(),
 					domain.getDivReasonCode().v(),
 					domain.getDivReasonContent().toString(),
-					Integer.valueOf(domain.getRequiredAtr().toString())
+					domain.getRequiredAtr().value
 					);
 	}
 }

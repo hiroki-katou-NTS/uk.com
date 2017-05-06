@@ -26,12 +26,13 @@ module nts.qmm017 {
                 { code: '1', name: '利用する' }
             ]);
             self.selectedConditionAtr = ko.observable(0);
-            self.startYearMonth = ko.observable(data.startYearMonth());
+            self.startYearMonth = ko.observable('');
+            self.startYearMonth(data.startYearMonth());
             self.formulaCode = ko.observable('');
             self.formulaName = ko.observable('');
             self.startYearMonthFormated = ko.observable('');
             self.isNewMode = ko.observable(data.isNewMode());;
-            data.isNewMode.subscribe(function(val){
+            data.isNewMode.subscribe(function(val) {
                 self.isNewMode(val);
             });
             self.startYearMonth.subscribe(function(ymChange) {
@@ -42,16 +43,25 @@ module nts.qmm017 {
                 }
             });
             self.comboBoxUseMaster = ko.observable({
-                itemList: ko.observableArray([
-                    {code: '1', name: '雇用マスタ'},
-                    {code: '2', name: '部門マスタ'},
-                    {code: '3', name: '分類マスタ'},
-                    {code: '4', name: '給与分類マスタ'},
-                    {code: '5', name: '職位マスタ'},
-                    {code: '6', name: '給与区分'},
-                ]),
+                itemList: ko.observableArray([]),
                 selectedCode: ko.observable(1)
             });
+            //auto fill input formula code to 3 char
+            $("#inp-formulaCode").blur(function() {
+                self.autoFill();
+            });
+        }
+
+        autoFill() {
+            if ($("#inp-formulaCode").val().length > 0 && $("#inp-formulaCode").val().length < 3) {
+                let countMissing = 3 - $("#inp-formulaCode").val().length;
+                let zeroToFill = '';
+                for (let i = 0; i < countMissing; i++) {
+                    zeroToFill += '0';
+                }
+                let currentValue = $("#inp-formulaCode").val();
+                $("#inp-formulaCode").val(zeroToFill + currentValue);
+            }
         }
     }
 }

@@ -10,12 +10,12 @@ public class InputSetting extends DomainObject{
 
 	private UseSetting selectUseSet;
 	
-	private CancelCheckError cancelErrSelReason;
+	private UseSetting cancelErrSelReason;
 	
 	public static InputSetting convert(int selectUseSet,
 			int cancelErrSelReason){
 		return new InputSetting(
 				EnumAdaptor.valueOf(selectUseSet, UseSetting.class),
-				EnumAdaptor.valueOf(cancelErrSelReason,CancelCheckError.class));
+				EnumAdaptor.valueOf(cancelErrSelReason,UseSetting.class));
 	}
 }

@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
@@ -12,7 +13,7 @@ public class DivergenceTime extends AggregateRoot{
 	/*乖離時間ID*/
 	private int divTimeId;
 	/*乖離時間使用設定*/
-	private DivergenceTimeUseSet divTimeUseSet;
+	private UseSetting divTimeUseSet;
 	/*アラーム時間*/
 	private Time alarmTime;
 	/*エラー時間*/
@@ -24,7 +25,7 @@ public class DivergenceTime extends AggregateRoot{
 
 	public DivergenceTime(String companyId, 
 						int divTimeId, 
-						DivergenceTimeUseSet divTimeUseSet, 
+						UseSetting divTimeUseSet, 
 						Time alarmTime,
 						Time errTime, 
 						InputSetting selectSet, 
@@ -51,12 +52,26 @@ public class DivergenceTime extends AggregateRoot{
 		return new DivergenceTime(
 				companyId, 
 				divTimeId, 
-				EnumAdaptor.valueOf(divTimeUseSet, DivergenceTimeUseSet.class),
+				EnumAdaptor.valueOf(divTimeUseSet, UseSetting.class),
 				new Time(BigDecimal.valueOf(alarmTime)), 
 				new Time(BigDecimal.valueOf(errTime)), 
 				InputSetting.convert(selectUseSet,cancelErrSelect), 
 				InputSetting.convert(inputUseSet,cancelErrInput));
 				
 	}
-	
+	public static boolean checkAlarmErrTime(int alarmTime,
+													int errTime){
+//		Time alartTimeNew = new Time(BigDecimal.valueOf(alarmTime));
+//		Time errTimeNew = new Time(BigDecimal.valueOf(errTime));
+		if(alarmTime==errTime){
+			if(alarmTime==0) return true;
+			else return false;
+		}else
+		if(alarmTime<errTime){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
 }

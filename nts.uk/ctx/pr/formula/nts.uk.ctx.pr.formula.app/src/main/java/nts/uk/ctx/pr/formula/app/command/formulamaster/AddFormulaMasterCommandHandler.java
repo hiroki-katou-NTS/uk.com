@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.formula.app.command.formulamaster;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -35,6 +36,12 @@ public class AddFormulaMasterCommandHandler extends CommandHandler<AddFormulaMas
 		AddFormulaMasterCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		String historyId = IdentifierUtil.randomUniqueId();
+		
+		FormulaMaster formulaMasterDomain = context.getCommand().toDomainMaster(companyCode);
+		FormulaHistory formulaHistoryDomain = context.getCommand().toDomainHis(companyCode, historyId);
+		
+		formulaMasterDomain.validate();
+		formulaHistoryDomain.validate();
 
 		FormulaMaster formulaMaster = new FormulaMaster(companyCode, new FormulaCode(command.getFormulaCode()),
 				EnumAdaptor.valueOf(command.getDifficultyAtr().intValue(), DifficultyAtr.class),

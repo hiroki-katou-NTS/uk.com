@@ -15,10 +15,10 @@ public class DivergenceReason extends AggregateRoot {
 	/*乖離理由*/
 	private DivergenceReasonContent divReasonContent;
 	/*必須区分*/
-	private RequiredAtr requiredAtr;
+	private UseSetting requiredAtr;
 
 	public DivergenceReason(String companyId, int divTimeId, DiverdenceReasonCode divReasonCode,
-			DivergenceReasonContent divReasonContent, RequiredAtr requiredAtr) {
+			DivergenceReasonContent divReasonContent, UseSetting requiredAtr) {
 		super();
 		this.companyId = companyId;
 		this.divTimeId = divTimeId;
@@ -38,7 +38,7 @@ public class DivergenceReason extends AggregateRoot {
 				divTimeId,
 				new DiverdenceReasonCode(divReasonCode),
 				new DivergenceReasonContent(divReasonContent),
-				EnumAdaptor.valueOf(requiredAtr, RequiredAtr.class));
+				EnumAdaptor.valueOf(requiredAtr, UseSetting.class));
 				
 	}
 }

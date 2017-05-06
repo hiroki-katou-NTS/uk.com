@@ -8,72 +8,143 @@
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
 				<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemPrintName
 					nts.uk.shr.com.primitive.Memo
    				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="qrm007.a.start.js" />
-				<com:scriptfile path="qrm007.a.viewmodel.js" />
-				<com:scriptfile path="qrm007.a.service.js" />
-				<com:stylefile path="qrm007.a.main.css" />
+				<com:scriptfile path="../shr/kml001.shr.vmbase.js" />
+				<com:scriptfile path="kml001.a.start.js" />
+				<com:scriptfile path="kml001.a.vm.js" />
+				<com:scriptfile path="kml001.a.service.js" />
+				<com:stylefile path="kml001.a.main.css" />
 			</ui:define>
 			
 			<ui:define name="content">
 				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button" data-bind="click: saveData, enable: $root.errors.isEmpty">登録</button>
-					<button>マスタ修正ログ</button>
+					<button class="proceed short-button">登録</button>
+					<button data-bind="click: premiumDialog">マスタ修正ログ</button>
 				</div>
 				<div id="contents-area">
 						<div class="pull-left">
 							<div class="caret-right caret-background bg-green">
-								<table id="lst-1" data-bind="ntsGridList: {
-										width: 550, height: 290,
-										options: retirementPayItemList,
-										optionsValue: 'itemCode',
+								<div>
+									<button class="dateControlBtn" data-bind="click: createDialog">履歴追加</button>
+									<button class="dateControlBtn" data-bind="click: editDialog">履歴編集</button>
+								</div>
+								<div id="dateRange-list-container">
+									<table id="dateRange-list" data-bind="ntsGridList: {
+										width: 220, height: 290,
+										options: gridPersonCostList,
+										optionsValue: 'dateRange',
 										columns: ko.observableArray([
-							                { headerText: 'コード', prop: 'itemCode', width: 50 },
-							                { headerText: '名称', prop: 'itemName', width: 145 },
-							                { headerText: '印刷用名称', prop: 'printName', width: 145 }]),
-										value: currentCode }">
-								</table>
+							                { headerText: 'コード', prop: 'dateRange', width: 150 }]),
+										value: currentGridPersonCost }">
+									</table>
+								</div>
+								
 							</div>
 						</div>
 						<div>
 							<div class="table">
-								<div class="cell column1">
-									<div data-bind="ntsFormLabel: { required: true }">コード/名称</div>
-								</div>
-								<div class="cell">
-									<span data-bind="text: currentItem().itemCode"></span>
-									<span id="name-span" data-bind="text: currentItem().itemName"></span>
+								<div id="formula">
+									<div class="table">
+										<div class="label">人件費の算出方法</div>
+									</div>
+									<hr/>
+									<div class="table">
+										<div class="cell">
+											<div class="label">割増率　×　人件費計算用時間　×　単価</div><br/>
+											<div class="label">・</div><br/>
+											<div class="label">・</div><br/>
+											<div class="label">10枠分</div>
+										</div>	
+										<div class="cell">
+											<!-- <label>&#xFE5C;</label> -->
+										</div>
+										<div class="cell">
+											<div class="cell"></div>
+											<div class="label">⇒　人件費</div>
+										</div>
+									</div>
+									
 								</div>
 							</div>
 							<div class="table">
 								<div class="cell column1">
-									<div data-bind="ntsFormLabel: { constraint: 'RetirementPayItemPrintName', required: true }">印刷用名称</div>
+									<div data-bind="ntsFormLabel: { required: true }">有効開始日</div>
 								</div>
 								<div class="cell valign-center">
-									<div data-bind="with: currentItem">
+									<div>
 										<input id="inp-1" data-name="印刷用名称" class="data-required" data-bind="ntsTextEditor: {
-											value: printName,
-											constraint: 'RetirementPayItemPrintName',
+											value: currentPersonCost().startDate,
+											constraint: 'Memo',
 											option: { width: '110px' },
-											required: true}" />
+											required: true, 
+											enable: false}" />
 									</div>
 								</div>
 							</div>
-							<hr id="division" align="left"/>
 							<div class="table">
-								<div class="cell column1 valign-top">
-									<div class="right-column" data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">メモ</div>
+								<div class="cell column1">
+									<div data-bind="ntsFormLabel: { required: true }">人件費を計算する際に使用する単価</div>
 								</div>
-								<div class="cell">
-									<div data-bind="with: currentItem">
-										<textarea id="inp-2" data-name="メモ" data-bind="ntsMultilineEditor: {
-											value: memo,
-											constraint: 'Memo'}" />
+								<div class="cell valign-center">
+									<div id="combo-box" data-bind="ntsComboBox: {
+															options: ko.observableArray([
+												                { code: 0, name: '単価1' },
+												                { code: 1, name: '単価2' },
+												                { code: 2, name: '単価3' },
+												                { code: 3, name: '契約単価' },
+												                { code: 4, name: '基準単価' }
+												            ]),
+															optionsValue: 'code',
+															value: currentPersonCost().unitPrice(),
+															optionsText: 'name',
+															enable: true }">
 									</div>
 								</div>
+							</div>
+							<div class="table">
+								<div class="item-valign-top" data-bind="ntsFormLabel: {}">メモ</div>
+								<textarea id="inp-2" data-name="メモ" data-bind="ntsMultilineEditor: {
+									value: currentPersonCost().memo,
+									constraint: 'Memo'}" />
+							</div>
+							<div class="table" id="premium-set-div">
+								<table id="premium-set-tbl">
+									<thead>
+										<tr>
+											<th>名称</th>
+											<th>割増率</th>
+											<th>人件費計算用時間</th>
+										</tr>
+									</thead>
+									<tbody data-bind="foreach: premiumSettingList">
+										<tr data-bind="css: { notUse: $parent.extraTimeItemList()[$index()].useClassification() == 0 }">
+											<td data-bind="text: $parent.extraTimeItemList()[$index()].name()"></td>
+											<td>
+												<input class="data-required" data-bind="ntsNumberEditor: {
+													value: premiumRate,
+													constraint: 'Memo',
+													option: { width: '40px' },
+													required: true, 
+													enable: true }" />	
+											</td>
+											<td>
+												<div class="cell">
+													<button class="small">Small</button>
+												</div>
+												<div class="cell">
+													<input class="data-required" data-bind="ntsNumberEditor: {
+													value: timeItemID,
+													constraint: 'Memo',
+													option: { width: '450px' },
+													required: true, 
+													enable: true }" />	
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
 				</div>

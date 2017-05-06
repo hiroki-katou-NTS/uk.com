@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
+import java.util.List;
 import java.util.UUID;
 
 import lombok.EqualsAndHashCode;
@@ -19,22 +20,24 @@ import nts.uk.shr.com.primitive.Memo;
 @EqualsAndHashCode(callSuper = false)
 public class PersonCostCalculation extends AggregateRoot {
 
-	String CID;
+	private String companyID;
 
-	String HID;
+	private String historyID;
 
-	Memo memo;
+	private Memo memo;
 
-	UnitPrice unitprice;
+	private UnitPrice unitprice;
 
-	GeneralDate startDate;
+	private GeneralDate startDate;
 
-	GeneralDate endDate;
+	private GeneralDate endDate;
+	
+	private List<PremiumSetting> premiumSettings; 
 
-	public static PersonCostCalculation createFromJavaType(String CID, Memo memo,
-			UnitPrice unitPrice, GeneralDate startDate, GeneralDate endDate) {
-		if(PersonCostCalculationDomainService.validateHistory(CID, startDate)) throw new BusinessException("ER065");
-		return new PersonCostCalculation(CID, UUID.randomUUID().toString(), memo, unitPrice, startDate, endDate);
+	public static PersonCostCalculation createFromJavaType(String companyID, Memo memo,
+			UnitPrice unitPrice, GeneralDate startDate, GeneralDate endDate, List<PremiumSetting> premiumSettings) {
+		if(PersonCostCalculationDomainService.validateHistory(companyID, startDate)) throw new BusinessException("ER065");
+		return new PersonCostCalculation(companyID, UUID.randomUUID().toString(), memo, unitPrice, startDate, endDate, premiumSettings);
 	}
 
 }

@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.schedule.app.command.budget.premium;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -11,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.ctx.at.schedule.dom.budget.premium.UnitPrice;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -39,7 +43,8 @@ public class DeletePremiumBudgetCommandHandler extends CommandHandler<DeletePrem
 						new Memo(budgetCommand.getMemo()), 
 						EnumAdaptor.valueOf(budgetCommand.getUnitprice(), UnitPrice.class), 
 						budgetCommand.getStartDate(), 
-						budgetCommand.getEndDate()
+						budgetCommand.getEndDate(),
+						Collections.EMPTY_LIST
 				)
 		);
 	}

@@ -1,138 +1,210 @@
-module qrm007.a.viewmodel {
+module kml001.a.viewmodel {
+    import vmbase = kml001.shr.vmbase;
     export class ScreenModel {
-        retirementPayItemList: KnockoutObservableArray<RetirementPayItemInterface>;
-        currentItem: KnockoutObservable<RetirementPayItem>;
-        currentCode: KnockoutObservable<string>;
-        dirty: nts.uk.ui.DirtyChecker;
+        gridPersonCostList: KnockoutObservableArray<GridPersonCostCalculation>;
+        currentGridPersonCost: KnockoutObservable<GridPersonCostCalculation>;
+        personCostList: KnockoutObservableArray<PersonCostCalculation>;
+        currentPersonCost: KnockoutObservable<PersonCostCalculation>;
+        extraTimeItemList: KnockoutObservableArray<ExtraTimeItem>;
+        premiumSettingList: KnockoutObservableArray<PremiumSetting>;
         constructor() {
             var self = this;
-            self.retirementPayItemList = ko.observableArray([]);
-            self.currentCode = ko.observable("");
-            self.currentItem = ko.observable(new RetirementPayItem("", 0, "", "", "", "", "", ""));
-            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+            self.personCostList = ko.observableArray([
+//                new PersonCostCalculation('','','0',0,"2014/3/3","2015/3/2"),
+//                new PersonCostCalculation('','','1',1,"2015/3/3","2016/3/2"),
+//                new PersonCostCalculation('','','2',2,"2016/3/3","2017/3/2"),
+//                new PersonCostCalculation('','','3',3,"2017/3/3","2018/3/2"),
+//                new PersonCostCalculation('','','4',4,"2018/3/3","9999/12/31")
+            ]);
+            self.currentPersonCost = ko.observable((_.first(self.personCostList())==null)?new PersonCostCalculation('','','',0,"",""):_.first(self.personCostList()));
+            self.gridPersonCostList = ko.observableArray([]);
+            self.personCostList().forEach(function(item) { self.gridPersonCostList.push({dateRange: item.startDate()+" ~ "+item.endDate()})});
+            self.currentGridPersonCost = ko.observable(self.currentPersonCost().startDate()+" ~ "+self.currentPersonCost().endDate()); 
+            self.currentGridPersonCost.subscribe(function(value){
+                self.currentPersonCost(self.getPersonCostCalculationInfo(_.split(value, ' ', 1)[0]));
+            });
+            self.extraTimeItemList = ko.observableArray([
+                new ExtraTimeItem('','1','Item1','0001',1),
+                new ExtraTimeItem('','2','Item2','0002',1),
+                new ExtraTimeItem('','3','Item3','0003',1),
+                new ExtraTimeItem('','4','Item4','0004',0),
+                new ExtraTimeItem('','5','Item5','0005',1),
+                new ExtraTimeItem('','6','Item6','0006',1),
+                new ExtraTimeItem('','7','Item7','0007',0),
+                new ExtraTimeItem('','8','Item8','0008',0),
+                new ExtraTimeItem('','9','Item9','0009',1),
+                new ExtraTimeItem('','10','Item10','0010',0)
+            ]);
+            self.premiumSettingList = ko.observableArray([
+                new PremiumSetting('1',15,['01','02','03']),
+                new PremiumSetting('2',15,['11','12','13']),
+                new PremiumSetting('3',15,['21','22','23']),
+                new PremiumSetting('4',15,['31','32','33']),
+                new PremiumSetting('5',15,['41','42','43']),
+                new PremiumSetting('6',15,['51','52','53']),
+                new PremiumSetting('7',15,['61','62','63']),
+                new PremiumSetting('8',15,['71','72','73']),
+                new PremiumSetting('9',15,['81','82','83']),
+                new PremiumSetting('10',15,['91','92','93'])
+            ]);
         }
+
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.findRetirementPayItemList(false)
-                .done(function() {
-                    $(document).delegate("#lst-1", "iggridselectionrowselectionchanging", function(evt, ui) {
-                        if (self.dirty.isDirty()) {
-                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。 ").
-                                ifYes(function() {
-                                    $('#inp-1').ntsError('clear');
-                                    $('#inp-2').ntsError('clear');
-                                    self.currentCode(ui.row.id);
-                                    self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));
-                                    self.dirty.reset();
-                                }).ifNo(function() {
-                                    self.currentCode(ui.selectedRows[0].id);
-                                });
-                        } else {
-                            $('#inp-1').ntsError('clear');
-                            $('#inp-2').ntsError('clear');
-                            self.currentCode(ui.row.id);
-                            self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));
-                            self.dirty.reset();
-                        }
-                    });
-                    dfd.resolve();
-                }).fail(function(res) {
-                    dfd.reject(res);
-                });
             return dfd.promise();
         }
-
+        
         /**
-         * find retirement payment item by company code
-         * @param notFirstTime : check current find is first time or not 
+         * 
          */
-        findRetirementPayItemList(notFirstTime) {
+        premiumDialog() {
             var self = this;
-            var dfd = $.Deferred();
-            qrm007.a.service.retirePayItemSelect()
-                .done(function(data) {
-                    self.retirementPayItemList.removeAll();
-                    if (data.length) {
-                        data.forEach(function(dataItem) {
-                            self.retirementPayItemList.push(ko.mapping.toJS(
-                                new RetirementPayItem(dataItem.companyCode, dataItem.category, dataItem.itemCode, dataItem.itemName,
-                                    dataItem.printName, dataItem.englishName, dataItem.fullName, dataItem.memo)));
-                        });
-                        if (!notFirstTime) { self.currentCode(_.first(self.retirementPayItemList()).itemCode); }
-                        self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));
-                        self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+            nts.uk.ui.windows.setShared('extraTimeItemList', self.extraTimeItemList());
+            nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                        
+            });
+        }
+        
+        /**
+         * 
+         */
+        createDialog() {
+            var self = this;
+            let lastestHistory = _.last(self.personCostList());
+            nts.uk.ui.windows.setShared('lastestStartDate', lastestHistory==null?"1900/1/1":lastestHistory.startDate());
+            nts.uk.ui.windows.sub.modal("/view/kml/001/c/index.xhtml", { title: "履歴の追加", dialogClass: "no-close" }).onClosed(function() {
+                let newStartDate: string = nts.uk.ui.windows.getShared('newStartDate');
+                if(newStartDate!=null) {
+                    if(lastestHistory!=null) {
+                        lastestHistory.endDate(vmbase.DateTimeProcess.getOneDayBefore(newStartDate));
+                        self.gridPersonCostList.replace(_.last(self.gridPersonCostList()),{dateRange: lastestHistory.startDate()+" ~ "+lastestHistory.endDate()});
                     }
-                    dfd.resolve();
-                })
-                .fail(function(res) { 
-                    self.retirementPayItemList.removeAll(); 
-                    dfd.reject(res); 
-                });
-            return dfd.promise();
+                    let copyDataFlag: boolean = nts.uk.ui.windows.getShared('copyDataFlag'); 
+                    if(!copyDataFlag) {
+                        self.personCostList.push(new PersonCostCalculation('','','',0,newStartDate,"9999/12/31"));   
+                    } else {
+                        self.personCostList.push(new PersonCostCalculation(
+                            self.currentPersonCost().companyID(),
+                            self.currentPersonCost().historyID(),
+                            self.currentPersonCost().memo(),
+                            self.currentPersonCost().unitPrice(),
+                            newStartDate,
+                            "9999/12/31"));    
+                    }        
+                    self.gridPersonCostList.push({dateRange: newStartDate+" ~ 9999/12/31"});
+                    self.currentGridPersonCost(_.last(self.gridPersonCostList()).dateRange);  
+                }   
+            });
         }
-
+        
         /**
-         * update retirement payment item
+         * 
          */
-        updateRetirementPayItemList() {
+        editDialog() {
             var self = this;
-            var dfd = $.Deferred();
-            if(self.dirty.isDirty()){
-                let command = ko.mapping.toJS(self.currentItem());
-                qrm007.a.service.retirePayItemUpdate(command)
-                    .done(function(data) {
-                        self.findRetirementPayItemList(true);
-                        dfd.resolve();
-                    }).fail(function(res) {
-                        dfd.reject(res);
-                    });
-            }
-            return dfd.promise();
+            let beforeIndex = _.findIndex(self.personCostList(), function(o) { return o.startDate() == self.currentPersonCost().startDate(); })-1;
+            let size = _.size(self.personCostList());
+            nts.uk.ui.windows.setShared('size', size);
+            nts.uk.ui.windows.setShared('beforeStartDate', (beforeIndex>=0)?self.personCostList()[beforeIndex].startDate():"1900/1/1");
+            nts.uk.ui.windows.setShared('currentEndDate', (size>0)?self.currentPersonCost().endDate():"9999/12/31");
+            nts.uk.ui.windows.sub.modal("/view/kml/001/d/index.xhtml", { title: "履歴の編集", dialogClass: "no-close" }).onClosed(function() {
+                let isUpdate: boolean = nts.uk.ui.windows.getShared('isUpdate');
+                if(isUpdate==true) {
+                    let newStartDate: string = nts.uk.ui.windows.getShared('newStartDate');
+                    self.personCostList()[beforeIndex+1].startDate(newStartDate);
+                    if(beforeIndex >= 0) self.personCostList()[beforeIndex].endDate(vmbase.DateTimeProcess.getOneDayBefore(newStartDate));
+                    self.gridPersonCostList.replace(self.gridPersonCostList()[beforeIndex+1],{dateRange: self.personCostList()[beforeIndex+1].startDate()+" ~ "+self.personCostList()[beforeIndex+1].endDate()});
+                    if(beforeIndex >= 0) self.gridPersonCostList.replace(self.gridPersonCostList()[beforeIndex],{dateRange: self.personCostList()[beforeIndex].startDate()+" ~ "+self.personCostList()[beforeIndex].endDate()});
+                    self.currentGridPersonCost(_.last(self.gridPersonCostList()).dateRange);
+                } else if(isUpdate==false) {
+                    self.personCostList.remove(_.last(self.personCostList()));
+                    let lastestHistory = _.last(self.personCostList());
+                    lastestHistory.endDate("9999/12/31");
+                    self.gridPersonCostList.remove(_.last(self.gridPersonCostList()));
+                    self.gridPersonCostList.replace(_.last(self.gridPersonCostList()),{dateRange: lastestHistory.startDate()+" ~ "+lastestHistory.endDate()});
+                    self.currentGridPersonCost(_.last(self.gridPersonCostList()).dateRange);
+                }        
+            });;
         }
-
-        /**
-         * event update selected retirement payment item
-         */
-        saveData() {
+        
+        getPersonCostCalculationInfo(startDate: string): PersonCostCalculationInterface{
             var self = this;
-            self.updateRetirementPayItemList();
+            return _.find(self.personCostList(), function(o) { return o.startDate() == startDate; });
         }
     }
+    
+    class GridPersonCostCalculation {
+        historyID: string;
+        dateRange: string;  
+        constructor(historyID: string, dateRange: string) {
+            var self = this;
+            self.historyID = historyID;
+            self.dateRange = dateRange;
+        }  
+    }
 
-    interface RetirementPayItemInterface {
-        companyCode: string;
-        category: number;
-        itemCode: string;
-        itemName: string;
-        printName: string;
-        englishName: string;
-        fullName: string;
+    interface PersonCostCalculationInterface {
+        companyID: string;
+        historyID: string;
         memo: string;
+        unitPrice: number;
+        startDate: string;
+        endDate: string;
     }
 
-    class RetirementPayItem {
-        companyCode: KnockoutObservable<string>;
-        category: KnockoutObservable<number>;
-        itemCode: KnockoutObservable<string>;
-        itemName: KnockoutObservable<string>;
-        printName: KnockoutObservable<string>;
-        englishName: KnockoutObservable<string>;
-        fullName: KnockoutObservable<string>;
+    class PersonCostCalculation {
+        companyID: KnockoutObservable<string>;
+        historyID: KnockoutObservable<string>;
         memo: KnockoutObservable<string>;
-        constructor(companyCode: string, category: number, itemCode: string, itemName: string, printName: string, englishName: string, fullName: string, memo: string) {
+        unitPrice: KnockoutObservable<number>;
+        startDate: KnockoutObservable<string>;
+        endDate: KnockoutObservable<string>;
+        constructor(companyID: string, historyID: string, memo: string, unitPrice: number, startDate: string, endDate: string) {
             var self = this;
-            self.companyCode = ko.observable(companyCode);
-            self.category = ko.observable(category);
-            self.itemCode = ko.observable(itemCode);
-            self.itemName = ko.observable(itemName);
-            self.printName = ko.observable(printName);
-            self.englishName = ko.observable(englishName);
-            self.fullName = ko.observable(fullName);
+            self.companyID = ko.observable(companyID);
+            self.historyID = ko.observable(historyID);
             self.memo = ko.observable(memo);
+            self.unitPrice = ko.observable(unitPrice);
+            self.startDate = ko.observable(startDate);
+            self.endDate = ko.observable(endDate);
         }
-        static converToObject(object: RetirementPayItemInterface): RetirementPayItem {
-            return new RetirementPayItem(object.companyCode, object.category, object.itemCode, object.itemName, object.printName, object.englishName, object.fullName, object.memo);
+        static converToObject(object: PersonCostCalculationInterface): PersonCostCalculation {
+            return new PersonCostCalculation(
+                object.companyID, 
+                object.historyID, 
+                object.memo, 
+                object.unitPrice, 
+                object.startDate, 
+                object.endDate);
+        }
+    }
+    
+    class ExtraTimeItem {
+        companyID: KnockoutObservable<string>;
+        extraItemID: KnockoutObservable<string>; 
+        name: KnockoutObservable<string>;
+        timeItemID: KnockoutObservable<string>;
+        useClassification: KnockoutObservable<number>;
+        constructor(companyID: string, extraItemID: string, name: string, timeItemID: string, useClassification: number) {
+            var self = this;
+            self.extraItemID = ko.observable(extraItemID);
+            self.companyID = ko.observable(companyID);
+            self.useClassification = ko.observable(useClassification);
+            self.timeItemID = ko.observable(timeItemID);
+            self.name = ko.observable(name);
+        }
+    }
+    
+    class PremiumSetting {
+        attendanceID: KnockoutObservable<string>;
+        premiumRate: KnockoutObservable<number>;
+        timeItemID: KnockoutObservableArray<string>;
+        constructor(attendanceID: string, premiumRate: number, timeItemID: Array<string>) {
+            var self = this;
+            self.attendanceID = ko.observable(attendanceID);
+            self.premiumRate = ko.observable(premiumRate);
+            self.timeItemID = ko.observable(timeItemID);
         }
     }
 }

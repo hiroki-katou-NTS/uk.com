@@ -1,138 +1,64 @@
-module qrm007.a.viewmodel {
+module kml001.b.viewmodel {
     export class ScreenModel {
-        retirementPayItemList: KnockoutObservableArray<RetirementPayItemInterface>;
-        currentItem: KnockoutObservable<RetirementPayItem>;
-        currentCode: KnockoutObservable<string>;
-        dirty: nts.uk.ui.DirtyChecker;
+        extraTimeItemList: KnockoutObservableArray<ExtraTimeItem>;
         constructor() {
             var self = this;
-            self.retirementPayItemList = ko.observableArray([]);
-            self.currentCode = ko.observable("");
-            self.currentItem = ko.observable(new RetirementPayItem("", 0, "", "", "", "", "", ""));
-            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+            self.extraTimeItemList = ko.observableArray(
+//                [ new ExtraTimeItem('','1','Item1','0001',1),
+//                new ExtraTimeItem('','2','Item2','0002',1),
+//                new ExtraTimeItem('','3','Item3','0003',1),
+//                new ExtraTimeItem('','4','Item4','0004',0),
+//                new ExtraTimeItem('','5','Item5','0005',0),
+//                new ExtraTimeItem('','6','Item6','0006',0),
+//                new ExtraTimeItem('','7','Item7','0007',0),
+//                new ExtraTimeItem('','8','Item8','0008',0),
+//                new ExtraTimeItem('','9','Item9','0009',0),
+//                new ExtraTimeItem('','10','Item10','0010',0)]
+//                nts.uk.ui.windows.getShared('extraTimeItemList')
+            );   
         }
+        
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.findRetirementPayItemList(false)
-                .done(function() {
-                    $(document).delegate("#lst-1", "iggridselectionrowselectionchanging", function(evt, ui) {
-                        if (self.dirty.isDirty()) {
-                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。 ").
-                                ifYes(function() {
-                                    $('#inp-1').ntsError('clear');
-                                    $('#inp-2').ntsError('clear');
-                                    self.currentCode(ui.row.id);
-                                    self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));
-                                    self.dirty.reset();
-                                }).ifNo(function() {
-                                    self.currentCode(ui.selectedRows[0].id);
-                                });
-                        } else {
-                            $('#inp-1').ntsError('clear');
-                            $('#inp-2').ntsError('clear');
-                            self.currentCode(ui.row.id);
-                            self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));
-                            self.dirty.reset();
-                        }
-                    });
-                    dfd.resolve();
-                }).fail(function(res) {
-                    dfd.reject(res);
-                });
-            return dfd.promise();
-        }
-
-        /**
-         * find retirement payment item by company code
-         * @param notFirstTime : check current find is first time or not 
-         */
-        findRetirementPayItemList(notFirstTime) {
-            var self = this;
-            var dfd = $.Deferred();
-            qrm007.a.service.retirePayItemSelect()
+            kml001.b.service.extraTimeSelect()
                 .done(function(data) {
-                    self.retirementPayItemList.removeAll();
-                    if (data.length) {
-                        data.forEach(function(dataItem) {
-                            self.retirementPayItemList.push(ko.mapping.toJS(
-                                new RetirementPayItem(dataItem.companyCode, dataItem.category, dataItem.itemCode, dataItem.itemName,
-                                    dataItem.printName, dataItem.englishName, dataItem.fullName, dataItem.memo)));
-                        });
-                        if (!notFirstTime) { self.currentCode(_.first(self.retirementPayItemList()).itemCode); }
-                        self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));
-                        self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
-                    }
+                    self.extraTimeItemList(data);
                     dfd.resolve();
                 })
                 .fail(function(res) { 
-                    self.retirementPayItemList.removeAll(); 
                     dfd.reject(res); 
                 });
             return dfd.promise();
         }
-
-        /**
-         * update retirement payment item
-         */
-        updateRetirementPayItemList() {
+        
+        submitAndCloseDialog(): void {
             var self = this;
-            var dfd = $.Deferred();
-            if(self.dirty.isDirty()){
-                let command = ko.mapping.toJS(self.currentItem());
-                qrm007.a.service.retirePayItemUpdate(command)
-                    .done(function(data) {
-                        self.findRetirementPayItemList(true);
-                        dfd.resolve();
-                    }).fail(function(res) {
-                        dfd.reject(res);
-                    });
-            }
-            return dfd.promise();
+            let extraItemListCommand = [];
+            ko.utils.arrayForEach(self.extraTimeItemList(), function(item) { extraItemListCommand.push(ko.toJSON(item)); });
+            kml001.b.service.extraTimeUpdate(extraItemListCommand);
+            nts.uk.ui.windows.close();
         }
-
-        /**
-         * event update selected retirement payment item
-         */
-        saveData() {
-            var self = this;
-            self.updateRetirementPayItemList();
+        
+        closeDialog(): void {
+            nts.uk.ui.windows.close();   
         }
+        
     }
-
-    interface RetirementPayItemInterface {
-        companyCode: string;
-        category: number;
-        itemCode: string;
-        itemName: string;
-        printName: string;
-        englishName: string;
-        fullName: string;
-        memo: string;
-    }
-
-    class RetirementPayItem {
-        companyCode: KnockoutObservable<string>;
-        category: KnockoutObservable<number>;
-        itemCode: KnockoutObservable<string>;
-        itemName: KnockoutObservable<string>;
-        printName: KnockoutObservable<string>;
-        englishName: KnockoutObservable<string>;
-        fullName: KnockoutObservable<string>;
-        memo: KnockoutObservable<string>;
-        constructor(companyCode: string, category: number, itemCode: string, itemName: string, printName: string, englishName: string, fullName: string, memo: string) {
+    
+    class ExtraTimeItem {
+        companyID: KnockoutObservable<string>;
+        extraItemID: KnockoutObservable<string>; 
+        name: KnockoutObservable<string>;
+        timeItemID: KnockoutObservable<string>;
+        useClassification: KnockoutObservable<number>;
+        constructor(companyID: string, extraItemID: string, name: string, timeItemID: string, useClassification: number) {
             var self = this;
-            self.companyCode = ko.observable(companyCode);
-            self.category = ko.observable(category);
-            self.itemCode = ko.observable(itemCode);
-            self.itemName = ko.observable(itemName);
-            self.printName = ko.observable(printName);
-            self.englishName = ko.observable(englishName);
-            self.fullName = ko.observable(fullName);
-            self.memo = ko.observable(memo);
-        }
-        static converToObject(object: RetirementPayItemInterface): RetirementPayItem {
-            return new RetirementPayItem(object.companyCode, object.category, object.itemCode, object.itemName, object.printName, object.englishName, object.fullName, object.memo);
+            self.extraItemID = ko.observable(extraItemID);
+            self.companyID = ko.observable(companyID);
+            self.useClassification = ko.observable(useClassification);
+            self.timeItemID = ko.observable(timeItemID);
+            self.name = ko.observable(name);
         }
     }
 }

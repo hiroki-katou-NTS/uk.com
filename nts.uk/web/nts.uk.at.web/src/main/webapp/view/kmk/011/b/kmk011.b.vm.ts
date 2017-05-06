@@ -8,19 +8,19 @@ module kmk011.b.viewmodel {
         label_005: KnockoutObservable<model.Labels>;
         label_006: KnockoutObservable<model.Labels>;
         sel_002: KnockoutObservable<string>;
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        dataSource: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        switchUSe3: KnockoutObservableArray<model.DivTime>;
-        selectUse: KnockoutObservable<any>;
+        columns: KnockoutObservableArray<any>;
+        dataSource: KnockoutObservableArray<model.Item>;
+        currentCode: KnockoutObservable<string>;
+        switchUSe3: KnockoutObservableArray<any>;
+        requiredAtr: KnockoutObservable<any>;
         inp_A34: KnockoutObservable<string>;
-        inp_A36: KnockoutObservable<string>;
-        inp_A37: KnockoutObservable<string>;
-        inp_A39: KnockoutObservable<string>;
-        inp_A311: KnockoutObservable<string>;
-        inp_A314: KnockoutObservable<string>;
-        checked: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
+        divReasonCode: KnockoutObservable<string>;
+        divReasonContent: KnockoutObservable<string>;
+        enableCode: KnockoutObservable<boolean>;
+        itemDivReason: KnockoutObservable<model.Item>;
+        divTimeId: KnockoutObservable<string>;
+        index_of_itemDelete: any;
+        objectOld: any;
         constructor() {
             var self = this;
             self.label_002 = ko.observable(new model.Labels());
@@ -29,29 +29,184 @@ module kmk011.b.viewmodel {
             self.label_005 = ko.observable(new model.Labels());
             self.label_006 = ko.observable(new model.Labels());
             self.sel_002 = ko.observable('');
-            self.currentCode = ko.observable(1);
+            self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'divTimeId', width: 100  },
-                { headerText: '名称', key: 'divTimeName', width: 150 }
+                { headerText: 'コード', key: 'divReasonCode', width: 100  },
+                { headerText: '名称', key: 'divReasonContent', width: 150 }
             ]);
-            self.dataSource = ko.observableArray([
-                {divTimeId: 1, divTimeName: '四捨五入' },
-                {divTimeId: 2,divTimeName: '金曜日'} ,
-                {divTimeId: 3,divTimeName: '土曜日'}
-                ]);
+            self.dataSource = ko.observableArray([]);
             self.switchUSe3 = ko.observableArray([
                     { code: '1', name: '必須する' },
-                    { code: '2', name: '必須しない' },
+                    { code: '0', name: '必須しない' },
                 ]);
-            self.selectUse = ko.observable(1);    
+            self.requiredAtr = ko.observable(0);    
             self.inp_A34 = ko.observable('時間１');    
-            self.inp_A36 = ko.observable('富士大学');
-            self.inp_A37 = ko.observable('日通会社');
-            self.inp_A39 = ko.observable('08:00');
-            self.inp_A311 = ko.observable('09:00');
-            self.inp_A314 = ko.observable('選択肢を設定');
-            self.checked = ko.observable(true);
-            self.enable = ko.observable(true);
+            self.divReasonCode = ko.observable('');
+            self.divReasonContent = ko.observable('');
+            self.enableCode = ko.observable(false);
+            self.itemDivReason = ko.observable(null);
+            self.divTimeId = ko.observable(null);
+            //subscribe currentCode
+            self.currentCode.subscribe(function(codeChanged) {
+                self.itemDivReason(self.findItemDivTime(codeChanged));
+                if(self.itemDivReason()===undefined||self.itemDivReason()==null){
+                    return;
+                }else{
+                    self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
+                    self.enableCode(false);
+                    self.divReasonCode(self.itemDivReason().divReasonCode);
+                    self.divReasonContent(self.itemDivReason().divReasonContent);
+                    self.requiredAtr(self.itemDivReason().requiredAtr);
+                }
+            });
+        }
+        
+        /**
+         * start page
+         * get all divergence reason
+         */
+        startPage(): JQueryPromise<any>{
+            var self = this;
+            self.currentCode('');
+            var dfd = $.Deferred();
+            self.divTimeId(nts.uk.ui.windows.getShared("KMK011_divTimeId"));
+            service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
+                if(lstDivReason=== undefined || lstDivReason.length == 0){
+                    self.dataSource();
+                    self.enableCode(true);
+                }else{
+                    self.dataSource(lstDivReason);
+                    let reasonFirst = _.first(lstDivReason);
+                    self.currentCode(reasonFirst.divReasonCode);
+                }
+                dfd.resolve();
+            })
+            return dfd.promise();
+        }
+        /**
+         * find item Divergence Time is selected
+         */
+        findItemDivTime(value: string): any {
+            let self = this;
+            var itemModel = null;
+            return _.find(self.dataSource(), function(obj: model.Item) {
+                return obj.divReasonCode == value;
+            })
+        }
+        refreshData(){
+            var self = this;
+            self.divReasonCode(null);
+            self.divReasonContent("");
+            self.requiredAtr(0);
+            self.enableCode(true);
+        }
+        RegistrationDivReason(){
+            var self = this;
+            if(self.enableCode()==false){
+                let objectNew = self.divReasonCode()+ self.divReasonContent()+self.requiredAtr();
+                console.log(objectNew);
+                if(self.objectOld==objectNew){
+                    return;
+                }else{
+                    if(self.checkInput()){
+                        self.updateDivReason();
+                    }else{
+                        return;
+                    }
+                }
+            }else
+            if(self.enableCode()==true){//add divergence
+                if(self.checkInput()){
+                    self.addDivReason();
+                }else{
+                    return;
+                }
+            }
+        }
+        addDivReason(){
+            var self = this;
+            var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
+            service.addDivReason(divReason).done(function() {
+                    self.getAllDivReasonNew();
+                }).fail(function(res) {
+                    alert(res.message);
+                    dfd.reject(res);
+                });
+        }
+        updateDivReason(){
+            var self = this;
+            var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
+            service.updateDivReason(divReason).done(function() {
+                    self.getAllDivReasonNew();
+                }).fail(function(res) {
+                    alert(res.message);
+                    dfd.reject(res);
+                });
+        }
+        //get all divergence reason new
+        getAllDivReasonNew(){
+            var self = this;
+            var dfd = $.Deferred<any>();
+            self.dataSource();
+            service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
+                self.currentCode('');
+                self.dataSource(lstDivReason);
+                self.enableCode(false);
+                self.currentCode(self.divReasonCode());
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+        }
+        //delete divergence reason
+        deleteDivReason(){
+            var self = this;
+            let divReason = self.itemDivReason();
+            self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
+            service.deleteDivReason(divReason).done(function(){
+                self.getDivReasonList_afterDelete();
+            });
+        }
+        //get list divergence reason after Delete 1 divergence reason
+        getDivReasonList_afterDelete(): any {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            self.dataSource();
+            service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
+                self.dataSource(lstDivReason);
+
+                if (self.dataSource().length > 0) {
+                    if (self.index_of_itemDelete === self.dataSource().length) {
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].divReasonCode)
+                    } else {
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete].divReasonCode)
+                    }
+
+                } else {
+                    self.refreshData();
+                }
+
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+
+        }
+        /**
+         * check input: divergence reason code and divergence reason content
+         */
+        checkInput(): boolean {
+            var self = this;
+            if (self.divTimeId() == '' || self.divReasonContent() == '') {
+                alert("nhap day du thong tin");
+                return false;
+            } else {
+                return true;
+            }
         }
     }
     export module model{ 
@@ -68,47 +223,16 @@ module kmk011.b.viewmodel {
             }
         }
     
-        export class BoxModel {
-            id: number;
-            name: string;
-            constructor(id, name) {
-                var self = this;
-                self.id = id;
-                self.name = name;
-            }
-        }
-        
-        export class DivTime{
-            divTimeId: number;
-            divTimeUseSet: number;
-            alarmTime: number;
-            errTime: number;
-            selUseSet: number;
-            cancelErrSelReason: number;
-            inpUseSet: number;
-            cancelErrInpReason: number;
-            constructor(divTimeId: number,divTimeUseSet: number,
-                        alarmTime: number,errTime: number,
-                        selUseSet: number,cancelErrSelReason: number,
-                        inpUseSet: number,cancelErrInpReason: number){
-                var self = this;
-                self.divTimeId = divTimeId;
-                self.divTimeUseSet = divTimeUseSet;
-                self.alarmTime = alarmTime;
-                self.errTime = errTime;
-                self.selUseSet = selUseSet;
-                self.cancelErrSelReason = cancelErrSelReason;
-                self.inpUseSet = inpUseSet;
-                self.cancelErrInpReason = cancelErrInpReason;
-            }
-        }
-        
         export class Item{
-            divTimeId: KnockoutObservable<number>;
-            divTimeName: KnockoutObservable<string>;  
-            constructor(divTimeId: number,divTimeName: string){
-                this.divTimeId = ko.observable(divTimeId);
-                this.divTimeName = ko.observable(divTimeName);    
+            divTimeId: number;
+            divReasonCode: string;
+            divReasonContent: string;  
+            requiredAtr: number;
+            constructor(divTimeId: number,divReasonCode: string,divReasonContent: string,requiredAtr: number){
+                this.divTimeId = divTimeId;
+                this.divReasonCode = divReasonCode;
+                this.divReasonContent = divReasonContent;    
+                this.requiredAtr = requiredAtr;
             }      
         }
     }
