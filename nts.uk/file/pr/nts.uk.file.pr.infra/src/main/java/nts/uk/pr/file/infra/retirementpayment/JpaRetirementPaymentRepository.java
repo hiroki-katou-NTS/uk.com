@@ -45,7 +45,7 @@ public class JpaRetirementPaymentRepository extends JpaRepository implements Ret
 		builderString = new StringBuilder();
 		builderString.append("SELECT NEW ");
 		builderString.append(RETIRE_PAY_ITEM_DTO);
-		builderString.append("(a.itemCode, a.itemName, a.itemAbName)");
+		builderString.append("(a.reportQremtRetirePayItemPK.itemCode, a.itemName, a.itemAbName)");
 		builderString.append("FROM ReportQremtRetirePayItem a ");
 		builderString.append("WHERE a.reportQremtRetirePayItemPK.ccd = :companyCode ");
 		GET_ALL_RETIRE_PAY_ITEMS = builderString.toString();

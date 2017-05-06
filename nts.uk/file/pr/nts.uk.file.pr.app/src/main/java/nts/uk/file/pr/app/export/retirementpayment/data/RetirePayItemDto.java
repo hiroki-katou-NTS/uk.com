@@ -17,4 +17,12 @@ public class RetirePayItemDto {
 	private String itemName;
 
 	private String itemAbName;
+
+	public RetirePayItemDto(String itemCode, String itemName, String itemAbName) {
+		super();
+		this.itemCode = itemCode;
+		this.itemName = itemName;
+		this.itemAbName = itemAbName;
+	}
+	
 }

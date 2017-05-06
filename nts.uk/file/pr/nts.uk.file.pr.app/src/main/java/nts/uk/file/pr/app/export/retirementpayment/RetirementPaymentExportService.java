@@ -37,7 +37,7 @@ public class RetirementPaymentExportService extends ExportService<RetirementPaym
 			//get dtos
 			Optional<RetirementPaymentDto> retirementPaymentDto = this.retirementPaymentRepository.getRetirementPayment(
 					companyCode, personId, context.getQuery().getStartDate(), context.getQuery().getEndDate());
-			PersonalBasicDto personalBasicDto = new PersonalBasicDto("従業員名 " + personId.charAt(35), "2005年    3月    1日", "2017年   12月   31日", "自己都合（転職）", "0年0ヶ 月", "0年0ヶ 月");
+			PersonalBasicDto personalBasicDto = new PersonalBasicDto("従業員名 " + personId.charAt(35), "2005年 3月 1日", "2017年 12月 31日", "自己都合（転職）", "0年0ヶ 月", "0年0ヶ 月");
 			CompanyMasterDto companyMasterDto = new CompanyMasterDto("日通システム株式会社", "愛知県名古屋市中区栄", "ナディアパークビジネスセンタービル９F");
 			//set dtos to report data
 			if(retirementPaymentDto.isPresent()){

@@ -3,8 +3,10 @@
  */
 package nts.uk.pr.file.infra.retirementpayment;
 
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class RetirementPaymentReportGeneratorImpl extends AsposeCellsReportGener
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/qrm009.xlsx";
 	/** The Constant REPORT_FILE_NAME. */
-	protected static final String REPORT_FILE_NAME = "退職金明細書_";
+	protected static final String REPORT_FILE_NAME = "退職金明細書.pdf";
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, List<RetirementPaymentReportData> dataSource,
@@ -52,23 +54,23 @@ public class RetirementPaymentReportGeneratorImpl extends AsposeCellsReportGener
 			Date date = new Date();
 			String currentDate = dateFormat.format(date).toString();
 			// filter pay item name
-			String printNameT1001 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode() == "T1001")
+			String printNameT1001 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T001"))
 					.findFirst().get().getItemName();
-			String printNameT2001 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode() == "T2001")
+			String printNameT2001 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T101"))
 					.findFirst().get().getItemName();
-			String printNameT2002 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode() == "T2002")
+			String printNameT2002 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T102"))
 					.findFirst().get().getItemName();
-			String printNameT2003 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode() == "T2003")
+			String printNameT2003 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T103"))
 					.findFirst().get().getItemName();
-			String printNameT2004 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode() == "T2004")
+			String printNameT2004 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T104"))
 					.findFirst().get().getItemName();
-			String printNameT2005 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode() == "T2005")
+			String printNameT2005 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T105"))
 					.findFirst().get().getItemName();
-			String printNameT2006 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode() == "T2006")
+			String printNameT2006 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T106"))
 					.findFirst().get().getItemName();
-			String printNameT2007 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode() == "T2007")
+			String printNameT2007 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T107"))
 					.findFirst().get().getItemName();
-			String printNameT3001 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode() == "T3001")
+			String printNameT3001 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T301"))
 					.findFirst().get().getItemName();
 			int sheetNumber = 0;
 			for (RetirementPaymentReportData retirementPaymentReportData : dataSource) {
@@ -76,8 +78,8 @@ public class RetirementPaymentReportGeneratorImpl extends AsposeCellsReportGener
 
 				Worksheet worksheet = workbook.getWorksheets().get(sheetNumber);
 				worksheet.replace("data", String.valueOf("data" + sheetNumber));
-				designer.setDataSource("data" + sheetNumber, retirementPaymentReportData);
-				designer.setDataSource("currentDate", currentDate);
+				designer.setDataSource("data" + sheetNumber, Arrays.asList(retirementPaymentReportData));
+				designer.setDataSource("currentDate", date);
 				designer.setDataSource("CTR_002", "12年7ヶ 月");
 				designer.setDataSource("retirePayItemT1001", printNameT1001);
 				designer.setDataSource("retirePayItemT2001", printNameT2001);
@@ -88,15 +90,18 @@ public class RetirementPaymentReportGeneratorImpl extends AsposeCellsReportGener
 				designer.setDataSource("retirePayItemT2006", printNameT2006);
 				designer.setDataSource("retirePayItemT2007", printNameT2007);
 				designer.setDataSource("retirePayItemT3001", printNameT3001);
+				designer.setDataSource("companyAddress", retirementPaymentReportData.getCompanyMasterDto().getAddress1()
+						+ "  " + retirementPaymentReportData.getCompanyMasterDto().getAddress2());
 				sheetNumber++;
 			}
-
+			// process data binginds in template
+			designer.getWorkbook().calculateFormula(true);
+			designer.process();
 			// save as PDF file
 			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
 			option.setAllColumnsInOnePagePerSheet(true);
-
-			designer.getWorkbook().save(this.createNewFile(generatorContext, REPORT_FILE_NAME.concat(currentDate)),
-					option);
+			OutputStream outputFile = this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME));
+			designer.getWorkbook().save(outputFile, option);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -16,7 +16,7 @@ public class RetirementPaymentDto {
 
 	private String trialPeriodSet;
 
-	private BigDecimal exclusionYears;
+	private String exclusionYears;
 
 	private BigDecimal totalPaymentMoney;
 
@@ -48,7 +48,7 @@ public class RetirementPaymentDto {
 		} else {
 			this.trialPeriodSet = "試用期間あり";
 		}
-		this.exclusionYears = exclusionYears;
+		this.exclusionYears = exclusionYears + "年0ヶ 月";
 		this.totalPaymentMoney = totalPaymentMoney;
 		this.incomeTaxMoney = incomeTaxMoney;
 		this.cityTaxMoney = cityTaxMoney;
