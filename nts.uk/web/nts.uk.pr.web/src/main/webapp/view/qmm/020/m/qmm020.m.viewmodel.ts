@@ -1,6 +1,6 @@
 module qmm020.m.viewmodel {
     export class ScreenModel {
-        listItemSelected: KnockoutObservable<any> = ko.observable(null);
+        listItemSelected: KnockoutObservable<string> = ko.observable('');
         listItemDataSources: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         listItemColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: 'コード', prop: 'code', width: 50 },
@@ -9,13 +9,13 @@ module qmm020.m.viewmodel {
         ]);
 
         constructor() {
-            var self = this;
+            let self = this;
             self.start();
         }
 
         //event when click to 選択 Button
         selectStmtCode() {
-            var self = this;
+            let self = this;
             nts.uk.ui.windows.setShared('stmtCodeSelected', self.listItemSelected());
             self.closeDialog();
         }
@@ -27,39 +27,33 @@ module qmm020.m.viewmodel {
 
         // start function
         start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-
-            var currentBaseYM = parseInt(nts.uk.ui.windows.getShared('valMDialog')) || 201710;
-
-            //get Allot History
-            service.getAllAllotLayoutHist(currentBaseYM).done(function(layoutHistory: Array<ILayoutHistoryModel>) {
-                if (layoutHistory.length > 0) {
-                    let _histItems: Array<LayoutHistoryModel> = [];
-
-                    _.forEach(layoutHistory, function(layoutHist, i) {
-                        _histItems.push(new LayoutHistoryModel(layoutHist));
-                    });
-
-                    let _items: Array<ItemModel> = [];
-
-                    _.forEach(_histItems, function(layoutSelect, i) {
-                        if (_histItems.length > 0) {
-                            //get Payment layout name
-                            service.getAllotLayoutName(layoutSelect.stmtCode).done(function(stmtName: string) {
-                                _items.push(new ItemModel({ code: layoutSelect.stmtCode, name: stmtName, time: layoutSelect.startYm + '~' + layoutSelect.endYm }));
-                                self.listItemDataSources(_items);
-                            }).fail(function(res) {
-                                alert(res);
-                            });
-                        }
-                    });
-                } else {
-                    dfd.resolve();
-                }
-            }).fail(function(res) {
-                alert(res);
-            });
+            let self = this, dfd = $.Deferred(),
+                currentBaseYM = parseInt(nts.uk.ui.windows.getShared('valMDialog'));
+            // Đậu, hàm này cần viết lại, nó kéo hiệu năng app xuống.
+            if (!!currentBaseYM) {
+                //get Allot History
+                service.getAllAllotLayoutHist(currentBaseYM).done(function(resp: Array<ILayoutHistoryModel>) {
+                    if (resp.length > 0) {
+                        let _items: Array<ItemModel> = [];
+                        _.forEach(resp, function(item) {
+                            if (resp.length > 0) {
+                                //get Payment layout name
+                                service.getAllotLayoutName(item.stmtCode).done(function(stmtName: string) {
+                                    _items.push(new ItemModel({ code: item.stmtCode, name: stmtName, time: item.startYm + '~' + item.endYm }));
+                                    self.listItemDataSources(_items);
+                                }).fail(function(res) {
+                                    alert(res);
+                                });
+                            }
+                        });
+                    } else {
+                        dfd.resolve();
+                    }
+                }).fail(function(res) {
+                    alert(res);
+                });
+            }
+            
             return dfd.promise();
         }
     }
