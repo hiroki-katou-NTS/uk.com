@@ -23,6 +23,12 @@ public class ReportItemDto {
 
 	/** The name. */
 	public String name;
+	
+	/** The is show name. */
+	public boolean isShowName;
+	
+	/** The is show value. */
+	public boolean isShowValue;
 
 	/** The monthly datas. */
 	public List<MonthlyData> monthlyDatas;
