@@ -399,7 +399,6 @@ module qpp011.b {
             });
 
             self.yearInJapanEmpire_B_LBL_010 = ko.observable();
-            self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
             //C
             self.C_INP_001_yearMonth = ko.observable('2017/12');
             self.C_INP_001_yearMonth.subscribe(function(newValue) {
@@ -434,7 +433,6 @@ module qpp011.b {
                 }
             });
             self.yearInJapanEmpire_C_LBL_010 = ko.observable();
-            self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_003_yearMonth()).toString() + ")");
 
 
         }
@@ -467,7 +465,7 @@ module qpp011.b {
 
         checkBValue(): boolean {
             var self = this;
-            if (self.B_INP_001_yearMonth() === "" || self.B_INP_001_yearMonth() === null) {
+            if (!self.B_INP_001_yearMonth()) {
                 nts.uk.ui.dialog.alert("が入力されていません");
                 $('#B_INP_001').focus();
                 return false;
@@ -487,7 +485,11 @@ module qpp011.b {
 
         exportPdf(): void {
             var self = this;
-            self.checkBValue();
+            
+            if (!self.checkBValue()){
+                return;    
+            }
+            
             if (self.selectedValue_B_LST_001().length > 0) {
                 var command = {
                     residentTaxCodeList: self.selectedValue_B_LST_001(),
@@ -533,7 +535,9 @@ module qpp011.b {
         }
         exportText(): void {
             var self = this;
-            self.checkCValue();
+            if(!self.checkCValue()){
+            return;    
+            }
             if (self.selectedValue_C_LST_001().length > 0) {
             } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
