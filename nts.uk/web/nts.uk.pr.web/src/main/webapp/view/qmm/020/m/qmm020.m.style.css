@@ -31,3 +31,7 @@
 	z-index: 99999;
 	background-color: #fff;
 }
+
+.dialog-button-group .x-large {
+	background-color: #a4eeb0;
+}
