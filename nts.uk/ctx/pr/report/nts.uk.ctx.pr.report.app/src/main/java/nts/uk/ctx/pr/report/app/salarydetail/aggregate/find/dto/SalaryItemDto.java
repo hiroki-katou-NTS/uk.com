@@ -7,16 +7,16 @@ package nts.uk.ctx.pr.report.app.salarydetail.aggregate.find.dto;
 import lombok.Data;
 
 /**
- * Instantiates a new master item dto.
+ * The Class SalaryItemDto.
  */
 @Data
 public class SalaryItemDto {
 
-	/** The master code. */
-	private String salaryItemCode;
+	/** The code. */
+	private String code;
 
-	/** The master name. */
-	private String salaryItemName;
+	/** The name. */
+	private String name;
 	
 
 }

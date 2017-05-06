@@ -120,6 +120,7 @@ module nts.uk.pr.view.base.simplehistory.updatehistory {
                     self.dialogOptions.onUpdateCallBack(callBackData).done(() => {
                         nts.uk.ui.windows.close();
                     }).fail((res) => {
+                        nts.uk.ui.dialog.alert(res.message);
                         if (res.messageId == 'ER023') {
                             $('#startYearMonth').ntsError('set', '履歴の期間が重複しています。');
                         }

@@ -9,9 +9,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
 import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
@@ -34,7 +37,7 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 	protected void handle(ExportServiceContext<ResidentialTaxQuery> context) {
 
 		String companyCode = AppContexts.user().companyCode();
-		int Y_K = 2016;
+		int year;
 		Map<String, Double> totalSalaryPaymentAmount = new HashMap<>();
 		Map<String, Double> totalDeliveryAmountRetirement = new HashMap<>();
 		Map<String, Double> totalActualRecieveMnyMap = new HashMap<>();
@@ -42,6 +45,10 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 
 		// get query
 		ResidentialTaxQuery query = context.getQuery();
+		
+		String[]  yearMonth = query.getYearMonth().split("/");
+		year = Integer.parseInt(yearMonth[0]);
+		int yearM = Integer.parseInt(yearMonth[0] + yearMonth[1]);
 
 		// get residential tax
 		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
@@ -57,40 +64,52 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 
 		// QTXMT_RESIDENTIAL_TAXSLIP.SEL_2
 		List<ResidentialTaxSlipDto> residentialTaxSlipDto = residentialTaxRepo.findResidentialTaxSlip(companyCode,
-				query.getYearMonth(), query.getResidentTaxCodeList());
+				yearM, query.getResidentTaxCodeList());
+		if (CollectionUtil.isEmpty(residentialTaxSlipDto)) {
+			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
+		}
 
 		// PPRMT_PERSON_RESITAX.SEL_1
-		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, Y_K,
+		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, year,
 				query.getResidentTaxCodeList());
+		
+		if (CollectionUtil.isEmpty(personResidentTaxList)) {
+			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
+		}
 
 		Map<String, List<PersonResitaxDto>> personResidentTaxListMap = personResidentTaxList.stream()
 				.collect(Collectors.groupingBy(PersonResitaxDto::getResidenceCode, Collectors.toList()));
 
-		// PAYMENTDETAI.SEL_6
-		// List<String> personIdList = personResidentTaxList.stream().map(x ->
-		// x.getPersonID()).collect(Collectors.toList());
-		String processingYearMonth = String.valueOf(query.getProcessingYearMonth());
-		int year = Integer.valueOf(processingYearMonth.substring(0, 4));
-		int month = Integer.valueOf(processingYearMonth.substring(4, 6));
-		GeneralDate baseRangeStartYearMonth = GeneralDate.ymd(2017, 03, 11);
+		//String processingYearMonth = String.valueOf(query.getProcessingYearMonth());
+		String[]  processingYearMonth = query.getProcessingYearMonth().split("/");
+		int processingYear = Integer.valueOf(Integer.parseInt(processingYearMonth[0]));
+		int processingMonth = Integer.valueOf(Integer.parseInt(processingYearMonth[1]));
+		int processingYM = Integer.parseInt(processingYearMonth[0] + processingYearMonth[1]);
+		//20170311
+		GeneralDate baseRangeStartYearMonth = GeneralDate.ymd(processingYear, processingMonth, 11);
 		// GeneralDate baseRangeEndYearMonth = query.getEndDate();
 		GeneralDate baseRangeEndYearMonth = GeneralDate.ymd(2017, 04, 01);
 		for (ResidentialTaxSlipDto residentialTax : residentialTaxSlipDto) {
 
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(residentialTax.getResiTaxCode());
+			if (CollectionUtil.isEmpty(personResitaxList)) {
+				continue;
+			}
+			
 			List<String> personIdList = personResitaxList.stream().map(x -> x.getPersonID())
 					.collect(Collectors.toList());
 
 			List<PaymentDetailDto> paymentDetailList = residentialTaxRepo.findPaymentDetail(companyCode, personIdList,
-					PayBonusAtr.SALARY, Integer.parseInt(query.getProcessingYearMonth()), CategoryAtr.DEDUCTION, "F108");
+					PayBonusAtr.SALARY, processingYM, CategoryAtr.DEDUCTION, "F108");
 
 			double totalValue = paymentDetailList.stream().mapToDouble(x -> x.getValue().doubleValue()).sum();
 			totalSalaryPaymentAmount.put(residentialTax.getResiTaxCode(),
 					totalValue + residentialTax.getTaxPayrollMny().doubleValue());
+			
 
 			// RETIREMENT_PAYMENT(退職金明細データ).SEL-2
 			List<RetirementPaymentDto> retirementPaymentList = residentialTaxRepo.findRetirementPaymentList(companyCode,
-					personIdList, baseRangeStartYearMonth, baseRangeEndYearMonth);
+					personIdList, baseRangeStartYearMonth, query.getEndDate());
 			double totalCityTaxMny = retirementPaymentList.stream().mapToDouble(x -> x.getCityTaxMny().doubleValue())
 					.sum();
 			double totalPrefectureTaxMny = retirementPaymentList.stream()
@@ -104,7 +123,7 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 					residentialTax.getHeadCount().intValue() + personResitaxList.size());
 
 		}
-		;
+		
 		// List<String> personIdList = personResidentTaxListMap
 
 		// return
@@ -113,12 +132,13 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 		Map<String, ResidentialTaxSlipDto> residentialTaxSlipMap = residentialTaxSlipDto.stream()
 				.collect(Collectors.toMap(ResidentialTaxSlipDto::getResiTaxCode, y -> y));
 
-		// Map<String, PaymentDetailDto> paymentDetailListMap =
-		// paymentDetailList.stream().collect(Collectors.toMap(keyMapper,
-		// valueMapper));
 
 		for (ResidentialTaxDto residentialTax : residentTaxList) {
 			ResidentialTaxSlipDto residentialTaxSlip = residentialTaxSlipMap.get(residentialTax.getResidenceTaxCode());
+			if (residentialTaxSlip == null) {
+				continue;
+			}
+			
 			Double salaryPaymentAmount = totalSalaryPaymentAmount.get(residentialTax.getResidenceTaxCode());
 			Double deliveryAmountRetirement = totalDeliveryAmountRetirement.get(residentialTax.getResidenceTaxCode());
 			Double totalAmountTobePaid = totalSalaryPaymentAmount.get(residentialTax.getResidenceTaxCode())

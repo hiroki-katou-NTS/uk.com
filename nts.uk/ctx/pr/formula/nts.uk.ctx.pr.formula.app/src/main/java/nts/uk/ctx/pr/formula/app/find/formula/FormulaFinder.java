@@ -29,7 +29,7 @@ public class FormulaFinder {
 	public List<FormulaFinderDto> init() {
 
 		LoginUserContext login = AppContexts.user();
-		boolean isExistedFormula = this.repository.isExistedFormula(login.companyCode());
+		boolean isExistedFormula = this.repository.isExistedFormulaByCompanyCode(login.companyCode());
 
 		if (!isExistedFormula) {
 			return null;

@@ -14,12 +14,8 @@ module nts.uk.pr.view.qmm008.e {
          * Function is used to load office detail by office code
          */
         export function getOfficeItemDetail(code: string): JQueryPromise<model.finder.OfficeItemDto> {
-            var dfd = $.Deferred<model.finder.OfficeItemDto>();
             var findPath = servicePath.getOfficeDetailData + "/" + code;
-            nts.uk.request.ajax(findPath).done(function(data: model.finder.OfficeItemDto) {
-                dfd.resolve(data);
-            });
-            return dfd.promise();
+            return nts.uk.request.ajax(findPath);
         }
 
         /**
@@ -33,7 +29,6 @@ module nts.uk.pr.view.qmm008.e {
          * Function is used to update office data
          */
         export function update(data: model.finder.OfficeItemDto): JQueryPromise<model.finder.OfficeItemDto> {
-
             return nts.uk.request.ajax(servicePath.updateOffice, data);
         }
         

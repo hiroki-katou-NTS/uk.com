@@ -27,11 +27,11 @@ public class SalaryAggregateItemWs extends WebService {
 
 	/** The find. */
 	@Inject
-	private SalaryAggregateItemFinder find;
+	private SalaryAggregateItemFinder finder;
 
 	/** The save. */
 	@Inject
-	private SalaryAggregateItemSaveCommandHandler save;
+	private SalaryAggregateItemSaveCommandHandler handler;
 
 	/**
 	 * Find salary aggregate item.
@@ -44,7 +44,7 @@ public class SalaryAggregateItemWs extends WebService {
 	@Path("findSalaryAggregateItem")
 	public SalaryAggregateItemFindDto findSalaryAggregateItem(
 		SalaryAggregateItemInDto salaryAggregateItemInDto) {
-		return this.find.findSalaryAggregateItem(salaryAggregateItemInDto);
+		return this.finder.findSalaryAggregateItem(salaryAggregateItemInDto);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class SalaryAggregateItemWs extends WebService {
 	@POST
 	@Path("findall")
 	public List<SalaryAggregateItemFindDto> findAll() {
-		return this.find.findAll();
+		return this.finder.findAll();
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class SalaryAggregateItemWs extends WebService {
 	@POST
 	@Path("save")
 	public void save(SalaryAggregateItemSaveCommand command) {
-		this.save.handle(command);
+		this.handler.handle(command);
 	}
 
 }

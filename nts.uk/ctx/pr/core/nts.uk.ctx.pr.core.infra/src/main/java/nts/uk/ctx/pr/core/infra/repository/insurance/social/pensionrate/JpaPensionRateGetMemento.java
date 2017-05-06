@@ -52,7 +52,7 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	 */
 	@Override
 	public String getHistoryId() {
-		return this.typeValue.getQismtPensionRatePK().getHistId();
+		return this.typeValue.getHistId();
 	}
 
 	/*
@@ -64,7 +64,7 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	 */
 	@Override
 	public String getCompanyCode() {
-		return this.typeValue.getQismtPensionRatePK().getCcd();
+		return this.typeValue.getCcd();
 	}
 
 	/*
@@ -76,7 +76,7 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	 */
 	@Override
 	public OfficeCode getOfficeCode() {
-		return new OfficeCode(this.typeValue.getQismtPensionRatePK().getSiOfficeCd());
+		return new OfficeCode(this.typeValue.getSiOfficeCd());
 	}
 
 	/*

@@ -18,7 +18,6 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRoundin
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
-import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRatePK;
 
 /**
  * The Class JpaHealthInsuranceRateSetMemento.
@@ -46,9 +45,7 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		QismtHealthInsuRatePK qismtHealthInsuRatePK = new QismtHealthInsuRatePK();
-		qismtHealthInsuRatePK.setHistId(historyId);
-		this.typeValue.setQismtHealthInsuRatePK(qismtHealthInsuRatePK);
+		this.typeValue.setHistId(historyId);
 	}
 
 	/*
@@ -60,9 +57,7 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setCompanyCode(String companyCode) {
-		QismtHealthInsuRatePK qismtHealthInsuRatePK = this.typeValue.getQismtHealthInsuRatePK();
-		qismtHealthInsuRatePK.setCcd(companyCode);
-		this.typeValue.setQismtHealthInsuRatePK(qismtHealthInsuRatePK);
+		this.typeValue.setCcd(companyCode);
 	}
 
 	/*
@@ -74,9 +69,7 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setOfficeCode(OfficeCode officeCode) {
-		QismtHealthInsuRatePK qismtHealthInsuRatePK = this.typeValue.getQismtHealthInsuRatePK();
-		qismtHealthInsuRatePK.setSiOfficeCd(officeCode.v());
-		this.typeValue.setQismtHealthInsuRatePK(qismtHealthInsuRatePK);
+		this.typeValue.setSiOfficeCd(officeCode.v());
 	}
 
 	/*

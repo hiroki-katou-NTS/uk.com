@@ -495,10 +495,12 @@ module qpp011.b {
                     residentTaxCodeList: self.selectedValue_B_LST_001(),
                     companyLogin: self.B_SEL_001_selectedId(),
                     regalDocCompanyCode: self.B_SEL_002_selectedCode(),
-                    yearMonth: 201612,
-                    processingYearMonth: 201703,
+                    //201612 self.B_INP_001_yearMonth()
+                    yearMonth: self.B_INP_001_yearMonth(),
+                    //201703 
+                    processingYearMonth: self.B_INP_002_yearMonth(),
                     processingYearMonthJapan: nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString(),
-                    endDate: new Date("2017/04/26"),
+                    endDate: new Date(self.B_INP_003_yearMonth()),
                     endDateJapan: nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString()
                 };
 

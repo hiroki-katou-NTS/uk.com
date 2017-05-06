@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.wageledger;
 
+import java.util.List;
+
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 
@@ -19,5 +21,5 @@ public interface WLOldLayoutReportGenerator {
 	 * @param reportData the report data
 	 */
 	void generate(FileGeneratorContext fileContext, 
-			WLOldLayoutReportData reportData, WageLedgerReportQuery query);
+			List<WLOldLayoutReportData> reportData, WageLedgerReportQuery query);
 }

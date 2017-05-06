@@ -21,7 +21,8 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class UpdatePensionAvgearnCommandHandler.
  */
 @Stateless
-public class UpdatePensionAvgearnCommandHandler extends CommandHandler<UpdatePensionAvgearnCommand> {
+public class UpdatePensionAvgearnCommandHandler
+		extends CommandHandler<UpdatePensionAvgearnCommand> {
 
 	/** The pension avgearn repository. */
 	@Inject
@@ -41,11 +42,8 @@ public class UpdatePensionAvgearnCommandHandler extends CommandHandler<UpdatePen
 		UpdatePensionAvgearnCommand command = context.getCommand();
 
 		// Map to domain
-		List<PensionAvgearn> updatedPensionAvgearns = command.getListPensionAvgearnDto().stream().map(item -> {
-			PensionAvgearn domain = new PensionAvgearn(item);
-			domain.setHistoryId(command.getHistoryId());
-			return domain;
-		}).collect(Collectors.toList());
+		List<PensionAvgearn> updatedPensionAvgearns = command.getListPensionAvgearnDto().stream()
+				.map(item -> item.toDomain(command.getHistoryId())).collect(Collectors.toList());
 
 		// Update
 		pensionAvgearnRepository.update(updatedPensionAvgearns, AppContexts.user().companyCode(),

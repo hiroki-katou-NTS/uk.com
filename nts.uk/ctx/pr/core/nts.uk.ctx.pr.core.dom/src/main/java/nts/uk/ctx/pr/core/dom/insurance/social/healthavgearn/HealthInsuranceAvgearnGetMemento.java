@@ -22,6 +22,20 @@ public interface HealthInsuranceAvgearnGetMemento {
 	 * @return the level code
 	 */
 	Integer getGrade();
+	
+	/**
+ 	 * Gets the avg earn.
+ 	 *
+ 	 * @return the avg earn
+ 	 */
+ 	Long getAvgEarn();
+
+	/**
+ 	 * Gets the upper limit.
+ 	 *
+ 	 * @return the upper limit
+ 	 */
+ 	Long getUpperLimit();
 
 	/**
 	 * Gets the company avg.

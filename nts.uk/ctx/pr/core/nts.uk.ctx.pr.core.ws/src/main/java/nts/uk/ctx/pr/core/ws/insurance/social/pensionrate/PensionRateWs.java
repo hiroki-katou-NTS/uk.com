@@ -14,10 +14,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.UpdatePensionCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.UpdatePensionCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionRateCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionRateCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.UpdatePensionRateCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.UpdatePensionRateCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find.PensionOfficeItemDto;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find.PensionRateDto;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find.PensionRateFinder;
@@ -46,11 +46,11 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 
 	/** The update pension command handler. */
 	@Inject
-	private UpdatePensionCommandHandler updatePensionCommandHandler;
+	private UpdatePensionRateCommandHandler updatePensionCommandHandler;
 
 	/** The delete pension command handler. */
 	@Inject
-	private DeletePensionCommandHandler deletePensionCommandHandler;
+	private DeletePensionRateCommandHandler deletePensionCommandHandler;
 
 	/** The social insurance office repository. */
 	@Inject
@@ -94,7 +94,7 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	 */
 	@POST
 	@Path("update")
-	public void update(UpdatePensionCommand command) {
+	public void update(UpdatePensionRateCommand command) {
 		updatePensionCommandHandler.handle(command);
 	}
 
@@ -105,7 +105,7 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	 */
 	@POST
 	@Path("remove")
-	public void remove(DeletePensionCommand command) {
+	public void remove(DeletePensionRateCommand command) {
 		deletePensionCommandHandler.handle(command);
 	}
 
