@@ -44,7 +44,6 @@ module qmm019.g.viewmodel {
             self.selectStmtCode = ko.observable(null);
             self.selectStmtName = ko.observable(null);
             self.selectStartYm = ko.observable(null);
-            console.log(option);
             self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({
                 inputFormat: "yearmonth"
             }));

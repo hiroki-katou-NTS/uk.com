@@ -31,13 +31,10 @@ module qmm019.d.viewmodel {
             self.selectStmtName = ko.observable(null);
             //self.selectStartYm =  ko.observable(null);
             self.selectStartYm = ko.observable(nts.uk.ui.windows.getShared('startYm'));
-            console.log(self.selectStartYm());
             self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode'));
             self.valueSel001 = ko.observable("");
             self.createlayout = ko.observable(null);
             self.startYmHis = ko.observable(nts.uk.ui.windows.getShared('startYm'));
-            console.log(self.startYmHis());
-            console.log(option);
             self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
             //---radio
             self.itemsRadio = ko.observableArray([
