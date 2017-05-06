@@ -268,75 +268,80 @@ module qmm020.c.viewmodel {
             nts.uk.ui.windows.sub.modal('../j/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ霑ｽ蜉�' })
                 .onClosed(function() {
                     let returnJDialog: string = nts.uk.ui.windows.getShared('returnJDialog');
-                    var modeRadio = returnJDialog.split("~")[0];
-                    var returnValue = returnJDialog.split("~")[1];
-                    if (returnValue != '') {
-                        //                        let employeeAllotSettings = new Array<EmployeeAllotSettingDto>();
-                        var items = self.itemTotalList();
-                        var addItem;
-                        var copItem;
-                        if (modeRadio === "2") {
-                            addItem = new TotalModel({
-                                historyId: '',
-                                employmentCode: '',
-                                paymentDetailCode: '',
-                                bonusDetailCode: '',
-                                startYm: returnValue,
-                                endYm: '999912',
-                                startEnd: (returnValue + ' ~ ' + '999912')
-                            });
-                            items.push(addItem);
-                        } else {
-                            copItem = new TotalModel({
-                                historyId: '',
-                                employmentCode: '',
-                                employmentName: '',
-                                paymentDetailCode: '',
-                                paymentDetailName: '',
-                                bonusDetailCode: '',
-                                bonusDetailName: '',
-                                startYm: returnValue,
-                                endYm: '999912',
-                                startEnd: (returnValue + ' ~ ' + '999912')
-                            });
-                            self.currentItem().historyId(copItem.historyId());
-                            self.currentItem().startYm(returnValue);
-                            self.currentItem().endYm('999912');
-                            self.currentItem().employmentCode(self.maxItem().historyId());
-                            //get employmentName, paymentDetailName, paymentDetailCode
-                            let dfd = $.Deferred<any>();
-                            service.getAllEmployeeAllotSetting(ko.toJS(self.maxItem().historyId())).done(function(data) {
-                                self.itemListDetail([]);
-                                if (data && data.length > 0) {
-                                    _.map(data, function(item: IModel) {
-                                        self.itemListDetail.push(new copItem(item.historyId, item.employmentCode, item.employmentName, item.paymentDetailCode
-                                            , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName, item.startYm, item.endYm, item.startEnd));
-                                    });
-                                    self.currentItem().employmentCode(ko.toJS(self.itemListDetail()[0].employmentCode));
-                                    self.currentItem().employmentName(ko.toJS(self.itemListDetail()[0].employmentName));
-                                    self.currentItem().paymentDetailCode(ko.toJS(self.itemListDetail()[0].paymentDetailCode));
-                                    self.currentItem().paymentDetailName(ko.toJS(self.itemListDetail()[0].paymentDetailName));
-                                    self.currentItem().bonusDetailCode(ko.toJS(self.itemListDetail()[0].bonusDetailCode));
-                                    self.currentItem().bonusDetailName(ko.toJS(self.itemListDetail()[0].bonusDetailName));
+                    if (!nts.uk.util.isNullOrUndefined(returnJDialog)) {
+
+                        var modeRadio = returnJDialog.split("~")[0];
+                        var returnValue = returnJDialog.split("~")[1];
+                        if (returnValue != '') {
+                            //                        let employeeAllotSettings = new Array<EmployeeAllotSettingDto>();
+                            var items = self.itemTotalList();
+                            var addItem;
+                            var copItem;
+                            if (modeRadio === "2") {
+                                addItem = new TotalModel({
+                                    historyId: '',
+                                    employmentCode: '',
+                                    paymentDetailCode: '',
+                                    bonusDetailCode: '',
+                                    startYm: returnValue,
+                                    endYm: '999912',
+                                    startEnd: (returnValue + ' ~ ' + '999912')
+                                });
+                                items.push(addItem);
+                            } else {
+                                copItem = new TotalModel({
+                                    historyId: '',
+                                    employmentCode: '',
+                                    employmentName: '',
+                                    paymentDetailCode: '',
+                                    paymentDetailName: '',
+                                    bonusDetailCode: '',
+                                    bonusDetailName: '',
+                                    startYm: returnValue,
+                                    endYm: '999912',
+                                    startEnd: (returnValue + ' ~ ' + '999912')
+                                });
+                                self.currentItem().historyId(copItem.historyId());
+                                self.currentItem().startYm(returnValue);
+                                self.currentItem().endYm('999912');
+                                self.currentItem().employmentCode(self.maxItem().historyId());
+                                //get employmentName, paymentDetailName, paymentDetailCode
+                                let dfd = $.Deferred<any>();
+                                service.getAllEmployeeAllotSetting(ko.toJS(self.maxItem().historyId())).done(function(data) {
+                                    self.itemListDetail([]);
+                                    if (data && data.length > 0) {
+                                        _.map(data, function(item: IModel) {
+                                            self.itemListDetail.push(new copItem(item.historyId, item.employmentCode, item.employmentName, item.paymentDetailCode
+                                                , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName, item.startYm, item.endYm, item.startEnd));
+                                        });
+                                        self.currentItem().employmentCode(ko.toJS(self.itemListDetail()[0].employmentCode));
+                                        self.currentItem().employmentName(ko.toJS(self.itemListDetail()[0].employmentName));
+                                        self.currentItem().paymentDetailCode(ko.toJS(self.itemListDetail()[0].paymentDetailCode));
+                                        self.currentItem().paymentDetailName(ko.toJS(self.itemListDetail()[0].paymentDetailName));
+                                        self.currentItem().bonusDetailCode(ko.toJS(self.itemListDetail()[0].bonusDetailCode));
+                                        self.currentItem().bonusDetailName(ko.toJS(self.itemListDetail()[0].bonusDetailName));
+                                        dfd.resolve();
+                                    }
+
+                                    $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
                                     dfd.resolve();
-                                }
+                                }).fail(function(res) {
+                                    // Alert message
+                                    alert(res);
+                                });
+                                dfd.promise();
 
-                                $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
-                                dfd.resolve();
-                            }).fail(function(res) {
-                                // Alert message
-                                alert(res);
-                            });
-                            dfd.promise();
+                                items.push(copItem);
 
-                            items.push(copItem);
+                            }
 
+                            self.itemTotalList([]);
+                            self.itemTotalList(items);
                         }
-
-                        self.itemTotalList([]);
-                        self.itemTotalList(items);
                     }
                 });
+
+
         }
         //Open dialog Edit History
         openKDialog() {

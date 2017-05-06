@@ -14,6 +14,7 @@ module qmm020.j.viewmodel {
         //focus input
         isSelected: KnockoutObservable<boolean>;
         maxYm: KnockoutObservable<any>;
+        input001: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -23,6 +24,7 @@ module qmm020.j.viewmodel {
             self.selectedValue = ko.observable(1);
             self.isSelected = ko.observable(true);
             self.maxYm = ko.observable('abc');
+            self.input001 = ko.observable();
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
             //Tab Selected
             self.valueShareJDialog = ko.observable(nts.uk.ui.windows.getShared('valJDialog'));
@@ -69,9 +71,11 @@ module qmm020.j.viewmodel {
                 $('#J_INP_001').ntsError('set', Error.ER023);
             }
 
-            if (self.valueShareJDialog().split('~')[0] === "1") {
+            if (ko.mapping.toJS(self.valueShareJDialog()).split('~')[0] === "1") {
                 var radioCheckVal = self.selectedValue();
                 var inputYm = $('#J_INP_001').val();
+                self.input001(inputYm);
+                console.log('aaa');
                 if (!nts.uk.time.parseYearMonth(inputYm).success) {
                     alert(nts.uk.time.parseYearMonth(inputYm).msg);
                     return false;
