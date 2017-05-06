@@ -67,18 +67,18 @@ module qpp008.a.viewmodel {
 
             ]);
             self.statusRegisterSelectCode = ko.observableArray([]);
-            
+
             self.employyerList = ko.observableArray([
-                new Employee("999000000000000000000000000000000001", "A", "A"),
-                new Employee("999000000000000000000000000000000002", "B", "B"),
-                new Employee("999000000000000000000000000000000003", "C", "C"),
-                new Employee("999000000000000000000000000000000004", "D", "D"),
-                new Employee("999000000000000000000000000000000005", "E", "E"),
-                new Employee("999000000000000000000000000000000006", "F", "F"),
-                new Employee("999000000000000000000000000000000007", "G", "G"),
-                new Employee("999000000000000000000000000000000008", "H", "H"),
-                new Employee("999000000000000000000000000000000009", "I", "I"),
-                new Employee("999000000000000000000000000000000010", "K", "K")
+                new Employee("99900000-0000-0000-0000-000000000001", "A", ""),
+                new Employee("99900000-0000-0000-0000-000000000002", "B", ""),
+                new Employee("99900000-0000-0000-0000-000000000003", "c", ""),
+                new Employee("99900000-0000-0000-0000-000000000004", "d", ""),
+                new Employee("99900000-0000-0000-0000-000000000005", "f", ""),
+                new Employee("99900000-0000-0000-0000-000000000006", "g", ""),
+                new Employee("99900000-0000-0000-0000-000000000007", "h", ""),
+                new Employee("99900000-0000-0000-0000-000000000008", "k", ""),
+                new Employee("99900000-0000-0000-0000-000000000009", "t", ""),
+                new Employee("99900000-0000-0000-0000-0000000000010", "A", "")
             ]);
             self.employyerColumns = ko.observableArray([
                 { headerText: '社員CD', prop: 'code', width: 200 },
@@ -118,10 +118,10 @@ module qpp008.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            return  self.loadComparingFormHeader();
+            return self.loadComparingFormHeader();
         }
-        
-        loadComparingFormHeader(){
+
+        loadComparingFormHeader() {
             let self = this;
             let dfd = $.Deferred();
             self.formHeaderList([]);
@@ -141,10 +141,12 @@ module qpp008.a.viewmodel {
         private toJSObjet(): any {
             let self = this;
             let command: any = {};
-            command.month1 = self.processingYMEarlierValue();
-            command.month2 = self.processingYMLaterValue();
-            command.payBonusAttr = 0;
+            //command.formCode = self.selectedCodeCbb1();
             command.employeeCodeList = self.employyerCurrentCodeList();
+            command.month1 = self.processingYMEarlierValue().trim().replace("/","");
+            command.month2 = self.processingYMLaterValue().trim().replace("/", "");
+            command.formCode = '114';
+            command.payBonusAttr = 0;
             return command;
         }
         /**
@@ -165,14 +167,14 @@ module qpp008.a.viewmodel {
         openDialogB() {
             let self = this;
             nts.uk.ui.windows.sub.modal('/view/qpp/008/b/index.xhtml', { title: '印刷設定' }).onClosed(function(): any {
-                
+
             });
         }
 
         openDialogC() {
             let self = this;
             nts.uk.ui.windows.sub.modal('/view/qpp/008/c/index.xhtml', { title: '出力項目の設定（共通）' }).onClosed(function(): any {
-                self.loadComparingFormHeader().done(function(){
+                self.loadComparingFormHeader().done(function() {
                     self.formHeaderSelectCode(nts.uk.ui.windows.getShared('qpp008_form_header_code'));
                 });
             });
@@ -183,7 +185,7 @@ module qpp008.a.viewmodel {
             nts.uk.ui.windows.setShared('qpp008_processingYMEarlierValue', self.processingYMEarlierValue(), true);
             nts.uk.ui.windows.setShared('qpp008_processingYMLaterValue', self.processingYMLaterValue(), true);
             nts.uk.ui.windows.sub.modal('/view/qpp/008/g/index.xhtml', { title: '差異を確認' }).onClosed(function(): any {
-                
+
             });
         }
     }
