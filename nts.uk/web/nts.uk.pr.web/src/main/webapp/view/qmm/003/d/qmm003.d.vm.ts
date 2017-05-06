@@ -46,9 +46,7 @@ module qmm003.d.viewmodel {
                     self.nodeRegionPrefectures([]);
                     nts.uk.ui.windows.close();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message).then(function(data) {
-                        nts.uk.ui.windows.close();
-                    });
+                    nts.uk.ui.dialog.alert(res.message);
                 });
             } else {
                 nts.uk.ui.dialog.alert("住民税納付先コード が選択されていません。");
