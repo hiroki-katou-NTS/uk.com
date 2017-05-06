@@ -362,7 +362,8 @@ module qmm019.a {
                 || self.layoutMaster().historyId === undefined)
                 return false;
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-            nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
+            nts.uk.ui.windows.setShared('startYm', self.startYm());
+            nts.uk.ui.windows.setShared('endYm', self.endYm());
             nts.uk.ui.windows.setShared('historyId', self.layoutMaster().historyId);
             nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
                 self.start(self.singleSelectedCode());

@@ -234,7 +234,7 @@ module qmm019.g.viewmodel {
                 startYmCopied: +self.startYmCopy,
                 stmtCode: stmtCd,
                 startYm: + $('#INP_003').val().replace('/', ''),
-                layoutAtr: parseInt(self.selectLayoutCode()),
+                layoutAtr: parseInt(self.selectedCodes()),
                 stmtName: self.layoutName() + "",
                 endYm: 999912
             });
