@@ -2,24 +2,22 @@ module ccg014.a.viewmodel {
     export class ScreenModel {
         // TitleMenu List
         listTitleMenu: KnockoutObservableArray<any>;
-        selectedTitleMenuCode: KnockoutObservable<string>;
+        selectedTitleMenuCD: KnockoutObservable<string>;
         columns: KnockoutObservableArray<any>;
         // TitleMenu Details
         selectedTitleMenu: KnockoutObservable<model.TitleMenu>;
         isCreate: KnockoutObservable<boolean>;
-        // OpenDdialogB
-        titleMenuCD: KnockoutObservableArray<string>;
-        name: KnockoutObservableArray<string>
+
         constructor() {
             var self = this;
             // TitleMenu List
             self.listTitleMenu = ko.observableArray([]);
-            self.selectedTitleMenuCode = ko.observable(null);
-            self.selectedTitleMenuCode.subscribe((value) => {
+            self.selectedTitleMenuCD = ko.observable(null);
+            self.selectedTitleMenuCD.subscribe((value) => {
                 self.findSelectedTitleMenu(value);
             });
             self.columns = ko.observableArray([
-               
+
                 { headerText: 'コード', key: 'titleMenuCD', width: 100 },
                 { headerText: '名称', key: 'name', width: 150 }
             ]);
@@ -33,25 +31,7 @@ module ccg014.a.viewmodel {
 
         /** Start Page */
         startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            /** Get list TitleMenu*/
-            service.getAllTitleMenu().done(function(listTitleMenu: Array<model.TitleMenu>) {
-                console.log(listTitleMenu);
-                self.listTitleMenu(listTitleMenu);
-                if (listTitleMenu.length > 0) {
-                    self.selectFirstTitleMenu();
-                    self.isCreate(false);
-                }
-                else {
-                    self.isCreate(true);
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-            });
-            dfd.resolve();
-            return dfd.promise();
+            return this.reloadData();
         }
 
         /** Get Selected TitleMenu */
@@ -67,27 +47,47 @@ module ccg014.a.viewmodel {
             }
         }
 
-        /** Get First TitleMenu */
-        selectFirstTitleMenu() {
-            var self = this;
-            var fistTitleMenu = _.head(self.listTitleMenu());
-            if (fistTitleMenu !== undefined)
-                self.selectedTitleMenuCode(fistTitleMenu.titleMenuCD);
-            else
-                self.selectedTitleMenuCode(null);
-        }
-
         /** Create Button Click */
         createButtonClick() {
             this.isCreate(true);
         }
 
-        /** Init Mode */
-        changeInitMode(isCreate: boolean) {
+        /** Registry Button Click */
+        registryButtonClick() {
             var self = this;
-            if (isCreate === true) {
-                self.selectedTitleMenuCode(null);
-                $("#titleMenuCD").focus();
+            var titleMenu = ko.mapping.toJS(self.selectedTitleMenu);
+            if (self.isCreate() === true) {
+                service.createTitleMenu(titleMenu).done((data) => {
+                    if (data === true) {
+                        nts.uk.ui.dialog.alert("Msg_15");
+                        self.reloadData();
+                    }
+                    else {
+                        nts.uk.ui.dialog.alert("Msg_3");
+                    }
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert("Msg_3");
+                });
+            }
+            else {
+                service.updateTitleMenu(titleMenu).done((data) => {
+                    nts.uk.ui.dialog.alert("Msg_15");
+                    self.reloadData(false);
+                });
+            }
+        }
+        
+        /**Delete Button Click */
+        removeTitleMenu() {
+            var self = this;
+            if (self.selectedTitleMenuCD() !== null) {
+                nts.uk.ui.dialog.confirm("Do you want to delete").ifYes(function(){
+                    service.deleteTitleMenu(self.selectedTitleMenuCD()).done(() => {
+                        self.reloadData(false);
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alert("Fail!")
+                    });
+                })
             }
         }
 
@@ -99,6 +99,54 @@ module ccg014.a.viewmodel {
         /** Open 030A Dialog */
         open030A_Dialog() {
             nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: 'フローメニューの設定', dialogClass: "no-close" });
+        }
+        
+        /** Init Mode */
+        private changeInitMode(isCreate: boolean) {
+            var self = this;
+            if (isCreate === true) {
+                self.selectedTitleMenuCD(null);
+                _.defer(()=>{$("#titleMenuCD").focus();});
+            }
+        }
+        
+        /** Open 030A Dialog */
+        private reloadData(isStart?: boolean): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            isStart = (isStart !== undefined) ? isStart : true;
+            var index = 0;
+            if (!isStart) {
+                index = _.findIndex(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
+                index = _.min([self.listTitleMenu().length - 2, index]);
+            }
+            /** Get list TitleMenu*/
+            service.getAllTitleMenu().done(function(listTitleMenu: Array<model.TitleMenu>) {
+                self.listTitleMenu(listTitleMenu);
+                if (listTitleMenu.length > 0) {
+                    self.selectTitleMenu(index);
+                    self.isCreate(false);
+                }
+                else {
+                    self.findSelectedTitleMenu(null);
+                    self.isCreate(true);
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                dfd.fail();
+                alert(error.message);
+            });
+            return dfd.promise();
+        }
+        
+        /** Get First TitleMenu */
+        private selectTitleMenu(index: number) {
+            var self = this;
+            var selectTitleMenu = _.nth(self.listTitleMenu(), index);
+            if (selectTitleMenu !== undefined)
+                self.selectedTitleMenuCD(selectTitleMenu.titleMenuCD);
+            else
+                self.selectedTitleMenuCD(null);
         }
     }
 

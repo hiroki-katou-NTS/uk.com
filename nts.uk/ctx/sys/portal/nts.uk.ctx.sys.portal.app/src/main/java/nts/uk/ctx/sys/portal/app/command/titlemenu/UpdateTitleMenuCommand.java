@@ -1,14 +1,22 @@
-/**
- * @author hieult
- */
+
 package nts.uk.ctx.sys.portal.app.command.titlemenu;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenu;
 import nts.uk.shr.com.context.AppContexts;
 
-@Value
+@Getter	
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor	
+/**
+ * @author hieult
+ */
 public class UpdateTitleMenuCommand {
+	
 	private String titleMenuCD;
 
 	private String name;

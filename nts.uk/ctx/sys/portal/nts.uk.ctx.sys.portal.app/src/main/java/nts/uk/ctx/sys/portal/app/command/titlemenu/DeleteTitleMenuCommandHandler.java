@@ -17,6 +17,6 @@ public class DeleteTitleMenuCommandHandler extends CommandHandler<DeleteTitleMen
 	@Override
 	protected void handle(CommandHandlerContext<DeleteTitleMenuCommand> context) {
 		String companyID = AppContexts.user().companyID();
-		repository.remove(companyID, context.getCommand().getTitleMenuID());
+		repository.remove(companyID, context.getCommand().getTitleMenuCD());
 	}
 }

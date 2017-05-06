@@ -4,23 +4,26 @@ module ccg014.a.service {
         createTitleMenu: "sys/portal/titlemenu/create",
         deleteTitleMenu: "sys/portal/titlemenu/delete",
         updateTitleMenu: "sys/portal/titlemenu/update",
-        
     }
-    // Get TitleMenu
-    export function getAllTitleMenu (): JQueryPromise<Array<viewmodel.model.TitleMenuDto>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.getAllTitleMenu)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    
+    /** Get TitleMenu */
+    export function getAllTitleMenu(): JQueryPromise<Array<viewmodel.model.TitleMenu>> {
+        return nts.uk.request.ajax("com", paths.getAllTitleMenu);
     }
 
-     /** Init TitleMenu */
-     
+    /** Function is used to delete Title Menu */
+    export function deleteTitleMenu(titleMenuCD: string): JQueryPromise<void> {
+        return nts.uk.request.ajax("com", paths.deleteTitleMenu, titleMenuCD);
+    }
     
+    /** Create Title Menu */
+    export function createTitleMenu(titleMenu: viewmodel.model.TitleMenu): JQueryPromise<boolean> {
+        return nts.uk.request.ajax("com", paths.createTitleMenu, titleMenu);
+    }
+    
+    /** Update Title Menu */
+    export function updateTitleMenu(titleMenu: viewmodel.model.TitleMenu): JQueryPromise<void> {
+        return nts.uk.request.ajax("com", paths.updateTitleMenu, titleMenu);
+    }
 
 }

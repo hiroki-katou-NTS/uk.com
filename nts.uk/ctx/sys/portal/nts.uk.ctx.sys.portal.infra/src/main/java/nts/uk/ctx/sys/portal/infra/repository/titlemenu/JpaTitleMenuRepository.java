@@ -16,7 +16,7 @@ import nts.uk.ctx.sys.portal.infra.entity.titlemenu.CcgmtTitleMenuPK;
 public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRepository{
 	
 	private final String SELECT= "SELECT c FROM CcgmtTitleMenu c";
-	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTitleMenu c WHERE c.ccgmtTitleMenuPK.companyID = :companyID AND c.ccgmtTitleMenuPK.titlemenuCD = :titlemenuCD";
+	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTitleMenu c WHERE c.ccgmtTitleMenuPK.companyID = :companyID AND c.ccgmtTitleMenuPK.titleMenuCD = :titleMenuCD";
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.ccgmtTitleMenuPK.companyID = :companyID";
 	
 	/**
@@ -42,7 +42,7 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 		return this.queryProxy()
 				.query(SELECT_SINGLE, CcgmtTitleMenu.class)
 				.setParameter("companyID", companyID)
-				.setParameter("titlemenuCD", titleMenuCD)
+				.setParameter("titleMenuCD", titleMenuCD)
 				.getSingle(c -> toDomain(c));
 	}
 	/**
@@ -78,8 +78,8 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 		return TitleMenu.createFromJavaType(
 				entity.ccgmtTitleMenuPK.companyID,
 				entity.ccgmtTitleMenuPK.titleMenuCD,
-				entity.layoutID,
-				entity.name);
+				entity.name,
+				entity.layoutID);
 	}
 	private CcgmtTitleMenu toEntity (TitleMenu domain){
 		return new CcgmtTitleMenu (

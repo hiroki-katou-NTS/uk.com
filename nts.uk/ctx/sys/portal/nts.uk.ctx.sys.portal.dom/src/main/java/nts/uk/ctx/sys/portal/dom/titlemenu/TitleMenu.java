@@ -17,13 +17,13 @@ public class TitleMenu extends AggregateRoot {
 	/** TitleMenuCD */
 	private TitleMenuCD titleMenuCD;
 	
+	/** TitleMenuName */
+	private Name name;
+	
 	/** LayoutID */
 	private String layoutID;
 
-	/** TitleMenuName */
-	private Name name;
-
-	public static TitleMenu createFromJavaType(String companyID, String titleMenuCD, String layoutID, String name) {
-		return new TitleMenu(companyID, new TitleMenuCD(titleMenuCD), layoutID, new Name(name));
+	public static TitleMenu createFromJavaType(String companyID, String titleMenuCD, String name, String layoutID) {
+		return new TitleMenu(companyID, new TitleMenuCD(titleMenuCD), new Name(name), layoutID);
 	}
 }
