@@ -10,9 +10,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.ctx.at.schedule.dom.budget.premium.UnitPrice;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlmpPersonCostCalculationPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlmtPersonCostCalculation;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlspPremiumSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlstPremiumSet;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -30,32 +33,36 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	
 	@Override
 	public void add(PersonCostCalculation personCostCalculation) {
-		this.commandProxy().insert(convertToEntity(personCostCalculation));
+		//personCostCalculation.getPremiumSettings()
+		this.commandProxy().insert(toPersonCostCalculationEntity(personCostCalculation));
 	}
 
 	@Override
 	public List<PersonCostCalculation> findByCompanyID(String CID) {
-		return this.queryProxy().query(SEL_BY_CID, KmlmtPersonCostCalculation.class).setParameter("CID", CID).getList(x -> convertToDomain(x));
+		return null;
+		//return this.queryProxy().query(SEL_BY_CID, KmlmtPersonCostCalculation.class).setParameter("CID", CID).getList(x -> convertToDomain(x));
 	}
 	
 	@Override
 	public Optional<PersonCostCalculation> find(String CID, String HID) {
-		return this.queryProxy().find(new KmlmpPersonCostCalculationPK(CID, HID), KmlmtPersonCostCalculation.class).map(x -> convertToDomain(x));
+		return null;
+		//return this.queryProxy().find(new KmlmpPersonCostCalculationPK(CID, HID), KmlmtPersonCostCalculation.class).map(x -> convertToDomain(x));
 	}
 
 	@Override
 	public Optional<PersonCostCalculation> findAfterDay(String CID, GeneralDate date) {
-		return this.queryProxy().query(SEL_DAY_AFTER, KmlmtPersonCostCalculation.class).setParameter("startDate", date).getSingle().map(x -> convertToDomain(x));
+		return null;
+		//return this.queryProxy().query(SEL_DAY_AFTER, KmlmtPersonCostCalculation.class).setParameter("startDate", date).getSingle().map(x -> convertToDomain(x));
 	}
 
 	@Override
 	public void update(PersonCostCalculation personCostCalculation) {
-		this.commandProxy().update(convertToEntity(personCostCalculation));
+		this.commandProxy().update(toPersonCostCalculationEntity(personCostCalculation));
 	}
 
 	@Override
 	public void delete(PersonCostCalculation personCostCalculation) {
-		this.commandProxy().remove(convertToEntity(personCostCalculation));
+		this.commandProxy().remove(toPersonCostCalculationEntity(personCostCalculation));
 	}
 	
 	/**
@@ -63,30 +70,37 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	 * @param kmlmtPersonCostCalculation Entity Object
 	 * @return Domain Object
 	 */
-	private PersonCostCalculation convertToDomain(KmlmtPersonCostCalculation kmlmtPersonCostCalculation){
-		return new PersonCostCalculation(
-				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.CID, 
-				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.HID, 
-				new Memo(kmlmtPersonCostCalculation.memo), 
-				EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class) , 
-				kmlmtPersonCostCalculation.startDate, 
-				kmlmtPersonCostCalculation.endDate);
-	}
+//	private PersonCostCalculation convertToDomain(KmlmtPersonCostCalculation kmlmtPersonCostCalculation){
+//		return new PersonCostCalculation(
+//				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.CID, 
+//				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.HID, 
+//				new Memo(kmlmtPersonCostCalculation.memo), 
+//				EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class) , 
+//				kmlmtPersonCostCalculation.startDate, 
+//				kmlmtPersonCostCalculation.endDate);
+//	}
 	
 	/**
 	 * convert Domain Object to Entity Object
 	 * @param personCostCalculation Domain Object
 	 * @return Entity Object
 	 */
-	private KmlmtPersonCostCalculation convertToEntity(PersonCostCalculation personCostCalculation) {
+	private KmlmtPersonCostCalculation toPersonCostCalculationEntity(PersonCostCalculation personCostCalculation) {
 		return new KmlmtPersonCostCalculation(
 				new KmlmpPersonCostCalculationPK(
-						personCostCalculation.getCID(), 
-						personCostCalculation.getHID()
+						personCostCalculation.getCompanyID(), 
+						personCostCalculation.getHistoryID()
 				), 
 				personCostCalculation.getMemo().v(), 
 				personCostCalculation.getUnitprice().unitPrice, 
 				personCostCalculation.getStartDate(), 
 				personCostCalculation.getEndDate());
 	}
+	
+//	private KmlstPremiumSet toPremiumSetEntity(String companyID, String historyID, PremiumSetting premiumSetting) {
+//		return new KmlstPremiumSet(
+//				new KmlspPremiumSetPK(companyID, historyID, premiumSetting.getAttendanceID()), 
+//				premiumSetting.getPremiumRate(), 
+//				);
+//	}
 }

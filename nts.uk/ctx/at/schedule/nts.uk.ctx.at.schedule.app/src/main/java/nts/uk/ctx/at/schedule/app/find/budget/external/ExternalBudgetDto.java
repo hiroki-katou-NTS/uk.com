@@ -9,7 +9,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 @AllArgsConstructor
 @Data
 public class ExternalBudgetDto {
-	private String externalBudgetId;
+	private String externalBudgetCode;
 
 	private String externalBudgetName;
 

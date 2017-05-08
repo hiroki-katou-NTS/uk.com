@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
@@ -18,6 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 
 @Stateless
+@Transactional
 public class PremiumBudgetFinder {
 	
 	@Inject
@@ -49,8 +51,8 @@ public class PremiumBudgetFinder {
 	
 	private PremiumBudgetDto convertToDto(PersonCostCalculation personCostCalculation){
 		return new PremiumBudgetDto(
-				personCostCalculation.getCID(), 
-				personCostCalculation.getHID(), 
+				personCostCalculation.getCompanyID(), 
+				personCostCalculation.getHistoryID(), 
 				personCostCalculation.getMemo().v(), 
 				personCostCalculation.getUnitprice().unitPrice, 
 				personCostCalculation.getStartDate(), 

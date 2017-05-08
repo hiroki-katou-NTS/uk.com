@@ -1,9 +1,6 @@
-module qrm007.a {
+module kml001.c {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
-        nts.uk.ui.confirmSave(screenModel.dirty);
-        screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
-        });
+        __viewContext.bind(screenModel);
     });
 }
