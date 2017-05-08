@@ -17,7 +17,6 @@ module kmk011.a.viewmodel {
         selectInp: KnockoutObservable<any>;
         lstItemTime: KnockoutObservableArray<model.TimeItem>;
         divTimeName: KnockoutObservable<string>;
-        inp_A36: KnockoutObservable<string>;
         timeItemName: KnockoutObservable<string>;
         alarmTime: KnockoutObservable<string>;
         errTime: KnockoutObservable<string>;
@@ -51,7 +50,6 @@ module kmk011.a.viewmodel {
                     { code: '0', name: '使用しない' },
                 ]);
             self.divTimeName = ko.observable('');    
-            self.inp_A36 = ko.observable('富士大学');
             self.timeItemName = ko.observable('');
             self.timeItemName(self.lstItemTime()[0].attendanceName + ' + ' +self.lstItemTime()[1].attendanceName+ ' + ' +self.lstItemTime()[2].attendanceName);
             self.inp_A314 = ko.observable('選択肢を設定');
@@ -128,6 +126,10 @@ module kmk011.a.viewmodel {
             console.log(self.divTimeId());
             nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', })    
         }
+        openDialog021(){
+            var self = this;
+            nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', })    
+        }
         Registration(){
             var self = this;
             var select = new service.model.SelectSet(self.selectSel(),self.convert(self.checkErrSelect()));
@@ -135,7 +137,12 @@ module kmk011.a.viewmodel {
             var divTime = new service.model.DivergenceTime(self.divTimeId(),self.divTimeName(),self.selectUse(),self.alarmTime(),self.errTime(),select,input);
             service.updateDivTime(divTime).done(function(){
                 self.getAllDivTimeNew();
-            });
+            }).fail(function(error) {
+//                nts.uk.ui.dialog.alert(error.message);
+                $('#inpAlarmTime').ntsError('set', error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
         }
         convert(value: boolean): number{
             if(value == true){

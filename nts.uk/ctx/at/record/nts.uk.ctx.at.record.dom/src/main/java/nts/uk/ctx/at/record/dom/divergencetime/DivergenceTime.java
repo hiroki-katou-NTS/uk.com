@@ -64,10 +64,7 @@ public class DivergenceTime extends AggregateRoot{
 				InputSetting.convert(inputUseSet,cancelErrInput));
 				
 	}
-	public static boolean checkAlarmErrTime(int alarmTime,
-													int errTime){
-//		Time alartTimeNew = new Time(BigDecimal.valueOf(alarmTime));
-//		Time errTimeNew = new Time(BigDecimal.valueOf(errTime));
+	public static boolean checkAlarmErrTime(int alarmTime,int errTime){
 		if(alarmTime==errTime){
 			if(alarmTime==0) return true;
 			else return false;

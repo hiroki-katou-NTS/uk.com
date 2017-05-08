@@ -104,7 +104,6 @@ module kmk011.b.viewmodel {
             var self = this;
             if(self.enableCode()==false){
                 let objectNew = self.divReasonCode()+ self.divReasonContent()+self.requiredAtr();
-                console.log(objectNew);
                 if(self.objectOld==objectNew){
                     return;
                 }else{
