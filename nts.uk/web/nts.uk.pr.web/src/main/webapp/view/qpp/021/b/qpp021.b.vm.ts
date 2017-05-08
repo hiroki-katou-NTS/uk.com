@@ -125,6 +125,15 @@ module qpp021.b.viewmodel {
             nts.uk.ui.windows.setShared("processingYm", processingYm);
             nts.uk.ui.windows.sub.modal('/view/qpp/021/h/index.xhtml', { title: '連絡事項の設定',  dialogClass: 'no-close' });
         }
+
+        openDialogScreenI(): void {
+            let self = this;
+            let processingNo: number = 1;
+            let processingYm: number = 201704;
+            nts.uk.ui.windows.setShared("processingNo", processingNo);
+            nts.uk.ui.windows.setShared("processingYm", processingYm);
+            nts.uk.ui.windows.sub.modal('/view/qpp/021/i/index.xhtml', { title: 'コメント登録',  dialogClass: 'no-close' });
+        }
     }
 
     class ComboBoxModel {
