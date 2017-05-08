@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.portal.app.find.toppagepart.AddTopPagePartDto;
+import nts.uk.ctx.sys.portal.app.find.toppagepart.ActiveTopPagePartDto;
 import nts.uk.ctx.sys.portal.app.find.toppagepart.PortalTopPagePartFinder;
 
 /**
@@ -21,7 +21,7 @@ public class TopPagePartWebservice extends WebService {
 	
 	@POST
 	@Path("findAll")
-	public AddTopPagePartDto findAll(){
+	public ActiveTopPagePartDto findAll(){
 		return portalTopPagePartFinder.findAll();
 	}
 }
