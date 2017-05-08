@@ -28,7 +28,7 @@
 						value: useMyPage,
 						enable: true }"></div>
 						<BR /><BR /><BR />
-					<div style="width: 50%; padding-left: 10px;">
+					<div>
 						<div id="tab-panel" class="cf"
 							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab, direction: 'vertical' }">
 							<div id="widget" data-bind="if: $parent.selectedTab() == 'tab_widget'">
@@ -47,7 +47,7 @@
 					</div>
 				</div>
 				<hr />
-				<div id="this-functions-area" class="control-group halign-center">
+				<div id="this-functions-area" class="control-group halign-right">
 					<button data-bind = "click : updateMyPageSetting" class="btn-default proceed x-large">決定</button>
 					<button onclick="nts.uk.ui.windows.close()">キャンセル</button>
 				</div>
@@ -56,7 +56,7 @@
 					<div style="float:left;" id="widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>利用区分<br /></label>
 					</div>
-					<div style="float:left;" class="cf"
+					<div style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
 						options: $parents[1].useDivisionOptions,
 						optionsValue: 'code',
@@ -64,9 +64,9 @@
 						value: usePart,
 						enable: true }"></div>
 					<div>
-						<table id="widget-list" data-bind="ntsGridList: {	
+						<table  id="widget-list" data-bind="ntsGridList: {	
 								showNumbering: true,							
-								height: 350,
+								height: 400,
 								dataSource: settingItems,
 								primaryKey: 'itemCode',
 								columns: $parents[1].columns,
@@ -83,7 +83,7 @@
 					<div style="float:left;" id="dashboard_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>利用区分<br /></label>
 					</div>
-					<div style="float:left;" class="cf"
+					<div style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
 						options: $parents[1].useDivisionOptions,
 						optionsValue: 'code',
@@ -93,7 +93,7 @@
 					<div>
 						<table id="dashboard-list" data-bind="ntsGridList: {	
 								showNumbering: true,							
-								height: 350,
+								height: 400,
 								dataSource: settingItems,
 								primaryKey: 'itemCode',
 								columns: $parents[1].columns,
@@ -110,7 +110,7 @@
 					<div style="float:left;" id="flow_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>利用区分<br /></label>
 					</div>
-					<div style="float:left;" class="cf"
+					<div style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
 						options: $parents[1].useDivisionOptions,
 						optionsValue: 'code',
@@ -120,7 +120,7 @@
 					<div>
 						<table id="flow-list" data-bind="ntsGridList: {	
 								showNumbering: true,							
-								height: 350,
+								height: 400,
 								dataSource: settingItems,
 								primaryKey: 'itemCode',
 								columns: $parents[1].columns,
@@ -137,7 +137,7 @@
 					<div style="float:left;" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>許可区分<br /></label>
 					</div>
-					<div style="float:left;" class="cf"
+					<div style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
 						options: $parents[1].permissionDivisionOptions,
 						optionsValue: 'code',
