@@ -3,6 +3,7 @@ module qpp021.i {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            screenModel.dirtyChecker.reset();
         });
     });
 }

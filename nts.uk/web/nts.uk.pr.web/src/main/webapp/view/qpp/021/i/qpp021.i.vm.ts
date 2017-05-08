@@ -4,17 +4,25 @@ module qpp021.i.viewmodel {
         listContactPersonalSetting: KnockoutObservableArray<ContactPersonalSettingModel>;
         igGrid: any;
         selected: KnockoutObservable<any>;
+        dirtyChecker: nts.uk.ui.DirtyChecker;
 
         constructor() {
             this.listContactPersonalSetting = ko.observableArray<ContactPersonalSettingModel>([]);
             this.selected = ko.observable();
+            let self = this;
+            self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.listContactPersonalSetting);
+            this.selected.subscribe(val => {
+                let selectedIndex = self.listContactPersonalSetting().findIndex(item => {
+                    return item.employeeCode == val;
+                });
+                $('#table-contact-setting').igGridSelection('selectRow', selectedIndex);
+            });
         }
 
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             self.loadListContactPersonalSetting().done(() => {
-                console.log(self.listContactPersonalSetting());
                 self.initIgGrid();
                 dfd.resolve();
             });
@@ -23,11 +31,27 @@ module qpp021.i.viewmodel {
 
         public onSaveBtnClicked(): void {
             let self = this;
-            service.save(ko.toJS(self.listContactPersonalSetting));
+            // Validate.
+            $('.ui-igedit-input').ntsEditor('validate');
+            if ($('.ui-igedit-input').ntsError('hasError')) {
+                return;
+            }
+            service.save(ko.toJS(self.listContactPersonalSetting)).done(() => {
+                self.dirtyChecker.reset();
+            }).fail(res => {
+                nts.uk.ui.dialog.alert(res.message);
+            });
         }
 
         public onCloseBtnClicked(): void {
-
+            let self = this;
+            if (self.dirtyChecker.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                    nts.uk.ui.windows.close();
+                });
+            } else {
+                nts.uk.ui.windows.close();
+            }
         }
 
         private loadListContactPersonalSetting(): JQueryPromise<any> {
@@ -66,7 +90,7 @@ module qpp021.i.viewmodel {
                 dataSource: self.listContactPersonalSetting,
                 width: '100%',
                 primaryKey: 'employeeCode',
-                height: '350px',
+                height: '400px',
                 features: [
                     {
                         name: 'Updating',
@@ -85,16 +109,31 @@ module qpp021.i.viewmodel {
                             },
                             {
                                 columnKey: 'comment',
+                                validation: true,
+                                editorOptions: {
+                                    validatorOptions: {
+                                        text: {
+                                            type: 'Any',
+                                            length: 100
+                                        }
+                                    }
+                                },
                                 readOnly: false
                             }
                         ]
+                    },
+                    {
+                        name: 'Selection',
+                        mode: 'row',
+                        multipleSelection: false,
+                        activation: false,
                     }
                 ],
                 autoCommit: true,
                 columns: [
                     { headerText: 'コード', dataType: 'string', key: 'employeeCode', width: '20%', columnCssClass: "bgIgCol" },
                     { headerText: '名称', dataType: 'string', key: 'employeeName', width: '20%', columnCssClass: "bgIgCol" },
-                    { headerText: 'Comment', dataType: 'string', key: 'comment', width: '60%', columnCssClass: "halign-right" }
+                    { headerText: '今月の給与明細に印刷する個人へのコメント', dataType: 'string', key: 'comment', width: '60%', columnCssClass: "halign-right" }
                 ]
             });
         }
