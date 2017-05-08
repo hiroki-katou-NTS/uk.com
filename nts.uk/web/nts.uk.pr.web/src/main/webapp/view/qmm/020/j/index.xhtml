@@ -26,7 +26,7 @@
 					<div id="J_LBL_002" data-bind="ntsFormLabel: { required: true }">期間</div>
 					<input id="J_INP_001"
 						data-bind="ntsTextEditor: {
-								value: input001,
+								value: startDate,
 								required: true,
 								enable: true,
 								readonly: false }" />
@@ -36,10 +36,9 @@
 									display: displayMode() == 3 ? 'block' : 'none'
 								}, 
 								ntsTextEditor: {
-									value: selectStartYm,
-									option: timeEditorOption,
-									constraint: 'startYm',
-									enable: true,
+									value: endDate,
+									required: displayMode() == 2,
+									enable: displayMode() == 3,
 									readonly: false }" />
 					<div class="form-group-radio">
 						<div id="J_LBL_004" data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div>
@@ -47,12 +46,12 @@
 							<div class="ntsControl">
 								<label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 20, checked: selectedValue" /> <span
+									data-bind="checkedValue: 1, checked: selectedMode" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: txtCopyHistory"></span>
 								</label>
 							</div>
-							<div id="J_caution"
+							<div id="J_LBL_005"
 								data-bind="style: {display: displayMode() == 2 ? 'block' : 'none'}">
 								<div class='caution'>引継ぎは部門名ではなく部門コードで行われます</div>
 								<div class='caution'>(名が同じでもコードが変更されている場合は引き継がれません。)</div>
@@ -60,7 +59,7 @@
 							<div class="ntsControl">
 								<label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 22, checked: selectedValue" /> <span
+									data-bind="checkedValue: 2, checked: selectedMode" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '初めから作成する'"></span>
 								</label>
@@ -69,18 +68,18 @@
 					</div>
 					<div
 						data-bind="style: {display: displayMode() == 2 ? 'block' : 'none' }">
-						<div id="J_LBL_006" data-bind="ntsFormLabel: { required: true }">部門基準日</div>
+						<div id="J_LBL_006" data-bind="ntsFormLabel: { required: true }">マスタ基準日</div>
 						<input id="J_INP_002"
 							data-bind="ntsTextEditor: {
-								value: selectStartYm,
-								required: true,
-								enable: true,
+								value: baseDate,
+								required: displayMode() == 2,
+								enable: displayMode() == 2,
 								readonly: false }" />
 					</div>
 				</div>
 			</div>
 			<div class="functions-area">
-				<button class="x-large proceed" id="J_BTN_001"
+				<button class="x-large" id="J_BTN_001"
 					data-bind="click: createHistoryDocument, enable: $root.errors.isEmpty">決定</button>
 				<button class="large" id="J_BTN_002" data-bind="click: closeDialog">キャンセル</button>
 			</div>
