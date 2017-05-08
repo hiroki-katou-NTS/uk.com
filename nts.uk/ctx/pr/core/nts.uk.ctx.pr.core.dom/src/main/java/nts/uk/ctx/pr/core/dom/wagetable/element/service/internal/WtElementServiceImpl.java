@@ -95,8 +95,8 @@ public class WtElementServiceImpl implements WtElementService {
 				return ElementType.CERTIFICATION.displayName;
 	
 			/** The working day. */
-			case WORKING_DAY:
-				return ElementType.WORKING_DAY.displayName;
+			case WITHOUT_WORKING_DAY:
+				return ElementType.WITHOUT_WORKING_DAY.displayName;
 	
 			/** The come late. */
 			case COME_LATE:

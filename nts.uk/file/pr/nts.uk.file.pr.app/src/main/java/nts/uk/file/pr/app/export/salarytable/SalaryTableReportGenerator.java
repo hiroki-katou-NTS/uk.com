@@ -13,14 +13,6 @@ import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
  */
 public interface SalaryTableReportGenerator {
 
-//	/**
-//	 * Generate.
-//	 *
-//	 * @param generatorContext the generator context
-//	 * @param dataSource the data source
-//	 */
-//	void generate(FileGeneratorContext generatorContext, SalaryChartDataSource dataSource);
-	
 	/**
 	 * Generate.
 	 *
@@ -28,5 +20,6 @@ public interface SalaryTableReportGenerator {
 	 * @param dataSource the data source
 	 * @param query the query
 	 */
-	void generate(FileGeneratorContext generatorContext, SalaryTableDataSource dataSource, SalaryTableReportQuery query);	
+	void generate(FileGeneratorContext generatorContext, 
+			SalaryTableDataSource dataSource, SalaryTableReportQuery query);
 }

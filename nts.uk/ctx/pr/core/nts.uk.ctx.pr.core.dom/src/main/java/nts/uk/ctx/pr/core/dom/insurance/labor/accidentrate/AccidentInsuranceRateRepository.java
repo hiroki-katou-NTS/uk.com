@@ -34,7 +34,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(String companyCode,String historyId);
+    void remove(String historyId);
 
 	/**
 	 * Find all.
@@ -50,7 +50,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param id the id
 	 * @return the accident insurance rate
 	 */
-	Optional<AccidentInsuranceRate> findById(String companyCode, String historyId);
+	Optional<AccidentInsuranceRate> findById(String historyId);
 	
 	/**
 	 * Find first data.

@@ -10,19 +10,23 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.organization.department.AddDepartmentCommand;
+import nts.uk.ctx.basic.app.command.organization.department.RemoveDepartmentCommand;
 import nts.uk.ctx.basic.app.command.organization.department.UpdateDepartmentCommand;
 import nts.uk.ctx.basic.app.command.organization.department.UpdateStartDateandEndDateHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.AddWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.AddWorkPlaceCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.workplace.RemoveHistoryWkPCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.workplace.RemoveWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.RemoveWorkPlaceCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateEndDateWorkPalceByHistoryIdCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateStartDateAndEndDateByHistoryIdWkPCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateStartDateandEndDateWKPHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateWorkPlaceCommand;
 import nts.uk.ctx.basic.app.command.organization.workplace.UpdateWorkPlaceCommandHandler;
+import nts.uk.ctx.basic.app.find.organization.department.DepartmentHistoryDto;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceDto;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceFinder;
+import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceHistoryDto;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceMemoDto;
 import nts.uk.ctx.basic.app.find.organization.workplace.WorkPlaceQueryResult;
 import nts.uk.ctx.basic.dom.organization.workplace.WorkPlace;
@@ -58,6 +62,15 @@ public class WorkplaceWebService extends WebService {
 	public void add(List<AddWorkPlaceCommand> command) {
 		this.addWorkPlace.handle(command);
 	}
+	
+	@POST
+	@Path("getAllHistoryWorkPlace")
+	public List<WorkPlaceHistoryDto> getAllhistory() {
+		String ccd = AppContexts.user().companyCode();
+		List<WorkPlaceHistoryDto> list =  finder.getAllHistory(ccd);
+		return list;
+	}
+
 
 	@POST
 	@Path("getallworkplace")
@@ -112,6 +125,12 @@ public class WorkplaceWebService extends WebService {
 	@POST
 	public void updateStartDateandEndDateByHistId(UpdateStartDateandEndDateWKPHistoryCommand command) {
 		this.updateStartDateandEndDate.handle(command);
+	}
+	
+	@Path("deleteworkplace")
+	@POST
+	public void deleteDepartment(RemoveWorkPlaceCommand command) {
+		this.removeWorkPlace.handle(command);
 	}
 
 }

@@ -11,7 +11,8 @@ module nts.uk.pr.view.qpp007.c {
             remove: "ctx/pr/report/salary/outputsetting/remove",
             findOutputSettingDetail: "ctx/pr/report/salary/outputsetting/find",
             findAllOutputSettings: "ctx/pr/report/salary/outputsetting/findall",
-            findAllAggregateItems: "ctx/pr/report/salary/aggregate/item/findall"
+            findAllAggregateItems: "ctx/pr/report/salary/aggregate/item/findall",
+            findAllMasterItems: "ctx/pr/report/masteritem/findAll"
         };
 
         /**
@@ -49,21 +50,7 @@ module nts.uk.pr.view.qpp007.c {
          */
         export function findAllMasterItems(): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            // mock data
-            var masterItems: any = [];
-            for (let i = 1; i <= 9; i++) {
-                masterItems.push({ code: 'F00' + i, name: '基本給' + i, category: 'Payment' });
-            }
-            for (let i = 1; i <= 9; i++) {
-                masterItems.push({ code: 'F10' + i, name: '基本給' + i, category: 'Deduction' });
-            }
-            for (let i = 1; i <= 9; i++) {
-                masterItems.push({ code: 'F20' + i, name: '基本給' + i, category: 'Attendance' });
-            }
-            for (let i = 1; i <= 9; i++) {
-                masterItems.push({ code: 'F30' + i, name: '基本給' + i, category: 'ArticleOthers' });
-            }
-            return dfd.resolve(masterItems).promise();
+            return nts.uk.request.ajax(paths.findAllMasterItems);
         }
 
     }

@@ -50,7 +50,7 @@
 	color: gray;
 	padding: 0 8px 0 8px;
 	margin-left: 10px;
-	overflow: scroll;
+	overflow: auto;
 }
 
 .block-detail .item_description_lbl {
