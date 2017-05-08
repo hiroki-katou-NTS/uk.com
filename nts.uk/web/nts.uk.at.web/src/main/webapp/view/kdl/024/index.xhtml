@@ -15,29 +15,30 @@
 			<com:scriptfile path="kdl024.service.js" />
 			<com:scriptfile path="kdl024.vm.js" />
 			<com:ValidatorScript>
-				nts.uk.shr.com.primitive.PersonId
-				nts.uk.shr.com.primitive.sample.ResidenceCode
+				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd
+				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetName
 			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="btnNew" class="btnMenu" data-bind="">新規</button>
-				<button id="btnSave" class="btnMenu proceed" data-bind="">登録</button>
+				<button id="btnNew" class="btnMenu" data-bind="click: addNew">新規</button>
+				<button id="btnSave" class="btnMenu proceed" data-bind="click: update, enable: $root.errors.isEmpty">登録</button>
 				<button id="btnDel" class="btnMenu delete_btn btn_width danger"
-					data-bind="" style="margin-left: 60px;">削除</button>
+					data-bind="click: del" style="margin-left: 60px;">削除</button>
 				<button id="btnClose" class="btnMenu" data-bind="">閉じる</button>
 			</div>
 			<div id="content-area" class="cf">
 				<div class="left-content">
-					<div id="lstBudget" class="bg-green caret-right caret-background">
+					<div id="lstBudget" class="bg-green caret-right caret-background" data-bind="with: currentItem" >
 						<table id="single-list"
 							data-bind="ntsGridList: {								
 								height: 255,
-								dataSource: items,
-								primaryKey: 'code',
-								columns: columns,
+								dataSource: $parent.items,
+								primaryKey: 'externalBudgetCode',
+								columns: $parent.columns,
 								multiple: false,
-								value: currentCode
+								required: true,
+								value: externalBudgetCode
 							}"
 							class="cf">
 						</table>
@@ -49,7 +50,7 @@
 							<td>
 								<div id="divInfo"
 									data-bind="ntsFormLabel: {
-													constraint: constraint, 
+													constraint: ['ExternalBudgetCd','ExternalBudgetName'] ,
 													required: true, 
 													inline:false, 
 													enable:true }">
@@ -57,10 +58,12 @@
 							</td>
 							<td>
 								<input id="inpCode" data-bind="ntsTextEditor: {
-													value:'',
-													enable: false,
-													readonly:true" />
-								<input id="inpName" data-bind="ntsTextEditor: {value:''" /> 
+ 													value: currentItem().externalBudgetCode,
+													enable: isEnableInp}" class="save-error" data-name="BudgetCode"/>
+								<input id="inpName" data-bind="ntsTextEditor: {
+ 													value:currentItem().externalBudgetName, 
+ 													enable: true } 
+													" />
 								<BR />
 							</td>
 						</tr>
@@ -78,8 +81,8 @@
 								<div id="cmbAttribute"
 									data-bind="ntsComboBox: {
 													options: itemListCbb,
-													optionsValue: 'nameCbb',
-													value: selectedCodeCbb,
+													optionsValue: 'codeCbb',
+													value: currentItem().budgetAtr,
 													optionsText: 'nameCbb',
 													enable: isEnableCbb,
 													columns: [
@@ -104,7 +107,7 @@
 											options: roundingRules,
 											optionsValue: 'unitId',
 											optionsText: 'unitName',
-											value: selectedRuleCode,
+											value: currentItem().unitAtr,
 											enable: true }">
 								</div>
 							</td>

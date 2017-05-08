@@ -24,7 +24,7 @@ public class DeleteExternalBudgetCmdHandler extends CommandHandler<DeleteExterna
 			// get command
 			DeleteExternalBudgetCmd command = context.getCommand();
 			// delete process
-			budgetRepo.delete(companyId, command.getExternalBudgetId());
+			budgetRepo.delete(companyId, command.getExternalBudgetCode());
 		} catch (Exception ex) {
 			throw ex;
 		}
