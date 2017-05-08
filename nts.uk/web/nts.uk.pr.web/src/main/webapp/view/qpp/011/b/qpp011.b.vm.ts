@@ -535,27 +535,33 @@ module qpp011.b {
         }
         exportText(): void {
             var self = this;
+            debugger;
             self.checkCValue();
             if (self.selectedValue_C_LST_001().length > 0) {
             } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
             }
-
             var command = {
-                residentTaxCodeList: self.selectedValue_B_LST_001(),
-                companyLogin: self.B_SEL_001_selectedId(),
-                regalDocCompanyCode: self.B_SEL_002_selectedCode(),
-                yearMonth: 201612,
-                processingYearMonth: 201703,
-                endDate: new Date("2017/04/24")
+                residentTaxCodeList: self.selectedValue_C_LST_001(),
+                companyLogin: self.C_SEL_001_selectedId(),
+                regalDocCompanyCode: self.C_SEL_002_selectedCode(),
+                //"2016/12",
+                yearMonth: self.C_INP_001_yearMonth(),
+                //"2017/03"
+                processingYearMonth: self.C_INP_002_yearMonth(),
+                endDate: new Date(self.C_INP_003_yearMonth()),
+                typeCode: "99",
+                clientCode: self.C_SEL_004_selectedCode(),
+                destinationBranchNumber: self.C_SEL_003_selectedCode()
             };
 
-            service.saveAsPdf(command).done(function() {
+            service.saveText(command).done(function() {
                 //
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
             });
         }
+        
     }
 
 
