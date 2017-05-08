@@ -18,12 +18,13 @@ table, td, th {
 }
 
 .comment-data {
-	width: 50%;
+	max-width: 450px !important;
 	height: 30px;
 }
 
 #comment_notification {
 	margin-top: 10px;
+	width: calc(25%);
 }
 
 #comment_person {

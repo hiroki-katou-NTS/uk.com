@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 900,
-					height : 600
+					width : 1260,
+					height : 900
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -33,23 +33,23 @@
 			<div id="contents-area">
 				<button id="btn_saveContactItemsSetting" class="proceed btnStyle"
 					data-bind="click: saveContactItemsSetting">登録</button>
-				<button id="btn_addUnemployeeInsuranceHistory">閉じる</button>
+				<button id="btn_closeContactItemsSetting" data-bind="click: closeContactItemsSetting">閉じる</button>
 				<hr />
 				<div id="content">
 					<div id="lable_yearmonth">
 						<span class="label with-image"> <i
 							class="image image-calendar" /> <span>処理する給与明細書の年月</span>
-						</span> <span data-bind="ntsFormLabel: { required: true }">2017/05</span>
+						</span> <span data-bind="ntsFormLabel: { required: true } , text: lbl_processingYm" />
 					</div>
 					<br />
-					<div data-bind="ntsFormLabel: {required: false}"
+					<div data-bind="ntsFormLabel: {constraint: 'ReportComment', required: false}"
 						id="label_notification">
 						<label>全社員向けの連絡事項</label>
 					</div>
 
 					<div id="comment_notification">
 						<table>
-							<tr class="bg-green">
+							<tr class="bg-green ui-iggrid-header ui-widget-header">
 								<td>今月の給与明細書に印刷する連絡事項</td>
 								<td>毎月の給与明細書に印刷する連絡事項</td>
 							</tr>
@@ -75,6 +75,12 @@
 								</td>
 							</tr>
 						</table>
+					</div>
+					
+					<br />
+					<div data-bind="ntsFormLabel: {constraint: 'ReportComment', required: false}"
+						id="label_notification_emp">
+						<label>雇用ごとの連絡事項</label>
 					</div>
 
 					<div id="comment_person">

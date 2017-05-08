@@ -12,11 +12,9 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.report.app.payment.contact.command.ContactItemsSettingSaveCommand;
 import nts.uk.ctx.pr.report.app.payment.contact.command.ContactItemsSettingSaveCommandHandler;
-import nts.uk.ctx.pr.report.app.payment.contact.command.dto.ContactItemsSettingDto;
 import nts.uk.ctx.pr.report.app.payment.contact.find.ContactItemsSettingFinder;
 import nts.uk.ctx.pr.report.app.payment.contact.find.dto.ContactItemsSettingFindDto;
 import nts.uk.ctx.pr.report.app.payment.contact.find.dto.ContactItemsSettingOut;
-import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSetting;
 
 /**
  * The Class ContactItemsSettingWs.
