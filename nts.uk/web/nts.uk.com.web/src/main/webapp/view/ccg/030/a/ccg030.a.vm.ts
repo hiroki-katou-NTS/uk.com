@@ -209,7 +209,14 @@ module ccg030.a.viewmodel {
                             self.dataShow();
                             self.currentCode(self.toppagepartcode.value());
                         }).fail(function(res){
-                            nts.uk.ui.dialog.alert(res.messageId);
+                            var Msg_3 = _.find(self.lstMessage(), function(mess){
+                                return  mess.messCode === res.messageId;
+                            })
+                            if(nts.uk.text.isNullOrEmpty(Msg_3)){
+                                nts.uk.ui.dialog.alert(res.message);
+                            }else{
+                                nts.uk.ui.dialog.alert(Msg_3.messName);
+                            }
                         })
                         dfd.resolve();
                     }else{
