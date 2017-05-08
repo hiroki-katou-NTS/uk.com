@@ -20,6 +20,7 @@ import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
+import nts.uk.ctx.sys.portal.dom.layout.service.LayoutService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -47,6 +48,9 @@ public class TopPageWs extends WebService {
 	
 	@Inject
 	CopyTopPageCommandHandler copyTopPageCommandHandler;
+	
+	@Inject 
+	LayoutService layoutService;
 	/**
 	 * Find all.
 	 *
@@ -103,6 +107,7 @@ public class TopPageWs extends WebService {
 	@Path("copyLayout/{layoutId}/{toppageCode}")
 	public void copyLayout(@PathParam("layoutId") String layoutId,@PathParam("toppageCode") String topPageCode) {
 	//TODO goi service cua anh Lam
+		layoutService.copyTopPageLayout(layoutId);
 	}
 	
 	/**

@@ -105,21 +105,26 @@ module nts.uk.com.view.ccg015.a {
             }
             private saveTopPage() {
                 var self = this;
-                //check update or create
-                if (self.isNewMode()) {
-                    service.registerTopPage(self.collectData()).done(function() {
-                        //TODO register success  show msg_15                      
-                    });
+                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
+
                 }
                 else {
-                    service.updateTopPage(self.collectData()).done(function() {
-                        //TODO register success  show msg_15  
+                    //check update or create
+                    if (self.isNewMode()) {
+                        service.registerTopPage(self.collectData()).done(function() {
+                            //TODO register success  show msg_15                      
+                        });
+                    }
+                    else {
+                        service.updateTopPage(self.collectData()).done(function() {
+                            //TODO register success  show msg_15  
+                        });
+                    }
+                    self.loadTopPageList().done(function() {
+                        self.toppageSelectedCode(self.collectData().topPageCode);
                     });
                 }
-                self.loadTopPageList().done(function(){
-                self.toppageSelectedCode(self.collectData().topPageCode);
-                });
-                //TODO focus create item   
             }
             private openMyPageSettingDialog() {
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
@@ -165,6 +170,7 @@ module nts.uk.com.view.ccg015.a {
             
             private openLayoutSettingDialog() {
                 var self = this;
+                nts.uk.ui.windows.setShared('layout', {layoutId :self.topPageModel().layoutId(),pgType:0});
                 nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
                     height: 650, width: 1300,
                     title: "$$$$$$$$",//TODO change name

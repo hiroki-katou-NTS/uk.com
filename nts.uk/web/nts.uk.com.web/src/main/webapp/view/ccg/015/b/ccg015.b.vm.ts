@@ -53,11 +53,13 @@ module nts.uk.pr.view.ccg015.b {
             initData() {
                 var self = this;
                 var companyId: string;
-                service.loadMyPageSetting("123456789ABC-0001").done(function(data: MyPageSettingDto) {
-                    self.data(data);
-                    self.loadDataToScreen(data).done(function() {
-                        self.setData(data);
-                    });
+                service.loadMyPageSetting().done(function(data: MyPageSettingDto) {
+                    if (data) {
+                        self.data(data);
+                        self.loadDataToScreen(data).done(function() {
+                            self.setData(data);
+                        });
+                    }
                     self.selectedTab("tab_dash_board");
                     self.selectedTab("tab_flow_menu");
                     self.selectedTab("tab_widget");

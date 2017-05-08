@@ -23,7 +23,7 @@ public class TopPageFinder {
 	TopPageRepository topPageRepository;
 
 	@Inject
-	PlacementRepository PlacementRepository;
+	PlacementRepository placementRepository;
 
 	// @Inject
 	// TopPagePartRepository topPagePartRepository;
@@ -39,7 +39,7 @@ public class TopPageFinder {
 
 	public TopPageDto findByCode(String companyId, String topPageCode, String languageType) {
 		Optional<TopPage> topPage = topPageRepository.findByCode(companyId, topPageCode);
-		List<Placement> lstPlacement = PlacementRepository.findByLayout(topPage.get().getLayoutId());
+		List<Placement> lstPlacement = placementRepository.findByLayout(topPage.get().getLayoutId());
 		// TODO use topPagePartRepository find
 		List<TopPagePart> lstTopPagePart = new ArrayList<>();
 		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId1", "topPagePartCode1", "topPagePartName", 1, 1, 1));

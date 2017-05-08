@@ -7,10 +7,10 @@ module nts.uk.pr.view.ccg015.b {
             loadMyPageSetting: "/mypage/getMyPageSetting",//TODO add find all top page path
             updateMyPageSetting: "/mypage/updateMyPageSetting"
         }
-        export function loadMyPageSetting(CompanyId: string): JQueryPromise<model.MyPageSettingDto> {
+        export function loadMyPageSetting(): JQueryPromise<model.MyPageSettingDto> {
             var self = this;
             var dfd = $.Deferred<any>();
-            var path = servicePath.loadMyPageSetting + "/" + CompanyId;
+            var path = servicePath.loadMyPageSetting;
             nts.uk.request.ajax(path).done(function(data: model.MyPageSettingDto) {
                 dfd.resolve(data);
             });

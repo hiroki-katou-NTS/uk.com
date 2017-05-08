@@ -4,7 +4,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.mypage.setting.UpdateMyPageSettingCommand;
@@ -30,13 +29,12 @@ public class MyPageSettingWs extends WebService {
 	/**
 	 * Gets the my page setting detail.
 	 *
-	 * @param companyId the company id
 	 * @return the my page setting detail
 	 */
 	@POST
-	@Path("getMyPageSetting/{companyId}")
-	public MyPageSettingDto getMyPageSettingDetail(@PathParam("companyId") String companyId) {
-		return myPageSettingFinder.findByCompanyId(companyId);
+	@Path("getMyPageSetting")
+	public MyPageSettingDto getMyPageSettingDetail() {
+		return myPageSettingFinder.findByCompanyId();
 	}
 
 	/**

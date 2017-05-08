@@ -7,6 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
+				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
+  			</com:ValidatorScript>
 			<com:stylefile path="ccg015.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../a/ccg015.a.service.js" />
@@ -39,16 +43,18 @@
 						<label>コード/名称</label>
 					</div>
 					<div>
-						<input
+						<input id="inp-code" class="nts-input save-error" data-name="コード"
 							data-bind="ntsTextEditor: {
 							value: newTopPageCode,
-							required: true
+							required: true,
+							constraint: 'TopPageCode' 
 							}" />
 
-						<input
+						<input id="inp-name" class="nts-input save-error" data-name="名称"
 							data-bind="ntsTextEditor: {
 							value: newTopPageName,
-							required: true
+							required: true,
+							constraint: 'TopPageName'
 							}" />
 					</div>
 				</div>

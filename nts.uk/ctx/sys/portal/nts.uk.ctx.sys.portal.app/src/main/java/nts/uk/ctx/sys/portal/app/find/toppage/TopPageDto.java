@@ -20,7 +20,10 @@ public class TopPageDto {
 
 	/** The Language number. */
 	public Integer languageNumber;
-
+	
+	/** The layout id. */
+	public String layoutId;
+	
 	/** The placement dto. */
 	public List<PlacementDto> placementDto;
 
@@ -38,7 +41,7 @@ public class TopPageDto {
 		topPageDto.topPageCode = topPage.getTopPageCode().v();
 		topPageDto.topPageName = topPage.getTopPageName().v();
 		topPageDto.languageNumber = topPage.getLanguageNumber();
-
+		topPageDto.layoutId = topPage.getLayoutId();
 		topPageDto.placementDto = lstPlacement.stream().map(item -> {
 			return PlacementDto.fromDomain(item, lstTopPagePart.stream().filter(t -> {
 				return true;
