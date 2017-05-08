@@ -12,8 +12,11 @@ public enum TopPagePartType {
 	DashBoard(1),
 	
 	/** The Folow menu. */
-	FolowMenu(2);
+	FolowMenu(2),
 
+	/** The External Url. */
+	ExternalUrl(3);
+	
 	/** The value. */
 	public int value;
 

@@ -1,23 +1,24 @@
 package nts.uk.ctx.sys.portal.dom.layout;
 
 /**
- *  0: My Page <br/>
+ * @author lamdt 
+ * 
+ *  <br/>
+ *  0: Top Page <br/>
  *  1: Title Menu <br/>
  *  2: My Page
- *  */
+ */
 public enum PGType {
 	/** Top Page トップページ */
-	TopPage(0, "トップページ"),
+	TopPage(0),
 	/** Title Menu タイトルメニュー */
-	TitleMenu(1, "タイトルメニュー"),
+	TitleMenu(1),
 	/** My Page マイページ */
-	MyPage(2, "マイページ");
+	MyPage(2);
 	
 	public final int value;
-	public final String name;
 	
-	PGType(int type, String name) {
+	PGType(int type) {
 		this.value = type;
-		this.name = name;
 	}
 }
