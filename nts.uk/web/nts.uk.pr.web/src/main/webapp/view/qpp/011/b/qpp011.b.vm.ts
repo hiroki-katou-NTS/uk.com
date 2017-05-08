@@ -16,6 +16,7 @@ module qpp011.b {
         C_SEL_003_selectedCode: KnockoutObservable<string>;
         C_SEL_004_ComboBoxItemList: KnockoutObservableArray<C_SEL_004_ComboboxItemModel>;
         C_SEL_004_selectedCode: KnockoutObservable<string>;
+        C_INP_004_Value: KnockoutObservable<number>;
         //End combobox
         //B_002
         B_SEL_002_Enable: any;
@@ -63,6 +64,13 @@ module qpp011.b {
                 new BoxModel(1, '本社'),
                 new BoxModel(2, '法定調書出力用会社')
             ]);
+            self.C_INP_004_Value = ko.observable(null);
+            self.C_INP_004_Value.subscribe(function(newValue) {
+                if (newValue > 99 && newValue < 0) {
+                    C_INP_004
+                }
+            });
+
             self.B_SEL_001_selectedId = ko.observable(1);
             self.B_SEL_002_Enable = ko.observable(false);
             self.B_SEL_001_selectedId.subscribe(function(newValue) {
@@ -110,7 +118,7 @@ module qpp011.b {
             //End Gridlist
             //Start Number Editer
             self.numbereditor = {
-                value: ko.observable(),
+                value: self.C_INP_004_Value,
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 0,
@@ -444,7 +452,7 @@ module qpp011.b {
                 $('#B_INP_001').focus();
                 return false;
             }
-           nts.uk.sessionStorage.setItem("QPP011_D_TargetDate", self.B_INP_001_yearMonth());
+            nts.uk.sessionStorage.setItem("QPP011_D_TargetDate", self.B_INP_001_yearMonth());
             nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { title: '納付書詳細設定', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
@@ -457,7 +465,7 @@ module qpp011.b {
         openFDialog() {
             let self = this;
             //nts.uk.sessionStorage.setItem("QPP011_F_TargetDate", moment(self.B_INP_001_yearMonth()).format("YYYY/MM"));
-            nts.uk.ui.windows.setShared('QPP011_F_TargetDate',self.B_INP_001_yearMonth());
+            nts.uk.ui.windows.setShared('QPP011_F_TargetDate', self.B_INP_001_yearMonth());
             nts.uk.ui.windows.setShared('QPP011_F_DesignatedMonth', self.B_INP_002_yearMonth());
             nts.uk.ui.windows.sub.modal('/view/qpp/011/f/index.xhtml', { title: '住民税チェックリスト', height: 560, width: 900, dialogClass: 'no-close' }).onClosed(function(): any {
             });
@@ -466,18 +474,15 @@ module qpp011.b {
         checkBValue(): boolean {
             var self = this;
             if (!self.B_INP_001_yearMonth()) {
-                nts.uk.ui.dialog.alert("が入力されていません");
-                $('#B_INP_001').focus();
+                $('#B_INP_001-input').ntsError('set', 'が入力されていません');
                 return false;
             }
             if (!self.B_INP_002_yearMonth()) {
-                nts.uk.ui.dialog.alert("が入力されていません");
-                $('#B_INP_002').focus();
+                $('#B_INP_002-input').ntsError('set', 'が入力されていません');
                 return false;
             }
             if (!self.B_INP_003_yearMonth()) {
-                nts.uk.ui.dialog.alert("が入力されていません");
-                $('#B_INP_003').focus();
+                $('#B_INP_003-input').ntsError('set', 'が入力されていません');
                 return false;
             }
             return true;
@@ -485,11 +490,11 @@ module qpp011.b {
 
         exportPdf(): void {
             var self = this;
-            
-            if (!self.checkBValue()){
-                return;    
+
+            if (!self.checkBValue()) {
+                return;
             }
-            
+
             if (self.selectedValue_B_LST_001().length > 0) {
                 var command = {
                     residentTaxCodeList: self.selectedValue_B_LST_001(),
@@ -518,26 +523,23 @@ module qpp011.b {
         checkCValue(): boolean {
             var self = this;
             if (!self.C_INP_001_yearMonth()) {
-                nts.uk.ui.dialog.alert("が入力されていません");
-                $('#C_INP_001').focus();
+                $('#C_INP_001-input').ntsError('set', 'が入力されていません');
                 return false;
             }
             if (!self.C_INP_002_yearMonth()) {
-                nts.uk.ui.dialog.alert("が入力されていません");
-                $('#C_INP_002').focus();
+                $('#C_INP_002-input').ntsError('set', 'が入力されていません');
                 return false;
             }
             if (!self.C_INP_003_yearMonth()) {
-                nts.uk.ui.dialog.alert("が入力されていません");
-                $('#C_INP_003').focus();
+                $('#C_INP_003-input').ntsError('set', 'が入力されていません');
                 return false;
             }
             return true;
         }
         exportText(): void {
             var self = this;
-            if(!self.checkCValue()){
-            return;    
+            if (!self.checkCValue()) {
+                return;
             }
             if (self.selectedValue_C_LST_001().length > 0) {
             } else {
