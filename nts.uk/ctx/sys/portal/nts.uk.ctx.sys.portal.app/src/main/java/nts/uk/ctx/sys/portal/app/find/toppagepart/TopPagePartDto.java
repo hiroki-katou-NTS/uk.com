@@ -8,7 +8,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
  */
 @Value
 public class TopPagePartDto {
-	
+
 	/** Company ID */
 	private String companyID;
 
@@ -23,19 +23,20 @@ public class TopPagePartDto {
 
 	/** TopPage Part Type */
 	private int type;
-
+	
 	/** Width */
 	private int width;
 
 	/** Height */
 	private int height;
-	
-	/** Create Dto from Domain */
-	public static TopPagePartDto fromDomain(TopPagePart domain) {
+
+	/** Convert Domain to Dto */
+	public static TopPagePartDto fromDomain(TopPagePart topPagePart) {
 		return new TopPagePartDto(
-			domain.getCompanyID(), domain.getToppagePartID(),
-			domain.getCode().v(), domain.getName().v(), domain.getType().value,
-			domain.getWidth().v(), domain.getHeight().v()
+			topPagePart.getCompanyID(), topPagePart.getToppagePartID(),
+			topPagePart.getCode().v(), topPagePart.getName().v(),
+			topPagePart.getType().value, topPagePart.getWidth().v(), topPagePart.getHeight().v()
 		);
 	}
+	
 }

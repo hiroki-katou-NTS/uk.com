@@ -20,23 +20,26 @@ public class PortalTopPagePartFinder {
 	
 	@Inject
 	private TopPagePartRepository topPagePartRepository;
-
+	
 	/**
 	 * Find all TopPagePart and TopPagePartType
 	 * @return List PlaceTopPagePartDto
 	 */
-	public AddTopPagePartDto findAll() {
+	public ActiveTopPagePartDto findAll() {
 		// Company ID
 		String companyID = AppContexts.user().companyID();
+		
 		// List TopPage Part Type
 		List<EnumConstant> listTopPagePartType = EnumAdaptor.convertToValueNameList(TopPagePartType.class);
+		
 		//List TopPage Part
 		List<TopPagePartDto> listTopPagePart = topPagePartRepository.findAll(companyID).stream()
-				.map(item -> TopPagePartDto.fromDomain(item))
+				.map(topPagePart -> TopPagePartDto.fromDomain(topPagePart))
 				.collect(Collectors.toList());
+		
 		// Build Dto
-		AddTopPagePartDto placeTopPagePartDto = new AddTopPagePartDto(listTopPagePartType, listTopPagePart);
-		return placeTopPagePartDto;
+		ActiveTopPagePartDto activeTopPagePartDto = new ActiveTopPagePartDto(listTopPagePartType, listTopPagePart);
+		return activeTopPagePartDto;
 	}
 
 }

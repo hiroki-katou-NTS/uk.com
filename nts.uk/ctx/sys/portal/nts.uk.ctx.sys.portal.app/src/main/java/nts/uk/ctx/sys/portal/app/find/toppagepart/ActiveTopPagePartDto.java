@@ -9,7 +9,7 @@ import nts.arc.enums.EnumConstant;
  * @author LamDT
  */
 @Value
-public class AddTopPagePartDto {
+public class ActiveTopPagePartDto {
 	
 	/** List TopPagePart Type */
 	private List<EnumConstant> listTopPagePartType;
