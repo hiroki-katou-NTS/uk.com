@@ -123,7 +123,6 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 			reportContext.getDesigner().setDataSource("Header", reportData.getSalaryChartHeader());
 			
 			// Initial Variables
-
 			PrintProcess printProcess = new PrintProcess();
 			printProcess.cells = cells;
 			printProcess.query = query;
@@ -139,7 +138,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 			
 			reportContext.getDesigner().setWorkbook(workbook);
 			reportContext.processDesigner();
-			reportContext.saveAsPdf(this.createNewFile(generatorContext, REPORT_FILE_NAME));
+			reportContext.saveAsPdf(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
 			
 			// Save report as PDF file
 			reportContext.getWorkbook().save("D:/SalaryTableReport.xlsx");
