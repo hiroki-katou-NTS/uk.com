@@ -1,31 +1,24 @@
-table, td, th {
-	border: 1px solid black;
-}
-
-#lable_yearmonth {
-	display: inline-block;
-	width: calc(25%);
+#processingYm {
+	width: 322px;
 	border: 1px solid #bbb;
 	border-radius: 5px;
-	overflow: hidden;
-	box-sizing: border-box;
-	transition: box-shadow 0.2s;
 	padding: 5px;
+	margin-bottom: 10px;
 }
-
-#label_notification {
+#label-contact-setting {
 	margin-top: 10px;
+	margin-bottom: 10px;
 }
-
-.comment-data {
-	width: 98%;
-	height: 30px;
+#content-contact-setting {
+	margin-left: 10px;
 }
-
-#comment_notification {
-	margin-top: 10px;
+#inpSearch input{
+	margin-left: 15px;
+	margin-bottom: 15px;
+	width: 200px !important;
 }
-
-#comment_person {
-	margin-top: 10px;
+.icon.icon-searchbox {
+	position: relative;
+	top: 10px;
+	left: 15px;
 }

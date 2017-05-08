@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 900,
-					height : 600
+					height : 700
 				};
 			</script>
 			<com:stylefile path="main.css" />
@@ -24,40 +24,38 @@
 			<com:scriptfile path="qpp021.i.start.js" />
 			<com:scriptfile path="qpp021.i.vm.js" />
 			<com:scriptfile path="qpp021.i.service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.report.dom.payment.contact.ReportComment
+  			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="save" data-bind="click: onSaveBtnClicked"
 					class="proceed btnStyle">登録</button>
-				<button id="close">閉じる</button>
+				<button id="close" data-bind="click: onCloseBtnClicked">閉じる</button>
 			</div>
 			<div id="contents-area">
-				<div id="lable_yearmonth">
-					<span class="label with-image"> <i
-						class="image image-calendar" /> <span>処理する給与明細書の年月</span>
-					</span><span>2017/04</span>
+				<div id="label-contact-setting">
+					<div id="processingYm">
+						<span class="label with-image">
+							<i class="image image-calendar" />
+							<span>処理する給与明細書の年月</span>
+						</span>
+						<span style="margin-left: 10px" data-bind="text: '2017/04'"></span>
+					</div>
+					<div data-bind="ntsFormLabel: {constraint: 'ReportComment', required: false}"
+					id="label_notification">社員へのコメント</div>
 				</div>
-				<br />
-				<div data-bind="ntsFormLabel: {required: false}"
-					id="label_notification">
-					<label>社員へのコメント</label>
-					<!-- <div style="width: 700px"
-						data-bind="ntsSearchBox: {mode: 'igGrid', 
+				<div id="content-contact-setting">
+					<i class="icon icon-searchbox"></i>
+					<span id="inpSearch" class="ntsSearchBox"
+					data-bind="ntsSearchBox: {mode: 'igGrid', 
 						comId: 'comment_person_table', 
 						items: listContactPersonalSetting, 
 						selected: selected, 
 						selectedKey: 'employeeCode', 
-						fields: ['employeeCode', 'employeeName']}" /> -->
-						<div id="inpSearch" class="ntsSearchBox"
-						data-bind="ntsSearchBox: {
-										comId: 'comment_person_table',
-										items: listContactPersonalSetting, 
-										selected: selected, 
-										selectedKey: 'employeeCode', 
-										fields: ['employeeCode']}"></div>
-					<div id="comment_person">
-						<table data-bind="igGrid: igGrid" id="comment_person_table"></table>
-					</div>
+						fields: ['employeeCode', 'employeeName']}" />
+					<table data-bind="igGrid: igGrid" id="comment_person_table"></table>
 				</div>
 			</div>
 		</ui:define>

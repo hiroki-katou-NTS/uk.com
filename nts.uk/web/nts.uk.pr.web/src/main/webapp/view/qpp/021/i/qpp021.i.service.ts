@@ -14,7 +14,7 @@ module qpp021.i.service {
         return nts.uk.request.ajax(paths.findAllSetting);
     }
 
-    export function save(dto): void {
+    export function save(dto): JQueryPromise<any> {
         return nts.uk.request.ajax(paths.save, {listContactPersonalSetting: dto});
     }
 
