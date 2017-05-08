@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "KSCST_EXTERNAL_BUDGET")
 public class KscstExternalBudget {
-	
+
 	@EmbeddedId
 	public KstscExternalBudgetPK kscstExternalBudgetPk;
 

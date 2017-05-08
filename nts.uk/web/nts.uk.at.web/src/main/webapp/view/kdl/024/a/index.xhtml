@@ -7,13 +7,13 @@
 <head>
 </head>
 <body>
-	<ui:composition template="../../../master/base.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kdl024.main.css" />
-			<com:scriptfile path="kdl024.start.js" />
-			<com:scriptfile path="kdl024.service.js" />
-			<com:scriptfile path="kdl024.vm.js" />
+			<com:stylefile path="kdl024.a.main.css" />
+			<com:scriptfile path="kdl024.a.start.js" />
+			<com:scriptfile path="kdl024.a.service.js" />
+			<com:scriptfile path="kdl024.a.vm.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd
 				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetName
@@ -22,7 +22,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="btnNew" class="btnMenu" data-bind="click: addNew">新規</button>
-				<button id="btnSave" class="btnMenu proceed" data-bind="click: update, enable: $root.errors.isEmpty">登録</button>
+				<button id="btnSave" class="btnMenu proceed" data-bind="click: register, enable: $root.errors.isEmpty">登録</button>
 				<button id="btnDel" class="btnMenu delete_btn btn_width danger"
 					data-bind="click: del" style="margin-left: 60px;">削除</button>
 				<button id="btnClose" class="btnMenu" data-bind="">閉じる</button>
@@ -59,9 +59,12 @@
 							<td>
 								<input id="inpCode" data-bind="ntsTextEditor: {
  													value: currentItem().externalBudgetCode,
-													enable: isEnableInp}" class="save-error" data-name="BudgetCode"/>
+ 													constraint: 'ExternalBudgetCd',
+													enable: isEnableInp}" 
+													data-name="BudgetCode"/>
 								<input id="inpName" data-bind="ntsTextEditor: {
- 													value:currentItem().externalBudgetName, 
+ 													value:currentItem().externalBudgetName,
+ 													constraint :'ExternalBudgetName', 
  													enable: true } 
 													" />
 								<BR />

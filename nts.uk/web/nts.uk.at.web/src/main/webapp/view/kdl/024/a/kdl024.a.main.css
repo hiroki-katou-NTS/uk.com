@@ -1,5 +1,6 @@
 .btnMenu {
 	width: 70px;
+	margin-top: 3px;
 }
 
 #btnNew {
@@ -24,7 +25,7 @@
 }
 
 #inpName {
-	width: 150px;
+	width: 123px !important;
 }
 
 #inpCode, #inpName {
@@ -37,7 +38,7 @@ button.nts-switch-button {
 	padding: 1px 1px;
 	font-size: 15px;
 	height: 35px;
-	width: 90px;
+	width: 86px;
 }
 
 #tblContent tr td {

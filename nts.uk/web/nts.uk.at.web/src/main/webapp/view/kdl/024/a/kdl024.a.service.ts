@@ -1,4 +1,4 @@
-module kdl024.service {
+module kdl024.a.service {
     var paths = {
         getExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
         insertExternalBudget: "at/schedule/budget/external/insertexternalbudget",
@@ -9,15 +9,16 @@ module kdl024.service {
      * get list External Budget
      */
     export function getListExternalBudget(): JQueryPromise<Array<model.ExternalBudgetDto>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("at", paths.getExternalBudgetList)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        //        var dfd = $.Deferred<Array<any>>();
+        //        nts.uk.request.ajax("at", paths.getExternalBudgetList)
+        //            .done(function(res: Array<any>) {
+        //                dfd.resolve(res);
+        //            })
+        //            .fail(function(res) {
+        //                dfd.reject(res);
+        //            })
+        //        return dfd.promise();
+        return nts.uk.request.ajax("at", paths.getExternalBudgetList);
     }
     /**
      * Update Budget
@@ -31,19 +32,19 @@ module kdl024.service {
         command.externalBudgetName = updateBudgetCmd.externalBudgetName();
         command.budgetAtr = Number(updateBudgetCmd.budgetAtr());
         command.unitAtr = updateBudgetCmd.unitAtr();
-        
+
         nts.uk.request.ajax(paths.updateExternalBudget, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
-            })  
+            })
             .fail(function(res) {
                 dfd.reject(res);
             })
         return dfd.promise();
     }
-    
+
     //Insert 
-    export function insertExternalBudget(insertBudgetCmd : any){
+    export function insertExternalBudget(insertBudgetCmd: any) {
         var dfd = $.Deferred<Array<any>>();
         //TODO --> update List
         let command = {} as model.ExternalBudgetDto;
@@ -54,7 +55,7 @@ module kdl024.service {
         nts.uk.request.ajax(paths.insertExternalBudget, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
-            })  
+            })
             .fail(function(res) {
                 dfd.reject(res);
             })
@@ -62,7 +63,7 @@ module kdl024.service {
     }
     //Delelte
     //Insert 
-    export function deleteExternalBudget(deleteBudgetCmd : any){
+    export function deleteExternalBudget(deleteBudgetCmd: any) {
         var dfd = $.Deferred<Array<any>>();
         //TODO --> update List
         let command = {} as model.ExternalBudgetDto;
@@ -73,7 +74,7 @@ module kdl024.service {
         nts.uk.request.ajax(paths.deleteExternalBudget, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
-            })  
+            })
             .fail(function(res) {
                 dfd.reject(res);
             })

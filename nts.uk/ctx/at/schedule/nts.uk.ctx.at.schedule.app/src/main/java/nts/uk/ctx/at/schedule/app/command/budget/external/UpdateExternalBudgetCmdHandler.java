@@ -17,17 +17,12 @@ public class UpdateExternalBudgetCmdHandler extends CommandHandler<UpdateExterna
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateExternalBudgetCmd> context) {
-		try {
-			// get command
-			UpdateExternalBudgetCmd command = context.getCommand();
-			// convert to server
-			ExternalBudget exBudget = command.toDomain();
-			// update process
-			budgetRepo.update(exBudget);
-		} catch (Exception ex) {
-			throw ex;
-		}
-
+		// get command
+		UpdateExternalBudgetCmd command = context.getCommand();
+		// convert to server
+		ExternalBudget exBudget = command.toDomain();
+		// update process
+		budgetRepo.update(exBudget);
 	}
 
 }
