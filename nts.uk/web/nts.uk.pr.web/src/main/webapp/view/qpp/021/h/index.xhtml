@@ -7,6 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 900,
+					height : 600
+				};
+			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile
 				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
@@ -33,7 +39,7 @@
 					<div id="lable_yearmonth">
 						<span class="label with-image"> <i
 							class="image image-calendar" /> <span>処理する給与明細書の年月</span>
-						</span> <span data-bind="ntsFormLabel: { required: true }">2017/04</span>
+						</span> <span data-bind="ntsFormLabel: { required: true }">2017/05</span>
 					</div>
 					<br />
 					<div data-bind="ntsFormLabel: {required: false}"
@@ -48,20 +54,25 @@
 								<td>毎月の給与明細書に印刷する連絡事項</td>
 							</tr>
 							<tr>
-								<td><input class="comment-data"
+								<td><input data-name="今月の給与明細書に印刷する連絡事項 "
+									id="inp_monthCpComment" class="comment-data"
 									data-bind="ntsTextEditor: {value: monthCpComment,
-											constraint: 'ReportComment', 
-											option: textEditorOption,
-											enable: true,
-											immediate: false,
-											required:false}"></input></td>
+									constraint: 'ReportComment', 
+									option: textEditorOption,
+									enable: true,
+									immediate: false,
+									required:false}"></input>
+								</td>
 								<td><input class="comment-data"
+									data-name="毎月の給与明細書に印刷する連絡事項" 
+									id="inp_initialCpComment"
 									data-bind="ntsTextEditor: {value: initialCpComment,
-											constraint: 'ReportComment', 
-											option: textEditorOption,
-											enable: true,
-											immediate: false,
-											required:false}"></input></td>
+									constraint: 'ReportComment', 
+									option: textEditorOption,
+									enable: true,
+									immediate: false,
+									required:false}"></input>
+								</td>
 							</tr>
 						</table>
 					</div>

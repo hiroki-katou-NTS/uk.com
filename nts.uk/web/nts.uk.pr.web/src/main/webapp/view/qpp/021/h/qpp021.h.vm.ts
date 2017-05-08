@@ -15,12 +15,16 @@ module nts.uk.pr.view.qpp021.h {
             initialCpComment: KnockoutObservable<string>;
             monthCpComment: KnockoutObservable<string>;
             textEditorOption: KnockoutObservable<any>;
+            processingNo: number;
+            processingYm: number;
 
             constructor() {
                 var self = this;
                 self.initialCpComment = ko.observable('');
                 self.monthCpComment = ko.observable('');
-                this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                self.processingNo = 1;
+                self.processingYm = 201705;
             }
 
             //start page
@@ -31,8 +35,8 @@ module nts.uk.pr.view.qpp021.h {
 
                     var dto: ContactItemsSettingFindDto;
                     dto = new ContactItemsSettingFindDto();
-                    dto.processingNo = 1;
-                    dto.processingYm = 201705;
+                    dto.processingNo = self.processingNo;
+                    dto.processingYm = self.processingYm;
 
                     var empCommentFinds: EmpCommentFindDto[];
                     empCommentFinds = [];
@@ -59,7 +63,7 @@ module nts.uk.pr.view.qpp021.h {
                         self.igGridDataSource = ko.observableArray(itemarr);
                         self.initIgGrid();
                         dfd.resolve(self);
-                    })
+                    });
 
                 }).fail(function() {
 
@@ -68,10 +72,53 @@ module nts.uk.pr.view.qpp021.h {
                 return dfd.promise();
             }
 
+            reloadData(): void {
+                var self = this;
+                service.findAllEmployee().done(data => {
+
+                    var dto: ContactItemsSettingFindDto;
+                    dto = new ContactItemsSettingFindDto();
+                    dto.processingNo = self.processingNo;
+                    dto.processingYm = self.processingYm;
+
+                    var empCommentFinds: EmpCommentFindDto[];
+                    empCommentFinds = [];
+
+                    data.forEach(item => {
+                        var empComment: EmpCommentFindDto;
+                        empComment = new EmpCommentFindDto();
+                        empComment.employeeCode = item.employmentCode;
+                        empComment.employeeName = item.employmentName;
+                        empCommentFinds.push(empComment);
+                    })
+                    dto.empCommentFinds = empCommentFinds;
+                    service.findContactItemSettings(dto).done(output => {
+                        var itemarr: CommentPersonModel[];
+                        itemarr = [];
+                        output.empCommentDtos.forEach(employee => {
+                            var item: CommentPersonModel;
+                            item = new CommentPersonModel();
+                            item.setupData(employee);
+                            itemarr.push(item);
+                        });
+                        self.initialCpComment(output.initialCpComment);
+                        self.monthCpComment(output.monthCpComment);
+                        self.igGridDataSource(itemarr);
+                        self.updateIgGrid();
+                    });
+
+                }).fail(function() {
+
+                });
+            }
             saveContactItemsSetting(): void {
                 var self = this;
+                if (self.validateData()) {
+                    return;
+                }
+
                 service.saveContactItemSettings(self.collectData()).done(function() {
-                    //load data    
+                    self.reloadData();
                 }).fail(function() {
 
                 });
@@ -82,8 +129,8 @@ module nts.uk.pr.view.qpp021.h {
                 var self = this;
                 var dto: ContactItemsSettingDto;
                 dto = new ContactItemsSettingDto();
-                dto.processingNo = 1;
-                dto.processingYm = 201705;
+                dto.processingNo = self.processingNo;
+                dto.processingYm = self.processingYm;
                 dto.initialCpComment = self.initialCpComment();
                 dto.monthCpComment = self.monthCpComment();
                 var empCommentDtos: EmpCommentDto[];
@@ -101,6 +148,15 @@ module nts.uk.pr.view.qpp021.h {
                 return dto;
             }
 
+            private validateData(): boolean {
+                $("#inp_monthCpComment").ntsEditor("validate");
+                $("#inp_initialCpComment").ntsEditor("validate");
+                if ($('.nts-editor').ntsError("hasError")) {
+                    return true;
+                }
+                return false;
+            }
+
             initIgGrid(): void {
                 var self = this;
 
@@ -109,7 +165,7 @@ module nts.uk.pr.view.qpp021.h {
                     dataSource: self.igGridDataSource,
                     width: '100%',
                     primaryKey: 'empCd',
-                    height: '750px',
+                    height: '550px',
                     features: [
                         {
                             name: 'Updating',
@@ -128,10 +184,64 @@ module nts.uk.pr.view.qpp021.h {
                                 },
                                 {
                                     columnKey: 'monthlyComment',
+                                    constraint: 'ReportComment',
                                     readOnly: false
                                 },
                                 {
                                     columnKey: 'initialComment',
+                                    constraint: 'ReportComment',
+                                    readOnly: false
+                                },
+                                {
+                                    columnKey: 'groupCalTypeText',
+                                    readOnly: true
+                                }
+                            ]
+                        }
+                    ],
+                    autoCommit: true,
+                    columns: [
+                        { headerText: 'コード', dataType: 'string', key: 'empCd', width: '10%', columnCssClass: "bgIgCol" },
+                        { headerText: '名称', dataType: 'string', key: 'empName', width: '10%', columnCssClass: "bgIgCol" },
+                        { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'monthlyComment', width: '40%', columnCssClass: "halign-right" },
+                        { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'initialComment', width: '40%', columnCssClass: "halign-right" }
+                    ]
+                });
+            }
+            
+            updateIgGrid(): void {
+                var self = this;
+
+                // IgGrid
+                self.igGrid({
+                    dataSource: self.igGridDataSource,
+                    width: '100%',
+                    primaryKey: 'empCd',
+                    height: '550px',
+                    features: [
+                        {
+                            name: 'Updating',
+                            editMode: 'row',
+                            enableAddRow: false,
+                            excelNavigatorMode: false,
+                            enableDeleteRow: false,
+                            columnSettings: [
+                                {
+                                    columnKey: 'empCd',
+                                    readOnly: true
+                                },
+                                {
+                                    columnKey: 'empName',
+                                    readOnly: true
+                                },
+                                {
+                                    columnKey: 'monthlyComment',
+                                    constraint: 'ReportComment',
+                                    readOnly: false
+                                },
+                                {
+                                    columnKey: 'initialComment',
+                                    constraint: 'ReportComment',
                                     readOnly: false
                                 },
                                 {

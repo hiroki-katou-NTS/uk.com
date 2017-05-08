@@ -22,7 +22,9 @@ var nts;
                                     var self = this;
                                     self.initialCpComment = ko.observable('');
                                     self.monthCpComment = ko.observable('');
-                                    this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                                    self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                                    self.processingNo = 1;
+                                    self.processingYm = 201705;
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -30,8 +32,8 @@ var nts;
                                     h.service.findAllEmployee().done(function (data) {
                                         var dto;
                                         dto = new ContactItemsSettingFindDto();
-                                        dto.processingNo = 1;
-                                        dto.processingYm = 201705;
+                                        dto.processingNo = self.processingNo;
+                                        dto.processingYm = self.processingYm;
                                         var empCommentFinds;
                                         empCommentFinds = [];
                                         data.forEach(function (item) {
@@ -61,9 +63,47 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.reloadData = function () {
+                                    var self = this;
+                                    h.service.findAllEmployee().done(function (data) {
+                                        var dto;
+                                        dto = new ContactItemsSettingFindDto();
+                                        dto.processingNo = self.processingNo;
+                                        dto.processingYm = self.processingYm;
+                                        var empCommentFinds;
+                                        empCommentFinds = [];
+                                        data.forEach(function (item) {
+                                            var empComment;
+                                            empComment = new EmpCommentFindDto();
+                                            empComment.employeeCode = item.employmentCode;
+                                            empComment.employeeName = item.employmentName;
+                                            empCommentFinds.push(empComment);
+                                        });
+                                        dto.empCommentFinds = empCommentFinds;
+                                        h.service.findContactItemSettings(dto).done(function (output) {
+                                            var itemarr;
+                                            itemarr = [];
+                                            output.empCommentDtos.forEach(function (employee) {
+                                                var item;
+                                                item = new CommentPersonModel();
+                                                item.setupData(employee);
+                                                itemarr.push(item);
+                                            });
+                                            self.initialCpComment(output.initialCpComment);
+                                            self.monthCpComment(output.monthCpComment);
+                                            self.igGridDataSource(itemarr);
+                                            self.updateIgGrid();
+                                        });
+                                    }).fail(function () {
+                                    });
+                                };
                                 ScreenModel.prototype.saveContactItemsSetting = function () {
                                     var self = this;
+                                    if (self.validateData()) {
+                                        return;
+                                    }
                                     h.service.saveContactItemSettings(self.collectData()).done(function () {
+                                        self.reloadData();
                                     }).fail(function () {
                                     });
                                 };
@@ -71,8 +111,8 @@ var nts;
                                     var self = this;
                                     var dto;
                                     dto = new ContactItemsSettingDto();
-                                    dto.processingNo = 1;
-                                    dto.processingYm = 201705;
+                                    dto.processingNo = self.processingNo;
+                                    dto.processingYm = self.processingYm;
                                     dto.initialCpComment = self.initialCpComment();
                                     dto.monthCpComment = self.monthCpComment();
                                     var empCommentDtos;
@@ -90,13 +130,21 @@ var nts;
                                     dto.empCommentDtos = empCommentDtos;
                                     return dto;
                                 };
+                                ScreenModel.prototype.validateData = function () {
+                                    $("#inp_monthCpComment").ntsEditor("validate");
+                                    $("#inp_initialCpComment").ntsEditor("validate");
+                                    if ($('.nts-editor').ntsError("hasError")) {
+                                        return true;
+                                    }
+                                    return false;
+                                };
                                 ScreenModel.prototype.initIgGrid = function () {
                                     var self = this;
                                     self.igGrid = ko.observable({
                                         dataSource: self.igGridDataSource,
                                         width: '100%',
                                         primaryKey: 'empCd',
-                                        height: '750px',
+                                        height: '550px',
                                         features: [
                                             {
                                                 name: 'Updating',
@@ -115,10 +163,61 @@ var nts;
                                                     },
                                                     {
                                                         columnKey: 'monthlyComment',
+                                                        constraint: 'ReportComment',
                                                         readOnly: false
                                                     },
                                                     {
                                                         columnKey: 'initialComment',
+                                                        constraint: 'ReportComment',
+                                                        readOnly: false
+                                                    },
+                                                    {
+                                                        columnKey: 'groupCalTypeText',
+                                                        readOnly: true
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        autoCommit: true,
+                                        columns: [
+                                            { headerText: 'コード', dataType: 'string', key: 'empCd', width: '10%', columnCssClass: "bgIgCol" },
+                                            { headerText: '名称', dataType: 'string', key: 'empName', width: '10%', columnCssClass: "bgIgCol" },
+                                            { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'monthlyComment', width: '40%', columnCssClass: "halign-right" },
+                                            { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'initialComment', width: '40%', columnCssClass: "halign-right" }
+                                        ]
+                                    });
+                                };
+                                ScreenModel.prototype.updateIgGrid = function () {
+                                    var self = this;
+                                    self.igGrid({
+                                        dataSource: self.igGridDataSource,
+                                        width: '100%',
+                                        primaryKey: 'empCd',
+                                        height: '550px',
+                                        features: [
+                                            {
+                                                name: 'Updating',
+                                                editMode: 'row',
+                                                enableAddRow: false,
+                                                excelNavigatorMode: false,
+                                                enableDeleteRow: false,
+                                                columnSettings: [
+                                                    {
+                                                        columnKey: 'empCd',
+                                                        readOnly: true
+                                                    },
+                                                    {
+                                                        columnKey: 'empName',
+                                                        readOnly: true
+                                                    },
+                                                    {
+                                                        columnKey: 'monthlyComment',
+                                                        constraint: 'ReportComment',
+                                                        readOnly: false
+                                                    },
+                                                    {
+                                                        columnKey: 'initialComment',
+                                                        constraint: 'ReportComment',
                                                         readOnly: false
                                                     },
                                                     {
