@@ -40,11 +40,13 @@ public class RetirementPaymentReportGeneratorImpl extends AsposeCellsReportGener
 	public void generate(FileGeneratorContext generatorContext, List<RetirementPaymentReportData> dataSource,
 			List<RetirePayItemDto> lstRetirePayItemDto) {
 		try {
+			// get main template
 			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
 			Worksheet mainWorkSheet = reportContext.getWorkbook().getWorksheets().get(0);
-
+			// create workbook to export
 			Workbook workbook = new Workbook();
 			workbook.getWorksheets().removeAt(0);
+			// create designer
 			WorkbookDesigner designer = new WorkbookDesigner();
 			designer.setWorkbook(workbook);
 			// get current date

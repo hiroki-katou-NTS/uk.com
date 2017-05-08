@@ -25,7 +25,7 @@ module qrm009.vm {
                 { personId: '999000000000000000000000000000000007', employeeCode: 'A0000007', employeeName: '従業員名 7' },
                 { personId: '999000000000000000000000000000000008', employeeCode: 'A0000008', employeeName: '従業員名 8' },
                 { personId: '999000000000000000000000000000000009', employeeCode: 'A0000009', employeeName: '従業員名 9' },
-                { personId: '999000000000000000000000000000000010', employeeCode: 'A0000000', employeeName: '従業員名 0' }
+                { personId: '999000000000000000000000000000000010', employeeCode: 'A0000010', employeeName: '従業員名 0' }
             ]);
             self.selectedPersons = ko.observableArray([]);
 
