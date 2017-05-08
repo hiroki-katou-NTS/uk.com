@@ -36,18 +36,17 @@ module nts.uk.com.view.ccg015.a {
                 self.languageSelectedCode = ko.observable("0");
                 //end constructor
             }
+            
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 self.loadTopPageList().done(function() {
-                    //TODO 
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
-            
-            private loadTopPageList() : JQueryPromise<void>
-            {
+
+            private loadTopPageList(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 self.listTopPage([]);
@@ -57,6 +56,7 @@ module nts.uk.com.view.ccg015.a {
                             self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
                         });
                         if (self.listTopPage().length > 0) {
+                            //focus first item
                             self.toppageSelectedCode(self.listTopPage()[0].code);
                         }
                     }
@@ -74,35 +74,34 @@ module nts.uk.com.view.ccg015.a {
                 self.topPageModel().topPageCode(data.topPageCode);
                 self.topPageModel().topPageName(data.topPageName);
                 self.topPageModel().layoutId(data.layoutId);
-                //TODO su dung service de lay layout rieng
-//                if (data.placements) {
-//                    data.placements.forEach(function(item, index) {
-//                        var placementModel = new PlacementModel();
-//                        var topPagePartModel = new TopPagePartModel();
-//                        //set value for top page part
-//                        topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
-//                        topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
-//                        topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
-//                        topPagePartModel.width(item.topPagePart.width);
-//                        topPagePartModel.height(item.topPagePart.height);
-//
-//                        placementModel.row(item.row);
-//                        placementModel.column(item.column);
-//                        placementModel.topPagePart(topPagePartModel);
-//
-//                        self.topPageModel().placement().push(placementModel);
-//                    });
-//                }
+                //TODO
+                //                if (data.placements) {
+                //                    data.placements.forEach(function(item, index) {
+                //                        var placementModel = new PlacementModel();
+                //                        var topPagePartModel = new TopPagePartModel();
+                //                        //set value for top page part
+                //                        topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
+                //                        topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
+                //                        topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
+                //                        topPagePartModel.width(item.topPagePart.width);
+                //                        topPagePartModel.height(item.topPagePart.height);
+                //
+                //                        placementModel.row(item.row);
+                //                        placementModel.column(item.column);
+                //                        placementModel.topPagePart(topPagePartModel);
+                //
+                //                        self.topPageModel().placement().push(placementModel);
+                //                    });
+                //                }
             }
+            
             private collectData(): TopPageDto {
                 var self = this;
                 //mock data
                 var data: TopPageDto = { topPageCode: self.topPageModel().topPageCode(), topPageName: self.topPageModel().topPageName(), languageNumber: 0, layoutId: "luid" };
                 return data;
             }
-            private collectDataForCreateNew(): TopPageDto {
-                return null;
-            }
+            
             private saveTopPage() {
                 var self = this;
                 $('.nts-input').ntsEditor('validate');
@@ -113,12 +112,12 @@ module nts.uk.com.view.ccg015.a {
                     //check update or create
                     if (self.isNewMode()) {
                         service.registerTopPage(self.collectData()).done(function() {
-                            //TODO register success  show msg_15                      
+                            nts.uk.ui.dialog.alert("登録しました。");                     
                         });
                     }
                     else {
                         service.updateTopPage(self.collectData()).done(function() {
-                            //TODO register success  show msg_15  
+                            nts.uk.ui.dialog.alert("登録しました。"); 
                         });
                     }
                     self.loadTopPageList().done(function() {
@@ -132,7 +131,7 @@ module nts.uk.com.view.ccg015.a {
                     title: "マイページの設定",
                     dialogClass: 'no-close'
                 }).onClosed(() => {
-                    //TODO on Close dialog
+                    //TODO
                 });
 
             }
@@ -151,7 +150,7 @@ module nts.uk.com.view.ccg015.a {
                     self.loadTopPageList().done(function() {
                         self.toppageSelectedCode(codeOfNewTopPage);
                     });
-                    //TODO on Close dialog
+                    //TODO 
                 });
 
             }
@@ -167,10 +166,10 @@ module nts.uk.com.view.ccg015.a {
                     //TODO on Close dialog
                 });
             }
-            
+
             private openLayoutSettingDialog() {
                 var self = this;
-                nts.uk.ui.windows.setShared('layout', {layoutId :self.topPageModel().layoutId(),pgType:0});
+                nts.uk.ui.windows.setShared('layout', { layoutId: self.topPageModel().layoutId(), pgType: 0 });
                 nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
                     height: 650, width: 1300,
                     title: "$$$$$$$$",//TODO change name
@@ -179,15 +178,17 @@ module nts.uk.com.view.ccg015.a {
                     //TODO on Close dialog
                 });
             }
+            
             private newTopPage() {
                 var self = this;
                 self.topPageModel(new TopPageModel());
                 self.isNewMode(true);
                 self.toppageSelectedCode("");
             }
+            
             private removeTopPage() {
                 var self = this;
-                nts.uk.ui.dialog.confirm("//TODO #Msg_18").ifYes(function() {
+                nts.uk.ui.dialog.confirm("選択中のデータを削除しますか？").ifYes(function() {
                     var removeCode = self.toppageSelectedCode();
                     var removeIndex = self.getIndexOfRemoveItem(removeCode);
                     var listLength = self.listTopPage().length;
@@ -196,7 +197,7 @@ module nts.uk.com.view.ccg015.a {
                     }).fail();
                     self.loadTopPageList().done(function() {
                         var lst = self.listTopPage();
-                        if (removeIndex < listLength-1) {
+                        if (removeIndex < listLength - 1) {
                             self.toppageSelectedCode(lst[removeIndex].code);
                         }
                         else {
@@ -207,17 +208,19 @@ module nts.uk.com.view.ccg015.a {
 
                 });
             }
-            private getIndexOfRemoveItem(code:string):number{
+            
+            private getIndexOfRemoveItem(code: string): number {
                 var self = this;
                 var ind = 0;
                 self.listTopPage().forEach(function(item, index) {
                     if (item.code == code) {
                         ind = index;
-                    } 
+                    }
                 });
-                return ind;    
+                return ind;
             }
         }
+        
         export class Node {
             code: string;
             name: string;
@@ -233,6 +236,7 @@ module nts.uk.com.view.ccg015.a {
                 self.custom = 'Random' + new Date().getTime();
             }
         }
+        
         export class TopPageModel {
             topPageCode: KnockoutObservable<string>;
             topPageName: KnockoutObservable<string>;
@@ -245,6 +249,7 @@ module nts.uk.com.view.ccg015.a {
                 this.layoutId = ko.observable('');
             }
         }
+        
         export class PlacementModel {
             row: KnockoutObservable<number>;
             column: KnockoutObservable<number>;
@@ -255,6 +260,7 @@ module nts.uk.com.view.ccg015.a {
                 this.topPagePart = ko.observable(new TopPagePartModel());
             }
         }
+        
         export class TopPagePartModel {
             topPagePartType: KnockoutObservable<number>;
             topPagePartCode: KnockoutObservable<string>;

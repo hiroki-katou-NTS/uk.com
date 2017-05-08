@@ -4,9 +4,13 @@ module nts.uk.pr.view.ccg015.b {
 
         // Service paths.
         var servicePath = {
-            loadMyPageSetting: "/mypage/getMyPageSetting",//TODO add find all top page path
+            loadMyPageSetting: "/mypage/getMyPageSetting",
             updateMyPageSetting: "/mypage/updateMyPageSetting"
         }
+        
+        /**
+          * Function is used to load My Page Setting.
+          */
         export function loadMyPageSetting(): JQueryPromise<model.MyPageSettingDto> {
             var self = this;
             var dfd = $.Deferred<any>();

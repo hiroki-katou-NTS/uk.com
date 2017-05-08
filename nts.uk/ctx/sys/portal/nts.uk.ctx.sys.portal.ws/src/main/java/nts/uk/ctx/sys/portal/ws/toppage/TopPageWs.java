@@ -45,12 +45,13 @@ public class TopPageWs extends WebService {
 	/** The delete top page command handler. */
 	@Inject
 	DeleteTopPageCommandHandler deleteTopPageCommandHandler;
-	
+
 	@Inject
 	CopyTopPageCommandHandler copyTopPageCommandHandler;
-	
-	@Inject 
+
+	@Inject
 	LayoutService layoutService;
+
 	/**
 	 * Find all.
 	 *
@@ -66,7 +67,8 @@ public class TopPageWs extends WebService {
 	/**
 	 * Gets the top page detail.
 	 *
-	 * @param topPageCode the top page code
+	 * @param topPageCode
+	 *            the top page code
 	 * @return the top page detail
 	 */
 	@POST
@@ -79,7 +81,8 @@ public class TopPageWs extends WebService {
 	/**
 	 * Creates the top page.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("create")
@@ -90,30 +93,32 @@ public class TopPageWs extends WebService {
 	/**
 	 * Copy the top page.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("copy")
 	public void copyTopPage(CopyTopPageCommand command) {
 		copyTopPageCommandHandler.handle(command);
 	}
-	
+
 	/**
 	 * Copy the top page.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("copyLayout/{layoutId}/{toppageCode}")
-	public void copyLayout(@PathParam("layoutId") String layoutId,@PathParam("toppageCode") String topPageCode) {
-	//TODO goi service cua anh Lam
+	public void copyLayout(@PathParam("layoutId") String layoutId, @PathParam("toppageCode") String topPageCode) {
 		layoutService.copyTopPageLayout(layoutId);
 	}
-	
+
 	/**
 	 * Update top page.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("update")
@@ -124,7 +129,8 @@ public class TopPageWs extends WebService {
 	/**
 	 * Delete top page.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("remove")

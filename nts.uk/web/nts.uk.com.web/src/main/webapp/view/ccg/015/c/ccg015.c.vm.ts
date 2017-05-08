@@ -58,7 +58,7 @@ module nts.uk.pr.view.ccg015.c {
                                 });
                             }
                             else {
-                                //throw message Msg_3    
+                                nts.uk.ui.dialog.alert("入力したコードは、既に登録されています。");    
                             }
                         }
                         else {
@@ -74,7 +74,7 @@ module nts.uk.pr.view.ccg015.c {
                                     aservice.registerTopPage(topPage).done(function() {
                                         nts.uk.ui.windows.close();
                                         //                                    nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
-                                        //show msg_20
+                                        nts.uk.ui.dialog.alert("コピーが完了しました。");
                                     });
                                 });
                             }
@@ -88,7 +88,7 @@ module nts.uk.pr.view.ccg015.c {
                                 aservice.registerTopPage(topPage).done(function() {
                                     nts.uk.ui.windows.close();
                                     //                                nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
-                                    //show msg_20
+                                    nts.uk.ui.dialog.alert("コピーが完了しました。");
                                 });
                             }
                         }

@@ -10,6 +10,9 @@ module nts.uk.com.view.ccg015.a {
             updateTopPage: "/toppage/update",
             removeTopPage: "/toppage/remove"
         }
+        /**
+          * Function is used to load All Top Page.
+          */
         export function loadTopPage(): JQueryPromise<Array<model.TopPageItemDto>> {
             var self = this;
             var dfd = $.Deferred<Array<model.TopPageItemDto>>();
@@ -19,7 +22,10 @@ module nts.uk.com.view.ccg015.a {
             });
             return dfd.promise();
         }
-
+        
+        /**
+          * Function is used to load data of 1 Top Page.
+          */
         export function loadDetailTopPage(topPageCode: string): JQueryPromise<model.TopPageDto> {
             var self = this;
             var dfd = $.Deferred<model.TopPageDto>();
@@ -48,7 +54,7 @@ module nts.uk.com.view.ccg015.a {
         * Function is used to delete Top Page.
         */
         export function deleteTopPage(topPageItemCode: string): JQueryPromise<model.TopPageDto> {
-            var data = {topPageCode: topPageItemCode}; 
+            var data = { topPageCode: topPageItemCode };
             return nts.uk.request.ajax(servicePath.removeTopPage, data);
         }
 
@@ -62,7 +68,7 @@ module nts.uk.com.view.ccg015.a {
                 topPageName: string;
                 languageNumber: number;
                 layoutId: string;
-//                placements: Array<PlacementDto>;
+                //                placements: Array<PlacementDto>;
             }
             export interface PlacementDto {
                 row: number;
