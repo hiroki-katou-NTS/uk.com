@@ -2,11 +2,12 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.service;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
-
+@Stateless
 public class TopPagePartServiceImpl implements TopPagePartService{
 
 	@Inject
