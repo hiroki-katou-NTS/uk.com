@@ -20,7 +20,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
 
             // Get options
-            var options: Array<any> = ko.unwrap(data.options);
+            var options: Array<any> = ko.unwrap(data.options) ;
             // Get options value
             var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
             var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
@@ -30,7 +30,8 @@ module nts.uk.ui.koExtentions {
 //            var required = ko.unwrap(data.required) || false;
             var columns: Array<any> = data.columns;
             // Container
-            let gridId = $(element).attr("id");
+            let elementId = $(element).attr("id");
+            let gridId = elementId;
             if(nts.uk.util.isNullOrUndefined(gridId)){
                 gridId = nts.uk.util.randomId();        
             } else {
@@ -46,7 +47,7 @@ module nts.uk.ui.koExtentions {
             var changeEvent = new CustomEvent("selectionChange", {
                 detail: {},
             });
-             
+              
             container.data("selectionChange", changeEvent);
             
             var features = [];
@@ -62,14 +63,21 @@ module nts.uk.ui.koExtentions {
                 width += 10 * maxWidthCharacter + 20;    
                 container.data("fullValue", true);
             } else {
+                let isHaveKey = false;
                 iggridColumns = _.map(columns, c => {
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                     c["width"] = c["length"] * maxWidthCharacter + 20;
                     c["headerText"] = '';
                     c["columnCssClass"] = 'nts-column';
                     width += c["length"] * maxWidthCharacter + 20;
+                    if (optionValue === c["key"]) {
+                         isHaveKey = true;   
+                    }
                     return c;
-                });    
+                });   
+                if (!isHaveKey) {
+                    iggridColumns.push({"key": optionValue, "width": 10 * maxWidthCharacter + 20, "headerText": '', "columnCssClass": 'nts-column', 'hidden': true});        
+                } 
             }
 
             var gridHeaderHeight = 24;
@@ -84,25 +92,21 @@ module nts.uk.ui.koExtentions {
             });
             
             container.ntsGridList('setupSelecting');
+             
             
-            
-            container.bind('iggridselectionrowselectionchanging', () => {
-                let itemSelected;
-                if (container.igGridSelection('option', 'multipleSelection')) {
-                    let selected: Array<any> = container.ntsGridList('getSelected');
-                    if (selected) {
-                        itemSelected = _.map(selected, s => s.id);
-                    } else {
-                        itemSelected = [];
-                    }
-                } else {
-                    let selected = container.ntsGridList('getSelected');
-                    if (selected) {
-                        itemSelected = selected.id;
-                    } else {
-                        itemSelected = ('');
-                    }
+            container.bind('iggridselectionrowselectionchanging', (evt, ui) => {
+//                console.log(ui);
+                if(container.data("enable") === false){ 
+                    return false;        
                 }
+                let itemSelected = ui.row.id;
+                let dataSource = container.igGrid('option', "dataSource");
+                if(container.data("fullValue")){
+                    itemSelected = _.find(dataSource, function (d){
+                        return d[optionValue].toString() === itemSelected.toString();      
+                    });    
+                }
+                  
                 var changingEvent = new CustomEvent("selectionChanging", {
                     detail: itemSelected,  
                     bubbles: true,
@@ -111,14 +115,15 @@ module nts.uk.ui.koExtentions {
                 
                 container.data("chaninged", true);
                 
-                document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                
-                if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
+                document.getElementById(elementId).dispatchEvent(changingEvent);
+                 
+                if (changingEvent.returnValue !== undefined && changingEvent.returnValue === false) {
                     return false;    
                 }
             });
 
             container.bind('selectionchanged', () => {
+//                console.log(ui);
                 let itemSelected;
                 if (container.igGridSelection('option', 'multipleSelection')) {
                     let selected: Array<any> = container.ntsGridList('getSelected');
@@ -133,6 +138,20 @@ module nts.uk.ui.koExtentions {
                         itemSelected = selected.id;
                     } else {
                         itemSelected = ('');
+                    }
+                }
+                container.data("selected", itemSelected);
+                let isMultiOld = container.igGridSelection('option', 'multipleSelection');
+                if(container.data("fullValue")){
+                    let dataSource = container.igGrid('option', "dataSource");
+                    if (isMultiOld){
+                        itemSelected = _.filter(dataSource, function(d){
+                            itemSelected.indexOf(d[optionValue].toString()) >= 0;            
+                        });
+                    } else {
+                        itemSelected = _.find(dataSource, function (d){
+                            return d[optionValue].toString() === itemSelected.toString();      
+                        });    
                     }
                 }
                 if(container.data("chaninged") !== true){
@@ -151,22 +170,10 @@ module nts.uk.ui.koExtentions {
                         return false;    
                     } 
                 }
-                
-                container.data("selected", itemSelected);
                 container.data("chaninged", false);
-                let isMultiOld = container.igGridSelection('option', 'multipleSelection');
-                if(container.data("fullValue")){
-                    let dataSource = container.igGrid('option', "dataSource");
-                    if (isMultiOld){
-                        itemSelected = _.map(dataSource, optionValue);
-                    } else {
-                        itemSelected = _.find(dataSource, function (d){
-                            return d[optionValue].toString() === itemSelected.toString();      
-                        });    
-                    }
+                if(!_.isEqual(itemSelected, data.value())){
+                    data.value(itemSelected);        
                 }
-                data.value(itemSelected);
-
             });
             container.setupSearchScroll("igGrid", true); 
             
@@ -194,6 +201,16 @@ module nts.uk.ui.koExtentions {
             var rows = data.rows;
             // Container.
             var container = $(element).find(".ntsListBox");
+            if(container.data("enable") !== enable){
+                if(!enable){
+                    container.ntsGridList('unsetupSelecting');
+                    container.addClass("disabled");     
+                } else {
+                    container.ntsGridList('setupSelecting');
+                    container.removeClass("disabled");    
+                }    
+            }
+            
             container.data("enable", enable);
             
             var currentSource = container.igGrid('option', 'dataSource');
@@ -208,7 +225,7 @@ module nts.uk.ui.koExtentions {
                         let key = c["key"] === undefined ? c["prop"] : c["key"];
                         s[key] = moment(s[key]).format(c["format"]);
                     });        
-                });
+                }); 
                 container.igGrid('option', 'dataSource', currentSources);
                 container.igGrid("dataBind");
             }
@@ -234,11 +251,27 @@ module nts.uk.ui.koExtentions {
                 container.ntsGridList('setSelected', dataValue);    
             } else {
                 var currentSelectedItems = container.ntsGridList('getSelected');
-                var isEqual = _.isEqualWith(currentSelectedItems, dataValue, function(current, newVal) {
-                    if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
-                        return true;
+                if (isMultiOld) {
+                    if (currentSelectedItems) {
+                        currentSelectedItems = _.map(currentSelectedItems, s => s.id);
+                    } else {
+                        currentSelectedItems = [];
                     }
-                })
+                    if(dataValue) {
+                        dataValue = _.map(dataValue, s => s.toString());
+                    }   
+                } else {
+                    if (currentSelectedItems) {
+                        currentSelectedItems = currentSelectedItems.id;
+                    } else {
+                        currentSelectedItems = ('');
+                    }
+                    if(dataValue) {
+                        dataValue = dataValue.toString();
+                    }
+                }
+                
+                var isEqual = _.isEqual(currentSelectedItems, dataValue);
                 if (!isEqual) {
                     container.ntsGridList('setSelected', dataValue);
                 }    

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.ws.wageledger;
@@ -26,20 +26,20 @@ import nts.uk.ctx.pr.report.app.wageledger.find.dto.OutputSettingDto;
  */
 @Path("ctx/pr/report/wageledger/outputsetting")
 @Produces("application/json")
-public class OutputSettingWebService extends WebService{
-	
+public class OutputSettingWebService extends WebService {
+
 	/** The save handler. */
 	@Inject
 	private OutputSettingSaveCommandHandler saveHandler;
-	
+
 	/** The remove handler. */
 	@Inject
 	private OutputSettingRemoveCommandHandler removeHandler;
-	
+
 	/** The finder. */
 	@Inject
 	private OutputSettingFinder finder;
-	
+
 	/**
 	 * Find all.
 	 *
@@ -47,10 +47,10 @@ public class OutputSettingWebService extends WebService{
 	 */
 	@POST
 	@Path("findAll")
-	public List<HeaderSettingDto> findAll(){
+	public List<HeaderSettingDto> findAll() {
 		return this.finder.findAll();
 	}
-	
+
 	/**
 	 * Find detail.
 	 *
@@ -62,7 +62,7 @@ public class OutputSettingWebService extends WebService{
 	public OutputSettingDto findDetail(@PathParam("code") String code) {
 		return this.finder.find(code);
 	}
-	
+
 	/**
 	 * Save.
 	 *
@@ -73,7 +73,7 @@ public class OutputSettingWebService extends WebService{
 	public void save(OutputSettingSaveCommand command) {
 		this.saveHandler.handle(command);
 	}
-	
+
 	/**
 	 * Removes the.
 	 *
