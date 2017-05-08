@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.portal.dom.flowmenu.DefClassAtr;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
@@ -39,6 +40,9 @@ public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuC
 		
 		if(!getFlowMenu.isPresent() || !getTopPagePart.isPresent()){
 			throw new BusinessException("ER026");
+		}
+		if(getFlowMenu.get().getDefClassAtr() == DefClassAtr.Default){
+			throw new BusinessException("Msg_76");
 		}
 		
 		repository.remove(companyID, topPagePartId);

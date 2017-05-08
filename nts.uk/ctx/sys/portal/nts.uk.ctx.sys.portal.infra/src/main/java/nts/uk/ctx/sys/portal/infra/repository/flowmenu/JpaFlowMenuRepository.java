@@ -23,7 +23,7 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 			+ " FROM CcgmtFlowMenu m "
 			+ " INNER JOIN CcgmtTopPagePart t "
 			+ " ON m.ccgmtFlowMenuPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID "
-			+ " AND m.ccgmtFlowMenuPK.companyID = :companyId";
+			+ " AND m.ccgmtFlowMenuPK.companyID = :companyId ORDER BY t.code";
 	private final String FLOWMENU_BY_TOPPAGEPARTID = SELECT_FLOWMENU + " AND m.ccgmtFlowMenuPK.toppagePartID = :topPagePartId";
 	
 	private final String FLOWMENU_INFOR = "SELECT c from CcgmtFlowMenu c "

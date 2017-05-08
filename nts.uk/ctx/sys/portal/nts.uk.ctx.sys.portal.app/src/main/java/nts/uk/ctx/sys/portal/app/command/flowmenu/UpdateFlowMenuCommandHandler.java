@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -31,8 +32,8 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
 		
-		String companyId = IdentifierUtil.randomUniqueId();
-		String topPagePartId = context.getCommand().getTopPagePartId();
+		String companyId = AppContexts.user().companyID();
+		String topPagePartId = context.getCommand().getToppagePartID();
 		//check topPagePartId is Existence	
 		Optional<FlowMenu> getFlowMenu = repository.getFlowMenu(companyId, topPagePartId);
 		Optional<TopPagePart> getTopPagePart = repositoryTop.find(topPagePartId);
