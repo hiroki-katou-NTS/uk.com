@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHistoryDto;
 public class AllotLayoutHistWebServices extends WebService {
 	@Inject
 	private AllotLayoutHistFinder find;
-	
+
 	@POST
 	@Path("getdata/{baseYm}")
 	public Object[] getData(@PathParam("baseYm") int baseYm) {
@@ -30,5 +30,11 @@ public class AllotLayoutHistWebServices extends WebService {
 		}
 
 		return new Object[] { layouts, objs };
+	}
+
+	@POST
+	@Path("findname/{stmtCode}")
+	public String GetAllotLayoutName(@PathParam("stmtCode") String stmtCode) {
+		return this.find.getAllotLayoutName(stmtCode);
 	}
 }

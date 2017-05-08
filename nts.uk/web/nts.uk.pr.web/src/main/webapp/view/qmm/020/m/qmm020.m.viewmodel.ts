@@ -9,7 +9,7 @@ module qmm020.m.viewmodel {
         ]);
 
         constructor() {
-            let self = this, currentBaseYM = parseInt(nts.uk.ui.windows.getShared('valMDialog')) || 201707;
+            let self = this, currentBaseYM = parseInt(nts.uk.ui.windows.getShared('M_BASEYM')) || 190701;
             if (!!currentBaseYM) {
                 service.getData(currentBaseYM)
                     .done((resp: Array<any>) => {
@@ -29,8 +29,7 @@ module qmm020.m.viewmodel {
         //event when click to 選択 Button
         selectStmtCode() {
             let self = this;
-            nts.uk.ui.windows.setShared('stmtCodeSelected', self.listItemSelected());
-            debugger;
+            nts.uk.ui.windows.setShared('M_RETURN', self.listItemSelected());
             self.closeDialog();
         }
 

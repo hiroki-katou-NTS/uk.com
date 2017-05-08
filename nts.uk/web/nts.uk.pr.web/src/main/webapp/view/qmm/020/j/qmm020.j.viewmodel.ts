@@ -1,8 +1,9 @@
 module qmm020.j.viewmodel {
     import option = nts.uk.ui.option;
-    //Type of tab when call J Dialog
-    //var tabIdType="";
+
     export class ScreenModel {
+        displayMode: KnockoutObservable<number> = ko.observable(1);
+
         timeEditorOption: KnockoutObservable<any>;
         //Shared value from J Dialog
         valueShareJDialog: KnockoutObservable<string>;
@@ -18,49 +19,47 @@ module qmm020.j.viewmodel {
 
         constructor() {
             var self = this;
+            // display mode
+            self.displayMode(nts.uk.ui.windows.getShared('J_MODE') || 1);
+
+            // resize window
+            self.displayMode.subscribe((v) => {
+                nts.uk.ui.windows.getSelf().setWidth(490);
+                if (v == 2) {
+                    nts.uk.ui.windows.getSelf().setHeight(420);
+                } else {
+                    nts.uk.ui.windows.getSelf().setHeight(300);
+                }
+            });
+
+            // trigger resize window
+            self.displayMode.valueHasMutated();
+
             self.selectedValue = ko.observable(2);
             self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
             //Default radio selected radio 1
             self.selectedValue = ko.observable(1);
             self.isSelected = ko.observable(true);
             self.maxYm = ko.observable('abc');
-            self.input001 = ko.observable();
+            self.input001 = ko.observable(undefined);
             //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
             //Tab Selected
             self.valueShareJDialog = ko.observable(nts.uk.ui.windows.getShared('valJDialog'));
-            if (self.valueShareJDialog().split("~")[0] === "1") {
-                nts.uk.ui.windows.getSelf().setHeight(350);
-                $('#J_INP_003').hide();
-                $('#J_LBL_006').parent().hide();
-                $('#J_INP_002').hide();
-                $('#J_caution').hide();
-            } 
-            if(self.valueShareJDialog().split("~")[0] === "2") {               
-                nts.uk.ui.windows.getSelf().setHeight(450);
-                $('#J_INP_003').hide();
-            }
-//             {
-//                //Set height to Sub Windows
-//                nts.uk.ui.windows.getSelf().setHeight(450);
-//            }
-            //
+
             self.selectStartYm = ko.observable('');
             self.txtCopyHistory = "";
             self.start();
         }
 
 
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            var maxDate: number = Number(self.valueShareJDialog().split("~" )[1]);
+        start() {
+            var self = this,
+                maxDate: number = Number(self.valueShareJDialog().split("~")[1]);
+
             self.selectStartYm(nts.uk.time.formatYearMonth(maxDate));
-            //Hien thi lable RadioBoxs
+
             self.txtCopyHistory = "最新の履歴（" + nts.uk.time.formatYearMonth(maxDate) + "）から引き継ぐ";
             self.maxYm = nts.uk.time.formatYearMonth(maxDate);
-            dfd.resolve();
-            // Return.
-            return dfd.promise();
         }
 
         //Event when click to Setting Button
@@ -95,17 +94,14 @@ module qmm020.j.viewmodel {
             }
             //Type of History Screen is 3 
             if (self.valueShareJDialog().split('~')[0] === "3") {
-                
-            }
 
+            }
         }
-        //Close Dialog
-        closeDialog(): any {
-            //nts.uk.ui.windows.setShared('returnJDialog','');
-            nts.uk.ui.windows.close();
-        }
+
+        closeDialog() { nts.uk.ui.windows.close(); }
     }
+
     enum Error {
-        ER023 = <any>"履歴の期間が重複しています。",
+        ER023 = <any>"履歴の期間が重複しています。"
     }
 }

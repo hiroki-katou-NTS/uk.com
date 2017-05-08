@@ -66,6 +66,8 @@ module qmm020.d.viewmodel {
 
         openJDialog() {
             let self = this;
+            nts.uk.ui.windows.setShared('J_MODE', 2);
+            nts.uk.ui.windows.setShared("valJDialog", '2~201701'); 
             nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" });
         }
 
@@ -77,12 +79,17 @@ module qmm020.d.viewmodel {
 
         openMDialog() {
             let self = this;
+            let currentItemTree = self.model().currentItemTree();
             if (!!currentItemTree) {
                 currentItemTree.dialog(true);
             }
+            
+            nts.uk.ui.windows.setShared('M_BASEYM', 201707);
             nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
                 .onClosed(function() {
                     currentItemTree.dialog(false);
+                    let value = nts.uk.ui.windows.getShared('M_RETURN');
+                    // set data into gridview
                 });
         }
     }
