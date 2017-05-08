@@ -3,9 +3,7 @@ module qmm020.c.viewmodel {
         // listbox
         itemList: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        itemListDetail: KnockoutObservableArray<EmployeeAllotSettingDto>;
         employeeTotal: KnockoutObservableArray<TotalModel>;
-        itemSetShareList: KnockoutObservableArray<EmployeeSettingHeaderModel>;
         itemTotalList: KnockoutObservableArray<TotalModel>;
         itemAllotSetting: KnockoutObservableArray<TotalModel>;
         itemName: KnockoutObservable<string>;
@@ -16,7 +14,6 @@ module qmm020.c.viewmodel {
         selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
         histId: KnockoutObservable<string>;
-        itemHist: KnockoutObservable<EmployeeSettingHeaderModel>;
         maxItem: KnockoutObservable<TotalModel>;
         maxDate: string;
         //selectedCode: KnockoutObservable<string>;
@@ -36,7 +33,6 @@ module qmm020.c.viewmodel {
             self.employeeTotal = ko.observableArray([]);
             self.itemHist = ko.observable(null);
             self.itemTotalList = ko.observableArray([]);
-            self.itemListDetail = ko.observableArray([]);
             self.itemAllotSetting = ko.observableArray([]);
             self.histId = ko.observable(null);
             self.maxItem = ko.observable(null);
@@ -122,11 +118,11 @@ module qmm020.c.viewmodel {
                     { headerText: "", key: "bonusDetailName", dataType: "string", hidden: true },
                     {
                         headerText: "邨ｦ荳取�守ｴｰ譖ｸ", key: "paymentDetailCode", dataType: "string", width: "250px", unbound: true,
-                        template: "<input type='button' data-name='${paymentDetailCode}' class='" + "C_BTN_001" + "' value='驕ｸ謚�'/><label style='margin-left:5px;'>${paymentDetailCode}</label><label style='margin-left:15px;'>${paymentDetailName}</label>"
+                        template: '<button class="c-btn-001" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${paymentDetailCode} ${paymentDetailName}</span>'
                     },
                     {
                         headerText: "雉樔ｸ取�守ｴｰ譖ｸ", key: "bonusDetailCode", dataType: "string", width: "20%", unbound: true,
-                        template: "<input type='button' data-name='${bonusDetailName}' class='" + "C_BTN_002" + "' value='驕ｸ謚�'/><label style='margin-left:5px;'>${bonusDetailCode}</label><label style='margin-left:15px;'>${bonusDetailName}</label>"
+                        template: '<button class="c-btn-002" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${bonusDetailCode} ${bonusDetailName}</span>'
                     },
                 ],
                 features: [{
@@ -355,12 +351,20 @@ module qmm020.c.viewmodel {
 
         openMDialog() {
             var self = this;
-            var valueShareMDialog = self.currentItem().startYm();
+            var valueShareMDialog = self.currentItem().startYm;
             //debugger;
             nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
             nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
                 //get selected code from M dialog
+                var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
+                ko.mapping.toJS(self.currentItem().paymentDetailCode(stmtCodeSelected));
                 //get Name payment Name
+                service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
+                    self.currentItem().payName(stmtName);
+                }).fail(function(res) {
+                    alert(res);
+                });
+
             });
         }
 
@@ -400,36 +404,7 @@ module qmm020.c.viewmodel {
     }
 
 
-    export class EmployeeSettingHeaderModel {
-        companyCode: string;
-        startYm: string;
-        endYm: string;
-        historyId: string;
 
-        constructor(companyCode: string, startYm: string, endYm: string, historyId: string) {
-            this.companyCode = companyCode;
-            this.startYm = startYm;
-            this.endYm = endYm;
-            this.historyId = historyId;
-        }
-    }
-
-    export class EmployeeSettingDetailModel {
-        companyCode: string;
-        historyId: string;
-        employmentCode: string;
-        paymentDetailCode: string;
-        bonusDetailCode: string;
-
-        constructor(companyCode: string, historyId: string, employmentCode: string, paymentDetailCode: string, bonusDetailCode: string) {
-            this.companyCode = companyCode;
-            this.historyId = historyId;
-            this.employmentCode = employmentCode;
-            this.paymentDetailCode = paymentDetailCode;
-            this.bonusDetailCode = bonusDetailCode;
-
-        }
-    }
 
     interface IModel {
         companyCode?: string;
@@ -475,27 +450,27 @@ module qmm020.c.viewmodel {
             this.endYm = ko.observable(param.endYm);
         }
     }
-    
+
 }
 
-$(function() {
-    $(document).on("click", ".C_BTN_001", function() {
-        var self = this;
-        alert($(this).data('name'));
-        var valueShareMDialog = ko.mapping.toJS(__viewContext.viewModel.viewmodelC.currentItem().startYm);
-        //debugger;
-        nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
-        nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
-            //get selected code from M dialog
-            var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
-
-            __viewContext.viewModel.viewmodelC.currentItem().paymentDetailCode(stmtCodeSelected);
-            //get Name payment Name
-            service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
-                self.currentItem().payName(stmtName);
-            }).fail(function(res) {
-                alert(res);
-            });
-        });
-    });
-})
+//$(function() {
+//    $(document).on("click", ".C_BTN_001", function() {
+//        var self = this;
+//        alert($(this).data('name'));
+//        var valueShareMDialog = ko.mapping.toJS(__viewContext.viewModel.viewmodelC.currentItem().startYm);
+//        //debugger;
+//        nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
+//        nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
+//            //get selected code from M dialog
+//            var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
+//
+//            __viewContext.viewModel.viewmodelC.currentItem().paymentDetailCode(stmtCodeSelected);
+//            //get Name payment Name
+//            service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
+//                self.currentItem().payName(stmtName);
+//            }).fail(function(res) {
+//                alert(res);
+//            });
+//        });
+//    });
+//})
