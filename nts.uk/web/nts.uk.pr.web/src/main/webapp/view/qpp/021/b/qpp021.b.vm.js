@@ -93,6 +93,14 @@ var qpp021;
                     nts.uk.ui.windows.setShared('QPP021_visible', isVisible, true);
                     nts.uk.ui.windows.sub.modal('/view/qpp/021/d/index.xhtml', { title: '詳細設定', });
                 };
+                ScreenModel.prototype.openDialogScreenH = function () {
+                    var self = this;
+                    var processingNo = +self.selectedCbCode();
+                    var processingYm = 201705;
+                    nts.uk.ui.windows.setShared("processingNo", processingNo);
+                    nts.uk.ui.windows.setShared("processingYm", processingYm);
+                    nts.uk.ui.windows.sub.modal('/view/qpp/021/h/index.xhtml', { title: '連絡事項の設定', dialogClass: 'no-close' });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
