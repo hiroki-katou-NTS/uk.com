@@ -82,7 +82,7 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         
         
 
-        if (this.repository.isAvailableData(companyCode, query)) {
+        if (!this.repository.isAvailableData(companyCode, query)) {
             throw new BusinessException("ER010");
         }
         // TODO: fake data.

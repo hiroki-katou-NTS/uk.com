@@ -109,10 +109,7 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         CollectionUtil.split(paySalaryQuery.getPersonIds(), QUERY_NUMER_EMPLOYEE_LIMIT, (subList) -> {
             dataResult.addAll(query.setParameter("personIds", subList).getResultList());
         });
-        if (dataResult.isEmpty()) {
-            return false;
-        }
-        return false;
+        return !dataResult.isEmpty();
     }
     
     /*
