@@ -42,11 +42,11 @@ module nts.uk.ui.errors {
         addError(error: ErrorListItem) {
             // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
             // 原因がわかるまでひとまずdeferを使っておく
-            //_.defer(() => {
-            var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.message == error.message);
-            if (duplicate.length == 0)
-                this.errors.push(error);
-            //});
+            _.defer(() => {
+                var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.message == error.message);
+                if (duplicate.length == 0)
+                    this.errors.push(error);
+            });
         }
         
         hasError() {
@@ -60,10 +60,10 @@ module nts.uk.ui.errors {
 
         removeErrorByElement($element: JQuery) {
             // addErrorと同じ対応
-            //_.defer(() => {
-            var removeds = _.filter(this.errors(), e => e.$control.is($element));
-            this.errors.removeAll(removeds);
-            //});
+            _.defer(() => {
+                var removeds = _.filter(this.errors(), e => e.$control.is($element));
+                this.errors.removeAll(removeds);
+            });
         }
     }
 
