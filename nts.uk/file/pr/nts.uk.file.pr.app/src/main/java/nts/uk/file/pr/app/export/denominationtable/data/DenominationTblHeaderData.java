@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.pr.app.export.salarytable.data;
+package nts.uk.file.pr.app.export.denominationtable.data;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +27,7 @@ import lombok.Setter;
  * @param empType the new emp type
  */
 @Setter
-public class SalaryTableHeaderData {
+public class DenominationTblHeaderData {
 	
 	/** The date. */
 	private String targetYearMonth;

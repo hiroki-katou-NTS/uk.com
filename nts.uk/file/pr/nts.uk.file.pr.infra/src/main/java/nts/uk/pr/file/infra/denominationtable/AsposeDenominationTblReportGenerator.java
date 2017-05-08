@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.salarytable;
+package nts.uk.pr.file.infra.denominationtable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,12 +33,12 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.file.pr.app.export.salarytable.SalaryTableReportGenerator;
-import nts.uk.file.pr.app.export.salarytable.data.Denomination;
-import nts.uk.file.pr.app.export.salarytable.data.DepartmentData;
-import nts.uk.file.pr.app.export.salarytable.data.EmployeeData;
-import nts.uk.file.pr.app.export.salarytable.data.SalaryTableDataSource;
-import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.DenominationTblReportGenerator;
+import nts.uk.file.pr.app.export.denominationtable.data.Denomination;
+import nts.uk.file.pr.app.export.denominationtable.data.DepartmentData;
+import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
+import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableDataSource;
+import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -46,7 +46,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  * The Class AsposeSalaryTableReportGenerator.
  */
 @Stateless
-public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator implements SalaryTableReportGenerator {
+public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGenerator implements DenominationTblReportGenerator {
 
 	/** The Constant REPORT_FILE_NAME. */
 	private static final String REPORT_FILE_NAME = "SalaryTableReport.pdf";
@@ -103,8 +103,8 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	 * nts.uk.ctx.pr.screen.app.report.salarychart.data.SalaryChartDataSource)
 	 */
 	@Override
-	public void generate(FileGeneratorContext generatorContext, SalaryTableDataSource reportData,
-			SalaryTableReportQuery query) {
+	public void generate(FileGeneratorContext generatorContext, DenominationTableDataSource reportData,
+			DenominationTableReportQuery query) {
 		List<EmployeeData> empList = reportData.getEmployeeList();
 		try {
 			 AsposeCellsReportContext reportContext =
@@ -247,7 +247,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	 * @param isGreen the is green
 	 */
 	private void printEmpSameDep(PrintProcess printProcess, MutableBoolean isGreen) {
-		SalaryTableReportQuery query = printProcess.query;
+		DenominationTableReportQuery query = printProcess.query;
 		// Breaking Page Code
 		int breakCode = query.getSelectedBreakPageCode();
 
@@ -291,7 +291,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	 * @param isGreen the is green
 	 */
 	private void printEmpDifferentDep(PrintProcess printProcess, MutableBoolean isGreen){
-		SalaryTableReportQuery query = printProcess.query;
+		DenominationTableReportQuery query = printProcess.query;
 		// Breaking Page Code
 		int breakCode = query.getSelectedBreakPageCode();
 		
@@ -601,7 +601,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	 * @param printProcess the print process
 	 */
 	private void printTotalOfDep(PrintProcess printProcess) {
-		SalaryTableReportQuery query = printProcess.query;
+		DenominationTableReportQuery query = printProcess.query;
 		Cells cells = printProcess.cells;
 		int rowIndex = printProcess.rowIndex;
 		int members = printProcess.members;
@@ -631,7 +631,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 	 * @param depToPrint the dep to print
 	 */
 	private void printAccByHierarchy(PrintProcess printProcess, DepartmentData depToPrint) {
-		SalaryTableReportQuery query = printProcess.query;
+		DenominationTableReportQuery query = printProcess.query;
 		// Breaking Page Code
 		int breakCode = query.getSelectedBreakPageCode();
 		// Hierarchy Breaking Page code
@@ -936,7 +936,7 @@ public class AsposeSalaryTableReportGenerator extends AsposeCellsReportGenerator
 		public Cells cells;
 		
 		/** The query. */
-		public SalaryTableReportQuery query;
+		public DenominationTableReportQuery query;
 		
 		/** The dep stack. */
 		public Stack<DepartmentData> depStack;

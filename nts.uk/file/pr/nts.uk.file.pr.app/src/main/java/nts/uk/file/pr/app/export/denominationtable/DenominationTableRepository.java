@@ -2,18 +2,18 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.pr.app.export.salarytable;
+package nts.uk.file.pr.app.export.denominationtable;
 
 import java.util.List;
 
-import nts.uk.file.pr.app.export.salarytable.data.EmployeeData;
-import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
+import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
 
 
 /**
  * The Interface SalarychartRepository.
  */
-public interface SalaryTableRepository {
+public interface DenominationTableRepository {
 
 	/**
 	 * Gets the items.
@@ -21,7 +21,7 @@ public interface SalaryTableRepository {
 	 * @param code the code
 	 * @return the items
 	 */
-	List<EmployeeData> getItems(String companyCode, SalaryTableReportQuery query);
+	List<EmployeeData> getItems(String companyCode, DenominationTableReportQuery query);
 	
 	
 }

@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.salarytable;
+package nts.uk.pr.file.infra.denominationtable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,13 +14,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.file.pr.app.export.salarytable.SalaryTableRepository;
-import nts.uk.file.pr.app.export.salarytable.data.DepartmentData;
-import nts.uk.file.pr.app.export.salarytable.data.EmployeeData;
-import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.DenominationTableRepository;
+import nts.uk.file.pr.app.export.denominationtable.data.DepartmentData;
+import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
+import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
 
 
 
@@ -28,7 +29,7 @@ import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
  * The Class JpaSalaryChartReportRepository.
  */
 @Stateless
-public class JpaSalaryTableReportRepository extends JpaRepository implements SalaryTableRepository {
+public class JpaDenominationTblReportRepository extends JpaRepository implements DenominationTableRepository {
 	private static final int PAY_BONUS_ATR = 0;
 	private static final int CTR_ATR_3 = 3;
 	private static final int ONE_THOUSAND = 1000;
@@ -185,24 +186,24 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 	 * @see nts.uk.ctx.pr.screen.app.report.qpp009.SalarychartRepository#getItems(java.lang.String, nts.uk.ctx.pr.screen.app.report.qpp009.query.SalaryChartReportQuery)
 	 */
 	@Override
-	public List<EmployeeData> getItems(String companyCode, SalaryTableReportQuery query) {
+	public List<EmployeeData> getItems(String companyCode, DenominationTableReportQuery query) {
 		List<Object[]> paymentHeaderResult = this.getPaymentHeaderResult(companyCode, query);
 		List<EmployeeData> masterResultList;
 		// Check if Result List is Empty
 		if (CollectionUtil.isEmpty(paymentHeaderResult)) {
-			throw new BusinessException("ER010");
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
 		else {
 			// Get Checking at Printing Result List
 			List<Object[]> checkingResultList = this.getCheckingAtPrintRss(companyCode, query);
 			if (CollectionUtil.isEmpty(checkingResultList)) {
-				throw new BusinessException("ER010");
+				throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 			}
 			else {
 				// Get Master Result List
 				masterResultList = this.getMasterResultList(companyCode, query);
 				if (CollectionUtil.isEmpty(checkingResultList)) {
-					throw new BusinessException("ER010");
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 				}
 			}
 		}
@@ -211,7 +212,7 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<Object[]> getPaymentHeaderResult(String companyCode, SalaryTableReportQuery query) {
+	private List<Object[]> getPaymentHeaderResult(String companyCode, DenominationTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
 		Query sqlQuery = em.createQuery(PAYMENT_HEADER_QUERY);
 		sqlQuery.setParameter("CCD", companyCode);
@@ -225,7 +226,7 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<Object[]> getCheckingAtPrintRss(String companyCode, SalaryTableReportQuery query) {
+	private List<Object[]> getCheckingAtPrintRss(String companyCode, DenominationTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
 		Query sqlQuery = em.createQuery(BANK_ACC_JOIN_PAYMENT_DETAIL_QUERY);
 		sqlQuery.setParameter("CCD", companyCode);
@@ -248,7 +249,7 @@ public class JpaSalaryTableReportRepository extends JpaRepository implements Sal
 
 	
 	@SuppressWarnings("unchecked")
-	private List<EmployeeData> getMasterResultList(String companyCode, SalaryTableReportQuery query) {
+	private List<EmployeeData> getMasterResultList(String companyCode, DenominationTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
 		Query sqlQuery = em.createQuery(QUERY_STRING);
 		sqlQuery.setParameter("CCD", companyCode);

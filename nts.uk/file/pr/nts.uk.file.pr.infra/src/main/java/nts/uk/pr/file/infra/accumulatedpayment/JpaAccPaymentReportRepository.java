@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -240,13 +241,13 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		
 		// Check if Result List is Empty
 		if (CollectionUtil.isEmpty(resultList)) {
-			throw new BusinessException("ER010");
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		} 
 		else {
 			// Get Master Result List
 			masterResultList = this.getMasterResultList(general, pIdList);
 			if (CollectionUtil.isEmpty(masterResultList)) {
-				throw new BusinessException("ER010");
+				throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 			}
 		}
 		return this.filterData(masterResultList, general);

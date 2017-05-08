@@ -2,16 +2,16 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.pr.app.export.salarytable;
+package nts.uk.file.pr.app.export.denominationtable;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.file.pr.app.export.salarytable.data.SalaryTableDataSource;
-import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableDataSource;
+import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
 
 /**
  * The Interface SalaryChartReportGenerator.
  */
-public interface SalaryTableReportGenerator {
+public interface DenominationTblReportGenerator {
 
 	/**
 	 * Generate.
@@ -21,5 +21,5 @@ public interface SalaryTableReportGenerator {
 	 * @param query the query
 	 */
 	void generate(FileGeneratorContext generatorContext, 
-			SalaryTableDataSource dataSource, SalaryTableReportQuery query);
+			DenominationTableDataSource dataSource, DenominationTableReportQuery query);
 }

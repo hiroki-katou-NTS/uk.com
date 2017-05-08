@@ -41,26 +41,26 @@ module qet002.a.viewmodel {
                 hasError = true;
                 $('#target-year-input').ntsError('set', '対象年 が入力されていません。');
             }
-            if (this.isLowerLimit() == true) {
+            if (this.isLowerLimit()) {
                 if (this.lowerLimitValue() == null) {
                     hasError = true;
                     $('#lower-limit-input').ntsError('set', '金額範囲下限額 が入力されていません。');
                 }
             }
-            if (this.isUpperLimit() == true) {
+            if (this.isUpperLimit()) {
                 if (this.upperLimitValue() == null) {
                     hasError = true;
                     $('#upper-limit-input').ntsError('set', '金額範囲上限額 が入力されていません。');
                 }
             }
-            if ((this.isLowerLimit() == true) && (this.isUpperLimit() == true)) {
+            if ((this.isLowerLimit()) && (this.isUpperLimit())) {
                 if (this.lowerLimitValue() > this.upperLimitValue()) {
                     hasError = true;
                     $('#lower-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
                 }
             }
-            if (this.isLowerLimit() == false){                             
-                $('#lower-limit-input').ntsError('clear');           
+            if (!this.isLowerLimit()){
+                $('#lower-limit-input').ntsError('clear');
             }
             if (this.isUpperLimit() == false){
                 $('#upper-limit-input').ntsError('clear');           

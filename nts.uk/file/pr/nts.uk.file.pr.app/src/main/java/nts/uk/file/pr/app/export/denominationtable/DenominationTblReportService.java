@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.pr.app.export.salarytable;
+package nts.uk.file.pr.app.export.denominationtable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,26 +16,26 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.file.pr.app.export.salarytable.data.Denomination;
-import nts.uk.file.pr.app.export.salarytable.data.DepartmentData;
-import nts.uk.file.pr.app.export.salarytable.data.EmployeeData;
-import nts.uk.file.pr.app.export.salarytable.data.SalaryTableDataSource;
-import nts.uk.file.pr.app.export.salarytable.query.SalaryTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.data.Denomination;
+import nts.uk.file.pr.app.export.denominationtable.data.DepartmentData;
+import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
+import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableDataSource;
+import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SalaryChartReportService.
  */
 @Stateless
-public class SalaryTableReportService extends ExportService<SalaryTableReportQuery> {
+public class DenominationTblReportService extends ExportService<DenominationTableReportQuery> {
 
 	/** The generator. */
 	@Inject
-	private SalaryTableReportGenerator generator;
+	private DenominationTblReportGenerator generator;
 
 	/** The repository. */
 	@Inject
-	private SalaryTableRepository repository;
+	private DenominationTableRepository repository;
 	
 	private static final int TWO_THOUSANDS = 2000;
 
@@ -46,10 +46,10 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 	 * .export.ExportServiceContext)
 	 */
 	@Override
-	protected void handle(ExportServiceContext<SalaryTableReportQuery> context) {
+	protected void handle(ExportServiceContext<DenominationTableReportQuery> context) {
 
 		// Get Query
-		SalaryTableReportQuery query = context.getQuery();	
+		DenominationTableReportQuery query = context.getQuery();	
 		String[] personIds = { "99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002",
 				"99900000-0000-0000-0000-000000000003", "99900000-0000-0000-0000-000000000004",
 				"99900000-0000-0000-0000-000000000005", "99900000-0000-0000-0000-000000000006",
@@ -61,7 +61,7 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 		List<EmployeeData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
 		
 		List<Integer> selectedLevels = Arrays.asList(1, 2, 3, 4, 5, 6);
-		SalaryTableReportQuery query1 = new SalaryTableReportQuery();
+		DenominationTableReportQuery query1 = new DenominationTableReportQuery();
 			query1.setIsCalculateTotal(true);
 			query1.setIsPrintDepHierarchy(true);
 			query1.setIsPrintTotalOfDepartment(true);
@@ -88,7 +88,7 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 		// Create header object.
 
 		// Create Data Source
-		val dataSource = SalaryTableDataSource.builder()
+		val dataSource = DenominationTableDataSource.builder()
 				.salaryChartHeader(null)
 				.employeeList(items)
 				.build();
@@ -103,7 +103,7 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 	 * @param paymentAmount the payment amount
 	 * @return the map
 	 */
-	private Map<Denomination, Long> divisionDeno(Double paymentAmount, SalaryTableReportQuery query) {
+	private Map<Denomination, Long> divisionDeno(Double paymentAmount, DenominationTableReportQuery query) {
 		Map<Denomination, Long> deno = new HashMap<>();
 		Double amount = paymentAmount;
 		for (Denomination d : Denomination.values()) {
@@ -123,7 +123,7 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 		return deno;
 	}
 	
-	private List<EmployeeData> createData( SalaryTableReportQuery query) {
+	private List<EmployeeData> createData( DenominationTableReportQuery query) {
 		List<EmployeeData> empList = new ArrayList<>();
 		List<DepartmentData> depData = new ArrayList<>();
 		List<String> depPath = new ArrayList<>();

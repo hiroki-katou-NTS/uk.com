@@ -8,17 +8,18 @@ module qpp009.a.viewmodel {
         japanYearmonth: KnockoutObservable<string>;
 
         constructor() {
-            this.outputDivisions = ko.observableArray<SelectionModel>([
+            var self = this;
+            self.outputDivisions = ko.observableArray<SelectionModel>([
                 new SelectionModel('UsuallyMonth', '通常月'),
                 new SelectionModel('PreliminaryMonth', '予備月')
             ]);
-            this.selectedDivision = ko.observable('UsuallyMonth');
-            this.detailItemsSetting = ko.observable(new DetailItemsSetting());
-            this.printSetting = ko.observable(new PrintSetting());
-            this.yearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
+            self.selectedDivision = ko.observable('UsuallyMonth');
+            self.detailItemsSetting = ko.observable(new DetailItemsSetting());
+            self.printSetting = ko.observable(new PrintSetting());
+            self.yearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
 
-            this.japanYearmonth = ko.computed(() => {
-                return nts.uk.time.yearmonthInJapanEmpire(self.yearMonth()).toString();
+            self.japanYearmonth = ko.computed(() => {
+                return '(' + nts.uk.time.yearmonthInJapanEmpire(self.yearMonth()).toString() + ')';
             })
 
         }
@@ -36,11 +37,60 @@ module qpp009.a.viewmodel {
          * Print report.
          */
         public printData() {
+            var self = this;
+            self.clearAllError();
+            //Validate
+            if (self.validate()) {
+                    return;
+            }
+            
+            // Print Report
             service.printService(this).done(function() {
             })
                 .fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 })
+        }
+        
+        private validate(): boolean {
+            var self = this;
+            var hasError = false;
+            // Validate year month
+            $('#date-picker').ntsEditor('validate');
+            if (self.yearMonth() == null) {
+                $('#date-picker').ntsError('set', 'が入力されていません。');
+                hasError = true;
+            }
+            if(self.detailItemsSetting().isPrintDepHierarchy() 
+            && self.detailItemsSetting().selectedLevels().length < 1) {
+                 $('#hierarchy-content').ntsError('set', 'が選択されていません。');
+                hasError = true;
+            }
+            
+            if(self.detailItemsSetting().isPrintDepHierarchy() 
+            && self.detailItemsSetting().selectedLevels().length > 5) {
+                $('#hierarchy-content').ntsError('set', 'chon nhieu hon 5 phat');
+                hasError = true;
+            }
+            
+            if(!self.detailItemsSetting().isPrintDepHierarchy() && self.printSetting().selectedBreakPageCode() == 4) {
+                $('#specify-break-page-select').ntsError('set', 'unselected hierarchical accumulation');
+                hasError = true;
+            }
+            
+            if(self.detailItemsSetting().selectedLevels().indexOf(self.printSetting().selectedBreakPageHierarchyCode()) < 0) {
+                $('#specify-break-page-hierarchy-select').ntsError('set', 'seledted hierarchy is not specified ');
+                hasError = true;
+                
+            }
+            return hasError;
+        }
+        
+        private clearAllError(): void {
+            $('#date-picker').ntsError('clear')
+            $('#hierarchy-content').ntsError('clear');
+            $('#specify-break-page-select').ntsError('clear');
+            $('#specify-break-page-hierarchy-select').ntsError('clear');
         }
 
     }

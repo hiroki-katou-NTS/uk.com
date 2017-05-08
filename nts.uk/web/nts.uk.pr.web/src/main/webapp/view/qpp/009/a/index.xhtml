@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
-					<button id="select-employee-button" class="proceed" data-bind="enable: $root.errors.isEmpty, click: printData">選択社員印刷ボタン</button>
+					<button id="select-employee-button" class="proceed" data-bind="click: printData">選択社員印刷ボタン</button>
 					<button id="print-excution-log-button">印刷実行ログボタン</button>
 				</div>
 			</div>
@@ -47,7 +47,7 @@
 									
 									<span id="date-picker" for="target-year-label"  data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}" ></span>
 									
-									<span id="japan-year" data-bind="text: japanYearmonth"></span>
+									<span id="japan-year" data-bind="text: japanYearmonth()"></span>
 								</div>
 								<div id="output-division" data-bind="ntsSwitchButton: {
 										options: outputDivisions,
