@@ -20,7 +20,6 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
 /**
  * The Class QPP007WebService.
  *
- * @author duongnd
  */
 @Path("/screen/pr/QPP007")
 @Produces("application/json")

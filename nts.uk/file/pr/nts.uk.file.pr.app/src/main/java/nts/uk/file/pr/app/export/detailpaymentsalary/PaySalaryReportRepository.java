@@ -12,22 +12,22 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
  */
 public interface PaySalaryReportRepository {
 
+	
 	/**
-	 * Export PDF payment salary.
-	 *
-	 * @param query the query
-	 * @return the payment salary report data
-	 */
-	public PaymentSalaryReportData exportPDFPaymentSalary(String companyCode,PaymentSalaryQuery query);
-
-	/**
-	 * Check export.
+	 * Find report data.
 	 *
 	 * @param companyCode the company code
 	 * @param query the query
-	 * @return true, if successful
+	 * @return the payment salary report data
 	 */
-	public boolean checkExport(String companyCode, PaymentSalaryQuery query);
-	
-	
+	PaymentSalaryReportData findReportData(String companyCode,PaymentSalaryQuery query);
+
+	/**
+	 * Checks if is available data.
+	 *
+	 * @param companyCode the company code
+	 * @param query the query
+	 * @return true, if is available data
+	 */
+	boolean isAvailableData(String companyCode, PaymentSalaryQuery query);
 }

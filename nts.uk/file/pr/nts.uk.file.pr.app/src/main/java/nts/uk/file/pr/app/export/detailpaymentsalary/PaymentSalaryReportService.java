@@ -32,6 +32,9 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * The Class PaymentSalaryReportService.
+ */
 @Stateless
 public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery> {
 
@@ -43,6 +46,7 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
     @Inject
     private PaySalaryReportRepository repository;
 
+    /** The salary print repo. */
     @Inject
     private SalaryPrintSettingRepository salaryPrintRepo;
     
@@ -66,12 +70,23 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
 
         // get query
         PaymentSalaryQuery query = context.getQuery();
+        
+        // fake employee
+        List<String> personIds = Arrays.asList("99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002",
+                "99900000-0000-0000-0000-000000000003");
+//                "99900000-0000-0000-0000-000000000004",
+//                "99900000-0000-0000-0000-000000000005", "99900000-0000-0000-0000-000000000006",
+//                "99900000-0000-0000-0000-000000000007", "99900000-0000-0000-0000-000000000008",
+//                "99900000-0000-0000-0000-000000000009", "99900000-0000-0000-0000-0000000000010");
+        query.setPersonIds(personIds);
+        
+        
 
-        if (this.repository.checkExport(companyCode, query)) {
+        if (this.repository.isAvailableData(companyCode, query)) {
             throw new BusinessException("ER010");
         }
-        
-        PaymentSalaryReportData reportData = this.repository.exportPDFPaymentSalary(companyCode, query);
+        // TODO: fake data.
+        PaymentSalaryReportData reportData = fakeReportData();//this.repository.findReportData(companyCode, query);
 
         SalaryPrintSettingDto configure = findSalarySetting(query);
         reportData.setConfigure(configure);
@@ -82,6 +97,12 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         this.generator.generate(context.getGeneratorContext(), reportData);
     }
     
+    /**
+     * Find salary setting.
+     *
+     * @param query the query
+     * @return the salary print setting dto
+     */
     private SalaryPrintSettingDto findSalarySetting(PaymentSalaryQuery query) {
         SalaryPrintSettingDto dto = new SalaryPrintSettingDto();
         String companyCode = AppContexts.user().companyCode();
@@ -130,6 +151,12 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         return dto;
     }
     
+    /**
+     * Find hierarchy.
+     *
+     * @param salarySetting the salary setting
+     * @return the list
+     */
     private List<Integer> findHierarchy(SalaryPrintSetting salarySetting) {
         List<Integer> hierarchies = new ArrayList<>();
         if (salarySetting.getHrchyIndex1()) {
@@ -162,6 +189,11 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         return hierarchies;
     }
 
+    /**
+     * Inits the data.
+     *
+     * @return the payment salary report data
+     */
     public PaymentSalaryReportData initData() {
         PaymentSalaryReportData rawData = fakeReportData();
         SalaryPrintSettingDto configure = findSalarySetting(null);
@@ -173,6 +205,12 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         return rawData;
     }
 
+    /**
+     * Find report header.
+     *
+     * @param query the query
+     * @return the header report data
+     */
     private HeaderReportData findReportHeader(PaymentSalaryQuery query) {
         HeaderReportData header = new HeaderReportData();
         header.setNameCompany("【日通システム株式会社】");
@@ -188,6 +226,11 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         return header;
     }
 
+    /**
+     * Fake report data.
+     *
+     * @return the payment salary report data
+     */
     private PaymentSalaryReportData fakeReportData() {
         PaymentSalaryReportData reportData = new PaymentSalaryReportData();
         int numberOfEmployee = 1;
@@ -200,6 +243,12 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         return reportData;
     }
 
+    /**
+     * Fake employees.
+     *
+     * @param numberOfEmployee the number of employee
+     * @return the list
+     */
     private List<EmployeeDto> fakeEmployees(int numberOfEmployee) {
         List<EmployeeDto> result = new ArrayList<>();
         List<DepartmentDto> depData = new ArrayList<>();
@@ -251,6 +300,13 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         return result;
     }
 
+    /**
+     * Fake map amount.
+     *
+     * @param numberOfEmployee the number of employee
+     * @param employees the employees
+     * @return the map
+     */
     private Map<EmployeeKey, Double> fakeMapAmount(int numberOfEmployee, List<EmployeeDto> employees) {
         Map<EmployeeKey, Double> mapEmployeeAmount = new HashMap<>();
 
@@ -267,6 +323,14 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         return mapEmployeeAmount;
     }
 
+    /**
+     * Fake category item.
+     *
+     * @param category the category
+     * @param numberOfEmployee the number of employee
+     * @param employees the employees
+     * @return the map
+     */
     private Map<EmployeeKey, Double> fakeCategoryItem(SalaryCategory category, int numberOfEmployee,
             List<EmployeeDto> employees) {
         Map<EmployeeKey, Double> map = new HashMap<>();
