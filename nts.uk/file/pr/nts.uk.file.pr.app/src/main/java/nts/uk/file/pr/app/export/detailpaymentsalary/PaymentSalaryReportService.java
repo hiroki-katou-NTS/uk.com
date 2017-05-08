@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
@@ -83,7 +84,7 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         
 
         if (!this.repository.isAvailableData(companyCode, query)) {
-            throw new BusinessException("ER010");
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         // TODO: fake data.
         PaymentSalaryReportData reportData = fakeReportData();//this.repository.findReportData(companyCode, query);

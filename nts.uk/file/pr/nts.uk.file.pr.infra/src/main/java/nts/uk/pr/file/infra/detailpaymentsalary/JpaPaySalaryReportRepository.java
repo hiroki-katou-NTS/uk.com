@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
@@ -270,7 +271,7 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         query.setParameter("itemCodes",itemCodes );
         List select = query.getResultList();
         if (select.isEmpty()) {
-            throw new BusinessException("ER010");
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         return select;
     }
