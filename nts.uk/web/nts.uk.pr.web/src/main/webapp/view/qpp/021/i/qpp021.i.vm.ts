@@ -73,20 +73,22 @@ module qpp021.i.viewmodel {
          * Convert dto to model.
          */
         private convertToModel(listEmp: Array<service.EmployeeDto>, listSetting: Array<service.ContactPersonalSettingDto>): Array<ContactPersonalSettingModel> {
+            let self = this;
             let listModel: Array<ContactPersonalSettingModel> = [];
-            listSetting.forEach((setting: service.ContactPersonalSettingDto) => {
-                let emp: service.EmployeeDto = listEmp.find((emp: service.EmployeeDto) => {
+            let filteredList = listEmp.filter(emp => emp.processingNo === self.processingNo);
+            filteredList.forEach((emp: service.EmployeeDto) => {
+                let setting: service.ContactPersonalSettingDto = listSetting.find((setting: service.ContactPersonalSettingDto) => {
                     return emp.employmentCode === setting.employeeId
                 });
-                if (emp) {
-                    let model = new ContactPersonalSettingModel();
-                    model.processingNo = emp.processingNo;
-                    model.processingYm = 201704;
-                    model.employeeCode = emp.employmentCode;
-                    model.employeeName = emp.employmentName;
+                let model = new ContactPersonalSettingModel();
+                model.processingNo = emp.processingNo;
+                model.processingYm = self.processingYm;
+                model.employeeCode = emp.employmentCode;
+                model.employeeName = emp.employmentName;
+                if (setting) {
                     model.comment = setting.comment;
-                    listModel.push(model);
                 }
+                listModel.push(model);
             });
             return listModel;
         }
