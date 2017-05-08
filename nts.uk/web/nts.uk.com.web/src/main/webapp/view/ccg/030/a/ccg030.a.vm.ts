@@ -13,6 +13,8 @@ module ccg030.a.viewmodel {
         enableDeleteFile: KnockoutObservable<boolean>;
         enableDownload: KnockoutObservable<boolean>;
         flowMenuInfor : KnockoutObservableArray<model.ItemModel>;
+        //message
+        lstMessage: KnockoutObservableArray<ItemMessage>;
         constructor() {
             var self = this;
             self.fileName = ko.observable("未設定");
@@ -20,6 +22,7 @@ module ccg030.a.viewmodel {
             self.enableDeleteFile = ko.observable(true);
             self.enableDownload = ko.observable(true);
             self.flowMenuInfor = ko.observableArray([]);
+            self.lstMessage = ko.observableArray([]);
             //Grid list
             self.items = ko.observableArray([]);
             self.currentCode = ko.observable("");
@@ -68,6 +71,7 @@ module ccg030.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            self.listMessage();
             self.dataShow();
             self.currentCode.subscribe(function(newValue){
                 var flowMenuInf = _.find(self.flowMenuInfor(), function(infor){
@@ -116,9 +120,10 @@ module ccg030.a.viewmodel {
                         item.name = flowMenuInf.topPageName;
                         self.items.push(item);
                     })
-                    
-                    var firstItem = _.first(self.items());
-                    self.currentCode(firstItem.code);
+                    if(nts.uk.text.isNullOrEmpty(self.toppagepartcode.value())){
+                        let firstItem = _.first(self.items());
+                        self.currentCode(firstItem.code);
+                    }
                 }
                 dfd.resolve(lstResult);
             }) 
@@ -146,37 +151,40 @@ module ccg030.a.viewmodel {
             self.enableDownload(false);
             self.width.value("");
             self.height.value("");
+            $('#inpCode').focus();
         }
         
         //削除ボタンを押す時
         deleteNewFlowMenu(){
             var self = this;
             var dfd = $.Deferred<any>();
-             nts.uk.ui.dialog.confirm("co xoa ko").ifCancel(function(){
-                return;
-             }).ifYes(function(){
-                 let indexItemDelete = _.findIndex(self.flowMenuInfor(), function(item) { return item.topPageCode == self.toppagepartcode.value(); });
-                service.deleteFlowMenu(self.flowMenuInfor()).done(function(){
-                    _.when(self.dataShow()).done(function(){
-                        if(self.flowMenuInfor().length === 0){
-                            self.createNewFlowMenu();
-                            self.enableDeleteMenu(false);
+            let indexItemDelete = _.findIndex(self.flowMenuInfor(), function(item) { return item.topPageCode == self.toppagepartcode.value(); });
+            var item = _.find(self.flowMenuInfor(), function(item){return item.topPageCode == self.toppagepartcode.value();})
+            service.deleteFlowMenu(item).done(function(){
+                $.when(self.dataShow()).done(function(){
+                    if(self.flowMenuInfor().length === 0){
+                        self.createNewFlowMenu();
+                        self.enableDeleteMenu(false);
+                    }else{
+                        self.enableDeleteMenu(true);
+                        if(self.flowMenuInfor().length === indexItemDelete){
+                            self.currentCode(self.items()[indexItemDelete - 1].code);    
                         }else{
-                            self.enableDeleteMenu(true);
-                            if(self.flowMenuInfor.length === indexItemDelete){
-                                self.currentCode(self.items()[indexItemDelete - 1].code);    
-                            }else{
-                                self.currentCode(self.items()[indexItemDelete].code);    
-                            }
+                            self.currentCode(self.items()[indexItemDelete].code);    
                         }
-                    })
-                    
+                    }
                 })
-                dfd.resolve();
-             })
-            
-            
-            
+            }).fail(function(res){
+                var Msg_76 = _.find(self.lstMessage(), function(mess){
+                    return  mess.messCode === res.messageId;
+                })
+                if(nts.uk.text.isNullOrEmpty(Msg_76)){
+                    nts.uk.ui.dialog.alert(res.message);
+                }else{
+                    nts.uk.ui.dialog.alert(Msg_76.messName);
+                }
+            })
+            dfd.resolve();
             return dfd.promise();
         }
         
@@ -184,32 +192,59 @@ module ccg030.a.viewmodel {
         registryFlowMenu(){
             var self = this;
             var dfd = $.Deferred<any>();
-            var flowMenu = new model.ItemModel();
-            flowMenu.topPageCode = self.toppagepartcode.value();
-            flowMenu.topPageName = self.toppagepartname.value();
-            flowMenu.fileName = self.fileName();
-            flowMenu.widthSize = +self.width.value();
-            flowMenu.heightSize = +self.height.value();
-            //新規の時
-            if(self.toppagepartcode.enableCode){
-                service.craeteFlowMenu(flowMenu).done(function(){
-                    self.dataShow();
-                    self.currentCode(self.toppagepartcode.value());
-                }).fail(function(res){
-                    nts.uk.ui.dialog.alert(res.message);
-                })
-                dfd.resolve();
-            }else{
-                //更新の時
-                service.updateFlowMenu(flowMenu).done(function(){
-                    self.dataShow();
-                    self.currentCode(self.toppagepartcode.value());
-                }).fail(function(res){
-                    nts.uk.ui.dialog.alert(res.message);
-                })
-                dfd.resolve();
-            }
-            return dfd.promise();
+            //check input value
+            $('.nts-input').trigger("validate");
+            _.defer(() => {
+                if (nts.uk.ui.errors.hasError() === false) {
+                    var flowMenu = new model.ItemModel();
+                    flowMenu.topPageCode = self.toppagepartcode.value();
+                    flowMenu.topPageName = self.toppagepartname.value();
+                    flowMenu.fileName = self.fileName();
+                    flowMenu.widthSize = +self.width.value();
+                    flowMenu.heightSize = +self.height.value();
+                    //新規の時
+                    if(self.toppagepartcode.enableCode()){
+                        service.craeteFlowMenu(flowMenu).done(function(){
+                            self.toppagepartcode.enableCode(false);
+                            self.dataShow();
+                            self.currentCode(self.toppagepartcode.value());
+                        }).fail(function(res){
+                            var Msg_3 = _.find(self.lstMessage(), function(mess){
+                                return  mess.messCode === res.messageId;
+                            })
+                            if(nts.uk.text.isNullOrEmpty(Msg_3)){
+                                nts.uk.ui.dialog.alert(res.message);
+                            }else{
+                                nts.uk.ui.dialog.alert(Msg_3.messName);
+                            }
+                        })
+                        dfd.resolve();
+                    }else{
+                        //更新の時
+                        var item = _.find(self.flowMenuInfor(), function(item){return item.topPageCode == self.toppagepartcode.value();})
+                        flowMenu.toppagePartID = item.toppagePartID;
+                        flowMenu.defClassAtr = item.defClassAtr;
+                        service.updateFlowMenu(flowMenu).done(function(){
+                            self.dataShow();
+                            self.currentCode(self.toppagepartcode.value());
+                        }).fail(function(res){
+                            nts.uk.ui.dialog.alert(res.messageId);
+                        })
+                        dfd.resolve();
+                    }
+                    return dfd.promise();
+                }
+            });
+        }
+        //list  message
+        listMessage(): any{
+            var self = this;
+            self.lstMessage.push(new ItemMessage("Msg_76", "既定フローメニューは削除できません。"));
+            self.lstMessage.push(new ItemMessage("Msg_3","入力したコードは、既に登録されています。"));
+            self.lstMessage.push(new ItemMessage("ER010","対象データがありません。"));
+            self.lstMessage.push(new ItemMessage("AL001","変更された内容が登録されていません。\r\nよろしいですか。"));
+            self.lstMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
+            self.lstMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
         }
     }
     
@@ -246,4 +281,12 @@ module ccg030.a.viewmodel {
             }
         }
    }
+   export class ItemMessage{
+        messCode: string;
+        messName: string;
+        constructor(messCode: string, messName: string){
+            this.messCode = messCode;
+            this.messName = messName;    
+        }    
+    }
 }

@@ -25,9 +25,9 @@
 		<ui:define name="content">
 			<div id="functions-area"  class="headerStyle">
 				<button class ="btnSetting" data-bind="click: createNewFlowMenu">新規</button>
-				<button class="proceed btnSetting" id = "btnRegistry" data-bind="click: registryFlowMenu; enable: $root.errors.isEmpty">登録</button>
+				<button class="proceed btnSetting" id = "btnRegistry" data-bind="click: registryFlowMenu, enable: $root.errors.isEmpty">登録</button>
 				
-				<button class="danger btnSetting" id = "btnDelete" data-bind="click: deleteNewFlowMenu; enable: enableDeleteMenu">削除</button>
+				<button class="danger btnSetting" id = "btnDelete" data-bind="click: deleteNewFlowMenu, enable: enableDeleteMenu">削除</button>
 				<button class ="btnSetting" id ="btn004" data-bind= "click : closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area" class="cf">

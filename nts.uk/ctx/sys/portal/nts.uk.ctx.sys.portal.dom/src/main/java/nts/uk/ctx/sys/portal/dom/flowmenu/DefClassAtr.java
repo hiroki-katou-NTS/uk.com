@@ -1,10 +1,10 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 public enum DefClassAtr {
-	/* New screen */
+	/**0: New	 */
 	New(0),
 
-	/* Default screen */
+	/**1: Default 	 */
 	Default(1);
 
 	public int value;

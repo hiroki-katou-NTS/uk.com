@@ -9,7 +9,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Value
 public class UpdateFlowMenuCommand {
-	private String topPagePartId;	
+	private String toppagePartID;	
 	//top page code
 	private String topPageCode;
 	//top page name
