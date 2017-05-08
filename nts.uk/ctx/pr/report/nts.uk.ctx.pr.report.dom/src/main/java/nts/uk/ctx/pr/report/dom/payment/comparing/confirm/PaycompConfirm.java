@@ -4,14 +4,12 @@ import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.CategoryAtr;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ItemCode;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class PaycompConfirm extends AggregateRoot {
 

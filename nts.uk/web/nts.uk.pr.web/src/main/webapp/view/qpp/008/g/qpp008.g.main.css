@@ -91,9 +91,8 @@
 }
 
 #grid-comparing-different thead {
-		background: #CFF1A5;
+	background: #CFF1A5;
 }
-
 
 /** grid css */
 .confirmedStatus-checkBox {
@@ -121,7 +120,7 @@
 }
 
 .blue-color-diff {
-	background-color: 	#ccd8ff !important;
+	background-color: #ccd8ff !important;
 }
 
 .ui-iggrid .ui-iggrid-tablebody td {
@@ -133,67 +132,12 @@
 }
 
 .ui-iggrid table .ui-ig-altrecord {
-    background-color: #fff !important;
+	background-color: #fff !important;
 }
 
-/** old css*/
-.function-area button {za a s65` Q2 - margin-left:40px;
-	margin-top: 10px;
-	margin-bottom: 10px;
+.category-attribute-name {
+	text-align: center !important;
 }
-
-#G_BTN_003 {
-	margin-left: 90px !important;
-}
-
-#G_LBL_002 {
-	margin-left: 101px;
-}
-
-.divLbl2 {
-	display: inline-block;
-}
-
-.divLbl2.valign-top.control-group>* {
-	display: inline-block;
-	vertical-align: middle;
-}
-
-#G_LBL_004 {
-	margin-left: 117px;
-}
-
-.divLbl3.valign-top.control-group>* {
-	display: inline-block;
-	vertical-align: middle;
-}
-
-.divLbl3.ntsCheckBox>span {
-	margin-left: 20px;
-}
-
-.checkBox123 {
-	margin-left: 53px;
-}
-
-.checkBox123 div {
-	padding-right: 40px;
-}
-
-.divLbl4.valign-top.control-group>* {
-	display: inline-block;
-	vertical-align: middle;
-}
-
-.divLbl4 {
-	margin-top: 5px;
-}
-
-.switchButton {
-	margin-left: 35px;
-}
-
-
 
 .ui-iggrid-header, .ui-widget-header {
 	text-align: center !important;

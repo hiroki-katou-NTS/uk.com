@@ -50,14 +50,17 @@ module qpp008.c.viewmodel {
                     }
                     return;
                 }
+                self.isEnableDeleteBtn(true);
                 if (codeChanged === self.previousCurrentCode) {
                     return;
                 }
                 if (!self.currentItemDirty.isDirty() && !self.items2Dirty.isDirty()) {
+                    self.clearError();
                     self.processWhenCurrentCodeChange(codeChanged);
                     return;
                 }
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                    self.clearError();
                     self.processWhenCurrentCodeChange(codeChanged);
                 }).ifCancel(function() {
                     self.currentCode(self.previousCurrentCode);
@@ -150,18 +153,22 @@ module qpp008.c.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            return self.reload(true);
+            let dfd = $.Deferred();
+            self.reload(true).done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
 
         refreshLayout(): void {
             let self = this;
+            self.clearError();
             self.currentItem(self.mappingFromJS(new ComparingFormHeader('', '')));
             self.currentCode(null);
             self.previousCurrentCode = null;
             self.allowEditCode(true);
             self.isUpdate(false);
             self.isEnableDeleteBtn(false);
-            self.clearError();
             self.getComparingFormForTab(null).done(function() {
                 self.currentItemDirty.reset();
                 self.items2Dirty.reset();
@@ -205,17 +212,17 @@ module qpp008.c.viewmodel {
                 });
                 if (self.items().length <= 0) {
                     self.refreshLayout();
-                    dfd.resolve(data);
+                    dfd.resolve();
                     return;
                 }
                 self.isEnableDeleteBtn(true);
                 self.items2Dirty.reset();
                 if (isReload) {
-                    self.currentCode(self.items()[0].formCode)
+                    self.currentCode(nts.uk.ui.windows.getShared('qpp008_form_header_code_set'));
                 } else if (!nts.uk.text.isNullOrEmpty(reloadCode)) {
                     self.currentCode(reloadCode)
                 }
-                dfd.resolve(data);
+                dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
             });
@@ -250,23 +257,27 @@ module qpp008.c.viewmodel {
                 return new ComparingFormDetail(item.itemCode, item.categoryAtr, i);
             });
             let insertUpdateDataModel = new InsertUpdateDataModel(nts.uk.text.padLeft(newformCode, '0', 2), newformName, comparingFormDetailList);
+            if (self.isUpdate()) {
+                service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function() {
+                    self.reload(false, nts.uk.text.padLeft(newformCode, '0', 2));
+                    self.currentItemDirty.reset();
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert(error.message).then(function() {
+                        self.currentItemDirty.reset();
+                        self.reload(true);
+                    })
+                });
+                return dfd.promise();
+            }
             service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function() {
                 self.reload(false, nts.uk.text.padLeft(newformCode, '0', 2));
                 self.currentItemDirty.reset();
-                if (self.isUpdate() === false) {
-                    self.isUpdate(true);
-                    self.allowEditCode(false);
-                }
+                self.isUpdate(true);
+                self.allowEditCode(false);
                 dfd.resolve();
             }).fail(function(error) {
-                if (error.message === '1') {
-                    let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
-                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード'));
-                } else if (error.message === '2') {
-                    nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
-                        self.reload(true);
-                    })
-                }
+                nts.uk.ui.dialog.alert(error.message);
             });
             return dfd.promise();
         }
@@ -303,13 +314,11 @@ module qpp008.c.viewmodel {
                         return;
                     }
                 });
-
             }).fail(function(error) {
-                if (error.message === '2') {
-                    nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
-                        self.reload(true);
-                    })
-                }
+                nts.uk.ui.dialog.alert(error.message).then(function() {
+                    self.currentItemDirty.reset();
+                    self.reload(true);
+                })
             });
         }
 

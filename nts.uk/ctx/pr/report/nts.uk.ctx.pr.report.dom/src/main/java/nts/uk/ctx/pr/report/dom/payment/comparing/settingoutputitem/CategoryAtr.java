@@ -6,13 +6,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum CategoryAtr {
 	// 0:支給
-	PAYMENT(0,"支給"),
+	PAYMENT(0,"支"),
 	// 1:控除
-	DEDUCTION(1,"控除"),
+	DEDUCTION(1,"控"),
 	// 2:勤怠
-	PERSONAL_TIME(2,"勤怠"),
+	PERSONAL_TIME(2,"勤"),
 	// 3:記事
-	ARTICLES(3,"記事"),
+	ARTICLES(3,"記"),
 	// 9:その他
 	OTHER(9,"その他"),
 

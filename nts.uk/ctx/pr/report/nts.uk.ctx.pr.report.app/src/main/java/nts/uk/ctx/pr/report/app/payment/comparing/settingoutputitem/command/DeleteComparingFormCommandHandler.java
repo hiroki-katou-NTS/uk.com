@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.app.payment.comparing.command;
+package nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.command;
 
 import java.util.Optional;
 
@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetailRepository;
@@ -32,7 +33,7 @@ public class DeleteComparingFormCommandHandler extends CommandHandler<DeleteComp
 				.getComparingFormHeader(companyCode, deleteCommand.getFormCode());
 
 		if (!comparingFormHeader.isPresent()) {
-			throw new BusinessException("2");
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
 		
 		this.comparingFormHeaderRepository.deleteComparingFormHeader(companyCode, deleteCommand.getFormCode());

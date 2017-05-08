@@ -20,6 +20,7 @@ import nts.uk.file.pr.app.export.comparingsalarybonus.data.PaymentDetail;
 import nts.uk.file.pr.app.export.comparingsalarybonus.query.ComparingSalaryBonusQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 @Stateless
 public class ComparingSalaryBonusReportService extends ExportService<ComparingSalaryBonusQuery> {
@@ -29,6 +30,8 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 
 	@Inject
 	private ComparingSalaryBonusQueryRepository compareSalaryBonusQueryRepo;
+	 @Inject 
+	 private JapaneseErasProvider japaneseErasProvider;
 
 	@Override
 	protected void handle(ExportServiceContext<ComparingSalaryBonusQuery> context) {
@@ -53,12 +56,11 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		List<DetailDifferential> lstDetailDifferentialEarlyYM = new ArrayList<DetailDifferential>();
 		List<DetailDifferential> lstDetailDifferentialLaterYM = new ArrayList<DetailDifferential>();
 		lstComparingFormDetail.stream().forEach(c -> {
-
 			lstDetailDifferentialEarlyYM.addAll(this.compareSalaryBonusQueryRepo.getDetailDifferentialWithEarlyYM(
 					companyCode, comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(),
 					c.getCategoryAtr().value, comparingQuery.getPayBonusAttr(), c.getItemCode().toString()));
 			lstDetailDifferentialLaterYM.addAll(this.compareSalaryBonusQueryRepo.getDetailDifferentialWithLaterYM(
-					companyCode, comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(),
+					companyCode, comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth2(),
 					c.getCategoryAtr().value, comparingQuery.getPayBonusAttr(), c.getItemCode().toString()));
 		});
 		// error 10

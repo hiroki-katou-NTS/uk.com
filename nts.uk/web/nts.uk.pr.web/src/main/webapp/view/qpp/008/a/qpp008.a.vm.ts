@@ -26,14 +26,13 @@ module qpp008.a.viewmodel {
         pagingSelectedCode: KnockoutObservable<number>;
         pagingEnable: KnockoutObservable<boolean>;
 
-
         constructor() {
             let self = this;
             self._init();
 
             self.textLbl006 = ko.observable(nts.uk.time.formatDate(new Date(), "yyyy/MM/dd"));
-            self.processingYMEarlierValue = ko.observable('2017/03');
-            self.processingYMLaterValue = ko.observable('2017/04');
+            self.processingYMEarlierValue = ko.observable('');
+            self.processingYMLaterValue = ko.observable('');
 
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
@@ -42,7 +41,7 @@ module qpp008.a.viewmodel {
                 if (nts.uk.text.isNullOrEmpty(newValue)) {
                     return;
                 }
-                if (newValue === 4) {
+                if (newValue === 3) {
                     self.pagingEnable(true);
                     return;
                 }
@@ -69,16 +68,16 @@ module qpp008.a.viewmodel {
             self.statusRegisterSelectCode = ko.observableArray([]);
 
             self.employyerList = ko.observableArray([
-                new Employee("99900000-0000-0000-0000-000000000001", "A", ""),
-                new Employee("99900000-0000-0000-0000-000000000002", "B", ""),
-                new Employee("99900000-0000-0000-0000-000000000003", "c", ""),
-                new Employee("99900000-0000-0000-0000-000000000004", "d", ""),
-                new Employee("99900000-0000-0000-0000-000000000005", "f", ""),
-                new Employee("99900000-0000-0000-0000-000000000006", "g", ""),
-                new Employee("99900000-0000-0000-0000-000000000007", "h", ""),
-                new Employee("99900000-0000-0000-0000-000000000008", "k", ""),
-                new Employee("99900000-0000-0000-0000-000000000009", "t", ""),
-                new Employee("99900000-0000-0000-0000-0000000000010", "A", "")
+                new Employee("99900000-0000-0000-0000-000000000001", "日通　一郎", ""),
+                new Employee("99900000-0000-0000-0000-000000000002", "日通　二郎", ""),
+                new Employee("99900000-0000-0000-0000-000000000003", "日通　三郎", ""),
+                new Employee("99900000-0000-0000-0000-000000000004", "日通　四郎", ""),
+                new Employee("99900000-0000-0000-0000-000000000005", "日通　五郎", ""),
+                new Employee("99900000-0000-0000-0000-000000000006", "日通　六郎", ""),
+                new Employee("99900000-0000-0000-0000-000000000007", "日通　七郎", ""),
+                new Employee("99900000-0000-0000-0000-000000000008", "日通　八郎", ""),
+                new Employee("99900000-0000-0000-0000-000000000009", "日通　九郎", ""),
+                new Employee("99900000-0000-0000-0000-0000000000010", "日通　十郎", "")
             ]);
             self.employyerColumns = ko.observableArray([
                 { headerText: '社員CD', prop: 'code', width: 200 },
@@ -113,7 +112,7 @@ module qpp008.a.viewmodel {
                 new ItemModel(9, '9'),
             ]);
             self.pagingSelectedCode = ko.observable(0);
-            self.pagingEnable = ko.observable(true);
+            self.pagingEnable = ko.observable(false);
         }
 
         startPage(): JQueryPromise<any> {
@@ -143,9 +142,9 @@ module qpp008.a.viewmodel {
             let command: any = {};
             //command.formCode = self.selectedCodeCbb1();
             command.employeeCodeList = self.employyerCurrentCodeList();
-            command.month1 = self.processingYMEarlierValue().trim().replace("/","");
+            command.month1 = self.processingYMEarlierValue().trim().replace("/", "");
             command.month2 = self.processingYMLaterValue().trim().replace("/", "");
-            command.formCode = '114';
+            command.formCode = '34';
             command.payBonusAttr = 0;
             return command;
         }
@@ -173,7 +172,8 @@ module qpp008.a.viewmodel {
 
         openDialogC() {
             let self = this;
-            nts.uk.ui.windows.sub.modal('/view/qpp/008/c/index.xhtml', { title: '出力項目の設定（共通）' }).onClosed(function(): any {
+            nts.uk.ui.windows.setShared('qpp008_form_header_code_set', self.formHeaderSelectCode(), true);
+            nts.uk.ui.windows.sub.modal('/view/qpp/008/c/index.xhtml', { title: '出力項目の設定（共通）', dialogClass: 'no-close' }).onClosed(function(): any {
                 self.loadComparingFormHeader().done(function() {
                     self.formHeaderSelectCode(nts.uk.ui.windows.getShared('qpp008_form_header_code'));
                 });
@@ -182,11 +182,46 @@ module qpp008.a.viewmodel {
 
         openDialogG() {
             let self = this;
-            nts.uk.ui.windows.setShared('qpp008_processingYMEarlierValue', self.processingYMEarlierValue(), true);
-            nts.uk.ui.windows.setShared('qpp008_processingYMLaterValue', self.processingYMLaterValue(), true);
-            nts.uk.ui.windows.sub.modal('/view/qpp/008/g/index.xhtml', { title: '差異を確認' }).onClosed(function(): any {
-
+            if (!self.isValidInputComparingDate(self.processingYMEarlierValue(), self.processingYMLaterValue())) {
+                return;
+            }
+            if (self.employyerCurrentCodeList().length === 0) {
+                nts.uk.ui.dialog.alert("社員一覧（汎用コントロール）が選択されていません。");
+                return;
+            }
+            let processingYMEarlier = Number(self.processingYMEarlierValue().trim().replace("/", ""));
+            let processingYMLater = Number(self.processingYMLaterValue().trim().replace("/", ""));
+            service.getDetailDifferentials(processingYMEarlier, processingYMLater, self.employyerCurrentCodeList()).done(function(data: any) {
+                if (!data || data.length === 0) {
+                    nts.uk.ui.dialog.alert("対象データがありません。");
+                    return;
+                }
+                nts.uk.ui.windows.setShared('qpp008_data', data, true);
+                nts.uk.ui.windows.setShared('qpp008_employyerCurrentCodeList', self.employyerCurrentCodeList(), true);
+                nts.uk.ui.windows.setShared('qpp008_processingYMEarlierValue', self.processingYMEarlierValue(), true);
+                nts.uk.ui.windows.setShared('qpp008_processingYMLaterValue', self.processingYMLaterValue(), true);
+                nts.uk.ui.windows.sub.modal('/view/qpp/008/g/index.xhtml', { title: '差異を確認' }).onClosed(function(): any {
+                });
+            }).fail(function(error: any) {
+                nts.uk.ui.dialog.alert(error.message);
             });
+
+        }
+
+        isValidInputComparingDate(date1: string, date2: string): boolean {
+            if (nts.uk.text.isNullOrEmpty(date1)) {
+                nts.uk.ui.dialog.alert("比較年月1が入力されていません。");
+                return false;
+            }
+            if (nts.uk.text.isNullOrEmpty(date2)) {
+                nts.uk.ui.dialog.alert("比較年月2が入力されていません。");
+                return false;
+            }
+            if (date1 === date2) {
+                nts.uk.ui.dialog.alert("設定が正しくありません。");
+                return false;
+            }
+            return true;
         }
     }
 

@@ -9,16 +9,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.report.app.payment.comparing.command.DeleteComparingFormCommand;
-import nts.uk.ctx.pr.report.app.payment.comparing.command.DeleteComparingFormCommandHandler;
-import nts.uk.ctx.pr.report.app.payment.comparing.command.InsertComparingFormCommand;
-import nts.uk.ctx.pr.report.app.payment.comparing.command.InsertComparingFormCommandHandler;
-import nts.uk.ctx.pr.report.app.payment.comparing.command.UpdateComparingFormCommand;
-import nts.uk.ctx.pr.report.app.payment.comparing.command.UpdateComparingFormCommandHandler;
-import nts.uk.ctx.pr.report.app.payment.comparing.find.ComparingFormDto;
-import nts.uk.ctx.pr.report.app.payment.comparing.find.ComparingFormFinder;
-import nts.uk.ctx.pr.report.app.payment.comparing.find.ComparingFormHeaderDto;
-import nts.uk.ctx.pr.report.app.payment.comparing.find.ComparingFormHeaderFinder;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.command.DeleteComparingFormCommand;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.command.DeleteComparingFormCommandHandler;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.command.InsertComparingFormCommand;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.command.InsertComparingFormCommandHandler;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.command.UpdateComparingFormCommand;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.command.UpdateComparingFormCommandHandler;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.find.ComparingFormDto;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.find.ComparingFormFinder;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.find.ComparingFormHeaderDto;
+import nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.find.ComparingFormHeaderFinder;
 
 @Path("report/payment/comparing")
 @Produces("application/json")

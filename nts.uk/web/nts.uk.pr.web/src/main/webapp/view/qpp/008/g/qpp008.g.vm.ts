@@ -21,7 +21,7 @@ module qpp008.g.viewmodel {
             self.comparativeDateEarlier = nts.uk.ui.windows.getShared('qpp008_processingYMEarlierValue');
             self.comparativeDateLater = nts.uk.ui.windows.getShared('qpp008_processingYMLaterValue');
             self.numberOfPeople = 2;
-            self.employeerIDSelection = new Array("99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002");
+            self.employeerIDSelection = nts.uk.ui.windows.getShared('qpp008_employyerCurrentCodeList');
 
             self.itemCategoryChecked = ko.observableArray([
                 new ItemModel(0, '支給'),
@@ -72,7 +72,7 @@ module qpp008.g.viewmodel {
                     { headerText: "", key: "selectId", dataType: "number", hidden: true },
                     { headerText: "社員コード", key: "employeeCode", dataType: "string", width: "10%" },
                     { headerText: "氏名", key: "employeeName", dataType: "string", width: "10%" },
-                    { headerText: "区分", key: "categoryAtrName", dataType: "string", width: "4%" },
+                    { headerText: "区分", key: "categoryAtrName", dataType: "string", width: "4%", columnCssClass:"category-attribute-name" },
                     { headerText: "項目名", key: "itemName", dataType: "string", width: "10%" },
                     {
                         headerText: self.comparativeDateEarlier,
@@ -138,22 +138,16 @@ module qpp008.g.viewmodel {
         }
         startPage(): JQueryPromise<any> {
             let self = this;
-             let processingYMEarlier = Number(self.comparativeDateEarlier.trim().replace("/", ""));
-            let processingYMLater = Number(self.comparativeDateLater.trim().replace("/", ""));
             let dfd = $.Deferred();
             self.detailDifferentList = new Array();
-            service.getDetailDifferentials(processingYMEarlier, processingYMLater, self.employeerIDSelection).done(function(data: any) {
-                let mapDetailDiff = _.map(data, function(item, i) {
-                    return new DetailsEmployeer(item, i);
-                });
-                self.detailDifferentList = mapDetailDiff;
-                self.detailDifferentListKO(self.detailDifferentList);
-                self.detailDifferentListDirty.reset();
-                $("#grid-comparing-different").igGrid({ dataSource: self.detailDifferentList });
-                dfd.resolve();
-            }).fail(function(error: any) {
-
+            let data = nts.uk.ui.windows.getShared('qpp008_data');
+            self.detailDifferentList = _.map(data, function(item, i) {
+                return new DetailsEmployeer(item, i);
             });
+            self.detailDifferentListKO(self.detailDifferentList);
+            self.detailDifferentListDirty.reset();
+            $("#grid-comparing-different").igGrid({ dataSource: self.detailDifferentList });
+            dfd.resolve();
             return dfd.promise();
         }
 
