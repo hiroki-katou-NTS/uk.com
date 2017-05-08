@@ -33,9 +33,9 @@ module nts.uk.pr.view.ccg015.b {
                 self.selectedTab = ko.observable('tab_widget');
                 self.myPageSettingModel = ko.observable(new MyPageSettingModel());
                 self.columns = ko.observableArray([
-                    { headerText: "コード", width: "50px", key: 'itemCode', dataType: "string", hidden: false },
-                    { headerText: "名称", width: "100px", key: 'itemName', dataType: "string" },
-                    { headerText: "マイページ利用設定", key: 'useItem', width: "200px", controlType: 'switch' }
+                    { headerText: "コード", width: "70px", key: 'itemCode', dataType: "string", hidden: false },
+                    { headerText: "名称", width: "200px", key: 'itemName', dataType: "string" },
+                    { headerText: "マイページ利用設定", key: 'useItem', width: "300px", controlType: 'switch' }
                 ]);
                 this.currentCode = ko.observable("w1");
                 self.data = ko.observable(null);
@@ -155,7 +155,8 @@ module nts.uk.pr.view.ccg015.b {
             private updateMyPageSetting() {
                 var self = this;
                 service.updateMyPageSetting(self.collectData()).done(function() {
-                    //TODO after update 
+                    //TODO after update
+                    nts.uk.ui.windows.close(); 
                 });
             }
         }

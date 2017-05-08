@@ -9,6 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.portal.app.command.toppage.CopyTopPageCommand;
+import nts.uk.ctx.sys.portal.app.command.toppage.CopyTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppage.DeleteTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.DeleteTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommand;
@@ -42,7 +44,9 @@ public class TopPageWs extends WebService {
 	/** The delete top page command handler. */
 	@Inject
 	DeleteTopPageCommandHandler deleteTopPageCommandHandler;
-
+	
+	@Inject
+	CopyTopPageCommandHandler copyTopPageCommandHandler;
 	/**
 	 * Find all.
 	 *
@@ -79,6 +83,28 @@ public class TopPageWs extends WebService {
 		registerTopPageCommandHandler.handle(command);
 	}
 
+	/**
+	 * Copy the top page.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("copy")
+	public void copyTopPage(CopyTopPageCommand command) {
+		copyTopPageCommandHandler.handle(command);
+	}
+	
+	/**
+	 * Copy the top page.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("copyLayout/{layoutId}/{toppageCode}")
+	public void copyLayout(@PathParam("layoutId") String layoutId,@PathParam("toppageCode") String topPageCode) {
+	//TODO goi service cua anh Lam
+	}
+	
 	/**
 	 * Update top page.
 	 *
