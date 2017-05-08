@@ -14,7 +14,7 @@ module qpp014.d.viewmodel {
 
         constructor(data: any) {
             let self = this;
-            self.dateOfPayment = ko.observable('2820-12-09 00:00:00');
+            self.dateOfPayment = ko.observable('2017-05-12 00:00:00');
             self.sparePayAtr = ko.observable(1);
             self.d_SEL_002_selectedCode = ko.observable(1);
             self.d_LST_001_items = ko.observableArray([]);
@@ -32,13 +32,13 @@ module qpp014.d.viewmodel {
             self.d_lbl_015 = ko.observable(data.processingNo);
             self.d_lbl_016 = ko.observable(data.processingName);
             nts.uk.ui.windows.setShared("sparePayAtr", self.sparePayAtr(), true);
+            nts.uk.ui.windows.setShared("processingNo", self.d_lbl_015(), true);
         }
 
         openEDialog() {
             var self = this;
             nts.uk.ui.windows.setShared("processingYMNotConvert", self.processingYMNotConvert(), true);
             nts.uk.ui.windows.setShared("dateOfPayment", self.dateOfPayment(), true);
-            nts.uk.ui.windows.setShared("processingNo", self.d_lbl_015(), true);
             nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function() {
                 //if close button, not next screen
                 if (!nts.uk.ui.windows.getShared("closeDialog")) {

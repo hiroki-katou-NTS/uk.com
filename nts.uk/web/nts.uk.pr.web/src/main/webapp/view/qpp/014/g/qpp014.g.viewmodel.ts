@@ -5,7 +5,7 @@ module qpp014.g.viewmodel {
         dataLineBank: KnockoutObservableArray<any>;
         g_INP_001: KnockoutObservable<any>;
         g_SEL_001_items: KnockoutObservableArray<ItemModel_G_SEL_001>;
-        g_SEL_001_itemSelected: KnockoutObservable<ItemModel_G_SEL_001>;
+        g_SEL_001_itemSelected: KnockoutObservable<any>;
         g_SEL_002_items: KnockoutObservableArray<ItemModel_G_SEL_002>;
         g_SEL_002_itemSelected: KnockoutObservable<any>;
         g_INP_002: any;
@@ -27,7 +27,7 @@ module qpp014.g.viewmodel {
             self.g_SEL_001_items = ko.observableArray([]);
             self.g_SEL_002_items = ko.observableArray([]);
             self.g_SEL_002_itemSelected = ko.observable();
-            self.g_SEL_001_itemSelected = ko.observable(self.g_SEL_001_items()[0]);
+            self.g_SEL_001_itemSelected = ko.observable();
             self.accountAtr = ko.observable(0);
             self.accountNo = ko.observable(0);
             self.g_INP_002 = {
@@ -51,30 +51,29 @@ module qpp014.g.viewmodel {
                 self.findAllLineBank().done(function() {
                     var tmp = [];
                     var tmp1 = null;
-                    if (self.dataLineBank().length > 0) {
-                        for (var i = 0; i < self.dataLineBank().length; i++) {
-                            tmp1 = _.find(self.dataBankBranch2(), function(x) {
-                                return x.branchId == self.dataLineBank()[i].branchId;
-                            });
-                            tmp.push(new ItemModel_G_SEL_001(self.dataLineBank()[i].lineBankCode, self.dataLineBank()[i].lineBankName, tmp1.code));
-                        }
-                    } else {
-                        nts.uk.ui.dialog.alert("対象データがありません。");
+                    for (var i = 0; i < self.dataLineBank().length; i++) {
+                        tmp1 = _.find(self.dataBankBranch2(), function(x) {
+                            return x.branchId == self.dataLineBank()[i].branchId;
+                        });
+                        tmp.push(new ItemModel_G_SEL_001(self.dataLineBank()[i].lineBankCode, self.dataLineBank()[i].lineBankName, tmp1.code));
                     }
                     self.g_SEL_001_items(tmp);
                 });
             });
-            self.g_SEL_001_itemSelected.subscribe(function() {
+            
+            self.g_SEL_001_itemSelected.subscribe(function(newValue : any) {
                 var tmp = _.find(self.dataLineBank(), function(x) {
-                    return x.lineBankCode == self.g_SEL_001_itemSelected();
+                    return x.lineBankCode == newValue;
                 });
                 self.accountAtr(tmp.accountAtr);
                 self.accountNo(tmp.accountNo);
                 self.g_SEL_002_items(tmp.consignors);
-                self.g_SEL_002_itemSelected(self.g_SEL_002_items()[0]);
             });
         }
 
+        /**
+        * get data from DB BRANCH
+        */
         findAllBankBranch(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -105,7 +104,11 @@ module qpp014.g.viewmodel {
             var dfd = $.Deferred();
             qpp014.g.service.findAllLineBank()
                 .done(function(dataLB) {
-                    self.dataLineBank(dataLB);
+                    if (dataLB.length > 0) {
+                        self.dataLineBank(dataLB);
+                    } else {
+                        nts.uk.ui.dialog.alert("対象データがありません。");//ER010
+                    }
                     dfd.resolve();
                 })
                 .fail(function() {
@@ -170,6 +173,4 @@ module qpp014.g.viewmodel {
             self.branchId = branchId;
         }
     }
-
-
 };

@@ -42,7 +42,7 @@ module qpp014.b.viewmodel {
         }
 
         /**
-         * back to screen J
+         * back to screen A
          * AL004
          */
         backToScreenA(): void {

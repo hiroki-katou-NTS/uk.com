@@ -22,8 +22,15 @@ public class JpaBankTransferRepository extends JpaRepository implements BankTran
 
 	private final String SEL_1 = SEL + "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
 			+ "AND b.qbkdtBankTransferPK.fromBranchId = :fromBranchId "
-			+ "AND b.qbkdtBankTransferPK.processingNo = :processingNo " + "AND b.processingYm = :processingYm "
+			+ "AND b.qbkdtBankTransferPK.processingNo = :processingNo "
+			+ "AND b.qbkdtBankTransferPK.payBonusAtr = :payBonusAtr " + "AND b.processingYm = :processingYm "
 			+ "AND b.qbkdtBankTransferPK.payDate = :payDate " + "AND b.qbkdtBankTransferPK.sparePayAtr = :sparePayAtr";
+	
+	private final String SEL_1_1 = SEL + "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
+			+ "AND b.qbkdtBankTransferPK.fromBranchId = :fromBranchId "
+			+ "AND b.qbkdtBankTransferPK.processingNo = :processingNo "
+			+ "AND b.qbkdtBankTransferPK.payBonusAtr = :payBonusAtr " + "AND b.processingYm = :processingYm "
+			+ "AND b.qbkdtBankTransferPK.payDate = :payDate";
 
 	private final String SEL_2 = SEL + "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
 			+ "AND b.qbkdtBankTransferPK.pid = :personId " + "AND b.qbkdtBankTransferPK.fromBranchId = :fromBranchId "
@@ -72,9 +79,19 @@ public class JpaBankTransferRepository extends JpaRepository implements BankTran
 		return this.queryProxy().query(SEL_1, QbkdtBankTransfer.class)
 				.setParameter("companyCode", param.getCompanyCode())
 				.setParameter("fromBranchId", param.getFromBranchId())
-				.setParameter("processingNo", param.getProcessNo())
+				.setParameter("payBonusAtr", param.getPayBonusAtr()).setParameter("processingNo", param.getProcessNo())
 				.setParameter("processingYm", param.getProcessYearMonth()).setParameter("payDate", param.getPayDate())
 				.setParameter("sparePayAtr", param.getSparePayAtr()).getList(x -> toDomain(x));
+	}
+	
+	@Override
+	public List<BankTransfer> findBySEL1_1(BankTransferParam param) {
+		return this.queryProxy().query(SEL_1_1, QbkdtBankTransfer.class)
+				.setParameter("companyCode", param.getCompanyCode())
+				.setParameter("fromBranchId", param.getFromBranchId())
+				.setParameter("payBonusAtr", param.getPayBonusAtr()).setParameter("processingNo", param.getProcessNo())
+				.setParameter("processingYm", param.getProcessYearMonth()).setParameter("payDate", param.getPayDate())
+				.getList(x -> toDomain(x));
 	}
 
 	@Override
@@ -118,7 +135,7 @@ public class JpaBankTransferRepository extends JpaRepository implements BankTran
 		bankTransfer.fromBank(x.qbkdtBankTransferPK.fromBranchId, x.fromBankKnName, x.fromBranchKnName,
 				x.qbkdtBankTransferPK.fromAccountAtr, x.qbkdtBankTransferPK.fromAccountNo);
 		bankTransfer.toBank(x.qbkdtBankTransferPK.toBranchId, x.toBankKnName, x.toBranchKnName,
-				x.qbkdtBankTransferPK.toAccountAtr, x.toAccountKnName, x.qbkdtBankTransferPK.toAccountNo);
+				x.qbkdtBankTransferPK.toAccountAtr, x.qbkdtBankTransferPK.toAccountNo, x.toAccountKnName);
 
 		return bankTransfer;
 	}

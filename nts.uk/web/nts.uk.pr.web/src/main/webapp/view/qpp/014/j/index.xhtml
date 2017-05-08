@@ -11,13 +11,15 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 1240	, height: 560 };</script>
 			<com:scriptfile path="qpp014.j.start.js" />
+			<com:scriptfile path="../g/qpp014.g.service.js" />
 			<com:scriptfile path="qpp014.j.viewmodel.js" />
+			<com:scriptfile path="qpp014.j.service.js" />
 			<com:stylefile path="qpp014.j.main.css" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class=" proceed" id="J_BTN_001">印刷(PDF)</button>
+				<button class=" proceed" id="J_BTN_001" data-bind="click: saveAsPdf">印刷(PDF)</button>
 				<button id="J_BTN_002" data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area">
@@ -112,14 +114,13 @@
 							width: 700,
 							height: 380,
 							dataSource: items_J_LST_001,
-							primaryKey: 'code',
+							primaryKey: 'label',
 							columns: ko.observableArray([
-				                { headerText: '振込元銀行', key: 'code', width: 100 },
-				                { headerText: '銀行コード', key: 'name', width: 100 },
-				                { headerText: '銀行名', key: 'description', width: 100 },
-				                { headerText: '支店名', key: 'description', width: 100 },
-				                { headerText: '口座区分', key: 'description', width: 100 },
-				                { headerText: '口座番号', key: 'description', width: 100 }
+				                { headerText: 'コード', key: 'label', width: 100 },
+				                { headerText: '振込元銀行', key: 'lineBankName', width: 150 },
+				                { headerText: '支店', key: 'branchName', width: 150 },
+				                { headerText: '口座区分', key: 'accountAtr', width: 100 },
+				                { headerText: '口座番号', key: 'accountNo', width: 100 }
 				            ]),
 							multiple: true,
 							value: currentCode_J_LST_001}">

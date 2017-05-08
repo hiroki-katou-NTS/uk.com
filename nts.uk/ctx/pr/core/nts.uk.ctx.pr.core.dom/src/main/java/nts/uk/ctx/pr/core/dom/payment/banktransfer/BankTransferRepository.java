@@ -50,6 +50,16 @@ public interface BankTransferRepository {
 	List<BankTransfer> findBySEL1(BankTransferParam param);
 
 	/**
+	 * Added by sonnh1
+	 * 
+	 * Find list bank transfer (SEL_1_1: not include property "sparePatAtr")
+	 * 
+	 * @param param
+	 * @return
+	 */
+	List<BankTransfer> findBySEL1_1(BankTransferParam param);
+
+	/**
 	 * Find list bank transfer (SEL_2)
 	 * 
 	 * @param param
