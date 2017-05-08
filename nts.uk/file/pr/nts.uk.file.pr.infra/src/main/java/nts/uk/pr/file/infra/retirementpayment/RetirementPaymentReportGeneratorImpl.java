@@ -4,8 +4,6 @@
 package nts.uk.pr.file.infra.retirementpayment;
 
 import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -50,32 +48,31 @@ public class RetirementPaymentReportGeneratorImpl extends AsposeCellsReportGener
 			WorkbookDesigner designer = new WorkbookDesigner();
 			designer.setWorkbook(workbook);
 			// get current date
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 			Date date = new Date();
-			String currentDate = dateFormat.format(date).toString();
 			// filter pay item name
 			String printNameT1001 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T001"))
-					.findFirst().get().getItemName();
+					.findFirst().orElse(new RetirePayItemDto("T001", "退職金支給額", "")).getItemName();
 			String printNameT2001 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T101"))
-					.findFirst().get().getItemName();
+					.findFirst().orElse(new RetirePayItemDto("T101", "所得税", "")).getItemName();
 			String printNameT2002 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T102"))
-					.findFirst().get().getItemName();
+					.findFirst().orElse(new RetirePayItemDto("T102", "市区町村民税", "")).getItemName();
 			String printNameT2003 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T103"))
-					.findFirst().get().getItemName();
+					.findFirst().orElse(new RetirePayItemDto("T103", "都道府県民税", "")).getItemName();
 			String printNameT2004 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T104"))
-					.findFirst().get().getItemName();
+					.findFirst().orElse(new RetirePayItemDto("T104", "その他控除1", "")).getItemName();
 			String printNameT2005 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T105"))
-					.findFirst().get().getItemName();
+					.findFirst().orElse(new RetirePayItemDto("T105", "その他控除2", "")).getItemName();
 			String printNameT2006 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T106"))
-					.findFirst().get().getItemName();
+					.findFirst().orElse(new RetirePayItemDto("T106", "その他控除3", "")).getItemName();
 			String printNameT2007 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T107"))
-					.findFirst().get().getItemName();
+					.findFirst().orElse(new RetirePayItemDto("T107", "控除額合計", "")).getItemName();
 			String printNameT3001 = lstRetirePayItemDto.stream().filter(item -> item.getItemCode().equals("T301"))
-					.findFirst().get().getItemName();
+					.findFirst().orElse(new RetirePayItemDto("T301", "差引支給額", "")).getItemName();
 			int sheetNumber = 0;
 			for (RetirementPaymentReportData retirementPaymentReportData : dataSource) {
+				// create new page follow main template
 				workbook = addWorksheet(workbook, mainWorkSheet);
-
+				// bind data to this sheet
 				Worksheet worksheet = workbook.getWorksheets().get(sheetNumber);
 				worksheet.replace("data", String.valueOf("data" + sheetNumber));
 				designer.setDataSource("data" + sheetNumber, Arrays.asList(retirementPaymentReportData));
@@ -94,7 +91,7 @@ public class RetirementPaymentReportGeneratorImpl extends AsposeCellsReportGener
 						+ "  " + retirementPaymentReportData.getCompanyMasterDto().getAddress2());
 				sheetNumber++;
 			}
-			// process data binginds in template
+			// apply data's binding in template
 			designer.getWorkbook().calculateFormula(true);
 			designer.process();
 			// save as PDF file

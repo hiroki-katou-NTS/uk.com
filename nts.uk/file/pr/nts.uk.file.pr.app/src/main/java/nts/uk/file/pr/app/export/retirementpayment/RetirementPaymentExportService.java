@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.file.pr.app.export.retirementpayment.data.CompanyMasterDto;
@@ -31,6 +33,10 @@ public class RetirementPaymentExportService extends ExportService<RetirementPaym
 		String companyCode = AppContexts.user().companyCode();
 		List<RetirementPaymentReportData> dataSource = new ArrayList<>();
 		List<RetirePayItemDto> lstRetirePayItemDto = this.retirementPaymentRepository.getListRetirePayItem(companyCode);
+		//validate range date
+		if(context.getQuery().getStartDate().after(context.getQuery().getEndDate())){
+			throw new BusinessException(new RawErrorMessage("範囲の指定が正しくありません。"));
+		}
 		//build report datasource
 		for (String personId : lstPersonId) {
 			RetirementPaymentReportData retirementPaymentReportData = new RetirementPaymentReportData();
@@ -42,6 +48,8 @@ public class RetirementPaymentExportService extends ExportService<RetirementPaym
 			//set dtos to report data
 			if(retirementPaymentDto.isPresent()){
 				retirementPaymentReportData.setRetirementPaymentDto(retirementPaymentDto.get());
+			} else {
+				throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 			}
 			retirementPaymentReportData.setCompanyMasterDto(companyMasterDto);
 			retirementPaymentReportData.setPersonalBasicDto(personalBasicDto);
