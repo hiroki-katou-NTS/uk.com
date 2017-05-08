@@ -228,6 +228,8 @@ module qmm020.c.viewmodel {
                 let maxDate: TotalModel = _.find(self.itemTotalList(), function(obj) { return parseInt(obj.endYm()) == itemMax; });
                 self.maxDate = (maxDate.startYm || "").toString();
                 self.maxItem(maxDate);
+                console.log(self.maxItem());
+                console.log(self.maxDate);
                 dfd.resolve();
             }).fail(function(res) {
                 alert(res);
@@ -473,9 +475,7 @@ module qmm020.c.viewmodel {
             this.endYm = ko.observable(param.endYm);
         }
     }
-    class EmpDetail {
-
-    }
+    
 }
 
 $(function() {
