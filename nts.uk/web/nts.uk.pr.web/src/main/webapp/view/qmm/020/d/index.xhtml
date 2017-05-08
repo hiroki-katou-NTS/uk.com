@@ -2,17 +2,17 @@
 <!DOCTYPE html>
 <html>
 <body>
-	<div class="contents-area">
+	<div class="contents-area" data-bind="with: model">
 		<div class="left-content">
 			<div class="bg-green caret-right caret-background">
-				<button id="D_BTN_003" data-bind="click: openJDialog">履歴追加</button>
-				<button id="D_BTN_004" data-bind="click: openKDialog">履歴編集</button>
+				<button id="D_BTN_003" data-bind="click: $parent.openJDialog">履歴追加</button>
+				<button id="D_BTN_004" data-bind="click: $parent.openKDialog">履歴編集</button>
 				<div id="D_LST_001"
 					data-bind="ntsListBox: {
-					options: listBoxItems,
+					options: ItemLists,
 					optionsValue: 'code',
 					optionsText: 'name',
-					value: listBoxItemSelected,
+					value: ItemListSelected,
 					rows: 5,
 					required: true,
 					enable: true,
@@ -32,8 +32,8 @@
 				<div
 					data-bind="ntsSearchBox: {
 								comId: 'D_LST_002', 
-								items: listTreeItems, 
-								selected: listTreeItemSelected, 
+								items: ItemTrees, 
+								selected: ItemTreeSelected, 
 								selectedKey: 'code', 
 								fields: ['name', 'code'], 
 								childField: 'childs'}" />
@@ -48,9 +48,9 @@
 						primaryKey: 'code',
 						primaryText: 'name',
 						childDataKey: 'childs',
-						columns: listTreeColumns,
-						dataSource: listTreeItems,
-						value: listTreeItemSelected }"></table>
+						columns: $parent.listTreeColumns,
+						dataSource: ItemTrees,
+						value: ItemTreeSelected }"></table>
 			</div>
 		</div>
 	</div>

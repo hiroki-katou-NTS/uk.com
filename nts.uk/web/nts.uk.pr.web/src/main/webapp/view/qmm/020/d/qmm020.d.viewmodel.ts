@@ -1,12 +1,10 @@
 module qmm020.d.viewmodel {
     export class ScreenModel {
-        listBoxItems: KnockoutObservableArray<ItemList> = ko.observableArray([]);
-        listBoxItemSelected: KnockoutObservable<string> = ko.observable('0');
-
-        listTreeItems: KnockoutObservableArray<ItemTree> = ko.observableArray([]);
-        listTreeItemSelected: KnockoutObservable<string> = ko.observable('0');
         listTreeColumns: Array<any> = [];
-        dirty: nts.uk.ui.DirtyChecker = new nts.uk.ui.DirtyChecker(this.listTreeItems);
+
+        model: KnockoutObservable<ItemModel> = ko.observable(undefined);
+        dirty: nts.uk.ui.DirtyChecker = new nts.uk.ui.DirtyChecker(this.model);
+
 
         constructor() {
             var self = this;
@@ -22,15 +20,17 @@ module qmm020.d.viewmodel {
         start() {
             let self = this;
 
+            self.model(new ItemModel({ ItemTrees: [], ItemLists: [] }));
+
             // replace below code by service            
-            self.listBoxItems([
+            self.model().ItemLists([
                 new ItemList({ code: '1', name: '2016/04 ~ 9999/12' }),
                 new ItemList({ code: '2', name: '2015/04 ~ 2016/03' }),
                 new ItemList({ code: '3', name: '2014/04 ~ 2015/03' })
             ]);
-            self.listBoxItemSelected('1');
+            self.model().ItemListSelected('1');
 
-            self.listTreeItems([
+            self.model().ItemTrees([
                 new ItemTree({
                     code: '001', name: 'Name 0001',
                     bonus: new ItemList({ code: '01', name: 'Bonus 01' }),
@@ -57,7 +57,8 @@ module qmm020.d.viewmodel {
                     payment: new ItemList({ code: '50', name: 'Payment Name 50' })
                 })
             ]);
-            self.listTreeItemSelected('002');
+
+            self.model().ItemTreeSelected('002');
 
             // reset dirty check
             self.dirty.reset();
@@ -76,7 +77,6 @@ module qmm020.d.viewmodel {
 
         openMDialog() {
             let self = this;
-            let currentItemTree = _.find(self.listTreeItems(), function(item) { return item.code == self.listTreeItemSelected(); });
             if (!!currentItemTree) {
                 currentItemTree.dialog(true);
             }
@@ -84,6 +84,34 @@ module qmm020.d.viewmodel {
                 .onClosed(function() {
                     currentItemTree.dialog(false);
                 });
+        }
+    }
+
+    interface IItemModel {
+        ItemTrees: Array<IItemTree>;
+        ItemLists: Array<IItemList>;
+    }
+
+    class ItemModel {
+        ItemTrees: KnockoutObservableArray<ItemTree> = ko.observableArray([]);
+        ItemTreeSelected: KnockoutObservable<string> = ko.observable(undefined);
+        ItemLists: KnockoutObservableArray<ItemList> = ko.observableArray([]);
+        ItemListSelected: KnockoutObservable<string> = ko.observable(undefined);
+
+        constructor(param: IItemModel) {
+            let self = this;
+            self.ItemTrees(param.ItemTrees.map((m) => { return new ItemTree(m); }));
+            self.ItemLists(param.ItemLists.map((m) => { return new ItemList(m); }));
+        }
+
+        currentItemTree(): ItemTree {
+            let self = this;
+            return _.find(self.ItemTrees(), function(m: ItemTree) { return m.code == self.ItemTreeSelected(); });
+        }
+
+        currentItemList(): ItemList {
+            let self = this;
+            return _.find(self.ItemLists(), function(m: ItemList) { return m.code == self.ItemListSelected(); });
         }
     }
 

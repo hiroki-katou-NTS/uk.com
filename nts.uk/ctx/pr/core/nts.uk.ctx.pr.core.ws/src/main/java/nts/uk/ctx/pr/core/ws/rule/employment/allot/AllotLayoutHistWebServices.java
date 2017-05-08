@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.allot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,16 +18,17 @@ import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHistoryDto;
 public class AllotLayoutHistWebServices extends WebService {
 	@Inject
 	private AllotLayoutHistFinder find;
-
+	
 	@POST
-	@Path("getall/{baseYm}")
-	public List<LayoutHistoryDto> GetAllAllotLayoutHistory(@PathParam("baseYm") int baseYm) {
-		return this.find.getSel1LayoutHistory(baseYm);
-	}
+	@Path("getdata/{baseYm}")
+	public Object[] getData(@PathParam("baseYm") int baseYm) {
+		List<String> objs = new ArrayList<String>();
 
-	@POST
-	@Path("findname/{stmtCode}")
-	public String GetAllotLayoutName(@PathParam("stmtCode") String stmtCode) {
-		return this.find.getAllotLayoutName(stmtCode);
+		List<LayoutHistoryDto> layouts = this.find.getSel1LayoutHistory(baseYm);
+		for (LayoutHistoryDto dto : layouts) {
+			objs.add(this.find.getAllotLayoutName(dto.getStmtCode()));
+		}
+
+		return new Object[] { layouts, objs };
 	}
 }
