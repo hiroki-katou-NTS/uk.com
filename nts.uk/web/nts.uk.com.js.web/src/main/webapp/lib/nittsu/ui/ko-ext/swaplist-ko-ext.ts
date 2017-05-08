@@ -107,7 +107,7 @@ module nts.uk.ui.koExtentions {
             $swap.find("#" + elementId + "-gridArea2").append("<table class = 'ntsSwapGrid' id = " + elementId + "-grid2" + "/>");
 
             var $grid1 = $swap.find(grid1Id);
-            var $grid2 = $swap.find(grid2Id);
+            var $grid2 = $swap.find(grid2Id); 
 
             var features = [{ name: 'Selection', multipleSelection: true },
                             { name: 'Sorting', type: 'local' },
@@ -166,7 +166,7 @@ module nts.uk.ui.koExtentions {
                 features: features
             });
             if (data.draggable === true) {
-                this.swapper.enableDragDrop();
+                this.swapper.enableDragDrop(data.value);
                 if (data.multipleDrag && data.multipleDrag.left === true) {
                     this.swapper.Model.swapParts[0].$listControl.addClass("multiple-drag");
                 }
@@ -177,7 +177,7 @@ module nts.uk.ui.koExtentions {
             
             $grid2.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
-                .height(gridHeight);
+                .height(gridHeight); 
 
             $grid2.ntsGridList('setupSelecting');
 
@@ -221,10 +221,12 @@ module nts.uk.ui.koExtentions {
             });
             if (!_.isEqual(currentSource, newSources)) {
                 this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                this.swapper.Model.transportBuilder.setFirst(newSources);
             }
 
             if (!_.isEqual(currentSelectedList, newSelectedList)) {
                 this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                this.swapper.Model.transportBuilder.setSecond(newSelectedList);
             }
         }
         
@@ -266,7 +268,7 @@ module nts.uk.ui.koExtentions {
             return this.model;
         }
         
-        private handle(parts: Array<number>) {
+        private handle(parts: Array<number>, value: (param?: any) => any) {
             var self = this;
             var model = this.model;
             for (var id in parts) {
@@ -285,7 +287,7 @@ module nts.uk.ui.koExtentions {
                                         self._beforeStop.call(this, model, evt, ui);
                                     },
                                     update: function(evt, ui) {
-                                        self._update.call(this, model, evt, ui);
+                                        self._update.call(this, model, evt, ui, value);
                                     }
                                 };
                 this.model.swapParts[parts[id]].initDraggable(options); 
@@ -368,7 +370,7 @@ module nts.uk.ui.koExtentions {
             }
         }
         
-        private _update(model: any, evt: any, ui: any) {
+        private _update(model: any, evt: any, ui: any, value: (param?: any) => any) {
             if (ui.item.closest("table").length === 0) return;
             model.transportBuilder.directTo(model.receiver(ui)).update();
             if (model.transportBuilder.startAt === model.transportBuilder.direction) {
@@ -379,12 +381,13 @@ module nts.uk.ui.koExtentions {
                 model.swapParts[0].bindData(model.transportBuilder.getFirst());
                 model.swapParts[1].bindData(model.transportBuilder.getSecond());
             }
+            value(model.transportBuilder.getSecond());
             setTimeout(function() { model.dropDone(); }, 0);
         }
         
-        enableDragDrop(parts?: Array<number>) {
+        enableDragDrop(value: (param?: any) => any, parts?: Array<number>) {
             parts = parts || [0, 1];
-            this.model.enableDrag(this, parts, this.handle);
+            this.model.enableDrag(this, value, parts, this.handle);
         }
     }
     
@@ -405,7 +408,7 @@ module nts.uk.ui.koExtentions {
         abstract target(param: any): any;
         abstract neighbor(param: any): string;
         abstract dropDone(): void;
-        abstract enableDrag(ctx: any, parts: Array<number>, cb: (parts: Array<number>) => void): void;
+        abstract enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>) => void): void;
         abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>): void;
     }
     
@@ -415,7 +418,7 @@ module nts.uk.ui.koExtentions {
         target(param: any): any;
         neighbor(param: any): string;
         dropDone(): void;
-        enableDrag(ctx: any, parts: Array<number>, cb: (parts: Array<number>) => void): void;
+        enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>) => void): void;
         move(forward: boolean, value: (param?: Array<any>) => Array<any>): void;
     }
     
@@ -602,6 +605,7 @@ module nts.uk.ui.koExtentions {
         
         bindIn(src): void {
             this.$listControl.igGrid("option", "dataSource", src);
+            this.$listControl.igGrid("dataBind");
         }
     }
     
@@ -646,11 +650,11 @@ module nts.uk.ui.koExtentions {
             }, 0); 
         }
         
-        enableDrag(ctx: any, parts: Array<number>, cb: (parts: Array<number>) => void) {
+        enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>) => void) {
             var self = this;
             for (var idx in parts) {
                 this.swapParts[parts[idx]].$listControl.on("iggridrowsrendered", function(evt, ui) {
-                    cb.call(ctx, parts);
+                    cb.call(ctx, parts, value);
                 });
             }
         }
@@ -669,6 +673,7 @@ module nts.uk.ui.koExtentions {
                     .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
             this.swapParts[0].bindData(this.transportBuilder.getFirst());
             this.swapParts[1].bindData(this.transportBuilder.getSecond());
+            value(this.transportBuilder.getSecond());
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");
             setTimeout(function() {
@@ -795,9 +800,15 @@ module nts.uk.ui.koExtentions {
         getFirst() : Array<any> {
             return this.firstList;
         }
-        
         getSecond() : Array<any> {
             return this.secondList;
+        }
+        
+        setFirst(first: Array<any>) {
+            this.firstList = first;        
+        }
+        setSecond(second: Array<any>) {
+            this.secondList = second;        
         }
     }
 }

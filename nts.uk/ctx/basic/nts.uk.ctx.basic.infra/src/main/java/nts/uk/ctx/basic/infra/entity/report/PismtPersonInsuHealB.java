@@ -5,6 +5,7 @@
 package nts.uk.ctx.basic.infra.entity.report;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -95,7 +96,7 @@ public class PismtPersonInsuHealB implements Serializable {
 	/** The health insu grade. */
 	@Basic(optional = false)
 	@Column(name = "HEALTH_INSU_GRADE")
-	private short healthInsuGrade;
+	private BigDecimal healthInsuGrade;
 
 	/** The health insu avg earn. */
 	@Basic(optional = false)
