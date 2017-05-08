@@ -10,8 +10,8 @@ module qpp021.i.viewmodel {
         constructor() {
             this.listContactPersonalSetting = ko.observableArray<ContactPersonalSettingModel>([]);
             this.selected = ko.observable();
-            this.processingNo = 1;
-            this.processingYm = 201704;
+            this.processingNo = nts.uk.ui.windows.getShared("processingNo");
+            this.processingYm = nts.uk.ui.windows.getShared("processingYm");
             let self = this;
             this.selected.subscribe(val => {
                 let selectedIndex = self.listContactPersonalSetting().findIndex(item => {
@@ -39,6 +39,10 @@ module qpp021.i.viewmodel {
          */
         public onSaveBtnClicked(): void {
             let self = this;
+            // Validate.
+            if ($('.nts-input').ntsError('hasError')) {
+                return;
+            }
             service.save(ko.toJS(self.listContactPersonalSetting)).fail(res => {
                 nts.uk.ui.dialog.alert(res.message);
             });
@@ -60,8 +64,8 @@ module qpp021.i.viewmodel {
             $.when(service.findAllEmp(), service.findAllSetting(this.processingNo, this.processingYm))
                 .done((listEmp: Array<service.EmployeeDto>, listSetting: Array<service.ContactPersonalSettingDto>) => {
                     self.listContactPersonalSetting(self.convertToModel(listEmp, listSetting));
+                    dfd.resolve();
                 });
-            dfd.resolve();
             return dfd.promise();
         }
 
@@ -115,14 +119,11 @@ module qpp021.i.viewmodel {
                             },
                             {
                                 columnKey: 'comment',
-                                validation: true,
+                                editorProvider: new (<any>$.ig).NtsTextEditor(),
                                 editorOptions: {
-                                    validatorOptions: {
-                                        text: {
-                                            type: 'Any',
-                                            length: 100
-                                        }
-                                    }
+                                    constraint: 'ReportComment',
+                                    option: {},
+                                    required: false
                                 },
                                 readOnly: false
                             }
