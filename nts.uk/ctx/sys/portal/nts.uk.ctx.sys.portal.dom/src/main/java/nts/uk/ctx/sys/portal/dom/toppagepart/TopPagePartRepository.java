@@ -52,5 +52,13 @@ public interface TopPagePartRepository {
 	 * @param topPagePart
 	 */
 	void update(TopPagePart topPagePart);
+	/**
+	 * find top page part data by code and type
+	 * @param companyId
+	 * @param code
+	 * @param type
+	 * @return
+	 */
+	Optional<TopPagePart> dataByCodeAndType(String companyId, String code, int type);
 
 }

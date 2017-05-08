@@ -20,6 +20,7 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID";
 	private final String SELECT_BY_COMPANY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID";
 	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";
+	private final String SELECT_BY_CODE_AND_TYPE = SELECT_BY_TYPE + " AND c.code = :code";
 
 	/*
 	 * (non-Javadoc)
@@ -125,5 +126,14 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 			domain.getType().value,
 			domain.getSize().getWidth().v(), domain.getSize().getHeight().v()
 		);
+	}
+
+	@Override
+	public Optional<TopPagePart> dataByCodeAndType(String companyId, String code, int type) {
+		return this.queryProxy().query(SELECT_BY_CODE_AND_TYPE, CcgmtTopPagePart.class)
+				.setParameter("companyID", companyId)
+				.setParameter("topPagePartType", type)
+				.setParameter("code", code)
+				.getSingle(c -> toDomain(c));
 	}
 }
