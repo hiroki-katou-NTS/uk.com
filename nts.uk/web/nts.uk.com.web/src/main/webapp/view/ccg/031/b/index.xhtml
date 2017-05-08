@@ -8,26 +8,12 @@
 
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 800, height: 800 };</script>
+			<script>var dialogSize = { width: 710, height: 645 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.basic.dom.company.CompanyCode
-				nts.uk.ctx.basic.dom.company.CompanyName
-				nts.uk.ctx.basic.dom.company.CompanyNameAbb
-				nts.uk.ctx.basic.dom.company.CompanyNameKana
-				nts.uk.ctx.basic.dom.company.FaxNo
-				nts.uk.ctx.basic.dom.company.Postal
-				nts.uk.ctx.basic.dom.company.TelephoneNo
-				nts.uk.ctx.basic.dom.company.TermBeginMon
-				nts.uk.ctx.basic.dom.company.CorporateMyNumber
-				nts.uk.ctx.basic.dom.company.PresidentName
-				nts.uk.ctx.basic.dom.company.PresidentJobTitle
-				nts.uk.ctx.basic.dom.company.address.Address1
-				nts.uk.ctx.basic.dom.company.address.Address2
-				nts.uk.ctx.basic.dom.company.address.AddressKana1
-				nts.uk.ctx.basic.dom.company.address.AddressKana2
-				nts.uk.ctx.basic.dom.company.useset.UseSet
   			</com:ValidatorScript>
   			<com:scriptfile set="IGNITE" />
+  			<com:scriptfile path="../../common/model.js" />
 			<com:scriptfile path="ccg031.b.service.js" />
 			<com:scriptfile path="ccg031.b.vm.js" />
 			<com:scriptfile path="ccg031.b.start.js" />
@@ -39,8 +25,8 @@
 			<div id="contents-area" class="cf">
 				<div class="label-area">
 					<label class="label-lg">選択位置：</label>
-					<label class="label-lg label-row"><span>上から</span><span data-bind="text: positionRow">1</span><span>マス目</span></label>
-					<label class="label-lg label-column"><span>左から</span><span data-bind="text: positionColumn">1</span><span>マス目</span></label>
+					<label class="label-lg label-row"><span>上から</span> <span data-bind="text: positionRow">1</span><span>マス目</span></label>
+					<label class="label-lg label-column"><span>左から</span> <span data-bind="text: positionColumn">1</span><span>マス目</span></label>
 				</div>
 				<div class="part-area">
 					<div id="combo-box" class="animated-background" data-bind="ntsComboBox: {
@@ -49,47 +35,72 @@
 						optionsText: 'fieldName',
 						value: selectedPartType,
 						enable: true,
-						columns: [{ prop: 'fieldName', length: 4 }]}"></div>
+						columns: [{ prop: 'fieldName', length: 6 }]}"></div>
 					<div class="part-container">
-						<label class="label add-widget-label">追加したいダッシュボード…</label>
-						<div class="cf">
-							<div class="col-1 pull-left">
-								<div class="toppage-part-list-placeholder placeholder">
-									<table id="toppage-part-list" data-bind="ntsGridList: {								
-										height: '100%',
-										width: '100%',
-										dataSource: listPart,
-										primaryKey: 'topPagePartID',
-										columns: listPartColumn,
-										multiple: false,
-										value: selectedPart}"></table>
-								</div>
-							</div>
-							<div class="col-2 pull-left">
-								<span class="caret-right caret-inline"></span>
-							</div>
-							<div class="col-3 pull-left">
-								<div class="widget-panel">
-									<div class="panel-header">
-										<span class="square green"></span>
-										<span class="title">選択したウィジェット情報</span>
+						<!-- TopPage Part -->
+						<div class="top-page-part" data-bind="visible: !isExternalUrl()">
+							<label class="label add-widget-label">追加したいウィジェットを選んでください。</label>
+							<div class="cf">
+								<div class="col-1 pull-left">
+									<div class="toppage-part-list-placeholder placeholder">
+										<table id="toppage-part-list" data-bind="ntsGridList: {								
+											height: 350,
+											width: '100%',
+											dataSource: listPart,
+											value: selectedPartID,
+											primaryKey: 'topPagePartID',
+											columns: listPartColumn,
+											multiple: false,
+											showNumbering: true}"></table>
 									</div>
-									<div class="panel-content">
-										<div class="valign-center control-group">
-											<div data-bind="ntsFormLabel: {required: true}">サイズ</div>
-											<label>Widget Size here</label>
+								</div>
+								<div class="col-2 pull-left">
+									<span class="caret-right caret-inline"></span>
+								</div>
+								<div class="col-3 pull-left">
+									<div class="widget-panel" data-bind="with: selectedPart">
+										<div class="panel-header">
+											<span class="square green"></span>
+											<span class="title" data-bind="text: name"></span>
 										</div>
-										<label>※サイズは固定で変更不可</label>
+										<div class="panel-content">
+											<div class="valign-center control-group">
+												<div data-bind="ntsFormLabel: {required: true}">サイズ</div>
+												<label class="label-width"><span>横</span><span data-bind="text: width"></span><span>マス</span></label>
+												<label>x</label>
+												<label class="label-height"><span>縦</span><span data-bind="text: height"></span><span>マス</span></label>
+											</div>
+											<label>※サイズは固定で変更不可</label>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						
+						<!-- External Url -->
+						<div class="external-url-part" data-bind="visible: isExternalUrl">
+							<div class="widget-panel">
+								<div class="panel-header">
+									<span class="square green"></span>
+									<span class="title">外部URL</span>
+								</div>
+								<div class="panel-content">
+									<div class="valign-center control-group">
+										<div data-bind="ntsFormLabel: {required: true}">サイズ</div>
+										<label class=""><span>横</span> <input data-bind="ntsNumberEditor: {value: urlWidth}" /> <span>マス</span></label>
+										<label><span>縦</span> <input data-bind="ntsNumberEditor: {value: urlHeight}" /> <span>マス</span></label>
+									</div>
+									<div class="valign-center control-group">
+										<div data-bind="ntsFormLabel: {required: true}">URL</div>
+										<input data-bind="ntsTextEditor: {value: url}" />
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div id="functions-area">
-				<button class="btn x-large btn-register proceed">決定</button>
+				<button class="btn x-large btn-register proceed" data-bind="click: submitDialog">決定</button>
 				<button class="btn btn-close" data-bind="click: closeDialog">キャンセル</button>
 			</div>
 		</ui:define>
