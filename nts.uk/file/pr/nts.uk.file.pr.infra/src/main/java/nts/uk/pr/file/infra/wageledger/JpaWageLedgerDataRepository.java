@@ -926,6 +926,12 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 		Map<QcamtItem, List<Object[]>> itemListMap = filteredResultList.stream()
 				.collect(Collectors.groupingBy(res -> (QcamtItem) res[1]));
 		itemListMap.forEach((masterItem, datas) -> {
+			boolean isShowName = true;
+			boolean isShowValue = true;
+			if (!datas.isEmpty() && datas.get(0).length > 2) {
+				isShowName = (Boolean) datas.get(0)[2];
+				isShowValue = (Boolean) datas.get(0)[3];
+			}
 			List<MonthlyData> monthlyDatas = datas.stream().map(data -> {
 				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) data[0];
 				
@@ -953,6 +959,8 @@ public class JpaWageLedgerDataRepository extends JpaRepository implements WageLe
 					.code(masterItem.qcamtItemPK.itemCd)
 					.name(masterItem.itemName)
 					.monthlyDatas(monthlyDatas)
+					.isShowName(isShowName)
+					.isShowValue(isShowValue)
 					.build());
 		});
 

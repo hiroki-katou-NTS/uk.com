@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
@@ -44,8 +46,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
-import nts.uk.file.pr.app.export.detailpaymentsalary.PaymentSalaryInsuranceGenerator;
+import nts.uk.file.pr.app.export.detailpaymentsalary.PaySalaryInsuGenerator;
 import nts.uk.file.pr.app.export.detailpaymentsalary.PaymentSalaryReportService;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.DepartmentDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeDto;
@@ -53,104 +56,107 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeKey;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.HeaderReportData;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportData;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.SalaryPrintSettingDto;
+import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
-public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerator
-      implements PaymentSalaryInsuranceGenerator {
+public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
+        implements PaySalaryInsuGenerator {
 
-  private static final String TEMPLATE_FILE = "/Users/mrken57/Work/UniversalK/project/export/qpp007/PaymentSalaryTemplate.xlsx";
-  private static final String PATH = "/Users/mrken57/Work/UniversalK/project/export/qpp007/";
-//  private static final String TEMPLATE_FILE = "report/PaymentSalaryTemplate.xlsx";
-  private static final String REPORT_FILE_NAME = "明細一覧表.pdf";
-  private static final String EXTENSION_PDF = ".pdf";
-  private static final String EXTENSION_EXCEL = ".xlsx";
-  private static final String SHEET_NAME = "My sheet";
-  
-//  public static void main(String[] args) {
-//      new AsposePaymentSalaryReportGenerator().testGeneratorReport();
-//  }
-  
-  
-  /*
-   * (non-Javadoc)
-   * 
-   * @see nts.uk.file.pr.app.export.detailpaymentsalary.
-   * PaymentSalaryInsuranceGenerator#generate(nts.arc.layer.infra.file.export.
-   * FileGeneratorContext, nts.uk.file.pr.app.export.detailpaymentsalary.data.
-   * PaymentSalaryReportData)
-   */
-  @Override
-  public void generate(FileGeneratorContext fileContext, PaymentSalaryReportData reportData) {
-      try (val reportContext = this.createContext(TEMPLATE_FILE)) {
-          Workbook workbook = reportContext.getWorkbook();
-          WorksheetCollection worksheets = workbook.getWorksheets();
-          workbook.calculateFormula(true);
-          createNewSheet(worksheets, reportData);
-          reportContext.getDesigner().setWorkbook(workbook);
-          reportContext.getDesigner().setDataSource(PaymentConstant.HEADER, reportData.getHeaderData());
-          reportContext.processDesigner();
-//          workbook.save(PATH + REPORT_FILE_NAME.concat(dateFormat.format(date).toString()).concat(EXTENSION_EXCEL));
-          reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
-      } catch (Exception e) {
-          throw new RuntimeException(e);
-      }
-  }
-  
-  private void testGeneratorReport() {
-      try {
-          FileInputStream fstream = new FileInputStream(TEMPLATE_FILE);
-          Workbook workbook = new Workbook(fstream);
-          WorksheetCollection worksheets = workbook.getWorksheets();
-          PaymentSalaryReportService service = new PaymentSalaryReportService();
-          PaymentSalaryReportData reportData = service.initData();
-          createNewSheet(worksheets, reportData);
-          workbook.calculateFormula(true);
-          DateFormat dateFormat = new SimpleDateFormat(PaymentConstant.DATE_TIME_FORMAT);
-          Date date = new Date();
-          String fileName = PATH + REPORT_FILE_NAME.concat(dateFormat.format(date).toString());
-//          workbook.save(fileName.concat(EXTENSION_EXCEL));
-          
-          PdfSaveOptions saveOptions = new PdfSaveOptions(SaveFormat.PDF);
-          saveOptions.setAllColumnsInOnePagePerSheet(true);
-          workbook.save(fileName.concat(EXTENSION_PDF), saveOptions);
-          workbook.save(fileName.concat(EXTENSION_PDF));
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
-  }
-    
+    @Inject
+    private JapaneseErasProvider japaneseProvider;
+
+//    private static final String TEMPLATE_FILE = "/Users/mrken57/Work/UniversalK/project/export/qpp007/PaymentSalaryTemplate.xlsx";
+    private static final String PATH = "/Users/mrken57/Work/UniversalK/project/export/qpp007/";
+    private static final String TEMPLATE_FILE = "report/QPP007.xlsx";
+    private static final String REPORT_FILE_NAME = "明細一覧表.pdf";
+    private static final String EXTENSION_PDF = ".pdf";
+    private static final String EXTENSION_EXCEL = ".xlsx";
+    private static final String SHEET_NAME = "My sheet";
+
+    // public static void main(String[] args) {
+    // new AsposePaymentSalaryReportGenerator().testGeneratorReport();
+    // }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.file.pr.app.export.detailpaymentsalary.
+     * PaymentSalaryInsuranceGenerator#generate(nts.arc.layer.infra.file.export.
+     * FileGeneratorContext, nts.uk.file.pr.app.export.detailpaymentsalary.data.
+     * PaymentSalaryReportData)
+     */
+    @Override
+    public void generate(FileGeneratorContext fileContext, PaymentSalaryReportData reportData) {
+        try (val reportContext = this.createContext(TEMPLATE_FILE)) {
+            Workbook workbook = reportContext.getWorkbook();
+            WorksheetCollection worksheets = workbook.getWorksheets();
+            workbook.calculateFormula(true);
+            createNewSheet(worksheets, reportData);
+            reportContext.getDesigner().setWorkbook(workbook);
+            reportContext.getDesigner().setDataSource(PaymentConstant.HEADER, Arrays.asList(reportData.getHeaderData()));
+            reportContext.processDesigner();
+//             workbook.save(PATH + this.getReportName(REPORT_FILE_NAME).concat(EXTENSION_EXCEL));
+            reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void testGeneratorReport() {
+        try {
+            FileInputStream fstream = new FileInputStream(TEMPLATE_FILE);
+            Workbook workbook = new Workbook(fstream);
+            WorksheetCollection worksheets = workbook.getWorksheets();
+            PaymentSalaryReportService service = new PaymentSalaryReportService();
+            PaymentSalaryReportData reportData = service.initData();
+            createNewSheet(worksheets, reportData);
+            workbook.calculateFormula(true);
+            String fileName = this.getReportName(REPORT_FILE_NAME);
+             workbook.save(fileName.concat(EXTENSION_EXCEL));
+
+            PdfSaveOptions saveOptions = new PdfSaveOptions(SaveFormat.PDF);
+            saveOptions.setAllColumnsInOnePagePerSheet(true);
+            workbook.save(fileName.concat(EXTENSION_PDF), saveOptions);
+            workbook.save(fileName.concat(EXTENSION_PDF));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void createNewSheet(WorksheetCollection worksheets, PaymentSalaryReportData reportData) {
         Worksheet worksheet = worksheets.get(PaymentConstant.NUMBER_ZERO);
         worksheet.setName(SHEET_NAME);
-        
+
         PrintProcess printProcess = new PrintProcess();
         printProcess.worksheet = worksheet;
         printProcess.configure = reportData.getConfigure();
-        
+
         writeContent(printProcess, reportData);
-        
-        // set print page
+
+        // ====== SET PRINT PAGE ======
         setupPage(printProcess, reportData.getHeaderData());
     }
-    
+
     private void setupPage(PrintProcess printProcess, HeaderReportData header) {
         // ======== PAGE SETUP =========
         PageSetup pageSetup = printProcess.worksheet.getPageSetup();
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         pageSetup.setCenterVertically(false);
         pageSetup.setCenterHorizontally(false);
-        
+
         int totalColumns = printProcess.totalColumn;
-        
+
         // ===== SET HEADER =======
-//        pageSetup.setHeader(0,"&\"IPAPGothic\"&11 " + header.getNameCompany());
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
-//        pageSetup.setHeader(2,"&\"IPAPGothic\"&11 " + dateFormat.format(new Date()) + "\n&P ページ");
-        
+         pageSetup.setHeader(0,"&\"IPAPGothic\"&11 " +
+         header.getNameCompany());
+         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+         pageSetup.setHeader(2,"&\"IPAPGothic\"&11 " + dateFormat.format(new
+         Date()) + "\n&P ページ");
+
         // merge row title report
         printProcess.worksheet.getCells().merge(0, 0, 1, PaymentConstant.NUMBER_COLUMN_PAGE);
-        
+
         // ======== SET PRINT AREA ========
         int lastColumn = totalColumns - PaymentConstant.NUMBER_ONE;
         Cell cellEnd = printProcess.worksheet.getCells().get(printProcess.indexRow, lastColumn);
@@ -158,24 +164,22 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         String printArea = PaymentConstant.START_AREA + endArea;
         pageSetup.setPrintArea(printArea);
     }
-    
+
     private void writeContent(PrintProcess printProcess, PaymentSalaryReportData reportData) {
         printProcess.indexRow = PaymentConstant.INDEX_ROW_CONTENT;
         printProcess.selectedLevels = reportData.getConfigure().getSelectedLevels();
         printProcess.employees = reportData.getEmployees().stream()
                 .filter(distinctByKey(p -> p.getCode()))
                 .collect(Collectors.toList());
-        
+
         Map<EmployeeKey, Double> mapAmount = reportData.getMapEmployeeAmount();
-        
-        List<String> yearMonths = mapAmount.entrySet()
-                .stream()
+
+        List<Integer> yearMonths = mapAmount.entrySet().stream()
                 .sorted((p1, p2) -> p1.getKey().getYearMonth().compareTo(p2.getKey().getYearMonth()))
-                .filter(distinctByKey(p -> p.getKey().getYearMonth()))
-                .map(p -> p.getKey().getYearMonth())
+                .filter(distinctByKey(p -> p.getKey().getYearMonth())).map(p -> p.getKey().getYearMonth())
                 .collect(Collectors.toList());
         printProcess.yearMonths = yearMonths;
-        
+
         // ========== CONTENT REPORT ===========
         // payment
         Map<EmployeeKey, Double> mapPayment = findMapCategory(mapAmount, SalaryCategory.Payment);
@@ -205,20 +209,21 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             printProcess.category = SalaryCategory.ArticleOthers;
             writeCategoryItem(printProcess);
         }
-        
+
         // ========== TITLE REPORT ===========
         writeTitleRow(printProcess);
-        
+
         // ========== WRITE NUMBER EMPLOYEE FOOTER REPORT ===========
         writeNumberEmployee(printProcess);
     }
-    
+
     private void writeTitleRow(PrintProcess printProcess) {
         Cells cells = printProcess.worksheet.getCells();
         int indexRow = PaymentConstant.INDEX_ROW_TITLE;
         cells.setRowHeight(indexRow, PaymentConstant.ROW_HEIGHT_TITLE);
         Map<Integer, String> mapTitle = printProcess.mapTitle;
         StyleModel styleModel = new StyleModel(PaymentConstant.LIGHT_BLUE_COLOR);
+        
         for (int indexColumn : mapTitle.keySet()) {
             String item = mapTitle.get(indexColumn);
             Cell cell = cells.get(indexRow, indexColumn);
@@ -226,20 +231,18 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             styleModel.drawBorderCell(cell);
         }
     }
-    
+
     private Map<EmployeeKey, Double> findMapCategory(Map<EmployeeKey, Double> mapAmount, SalaryCategory category) {
-        return mapAmount.entrySet()
-                .stream()
+        return mapAmount.entrySet().stream()
                 .sorted((p1, p2) -> p1.getKey().getYearMonth().compareTo(p2.getKey().getYearMonth()))
                 .filter(item -> item.getKey().getSalaryCategory() == category)
                 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
     }
-    
+
     private void writeCategoryItem(PrintProcess printProcess) {
         Map<EmployeeKey, Double> mapAmount = printProcess.mapAmount;
         // write content of a category.
-        List<String> itemNames = mapAmount.entrySet()
-                .stream()
+        List<String> itemNames = mapAmount.entrySet().stream()
                 .map(p -> p.getKey().getItemName())
                 .distinct()
                 .collect(Collectors.toList());
@@ -252,7 +255,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 printProcess.isForebackground = true;
             }
             calAmountByItemName(printProcess, itemName);
-            
+
             // ===== UPDATE VARIABLE ====
             printProcess.totalColumn = printProcess.indexColumn;
             printProcess.indexColumn = PaymentConstant.NUMBER_ZERO;
@@ -261,12 +264,14 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             printProcess.mapAmountDepMonths = null;
             indexArr++;
         }
-        // write header category. Need to calculate index row of header category?
+        // write header category. Need to calculate index row of header
+        // category?
         writeHeaderCategory(printProcess);
     }
-    
+
     private void writeHeaderCategory(PrintProcess printProcess) {
         String header;
+        // ====== FIND HEADER BY CATEGORY ======
         switch (printProcess.category) {
             case Payment :
                 header = "【支給項目】";
@@ -286,7 +291,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         Cells cells = printProcess.worksheet.getCells();
         Cell cell = cells.get(printProcess.indexRowHeaderCategory, PaymentConstant.NUMBER_ZERO);
         cell.setValue(header);
-        
+
         int numberColumn = printProcess.totalColumn;
         StyleModel styleModel = new StyleModel();
         styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
@@ -294,11 +299,11 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         styleModel.drawHorizontalEdgePage(cells, numberColumn, printProcess.indexRowHeaderCategory);
         styleModel.drawBorderLineRow(cells, numberColumn, printProcess.indexRowHeaderCategory);
     }
-    
+
     private void calAmountByItemName(PrintProcess printProcess, String itemName) {
         // ========== WRITE ITEM NAME ==========
         writeItemName(printProcess, itemName);
-        
+
         // ========== DECLARE VARIABLE =========
         Map<EmployeeKey, Double> mapCategory = printProcess.mapAmount;
         Map<EmployeeKey, Double> mapAmonutItemName = subMapAmount(mapCategory, itemName);
@@ -306,13 +311,13 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         List<EmployeeDto> employees = printProcess.employees;
         Iterator<EmployeeDto> iteratorEmp = employees.iterator();
         EmployeeDto prevEmp = null;
-        
+
         // list code employee in department.
         List<String> codeEmpDeps = new ArrayList<>();
         DepartmentDto lastDep = null;
-        
+
         // ========== FIND AND PRINT EMPLOYEES ===========
-        while(iteratorEmp.hasNext()) {
+        while (iteratorEmp.hasNext()) {
             EmployeeDto currEmp = iteratorEmp.next();
             if (prevEmp == null) {
                 prevEmp = currEmp;
@@ -351,20 +356,20 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             // write cumulative monthly and total of department.
             writeCumulateDep(printProcess, lastDep, new ArrayList<>());
         }
-        
+
         // write total departments monthly and all department
         writeTotalAllDep(printProcess);
     }
-    
+
     private void writeItemName(PrintProcess printProcess, String itemName) {
         Cell cell = printProcess.worksheet.getCells().get(printProcess.indexRow, printProcess.indexColumn);
         cell.setValue(itemName);
-        
+
         StyleModel styleModel = new StyleModel();
         styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
         styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
         styleModel.setBorderType(CellsBorderType.VerticalBorder);
-        
+
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
@@ -379,23 +384,23 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         }
         printProcess.indexColumn++;
     }
-     
+
     private void writeEmployee(PrintProcess printProcess, Map<EmployeeKey, Double> mapAmonutItemName, EmployeeDto emp) {
         // map amount of a employee. It can a month or multiple month.
-        Map<EmployeeKey, Double> amountEmp = mapAmonutItemName.entrySet()
-                .stream()
+        Map<EmployeeKey, Double> amountEmp = mapAmonutItemName.entrySet().stream()
                 .filter(p -> p.getKey().getEmployeeCode().equals(emp.getCode()))
                 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
         int indexRow = printProcess.indexRow;
         int indexColumn = printProcess.indexColumn;
         SalaryPrintSettingDto configure = printProcess.configure;
         
+        // ======= SET STYLE ======
         StyleModel styleModel = new StyleModel();
         styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
         styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
         styleModel.setBorderType(CellsBorderType.VerticalBorder);
         styleModel.setFormatNumber(PaymentConstant.FORMAT_NUMBER);
-        
+
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
@@ -403,12 +408,11 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         // write amount of a employee.
         double totalEmployee = PaymentConstant.NUMBER_ZERO;
         Map<Integer, String> mapTitle = printProcess.mapTitle;
-        for (String yearMonth : printProcess.yearMonths) {
-            // amount of employee in a month. It can pay many times in month.
-            List<Double> amountMonth = amountEmp.entrySet()
-                    .stream()
-                    .filter(p -> p.getKey().getYearMonth().equals(yearMonth))
-                    .map(p -> p.getValue())
+        
+        // ====== WRITE EMPLOYEE MONTHLY ======
+        for (Integer yearMonth : printProcess.yearMonths) {
+            List<Double> amountMonth = amountEmp.entrySet().stream()
+                    .filter(p -> p.getKey().getYearMonth().equals(yearMonth)).map(p -> p.getValue())
                     .collect(Collectors.toList());
             for (Double amount : amountMonth) {
                 if (configure.getOutputFormatType().equals(PaymentConstant.OUTPUT_FORMAT_TYPE_DETAIL)
@@ -419,7 +423,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                     styleModel.drawBorderLastColPageIfNeed(cell);
                     // write title row
                     if (!printProcess.isHasTitleRow) {
-                        String titleRow = yearMonth + "\n" + emp.getCode() + "\n" + emp.getName();
+                        String titleRow = convertYearMonthJP(yearMonth) + "\n" + emp.getCode() + "\n" + emp.getName();
                         mapTitle.put(indexColumn, titleRow);
                     }
                     indexColumn++;
@@ -438,13 +442,15 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 styleModel.drawBorderLastColPageIfNeed(cellTotalMonthly);
                 // write title row
                 if (!printProcess.isHasTitleRow) {
-                    String titleRow = yearMonth + "\nTotal Monthly\n" + emp.getCode() + "    " + emp.getName();
+                    String titleRow = convertYearMonthJP(yearMonth) + "\nTotal Monthly\n" + emp.getCode() + "    "
+                            + emp.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
                 indexColumn++;
             }
         }
-        // write total a employee of all months.
+        
+        // ====== WRITE EMPLOYEE TOTAL ======
         if (configure.getOutputFormatType().equals(PaymentConstant.OUTPUT_FORMAT_TYPE_DETAIL)
                 && configure.getSumPersonSet()) {
             Cell cellTotal = cells.get(indexRow, indexColumn);
@@ -466,17 +472,19 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         printProcess.mapTitle = mapTitle;
         printProcess.indexColumn = indexColumn;
     }
-    
-    private void writeTotalDep(PrintProcess printProcess, Map<EmployeeKey, Double> mapAmonutItemName, 
+
+    private void writeTotalDep(PrintProcess printProcess, Map<EmployeeKey, Double> mapAmonutItemName,
             List<String> codeEmps, DepartmentDto prevDep) {
         int indexRow = printProcess.indexRow;
         int indexColumn = printProcess.indexColumn;
         
+        // ====== SET STYLE ======
         StyleModel styleModel = new StyleModel();
         styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
         styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
         styleModel.setBorderType(CellsBorderType.DoubleVerticalBorder);
         styleModel.setFormatNumber(PaymentConstant.FORMAT_NUMBER);
+        // =======================
         
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
@@ -493,11 +501,11 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         }
         SalaryPrintSettingDto configure = printProcess.configure;
         int totalEmp = 0;
-        // write amount a department monthly.
-        for (String yearMonth : printProcess.yearMonths) {
-            double amountMonth = mapAmonutItemName.entrySet()
-                    .stream()
-                    .filter(p -> p.getKey().getYearMonth().equals(yearMonth)
+        
+        // ====== WRITE AMOUNT A DEPARTMENT MONTHLY ======
+        for (Integer yearMonth : printProcess.yearMonths) {
+            double amountMonth = mapAmonutItemName.entrySet().stream()
+                    .filter(p -> p.getKey().getYearMonth().equals(yearMonth) 
                             && codeEmps.contains(p.getKey().getEmployeeCode()))
                     .mapToDouble(p -> p.getValue())
                     .sum();
@@ -508,26 +516,29 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 Cell cell = cells.get(indexRow, indexColumn);
                 cell.setValue(amountMonth);
                 styleModel.drawBorderCell(cell);
-                
+
                 // write title row
                 if (!printProcess.isHasTitleRow) {
-                    String titleRow = yearMonth + "\n部門月計\n" + prevDep.getCode() + "    " + prevDep.getName();
+                    String titleRow = convertYearMonthJP(yearMonth) + "\n部門月計\n" + prevDep.getCode() + "    "
+                            + prevDep.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
                 totalEmp += codeEmps.size();
                 // count number employee
                 String numberEmp = codeEmps.size() + "人";
                 printProcess.mapFooter.put(indexColumn, numberEmp);
-                
+
                 indexColumn++;
             }
         }
+        
+        // ====== WRITE AMOUNT A DEPARTMENT TOTAL =======
         if (configure.getSumEachDeprtSet()) {
             // write total amount a department in many months.
             Cell cellTotal = cells.get(indexRow, indexColumn);
             cellTotal.setValue(totalDep);
             styleModel.drawBorderCell(cellTotal);
-            
+
             // write title row
             if (!printProcess.isHasTitleRow) {
                 String titleRow = "\n部門計\n" + prevDep.getCode() + "    " + prevDep.getName();
@@ -535,7 +546,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             }
             String numberEmp = totalEmp + "人";
             printProcess.mapFooter.put(indexColumn, numberEmp);
-            
+
             if (PaymentConstant.PAGE_BREAK_DEPARTMENT.equals(printProcess.configure.getPageBreakSetting())) {
                 styleModel.drawBorderRight(cellTotal);
                 indexColumn = breakPage(printProcess, indexColumn);
@@ -547,10 +558,12 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         printProcess.mapTitle = mapTitle;
         printProcess.mapAmountDepMonths = mapAmountDepMonths;
     }
-    
-    private Stack<DepartmentDto> findSameLevelDep(PrintProcess printProcess, Stack<DepartmentDto> stackDep, DepartmentDto currentDep) {
+
+    private Stack<DepartmentDto> findSameLevelDep(PrintProcess printProcess, Stack<DepartmentDto> stackDep,
+            DepartmentDto currentDep) {
         Stack<DepartmentDto> newStack = new Stack<>();
         newStack.addAll(stackDep);
+        
         List<DepartmentDto> tmpDeps = new ArrayList<>();
         boolean isEqualDepLevel = false;
         while (!newStack.isEmpty()) {
@@ -558,7 +571,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             tmpDeps.add(prevDep);
             if (currentDep.getDepLevel() == prevDep.getDepLevel()) {
                 calCumulateDepMonthly(printProcess, tmpDeps, prevDep);
-//                newStack.push(currentDep);
+                // newStack.push(currentDep);
                 isEqualDepLevel = true;
                 // remove department code: C, D, E --> remove E (D contains E)
                 for (int i = 0; i < tmpDeps.size(); i++) {
@@ -575,10 +588,9 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 break;
             }
         }
-        
         return newStack;
     }
-    
+
     private void writeCumulateDep(PrintProcess printProcess, DepartmentDto prevDep, List<DepartmentDto> tmpDeps) {
         if (!printProcess.selectedLevels.contains(prevDep.getDepLevel())) {
             return;
@@ -591,18 +603,19 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         Map<DepartmentDto, Double> mapAmountDepMonths = printProcess.mapAmountDepMonths;
         double totalCumulate = 0;
         
+        // ====== SET STYLE ======
         StyleModel styleModel = new StyleModel();
         styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
         styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
         styleModel.setBorderType(CellsBorderType.DoubleVerticalBorder);
         styleModel.setFormatNumber(PaymentConstant.FORMAT_NUMBER);
-        
+
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
-        
-        // write cumulative previous department.
-        for (String yearMonth : printProcess.yearMonths) {
+
+        // ====== WRITE CUMULATIVE MONTH DEPARTMENT ======
+        for (Integer yearMonth : printProcess.yearMonths) {
             prevDep.setYearMonth(yearMonth);
             double amount = mapAmountDepMonths.get(prevDep);
             totalCumulate += amount;
@@ -610,24 +623,27 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 Cell cell = cells.get(indexRow, indexColumn);
                 cell.setValue(amount);
                 styleModel.drawBorderCell(cell);
-                
+
                 if (!printProcess.isHasTitleRow) {
-                    String titleRow = yearMonth + "\n部門階層月計\n" + prevDep.getCode() + "        " + prevDep.getName();
+                    String titleRow = convertYearMonthJP(yearMonth) + "\n部門階層月計\n" + prevDep.getCode() + "        "
+                            + prevDep.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
                 indexColumn++;
             }
         }
+        
+        // ====== WRITE CUMULATIVE DEPARTMENT TOTAL ======
         if (printProcess.configure.getSumDepHrchyIndexSet()) {
             Cell cellTotal = cells.get(indexRow, indexColumn);
             cellTotal.setValue(totalCumulate);
             styleModel.drawBorderCell(cellTotal);
-            
+
             if (!printProcess.isHasTitleRow) {
                 String titleRow = "\n部門階層累計\n" + prevDep.getCode() + "        " + prevDep.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
-            
+
             if (PaymentConstant.PAGE_BREAK_HIERARCHY_DEPARTMENT.equals(printProcess.configure.getPageBreakSetting())
                     && printProcess.configure.getHierarchy().equals(prevDep.getDepLevel().toString())) {
                 styleModel.drawBorderRight(cellTotal);
@@ -636,11 +652,11 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 indexColumn++;
             }
         }
-        
+
         printProcess.indexColumn = indexColumn;
         printProcess.mapTitle = mapTitle;
     }
-    
+
     private void writeTotalAllDep(PrintProcess printProcess) {
         Cells cells = printProcess.worksheet.getCells();
         int indexRow = printProcess.indexRow;
@@ -649,20 +665,20 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         Map<DepartmentDto, Double> mapAmountDepMonths = printProcess.mapAmountDepMonths;
         double totalCumulate = 0;
         
+        // ====== SET STYLE =======
         StyleModel styleModel = new StyleModel();
         styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
         styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
         styleModel.setBorderType(CellsBorderType.DoubleVerticalBorder);
         styleModel.setFormatNumber(PaymentConstant.FORMAT_NUMBER);
-        
+
         if (printProcess.isForebackground) {
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
-        
-        // write cumulative previous department.
-        for (String yearMonth : printProcess.yearMonths) {
-            double amount = mapAmountDepMonths.entrySet()
-                    .stream()
+
+        // ====== WIRITE AMOUNT MONTH TOTAL ======
+        for (Integer yearMonth : printProcess.yearMonths) {
+            double amount = mapAmountDepMonths.entrySet().stream()
                     .filter(p -> p.getKey().getYearMonth().equals(yearMonth))
                     .mapToDouble(p -> p.getValue())
                     .sum();
@@ -671,37 +687,38 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 Cell cell = cells.get(indexRow, indexColumn);
                 cell.setValue(amount);
                 styleModel.drawBorderCell(cell);
-                
+
                 if (!printProcess.isHasTitleRow) {
-                    String titleRow = yearMonth + "\n総合 月計\n";
+                    String titleRow = convertYearMonthJP(yearMonth) + "\n総合 月計\n";
                     mapTitle.put(indexColumn, titleRow);
                 }
                 indexColumn++;
             }
         }
+        // ====== WRITE AMOUNT TOTAL ======
         if (printProcess.configure.getTotalSet()) {
             Cell cellTotal = cells.get(indexRow, indexColumn);
             cellTotal.setValue(totalCumulate);
             styleModel.drawBorderCell(cellTotal);
-            
+
             if (!printProcess.isHasTitleRow) {
                 String titleRow = "総合計\n";
                 mapTitle.put(indexColumn, titleRow);
             }
             indexColumn++;
         }
-        
+
         printProcess.indexColumn = indexColumn;
         printProcess.mapTitle = mapTitle;
     }
-    
+
     private void writeNumberEmployee(PrintProcess printProcess) {
         // write number employee footer report.
         Cells cells = printProcess.worksheet.getCells();
-        
+
         Cell cellName = cells.get(printProcess.indexRow, PaymentConstant.NUMBER_ZERO);
         cellName.setValue("件数");
-        
+
         for (int indexColum : printProcess.mapFooter.keySet()) {
             String numberEmp = printProcess.mapFooter.get(indexColum);
             Cell cell = cells.get(printProcess.indexRow, indexColum);
@@ -709,25 +726,28 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         }
         int numberColumn = printProcess.totalColumn;
         
+        // ====== SET STYLE FOR ROW NUMBER EMPLOYEE ======
         StyleModel styleModel = new StyleModel(PaymentConstant.LIGHT_BLUE_COLOR);
         styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
         styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
         styleModel.drawHorizontalEdgePage(cells, numberColumn, printProcess.indexRow);
         styleModel.drawBorderLineRow(cells, numberColumn, printProcess.indexRow);
-        
+
         printProcess.indexRow++;
     }
-    
+
     private void calCumulateDepMonthly(PrintProcess printProcess, List<DepartmentDto> tmpDeps, DepartmentDto dep) {
         Map<DepartmentDto, Double> mapAmountDepMonths = printProcess.mapAmountDepMonths;
         List<String> depCodes = tmpDeps.stream()
                 .map(p -> p.getCode())
                 .collect(Collectors.toList());
-        for (String yearMonth : printProcess.yearMonths) {
+        
+        // ====== UPDATE AMOUNT MONTHLY OF DEPARTMENT ======
+        for (Integer yearMonth : printProcess.yearMonths) {
             DepartmentDto newDep = DepartmentDto.newDepartment(dep, yearMonth);
-            double amount = mapAmountDepMonths.entrySet()
-                    .stream()
-                    .filter(p -> p.getKey().getYearMonth().equals(yearMonth) && depCodes.contains(p.getKey().getCode()))
+            double amount = mapAmountDepMonths.entrySet().stream()
+                    .filter(p -> p.getKey().getYearMonth().equals(yearMonth)
+                            && depCodes.contains(p.getKey().getCode()))
                     .mapToDouble(p -> p.getValue())
                     .sum();
             if (amount != 0) {
@@ -737,74 +757,82 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         }
         printProcess.mapAmountDepMonths = mapAmountDepMonths;
     }
-    
+
     private int breakPage(PrintProcess printProcess, int indexColumn) {
         int numColumnExist = indexColumn % PaymentConstant.NUMBER_COLUMN_PAGE;
         int numColumnBlank = PaymentConstant.NUMBER_COLUMN_PAGE - numColumnExist;
-        
+
         StyleModel styleModel = new StyleModel();
         Cells cells = printProcess.worksheet.getCells();
         
+        // ====== DRAW BORDER FIRST AND LAST COLUMN OF ROW HEADER CATEGORY ======
         Cell cellStartPage = cells.get(printProcess.indexRowHeaderCategory, indexColumn - numColumnExist);
         styleModel.drawBorderLeft(cellStartPage);
-        
+
         Cell cellEndPage = cells.get(printProcess.indexRowHeaderCategory, indexColumn);
         styleModel.drawBorderRight(cellEndPage);
-        
+
         return indexColumn + numColumnBlank;
     }
-    
+
     private Map<EmployeeKey, Double> subMapAmount(Map<EmployeeKey, Double> mapAmount, String itemName) {
-        return mapAmount.entrySet()
-                .stream()
+        return mapAmount.entrySet().stream()
                 .filter(p -> p.getKey().getItemName().equals(itemName))
-                .collect(Collectors.toMap(p-> p.getKey(), p -> p.getValue()));
+                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
     }
-    
+
     private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
-    
+
+    private String convertYearMonthJP(Integer yearMonth) {
+        String firstDay = "01";
+        String tmpDate = yearMonth.toString().concat(firstDay);
+        String dateFormat = "yyyyMMdd";
+        GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
+        return this.japaneseProvider.toJapaneseDate(generalDate).toString();
+    }
+
     @Setter
     @Getter
     class StyleModel {
-        
+
         private Color foregroundColor;
         private String formatNumber;
         private CellsBorderType borderType;
         private boolean isVerticalBorder;
         private boolean isHorizontalBorder;
-        
+
         public StyleModel() {
             this.foregroundColor = Color.getWhite();
             this.borderType = CellsBorderType.CommonBorder;
             this.isVerticalBorder = true;
             this.isHorizontalBorder = true;
         }
-        
+
         public StyleModel(Color background) {
             this.foregroundColor = background;
             this.borderType = CellsBorderType.CommonBorder;
             this.isVerticalBorder = true;
             this.isHorizontalBorder = true;
         }
-        
+
         public void drawTitleReport(Cell cell) {
             Style style = this.findStyleCell(cell, this.borderType);
             style.setHorizontalAlignment(TextAlignmentType.CENTER);
             cell.setStyle(style);
         }
-        
+
         public void drawHorizontalEdgePage(Cells cells, int numberColumn, int indexRow) {
             Cell firstCellRow = cells.get(indexRow, 0);
             this.drawBorderLeft(firstCellRow);
-            
+
             int indexLastColumn = numberColumn - PaymentConstant.NUMBER_ONE;
             Cell lastCellRow = cells.get(indexRow, indexLastColumn);
             this.drawBorderRight(lastCellRow);
         }
-        
+
         public void drawBorderCell(Cell cell) {
             Style style = this.findStyleCell(cell, this.borderType);
             if (this.formatNumber != null) {
@@ -813,35 +841,35 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
             }
             cell.setStyle(style);
         }
-        
+
         public void drawDoubleBorder(Cell cell, CellsBorderType borderType) {
             Style style = this.findStyleCell(cell, borderType);
             cell.setStyle(style);
         }
-        
+
         public void drawBorderLineRow(Cells cells, int numberColumn, int indexRow) {
             for (int i = 0; i < numberColumn; i++) {
                 Cell cellAbove = cells.get(indexRow - 1, i);
                 Cell currentCell = cells.get(indexRow, i);
                 Cell cellBelow = cells.get(indexRow + 1, i);
-                
+
                 Style style = this.findStyleCell(currentCell, CellsBorderType.HorizontalBorder);
                 currentCell.setStyle(style);
-                
-                // draw border last and first column in a page.
+
+                // ====== DRAW BORDER LAST AND FIRST COLUMN IN A PAGE ======
                 this.drawBorderLastColPageIfNeed(currentCell);
                 
-                if (cellAbove.getValue() == null && currentCell.getValue() == null 
-                        && cellBelow.getValue() == null) {
+                // ====== CLEAR BORDER COLUMN HAS VALUE EMPTY ======
+                if (cellAbove.getValue() == null && currentCell.getValue() == null && cellBelow.getValue() == null) {
                     this.clearBorderColumnEmpty(cells, indexRow, i);
                 }
-                
+
             }
         }
-        
+
         public void drawBorderLastColPageIfNeed(Cell cell) {
             int indexColumn = cell.getColumn();
-            if ( indexColumn > PaymentConstant.NUMBER_ONE) {
+            if (indexColumn > PaymentConstant.NUMBER_ONE) {
                 Style newStyle = null;
                 int indexReal = indexColumn + PaymentConstant.NUMBER_ONE;
                 if (indexReal % PaymentConstant.NUMBER_COLUMN_PAGE == PaymentConstant.NUMBER_ZERO) {
@@ -854,54 +882,58 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                 }
             }
         }
-        
+
         public void clearBorderColumnEmpty(Cells cells, int indexRow, int indexColumn) {
+            // ====== FIND CELL AROUND ======
             Cell prevCellAbove = cells.get(indexRow - 1, (indexColumn - 1) >= 0 ? (indexColumn - 1) : 0);
             Cell nextCellAbove = cells.get(indexRow - 1, indexColumn + 1);
             Cell currentCell = cells.get(indexRow, indexColumn);
             Cell prevCellBelow = cells.get(indexRow + 1, (indexColumn - 1) >= 0 ? (indexColumn - 1) : 0);
             Cell nextCellBelow = cells.get(indexRow + 1, indexColumn + 1);
-            
+
             Style style = this.findStyleCell(currentCell, CellsBorderType.NoBorder);
             style.setForegroundColor(Color.getWhite());
             currentCell.setStyle(style);
+            
+            // ====== SET RIGHT BORDER - LAST COLUMN OF A PAGE ======
             if (prevCellAbove.getValue() != null || prevCellBelow.getValue() != null) {
                 Cell prevCell = cells.get(indexRow, (indexColumn - 1) >= 0 ? (indexColumn - 1) : 0);
                 Style styleLeft = this.findStyleCell(prevCell, CellsBorderType.RightBorder);
                 prevCell.setStyle(styleLeft);
             }
             
+            // ====== SET LEFT BORDER - FIRST COLUMN OF A PAGE
             if (nextCellAbove.getValue() != null || nextCellBelow.getValue() != null) {
                 Cell nextCell = cells.get(indexRow, indexColumn + 1);
                 Style styleLeft = this.findStyleCell(nextCell, CellsBorderType.LeftBorder);
                 nextCell.setStyle(styleLeft);
             }
         }
-        
+
         public void drawBorderLeft(Cell cell) {
             Style style = this.findStyleCell(cell, CellsBorderType.LeftBorder);
             cell.setStyle(style);
         }
-        
+
         public void drawBorderRight(Cell cell) {
             Style style = this.findStyleCell(cell, CellsBorderType.RightBorder);
             cell.setStyle(style);
         }
-        
+
         private Style findStyleCell(Cell cell, CellsBorderType borderType) {
             Style style = cell.getStyle();
             style.setForegroundColor(this.foregroundColor);
             style.setPattern(BackgroundType.SOLID);
             style.setTextWrapped(true);
-            
+
             switch (borderType) {
-                case NoBorder:
+                case NoBorder :
                     style.setBorder(BorderType.LEFT_BORDER, CellBorderType.NONE, Color.getWhite());
                     style.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getWhite());
                     style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getWhite());
                     style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getWhite());
                     break;
-                case CommonBorder:
+                case CommonBorder :
                     if (this.isVerticalBorder) {
                         style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
                         style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
@@ -911,51 +943,45 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
                         style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
                     }
                     break;
-                case VerticalBorder:
+                case VerticalBorder :
                     if (this.isVerticalBorder) {
                         style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
                         style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
                     }
                     break;
-                case HorizontalBorder:
+                case HorizontalBorder :
                     if (this.isHorizontalBorder) {
                         style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
                         style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
                     }
                     break;
-                case LeftBorder:
+                case LeftBorder :
                     if (this.isVerticalBorder) {
                         style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
                     }
                     break;
-                case RightBorder:
+                case RightBorder :
                     if (this.isVerticalBorder) {
                         style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
                     }
                     break;
-                case DoubleVerticalBorder:
+                case DoubleVerticalBorder :
                     if (this.isVerticalBorder) {
                         style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
                         style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
                     }
                     break;
-                default:
+                default :
                     break;
             }
             return style;
         }
     }
-    
+
     enum CellsBorderType {
-        NoBorder,
-        CommonBorder,
-        VerticalBorder,
-        HorizontalBorder,
-        LeftBorder,
-        RightBorder,
-        DoubleVerticalBorder
+        NoBorder, CommonBorder, VerticalBorder, HorizontalBorder, LeftBorder, RightBorder, DoubleVerticalBorder
     }
-    
+
     class PrintProcess {
         Worksheet worksheet;
         int indexRow = 0;
@@ -964,7 +990,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         int totalColumn = 0;
         boolean isForebackground = false;
         boolean isHasTitleRow = false;
-//        List<String> titleRows;
+        // List<String> titleRows;
         Map<Integer, String> mapTitle;
         Map<Integer, String> mapFooter;
         SalaryCategory category;
@@ -972,7 +998,7 @@ public class AsposePaymentSalaryReportGenerator extends AsposeCellsReportGenerat
         List<DepartmentDto> departments;
         List<Integer> selectedLevels;
         Map<EmployeeKey, Double> mapAmount;
-        List<String> yearMonths;
+        List<Integer> yearMonths;
         Map<DepartmentDto, Double> mapAmountDepMonths;
         SalaryPrintSettingDto configure;
     }

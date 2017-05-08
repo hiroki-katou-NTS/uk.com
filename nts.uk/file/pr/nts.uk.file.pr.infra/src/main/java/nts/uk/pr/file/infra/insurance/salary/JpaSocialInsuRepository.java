@@ -21,6 +21,7 @@ import javax.persistence.Query;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
@@ -211,7 +212,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         int yearMonth = salaryQuery.getYearMonth();
         List<Object[]> itemList = findPersons(companyCode, salaryQuery.getOfficeCodes(), yearMonth, loginPersonId);
         if (itemList.isEmpty()) {
-            throw new BusinessException("ER010");
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         Map<Object, List<Object[]>> mapOffice = itemList.stream()
                 .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
@@ -244,7 +245,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
             
             if (reportData.objectNormals.isEmpty() || reportData.objectDeductions.isEmpty()) {
-                throw new BusinessException("ER010");
+                throw new BusinessException(new RawErrorMessage("対象データがありません。"));
             }
             List<DataRowItem> listRowItemPersonal = new ArrayList<>();
             List<DataRowItem> listRowItemCompany = new ArrayList<>();
@@ -334,7 +335,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         int yearMonth = salaryQuery.getYearMonth();
         List<Object[]> itemList = findPersons(companyCode, salaryQuery.getOfficeCodes(), yearMonth, loginPid);
         if (itemList.isEmpty()) {
-            throw new BusinessException("ER010");
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         Map<Object, List<Object[]>> mapOffice = itemList.stream()
                 .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
@@ -362,7 +363,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
             
             if (reportData.objectNormals.isEmpty() || reportData.objectDeductions.isEmpty()) {
-                throw new BusinessException("ER010");
+                throw new BusinessException(new RawErrorMessage("対象データがありません。"));
             }
             List<MLayoutRowItem> listRowItem = new ArrayList<>();
             // list employee is printed output.

@@ -9,16 +9,11 @@ package nts.uk.pr.file.infra.detailpaymentsalary;
 
 import com.aspose.cells.Color;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ReportConstant.
  *
- * @author duongnd
  */
 public class PaymentConstant {
-    
-    /** The Constant DATE_TIME_FORMAT. */
-    public static final String DATE_TIME_FORMAT = "yyyyMMddHHmmss";
     
     /** The Constant START_AREA. */
     public static final String START_AREA = "A1:";

@@ -288,6 +288,10 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param paymentDateMap the payment date map
 	 */
 	private void fillReportItemsData(List<ReportItemDto> reportItems, PrintData printData) {
+		reportItems = reportItems.stream().filter(item -> item.isShow()).collect(Collectors.toList());
+		if (reportItems.size() == 0) {
+			return;
+		}
 		Worksheet ws = printData.reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
 		int totalItemData = reportItems.size();
@@ -313,7 +317,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 				ReportItemDto item = items.get(i);
 				
 				// Draw begin line on page.
-				if (i == 0) {
+				if (i == 0 && paymentDateMap.size() > 0) {
 					Range beginRowRange = cells.createRange(printData.currentRow, printData.currentColumn + 1,
 							1, paymentDateMap.size());
 					beginRowRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
@@ -360,7 +364,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		
 		// Fill item name cell.
 		Cell nameCell = cells.get(printData.currentRow, printData.currentColumn);
-		nameCell.setValue(item.name);
+		nameCell.setValue(!item.isShowName && item.isZeroValue() ? "" : item.name);
 		this.setStyleCell(nameCell, StyleModel.createNameCellStyle(backgroundColor));
 		printData.currentColumn++;
 		
@@ -369,6 +373,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 				.collect(Collectors.toMap(d -> d.month, Function.identity()));
 		Map<Integer, GeneralDate> paymentDateMap = printData.isSalaryPath
 				? printData.reportData.salaryPaymentDateMap : printData.reportData.bonusPaymentDateMap;
+		boolean isShowValue = !item.isZeroValue() || item.isShowValue;
 		if (paymentDateMap == null) {
 			paymentDateMap = new HashMap<>();
 		}
@@ -376,7 +381,10 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		for (int j = 0; j < paymentDateMap.size(); j++) {
 			MonthlyData data = dataMap.get(monthList.get(j));
 			Cell monthCell = cells.get(printData.currentRow, printData.currentColumn);
-			monthCell.setValue(data.amount);
+			// Check show value.
+			if (isShowValue) {
+				monthCell.setValue(data != null ? data.amount : 0);
+			}
 
 			// Set style for cell.
 			StyleModel dataCellStyle = StyleModel

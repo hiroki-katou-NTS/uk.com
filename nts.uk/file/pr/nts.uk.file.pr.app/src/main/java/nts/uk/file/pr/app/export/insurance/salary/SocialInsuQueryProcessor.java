@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
@@ -77,7 +78,7 @@ public class SocialInsuQueryProcessor {
         String companyCode = AppContexts.user().companyCode();
         List<HealthInsuranceAvgearn> healInsuAvgearns = insuAvgearnRepo.findByOfficeCodes(companyCode, officeCodes);
         if (healInsuAvgearns.isEmpty()) {
-            throw new BusinessException("ER010");
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         return healInsuAvgearns;
     }
@@ -92,7 +93,7 @@ public class SocialInsuQueryProcessor {
         String companyCode = AppContexts.user().companyCode();
         List<PensionAvgearn> pensionAvgearns = pensAvgearnRepo.findbyOfficeCodes(companyCode, officeCodes);
         if (pensionAvgearns.isEmpty()) {
-            throw new BusinessException("ER010");
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         return pensionAvgearns;
     }
