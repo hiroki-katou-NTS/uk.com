@@ -1,42 +1,26 @@
 module qmm020.c.viewmodel {
     export class ScreenModel {
         // listbox
-        itemList: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        employeeTotal: KnockoutObservableArray<TotalModel>;
         itemTotalList: KnockoutObservableArray<TotalModel>;
-        itemAllotSetting: KnockoutObservableArray<TotalModel>;
-        itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<number>;
+        itemHeaderList: KnockoutObservableArray<TotalModel>;
         currentItem: KnockoutObservable<TotalModel>;
-        selectedName: KnockoutObservable<string>;
         selectedCode: KnockoutObservable<string>;
-        selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
-        histId: KnockoutObservable<string>;
         maxItem: KnockoutObservable<TotalModel>;
-        maxDate: string;
         //selectedCode: KnockoutObservable<string>;
-
-
-        employeeAllotHead: Array<EmployeeSettingHeaderModel>;
         dataSource: any;
         selectedList: any;
 
         constructor() {
             var self = this;
             let dfd = $.Deferred<any>();
-            self.itemList = ko.observableArray([]);
             self.selectedCode = ko.observable();
-            self.isEnable = ko.observable(true);
             self.selectedList = ko.observableArray([]);
-            self.employeeTotal = ko.observableArray([]);
-            self.itemHist = ko.observable(null);
+            self.isEnable = ko.observable(true);
             self.itemTotalList = ko.observableArray([]);
-            self.itemAllotSetting = ko.observableArray([]);
-            self.histId = ko.observable(null);
+            self.itemHeaderList = ko.observableArray([]);
             self.maxItem = ko.observable(null);
-            self.maxDate = "";
             self.dataSource = ko.observableArray([]);
             self.currentItem = ko.observable(new TotalModel({
                 historyId: '',
@@ -54,8 +38,6 @@ module qmm020.c.viewmodel {
             ]);
 
             self.selectedCode.subscribe(function(codeChange) {
-                //let x =  self.getEmpName();
-                //self.itemAllotSetting([]);
                 self.getHist();
                 service.getEmployeeDetail(ko.toJS(codeChange)).done(function(data: Array<IModel>) {
                     let employeeItems: Array<IModel> = [];
@@ -100,16 +82,15 @@ module qmm020.c.viewmodel {
             self.LoadData([]);
             // call first method
             self.start();
-            $("#C_BTN_001").click(function() {
-                alert("The paragraph was clicked.");
-            });
+//            $("#C_BTN_001").click(function() {
+//                alert("The paragraph was clicked.");
+//            });
         }
 
         LoadData(itemList) {
             let self = this;
             $("#C_LST_001").igGrid({
                 columns: [
-                    { headerText: "", key: "NO", dataType: "string", width: "20px" },
                     { headerText: "繧ｳ繝ｼ繝�", key: "employmentCode", dataType: "string", width: "100px" },
                     { headerText: "蜷咲ｧｰ", key: "employmentName", dataType: "string", width: "200px" },
                     { headerText: "", key: "paymentDetailCode", dataType: "string", hidden: true },
@@ -130,7 +111,6 @@ module qmm020.c.viewmodel {
                     mode: 'row',
                     multipleSelection: true,
                     activation: false,
-                    //                    rowSelectionChanged: this.selectionChanged.bind(this)
                 },
                 ],
                 virtualization: true,
@@ -146,37 +126,22 @@ module qmm020.c.viewmodel {
         //find histId to subscribe
         getHist(value: any) {
             let self = this;
-            let rtHist = _.find(ko.toJS(self.itemTotalList()), function(item: IModel) {
+            let rtHist = _.find(ko.toJS(self.itemHeaderList()), function(item: IModel) {
                 return item.historyId == value;
             });
             return rtHist;
         }
-        //find employeeName initiation
-        getEmpName(value: any) {
-            let self = this;
-            value = _.find(ko.mapping.toJS(self.employeeTotal()), function(o: IModel) {
-                return o.employmentCode == '00001';
-            });
-            return value;
-        }
-        // getEmpCode initiation
-        getEmpcode(value: any) {
-            let self = this;
-            value = _.find(ko.mapping.toJS(self.employeeTotal()), function(h: IModel) {
-                return null;
-            });
-        }
         //Selected changed
-        selectionChanged(evt, ui) {
-            //console.log(evt.type);
-            var selectedRows = ui.selectedRows;
-
-            var arr = [];
-            for (var i = 0; i < selectedRows.length; i++) {
-                arr.push("" + selectedRows[i].id);
-            }
-            this.selectedList(arr);
-        };
+//        selectionChanged(evt, ui) {
+//            //console.log(evt.type);
+//            var selectedRows = ui.selectedRows;
+//
+//            var arr = [];
+//            for (var i = 0; i < selectedRows.length; i++) {
+//                arr.push("" + selectedRows[i].id);
+//            }
+//            this.selectedList(arr);
+//        };
 
         // start function
         start(): JQueryPromise<any> {
@@ -191,7 +156,7 @@ module qmm020.c.viewmodel {
                     });
                     dfd.resolve();
                 }
-                self.employeeTotal(employeeItem);
+                self.itemTotalList(employeeItem);
                 // self.currentItem(employeeItem.employmentName);
                 // Set datafor grid
                 $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
@@ -209,7 +174,8 @@ module qmm020.c.viewmodel {
                     _.forEach(data, function(item) {
                         totalItem.push(new TotalModel({ historyId: item.historyId, startEnd: item.startYm + ' ~ ' + item.endYm, endYm: item.endYm, startYm: item.startYm }));
                     });
-                    self.itemTotalList(totalItem);
+                    ko.mapping.toJS(self.itemHeaderList(totalItem));
+                    debugger;
                     //let max = _.maxBy(self.itemList(), (itemMax) => { return itemMax.endYm });
                     dfd.resolve();
                 } else {
@@ -221,7 +187,7 @@ module qmm020.c.viewmodel {
             });
 
             service.getAllotEmployeeMaxDate().done(function(itemMax: number) {
-                let maxDate: TotalModel = _.find(self.itemTotalList(), function(obj) { return parseInt(obj.endYm()) == itemMax; });
+                let maxDate: TotalModel = _.find(self.itemHeaderList(), function(obj) { return parseInt(obj.endYm()) == itemMax; });
                 self.maxDate = (maxDate.startYm || "").toString();
                 self.maxItem(maxDate);
                 console.log(self.maxItem());
@@ -369,41 +335,6 @@ module qmm020.c.viewmodel {
         }
 
     }
-    export class ItemModel {
-        histId: string;
-        startEnd: string;
-        endYm: string;
-
-        constructor(histId: string, startEnd: string, endYm: string) {
-            let self = this;
-            self.histId = (histId);
-            self.startEnd = startEnd;
-            self.endYm = endYm;
-        }
-    }
-
-    class EmployeeAllotSettingDto {
-        companyCode: KnockoutObservable<string>;
-        historyId: KnockoutObservable<string>;
-        employmentCode: KnockoutObservable<string>;
-        employmentName: KnockoutObservable<string>;
-        paymentDetailCode: KnockoutObservable<string>;
-        paymentDetailName: KnockoutObservable<string>;
-        bonusDetailCode: KnockoutObservable<string>;
-        bonusDetailName: KnockoutObservable<string>;
-        constructor(companyCode: string, historyId: string, employmentCode: string, employmentName: string, paymentDetailCode: string, paymentDetailName: string, bonusDetailCode: string, bonusDetailName: string) {
-            this.companyCode = ko.observable(companyCode);
-            this.historyId = ko.observable(historyId);
-            this.employmentCode = ko.observable(employmentCode);
-            this.employmentName = ko.observable(employmentName);
-            this.paymentDetailCode = ko.observable(paymentDetailCode);
-            this.paymentDetailName = ko.observable(paymentDetailName);
-            this.bonusDetailCode = ko.observable(bonusDetailCode);
-            this.bonusDetailName = ko.observable(bonusDetailName);
-        }
-    }
-
-
 
 
     interface IModel {
@@ -453,24 +384,3 @@ module qmm020.c.viewmodel {
 
 }
 
-//$(function() {
-//    $(document).on("click", ".C_BTN_001", function() {
-//        var self = this;
-//        alert($(this).data('name'));
-//        var valueShareMDialog = ko.mapping.toJS(__viewContext.viewModel.viewmodelC.currentItem().startYm);
-//        //debugger;
-//        nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
-//        nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
-//            //get selected code from M dialog
-//            var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
-//
-//            __viewContext.viewModel.viewmodelC.currentItem().paymentDetailCode(stmtCodeSelected);
-//            //get Name payment Name
-//            service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
-//                self.currentItem().payName(stmtName);
-//            }).fail(function(res) {
-//                alert(res);
-//            });
-//        });
-//    });
-//})
