@@ -1,8 +1,6 @@
 package nts.uk.ctx.sys.portal.app.find.placement;
 
 import lombok.Value;
-import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
-import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 
 /**
  * @author LamDT
