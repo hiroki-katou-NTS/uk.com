@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.report.dom.payment.contact;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The Interface ContactPersonalSettingRepository.
@@ -16,16 +15,19 @@ public interface ContactPersonalSettingRepository {
 	 * Find all.
 	 *
 	 * @param ccd the ccd
+	 * @param processingYm the processing ym
+	 * @param processingNo the processing no
+	 * @return the list
+	 */
+	List<ContactPersonalSetting> findAll(String ccd, int processingYm, int processingNo);
+
+	/**
+	 * Find all.
+	 *
+	 * @param ccd the ccd
 	 * @return the list
 	 */
 	List<ContactPersonalSetting> findAll(String ccd);
-
-	/**
-	 * Find.
-	 *
-	 * @return the optional
-	 */
-	Optional<ContactPersonalSetting> find();
 
 	/**
 	 * Creates the.

@@ -15,18 +15,26 @@ import nts.uk.ctx.pr.report.dom.payment.contact.ContactPersonalSetting;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactPersonalSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class ContactPersonalSettingFinder.
+ */
 @Stateless
 public class ContactPersonalSettingFinder {
+
+	/** The repository. */
 	@Inject
 	private ContactPersonalSettingRepository repository;
 
 	/**
 	 * Find all.
 	 *
+	 * @param processingYm the processing ym
+	 * @param processingNo the processing no
 	 * @return the list
 	 */
-	public List<ContactPersonalSettingDto> findAll() {
-		List<ContactPersonalSetting> listSetting = repository.findAll(AppContexts.user().companyCode());
+	public List<ContactPersonalSettingDto> findAll(int processingYm, int processingNo) {
+		String companyCode = AppContexts.user().companyCode();
+		List<ContactPersonalSetting> listSetting = repository.findAll(companyCode, processingYm, processingNo);
 		List<ContactPersonalSettingDto> listDto = listSetting.stream().map(setting -> {
 			return ContactPersonalSettingDto.builder().employeeId(setting.getEmployeeCode())
 					.comment(setting.getComment().v()).build();

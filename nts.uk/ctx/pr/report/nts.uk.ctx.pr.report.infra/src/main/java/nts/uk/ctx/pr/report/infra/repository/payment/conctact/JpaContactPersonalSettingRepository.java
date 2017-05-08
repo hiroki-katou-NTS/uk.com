@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.report.infra.repository.payment.conctact;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -30,19 +29,6 @@ import nts.uk.ctx.pr.report.infra.repository.payment.conctact.memento.JpaContact
  */
 @Stateless
 public class JpaContactPersonalSettingRepository extends JpaRepository implements ContactPersonalSettingRepository {
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.report.dom.payment.contact.ContactPersonalSettingRepository
-	 * #find()
-	 */
-	@Override
-	public Optional<ContactPersonalSetting> find() {
-		// TODO: not used yet.
-		return null;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -97,6 +83,41 @@ public class JpaContactPersonalSettingRepository extends JpaRepository implement
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.report.dom.payment.contact.ContactPersonalSettingRepository
+	 * #findAll(java.lang.String, int, int)
+	 */
+	@Override
+	public List<ContactPersonalSetting> findAll(String ccd, int processingYm, int processingNo) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QctmtCommentMonthPs> cq = cb.createQuery(QctmtCommentMonthPs.class);
+		Root<QctmtCommentMonthPs> root = cq.from(QctmtCommentMonthPs.class);
+
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(
+				cb.equal(root.get(QctmtCommentMonthPs_.qctmtCommentMonthPsPK).get(QctmtCommentMonthPsPK_.ccd), ccd));
+		predicateList.add(
+				cb.equal(root.get(QctmtCommentMonthPs_.qctmtCommentMonthPsPK).get(QctmtCommentMonthPsPK_.processingNo),
+						processingNo));
+		predicateList.add(
+				cb.equal(root.get(QctmtCommentMonthPs_.qctmtCommentMonthPsPK).get(QctmtCommentMonthPsPK_.processingYm),
+						processingYm));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+	}
+
 	/**
 	 * To domain.
 	 *
@@ -120,5 +141,4 @@ public class JpaContactPersonalSettingRepository extends JpaRepository implement
 		domain.saveToMemento(new JpaContactPersonalSettingSetMemento(entity));
 		return entity;
 	}
-
 }

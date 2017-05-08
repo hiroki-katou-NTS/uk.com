@@ -10,8 +10,9 @@ module qpp021.i.service {
         return nts.uk.request.ajax("com", paths.findAllEmp);
     }
 
-    export function findAllSetting(): JQueryPromise<ContactPersonalSettingDto> {
-        return nts.uk.request.ajax(paths.findAllSetting);
+    export function findAllSetting(processingNo: number, processingYm: number): JQueryPromise<ContactPersonalSettingDto> {
+        let request = {processingNo: processingNo, processingYm: processingYm}
+        return nts.uk.request.ajax(paths.findAllSetting, request);
     }
 
     export function save(dto): JQueryPromise<any> {

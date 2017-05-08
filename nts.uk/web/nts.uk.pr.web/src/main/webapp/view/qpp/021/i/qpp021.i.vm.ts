@@ -2,15 +2,17 @@ module qpp021.i.viewmodel {
     export class ScreenModel {
 
         listContactPersonalSetting: KnockoutObservableArray<ContactPersonalSettingModel>;
+        processingNo: number;
+        processingYm: number;
         igGrid: any;
         selected: KnockoutObservable<any>;
-        dirtyChecker: nts.uk.ui.DirtyChecker;
 
         constructor() {
             this.listContactPersonalSetting = ko.observableArray<ContactPersonalSettingModel>([]);
             this.selected = ko.observable();
+            this.processingNo = 1;
+            this.processingYm = 201704;
             let self = this;
-            self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.listContactPersonalSetting);
             this.selected.subscribe(val => {
                 let selectedIndex = self.listContactPersonalSetting().findIndex(item => {
                     return item.employeeCode == val;
@@ -19,6 +21,9 @@ module qpp021.i.viewmodel {
             });
         }
 
+        /**
+         * Start page.
+         */
         public startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
@@ -29,35 +34,30 @@ module qpp021.i.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * Event when click save button.
+         */
         public onSaveBtnClicked(): void {
             let self = this;
-            // Validate.
-            $('.ui-igedit-input').ntsEditor('validate');
-            if ($('.ui-igedit-input').ntsError('hasError')) {
-                return;
-            }
-            service.save(ko.toJS(self.listContactPersonalSetting)).done(() => {
-                self.dirtyChecker.reset();
-            }).fail(res => {
+            service.save(ko.toJS(self.listContactPersonalSetting)).fail(res => {
                 nts.uk.ui.dialog.alert(res.message);
             });
         }
 
+        /**
+         * Event when click close button.
+         */
         public onCloseBtnClicked(): void {
-            let self = this;
-            if (self.dirtyChecker.isDirty()) {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-                    nts.uk.ui.windows.close();
-                });
-            } else {
-                nts.uk.ui.windows.close();
-            }
+            nts.uk.ui.windows.close();
         }
 
+        /**
+         * Load list contact personal setting.
+         */
         private loadListContactPersonalSetting(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            $.when(service.findAllEmp(), service.findAllSetting())
+            $.when(service.findAllEmp(), service.findAllSetting(this.processingNo, this.processingYm))
                 .done((listEmp: Array<service.EmployeeDto>, listSetting: Array<service.ContactPersonalSettingDto>) => {
                     self.listContactPersonalSetting(self.convertToModel(listEmp, listSetting));
                 });
@@ -65,6 +65,9 @@ module qpp021.i.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * Convert dto to model.
+         */
         private convertToModel(listEmp: Array<service.EmployeeDto>, listSetting: Array<service.ContactPersonalSettingDto>): Array<ContactPersonalSettingModel> {
             let listModel: Array<ContactPersonalSettingModel> = [];
             listSetting.forEach((setting: service.ContactPersonalSettingDto) => {
@@ -84,6 +87,9 @@ module qpp021.i.viewmodel {
             return listModel;
         }
 
+        /**
+         * Initialize igGrid.
+         */
         private initIgGrid(): void {
             var self = this;
             self.igGrid = ko.observable({

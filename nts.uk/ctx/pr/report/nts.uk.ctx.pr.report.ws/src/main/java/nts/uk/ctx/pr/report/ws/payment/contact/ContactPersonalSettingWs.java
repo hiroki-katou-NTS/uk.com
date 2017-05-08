@@ -15,22 +15,28 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.report.app.payment.contact.command.ContactPersonalSettingSaveCommand;
 import nts.uk.ctx.pr.report.app.payment.contact.command.ContactPersonalSettingSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.payment.contact.find.ContactPersonalSettingFinder;
+import nts.uk.ctx.pr.report.app.payment.contact.find.dto.ContactItemsSettingFindDto;
 import nts.uk.ctx.pr.report.app.payment.contact.find.dto.ContactPersonalSettingDto;
 
+/**
+ * The Class ContactPersonalSettingWs.
+ */
 @Path("ctx/pr/report/payment/contact/personalsetting")
 @Produces("application/json")
 public class ContactPersonalSettingWs extends WebService {
 
+	/** The finder. */
 	@Inject
 	private ContactPersonalSettingFinder finder;
+	
+	/** The save handler. */
 	@Inject
 	private ContactPersonalSettingSaveCommandHandler saveHandler;
 
 	/**
 	 * Save.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("save")
@@ -38,10 +44,16 @@ public class ContactPersonalSettingWs extends WebService {
 		this.saveHandler.handle(command);
 	}
 
+	/**
+	 * Find all.
+	 *
+	 * @param dto the dto
+	 * @return the list
+	 */
 	@POST
 	@Path("findall")
-	public List<ContactPersonalSettingDto> findAll() {
-		return this.finder.findAll();
+	public List<ContactPersonalSettingDto> findAll(ContactItemsSettingFindDto dto) {
+		return this.finder.findAll(dto.getProcessingYm(), dto.getProcessingNo());
 	}
 
 }
