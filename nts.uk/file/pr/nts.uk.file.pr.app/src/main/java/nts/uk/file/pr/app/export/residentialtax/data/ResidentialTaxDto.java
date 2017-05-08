@@ -13,4 +13,5 @@ public class ResidentialTaxDto {
 	private String companySpecifiedNo;
 	private String cordinatePostalCode;
 	private String cordinatePostOffice;
+	private String resiTaxAutonomyKnName;
 }
