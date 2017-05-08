@@ -20,7 +20,8 @@
 		<ui:define name="content">
 			<div id="function_area">
 				<!-- A1_1: Button Registration -->
-				<button id="btn_001" class="button proceed separate-button fix-button">登録</button>
+				<button id="btn_001" class="button proceed separate-button fix-button"
+						data-bind = "click: Registration">登録</button>
 			</div>
 			
 			<div id="content-area">
@@ -71,7 +72,7 @@
 							</td>
 							<td>	
 								<!-- A3_4: Divergence Time Name -->														
-								<input style="width: 60px" data-bind="ntsTextEditor:{
+								<input style="width: 70px" data-bind="ntsTextEditor:{
                                          value: divTimeName,
                                          enable: false}" />
 							</td>
@@ -120,7 +121,7 @@
 							<td>
 								<!-- A3_13: Set use select -->
 								<div id="inp_006" class="cf" data-bind="ntsSwitchButton: {
-									options: selectUseSet,
+									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectSel,
@@ -135,7 +136,7 @@
 							<td>
 								<!-- A3_15: Check error(select) -->
 								<div style="margin-bottom: 10px" data-bind="ntsCheckBox:{
-									checked: checkErrInput,
+									checked: checkErrSelect,
 									 enable: enable,
 									  text: '日別実績の修正で乖離理由が選択された場合、エラー／アラームの色を消す'}">
 								 </div>
@@ -149,7 +150,7 @@
 							<td>
 								<!-- A3_17: Set use input -->
 								<div class="cf" data-bind="ntsSwitchButton: {
-									options: inputUseSet,
+									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectInp,

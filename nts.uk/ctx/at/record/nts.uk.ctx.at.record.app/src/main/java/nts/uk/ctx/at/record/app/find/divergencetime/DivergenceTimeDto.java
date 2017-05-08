@@ -14,6 +14,8 @@ public class DivergenceTimeDto {
 	private String companyId;
 	/*乖離時間ID*/
 	private int divTimeId;
+	/*乖離時間名称*/
+	private String divTimeName;
 	/*乖離時間使用設定*/
 	private int divTimeUseSet;
 	/*アラーム時間*/
@@ -28,7 +30,8 @@ public class DivergenceTimeDto {
 	public static DivergenceTimeDto fromDomain(DivergenceTime domain){
 		return new DivergenceTimeDto(domain.getCompanyId(),
 					domain.getDivTimeId(),
-					Integer.valueOf(domain.getDivTimeUseSet().toString()),
+					domain.getDivTimeName().v(),
+					Integer.valueOf(domain.getDivTimeUseSet().value),
 					Integer.valueOf(domain.getAlarmTime().toString()),
 					Integer.valueOf(domain.getErrTime().toString()),
 					InputSet.convertType(domain.getSelectSet().getSelectUseSet().value,domain.getSelectSet().getCancelErrSelReason().value),

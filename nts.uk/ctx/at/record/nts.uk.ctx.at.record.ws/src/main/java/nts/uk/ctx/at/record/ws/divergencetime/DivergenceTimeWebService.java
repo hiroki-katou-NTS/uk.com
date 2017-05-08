@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.app.command.divergencetime.DeleteDivergenceReasonCom
 import nts.uk.ctx.at.record.app.command.divergencetime.DeleteDivergenceReasonCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommandHandler;
+import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommand;
+import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommandHandler;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceTimeDto;
@@ -27,6 +29,8 @@ public class DivergenceTimeWebService extends WebService{
 
 	@Inject
 	private DivergenceTimeFinder getAllDivTime;
+	@Inject
+	private UpdateDivergenceTimeCommandHandler updateDivTime;
 	@Inject
 	private DivergenceReasonFinder getAllDivReason;
 	@Inject
@@ -47,8 +51,8 @@ public class DivergenceTimeWebService extends WebService{
 	}
 	@POST
 	@Path("updatedivtime")
-	public void updateDivTime(){
-		
+	public void updateDivTime(UpdateDivergenceTimeCommand command){
+		this.updateDivTime.handle(command);
 	}
 	/**
 	 * get all divergence reason

@@ -24,6 +24,9 @@ public class KmnmtDivergenceTime extends UkJpaEntity implements Serializable{
 	/*主キー*/
 	@EmbeddedId
 	public KmnmtDivergenceTimePK kmnmtDivergenceTimePK;
+	/*乖離時間名称*/
+	@Column(name = "DIVERGENCETIME_NAME")
+	public String divTimeName;
 	/*乖離時間使用設定*/
 	@Column(name = "DIVERGENCETIME_USE_SET")
 	public int divTimeUseSet;
