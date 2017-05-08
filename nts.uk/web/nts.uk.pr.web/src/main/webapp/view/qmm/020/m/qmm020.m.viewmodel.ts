@@ -30,6 +30,7 @@ module qmm020.m.viewmodel {
         selectStmtCode() {
             let self = this;
             nts.uk.ui.windows.setShared('M_RETURN', self.listItemSelected());
+                 debugger;
             self.closeDialog();
         }
 

@@ -103,9 +103,10 @@ module qmm020.c.service {
             })
 
     }
-    export function getAllotLayoutName(stmtCode: string): JQueryPromise<string> {
+    export function getAllotLayoutName(stmtCode: any): JQueryPromise<string> {
         var dfd = $.Deferred<any>();
-        var _path = nts.uk.text.format(paths.getLayoutName, stmtCode);
+        debugger;
+        var _path = nts.uk.text.format(paths.getLayoutName, stmtCode.paymentDetailCode);
         var options = {
             dataType: 'text',
             contentType: 'text/plain'

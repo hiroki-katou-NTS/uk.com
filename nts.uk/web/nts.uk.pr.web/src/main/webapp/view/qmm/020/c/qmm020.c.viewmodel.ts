@@ -76,7 +76,8 @@ module qmm020.c.viewmodel {
                     alert(res);
                 });
                 dfd.promise();
-                self.currentItem(self.getHist(codeChange));
+                self.currentItem(ko.mapping.fromJS(self.getHist(codeChange)));
+                debugger;
             });
             // init columns and title for grid
             self.LoadData([]);
@@ -175,7 +176,6 @@ module qmm020.c.viewmodel {
                         totalItem.push(new TotalModel({ historyId: item.historyId, startEnd: item.startYm + ' ~ ' + item.endYm, endYm: item.endYm, startYm: item.startYm }));
                     });
                     ko.mapping.toJS(self.itemHeaderList(totalItem));
-                    debugger;
                     //let max = _.maxBy(self.itemList(), (itemMax) => { return itemMax.endYm });
                     dfd.resolve();
                 } else {
@@ -317,16 +317,20 @@ module qmm020.c.viewmodel {
 
         openMDialog() {
             var self = this;
-            var valueShareMDialog = self.currentItem().startYm;
+            var valueShareMDialog = self.currentItem().startYm();
             //debugger;
-            nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
+            nts.uk.ui.windows.setShared('M_BASEYM', valueShareMDialog);
+            debugger;
             nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
                 //get selected code from M dialog
-                var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
-                ko.mapping.toJS(self.currentItem().paymentDetailCode(stmtCodeSelected));
+                var stmtCodeSelected = nts.uk.ui.windows.getShared('M_RETURN');
+                var stmtCode = ko.mapping.toJS(self.currentItem().paymentDetailCode(stmtCodeSelected));
                 //get Name payment Name
-                service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
-                    self.currentItem().payName(stmtName);
+                service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
+                    self.currentItem().paymentDetailName(stmtName);
+                    
+//                    self.LoadData(ko.mapping.toJS(self.itemTotalList(self.currentItem())));
+                         debugger;
                 }).fail(function(res) {
                     alert(res);
                 });
