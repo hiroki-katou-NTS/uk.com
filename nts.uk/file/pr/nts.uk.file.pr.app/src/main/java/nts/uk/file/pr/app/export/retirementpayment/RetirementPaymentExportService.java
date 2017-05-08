@@ -2,7 +2,6 @@ package nts.uk.file.pr.app.export.retirementpayment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,27 +32,29 @@ public class RetirementPaymentExportService extends ExportService<RetirementPaym
 		String companyCode = AppContexts.user().companyCode();
 		List<RetirementPaymentReportData> dataSource = new ArrayList<>();
 		List<RetirePayItemDto> lstRetirePayItemDto = this.retirementPaymentRepository.getListRetirePayItem(companyCode);
-		//validate range date
-		if(context.getQuery().getStartDate().after(context.getQuery().getEndDate())){
+		List<RetirementPaymentDto> lstRetirementPaymentDto = this.retirementPaymentRepository.getRetirementPayment(
+				companyCode, lstPersonId, context.getQuery().getStartDate(), context.getQuery().getEndDate());
+		// check if missing the target data
+		if(lstRetirementPaymentDto.size() < lstPersonId.size()){
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
+		}
+		// validate range date
+		if (context.getQuery().getStartDate().after(context.getQuery().getEndDate())) {
 			throw new BusinessException(new RawErrorMessage("範囲の指定が正しくありません。"));
 		}
-		//build report datasource
+		// build report datasource
 		for (String personId : lstPersonId) {
 			RetirementPaymentReportData retirementPaymentReportData = new RetirementPaymentReportData();
-			//get dtos
-			Optional<RetirementPaymentDto> retirementPaymentDto = this.retirementPaymentRepository.getRetirementPayment(
-					companyCode, personId, context.getQuery().getStartDate(), context.getQuery().getEndDate());
-			PersonalBasicDto personalBasicDto = new PersonalBasicDto("従業員名 " + personId.charAt(35), "2005年 3月 1日", "2017年 12月 31日", "自己都合（転職）", "0年0ヶ 月", "0年0ヶ 月");
+			// get dtos
+			RetirementPaymentDto retirementPaymentDto = lstRetirementPaymentDto.stream().filter(dto -> dto.getPersonId().equals(personId)).findFirst().orElse(null);
+			PersonalBasicDto personalBasicDto = new PersonalBasicDto("従業員名 " + personId.charAt(35), "2005年 3月 1日",
+					"2017年 12月 31日", "自己都合（転職）", "0年0ヶ 月", "0年0ヶ 月");
 			CompanyMasterDto companyMasterDto = new CompanyMasterDto("日通システム株式会社", "愛知県名古屋市中区栄", "ナディアパークビジネスセンタービル９F");
-			//set dtos to report data
-			if(retirementPaymentDto.isPresent()){
-				retirementPaymentReportData.setRetirementPaymentDto(retirementPaymentDto.get());
-			} else {
-				throw new BusinessException(new RawErrorMessage("対象データがありません。"));
-			}
+			// set dtos to report data
+			retirementPaymentReportData.setRetirementPaymentDto(retirementPaymentDto);
 			retirementPaymentReportData.setCompanyMasterDto(companyMasterDto);
 			retirementPaymentReportData.setPersonalBasicDto(personalBasicDto);
-			//add to list
+			// add to list
 			dataSource.add(retirementPaymentReportData);
 		}
 		this.retirementPaymentReportGenerator.generate(context.getGeneratorContext(), dataSource, lstRetirePayItemDto);

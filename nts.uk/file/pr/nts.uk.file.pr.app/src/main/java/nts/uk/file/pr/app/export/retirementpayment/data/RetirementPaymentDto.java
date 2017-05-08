@@ -13,6 +13,8 @@ import lombok.Value;
  */
 @Value
 public class RetirementPaymentDto {
+	
+	private String personId;
 
 	private String trialPeriodSet;
 
@@ -38,11 +40,12 @@ public class RetirementPaymentDto {
 
 	private String statementMemo;
 
-	public RetirementPaymentDto(BigDecimal trialPeriodSet, BigDecimal exclusionYears, BigDecimal totalPaymentMoney,
+	public RetirementPaymentDto(String personId, BigDecimal trialPeriodSet, BigDecimal exclusionYears, BigDecimal totalPaymentMoney,
 			BigDecimal incomeTaxMoney, BigDecimal cityTaxMoney, BigDecimal prefectureTaxMoney,
 			BigDecimal deductionMoney1, BigDecimal deductionMoney2, BigDecimal deductionMoney3,
 			BigDecimal totalDeductionMoney, BigDecimal actualRecieveMoney, String statementMemo) {
 		super();
+		this.personId = personId;
 		if (trialPeriodSet.intValue() == 0) {
 			this.trialPeriodSet = "試用期間なし";
 		} else {

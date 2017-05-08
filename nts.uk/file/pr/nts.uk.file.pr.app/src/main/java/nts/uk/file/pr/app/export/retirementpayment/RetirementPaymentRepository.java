@@ -14,7 +14,7 @@ public interface RetirementPaymentRepository {
 	 * @param query the query
 	 * @return the payment report data
 	 */
-	public Optional<RetirementPaymentDto> getRetirementPayment(String companyCode, String personId, GeneralDate startDate, GeneralDate endDate);
+	public List<RetirementPaymentDto> getRetirementPayment(String companyCode, List<String> personId, GeneralDate startDate, GeneralDate endDate);
 	
 	/**
 	 * Get retirement payment data.

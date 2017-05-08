@@ -5,50 +5,40 @@ package nts.uk.pr.file.infra.retirementpayment.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * @author hungnm
  *
  */
-@Setter
-@Getter
 @Entity
 @Table(name = "QREMT_RETIRE_PAY_ITEM")
 public class ReportQremtRetirePayItem extends UkJpaEntity implements Serializable {
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	protected ReportQremtRetirePayItemPK reportQremtRetirePayItemPK;
+	public ReportQremtRetirePayItemPK reportQremtRetirePayItemPK;
 	
-	@Basic(optional = false)
 	@Column(name = "ITEM_NAME")
-	private String itemName;
+	public String itemName;
 	
-	@Basic(optional = false)
 	@Column(name = "ITEM_AB_NAME")
-	private String itemAbName;
+	public String itemAbName;
 	
-	@Basic(optional = true)
 	@Column(name = "ITEM_AB_NAME_E")
-	private String itemAbNameE;
+	public String itemAbNameE;
 	
-	@Basic(optional = true)
 	@Column(name = "ITEM_AB_NAME_O")
-	private String itemAbNameO;
+	public String itemAbNameO;
 	
-	@Basic(optional = true)
 	@Column(name = "MEMO")
-	private String memo;
+	public String memo;
 
 	public ReportQremtRetirePayItem() {
 		super();
@@ -58,7 +48,7 @@ public class ReportQremtRetirePayItem extends UkJpaEntity implements Serializabl
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
-	protected Object getKey() {
+	public Object getKey() {
 		// TODO Auto-generated method stub
 		return this.reportQremtRetirePayItemPK;
 	}

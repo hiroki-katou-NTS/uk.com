@@ -3,158 +3,126 @@ package nts.uk.pr.file.infra.retirementpayment.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * @author hungnm
  *
  */
-@Setter
-@Getter
 @Entity
 @Table(name = "QREDT_RETIREMENT_PAYMENT")
 public class ReportQredtRetirementPayment extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	protected ReportQredtRetirementPaymentPK reportQredtRetirementPaymentPK;
+	public ReportQredtRetirementPaymentPK reportQredtRetirementPaymentPK;
 
-	@Basic(optional = false)
 	@Column(name = "TRIAL_PERIOD_SET")
-	private BigDecimal trialPeriodSet;
+	public BigDecimal trialPeriodSet;
 
-	@Basic(optional = false)
 	@Column(name = "EXCLUSION_YEARS")
-	private BigDecimal exclusionYears;
+	public BigDecimal exclusionYears;
 
-	@Basic(optional = false)
 	@Column(name = "ADDITIONAL_BOARD_YEARS")
-	private BigDecimal additionalBoardYears;
+	public BigDecimal additionalBoardYears;
 
-	@Basic(optional = false)
 	@Column(name = "BOARD_YEARS")
-	private BigDecimal boardYears;
+	public BigDecimal boardYears;
 
-	@Basic(optional = false)
 	@Column(name = "TOTAL_PAYMENT_MNY")
-	private BigDecimal totalPaymentMoney;
+	public BigDecimal totalPaymentMoney;
 
-	@Basic(optional = false)
 	@Column(name = "DEDUCTION1_MNY")
-	private BigDecimal deductionMoney1;
+	public BigDecimal deductionMoney1;
 
-	@Basic(optional = false)
 	@Column(name = "DEDUCTION2_MNY")
-	private BigDecimal deductionMoney2;
+	public BigDecimal deductionMoney2;
 
-	@Basic(optional = false)
 	@Column(name = "DEDUCTION3_MNY")
-	private BigDecimal deductionMoney3;
+	public BigDecimal deductionMoney3;
 
-	@Basic(optional = false)
 	@Column(name = "OTHER_RETIREMENT_PAY_OP")
-	private BigDecimal otherRetirementPayOptional;
+	public BigDecimal otherRetirementPayOptional;
 
-	@Basic(optional = false)
 	@Column(name = "TAX_CAL_METHOD_SET")
-	private BigDecimal taxCalMethodSet;
+	public BigDecimal taxCalMethodSet;
 
-	@Basic(optional = false)
 	@Column(name = "INCOME_TAX_MNY")
-	private BigDecimal incomeTaxMoney;
+	public BigDecimal incomeTaxMoney;
 
-	@Basic(optional = false)
 	@Column(name = "CITY_TAX_MNY")
-	private BigDecimal cityTaxMoney;
+	public BigDecimal cityTaxMoney;
 
-	@Basic(optional = false)
 	@Column(name = "PREFECTURE_TAX_MNY")
-	private BigDecimal prefectureTaxMoney;
+	public BigDecimal prefectureTaxMoney;
 
-	@Basic(optional = false)
 	@Column(name = "TOTAL_DEDUCTION_MNY")
-	private BigDecimal totalDeductionMoney;
+	public BigDecimal totalDeductionMoney;
 
-	@Basic(optional = false)
 	@Column(name = "ACTUAL_RECIEVE_MNY")
-	private BigDecimal actualRecieveMoney;
+	public BigDecimal actualRecieveMoney;
 
-	@Basic(optional = false)
 	@Column(name = "BANK_TRANSFER_OP1")
-	private BigDecimal bankTransferOptional1;
+	public BigDecimal bankTransferOptional1;
 
-	@Basic(optional = true)
 	@Column(name = "OP1_MNY")
-	private BigDecimal optionalMoney1;
+	public BigDecimal optionalMoney1;
 
-	@Basic(optional = false)
 	@Column(name = "BANK_TRANSFER_OP2")
-	private BigDecimal bankTransferOptional2;
+	public BigDecimal bankTransferOptional2;
 
-	@Basic(optional = true)
 	@Column(name = "OP2_MNY")
-	private BigDecimal optionalMoney2;
+	public BigDecimal optionalMoney2;
 
-	@Basic(optional = false)
 	@Column(name = "BANK_TRANSFER_OP3")
-	private BigDecimal bankTransferOptional3;
+	public BigDecimal bankTransferOptional3;
 
-	@Basic(optional = true)
 	@Column(name = "OP3_MNY")
-	private BigDecimal optionalMoney3;
+	public BigDecimal optionalMoney3;
 
-	@Basic(optional = false)
 	@Column(name = "BANK_TRANSFER_OP4")
-	private BigDecimal bankTransferOptional4;
+	public BigDecimal bankTransferOptional4;
 
-	@Basic(optional = true)
 	@Column(name = "OP4_MNY")
-	private BigDecimal optionalMoney4;
+	public BigDecimal optionalMoney4;
 
-	@Basic(optional = false)
 	@Column(name = "BANK_TRANSFER_OP5")
-	private BigDecimal bankTransferOptional5;
+	public BigDecimal bankTransferOptional5;
 
-	@Basic(optional = true)
 	@Column(name = "OP5_MNY")
-	private BigDecimal optionalMoney5;
+	public BigDecimal optionalMoney5;
 
-	@Basic(optional = true)
 	@Column(name = "WITHHOLDING_MENO")
-	private String withHoldingMemo;
+	public String withHoldingMemo;
 
-	@Basic(optional = true)
 	@Column(name = "STATEMENT_MEMO")
-	private String statementMemo;
-	
+	public String statementMemo;
+
 	public ReportQredtRetirementPayment() {
 		super();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
-	protected Object getKey() {
+	public Object getKey() {
 		// TODO Auto-generated method stub
 		return this.reportQredtRetirementPaymentPK;
 	}
 
-
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -166,9 +134,9 @@ public class ReportQredtRetirementPayment extends UkJpaEntity implements Seriali
 		return result;
 	}
 
-
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
