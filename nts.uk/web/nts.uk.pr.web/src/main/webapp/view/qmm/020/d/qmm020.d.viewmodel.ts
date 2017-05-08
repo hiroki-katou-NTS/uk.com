@@ -72,6 +72,7 @@ module qmm020.d.viewmodel {
                 .onClosed(function() {
                     let value = nts.uk.ui.windows.getShared('J_RETURN');
                     // set data into gridview
+                    debugger;
                 });
         }
 

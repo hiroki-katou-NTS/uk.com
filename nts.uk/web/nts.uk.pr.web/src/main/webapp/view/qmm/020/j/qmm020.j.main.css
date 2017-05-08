@@ -38,12 +38,6 @@
 	width: 120px;
 }
 
-.contents-area #J_INP_001,
-.contents-area  #J_INP_002,
-.contents-area  #J_INP_003 {
-	width: 100px;
-}
-
 .contents-area .form-group-radio {
 	padding-top: 10px;
 }
