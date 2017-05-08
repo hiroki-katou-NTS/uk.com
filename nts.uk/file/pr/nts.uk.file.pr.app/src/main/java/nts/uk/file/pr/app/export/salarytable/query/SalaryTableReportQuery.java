@@ -47,7 +47,7 @@ import lombok.Setter;
 public class SalaryTableReportQuery {
 
 	/** The target year. */
-	private Integer targetYear;
+	private Integer yearMonth;
 	
 	/** The emp id list. */
 	private List<String> pIdList;

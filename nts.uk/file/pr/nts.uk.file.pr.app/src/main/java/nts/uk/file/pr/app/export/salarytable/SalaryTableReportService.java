@@ -50,6 +50,12 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 
 		// Get Query
 		SalaryTableReportQuery query = context.getQuery();	
+		String[] personIds = { "99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002",
+				"99900000-0000-0000-0000-000000000003", "99900000-0000-0000-0000-000000000004",
+				"99900000-0000-0000-0000-000000000005", "99900000-0000-0000-0000-000000000006",
+				"99900000-0000-0000-0000-000000000007", "99900000-0000-0000-0000-000000000008",
+				"99900000-0000-0000-0000-000000000009", "99900000-0000-0000-0000-000000000010"};
+			query.setPIdList(Arrays.asList(personIds));
 
 		// Query data.
 		List<EmployeeData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
@@ -63,7 +69,7 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 			query1.setSelectedUse2000yen(0);
 			query1.setIsPrintDepHierarchy(true);
 			query1.setSelectedLevels(selectedLevels);
-			query1.setTargetYear(2016);
+			query1.setYearMonth(2016);
 			query1.setSelectedBreakPageHierarchyCode(4);
 			query1.setIsPrintDetailItem(true);
 
@@ -71,15 +77,24 @@ public class SalaryTableReportService extends ExportService<SalaryTableReportQue
 
 		if (items == null) {
 			items = empList;
+			query = query1;
 		}
+		
+		// Division Denomination
+		items.stream().forEach(emp -> {
+			emp.setDenomination(divisionDeno(emp.getPaymentAmount(), context.getQuery()));
+		});
 
 		// Create header object.
 
 		// Create Data Source
-		val dataSource = SalaryTableDataSource.builder().salaryChartHeader(null).employeeList(items).build();
+		val dataSource = SalaryTableDataSource.builder()
+				.salaryChartHeader(null)
+				.employeeList(items)
+				.build();
 
 		// Call generator.
-		this.generator.generate(context.getGeneratorContext(), dataSource, query1);
+		this.generator.generate(context.getGeneratorContext(), dataSource, query);
 	}
 	
 	/**

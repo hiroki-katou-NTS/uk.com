@@ -83,4 +83,7 @@ public class DepartmentData {
 	/** The accumulated payment. */
 	private Double accumulatedPayment;
 	
+	/** The number of emp. */
+	private int numberOfEmp;
+	
 }
