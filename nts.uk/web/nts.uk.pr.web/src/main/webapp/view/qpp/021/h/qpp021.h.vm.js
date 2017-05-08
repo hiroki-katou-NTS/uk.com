@@ -131,13 +131,23 @@ var nts;
                                                         readOnly: true
                                                     },
                                                     {
+                                                        editorProvider: new $.ig.NtsTextEditor(),
+                                                        editorOptions: {
+                                                            constraint: 'ReportComment',
+                                                            option: {},
+                                                            required: false
+                                                        },
                                                         columnKey: 'monthlyComment',
-                                                        constraint: 'ReportComment',
                                                         readOnly: false
                                                     },
                                                     {
                                                         columnKey: 'initialComment',
-                                                        constraint: 'ReportComment',
+                                                        editorProvider: new $.ig.NtsTextEditor(),
+                                                        editorOptions: {
+                                                            constraint: 'ReportComment',
+                                                            option: {},
+                                                            required: false
+                                                        },
                                                         readOnly: false
                                                     },
                                                     {

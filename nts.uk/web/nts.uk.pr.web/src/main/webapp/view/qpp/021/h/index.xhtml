@@ -20,6 +20,7 @@
 			<com:scriptfile
 				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
 				of="/nts.uk.com.js.web" />
+			<com:scriptfile path="../../../qmm/016/a/grid.editor.js" />
 			<com:stylefile path="qpp021.h.style.css" />
 			<com:scriptfile path="qpp021.h.start.js" />
 			<com:scriptfile path="qpp021.h.service.js" />
@@ -33,16 +34,19 @@
 			<div id="contents-area">
 				<button id="btn_saveContactItemsSetting" class="proceed btnStyle"
 					data-bind="click: saveContactItemsSetting">登録</button>
-				<button id="btn_closeContactItemsSetting" data-bind="click: closeContactItemsSetting">閉じる</button>
+				<button id="btn_closeContactItemsSetting"
+					data-bind="click: closeContactItemsSetting">閉じる</button>
 				<hr />
 				<div id="content">
 					<div id="lable_yearmonth">
 						<span class="label with-image"> <i
 							class="image image-calendar" /> <span>処理する給与明細書の年月</span>
-						</span> <span data-bind="ntsFormLabel: { required: true } , text: lbl_processingYm" />
+						</span> <span
+							data-bind="ntsFormLabel: { required: true } , text: lbl_processingYm" />
 					</div>
 					<br />
-					<div data-bind="ntsFormLabel: {constraint: 'ReportComment', required: false}"
+					<div
+						data-bind="ntsFormLabel: {constraint: 'ReportComment', required: false}"
 						id="label_notification">
 						<label>全社員向けの連絡事項</label>
 					</div>
@@ -64,8 +68,7 @@
 									required:false}"></input>
 								</td>
 								<td><input class="comment-data"
-									data-name="毎月の給与明細書に印刷する連絡事項" 
-									id="inp_initialCpComment"
+									data-name="毎月の給与明細書に印刷する連絡事項" id="inp_initialCpComment"
 									data-bind="ntsTextEditor: {value: initialCpComment,
 									constraint: 'ReportComment', 
 									option: textEditorOption,
@@ -76,9 +79,10 @@
 							</tr>
 						</table>
 					</div>
-					
+
 					<br />
-					<div data-bind="ntsFormLabel: {constraint: 'ReportComment', required: false}"
+					<div
+						data-bind="ntsFormLabel: {constraint: 'ReportComment', required: false}"
 						id="label_notification_emp">
 						<label>雇用ごとの連絡事項</label>
 					</div>
