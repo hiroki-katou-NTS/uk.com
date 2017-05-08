@@ -93,7 +93,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	 */
 	@Override
 	public void addAll(Collection<Placement> placements) {
-		this.commandProxy().insert(toEntity(placements));
+		this.commandProxy().insertAll(toEntity(placements));
 	}
 	
 	/*

@@ -24,17 +24,17 @@ public class CcgmtPlacement extends UkJpaEntity {
 	@Column(name = "LAYOUT_ID")
 	public String layoutID;
 
-	@Column(name = "COLUMN")
+	@Column(name = "POS_COLUMN")
 	public int column;
 
-	@Column(name = "ROW")
+	@Column(name = "POS_ROW")
 	public int row;
 
-	@Column(name = "WIDTH")
-	public int width;
+	@Column(name = "SIZE_WIDTH")
+	public Integer width;
 
-	@Column(name = "HEIGHT")
-	public int height;
+	@Column(name = "SIZE_HEIGHT")
+	public Integer height;
 
 	@Column(name = "EXTERNAL_URL")
 	public String externalUrl;
