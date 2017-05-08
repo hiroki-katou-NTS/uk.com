@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 
-.placement-container {float:left; width: 960px; height: 640px; overflow:auto;}
+.placement-container {position:relative; float:left; width: 960px; height: 640px; overflow:auto;}
 .placement-container.overflow-y {width: 977px; margin-right:10px;}
 .placement-container.overflow-x {height: 657px; margin-bottom:10px;}
 .placement-row {overflow:visible; white-space:nowrap; font-size:0;}

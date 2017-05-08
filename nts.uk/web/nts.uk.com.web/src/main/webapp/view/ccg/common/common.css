@@ -1,18 +1,24 @@
 @CHARSET "UTF-8";
 
-.widget-panel {outline:1px solid #B1B1B1; border-top:5px solid #2FCC71; padding:10px; }
-.widget-panel .panel-header {border-bottom:1px solid #B1B1B1; padding-bottom:10px; margin-bottom:10px;}
-.widget-panel .panel-header .square {display:inline-block; width:18px; height:18px; vertical-align: middle;}
+/* Widget Panel */
+.widget-panel {border:1px solid #B1B1B1; box-shadow:0 5px 0 #2FCC71 inset; padding:10px; box-sizing:border-box; }
+.widget-panel .panel-header {border-bottom:1px solid #B1B1B1; height:30px; padding-bottom:10px; margin-bottom:10px; box-sizing:border-box;}
+.widget-panel .panel-header .square {display:inline-block; width:18px; height:18px; vertical-align: middle; margin-right: 10px;}
 .widget-panel .panel-header .square.green {background-color: #2FCC71;}
-.widget-panel .panel-header .title {display:inline-block; margin-left: 10px; vertical-align: middle;}
-.widget-panel .panel-content {padding: 5px;}
+.widget-panel .panel-header .title {display:inline-block; vertical-align: middle;}
+.widget-panel .panel-content {padding: 5px;box-sizing:border-box;}
+
+.widget-panel.preview {position:absolute; min-width: 150px; min-height: 150px; background:#fff; top: 0;}
+.widget-panel.preview .panel-content{min-height:80px; height: calc(100% - 40px); padding:0px;}
+.widget-panel.preview .panel-content iframe{width:100%; height:100%;}
+
 
 /* Loading Placeholder */
 .placeholder {
-    animation-duration: 0.75s;
+    animation-name: placeHolderShimmer;
+    animation-duration: 1s;
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;
-    animation-name: placeHolderShimmer;
     animation-timing-function: linear;
     background: #f6f7f8;
     background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);

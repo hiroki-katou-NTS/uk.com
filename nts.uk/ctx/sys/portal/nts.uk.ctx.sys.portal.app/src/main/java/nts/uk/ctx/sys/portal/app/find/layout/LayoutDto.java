@@ -4,8 +4,6 @@ import java.util.List;
 
 import lombok.Value;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementDto;
-import nts.uk.ctx.sys.portal.dom.layout.Layout;
-import nts.uk.ctx.sys.portal.dom.placement.Placement;
 
 /**
  * @author LamDT
