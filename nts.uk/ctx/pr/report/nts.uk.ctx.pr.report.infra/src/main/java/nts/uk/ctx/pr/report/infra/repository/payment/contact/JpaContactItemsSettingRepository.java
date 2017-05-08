@@ -113,7 +113,7 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call QISMT_LABOR_INSU_OFFICE (QismtLaborInsuOffice SQL)
+		// call QCTMT_COMMENT_MONTH_EM (QctmtCommentMonthEm SQL)
 		CriteriaQuery<QctmtCommentMonthEm> cq = criteriaBuilder
 			.createQuery(QctmtCommentMonthEm.class);
 
@@ -181,7 +181,7 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call QISMT_LABOR_INSU_OFFICE (QismtLaborInsuOffice SQL)
+		// call QCTMT_EM_INITIAL_CMT (QctmtEmInitialCmt SQL)
 		CriteriaQuery<QctmtEmInitialCmt> cq = criteriaBuilder.createQuery(QctmtEmInitialCmt.class);
 
 		// root data
