@@ -251,12 +251,12 @@
 								<div class="floatLeft" id="C_LBL_013"
 									data-bind="ntsFormLabel: { required: true }">種別コード</div>
 								<div id="C_INP_004"  data-bind="with: numbereditor" >
-									<input
+									<input id="C_INP_004-input" data-name="種別コード"
 										data-bind="ntsNumberEditor: {
 														value: value,
 														constraint:constraint ,
 														option: option,
-														required: true,
+														required: required,
 														enable: enable,
 														readonly: readonly
 														}" />

@@ -65,11 +65,6 @@ module qpp011.b {
                 new BoxModel(2, '法定調書出力用会社')
             ]);
             self.C_INP_004_Value = ko.observable(null);
-            self.C_INP_004_Value.subscribe(function(newValue) {
-                if (newValue > 99 && newValue < 0) {
-                    C_INP_004
-                }
-            });
 
             self.B_SEL_001_selectedId = ko.observable(1);
             self.B_SEL_002_Enable = ko.observable(false);
@@ -120,13 +115,7 @@ module qpp011.b {
             self.numbereditor = {
                 value: self.C_INP_004_Value,
                 constraint: '',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 0,
-                    decimallength: 0,
-                    placeholder: "",
-                    width: "18",
-                    textalign: "center"
-                })),
+                option:{ width: "18" },
                 required: ko.observable(true),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
@@ -533,6 +522,14 @@ module qpp011.b {
             if (!self.C_INP_003_yearMonth()) {
                 $('#C_INP_003-input').ntsError('set', 'が入力されていません');
                 return false;
+            }
+            if (!self.C_INP_004_Value()) {
+                $('#C_INP_004-input').ntsError('set', 'が入力されていません');
+                return false;
+            }
+            if (self.C_INP_004_Value() && !self.C_INP_004_Value().match(/^[0-9]{2}$/)) {
+                $('#C_INP_004-input').ntsError('set', '00〜99の間の値を入力してください');
+                return false;    
             }
             return true;
         }
