@@ -155,7 +155,8 @@ module nts.uk.pr.view.ccg015.b {
             private updateMyPageSetting() {
                 var self = this;
                 service.updateMyPageSetting(self.collectData()).done(function() {
-                    //TODO after update 
+                    //TODO after update
+                    nts.uk.ui.windows.close(); 
                 });
             }
         }

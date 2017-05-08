@@ -73,6 +73,7 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 self.topPageModel().topPageCode(data.topPageCode);
                 self.topPageModel().topPageName(data.topPageName);
+                self.topPageModel().layoutId(data.layoutId);
                 //TODO su dung service de lay layout rieng
 //                if (data.placements) {
 //                    data.placements.forEach(function(item, index) {
@@ -135,11 +136,16 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
+                nts.uk.ui.windows.setShared('layoutId', self.topPageModel().layoutId());
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml", {
                     height: 350, width: 650,
                     title: "他のトップページコピー",
                     dialogClass: 'no-close'
                 }).onClosed(() => {
+                    var codeOfNewTopPage = nts.uk.ui.windows.getShared("codeOfNewTopPage");
+                    self.loadTopPageList().done(function() {
+                        self.toppageSelectedCode(codeOfNewTopPage);
+                    });
                     //TODO on Close dialog
                 });
 
@@ -150,7 +156,7 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
                     height: 650, width: 1300,
-                    title: "$$$$$$$$",
+                    title: "$$$$$$$$",//TODO change name
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                     //TODO on Close dialog
@@ -161,7 +167,7 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
                     height: 650, width: 1300,
-                    title: "$$$$$$$$",
+                    title: "$$$$$$$$",//TODO change name
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                     //TODO on Close dialog
@@ -225,10 +231,12 @@ module nts.uk.com.view.ccg015.a {
             topPageCode: KnockoutObservable<string>;
             topPageName: KnockoutObservable<string>;
             placement: KnockoutObservableArray<PlacementModel>;
+            layoutId: KnockoutObservable<string>;
             constructor() {
                 this.topPageCode = ko.observable('');
                 this.topPageName = ko.observable('');
                 this.placement = ko.observableArray([]);
+                this.layoutId = ko.observable('');
             }
         }
         export class PlacementModel {
