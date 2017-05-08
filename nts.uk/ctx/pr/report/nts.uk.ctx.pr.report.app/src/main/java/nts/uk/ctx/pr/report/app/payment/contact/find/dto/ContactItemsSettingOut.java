@@ -31,7 +31,8 @@ import nts.uk.ctx.pr.report.dom.payment.contact.ReportComment;
 /**
  * Sets the emp comment dtos.
  *
- * @param empCommentDtos the new emp comment dtos
+ * @param empCommentDtos
+ *            the new emp comment dtos
  */
 @Setter
 
@@ -116,8 +117,17 @@ public class ContactItemsSettingOut implements ContactItemsSettingSetMemento {
 			EmpCommentDto dto = new EmpCommentDto();
 			dto.setEmpCd(comment.getEmpCd());
 			dto.setEmployeeName(comment.getEmployeeName());
-			dto.setInitialComment(comment.getInitialComment().v());
-			dto.setMonthlyComment(comment.getMonthlyComment().v());
+			if (comment.getInitialComment() != null) {
+				dto.setInitialComment(comment.getInitialComment().v());
+			} else {
+				dto.setInitialComment(null);
+			}
+			if (comment.getMonthlyComment() != null) {
+				dto.setMonthlyComment(comment.getMonthlyComment().v());
+
+			} else {
+				dto.setMonthlyComment(null);
+			}
 			return dto;
 		}).collect(Collectors.toList());
 	}
@@ -125,7 +135,8 @@ public class ContactItemsSettingOut implements ContactItemsSettingSetMemento {
 	/**
 	 * Merge data.
 	 *
-	 * @param dto the dto
+	 * @param dto
+	 *            the dto
 	 */
 	public void mergeData(List<EmpCommentFindDto> dto) {
 		if (CollectionUtil.isEmpty(this.empCommentDtos)) {
@@ -159,11 +170,11 @@ public class ContactItemsSettingOut implements ContactItemsSettingSetMemento {
 			this.empCommentDtos = dataNew;
 		}
 	}
-	
+
 	/**
 	 * Instantiates a new contact items setting out.
 	 */
-	public ContactItemsSettingOut(){
+	public ContactItemsSettingOut() {
 		super();
 	}
 }

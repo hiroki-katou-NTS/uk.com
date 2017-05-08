@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.report.infra.repository.payment.contact;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -18,16 +17,19 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm_;
-import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm;
-import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEmPK_;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSetting;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QcmtCommentMonthCp;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QcmtCommentMonthCpPK;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEmPK_;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm_;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCpInitialCmt;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCpInitialCmtPK;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmt;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmtPK_;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmt_;
 
 /**
  * The Class JpaContactItemsSettingRepository.
@@ -64,6 +66,8 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 			jpa.setCommentInitialCp(commentInitCp.get());
 		}
 		jpa.setCommentMonthEmps(this.findCommentMonthEmp(code, empCds));
+
+		jpa.setCommentInitialEmps(this.findCommentInitalEmp(code, empCds));
 		return new ContactItemsSetting(jpa);
 	}
 
@@ -94,6 +98,15 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 			QctmtCpInitialCmt.class);
 	}
 
+	/**
+	 * Find comment inital emp.
+	 *
+	 * @param code
+	 *            the code
+	 * @param empCds
+	 *            the emp cds
+	 * @return the list
+	 */
 	private List<QctmtCommentMonthEm> findCommentMonthEmp(ContactItemsCode code,
 		List<String> empCds) {
 		// get entity manager
@@ -118,12 +131,92 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 			root.get(QctmtCommentMonthEm_.qctmtCommentMonthEmPK).get(QctmtCommentMonthEmPK_.ccd),
 			code.getCompanyCode()));
 
+		// in empCds
+		lstpredicateWhere
+			.add(criteriaBuilder.and(root.get(QctmtCommentMonthEm_.qctmtCommentMonthEmPK)
+				.get(QctmtCommentMonthEmPK_.empCd).in(empCds)));
+
+		// eq pay bonus atr
+		lstpredicateWhere
+			.add(criteriaBuilder.equal(root.get(QctmtCommentMonthEm_.qctmtCommentMonthEmPK)
+				.get(QctmtCommentMonthEmPK_.payBonusAtr), PAY_BONUS_ATR));
+
+		// eq spare pay atr
+		lstpredicateWhere
+			.add(criteriaBuilder.equal(root.get(QctmtCommentMonthEm_.qctmtCommentMonthEmPK)
+				.get(QctmtCommentMonthEmPK_.sparePayAtr), SPARE_PAY_ATR));
+
+		// eq processing No
+		lstpredicateWhere
+			.add(criteriaBuilder.equal(root.get(QctmtCommentMonthEm_.qctmtCommentMonthEmPK)
+				.get(QctmtCommentMonthEmPK_.processingNo), code.getProcessingNo().v()));
+
+		// eq processing Ym
+		lstpredicateWhere
+			.add(criteriaBuilder.equal(root.get(QctmtCommentMonthEm_.qctmtCommentMonthEmPK)
+				.get(QctmtCommentMonthEmPK_.processingYm), code.getProcessingYm().v()));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
 		TypedQuery<QctmtCommentMonthEm> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList();
+	}
+
+	/**
+	 * Find comment inital emp.
+	 *
+	 * @param code
+	 *            the code
+	 * @param empCds
+	 *            the emp cds
+	 * @return the list
+	 */
+	private List<QctmtEmInitialCmt> findCommentInitalEmp(ContactItemsCode code,
+		List<String> empCds) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call QISMT_LABOR_INSU_OFFICE (QismtLaborInsuOffice SQL)
+		CriteriaQuery<QctmtEmInitialCmt> cq = criteriaBuilder.createQuery(QctmtEmInitialCmt.class);
+
+		// root data
+		Root<QctmtEmInitialCmt> root = cq.from(QctmtEmInitialCmt.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq CompanyCode
+		lstpredicateWhere.add(criteriaBuilder.equal(
+			root.get(QctmtEmInitialCmt_.qctmtEmInitialCmtPK).get(QctmtEmInitialCmtPK_.ccd),
+			code.getCompanyCode()));
+
+		// in empCds
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(QctmtEmInitialCmt_.qctmtEmInitialCmtPK)
+			.get(QctmtEmInitialCmtPK_.empCd).in(empCds)));
+
+		// eq pay bonus atr
+		lstpredicateWhere.add(criteriaBuilder.equal(
+			root.get(QctmtEmInitialCmt_.qctmtEmInitialCmtPK).get(QctmtEmInitialCmtPK_.payBonusAtr),
+			PAY_BONUS_ATR));
+
+		// eq spare pay atr
+		lstpredicateWhere.add(criteriaBuilder.equal(
+			root.get(QctmtEmInitialCmt_.qctmtEmInitialCmtPK).get(QctmtEmInitialCmtPK_.sparePayAtr),
+			SPARE_PAY_ATR));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// creat query
+		TypedQuery<QctmtEmInitialCmt> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList();

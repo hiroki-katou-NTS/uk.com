@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.payment.contact;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -98,29 +99,32 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 	 */
 	@Override
 	public Set<EmpComment> getMonthEmComments() {
-		if(CollectionUtil.isEmpty(this.commentMonthEmps) && CollectionUtil.isEmpty(this.commentInitialEmps)){
+		if (CollectionUtil.isEmpty(this.commentMonthEmps)
+			&& CollectionUtil.isEmpty(this.commentInitialEmps)) {
 			return new HashSet<>();
 		}
-		
+
 		Map<String, EmpComment> mapEmpComment = this.commentMonthEmps.stream().map(comment -> {
 			EmpComment empComment = new EmpComment();
-			empComment.setEmpCd(comment.getQctmtCommentMonthEmPK().getCcd());
+			empComment.setEmpCd(comment.getQctmtCommentMonthEmPK().getEmpCd());
 			empComment.setMonthlyComment(new ReportComment(comment.getComment()));
 			return empComment;
 		}).collect(Collectors.toMap(empComment -> empComment.getEmpCd(), empComment -> empComment));
-		this.commentInitialEmps.stream().forEach(comment -> {
-			EmpComment empComment = mapEmpComment.get(comment.getQctmtEmInitialCmtPK().getEmpCd());
-			if (empComment == null) {
-				empComment = new EmpComment();
-				empComment.setEmpCd(comment.getQctmtEmInitialCmtPK().getCcd());
-				empComment.setInitialComment(new ReportComment(comment.getComment()));
-				mapEmpComment.put(comment.getQctmtEmInitialCmtPK().getEmpCd(), empComment);
-			} else {
-				empComment.setInitialComment(new ReportComment(comment.getComment()));
-				mapEmpComment.replace(comment.getQctmtEmInitialCmtPK().getEmpCd(), empComment);
-			}
-		});
-
+		if (!CollectionUtil.isEmpty(this.commentInitialEmps)) {
+			this.commentInitialEmps.stream().forEach(comment -> {
+				EmpComment empComment = mapEmpComment
+					.get(comment.getQctmtEmInitialCmtPK().getEmpCd());
+				if (empComment == null) {
+					empComment = new EmpComment();
+					empComment.setEmpCd(comment.getQctmtEmInitialCmtPK().getEmpCd());
+					empComment.setInitialComment(new ReportComment(comment.getComment()));
+					mapEmpComment.put(empComment.getEmpCd(), empComment);
+				} else {
+					empComment.setInitialComment(new ReportComment(comment.getComment()));
+					mapEmpComment.replace(comment.getQctmtEmInitialCmtPK().getEmpCd(), empComment);
+				}
+			});
+		}
 		Set<String> setEmpCd = mapEmpComment.keySet();
 		return setEmpCd.stream().map(item -> {
 			return mapEmpComment.get(item);
