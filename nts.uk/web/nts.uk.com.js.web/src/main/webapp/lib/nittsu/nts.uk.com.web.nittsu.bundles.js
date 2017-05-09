@@ -1997,9 +1997,12 @@ var nts;
                         this.option.show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
-                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
-                        if (duplicate.length == 0)
-                            this.errors.push(error);
+                        var _this = this;
+                        _.defer(function () {
+                            var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
+                            if (duplicate.length == 0)
+                                _this.errors.push(error);
+                        });
                     };
                     ErrorsViewModel.prototype.hasError = function () {
                         return this.occurs();
@@ -2009,8 +2012,11 @@ var nts;
                         this.errors.removeAll();
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
-                        var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });
-                        this.errors.removeAll(removeds);
+                        var _this = this;
+                        _.defer(function () {
+                            var removeds = _.filter(_this.errors(), function (e) { return e.$control.is($element); });
+                            _this.errors.removeAll(removeds);
+                        });
                     };
                     return ErrorsViewModel;
                 }());
@@ -3931,6 +3937,7 @@ var nts;
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
                         var inputClass = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
                         var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
+                        $input.attr("data-name", container.data("name"));
                         container.append($input);
                         if (hasDayofWeek) {
                             var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
@@ -6893,4 +6900,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

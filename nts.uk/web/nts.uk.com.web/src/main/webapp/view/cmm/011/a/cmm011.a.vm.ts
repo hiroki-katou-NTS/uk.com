@@ -184,7 +184,7 @@ module cmm011.a.viewmodel {
             if (self.A_INP_CODE_enable() == false && self.checkInput() && self.checkAddHist1() == '') {
                 var dfd = $.Deferred();
                 let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
-                var current = self.findHira(self.singleSelectedCode(), self.dataSource());
+                var current:any = self.findHira(self.singleSelectedCode(), self.dataSource());
                 let dto = new model.AddWorkplaceDto(self.A_INP_CODE(), hisdto.historyId, hisdto.endDate, self.A_INP_OUTCODE(), self.A_INP_FULLNAME(), current.hierarchyCode, self.A_INP_NAME(), hisdto.startDate, self.A_INP_MEMO(), current.shortName, current.parentChildAttribute1, current.parentChildAttribute2, null, null, null);
                 let wkpCodeItemUpdate = self.A_INP_CODE();
                 let arr = new Array;
@@ -329,7 +329,7 @@ module cmm011.a.viewmodel {
             self.enablebtnupdown(false);
         }
 
-        getAllWorkPlaceByHistId(historyId, workplaceCode) {
+        getAllWorkPlaceByHistId(historyId:any, workplaceCode:any) {
             var self = this;
             var dfd = $.Deferred();
             service.getAllWorkPLaceByHistId(historyId)
@@ -359,7 +359,7 @@ module cmm011.a.viewmodel {
                     return item;
                 });
                 for (var i in changeIndexChild) {
-                    var item = changeIndexChild[i];
+                    var item:any = changeIndexChild[i];
                     var itemHierachy = item.hierarchyCode;
                     var j = parseInt(i) + 1;
                     item.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length - 1) + j;
@@ -393,11 +393,11 @@ module cmm011.a.viewmodel {
             } else {
                 //curtent hirachy code
                 var chc = current.hierarchyCode;
-                var changeIndexChild = _.filter(_dt, function(item) {
+                var changeIndexChilds = _.filter(_dt, function(item) {
                     return item;
                 });
-                for (var i in changeIndexChild) {
-                    var item = changeIndexChild[i];
+                for (var i in changeIndexChilds) {
+                    var item:any = changeIndexChilds[i];
                     var itemHierachy = item.hierarchyCode;
                     var j = parseInt(i) + 1;
                     item.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length - 1) + j;
@@ -459,7 +459,7 @@ module cmm011.a.viewmodel {
                             var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
 
                             // Thay đổi hirachiCode của các object bên dưới
-                            var changeIndexChild = _.filter(parrent['children'], function(item) {
+                            var changeIndexChild = _.filter(parrent['children'], function(item:any) {
                                 return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
                             });
                             for (var i in changeIndexChild) {
@@ -473,7 +473,7 @@ module cmm011.a.viewmodel {
                                     self.updateHierachyWhenInsertItem(item1, phc + itemAddH);
                                 }
                             }
-                            var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
+                            var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
                             if (editObjs.length > 0) {
                                 let currentHis = self.itemHist();
                                 for (var k = 0; k < editObjs.length; k++) {
@@ -485,9 +485,9 @@ module cmm011.a.viewmodel {
                             }
                             self.listDtoUpdateHierachy(editObjs);
                         } else {
-                            var index = _dt.indexOf(current);
+                            var index:any = _dt.indexOf(current);
                             //Parent hirachy code
-                            var phc = current.hierarchyCode;
+                            var phc:any = current.hierarchyCode;
                             var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
 
                             // Thay đổi hirachiCode của các object bên dưới
@@ -506,7 +506,7 @@ module cmm011.a.viewmodel {
                                     self.updateHierachyWhenInsertItem(item2, itemAddH);
                                 }
                             }
-                            var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
+                            var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
                             if (editObjs.length > 0) {
                                 let currentHis = self.itemHist();
                                 for (var k = 0; k < editObjs.length; k++) {
@@ -526,7 +526,7 @@ module cmm011.a.viewmodel {
                                     var current = self.findHira(deleteobj.workplaceCode, self.dataSource());
                                     let _dt = nts.uk.util.flatArray(self.dataSource(), 'children');
                                     let selectedcode = "";
-                                    let indexOfItemDelete = _.findIndex(_dt, function(o) { return o.departmentCode == deleteobj.workplaceCode; });
+                                    let indexOfItemDelete = _.findIndex(_dt, function(o:any) { return o.departmentCode == deleteobj.workplaceCode; });
                                     if (indexOfItemDelete === _dt.length - 1 || current.children.length > 0) {
                                         selectedcode = (_dt[indexOfItemDelete - 1].departmentCode);
                                     } else {
@@ -548,7 +548,7 @@ module cmm011.a.viewmodel {
             }).ifNo(function() { });
         }
 
-        findHira(value: string, sources) {
+        findHira(value: string, sources:any) {
             let self = this;
 
             if (!sources || !sources.length) {
@@ -560,8 +560,8 @@ module cmm011.a.viewmodel {
             return _.find(sources, function(item: model.Dto) { return item.departmentCode == value; });
         }
 
-        findParent(value: string, sources) {
-            let self = this, node;
+        findParent(value: string, sources:any) :any{
+            let self = this, node:any;
 
             if (!sources || !sources.length) {
                 return undefined;
@@ -589,7 +589,7 @@ module cmm011.a.viewmodel {
         //find history object
         findHist(value: string): viewmodel.model.HistoryDto {
             let self = this;
-            var itemModel = null;
+            var itemModel:any = null;
             _.find(self.itemHistId, function(obj: viewmodel.model.HistoryDto) {
                 if (obj.startDate == value) {
                     itemModel = obj;
@@ -688,7 +688,7 @@ module cmm011.a.viewmodel {
             var self = this;
             if (self.selectedCodes_His() == null)
                 return false;
-            let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
+            let hisdto:any = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
             let index = _.findIndex(self.itemHistId(), function(obj) { return obj == hisdto; });
             hisdto.index = index;
             nts.uk.ui.windows.setShared('itemHist', hisdto);
@@ -783,7 +783,7 @@ module cmm011.a.viewmodel {
                         var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
 
                         // Thay đổi hirachiCode của các object bên dưới
-                        var changeIndexChild = _.filter(parrent['children'], function(item) {
+                        var changeIndexChild = _.filter(parrent['children'], function(item:any) {
                             return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) >= chc;
                         });
                         for (var i in changeIndexChild) {
@@ -799,7 +799,7 @@ module cmm011.a.viewmodel {
                         }
                         newObj.hierarchyCode = phc + hierachyItemadd;
                         parrent.children.splice(index, 0, newObj);
-                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
+                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
                         if (editObjs.length > 0) {
                             let currentHis = self.itemHist();
                             for (var k = 0; k < editObjs.length; k++) {
@@ -813,9 +813,9 @@ module cmm011.a.viewmodel {
                         self.dtoAdd(newObj);
                         self.listDtoUpdateHierachy(editObjs);
                     } else {
-                        var index = _dt.indexOf(current);
+                        var index:any = _dt.indexOf(current);
                         //Parent hirachy code
-                        var phc = current.hierarchyCode;
+                        var phc:any = current.hierarchyCode;
                         var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
                         // Thay đổi hirachiCode của các object bên dưới
                         var changeIndexChild2 = _.filter(_dt, function(item) {
@@ -834,7 +834,7 @@ module cmm011.a.viewmodel {
                             }
                         }
                         newObj.hierarchyCode = hierachyItemadd;
-                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
+                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
                         if (editObjs.length > 0) {
                             let currentHis = self.itemHist();
                             for (var k = 0; k < editObjs.length; k++) {
@@ -879,7 +879,7 @@ module cmm011.a.viewmodel {
             let hisdto = self.findHist_Dep(self.itemHistId(), self.selectedCodes_His());
             for (var i in item.children) {
                 var itemCon = item.children[i];
-                var j = parseInt(i) + 1;
+                var j:any = parseInt(i) + 1;
                 while ((j + "").length < 3)
                     j = "0" + j;
                 itemCon.hierarchyCode = item.hierarchyCode.substr(0, item.hierarchyCode.length) + j;
@@ -949,7 +949,7 @@ module cmm011.a.viewmodel {
                         var phc = parrent.hierarchyCode;
                         var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
                         // Thay đổi hirachiCode của các object bên dưới
-                        var changeIndexChild = _.filter(parrent['children'], function(item) {
+                        var changeIndexChild = _.filter(parrent['children'], function(item:any) {
                             return item.hierarchyCode.length == current.hierarchyCode.length && parseInt(item.hierarchyCode.substr(item.hierarchyCode.length - 3, 3)) > chc;
                         });
                         for (var i in changeIndexChild) {
@@ -965,7 +965,7 @@ module cmm011.a.viewmodel {
                         }
                         newObj.hierarchyCode = phc + hierachyItemadd;
                         parrent.children.splice(index + 1, 0, newObj);
-                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
+                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
                         if (editObjs.length > 0) {
                             let currentHis = self.itemHist();
                             for (var k = 0; k < editObjs.length; k++) {
@@ -983,9 +983,9 @@ module cmm011.a.viewmodel {
                         }
                     }
                     else {
-                        var index = _dt.indexOf(current);
+                        var index:any = _dt.indexOf(current);
                         //Parent hirachy code
-                        var phc = current.hierarchyCode;
+                        var phc:any = current.hierarchyCode;
                         var chc = parseInt(current.hierarchyCode.substr(current.hierarchyCode.length - 3, 3));
                         // Thay đổi hirachiCode của các object bên dưới
                         var changeIndexChild2 = _.filter(_dt, function(item) {
@@ -1003,7 +1003,7 @@ module cmm011.a.viewmodel {
                             }
                         }
                         newObj.hierarchyCode = hierachyItemadd;
-                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item) { return item.editIndex; });
+                        var editObjs = _.filter(nts.uk.util.flatArray(self.dataSource(), 'children'), function(item:any) { return item.editIndex; });
                         if (editObjs.length > 0) {
                             let currentHis = self.itemHist();
                             for (var k = 0; k < editObjs.length; k++) {
@@ -1047,7 +1047,7 @@ module cmm011.a.viewmodel {
                         var hierachyItemadd = length + "";
                         while ((hierachyItemadd + "").length < 3)
                             hierachyItemadd = "0" + hierachyItemadd;
-                        var newObj = new model.Dto('', "999", "", "",
+                        var newObj:any = new model.Dto('', "999", "", "",
                             "", "", hierachy_current + hierachyItemadd,
                             "情報を登録してください", "情報を登録してください",
                             current.startDate,
