@@ -99,8 +99,8 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.15.1'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.22.6'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.17'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.23'
 	}
 }
 
@@ -573,6 +573,9 @@ project (':web:nts.uk.com.js.web') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		
+		// implement eraAdapter
+		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
+		
 	}
 }
 //=====================nts.uk.com.js.web↑============================
@@ -632,6 +635,8 @@ project (':web:nts.uk.at.web') {
 		runtime project (':ctx:at:record:nts.uk.ctx.at.record.pubimp')
 		runtime project (':ctx:at:record:nts.uk.ctx.at.record.ws')
 
+		// implement eraAdapter
+		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
 //=====================nts.uk.at.web↑==============================

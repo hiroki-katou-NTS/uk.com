@@ -51,6 +51,7 @@ module nts.uk.ui.koExtentions {
             container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
             var inputClass: string = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
             var $input: any = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
+            $input.attr("data-name", container.data("name"));
             container.append($input);
             if (hasDayofWeek) {
                 var lengthClass: string = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
@@ -142,7 +143,6 @@ module nts.uk.ui.koExtentions {
                 $label.text("");
             }
             container.data("init", false);
-            
             // Properties Binding
             $input.datepicker('setStartDate', startDate);
             $input.datepicker('setEndDate', endDate);
