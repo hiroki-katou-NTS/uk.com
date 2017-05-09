@@ -6,14 +6,14 @@ module qmm020.c.viewmodel {
         constructor() {
             let self = this;
             self.gridColumns = [
-                { headerText: "繧ｳ繝ｼ繝�", key: "employmentCode", dataType: "string", width: "100px" },
-                { headerText: "蜷咲ｧｰ", key: "employmentName", dataType: "string", width: "200px" },
+                { headerText: "コード", key: "employmentCode", dataType: "string", width: "100px" },
+                { headerText: "名称", key: "employmentName", dataType: "string", width: "200px" },
                 {
-                    headerText: "邨ｦ荳取�守ｴｰ譖ｸ", key: "paymentDetailCode", dataType: "string", width: "250px",
+                    headerText: "給与明細書", key: "paymentDetailCode", dataType: "string", width: "250px",
                     template: '<button class="c-btn-001" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${paymentDetailCode} ${paymentDetailName}</span>'
                 },
                 {
-                    headerText: "雉樔ｸ取�守ｴｰ譖ｸ", key: "bonusDetailCode", dataType: "string", width: "20%",
+                    headerText: "賞与明細書", key: "bonusDetailCode", dataType: "string", width: "20%",
                     template: '<button class="c-btn-002" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${bonusDetailCode} ${bonusDetailName}</span>'
                 },
             ];

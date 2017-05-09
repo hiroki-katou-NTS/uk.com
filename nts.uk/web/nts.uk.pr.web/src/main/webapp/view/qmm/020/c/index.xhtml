@@ -2,8 +2,8 @@
 	<div class="left-content">
 		<div class="bg-green caret-right caret-background">
 			<div class="C_BTN_34">
-				<button id="C_BTN_003" data-bind="click: $parent.openJDialog">履歴追加ボタン</button>
-				<button id="C_BTN_004" data-bind="click: $parent.openKDialog">履歴編集ボタン</button>
+				<button id="C_BTN_003" data-bind="click: $parent.openJDialog">履歴追加</button>
+				<button id="C_BTN_004" data-bind="click: $parent.openKDialog">履歴編集</button>
 			</div>
 			<div id="C_LST_002"
 				data-bind="ntsListBox: {
@@ -21,11 +21,9 @@
 		</div>
 	</div>
 	<div class="right-content">
-		<div class="form-label">
-			<label id="LBL_004">鬮ｮ�ｿｽ騾包ｽｨ邵ｺ�ｽｫ隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ郢ｧ蝣､�ｽｴ闊娯�邵ｺ莉｣�ｽ�</label>
-			<hr />
-		</div>
-		<div>
+		<div id="C_LBL_004" data-bind="ntsFormLabel: {}">雇用に明細書を紐付ける</div>
+		<hr />
+		<div class="content-box">
 			<div class="searchBox"
 				data-bind="ntsSearchBox: {
 					comId: 'C_LST_001',
