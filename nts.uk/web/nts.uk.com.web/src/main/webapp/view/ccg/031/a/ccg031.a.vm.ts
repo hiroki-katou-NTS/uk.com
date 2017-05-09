@@ -1,6 +1,7 @@
 module ccg031.a.viewmodel {
     import model = ccg.model;
     import windows = nts.uk.ui.windows;
+    import ntsNumber = nts.uk.ntsNumber;
 
     export class ScreenModel {
         // Layout Info
@@ -38,12 +39,13 @@ module ccg031.a.viewmodel {
             var layoutInfo: any = windows.getShared("layout");
             self.layoutID = null;
             self.pgType = null;
-            if(layoutInfo !== undefined) {
+            if (layoutInfo !== undefined) {
                 self.layoutID = layoutInfo.layoutID;
                 self.pgType = layoutInfo.pgType;
             }
             service.active(self.layoutID).done((data: model.LayoutDto) => {
                 console.log(data);
+                self.reorderPartPosition();
                 dfd.resolve();
             }).fail((res: any) => {
                 dfd.fail();
@@ -56,6 +58,7 @@ module ccg031.a.viewmodel {
             var self = this;
             service.registry(self.layoutID, self.pgType, self.placements()).done((data: any) => {
                 console.log(data);
+                self.refreshWidget();
             }).fail((res) => {
                 $("body").ntsError("set", "Server Error");
             });
@@ -66,20 +69,18 @@ module ccg031.a.viewmodel {
             windows.close();
         }
 
-        /** Add Column */
-        addColumn(column?: number): void {
-            var self = this;
-            column = column || 1;
-            self.totalColumn(self.totalColumn() + column);
-            self.addOverflowClass();
+        /** Add Column button click */
+        addColumnButtonClick(): void {
+            this.addColumn(1);
+            this.setupDropable();
+            this.addOverflowClass();
         }
 
-        /** Add Row */
-        addRow(row?: number): void {
-            var self = this;
-            row = row || 1;
-            self.totalRow(self.totalRow() + row);
-            self.addOverflowClass();
+        /** Add Row button click */
+        addRowButtonClick(): void {
+            this.addRow(1);
+            this.setupDropable();
+            this.addOverflowClass();
         }
 
         /** Open Add TopPage-Part Dialog */
@@ -89,10 +90,9 @@ module ccg031.a.viewmodel {
             windows.setShared("size", { row: row, column: column }, false);
             windows.sub.modal("/view/ccg/031/b/index.xhtml").onClosed(() => {
                 let placement: model.Placement = windows.getShared("placement");
-                console.log(placement);
                 if (placement != undefined) {
                     self.placements.push(placement);
-                    self.reorderPartPosition();
+                    self.refreshWidget();
                 }
                 $(element).removeClass("placeholder");
             });
@@ -100,17 +100,37 @@ module ccg031.a.viewmodel {
 
         /** Open Preview Dialog */
         openPreviewDialog(): void {
-            
+
+        }
+
+        /** Open Preview Dialog */
+        removeWidget(placementID: string): void {
+            var self = this;
+            self.placements.remove((item) => {
+                return item.placementID == placementID;
+            });
+            self.refreshWidget();
+        }
+
+        /** Refresh all Widget display & binding */
+        private refreshWidget(): void {
+            var self = this;
+            // Re-order
+            self.reorderPartPosition();
+            // Drag & Drop
+            self.setupDragable();
+            self.setupDropable();
         }
 
         /** Re-order parts position */
         private reorderPartPosition(): void {
             var self = this;
-            // TODO: Move to right
 
+            // Move parts
+            self.moveOverlapParts();
 
             // Expand row & column
-            self.expandLayout();
+            self.autoExpandLayout();
 
             // Calculate Position & Size
             _.forEach(self.placements(), (placement) => {
@@ -123,9 +143,76 @@ module ccg031.a.viewmodel {
             });
         }
 
+        /** Setup Dragable */
+        private setupDragable(): void {
+            $(".widget-panel").draggable({
+                opacity: .8,
+                distance: 20,
+                containment: ".placement-container",
+                cancel: ".panel-content,.remove-button",
+                revert: "invalid",
+                stack: ".widget-panel",
+                iframeFix: true
+            });
+        }
+
+        /** Setup Dropable */
+        private setupDropable(): void {
+            var self = this;
+            $(".placement-item").droppable({
+                tolerance: "pointer",
+                classes: { "ui-droppable-hover": "hover" },
+                drop: function(event, ui) {
+                    let $dropable = $(event.target);
+                    let $dragable = ui.draggable;
+                    let placement = _.find(self.placements(), ['placementID', $dragable.attr("id")]);
+                    placement.row = $dropable.data("row");
+                    placement.column = $dropable.data("column");
+                    $dragable.position({
+                        my: "left top",
+                        at: "left top",
+                        of: $dropable,
+                        collision: "none"
+                    });
+                    self.refreshWidget();
+                }
+            });
+        }
+
+        /** Move overlap part */
+        private moveOverlapParts(): void {
+
+        }
+
         /** Expand layout */
-        private expandLayout(): void {
-            // TODO: Expand row & column
+        private autoExpandLayout(): void {
+            var self = this;
+            _.forEach(self.placements(), (placement) => {
+                let column: number = ntsNumber.getDecimal(placement.column, 0);
+                let row: number = ntsNumber.getDecimal(placement.row, 0);
+                let width: number = ntsNumber.getDecimal(placement.width, 0);
+                let height: number = ntsNumber.getDecimal(placement.height, 0);
+                // Column
+                let totalColumn = self.totalColumn();
+                let expandColumn = (column + width - 1) - totalColumn;
+                if (expandColumn > 0) self.addColumn(expandColumn);
+                // Row
+                let totalRow = self.totalRow();
+                let expandRow = (row + height - 1) - totalRow;
+                if (expandRow > 0) self.addRow(expandRow);
+            });
+        }
+
+        /** Add Column */
+        private addColumn(column?: number): void {
+            column = column || 1;
+            this.totalColumn(this.totalColumn() + column);
+        }
+
+        /** Add Row */
+        private addRow(row?: number): void {
+            row = row || 1;
+            this.totalRow(this.totalRow() + row);
         }
 
         /** Add overflow class */

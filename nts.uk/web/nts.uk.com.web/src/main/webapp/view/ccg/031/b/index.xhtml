@@ -10,7 +10,9 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 710, height: 645 };</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.basic.dom.company.CompanyCode
+				nts.uk.ctx.sys.portal.dom.toppagepart.size.Width
+				nts.uk.ctx.sys.portal.dom.toppagepart.size.Height
+				nts.uk.ctx.sys.portal.dom.placement.externalurl.Url
   			</com:ValidatorScript>
   			<com:scriptfile set="IGNITE" />
   			<com:scriptfile path="../../common/model.js" />
@@ -44,7 +46,7 @@
 								<div class="col-1 pull-left">
 									<div class="toppage-part-list-placeholder placeholder">
 										<table id="toppage-part-list" data-bind="ntsGridList: {								
-											height: 350,
+											height: 340,
 											width: '100%',
 											dataSource: listPart,
 											value: selectedPartID,
@@ -77,7 +79,7 @@
 							</div>
 						</div>
 						<!-- External Url -->
-						<div class="external-url-part" data-bind="visible: isExternalUrl">
+						<div class="external-url-part" data-bind="visible: isExternalUrl" style="display:none;">
 							<div class="widget-panel">
 								<div class="panel-header">
 									<span class="square green"></span>
@@ -86,12 +88,12 @@
 								<div class="panel-content">
 									<div class="valign-center control-group">
 										<div data-bind="ntsFormLabel: {required: true}">サイズ</div>
-										<label class=""><span>横</span> <input data-bind="ntsNumberEditor: {value: urlWidth}" /> <span>マス</span></label>
-										<label><span>縦</span> <input data-bind="ntsNumberEditor: {value: urlHeight}" /> <span>マス</span></label>
+										<label class="label-width"><span>横</span> <input class="input-width" data-bind="ntsNumberEditor: {value: urlWidth, constraint: 'Width'}" /> <span>マス</span></label>
+										<label class="label-height"><span>縦</span> <input class="input-height" data-bind="ntsNumberEditor: {value: urlHeight, constraint: 'Height'}" /> <span>マス</span></label>
 									</div>
 									<div class="valign-center control-group">
 										<div data-bind="ntsFormLabel: {required: true}">URL</div>
-										<input data-bind="ntsTextEditor: {value: url}" />
+										<input class="input-url" data-bind="ntsTextEditor: {value: url, constraint: 'Url'}" />
 									</div>
 								</div>
 							</div>
