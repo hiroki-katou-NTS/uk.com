@@ -9,6 +9,10 @@ module qmm020.m.viewmodel {
         ]);
 
         constructor() {
+            // set width and height of dialog
+            nts.uk.ui.windows.getSelf().setWidth(485);
+            nts.uk.ui.windows.getSelf().setHeight(550);
+
             let self = this, currentBaseYM = parseInt(nts.uk.ui.windows.getShared('M_BASEYM')) || 190701;
             if (!!currentBaseYM) {
                 service.getData(currentBaseYM)
