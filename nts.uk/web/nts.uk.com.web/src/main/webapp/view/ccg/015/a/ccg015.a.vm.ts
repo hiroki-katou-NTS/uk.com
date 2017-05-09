@@ -171,7 +171,8 @@ module nts.uk.com.view.ccg015.a {
 
             private openLayoutSettingDialog() {
                 var self = this;
-                nts.uk.ui.windows.setShared('layout', { layoutId: self.topPageModel().layoutId(), pgType: 0 });
+                var layoutId = self.topPageModel().layoutId();
+                nts.uk.ui.windows.setShared('layout', { layoutId: layoutId, pgType: 0 });
                 nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
                     height: 650, width: 1300,
                     title: "$$$$$$$$",//TODO change name

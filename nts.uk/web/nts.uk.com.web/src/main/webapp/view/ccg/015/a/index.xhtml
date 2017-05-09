@@ -106,7 +106,7 @@
 								</tr>
 
 								<tr>
-									<td><button data-bind=" click: $parent.openLayoutSettingDialog ,enable: !$parent.isNewMode()" class="x-large">レイアウト設定</button></td>
+									<td><button data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()" class="x-large">レイアウト設定</button></td>
 								</tr>
 							</table>
 

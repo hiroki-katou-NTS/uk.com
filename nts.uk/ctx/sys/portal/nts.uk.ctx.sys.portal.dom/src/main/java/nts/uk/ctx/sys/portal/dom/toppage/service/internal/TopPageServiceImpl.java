@@ -1,11 +1,8 @@
 package nts.uk.ctx.sys.portal.dom.toppage.service.internal;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.ctx.sys.portal.dom.layout.service.LayoutService;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
