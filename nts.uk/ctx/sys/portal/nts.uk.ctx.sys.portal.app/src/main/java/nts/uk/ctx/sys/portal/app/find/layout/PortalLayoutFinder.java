@@ -24,7 +24,7 @@ public class PortalLayoutFinder {
 	private PlacementRepository placementRepository;
 	
 	@Inject
-	private DefaultPortalLayoutFactory portalLayoutFactory;
+	private PortalLayoutFactory portalLayoutFactory;
 
 	/**
 	 * Find Layout by ID

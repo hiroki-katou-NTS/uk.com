@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author LamDT 
  */
 @Stateless
-public class DefaultPortalLayoutFactory {
+public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 
 	@Inject
 	private TopPagePartRepository topPagePartRepository;
@@ -30,6 +30,7 @@ public class DefaultPortalLayoutFactory {
 	 * @param
 	 * @return LayoutDto
 	 */
+	@Override
 	public LayoutDto buildLayoutDto(Layout layout, List<Placement> placements) {
 		List<PlacementDto> placementDtos = buildPlacementDto(placements);
 		return new LayoutDto(layout.getCompanyID(), layout.getLayoutID(), layout.getPgType().value, placementDtos);
@@ -40,6 +41,7 @@ public class DefaultPortalLayoutFactory {
 	 * @param
 	 * @return List PlacementDto
 	 */
+	@Override
 	public List<PlacementDto> buildPlacementDto(List<Placement> placements) {
 		List<PlacementDto> placementDtos = new ArrayList<PlacementDto>();
 		for (Placement placement : placements) {
@@ -53,6 +55,7 @@ public class DefaultPortalLayoutFactory {
 	 * @param
 	 * @return PlacementDto
 	 */
+	@Override
 	public PlacementDto buildPlacementDto(Placement placement) {
 		if (placement.isExternalUrl()) {
 			// ExternalUrl Part
@@ -79,6 +82,7 @@ public class DefaultPortalLayoutFactory {
 	 * @param
 	 * @return PlacementPartDto
 	 */
+	@Override
 	public PlacementPartDto fromTopPagePart(TopPagePart topPagePart) {
 		return new PlacementPartDto(
 			topPagePart.getCompanyID(),
@@ -93,6 +97,7 @@ public class DefaultPortalLayoutFactory {
 	 * @param
 	 * @return PlacementPartDto
 	 */
+	@Override
 	public PlacementPartDto fromExternalUrl(ExternalUrl externalUrl) {
 		String companyID = AppContexts.user().companyID();
 		return new PlacementPartDto(
