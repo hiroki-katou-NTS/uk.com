@@ -1,14 +1,14 @@
 module nts.uk.request {
-    
+
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
-    
+
     export type WebAppId = 'com' | 'pr' | 'at';
     const WEB_APP_NAME = {
         com: 'nts.uk.com.web',
         pr: 'nts.uk.pr.web',
         at: 'nts.uk.at.web'
     };
-    
+
     export class QueryString {
 
         items: { [key: string]: any };
@@ -29,7 +29,7 @@ module nts.uk.request {
             }
             return instance;
         }
- 
+
         static build(entriesObj: { [key: string]: any }) {
             var instance = new QueryString();
 
@@ -103,21 +103,21 @@ module nts.uk.request {
                 return this.rawUrl;
             }
         }
-        
+
         mergeRelativePath(relativePath) {
             var stack = this.rawUrl.split('/');
             var parts = relativePath.split('/');
             var queryStringToAdd = QueryString.parseUrl(relativePath);
-    
+
             // 最後のファイル名は除外
             // (最後がフォルダ名でしかも / で終わっていない場合は考慮しない)
             stack.pop();
-            
+
             // relativePathの先頭が '/' の場合、それを取り除く
             if (parts[0] === '') {
                 parts.shift();
             }
-    
+
             for (var i = 0; i < parts.length; i++) {
                 if (parts[i] === '.')
                     continue;
@@ -126,24 +126,24 @@ module nts.uk.request {
                 else
                     stack.push(parts[i]);
             }
-            
+
             queryStringToAdd.mergeFrom(this.queryString);
-            
+
             var queryStringParts = queryStringToAdd.hasItems()
                 ? '?' + queryStringToAdd.serialize()
                 : '';
-    
+
             return new Locator(stack.join('/') + queryStringParts);
         }
     }
-    
+
     export function ajax(path: string, data?: any, options?: any);
-    export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any)  {
-        
-        if (typeof arguments[1] !== 'string' ) {
+    export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any) {
+
+        if (typeof arguments[1] !== 'string') {
             return ajax.apply(null, _.concat(location.currentAppId, arguments));
         }
-        
+
         var dfd = $.Deferred();
         options = options || {};
 
@@ -162,7 +162,7 @@ module nts.uk.request {
             url: webserviceLocator.serialize(),
             dataType: options.dataType || 'json',
             data: data
-        }).done(function (res) {
+        }).done(function(res) {
             if (res !== undefined && res.businessException) {
                 dfd.reject(res);
             } else {
@@ -173,10 +173,10 @@ module nts.uk.request {
         return dfd.promise();
     }
 
-     
+
     export function exportFile(path: string, data?: any, options?: any) {
         let dfd = $.Deferred();
-        
+
         ajax(path, data, options)
             .then((res: any) => {
                 return deferred.repeat(conf => conf
@@ -185,22 +185,27 @@ module nts.uk.request {
                     .pause(1000));
             })
             .done((res: any) => {
-                specials.donwloadFile(res.id);
-                dfd.resolve(res);
+                if (res.failed||res.status == "ABORTED") {
+                    dfd.reject(res.error);
+                } else {
+                    specials.donwloadFile(res.id);
+                    dfd.resolve(res);
+                }
+
             })
             .fail(res => {
                 dfd.reject(res);
             });
-        
+
         return dfd.promise();
     }
-            
+
     export module specials {
-        
+
         export function getAsyncTaskInfo(taskId: string) {
             return ajax('/ntscommons/arc/task/async/' + taskId);
         }
-        
+
         export function donwloadFile(fileId: string) {
             $('<iframe/>')
                 .attr('id', 'download-frame')
@@ -208,15 +213,15 @@ module nts.uk.request {
                 .attr('src', resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId));
         }
     }
-    
-    
+
+
     export function jump(path: string, data?: any) {
-        
+
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
-        
+
         window.location.href = resolvePath(path);
     }
-    
+
     export function resolvePath(path: string) {
         var destination: Locator;
         if (path.charAt(0) === '/') {
@@ -224,21 +229,21 @@ module nts.uk.request {
         } else {
             destination = location.current.mergeRelativePath(path);
         }
-        
+
         return destination.rawUrl;
     }
-    
+
     export module location {
         export var current = new Locator(window.location.href);
         export var appRoot = current.mergeRelativePath(__viewContext.rootPath);
         export var siteRoot = appRoot.mergeRelativePath('../');
         export var ajaxRootDir = 'webapi/';
-        
+
         var currentAppName = _.takeRight(appRoot.serialize().split('/'), 2)[0];
         export var currentAppId: WebAppId;
         for (var id in WEB_APP_NAME) {
             if (currentAppName === WEB_APP_NAME[id]) {
-                currentAppId = <WebAppId> id;
+                currentAppId = <WebAppId>id;
                 break;
             }
         }
