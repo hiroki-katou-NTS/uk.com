@@ -36,7 +36,7 @@ module nts.uk.com.view.ccg015.a {
                 self.languageSelectedCode = ko.observable("0");
                 //end constructor
             }
-            
+
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
@@ -94,14 +94,14 @@ module nts.uk.com.view.ccg015.a {
                 //                    });
                 //                }
             }
-            
+
             private collectData(): TopPageDto {
                 var self = this;
                 //mock data
-                var data: TopPageDto = { topPageCode: self.topPageModel().topPageCode(), topPageName: self.topPageModel().topPageName(), languageNumber: 0, layoutId: "luid" };
+                var data: TopPageDto = { topPageCode: self.topPageModel().topPageCode(), topPageName: self.topPageModel().topPageName(), languageNumber: 0, layoutId: self.topPageModel().layoutId() };
                 return data;
             }
-            
+
             private saveTopPage() {
                 var self = this;
                 $('.nts-input').ntsEditor('validate');
@@ -112,14 +112,14 @@ module nts.uk.com.view.ccg015.a {
                     //check update or create
                     if (self.isNewMode()) {
                         service.registerTopPage(self.collectData()).done(function() {
-                            nts.uk.ui.dialog.alert("登録しました。");                     
-                        }).fail(function(res){
+                            nts.uk.ui.dialog.alert("登録しました。");
+                        }).fail(function(res) {
                             alert(res.messageId);
                         });
                     }
                     else {
                         service.updateTopPage(self.collectData()).done(function() {
-                            nts.uk.ui.dialog.alert("登録しました。"); 
+                            nts.uk.ui.dialog.alert("登録しました。");
                         });
                     }
                     self.loadTopPageList().done(function() {
@@ -162,7 +162,7 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
                     height: 650, width: 1300,
-                    title: "$$$$$$$$",//TODO change name
+                    title: "フローメニューの設定",//TODO change name
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                     //TODO on Close dialog
@@ -175,20 +175,20 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('layout', { layoutId: layoutId, pgType: 0 });
                 nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
                     height: 650, width: 1300,
-                    title: "$$$$$$$$",//TODO change name
+                    title: "レイアウトの設定",//TODO change name
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                     //TODO on Close dialog
                 });
             }
-            
+
             private newTopPage() {
                 var self = this;
                 self.topPageModel(new TopPageModel());
                 self.isNewMode(true);
                 self.toppageSelectedCode("");
             }
-            
+
             private removeTopPage() {
                 var self = this;
                 nts.uk.ui.dialog.confirm("選択中のデータを削除しますか？").ifYes(function() {
@@ -213,7 +213,7 @@ module nts.uk.com.view.ccg015.a {
 
                 });
             }
-            
+
             private getIndexOfRemoveItem(code: string): number {
                 var self = this;
                 var ind = 0;
@@ -225,7 +225,7 @@ module nts.uk.com.view.ccg015.a {
                 return ind;
             }
         }
-        
+
         export class Node {
             code: string;
             name: string;
@@ -241,7 +241,7 @@ module nts.uk.com.view.ccg015.a {
                 self.custom = 'Random' + new Date().getTime();
             }
         }
-        
+
         export class TopPageModel {
             topPageCode: KnockoutObservable<string>;
             topPageName: KnockoutObservable<string>;
@@ -254,7 +254,7 @@ module nts.uk.com.view.ccg015.a {
                 this.layoutId = ko.observable('');
             }
         }
-        
+
         export class PlacementModel {
             row: KnockoutObservable<number>;
             column: KnockoutObservable<number>;
@@ -265,7 +265,7 @@ module nts.uk.com.view.ccg015.a {
                 this.topPagePart = ko.observable(new TopPagePartModel());
             }
         }
-        
+
         export class TopPagePartModel {
             topPagePartType: KnockoutObservable<number>;
             topPagePartCode: KnockoutObservable<string>;
