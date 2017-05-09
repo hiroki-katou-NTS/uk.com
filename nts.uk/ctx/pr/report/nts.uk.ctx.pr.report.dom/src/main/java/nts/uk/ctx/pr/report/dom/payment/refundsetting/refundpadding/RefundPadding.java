@@ -56,6 +56,13 @@ public class RefundPadding extends AggregateRoot {
 	private SizeLimit breakLineMarginButtom;
 
 	/**
+	 * Instantiates a new refund padding.
+	 */
+	public RefundPadding() {
+		super();
+	}
+
+	/**
 	 * Creates the A 4 once person.
 	 *
 	 * @param companyCode
@@ -138,4 +145,46 @@ public class RefundPadding extends AggregateRoot {
 		refundPadding.breakLineMarginButtom = breakLineMarginButtom;
 		return refundPadding;
 	}
+
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new labor insurance office.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public RefundPadding(RefundPaddingGetMemento memento) {
+		this.companyCode = memento.getCompanyCode();
+		this.printType = memento.getPrintType();
+		this.paddingTop = memento.getPaddingTop();
+		this.paddingLeft = memento.getPaddingLeft();
+		this.upperAreaPaddingTop = memento.getUpperAreaPaddingTop();
+		this.underAreaPaddingTop = memento.getUnderAreaPaddingTop();
+		this.isShowBreakLine = memento.getIsShowBreakLine();
+		this.breakLineMargin = memento.getBreakLineMargin();
+		this.middleAreaPaddingTop = memento.getMiddleAreaPaddingTop();
+		this.breakLineMarginTop = memento.getBreakLineMarginTop();
+		this.breakLineMarginButtom = memento.getBreakLineMarginButtom();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(RefundPaddingSetMemento memento) {
+		memento.setCompanyCode(this.companyCode);
+		memento.setPrintType(this.printType);
+		memento.setPaddingTop(this.paddingTop);
+		memento.setPaddingLeft(this.paddingLeft);
+		memento.setUpperAreaPaddingTop(this.upperAreaPaddingTop);
+		memento.setUnderAreaPaddingTop(this.underAreaPaddingTop);
+		memento.setIsShowBreakLine(this.isShowBreakLine);
+		memento.setBreakLineMargin(this.breakLineMargin);
+		memento.setMiddleAreaPaddingTop(this.middleAreaPaddingTop);
+		memento.setBreakLineMarginTop(this.breakLineMarginTop);
+		memento.setBreakLineMarginButtom(this.breakLineMarginButtom);
+	}
+
 }
