@@ -1,56 +1,34 @@
 module ccg014.b.viewmodel {
 
-    
     export class ScreenModel {
-           //editor
-     titlecode: any;
-     titlename: any;   
-        
-        constructor() {
-               var self = this;            
-            self.titlecode = {
-            value: ko.observable(''),
-            constraint: 'TitleMenuCode',
-            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                filldirection: "right",
-                fillcharacter: "0",
-                textmode: "text",
-                placeholder: "",
-                width: "30px",
-                textalign: "left"
-            })),
-            required: ko.observable(true),
-            enable: ko.observable(true),
-            readonly: ko.observable(false)
-        };
-            self.titlename = {
-            value: ko.observable(''),
-            constraint: 'Name',
-            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                filldirection: "right",
-                fillcharacter: "0",
-                textmode: "text",
-                placeholder: "",
-                width: "100px",
-                textalign: "left"
-            })),
-            required: ko.observable(true),
-            enable: ko.observable(true),
-            readonly: ko.observable(false)
-        };
-           
-        }
-        
-        startPage(): JQueryPromise<any> {
+        titlecode: KnockoutObservable<string>;
+        titlename: KnockoutObservable<string>;
+        copyTitleCD: KnockoutObservable<string>;
+        copyName: KnockoutObservable<string>;
+        checkOverwritting: KnockoutObservable<boolean>;
+        constructor (data) {
             var self = this;
-            
-            var dfd = $.Deferred();
-            dfd.resolve();
-            return dfd.promise();
+            self.titlecode = ko.observable(data.titleMenuCD());
+            self.titlename = ko.observable(data.name());
+            self.copyTitleCD = ko.observable('');
+            self.copyName = ko.observable('');
+            self.checkOverwritting = ko.observable(true);
         }
+
+        /** Close Dialog */
         cancel_Dialog(): any {
             nts.uk.ui.windows.close();
         }
+
+        /* Copy TitleMenu */
+        submitClickButton() {
+            var self = this;
+            service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.checkOverwritting()).done(() => {
+                nts.uk.ui.dialog.alert("Msg_15");
+            })
+            .fail((res) => {
+                nts.uk.ui.dialog.alert(res.messageId);
+            });
+        }
     }
-    export module model{}
 }
