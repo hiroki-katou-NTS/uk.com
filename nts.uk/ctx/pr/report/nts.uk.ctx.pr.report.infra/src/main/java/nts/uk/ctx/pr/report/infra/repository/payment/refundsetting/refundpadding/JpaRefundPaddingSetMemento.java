@@ -65,6 +65,9 @@ public class JpaRefundPaddingSetMemento implements RefundPaddingSetMemento {
 	 */
 	@Override
 	public void setPaddingTop(SizeLimit paddingTop) {
+		if (paddingTop == null) {
+			return;
+		}
 		this.typeValue.setPaddingTop(paddingTop.v());
 
 	}
@@ -78,6 +81,9 @@ public class JpaRefundPaddingSetMemento implements RefundPaddingSetMemento {
 	 */
 	@Override
 	public void setPaddingLeft(SizeLimit paddingLeft) {
+		if (paddingLeft == null) {
+			return;
+		}
 		this.typeValue.setPaddingLeft(paddingLeft.v());
 	}
 
@@ -90,6 +96,9 @@ public class JpaRefundPaddingSetMemento implements RefundPaddingSetMemento {
 	 */
 	@Override
 	public void setUpperAreaPaddingTop(SizeLimit upperAreaPaddingTop) {
+		if (upperAreaPaddingTop == null) {
+			return;
+		}
 		this.typeValue.setUpperAreaPaddingTop(upperAreaPaddingTop.v());
 
 	}
@@ -103,6 +112,9 @@ public class JpaRefundPaddingSetMemento implements RefundPaddingSetMemento {
 	 */
 	@Override
 	public void setUnderAreaPaddingTop(SizeLimit underAreaPaddingTop) {
+		if (underAreaPaddingTop == null) {
+			return;
+		}
 		this.typeValue.setUnderAreaPaddingTop(underAreaPaddingTop.v());
 	}
 
@@ -115,6 +127,9 @@ public class JpaRefundPaddingSetMemento implements RefundPaddingSetMemento {
 	 */
 	@Override
 	public void setIsShowBreakLine(ShowBreakLine isShowBreakLine) {
+		if (isShowBreakLine == null) {
+			return;
+		}
 		this.typeValue.setIsShowBreakLine(isShowBreakLine.value);
 	}
 
@@ -127,6 +142,9 @@ public class JpaRefundPaddingSetMemento implements RefundPaddingSetMemento {
 	 */
 	@Override
 	public void setBreakLineMargin(SizeLimit breakLineMargin) {
+		if (breakLineMargin == null) {
+			return;
+		}
 		this.typeValue.setBreakLineMargin(breakLineMargin.v());
 
 	}
@@ -140,6 +158,9 @@ public class JpaRefundPaddingSetMemento implements RefundPaddingSetMemento {
 	 */
 	@Override
 	public void setMiddleAreaPaddingTop(SizeLimit middleAreaPaddingTop) {
+		if (middleAreaPaddingTop == null) {
+			return;
+		}
 		this.typeValue.setMiddleAreaPaddingTop(middleAreaPaddingTop.v());
 
 	}
@@ -153,6 +174,9 @@ public class JpaRefundPaddingSetMemento implements RefundPaddingSetMemento {
 	 */
 	@Override
 	public void setBreakLineMarginTop(SizeLimit breakLineMarginTop) {
+		if (breakLineMarginTop == null) {
+			return;
+		}
 		this.typeValue.setBreakLineMarginTop(breakLineMarginTop.v());
 	}
 
@@ -165,6 +189,9 @@ public class JpaRefundPaddingSetMemento implements RefundPaddingSetMemento {
 	 */
 	@Override
 	public void setBreakLineMarginButtom(SizeLimit breakLineMarginButtom) {
+		if (breakLineMarginButtom == null) {
+			return;
+		}
 		this.typeValue.setBreakLineMarginButtom(breakLineMarginButtom.v());
 	}
 

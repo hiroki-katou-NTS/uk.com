@@ -12,8 +12,11 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingThreeSaveCommand;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingThreeSaveCommandHandler;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingTwoSaveCommand;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingTwoSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.RefundPaddingFinder;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingThreeOut;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingTwoOut;
 
 /**
  * The Class RefundPaddingWs.
@@ -29,13 +32,15 @@ public class RefundPaddingWs extends WebService {
 	/** The save. */
 	@Inject
 	private RefundPaddingThreeSaveCommandHandler savethree;
+	
+	/** The savetwo. */
+	@Inject
+	private RefundPaddingTwoSaveCommandHandler savetwo;
 
 	/**
-	 * Find all.
+	 * Find print type three.
 	 *
-	 * @param dto
-	 *            the dto
-	 * @return the list
+	 * @return the refund padding three out
 	 */
 	@POST
 	@Path("printtype/three/find")
@@ -46,12 +51,36 @@ public class RefundPaddingWs extends WebService {
 	/**
 	 * Save three.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("printtype/three/save")
 	public void saveThree(RefundPaddingThreeSaveCommand command) {
 		this.savethree.handle(command);
+	}
+
+	/**
+	 * Find print type two.
+	 *
+	 * @return the refund padding three out
+	 */
+	@POST
+	@Path("printtype/two/find")
+	public RefundPaddingTwoOut findPrintTypeTwo() {
+		return this.finder.findPrintTypeTwo();
+	}
+
+	/**
+	 * Save two.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("printtype/two/save")
+	public void saveTwo(RefundPaddingTwoSaveCommand command) {
+		this.savetwo.handle(command);
 	}
 
 }

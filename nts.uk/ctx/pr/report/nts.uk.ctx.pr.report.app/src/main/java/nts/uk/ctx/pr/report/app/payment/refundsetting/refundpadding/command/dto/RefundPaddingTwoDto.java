@@ -15,18 +15,15 @@ import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.ShowBreakLin
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.SizeLimit;
 
 /**
- * The Class RefundPaddingThreeDto.
+ * The Class RefundPaddingTwoDto.
  */
 
 @Getter
 @Setter
-public class RefundPaddingThreeDto {
+public class RefundPaddingTwoDto {
 
 	/** The upper area padding top. */
 	private BigDecimal upperAreaPaddingTop;
-
-	/** The middle area padding top. */
-	private BigDecimal middleAreaPaddingTop;
 
 	/** The under area padding top. */
 	private BigDecimal underAreaPaddingTop;
@@ -34,11 +31,8 @@ public class RefundPaddingThreeDto {
 	/** The padding left. */
 	private BigDecimal paddingLeft;
 
-	/** The break line margin top. */
-	private BigDecimal breakLineMarginTop;
-
-	/** The break line margin buttom. */
-	private BigDecimal breakLineMarginButtom;
+	/** The break line margin. */
+	private BigDecimal breakLineMargin;
 
 	/** The is show break line. */
 	private int isShowBreakLine;
@@ -46,33 +40,34 @@ public class RefundPaddingThreeDto {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the refund padding
 	 */
 	public RefundPadding toDomain(String companyCode) {
-		return new RefundPadding(new RefundPaddingThreeGetMementoImpl(companyCode, this));
+		return new RefundPadding(new RefundPaddingTwoGetMementoImpl(companyCode, this));
 	}
 
 	/**
-	 * The Class RefundPaddingThreeGetMementoImpl.
+	 * The Class RefundPaddingTwoGetMementoImpl.
 	 */
-	public class RefundPaddingThreeGetMementoImpl implements RefundPaddingGetMemento {
+	public class RefundPaddingTwoGetMementoImpl implements RefundPaddingGetMemento {
 
 		/** The company code. */
 		private String companyCode;
 
 		/** The dto. */
-		private RefundPaddingThreeDto dto;
+		private RefundPaddingTwoDto dto;
 
 		/**
-		 * Instantiates a new refund padding three get memento impl.
+		 * Instantiates a new refund padding Two get memento impl.
 		 *
 		 * @param companyCode
 		 *            the company code
 		 * @param dto
 		 *            the dto
 		 */
-		public RefundPaddingThreeGetMementoImpl(String companyCode, RefundPaddingThreeDto dto) {
+		public RefundPaddingTwoGetMementoImpl(String companyCode, RefundPaddingTwoDto dto) {
 			this.companyCode = companyCode;
 			this.dto = dto;
 		}
@@ -96,7 +91,7 @@ public class RefundPaddingThreeDto {
 		 */
 		@Override
 		public PrintType getPrintType() {
-			return PrintType.A4_THREE_PERSON;
+			return PrintType.A4_TWO_PERSON;
 		}
 
 		/*
@@ -162,7 +157,7 @@ public class RefundPaddingThreeDto {
 		 */
 		@Override
 		public SizeLimit getBreakLineMargin() {
-			return null;
+			return new SizeLimit(dto.breakLineMargin);
 		}
 
 		/*
@@ -173,7 +168,7 @@ public class RefundPaddingThreeDto {
 		 */
 		@Override
 		public SizeLimit getMiddleAreaPaddingTop() {
-			return new SizeLimit(dto.middleAreaPaddingTop);
+			return null;
 		}
 
 		/*
@@ -184,7 +179,7 @@ public class RefundPaddingThreeDto {
 		 */
 		@Override
 		public SizeLimit getBreakLineMarginTop() {
-			return new SizeLimit(dto.breakLineMarginTop);
+			return null;
 		}
 
 		/*
@@ -195,7 +190,7 @@ public class RefundPaddingThreeDto {
 		 */
 		@Override
 		public SizeLimit getBreakLineMarginButtom() {
-			return new SizeLimit(dto.breakLineMarginButtom);
+			return null;
 		}
 
 	}

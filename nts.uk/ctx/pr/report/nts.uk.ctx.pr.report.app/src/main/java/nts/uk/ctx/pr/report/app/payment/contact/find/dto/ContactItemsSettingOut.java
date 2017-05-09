@@ -20,33 +20,7 @@ import nts.uk.ctx.pr.report.dom.payment.contact.ReportComment;
 /**
  * The Class ContactItemsSettingOut.
  */
-
-/**
- * Sets the emp comment dtos.
- *
- * @param empCommentDtos
- *            the new emp comment dtos
- */
-
-/**
- * Sets the emp comment dtos.
- *
- * @param empCommentDtos
- *            the new emp comment dtos
- */
 @Setter
-
-/**
- * Gets the emp comment dtos.
- *
- * @return the emp comment dtos
- */
-
-/**
- * Gets the emp comment dtos.
- *
- * @return the emp comment dtos
- */
 @Getter
 public class ContactItemsSettingOut implements ContactItemsSettingSetMemento {
 
