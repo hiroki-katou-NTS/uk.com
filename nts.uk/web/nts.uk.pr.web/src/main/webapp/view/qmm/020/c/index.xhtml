@@ -1,21 +1,21 @@
-<div class="contents-area">
+<div class="contents-area" data-bind="with: model">
 	<div class="left-content">
 		<div class="bg-green caret-right caret-background">
 			<div class="C_BTN_34">
-				<button id="C_BTN_003" data-bind="click:openJDialog">履歴追加ボタン</button>
-				<button id="C_BTN_004" data-bind="click:openKDialog">履歴編集ボタン</button>
+				<button id="C_BTN_003" data-bind="click: $parent.openJDialog">履歴追加ボタン</button>
+				<button id="C_BTN_004" data-bind="click: $parent.openKDialog">履歴編集ボタン</button>
 			</div>
 			<div id="C_LST_002"
 				data-bind="ntsListBox: {
-						options: itemHeaderList,
-						optionsValue: 'id',
-						optionsText: 'startEnd',
-						value: selectedCode,
-						enable: isEnable(),
+						options: ListItems,
+						optionsValue: 'historyId',
+						optionsText: 'text',
+						value: ListItemSelected,
+						enable: true,
 						rows:5,
 						required: true,
 						columns: [
-							{ prop: 'startEnd', length: 12 }
+							{ prop: 'text', length: 12 }
 						]}">
 			</div>
 		</div>
@@ -28,14 +28,20 @@
 		<div>
 			<div class="searchBox"
 				data-bind="ntsSearchBox: {
-											mode: 'igGrid', 
-											comId: 'C_LST_001', 
-											items: dataSource, 
-											selected: selectedList, 
-											selectedKey: 'ID', 
-											fields: ['Name', 'ID']}" />
-			<table id="C_LST_001" class="cf"></table>
-			<br />
+					comId: 'C_LST_001',
+					items: GridItems,
+					selected: GridItemSelected,
+					selectedKey: 'employmentCode',
+					fields: ['employmentCode', 'employmentName']}" />
+			<table id="C_LST_001"
+				data-bind="ntsGridList: {
+					width: 800,								
+					height: 350,
+					dataSource: GridItems,
+					primaryKey: 'employmentCode',
+					columns: $parent.gridColumns,
+					multiple: false,
+					value: GridItemSelected}"></table>
 		</div>
 	</div>
 </div>

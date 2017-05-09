@@ -9,12 +9,12 @@ module qmm020.c.viewmodel {
                 { headerText: "繧ｳ繝ｼ繝�", key: "employmentCode", dataType: "string", width: "100px" },
                 { headerText: "蜷咲ｧｰ", key: "employmentName", dataType: "string", width: "200px" },
                 {
-                    headerText: "邨ｦ荳取�守ｴｰ譖ｸ", key: "paymentCode", dataType: "string", width: "250px",
-                    template: '<button class="c-btn-001" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${paymentCode} ${paymentName}</span>'
+                    headerText: "邨ｦ荳取�守ｴｰ譖ｸ", key: "paymentDetailCode", dataType: "string", width: "250px",
+                    template: '<button class="c-btn-001" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${paymentDetailCode} ${paymentDetailName}</span>'
                 },
                 {
-                    headerText: "雉樔ｸ取�守ｴｰ譖ｸ", key: "bonusCode", dataType: "string", width: "20%",
-                    template: '<button class="c-btn-002" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${bonusCode} ${bonusName}</span>'
+                    headerText: "雉樔ｸ取�守ｴｰ譖ｸ", key: "bonusDetailCode", dataType: "string", width: "20%",
+                    template: '<button class="c-btn-002" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${bonusDetailCode} ${bonusDetailName}</span>'
                 },
             ];
 
@@ -39,10 +39,39 @@ module qmm020.c.viewmodel {
                 if (data && data.length > 0) {
                     data.map((m) => { self.model().GridItems.push(new GridModel(m)); });
                 }
-                debugger;
             }).fail(function(res) {
                 alert(res);
             });
+        }
+
+        openJDialog() {
+        }
+
+        openKDialog() {
+        }
+
+        openMDialog() {
+            let self = this, currentItemList = self.model().currentItemList();
+            if (!!currentItemList) {
+                nts.uk.ui.windows.setShared('M_BASEYM', currentItemList.startYm);
+
+                nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
+                    .onClosed(function() {
+                        let currentItemGrid = self.model().currentItemGrid();
+                        if (currentItemGrid) {
+                            let stmtCode = nts.uk.ui.windows.getShared('M_RETURN');
+                            currentItemGrid.paymentDetailCode = stmtCode;
+                            service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
+                                currentItemGrid.paymentDetailName = stmtName;
+                                
+                                //update date to igGrid
+                                self.model().updateData();
+                            }).fail(function(res) {
+                                alert(res);
+                            });
+                        }
+                    });
+            }
         }
 
         saveData() {
@@ -64,17 +93,45 @@ module qmm020.c.viewmodel {
         constructor(param: IModel) {
             let self = this;
             self.ListItems(param.ListItems.map((m) => { return new ListModel(m); }));
-            self.ListItems(param.GridItems.map((m) => { return new GridModel(m); }));
+            self.GridItems(param.GridItems.map((m) => { return new GridModel(m); }));
+
+            self.ListItemSelected.subscribe((v) => {
+                if (v) {
+                    service.getEmployeeDetail(v).done(function(data: Array<any>) {
+                        _.forEach(self.GridItems(), function(t) {
+                            let item = _.find(data, function(m) {
+                                return t.employmentCode == m.employeeCode;
+                            });
+                            if (item) {
+                                t.bonusDetailCode = item.bonusDetailCode;
+                                t.paymentDetailCode = item.paymentDetailCode;
+                            }
+                            else {
+                                t.bonusDetailCode = '';
+                                t.paymentDetailCode = '';
+                            }
+                        });
+                        //update date to igGrid
+                        self.updateData();
+                    });
+                }
+            });
         }
 
-        currentItemList(): ListModel {
+        updateData() {
+            let self = this;
+            //update date to igGrid
+            $("#C_LST_001").igGrid("option", "dataSource", ko.toJS(self.GridItems()));
+        };
+
+        currentItemList(): IListModel {
             let self = this;
             return _.find(self.ListItems(), function(t: IListModel) { return t.historyId == self.ListItemSelected(); });
         }
 
-        currentItemGrid(): GridModel {
+        currentItemGrid(): IGridModel {
             let self = this;
-            return _.find(self.GridItems(), function(t: IGridModel) { return t.code == self.ListItemSelected(); });
+            return _.find(self.GridItems(), function(t: IGridModel) { return t.employmentCode == self.GridItemSelected(); });
         }
     }
 
@@ -89,10 +146,12 @@ module qmm020.c.viewmodel {
         historyId: string;
         endYm: number;
         startYm: number;
+        text: string;
         constructor(param: IListModel) {
             this.historyId = param.historyId;
             this.endYm = param.endYm;
             this.startYm = param.startYm;
+            this.text = param.startYm + "~" + param.endYm;
         }
     }
 
@@ -100,10 +159,10 @@ module qmm020.c.viewmodel {
         historyId: string;
         employmentCode: string;
         employmentName: string;
-        bonusCode: string;
-        bonusName: string;
-        paymentCode: string;
-        paymentName: string;
+        bonusDetailCode?: string;
+        bonusDetailName?: string;
+        paymentDetailCode?: string;
+        paymentDetailName?: string;
     }
 
     // grid view model
@@ -111,18 +170,18 @@ module qmm020.c.viewmodel {
         historyId: string;
         employmentCode: string;
         employmentName: string;
-        bonusCode?: string;
-        bonusName?: string;
-        paymentCode?: string;
-        paymentName?: string;
+        bonusDetailCode: string;
+        bonusDetailName: string;
+        paymentDetailCode: string;
+        paymentDetailName: string;
         constructor(param: IGridModel) {
             this.historyId = param.historyId;
             this.employmentCode = param.employmentCode;
             this.employmentName = param.employmentName;
-            this.bonusCode = param.bonusCode;
-            this.bonusName = param.bonusName;
-            this.paymentCode = param.paymentCode;
-            this.paymentName = param.paymentName;
+            this.bonusDetailCode = param.bonusDetailCode;
+            this.bonusDetailName = param.bonusDetailName;
+            this.paymentDetailCode = param.paymentDetailCode;
+            this.paymentDetailName = param.paymentDetailName;
         }
     }
 
