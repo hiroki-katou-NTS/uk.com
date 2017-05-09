@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command;
@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.RefundPaddin
  */
 @Getter
 @Setter
-public class RefundPaddingThreeSaveCommand implements Serializable {
+public class RefundPaddingOnceSaveCommand implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

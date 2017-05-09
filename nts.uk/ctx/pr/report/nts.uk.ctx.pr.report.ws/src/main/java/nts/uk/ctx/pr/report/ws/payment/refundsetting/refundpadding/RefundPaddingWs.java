@@ -82,5 +82,30 @@ public class RefundPaddingWs extends WebService {
 	public void saveTwo(RefundPaddingTwoSaveCommand command) {
 		this.savetwo.handle(command);
 	}
+	
+	/**
+	 * Find all.
+	 *
+	 * @param dto
+	 *            the dto
+	 * @return the list
+	 */
+	@POST
+	@Path("printtype/once/find")
+	public RefundPaddingThreeOut findPrintTypeOnce() {
+		return this.finder.findPrintTypeThree();
+	}
+
+	/**
+	 * Save three.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("printtype/once/save")
+	public void saveOnceType(RefundPaddingThreeSaveCommand command) {
+		this.savethree.handle(command);
+	}
 
 }
