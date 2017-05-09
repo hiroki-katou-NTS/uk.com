@@ -27,6 +27,7 @@ module qet001.b.viewmodel {
             this.reportItems = ko.observableArray([]);
             this.isLoading = ko.observable(true);
             this.outputItemColumns = ko.observableArray([
+                    {headerText: 'key', prop: 'itemKey', width: 50, hidden: true},
                     {headerText: '集約', prop: 'isAggregateItem', width: 40,
                         formatter: function(data: string) {
                             if (data == 'true') {
@@ -45,6 +46,7 @@ module qet001.b.viewmodel {
                     },
                 ]);
             this.reportItemColumns = ko.observableArray([
+                    {headerText: 'key', prop: 'itemKey', width: 50, hidden: true},
                     {headerText: '区分', prop: 'categoryNameJa', width: 50},
                     {headerText: '集約', prop: 'isAggregate', width: 40,
                         formatter: function(data: string): string {
@@ -503,6 +505,9 @@ module qet001.b.viewmodel {
                     .map((item) => {
                         return item.code;
                     });
+                categorySetting.outputItems.forEach(item => {
+                    item.itemKey = item.code + (item.isAggregateItem ? '_A' : '_NA');
+                })
             }
             this.outputItems = ko.observableArray(categorySetting ? categorySetting.outputItems : []);
             var aggregateItemsExcluded = aggregateItems.filter((item) => aggregateSettingItemCode.indexOf(item.code) == -1);
@@ -527,7 +532,7 @@ module qet001.b.viewmodel {
                     var code = valueAccessor();
                     viewModel.outputItems().forEach(item => {
                         $('#' + item.code).on('click', function() {
-                            code(item.code);
+                            code(item.itemKey);
                             viewModel.remove();
                             code(null);
                         })
@@ -538,8 +543,10 @@ module qet001.b.viewmodel {
         
         public remove() {
             var self = this;
+            var seletecedAttr = self.outputItemsSelected().split('_');
             var selectedItem = self.outputItems().filter((item) => {
-                return item.code == self.outputItemsSelected();
+                var isAggregate = seletecedAttr[1] == 'A';
+                return item.code == seletecedAttr[0] && item.isAggregateItem == isAggregate;
             })[0];
             self.outputItems.remove(selectedItem);
             
@@ -584,6 +591,7 @@ module qet001.b.viewmodel {
                 code: selectedItem.code,
                 name: selectedItem.name,
                 isAggregateItem: false,
+                itemKey: selectedItem.code + '_NA'
             });
             self.masterItemSelected(null);
         }
@@ -605,7 +613,8 @@ module qet001.b.viewmodel {
             self.outputItems.push({
                 code: selectedItem.code,
                 name: selectedItem.name,
-                isAggregateItem: true
+                isAggregateItem: true,
+                itemKey: selectedItem.code + '_A'
             });
             self.aggregateItemSelected(null);
         }
@@ -642,6 +651,7 @@ module qet001.b.viewmodel {
         itemCode: string;
         itemName: string;
         categoryNameJa: string;
+        itemKey: string;
         
         constructor(categoryName: string, isAggregate: boolean, itemCode: string, itemName: string) {
             this.categoryName = categoryName;
@@ -663,6 +673,7 @@ module qet001.b.viewmodel {
                 default:
                     self.categoryNameJa = '';
             }
+            self.itemKey = itemCode + isAggregate + categoryName;
         }
     }
     
