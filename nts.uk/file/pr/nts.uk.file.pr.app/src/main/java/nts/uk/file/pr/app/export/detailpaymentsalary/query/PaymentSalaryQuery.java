@@ -24,7 +24,13 @@ public class PaymentSalaryQuery {
 
     /** The end date. */
     private Integer endDate;
-
+    
+    /** The is normal month. */
+    private Boolean isNormalMonth;
+    
+    /** The is preliminary month. */
+    private Boolean isPreliminaryMonth;
+    
     /** The employee codes. */
     private List<String> personIds;
 
