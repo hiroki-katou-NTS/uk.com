@@ -23,7 +23,7 @@ module qpp014.i {
             self.processingDateInJapanEmprire = ko.observable(nts.uk.ui.windows.getShared("processingDateInJapanEmprire"));
             self.transferBank = ko.observable(nts.uk.ui.windows.getShared("label"));
         }
-
+ 
         /**
          * close dialog
          */

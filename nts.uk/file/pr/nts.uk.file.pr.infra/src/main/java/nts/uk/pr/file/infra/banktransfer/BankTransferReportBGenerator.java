@@ -9,25 +9,25 @@ import com.aspose.cells.PdfSaveOptions;
 import com.aspose.cells.SaveFormat;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.file.pr.app.export.banktransfer.BankTransferRpAGenerator;
-import nts.uk.file.pr.app.export.banktransfer.data.BankTransferAReport;
-import nts.uk.file.pr.app.export.banktransfer.data.BankTransferARpData;
+import nts.uk.file.pr.app.export.banktransfer.BankTransferRpBGenerator;
+import nts.uk.file.pr.app.export.banktransfer.data.BankTransferBReport;
+import nts.uk.file.pr.app.export.banktransfer.data.BankTransferBRpData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
-public class BankTransferReportAGenerator extends AsposeCellsReportGenerator implements BankTransferRpAGenerator {
+public class BankTransferReportBGenerator extends AsposeCellsReportGenerator implements BankTransferRpBGenerator {
 
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "report/qpp014a.xlsx";
+	private static final String TEMPLATE_FILE = "report/qpp014b.xlsx";
 	/** The Constant REPORT_FILE_NAME. */
-	protected static final String REPORT_FILE_NAME = "テストQPP014.pdf";
+	protected static final String REPORT_FILE_NAME = "テストQPP014B.pdf";
 
 	@Override
-	public void generator(FileGeneratorContext fileGeneratorContext, BankTransferAReport report) {
+	public void generator(FileGeneratorContext fileGeneratorContext, BankTransferBReport report) {
 		try {
 			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
-			List<BankTransferARpData> rpData = report.getData();
+			List<BankTransferBRpData> rpData = report.getData();
 
 			// set datasource
 			reportContext.setDataSource("header", report.getHeader());

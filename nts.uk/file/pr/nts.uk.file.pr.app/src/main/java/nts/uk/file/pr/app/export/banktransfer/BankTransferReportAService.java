@@ -21,10 +21,10 @@ import nts.uk.file.pr.app.export.banktransfer.query.BankTransferReportQuery;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class BankTransferReportService extends ExportService<BankTransferReportQuery> {
+public class BankTransferReportAService extends ExportService<BankTransferReportQuery> {
 
 	@Inject
-	private BankTransferReportGenerator generator;
+	private BankTransferRpAGenerator generator;
 
 	@Inject
 	private BankTransferRepository bankTransferRepo;

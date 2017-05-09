@@ -14,7 +14,7 @@ module qpp014.d.viewmodel {
 
         constructor(data: any) {
             let self = this;
-            self.dateOfPayment = ko.observable('2017-05-12 00:00:00');
+            self.dateOfPayment = ko.observable('2017-05-11 00:00:00');
             self.sparePayAtr = ko.observable(1);
             self.d_SEL_002_selectedCode = ko.observable(1);
             self.d_LST_001_items = ko.observableArray([]);
@@ -25,7 +25,7 @@ module qpp014.d.viewmodel {
             self.d_LST_001_itemSelected = ko.observable(0);
             self.d_nextScreen = ko.computed(function() {
                 //check value of D_SEL_002 to jump to screen G or H after click E_BTN_002
-                return self.d_SEL_002_selectedCode() == 2 ? 'screen_g' : 'screen_h';
+                return self.d_SEL_002_selectedCode() == 2 ? 'screen_g' : 'screen_h'; 
             });
             self.processingYMNotConvert = ko.observable(data.currentProcessingYm);
             self.processingYM = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));

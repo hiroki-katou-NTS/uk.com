@@ -20,9 +20,6 @@ module qpp014.h.viewmodel {
             self.dataLineBank = ko.observableArray([]);
             self.h_INP_001 = ko.observable();
             self.h_LST_001_items = ko.observableArray([]);
-            for (let i = 1; i < 100; i++) {
-                self.h_LST_001_items.push(new ItemModel_H_LST_001('00' + i, '基本給', "description " + i));
-            }
             self.h_LST_001_itemsSelected = ko.observable();
             self.yearMonthDateInJapanEmpire = ko.computed(function() {
                 if (self.h_INP_001() == undefined || self.h_INP_001() == null || self.h_INP_001() == "") {
@@ -35,11 +32,19 @@ module qpp014.h.viewmodel {
             self.processingDateInJapanEmprire = ko.computed(function() {
                 return "(" + nts.uk.time.yearmonthInJapanEmpire(self.processingDate()).toString() + ")";
             });
-            self.processingNo = ko.observable(data.processingNo + ' : ');
+            self.processingNo = ko.observable(data.processingNo);
             self.processingName = ko.observable(data.processingName + ' )');
-            
+
             $.when(self.findAllBankBranch()).done(function() {
-                self.findAllLineBank().done(function() { });
+                self.findAllLineBank().done(function() {
+                    for (let i = 0; i < self.dataLineBank().length; i++) {
+                        var tmp = _.find(self.dataBankBranch2(), function(x) {
+                            return x.branchId === self.dataLineBank()[i].branchId;
+                        });
+                        self.h_LST_001_items.push(new ItemModel_H_LST_001(self.dataLineBank()[i].lineBankCode, tmp.code,
+                            self.dataLineBank()[i].lineBankName, tmp.name, self.dataLineBank()[i].accountAtr, self.dataLineBank()[i].accountNo, self.dataLineBank()[i].branchId));
+                    }
+                });
             });
         }
 
@@ -88,19 +93,60 @@ module qpp014.h.viewmodel {
                 });
             return dfd.promise();
         }
+
+        /**
+         * Print file PDF
+         */
+        saveAsPdf(): void {
+            var self = this;
+            if (self.h_INP_001() == null || self.h_INP_001() == "") {
+                nts.uk.ui.dialog.alert("振込指定日が入力されていません。");//ER001
+            } else if (self.h_LST_001_itemsSelected() == undefined || self.h_LST_001_itemsSelected().length < 1) {
+                nts.uk.ui.dialog.alert("振込元銀行が選択されていません。");//ER007
+            } else {
+                var branchIdList = [];
+                for (let i = 0; i < self.h_LST_001_itemsSelected().length; i++) {
+                    branchIdList.push(
+                        _.find(self.h_LST_001_items(), function(x) {
+                            return x.label === self.h_LST_001_itemsSelected()[i];
+                        }).branchId);
+                }
+                var command = {
+                    fromBranchId: branchIdList,
+                    processingNo: self.processingNo(),
+                    processingYm: parseInt(self.processingDate().replace('/','')),
+                    payDate: self.h_INP_001(),
+                    sparePayAtr: nts.uk.ui.windows.getShared("sparePayAtr"),
+                };
+                qpp014.h.service.saveAsPdf(command)
+                    .done(function() { })
+                    .fail();
+            }
+        }
     }
 
     export class ItemModel_H_LST_001 {
-        code: string;
-        name: string;
-        description: string;
+        lineBankCode: string;
+        branchCode: string;
+        lineBankName: string;
+        branchName: string;
+        accountAtr: number;
+        accountNo: string;
+        branchId: string;
+        label: string;
 
-        constructor(code: string, name: string, description: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
+        constructor(lineBankCode: string, branchCode: string, lineBankName: string, branchName: string, accountAtr: number, accountNo: string, branchId: string) {
+            this.lineBankCode = lineBankCode;
+            this.branchCode = branchCode;
+            this.lineBankName = lineBankName;
+            this.branchName = branchName;
+            this.accountAtr = accountAtr;
+            this.accountNo = accountNo;
+            this.branchId = branchId;
+            this.label = this.lineBankCode + ' - ' + this.branchCode;
         }
     }
+
     class BankBranch {
         code: string;
         name: string;

@@ -18,7 +18,7 @@ module qpp014.b.viewmodel {
             self.viewmodelg = new qpp014.g.viewmodel.ScreenModel(data);
             self.viewmodelh = new qpp014.h.viewmodel.ScreenModel(data);
             self.data = data;
-
+ 
             //sparePayAtr not transfer value in screen d, so tranfer it here
             self.viewmodeld.sparePayAtr.subscribe(function(newValue) {
                 nts.uk.ui.windows.setShared("sparePayAtr", newValue, true);

@@ -1,9 +1,9 @@
 module qpp014.j.service {
     var paths = {
-        saveAsPdf: "screen/pr/QPP014/saveAsPdf"
+        saveAsPdfA: "screen/pr/QPP014/saveAsPdfA"
     }
 
     export function saveAsPdf(command: any): JQueryPromise<any> {
-        return nts.uk.request.exportFile(paths.saveAsPdf, command);
+        return nts.uk.request.exportFile(paths.saveAsPdfA, command);
     }
 }

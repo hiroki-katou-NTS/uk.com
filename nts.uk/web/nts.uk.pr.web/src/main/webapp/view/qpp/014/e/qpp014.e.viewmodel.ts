@@ -13,7 +13,7 @@ module qpp014.e {
         numberOfProcessSuccess: KnockoutObservable<number>;
         numberOfProcessFail: KnockoutObservable<number>;
         processingYM: KnockoutObservable<string>;
-
+ 
         constructor() {
             var self = this;
             $('#successful').css('display', 'none');
