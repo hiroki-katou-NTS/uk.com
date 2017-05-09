@@ -16,7 +16,7 @@ public class ComparingFormDto {
 	private List<ComparingItemMasterDto> lstItemMasterForTab_0;
 	private List<ComparingItemMasterDto> lstItemMasterForTab_1;
 	private List<ComparingItemMasterDto> lstItemMasterForTab_3;
-	private List<String> lstSelectForTab_0;
-	private List<String> lstSelectForTab_1;
-	private List<String> lstSelectForTab_3;
+	private List<ComparingItemMasterDto> lstSelectForTab_0;
+	private List<ComparingItemMasterDto> lstSelectForTab_1;
+	private List<ComparingItemMasterDto> lstSelectForTab_3;
 }
