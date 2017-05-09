@@ -31,13 +31,28 @@ public class DefaultLayoutService implements LayoutService {
 
 	@Override
 	public String copyTopPageLayout(String layoutID) {
+		return copyLayout(layoutID, 0);
+	}
+
+	@Override
+	public String copyTitleMenuLayout(String layoutID) {
+		return copyLayout(layoutID, 1);
+	}
+	
+	@Override
+	public String copyMyPageLayout(String layoutID) {
+		return copyLayout(layoutID, 2);
+	}
+	
+	private String copyLayout(String layoutID, int pgType) {
 		if (layoutID.equals(null) || !isExist(layoutID))
 			return null;
 		
 		String companyID = AppContexts.user().companyID();
 		String newLayoutID = IdentifierUtil.randomUniqueId();
+		
 		// Copy Layout
-		Layout newLayout = Layout.createFromJavaType(companyID, newLayoutID, 0);
+		Layout newLayout = Layout.createFromJavaType(companyID, newLayoutID, pgType);
 		layoutRepository.add(newLayout);
 		// Copy all Layout's Placement
 		placementService.copyPlacementByLayout(layoutID, newLayoutID);
