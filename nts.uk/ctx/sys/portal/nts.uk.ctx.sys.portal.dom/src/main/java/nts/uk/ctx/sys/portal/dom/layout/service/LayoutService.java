@@ -21,4 +21,19 @@ public interface LayoutService {
 	 */
 	String copyTopPageLayout(String layoutID);
 
+	 /**
+	  * Copy Layout with given ID
+	  * 
+	  * @param
+	  * @return Copied layout ID
+	  */
+	 String copyTitleMenuLayout(String layoutID);
+	 
+	 /**
+	  * Copy Layout with given ID
+	  * 
+	  * @param
+	  * @return Copied layout ID
+	  */
+	 String copyMyPageLayout(String layoutID);
 }

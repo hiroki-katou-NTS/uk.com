@@ -37,7 +37,7 @@ public class MyPageSettingWs extends WebService {
 	@POST
 	@Path("getMyPageSetting")
 	public MyPageSettingDto getMyPageSettingDetail() {
-		String companyId = AppContexts.user().companyId();
+		String companyId = AppContexts.user().companyID();
 		return myPageSettingFinder.findByCompanyId(companyId);
 	}
 	
