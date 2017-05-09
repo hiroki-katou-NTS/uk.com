@@ -123,16 +123,21 @@ module qpp021.b.viewmodel {
             var processingYm: number = 201705;
             nts.uk.ui.windows.setShared("processingNo", processingNo);
             nts.uk.ui.windows.setShared("processingYm", processingYm);
-            nts.uk.ui.windows.sub.modal('/view/qpp/021/h/index.xhtml', { title: '連絡事項の設定',  dialogClass: 'no-close' });
+            nts.uk.ui.windows.sub.modal('/view/qpp/021/h/index.xhtml', { title: '連絡事項の設定', dialogClass: 'no-close' });
         }
 
         openDialogScreenI(): void {
             let self = this;
             let processingNo: number = 1;
-            let processingYm: number = 201704;
+            let processingYm: number = 201705;
             nts.uk.ui.windows.setShared("processingNo", processingNo);
             nts.uk.ui.windows.setShared("processingYm", processingYm);
-            nts.uk.ui.windows.sub.modal('/view/qpp/021/i/index.xhtml', { title: 'コメント登録',  dialogClass: 'no-close' });
+            nts.uk.ui.windows.sub.modal('/view/qpp/021/i/index.xhtml', { title: 'コメント登録', dialogClass: 'no-close' });
+        }
+
+        openDialogRefundPadding(): void {
+            nts.uk.ui.windows.sub.modal('/view/qpp/021/f/index.xhtml', { title: '余白設定2', dialogClass: 'no-close' });
+            //nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
         }
     }
 
