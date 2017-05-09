@@ -1997,9 +1997,12 @@ var nts;
                         this.option.show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
-                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
-                        if (duplicate.length == 0)
-                            this.errors.push(error);
+                        var _this = this;
+                        _.defer(function () {
+                            var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
+                            if (duplicate.length == 0)
+                                _this.errors.push(error);
+                        });
                     };
                     ErrorsViewModel.prototype.hasError = function () {
                         return this.occurs();
@@ -2009,8 +2012,11 @@ var nts;
                         this.errors.removeAll();
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
-                        var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });
-                        this.errors.removeAll(removeds);
+                        var _this = this;
+                        _.defer(function () {
+                            var removeds = _.filter(_this.errors(), function (e) { return e.$control.is($element); });
+                            _this.errors.removeAll(removeds);
+                        });
                     };
                     return ErrorsViewModel;
                 }());
@@ -2936,7 +2942,7 @@ var nts;
                             var rowKey = $row.attr("data-id");
                             $parent.find(".nts-switch-button").removeClass("selected");
                             var element = _.find($parent.find(".nts-switch-button"), function (e) {
-                                return selectedValue === $(e).attr('data-value');
+                                return selectedValue.toString() === $(e).attr('data-value').toString();
                             });
                             if (element !== undefined) {
                                 $(element).addClass('selected');
@@ -3074,6 +3080,7 @@ var nts;
                                 mousePos = null;
                                 dragSelectRange = [];
                                 $(window).unbind('mousemove.NtsGridListDragging');
+                                $grid.triggerHandler('selectionchanged');
                                 clearInterval(timerAutoScroll);
                             });
                         });
@@ -3930,6 +3937,7 @@ var nts;
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
                         var inputClass = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
                         var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
+                        $input.attr("data-name", container.data("name"));
                         container.append($input);
                         if (hasDayofWeek) {
                             var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
@@ -5326,7 +5334,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid1)
                             .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
-                            .setDataSource(data.dataSource)
+                            .setDataSource(originalSource)
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -5337,7 +5345,7 @@ var nts;
                         swapParts.push(new GridSwapPart().listControl($grid2)
                             .searchControl($swap.find(".ntsSwapSearchRight").find(".ntsSearchButton"))
                             .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
-                            .setDataSource(data.value)
+                            .setDataSource(data.value())
                             .setSearchCriterion(data.searchCriterion || criterion)
                             .setSearchMode(data.searchMode || "highlight")
                             .setColumns(columns())
@@ -5369,7 +5377,7 @@ var nts;
                             features: features
                         });
                         if (data.draggable === true) {
-                            this.swapper.enableDragDrop();
+                            this.swapper.enableDragDrop(data.value);
                             if (data.multipleDrag && data.multipleDrag.left === true) {
                                 this.swapper.Model.swapParts[0].$listControl.addClass("multiple-drag");
                             }
@@ -5414,9 +5422,11 @@ var nts;
                         });
                         if (!_.isEqual(currentSource, newSources)) {
                             this.swapper.Model.swapParts[0].bindData(newSources.slice());
+                            this.swapper.Model.transportBuilder.setFirst(newSources);
                         }
                         if (!_.isEqual(currentSelectedList, newSelectedList)) {
                             this.swapper.Model.swapParts[1].bindData(newSelectedList.slice());
+                            this.swapper.Model.transportBuilder.setSecond(newSelectedList);
                         }
                     };
                     NtsSwapListBindingHandler.prototype.makeBindings = function () {
@@ -5453,7 +5463,7 @@ var nts;
                         enumerable: true,
                         configurable: true
                     });
-                    SwapHandler.prototype.handle = function (parts) {
+                    SwapHandler.prototype.handle = function (parts, value) {
                         var self = this;
                         var model = this.model;
                         for (var id in parts) {
@@ -5472,7 +5482,7 @@ var nts;
                                     self._beforeStop.call(this, model, evt, ui);
                                 },
                                 update: function (evt, ui) {
-                                    self._update.call(this, model, evt, ui);
+                                    self._update.call(this, model, evt, ui, value);
                                 }
                             };
                             this.model.swapParts[parts[id]].initDraggable(options);
@@ -5556,7 +5566,7 @@ var nts;
                             $(this).sortable("cancel");
                         }
                     };
-                    SwapHandler.prototype._update = function (model, evt, ui) {
+                    SwapHandler.prototype._update = function (model, evt, ui, value) {
                         if (ui.item.closest("table").length === 0)
                             return;
                         model.transportBuilder.directTo(model.receiver(ui)).update();
@@ -5569,11 +5579,12 @@ var nts;
                             model.swapParts[0].bindData(model.transportBuilder.getFirst());
                             model.swapParts[1].bindData(model.transportBuilder.getSecond());
                         }
+                        value(model.transportBuilder.getSecond());
                         setTimeout(function () { model.dropDone(); }, 0);
                     };
-                    SwapHandler.prototype.enableDragDrop = function (parts) {
+                    SwapHandler.prototype.enableDragDrop = function (value, parts) {
                         parts = parts || [0, 1];
-                        this.model.enableDrag(this, parts, this.handle);
+                        this.model.enableDrag(this, value, parts, this.handle);
                     };
                     return SwapHandler;
                 }());
@@ -5742,6 +5753,7 @@ var nts;
                     };
                     GridSwapPart.prototype.bindIn = function (src) {
                         this.$listControl.igGrid("option", "dataSource", src);
+                        this.$listControl.igGrid("dataBind");
                     };
                     return GridSwapPart;
                 }(SwapPart));
@@ -5782,11 +5794,11 @@ var nts;
                                 : self.swapParts[1].$listControl).igGrid("virtualScrollTo", self.transportBuilder.outcomeIndex + 1);
                         }, 0);
                     };
-                    GridSwapList.prototype.enableDrag = function (ctx, parts, cb) {
+                    GridSwapList.prototype.enableDrag = function (ctx, value, parts, cb) {
                         var self = this;
                         for (var idx in parts) {
                             this.swapParts[parts[idx]].$listControl.on("iggridrowsrendered", function (evt, ui) {
-                                cb.call(ctx, parts);
+                                cb.call(ctx, parts, value);
                             });
                         }
                     };
@@ -5804,6 +5816,7 @@ var nts;
                             .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
                         this.swapParts[0].bindData(this.transportBuilder.getFirst());
                         this.swapParts[1].bindData(this.transportBuilder.getSecond());
+                        value(this.transportBuilder.getSecond());
                         $source.igGridSelection("clearSelection");
                         $dest.igGridSelection("clearSelection");
                         setTimeout(function () {
@@ -5898,24 +5911,30 @@ var nts;
                     ListItemTransporter.prototype.update = function () {
                         switch (this.determineDirection()) {
                             case "firstToSecond":
-                                this.move(this.firstList(), this.secondList());
+                                this.move(this.firstList, this.secondList);
                                 break;
                             case "secondToFirst":
-                                this.move(this.secondList(), this.firstList());
+                                this.move(this.secondList, this.firstList);
                                 break;
                             case "insideFirst":
-                                this.move(this.firstList(), this.firstList());
+                                this.move(this.firstList, this.firstList);
                                 break;
                             case "insideSecond":
-                                this.move(this.secondList(), this.secondList());
+                                this.move(this.secondList, this.secondList);
                                 break;
                         }
                     };
                     ListItemTransporter.prototype.getFirst = function () {
-                        return this.firstList();
+                        return this.firstList;
                     };
                     ListItemTransporter.prototype.getSecond = function () {
-                        return this.secondList();
+                        return this.secondList;
+                    };
+                    ListItemTransporter.prototype.setFirst = function (first) {
+                        this.firstList = first;
+                    };
+                    ListItemTransporter.prototype.setSecond = function (second) {
+                        this.secondList = second;
                     };
                     return ListItemTransporter;
                 }());
@@ -6881,4 +6900,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

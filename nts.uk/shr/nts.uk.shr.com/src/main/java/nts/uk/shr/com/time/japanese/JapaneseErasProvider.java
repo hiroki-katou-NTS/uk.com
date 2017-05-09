@@ -1,31 +1,43 @@
 package nts.uk.shr.com.time.japanese;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
-@ApplicationScoped
+//@ApplicationScoped
+@Stateless
 public class JapaneseErasProvider {
 
 	private JapaneseEras eras;
 	
-	//@Inject
+	@Inject
 	private JapaneseErasAdapter adapter;
 	
 	@PostConstruct
 	public void initialize() {
-		//this.eras = this.adapter.getAllEras();
-		this.eras = new JapaneseEras(Arrays.asList(
-				new JapaneseEraName("テスト１", "A", GeneralDate.ymd(1900, 1, 1), GeneralDate.ymd(1999, 12, 31)),
-				new JapaneseEraName("テスト２", "B", GeneralDate.ymd(2000, 1, 1), GeneralDate.ymd(9999, 12, 31))
-				));
+		this.eras = this.adapter.getAllEras();
 	}
 	
 	public JapaneseEras getAllEras() {
 		return this.eras;
+	}
+	
+	public Optional<JapaneseEraName> eraOf (GeneralDate date) {
+		return this.eras.eraOf(date);
+	}
+
+	public Optional<JapaneseEraName> eraOf (GeneralDateTime datetime) {
+		return this.eras.eraOf(GeneralDate.ymd(datetime.year(), datetime.month(), datetime.day()));
+	}
+	
+	public JapaneseDate toJapaneseDate (GeneralDate date) {
+		Optional<JapaneseEraName> era = this.eras.eraOf(date);
+		return new JapaneseDate(date, era.get());
 	}
 }
