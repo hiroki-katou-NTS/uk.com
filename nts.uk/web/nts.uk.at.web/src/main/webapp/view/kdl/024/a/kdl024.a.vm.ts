@@ -85,7 +85,7 @@ module kdl024.a.viewmodel {
                     dfd.resolve();
                 }
             }).fail(function(res) {
-                alert(res.message);
+                nts.uk.ui.dialog.alert(res.message);
             });
             return dfd.promise();
         }
@@ -138,7 +138,8 @@ module kdl024.a.viewmodel {
                     //Restart screen
                     //self.start();
                 }).fail(function(res) {
-                    alert(res.message);
+                    nts.uk.ui.dialog.alert(res.message);
+                    self.start();
                 });
             }
             //enable button Del 
@@ -194,7 +195,8 @@ module kdl024.a.viewmodel {
                         self.items(self.currentSource);
                     }
                 }).fail(function(res) {
-                    alert(res.message);
+                    nts.uk.ui.dialog.alert(res.message);
+                    self.start();
                 });
             });            
         }

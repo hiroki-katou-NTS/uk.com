@@ -5,18 +5,17 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.shr.com.context.AppContexts;
 
 @Getter
-public class DeleteExternalBudgetCmd {
+public class InsertExternalBudgetCommand {
 	private String externalBudgetCode;
-	
+
 	private String externalBudgetName;
 
 	private int budgetAtr;
 
 	private int unitAtr;
-	
+
 	public ExternalBudget toDomain() {
 		return ExternalBudget.createFromJavaType(AppContexts.user().companyCode(), this.externalBudgetCode,
 				this.externalBudgetName, this.budgetAtr, this.unitAtr);
 	}
-
 }

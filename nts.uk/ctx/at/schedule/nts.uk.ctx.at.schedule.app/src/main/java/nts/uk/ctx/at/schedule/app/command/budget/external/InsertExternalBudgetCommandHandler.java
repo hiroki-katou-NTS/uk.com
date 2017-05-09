@@ -16,22 +16,25 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class DeleteExternalBudgetCmdHandler extends CommandHandler<DeleteExternalBudgetCmd> {
+public class InsertExternalBudgetCommandHandler extends CommandHandler<InsertExternalBudgetCommand> {
 
 	@Inject
 	private ExternalBudgetRepository budgetRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<DeleteExternalBudgetCmd> context) {
-		String companyId = AppContexts.user().companyCode();
+	protected void handle(CommandHandlerContext<InsertExternalBudgetCommand> context) {
 		// get command
-		DeleteExternalBudgetCmd command = context.getCommand();
-		Optional<ExternalBudget> optional = this.budgetRepo.find(companyId, command.getExternalBudgetCode());
-//		if(!optional.isPresent()){
-//			throw new BusinessException(new RawErrorMessage("入力したコードは、既に登録されています。"));
-//		}
-		// delete process
-		budgetRepo.delete(companyId, command.getExternalBudgetCode());
+		InsertExternalBudgetCommand command = context.getCommand();
+		// convert to server
+		ExternalBudget exBudget = command.toDomain();
+		// Check exist
+		Optional<ExternalBudget> optional = this.budgetRepo.find(AppContexts.user().companyCode(),
+				command.getExternalBudgetCode());
+		if (optional.isPresent()) {
+			throw new BusinessException(new RawErrorMessage("入力したコードは、既に登録されています。"));
+		}
+		// insert process
+		budgetRepo.insert(exBudget);
 	}
 
 }
