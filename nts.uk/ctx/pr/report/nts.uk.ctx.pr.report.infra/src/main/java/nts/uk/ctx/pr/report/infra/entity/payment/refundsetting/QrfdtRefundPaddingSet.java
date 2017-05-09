@@ -19,20 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class QrfdtRefundPaddingSet.
  */
-
-/**
- * Gets the break line margin buttom.
- *
- * @return the break line margin buttom
- */
 @Getter
-
-/**
- * Sets the break line margin buttom.
- *
- * @param breakLineMarginButtom
- *            the new break line margin buttom
- */
 @Setter
 @Entity
 @Table(name = "QRFDT_REFUND_PADDING_SET")
