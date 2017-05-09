@@ -5,7 +5,7 @@
 /**
  * 
  */
-package nts.uk.file.pr.app.export.detailpaymentsalary;
+package nts.uk.file.pr.app.export.detailpayment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,22 +70,16 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         // get query
         PaymentSalaryQuery query = context.getQuery();
         
-        // fake employee
-        List<String> personIds = Arrays.asList("99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002",
-                "99900000-0000-0000-0000-000000000003");
-//                "99900000-0000-0000-0000-000000000004",
-//                "99900000-0000-0000-0000-000000000005", "99900000-0000-0000-0000-000000000006",
-//                "99900000-0000-0000-0000-000000000007", "99900000-0000-0000-0000-000000000008",
-//                "99900000-0000-0000-0000-000000000009", "99900000-0000-0000-0000-0000000000010");
+        // TODO: fake employee
+        List<String> personIds = Arrays.asList("99900000-0000-0000-0000-000000000001",
+                "99900000-0000-0000-0000-000000000002", "99900000-0000-0000-0000-000000000003");
         query.setPersonIds(personIds);
         
-        
-
         if (!this.repository.isAvailableData(companyCode, query)) {
             throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         // TODO: fake data.
-        PaymentSalaryReportData reportData = fakeReportData();//this.repository.findReportData(companyCode, query);
+        PaymentSalaryReportData reportData = fakeReportData();
 
         SalaryPrintSettingDto configure = findSalarySetting(query);
         reportData.setConfigure(configure);
@@ -127,26 +121,6 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         dto.setHierarchy(query.getHierarchy());
         dto.setOutputLanguage(query.getOutputLanguage());
         
-        // TODO: fake value
-//        dto.setShowPayment(true);
-//        dto.setSumPersonSet(true);
-//        dto.setSumMonthPersonSet(true);
-//        dto.setSumEachDeprtSet(true);
-//        dto.setSumMonthDeprtSet(true);
-//        dto.setSumDepHrchyIndexSet(true);
-//        dto.setSumMonthDepHrchySet(true);
-//        List<Integer> listHierarchy = Arrays.asList(1, 2, 5); //findHierarchy(salary);
-//        dto.setSelectedLevels(listHierarchy);
-//        dto.setTotalSet(true);
-//        dto.setMonthTotalSet(true);
-//        
-//        dto.setOutputFormatType("1");
-//        dto.setIsVerticalLine(false);
-//        dto.setIsHorizontalLine(false);
-//        dto.setPageBreakSetting("1");
-//        dto.setHierarchy("2");
-//        dto.setOutputLanguage("1");
-        
         return dto;
     }
     
@@ -159,49 +133,33 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
     private List<Integer> findHierarchy(SalaryPrintSetting salarySetting) {
         List<Integer> hierarchies = new ArrayList<>();
         if (salarySetting.getHrchyIndex1()) {
-            hierarchies.add(1);
+            hierarchies.add(PaymentConstant.HIERARCHY_INDEX_1);
         }
         if (salarySetting.getHrchyIndex2()) {
-            hierarchies.add(2);
+            hierarchies.add(PaymentConstant.HIERARCHY_INDEX_2);
         }
         if (salarySetting.getHrchyIndex3()) {
-            hierarchies.add(3);
+            hierarchies.add(PaymentConstant.HIERARCHY_INDEX_3);
         }
         if (salarySetting.getHrchyIndex4()) {
-            hierarchies.add(4);
+            hierarchies.add(PaymentConstant.HIERARCHY_INDEX_4);
         }
         if (salarySetting.getHrchyIndex5()) {
-            hierarchies.add(5);
+            hierarchies.add(PaymentConstant.HIERARCHY_INDEX_5);
         }
         if (salarySetting.getHrchyIndex6()) {
-            hierarchies.add(6);
+            hierarchies.add(PaymentConstant.HIERARCHY_INDEX_6);
         }
         if (salarySetting.getHrchyIndex7()) {
-            hierarchies.add(7);
+            hierarchies.add(PaymentConstant.HIERARCHY_INDEX_7);
         }
         if (salarySetting.getHrchyIndex8()) {
-            hierarchies.add(8);
+            hierarchies.add(PaymentConstant.HIERARCHY_INDEX_8);
         }
         if (salarySetting.getHrchyIndex9()) {
-            hierarchies.add(9);
+            hierarchies.add(PaymentConstant.HIERARCHY_INDEX_9);
         }
         return hierarchies;
-    }
-
-    /**
-     * Inits the data.
-     *
-     * @return the payment salary report data
-     */
-    public PaymentSalaryReportData initData() {
-        PaymentSalaryReportData rawData = fakeReportData();
-        SalaryPrintSettingDto configure = findSalarySetting(null);
-        rawData.setConfigure(configure);
-
-//        HeaderReportData header = findReportHeader();
-//        rawData.setHeaderData(header);
-
-        return rawData;
     }
 
     /**
@@ -309,14 +267,13 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
     private Map<EmployeeKey, Double> fakeMapAmount(int numberOfEmployee, List<EmployeeDto> employees) {
         Map<EmployeeKey, Double> mapEmployeeAmount = new HashMap<>();
 
-        Map<EmployeeKey, Double> mapPayment = fakeCategoryItem(SalaryCategory.Payment, numberOfEmployee, employees);
+        Map<EmployeeKey, Double> mapPayment = fakeCategoryItem(SalaryCategory.Payment, employees);
         mapEmployeeAmount.putAll(mapPayment);
 
-        Map<EmployeeKey, Double> mapDeduction = fakeCategoryItem(SalaryCategory.Deduction, numberOfEmployee, employees);
+        Map<EmployeeKey, Double> mapDeduction = fakeCategoryItem(SalaryCategory.Deduction, employees);
         mapEmployeeAmount.putAll(mapDeduction);
 
-        Map<EmployeeKey, Double> mapArticleOther = fakeCategoryItem(SalaryCategory.ArticleOthers, numberOfEmployee,
-                employees);
+        Map<EmployeeKey, Double> mapArticleOther = fakeCategoryItem(SalaryCategory.ArticleOthers, employees);
         mapEmployeeAmount.putAll(mapArticleOther);
 
         return mapEmployeeAmount;
@@ -326,12 +283,10 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
      * Fake category item.
      *
      * @param category the category
-     * @param numberOfEmployee the number of employee
      * @param employees the employees
      * @return the map
      */
-    private Map<EmployeeKey, Double> fakeCategoryItem(SalaryCategory category, int numberOfEmployee,
-            List<EmployeeDto> employees) {
+    private Map<EmployeeKey, Double> fakeCategoryItem(SalaryCategory category, List<EmployeeDto> employees) {
         Map<EmployeeKey, Double> map = new HashMap<>();
         for (int j = 0; j < 10; j++) {
             double value = j + 1;

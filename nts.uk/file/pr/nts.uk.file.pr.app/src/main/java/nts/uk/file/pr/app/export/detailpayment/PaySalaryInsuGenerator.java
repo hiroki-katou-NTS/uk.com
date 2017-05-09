@@ -5,7 +5,7 @@
 /**
  * 
  */
-package nts.uk.file.pr.app.export.detailpaymentsalary;
+package nts.uk.file.pr.app.export.detailpayment;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportData;

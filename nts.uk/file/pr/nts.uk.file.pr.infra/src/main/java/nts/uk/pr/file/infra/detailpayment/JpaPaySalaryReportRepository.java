@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.pr.file.infra.detailpaymentsalary;
+package nts.uk.pr.file.infra.detailpayment;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySetting
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItem;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingRepository;
-import nts.uk.file.pr.app.export.detailpaymentsalary.PaySalaryReportRepository;
+import nts.uk.file.pr.app.export.detailpayment.PaySalaryReportRepository;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeKey;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentConstant;
@@ -152,8 +152,10 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         Map<EmployeeKey, Double> mapEmpAmount = new HashMap<>();
         
         // ========= FIND MAP AMOUNT OF EMPLOYEE =========
-        for (String codeEmp : mapEmp.keySet()) {
-            List<Object[]> listDetail = mapEmp.get(codeEmp);
+        for (Map.Entry<String, List<Object[]>> entry : mapEmp.entrySet()) {
+            String codeEmp = entry.getKey();
+            List<Object[]> listDetail = entry.getValue();
+            
             Map<Integer, List<Object[]>> mapAmountByYm = listDetail.stream()
                     .collect(Collectors.groupingBy(item -> (int) item[4]));
             
@@ -166,8 +168,8 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         return reportData;
     }
     
-    private void filterData(String codeEmp, Map<Integer, List<Object[]>> mapAmountByYm, Map<CategoryItem, List<String>> mapItem,
-            Map<EmployeeKey, Double> mapAmount) {
+    private void filterData(String codeEmp, Map<Integer, List<Object[]>> mapAmountByYm,
+            Map<CategoryItem, List<String>> mapItem, Map<EmployeeKey, Double> mapAmount) {
         
         mapAmountByYm.forEach((yearMonth, objectList) -> {
             mapItem.forEach((categoryItem, subItemCodes) -> {
@@ -179,10 +181,8 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 key.setSalaryCategory(SalaryCategory.valueOf(categoryItem.category.value));
                 
                 List<Object[]> objectFiltereds = objectList.stream()
-                        .filter(ob -> {
-                            return yearMonth == (int) ob[4] && (int) ob[1] == categoryItem.category.value 
-                                    && subItemCodes.contains((String) ob[2]);
-                        })
+                        .filter(ob -> yearMonth == (int) ob[4] && (int) ob[1] == categoryItem.category.value 
+                                    && subItemCodes.contains((String) ob[2]))
                         .collect(Collectors.toList());
                 
                 double amount = 0;
@@ -218,10 +218,8 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 // ========= MASTER ITEM =========
                 if (item.getType() == SalaryItemType.Master) {
                     categoryItem.itemName = masterItems.stream()
-                            .filter(masterItem -> {
-                                return masterItem.getCategoryAtr().value == categoryItem.category.value
-                                        && masterItem.getItemCode().v().equals(categoryItem.itemCode);
-                            })
+                            .filter(masterItem -> masterItem.getCategoryAtr().value == categoryItem.category.value
+                                        && masterItem.getItemCode().v().equals(categoryItem.itemCode))
                             .map(masterItem -> masterItem.getItemName().v())
                             .findFirst()
                             .get();
@@ -230,26 +228,14 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 // ========= AGGREGATE ITEM =========
                 else {
                     List<String> subMasterItemCodes = aggrItems.stream()
-                            .filter(aggr -> {
-                                if (aggr.getHeader().getTaxDivision().value == category.getCategory().value
-                                        && aggr.getHeader().getAggregateItemCode().v().equals(itemCode)) {
-                                    return true;
-                                }
-                                return false;
-                            })
-                            .flatMap(aggr -> {
-                                return aggr.getSubItemCodes().stream()
-                                        .map(aggrItem -> aggrItem.getSalaryItemCode());
-                            })
+                            .filter(aggr -> aggr.getHeader().getTaxDivision().value == category.getCategory().value
+                                        && aggr.getHeader().getAggregateItemCode().v().equals(itemCode))
+                            .flatMap(aggr -> aggr.getSubItemCodes().stream()
+                                        .map(aggrItem -> aggrItem.getSalaryItemCode()))
                             .collect(Collectors.toList());
                     categoryItem.itemName = aggrItems.stream()
-                            .filter(aggr -> {
-                                if (aggr.getHeader().getTaxDivision().value == category.getCategory().value
-                                        && aggr.getHeader().getAggregateItemCode().v().equals(itemCode)) {
-                                    return true;
-                                }
-                                return false;
-                            })
+                            .filter(aggr -> aggr.getHeader().getTaxDivision().value == category.getCategory().value
+                                        && aggr.getHeader().getAggregateItemCode().v().equals(itemCode))
                             .map(aggr -> aggr.getName().v())
                             .findFirst()
                             .get();
@@ -269,14 +255,14 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         query.setParameter("companyCode", companyCode);
         query.setParameter("startYM", payQuery.getStartDate());
         query.setParameter("endYM", payQuery.getEndDate());
-        query.setParameter("itemCodes", itemCodes );
+        query.setParameter("itemCodes", itemCodes);
         // TODO: not valid case both isNormalMonth = false and isPreliminaryMonth = false
         List<Integer> payAttrs = new ArrayList<>();
         if (payQuery.getIsNormalMonth()) {
-            payAttrs.add(PaymentConstant.NUMBER_ZERO);
+            payAttrs.add(PaymentConstant.ZERO);
         }
         if (payQuery.getIsPreliminaryMonth()) {
-            payAttrs.add(PaymentConstant.NUMBER_ONE);
+            payAttrs.add(PaymentConstant.ONE);
         }
         query.setParameter("sparePayAttributes", payAttrs);
         List select = query.getResultList();

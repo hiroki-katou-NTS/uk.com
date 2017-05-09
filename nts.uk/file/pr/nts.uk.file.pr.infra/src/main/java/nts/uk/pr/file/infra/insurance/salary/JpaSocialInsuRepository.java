@@ -2,9 +2,6 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-/**
- * 
- */
 package nts.uk.pr.file.infra.insurance.salary;
 
 import java.util.ArrayList;
@@ -50,12 +47,11 @@ import nts.uk.file.pr.app.export.insurance.salary.SocialInsuRepository;
  * The Class JpaSalarySocialInsuranceRepository.
  *
  */
-
 @Stateless
 public class JpaSocialInsuRepository extends JpaRepository implements SocialInsuRepository {
     
-    /** The query check data. */
-    String QUERY_CHECK_DATA = "SELECT ppd, pmd, ps, ph "
+    /** The Constant QUERY_CHECK_DATA. */
+    private static final String QUERY_CHECK_DATA = "SELECT ppd, pmd, ps, ph "
             + "FROM QpdptPayday ppd,"
             + "QpdmtPayday pmd, "
             + "PismtPersonInsuSocial ps, "
@@ -186,9 +182,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         query.setParameter("loginPid", loginPersonId);
         query.setParameter("yearMonth", yearMonth);
         query.setParameter("officeCodes", salaryQuery.getOfficeCodes());
-        String tmpDate = yearMonth.toString().concat(FIRST_DAY);
-        GeneralDate baseDate = GeneralDate.fromString(tmpDate, DATE_FORMAT);
-        query.setParameter("baseDate", baseDate);
+        query.setParameter("baseDate", convertGeneralDate(yearMonth));
         if (query.getResultList().isEmpty()) {
             return false;
         }
@@ -417,9 +411,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         query.setParameter("officeCodes", officeCodes);
         query.setParameter("loginPid", loginPersonId);
         query.setParameter("yearMonth", yearMonth);
-        String tmpDate = yearMonth.toString().concat(FIRST_DAY);
-        GeneralDate baseDate = GeneralDate.fromString(tmpDate, DATE_FORMAT);
-        query.setParameter("baseDate", baseDate);
+        query.setParameter("baseDate", convertGeneralDate(yearMonth));
         return query.getResultList();
     }
     
@@ -439,9 +431,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         Query query = em.createQuery(FIND_PERSON_NORMAL);
         query.setParameter("personIds", personIds);
         query.setParameter("companyCode", companyCode);
-        String tmpDate = yearMonth.toString().concat(FIRST_DAY);
-        GeneralDate baseDate = GeneralDate.fromString(tmpDate, DATE_FORMAT);
-        query.setParameter("baseDate", baseDate);
+        query.setParameter("baseDate", convertGeneralDate(yearMonth));
         query.setParameter("yearMonth", yearMonth);
         return query.getResultList(); 
     }
@@ -942,6 +932,17 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         }
         
         return true;
+    }
+    
+    /**
+     * Convert general date.
+     *
+     * @param yearMonth the year month
+     * @return the general date
+     */
+    private GeneralDate convertGeneralDate(Integer yearMonth) {
+        String tmpDate = yearMonth.toString().concat(FIRST_DAY);
+        return GeneralDate.fromString(tmpDate, DATE_FORMAT);
     }
     
     /**

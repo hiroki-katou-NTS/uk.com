@@ -2,9 +2,6 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-/**
- * 
- */
 package nts.uk.file.pr.app.export.detailpaymentsalary.data;
 
 import com.aspose.cells.Color;
@@ -38,11 +35,14 @@ public class PaymentConstant {
     /** The Constant INDEX_ROW_CONTENT. */
     public static final int INDEX_ROW_CONTENT = 6;
     
-    /** The Constant NUMBER_ZERO. */
-    public static final int NUMBER_ZERO = 0;
+    /** The Constant ZERO. */
+    public static final int ZERO = 0;
     
-    /** The Constant NUMBER_ONE. */
-    public static final int NUMBER_ONE = 1;
+    /** The Constant ONE. */
+    public static final int ONE = 1;
+    
+    /** The Constant SECOND. */
+    public static final int SECOND = 2;
     
     /** The Constant NUMBER_COLUMN_PAGE. */
     public static final int NUMBER_COLUMN_PAGE = 13;
@@ -79,4 +79,35 @@ public class PaymentConstant {
     
     /** The Constant OUTPUT_LANGUEGE_ENGLISH. */
     public static final String OUTPUT_LANGUEGE_ENGLISH = "2";
+    
+    /** The Constant HIERARCHY_INDEX_1. */
+    public static final int HIERARCHY_INDEX_1 = 1;
+    
+    /** The Constant HIERARCHY_INDEX_2. */
+    public static final int HIERARCHY_INDEX_2 = 2;
+    
+    /** The Constant HIERARCHY_INDEX_3. */
+    public static final int HIERARCHY_INDEX_3 = 3;
+    
+    /** The Constant HIERARCHY_INDEX_4. */
+    public static final int HIERARCHY_INDEX_4 = 4;
+    
+    /** The Constant HIERARCHY_INDEX_5. */
+    public static final int HIERARCHY_INDEX_5 = 5;
+    
+    /** The Constant HIERARCHY_INDEX_6. */
+    public static final int HIERARCHY_INDEX_6 = 6;
+    
+    /** The Constant HIERARCHY_INDEX_7. */
+    public static final int HIERARCHY_INDEX_7 = 7;
+    
+    /** The Constant HIERARCHY_INDEX_8. */
+    public static final int HIERARCHY_INDEX_8 = 8;
+    
+    /** The Constant HIERARCHY_INDEX_9. */
+    public static final int HIERARCHY_INDEX_9 = 9;
+    
+    private PaymentConstant() {
+        throw new IllegalAccessError("Utility class");
+    }
 }

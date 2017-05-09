@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.pr.app.export.detailpaymentsalary;
+package nts.uk.file.pr.app.export.detailpayment;
 
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportData;
 import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
