@@ -1,16 +1,14 @@
 module qpp021.f.service {
 
     var paths = {
-        printService: "/file/paymentdata/print",
+        save: "ctx/pr/report/payment/contact/personalsetting/save"
     };
 
-    export function printF(query: any): JQueryPromise<any> {
-        let dfd = $.Deferred<any>();
-        //nts.uk.request.ajax(paths.getComparingPrintSet).done(function(res: any) {
-            dfd.resolve();
-        //}).fail(function(error: any) {
-            //dfd.reject(error);
-       // })
-        return dfd.promise();
+    /**
+     * Save
+     */
+    export function save(data: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.save, data);
     }
+
 }

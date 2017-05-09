@@ -5,14 +5,15 @@ var qpp021;
         var service;
         (function (service) {
             var paths = {
-                printService: "/file/paymentdata/print",
+                save: "ctx/pr/report/payment/contact/personalsetting/save"
             };
-            function printF(query) {
-                var dfd = $.Deferred();
-                dfd.resolve();
-                return dfd.promise();
+            /**
+             * Save
+             */
+            function save(data) {
+                return nts.uk.request.ajax(paths.save, data);
             }
-            service.printF = printF;
+            service.save = save;
         })(service = f.service || (f.service = {}));
     })(f = qpp021.f || (qpp021.f = {}));
 })(qpp021 || (qpp021 = {}));
