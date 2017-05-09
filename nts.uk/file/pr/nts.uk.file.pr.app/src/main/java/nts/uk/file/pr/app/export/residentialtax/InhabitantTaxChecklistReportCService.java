@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
@@ -54,14 +55,16 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 				query.getResidentTaxCodeList());
 		
 		if(personResidentTaxList.size() == 0) {
-			throw new BusinessException("データがありません。");
+			throw new BusinessException(new RawErrorMessage("データがありません。"));
 		}
 		
 		CompanyDto company = residentialTaxRepo.findCompany(companyCode);
 
 		Map<String, List<PersonResitaxDto>> personResidentTaxListMap = personResidentTaxList.stream()
 				.collect(Collectors.groupingBy(PersonResitaxDto::getResidenceCode, Collectors.toList()));
-
+		
+		String[]  processingYearMonth = query.getProcessingYearMonth().split("/");
+		int processingYM = Integer.parseInt(processingYearMonth[0] + processingYearMonth[1]);
 		for (PersonResitaxDto personResidentTax : personResidentTaxList) {
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap
 					.get(personResidentTax.getResidenceCode());
@@ -69,7 +72,7 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 					.collect(Collectors.toList());
 
 			List<PaymentDetailDto> paymentDetailList = residentialTaxRepo.findPaymentDetail(companyCode, personIdList,
-					PayBonusAtr.SALARY, Integer.parseInt(query.getProcessingYearMonth()), CategoryAtr.DEDUCTION, "F108");
+					PayBonusAtr.SALARY, processingYM , CategoryAtr.DEDUCTION, "F108");
 
 			double totalValue = paymentDetailList.stream().mapToDouble(x -> x.getValue().doubleValue()).sum();
             for (PaymentDetailDto paymentDetail : paymentDetailList) {

@@ -173,13 +173,13 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 			// DBD_015 actualRecieveMny
 			reportData.setActualRecieveMny(actualRecieveMnyMap);
 			// DBD_016 cityTaxMny
-			reportData.setCityTaxMny(residentialTaxSlip.getCityTaxMny().toString());
+			reportData.setCityTaxMny(residentialTaxSlip.getCityTaxMny().doubleValue());
 			// DBD_017 prefectureTaxMny
-			reportData.setPrefectureTaxMny(residentialTaxSlip.getPrefectureTaxMny().toString());
+			reportData.setPrefectureTaxMny(residentialTaxSlip.getPrefectureTaxMny().doubleValue());
 			// DBD_018 taxOverdueMny
-			reportData.setTaxOverdueMny(residentialTaxSlip.getTaxOverdueMny().toString());
+			reportData.setTaxOverdueMny(residentialTaxSlip.getTaxOverdueMny().doubleValue());
 			// DBD_019 taxDemandChargeMny
-			reportData.setTaxDemandChargeMny(residentialTaxSlip.getTaxDemandChargeMny().toString());
+			reportData.setTaxDemandChargeMny(residentialTaxSlip.getTaxDemandChargeMny().doubleValue());
 			// DBD_020 filingDate
 			reportData.setFilingDate(residentialTaxSlip.getDueDate().toString());
 			// CTR_001 designatedYM
