@@ -27,7 +27,7 @@ import lombok.Setter;
  * @param empType the new emp type
  */
 @Setter
-public class DenominationTblHeaderData {
+public class DenoTableHeaderData {
 	
 	/** The date. */
 	private String targetYearMonth;

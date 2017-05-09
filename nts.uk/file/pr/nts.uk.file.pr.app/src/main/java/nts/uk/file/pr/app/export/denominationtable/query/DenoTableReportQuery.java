@@ -44,7 +44,7 @@ import lombok.Setter;
  * @param isBreakPageByAccumulated the new checks if is break page by accumulated
  */
 @Setter
-public class DenominationTableReportQuery {
+public class DenoTableReportQuery {
 
 	/** The target year. */
 	private Integer yearMonth;
@@ -53,7 +53,7 @@ public class DenominationTableReportQuery {
 	private List<String> pIdList;
 	
 	/** The selected division. */
-	private String selectedDivision;	
+	private Integer selectedDivision;	
 	
 	/** The is print detail item. */
 	private Boolean isPrintDetailItem;

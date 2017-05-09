@@ -11,8 +11,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.file.pr.app.export.denominationtable.DenominationTblReportService;
-import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.DenoTableReportService;
+import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 
 /**
  * The Class QPP009WebService.
@@ -23,7 +23,7 @@ public class QPP009WebService extends WebService {
 	
 	/** The export service. */
 	@Inject
-	private DenominationTblReportService exportService;
+	private DenoTableReportService exportService;
 	
 	/**
 	 * Generate.
@@ -33,7 +33,7 @@ public class QPP009WebService extends WebService {
 	 */
 	@POST
 	@Path("generate")
-	public ExportServiceResult generate(DenominationTableReportQuery query) {
+	public ExportServiceResult generate(DenoTableReportQuery query) {
 	// TODO:
 		return this.exportService.start(query);
 	}

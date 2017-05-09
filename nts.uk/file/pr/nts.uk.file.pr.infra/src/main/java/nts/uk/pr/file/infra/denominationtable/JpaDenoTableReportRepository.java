@@ -18,10 +18,10 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.file.pr.app.export.denominationtable.DenominationTableRepository;
+import nts.uk.file.pr.app.export.denominationtable.DenoTableRepository;
 import nts.uk.file.pr.app.export.denominationtable.data.DepartmentData;
 import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
-import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 
 
 
@@ -29,13 +29,13 @@ import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReport
  * The Class JpaSalaryChartReportRepository.
  */
 @Stateless
-public class JpaDenominationTblReportRepository extends JpaRepository implements DenominationTableRepository {
+public class JpaDenoTableReportRepository extends JpaRepository implements DenoTableRepository {
 	private static final int PAY_BONUS_ATR = 0;
 	private static final int CTR_ATR_3 = 3;
 	private static final int ONE_THOUSAND = 1000;
 	private static final int ONE = 1;
 	private static final int VALUE_0 = 0;
-	private static final int SPARE_PAY_ATR = 0;
+//	private static final int SPARE_PAY_ATR = 0;
 	private static final String ITEM_CD_F304 = "F304";
 	private static final String ITEM_CD_F305 = "F305";
 	private static final String ITEM_CD_F306 = "F306";
@@ -148,8 +148,10 @@ public class JpaDenominationTblReportRepository extends JpaRepository implements
 //			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "//3 (NOT 4)
 //			+ "";
 	
-	private static final String QUERY_STRING = "SELECT pb.pid, pc.scd, pb.nameB, d.cmnmtDepPK.departmentCode, "
-			+ "d.depName, d.hierarchyId, SUM(pd.value) "// missing dep info
+	private static final String QUERY_STRING = "SELECT pb.pid, pc.scd, pb.nameB, "
+//			+ "d.cmnmtDepPK.departmentCode, d.depName, "
+			+ "pdr.depcd, d.depName, "
+			+ "d.hierarchyId, SUM(pd.value), COUNT(pdr.pogmtPersonDepRglPK.pid)  "// missing dep info
 			+ "FROM PbsmtPersonBase pb "
 			+ "LEFT JOIN PcpmtPersonCom pc "
 			+ "ON pc.pcpmtPersonComPK.pid = pb.pid "
@@ -178,7 +180,7 @@ public class JpaDenominationTblReportRepository extends JpaRepository implements
 			+ "OR (ba.useSet3 = :ONE AND ba.paymentMethod3 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F306) "
 			+ "OR (ba.useSet4 = :ONE AND ba.paymentMethod4 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F307) "
 			+ "OR (ba.useSet5 = :ONE AND ba.paymentMethod5 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F308)) "
-			+ "GROUP BY pb.pid, pc.scd, pb.nameB, d.cmnmtDepPK.departmentCode, d.depName, d.hierarchyId "
+			+ "GROUP BY pb.pid, pc.scd, pb.nameB, pdr.depcd, d.depName, d.hierarchyId "
 			+ "ORDER BY d.hierarchyId ";
 			
 	
@@ -186,7 +188,7 @@ public class JpaDenominationTblReportRepository extends JpaRepository implements
 	 * @see nts.uk.ctx.pr.screen.app.report.qpp009.SalarychartRepository#getItems(java.lang.String, nts.uk.ctx.pr.screen.app.report.qpp009.query.SalaryChartReportQuery)
 	 */
 	@Override
-	public List<EmployeeData> getItems(String companyCode, DenominationTableReportQuery query) {
+	public List<EmployeeData> getItems(String companyCode, DenoTableReportQuery query) {
 		List<Object[]> paymentHeaderResult = this.getPaymentHeaderResult(companyCode, query);
 		List<EmployeeData> masterResultList;
 		// Check if Result List is Empty
@@ -212,7 +214,7 @@ public class JpaDenominationTblReportRepository extends JpaRepository implements
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<Object[]> getPaymentHeaderResult(String companyCode, DenominationTableReportQuery query) {
+	private List<Object[]> getPaymentHeaderResult(String companyCode, DenoTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
 		Query sqlQuery = em.createQuery(PAYMENT_HEADER_QUERY);
 		sqlQuery.setParameter("CCD", companyCode);
@@ -226,7 +228,7 @@ public class JpaDenominationTblReportRepository extends JpaRepository implements
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<Object[]> getCheckingAtPrintRss(String companyCode, DenominationTableReportQuery query) {
+	private List<Object[]> getCheckingAtPrintRss(String companyCode, DenoTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
 		Query sqlQuery = em.createQuery(BANK_ACC_JOIN_PAYMENT_DETAIL_QUERY);
 		sqlQuery.setParameter("CCD", companyCode);
@@ -249,14 +251,14 @@ public class JpaDenominationTblReportRepository extends JpaRepository implements
 
 	
 	@SuppressWarnings("unchecked")
-	private List<EmployeeData> getMasterResultList(String companyCode, DenominationTableReportQuery query) {
+	private List<EmployeeData> getMasterResultList(String companyCode, DenoTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
 		Query sqlQuery = em.createQuery(QUERY_STRING);
 		sqlQuery.setParameter("CCD", companyCode);
 		sqlQuery.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR);
 		sqlQuery.setParameter("ProcessingYM", query.getYearMonth());
 		sqlQuery.setParameter("CTR_ATR", CTR_ATR_3);
-		sqlQuery.setParameter("SPARE_PAY_ATR", SPARE_PAY_ATR);
+		sqlQuery.setParameter("SPARE_PAY_ATR", query.getSelectedDivision());
 		sqlQuery.setParameter("BASE_YMD", GeneralDate.today());
 		sqlQuery.setParameter("BASE_YM", query.getYearMonth());
 		sqlQuery.setParameter("ITEM_CD_F304", ITEM_CD_F304);
@@ -271,6 +273,9 @@ public class JpaDenominationTblReportRepository extends JpaRepository implements
 		CollectionUtil.split(query.getPIdList(), ONE_THOUSAND,
 				subList -> resultList.addAll(sqlQuery.setParameter("PIDs", subList).getResultList()));
 		
+		if (CollectionUtil.isEmpty(resultList)) {
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
+		}
 		// Convert To EmployeeData List
 		List<EmployeeData> empList = new ArrayList<>();
 		Iterator<Object[]> itemItr = resultList.iterator();
@@ -284,11 +289,13 @@ public class JpaDenominationTblReportRepository extends JpaRepository implements
 			String depName = (String) objItr[4];
 			String depPath = (String) objItr[5];
 			int depLevel = depPath.length() / 3;
+			Long peopleInDep = (Long) objItr[7];
 			DepartmentData depData = DepartmentData.builder()
 					.depCode(depCode)
 					.depName(depName)
 					.depPath(depPath)
 					.depLevel(depLevel)
+					.numberOfEmp(peopleInDep.intValue())
 					.build();
 			EmployeeData empData = EmployeeData.builder()
 					.empCode(empCode)
