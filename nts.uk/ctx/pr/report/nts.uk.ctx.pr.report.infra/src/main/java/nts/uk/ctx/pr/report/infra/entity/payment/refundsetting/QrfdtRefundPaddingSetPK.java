@@ -29,7 +29,7 @@ public class QrfdtRefundPaddingSetPK implements Serializable {
 
 	/** The print type. */
 	@Column(name = "PRINT_TYPE")
-	private short printType;
+	private int printType;
 
 	/**
 	 * Instantiates a new qrfdt refund padding set PK.

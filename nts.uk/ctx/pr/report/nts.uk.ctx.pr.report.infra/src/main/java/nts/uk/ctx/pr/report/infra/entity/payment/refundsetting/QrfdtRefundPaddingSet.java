@@ -50,7 +50,7 @@ public class QrfdtRefundPaddingSet extends UkJpaEntity implements Serializable {
 
 	/** The is show break line. */
 	@Column(name = "IS_SHOW_BREAK_LINE")
-	private BigDecimal isShowBreakLine;
+	private int isShowBreakLine;
 
 	/** The break line margin. */
 	@Column(name = "BREAK_LINE_MARGIN")

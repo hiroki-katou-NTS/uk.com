@@ -1,18 +1,59 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding;
 
-import lombok.AllArgsConstructor;
-
-/** ÈÉ®ÈñÄÂá∫Âäõ */
-@AllArgsConstructor
 public enum ShowBreakLine {
-	/**
-	 * 1.Ë°®Á§∫„?ô„Çã
-	 */
-	DISPLAY(1),
-	/**
-	 * 2.Ë°®Á§∫„?ó„?™„?Ñ
-	 */
-	NOT_DISPLAY(2);
 
-	public final int value;
+	/** The display. */
+	DISPLAY(0, "„Åô„Çã"),
+
+	/** The not display. */
+	NOT_DISPLAY(1, "„Åó„Å™„ÅÑ");
+
+	/** The value. */
+	public int value;
+
+	/** The description. */
+	public String description;
+
+	/** The Constant values. */
+	private final static ShowBreakLine[] values = ShowBreakLine.values();
+
+	/**
+	 * Instantiates a new prints the type.
+	 *
+	 * @param value
+	 *            the value
+	 * @param description
+	 *            the description
+	 */
+	private ShowBreakLine(int value, String description) {
+		this.value = value;
+		this.description = description;
+	}
+
+	/**
+	 * Value of.
+	 *
+	 * @param value
+	 *            the value
+	 * @return the prints the type
+	 */
+	public static ShowBreakLine valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (ShowBreakLine val : ShowBreakLine.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+		// Not found.
+		return null;
+	}
 }
