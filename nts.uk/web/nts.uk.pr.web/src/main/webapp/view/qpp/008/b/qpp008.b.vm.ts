@@ -34,7 +34,8 @@ module qpp008.b.viewmodel {
                 let hrchyIndexSelect = self.printSetting().hrchyIndexSelectId().sort();
                 let newHrchyIndexList = new Array();
                 let enable = true;
-                if (hrchyIndexSelect.length >= 5) {
+                let sumDepHrchyIndexSet = self.printSetting().sumDepHrchyIndexSet()
+                if (hrchyIndexSelect.length >= 5 || !sumDepHrchyIndexSet) {
                     enable = false
                 }
                 for (let i = 1; i < 10; i++) {
@@ -44,6 +45,9 @@ module qpp008.b.viewmodel {
                     for (let x = 0; x < 5; x++) {
                         if (itemsDetail[x] === 0 && i < 5) {
                             itemsDetail[x] = item;
+                            if (!sumDepHrchyIndexSet) {
+                                break;
+                            }
                             _.find(newHrchyIndexList, function(o) {
                                 if (o.id === item) {
                                     o.enable(true);
@@ -58,6 +62,7 @@ module qpp008.b.viewmodel {
                 self.hrchyIndexList(newHrchyIndexList);
                 return itemsDetail;
             }, self).extend({ deferred: true });
+
         }
 
         startPage(): JQueryPromise<any> {
@@ -82,6 +87,19 @@ module qpp008.b.viewmodel {
 
         configurationPrintSetting(): any {
             let self = this;
+            if (self.printSetting().sumDepHrchyIndexSet() && self.printSetting().hrchyIndexSelectId().length === 0) {
+                nts.uk.ui.dialog.alert("部門階層が正しく指定されていません");
+                return;
+            }
+            if (self.printSetting().hrchyIndexSelectId().length >= 6) {
+                nts.uk.ui.dialog.alert("部門階層が正しく指定されていません");
+                return;
+            }
+            if (!self.printSetting().showPayment() && !self.printSetting().sumEachDeprtSet()
+                && !self.printSetting().sumDepHrchyIndexSet() && !self.printSetting().totalSet()) {
+                nts.uk.ui.dialog.alert("設定が正しくありません。");
+                return;
+            }
             service.insertUpdateData(new ConfigPrintSettingModel(self.printSetting(), self.hrchyIndexArray())).done(function() {
                 self.printSettingDirty.reset();
                 nts.uk.ui.windows.close();
@@ -100,7 +118,6 @@ module qpp008.b.viewmodel {
             }).ifCancel(function() {
                 return;
             })
-
         }
     }
 
@@ -144,14 +161,6 @@ module qpp008.b.viewmodel {
                 self.hrchyIndexSelectId = ko.observableArray([]);
                 self.multiCheckBoxEnable = ko.observable(false);
             }
-            self.sumDepHrchyIndexSet.subscribe(function(newValue) {
-                if (newValue == true) {
-                    self.multiCheckBoxEnable(true);
-                    return;
-                }
-                self.multiCheckBoxEnable(false);
-            });
-
         }
     }
 

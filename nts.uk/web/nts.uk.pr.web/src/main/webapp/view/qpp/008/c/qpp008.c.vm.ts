@@ -359,8 +359,18 @@ module qpp008.c.viewmodel {
 
         closeDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared('qpp008_form_header_code', self.currentCode(), true);
-            nts.uk.ui.windows.close();
+            if (!self.items2Dirty.isDirty() && !self.currentItemDirty.isDirty()) {
+                nts.uk.ui.windows.setShared('qpp008_form_header_code', self.currentCode(), true);
+                nts.uk.ui.windows.close();
+                return;
+            }
+            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                self.items2Dirty.reset();
+                self.currentItemDirty.reset();
+                nts.uk.ui.windows.close();
+            }).ifCancel(function() {
+                return;
+            })
         }
 
         getSwapUpDownList(lstSelectForTab: Array<string>, categoryAtr: number) {

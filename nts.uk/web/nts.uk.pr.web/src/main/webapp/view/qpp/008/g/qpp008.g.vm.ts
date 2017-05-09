@@ -72,7 +72,7 @@ module qpp008.g.viewmodel {
                     { headerText: "", key: "selectId", dataType: "number", hidden: true },
                     { headerText: "社員コード", key: "employeeCode", dataType: "string", width: "10%" },
                     { headerText: "氏名", key: "employeeName", dataType: "string", width: "10%" },
-                    { headerText: "区分", key: "categoryAtrName", dataType: "string", width: "4%", columnCssClass:"category-attribute-name" },
+                    { headerText: "区分", key: "categoryAtrName", dataType: "string", width: "4%", columnCssClass: "category-attribute-name" },
                     { headerText: "項目名", key: "itemName", dataType: "string", width: "10%" },
                     {
                         headerText: self.comparativeDateEarlier,
@@ -96,7 +96,7 @@ module qpp008.g.viewmodel {
                         key: "reasonDifference",
                         dataType: "string",
                         width: "12%",
-                        template: "{{if ${difference} !== 0}}<input type='text' data-value = ${selectId} value='${reasonDifference}' class='reasonDifference-text' />{{/if}}"
+                        template: "{{if ${difference} !== 0}}<input type='text' data-value = ${selectId} value='${reasonDifference}' class='reasonDifference-text'　maxlength='30' />{{/if}}"
                     },
                     { headerText: "登録状況（" + self.comparativeDateEarlier + "）", key: "registrationStatus1", dataType: "string", width: "12%" },
                     { headerText: "登録状況（" + self.comparativeDateLater + "）", key: "registrationStatus2", dataType: "string", width: "12%" },
@@ -125,6 +125,10 @@ module qpp008.g.viewmodel {
             $("#grid-comparing-different").on("change", ".reasonDifference-text", function(evt: any) {
                 let $element = $(this);
                 let selectedValue = $element.val();
+                if (nts.uk.text.countHalf(selectedValue) > 30) {
+                    nts.uk.ui.dialog.alert("Max length for this input is 30");
+                    return;
+                }
                 let selectId = $element.attr('data-value');
                 self.resionDiffChange(Number(selectId), selectedValue);
             });
@@ -194,6 +198,10 @@ module qpp008.g.viewmodel {
         refineComparingDifferrent() {
             let self = this;
             let dataRefine = new Array();
+            if (self.selectedItemCategoryCode().length === 0) {
+                nts.uk.ui.dialog.alert("＊が選択されていません。");
+                return;
+            }
             dataRefine = _.filter(self.detailDifferentList, function(item) {
                 if (_.indexOf(self.selectedItemCategoryCode(), item.categoryAtr) != -1) {
                     if (self.selectedconfirmedCode() == 1 && item.confirmedStatus == false && item.difference != 0) {
@@ -207,7 +215,10 @@ module qpp008.g.viewmodel {
                 }
                 return false;
             });
-
+            if (!dataRefine || dataRefine.length == 0) {
+                nts.uk.ui.dialog.alert("対象データがありません。");
+                return;
+            }
             $("#grid-comparing-different").igGrid({ dataSource: dataRefine });
             $("#grid-comparing-different").igGrid("dataBind");
         }
@@ -228,7 +239,17 @@ module qpp008.g.viewmodel {
         }
 
         closeDialog() {
-            nts.uk.ui.windows.close();
+            let self = this;
+            if (!self.detailDifferentListDirty.isDirty()) {
+                nts.uk.ui.windows.close();
+                return;
+            }
+            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                self.detailDifferentListDirty.reset();
+                nts.uk.ui.windows.close();
+            }).ifCancel(function() {
+                return;
+            })
         }
 
     }

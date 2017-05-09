@@ -52,7 +52,7 @@
 										<button
 											data-bind="ntsHelpButton: {image: 'test.img', position: 'right center', enable: true }">?</button>
 										<div class="div-checkbox-child">
-											<span class="label" id="B_LBL_003">累計したい%部門%の階層を指定（最大５つ）</span>
+											<span class="label" id="B_LBL_003">累計したい部門の階層を指定（最大５つ）</span>
 											<div class="tableCheckBoxChild">
 												<div class="col-100px" style=""
 													data-bind="ntsMultiCheckBox: {
@@ -61,7 +61,7 @@
 														optionsText: 'name',
 														value: hrchyIndexSelectId,
 														enable: multiCheckBoxEnable
-														}">
+														} ">
 												</div>
 											</div>
 											<span class="label" id="B_LBL_013">※10階層計は部門計で確認できます。</span>
@@ -102,28 +102,26 @@
 							enable: true }">
 						</div>
 						<div>
-							<span class="label" id="B_LBL_006">※差額がない項目は表示しません」と表記</span> <br />
+							<span class="label" id="B_LBL_006">※差額がない項目は表示しません</span> <br />
 							<span class="label" id="B_LBL_007">※全項目の差額がない社員は、印刷対象になりません。</span>
 						</div>
 
 						<div class="div-title-content ">
-							<span class="label" id="B_LBL_008">差額がない場合</span>
+							<span class="label" id="B_LBL_008">差額の背景色</span>
 						</div>
 						<div>
 							<table class="table_setting_color">
 								<tr>
 									<td><div id="B_LBL_009"
 											data-bind="ntsFormLabel: {inline: true, required:false, enable: true}">プラス</div></td>
-									<td><span data-bind="text: plushBackColor"></span>
-										waiting...</td>
-									<td><span class="label" id="B_LBL_010">サンプル文字</span></td>
+									<td><span data-bind="text: plushBackColor"></span> ...  </td>
+									<td><span class="label color-b-lbl" id="b_lbl_010" data-bind = "style: { 'background-color': plushBackColor}">サンプル文字</span></td>
 								</tr>
 								<tr>
 									<td><div id="B_LBL_011"
 											data-bind="ntsFormLabel: {inline: true, required:false, enable: true}">マイナス</div></td>
-									<td><span data-bind="text: minusBackColor"></span>
-										waiting...</td>
-									<td><span class="label" id="B_LBL_012">サンプル文字</span></td>
+									<td><span data-bind="text: minusBackColor"></span>  ... </td>
+									<td><span class="label color-b-lbl" id="b_lbl_012" data-bind = "style: { 'background-color': minusBackColor}">サンプル文字</span></td>
 								</tr>
 							</table>
 						</div>
