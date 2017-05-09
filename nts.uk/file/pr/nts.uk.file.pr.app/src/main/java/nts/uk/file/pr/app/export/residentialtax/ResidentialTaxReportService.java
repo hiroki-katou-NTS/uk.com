@@ -16,7 +16,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
 import nts.uk.file.pr.app.export.residentialtax.data.PaymentDetailDto;
 import nts.uk.file.pr.app.export.residentialtax.data.PersonResitaxDto;
@@ -87,8 +87,6 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 		int processingYM = Integer.parseInt(processingYearMonth[0] + processingYearMonth[1]);
 		//20170311
 		GeneralDate baseRangeStartYearMonth = GeneralDate.ymd(processingYear, processingMonth, 11);
-		// GeneralDate baseRangeEndYearMonth = query.getEndDate();
-		GeneralDate baseRangeEndYearMonth = GeneralDate.ymd(2017, 04, 01);
 		for (ResidentialTaxSlipDto residentialTax : residentialTaxSlipDto) {
 
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(residentialTax.getResiTaxCode());
@@ -110,21 +108,19 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 			// RETIREMENT_PAYMENT(退職金明細データ).SEL-2
 			List<RetirementPaymentDto> retirementPaymentList = residentialTaxRepo.findRetirementPaymentList(companyCode,
 					personIdList, baseRangeStartYearMonth, query.getEndDate());
-			double totalCityTaxMny = retirementPaymentList.stream().mapToDouble(x -> x.getCityTaxMny().doubleValue())
+			double totalCityTaxMny = retirementPaymentList.stream().mapToInt(x -> x.getCityTaxMny())
 					.sum();
 			double totalPrefectureTaxMny = retirementPaymentList.stream()
-					.mapToDouble(x -> x.getPrefectureTaxMny().doubleValue()).sum();
+					.mapToInt(x -> x.getPrefectureTaxMny()).sum();
 			totalDeliveryAmountRetirement.put(residentialTax.getResiTaxCode(),
 					totalPrefectureTaxMny + totalCityTaxMny + residentialTax.getTaxRetirementMny().doubleValue());
 			double totalActualRecieveMny = retirementPaymentList.stream()
-					.mapToDouble(x -> x.getActualRecieveMny().doubleValue()).sum();
+					.mapToInt(x -> x.getActualRecieveMny()).sum();
 			totalActualRecieveMnyMap.put(residentialTax.getResiTaxCode(), totalActualRecieveMny);
-			deliveryNumber.put(residentialTax.getResiTaxCode(),
-					residentialTax.getHeadCount().intValue() + personResitaxList.size());
+			deliveryNumber.put(residentialTax.getResiTaxCode(),residentialTax.getHeadCount().intValue());
 
 		}
 		
-		// List<String> personIdList = personResidentTaxListMap
 
 		// return
 		List<ResidentTaxReportData> reportDataList = new ArrayList<ResidentTaxReportData>();
@@ -173,7 +169,7 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 			// DBD_013 cordinatePostalCode
 			reportData.setCordinatePostalCode(residentialTax.getCordinatePostalCode());
 			// DBD_014 deliveryNumber
-			reportData.setDeliveryNumber(deliveryNumberString);
+			reportData.setDeliveryNumber(deliveryNumberString+"人");
 			// DBD_015 actualRecieveMny
 			reportData.setActualRecieveMny(actualRecieveMnyMap);
 			// DBD_016 cityTaxMny
