@@ -8,8 +8,8 @@ module qrm009.vm {
 
         constructor() {
             var self = this;
-            self.startDate = ko.observable('2001/01/01');
-            self.endDate = ko.observable('2017/05/05');
+            self.startDate = ko.observable(moment().format("YYYY/MMM/DD"));
+            self.endDate = ko.observable(moment().format("YYYY/MMM/DD"));
             self.columnPersonGridList = [
                 { headerText: 'personId', key: 'personId', hidden: true },
                 { headerText: 'コード', key: 'employeeCode', width: 100 },
@@ -40,9 +40,9 @@ module qrm009.vm {
                     endDate: moment(self.endDate()).utc().toISOString()
                 };
                 if (moment(self.startDate()) <= moment(self.endDate())) {
-                    service.getPaymentDateProcessingList(query)
+                    service.exportRetirementPaymentPDF(query)
                         .fail(function(res) {
-                            nts.uk.ui.dialog.alert(res);
+                            nts.uk.ui.dialog.alert(res.message);
                         });
                 } else {
                     nts.uk.ui.dialog.alert("範囲の指定が正しくありません。");

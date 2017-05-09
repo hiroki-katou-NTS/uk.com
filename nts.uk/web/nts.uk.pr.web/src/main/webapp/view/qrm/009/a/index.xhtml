@@ -19,7 +19,7 @@
 			
 			<ui:define name="content">
 				<div id="functions-area">
-					<button id="btn-export" class="proceed" data-bind="click: exportPDF">選択した社員を印刷(PDF)</button>
+					<button id="btn-export" class="proceed" data-bind="click: exportPDF, enable: $root.errors.isEmpty">選択した社員を印刷(PDF)</button>
 					<button id="A_BTN_002">印刷実行ログ</button>
 				</div>
 				<div id="contents-area">

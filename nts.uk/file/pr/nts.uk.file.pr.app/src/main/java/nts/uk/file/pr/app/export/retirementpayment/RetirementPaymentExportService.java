@@ -34,8 +34,12 @@ public class RetirementPaymentExportService extends ExportService<RetirementPaym
 		List<RetirePayItemDto> lstRetirePayItemDto = this.retirementPaymentRepository.getListRetirePayItem(companyCode);
 		List<RetirementPaymentDto> lstRetirementPaymentDto = this.retirementPaymentRepository.getRetirementPayment(
 				companyCode, lstPersonId, context.getQuery().getStartDate(), context.getQuery().getEndDate());
+		// check empty list person
+		if (lstPersonId.size() < 1) {
+			throw new BusinessException(new RawErrorMessage("社員選択が選択されていません。"));
+		}
 		// check if missing the target data
-		if(lstRetirementPaymentDto.size() < lstPersonId.size()){
+		if (lstRetirementPaymentDto.size() < lstPersonId.size()) {
 			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
 		// validate range date
@@ -46,7 +50,8 @@ public class RetirementPaymentExportService extends ExportService<RetirementPaym
 		for (String personId : lstPersonId) {
 			RetirementPaymentReportData retirementPaymentReportData = new RetirementPaymentReportData();
 			// get dtos
-			RetirementPaymentDto retirementPaymentDto = lstRetirementPaymentDto.stream().filter(dto -> dto.getPersonId().equals(personId)).findFirst().orElse(null);
+			RetirementPaymentDto retirementPaymentDto = lstRetirementPaymentDto.stream()
+					.filter(dto -> dto.getPersonId().equals(personId)).findFirst().orElse(null);
 			PersonalBasicDto personalBasicDto = new PersonalBasicDto("従業員名 " + personId.charAt(35), "2005年 3月 1日",
 					"2017年 12月 31日", "自己都合（転職）", "0年0ヶ 月", "0年0ヶ 月");
 			CompanyMasterDto companyMasterDto = new CompanyMasterDto("日通システム株式会社", "愛知県名古屋市中区栄", "ナディアパークビジネスセンタービル９F");
