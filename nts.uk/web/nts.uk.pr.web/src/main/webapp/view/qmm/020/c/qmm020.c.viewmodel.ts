@@ -45,6 +45,22 @@ module qmm020.c.viewmodel {
         }
 
         openJDialog() {
+            let self = this;
+            nts.uk.ui.windows.setShared("J_DATA", { displayMode: 1, startYm: 201701, endYm: 201708 });
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" })
+                .onClosed(function() {
+                    nts.uk.ui.windows.setShared("J_DATA", null);
+                    let value: any = nts.uk.ui.windows.getShared('J_RETURN');
+                    if (value) {
+                        if (value.selectedMode == 2) {
+                            self.model().ListItems.push(new ListModel({ historyId: '', startYm: value.startDate, endYm: 999912 }));
+                        } else {
+                            let getMaxDate = nts.uk.ui.windows.getShared('C_MAXDATE');
+                            let hist = getMaxDate.historyId;
+                            
+                        }
+                    }
+                });
         }
 
         openKDialog() {
@@ -63,7 +79,7 @@ module qmm020.c.viewmodel {
                             currentItemGrid.paymentDetailCode = stmtCode;
                             service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
                                 currentItemGrid.paymentDetailName = stmtName;
-                                
+
                                 //update date to igGrid
                                 self.model().updateData();
                             }).fail(function(res) {
@@ -115,6 +131,11 @@ module qmm020.c.viewmodel {
                         self.updateData();
                     });
                 }
+            });
+            // get itemMax of ListItem
+            service.getAllotEmployeeMaxDate().done(function(itemMax: number) {
+                let maxDate: IListModel = _.find(self.ListItems(), function(obj) { return (obj.endYm) == itemMax; });
+                nts.uk.ui.windows.setShared("C_MAXDATE", maxDate);
             });
         }
 
