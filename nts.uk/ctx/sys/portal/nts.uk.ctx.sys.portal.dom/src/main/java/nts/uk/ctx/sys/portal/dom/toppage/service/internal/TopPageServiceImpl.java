@@ -37,21 +37,19 @@ public class TopPageServiceImpl implements TopPageService {
 	 */
 	@Override
 	public void copyTopPage(TopPage topPage, String companyId) {
-//		// remove layout of duplicate
-//		Optional<Layout> layout = layoutRepository.find(topPage.getLayoutId());
-//		if (layout.isPresent()) {
-//			layoutRepository.remove(companyId, topPage.getLayoutId());
-//		}
-		// TODO dang ki layout moi
 		String newLayoutId = layoutService.copyTopPageLayout(topPage.getLayoutId());
 		TopPage newTopPage = TopPage.createFromJavaType(topPage.getCompanyId(), topPage.getTopPageCode().v(),
 				newLayoutId, topPage.getTopPageName().v(), topPage.getLanguageNumber());
-
-		// dang ki tp moi
 		topPageRepository.update(newTopPage);
-				
-		// layoutService.registry();
-		// layoutRepository.findByType(companyId,PGType.TopPage.value);
+	}
 
+	@Override
+	public void removeTopPage(String topPageCode, String companyId) {
+		TopPage tp = topPageRepository.findByCode(companyId, topPageCode).get();
+		topPageRepository.remove(companyId, topPageCode);
+		if (!tp.getLayoutId().equals("")) {
+			//TODO change to service of Lam san
+			layoutRepository.remove(companyId, tp.getLayoutId());
+		}
 	}
 }

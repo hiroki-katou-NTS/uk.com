@@ -5,7 +5,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.service.TopPageService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -17,6 +19,9 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 	/** The top page repository. */
 	@Inject
 	TopPageRepository topPageRepository;
+	
+	@Inject
+	TopPageService topPageService; 
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -25,8 +30,7 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 	protected void handle(CommandHandlerContext<DeleteTopPageCommand> context) {
 		DeleteTopPageCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyID();
-		//remove
-		topPageRepository.remove(companyId,command.getTopPageCode());
+		topPageService.removeTopPage(command.getTopPageCode(), companyId);
 	}
 
 }
