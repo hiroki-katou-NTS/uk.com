@@ -1,15 +1,22 @@
 module kmk011.a.service {
     var paths = {
-        getAllDivTimeName: "at/record/divergencetime/?",
         getAllDivTime: "at/record/divergencetime/getalldivtime",
+        getAllDivItem: "at/record/divergencetime/getalldivitem",
+        getAllDivItemId: "at/record/divergencetime/getalldivitemid",
         updateDivTime: "at/record/divergencetime/updatedivtime"
     }
 
     /**
-    * get all divergence time name
+    * get all divergence item id selected
     */
-    export function getAllDivTimeName(): JQueryPromise<Array<model.DivergenceTimeItem>> {
-        return nts.uk.request.ajax("at", paths.getAllDivTimeName);
+    export function getAllDivItem(divTimeId: string): JQueryPromise<Array<model.DivergenceTimeItem>> {
+        return nts.uk.request.ajax("at", paths.getAllDivItem + divTimeId);
+    }
+    /**
+    * get all divergence item id
+    */
+    export function getAllDivItemId(divTimeId: string): JQueryPromise<Array<model.DivergenceTimeItem>> {
+        return nts.uk.request.ajax("at", paths.getAllDivItemId + divTimeId);
     }
     /**
     * get all divergence time
@@ -27,25 +34,32 @@ module kmk011.a.service {
         export class DivergenceTime {
             divTimeId: number;
             divTimeUseSet: number;
+            divTimeName: string;
             alarmTime: number;
             errTime: number;
-            selUseSet: number;
-            cancelErrSelReason: number;
-            inpUseSet: number;
-            cancelErrInpReason: number;
-            constructor(divTimeId: number,divTimeUseSet: number,
+            selectSet: SelectSet;
+            inputSet: SelectSet;
+            constructor(divTimeId: number,divTimeName: string,
+                        divTimeUseSet: number,
                         alarmTime: number,errTime: number,
-                        selUseSet: number,cancelErrSelReason: number,
-                        inpUseSet: number,cancelErrInpReason: number){
+                        selectSet: SelectSet,
+                        inputSet: SelectSet){
                 var self = this;
                 self.divTimeId = divTimeId;
+                self.divTimeName = divTimeName;
                 self.divTimeUseSet = divTimeUseSet;
                 self.alarmTime = alarmTime;
                 self.errTime = errTime;
-                self.selUseSet = selUseSet;
-                self.cancelErrSelReason = cancelErrSelReason;
-                self.inpUseSet = inpUseSet;
-                self.cancelErrInpReason = cancelErrInpReason;
+                self.selectSet = selectSet;
+                self.inputSet = inputSet;
+            }
+        }
+        export class SelectSet{
+            selectUseSet: number;
+            cancelErrSelReason: number;
+            constructor(selectUseSet: number,cancelErrSelReason: number){
+                this.selectUseSet = selectUseSet;
+                this.cancelErrSelReason = cancelErrSelReason;
             }
         }
         export class DivergenceTimeItem{

@@ -3,7 +3,6 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
@@ -12,6 +11,8 @@ public class DivergenceTime extends AggregateRoot{
 	private String companyId;
 	/*乖離時間ID*/
 	private int divTimeId;
+	/*乖離時間名称*/
+	private DivergenceTimeName divTimeName;
 	/*乖離時間使用設定*/
 	private UseSetting divTimeUseSet;
 	/*アラーム時間*/
@@ -25,6 +26,7 @@ public class DivergenceTime extends AggregateRoot{
 
 	public DivergenceTime(String companyId, 
 						int divTimeId, 
+						DivergenceTimeName divTimeName,
 						UseSetting divTimeUseSet, 
 						Time alarmTime,
 						Time errTime, 
@@ -33,6 +35,7 @@ public class DivergenceTime extends AggregateRoot{
 		super();
 		this.companyId = companyId;
 		this.divTimeId = divTimeId;
+		this.divTimeName = divTimeName;
 		this.divTimeUseSet = divTimeUseSet;
 		this.alarmTime = alarmTime;
 		this.errTime = errTime;
@@ -42,6 +45,7 @@ public class DivergenceTime extends AggregateRoot{
 	
 	public static DivergenceTime createSimpleFromJavaType(String companyId,
 														int divTimeId,
+														String divTimeName,
 														int divTimeUseSet,
 														int alarmTime,
 														int errTime,
@@ -52,6 +56,7 @@ public class DivergenceTime extends AggregateRoot{
 		return new DivergenceTime(
 				companyId, 
 				divTimeId, 
+				new DivergenceTimeName(divTimeName),
 				EnumAdaptor.valueOf(divTimeUseSet, UseSetting.class),
 				new Time(BigDecimal.valueOf(alarmTime)), 
 				new Time(BigDecimal.valueOf(errTime)), 
@@ -59,10 +64,7 @@ public class DivergenceTime extends AggregateRoot{
 				InputSetting.convert(inputUseSet,cancelErrInput));
 				
 	}
-	public static boolean checkAlarmErrTime(int alarmTime,
-													int errTime){
-//		Time alartTimeNew = new Time(BigDecimal.valueOf(alarmTime));
-//		Time errTimeNew = new Time(BigDecimal.valueOf(errTime));
+	public static boolean checkAlarmErrTime(int alarmTime,int errTime){
 		if(alarmTime==errTime){
 			if(alarmTime==0) return true;
 			else return false;

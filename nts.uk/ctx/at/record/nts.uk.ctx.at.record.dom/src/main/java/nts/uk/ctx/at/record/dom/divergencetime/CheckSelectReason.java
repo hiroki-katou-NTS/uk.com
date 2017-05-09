@@ -1,14 +1,30 @@
 package nts.uk.ctx.at.record.dom.divergencetime;
 
-import lombok.Getter;
+import java.util.List;
 
-@Getter
-public class CheckSelectReason {
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.shr.com.context.AppContexts;
+
+@Stateless
+public class CheckSelectReason{
+	@Inject
+	private DivergenceTimeRepository divTimeRepo;
 	
-	public void checkSelectReason(
-			int selectReason,
-			int divTimeId)
-	{
-			
+	String companyId = AppContexts.user().companyCode();
+	
+	public boolean checkSelectReason(int selectUseSet,int divTimeId){
+		if(selectUseSet==0){
+			return false;
+		}else
+		{
+			List<DivergenceReason> lst = this.divTimeRepo.getDivReasonByCode(companyId, Integer.valueOf(divTimeId));
+			if(lst.isEmpty()){
+				return false;
+			}else{
+				return true;
+			}
+		}
 	}
 }

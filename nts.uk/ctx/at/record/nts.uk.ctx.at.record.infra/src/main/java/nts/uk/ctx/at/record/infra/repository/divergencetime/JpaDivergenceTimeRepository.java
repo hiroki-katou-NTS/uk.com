@@ -38,6 +38,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		val domain = DivergenceTime.createSimpleFromJavaType(
 				entity.kmnmtDivergenceTimePK.companyId,
 				entity.kmnmtDivergenceTimePK.divTimeId,
+				entity.getDivTimeName(),
 				entity.divTimeUseSet,
 				entity.alarmTime,
 				entity.errTime,
@@ -68,9 +69,13 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		entity.kmnmtDivergenceTimePK = new KmnmtDivergenceTimePK(
 												domain.getCompanyId(),
 												domain.getDivTimeId());
+		entity.divTimeName = domain.getDivTimeName().toString();
 		entity.alarmTime = Integer.valueOf(domain.getAlarmTime().toString());
 		entity.errTime = Integer.valueOf(domain.getErrTime().toString());
-		entity.selectUseSet = Integer.valueOf(domain.getSelectSet().getSelectUseSet().toString());
+		entity.selectUseSet = Integer.valueOf(domain.getSelectSet().getSelectUseSet().value);
+		entity.cancelErrSelReason = Integer.valueOf(domain.getSelectSet().getCancelErrSelReason().value);
+		entity.inputUseSet = Integer.valueOf(domain.getInputSet().getSelectUseSet().value);
+		entity.cancelErrInputReason = Integer.valueOf(domain.getInputSet().getCancelErrSelReason().value);
 		return entity;
 	}
 	private static KmkmtDivergenceReason toEntityDivReason(DivergenceReason domain){
