@@ -126,7 +126,7 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         // TODO: find list department which is sorted department level.
         List<EmployeeDto> emps = new ArrayList<>();
         
-        // ======================== FIND MAP AMOUTN EMPLOYEE ========================
+        // ======================== FIND MAP AMOUNT EMPLOYEE ========================
         SalaryOutputSetting outputSetting = outputSettingRepo.findByCode(companyCode,
                 paySalaryQuery.getOutputSettingCode());
         

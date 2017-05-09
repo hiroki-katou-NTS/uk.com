@@ -5,7 +5,7 @@
 /**
  * 
  */
-package nts.uk.pr.file.infra.detailpaymentsalary;
+package nts.uk.file.pr.app.export.detailpaymentsalary.data;
 
 import com.aspose.cells.Color;
 
@@ -20,6 +20,9 @@ public class PaymentConstant {
     
     /** The Constant FORMAT_NUMBER. */
     public static final String FORMAT_NUMBER = "#,##0_);(#,##0)";
+    
+    /** The Constant SPACES. */
+    public static final String SPACES = "    ";
     
     /** The Constant ROW_HEIGHT_TITLE. */
     public static final int ROW_HEIGHT_TITLE = 50;
