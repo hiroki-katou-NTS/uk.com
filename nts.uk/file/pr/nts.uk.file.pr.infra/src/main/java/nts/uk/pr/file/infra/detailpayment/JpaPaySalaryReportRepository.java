@@ -32,11 +32,11 @@ import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItem;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingRepository;
 import nts.uk.file.pr.app.export.detailpayment.PaySalaryReportRepository;
-import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeDto;
-import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeKey;
-import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentConstant;
-import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportData;
-import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
+import nts.uk.file.pr.app.export.detailpayment.data.EmployeeDto;
+import nts.uk.file.pr.app.export.detailpayment.data.EmployeeKey;
+import nts.uk.file.pr.app.export.detailpayment.data.PaymentConstant;
+import nts.uk.file.pr.app.export.detailpayment.data.PaymentSalaryReportData;
+import nts.uk.file.pr.app.export.detailpayment.query.PaymentSalaryQuery;
 
 /**
  * The Class JpaPaymentSalaryReportRepository.

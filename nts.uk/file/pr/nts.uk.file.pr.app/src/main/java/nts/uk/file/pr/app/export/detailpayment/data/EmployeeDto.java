@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.pr.app.export.detailpaymentsalary.data;
+package nts.uk.file.pr.app.export.detailpayment.data;
 
 import lombok.Getter;
 import lombok.Setter;

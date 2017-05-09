@@ -5,7 +5,7 @@
 /**
  * 
  */
-package nts.uk.file.pr.app.export.detailpaymentsalary.query;
+package nts.uk.file.pr.app.export.detailpayment.query;
 
 import java.util.List;
 

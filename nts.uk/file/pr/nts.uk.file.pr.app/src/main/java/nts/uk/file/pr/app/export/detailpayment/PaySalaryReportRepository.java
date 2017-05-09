@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.detailpayment;
 
-import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportData;
-import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
+import nts.uk.file.pr.app.export.detailpayment.data.PaymentSalaryReportData;
+import nts.uk.file.pr.app.export.detailpayment.query.PaymentSalaryQuery;
 
 /**
  * The Interface PaymentSalaryReportRepository.
