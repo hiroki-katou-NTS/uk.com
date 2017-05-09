@@ -15,4 +15,7 @@ public class ResidentialTaxQuery {
 	private String processingYearMonthJapan;
 	private GeneralDate endDate;
 	private String endDateJapan;
+	private String typeCode;
+	private String clientCode;
+	private String destinationBranchNumber;
 }

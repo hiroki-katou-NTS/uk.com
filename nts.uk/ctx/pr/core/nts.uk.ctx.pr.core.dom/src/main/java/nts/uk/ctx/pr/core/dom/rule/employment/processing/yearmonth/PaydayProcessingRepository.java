@@ -9,7 +9,7 @@ public interface PaydayProcessingRepository {
 	
 	PaydayProcessing selectOne(String companyCode, int processingNo);
 
-	List<PaydayProcessing> select1(String companyCode, int bonusAtr);
+	List<PaydayProcessing> select1(String companyCode);
 
 	List<PaydayProcessing> select3(String companyCode);
 	

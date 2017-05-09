@@ -25,7 +25,7 @@ public class JpaResidentialTaxReportRepository extends JpaRepository implements 
 
 	//private String CMNMT_COMPANY_SEL_3 = "SELECT e FROM ReportCmnmtCompany e WHERE e.cmnmtCompanyPk.companyCd = :companyCd";
 	private String QTXMT_RESIDENTIAL_TAX_SEL_4 = "SELECT NEW " + ResidentialTaxDto.class.getName() + ""
-			+ "(c.qtxmtResidentialTaxPk.resiTaxCode, c.resiTaxAutonomy, c.registeredName, c.companyAccountNo, c.companySpecifiedNo, c.cordinatePostalCode, c.cordinatePostOffice) "
+			+ "(c.qtxmtResidentialTaxPk.resiTaxCode, c.resiTaxAutonomy, c.registeredName, c.companyAccountNo, c.companySpecifiedNo, c.cordinatePostalCode, c.cordinatePostOffice, c.resiTaxAutonomyKnName) "
 			+ "FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode IN :resiTaxCode";
 	private String QTXMT_RESIDENTIAL_TAXSLIP_SEL_2 = "SELECT NEW " + ResidentialTaxSlipDto.class.getName() + ""
 			+ "(a.qtxmtResimentTialTaxSlipPk.residentTaxCode, a.qtxmtResimentTialTaxSlipPk.yearMonth, a.taxPayRollMoney, a.taxBonusMoney, a.taxOverDueMoney, a.taxDemandChargeMoyney, a.address, a.dueDate, a.headcount, a.retirementBonusAmout, a.cityTaxMoney, a.prefectureTaxMoney) "

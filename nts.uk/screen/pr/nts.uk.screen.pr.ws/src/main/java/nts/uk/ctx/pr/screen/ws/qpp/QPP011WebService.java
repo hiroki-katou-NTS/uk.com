@@ -10,6 +10,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.file.pr.app.export.residentialtax.InhabitantTaxChecklistQuery;
 import nts.uk.file.pr.app.export.residentialtax.InhabitantTaxChecklistReportBService;
 import nts.uk.file.pr.app.export.residentialtax.InhabitantTaxChecklistReportCService;
+import nts.uk.file.pr.app.export.residentialtax.OutputPaymentDataReportService;
 import nts.uk.file.pr.app.export.residentialtax.ResidentialTaxQuery;
 import nts.uk.file.pr.app.export.residentialtax.ResidentialTaxReportService;
 
@@ -25,6 +26,9 @@ public class QPP011WebService extends WebService {
 	
 	@Inject
 	InhabitantTaxChecklistReportCService reportServiceC;
+	
+	@Inject
+	private OutputPaymentDataReportService reportPaymentDataService;
 
 	@POST
 	@Path("saveAsPdf")
@@ -42,6 +46,12 @@ public class QPP011WebService extends WebService {
 	@Path("saveAsPdfC")
 	public ExportServiceResult exportDataC(InhabitantTaxChecklistQuery query) {
 		return reportServiceC.start(query);
+	}
+	
+	@POST
+	@Path("savePaymentData")
+	public ExportServiceResult exportPaymentData(ResidentialTaxQuery query) {
+		return reportPaymentDataService.start(query);
 	}
 	
 	
