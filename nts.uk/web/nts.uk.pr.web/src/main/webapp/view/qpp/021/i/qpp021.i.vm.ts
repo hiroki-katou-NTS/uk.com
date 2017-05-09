@@ -142,7 +142,7 @@ module qpp021.i.viewmodel {
                 columns: [
                     { headerText: 'コード', dataType: 'string', key: 'employeeCode', width: '20%', columnCssClass: "bgIgCol" },
                     { headerText: '名称', dataType: 'string', key: 'employeeName', width: '20%', columnCssClass: "bgIgCol" },
-                    { headerText: '今月の給与明細に印刷する個人へのコメント', dataType: 'string', key: 'comment', width: '60%', columnCssClass: "halign-right" }
+                    { headerText: '今月の給与明細に印刷する個人へのコメント', dataType: 'string', key: 'comment', width: '60%', columnCssClass: "halign-left" }
                 ]
             });
         }
