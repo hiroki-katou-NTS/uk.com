@@ -21,6 +21,13 @@ import nts.uk.ctx.pr.report.infra.entity.payment.refundsetting.refundpadding.Qrf
 @Stateless
 public class JpaRefundPaddingRepository extends JpaRepository implements RefundPaddingRepository {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
+	 * RefundPaddingRepository#save(nts.uk.ctx.pr.report.dom.payment.
+	 * refundsetting.refundpadding.RefundPadding)
+	 */
 	@Override
 	public void save(RefundPadding refundPadding) {
 
@@ -29,6 +36,13 @@ public class JpaRefundPaddingRepository extends JpaRepository implements RefundP
 		this.commandProxy().update(entity);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
+	 * RefundPaddingRepository#findByPrintType(java.lang.String,
+	 * nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.PrintType)
+	 */
 	@Override
 	public Optional<RefundPadding> findByPrintType(String companyCode, PrintType printType) {
 		QrfdtRefundPaddingSetPK pk = new QrfdtRefundPaddingSetPK();
