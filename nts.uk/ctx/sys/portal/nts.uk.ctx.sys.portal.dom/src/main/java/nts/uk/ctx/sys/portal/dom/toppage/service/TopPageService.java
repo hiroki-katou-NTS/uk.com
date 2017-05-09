@@ -9,6 +9,17 @@ public interface TopPageService {
 	
 	/**
 	 * Copy top page.
+	 *
+	 * @param topPage the top page
+	 * @param companyId the company id
 	 */
-	void copyTopPage(TopPage topPage,String copyCode,String copyLayoutId,String companyId);
+	void copyTopPage(TopPage topPage,String companyId);
+	
+	/**
+	 * Removes the top page.
+	 *
+	 * @param topPageCode the top page code
+	 * @param companyId the company id
+	 */
+	void removeTopPage(String topPageCode, String companyId);
 }

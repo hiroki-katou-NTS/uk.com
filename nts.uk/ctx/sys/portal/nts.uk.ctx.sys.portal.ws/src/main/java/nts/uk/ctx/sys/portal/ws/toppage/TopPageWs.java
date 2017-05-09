@@ -2,11 +2,11 @@ package nts.uk.ctx.sys.portal.ws.toppage;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.toppage.CopyTopPageCommand;
@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
+import nts.uk.ctx.sys.portal.app.find.toppage.StringDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
@@ -27,7 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class TopPageWs.
  */
 @Path("/toppage")
-@Stateless
+@Produces("application/json")
 public class TopPageWs extends WebService {
 
 	/** The top page finder. */
@@ -110,8 +111,11 @@ public class TopPageWs extends WebService {
 	 */
 	@POST
 	@Path("copyLayout/{layoutId}/{toppageCode}")
-	public void copyLayout(@PathParam("layoutId") String layoutId, @PathParam("toppageCode") String topPageCode) {
-		layoutService.copyTopPageLayout(layoutId);
+	public StringDto copyLayout(@PathParam("layoutId") String layoutId, @PathParam("toppageCode") String topPageCode) {
+		String newLayoutId = layoutService.copyTopPageLayout(layoutId);
+		StringDto s = new StringDto();
+		s.newLayoutId = newLayoutId;
+		return s;
 	}
 
 	/**

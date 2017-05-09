@@ -26,9 +26,7 @@ public class CopyTopPageCommandHandler extends CommandHandler<CopyTopPageCommand
 		CopyTopPageCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyID();
 		TopPage tp = command.toDomain();
-		String copyCode = command.copyCode;
-		String copyLayoutId = command.copyLayoutId;
-		topPageService.copyTopPage(tp,copyCode,copyLayoutId,companyId);
+		topPageService.copyTopPage(tp,companyId);
 	}
 
 }

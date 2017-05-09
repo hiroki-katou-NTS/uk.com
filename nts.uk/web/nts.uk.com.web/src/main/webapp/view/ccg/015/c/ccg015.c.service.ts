@@ -18,12 +18,12 @@ module nts.uk.pr.view.ccg015.c {
         /**
           * Function is used to copy new Layout.
           */
-        export function copyLayout(layoutId: string,topPageCode : string): JQueryPromise<string> {
+        export function copyLayout(layoutId: string,topPageCode : string): JQueryPromise<StringDto> {
             var self = this;
-            var dfd = $.Deferred<string>();
+            var dfd = $.Deferred<StringDto>();
             var path = servicePath.copyLayout+"/"+layoutId+"/"+topPageCode;
-            nts.uk.request.ajax(path).done(function(layoutId: string) {
-                dfd.resolve(layoutId);
+            nts.uk.request.ajax(path).done(function(newLayoutId: StringDto) {
+                dfd.resolve(newLayoutId);
             });
             return dfd.promise();
         }
@@ -32,11 +32,15 @@ module nts.uk.pr.view.ccg015.c {
             topPageCode: string;
             topPageName: string;
             layoutId: string;
+            languageNumber: number;
         }
         export interface PlacementDto {
             topPagePartCode: string;
             row: number;
             column: number;
+        }
+        export interface StringDto{
+            newLayoutId:string;
         }
     }
 }
