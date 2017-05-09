@@ -6,7 +6,7 @@ module qpp014.b.viewmodel {
         viewmodelg: qpp014.g.viewmodel.ScreenModel;
         viewmodelh: qpp014.h.viewmodel.ScreenModel;
         data: any;
-
+ 
         constructor(data: any) {
             let self = this;
             self.b_stepList = [

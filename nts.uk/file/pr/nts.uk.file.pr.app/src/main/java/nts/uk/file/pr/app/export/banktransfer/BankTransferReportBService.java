@@ -47,26 +47,26 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 
 				for (BankTransfer bankTrans : bankTransfer) {
 					BankTransferBRpData rpData = new BankTransferBRpData();
-					// A_DBD_002
+					// B_DBD_002
 					rpData.setBankCode("001");
-					// A_DBD_003
+					// B_DBD_003
 					rpData.setBankName("bankName");
-					// A_DBD_004
+					// B_DBD_004
 					rpData.setBranchCode("101");
-					// A_DBD_005
+					// B_DBD_005
 					rpData.setBranchName("branchName");
-					// A_DBD_006
+					// B_DBD_006
 					if (bankTrans.getFromBank().getAccountAtr() == 0) {
 						rpData.setFromAccountAtr("普通");
 					} else {
 						rpData.setFromAccountAtr("当座");
 					}
-					// A_DBD_007
+					// B_DBD_007
 					rpData.setFromAccountNo(bankTrans.getFromBank().getAccountNo());
-					// A_DBD_008
+					// B_DBD_008
 					rpData.setNumPerSameType(15);
 					rpData.setUnitPerson("人");
-					// A_DBD_009
+					// B_DBD_009
 					rpData.setPaymentMyn(bankTrans.getPaymentMoney().v());
 					rpData.setUnit("円");
 
@@ -76,7 +76,7 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 			}
 			BankTransferBRpData rpDataSum = new BankTransferBRpData();
 			rpDataSum.setBankCode("総合計");
-			// A_CTR_002 (totalPaymentMny)
+			// B_CTR_002 (totalPaymentMny)
 			BigDecimal sum = BigDecimal.valueOf(0);
 			int totalPerson = 0;
 			for (BankTransferBRpData bankTransferBRpData : rpDataList) {
@@ -85,7 +85,7 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 			}
 			rpDataSum.setPaymentMyn(sum);
 			rpDataSum.setUnit("円");
-			// A_CTR_001 (totalPerson)
+			// B_CTR_001 (totalPerson)
 			rpDataSum.setNumPerSameType(totalPerson);
 			rpDataSum.setUnitPerson("人");
 
@@ -96,7 +96,7 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 			header.setStartCode("0001 - 100 	給与分  	給与予備月 ");
 			header.setEndCode("9999 - 999	総合計	給与予備月 】");
 			header.setDate("平成 29 年 5 月12日  】");
-			// A_DBD_001
+			// B_DBD_001
 			header.setPerson("PERSON");
 
 			BankTransferBReport reportB = new BankTransferBReport();
@@ -119,23 +119,23 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 
 			for (BankTransfer bankTrans : bankTransfer) {
 				BankTransferBRpData rpData = new BankTransferBRpData();
-				// A_DBD_002
+				// B_DBD_002
 				rpData.setBankCode("001");
-				// A_DBD_003
+				// B_DBD_003
 				rpData.setBankName("bankName");
-				// A_DBD_004
+				// B_DBD_004
 				rpData.setBranchCode("101");
-				// A_DBD_005
+				// B_DBD_005
 				rpData.setBranchName("branchName");
-				// A_DBD_006
+				// B_DBD_006
 				if (bankTrans.getFromBank().getAccountAtr() == 0) {
 					rpData.setFromAccountAtr("普通");
 				} else {
 					rpData.setFromAccountAtr("当座");
 				}
-				// A_DBD_007
+				// B_DBD_007
 				rpData.setFromAccountNo(bankTrans.getFromBank().getAccountNo());
-				// A_DBD_008
+				// B_DBD_008
 				rpData.setNumPerSameType(15);
 				// A_DBD_009
 				rpData.setPaymentMyn(bankTrans.getPaymentMoney().v());
@@ -147,7 +147,7 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 		}
 		BankTransferBRpData rpDataSum = new BankTransferBRpData();
 		rpDataSum.setBankCode("総合計");
-		// A_CTR_002 (totalPaymentMny)
+		// B_CTR_002 (totalPaymentMny)
 		BigDecimal sum = BigDecimal.valueOf(0);
 		int totalPerson = 0;
 		for (BankTransferBRpData bankTransferBRpData : rpDataList) {
@@ -156,7 +156,7 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 		}
 		rpDataSum.setPaymentMyn(sum);
 		rpDataSum.setUnit("円");
-		// A_CTR_001 (totalPerson)
+		// B_CTR_001 (totalPerson)
 		rpDataSum.setNumPerSameType(totalPerson);
 		rpDataSum.setUnitPerson("人");
 
@@ -167,7 +167,7 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 		header.setStartCode("0001 - 100 	給与分  	給与予備月 ");
 		header.setEndCode("9999 - 999	総合計	給与予備月 】");
 		header.setDate("平成 29 年 5 月12日  】");
-		// A_DBD_001
+		// B_DBD_001
 		header.setPerson("PERSON");
 
 		BankTransferBReport reportB = new BankTransferBReport();
@@ -176,5 +176,5 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 
 		this.generator.generator(context.getGeneratorContext(), reportB);
 	}
-
+ 
 }

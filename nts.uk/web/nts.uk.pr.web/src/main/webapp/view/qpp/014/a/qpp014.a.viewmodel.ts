@@ -18,15 +18,15 @@ module qpp014.a.viewmodel {
             });
             return dfd.promise();
         }
- 
+  
         /**
          * get data from table PAYDAY_PROCESSING
          */
         findAll(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            //get data with DISP_SET = 1 and BONUS_ATR = 1 
-            qpp014.a.service.findAll(1)
+            //get data with DISP_SET = 1
+            qpp014.a.service.findAll()
                 .done(function(data) {
                     if (data.length > 0) {
                         _.forEach(data, function(x) {
