@@ -39,5 +39,4 @@ public class SystemResource {
 	// use for 予約
 	@Column
 	private boolean customizable;
-
 }

@@ -25,7 +25,7 @@ public class JapaneseErasProvider {
 	}
 	
 	public JapaneseEras getAllEras() {
-		return this.eras;
+		return this.eras; 
 	}
 	
 	public Optional<JapaneseEraName> eraOf (GeneralDate date) {

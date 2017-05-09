@@ -4,4 +4,5 @@ public interface SampleIntercepted {
 
 	String join(String a, String b);
 	void hoge();
+	
 }
