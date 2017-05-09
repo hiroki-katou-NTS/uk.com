@@ -21,5 +21,6 @@ public interface LayoutHistRepository {
 	
 	List<LayoutHistory> getAllLayoutHist(String companyCode);
 	Optional<LayoutHistory> getAllHistMax(String companyCd, String stmtCode);
+	Optional<LayoutHistory> getHistoryByCodeAndEndYear(String companyCode, String stmtCode, int endYm);
 	
 }

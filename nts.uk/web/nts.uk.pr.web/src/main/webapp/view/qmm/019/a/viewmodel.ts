@@ -51,6 +51,7 @@ module qmm019.a {
                     return layoutHead.stmtCode === codeChanged.split(';')[0];
                 });
                 if (layoutFind !== undefined && layoutHead != undefined) {
+                    layoutFind.stmtName = layoutHead.stmtName;
                     self.layoutMaster(layoutFind);
                     self.layoutHead(ko.mapping.fromJS(layoutHead));
                     self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
@@ -251,7 +252,6 @@ module qmm019.a {
 
             service.getAllLayoutHist().done(function(layouts: Array<service.model.LayoutMasterDto>) {
                 if (layouts.length > 0) {
-
                     self.layouts(layouts);
                     service.getAllLayoutHead().done(function(layoutsMax: Array<service.model.LayoutHeadDto>) {
                         self.layoutsMax(layoutsMax);

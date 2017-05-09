@@ -49,7 +49,8 @@ module qmm019.e.viewmodel {
             self.historyId(nts.uk.ui.windows.getShared('historyId'));
             self.layoutYm(layoutYm);
             self.layoutStartYm(self.layoutYm().startYm);
-            service.getLayout(layoutCode, self.historyId()).done(function(layout: service.model.LayoutMasterDto) {
+            service.getLayout(layoutCode, self.historyId()).done(function(layoutReturn: service.model.LayoutMasterDto) {
+                let layout  = new service.model.LayoutMasterDto(layoutReturn.companyCode, layoutReturn.stmtCode, layoutReturn.stmtName, parseInt(self.layoutYm().startYm.replace('/', '')), parseInt(self.layoutYm().endYM.replace('/', '')), self.historyId());
                 self.selectLayout(layout);
                 self.startDiaglog();
                 dfd.resolve();
@@ -108,7 +109,7 @@ module qmm019.e.viewmodel {
                 return false;
             }
             layoutInfor.startYmOriginal = +self.layoutYm().startYm.replace('/', '');
-            layoutInfor.startYm = +$("#INP_001").val().replace('/', '');
+            layoutInfor.startYm =  +self.selectLayoutStartYm().replace('/', '');
             //直前の[明細書マスタ]の開始年月　>　入力した開始年月　>=　終了年月　の場合
             if (layoutInfor.startYmOriginal > layoutInfor.startYm
                 || layoutInfor.startYm > +self.selectLayoutEndYm().replace('/', '')) {
@@ -124,7 +125,7 @@ module qmm019.e.viewmodel {
                     //alert("履歴を修正しました。");
                     nts.uk.ui.windows.close();
                 }).fail(function(res) {
-                    alert(res);
+                    alert(res.message);
                 })
             }
         }

@@ -99,7 +99,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			if (!detailCommand.isAdded() && detailCommand.getUpdateItemCode().equals("")) {
 				// Khong phai là Thêm mới và không phải là Update ItemCode thì
 				// chỉ update thường:
-				detailRepo.update(LayoutMasterDetail.createFromJavaType(companyCode, stmtCode,
+				LayoutMasterDetail oldLayoutMasterDetail  = LayoutMasterDetail.createFromJavaType(companyCode, stmtCode,
 						detailCommand.getCategoryAtr(), detailCommand.getItemCode(), detailCommand.getAutoLineId(),
 						detailCommand.getDisplayAtr(), detailCommand.getSumScopeAtr(),
 						detailCommand.getCalculationMethod(), detailCommand.getDistributeWay(),
@@ -111,7 +111,8 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 						detailCommand.getErrorRangeLow(), detailCommand.getIsAlamUseHigh(),
 						detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(),
 						detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn(),
-						layoutCommand.getHistoryId()));
+						layoutCommand.getHistoryId());
+				detailRepo.update(oldLayoutMasterDetail);
 				continue;
 			}
 			if (!detailCommand.getUpdateItemCode().equals("")) {
@@ -125,7 +126,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			autoLineId = mapLineIdTemp.get(detailCommand.getAutoLineId()) == null ? detailCommand.getAutoLineId()
 					: mapLineIdTemp.get(detailCommand.getAutoLineId());
 			// dành cho Thêm mới và update itemCode
-			detailRepo.add(LayoutMasterDetail.createFromJavaType(companyCode, stmtCode, detailCommand.getCategoryAtr(),
+			LayoutMasterDetail NewMasterDetail = LayoutMasterDetail.createFromJavaType(companyCode, stmtCode, detailCommand.getCategoryAtr(),
 					detailCommand.getItemCode(), autoLineId, detailCommand.getDisplayAtr(),
 					detailCommand.getSumScopeAtr(), detailCommand.getCalculationMethod(),
 					detailCommand.getDistributeWay(), detailCommand.getDistributeSet(), detailCommand.getFormulaCode(),
@@ -134,7 +135,8 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 					detailCommand.getIsErrorUseHigh(), detailCommand.getErrorRangeHigh(),
 					detailCommand.getIsErrorUserLow(), detailCommand.getErrorRangeLow(),
 					detailCommand.getIsAlamUseHigh(), detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(),
-					detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn(), layoutCommand.getHistoryId()));
+					detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn(), layoutCommand.getHistoryId());
+			detailRepo.add(NewMasterDetail);
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistory;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHistory;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHistoryPK;
 
@@ -21,8 +22,9 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHis
  */
 @Stateless
 public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutHistRepository {
-	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHistory c" ;
-	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd" + " ORDER BY c.startYear DESC";
+	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHistory c";
+	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd"
+			+ " ORDER BY c.startYear DESC";
 	private final String SEL_1 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd "
 			+ " AND c.startYear <= :baseYearMonth " + " AND c.endYear >= :baseYearMonth ";
 	private final String SEL_2 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd "
@@ -34,8 +36,10 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 	private final String SEL_5 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCode "
 			+ " AND c.qstmtStmtLayoutHistPK.stmtCd = :stmtCode" + " AND c.strYm <= :baseYearMonth "
 			+ " AND c.endYm >= :baseYearMonth ";
-    private final String SELECT_HIST_MAX_START = SELECT_NO_WHERE
-	 + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHistPK.stmtCd = :stmtCd"+ " AND  c.endYear = 999912";
+	private final String SELECT_HIST_MAX_START = SELECT_NO_WHERE
+			+ " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHistPK.stmtCd = :stmtCd"
+			+ " AND  c.endYear = 999912";
+	private final String SELECT_HIST_BY_ENDYEAR = SEL_2 + " AND c.endYear = :endYear ";
 
 	private final LayoutHistory toDomain(QstmtStmtLayoutHistory entity) {
 		val domain = LayoutHistory.createFromJavaType(entity.qstmtStmtLayoutHistPK.companyCd,
@@ -111,32 +115,35 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 		return this.queryProxy().query(SEL_HISTORY_BEFORE, QstmtStmtLayoutHistory.class)
 				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
 				.setParameter("startYear", startYear).getSingle().map(e -> {
-				     return Optional.of(toDomain(e));
-			    }).orElse(Optional.empty());
+					return Optional.of(toDomain(e));
+				}).orElse(Optional.empty());
 	}
 
 	@Override
 	public List<LayoutHistory> getBy_SEL_3(String companyCd, int startYear) {
-			return this.queryProxy().query(SEL_3, QstmtStmtLayoutHistory.class).setParameter("companyCd", companyCd)
-					.setParameter("startYear", startYear)
-					.getList(x -> toDomain(x));
+		return this.queryProxy().query(SEL_3, QstmtStmtLayoutHistory.class).setParameter("companyCd", companyCd)
+				.setParameter("startYear", startYear).getList(x -> toDomain(x));
 	}
 
 	@Override
 	public List<LayoutHistory> getAllLayoutHist(String companyCd) {
-        return this.queryProxy().query(SELECT_ALL, QstmtStmtLayoutHistory.class)
-                .setParameter("companyCd", companyCd)
-                .getList(entity -> toDomain(entity));
+		return this.queryProxy().query(SELECT_ALL, QstmtStmtLayoutHistory.class).setParameter("companyCd", companyCd)
+				.getList(entity -> toDomain(entity));
 
 	}
 
 	@Override
 	public Optional<LayoutHistory> getAllHistMax(String companyCd, String stmtCd) {
 		return this.queryProxy().query(SELECT_HIST_MAX_START, QstmtStmtLayoutHistory.class)
-				.setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd)
-				.getSingle().map(e -> {
-				     return Optional.of(toDomain(e));
-			    }).orElse(Optional.empty());
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).getSingle().map(e -> {
+					return Optional.of(toDomain(e));
+				}).orElse(Optional.empty());
+	}
+
+	@Override
+	public Optional<LayoutHistory> getHistoryByCodeAndEndYear(String companyCode, String stmtCode, int endYm) {
+		return this.queryProxy().query(SELECT_HIST_BY_ENDYEAR, QstmtStmtLayoutHistory.class)
+				.setParameter("companyCd", companyCode).setParameter("stmtCd", stmtCode).setParameter("endYear", endYm)
+				.getSingle().map(x -> toDomain(x));
 	}
 }

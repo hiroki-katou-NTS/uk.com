@@ -35,7 +35,7 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.endYm = :endYm";
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutLinesPk.historyId = :historyId";
 	private final String SELECT_ALL_DETAILS1 = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutLinesPk.historyId = :historyId";

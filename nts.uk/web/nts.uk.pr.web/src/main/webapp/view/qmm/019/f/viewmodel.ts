@@ -24,12 +24,14 @@ module qmm019.f.viewmodel {
         alamRangeHigh: KnockoutObservable<string> = ko.observable('0');
         checkUseLowAlam: KnockoutObservable<boolean> = ko.observable(false);
         alamRangeLow: KnockoutObservable<string> = ko.observable('0');
+
         commuteAtr: KnockoutObservable<number> = ko.observable(0);
         calculationMethod: KnockoutObservable<number> = ko.observable(0);
         distributeSet: KnockoutObservable<number> = ko.observable(0);
         distributeWay: KnockoutObservable<number> = ko.observable(0);
         personalWageCode: KnockoutObservable<string> = ko.observable('');
         sumScopeAtr: KnockoutObservable<number> = ko.observable(0);
+
         taxAtr: KnockoutObservable<number> = ko.observable(0);
     }
 
@@ -59,33 +61,8 @@ module qmm019.f.viewmodel {
                     self.selectedCode(currentItemCode);
                     let itemDto: any = _.find(self.listItemDto, function(item) {
                         return item.itemCode === currentItemCode;
-                    })
-                    let item = {
-                        companyCode: ko.observable(null),
-                        itemCode: ko.observable(objectNotYetSave.itemCode()),
-                        itemAbName: ko.observable(objectNotYetSave.itemAbName()),
-                        categoryAtr: ko.observable(objectNotYetSave.categoryAtr()),
-                        checkUseHighError: ko.observable(objectNotYetSave.isUseHighError() == 1),
-                        errRangeHigh: ko.observable(objectNotYetSave.errRangeHigh()),
-                        checkUseLowError: ko.observable(objectNotYetSave.isUseLowError() == 1),
-                        errRangeLow: ko.observable(objectNotYetSave.errRangeLow()),
-                        checkUseHighAlam: ko.observable(objectNotYetSave.isUseHighAlam() == 1),
-                        alamRangeHigh: ko.observable(objectNotYetSave.alamRangeHigh()),
-                        checkUseLowAlam: ko.observable(objectNotYetSave.isUseLowAlam() == 1),
-                        alamRangeLow: ko.observable(objectNotYetSave.alamRangeLow()),
-                        commuteAtr: ko.observable(objectNotYetSave.commuteAtr()),
-                        calculationMethod: ko.observable(objectNotYetSave.calculationMethod()),
-                        distributeSet: ko.observable(objectNotYetSave.distributeSet()),
-                        distributeWay: ko.observable(objectNotYetSave.distributeWay()),
-                        personalWageCode: ko.observable(objectNotYetSave.personalWageCode()),
-                        sumScopeAtr: ko.observable(objectNotYetSave.sumScopeAtr()),
-                        taxAtr: ko.observable(itemDto.taxAtr)
-                    };
-                    self.itemDtoSelected(item);
-                    self.checkUseHighError(self.itemDtoSelected().checkUseHighError());
-                    self.checkUseLowError(self.itemDtoSelected().checkUseLowError());
-                    self.checkUseHighAlam(self.itemDtoSelected().checkUseHighAlam());
-                    self.checkUseLowAlam(self.itemDtoSelected().checkUseLowAlam());
+                    });
+                    self.setLayoutVariable(objectNotYetSave);
                 } else {
                     self.selectedCode(currentItemCode);
                     service.getLayoutMasterDetail(stmtCode,
@@ -95,55 +72,10 @@ module qmm019.f.viewmodel {
                                 return item.itemCode === currentItemCode;
                             })
                             if (data != null) {
-                                item = {
-                                    companyCode: ko.observable(null),
-                                    itemCode: ko.observable(data.itemCode),
-                                    itemAbName: ko.observable(self.selectedName()),
-                                    categoryAtr: ko.observable(data.categoryAtr),
-                                    checkUseHighError: ko.observable(data.isUseHighError == 1),
-                                    errRangeHigh: ko.observable(data.errRangeHigh),
-                                    checkUseLowError: ko.observable(data.isUseLowError == 1),
-                                    errRangeLow: ko.observable(data.errRangeLow),
-                                    checkUseHighAlam: ko.observable(data.isUseHighAlam == 1),
-                                    alamRangeHigh: ko.observable(data.alamRangeHigh),
-                                    checkUseLowAlam: ko.observable(data.isUseLowAlam == 1),
-                                    alamRangeLow: ko.observable(data.alamRangeLow),
-                                    commuteAtr: ko.observable(data.commuteAtr),
-                                    calculationMethod: ko.observable(data.calculationMethod),
-                                    distributeSet: ko.observable(data.distributeSet),
-                                    distributeWay: ko.observable(data.distributeWay),
-                                    personalWageCode: ko.observable(data.personalWageCode),
-                                    sumScopeAtr: ko.observable(data.sumScopeAtr),
-                                    taxAtr: ko.observable(data.taxAtr)
-                                };
+                                self.setLayoutVariable(data);
                             } else {
-                                item = {
-                                    companyCode: ko.observable(null),
-                                    itemCode: ko.observable(itemDto.itemCode),
-                                    itemAbName: ko.observable(itemDto.itemAbName),
-                                    categoryAtr: ko.observable(itemDto.categoryAtr),
-                                    checkUseHighError: ko.observable(itemDto.checkUseHighError == 1),
-                                    errRangeHigh: ko.observable(itemDto.errRangeHigh),
-                                    checkUseLowError: ko.observable(itemDto.checkUseLowError == 1),
-                                    errRangeLow: ko.observable(itemDto.errRangeLow),
-                                    checkUseHighAlam: ko.observable(itemDto.checkUseHighAlam == 1),
-                                    alamRangeHigh: ko.observable(itemDto.alamRangeHigh),
-                                    checkUseLowAlam: ko.observable(itemDto.checkUseLowAlam == 1),
-                                    alamRangeLow: ko.observable(itemDto.alamRangeLow),
-                                    commuteAtr: ko.observable(itemDto.commuteAtr),
-                                    calculationMethod: ko.observable(itemDto.calculationMethod),
-                                    distributeSet: ko.observable(itemDto.distributeSet),
-                                    distributeWay: ko.observable(itemDto.distributeWay),
-                                    personalWageCode: ko.observable(itemDto.personalWageCode),
-                                    sumScopeAtr: ko.observable(itemDto.sumScopeAtr),
-                                    taxAtr: ko.observable(itemDto.taxAtr)
-                                }
+                                self.setLayoutVariable(itemDto);
                             }
-                            self.itemDtoSelected(item);
-                            self.checkUseHighError(self.itemDtoSelected().checkUseHighError());
-                            self.checkUseLowError(self.itemDtoSelected().checkUseLowError());
-                            self.checkUseHighAlam(self.itemDtoSelected().checkUseHighAlam());
-                            self.checkUseLowAlam(self.itemDtoSelected().checkUseLowAlam());
                         });
                 }
             }
@@ -168,15 +100,47 @@ module qmm019.f.viewmodel {
 
             //subcribe list box's change
             self.selectedCode.subscribe(function(codeChange) {
-                var item = ko.mapping.fromJS(self.getItemDtoSelected(codeChange));
-                self.itemDtoSelected(item);
-                self.checkUseHighError(self.itemDtoSelected().checkUseHighError());
-                self.checkUseLowError(self.itemDtoSelected().checkUseLowError());
-                self.checkUseHighAlam(self.itemDtoSelected().checkUseHighAlam());
-                self.checkUseLowAlam(self.itemDtoSelected().checkUseLowAlam());
+                var item: ItemDto = self.getItemDtoSelected(codeChange);
+                if (item) {
+                    self.setLayoutVariable(item);
+                }
             });
         }
+        setLayoutVariable(item: ItemDto) {
+            let self = this;
+            service.getItem(item.categoryAtr, item.itemCode).done(function(res) {
+                if (res) {
+                    let newItem = {
+                        companyCode: ko.observable(null),
+                        itemCode: ko.observable(item.itemCode),
+                        itemAbName: ko.observable(item.itemAbName),
+                        categoryAtr: ko.observable(item.categoryAtr),
+                        checkUseHighError: ko.observable(res.errRangeHighAtr),
+                        errRangeHigh: ko.observable(res.errRangeHigh),
+                        checkUseLowError: ko.observable(res.errRangeLowAtr),
+                        errRangeLow: ko.observable(res.errRangeLow),
+                        checkUseHighAlam: ko.observable(res.alRangeHighAtr),
+                        alamRangeHigh: ko.observable(res.alRangeHigh),
+                        checkUseLowAlam: ko.observable(res.alRangeLowAtr),
+                        alamRangeLow: ko.observable(res.alRangeLow),
+                        //pika ?
+                        commuteAtr: ko.observable(res.commuteAtr),
+                        calculationMethod: ko.observable(res.calculationMethod),
+                        distributeSet: ko.observable(res.distributeSet),
+                        distributeWay: ko.observable(res.distributeWay),
+                        personalWageCode: ko.observable(res.personalWageCode),
+                        sumScopeAtr: ko.observable(res.sumScopeAtr),
 
+                        taxAtr: ko.observable(res.taxAtr)
+                    };
+                    self.itemDtoSelected(newItem);
+                    self.checkUseHighError(self.itemDtoSelected().checkUseHighError());
+                    self.checkUseLowError(self.itemDtoSelected().checkUseLowError());
+                    self.checkUseHighAlam(self.itemDtoSelected().checkUseHighAlam());
+                    self.checkUseLowAlam(self.itemDtoSelected().checkUseLowAlam());
+                }
+            });
+        }
         getItemDtoSelected(codeChange): ItemDto {
             var self = this;
             var item = _.find(self.listItemDto, function(item) {
