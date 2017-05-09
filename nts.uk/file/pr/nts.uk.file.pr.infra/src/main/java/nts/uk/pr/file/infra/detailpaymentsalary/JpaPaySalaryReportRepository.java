@@ -34,6 +34,7 @@ import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingRe
 import nts.uk.file.pr.app.export.detailpaymentsalary.PaySalaryReportRepository;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeKey;
+import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentConstant;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportData;
 import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
 
@@ -75,7 +76,7 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
             + "AND detail.qstdtPaymentDetailPK.payBonusAttribute = 0 "
             + "AND detail.qstdtPaymentDetailPK.processingYM >= :startYM "
             + "AND detail.qstdtPaymentDetailPK.processingYM <= :endYM "
-            + "AND detail.qstdtPaymentDetailPK.sparePayAttribute = 0 "
+            + "AND detail.qstdtPaymentDetailPK.sparePayAttribute IN :sparePayAttributes "
             + "AND detail.qstdtPaymentDetailPK.itemCode IN :itemCodes";
     
     private static final int QUERY_NUMER_EMPLOYEE_LIMIT = 1000;
@@ -268,7 +269,16 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         query.setParameter("companyCode", companyCode);
         query.setParameter("startYM", payQuery.getStartDate());
         query.setParameter("endYM", payQuery.getEndDate());
-        query.setParameter("itemCodes",itemCodes );
+        query.setParameter("itemCodes", itemCodes );
+        // TODO: not valid case both isNormalMonth = false and isPreliminaryMonth = false
+        List<Integer> payAttrs = new ArrayList<>();
+        if (payQuery.getIsNormalMonth()) {
+            payAttrs.add(PaymentConstant.NUMBER_ZERO);
+        }
+        if (payQuery.getIsPreliminaryMonth()) {
+            payAttrs.add(PaymentConstant.NUMBER_ONE);
+        }
+        query.setParameter("sparePayAttributes", payAttrs);
         List select = query.getResultList();
         if (select.isEmpty()) {
             throw new BusinessException(new RawErrorMessage("対象データがありません。"));
