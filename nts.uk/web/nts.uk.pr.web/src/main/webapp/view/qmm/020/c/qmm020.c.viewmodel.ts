@@ -82,9 +82,9 @@ module qmm020.c.viewmodel {
             self.LoadData([]);
             // call first method
             self.start();
-//            $("#C_BTN_001").click(function() {
-//                alert("The paragraph was clicked.");
-//            });
+            //            $("#C_BTN_001").click(function() {
+            //                alert("The paragraph was clicked.");
+            //            });
         }
 
         LoadData(itemList) {
@@ -132,16 +132,16 @@ module qmm020.c.viewmodel {
             return rtHist;
         }
         //Selected changed
-//        selectionChanged(evt, ui) {
-//            //console.log(evt.type);
-//            var selectedRows = ui.selectedRows;
-//
-//            var arr = [];
-//            for (var i = 0; i < selectedRows.length; i++) {
-//                arr.push("" + selectedRows[i].id);
-//            }
-//            this.selectedList(arr);
-//        };
+        //        selectionChanged(evt, ui) {
+        //            //console.log(evt.type);
+        //            var selectedRows = ui.selectedRows;
+        //
+        //            var arr = [];
+        //            for (var i = 0; i < selectedRows.length; i++) {
+        //                arr.push("" + selectedRows[i].id);
+        //            }
+        //            this.selectedList(arr);
+        //        };
 
         // start function
         start(): JQueryPromise<any> {
@@ -332,6 +332,10 @@ module qmm020.c.viewmodel {
                 });
 
             });
+        }
+
+        saveData() {
+            console.log('C');
         }
 
     }

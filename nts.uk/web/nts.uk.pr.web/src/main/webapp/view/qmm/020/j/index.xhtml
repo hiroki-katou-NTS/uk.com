@@ -7,8 +7,8 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="qmm020.j.main.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="qmm020.j.style.css" />
 			<com:scriptfile path="qmm020.j.start.js" />
 			<com:scriptfile path="qmm020.j.viewmodel.js" />
 			<com:scriptfile path="qmm020.j.service.js" />
@@ -31,10 +31,11 @@
 								required: true,
 								enable: true,
 								readonly: false }"></div>
-					<label id="J_LBL_003"><span>～</span><span data-bind="style: {display: displayMode() == 3 ? 'none' : ''}">9999/12</span></label>
+					<label id="J_LBL_003"><span>～</span><span
+						data-bind="style: {display: displayMode() == 3 ? 'none' : ''}">9999/12</span></label>
 					<div id="J_INP_003"
 						data-bind="style: { 
-									display: displayMode() == 3 ? 'block' : 'none'
+									display: displayMode() == 3 ? '' : 'none'
 								}, 
 								ntsDatePicker: {
 									value: endDate,
@@ -83,7 +84,7 @@
 			</div>
 			<div class="functions-area">
 				<button class="x-large" id="J_BTN_001"
-					data-bind="click: createHistoryDocument, enable: $root.errors.isEmpty">決定</button>
+					data-bind="click: createHistoryDocument, enable: validate($root)">決定</button>
 				<button class="large" id="J_BTN_002" data-bind="click: closeDialog">キャンセル</button>
 			</div>
 		</ui:define>

@@ -12,28 +12,33 @@ module qmm020.j.viewmodel {
         txtCopyHistory: KnockoutObservable<string> = ko.observable(undefined);
         constructor() {
             var self = this;
-            // display mode
-            self.displayMode(nts.uk.ui.windows.getShared('J_MODE') || 1);
-
+            let dto: IDTOModel = nts.uk.ui.windows.getShared("J_DATA");
+            
             // close dialog if dialog hasn't param 
-            if (!nts.uk.ui.windows.getShared("J_BASEDATE")) {
+            if (!dto) {
                 self.closeDialog();
                 return;
             }
 
-            if (typeof nts.uk.ui.windows.getShared("J_BASEDATE") == "number") {
-                self.startYm(nts.uk.ui.windows.getShared("J_BASEDATE") || 197001);
-            } else {
-                self.startYm(nts.uk.ui.windows.getShared("J_BASEDATE")[0] || 197001);
-                self.endYm(nts.uk.ui.windows.getShared("J_BASEDATE")[1] || 197001);
-            }
+            // observable value
+            self.startYm(dto.startYm || 197001);
+            self.endYm(dto.endYm || 197001);
+
+            // display mode
+            self.displayMode(dto.displayMode || 1);
+
             // resize window
             self.displayMode.subscribe((v) => {
-                nts.uk.ui.windows.getSelf().setWidth(490);
                 if (v == 2) {
                     nts.uk.ui.windows.getSelf().setHeight(420);
                 } else {
                     nts.uk.ui.windows.getSelf().setHeight(300);
+                }
+
+                if (v == 3) {
+                    nts.uk.ui.windows.getSelf().setWidth(500);
+                } else {
+                    nts.uk.ui.windows.getSelf().setWidth(490);
                 }
 
                 if (self.displayMode() != 3) {
@@ -47,18 +52,48 @@ module qmm020.j.viewmodel {
             self.displayMode.valueHasMutated();
         }
 
-        createHistoryDocument() {
+        validate($root): boolean {
             let self = this;
-            nts.uk.ui.windows.setShared('J_RETURN', {
-                startDate: self.startDate(),
-                endDate: self.endDate(),
-                baseDate: self.baseDate(),
-                selectedMode: self.selectedMode(),
-            });
+            return $root.errors.isEmpty();
+        }
+
+        createHistoryDocument() {
+            let self = this, model: IDTOModel = {};
+            switch (self.displayMode()) {
+                case 1:
+                    model.startDate = parseInt(moment.utc(self.startDate()).format("YYYYMM"));
+                    model.selectedMode = self.selectedMode();
+                    break;
+                case 2:
+                    model.startDate = parseInt(moment.utc(self.startDate()).format("YYYYMM"));
+                    model.baseDate = self.baseDate();
+                    model.selectedMode = self.selectedMode();
+                    break;
+                case 3:
+                    model.startDate = parseInt(moment.utc(self.startDate()).format("YYYYMM"));
+                    model.endDate = parseInt(moment.utc(self.endDate()).format("YYYYMM"));
+                    model.selectedMode = self.selectedMode();
+                    break;
+            }
+            nts.uk.ui.windows.setShared('J_RETURN', model);
             self.closeDialog();
         }
 
-        closeDialog() { nts.uk.ui.windows.close(); }
+        closeDialog() {
+            // Clear setted data
+            nts.uk.ui.windows.setShared('J_DATA', null);
+            nts.uk.ui.windows.close();
+        }
+    }
+
+    interface IDTOModel {
+        displayMode?: number;
+        startYm?: number;
+        endYm?: number;
+        startDate?: any;
+        endDate?: any;
+        baseDate?: Date;
+        selectedMode?: number;
     }
 
     enum Error {

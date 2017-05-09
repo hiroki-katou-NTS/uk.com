@@ -66,13 +66,15 @@ module qmm020.d.viewmodel {
 
         openJDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared('J_MODE', 2);
-            nts.uk.ui.windows.setShared("J_BASEDATE", 201701);
+            nts.uk.ui.windows.setShared("J_DATA", { displayMode: 2, startYm: 201701, endYm: 201708 });
             nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" })
                 .onClosed(function() {
+                    nts.uk.ui.windows.setShared("J_DATA", null);
                     let value = nts.uk.ui.windows.getShared('J_RETURN');
-                    // set data into gridview
-                    debugger;
+                    if (value) {
+                        // set data into gridview
+                        debugger;
+                    }
                 });
         }
 
@@ -97,6 +99,11 @@ module qmm020.d.viewmodel {
                     // set data into gridview
                 });
         }
+
+        saveData() {
+            let self = this;
+            console.log('D');
+        }
     }
 
     interface IItemModel {
@@ -118,7 +125,7 @@ module qmm020.d.viewmodel {
 
         currentItemTree(): ItemTree {
             let self = this;
-            return _.find(self.ItemTrees(), function(m: ItemTree) { return m.code == self.ItemTreeSelected(); });
+            return _.find(self.ItemTrees(), function(m: ItemTree) { return m.name == self.ItemTreeSelected(); });
         }
 
         currentItemList(): ItemList {
