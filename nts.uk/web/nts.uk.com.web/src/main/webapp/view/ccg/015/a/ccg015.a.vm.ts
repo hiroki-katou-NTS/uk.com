@@ -197,11 +197,13 @@ module nts.uk.com.view.ccg015.a {
                     }).fail();
                     self.loadTopPageList().done(function() {
                         var lst = self.listTopPage();
-                        if (removeIndex < listLength - 1) {
-                            self.toppageSelectedCode(lst[removeIndex].code);
-                        }
-                        else {
-                            self.toppageSelectedCode(lst[removeIndex - 1].code);
+                        if (lst.length > 0) {
+                            if (removeIndex < listLength - 1) {
+                                self.toppageSelectedCode(lst[removeIndex].code);
+                            }
+                            else {
+                                self.toppageSelectedCode(lst[removeIndex - 1].code);
+                            }
                         }
                     });
                 }).ifNo(function() {
