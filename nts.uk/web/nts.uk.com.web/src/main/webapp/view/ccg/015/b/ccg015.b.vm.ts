@@ -59,6 +59,13 @@ module nts.uk.pr.view.ccg015.b {
                         self.loadDataToScreen(data).done(function() {
                             self.setData(data);
                         });
+                    } else {
+                        service.loadDefaultMyPageSetting().done(function(dataDefault: MyPageSettingDto) {
+                            self.data(dataDefault);
+                            self.loadDataToScreen(dataDefault).done(function() {
+                                self.setData(dataDefault);
+                            });
+                        });
                     }
                     self.selectedTab("tab_dash_board");
                     self.selectedTab("tab_flow_menu");

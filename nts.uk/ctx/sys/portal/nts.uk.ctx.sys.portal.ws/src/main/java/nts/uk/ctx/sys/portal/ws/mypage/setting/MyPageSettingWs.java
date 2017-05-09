@@ -18,6 +18,8 @@ import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingFinder;
 @Stateless
 public class MyPageSettingWs extends WebService {
 
+	public final String defaultCompanyId = "0";
+	
 	/** The my page setting finder. */
 	@Inject
 	MyPageSettingFinder myPageSettingFinder;
@@ -34,9 +36,16 @@ public class MyPageSettingWs extends WebService {
 	@POST
 	@Path("getMyPageSetting")
 	public MyPageSettingDto getMyPageSettingDetail() {
-		return myPageSettingFinder.findByCompanyId();
+		String companyId = AppContexts.user().companyID();
+		return myPageSettingFinder.findByCompanyId(companyId);
 	}
-
+	
+	@POST
+	@Path("getDefaultMyPageSetting")
+	public MyPageSettingDto getDefaultMyPageSettingDetail() {
+		return myPageSettingFinder.findByCompanyId(defaultCompanyId);
+	}
+	
 	/**
 	 * Update my page setting.
 	 *

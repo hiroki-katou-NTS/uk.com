@@ -5,6 +5,7 @@ module nts.uk.pr.view.ccg015.b {
         // Service paths.
         var servicePath = {
             loadMyPageSetting: "/mypage/getMyPageSetting",
+            loadDefaultMyPageSetting: "/mypage/getDefaultMyPageSetting",
             updateMyPageSetting: "/mypage/updateMyPageSetting"
         }
         
@@ -15,6 +16,19 @@ module nts.uk.pr.view.ccg015.b {
             var self = this;
             var dfd = $.Deferred<any>();
             var path = servicePath.loadMyPageSetting;
+            nts.uk.request.ajax(path).done(function(data: model.MyPageSettingDto) {
+                dfd.resolve(data);
+            });
+            return dfd.promise();
+        }
+        
+        /**
+          * Function is used to load My Page Setting.
+          */
+        export function loadDefaultMyPageSetting(): JQueryPromise<model.MyPageSettingDto> {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            var path = servicePath.loadDefaultMyPageSetting;
             nts.uk.request.ajax(path).done(function(data: model.MyPageSettingDto) {
                 dfd.resolve(data);
             });
