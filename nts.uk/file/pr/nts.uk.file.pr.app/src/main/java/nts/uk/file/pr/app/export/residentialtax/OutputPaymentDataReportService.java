@@ -3,8 +3,6 @@
  */
 package nts.uk.file.pr.app.export.residentialtax;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +19,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
 import nts.uk.file.pr.app.export.residentialtax.data.PaymentDetailDto;
 import nts.uk.file.pr.app.export.residentialtax.data.PersonResitaxDto;
@@ -127,15 +125,15 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
                   numberRetirees = retirementPaymentList.size();
 			}else {
 				  long numberPeopleZero = retirementPaymentList.stream()
-	                     .filter(x -> x.getCityTaxMny().doubleValue() > 0  && x.getPrefectureTaxMny().doubleValue()> 0)
+	                     .filter(x -> x.getCityTaxMny() > 0  && x.getPrefectureTaxMny()> 0)
 	                     .count();
 				  numberRetirees = retirementPaymentList.size() - numberPeopleZero;
 			}
 			
-			double totalCityTaxMny = retirementPaymentList.stream().mapToDouble(x -> x.getCityTaxMny().doubleValue())
+			double totalCityTaxMny = retirementPaymentList.stream().mapToInt(x -> x.getCityTaxMny())
 					.sum();
 			double totalPrefectureTaxMny = retirementPaymentList.stream()
-					.mapToDouble(x -> x.getPrefectureTaxMny().doubleValue()).sum();
+					.mapToInt(x -> x.getPrefectureTaxMny()).sum();
 			
 			totalCityTaxMnyMap.put(residentialTax.getResiTaxCode(), totalCityTaxMny);
 			
@@ -145,7 +143,7 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 					totalPrefectureTaxMny + totalCityTaxMny + residentialTax.getTaxRetirementMny().doubleValue());
 			
 			double totalActualRecieveMny = retirementPaymentList.stream()
-					.mapToDouble(x -> x.getActualRecieveMny().doubleValue()).sum();
+					.mapToInt(x -> x.getActualRecieveMny()).sum();
 			
 			numberRetireesMap.put(residentialTax.getResiTaxCode(), numberRetirees);
 			totalActualRecieveMnyMap.put(residentialTax.getResiTaxCode(), totalActualRecieveMny);

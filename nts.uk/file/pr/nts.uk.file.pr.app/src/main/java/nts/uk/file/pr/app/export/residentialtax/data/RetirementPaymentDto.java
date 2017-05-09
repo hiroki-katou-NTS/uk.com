@@ -15,17 +15,17 @@ public class RetirementPaymentDto {
     private int exclusionYears;
     private int additionalBoardYears;
     private int boardYears;
-    private BigDecimal totalPaymentMny;
-    private BigDecimal deduction1Mny;
-    private BigDecimal deduction2Mny;
-    private BigDecimal deduction3Mny;
+    private int totalPaymentMny;
+    private int deduction1Mny;
+    private int deduction2Mny;
+    private int deduction3Mny;
     private int otherRetirementPayOp;
     private int taxCalMethodSet;
-    private BigDecimal incomeTaxMny;
-    private BigDecimal cityTaxMny;
-    private BigDecimal prefectureTaxMny;
-    private BigDecimal totalDeductionMny;
-    private BigDecimal actualRecieveMny;
+    private int incomeTaxMny;
+    private int cityTaxMny;
+    private int prefectureTaxMny;
+    private int totalDeductionMny;
+    private int actualRecieveMny;
     private String  withholdingMeno;
     
 }

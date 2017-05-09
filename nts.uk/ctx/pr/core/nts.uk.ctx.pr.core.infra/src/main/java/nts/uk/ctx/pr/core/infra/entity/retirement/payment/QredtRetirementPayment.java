@@ -36,16 +36,16 @@ public class QredtRetirementPayment extends UkJpaEntity {
 	public int boardYears;
 	
 	@Column(name="TOTAL_PAYMENT_MNY")
-	public BigDecimal totalPaymentMoney;
+	public int totalPaymentMoney;
 	
 	@Column(name="DEDUCTION1_MNY")
-	public BigDecimal deduction1Money;
+	public int deduction1Money;
 	
 	@Column(name="DEDUCTION2_MNY")
-	public BigDecimal deduction2Money;
+	public int deduction2Money;
 	
 	@Column(name="DEDUCTION3_MNY")
-	public BigDecimal deduction3Money;
+	public int deduction3Money;
 	
 	@Column(name="OTHER_RETIREMENT_PAY_OP")
 	public int retirementPayOption;
@@ -54,49 +54,49 @@ public class QredtRetirementPayment extends UkJpaEntity {
 	public int taxCalculationMethod;
 	
 	@Column(name="INCOME_TAX_MNY")
-	public BigDecimal incomeTaxMoney;
+	public int incomeTaxMoney;
 	
 	@Column(name="CITY_TAX_MNY")
-	public BigDecimal cityTaxMoney;
+	public int cityTaxMoney;
 	
 	@Column(name="PREFECTURE_TAX_MNY")
-	public BigDecimal prefectureTaxMoney;
+	public int prefectureTaxMoney;
 	
 	@Column(name="TOTAL_DEDUCTION_MNY")
-	public BigDecimal totalDeclarationMoney;
+	public int totalDeclarationMoney;
 	
 	@Column(name="ACTUAL_RECIEVE_MNY")
-	public BigDecimal actualRecieveMoney;
+	public int actualRecieveMoney;
 	
 	@Column(name="BANK_TRANSFER_OP1")
 	public int bankTransferOption1;
 	
 	@Column(name="OP1_MNY")
-	public BigDecimal option1Money;
+	public int option1Money;
 	
 	@Column(name="BANK_TRANSFER_OP2")
 	public int bankTransferOption2;
 	
 	@Column(name="OP2_MNY")
-	public BigDecimal option2Money;
+	public int option2Money;
 	
 	@Column(name="BANK_TRANSFER_OP3")
 	public int bankTransferOption3;
 	
 	@Column(name="OP3_MNY")
-	public BigDecimal option3Money;
+	public int option3Money;
 	
 	@Column(name="BANK_TRANSFER_OP4")
 	public int bankTransferOption4;
 	
 	@Column(name="OP4_MNY")
-	public BigDecimal option4Money;
+	public int option4Money;
 	
 	@Column(name="BANK_TRANSFER_OP5")
 	public int bankTransferOption5;
 	
 	@Column(name="OP5_MNY")
-	public BigDecimal option5Money;
+	public int option5Money;
 	
 	@Column(name="WITHHOLDING_MENO")
 	public String withholdingMeno;

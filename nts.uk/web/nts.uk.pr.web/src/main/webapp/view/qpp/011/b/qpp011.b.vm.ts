@@ -16,7 +16,7 @@ module qpp011.b {
         C_SEL_003_selectedCode: KnockoutObservable<string>;
         C_SEL_004_ComboBoxItemList: KnockoutObservableArray<C_SEL_004_ComboboxItemModel>;
         C_SEL_004_selectedCode: KnockoutObservable<string>;
-        C_INP_004_Value: KnockoutObservable<number>;
+        C_INP_004_Value: KnockoutObservable<string>;
 
         //End combobox
         //B_002
