@@ -6,7 +6,6 @@ module qpp008.b.viewmodel {
         /* SwictchButton*/
         roundingRules: KnockoutObservableArray<any>;
         roundingRules1: KnockoutObservableArray<any>;
-
         /* check dirty*/
         printSettingDirty: nts.uk.ui.DirtyChecker;
 
@@ -35,7 +34,8 @@ module qpp008.b.viewmodel {
                 let hrchyIndexSelect = self.printSetting().hrchyIndexSelectId().sort();
                 let newHrchyIndexList = new Array();
                 let enable = true;
-                if (hrchyIndexSelect.length >= 5) {
+                let sumDepHrchyIndexSet = self.printSetting().sumDepHrchyIndexSet()
+                if (hrchyIndexSelect.length >= 5 || !sumDepHrchyIndexSet) {
                     enable = false
                 }
                 for (let i = 1; i < 10; i++) {
@@ -45,12 +45,15 @@ module qpp008.b.viewmodel {
                     for (let x = 0; x < 5; x++) {
                         if (itemsDetail[x] === 0 && i < 5) {
                             itemsDetail[x] = item;
+                            if (!sumDepHrchyIndexSet) {
+                                break;
+                            }
                             _.find(newHrchyIndexList, function(o) {
-                                if(o.id === item){
+                                if (o.id === item) {
                                     o.enable(true);
                                     return true;
                                 }
-                                return false; 
+                                return false;
                             });
                             break;
                         }
@@ -59,6 +62,7 @@ module qpp008.b.viewmodel {
                 self.hrchyIndexList(newHrchyIndexList);
                 return itemsDetail;
             }, self).extend({ deferred: true });
+
         }
 
         startPage(): JQueryPromise<any> {
@@ -83,8 +87,22 @@ module qpp008.b.viewmodel {
 
         configurationPrintSetting(): any {
             let self = this;
+            if (self.printSetting().sumDepHrchyIndexSet() && self.printSetting().hrchyIndexSelectId().length === 0) {
+                nts.uk.ui.dialog.alert("部門階層が正しく指定されていません");
+                return;
+            }
+            if (self.printSetting().hrchyIndexSelectId().length >= 6) {
+                nts.uk.ui.dialog.alert("部門階層が正しく指定されていません");
+                return;
+            }
+            if (!self.printSetting().showPayment() && !self.printSetting().sumEachDeprtSet()
+                && !self.printSetting().sumDepHrchyIndexSet() && !self.printSetting().totalSet()) {
+                nts.uk.ui.dialog.alert("設定が正しくありません。");
+                return;
+            }
             service.insertUpdateData(new ConfigPrintSettingModel(self.printSetting(), self.hrchyIndexArray())).done(function() {
-                self.loadData();
+                self.printSettingDirty.reset();
+                nts.uk.ui.windows.close();
             });
         }
 
@@ -100,36 +118,48 @@ module qpp008.b.viewmodel {
             }).ifCancel(function() {
                 return;
             })
-
         }
     }
 
     export class PrintSettingModel {
-        plushBackColor: KnockoutObservable<string> = ko.observable("#cfe2f3");
-        minusBackColor: KnockoutObservable<string> = ko.observable("#f4cccc");
-        showItemIfCfWithNull: KnockoutObservable<number> = ko.observable(0);
-        showItemIfSameValue: KnockoutObservable<number> = ko.observable(0);
-        showPayment: KnockoutObservable<boolean> = ko.observable(true);
-        totalSet: KnockoutObservable<boolean> = ko.observable(true);
-        sumEachDeprtSet: KnockoutObservable<boolean> = ko.observable(false);
-        sumDepHrchyIndexSet: KnockoutObservable<boolean> = ko.observable(false);
+        plushBackColor: KnockoutObservable<string>;
+        minusBackColor: KnockoutObservable<string>;
+        showItemIfCfWithNull: KnockoutObservable<number>;
+        showItemIfSameValue: KnockoutObservable<number>;
+        showPayment: KnockoutObservable<boolean>;
+        totalSet: KnockoutObservable<boolean>;
+        sumEachDeprtSet: KnockoutObservable<boolean>;
+        sumDepHrchyIndexSet: KnockoutObservable<boolean>;
         hrchyIndexSelectId: KnockoutObservableArray<number> = ko.observableArray([]);
+        multiCheckBoxEnable: KnockoutObservable<boolean>;
         constructor(settingMapping: any) {
             let self = this;
             if (settingMapping) {
-                self.plushBackColor(settingMapping.plushBackColor);
-                self.minusBackColor(settingMapping.minusBackColor);
-                self.showItemIfCfWithNull(settingMapping.showItemIfCfWithNull);
-                self.showItemIfSameValue(settingMapping.showItemIfSameValue);
-                self.showPayment(settingMapping.showPayment === 0 ? false : true);
-                self.totalSet(settingMapping.totalSet === 0 ? false : true);
-                self.sumEachDeprtSet(settingMapping.sumEachDeprtSet === 0 ? false : true);
-                self.sumDepHrchyIndexSet(settingMapping.sumDepHrchyIndexSet === 0 ? false : true);
+                self.plushBackColor = ko.observable(settingMapping.plushBackColor);
+                self.minusBackColor = ko.observable(settingMapping.minusBackColor);
+                self.showItemIfCfWithNull = ko.observable(settingMapping.showItemIfCfWithNull);
+                self.showItemIfSameValue = ko.observable(settingMapping.showItemIfSameValue);
+                self.showPayment = ko.observable(settingMapping.showPayment === 0 ? false : true);
+                self.totalSet = ko.observable(settingMapping.totalSet === 0 ? false : true);
+                self.sumEachDeprtSet = ko.observable(settingMapping.sumEachDeprtSet === 0 ? false : true);
+                self.sumDepHrchyIndexSet = ko.observable(settingMapping.sumDepHrchyIndexSet === 0 ? false : true);
                 if (settingMapping.hrchyIndex1 > 0) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex1); }
                 if (settingMapping.hrchyIndex2 > 1) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex2); }
                 if (settingMapping.hrchyIndex3 > 2) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex3); }
                 if (settingMapping.hrchyIndex4 > 3) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex4); }
                 if (settingMapping.hrchyIndex5 > 4) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex5); }
+                self.multiCheckBoxEnable = ko.observable(settingMapping.sumDepHrchyIndexSet === 0 ? false : true);
+            } else {
+                self.plushBackColor = ko.observable("#cfe2f3");
+                self.minusBackColor = ko.observable("#f4cccc");
+                self.showItemIfCfWithNull = ko.observable(0);
+                self.showItemIfSameValue = ko.observable(0);
+                self.showPayment = ko.observable(true);
+                self.totalSet = ko.observable(true);
+                self.sumEachDeprtSet = ko.observable(false);
+                self.sumDepHrchyIndexSet = ko.observable(false);
+                self.hrchyIndexSelectId = ko.observableArray([]);
+                self.multiCheckBoxEnable = ko.observable(false);
             }
         }
     }

@@ -1,8 +1,9 @@
 @CHARSET "UTF-8";
 
-#contents-area{
+#contents-area {
 	width: 1300px !important;
 }
+
 #functions-area {
 	height: 50px;
 }
@@ -136,6 +137,8 @@
 	border: none;
 	vertical-align: top;
 }
-#setting-combobox-sel-001{
+
+#setting-combobox-sel-001 {
 	width: 280px !important;
 }
+

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.app.payment.comparing.find;
+package nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.find;
 
 import lombok.Value;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormHeader;

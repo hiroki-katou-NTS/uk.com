@@ -23,7 +23,11 @@ public class QlsptPaycompFormDetail extends UkJpaEntity implements Serializable 
 	@Basic(optional = false)
 	@Column(name = "DISP_ORDER")
 	public BigDecimal dispOrder;
-
+	
+	@Basic(optional = false)
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer = 0;
+	
 	@Override
 	protected Object getKey() {
 		return paycompFormDetailPK;

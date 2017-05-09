@@ -32,6 +32,9 @@ public class QlsdtPaycompConfirm extends UkJpaEntity implements Serializable {
 	@Column(name = "DIFF_REASON")
 	public String diffReason;
 	
+	@Basic(optional = false)
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer = 0;
 	
 	@Override
 	protected Object getKey() {

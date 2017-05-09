@@ -1,11 +1,11 @@
-package nts.uk.ctx.pr.report.app.payment.comparing.command;
+package nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.command;
 
 import java.util.List;
 
 import lombok.Data;
 
 @Data
-public class UpdateComparingFormCommand {
+public class InsertComparingFormCommand {
 	private String formCode;
 	private String formName;
 	private List<BaseEntityCommand> comparingFormDetailList;

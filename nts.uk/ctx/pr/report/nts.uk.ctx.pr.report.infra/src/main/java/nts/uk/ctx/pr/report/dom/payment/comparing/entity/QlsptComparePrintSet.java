@@ -70,7 +70,11 @@ public class QlsptComparePrintSet extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "HRCHY_INDEX5")
 	public int hrchyIndex5;
-
+	
+	@Basic(optional = false)
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer = 0;
+	
 	@Override
 	protected Object getKey() {
 		return qlsptComparePrintSetPK;

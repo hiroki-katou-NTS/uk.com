@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.app.payment.comparing.command;
+package nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.command;
 
 import java.math.BigDecimal;
 
