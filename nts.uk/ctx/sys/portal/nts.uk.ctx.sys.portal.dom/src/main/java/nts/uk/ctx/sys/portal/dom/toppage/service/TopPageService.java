@@ -10,5 +10,5 @@ public interface TopPageService {
 	/**
 	 * Copy top page.
 	 */
-	void copyTopPage(TopPage topPage,String copyCode,String copyLayoutId,String companyId);
+	void copyTopPage(TopPage topPage,String companyId);
 }

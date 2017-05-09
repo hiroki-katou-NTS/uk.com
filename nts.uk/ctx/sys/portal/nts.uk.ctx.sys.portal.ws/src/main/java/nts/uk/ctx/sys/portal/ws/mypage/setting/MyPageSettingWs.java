@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.portal.app.command.mypage.setting.UpdateMyPageSettingComma
 import nts.uk.ctx.sys.portal.app.command.mypage.setting.UpdateMyPageSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingDto;
 import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingFinder;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class MyPageSettingWs.
@@ -36,7 +37,7 @@ public class MyPageSettingWs extends WebService {
 	@POST
 	@Path("getMyPageSetting")
 	public MyPageSettingDto getMyPageSettingDetail() {
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		return myPageSettingFinder.findByCompanyId(companyId);
 	}
 	

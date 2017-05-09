@@ -113,6 +113,8 @@ module nts.uk.com.view.ccg015.a {
                     if (self.isNewMode()) {
                         service.registerTopPage(self.collectData()).done(function() {
                             nts.uk.ui.dialog.alert("登録しました。");                     
+                        }).fail(function(res){
+                            alert(res.messageId);
                         });
                     }
                     else {

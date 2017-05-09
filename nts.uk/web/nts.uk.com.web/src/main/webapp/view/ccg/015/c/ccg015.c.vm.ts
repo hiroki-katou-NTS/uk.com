@@ -3,6 +3,7 @@ module nts.uk.pr.view.ccg015.c {
         import aservice = nts.uk.com.view.ccg015.a.service;
         import aserviceDto = nts.uk.com.view.ccg015.a.service.model;
         import PlacementDto = service.PlacementDto;
+        import StringDto = service.StringDto;
         export class ScreenModel {
             parentTopPageCode: KnockoutObservable<string>;
             parentTopPageName: KnockoutObservable<string>;
@@ -50,7 +51,8 @@ module nts.uk.pr.view.ccg015.c {
                                 var topPageOverWrite: service.TopPageDto = {
                                     topPageCode: self.newTopPageCode(),
                                     topPageName: self.newTopPageName(),
-                                    layoutId: self.parentLayoutId()
+                                    layoutId: self.parentLayoutId(),
+                                    languageNumber: 0
                                 };
                                 service.copyTopPage(topPageOverWrite).done(function() {
                                     nts.uk.ui.windows.close();
@@ -64,12 +66,12 @@ module nts.uk.pr.view.ccg015.c {
                         else {
                             //check neu tp dc copy da dk layout thi cp layout
                             if (self.parentLayoutId()) {
-                                service.copyLayout(self.parentLayoutId(), self.parentTopPageCode()).done(function(layoutId: string) {
+                                service.copyLayout(self.parentLayoutId(), self.parentTopPageCode()).done(function(data: StringDto) {
                                     var topPage: aservice.model.TopPageDto = {
                                         topPageCode: self.newTopPageCode(),
                                         topPageName: self.newTopPageName(),
                                         languageNumber: 0,//jp
-                                        layoutId: layoutId//get from parent
+                                        layoutId: data.newLayoutId//get from parent
                                     };
                                     aservice.registerTopPage(topPage).done(function() {
                                         nts.uk.ui.windows.close();
