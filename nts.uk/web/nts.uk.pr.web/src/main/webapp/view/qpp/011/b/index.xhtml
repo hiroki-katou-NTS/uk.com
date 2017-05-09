@@ -58,7 +58,7 @@
 							<div style="clear: both;">
 								<div id="B_LBL_004"
 									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
-								<div id="B_INP_001"
+								<div id="B_INP_001" data-name="対象年月" 	 							
 									data-bind="ntsDatePicker: {
 														value: B_INP_001_yearMonth, 
 														dateFormat: 'YYYY/MM', 
@@ -75,7 +75,7 @@
 							<div style="clear: both;">
 								<div id="B_LBL_007"
 									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
-								<div id="B_INP_002"
+								<div id="B_INP_002" data-name="指定年月"
 									data-bind="ntsDatePicker: {
 														value: B_INP_002_yearMonth, 
 														dateFormat: 'YYYY/MM', 
@@ -91,7 +91,7 @@
 							<div style="clear: both;">
 								<div class="floatLeft" id="B_LBL_009"
 									data-bind="ntsFormLabel: {  required: true }">納付期限</div>
-								<div id="B_INP_003"
+								<div id="B_INP_003" data-name="納付期限"
 									data-bind="ntsDatePicker: {
 														value: B_INP_003_yearMonth, 
 														dateFormat: 'YYYY/MM/DD', 
@@ -144,7 +144,7 @@
 					<div id="content2">
 						<div style="float: left; margin-right: 30px;">
 							<div id="C_LBL_003" data-bind="ntsFormLabel: {  required: true }">会社選択</div>
-							<div id="C_SEL_001"
+							<div id="C_SEL_001" 
 								data-bind="ntsRadioBoxGroup: {
 														options: B_SEL_001_RadioItemList,
 														optionsValue: 'id',
@@ -152,7 +152,7 @@
 														value: C_SEL_001_selectedId,
 														enable: true }">
 							</div>
-							<div id="C_SEL_002"
+							<div id="C_SEL_002" 
 								data-bind="ntsComboBox: {
 														options: B_SEL_002_ComboBoxItemList,
 														optionsValue: 'reganDocCompanyCode',
@@ -167,7 +167,7 @@
 							<div style="clear: both;">
 								<div id="C_LBL_004"
 									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
-								<div id="C_INP_001"
+								<div id="C_INP_001" data-name="対象年月"
 									data-bind="ntsDatePicker: {
 														value: C_INP_001_yearMonth, 
 														dateFormat: 'YYYY/MM', 
@@ -184,7 +184,7 @@
 							<div style="clear: both;">
 								<div id="C_LBL_007"
 									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
-								<div id="C_INP_002"
+								<div id="C_INP_002" data-name="指定年月"
 									data-bind="ntsDatePicker: {
 														value: C_INP_002_yearMonth, 
 														dateFormat: 'YYYY/MM', 
@@ -201,7 +201,7 @@
 							<div style="clear: both;">
 								<div class="floatLeft" id="C_LBL_009"
 									data-bind="ntsFormLabel: {  required: true }">納付期限</div>
-								<div id="C_INP_003"
+								<div id="C_INP_003" data-name="納付期限"
 									data-bind="ntsDatePicker: {
 														value: C_INP_003_yearMonth, 
 														dateFormat: 'YYYY/MM/DD',
@@ -251,12 +251,12 @@
 								<div class="floatLeft" id="C_LBL_013"
 									data-bind="ntsFormLabel: { required: true }">種別コード</div>
 								<div id="C_INP_004"  data-bind="with: numbereditor" >
-									<input
+									<input id="C_INP_004-input" data-name="種別コード"
 										data-bind="ntsNumberEditor: {
 														value: $parent.C_INP_004_value,
 														constraint:constraint ,
 														option: option,
-														required: true,
+														required: required,
 														enable: enable,
 														readonly: readonly
 														}" />
