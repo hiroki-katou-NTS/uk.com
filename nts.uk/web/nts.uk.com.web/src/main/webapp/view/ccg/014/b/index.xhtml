@@ -7,9 +7,8 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 700, height: 300 };</script>
+			<script>var dialogSize = { width: 800, height: 310 };</script>
 			<com:ValidatorScript>
-					
 					nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuCD
 					nts.uk.ctx.sys.portal.dom.titlemenu.Name
 				</com:ValidatorScript>
@@ -23,40 +22,27 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="row1">
-					<span style="text-align: center;">コピー元情報：</span>
+					<span style="text-align: center;margin-right: 30px;">コピー元情報：</span>
 					<div data-bind="ntsFormLabel: {}">コード/名称</div>
+					<span id="titleMenuCD" data-bind="text: titlecode"></span> <span
+						id="Name" data-bind="text: titlename"></span>
+
 				</div>
 				<div class="row2" style="margin-top: 5px;">
-					<span style="text-align: center;">コピー元情報：</span>
-					<div
-						data-bind="ntsFormLabel: { constraint: 'TitleMenuCD',constraint: 'Name', required: true }">コード/名称</div>
-					<div id= "textcode" data-bind="with: titlecode">
-						<input
-							data-bind="ntsTextEditor: {
-								value: value,
-								constraint: 'TitleMenuCD',
-								option: option,
-								required: required,
-								enable: enable,
-								readonly: readonly}" />
+					<span style="text-align: center; margin-right: 30px;">コピー先情報：</span>
+					<div data-bind="ntsFormLabel: { constraint: ['TitleMenuCD' , 'Name'], required: true }">コード/名称</div>
+					<div id="copycode">
+						<input data-bind="ntsTextEditor: {value: copyTitleCD, constraint: 'TitleMenuCD', required: true}" />
 					</div>
-					<div id= "textname" data-bind="with: titlename">
-						<input
-							data-bind="ntsTextEditor: {
-								value: value,
-								constraint: 'Name',
-								option: option,
-								required: required,
-								enable: enable,
-								readonly: readonly}" />
-					</div>
+					<div id="copyname">
+						<input data-bind="ntsTextEditor: {value: copyName, constraint: 'Name', required: true}" />
+					</div>	
 				</div>
-
+				<hr style="width: 100%; margin-top: 30px;" />
+				<div id="checkOverwritting" data-bind="ntsCheckBox: { checked: checkOverwritting }">設定済みの場合は、データを上書きします。</div>
 				<div class="button">
-					<hr style="width: 100%;" />
-				<button id="registration" class="proceed x-large">登録</button>
-				<button id="cancel" data-bind ="click :  cancel_Dialog">キャンセル</button>
-
+					<button id="execution" class="proceed x-large fixbtn" data-bind="click: submitClickButton" >実行</button>
+					<button id="cancel" data-bind="click: cancel_Dialog">キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

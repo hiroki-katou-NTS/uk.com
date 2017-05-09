@@ -1,8 +1,7 @@
 module ccg014.b {
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
-        screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
-        });
+        let copyData = nts.uk.ui.windows.getShared("copyData");
+        var screenModel = new viewmodel.ScreenModel(copyData);
+        __viewContext.bind(screenModel);
     });
 }
