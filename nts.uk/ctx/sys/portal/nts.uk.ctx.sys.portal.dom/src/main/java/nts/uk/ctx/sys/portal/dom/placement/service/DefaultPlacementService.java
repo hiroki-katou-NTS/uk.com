@@ -35,22 +35,22 @@ public class DefaultPlacementService implements PlacementService {
 	}
 
 	@Override
-	public List<String> copyPlacementByLayout(String layoutID) {
-		Optional<Layout> layout = layoutRepository.find(layoutID);
+	public List<String> copyPlacementByLayout(String sourceLayoutID, String targetLayoutID) {
+		Optional<Layout> layout = layoutRepository.find(sourceLayoutID);
 		if (!layout.isPresent())
 			return Collections.emptyList();
 		
-		List<Placement> placements = placementRepository.findByLayout(layoutID);
+		List<Placement> placements = placementRepository.findByLayout(sourceLayoutID);
 		List<String> placementIDs = new ArrayList<String>();
 		for (Placement placement : placements) {
-			String placementID = copyPlacement(placement.getPlacementID());
+			String placementID = copyPlacement(placement.getPlacementID(), targetLayoutID);
 			placementIDs.add(placementID);
 		}
 		return placementIDs;
 	}
 
 	@Override
-	public String copyPlacement(String placementID) {
+	public String copyPlacement(String placementID, String targetLayoutID) {
 		if (placementID.equals(null) || !isExist(placementID))
 			return null;
 		
@@ -67,7 +67,7 @@ public class DefaultPlacementService implements PlacementService {
 			height = externalUrl.get().getHeight().v();
 		}
 		Placement newPlacement = Placement.createFromJavaType(
-				companyID, newPlacementID, placement.getLayoutID(), placement.getToppagePartID(),
+				companyID, newPlacementID, targetLayoutID, placement.getToppagePartID(),
 				placement.getColumn().v(), placement.getRow().v(),
 				url, width, height);
 		placementRepository.add(newPlacement);

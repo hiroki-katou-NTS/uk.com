@@ -16,19 +16,19 @@ public interface PlacementService {
 	boolean isExist(String placementID);
 
 	/**
-	 * Copy List Placement within Layout
+	 * Copy List Placement from Source Layout to Target Layout
 	 * 
 	 * @param
 	 * @return Copied List placement ID
 	 */
-	List<String> copyPlacementByLayout(String layoutID);
+	List<String> copyPlacementByLayout(String sourceLayoutID, String targetLayoutID);
 
 	/**
-	 * Copy Placement with given ID
+	 * Copy Placement with given ID to Target Layout
 	 * 
 	 * @param
 	 * @return Copied placement ID
 	 */
-	String copyPlacement(String placementID);
+	String copyPlacement(String placementID, String targetLayoutID);
 
 }

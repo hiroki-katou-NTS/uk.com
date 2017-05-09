@@ -36,11 +36,11 @@ public class DefaultLayoutService implements LayoutService {
 		
 		String companyID = AppContexts.user().companyID();
 		String newLayoutID = IdentifierUtil.randomUniqueId();
-		
-		Layout newLayout = Layout.createFromJavaType(companyID, layoutID, 0);
+		// Copy Layout
+		Layout newLayout = Layout.createFromJavaType(companyID, newLayoutID, 0);
 		layoutRepository.add(newLayout);
-		
-		placementService.copyPlacementByLayout(newLayoutID);
+		// Copy all Layout's Placement
+		placementService.copyPlacementByLayout(layoutID, newLayoutID);
 		
 		return newLayoutID;
 	}
