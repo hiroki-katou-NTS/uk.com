@@ -1,9 +1,37 @@
 #functions-area {
 	padding-bottom: 20px;
 }
+
 #main-content td {
 	padding-bottom: 10px;
 }
+
 .input-default {
-	width: 50px;
+	width: 100px;
+}
+
+#content_settingMargin {
+	display: inline-block;
+	margin-left: 70px;
+}
+
+.lbl_printingPositionBig {
+	margin-left: 170px;
+}
+
+.settingMargin {
+	margin-left: 30px;
+}
+
+.content_settingOutput {
+	display: inline-block;
+	margin-left: 45px;
+}
+
+.lbl_number {
+	display: inline-block;
+}
+
+#inp_breakLineMargin{
+	margin-left: 30px;
 }

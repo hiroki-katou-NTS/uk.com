@@ -9,72 +9,99 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 900,
-					height : 700
+					width : 600,
+					height : 650
 				};
 			</script>
 			<com:stylefile path="qpp021.f.main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qpp021.f.vm.js" />
 			<com:scriptfile path="qpp021.f.start.js" />
 			<com:scriptfile path="qpp021.f.service.js" />
+			<com:scriptfile path="qpp021.f.vm.js" />
 			<com:ValidatorScript>
-				nts.uk.ctx.pr.report.dom.payment.contact.ReportComment
-  			</com:ValidatorScript>
+			    nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.SizeLimit
+			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
 			<!-- BEGIN CONTENT AREA-->
-			<div id="contents-area" data-bind="visible: true" style="display: none">
+			<div id="contents-area" data-bind="visible: true"
+				style="display: none">
 				<div>「印字位置の調整を行ってください。</div>
 				<div>※この設定は翌月以降の明細書にも反映されます。</div>
 				<div style="margin-top: 10px;">
-					<span>余白・区切線の設定　単位　1mm</span>
+					<span>余白・区切線の設定 単位 1mm</span>
 					<button>?</button>
 				</div>
-				<hr/>
-				<com:ko tag="with" bind="myModel">
-				<table id="main-content">
-					<tr>
-						<td><div data-bind="ntsFormLabel: {}">余白補正</div></td>
-						<td>
-							<span>上段　上</span><input id="abc" class="input-default" data-bind="ntsTextEditor: {value: inp1}" />
-							<span>下段　上</span><input id="bcd" class="input-default" data-bind="ntsTextEditor: {value: inp2}" />
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><div>※数値が大きいほど印字位置が下がります。</div>
-							<span>左</span>
-							<input id="zxcv" class="input-default" data-bind="ntsTextEditor: {value: inp3}" />
-							<div>※数値が大きいほど印字位置が右に移動します。</div>
-						</td>
-					</tr>
-					<tr>
-						<td><div data-bind="ntsFormLabel: {}">区切線の出力</div></td>
-						<td><div data-bind="ntsSwitchButton: {
-										options: $parent.splitLineOutput,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: selectedSplitLineOutput,
-										enable: true }">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td><div data-bind="ntsFormLabel: {}">区切線の補正</div></td>
-						<td>
-							<span class="pull-left"><input id="zxcv" class="input-default" data-bind="ntsTextEditor: {value: inp4}" /></span>
-							<div class="pull-left">※数値が大きいほど <br/>区切線の位置が下がります。</div>
-						</td>
-					</tr>
-				</table>
-				</com:ko>
-				<button id="print" data-bind="">テスト印字</button>
+				<hr />
+
+				<div data-bind="ntsFormLabel: {}" class="settingMargin">
+					<label>余白補正</label>
+					<div id="content_settingMargin">
+						<label>上段 上</label> <input data-name="余白上段上" class="input-default"
+							id="inp_upperAreaPaddingTop"
+							data-bind="ntsNumberEditor: {value: refundPaddingTwoModel.upperAreaPaddingTop,
+							constraint: 'SizeLimit', 
+							option: sizeLimitOption}"></input>
+
+						<label>上段 上</label> <input data-name="余白上段上" class="input-default"
+							id="inp_underAreaPaddingTop"
+							data-bind="ntsNumberEditor: {value: refundPaddingTwoModel.underAreaPaddingTop,
+							constraint: 'SizeLimit', 
+							option: sizeLimitOption}"></input>
+					</div>
+				</div>
+				<br /> <br />
+				<lable class="lbl_printingPositionBig">※数値が大きいほど印字位置が下がります。</lable>
+				<br /> <br />
+				<div class="lbl_printingPositionBig">
+					<div class="content_printingPositionBig">
+						<lable>左</lable>
+						<input class="input-default" data-name="余白左" id="inp_paddingLeft"
+							data-bind="ntsNumberEditor: {value: refundPaddingTwoModel.paddingLeft,
+								constraint: 'SizeLimit',option: sizeLimitOption}"></input>
+					</div>
+				</div>
+				<br />
+				<lable class="lbl_printingPositionBig">※数値が大きいほど印字位置が右に移動します。</lable>
+
+				<br /> <br />
+
+				<div data-bind="ntsFormLabel: {required: false}"
+					id="lbl_spliteLineOutput" class="settingMargin">
+					<label>区切線の出力</label>
+					<div class="content_settingOutput" id="selectSpliteLineOutput"
+						data-bind="ntsSwitchButton: {
+						options: splitLineOutput,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: refundPaddingTwoModel.isShowBreakLine,
+						enable: true }"></div>
+				</div>
+				<br /> <br />
+
+				<div data-bind="ntsFormLabel: {required: false}"
+					id="lbl_spliteLineOutput" class="settingMargin">
+					<label>区切線の補正</label> <input class="input-default" data-name="余白左"
+						id="inp_breakLineMargin"
+						data-bind="ntsNumberEditor: {value: refundPaddingTwoModel.breakLineMargin,
+								constraint: 'SizeLimit',option: sizeLimitOption}"></input>
+					<div class="lbl_number">
+						<label>※数値が大きいほど</label>
+					</div>
+					<label> 区切線の位置が下がります。</label>
+				</div>
 			</div>
-			<hr />
+
 			<!-- END CONTENT AREA-->
 			<!-- BEGIN FUNCTION AREA-->
-			<div id="functions-area" class="halign-center">
+			<div id="this-functions-area" class="control-group halign-center">
+				<br /> <br />
+				<button id="print" data-bind="">テスト印字</button>
+				<br/>
+				<br/>
+				<br/>
+				<hr />
+				<br/>
 				<button id="save" data-bind="click: onSaveBtnClicked"
 					class="proceed x-large">登録</button>
 				<button id="close" data-bind="click: onCloseBtnClicked">キャンセル</button>
