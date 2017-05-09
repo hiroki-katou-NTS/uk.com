@@ -234,9 +234,9 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 
 		JpaContactItemsSettingSetMemento jpa = new JpaContactItemsSettingSetMemento();
 		contactItemsSetting.saveToMemento(jpa);
-		this.commandProxy().update(jpa.getCommentInitialCp());
-		this.commandProxy().updateAll(jpa.getCommentInitialEmps());
-		this.commandProxy().updateAll(jpa.getCommentMonthEmps());
 		this.commandProxy().update(jpa.getCommentMonthCp());
+		this.commandProxy().update(jpa.getCommentInitialCp());
+		this.commandProxy().updateAll(jpa.getCommentMonthEmps());
+		this.commandProxy().updateAll(jpa.getCommentInitialEmps());
 	}
 }

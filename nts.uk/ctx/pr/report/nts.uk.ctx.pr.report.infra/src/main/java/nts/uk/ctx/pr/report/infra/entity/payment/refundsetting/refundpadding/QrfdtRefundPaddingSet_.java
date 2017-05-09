@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.infra.entity.payment.refundsetting;
+package nts.uk.ctx.pr.report.infra.entity.payment.refundsetting.refundpadding;
 
 import java.math.BigDecimal;
 

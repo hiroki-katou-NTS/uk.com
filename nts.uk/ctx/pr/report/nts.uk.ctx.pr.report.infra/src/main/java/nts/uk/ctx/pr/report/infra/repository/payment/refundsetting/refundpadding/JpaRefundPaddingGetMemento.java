@@ -2,13 +2,13 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.infra.repository.payment.refundsetting;
+package nts.uk.ctx.pr.report.infra.repository.payment.refundsetting.refundpadding;
 
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.PrintType;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.RefundPaddingGetMemento;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.ShowBreakLine;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.SizeLimit;
-import nts.uk.ctx.pr.report.infra.entity.payment.refundsetting.QrfdtRefundPaddingSet;
+import nts.uk.ctx.pr.report.infra.entity.payment.refundsetting.refundpadding.QrfdtRefundPaddingSet;
 
 /**
  * The Class JpaRefundPaddingGetMemento.

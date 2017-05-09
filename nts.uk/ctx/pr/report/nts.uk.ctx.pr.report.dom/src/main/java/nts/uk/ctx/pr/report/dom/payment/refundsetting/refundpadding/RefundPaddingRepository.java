@@ -12,18 +12,11 @@ import java.util.Optional;
 public interface RefundPaddingRepository {
 
 	/**
-	 * Adds the.
+	 * Save.
 	 *
-	 * @param office the office
+	 * @param refundPadding the refund padding
 	 */
-    void add(RefundPadding office);
-
-	/**
-	 * Update.
-	 *
-	 * @param office the office
-	 */
-    void update(RefundPadding office);
+    void save(RefundPadding refundPadding);
 
 	/**
 	 * Find by id.
@@ -31,6 +24,6 @@ public interface RefundPaddingRepository {
 	 * @param id the id
 	 * @return the labor insurance office
 	 */
-	Optional<RefundPadding> findById(String companyCode, PrintType printType);
+	Optional<RefundPadding> findByPrintType(String companyCode, PrintType printType);
 
 }
