@@ -2,6 +2,7 @@ package nts.uk.file.pr.app.export.comparingsalarybonus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,17 +11,18 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
+import nts.uk.ctx.pr.report.app.payment.comparing.confirm.find.DetailDifferentialDto;
+import nts.uk.ctx.pr.report.app.payment.comparing.confirm.find.DetailDifferentialFinder;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetail;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusHeaderReportData;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusReportData;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DataRowComparingSalaryBonus;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DeparmentInf;
-import nts.uk.file.pr.app.export.comparingsalarybonus.data.EmployeeInf;
-import nts.uk.file.pr.app.export.comparingsalarybonus.data.PaymentDetail;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DetailEmployee;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.HeaderTable;
 import nts.uk.file.pr.app.export.comparingsalarybonus.query.ComparingSalaryBonusQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 @Stateless
 public class ComparingSalaryBonusReportService extends ExportService<ComparingSalaryBonusQuery> {
@@ -30,15 +32,15 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 
 	@Inject
 	private ComparingSalaryBonusQueryRepository compareSalaryBonusQueryRepo;
-	 @Inject 
-	 private JapaneseErasProvider japaneseErasProvider;
+
+	@Inject
+	private DetailDifferentialFinder detailDifferentialFinder;
 
 	@Override
 	protected void handle(ExportServiceContext<ComparingSalaryBonusQuery> context) {
 		ComparingSalaryBonusQuery comparingQuery = context.getQuery();
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyCode = loginUserContext.companyCode();
-
 		// error1
 		if (comparingQuery.getMonth1() == 0 || comparingQuery.getMonth2() == 0) {
 			throw new BusinessException(new RawErrorMessage("比較年月1、比較年月2 が入力されていません。"));
@@ -47,62 +49,41 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		if (comparingQuery.getMonth1() == comparingQuery.getMonth2()) {
 			throw new BusinessException(new RawErrorMessage("設定が正しくありません。"));
 		}
+		
+		if(comparingQuery.getEmployeeCodeList().isEmpty()){
+			throw new BusinessException(new RawErrorMessage("List Employee is not selected"));
+		}
 
 		List<ComparingFormDetail> lstComparingFormDetail = this.compareSalaryBonusQueryRepo
 				.getPayComDetailByFormCode(companyCode, comparingQuery.getFormCode());
+		// error1
 
 		/****************** EA2 ******************/
-
-		List<DetailDifferential> lstDetailDifferentialEarlyYM = new ArrayList<DetailDifferential>();
-		List<DetailDifferential> lstDetailDifferentialLaterYM = new ArrayList<DetailDifferential>();
+		List<DetailDifferentialDto> lstDetailDto = this.detailDifferentialFinder.getDetailDifferential(
+				comparingQuery.getMonth1(), comparingQuery.getMonth2(), comparingQuery.getEmployeeCodeList());
+		List<DetailDifferentialDto> lstDetailFinal = new ArrayList<>();
 		lstComparingFormDetail.stream().forEach(c -> {
-			lstDetailDifferentialEarlyYM.addAll(this.compareSalaryBonusQueryRepo.getDetailDifferentialWithEarlyYM(
-					companyCode, comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(),
-					c.getCategoryAtr().value, comparingQuery.getPayBonusAttr(), c.getItemCode().toString()));
-			lstDetailDifferentialLaterYM.addAll(this.compareSalaryBonusQueryRepo.getDetailDifferentialWithLaterYM(
-					companyCode, comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth2(),
-					c.getCategoryAtr().value, comparingQuery.getPayBonusAttr(), c.getItemCode().toString()));
+			List<DetailDifferentialDto> lstDetail = lstDetailDto.stream()
+					.filter(s -> (c.getCategoryAtr().value == s.getCategoryAtr()
+							&& s.getItemCode().equals(c.getItemCode().toString())))
+					.collect(Collectors.toList());
+			lstDetailFinal.addAll(lstDetail);
 		});
-		// error 10
-		if (lstDetailDifferentialEarlyYM.isEmpty() || lstDetailDifferentialLaterYM.isEmpty()) {
-			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
-		}
-
-		/**************************** EA3 *****************************/
-		List<PaymentDetail> lstPaymentDetailEarlyYM = this.compareSalaryBonusQueryRepo.getPaymentDetail(companyCode,
-				comparingQuery.getEmployeeCodeList(), comparingQuery.getPayBonusAttr(), comparingQuery.getMonth1());
-
-		List<PaymentDetail> lstPaymentDetailLaterYM = this.compareSalaryBonusQueryRepo.getPaymentDetail(companyCode,
-				comparingQuery.getEmployeeCodeList(), comparingQuery.getPayBonusAttr(), comparingQuery.getMonth2());
-		int comparingMonth = comparingQuery.getMonth2() - comparingQuery.getMonth1();
-		if (comparingMonth > 0) {
-			System.out.println("not same line");
-		} else {
-
-			System.out.println("same line");
-		}
-
-		ComparingSalaryBonusReportData reportData = fakeData(companyCode, comparingQuery);
+		ComparingSalaryBonusReportData reportData = fakeData(companyCode, comparingQuery, lstDetailFinal);
 		this.compareGenertor.generate(context.getGeneratorContext(), reportData);
 
 	}
 
-	private ComparingSalaryBonusReportData fakeData(String companyCode, ComparingSalaryBonusQuery comparingQuery) {
+	private ComparingSalaryBonusReportData fakeData(String companyCode, ComparingSalaryBonusQuery comparingQuery,
+			List<DetailDifferentialDto> lstDetailComparing) {
 		ComparingSalaryBonusReportData reportData = new ComparingSalaryBonusReportData();
+		// TODO-LanLT: doan nay dang chua hieu tai lieu
 		List<ComparingSalaryBonusHeaderReportData> lstheaderData;
 		lstheaderData = this.compareSalaryBonusQueryRepo.getReportHeader(companyCode);
 		if (lstheaderData.isEmpty()) {
-			throw new BusinessException(new RawErrorMessage("not data"));
+			throw new BusinessException(new RawErrorMessage("Data is not found"));
 		}
 		ComparingSalaryBonusHeaderReportData headerData = new ComparingSalaryBonusHeaderReportData();
-//		int max = lstheaderData.size();
-//		headerData.setTitleReport("明細金額比較表");
-//		headerData.setNameCompany("【  】");
-//		headerData.setNameDeparment("【部門：】");
-//		headerData.setTypeDeparment("【分類：】");
-//		headerData.setPostion(
-//				"【職位：  】");
-//		headerData.setTargetYearMonth("【処理年月：  】");
 		int max = lstheaderData.size();
 		headerData.setTitleReport("明細金額比較表");
 		headerData.setNameCompany("【 " + lstheaderData.get(0).getNameCompany() + " 】");
@@ -113,27 +94,62 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		headerData.setPostion(
 				"【職位：  " + lstheaderData.get(0).getPostion() + " ~ " + lstheaderData.get(max - 1).getPostion() + " 】");
 		headerData.setTargetYearMonth("【処理年月：  " + lstheaderData.get(0).getTargetYearMonth() + "】");
-		headerData.setItemName("項目名称");
-		headerData.setMonth1("平成  29 年  3月");
-		headerData.setMonth2("平成  29 年  4月");
-		headerData.setDifferentSalary("差額");
-		headerData.setRegistrationStatus1("登録状況1 (平成  29 年  3月)");
-		headerData.setRegistrationStatus2("登録状況2 (平成  29 年  4月)");
-		headerData.setReason(" 差異理由");
-		headerData.setConfirmed("確認済");
-		DeparmentInf lstDep =new DeparmentInf("000001","部門1");
-        headerData.setDepInf(lstDep);
+
+		HeaderTable headerTable = new HeaderTable();
+		headerTable.setItemName("項目名称");
+		headerTable.setMonth1(comparingQuery.getMonthJapan1() + "(A)");
+		headerTable.setMonth2(comparingQuery.getMonthJapan2() + "(B)");
+		headerTable.setDifferentSalary("差額(C)");
+		headerTable.setRegistrationStatus1("登録状況1" + "(" + comparingQuery.getMonthJapan1() + ")");
+		headerTable.setRegistrationStatus2("登録状況2" + "(" + comparingQuery.getMonthJapan2() + ")");
+		headerTable.setReason("差異理由");
+		headerTable.setConfirmed("確認済");
+
 		reportData.setHeaderData(headerData);
+		reportData.setHeaderTable(headerTable);
 
-		List<DeparmentInf> deparmentInf = new ArrayList<>();
-		deparmentInf.add(new DeparmentInf("000001","部門1"));
-		deparmentInf.add(new DeparmentInf("000002","部門2"));
-		reportData.setDeparmentInf(deparmentInf);
+		// nhung item code co employee ID giong nhau thi sap xep nhan vien do co nhung item code day.
+		List<DetailEmployee> lstDetailEmployee = new ArrayList<>();
+		comparingQuery.getEmployeeCodeList().stream().forEach(c -> {
+			List<DetailDifferentialDto> comparingDto = null;
+			comparingDto = lstDetailComparing.stream().filter(s -> s.getEmployeeCode().equals(c))
+					.collect(Collectors.toList());
+			if (comparingDto.isEmpty()) {
+				//throw new BusinessException(new RawErrorMessage(c));
+				System.out.println(c);
+			} else {
+				DetailEmployee detailEmployee = new DetailEmployee();
+				detailEmployee.setPersonID(c);
+				detailEmployee.setPersonName(comparingDto.get(0).getEmployeeName());
+				List<DataRowComparingSalaryBonus> lstDataRowComparingSalaryBonus = comparingDto.stream()
+						.map(comparing -> {
+							DataRowComparingSalaryBonus dataRow = new DataRowComparingSalaryBonus();
+								dataRow.setItemName(comparing.getItemName());
+								dataRow.setMonth1(comparing.getComparisonValue1());
+								dataRow.setMonth2(comparing.getComparisonValue2());
+								dataRow.setDifferentSalary(comparing.getValueDifference());
+								dataRow.setRegistrationStatus1(comparing.getRegistrationStatus1());
+								dataRow.setRegistrationStatus2(comparing.getRegistrationStatus2());
+								dataRow.setReason(comparing.getReasonDifference());
+								if (comparing.getConfirmedStatus() == 1) {
+									dataRow.setConfirmed("O");
+								} else {
+									dataRow.setConfirmed("");
+								}
+							return dataRow;
 
-		List<EmployeeInf> employeeInf = new ArrayList<>();
-		employeeInf.add(new EmployeeInf("99900000-0000-0000-0000-000000000001","A"));
-		employeeInf.add(new EmployeeInf("99900000-0000-0000-0000-000000000002","B"));
-		reportData.setEmployeeInf(employeeInf);
+						}).collect(Collectors.toList());
+
+				detailEmployee.setLstData(lstDataRowComparingSalaryBonus);
+				lstDetailEmployee.add(detailEmployee);
+			}
+		});
+
+		List<DeparmentInf> lstDepartmentData = new ArrayList<>();
+		DeparmentInf deparmentInf = new DeparmentInf("0000000101", "部門1", lstDetailEmployee);
+		lstDepartmentData.add(deparmentInf);
+		reportData.setDeparmentInf(lstDepartmentData);
+
 		return reportData;
 	}
 

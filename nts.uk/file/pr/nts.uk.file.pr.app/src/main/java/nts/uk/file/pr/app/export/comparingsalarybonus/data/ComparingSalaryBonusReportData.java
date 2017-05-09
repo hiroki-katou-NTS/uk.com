@@ -16,5 +16,5 @@ public class ComparingSalaryBonusReportData {
 	ComparingSalaryBonusHeaderReportData headerData;
 	HeaderTable  headerTable;
 	List<DeparmentInf> deparmentInf;
-	List<EmployeeInf> employeeInf;
+	
 }
