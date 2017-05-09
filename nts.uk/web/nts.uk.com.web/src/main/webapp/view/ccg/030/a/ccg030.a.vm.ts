@@ -158,33 +158,34 @@ module ccg030.a.viewmodel {
         deleteNewFlowMenu(){
             var self = this;
             var dfd = $.Deferred<any>();
-            let indexItemDelete = _.findIndex(self.flowMenuInfor(), function(item) { return item.topPageCode == self.toppagepartcode.value(); });
-            var item = _.find(self.flowMenuInfor(), function(item){return item.topPageCode == self.toppagepartcode.value();})
-            service.deleteFlowMenu(item).done(function(){
-                $.when(self.dataShow()).done(function(){
-                    if(self.flowMenuInfor().length === 0){
-                        self.createNewFlowMenu();
-                        self.enableDeleteMenu(false);
-                    }else{
-                        self.enableDeleteMenu(true);
-                        if(self.flowMenuInfor().length === indexItemDelete){
-                            self.currentCode(self.items()[indexItemDelete - 1].code);    
+            nts.uk.ui.dialog.confirm(self.messName("Msg_18")).ifCancel(function(){
+               return; 
+            }).ifYes(function(){
+                let indexItemDelete = _.findIndex(self.flowMenuInfor(), function(item) { return item.topPageCode == self.toppagepartcode.value(); });
+                var item = _.find(self.flowMenuInfor(), function(item){return item.topPageCode == self.toppagepartcode.value();})
+                service.deleteFlowMenu(item).done(function(){
+                    $.when(self.dataShow()).done(function(){
+                        if(self.flowMenuInfor().length === 0){
+                            self.createNewFlowMenu();
+                            self.enableDeleteMenu(false);
                         }else{
-                            self.currentCode(self.items()[indexItemDelete].code);    
+                            self.enableDeleteMenu(true);
+                            if(self.flowMenuInfor().length === indexItemDelete){
+                                self.currentCode(self.items()[indexItemDelete - 1].code);    
+                            }else{
+                                self.currentCode(self.items()[indexItemDelete].code);    
+                            }
                         }
+                    })
+                }).fail(function(res){
+                    if(nts.uk.text.isNullOrEmpty(self.messName("Msg_76"))){
+                        nts.uk.ui.dialog.alert(res.message);
+                    }else{
+                        nts.uk.ui.dialog.alert(self.messName("Msg_76"));
                     }
                 })
-            }).fail(function(res){
-                var Msg_76 = _.find(self.lstMessage(), function(mess){
-                    return  mess.messCode === res.messageId;
-                })
-                if(nts.uk.text.isNullOrEmpty(Msg_76)){
-                    nts.uk.ui.dialog.alert(res.message);
-                }else{
-                    nts.uk.ui.dialog.alert(Msg_76.messName);
-                }
+                dfd.resolve();
             })
-            dfd.resolve();
             return dfd.promise();
         }
         
@@ -207,15 +208,14 @@ module ccg030.a.viewmodel {
                         service.craeteFlowMenu(flowMenu).done(function(){
                             self.toppagepartcode.enableCode(false);
                             self.dataShow();
-                            self.currentCode(self.toppagepartcode.value());
+                            self.currentCode(self.toppagepartcode.value());                          
+                            nts.uk.ui.dialog.alert(self.messName("Msg_15"));
                         }).fail(function(res){
-                            var Msg_3 = _.find(self.lstMessage(), function(mess){
-                                return  mess.messCode === res.messageId;
-                            })
+                            var Msg_3 = self.messName('Msg_3');
                             if(nts.uk.text.isNullOrEmpty(Msg_3)){
                                 nts.uk.ui.dialog.alert(res.message);
                             }else{
-                                nts.uk.ui.dialog.alert(Msg_3.messName);
+                                nts.uk.ui.dialog.alert(Msg_3);
                             }
                         })
                         dfd.resolve();
@@ -227,6 +227,7 @@ module ccg030.a.viewmodel {
                         service.updateFlowMenu(flowMenu).done(function(){
                             self.dataShow();
                             self.currentCode(self.toppagepartcode.value());
+                            nts.uk.ui.dialog.alert(self.messName("Msg_15"));
                         }).fail(function(res){
                             nts.uk.ui.dialog.alert(res.messageId);
                         })
@@ -241,10 +242,18 @@ module ccg030.a.viewmodel {
             var self = this;
             self.lstMessage.push(new ItemMessage("Msg_76", "既定フローメニューは削除できません。"));
             self.lstMessage.push(new ItemMessage("Msg_3","入力したコードは、既に登録されています。"));
-            self.lstMessage.push(new ItemMessage("ER010","対象データがありません。"));
-            self.lstMessage.push(new ItemMessage("AL001","変更された内容が登録されていません。\r\nよろしいですか。"));
+            self.lstMessage.push(new ItemMessage("Msg_18","選択中のデータを削除しますか？"));
+            self.lstMessage.push(new ItemMessage("Msg_15","登録しました。"));
             self.lstMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
             self.lstMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
+        }
+        
+        messName(messCode: string): string{
+            var self = this;
+            var Msg = _.find(self.lstMessage(), function(mess){
+                return  mess.messCode === messCode;
+            }) 
+            return Msg.messName;
         }
     }
     
