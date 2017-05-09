@@ -43,80 +43,80 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 		String[]  yearMonth = query.getYearMonth().split("/");
 		year = Integer.parseInt(yearMonth[0]);
 		// get residential tax
-		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
-				query.getResidentTaxCodeList());
+//		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
+//				query.getResidentTaxCodeList());
 
-		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, year,
-				query.getResidentTaxCodeList());
-		if(personResidentTaxList.size() == 0) {
-			throw new BusinessException("データがありません。");
-		}
-		
-		CompanyDto company = residentialTaxRepo.findCompany(companyCode);
-
-		Map<String, List<PersonResitaxDto>> personResidentTaxListMap = personResidentTaxList.stream()
-				.collect(Collectors.groupingBy(PersonResitaxDto::getResidenceCode, Collectors.toList()));
-
-		for (PersonResitaxDto personResidentTax : personResidentTaxList) {
-			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(personResidentTax.getResidenceCode());
-			List<String> personIdList = personResitaxList.stream().map(x -> x.getPersonID())
-					.collect(Collectors.toList());
-			
-			List<PaymentDetailDto> paymentDetailList = residentialTaxRepo.findPaymentDetail(companyCode, personIdList,
-					PayBonusAtr.SALARY, Integer.parseInt(query.getProcessingYearMonth()), CategoryAtr.DEDUCTION, "F108");
-			
-			double totalValue = paymentDetailList.stream()
-	                 .mapToDouble(x->x.getValue().doubleValue())
-	                 .sum();
-			
-			totalPaymentAmount.put(personResidentTax.getResidenceCode(), totalValue);
-			totalNumberPeople.put(personResidentTax.getResidenceCode(), personResitaxList.size());
-		}
-		
-		List<InhabitantTaxChecklistBRpData> reportDataList = new ArrayList<InhabitantTaxChecklistBRpData>();
-		
-		for (ResidentialTaxDto residentialTax : residentTaxList) {
-			
-			InhabitantTaxChecklistBRpData reportData = new InhabitantTaxChecklistBRpData();
-			//DBD_001 residenceTaxCode
-			 reportData.setResidenceTaxCode(residentialTax.getResidenceTaxCode());
-			 
-			//DBD_002 resiTaxAutonomy
-			 reportData.setResiTaxAutonomy(residentialTax.getResiTaxAutonomy());
-			 
-			//DBD_003  numberPeople
-			 reportData.setNumberPeople(totalNumberPeople.get(residentialTax.getResidenceTaxCode()).toString());
-			//DBD_004 value
-			 reportData.setValue(totalPaymentAmount.get(residentialTax.getResidenceTaxCode()));
-			 reportDataList.add(reportData);
-		}
-		
-		InhabitantTaxChecklistBRpData sumReportData = new InhabitantTaxChecklistBRpData();
-			
-		Double sumPaymentAmount = totalPaymentAmount.values().stream()
-				.mapToDouble(x -> x.doubleValue())
-				.sum();
-				
-		Integer sumNumberPeople = totalNumberPeople.values().stream()
-				.mapToInt(x -> x.intValue())
-				.sum();
-		sumReportData.setResidenceTaxCode("");
-		sumReportData.setResiTaxAutonomy("総合計");
-		sumReportData.setNumberPeople(sumNumberPeople.toString());
-		sumReportData.setValue(sumPaymentAmount);
-		
-		reportDataList.add(sumReportData);
-		
-		InhabitantTaxChecklistBRpHeader header = new InhabitantTaxChecklistBRpHeader();		
-		header.setCompanyName(company.getCompanyName());
-		header.setStartResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode()+" "+reportDataList.get(0).getResiTaxAutonomy());
-		header.setLateResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode()+" "+reportDataList.get(0).getResiTaxAutonomy()+"】");
-		header.setDate(query.getProcessingDate()+"度 】");
-		
-		InhabitantTaxChecklistBReport dataReportB = new InhabitantTaxChecklistBReport();
-		dataReportB.setData(reportDataList);
-		dataReportB.setHeader(header);
-		this.generate.generate(context.getGeneratorContext(), dataReportB);
+//		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, year,
+//				query.getResidentTaxCodeList());
+//		if(personResidentTaxList.size() == 0) {
+//			throw new BusinessException("データがありません。");
+//		}
+//		
+//		CompanyDto company = residentialTaxRepo.findCompany(companyCode);
+//
+//		Map<String, List<PersonResitaxDto>> personResidentTaxListMap = personResidentTaxList.stream()
+//				.collect(Collectors.groupingBy(PersonResitaxDto::getResidenceCode, Collectors.toList()));
+//
+//		for (PersonResitaxDto personResidentTax : personResidentTaxList) {
+//			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(personResidentTax.getResidenceCode());
+//			List<String> personIdList = personResitaxList.stream().map(x -> x.getPersonID())
+//					.collect(Collectors.toList());
+//			
+//			List<PaymentDetailDto> paymentDetailList = residentialTaxRepo.findPaymentDetail(companyCode, personIdList,
+//					PayBonusAtr.SALARY, Integer.parseInt(query.getProcessingYearMonth()), CategoryAtr.DEDUCTION, "F108");
+//			
+//			double totalValue = paymentDetailList.stream()
+//	                 .mapToDouble(x->x.getValue().doubleValue())
+//	                 .sum();
+//			
+//			totalPaymentAmount.put(personResidentTax.getResidenceCode(), totalValue);
+//			totalNumberPeople.put(personResidentTax.getResidenceCode(), personResitaxList.size());
+//		}
+//		
+//		List<InhabitantTaxChecklistBRpData> reportDataList = new ArrayList<InhabitantTaxChecklistBRpData>();
+//		
+//		for (ResidentialTaxDto residentialTax : residentTaxList) {
+//			
+//			InhabitantTaxChecklistBRpData reportData = new InhabitantTaxChecklistBRpData();
+//			//DBD_001 residenceTaxCode
+//			 reportData.setResidenceTaxCode(residentialTax.getResidenceTaxCode());
+//			 
+//			//DBD_002 resiTaxAutonomy
+//			 reportData.setResiTaxAutonomy(residentialTax.getResiTaxAutonomy());
+//			 
+//			//DBD_003  numberPeople
+//			 reportData.setNumberPeople(totalNumberPeople.get(residentialTax.getResidenceTaxCode()).toString());
+//			//DBD_004 value
+//			 reportData.setValue(totalPaymentAmount.get(residentialTax.getResidenceTaxCode()));
+//			 reportDataList.add(reportData);
+//		}
+//		
+//		InhabitantTaxChecklistBRpData sumReportData = new InhabitantTaxChecklistBRpData();
+//			
+//		Double sumPaymentAmount = totalPaymentAmount.values().stream()
+//				.mapToDouble(x -> x.doubleValue())
+//				.sum();
+//				
+//		Integer sumNumberPeople = totalNumberPeople.values().stream()
+//				.mapToInt(x -> x.intValue())
+//				.sum();
+//		sumReportData.setResidenceTaxCode("");
+//		sumReportData.setResiTaxAutonomy("総合計");
+//		sumReportData.setNumberPeople(sumNumberPeople.toString());
+//		sumReportData.setValue(sumPaymentAmount);
+//		
+//		reportDataList.add(sumReportData);
+//		
+//		InhabitantTaxChecklistBRpHeader header = new InhabitantTaxChecklistBRpHeader();		
+//		header.setCompanyName(company.getCompanyName());
+//		header.setStartResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode()+" "+reportDataList.get(0).getResiTaxAutonomy());
+//		header.setLateResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode()+" "+reportDataList.get(0).getResiTaxAutonomy()+"】");
+//		header.setDate(query.getProcessingDate()+"度 】");
+//		
+//		InhabitantTaxChecklistBReport dataReportB = new InhabitantTaxChecklistBReport();
+//		dataReportB.setData(reportDataList);
+//		dataReportB.setHeader(header);
+		this.generate.generate(context.getGeneratorContext(), null);
 
 	}
 
