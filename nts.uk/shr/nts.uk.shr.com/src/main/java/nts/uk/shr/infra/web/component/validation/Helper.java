@@ -107,6 +107,6 @@ class Helper {
 			results.put(paramParts[0].trim(), paramParts[1].trim());
 		}
 		
-		return results;
+		return results; 
 	}
 }

@@ -4,6 +4,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -21,7 +22,7 @@ public abstract class AggregateTableEntity extends UkJpaEntity {
      * version
      */
     //@Version
-	@Transient
+	@Transient 
     protected long version;
     
     /**

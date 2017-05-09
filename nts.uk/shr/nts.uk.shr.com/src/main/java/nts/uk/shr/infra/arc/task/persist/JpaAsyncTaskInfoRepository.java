@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import org.apache.log4j.Logger;
+
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -19,20 +21,23 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 
 	@Override
 	public Optional<AsyncTaskInfo> find(String id) {
-		return this.queryProxy().find(id, CisdtAsyncTask.class)
+		Optional<AsyncTaskInfo> result = this.queryProxy().find(id, CisdtAsyncTask.class)
 				.map(e -> toDomain(e));
+		Logger.getLogger(this.getClass()).debug(result);
+		 return result;
 	}
 
 	@Override
 	public void add(AsyncTaskInfo taskInfo) {
 		this.commandProxy().insert(toEntity(taskInfo));
+		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void update(AsyncTaskInfo taskInfo) {
 		this.commandProxy().update(toEntity(taskInfo));
 	}
-	
+	 
 	private static AsyncTaskInfo toDomain(CisdtAsyncTask entity) {
 		return new AsyncTaskInfo(
 				entity.taskId,
@@ -71,4 +76,5 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 		
 		return entity;
 	}
+	
 }

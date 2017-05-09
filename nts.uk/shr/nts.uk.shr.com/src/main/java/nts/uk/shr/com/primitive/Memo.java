@@ -17,7 +17,7 @@ public class Memo extends StringPrimitiveValue<Memo> {
 	 * @param rawValue value
 	 */
 	public Memo(String rawValue) {
-		super(rawValue);
+		super(rawValue); 
 	}
 
 }

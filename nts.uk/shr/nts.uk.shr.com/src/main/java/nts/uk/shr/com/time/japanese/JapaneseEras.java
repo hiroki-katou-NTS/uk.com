@@ -1,11 +1,11 @@
 package nts.uk.shr.com.time.japanese;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -14,7 +14,6 @@ import nts.arc.time.GeneralDate;
 public class JapaneseEras {
 
 	/** names */
-	@Getter
 	private final List<JapaneseEraName> names;
 	
 	/**
@@ -38,5 +37,9 @@ public class JapaneseEras {
 		return this.names.stream()
 				.filter(e -> e.contains(date))
 				.findFirst();
+	}
+	
+	public List<JapaneseEraName> getNames () {
+		return new ArrayList<>(this.names);
 	}
 }

@@ -11,7 +11,6 @@ import nts.arc.i18n.custom.LanguageChangedEvent;
 import nts.arc.i18n.custom.ResourceChangedEvent;
 import nts.gul.text.IdentifierUtil;
 
-@SessionScoped
 @Stateful
 public class SessionLocale implements ISessionLocale {
 	private Locale currentLocale;
@@ -48,5 +47,4 @@ public class SessionLocale implements ISessionLocale {
 		// TODO Auto-generated method stub
 		return this.version;
 	}
-
 }
