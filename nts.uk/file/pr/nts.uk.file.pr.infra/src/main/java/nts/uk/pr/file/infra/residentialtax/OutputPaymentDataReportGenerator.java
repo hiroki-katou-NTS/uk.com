@@ -2,6 +2,7 @@ package nts.uk.pr.file.infra.residentialtax;
 
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 
 import javax.ejb.Stateless;
@@ -63,7 +64,7 @@ public class OutputPaymentDataReportGenerator extends AsposeCellsReportGenerator
 			out.print(createspace(format(reportData.getCommon().getTotalRetirementAmount()),11));
 			out.print(createspace(reportData.getCommon().getTotalNumberSala(),7));
 			out.print(createspace(format(reportData.getCommon().getTotalSalaRetiAmount()),11));
-			out.println(""); // xuống dòng
+			out.println("");
 			out.print("9");
 			out.close();
 
@@ -74,7 +75,11 @@ public class OutputPaymentDataReportGenerator extends AsposeCellsReportGenerator
 	}
 
 	private String format(Double input) {
-		NumberFormat formatter = new DecimalFormat("#0");
+		DecimalFormat formatter = new DecimalFormat();
+		DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+		symbols.setGroupingSeparator(',');
+		formatter.setDecimalFormatSymbols(symbols);
+		
 		return formatter.format(input);
 	}
 

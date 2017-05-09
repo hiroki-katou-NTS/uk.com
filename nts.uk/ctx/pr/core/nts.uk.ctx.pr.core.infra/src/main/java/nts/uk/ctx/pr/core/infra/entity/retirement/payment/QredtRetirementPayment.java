@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.infra.entity.retirement.payment;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -34,16 +36,16 @@ public class QredtRetirementPayment extends UkJpaEntity {
 	public int boardYears;
 	
 	@Column(name="TOTAL_PAYMENT_MNY")
-	public int totalPaymentMoney;
+	public BigDecimal totalPaymentMoney;
 	
 	@Column(name="DEDUCTION1_MNY")
-	public int deduction1Money;
+	public BigDecimal deduction1Money;
 	
 	@Column(name="DEDUCTION2_MNY")
-	public int deduction2Money;
+	public BigDecimal deduction2Money;
 	
 	@Column(name="DEDUCTION3_MNY")
-	public int deduction3Money;
+	public BigDecimal deduction3Money;
 	
 	@Column(name="OTHER_RETIREMENT_PAY_OP")
 	public int retirementPayOption;
@@ -52,49 +54,49 @@ public class QredtRetirementPayment extends UkJpaEntity {
 	public int taxCalculationMethod;
 	
 	@Column(name="INCOME_TAX_MNY")
-	public int incomeTaxMoney;
+	public BigDecimal incomeTaxMoney;
 	
 	@Column(name="CITY_TAX_MNY")
-	public int cityTaxMoney;
+	public BigDecimal cityTaxMoney;
 	
 	@Column(name="PREFECTURE_TAX_MNY")
-	public int prefectureTaxMoney;
+	public BigDecimal prefectureTaxMoney;
 	
 	@Column(name="TOTAL_DEDUCTION_MNY")
-	public int totalDeclarationMoney;
+	public BigDecimal totalDeclarationMoney;
 	
 	@Column(name="ACTUAL_RECIEVE_MNY")
-	public int actualRecieveMoney;
+	public BigDecimal actualRecieveMoney;
 	
 	@Column(name="BANK_TRANSFER_OP1")
 	public int bankTransferOption1;
 	
 	@Column(name="OP1_MNY")
-	public int option1Money;
+	public BigDecimal option1Money;
 	
 	@Column(name="BANK_TRANSFER_OP2")
 	public int bankTransferOption2;
 	
 	@Column(name="OP2_MNY")
-	public int option2Money;
+	public BigDecimal option2Money;
 	
 	@Column(name="BANK_TRANSFER_OP3")
 	public int bankTransferOption3;
 	
 	@Column(name="OP3_MNY")
-	public int option3Money;
+	public BigDecimal option3Money;
 	
 	@Column(name="BANK_TRANSFER_OP4")
 	public int bankTransferOption4;
 	
 	@Column(name="OP4_MNY")
-	public int option4Money;
+	public BigDecimal option4Money;
 	
 	@Column(name="BANK_TRANSFER_OP5")
 	public int bankTransferOption5;
 	
 	@Column(name="OP5_MNY")
-	public int option5Money;
+	public BigDecimal option5Money;
 	
 	@Column(name="WITHHOLDING_MENO")
 	public String withholdingMeno;

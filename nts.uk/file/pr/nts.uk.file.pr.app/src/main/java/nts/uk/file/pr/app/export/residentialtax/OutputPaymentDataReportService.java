@@ -45,7 +45,7 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 	private OutputPaymentDataGenerator generator;
 	@Inject
 	private ResidentialTaxReportRepository residentialTaxRepo;
-
+	
 	@Override
 	protected void handle(ExportServiceContext<ResidentialTaxQuery> context) {
 		String companyCode = AppContexts.user().companyCode();
@@ -103,8 +103,6 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		int processingYM = Integer.parseInt(processingYearMonth[0] + processingYearMonth[1]);
 		// 20170311
 		GeneralDate baseRangeStartYearMonth = GeneralDate.ymd(processingYear, processingMonth, 11);
-	    //GeneralDate baseRangeEndYearMonth = query.getEndDate();
-		GeneralDate baseRangeEndYearMonth = GeneralDate.ymd(2017, 04, 01);
 		for (ResidentialTaxSlipDto residentialTax : residentialTaxSlipDto) {
 			long numberRetirees;
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(residentialTax.getResiTaxCode());
@@ -160,7 +158,11 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 
 		List<ResidentTaxTextData> dataList = new ArrayList<ResidentTaxTextData>();
 		for (ResidentialTaxDto residentialTax : residentTaxList) {
+			
 			Double salaryPaymentAmount = totalSalaryPaymentAmount.get(residentialTax.getResidenceTaxCode());
+			if (salaryPaymentAmount  == null) {
+				break;
+			}
 			Double deliveryAmountRetirement = totalDeliveryAmountRetirement.get(residentialTax.getResidenceTaxCode());
 			Double totalCityTaxMny = totalCityTaxMnyMap.get(residentialTax.getResidenceTaxCode());
 			Double totalPrefectureTaxMny = totalPrefectureTaxMnyMap.get(residentialTax.getResidenceTaxCode());
@@ -200,8 +202,8 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		common.setTypeCode(query.getTypeCode());
 		common.setClientCode(query.getClientCode());
 		common.setDesBranchNumber(query.getDestinationBranchNumber());
-		common.setPaymentDueDate("");
-		common.setPaymentMonth("");
+		common.setPaymentDueDate(query.getEndDate().toString());
+		common.setPaymentMonth(query.getEndDate().yearMonth().toString());
 		common.setClientName(company.getCompanyName());
 		common.setClientAddress(company.getAddress1() + company.getAddress2());
 		common.setTotalNumSalaryMi(totalNumSalaryMi.toString());

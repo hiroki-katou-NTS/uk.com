@@ -87,8 +87,6 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 		int processingYM = Integer.parseInt(processingYearMonth[0] + processingYearMonth[1]);
 		//20170311
 		GeneralDate baseRangeStartYearMonth = GeneralDate.ymd(processingYear, processingMonth, 11);
-		// GeneralDate baseRangeEndYearMonth = query.getEndDate();
-		GeneralDate baseRangeEndYearMonth = GeneralDate.ymd(2017, 04, 01);
 		for (ResidentialTaxSlipDto residentialTax : residentialTaxSlipDto) {
 
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(residentialTax.getResiTaxCode());
@@ -119,12 +117,10 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 			double totalActualRecieveMny = retirementPaymentList.stream()
 					.mapToDouble(x -> x.getActualRecieveMny().doubleValue()).sum();
 			totalActualRecieveMnyMap.put(residentialTax.getResiTaxCode(), totalActualRecieveMny);
-			deliveryNumber.put(residentialTax.getResiTaxCode(),
-					residentialTax.getHeadCount().intValue() + personResitaxList.size());
+			deliveryNumber.put(residentialTax.getResiTaxCode(),residentialTax.getHeadCount().intValue());
 
 		}
 		
-		// List<String> personIdList = personResidentTaxListMap
 
 		// return
 		List<ResidentTaxReportData> reportDataList = new ArrayList<ResidentTaxReportData>();
@@ -173,7 +169,7 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 			// DBD_013 cordinatePostalCode
 			reportData.setCordinatePostalCode(residentialTax.getCordinatePostalCode());
 			// DBD_014 deliveryNumber
-			reportData.setDeliveryNumber(deliveryNumberString);
+			reportData.setDeliveryNumber(deliveryNumberString+"人");
 			// DBD_015 actualRecieveMny
 			reportData.setActualRecieveMny(actualRecieveMnyMap);
 			// DBD_016 cityTaxMny
