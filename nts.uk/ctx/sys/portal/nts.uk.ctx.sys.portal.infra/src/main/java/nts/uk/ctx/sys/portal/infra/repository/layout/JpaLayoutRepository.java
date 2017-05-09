@@ -21,12 +21,6 @@ public class JpaLayoutRepository extends JpaRepository implements LayoutReposito
 	private final String SELECT_ALL = "SELECT c FROM CcgmtLayout c WHERE c.ccgmtLayoutPK.companyID = :companyID";
 	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtLayout c WHERE c.ccgmtLayoutPK.companyID = :companyID AND c.pgType = :pgType";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.layout.LayoutRepository#find(String layoutID)
-	 */
 	@Override
 	public Optional<Layout> find(String layoutID) {
 		return this.queryProxy().query(SELECT_SINGLE, CcgmtLayout.class)
@@ -34,12 +28,6 @@ public class JpaLayoutRepository extends JpaRepository implements LayoutReposito
 				.getSingle(c -> toDomain(c));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.layout.LayoutRepository#findAll(String companyID)
-	 */
 	@Override
 	public List<Layout> findAll(String companyID) {
 		return this.queryProxy().query(SELECT_ALL, CcgmtLayout.class)
@@ -47,12 +35,6 @@ public class JpaLayoutRepository extends JpaRepository implements LayoutReposito
 				.getList(c -> toDomain(c));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.layout.LayoutRepository#findByType(String companyID, int pgType)
-	 */
 	@Override
 	public List<Layout> findByType(String companyID, int pgType) {
 		return this.queryProxy().query(SELECT_BY_TYPE, CcgmtLayout.class)
@@ -61,34 +43,16 @@ public class JpaLayoutRepository extends JpaRepository implements LayoutReposito
 				.getList(c -> toDomain(c));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.layout.LayoutRepository#remove(String companyID, String layoutID)
-	 */
 	@Override
 	public void remove(String companyID, String layoutID) {
 		this.commandProxy().remove(CcgmtLayout.class, new CcgmtLayoutPK(companyID, layoutID));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.layout.LayoutRepository#add(nts.uk.ctx.sys.portal.dom.layout.Layout)
-	 */
 	@Override
 	public void add(Layout layout) {
 		this.commandProxy().insert(toEntity(layout));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.layout.LayoutRepository#update(nts.uk.ctx.sys.portal.dom.layout.Layout)
-	 */
 	@Override
 	public void update(Layout layout) {
 		this.commandProxy().update(toEntity(layout));

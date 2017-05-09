@@ -22,12 +22,6 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtPlacement c WHERE c.placementID = :placementID";
 	private final String SELECT_BY_LAYOUT = "SELECT c FROM CcgmtPlacement c WHERE c.layoutID = :layoutID";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#find(String placementID)
-	 */
 	@Override
 	public Optional<Placement> find(String placementID) {
 		return this.queryProxy().query(SELECT_SINGLE, CcgmtPlacement.class)
@@ -35,12 +29,6 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 				.getSingle(c -> toDomain(c));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#findByType(String companyID, int pgType)
-	 */
 	@Override
 	public List<Placement> findByLayout(String layoutID) {
 		return this.queryProxy().query(SELECT_BY_LAYOUT, CcgmtPlacement.class)
@@ -48,23 +36,11 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 				.getList(c -> toDomain(c));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#remove(String companyID, String placementID)
-	 */
 	@Override
 	public void remove(String companyID, String placementID) {
 		this.commandProxy().remove(CcgmtPlacement.class, new CcgmtPlacementPK(companyID, placementID));
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#removeAll(String companyID, List<String> placementIDs)
-	 */
 	@Override
 	public void removeAll(String companyID, List<String> placementIDs) {
 		List<CcgmtPlacementPK> listCcgmtPlacementPK = new ArrayList<CcgmtPlacementPK>();
@@ -74,34 +50,16 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 		this.commandProxy().removeAll(CcgmtPlacement.class, listCcgmtPlacementPK);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#add(nts.uk.ctx.sys.portal.dom.placement.Placement)
-	 */
 	@Override
 	public void add(Placement placement) {
 		this.commandProxy().insert(toEntity(placement));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#addAll(Collection<Placement>)
-	 */
 	@Override
 	public void addAll(Collection<Placement> placements) {
 		this.commandProxy().insertAll(toEntity(placements));
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.placement.PlacementRepository#update(nts.uk.ctx.sys.portal.dom.placement.Placement)
-	 */
 	@Override
 	public void update(Placement placement) {
 		this.commandProxy().update(toEntity(placement));

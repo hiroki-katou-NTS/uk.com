@@ -22,13 +22,6 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";
 	private final String SELECT_BY_CODE_AND_TYPE = SELECT_BY_TYPE + " AND c.code = :code";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository#find(String
-	 * topPagePartID)
-	 */
 	@Override
 	public Optional<TopPagePart> find(String topPagePartID) {
 		return this.queryProxy().query(SELECT_SINGLE, CcgmtTopPagePart.class)
@@ -36,13 +29,6 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 				.getSingle(c -> toDomain(c));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository#findByLayout(
-	 * String layoutID)
-	 */
 	@Override
 	public List<TopPagePart> findAll(String companyID) {
 		 return this.queryProxy().query(SELECT_BY_COMPANY, CcgmtTopPagePart.class)
@@ -50,13 +36,6 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 					.getList(c -> toDomain(c));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository#findByLayout(
-	 * String layoutID)
-	 */
 	@Override
 	public List<TopPagePart> findByType(String companyID, int type) {
 		 return this.queryProxy().query(SELECT_BY_TYPE, CcgmtTopPagePart.class)
@@ -65,35 +44,16 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 				.getList(c -> toDomain(c));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository#remove(String
-	 * companyID, String topPagePartID)
-	 */
 	@Override
 	public void remove(String companyID, String topPagePartID) {
 		this.commandProxy().remove(CcgmtTopPagePart.class, new CcgmtTopPagePartPK(companyID, topPagePartID));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository#add(
-	 * TopPagePart)
-	 */
 	@Override
 	public void add(TopPagePart topPagePart) {
 		this.commandProxy().insert(toEntity(topPagePart));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository#update(
-	 * TopPagePart)
-	 */
 	@Override
 	public void update(TopPagePart topPagePart) {
 		this.commandProxy().update(toEntity(topPagePart));
