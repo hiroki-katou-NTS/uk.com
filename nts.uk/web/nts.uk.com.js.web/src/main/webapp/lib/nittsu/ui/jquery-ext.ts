@@ -890,9 +890,13 @@ module nts.uk.ui.jqueryExtentions {
 
     }
     
-    export module igGridExt {
-        $.fn.igGridExt = function(options: any) {
+    export module ntsGrid {
+        $.fn.ntsGrid = function(options: any) {
             var self = this;
+            if (typeof options === "string") {
+                ntsAction($(self), options, [].slice.call(arguments).slice(1));
+                return;
+            }
             if (options.ntsControls === undefined) {
                 $(this).igGrid(options);
                 return;
@@ -906,40 +910,40 @@ module nts.uk.ui.jqueryExtentions {
                 
                 var $self = $(self);
                 column.formatter = function(value, rowObj) {
+                    var rowId = rowObj[$self.igGrid("option", "primaryKey")];
                     var update = (val) => { 
                         if ($self.data("igGrid") !== null) {
-//                            $self.igGridUpdating("setCellValue", rowObj[$self.igGrid("option", "primaryKey")], column.key, val);
-//                            $self.igGrid("commit");
-                            var rowId = rowObj[$self.igGrid("option", "primaryKey")];
-                            $self.igGridUpdating("setCellValue", rowId, column.key, val);
-                            var updatedRow = $self.igGrid("rowById", rowId, false);
-                            $self.igGrid("commit");
-                            if (updatedRow !== undefined) 
-                                $self.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
+                            $self.igGridUpdating("setCellValue", rowId, column.key, column.dataType !== 'string' ? val : val.toString());
+                            if (options.autoCommit === undefined || options.autoCommit === false) {
+                                var updatedRow = $self.igGrid("rowById", rowId, false);
+                                $self.igGrid("commit");
+                                if (updatedRow !== undefined) $self.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
+                            }
                         }
                     };
-                    var data = {
-                        setChecked: update,
-                        checked: value
+                    var deleteRow = () => {
+                        if ($self.data("igGrid") !== null) $self.data("igGridUpdating").deleteRow(rowId);
                     };
-                    var ntsControl = getControl(controlDef.controlType);
-                    ntsControl.setText(controlDef);
-                    var $container = ntsControl.draw(data);
-                    var selectors = ntsControl.bindEventsTo();
                     
+                    var ntsControl = getControl(controlDef.controlType);
+                    var cell = $self.igGrid("cellById", rowId, column.key);
+                    var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
+                    isEnable = isEnable !== undefined ? isEnable : controlDef.enable === undefined ? true : controlDef.enable;
+                    var data = {
+                        controlDef: controlDef,
+                        update: update,
+                        deleteRow: deleteRow,
+                        initValue: value,
+                        enable: isEnable
+                    };
+                    var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
+                    var $container = $("<div/>").append($("<div/>").addClass(controlCls));
                     var $_self = $self;
                     setTimeout(function() {
                         var $self = $_self;
-                        for (var sel in selectors) {
-                            var events = (<any>$)._data($container.find(selectors[sel])[0], "events");
-                            var $selector = $self.igGrid("cellById", rowObj[$self.igGrid("option", "primaryKey")], column.key).find(selectors[sel]);
-                            for (var id in events) {
-                                _.each(events[id], function(evt) {
-                                    $selector.unbind();
-                                    $selector.on(evt.type, evt.handler);
-                                });
-                            }
-                        }
+                        var $gridCell = $self.igGrid("cellById", rowObj[$self.igGrid("option", "primaryKey")], column.key);
+                        if ($($gridCell.children()[0]).children().length === 0)
+                            $("." + controlCls).append(ntsControl.draw(data));
                     }, 0);
                     
                     return $container.html();
@@ -953,38 +957,86 @@ module nts.uk.ui.jqueryExtentions {
             }) === undefined) {
                 options.features.push({ name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none' });
             }
+            options.autoCommit = true;
             $(this).igGrid(options);
         };
         
+        function ntsAction($grid: JQuery, method: string, params: Array<any>) {
+            switch (method) {
+                case "updateRow":
+                    var autoCommit = $grid.data("igGrid") !== null && $grid.igGrid("option", "autoCommit") ? true : false;
+                    updateRow($grid, params[0], params[1], autoCommit); 
+                    break;
+                case "enableNtsControlAt":
+                    enableNtsControlAt($grid, params[0], params[1], params[2]);
+                    break;
+                case "disableNtsControlAt":
+                    disableNtsControlAt($grid, params[0], params[1], params[2]);
+                    break;
+            }
+        }
+        
+        function updateRow($grid: JQuery, rowId: any, object: any, autoCommit: boolean) {
+            $grid.data("igGridUpdating").updateRow(rowId, object);
+            if (!autoCommit) {
+                var updatedRow = $grid.igGrid("rowById", rowId, false);
+                $grid.igGrid("commit");
+                if (updatedRow !== undefined) $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
+            }
+        }
+        
+        function disableNtsControlAt($grid: JQuery, rowId: any, columnKey: any, controlType: string) {
+            var cellContainer = $grid.igGrid("cellById", rowId, columnKey);
+            var control = getControl(controlType);
+            control.disable($(cellContainer));
+        } 
+        
+        function enableNtsControlAt($grid: JQuery, rowId: any, columnKey: any, controlType: string) {
+            var cellContainer = $grid.igGrid("cellById", rowId, columnKey);
+            var control = getControl(controlType);
+            control.enable($(cellContainer));
+        }
+        
         function getControl(name: string): NtsControlBase {
-            
-            return new CheckBox();
+            switch (name) {
+                case 'CheckBox':
+                    return new CheckBox();
+                case 'SwitchButtons':
+                    return new SwitchButtons();
+                case 'ComboBox':
+                    return new ComboBox();
+                case 'Button':
+                    return new Button();
+                case 'DeleteButton':
+                    return new DeleteButton();
+            }
         }
         
         abstract class NtsControlBase {
-            value: any;
             readOnly: boolean = false;
-            enable: boolean = true;
-            text: string;
-            
+            abstract containerClass(): string;
             abstract draw(data: any): JQuery;
-            abstract setText(options: any): void;
-            abstract bindEventsTo(): any;
+            abstract enable($container: JQuery): void;
+            abstract disable($container: JQuery): void;
         }
                 
         class CheckBox extends NtsControlBase {
+            containerClass(): string {
+                return "nts-checkbox-container";
+            }
             
             draw(data: any): JQuery {
-                var $container = $("<div/>");
                 var checkBoxText: string;
-                var setChecked = data.setChecked;
-                var $wrapper = $("<div/>");
-                $wrapper.appendTo($container).addClass("ntsControl").on("click", (e) => {
+                var setChecked = data.update;
+                var initValue = data.initValue;
+                var $wrapper = $("<div/>").addClass(this.containerClass()).data("enable", data.enable);
+                $wrapper.addClass("ntsControl").on("click", (e) => {
                     if ($wrapper.data("readonly") === true) e.preventDefault();
                 });
                 
-                if (this.text) {
-                    checkBoxText = this.text;
+                var text = data.controlDef.options[data.controlDef.optionsText];
+                if (text) {
+                    checkBoxText = text;
                 } else {
                     checkBoxText = $wrapper.text();
                     $wrapper.text('');
@@ -998,23 +1050,206 @@ module nts.uk.ui.jqueryExtentions {
                     var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
                 $checkBoxLabel.appendTo($wrapper);
                 
-                var checked = data.checked !== undefined ? data.checked : true;
+                var checked = initValue !== undefined ? initValue : true;
                 $wrapper.data("readonly", this.readOnly);
                 var $checkBox = $wrapper.find("input[type='checkbox']");
         
                 if (checked === true) $checkBox.attr("checked", "checked");
                 else $checkBox.removeAttr("checked");
-                if (this.enable === true) $checkBox.removeAttr("disabled");
+                if (data.enable === true) $checkBox.removeAttr("disabled");
                 else $checkBox.attr("disabled", "disabled");
+                return $wrapper;
+            }
+            
+            disable($container: JQuery): void {
+                var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
+                $wrapper.find("input[type='checkbox']").attr("disabled", "disabled");
+            }
+            
+            enable($container: JQuery): void {
+                var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
+                $wrapper.find("input[type='checkbox']").removeAttr("disabled");
+            }
+        }
+        
+        class SwitchButtons extends NtsControlBase {
+            containerClass(): string {
+                return "nts-switch-container";
+            }
+            
+            draw(data: any): JQuery {
+                var selectedCssClass = 'selected';
+                var options = data.controlDef.options;
+                var optionsValue = data.controlDef.optionsValue;
+                var optionsText = data.controlDef.optionsText;
+                var selectedValue = data.initValue;
+                var container = $("<div/>").addClass(this.containerClass()).data("enable", data.enable);
+
+                _.forEach(options, function(opt) {
+                    var value = opt[optionsValue];
+                    var text = opt[optionsText];
+                    
+                    var btn = $('<button>').text(text)
+                        .addClass('nts-switch-button')
+                        .attr('data-swbtn', value)
+                        .on('click', function() {
+                            var selectedValue = $(this).data('swbtn');
+                            $('button', container).removeClass(selectedCssClass);
+                            $(this).addClass(selectedCssClass);
+                            data.update(selectedValue);
+                        });
+                    if (value === selectedValue) {
+                        btn.addClass(selectedCssClass);
+                    }
+                    container.append(btn);
+                });
+                (data.enable === true) ? $('button', container).prop("disabled", false) 
+                                        : $('button', container).prop("disabled", true);
+                return container;
+            }
+            
+            enable($container: JQuery): void {
+                var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
+                $('button', $wrapper).prop("disabled", false);
+            }
+            
+            disable($container: JQuery): void {
+                var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
+                $('button', $wrapper).prop("disabled", true);
+            }
+            
+        }
+        
+        class ComboBox extends NtsControlBase {
+            containerClass(): string {
+                return "nts-combo-container";
+            }
+            
+            draw(data: any): JQuery {
+                // Default values.
+                var distanceColumns = '     ';
+                // Character used fill to the columns.
+                var fillCharacter = ' '; 
+                var maxWidthCharacter = 15;
+                var container = $("<div/>").addClass(this.containerClass()).data("enable", data.enable);
+                var columns: Array<any> = data.controlDef.columns;
+
+                // Set attribute for multi column.
+                var itemTemplate: string = undefined;
+                var haveColumn = columns && columns.length > 0;
+                if (haveColumn) {
+                    itemTemplate = '<div class="nts-combo-item">';
+                    _.forEach(columns, function(item, i) {
+                        // Set item template.
+                        itemTemplate += '<div class="nts-column nts-combo-column-' + i + '">${' + item.prop + '}</div>';
+                    });
+                    itemTemplate += '</div>';
+                }
+                
+                data.controlDef.options = data.controlDef.options.map((option) => {
+                    var newOptionText: string = '';
+                    if (haveColumn) {
+                        _.forEach(columns, function(item, i) {
+                            var prop: string = option[item.prop];
+                            var length: number = item.length;
+
+                            if (i === columns.length - 1) {
+                                newOptionText += prop;
+                            } else {
+                                newOptionText += text.padRight(prop, fillCharacter, length) + distanceColumns;
+                            }
+                        });
+
+                    } else {
+                        newOptionText = option[data.controlDef.optionsText];
+                    }
+                    option['nts-combo-label'] = newOptionText;
+                    return option;
+                });
+
+                var comboMode: string = data.editable ? 'editable' : 'dropdown';
+                container.igCombo({
+                    dataSource: data.controlDef.options,
+                    valueKey: data.controlDef.optionsValue,
+                    textKey: 'nts-combo-label',
+                    mode: comboMode,
+                    disabled: !data.enable,
+                    placeHolder: '',
+                    enableClearButton: false,
+                    initialSelectedItems: [
+                        { value: data.initValue }
+                    ],
+                    itemTemplate: itemTemplate,
+                    selectionChanged: function(evt: any, ui: any) {
+                        if (ui.items.length > 0) {
+                            data.update(ui.items[0].data[data.controlDef.optionsValue]);
+                        }
+                    }
+                });
+                
+                // Set width for multi columns.
+                if (haveColumn) {
+                    var totalWidth = 0;
+                    var $dropDownOptions = $(container.igCombo("dropDown"));
+                    _.forEach(columns, function(item, i) {
+                        var charLength: number = item.length;
+                        var width = charLength * maxWidthCharacter + 10;
+                        $dropDownOptions.find('.nts-combo-column-' + i).width(width);
+                        if (i !== columns.length - 1) {
+                            $dropDownOptions.find('.nts-combo-column-' + i).css({ 'float': 'left' });
+                        }
+                        totalWidth += width + 10;
+                    });
+                    $dropDownOptions.find('.nts-combo-item').css({ 'min-width': totalWidth });
+                    container.css({ 'min-width': totalWidth });
+                }
+    
+                container.data("columns", columns);
+                container.data("comboMode", comboMode);
+                return container;
+            }
+            
+            enable($container: JQuery): void {
+                var $wrapper = $container.find("." + this.containerClass());
+                $wrapper.data("enable", true);
+                $wrapper.igCombo("option", "disabled", false);
+            }
+            disable($container: JQuery): void {
+                var $wrapper = $container.find("." + this.containerClass());
+                $wrapper.data("enable", false);
+                $wrapper.igCombo("option", "disabled", true);
+            }
+        }
+        
+        class Button extends NtsControlBase {
+            containerClass(): string {
+                return "nts-button-container";
+            }
+            
+            draw(data: any): JQuery {
+                var $container = $("<div/>").addClass(this.containerClass());
+                var $button = $("<button/>").addClass("ntsButton").appendTo($container).text(data.controlDef.text)
+                                            .data("enable", data.enable).on("click", data.controlDef.click);
+                $button.prop("disabled", !data.enable);
                 return $container;
             }
             
-            bindEventsTo(): any {
-                return [ ".ntsControl", "input[type='checkbox']" ];
+            enable($container: JQuery): void {
+                var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
+                $wrapper.find(".ntsButton").prop("disabled", false);
             }
-            
-            setText(controlDef: any): void {
-                this.text = controlDef.options[controlDef.optionsText];
+            disable($container: JQuery): void {
+                var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
+                $wrapper.find(".ntsButton").prop("disabled", true);
+            }
+        }
+        
+        class DeleteButton extends Button {
+            draw(data: any): JQuery {
+                var btn = super.draw(data);
+                btn.off("click", data.controlDef.click);
+                btn.on("click", data.deleteRow);
+                return btn;
             }
         }
     }
