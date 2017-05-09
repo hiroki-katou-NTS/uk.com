@@ -1,7 +1,7 @@
 module qpp009.a.viewmodel {
     export class ScreenModel {
         outputDivisions: KnockoutObservableArray<SelectionModel>;
-        selectedDivision: KnockoutObservable<string>;
+        selectedDivision: KnockoutObservable<number>;
         detailItemsSetting: KnockoutObservable<DetailItemsSetting>;
         printSetting: KnockoutObservable<PrintSetting>;
         yearMonth: KnockoutObservable<number>;
@@ -10,10 +10,10 @@ module qpp009.a.viewmodel {
         constructor() {
             var self = this;
             self.outputDivisions = ko.observableArray<SelectionModel>([
-                new SelectionModel('UsuallyMonth', '通常月'),
-                new SelectionModel('PreliminaryMonth', '予備月')
+                new SelectionModel(0, '通常月'),
+                new SelectionModel(1, '予備月')
             ]);
-            self.selectedDivision = ko.observable('UsuallyMonth');
+            self.selectedDivision = ko.observable(0);
             self.detailItemsSetting = ko.observable(new DetailItemsSetting());
             self.printSetting = ko.observable(new PrintSetting());
             self.yearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
@@ -185,10 +185,10 @@ module qpp009.a.viewmodel {
  * Class 出力区分.
  */
     export class SelectionModel {
-        code: string;
+        code: number;
         name: string;
 
-        constructor(code: string, name: string) {
+        constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
         }

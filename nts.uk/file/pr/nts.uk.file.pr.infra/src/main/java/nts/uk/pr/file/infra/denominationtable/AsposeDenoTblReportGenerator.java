@@ -33,12 +33,12 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.file.pr.app.export.denominationtable.DenominationTblReportGenerator;
+import nts.uk.file.pr.app.export.denominationtable.DenoTableReportGenerator;
 import nts.uk.file.pr.app.export.denominationtable.data.Denomination;
 import nts.uk.file.pr.app.export.denominationtable.data.DepartmentData;
 import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
-import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableDataSource;
-import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableData;
+import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -46,7 +46,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  * The Class AsposeSalaryTableReportGenerator.
  */
 @Stateless
-public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGenerator implements DenominationTblReportGenerator {
+public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator implements DenoTableReportGenerator {
 
 	/** The Constant REPORT_FILE_NAME. */
 	private static final String REPORT_FILE_NAME = "SalaryTableReport.pdf";
@@ -71,6 +71,7 @@ public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGener
 	
 	/** The Constant ROWS_PER_PAGE. */
 	private static final int ROWS_PER_PAGE = 37;
+	private static final String HIERARCHY_DEP_TEXT = "部門階層素計";
 
 	/** The Constant SPACES. */
 	private static final String SPACES = "    ";
@@ -103,8 +104,8 @@ public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGener
 	 * nts.uk.ctx.pr.screen.app.report.salarychart.data.SalaryChartDataSource)
 	 */
 	@Override
-	public void generate(FileGeneratorContext generatorContext, DenominationTableDataSource reportData,
-			DenominationTableReportQuery query) {
+	public void generate(FileGeneratorContext generatorContext, DenominationTableData reportData,
+			DenoTableReportQuery query) {
 		List<EmployeeData> empList = reportData.getEmployeeList();
 		try {
 			 AsposeCellsReportContext reportContext =
@@ -247,7 +248,7 @@ public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGener
 	 * @param isGreen the is green
 	 */
 	private void printEmpSameDep(PrintProcess printProcess, MutableBoolean isGreen) {
-		DenominationTableReportQuery query = printProcess.query;
+		DenoTableReportQuery query = printProcess.query;
 		// Breaking Page Code
 		int breakCode = query.getSelectedBreakPageCode();
 
@@ -291,7 +292,7 @@ public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGener
 	 * @param isGreen the is green
 	 */
 	private void printEmpDifferentDep(PrintProcess printProcess, MutableBoolean isGreen){
-		DenominationTableReportQuery query = printProcess.query;
+		DenoTableReportQuery query = printProcess.query;
 		// Breaking Page Code
 		int breakCode = query.getSelectedBreakPageCode();
 		
@@ -556,7 +557,7 @@ public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGener
 		int rowIndex = printProcess.rowIndex;
 		DepartmentData depData = currentEmp.getDepartmentData();
 		Cell cell = cells.get(rowIndex, 0);
-		cell.setValue("部門  : " + SPACES + depData.getDepPath() + SPACES + depData.getDepName());
+		cell.setValue("部門  : " + SPACES + depData.getDepCode() + SPACES + HIERARCHY_DEP_TEXT);
 
 		// Set Style for cells
 		for (int i = FIRST_COLUMN_INDEX; i < LAST_COLUMN_INDEX; i++) {
@@ -601,10 +602,11 @@ public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGener
 	 * @param printProcess the print process
 	 */
 	private void printTotalOfDep(PrintProcess printProcess) {
-		DenominationTableReportQuery query = printProcess.query;
+		DenoTableReportQuery query = printProcess.query;
 		Cells cells = printProcess.cells;
 		int rowIndex = printProcess.rowIndex;
-		int members = printProcess.members;
+//		int members = printProcess.members;
+		int members = printProcess.prevEmp.getDepartmentData().getNumberOfEmp();
 		if (query.getIsPrintTotalOfDepartment()) {
 			// Fill Data to cells
 			cells.get(rowIndex, COLUMN_INDEX[0]).setValue("部門計" + SPACES1 + members + "人");
@@ -631,7 +633,7 @@ public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGener
 	 * @param depToPrint the dep to print
 	 */
 	private void printAccByHierarchy(PrintProcess printProcess, DepartmentData depToPrint) {
-		DenominationTableReportQuery query = printProcess.query;
+		DenoTableReportQuery query = printProcess.query;
 		// Breaking Page Code
 		int breakCode = query.getSelectedBreakPageCode();
 		// Hierarchy Breaking Page code
@@ -693,7 +695,7 @@ public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGener
 	private void printAccumulated(PrintProcess printProcess, DepartmentData depToPrint) {
 		Cells cells = printProcess.cells;
 		int rowIndex = printProcess.rowIndex;
-		cells.get(rowIndex, COLUMN_INDEX[0]).setValue(depToPrint.getDepName() + SPACES + depToPrint.getDepPath());
+		cells.get(rowIndex, COLUMN_INDEX[0]).setValue(depToPrint.getDepName() + SPACES + depToPrint.getDepName());
 		for (Denomination d : Denomination.values()) {
 			int columnIndex = d.value + 1;
 			cells.get(rowIndex, columnIndex).setValue(depToPrint.getDenomination().get(d) + "枚");
@@ -936,7 +938,7 @@ public class AsposeDenominationTblReportGenerator extends AsposeCellsReportGener
 		public Cells cells;
 		
 		/** The query. */
-		public DenominationTableReportQuery query;
+		public DenoTableReportQuery query;
 		
 		/** The dep stack. */
 		public Stack<DepartmentData> depStack;

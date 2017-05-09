@@ -19,23 +19,23 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.file.pr.app.export.denominationtable.data.Denomination;
 import nts.uk.file.pr.app.export.denominationtable.data.DepartmentData;
 import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
-import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableDataSource;
-import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableData;
+import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SalaryChartReportService.
  */
 @Stateless
-public class DenominationTblReportService extends ExportService<DenominationTableReportQuery> {
+public class DenoTableReportService extends ExportService<DenoTableReportQuery> {
 
 	/** The generator. */
 	@Inject
-	private DenominationTblReportGenerator generator;
+	private DenoTableReportGenerator generator;
 
 	/** The repository. */
 	@Inject
-	private DenominationTableRepository repository;
+	private DenoTableRepository repository;
 	
 	private static final int TWO_THOUSANDS = 2000;
 
@@ -46,10 +46,10 @@ public class DenominationTblReportService extends ExportService<DenominationTabl
 	 * .export.ExportServiceContext)
 	 */
 	@Override
-	protected void handle(ExportServiceContext<DenominationTableReportQuery> context) {
+	protected void handle(ExportServiceContext<DenoTableReportQuery> context) {
 
 		// Get Query
-		DenominationTableReportQuery query = context.getQuery();	
+		DenoTableReportQuery query = context.getQuery();	
 		String[] personIds = { "99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002",
 				"99900000-0000-0000-0000-000000000003", "99900000-0000-0000-0000-000000000004",
 				"99900000-0000-0000-0000-000000000005", "99900000-0000-0000-0000-000000000006",
@@ -61,7 +61,7 @@ public class DenominationTblReportService extends ExportService<DenominationTabl
 		List<EmployeeData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
 		
 		List<Integer> selectedLevels = Arrays.asList(1, 2, 3, 4, 5, 6);
-		DenominationTableReportQuery query1 = new DenominationTableReportQuery();
+		DenoTableReportQuery query1 = new DenoTableReportQuery();
 			query1.setIsCalculateTotal(true);
 			query1.setIsPrintDepHierarchy(true);
 			query1.setIsPrintTotalOfDepartment(true);
@@ -88,7 +88,7 @@ public class DenominationTblReportService extends ExportService<DenominationTabl
 		// Create header object.
 
 		// Create Data Source
-		val dataSource = DenominationTableDataSource.builder()
+		val dataSource = DenominationTableData.builder()
 				.salaryChartHeader(null)
 				.employeeList(items)
 				.build();
@@ -103,7 +103,7 @@ public class DenominationTblReportService extends ExportService<DenominationTabl
 	 * @param paymentAmount the payment amount
 	 * @return the map
 	 */
-	private Map<Denomination, Long> divisionDeno(Double paymentAmount, DenominationTableReportQuery query) {
+	private Map<Denomination, Long> divisionDeno(Double paymentAmount, DenoTableReportQuery query) {
 		Map<Denomination, Long> deno = new HashMap<>();
 		Double amount = paymentAmount;
 		for (Denomination d : Denomination.values()) {
@@ -123,7 +123,7 @@ public class DenominationTblReportService extends ExportService<DenominationTabl
 		return deno;
 	}
 	
-	private List<EmployeeData> createData( DenominationTableReportQuery query) {
+	private List<EmployeeData> createData( DenoTableReportQuery query) {
 		List<EmployeeData> empList = new ArrayList<>();
 		List<DepartmentData> depData = new ArrayList<>();
 		List<String> depPath = new ArrayList<>();

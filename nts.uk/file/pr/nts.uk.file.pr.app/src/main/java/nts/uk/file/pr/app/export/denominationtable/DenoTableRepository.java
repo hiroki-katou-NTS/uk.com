@@ -7,13 +7,13 @@ package nts.uk.file.pr.app.export.denominationtable;
 import java.util.List;
 
 import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
-import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 
 
 /**
  * The Interface SalarychartRepository.
  */
-public interface DenominationTableRepository {
+public interface DenoTableRepository {
 
 	/**
 	 * Gets the items.
@@ -21,7 +21,7 @@ public interface DenominationTableRepository {
 	 * @param code the code
 	 * @return the items
 	 */
-	List<EmployeeData> getItems(String companyCode, DenominationTableReportQuery query);
+	List<EmployeeData> getItems(String companyCode, DenoTableReportQuery query);
 	
 	
 }

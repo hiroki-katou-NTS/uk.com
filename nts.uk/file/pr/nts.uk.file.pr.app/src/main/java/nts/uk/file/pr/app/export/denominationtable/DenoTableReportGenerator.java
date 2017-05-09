@@ -5,13 +5,13 @@
 package nts.uk.file.pr.app.export.denominationtable;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableDataSource;
-import nts.uk.file.pr.app.export.denominationtable.query.DenominationTableReportQuery;
+import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableData;
+import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 
 /**
  * The Interface SalaryChartReportGenerator.
  */
-public interface DenominationTblReportGenerator {
+public interface DenoTableReportGenerator {
 
 	/**
 	 * Generate.
@@ -21,5 +21,5 @@ public interface DenominationTblReportGenerator {
 	 * @param query the query
 	 */
 	void generate(FileGeneratorContext generatorContext, 
-			DenominationTableDataSource dataSource, DenominationTableReportQuery query);
+			DenominationTableData dataSource, DenoTableReportQuery query);
 }

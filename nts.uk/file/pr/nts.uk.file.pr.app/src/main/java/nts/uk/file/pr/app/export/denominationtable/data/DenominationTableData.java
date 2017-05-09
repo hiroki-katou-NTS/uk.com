@@ -53,10 +53,10 @@ import lombok.Setter;
  * @param employeeList the new employee list
  */
 @Setter
-public class DenominationTableDataSource {
+public class DenominationTableData {
 	
 	/** The salary chart header. */
-	private DenominationTblHeaderData salaryChartHeader;
+	private DenoTableHeaderData salaryChartHeader;
 	
 	/** The employee list. */
 	private List<EmployeeData> employeeList;
