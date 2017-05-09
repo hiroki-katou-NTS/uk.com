@@ -15,7 +15,7 @@ module cmm009.a.service {
         
     }
 
-    export function deleteDepartment(department: viewmodel.model.DepartmentDeleteDto) {
+    export function deleteDepartment(department: viewmodel.DepartmentDeleteDto) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.deleteDep, department).done(
             function(res: any) {
@@ -28,7 +28,7 @@ module cmm009.a.service {
     }
 
 
-    export function upDateStartDateandEndDate(updateYMD: viewmodel.model.updateDateMY) {
+    export function upDateStartDateandEndDate(updateYMD: viewmodel.updateDateMY) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.updateStartDateandEndDate, updateYMD).done(
             function(res: any) {
@@ -128,7 +128,7 @@ module cmm009.a.service {
     /**
     * Get list dapartment tแบกi listHistory[0].
     */
-    export function getAllDepartment(): JQueryPromise<viewmodel.model.DepartmentQueryResult> {
+    export function getAllDepartment(): JQueryPromise<viewmodel.DepartmentQueryResult> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.getAllDepartment)
             .done(function(res: any) {
@@ -172,7 +172,7 @@ module cmm009.a.service {
     /**
      * get Memo theo historyID
      */
-    export function getMemoByHistId(historyId: string): JQueryPromise<viewmodel.model.MemoDto> {
+    export function getMemoByHistId(historyId: string): JQueryPromise<viewmodel.MemoDto> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.getMemoByHistId + historyId)
             .done(function(res: any) {

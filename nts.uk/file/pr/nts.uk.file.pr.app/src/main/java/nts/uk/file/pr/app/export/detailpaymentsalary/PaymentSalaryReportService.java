@@ -27,6 +27,7 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.data.DepartmentDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeKey;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.HeaderReportData;
+import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentConstant;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.SalaryPrintSettingDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportData;
 import nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery;
@@ -50,9 +51,6 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
     /** The salary print repo. */
     @Inject
     private SalaryPrintSettingRepository salaryPrintRepo;
-    
-    /** The Constant OUTPUT_FORMAT_TYPE_DETAIL. */
-    private static final String OUTPUT_FORMAT_TYPE_DETAIL = "1";
     
     /*
      * (non-Javadoc)
@@ -216,7 +214,7 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         HeaderReportData header = new HeaderReportData();
         header.setNameCompany("【日通システム株式会社】");
         String titleReport = "明細累計表（給与）";
-        if (query.getOutputFormatType() == OUTPUT_FORMAT_TYPE_DETAIL) {
+        if (query.getOutputFormatType() == PaymentConstant.OUTPUT_FORMAT_TYPE_DETAIL) {
             titleReport = "明細一覧表（給与）";
         }
         header.setTitleReport(titleReport);

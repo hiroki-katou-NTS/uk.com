@@ -54,6 +54,7 @@ import nts.uk.file.pr.app.export.detailpaymentsalary.data.DepartmentDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeDto;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.EmployeeKey;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.HeaderReportData;
+import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentConstant;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.PaymentSalaryReportData;
 import nts.uk.file.pr.app.export.detailpaymentsalary.data.SalaryPrintSettingDto;
 import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
@@ -442,8 +443,8 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                 styleModel.drawBorderLastColPageIfNeed(cellTotalMonthly);
                 // write title row
                 if (!printProcess.isHasTitleRow) {
-                    String titleRow = convertYearMonthJP(yearMonth) + "\nTotal Monthly\n" + emp.getCode() + "    "
-                            + emp.getName();
+                    String titleRow = convertYearMonthJP(yearMonth) + "\n社員月計\n" + emp.getCode()
+                    + PaymentConstant.SPACES + emp.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
                 indexColumn++;
@@ -459,7 +460,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             styleModel.drawBorderLastColPageIfNeed(cellTotal);
             // write title row
             if (!printProcess.isHasTitleRow) {
-                String titleRow = "個人計\n" + emp.getCode() + "    " + emp.getName();
+                String titleRow = "個人計\n" + emp.getCode() + PaymentConstant.SPACES + emp.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
             if (PaymentConstant.PAGE_BREAK_EMPLOYEE.equals(printProcess.configure.getPageBreakSetting())) {
@@ -519,8 +520,8 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
 
                 // write title row
                 if (!printProcess.isHasTitleRow) {
-                    String titleRow = convertYearMonthJP(yearMonth) + "\n部門月計\n" + prevDep.getCode() + "    "
-                            + prevDep.getName();
+                    String titleRow = convertYearMonthJP(yearMonth) + "\n部門月計\n" + prevDep.getCode()
+                    + PaymentConstant.SPACES + prevDep.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
                 totalEmp += codeEmps.size();
@@ -541,7 +542,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
 
             // write title row
             if (!printProcess.isHasTitleRow) {
-                String titleRow = "\n部門計\n" + prevDep.getCode() + "    " + prevDep.getName();
+                String titleRow = "\n部門計\n" + prevDep.getCode() + PaymentConstant.SPACES + prevDep.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
             String numberEmp = totalEmp + "人";
@@ -979,7 +980,13 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
     }
 
     enum CellsBorderType {
-        NoBorder, CommonBorder, VerticalBorder, HorizontalBorder, LeftBorder, RightBorder, DoubleVerticalBorder
+        NoBorder,
+        CommonBorder,
+        VerticalBorder,
+        HorizontalBorder,
+        LeftBorder,
+        RightBorder,
+        DoubleVerticalBorder
     }
 
     class PrintProcess {

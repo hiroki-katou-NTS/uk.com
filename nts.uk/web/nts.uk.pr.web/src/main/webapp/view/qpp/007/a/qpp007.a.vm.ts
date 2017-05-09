@@ -164,6 +164,8 @@ module nts.uk.pr.view.qpp007.a {
                 command.pageBreakSetting = self.selectedpageBreakSetting();
                 command.startDate = self.startYearMonth();
                 command.endDate = self.endYearMonth();
+                command.isNormalMonth = self.isUsuallyAMonth();
+                command.isPreliminaryMonth = self.isPreliminaryMonth();
                 if (self.isDepartmentHierarchy()) {
                     command.hierarchy  = self.selectedHierachy();
                 }
