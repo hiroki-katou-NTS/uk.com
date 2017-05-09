@@ -22,20 +22,25 @@ public class JpaPaydayProcessingRepository extends JpaRepository implements Payd
 	private final String SELECT_ALL_BY_CCD_AND_DISP_ATR_1 = SELECT_ALL
 			+ " WHERE c.qpdmtPaydayProcessingPK.ccd = :companyCode AND c.dispSet = 1";
 
-	private final String SELECT_ALL_BY_BONUS_ATR_AND_DISP_SET = SELECT_ALL_BY_CCD
-			+ " AND c.bonusAtr = :bonusAtr AND c.dispSet = 1";
+	private final String SELECT_ALL_BY_DISP_SET = SELECT_ALL_BY_CCD + " AND c.dispSet = 1";
 
 	@Override
 	public PaydayProcessing selectOne(String companyCode, int processingNo) {
-		return this.queryProxy().query(SELECT_ONE_BY_KEY, QpdmtPaydayProcessing.class)
-				.setParameter("companyCode", companyCode).setParameter("processingNo", processingNo)
-				.getList(c -> toDomain(c)).get(0);
+		List<PaydayProcessing> paydayProcessings = this.queryProxy()
+				.query(SELECT_ONE_BY_KEY, QpdmtPaydayProcessing.class).setParameter("companyCode", companyCode)
+				.setParameter("processingNo", processingNo).getList(c -> toDomain(c));
+
+		if (paydayProcessings.isEmpty()) {
+			return null;
+		} else {
+			return paydayProcessings.get(0);
+		}
 	}
 
 	@Override
-	public List<PaydayProcessing> select1(String companyCode, int bonusAtr) {
-		return this.queryProxy().query(SELECT_ALL_BY_BONUS_ATR_AND_DISP_SET, QpdmtPaydayProcessing.class)
-				.setParameter("companyCode", companyCode).setParameter("bonusAtr", bonusAtr).getList(c -> toDomain(c));
+	public List<PaydayProcessing> select1(String companyCode) {
+		return this.queryProxy().query(SELECT_ALL_BY_DISP_SET, QpdmtPaydayProcessing.class)
+				.setParameter("companyCode", companyCode).getList(c -> toDomain(c));
 	}
 
 	@Override

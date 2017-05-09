@@ -15,7 +15,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.allot.CompanyAllotSetting;
 import nts.uk.ctx.pr.core.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.core.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.core.dom.allot.PersonalAllotSettingRepository;
@@ -64,6 +63,7 @@ import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWage;
 import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWageRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMaster;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMasterRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.CompanyAllotSetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategoryRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
@@ -93,8 +93,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	private PaymentDataCheckService paymentDataCheckService;
 	@Inject
 	private PersonalAllotSettingRepository personalAllotSettingRepo;
-	@Inject
-	private CompanyAllotSettingRepository companyAllotSettingRepo;
+	//@Inject
+	//private CompanyAllotSettingRepository companyAllotSettingRepo;
 	@Inject
 	private HolidayPaidRepository holidayPaidRepo;
 	@Inject
@@ -319,13 +319,13 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				baseYearMonth);
 
 		if (!personalAllotSettingOp.isPresent()) {
-			// get allot company setting
-			CompanyAllotSetting companyAllotSetting = companyAllotSettingRepo.find(companyCode)
-					.orElseThrow(() -> new RuntimeException("エラーでは？")); // Company Allot Setting Not Found
-
-			result = new PersonalAllotSetting(new CompanyCode(companyCode), new PersonId(personId),
-					companyAllotSetting.getStartDate(), companyAllotSetting.getEndDate(),
-					companyAllotSetting.getBonusDetailCode(), companyAllotSetting.getPaymentDetailCode());
+//			// get allot company setting
+//			CompanyAllotSetting companyAllotSetting = companyAllotSettingRepo.find(companyCode)
+//					.orElseThrow(() -> new RuntimeException("エラーでは？")); // Company Allot Setting Not Found
+//
+//			result = new PersonalAllotSetting(new CompanyCode(companyCode), new PersonId(personId),
+//					companyAllotSetting.getStartDate(), companyAllotSetting.getEndDate(),
+//					companyAllotSetting.getBonusDetailCode(), companyAllotSetting.getPaymentDetailCode());
 		} else {
 			result = personalAllotSettingOp.get();
 		}

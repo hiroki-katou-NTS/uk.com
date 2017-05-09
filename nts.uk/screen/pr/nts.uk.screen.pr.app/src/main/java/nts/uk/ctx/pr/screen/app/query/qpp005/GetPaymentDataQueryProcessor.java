@@ -52,8 +52,8 @@ public class GetPaymentDataQueryProcessor {
 	@Inject
 	private PersonalAllotSettingRepository personalPSRepository;
 
-	@Inject
-	private CompanyAllotSettingRepository companyAllotSettingRepository;
+//	@Inject
+//	private CompanyAllotSettingRepository companyAllotSettingRepository;
 
 	/** LayoutMasterRepository */
 	@Inject
@@ -97,11 +97,12 @@ public class GetPaymentDataQueryProcessor {
 		int processingYM = payDateMaster.getCurrentProcessingYm().v();
 
 		// get stmtCode
-		String stmtCode = this.personalPSRepository.find(companyCode, query.getPersonId(), processingYM)
-				.map(o -> o.getPaymentDetailCode().v()).orElseGet(() -> {
-					return this.companyAllotSettingRepository.find(companyCode).get()
-							.getPaymentDetailCode().v();
-				});
+		String stmtCode = ""; 
+//				this.personalPSRepository.find(companyCode, query.getPersonId(), processingYM)
+//				.map(o -> o.getPaymentDetailCode().v()).orElseGet(() -> {
+//					return this.companyAllotSettingRepository.find(companyCode).get()
+//							.getPaymentDetailCode().v();
+//				});
 
 		// get 明細書マスタ
 		List<LayoutMaster> mLayouts = this.layoutMasterRepository.findAll(companyCode, stmtCode, processingYM);

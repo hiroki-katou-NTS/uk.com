@@ -3,7 +3,8 @@ module qpp011.f.service {
         findAllResidential: "pr/core/residential/findallresidential",
         getlistLocation: "pr/core/residential/getlistLocation",
         saveAsPdfB: "screen/pr/QPP011/saveAsPdfB",
-        saveAsPdfC: "screen/pr/QPP011/saveAsPdfC"
+        saveAsPdfC: "screen/pr/QPP011/saveAsPdfC",
+        saveText: "screen/pr/QPP011/savePaymentData"
     }
 
     /**
@@ -39,6 +40,12 @@ module qpp011.f.service {
         } else {
            var path  = paths.saveAsPdfC;
         }
+        return nts.uk.request.exportFile(path, command);
+    }
+    
+    export function saveText(command: any): JQueryPromise<any> {
+        var path  = paths.saveText;
+
         return nts.uk.request.exportFile(path, command);
     }
 }
