@@ -50,6 +50,7 @@ import nts.uk.file.pr.app.export.detailpayment.data.HeaderReportData;
 import nts.uk.file.pr.app.export.detailpayment.data.PaymentConstant;
 import nts.uk.file.pr.app.export.detailpayment.data.PaymentSalaryReportData;
 import nts.uk.file.pr.app.export.detailpayment.data.SalaryPrintSettingDto;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -908,7 +909,8 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         String tmpDate = yearMonth.toString().concat(firstDay);
         String dateFormat = "yyyyMMdd";
         GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
-        return this.japaneseProvider.toJapaneseDate(generalDate).toString();
+        JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
+        return japaneseDate.era() + japaneseDate.year() + "年" + japaneseDate.month() + "月度"; 
     }
 
     @Setter

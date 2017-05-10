@@ -20,6 +20,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingRepository;
@@ -33,6 +34,8 @@ import nts.uk.file.pr.app.export.detailpayment.data.SalaryPrintSettingDto;
 import nts.uk.file.pr.app.export.detailpayment.query.PaymentSalaryQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
+import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 /**
  * The Class PaymentSalaryReportService.
@@ -51,6 +54,10 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
     /** The salary print repo. */
     @Inject
     private SalaryPrintSettingRepository salaryPrintRepo;
+    
+    /** The japanese provider. */
+    @Inject
+    private JapaneseErasProvider japaneseProvider;
     
     /*
      * (non-Javadoc)
@@ -78,8 +85,10 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         if (!this.repository.isAvailableData(companyCode, query)) {
             throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
+        
+        PaymentSalaryReportData reportData = this.repository.findReportData(companyCode, query);
         // TODO: fake data.
-        PaymentSalaryReportData reportData = fakeReportData();
+        reportData = fakeReportData();
 
         SalaryPrintSettingDto configure = findSalarySetting(query);
         reportData.setConfigure(configure);
@@ -179,8 +188,30 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         header.setDepartment("【部門　：役員　販売促進1課　役員～製造部　製造課　製造　(31部門)】");
         header.setCategory("【分類　：正社員～アルバイト　(5分類)】");
         header.setPosition("【職位　：参事～主任　(10職位)】");
-        header.setTargetYearMonth("【処理年月：平成12年 1月度】");
+        
+        // ========= CONVERT YEARMONTH JAPANESE =========
+        StringBuilder yearMonthJP = new StringBuilder("【処理年月：");
+        yearMonthJP.append(convertYearMonthJP(query.getStartDate()));
+        yearMonthJP.append("～");
+        yearMonthJP.append(convertYearMonthJP(query.getEndDate()));
+        yearMonthJP.append("】");
+        header.setTargetYearMonth(yearMonthJP.toString());
         return header;
+    }
+    
+    /**
+     * Convert year month JP.
+     *
+     * @param yearMonth the year month
+     * @return the string
+     */
+    private String convertYearMonthJP(Integer yearMonth) {
+        String firstDay = "01";
+        String tmpDate = yearMonth.toString().concat(firstDay);
+        String dateFormat = "yyyyMMdd";
+        GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
+        JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
+        return japaneseDate.era() + japaneseDate.year() + "年 " + japaneseDate.month() + "月度"; 
     }
 
     /**
