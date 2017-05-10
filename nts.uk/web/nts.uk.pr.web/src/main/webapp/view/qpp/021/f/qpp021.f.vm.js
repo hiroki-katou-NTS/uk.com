@@ -42,7 +42,11 @@ var nts;
                                     if ($('.nts-input').ntsError('hasError')) {
                                         return;
                                     }
-                                    f.service.saveRefundPadding(self.refundPaddingTwoModel.toDto());
+                                    f.service.saveRefundPadding(self.refundPaddingTwoModel.toDto()).done(function () {
+                                        self.onCloseBtnClicked();
+                                    }).fail(function () {
+                                        self.onCloseBtnClicked();
+                                    });
                                 };
                                 ScreenModel.prototype.onCloseBtnClicked = function () {
                                     nts.uk.ui.windows.close();

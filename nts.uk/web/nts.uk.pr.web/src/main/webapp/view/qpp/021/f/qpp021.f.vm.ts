@@ -43,7 +43,11 @@ module nts.uk.pr.view.qpp021.f {
                     return;
                 }
                 // Save.
-                service.saveRefundPadding(self.refundPaddingTwoModel.toDto());
+                service.saveRefundPadding(self.refundPaddingTwoModel.toDto()).done(function(){
+                    self.onCloseBtnClicked();
+                }).fail(function(){
+                    self.onCloseBtnClicked();    
+                })
             }
 
             /**

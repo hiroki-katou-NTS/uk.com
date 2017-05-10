@@ -40,7 +40,11 @@ var nts;
                                     if ($('.nts-input').ntsError('hasError')) {
                                         return;
                                     }
-                                    e.service.saveRefundPadding(self.refundPaddingOnceModel.toDto());
+                                    e.service.saveRefundPadding(self.refundPaddingOnceModel.toDto()).done(function () {
+                                        self.close();
+                                    }).fail(function (error) {
+                                        self.close();
+                                    });
                                 };
                                 ScreenModel.prototype.close = function () {
                                     nts.uk.ui.windows.close();

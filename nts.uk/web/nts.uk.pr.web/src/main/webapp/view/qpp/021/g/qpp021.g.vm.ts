@@ -43,7 +43,11 @@ module nts.uk.pr.view.qpp021.g {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
-                service.saveRefundPadding(self.refundPaddingThreeModel.toDto());
+                service.saveRefundPadding(self.refundPaddingThreeModel.toDto()).done(function(){
+                    self.closeRefundPaddingThree();    
+                }).fail(function(error){
+                   self.closeRefundPaddingThree(); 
+                });
             }
 
             closeRefundPaddingThree(): void {
