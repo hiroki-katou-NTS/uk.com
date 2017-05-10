@@ -110,7 +110,7 @@ var qpp021;
                     nts.uk.ui.windows.sub.modal('/view/qpp/021/i/index.xhtml', { title: 'コメント登録', dialogClass: 'no-close' });
                 };
                 ScreenModel.prototype.openDialogRefundPadding = function () {
-                    nts.uk.ui.windows.sub.modal('/view/qpp/021/f/index.xhtml', { title: '余白設定2', dialogClass: 'no-close' });
+                    nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
                 };
                 return ScreenModel;
             }());
