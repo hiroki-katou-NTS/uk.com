@@ -44,6 +44,7 @@ import nts.uk.file.pr.app.export.detailpayment.query.PaymentSalaryQuery;
 @Stateless
 public class JpaPaySalaryReportRepository extends JpaRepository implements PaySalaryReportRepository {
     
+    /** The Constant QUERY_CHECK_DATA. */
     private static final String QUERY_CHECK_DATA = "SELECT header, detail "
             + "FROM QstdtPaymentHeader header, "
             + "QstdtPaymentDetail detail "
@@ -58,6 +59,7 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
             + "AND detail.qstdtPaymentDetailPK.processingYM >= :startYM "
             + "AND detail.qstdtPaymentDetailPK.processingYM <= :endYM ";
     
+    /** The Constant QUERY_PAYMENT_DETAIL. */
     private static final String QUERY_PAYMENT_DETAIL = "SELECT pCom.scd, detail.qstdtPaymentDetailPK.categoryATR,"
             + "detail.qstdtPaymentDetailPK.itemCode, item.itemName,"
             + "detail.qstdtPaymentDetailPK.processingYM, detail.value "
@@ -79,14 +81,18 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
             + "AND detail.qstdtPaymentDetailPK.sparePayAttribute IN :sparePayAttributes "
             + "AND detail.qstdtPaymentDetailPK.itemCode IN :itemCodes";
     
+    /** The Constant QUERY_NUMER_EMPLOYEE_LIMIT. */
     private static final int QUERY_NUMER_EMPLOYEE_LIMIT = 1000;
     
+    /** The output setting repo. */
     @Inject
     private SalaryOutputSettingRepository outputSettingRepo;
     
+    /** The master item repo. */
     @Inject
     private ItemMasterRepository masterItemRepo;
     
+    /** The aggr item repo. */
     @Inject
     private SalaryAggregateItemRepository aggrItemRepo;
     
@@ -168,6 +174,14 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         return reportData;
     }
     
+    /**
+     * Filter data.
+     *
+     * @param codeEmp the code emp
+     * @param mapAmountByYm the map amount by ym
+     * @param mapItem the map item
+     * @param mapAmount the map amount
+     */
     private void filterData(String codeEmp, Map<Integer, List<Object[]>> mapAmountByYm,
             Map<CategoryItem, List<String>> mapItem, Map<EmployeeKey, Double> mapAmount) {
         
@@ -203,6 +217,14 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         });
     }
     
+    /**
+     * Find map item.
+     *
+     * @param outputSetting the output setting
+     * @param masterItems the master items
+     * @param aggrItems the aggr items
+     * @return the map
+     */
     private Map<CategoryItem, List<String>> findMapItem(SalaryOutputSetting outputSetting, List<ItemMaster> masterItems,
             List<SalaryAggregateItem> aggrItems) {
         Map<CategoryItem, List<String>> mapItem = new HashMap<>();
@@ -246,6 +268,14 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         return mapItem;
     }
     
+    /**
+     * Find payment detail.
+     *
+     * @param companyCode the company code
+     * @param payQuery the pay query
+     * @param itemCodes the item codes
+     * @return the list
+     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private List<Object[]> findPaymentDetail(String companyCode, PaymentSalaryQuery payQuery,
             List<String> itemCodes) {
@@ -256,13 +286,15 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         query.setParameter("startYM", payQuery.getStartDate());
         query.setParameter("endYM", payQuery.getEndDate());
         query.setParameter("itemCodes", itemCodes);
-        // TODO: not valid case both isNormalMonth = false and isPreliminaryMonth = false
         List<Integer> payAttrs = new ArrayList<>();
         if (payQuery.getIsNormalMonth()) {
             payAttrs.add(PaymentConstant.ZERO);
         }
         if (payQuery.getIsPreliminaryMonth()) {
             payAttrs.add(PaymentConstant.ONE);
+        }
+        if (payAttrs.isEmpty()) {
+            throw new BusinessException(new RawErrorMessage("通常月と予備月が指定されていません。"));
         }
         query.setParameter("sparePayAttributes", payAttrs);
         List select = query.getResultList();
@@ -272,9 +304,18 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         return select;
     }
     
+    /**
+     * The Class CategoryItem.
+     */
     class CategoryItem {
+        
+        /** The item code. */
         private String itemCode;
+        
+        /** The item name. */
         private String itemName;
+        
+        /** The category. */
         private SalaryCategory category;
     }
 }

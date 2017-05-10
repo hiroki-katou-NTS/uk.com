@@ -250,7 +250,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
      */
     private void writeCategoryItem(PrintProcess printProcess) {
         Map<EmployeeKey, Double> mapAmount = printProcess.mapAmount;
-        // write content of a category.
+        // ========= FIND LIST ITEM NAME =========
         List<String> itemNames = mapAmount.entrySet().stream()
                 .map(p -> p.getKey().getItemName())
                 .distinct()
@@ -258,6 +258,8 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         printProcess.indexRowHeaderCategory = printProcess.indexRow;
         printProcess.indexRow++;
         int indexArr = 0;
+        
+        // ========= PRINT ITEM OF A CATEGORY =========
         for (String itemName : itemNames) {
             printProcess.isForebackground = false;
             if (indexArr % PaymentConstant.SECOND != PaymentConstant.ZERO) {
@@ -273,8 +275,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             printProcess.mapAmountDepMonths.clear();
             indexArr++;
         }
-        // write header category. Need to calculate index row of header
-        // category?
+        // ========= WRITE HEADER CATEGORY =========
         writeHeaderCategory(printProcess);
     }
 
@@ -349,26 +350,32 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             DepartmentDto prevDep = prevEmp.getDepartment();
             DepartmentDto currDep = currEmp.getDepartment();
             lastDep = currDep;
-            // check employees in department ?
+            // check employees in department
             if (currDep.getCode().equals(prevDep.getCode())) {
                 // print employee same a department
                 writeEmployee(printProcess, mapAmountItemName, currEmp);
                 codeEmpDeps.add(currEmp.getCode());
                 continue;
-            } else {
-                stackDep.push(prevDep);
-                // write department monthly and total department all month.
-                writeTotalDep(printProcess, mapAmountItemName, codeEmpDeps, prevDep);
-                codeEmpDeps.clear();
-                codeEmpDeps.add(currEmp.getCode());
-                // check current department
-                if (!currDep.getDepPath().startsWith(prevDep.getDepPath())) {
-                    // print calculate cumulative of previous department
-                    stackDep = findSameLevelDep(printProcess, stackDep, currDep);
-                }
-                writeEmployee(printProcess, mapAmountItemName, currEmp);
-                prevEmp = currEmp;
             }
+            
+            // ==================================== JUMP NEW DEPARTMENT  ====================================
+            stackDep.push(prevDep);
+            // write department monthly and total department all month.
+            writeTotalDep(printProcess, mapAmountItemName, codeEmpDeps, prevDep);
+            
+            // ========= SET EMPLOYEE CODE OF NEW DEPARMENT =========
+            codeEmpDeps.clear();
+            codeEmpDeps.add(currEmp.getCode());
+            
+            // ========= CHECK CURRENT DEPARTMENT =========
+            if (!currDep.getDepPath().startsWith(prevDep.getDepPath())) {
+                // print calculate cumulative of previous department
+                stackDep = findSameLevelDep(printProcess, stackDep, currDep);
+            }
+            
+            // ========= PRIN EMPLOYEE OF NEW DEPARTMENT =========
+            writeEmployee(printProcess, mapAmountItemName, currEmp);
+            prevEmp = currEmp;
         }
         // write total monthly and total all of last department.
         if (lastDep != null) {
@@ -400,13 +407,14 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             styleModel.setForegroundColor(PaymentConstant.LIGHT_GREEN_COLOR);
         }
         styleModel.drawBorderCell(cell);
+        
         if (printProcess.mapTitle == null) {
             printProcess.mapTitle = new HashMap<>();
-            if (printProcess.configure.getOutputFormatType() == PaymentConstant.OUTPUT_FORMAT_TYPE_CUMULATIVE) {
-                printProcess.mapTitle.put(printProcess.indexColumn, "");
-            } else {
-                printProcess.mapTitle.put(printProcess.indexColumn, "社員");
-            }
+        }
+        if (PaymentConstant.OUTPUT_FORMAT_TYPE_CUMULATIVE.equals(printProcess.configure.getOutputFormatType())) {
+            printProcess.mapTitle.put(printProcess.indexColumn, "");
+        } else {
+            printProcess.mapTitle.put(printProcess.indexColumn, "社員");
         }
         printProcess.indexColumn++;
     }
@@ -620,15 +628,9 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             tmpDeps.add(prevDep);
             if (currentDep.getDepLevel() == prevDep.getDepLevel()) {
                 calCumulateDepMonthly(printProcess, tmpDeps, prevDep);
-                isEqualDepLevel = true;
                 // remove department code: C, D, E --> remove E (D contains E)
-                for (int i = 0; i < tmpDeps.size(); i++) {
-                    if (tmpDeps.get(i) == prevDep) {
-                        break;
-                    } else {
-                        tmpDeps.remove(i);
-                    }
-                }
+                removeTempDep(tmpDeps, prevDep);
+                isEqualDepLevel = true;
             }
             // write cumulative department.
             writeCumulateDep(printProcess, prevDep, tmpDeps);
@@ -637,6 +639,22 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             }
         }
         return newStack;
+    }
+    
+    /**
+     * Removes the temp dep.
+     *
+     * @param tmpDeps the tmp deps
+     * @param prevDep the prev dep
+     */
+    private void removeTempDep(List<DepartmentDto> tmpDeps, DepartmentDto prevDep) {
+        for (int i = 0; i < tmpDeps.size(); i++) {
+            if (tmpDeps.get(i) == prevDep) {
+                break;
+            } else {
+                tmpDeps.remove(i);
+            }
+        }
     }
 
     /**
@@ -695,7 +713,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             styleModel.drawBorderCell(cellTotal);
 
             if (!printProcess.isHasTitleRow) {
-                String titleRow = "\n部門階層累計\n" + prevDep.getCode() + "        " + prevDep.getName();
+                String titleRow = "\n部門階層累計\n" + prevDep.getCode() + PaymentConstant.SPACES + prevDep.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
 
@@ -822,7 +840,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                             && depCodes.contains(p.getKey().getCode()))
                     .mapToDouble(p -> p.getValue())
                     .sum();
-            if (amount > 0) {
+            if (amount > PaymentConstant.ZERO) {
                 mapAmountDepMonths.remove(newDep);
                 mapAmountDepMonths.put(newDep, amount);
             }
@@ -893,18 +911,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         return this.japaneseProvider.toJapaneseDate(generalDate).toString();
     }
 
-    /**
-     * Sets the horizontal border.
-     *
-     * @param isHorizontalBorder the new horizontal border
-     */
     @Setter
-    
-    /**
-     * Checks if is horizontal border.
-     *
-     * @return true, if is horizontal border
-     */
     @Getter
     class StyleModel {
 
