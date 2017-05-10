@@ -8,13 +8,13 @@
 			<div id="D_LST_001"
 				data-bind="ntsListBox: {
 					options: ItemLists,
-					optionsValue: 'code',
-					optionsText: 'name',
+					optionsValue: 'historyId',
+					optionsText: 'text',
 					value: ItemListSelected,
 					rows: 5,
 					required: true,
 					enable: true,
-					columns: [{ prop: 'name', length: 10 }]
+					columns: [{ prop: 'text', length: 10 }]
 				}"></div>
 		</div>
 	</div>
@@ -38,8 +38,8 @@
 
 			<table id="D_LST_002"
 				data-bind="ntsTreeGridView:{
-						width: 1010,
-						height: 550,
+						width: 900,
+						height: 350,
 						enable: true,
 						multiple: false,
 						showCheckBox: false,

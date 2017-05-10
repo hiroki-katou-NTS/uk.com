@@ -23,7 +23,7 @@
 		<ui:define name="sidebar">
 			<div data-bind="with: viewmodelA">
 				<ul class="navigator"
-					data-bind="foreach: tabs().filter((t) => { return t.display() == true; })">
+					data-bind="foreach: tabs().filter(function(t) { return t.display() == true; })">
 					<li><a
 						data-bind="text: name, 
 						click: changeTab,

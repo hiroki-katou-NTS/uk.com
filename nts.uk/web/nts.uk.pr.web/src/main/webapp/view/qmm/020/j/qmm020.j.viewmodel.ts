@@ -5,15 +5,15 @@ module qmm020.j.viewmodel {
         displayMode: KnockoutObservable<number> = ko.observable(1);
         startYm: KnockoutObservable<number> = ko.observable(197001);
         endYm: KnockoutObservable<number> = ko.observable(197001);
-        endDate: KnockoutObservable<Date> = ko.observable(moment.utc().toDate());
-        baseDate: KnockoutObservable<Date> = ko.observable(moment.utc().toDate());
-        startDate: KnockoutObservable<Date> = ko.observable(moment.utc().toDate());
-        selectedMode: KnockoutObservable<number> = ko.observable(1);
+        endDate: KnockoutObservable<Date> = ko.observable(new Date());
+        baseDate: KnockoutObservable<Date> = ko.observable(new Date());
+        startDate: KnockoutObservable<Date> = ko.observable(new Date());
+        selectedMode: KnockoutObservable<number> = ko.observable(2);
         txtCopyHistory: KnockoutObservable<string> = ko.observable(undefined);
         constructor() {
             var self = this;
             let dto: IDTOModel = nts.uk.ui.windows.getShared("J_DATA");
-            
+
             // close dialog if dialog hasn't param 
             if (!dto) {
                 self.closeDialog();
@@ -21,8 +21,17 @@ module qmm020.j.viewmodel {
             }
 
             // observable value
-            self.startYm(dto.startYm || 197001);
-            self.endYm(dto.endYm || 197001);
+            let startYm = nts.uk.time.parseYearMonth(dto.startYm);
+            if (startYm.success) {
+                self.startYm(dto.startYm);
+                self.startDate(moment.utc(Date.UTC(startYm.year, startYm.month, 0)).toDate());
+            }
+
+            let endYm = nts.uk.time.parseYearMonth(dto.endYm);
+            if (endYm.success) {
+                self.endYm(dto.endYm);
+                self.endDate(moment.utc(Date.UTC(endYm.year, endYm.month, 0)).toDate());
+            }
 
             // display mode
             self.displayMode(dto.displayMode || 1);
@@ -80,8 +89,6 @@ module qmm020.j.viewmodel {
         }
 
         closeDialog() {
-            // Clear setted data
-            nts.uk.ui.windows.setShared('J_DATA', null);
             nts.uk.ui.windows.close();
         }
     }

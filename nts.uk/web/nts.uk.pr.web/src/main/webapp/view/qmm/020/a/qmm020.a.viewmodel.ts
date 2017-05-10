@@ -26,10 +26,50 @@ module qmm020.a.viewmodel {
         };
 
         changeTab(tab: TabModel) {
-            let self = this;
+            let self = this, view = __viewContext.viewModel;
             tab.active(true);
             self.title(tab.name);
             self.tabs().map((t) => { if (t.name != tab.name) t.active(false); });
+
+            // call start function on view at here
+            switch (tab.id) {
+                case 'B':
+                    if (typeof view.viewmodelB.start == 'function') {
+                        view.viewmodelB.start();
+                    }
+                    break;
+                case 'C':
+                    if (typeof view.viewmodelC.start == 'function') {
+                        view.viewmodelC.start();
+                    }
+                    break;
+                case 'D':
+                    if (typeof view.viewmodelD.start == 'function') {
+                        view.viewmodelD.start();
+                    }
+                    break;
+                case 'E':
+                    if (typeof view.viewmodelE.start == 'function') {
+                        view.viewmodelE.start();
+                    }
+                    break;
+                case 'F':
+                    if (typeof view.viewmodelF.start == 'function') {
+                        view.viewmodelF.start();
+                    }
+                    break;
+                case 'G':
+                    if (typeof view.viewmodelG.start == 'function') {
+                        view.viewmodelG.start();
+                    }
+                    break;
+                case 'H':
+                    if (typeof view.viewmodelH.start == 'function') {
+                        view.viewmodelH.start();
+                    }
+                    break;
+            }
+
         }
 
         // call saveData on child view by active tab id
@@ -38,25 +78,39 @@ module qmm020.a.viewmodel {
                 activeTab = _.find(self.tabs(), function(t) { return t.active() == true; });
             switch (activeTab.id) {
                 case 'B':
-                    view.viewmodelB.saveData();
+                    if (typeof view.viewmodelB.saveData == 'function') {
+                        view.viewmodelB.saveData();
+                    }
                     break;
                 case 'C':
-                    view.viewmodelC.saveData();
+                    if (typeof view.viewmodelC.saveData == 'function') {
+                        view.viewmodelC.saveData();
+                    }
                     break;
                 case 'D':
-                    view.viewmodelD.saveData();
+                    if (typeof view.viewmodelD.saveData == 'function') {
+                        view.viewmodelD.saveData();
+                    }
                     break;
                 case 'E':
-                    view.viewmodelE.saveData();
+                    if (typeof view.viewmodelE.saveData == 'function') {
+                        view.viewmodelE.saveData();
+                    }
                     break;
                 case 'F':
-                    view.viewmodelF.saveData();
+                    if (typeof view.viewmodelF.saveData == 'function') {
+                        view.viewmodelF.saveData();
+                    }
                     break;
                 case 'G':
-                    view.viewmodelG.saveData();
+                    if (typeof view.viewmodelG.saveData == 'function') {
+                        view.viewmodelG.saveData();
+                    }
                     break;
                 case 'H':
-                    view.viewmodelH.saveData();
+                    if (typeof view.viewmodelH.saveData == 'function') {
+                        view.viewmodelH.saveData();
+                    }
                     break;
             }
         }
