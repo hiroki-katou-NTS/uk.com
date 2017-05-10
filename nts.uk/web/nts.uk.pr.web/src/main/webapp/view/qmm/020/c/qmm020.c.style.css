@@ -18,7 +18,7 @@
 }
 
 .screen-c #C_LST_002, .screen-c #C_LST_002_grid_container, .screen-c #C_LST_002_grid_virtualContainer,
-	.screen-c #C_LST_002_grid_displayContainer, .screen-c  #C_LST_002 #D_LST_002_grid td
+	.screen-c #C_LST_002_grid_displayContainer, .screen-c  #C_LST_002 #C_LST_002_grid td
 	{
 	width: 170px !important;
 	max-width: none !important;
@@ -34,7 +34,7 @@
 	background-color: #FCFCFC !important;
 }
 
-.screen-c #D_LST_002_container {
+.screen-c #C_LST_002_container {
 	margin-top: 10px;
 }
 

@@ -1,5 +1,3 @@
-
-
 module qmm020.b.viewmodel {
     export class ScreenModel {
         //content:  KnockoutObservable<any>;
@@ -22,14 +20,14 @@ module qmm020.b.viewmodel {
             self.maxItem = ko.observable(new service.model.CompanyAllotSettingDto());
             self.start();
         }
+
         // start function
-        start(): JQueryPromise<any> {
+        start() {
             var self = this;
-            var dfd = $.Deferred<any>();
             //Get list startDate, endDate of History 
             //get allot Company
             service.getAllotCompanyList().done(function(companyAllots: Array<service.model.CompanyAllotSettingDto>) {
-                
+
                 if (companyAllots.length > 0) {
                     let _items: Array<ComHistItem> = [];
                     //push data to listItem of hist List
@@ -53,34 +51,29 @@ module qmm020.b.viewmodel {
                     self.currentItem().historyId(companyAllots[0].historyId);
                 } else {
                     //self.allowClick(false);
-                    dfd.resolve();
+
                 }
             }).fail(function(res) {
                 // Alert message
                 alert(res);
             });
+            
             //get Row with max Date 
             service.getAllotCompanyMaxDate().done(function(itemMax: service.model.CompanyAllotSettingDto) {
                 self.maxItem(itemMax);
             }).fail(function(res) {
                 alert(res);
             });
-
-            return dfd.promise();
         }
 
         //Event of Save Button Clicking
-        //Insert or Update Data
-        register() {
+        saveData() {
             var self = this;
-            //debugger;
-            //Insert
             if (self.isInsert()) {
                 service.insertComAllot(self.currentItem()).done(function() {
                 }).fail(function(res) {
                     alert(res);
                 });
-                //Update    
             } else {
                 service.updateComAllot(self.currentItem()).done(function() {
                 }).fail(function(res) {
@@ -199,10 +192,12 @@ module qmm020.b.viewmodel {
                 self.start();
             });
         }
+
         //Open L Dialog
         openLDialog() {
             alert('2017');
         }
+
         //Click to button Select Payment
         openPaymentMDialog() {
             var self = this;
@@ -242,8 +237,8 @@ module qmm020.b.viewmodel {
                 });
             });
         }
-
     }
+
     //Previous Month 
     function previousYM(sYm: string) {
         var preYm: number = 0;
