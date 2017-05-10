@@ -46,6 +46,7 @@ public class JpaLayoutRepository extends JpaRepository implements LayoutReposito
 	@Override
 	public void remove(String companyID, String layoutID) {
 		this.commandProxy().remove(CcgmtLayout.class, new CcgmtLayoutPK(companyID, layoutID));
+		this.getEntityManager().flush();
 	}
 
 	@Override

@@ -39,6 +39,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	@Override
 	public void remove(String companyID, String placementID) {
 		this.commandProxy().remove(CcgmtPlacement.class, new CcgmtPlacementPK(companyID, placementID));
+		this.getEntityManager().flush();
 	}
 	
 	@Override
@@ -48,6 +49,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 			listCcgmtPlacementPK.add(new CcgmtPlacementPK(companyID, placementID));
 		}
 		this.commandProxy().removeAll(CcgmtPlacement.class, listCcgmtPlacementPK);
+		this.getEntityManager().flush();
 	}
 
 	@Override

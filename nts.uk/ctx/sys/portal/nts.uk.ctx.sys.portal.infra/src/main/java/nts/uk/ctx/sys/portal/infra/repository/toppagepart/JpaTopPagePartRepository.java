@@ -47,6 +47,7 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	@Override
 	public void remove(String companyID, String topPagePartID) {
 		this.commandProxy().remove(CcgmtTopPagePart.class, new CcgmtTopPagePartPK(companyID, topPagePartID));
+		this.getEntityManager().flush();
 	}
 
 	@Override
