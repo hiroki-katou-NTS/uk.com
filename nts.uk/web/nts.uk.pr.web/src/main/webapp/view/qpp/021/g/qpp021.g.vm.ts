@@ -33,6 +33,7 @@ module nts.uk.pr.view.qpp021.g {
                 }).fail(function(error) {
                     console.log(error);
                 });
+
                 return dfd.promise();
             }
 

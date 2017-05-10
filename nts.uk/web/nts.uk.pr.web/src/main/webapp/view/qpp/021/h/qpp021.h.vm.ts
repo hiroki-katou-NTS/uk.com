@@ -71,7 +71,6 @@ module nts.uk.pr.view.qpp021.h {
 
                 }).fail(function(error) {
                 });
-
                 return dfd.promise();
             }
 
