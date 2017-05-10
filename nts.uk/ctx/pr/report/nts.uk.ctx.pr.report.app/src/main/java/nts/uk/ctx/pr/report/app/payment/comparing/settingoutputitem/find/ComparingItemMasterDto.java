@@ -1,15 +1,17 @@
 package nts.uk.ctx.pr.report.app.payment.comparing.settingoutputitem.find;
 
 import lombok.Value;
-import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingItemMaster;
 
 @Value
 public class ComparingItemMasterDto {
 	private String itemCode;
 	private String itemName;
+	private int categoryAtr;
+	private String categoryAtrName;
 
-	public static ComparingItemMasterDto fromDomain(ComparingItemMaster domain) {
-		return new ComparingItemMasterDto(domain.getItemCode().v(), domain.getItemName().v());
+	public static ComparingItemMasterDto fromDomain(String itemCode, String itemName, int categoryAtr,
+			String categoryAtrName) {
+		return new ComparingItemMasterDto(itemCode, itemName, categoryAtr, categoryAtrName);
 	}
 
 }

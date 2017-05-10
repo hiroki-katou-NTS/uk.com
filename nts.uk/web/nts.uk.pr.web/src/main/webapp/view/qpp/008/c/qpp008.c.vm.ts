@@ -119,21 +119,9 @@ module qpp008.c.viewmodel {
             let self = this;
             self.items2 = ko.computed(function() {
                 let itemsDetail = new Array();
-                itemsDetail = itemsDetail.concat(_.map(self.currentCodeListSwap(), function(itemMaster) {
-                    itemMaster.categoryAtrName = "支";
-                    itemMaster.categoryAtr = 0;
-                    return itemMaster
-                }));
-                itemsDetail = itemsDetail.concat(_.map(self.currentCodeListSwap1(), function(itemMaster) {
-                    itemMaster.categoryAtrName = "控";
-                    itemMaster.categoryAtr = 1;
-                    return itemMaster
-                }));
-                itemsDetail = itemsDetail.concat(_.map(self.currentCodeListSwap3(), function(itemMaster) {
-                    itemMaster.categoryAtrName = "記";
-                    itemMaster.categoryAtr = 3;
-                    return itemMaster
-                }));
+                itemsDetail = itemsDetail.concat(self.currentCodeListSwap());
+                itemsDetail = itemsDetail.concat(self.currentCodeListSwap1());
+                itemsDetail = itemsDetail.concat(self.currentCodeListSwap3());
                 return itemsDetail;
             }, self).extend({ deferred: true });
 
@@ -347,9 +335,9 @@ module qpp008.c.viewmodel {
                 self.itemsSwap(data.lstItemMasterForTab_0);
                 self.itemsSwap1(data.lstItemMasterForTab_1);
                 self.itemsSwap3(data.lstItemMasterForTab_3);
-                self.getSwapUpDownList(data.lstSelectForTab_0, 0);
-                self.getSwapUpDownList(data.lstSelectForTab_1, 1);
-                self.getSwapUpDownList(data.lstSelectForTab_3, 3);
+                self.currentCodeListSwap(data.lstSelectForTab_0);
+                self.currentCodeListSwap1(data.lstSelectForTab_1);
+                self.currentCodeListSwap3(data.lstSelectForTab_3);
                 dfd.resolve(data);
             }).fail(function(error) {
                 alert(error.message);
@@ -373,50 +361,44 @@ module qpp008.c.viewmodel {
             })
         }
 
-        getSwapUpDownList(lstSelectForTab: Array<string>, categoryAtr: number) {
-            let self = this;
-            if (categoryAtr === 0) {
-                _.forEach(lstSelectForTab, function(value) {
-                    _.forEach(self.itemsSwap(), function(itemMaster) {
-                        if (value === itemMaster.itemCode) {
-                            self.itemsSwap.remove(itemMaster);
-                            itemMaster.categoryAtrName = "支";
-                            itemMaster.categoryAtr = 0;
-                            self.currentCodeListSwap.push(itemMaster);
-                            return false;
-                        }
-                    });
-                });
-            }
-
-            if (categoryAtr === 1) {
-                _.forEach(lstSelectForTab, function(value) {
-                    _.forEach(self.itemsSwap1(), function(itemMaster) {
-                        if (value === itemMaster.itemCode) {
-                            self.itemsSwap1.remove(itemMaster);
-                            itemMaster.categoryAtrName = "控";
-                            itemMaster.categoryAtr = 1;
-                            self.currentCodeListSwap1.push(itemMaster);
-                            return false;
-                        }
-                    });
-                });
-            }
-
-            if (categoryAtr === 3) {
-                _.forEach(lstSelectForTab, function(value) {
-                    _.forEach(self.itemsSwap3(), function(itemMaster) {
-                        if (value === itemMaster.itemCode) {
-                            self.itemsSwap3.remove(itemMaster);
-                            itemMaster.categoryAtrName = "記";
-                            itemMaster.categoryAtr = 3;
-                            self.currentCodeListSwap3.push(itemMaster);
-                            return false;
-                        }
-                    });
-                });
-            }
-        }
+//        getSwapUpDownList(lstSelectForTab: Array<string>, categoryAtr: number) {
+//            let self = this;
+//            if (categoryAtr === 0) {
+//                _.forEach(lstSelectForTab, function(value) {
+//                    _.forEach(self.itemsSwap(), function(itemMaster) {
+//                        if (value === itemMaster.itemCode) {
+//                            self.itemsSwap.remove(itemMaster);
+//                            self.currentCodeListSwap.push(itemMaster);
+//                            return false;
+//                        }
+//                    });
+//                });
+//            }
+//
+//            if (categoryAtr === 1) {
+//                _.forEach(lstSelectForTab, function(value) {
+//                    _.forEach(self.itemsSwap1(), function(itemMaster) {
+//                        if (value === itemMaster.itemCode) {
+//                            self.itemsSwap1.remove(itemMaster);
+//                            self.currentCodeListSwap1.push(itemMaster);
+//                            return false;
+//                        }
+//                    });
+//                });
+//            }
+//
+//            if (categoryAtr === 3) {
+//                _.forEach(lstSelectForTab, function(value) {
+//                    _.forEach(self.itemsSwap3(), function(itemMaster) {
+//                        if (value === itemMaster.itemCode) {
+//                            self.itemsSwap3.remove(itemMaster);
+//                            self.currentCodeListSwap3.push(itemMaster);
+//                            return false;
+//                        }
+//                    });
+//                });
+//            }
+//        }
     }
 
     export class ComparingFormHeader {
@@ -431,9 +413,9 @@ module qpp008.c.viewmodel {
     export class ItemMaster {
         itemCode: string;
         itemName: string;
-        categoryAtrName: string;
         categoryAtr: number;
-        constructor(itemCode: string, itemName: string, categoryAtrName: string, categoryAtr: number) {
+        categoryAtrName: string;
+        constructor(itemCode: string, itemName: string, categoryAtr: number, categoryAtrName: string) {
             this.itemCode = itemCode;
             this.itemName = itemName;
             this.categoryAtrName = categoryAtrName;
@@ -445,12 +427,12 @@ module qpp008.c.viewmodel {
         lstItemMasterForTab_0: Array<ItemMaster>;
         lstItemMasterForTab_1: Array<ItemMaster>;
         lstItemMasterForTab_3: Array<ItemMaster>;
-        lstSelectForTab_0: Array<string>;
-        lstSelectForTab_1: Array<string>;
-        lstSelectForTab_3: Array<string>;
+        lstSelectForTab_0: Array<ItemMaster>;
+        lstSelectForTab_1: Array<ItemMaster>;
+        lstSelectForTab_3: Array<ItemMaster>;
         constructor(lstItemMasterForTab_0: Array<ItemMaster>, lstItemMasterForTab_1: Array<ItemMaster>,
-            lstItemMasterForTab_3: Array<ItemMaster>, lstSelectForTab_0: Array<string>,
-            lstSelectForTab_1: Array<string>, lstSelectForTab_3: Array<string>) {
+            lstItemMasterForTab_3: Array<ItemMaster>, lstSelectForTab_0: Array<ItemMaster>,
+            lstSelectForTab_1: Array<ItemMaster>, lstSelectForTab_3: Array<ItemMaster>) {
             this.lstItemMasterForTab_0 = lstItemMasterForTab_0;
             this.lstItemMasterForTab_1 = lstItemMasterForTab_0;
             this.lstItemMasterForTab_3 = lstItemMasterForTab_1;
