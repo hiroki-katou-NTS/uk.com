@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.ctx.sys.portal.dom.placement.service.PlacementService;
@@ -19,16 +20,25 @@ public class DefaultLayoutService implements LayoutService {
 
 	@Inject
 	private LayoutRepository layoutRepository;
-	
+		
 	@Inject
 	private PlacementService placementService;
-
+	
 	@Override
 	public boolean isExist(String layoutID) {
 		Optional<Layout> layout = layoutRepository.find(layoutID);
 		return layout.isPresent();
 	}
 
+	@Override
+	public void deleteLayout(String companyID, String layoutID) {
+		if (isExist(layoutID)) {
+			// Remove old data
+			layoutRepository.remove(companyID, layoutID);
+			placementService.deletePlacementByLayout(companyID, layoutID);
+		}
+	}
+	
 	@Override
 	public String copyTopPageLayout(String layoutID) {
 		return copyLayout(layoutID, 0);
@@ -45,7 +55,7 @@ public class DefaultLayoutService implements LayoutService {
 	}
 	
 	private String copyLayout(String layoutID, int pgType) {
-		if (layoutID.equals(null) || !isExist(layoutID))
+		if (StringUtil.isNullOrEmpty(layoutID, true) || !isExist(layoutID))
 			return null;
 		
 		String companyID = AppContexts.user().companyID();

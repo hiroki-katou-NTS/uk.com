@@ -14,7 +14,7 @@ public interface PlacementService {
 	 * @return True if existed
 	 */
 	boolean isExist(String placementID);
-
+	
 	/**
 	 * Copy List Placement from Source Layout to Target Layout
 	 * 
@@ -31,4 +31,11 @@ public interface PlacementService {
 	 */
 	String copyPlacement(String placementID, String targetLayoutID);
 
+	/**
+	 * Delete List Placement from Source Layout to Target Layout
+	 * 
+	 * @param
+	 */
+	void deletePlacementByLayout(String companyID, String layoutID);
+	
 }

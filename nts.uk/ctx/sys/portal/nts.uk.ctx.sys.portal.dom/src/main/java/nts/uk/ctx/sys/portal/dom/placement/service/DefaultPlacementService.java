@@ -73,7 +73,16 @@ public class DefaultPlacementService implements PlacementService {
 		placementRepository.add(newPlacement);
 		
 		return newPlacementID;
+	}
 
+	@Override
+	public void deletePlacementByLayout(String companyID, String layoutID) {
+		List<String> placementIDs = new ArrayList<String>();
+		List<Placement> placements = placementRepository.findByLayout(layoutID);
+		for (Placement placement : placements) {
+			placementIDs.add(placement.getPlacementID());
+		}
+		placementRepository.removeAll(companyID, placementIDs);
 	}
 
 }

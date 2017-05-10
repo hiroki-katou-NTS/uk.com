@@ -14,6 +14,13 @@ public interface LayoutService {
 	boolean isExist(String layoutID);
 	
 	/**
+	 * Delete Layout and all Placements
+	 * 
+	 * @param
+	 */
+	void deleteLayout(String companyID, String layoutID);
+	
+	/**
 	 * Copy Layout with given ID
 	 * 
 	 * @param
