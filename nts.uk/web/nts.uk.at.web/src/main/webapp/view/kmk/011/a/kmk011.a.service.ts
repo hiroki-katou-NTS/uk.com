@@ -3,7 +3,8 @@ module kmk011.a.service {
         getAllDivTime: "at/record/divergencetime/getalldivtime",
         getDivItemIdSel: "at/record/divergencetime/getItemSet/",
         getAllDivItem: "at/record/divergencetime/getAllItem",
-        updateDivTime: "at/record/divergencetime/updatedivtime"
+        updateDivTime: "at/record/divergencetime/updatedivtime",
+        updateTimeItemId:"at/record/divergencetime/updateTimeItemId"
     }
 
     /**
@@ -17,6 +18,12 @@ module kmk011.a.service {
     */
     export function getAllDivItemId(): JQueryPromise<Array<model.DivergenceItem>> {
         return nts.uk.request.ajax("at", paths.getAllDivItem);
+    }
+    /**
+    * update time item id (da duoc chon lai)
+    */
+    export function updateTimeItemId(lstItemId: Array<model.DivergenceTimeItem>):JQueryPromise<Array<model.DivergenceTimeItem>>{
+        return nts.uk.request.ajax("at", paths.updateTimeItemId, lstItemId);
     }
     /**
     * get all divergence time
@@ -64,8 +71,10 @@ module kmk011.a.service {
         }
         export class DivergenceTimeItem{
             divTimeId: number;
-            constructor(divTimeId: number){
+            attendanceId: number;
+            constructor(divTimeId: number,attendanceId: number){
                 this.divTimeId = divTimeId;
+                this.attendanceId = attendanceId;
             }
         }
         export class DivergenceItem{

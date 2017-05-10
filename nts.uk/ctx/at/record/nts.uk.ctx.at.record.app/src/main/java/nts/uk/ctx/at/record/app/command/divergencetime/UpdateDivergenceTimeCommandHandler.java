@@ -10,12 +10,16 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import service.CheckSelectReason;
+import service.DivergenceReasonService;
 
 @Stateless
 public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDivergenceTimeCommand>{
 
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
+	@Inject
+	public DivergenceReasonService check;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateDivergenceTimeCommand> context) {
@@ -31,11 +35,16 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 									context.getCommand().getInputSet().getSelectUseSet(),
 									context.getCommand().getInputSet().getCancelErrSelReason());
 		Boolean checkTime = DivergenceTime.checkAlarmErrTime(context.getCommand().getAlarmTime(), context.getCommand().getErrTime());
-//		Boolean checkExistReason = CheckSelectReason.checkSelectReason(context.getCommand().getSelectSet().getSelectUseSet(),context.getCommand().getDivTimeId());
+//		Boolean checkExistReason = CheckSelectReason(context.getCommand().getSelectSet().getSelectUseSet(),context.getCommand().getDivTimeId());
 		if(checkTime == true){
-			divTimeRepo.updateDivTime(divTime);
+			if(check.isExit(context.getCommand().getSelectSet().getSelectUseSet(),context.getCommand().getDivTimeId())){
+				divTimeRepo.updateDivTime(divTime);
+			}else{
+				throw new BusinessException(new RawErrorMessage("Msg_32"));
+			}
+			
 		}else{
-			throw new BusinessException(new RawErrorMessage("アラーム時間がエラー時間を超えています。"));
+			throw new BusinessException(new RawErrorMessage("Msg_82"));
 		}
 		
 	}

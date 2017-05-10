@@ -13,11 +13,9 @@ public class DivergenceItemSet {
 	/*乖離項目ID*/
 	private int divergenceItemId;
 	
-	public static DivergenceItemSet createSimpleFromJavaType(
-			String companyId,
-			int divTimeId,
-			int divergenceItemId)
-	{
+	public static DivergenceItemSet createSimpleFromJavaType(String companyId,
+					int divTimeId,
+					int divergenceItemId){
 		return new DivergenceItemSet(companyId, divTimeId, divergenceItemId);
 	}
 }

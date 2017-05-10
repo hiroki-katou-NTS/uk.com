@@ -102,25 +102,22 @@ module kmk011.b.viewmodel {
         }
         RegistrationDivReason(){
             var self = this;
-            if(self.enableCode()==false){
-                let objectNew = self.divReasonCode()+ self.divReasonContent()+self.requiredAtr();
-                if(self.objectOld==objectNew){
-                    return;
-                }else{
-                    if(self.checkInput()){
-                        self.updateDivReason();
-                    }else{
-                        return;
+             $('.nts-input').trigger("validate");
+            _.defer(() => {
+                if (nts.uk.ui.errors.hasError()===false) {
+                    if(self.enableCode()==false){
+                        let objectNew = self.divReasonCode()+ self.divReasonContent()+self.requiredAtr();
+                        if(self.objectOld==objectNew){
+                            return;
+                        }else{
+                            self.updateDivReason();
+                        }
+                    }else
+                    if(self.enableCode()==true){//add divergence
+                        self.addDivReason();
                     }
                 }
-            }else
-            if(self.enableCode()==true){//add divergence
-                if(self.checkInput()){
-                    self.addDivReason();
-                }else{
-                    return;
-                }
-            }
+            });
         }
         addDivReason(){
             var self = this;
@@ -205,15 +202,15 @@ module kmk011.b.viewmodel {
         /**
          * check input: divergence reason code and divergence reason content
          */
-        checkInput(): boolean {
-            var self = this;
-            if (self.divTimeId() == '' || self.divReasonContent() == '') {
-                alert("nhap day du thong tin");
-                return false;
-            } else {
-                return true;
-            }
-        }
+//        checkInput(): boolean {
+//            var self = this;
+//            if (self.divTimeId() == '' || self.divReasonContent() == '') {
+//                alert("nhap day du thong tin");
+//                return false;
+//            } else {
+//                return true;
+//            }
+//        }
         closeDialog(){
              nts.uk.ui.windows.close();
         }

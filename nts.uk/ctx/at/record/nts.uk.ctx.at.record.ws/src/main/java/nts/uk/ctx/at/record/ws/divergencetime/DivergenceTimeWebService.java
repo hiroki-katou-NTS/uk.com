@@ -114,4 +114,9 @@ public class DivergenceTimeWebService extends WebService{
 	public List<DivergenceItemDto> getAllItem(){
 		return this.getAllItem.getAllDivReasonByCode();
 	}
+	@POST
+	@Path("updateTimeItemId")
+	public void updateTimeItemId(){
+		
+	}
 }

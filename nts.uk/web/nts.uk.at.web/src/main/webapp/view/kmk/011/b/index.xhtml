@@ -63,11 +63,12 @@
 							</td>
 							<td>
 								<!-- B3_2: Divergence Reason Code -->
-								<input id="inpCode" style="width: 20px" data-bind="ntsTextEditor: {
-                                          value: divReasonCode, enable: enableCode}" data-name="Code"/>
+								<input class = "nts-input" id="inpCode" style="width: 20px" data-bind="ntsTextEditor: {
+                                          value: divReasonCode, enable: enableCode,required: true}" data-name="Code"/>
 								<!-- B3_3: Divergence Reason Content -->
-								<input data-bind="ntsTextEditor: {
-                                          value: divReasonContent}" />
+								<input class = "nts-input2" data-bind="ntsTextEditor: {
+                                          value: divReasonContent,
+                                          required: true}" />
 							</td>
 						</tr>
 						<tr class = "row">
