@@ -16,9 +16,9 @@ public class ComparingSalaryBonusReportData {
 	ComparingSalaryBonusHeaderReportData headerData;
 	HeaderTable  headerTable;
 	List<DeparmentInf> deparmentInf;
-	DataRowComparingSalaryBonus divisionTotal;
-	DataRowComparingSalaryBonus TotalA;
-	DataRowComparingSalaryBonus TotalC;
+	List<DataRowComparingSalaryBonus> lstDivisionTotal;
+	List<DataRowComparingSalaryBonus> lstTotalA;
+	List<DataRowComparingSalaryBonus> lstTotalC;
 	DataRowComparingSalaryBonus grandTotal;
 	
 }
