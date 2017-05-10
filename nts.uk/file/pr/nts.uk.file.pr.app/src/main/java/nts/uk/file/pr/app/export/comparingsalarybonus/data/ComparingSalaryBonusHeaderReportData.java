@@ -59,6 +59,5 @@ public class ComparingSalaryBonusHeaderReportData {
 	
 	/** 確認済 **/
 	private String confirmed;
-    private DeparmentInf depInf;
 
 }

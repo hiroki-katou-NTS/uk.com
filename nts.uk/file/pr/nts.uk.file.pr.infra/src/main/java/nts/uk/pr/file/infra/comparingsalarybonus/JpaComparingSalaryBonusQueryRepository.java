@@ -47,8 +47,11 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 			+ " WHERE d.qstdtPaymentDetailPK.companyCode = :ccd " + " AND d.qstdtPaymentDetailPK.personId IN :personId"
 			+ " AND  d.qstdtPaymentDetailPK.payBonusAttribute = :payBonusAttribute"
 			+ " AND  d.qstdtPaymentDetailPK.processingYM =:processingYM";
-	private final String SELECT_CALLED_DETAIL = "SELECT c.emp, d.depName, d.hierarchyId, c.jobtitle FROM  CmnmtCalled c"
-			+ " INNER JOIN  CmnmtDep  d " + " ON c.ccd = d.cmnmtDepPK.companyCode " + " WHERE c.ccd =:ccd";
+	private final String SELECT_CALLED_DETAIL = "SELECT c.emp, d.depName, d.hierarchyId, c.jobtitle, a.cName FROM  CmnmtCalled c"
+			+ " INNER JOIN  CmnmtDep  d " + " ON c.ccd = d.cmnmtDepPK.companyCode "
+			+ " INNER JOIN  CmnmtCompany a"
+			+ " ON c.ccd = a.cmnmtCompanyPk.companyCd"
+			+ " WHERE c.ccd =:ccd ";
 
 	/**
 	 * convert To Domain ComparingFormDetail from entity
@@ -135,11 +138,9 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 		String registrationStatus2= null;
 		String reason= null;
 		String confirmed = null;
-		DeparmentInf depInf = null;
 
 		return new ComparingSalaryBonusHeaderReportData(nameCompany, titleReport, nameDeparment, typeDeparment, postion,
-				targetYearMonth,itemName,month1,month2,differentSalary, registrationStatus1,registrationStatus2,reason,confirmed
-				, depInf);
+				targetYearMonth,itemName,month1,month2,differentSalary, registrationStatus1,registrationStatus2,reason,confirmed);
 	}
 
 	/**

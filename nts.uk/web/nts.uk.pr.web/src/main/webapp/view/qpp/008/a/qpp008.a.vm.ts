@@ -145,7 +145,6 @@ module qpp008.a.viewmodel {
             command.month1 = self.processingYMEarlierValue().trim().replace("/", "");
             command.monthJapan1 = nts.uk.time.yearInJapanEmpire(self.processingYMEarlierValue().trim().replace("/", "").charAt[0]).toString();
             command.monthJapan1 = command.monthJapan1 + " " + self.processingYMEarlierValue().split("/")[1] + "月";
-
             command.month2 = self.processingYMLaterValue().trim().replace("/", "");
             command.monthJapan2 = nts.uk.time.yearInJapanEmpire(self.processingYMLaterValue().trim().replace("/", "").charAt[0]).toString();
             command.monthJapan2 = command.monthJapan2 + " " + self.processingYMLaterValue().split("/")[1] + "月";
