@@ -32,9 +32,10 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<button id="btn_saveContactItemsSetting" class="proceed btnStyle"
+				<button id="btn_saveContactItemsSetting"
+					class="proceed btnStyle large buttonaction"
 					data-bind="click: saveContactItemsSetting">登録</button>
-				<button id="btn_closeContactItemsSetting"
+				<button id="btn_closeContactItemsSetting" class="large buttonaction"
 					data-bind="click: closeContactItemsSetting">閉じる</button>
 				<hr />
 				<div id="content">
@@ -54,8 +55,8 @@
 					<div id="comment_notification">
 						<table>
 							<tr class="bg-green ui-iggrid-header ui-widget-header">
-								<td>今月の給与明細書に印刷する連絡事項</td>
-								<td>毎月の給与明細書に印刷する連絡事項</td>
+								<td class="lbl_monthlyComment">今月の給与明細書に印刷する連絡事項</td>
+								<td class="lbl_monthlyComment">毎月の給与明細書に印刷する連絡事項</td>
 							</tr>
 							<tr>
 								<td><input data-name="今月の給与明細書に印刷する連絡事項 "

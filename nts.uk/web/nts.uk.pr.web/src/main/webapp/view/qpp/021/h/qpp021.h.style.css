@@ -30,3 +30,11 @@ table, td, th {
 #comment_person {
 	margin-top: 10px;
 }
+
+.lbl_monthlyComment {
+	padding-left: 3px;
+}
+
+.buttonaction{
+	width: 90px;
+}

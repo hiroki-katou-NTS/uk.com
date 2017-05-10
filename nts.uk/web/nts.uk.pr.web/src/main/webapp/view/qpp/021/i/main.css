@@ -5,19 +5,32 @@
 	padding: 5px;
 	margin-bottom: 10px;
 }
+
 #label-contact-setting {
 	margin-bottom: 10px;
 }
+
 #content-contact-setting {
 	margin-left: 10px;
 }
-#inpSearch input{
+
+#inpSearch input {
 	margin-left: 15px;
 	margin-bottom: 15px;
 	width: 200px !important;
 }
+
 .icon.icon-searchbox {
 	position: relative;
 	top: 10px;
 	left: 15px;
+}
+
+.actionReport {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+.buttonaction{
+	width: 90px;
 }
