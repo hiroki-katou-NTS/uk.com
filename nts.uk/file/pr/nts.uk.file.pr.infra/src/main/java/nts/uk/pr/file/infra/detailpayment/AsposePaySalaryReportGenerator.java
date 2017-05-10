@@ -1015,16 +1015,17 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
          */
         public void drawBorderLineRow(Cells cells, int numberColumn, int indexRow) {
             for (int i = 0; i < numberColumn; i++) {
-                Cell cellAbove = cells.get(indexRow - 1, i);
                 Cell currentCell = cells.get(indexRow, i);
-                Cell cellBelow = cells.get(indexRow + 1, i);
-
                 Style style = this.findStyleCell(currentCell, CellsBorderType.HorizontalBorder);
                 currentCell.setStyle(style);
 
                 // ====== DRAW BORDER LAST AND FIRST COLUMN IN A PAGE ======
-                this.drawBorderLastColPageIfNeed(currentCell);
+                if (i > PaymentConstant.ONE) {
+                    this.drawBorderLastColPageIfNeed(currentCell);
+                }
                 
+                Cell cellAbove = cells.get(indexRow - 1, i);
+                Cell cellBelow = cells.get(indexRow + 1, i);
                 // ====== CLEAR BORDER COLUMN HAS VALUE EMPTY ======
                 if (cellAbove.getValue() == null && currentCell.getValue() == null && cellBelow.getValue() == null) {
                     this.clearBorderColumnEmpty(cells, indexRow, i);
@@ -1034,23 +1035,21 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         }
 
         /**
-         * Draw border last col page if need.
+         * Draw border last column page if need.
          *
          * @param cell the cell
          */
         public void drawBorderLastColPageIfNeed(Cell cell) {
             int indexColumn = cell.getColumn();
-            if (indexColumn > PaymentConstant.ONE) {
-                Style newStyle = null;
-                int indexReal = indexColumn + PaymentConstant.ONE;
-                if (indexReal % PaymentConstant.NUMBER_COLUMN_PAGE == PaymentConstant.ZERO) {
-                    newStyle = this.findStyleCell(cell, CellsBorderType.RightBorder);
-                } else if (indexReal % PaymentConstant.NUMBER_COLUMN_PAGE == PaymentConstant.ONE) {
-                    newStyle = this.findStyleCell(cell, CellsBorderType.LeftBorder);
-                }
-                if (newStyle != null) {
-                    cell.setStyle(newStyle);
-                }
+            Style newStyle = null;
+            int indexReal = indexColumn + PaymentConstant.ONE;
+            if (indexReal % PaymentConstant.NUMBER_COLUMN_PAGE == PaymentConstant.ZERO) {
+                newStyle = this.findStyleCell(cell, CellsBorderType.RightBorder);
+            } else if (indexReal % PaymentConstant.NUMBER_COLUMN_PAGE == PaymentConstant.ONE) {
+                newStyle = this.findStyleCell(cell, CellsBorderType.LeftBorder);
+            }
+            if (newStyle != null) {
+                cell.setStyle(newStyle);
             }
         }
 

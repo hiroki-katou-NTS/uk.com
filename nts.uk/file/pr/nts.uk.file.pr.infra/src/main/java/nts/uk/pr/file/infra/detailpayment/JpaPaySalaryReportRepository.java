@@ -202,11 +202,13 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 double amount = 0;
                 
                 if (!CollectionUtil.isEmpty(objectFiltereds)) {
-                    Object[] detail = objectFiltereds.get(0);
-                    // item master
-                    if (objectFiltereds.size() == 1) {
+                    // === Master ===
+                    if (categoryItem.typeItem == SalaryItemType.Master) {
+                        Object[] detail = objectFiltereds.get(0);
                         amount = ((BigDecimal) detail[5]).doubleValue();
-                    } else {
+                    }
+                    // === Aggregate ===
+                    else {
                         amount = objectFiltereds.stream()
                                 .mapToDouble(ob -> ((BigDecimal) ob[5]).doubleValue())
                                 .sum();
@@ -239,6 +241,7 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 
                 // ========= MASTER ITEM =========
                 if (item.getType() == SalaryItemType.Master) {
+                    categoryItem.typeItem = SalaryItemType.Master;
                     categoryItem.itemName = masterItems.stream()
                             .filter(masterItem -> masterItem.getCategoryAtr().value == categoryItem.category.value
                                         && masterItem.getItemCode().v().equals(categoryItem.itemCode))
@@ -249,6 +252,7 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 }
                 // ========= AGGREGATE ITEM =========
                 else {
+                    categoryItem.typeItem = SalaryItemType.Aggregate;
                     List<String> subMasterItemCodes = aggrItems.stream()
                             .filter(aggr -> aggr.getHeader().getTaxDivision().value == category.getCategory().value
                                         && aggr.getHeader().getAggregateItemCode().v().equals(itemCode))
@@ -317,5 +321,8 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         
         /** The category. */
         private SalaryCategory category;
+        
+        /** The salary item. */
+        private SalaryItemType typeItem;
     }
 }
