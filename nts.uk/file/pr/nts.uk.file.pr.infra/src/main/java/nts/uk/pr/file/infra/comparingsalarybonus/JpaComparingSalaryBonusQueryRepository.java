@@ -51,7 +51,11 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 			+ " INNER JOIN  CmnmtDep  d " + " ON c.ccd = d.cmnmtDepPK.companyCode "
 			+ " INNER JOIN  CmnmtCompany a"
 			+ " ON c.ccd = a.cmnmtCompanyPk.companyCd"
-			+ " WHERE c.ccd =:ccd ";
+			+ " INNER JOIN "
+			+ " WHERE c.ccd =:ccd "
+			+ " AND IN :personId";
+	
+//	private final String SELEC_COMPANY_NAME = "SELECT c.cName FROM CmnmtCompany c WHERE c.cmnmtCompanyPk.companyCd :=ccd ";
 
 	/**
 	 * convert To Domain ComparingFormDetail from entity
