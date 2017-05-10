@@ -6,7 +6,7 @@ module ccg014.b.viewmodel {
         copyTitleCD: KnockoutObservable<string>;
         copyName: KnockoutObservable<string>;
         checkOverwritting: KnockoutObservable<boolean>;
-        constructor (data) {
+        constructor(data) {
             var self = this;
             self.titlecode = ko.observable(data.titleMenuCD());
             self.titlename = ko.observable(data.name());
@@ -23,8 +23,10 @@ module ccg014.b.viewmodel {
         /* Copy TitleMenu */
         submitClickButton() {
             var self = this;
-            service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.checkOverwritting()).done(() => {
-                nts.uk.ui.dialog.alert("Msg_15");
+            service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.copyName(), self.checkOverwritting()).done(() => {
+                nts.uk.ui.dialog.confirm("Do you want to say \"Hello World!\"?").ifYes(function() {
+                    self.cancel_Dialog();
+                })
             })
             .fail((res) => {
                 nts.uk.ui.dialog.alert(res.messageId);

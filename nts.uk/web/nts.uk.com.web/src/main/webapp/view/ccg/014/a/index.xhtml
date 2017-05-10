@@ -22,7 +22,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id ="new" data-bind="click : createButtonClick">新規</button>
-				<button id ="registration" class="proceed" data-bind="click: registryButtonClick " >登録</button>
+				<button id ="registration" class="proceed" data-bind="click: registryButtonClick, enable: $root.errors.isEmpty " >登録</button>
 				<button id ="copy" data-bind= "click : openBDialog, enable: !isCreate()" >コピー</button>
 				<button id ="flow_setting" data-bind= "click : open030A_Dialog">フローメニューの設定</button>
 				<button id ="delete"  data-bind="click : removeTitleMenu , enable: !isCreate()" class="danger">削除</button>
@@ -67,7 +67,7 @@
 						<input id="titleMenuCD" data-bind="ntsTextEditor: {value: titleMenuCD, constraint: 'TitleMenuCD', enable: $parent.isCreate , immediate: true , required: true }" />
 						<input data-bind="ntsTextEditor: {value: name, constraint: 'Name' , required: true , immediate: true}" />
 					</div> 
-					<div class="row2"><button class="x-large fixbtn" >レイアウト設定</button></div>
+					<div class="row2"><button class="x-large fixbtn" data-bind="enable: !isCreate()">レイアウト設定</button></div>
 					<div class="row3"></div>
 				</div>
 			</div>

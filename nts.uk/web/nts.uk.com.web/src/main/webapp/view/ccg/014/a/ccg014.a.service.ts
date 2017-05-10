@@ -17,7 +17,7 @@ module ccg014.a.service {
     }
     
     /** Create Title Menu */
-    export function createTitleMenu(titleMenu: viewmodel.model.TitleMenu): JQueryPromise<boolean> {
+    export function createTitleMenu(titleMenu: viewmodel.model.TitleMenu): JQueryPromise<void> {
         return nts.uk.request.ajax("com", paths.createTitleMenu, titleMenu);
     }
     

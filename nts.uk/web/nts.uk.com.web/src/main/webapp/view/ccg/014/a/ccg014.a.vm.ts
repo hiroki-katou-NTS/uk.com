@@ -1,7 +1,8 @@
 module ccg014.a.viewmodel {
+    import commonModel = ccg.model;
     import windows = nts.uk.ui.windows;
     import errors = nts.uk.ui.errors;
-    
+
     export class ScreenModel {
         // TitleMenu List
         listTitleMenu: KnockoutObservableArray<any>;
@@ -21,7 +22,6 @@ module ccg014.a.viewmodel {
                 self.findSelectedTitleMenu(value);
             });
             self.columns = ko.observableArray([
-
                 { headerText: 'コード', key: 'titleMenuCD', width: 70 },
                 { headerText: '名称', key: 'name', width: 260 }
             ]);
@@ -69,32 +69,27 @@ module ccg014.a.viewmodel {
             var titleMenuCD = titleMenu.titleMenuCD;
             if (self.isCreate() === true) {
                 service.createTitleMenu(titleMenu).done((data) => {
-                    if (data === true) {
-                        nts.uk.ui.dialog.alert("登録しました。");
-                        self.reloadData().done(() => {
-                            self.selectTitleMenuByIndexByCode(titleMenuCD);
-                        });
-                    }
-                    else {
-                        nts.uk.ui.dialog.alert("入力したコードは、既に登録されています。");
-                    }
+                    nts.uk.ui.dialog.alert("登録しました。");
+                    self.reloadData().done(() => {
+                        self.selectTitleMenuByIndexByCode(titleMenuCD);
+                    });
                 }).fail((res) => {
                     nts.uk.ui.dialog.alert("入力したコードは、既に登録されています。");
                 });
             }
             else {
                 service.updateTitleMenu(titleMenu).done((data) => {
-                    nts.uk.ui.dialog.alert("登録しました。");
                     self.reloadData();
+                    nts.uk.ui.dialog.alert("登録しました。");
                 });
             }
         }
-        
+
         /**Delete Button Click */
         removeTitleMenu() {
             var self = this;
             if (self.selectedTitleMenuCD() !== null) {
-                nts.uk.ui.dialog.confirm("Do you want to delete").ifYes(function(){
+                nts.uk.ui.dialog.confirm("Msg_18 Co xoa ko").ifYes(function() {
                     service.deleteTitleMenu(self.selectedTitleMenuCD()).done(() => {
                         var index = _.findIndex(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
                         index = _.min([self.listTitleMenu().length - 2, index]);
@@ -104,9 +99,8 @@ module ccg014.a.viewmodel {
                     }).fail((res) => {
                         nts.uk.ui.dialog.alert("Fail!")
                     });
-                })
+                }).then(function() { nts.uk.ui.dialog.alert("Msg_16 Da xoa") });
             }
-           
         }
 
         /** Open  CCG 014B Dialog */
@@ -116,21 +110,35 @@ module ccg014.a.viewmodel {
             windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: '他のタイトルメニューのコピー', dialogClass: "no-close" });
         }
 
+        /** Open  CCG 031_1 Dialog */
+        open031_1Dialog() {
+            var self = this;
+            var layoutInfo: commonModel.TransferLayoutInfo = {
+                parentCode: self.selectedTitleMenuCD(),
+                layoutID: self.selectedTitleMenu().layoutID(),
+                pgType: 1
+            };
+            windows.setShared("layout", layoutInfo, false);
+            windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: '他のタイトルメニューのコピー', dialogClass: "no-close" });
+        }
+
         /** Open 030A Dialog */
         open030A_Dialog() {
             windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: 'フローメニューの設定', dialogClass: "no-close" });
         }
-        
+
         /** Init Mode */
         private changeInitMode(isCreate: boolean) {
             var self = this;
             if (isCreate === true) {
                 self.selectedTitleMenuCD(null);
-                _.defer(()=>{$("#titleMenuCD").focus();});
+                _.defer(() => { $("#titleMenuCD").focus(); });
             }
-            
+            else {
+                _.defer(() => { errors.clearAll(); });
+            }
         }
-        
+
         /** Reload data from server */
         private reloadData(): JQueryPromise<any> {
             var self = this;
@@ -152,12 +160,12 @@ module ccg014.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         /** Select TitleMenu by Code: Create & Update case*/
         private selectTitleMenuByIndexByCode(code: string) {
             this.selectedTitleMenuCD(code);
         }
-        
+
         /** Select TitleMenu by Index: Start & Delete case */
         private selectTitleMenuByIndex(index: number) {
             var self = this;
@@ -167,6 +175,7 @@ module ccg014.a.viewmodel {
             else
                 self.selectedTitleMenuCD(null);
         }
+
     }
 
     export module model {
