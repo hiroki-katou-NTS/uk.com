@@ -15,7 +15,13 @@ module nts.uk.pr.view.qpp007.a {
         }
 
         export function saveAsPdf(command: any): JQueryPromise<any> {
-            return nts.uk.request.exportFile(servicePath.saveAsPdf, command);
+            let dfd = $.Deferred<void>();
+            nts.uk.request.exportFile(servicePath.saveAsPdf, command).done(function() {
+                    dfd.resolve();
+                }).fail(function(res) {
+                    dfd.reject();
+                });
+            return dfd.promise();
         }
 
         export module model {
