@@ -88,7 +88,7 @@ module nts.uk.pr.view.qpp021.g {
             }
 
             updateDataDto(dto: RefundPaddingThreeDto) {
-                this.upperAreaPaddingTop(dto.underAreaPaddingTop);
+                this.upperAreaPaddingTop(dto.upperAreaPaddingTop);
                 this.middleAreaPaddingTop(dto.middleAreaPaddingTop);
                 this.underAreaPaddingTop(dto.underAreaPaddingTop);
                 this.paddingLeft(dto.paddingLeft);

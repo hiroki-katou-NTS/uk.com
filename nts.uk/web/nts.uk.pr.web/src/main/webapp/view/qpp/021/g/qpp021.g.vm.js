@@ -65,7 +65,7 @@ var nts;
                                     this.isShowBreakLine = ko.observable(0);
                                 }
                                 RefundPaddingThreeModel.prototype.updateDataDto = function (dto) {
-                                    this.upperAreaPaddingTop(dto.underAreaPaddingTop);
+                                    this.upperAreaPaddingTop(dto.upperAreaPaddingTop);
                                     this.middleAreaPaddingTop(dto.middleAreaPaddingTop);
                                     this.underAreaPaddingTop(dto.underAreaPaddingTop);
                                     this.paddingLeft(dto.paddingLeft);

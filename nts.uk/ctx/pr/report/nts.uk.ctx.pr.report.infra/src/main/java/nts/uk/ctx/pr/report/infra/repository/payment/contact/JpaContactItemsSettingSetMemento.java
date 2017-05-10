@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.payment.contact;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
