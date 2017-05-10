@@ -16,12 +16,16 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.time.GeneralDate;
+import nts.uk.file.pr.app.export.denominationtable.data.DenoTableHeaderData;
 import nts.uk.file.pr.app.export.denominationtable.data.Denomination;
 import nts.uk.file.pr.app.export.denominationtable.data.DepartmentData;
 import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
 import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableData;
 import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
+import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 /**
  * The Class SalaryChartReportService.
@@ -38,6 +42,10 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 	private DenoTableRepository repository;
 	
 	private static final int TWO_THOUSANDS = 2000;
+	
+	/** The japanese provider. */
+    @Inject
+    private JapaneseErasProvider japaneseProvider;
 
 	/*
 	 * (non-Javadoc)
@@ -85,17 +93,35 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 			emp.setDenomination(divisionDeno(emp.getPaymentAmount(), context.getQuery()));
 		});
 
+		//  CONVERT YEARMONTH JAPANESE 
+        StringBuilder japanYM = new StringBuilder("【処理年月：");
+        japanYM.append(convertYearMonthJP(query.getYearMonth()));
 		// Create header object.
+		DenoTableHeaderData headerData = DenoTableHeaderData.builder()
+				.departmentInfo("【部門： A部門～C部門（3部門）】")
+				.categoryInfo("【分類： 正社員～アルバイト（５分類）】")
+				.positionInfo("【職位： 部長～一般（12職位）】")
+				.targetYearMonth(japanYM.toString())
+				.build();
 
 		// Create Data Source
 		val dataSource = DenominationTableData.builder()
-				.salaryChartHeader(null)
+				.salaryChartHeader(headerData)
 				.employeeList(items)
 				.build();
 
 		// Call generator.
 		this.generator.generate(context.getGeneratorContext(), dataSource, query);
 	}
+	
+	private String convertYearMonthJP(Integer yearMonth) {
+        String firstDay = "01";
+        String tmpDate = yearMonth.toString().concat(firstDay);
+        String dateFormat = "yyyyMMdd";
+        GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
+        JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
+        return japaneseDate.era() + japaneseDate.year() + "年 " + japaneseDate.month() + "月度給与】";
+    }
 	
 	/**
 	 * Division deno.

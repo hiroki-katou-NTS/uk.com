@@ -557,7 +557,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 		int rowIndex = printProcess.rowIndex;
 		DepartmentData depData = currentEmp.getDepartmentData();
 		Cell cell = cells.get(rowIndex, 0);
-		cell.setValue("部門  : " + SPACES + depData.getDepCode() + SPACES + HIERARCHY_DEP_TEXT);
+		cell.setValue("部門  : " + SPACES + depData.getDepCode() + SPACES + depData.getDepName());
 
 		// Set Style for cells
 		for (int i = FIRST_COLUMN_INDEX; i < LAST_COLUMN_INDEX; i++) {
@@ -695,7 +695,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 	private void printAccumulated(PrintProcess printProcess, DepartmentData depToPrint) {
 		Cells cells = printProcess.cells;
 		int rowIndex = printProcess.rowIndex;
-		cells.get(rowIndex, COLUMN_INDEX[0]).setValue(depToPrint.getDepName() + SPACES + depToPrint.getDepName());
+		cells.get(rowIndex, COLUMN_INDEX[0]).setValue(depToPrint.getDepName() + SPACES + HIERARCHY_DEP_TEXT);
 		for (Denomination d : Denomination.values()) {
 			int columnIndex = d.value + 1;
 			cells.get(rowIndex, columnIndex).setValue(depToPrint.getDenomination().get(d) + "枚");

@@ -13,11 +13,14 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentDataSource;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentHeaderData;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentItemData;
 import nts.uk.file.pr.app.export.accumulatedpayment.query.AccPaymentReportQuery;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
+import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 /**
  * The Class AccPaymentReportService.
@@ -32,6 +35,10 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 	/** The repository. */
 	@Inject
 	private AccPaymentRepository repository;
+	
+	/** The japanese provider. */
+    @Inject
+    private JapaneseErasProvider japaneseProvider;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.file.export.ExportService#handle(nts.arc.layer.app.file.export.ExportServiceContext)
@@ -50,14 +57,17 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 		
 		// Query data.
 		List<AccPaymentItemData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
+		
+		//  CONVERT YEARMONTH JAPANESE 
+        StringBuilder japanYear = new StringBuilder("【期間： ");
+        japanYear.append(convertYearMonthJP(query.getTargetYear()));
 
 		// Create header object.
-		
 		AccPaymentHeaderData headerData = AccPaymentHeaderData.builder()
-				.departmentInfo("【部門：役員　販売促進1課　役員～製造部　製造課　製造　（31部門）】")
-				.empTypeInfo("【分類：正社員～アルバイト（5分類）】")
-				.positionInfo("【職位：参事～主任（10職位）】")
-				.yearMonthInfo("【処理年月：平成12年1月~12月迄】")
+				.departmentInfo("【部門： 役員　販売促進1課　役員～製造部　製造課　製造　（31部門）】")
+				.empTypeInfo("【分類： 正社員～アルバイト（5分類）】")
+				.positionInfo("【職位： 参事～主任（10職位）】")
+				.yearMonthInfo(japanYear.toString())
 				.build();
 
 		// Create data source.
@@ -70,5 +80,13 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 		// Call generator.
 		this.generator.generate(context.getGeneratorContext(),dataSource, query);		
 	}
+	private String convertYearMonthJP(Integer yearMonth) {
+        String firstDay = "01";
+        String tmpDate = yearMonth.toString().concat(firstDay);
+        String dateFormat = "yyyyMMdd";
+        GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
+        JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
+        return japaneseDate.era() + japaneseDate.year() + "年 " + "01月～12月迄】";
+    }
 
 }

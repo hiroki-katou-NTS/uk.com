@@ -39,7 +39,7 @@ public class DenoTableHeaderData {
 	private String positionInfo;
 	
 	/** The emp type. */
-	private String empTypeInfo;
+	private String categoryInfo;
 	
 
 }
