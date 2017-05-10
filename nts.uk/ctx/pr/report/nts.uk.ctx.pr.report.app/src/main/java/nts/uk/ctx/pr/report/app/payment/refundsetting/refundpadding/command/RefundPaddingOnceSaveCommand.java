@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingThreeDto;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingOnceDto;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.RefundPadding;
 
 /**
@@ -22,16 +22,15 @@ public class RefundPaddingOnceSaveCommand implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The dto. */
-	private RefundPaddingThreeDto dto;
+	private RefundPaddingOnceDto dto;
 
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the contact items setting
+	 * @param companyCode the company code
+	 * @return the refund padding
 	 */
-	public  RefundPadding toDomain(String companyCode) {
+	public RefundPadding toDomain(String companyCode) {
 		return this.dto.toDomain(companyCode);
 	}
 }

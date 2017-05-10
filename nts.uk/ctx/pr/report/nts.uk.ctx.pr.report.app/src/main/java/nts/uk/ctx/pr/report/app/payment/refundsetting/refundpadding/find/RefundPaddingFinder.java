@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingOnceOut;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingThreeOut;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingTwoOut;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.PrintType;
@@ -30,9 +31,7 @@ public class RefundPaddingFinder {
 	/**
 	 * Find print type three.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the refund padding three dto
+	 * @return the refund padding three out
 	 */
 	public RefundPaddingThreeOut findPrintTypeThree() {
 		// get login user
@@ -50,6 +49,11 @@ public class RefundPaddingFinder {
 		return dto;
 	}
 
+	/**
+	 * Find print type two.
+	 *
+	 * @return the refund padding two out
+	 */
 	public RefundPaddingTwoOut findPrintTypeTwo() {
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -60,6 +64,27 @@ public class RefundPaddingFinder {
 		Optional<RefundPadding> optionalFinder = this.repository.findByPrintType(companyCode,
 			PrintType.A4_TWO_PERSON);
 		RefundPaddingTwoOut dto = new RefundPaddingTwoOut();
+		if (optionalFinder.isPresent()) {
+			optionalFinder.get().saveToMemento(dto);
+		}
+		return dto;
+	}
+
+	/**
+	 * Find print type one.
+	 *
+	 * @return the refund padding once out
+	 */
+	public RefundPaddingOnceOut findPrintTypeOne() {
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get company code
+		String companyCode = loginUserContext.companyCode();
+
+		Optional<RefundPadding> optionalFinder = this.repository.findByPrintType(companyCode,
+			PrintType.A4_ONCE_PERSON);
+		RefundPaddingOnceOut dto = new RefundPaddingOnceOut();
 		if (optionalFinder.isPresent()) {
 			optionalFinder.get().saveToMemento(dto);
 		}

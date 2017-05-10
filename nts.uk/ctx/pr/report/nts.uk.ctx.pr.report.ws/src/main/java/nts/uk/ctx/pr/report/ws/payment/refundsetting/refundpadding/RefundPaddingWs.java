@@ -10,11 +10,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingOnceSaveCommand;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingOnceSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingThreeSaveCommand;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingThreeSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingTwoSaveCommand;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.RefundPaddingTwoSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.RefundPaddingFinder;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingOnceOut;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingThreeOut;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingTwoOut;
 
@@ -29,13 +32,17 @@ public class RefundPaddingWs extends WebService {
 	@Inject
 	private RefundPaddingFinder finder;
 
-	/** The save. */
+	/** The save three. */
 	@Inject
 	private RefundPaddingThreeSaveCommandHandler savethree;
-	
-	/** The savetwo. */
+
+	/** The save two. */
 	@Inject
 	private RefundPaddingTwoSaveCommandHandler savetwo;
+
+	/** The save one. */
+	@Inject
+	private RefundPaddingOnceSaveCommandHandler saveone;
 
 	/**
 	 * Find print type three.
@@ -51,8 +58,7 @@ public class RefundPaddingWs extends WebService {
 	/**
 	 * Save three.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("printtype/three/save")
@@ -74,38 +80,34 @@ public class RefundPaddingWs extends WebService {
 	/**
 	 * Save two.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("printtype/two/save")
 	public void saveTwo(RefundPaddingTwoSaveCommand command) {
 		this.savetwo.handle(command);
 	}
-	
+
 	/**
-	 * Find all.
+	 * Find print type once.
 	 *
-	 * @param dto
-	 *            the dto
-	 * @return the list
+	 * @return the refund padding once out
 	 */
 	@POST
 	@Path("printtype/once/find")
-	public RefundPaddingThreeOut findPrintTypeOnce() {
-		return this.finder.findPrintTypeThree();
+	public RefundPaddingOnceOut findPrintTypeOnce() {
+		return this.finder.findPrintTypeOne();
 	}
 
 	/**
-	 * Save three.
+	 * Save once type.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("printtype/once/save")
-	public void saveOnceType(RefundPaddingThreeSaveCommand command) {
-		this.savethree.handle(command);
+	public void saveOnceType(RefundPaddingOnceSaveCommand command) {
+		this.saveone.handle(command);
 	}
 
 }
