@@ -34,13 +34,13 @@ public class ExternalUrl extends DomainObject {
 	}
 
 	/**
-	 * Create External Url from Java type if url is null return NULL
+	 * Create External Url from Java type if url is null return Optional.empty
 	 * 
-	 * @param url Url for class, if blank or NULL will return NULL
+	 * @param url Url for class, if blank or NULL will return Optional.empty
 	 * @param
 	 * @return Optional&lt;ExternalUrl&gt;
 	 **/
-	public static Optional<ExternalUrl> createFromJavaType(String url, int width, int height) {
+	public static Optional<ExternalUrl> createFromJavaType(String url, Integer width, Integer height) {
 		if (!StringUtil.isNullOrEmpty(url, true)) {
 			return Optional.of(new ExternalUrl(new Url(url), Size.createFromJavaType(width, height)));
 		}

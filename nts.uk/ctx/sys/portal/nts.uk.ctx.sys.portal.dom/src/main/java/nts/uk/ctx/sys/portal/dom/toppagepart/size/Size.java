@@ -23,7 +23,7 @@ public class Size extends DomainObject {
 	 * @param
 	 * @return Size
 	 **/
-	public static Size createFromJavaType(int width, int height) {
+	public static Size createFromJavaType(Integer width, Integer height) {
 		return new Size(new Width(width), new Height(height));
 	}
 }
