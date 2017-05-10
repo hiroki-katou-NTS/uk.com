@@ -31,7 +31,7 @@ public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuC
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteFlowMenuCommand> context) {		
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		String topPagePartId = context.getCommand().getToppagePartID();
 		//check topPagePartId is exit
 		//check topPagePartId is Existence	

@@ -32,7 +32,7 @@ public class CreateFlowMenuCommandHandler extends CommandHandler<CreateFlowMenuC
 	@Override
 	protected void handle(CommandHandlerContext<CreateFlowMenuCommand> context) {
 		String topPagePartId = IdentifierUtil.randomUniqueId();
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		String code = context.getCommand().getTopPageCode();
 		//check code
 		if(service.isExit(companyId, code, 2)){

@@ -32,7 +32,7 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
 		
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		String topPagePartId = context.getCommand().getToppagePartID();
 		//check topPagePartId is Existence	
 		Optional<FlowMenu> getFlowMenu = repository.getFlowMenu(companyId, topPagePartId);

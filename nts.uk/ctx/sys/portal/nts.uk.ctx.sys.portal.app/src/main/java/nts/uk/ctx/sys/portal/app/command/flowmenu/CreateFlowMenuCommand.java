@@ -23,7 +23,7 @@ public class CreateFlowMenuCommand {
 	private String fileName;
 	
 	public FlowMenu toDomain (String topPagePartId){
-		return FlowMenu.createFromJavaType(AppContexts.user().companyID(),
+		return FlowMenu.createFromJavaType(AppContexts.user().companyId(),
 				topPagePartId,
 				IdentifierUtil.randomUniqueId(),
 				this.fileName,
@@ -31,7 +31,7 @@ public class CreateFlowMenuCommand {
 	}
 	
 	public TopPagePart toTopPagePart(String topPagePartId){
-		return TopPagePart.createFromJavaType(AppContexts.user().companyID(),
+		return TopPagePart.createFromJavaType(AppContexts.user().companyId(),
 				topPagePartId, 
 				this.topPageCode,
 				this.topPageName,
