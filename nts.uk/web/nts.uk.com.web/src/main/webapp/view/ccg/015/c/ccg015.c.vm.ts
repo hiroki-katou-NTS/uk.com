@@ -2,8 +2,6 @@ module nts.uk.pr.view.ccg015.c {
     export module viewmodel {
         import aservice = nts.uk.com.view.ccg015.a.service;
         import aserviceDto = nts.uk.com.view.ccg015.a.service.model;
-        import PlacementDto = service.PlacementDto;
-        import StringDto = service.StringDto;
         export class ScreenModel {
             parentTopPageCode: KnockoutObservable<string>;
             parentTopPageName: KnockoutObservable<string>;
@@ -46,9 +44,10 @@ module nts.uk.pr.view.ccg015.c {
                         copyCode: self.parentTopPageCode()
                     };
                     service.copyTopPage(data).done(function() {
-                        //TODO 
+                        nts.uk.ui.dialog.alert("登録しました。"); 
                         nts.uk.ui.windows.close();
                     }).fail(function(res) {
+                        //TODO
                         alert("error");
                     });
                 }

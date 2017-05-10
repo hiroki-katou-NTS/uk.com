@@ -16,7 +16,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div data-bind="with: myPageSettingModel" id="contents-left">
-					<div>トップページでマイページを利用する項目を設定してください。</div><BR />
+					<div>トップページでマイページを利用する詳細項目を設定してください。</div><BR />
 					<div style="float:left;" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>マイページ利用区分<br /></label>
 					</div>
@@ -47,7 +47,7 @@
 					</div>
 				</div>
 				<hr />
-				<div id="this-functions-area" class="control-group halign-right">
+				<div id="this-functions-area" class="control-group halign-center">
 					<button data-bind = "click : updateMyPageSetting" class="btn-default proceed x-large">決定</button>
 					<button onclick="nts.uk.ui.windows.close()">キャンセル</button>
 				</div>

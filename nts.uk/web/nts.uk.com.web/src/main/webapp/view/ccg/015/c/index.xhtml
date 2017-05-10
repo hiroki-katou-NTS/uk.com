@@ -39,7 +39,7 @@
 						<p>コピー先情報：</p>
 					</div>
 					<div style="float: left;margin-top: -5px;" id="lbl_code_name"
-						data-bind="ntsFormLabel: {required: true}">
+						data-bind="ntsFormLabel: {constraint : ['TopPageCode','TopPageName'],required: true}">
 						<label>コード/名称</label>
 					</div>
 					<div>
