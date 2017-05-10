@@ -147,7 +147,9 @@ module nts.uk.pr.view.ccg015.b {
                                 partType: self.convertPartType(item.partType())
                             }
                         }
-                        items.push(settingItem);
+                        if (settingItem.partType != TopPagePartsType.ExternalUrl) {
+                            items.push(settingItem);
+                        }
                     });
                 });
                 collectData.topPagePartUseSettingDto = items;
@@ -158,6 +160,7 @@ module nts.uk.pr.view.ccg015.b {
                     case 0: return "Widget";
                     case 1: return "DashBoard";
                     case 2: return "FolowMenu";
+                    case 3: return "ExternalUrl";
                     default: return "Widget";
                 }
             }
@@ -201,6 +204,7 @@ module nts.uk.pr.view.ccg015.b {
             static Widget = "Widget";
             static Dashboard = "DashBoard";
             static FolowMenu = "FolowMenu";
+            static ExternalUrl = "ExternalUrl";
         }
         export enum TopPagePartsEnum {
             Widget = 0,

@@ -48,7 +48,7 @@ public class TopPageServiceImpl implements TopPageService {
 				topPageRepository.update(newTopPage);
 			} else {
 				// TODO change message
-				throw new BusinessException("Msg_");
+				throw new BusinessException("#Msg_3");
 			}
 		} else {
 			// register new

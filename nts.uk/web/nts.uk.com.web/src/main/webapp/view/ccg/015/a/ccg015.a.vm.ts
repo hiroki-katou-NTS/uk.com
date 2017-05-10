@@ -176,11 +176,7 @@ module nts.uk.com.view.ccg015.a {
                 var topPageCode = self.topPageModel().topPageCode();
                 var transferData: commonModel.TransferLayoutInfo = {topPageCode: topPageCode, layoutID: layoutId, pgType: 0};
                 nts.uk.ui.windows.setShared('layout', transferData);
-                nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
-                    height: 650, width: 1300,
-                    title: "レイアウトの設定",//TODO change name
-                    dialogClass: 'no-close'
-                }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml").onClosed(() => {
                     //TODO on Close dialog
                 });
             }
@@ -190,6 +186,7 @@ module nts.uk.com.view.ccg015.a {
                 self.topPageModel(new TopPageModel());
                 self.isNewMode(true);
                 self.toppageSelectedCode("");
+                $("#inp_code").focus();
             }
 
             private removeTopPage() {
