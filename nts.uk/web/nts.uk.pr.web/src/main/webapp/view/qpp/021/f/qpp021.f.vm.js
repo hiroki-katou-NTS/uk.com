@@ -72,7 +72,7 @@ var nts;
                                 RefundPaddingTwoModel.prototype.toDto = function () {
                                     var dto;
                                     dto = new RefundPaddingTwoDto();
-                                    dto.upperAreaPaddingTop = this.underAreaPaddingTop();
+                                    dto.upperAreaPaddingTop = this.upperAreaPaddingTop();
                                     dto.underAreaPaddingTop = this.underAreaPaddingTop();
                                     dto.paddingLeft = this.paddingLeft();
                                     dto.breakLineMargin = this.breakLineMargin();

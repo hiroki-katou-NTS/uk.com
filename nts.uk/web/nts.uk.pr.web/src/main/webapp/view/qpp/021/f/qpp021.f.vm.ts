@@ -95,7 +95,7 @@ module nts.uk.pr.view.qpp021.f {
             toDto(): RefundPaddingTwoDto {
                 var dto: RefundPaddingTwoDto;
                 dto = new RefundPaddingTwoDto();
-                dto.upperAreaPaddingTop = this.underAreaPaddingTop();
+                dto.upperAreaPaddingTop = this.upperAreaPaddingTop();
                 dto.underAreaPaddingTop = this.underAreaPaddingTop();
                 dto.paddingLeft = this.paddingLeft();
                 dto.breakLineMargin = this.breakLineMargin();
