@@ -14,7 +14,7 @@ public class DeleteDivergenceReasonCommandHandler extends CommandHandler<DeleteD
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteDivergenceReasonCommand> context) {
-		String companyId = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
 		divTimeRepo.deleteDivReason(companyId, context.getCommand().getDivTimeId(), context.getCommand().getDivReasonCode());
 	}
 	

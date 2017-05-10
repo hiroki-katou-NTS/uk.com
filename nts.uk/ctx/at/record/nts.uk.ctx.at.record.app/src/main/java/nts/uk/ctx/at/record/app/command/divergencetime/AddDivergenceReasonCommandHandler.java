@@ -19,7 +19,7 @@ public class AddDivergenceReasonCommandHandler extends CommandHandler<AddDiverge
 	private DivergenceTimeRepository divTimeRepo;
 	@Override
 	protected void handle(CommandHandlerContext<AddDivergenceReasonCommand> context) {
-		String companyId = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
 		DivergenceReason divReason = DivergenceReason.createSimpleFromJavaType(companyId,
 				context.getCommand().getDivTimeId(),
 				context.getCommand().getDivReasonCode(),
@@ -29,7 +29,7 @@ public class AddDivergenceReasonCommandHandler extends CommandHandler<AddDiverge
 													context.getCommand().getDivTimeId(),
 													context.getCommand().getDivReasonCode());
 		if(divReasonF.isPresent()){
-			throw new BusinessException(new RawErrorMessage("du lieu da khong con ton tai trong db"));
+			throw new BusinessException(new RawErrorMessage("入力したコードは、既に登録されています。"));
 		}else{
 			divTimeRepo.addDivReason(divReason);
 		}

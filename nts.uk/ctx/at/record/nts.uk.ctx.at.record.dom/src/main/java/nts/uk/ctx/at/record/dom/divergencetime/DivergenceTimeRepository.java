@@ -24,7 +24,14 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeId
 	 * @return
 	 */
-	List<AttendanceItem> getallItembyCode(String companyId, String divTimeId);
+	List<DivergenceItemSet> getallItembyCode(String companyId, int divTimeId);
+	/**
+	 * get all divergence item
+	 * @param companyId
+	 * @param divTimeId
+	 * @return
+	 */
+	List<DivergenceItem> getallDivItem(String companyId, int divTimeId);
 	/**
 	 * update divergence time
 	 * @param divTime

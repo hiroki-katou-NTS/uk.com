@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KMKMT_DIVERGENCE_TIME")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmnmtDivergenceTime extends UkJpaEntity implements Serializable{
+public class KmkmtDivergenceTime extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	/*主キー*/
 	@EmbeddedId
-	public KmnmtDivergenceTimePK kmnmtDivergenceTimePK;
+	public KmkmtDivergenceTimePK kmkmtDivergenceTimePK;
 	/*乖離時間名称*/
 	@Column(name = "DIVERGENCETIME_NAME")
 	public String divTimeName;

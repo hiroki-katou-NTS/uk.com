@@ -18,7 +18,7 @@ public class UpdateDivergenceReasonCommandHandler extends CommandHandler<UpdateD
 	private DivergenceTimeRepository divTimeRepo;
 	@Override
 	protected void handle(CommandHandlerContext<UpdateDivergenceReasonCommand> context) {
-		String companyId = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
 		DivergenceReason divReason = DivergenceReason.createSimpleFromJavaType(companyId,
 				context.getCommand().getDivTimeId(),
 				context.getCommand().getDivReasonCode(),

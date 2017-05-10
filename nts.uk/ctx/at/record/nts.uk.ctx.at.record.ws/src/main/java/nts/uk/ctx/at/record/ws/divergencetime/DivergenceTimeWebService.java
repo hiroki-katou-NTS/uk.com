@@ -18,10 +18,15 @@ import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCom
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommandHandler;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemDto;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceTimeDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceTimeFinder;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItem;
 
 @Path("at/record/divergencetime")
 @Produces("application/json")
@@ -39,7 +44,10 @@ public class DivergenceTimeWebService extends WebService{
 	private AddDivergenceReasonCommandHandler addDivReason;
 	@Inject
 	private UpdateDivergenceReasonCommandHandler updateDivReason;
-	
+	@Inject
+	private DivergenceItemSetFinder getItemSet;
+	@Inject
+	private DivergenceItemFinder getAllItem;
 	/**
 	 * get all divergence time
 	 * @return
@@ -86,5 +94,20 @@ public class DivergenceTimeWebService extends WebService{
 	@Path("deletedivreason")
 	public void deleteDivReason(DeleteDivergenceReasonCommand command){
 		this.delDivReason.handle(command);
+	}
+	/**
+	 * get item set
+	 * @param divTimeId
+	 * @return
+	 */
+	@POST
+	@Path("getItemSet/{divTimeId}")
+	public List<DivergenceItemSetDto> getItemSet(@PathParam("divTimeId") String divTimeId){
+		return this.getItemSet.getAllDivReasonByCode(divTimeId);
+	}
+	@POST
+	@Path("getAllItem/{divTimeId}")
+	public List<DivergenceItemDto> getAllItem(@PathParam("divTimeId") String divTimeId){
+		return this.getAllItem.getAllDivReasonByCode(divTimeId);
 	}
 }

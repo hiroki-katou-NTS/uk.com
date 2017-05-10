@@ -1,19 +1,19 @@
 module kmk011.a.service {
     var paths = {
         getAllDivTime: "at/record/divergencetime/getalldivtime",
-        getAllDivItem: "at/record/divergencetime/getalldivitem",
+        getDivItemIdSel: "at/record/divergencetime/getItemSet/",
         getAllDivItemId: "at/record/divergencetime/getalldivitemid",
         updateDivTime: "at/record/divergencetime/updatedivtime"
     }
 
     /**
-    * get all divergence item id selected
+    * get all divergence item id selected(id da duoc chon)
     */
-    export function getAllDivItem(divTimeId: string): JQueryPromise<Array<model.DivergenceTimeItem>> {
-        return nts.uk.request.ajax("at", paths.getAllDivItem + divTimeId);
+    export function getDivItemIdSelected(divTimeId: string): JQueryPromise<Array<model.DivergenceTimeItem>> {
+        return nts.uk.request.ajax("at", paths.getDivItemIdSel + divTimeId);
     }
     /**
-    * get all divergence item id
+    * get all divergence item id(id co the chon)
     */
     export function getAllDivItemId(divTimeId: string): JQueryPromise<Array<model.DivergenceTimeItem>> {
         return nts.uk.request.ajax("at", paths.getAllDivItemId + divTimeId);

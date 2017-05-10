@@ -15,13 +15,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmnmtDivergenceTimePK implements Serializable{
-
+public class KmnmtDivergenceItemPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/*会社ID*/
 	@Column(name = "CID")
 	public String companyId;
 	/*乖離時間ID*/
-	@Column(name = "DIVERGENCETIME_ID")
+	@Column(name = "ID")
 	public int divTimeId;
 }
