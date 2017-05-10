@@ -105,9 +105,13 @@ public class DivergenceTimeWebService extends WebService{
 	public List<DivergenceItemSetDto> getItemSet(@PathParam("divTimeId") String divTimeId){
 		return this.getItemSet.getAllDivReasonByCode(divTimeId);
 	}
+	/**
+	 * get all divergence item
+	 * @return
+	 */
 	@POST
-	@Path("getAllItem/{divTimeId}")
-	public List<DivergenceItemDto> getAllItem(@PathParam("divTimeId") String divTimeId){
-		return this.getAllItem.getAllDivReasonByCode(divTimeId);
+	@Path("getAllItem")
+	public List<DivergenceItemDto> getAllItem(){
+		return this.getAllItem.getAllDivReasonByCode();
 	}
 }

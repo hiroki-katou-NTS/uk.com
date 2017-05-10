@@ -11,7 +11,7 @@ public class DivergenceItemDto {
 	/*乖離項目名称*/
 	private String divItemName;
 	/*内部ID*/
-	private int internalId;
+	private int dislayNumber;
 	/*使用区分*/
 	private int useAtr;
 	/*乖離項目属性*/	
@@ -20,7 +20,7 @@ public class DivergenceItemDto {
 		return new DivergenceItemDto(domain.getCompanyId(),
 					domain.getDivItemId(),
 					domain.getDivItemName().v(),
-					domain.getInternalId(),
+					domain.getDislayNumber(),
 					domain.getUseAtr().value,
 					domain.getAttendanceAtr().value
 					);

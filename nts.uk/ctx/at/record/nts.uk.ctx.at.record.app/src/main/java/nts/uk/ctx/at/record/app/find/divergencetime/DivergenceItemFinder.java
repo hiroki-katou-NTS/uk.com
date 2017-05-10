@@ -16,8 +16,8 @@ public class DivergenceItemFinder {
 	//user contexts
 	String companyId = AppContexts.user().companyId();
 	
-	public List<DivergenceItemDto> getAllDivReasonByCode(String divTimeId){
-		List<DivergenceItemDto> lst = this.divTimeRepo.getallDivItem(companyId,Integer.valueOf(divTimeId))
+	public List<DivergenceItemDto> getAllDivReasonByCode(){
+		List<DivergenceItemDto> lst = this.divTimeRepo.getallDivItem(companyId)
 				.stream()
 				.map(c->DivergenceItemDto.fromDomain(c))
 				.collect(Collectors.toList());

@@ -24,6 +24,9 @@ public class KmnmtDivergenceItem extends UkJpaEntity implements Serializable{
 	/*主キー*/
 	@EmbeddedId
     public KmnmtDivergenceItemPK kmnmtDivergenceItemPK;
+	/*名称*/
+	@Column(name = "NAME")
+	public String divName;
 	/*表示番号*/
 	@Column(name = "DISPLAY_NUMBER")
 	public int displayNumber;

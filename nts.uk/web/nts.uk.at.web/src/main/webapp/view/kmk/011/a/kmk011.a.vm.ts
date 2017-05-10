@@ -26,6 +26,7 @@ module kmk011.a.viewmodel {
         enable: KnockoutObservable<boolean>;
         divTimeId: KnockoutObservable<number>;
         itemDivTime: KnockoutObservable<service.model.DivergenceTime>;
+        listDivItem: KnockoutObservableArray<service.model.DivergenceItem>;
         constructor() {
             var self = this;
             self.label_002 = ko.observable(new model.Labels());
@@ -64,6 +65,7 @@ module kmk011.a.viewmodel {
             self.selectInp = ko.observable();
             self.checkErrInput = ko.observable(false);
             self.checkErrSelect = ko.observable(false);
+            self.listDivItem = ko.observableArray([]);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
                 if(codeChanged==0){return;}
@@ -106,6 +108,10 @@ module kmk011.a.viewmodel {
                     let rdivTimeFirst = _.first(lstDivTime);
                     self.currentCode(rdivTimeFirst.divTimeId);
                 }
+                service.getAllDivItemId().done(function(lstDivItem: Array<service.model.DivergenceItem>){
+                    self.listDivItem(lstDivItem);
+                    console.log(self.listDivItem());
+                })
                 dfd.resolve();
             })
             return dfd.promise();
@@ -140,9 +146,11 @@ module kmk011.a.viewmodel {
 //            });
                 service.getDivItemIdSelected(self.divTimeId()).done(function(lstIdSel: number){
                     var listIdSel = lstIdSel;
-                    nts.uk.ui.windows.setShared('KMK011_lstId', listIdSel, true);
+                    nts.uk.ui.windows.setShared('AllAttendanceObj', self.listDivItem(), true);
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId', listIdSel, true);
                     nts.uk.ui.windows.setShared('Multiple', true, true);
-                    nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', })  
+                    console.log(listIdSel);
+                    nts.uk.ui.windows.sub.modal('../../../kdl/021/index.xhtml', { title: '乖離時間の登録＞対象項目', })  
                 })
         }
         Registration(){
@@ -193,6 +201,13 @@ module kmk011.a.viewmodel {
             })
             dfd.resolve();
             return dfd.promise();
+        }
+        findTimeName(divTimeId: number): string{
+             service.getDivItemIdSelected(divTimeId).done(function(lstIdSel: number){
+                    var listIdSel = lstIdSel;
+//                 var lst = lstIdSel()[0].attendanceName + ' + ' +self.lstItemTime()[1].attendanceName+ ' + ' +self.lstItemTime()[2].attendanceName
+                 return divTimeId.toString();
+                })
         }
     }
     export module model{ 
