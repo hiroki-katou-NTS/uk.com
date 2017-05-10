@@ -1,5 +1,12 @@
 module ccg.model {
-
+    
+    /** Transfer data from topPage to LayoutSetting */
+    export interface TransferLayoutInfo {
+        topPageCode: string;
+        layoutID: string;
+        pgType: number;
+    }
+    
     /** Server LayoutDto */
     export interface LayoutDto {
         companyID: string;

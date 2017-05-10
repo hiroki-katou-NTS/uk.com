@@ -1,5 +1,6 @@
 module nts.uk.com.view.ccg015.a {
     export module viewmodel {
+        import commonModel = ccg.model;
         import TopPageItemDto = ccg015.a.service.model.TopPageItemDto;
         import TopPageDto = ccg015.a.service.model.TopPageDto;
         export class ScreenModel {
@@ -172,7 +173,9 @@ module nts.uk.com.view.ccg015.a {
             private openLayoutSettingDialog() {
                 var self = this;
                 var layoutId = self.topPageModel().layoutId();
-                nts.uk.ui.windows.setShared('layout', { layoutId: layoutId, pgType: 0 });
+                var topPageCode = self.topPageModel().topPageCode();
+                var transferData: commonModel.TransferLayoutInfo = {topPageCode: topPageCode, layoutID: layoutId, pgType: 0};
+                nts.uk.ui.windows.setShared('layout', transferData);
                 nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
                     height: 650, width: 1300,
                     title: "レイアウトの設定",//TODO change name

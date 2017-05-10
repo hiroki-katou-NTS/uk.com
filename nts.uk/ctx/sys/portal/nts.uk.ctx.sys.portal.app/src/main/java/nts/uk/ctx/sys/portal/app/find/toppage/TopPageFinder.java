@@ -8,11 +8,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.sys.portal.dom.layout.PGType;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
 
 /**
  * The Class TopPageFinder.
@@ -25,8 +27,8 @@ public class TopPageFinder {
 	@Inject
 	PlacementRepository placementRepository;
 
-	// @Inject
-	// TopPagePartRepository topPagePartRepository;
+	@Inject
+	TopPagePartRepository topPagePartRepository;
 
 	public List<TopPageItemDto> findAll(String companyId) {
 		List<TopPage> listTopPage = topPageRepository.findAll(companyId);
@@ -39,15 +41,11 @@ public class TopPageFinder {
 
 	public TopPageDto findByCode(String companyId, String topPageCode, String languageType) {
 		Optional<TopPage> topPage = topPageRepository.findByCode(companyId, topPageCode);
-		List<Placement> lstPlacement = placementRepository.findByLayout(topPage.get().getLayoutId());
-		// TODO use topPagePartRepository find
-		List<TopPagePart> lstTopPagePart = new ArrayList<>();
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId1", "topPagePartCode1", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId2", "topPagePartCode2", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId3", "topPagePartCode3", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId4", "topPagePartCode4", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId5", "topPagePartCode5", "topPagePartName", 1, 1, 1));
-		lstTopPagePart.add(TopPagePart.createFromJavaType("1","topPagePartId6", "topPagePartCode6", "topPagePartName", 1, 1, 1));
+		//TODO cho anh Lam sua
+//		List<Placement> lstPlacement = placementRepository.findByLayout(topPage.get().getLayoutId());
+		List<Placement> lstPlacement = new ArrayList<>();
+		
+		List<TopPagePart> lstTopPagePart = topPagePartRepository.findByType(companyId,PGType.TopPage.value);
 		// convert toppage domain to dto
 		if (topPage.isPresent()) {
 			TopPage tp = topPage.get();

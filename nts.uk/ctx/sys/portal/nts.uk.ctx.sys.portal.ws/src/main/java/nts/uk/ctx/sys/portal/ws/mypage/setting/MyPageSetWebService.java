@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Path("/mypage")
 @Stateless
-public class MyPageSettingWs extends WebService {
+public class MyPageSetWebService extends WebService {
 
 	public final String defaultCompanyId = "0";
 	

@@ -13,7 +13,7 @@ public interface TopPageService {
 	 * @param topPage the top page
 	 * @param companyId the company id
 	 */
-	void copyTopPage(TopPage topPage,String companyId);
+	void copyTopPage(TopPage topPage,String companyId,boolean isCheckOverWrite, String copyCode);
 	
 	/**
 	 * Removes the top page.

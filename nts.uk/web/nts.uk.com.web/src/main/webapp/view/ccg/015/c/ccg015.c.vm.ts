@@ -37,63 +37,19 @@ module nts.uk.pr.view.ccg015.c {
                 }
                 else {
                     nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
-                    aservice.loadTopPage().done(function(data: Array<aserviceDto.TopPageItemDto>) {
-                        //TODO check input code exist
-                        data.forEach(function(item, index) {
-                            if (item.topPageCode == self.newTopPageCode()) {
-                                self.isDuplicateCode(true);
-                            }
-                        });
-                        //
-                        if (self.isDuplicateCode()) {
-                            //check overwrite data
-                            if (self.check()) {
-                                var topPageOverWrite: service.TopPageDto = {
-                                    topPageCode: self.newTopPageCode(),
-                                    topPageName: self.newTopPageName(),
-                                    layoutId: self.parentLayoutId(),
-                                    languageNumber: 0
-                                };
-                                service.copyTopPage(topPageOverWrite).done(function() {
-                                    nts.uk.ui.windows.close();
-                                    //                                nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
-                                });
-                            }
-                            else {
-                                nts.uk.ui.dialog.alert("入力したコードは、既に登録されています。");    
-                            }
-                        }
-                        else {
-                            //check neu tp dc copy da dk layout thi cp layout
-                            if (self.parentLayoutId()) {
-                                service.copyLayout(self.parentLayoutId(), self.parentTopPageCode()).done(function(data: StringDto) {
-                                    var topPage: aservice.model.TopPageDto = {
-                                        topPageCode: self.newTopPageCode(),
-                                        topPageName: self.newTopPageName(),
-                                        languageNumber: 0,//jp
-                                        layoutId: data.newLayoutId//get from parent
-                                    };
-                                    aservice.registerTopPage(topPage).done(function() {
-                                        nts.uk.ui.windows.close();
-                                        //                                    nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
-                                        nts.uk.ui.dialog.alert("コピーが完了しました。");
-                                    });
-                                });
-                            }
-                            else {
-                                var topPage: aservice.model.TopPageDto = {
-                                    topPageCode: self.newTopPageCode(),
-                                    topPageName: self.newTopPageName(),
-                                    languageNumber: 0,//jp
-                                    layoutId: ""
-                                };
-                                aservice.registerTopPage(topPage).done(function() {
-                                    nts.uk.ui.windows.close();
-                                    //                                nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
-                                    nts.uk.ui.dialog.alert("コピーが完了しました。");
-                                });
-                            }
-                        }
+                    var data: service.TopPageDto = {
+                        topPageCode: self.newTopPageCode(),
+                        topPageName: self.newTopPageName(),
+                        layoutId: self.parentLayoutId(),
+                        languageNumber: 0,
+                        isCheckOverwrite: self.check(),
+                        copyCode: self.parentTopPageCode()
+                    };
+                    service.copyTopPage(data).done(function() {
+                        //TODO 
+                        nts.uk.ui.windows.close();
+                    }).fail(function(res) {
+                        alert("error");
                     });
                 }
 

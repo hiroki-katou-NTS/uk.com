@@ -17,7 +17,6 @@ import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.RegisterTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommand;
 import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
-import nts.uk.ctx.sys.portal.app.find.toppage.StringDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
@@ -29,7 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Path("/toppage")
 @Produces("application/json")
-public class TopPageWs extends WebService {
+public class TopPageWebService extends WebService {
 
 	/** The top page finder. */
 	@Inject
@@ -92,32 +91,17 @@ public class TopPageWs extends WebService {
 	}
 
 	/**
-	 * Copy the top page.
+	 * Copy top page.
 	 *
 	 * @param command
 	 *            the command
 	 */
 	@POST
-	@Path("copy")
+	@Path("copyTopPage")
 	public void copyTopPage(CopyTopPageCommand command) {
 		copyTopPageCommandHandler.handle(command);
 	}
-
-	/**
-	 * Copy the top page.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	@POST
-	@Path("copyLayout/{layoutId}/{toppageCode}")
-	public StringDto copyLayout(@PathParam("layoutId") String layoutId, @PathParam("toppageCode") String topPageCode) {
-		String newLayoutId = layoutService.copyTopPageLayout(layoutId);
-		StringDto s = new StringDto();
-		s.newLayoutId = newLayoutId;
-		return s;
-	}
-
+	
 	/**
 	 * Update top page.
 	 *

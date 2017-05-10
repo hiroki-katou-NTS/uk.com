@@ -4,7 +4,7 @@ module nts.uk.pr.view.ccg015.c {
 
         // Service paths.
         var servicePath = {
-            copyPath: "toppage/copy",
+            copyPath: "toppage/copyTopPage",
             copyLayout: "toppage/copyLayout"
         }
 
@@ -33,6 +33,8 @@ module nts.uk.pr.view.ccg015.c {
             topPageName: string;
             layoutId: string;
             languageNumber: number;
+            isCheckOverwrite: boolean;
+            copyCode: string;
         }
         export interface PlacementDto {
             topPagePartCode: string;

@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,12 +43,15 @@ public class TopPageDto {
 		topPageDto.topPageName = topPage.getTopPageName().v();
 		topPageDto.languageNumber = topPage.getLanguageNumber();
 		topPageDto.layoutId = topPage.getLayoutId();
-		topPageDto.placementDto = lstPlacement.stream().map(item -> {
-			return PlacementDto.fromDomain(item, lstTopPagePart.stream().filter(t -> {
-				return true;
-//				return t.getToppagePartID().equals(item.getToppagePartID());
-			}).findFirst().get());
-		}).collect(Collectors.toList());
+		if (lstPlacement.isEmpty()) {
+			topPageDto.placementDto = new ArrayList<>();
+		} else {
+			topPageDto.placementDto = lstPlacement.stream().map(item -> {
+				return PlacementDto.fromDomain(item, lstTopPagePart.stream().filter(t -> {
+					return t.getToppagePartID().equals(item.getToppagePartID());
+				}).findFirst().get());
+			}).collect(Collectors.toList());
+		}
 		return topPageDto;
 	}
 }
