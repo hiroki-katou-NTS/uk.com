@@ -288,14 +288,8 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param paymentDateMap the payment date map
 	 */
 	private void fillReportItemsData(List<ReportItemDto> reportItems, PrintData printData) {
-		reportItems = reportItems.stream().filter(item -> item.isShow()).collect(Collectors.toList());
-		if (reportItems.size() == 0) {
-			return;
-		}
 		Worksheet ws = printData.reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
-		int totalItemData = reportItems.size();
-		int fromIndex = 0;
 		final Map<Integer, GeneralDate> paymentDateMap = printData.isSalaryPath
 				? printData.reportData.salaryPaymentDateMap : printData.reportData.bonusPaymentDateMap;
 		
@@ -304,6 +298,14 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		contentNameCell.setValue(printData.headerLabel);
 		printData.currentRow++;
 		boolean isItemLastOfPage = false;
+		
+		// Fill content.
+		reportItems = reportItems.stream().filter(item -> item.isShow()).collect(Collectors.toList());
+		if (reportItems.size() == 0) {
+			return;
+		}
+		int totalItemData = reportItems.size();
+		int fromIndex = 0;
 		
 		while (totalItemData > 0) {
 			int amountItemOnPage = Math.min(printData.amountItemLeftOnCurrentPage, MAX_RECORD_ON_ONE_PAGE);
