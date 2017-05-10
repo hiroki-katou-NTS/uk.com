@@ -15,6 +15,7 @@ import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.ctx.sys.portal.dom.layout.service.LayoutService;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
+import nts.uk.ctx.sys.portal.dom.placement.service.PlacementService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -33,6 +34,9 @@ public class RegistryPortalLayoutCommandHandler extends CommandHandler<RegistryP
 	@Inject
 	private LayoutService layoutService;
 
+	@Inject
+	private PlacementService placementService;
+
 	@Override
 	protected void handle(CommandHandlerContext<RegistryPortalLayoutCommand> context) {
 		// Data
@@ -40,29 +44,24 @@ public class RegistryPortalLayoutCommandHandler extends CommandHandler<RegistryP
 		RegistryPortalLayoutCommand command = context.getCommand();
 		PortalLayoutCommand layoutCommand = command.getPortalLayoutCommand();
 		List<PortalPlacementCommand> placementCommands = command.getListPortalPlacementCommand();
-		String layoutID = layoutCommand.toDomain().getLayoutID();
+		String layoutID = layoutCommand.getLayoutID();
 
-		if (layoutService.isExist(layoutID)) {
-			// Remove old data
-			layoutRepository.remove(companyID, layoutCommand.toDomain().getLayoutID());
-			List<String> placementIDs = new ArrayList<String>();
-			for (PortalPlacementCommand placementCommand : placementCommands) {
-				placementIDs.add(placementCommand.getPlacementID());
-			}
-			placementRepository.removeAll(companyID, placementIDs);
+		// Layout registry if not exist
+		if (!layoutService.isExist(layoutID)) {
+			layoutID = IdentifierUtil.randomUniqueId();
+			layoutRepository.add(layoutCommand.toDomain(layoutID));
 		}
 
-		// Layout registry
-		String newLayoutID = IdentifierUtil.randomUniqueId();
-		layoutRepository.add(layoutCommand.toDomain(newLayoutID));
+		// Placements delete
+		placementService.deletePlacementByLayout(companyID, layoutID);
+
 		// Placements registry
 		List<Placement> placements = new ArrayList<Placement>();
 		for (PortalPlacementCommand placementCommand : placementCommands) {
-			placementCommand.setLayoutID(newLayoutID);
+			placementCommand.setLayoutID(layoutID);
 			placements.add(placementCommand.toDomain(IdentifierUtil.randomUniqueId()));
 		}
 		placementRepository.addAll(placements);
-
 	}
 
 }
