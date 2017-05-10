@@ -38,13 +38,13 @@ public class DetailDifferentialFinder {
 					.findFirst();
 			BigDecimal comparisonValue2 = new BigDecimal(-1);
 			int registrationStatus2 = 2;
-			BigDecimal valueDifference = s.getComparisonValue1().v().subtract(new BigDecimal(0));
+			BigDecimal valueDifference = new BigDecimal(0).subtract(s.getComparisonValue1().v());
 			String reasonDifference = "";
 			int confirmedStatus = 0;
 			if (detalDiff.isPresent()) {
 				comparisonValue2 = detalDiff.get().getComparisonValue2().v();
 				registrationStatus2 = detalDiff.get().getRegistrationStatus2().value;
-				valueDifference = s.getComparisonValue1().v().subtract(detalDiff.get().getComparisonValue2().v());
+				valueDifference = s.getComparisonValue2().v().subtract(detalDiff.get().getComparisonValue1().v());
 				detailDifferential2.remove(detalDiff.get());
 			}
 
@@ -73,7 +73,7 @@ public class DetailDifferentialFinder {
 					.findFirst();
 			BigDecimal comparisonValue1 = new BigDecimal(-1);
 			int registrationStatus1 = 2;
-			BigDecimal valueDifference = new BigDecimal(0).subtract(s.getComparisonValue2().v());
+			BigDecimal valueDifference = s.getComparisonValue2().v().subtract(new BigDecimal(0));
 			String reasonDifference = "";
 			int confirmedStatus = 0;
 			if (payCompComfirmFilter.isPresent()) {
