@@ -124,23 +124,25 @@ module kmk011.b.viewmodel {
         }
         addDivReason(){
             var self = this;
+            var dfd = $.Deferred();
             var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
             service.addDivReason(divReason).done(function() {
-                    self.getAllDivReasonNew();
-                }).fail(function(res) {
-                    alert(res.message);
-                    dfd.reject(res);
-                });
+                nts.uk.ui.dialog.alert('登録しました。');
+                self.getAllDivReasonNew();
+            }).fail(function(error) {
+                $('#inpCode').ntsError('set', error.message);
+            });
         }
         updateDivReason(){
             var self = this;
+            var dfd = $.Deferred();
             var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
             service.updateDivReason(divReason).done(function() {
-                    self.getAllDivReasonNew();
-                }).fail(function(res) {
-                    alert(res.message);
-                    dfd.reject(res);
-                });
+                self.getAllDivReasonNew();
+            }).fail(function(res) {
+                alert(res.message);
+                dfd.reject(res);
+            });
         }
         //get all divergence reason new
         getAllDivReasonNew(){
@@ -162,11 +164,16 @@ module kmk011.b.viewmodel {
         //delete divergence reason
         deleteDivReason(){
             var self = this;
-            let divReason = self.itemDivReason();
-            self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
-            service.deleteDivReason(divReason).done(function(){
-                self.getDivReasonList_afterDelete();
-            });
+            nts.uk.ui.dialog.confirm('選択中のデータを削除しますか？').ifYes(function(){
+                let divReason = self.itemDivReason();
+                self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
+                service.deleteDivReason(divReason).done(function(){
+                    self.getDivReasonList_afterDelete();
+                    nts.uk.ui.dialog.alert('削除しました。');
+                });
+            }).ifCancel(function(){
+                return;
+            })
         }
         //get list divergence reason after Delete 1 divergence reason
         getDivReasonList_afterDelete(): any {
@@ -206,6 +213,9 @@ module kmk011.b.viewmodel {
             } else {
                 return true;
             }
+        }
+        closeDialog(){
+             nts.uk.ui.windows.close();
         }
     }
     export module model{ 

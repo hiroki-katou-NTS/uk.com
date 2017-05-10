@@ -30,7 +30,8 @@
 				<button id="btn_005" class="button danger separate-button fix-button"
 						data-bind = "click: deleteDivReason">削除</button>	
 				<!-- B1_4: Button Close -->	
-				<button id="btn_004" class="button separate-button fix-button">閉じる</button>
+				<button id="btn_004" class="button separate-button fix-button"
+						data-bind = "click: closeDialog">閉じる</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float:left" class="bg-green caret-right caret-background">
@@ -62,8 +63,8 @@
 							</td>
 							<td>
 								<!-- B3_2: Divergence Reason Code -->
-								<input style="width: 20px" data-bind="ntsTextEditor: {
-                                          value: divReasonCode, enable: enableCode}" />
+								<input id="inpCode" style="width: 20px" data-bind="ntsTextEditor: {
+                                          value: divReasonCode, enable: enableCode}" data-name="Code"/>
 								<!-- B3_3: Divergence Reason Content -->
 								<input data-bind="ntsTextEditor: {
                                           value: divReasonContent}" />

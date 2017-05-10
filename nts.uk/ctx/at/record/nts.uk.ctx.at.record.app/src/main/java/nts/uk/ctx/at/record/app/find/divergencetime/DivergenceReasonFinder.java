@@ -15,10 +15,10 @@ public class DivergenceReasonFinder {
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
 	//user contexts
-	String companyId = AppContexts.user().companyCode();
+	String companyId = AppContexts.user().companyId();
 	
 	public List<DivergenceReasonDto> getAllDivReasonByCode(String divTimeId){
-		List<DivergenceReasonDto> lst = this.divTimeRepo.getDivReasonByCode(companyId, Integer.valueOf(divTimeId))
+		List<DivergenceReasonDto> lst = this.divTimeRepo.getDivReasonByCode(companyId,Integer.valueOf(divTimeId))
 				.stream()
 				.map(c->DivergenceReasonDto.fromDomain(c))
 				.collect(Collectors.toList());

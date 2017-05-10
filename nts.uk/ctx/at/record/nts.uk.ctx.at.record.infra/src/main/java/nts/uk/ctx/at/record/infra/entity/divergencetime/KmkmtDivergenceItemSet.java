@@ -15,15 +15,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name="KMKMT_ATTENDANCE_ITEM_SET")
+@Table(name="KMKMT_DIVERGENCE_ITEM_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmnmtAttendanceItemSet extends UkJpaEntity implements Serializable{
+public class KmkmtDivergenceItemSet extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	/*主キー*/
 	@EmbeddedId
-    public KmnmtAttendanceItemSetPK kmnmtAttendanceItemSetPK;
+    public KmkmtDivergenceItemSetPK kmkmtDivergenceItemSetPK;
 	
 	@Override
 	protected Object getKey() {

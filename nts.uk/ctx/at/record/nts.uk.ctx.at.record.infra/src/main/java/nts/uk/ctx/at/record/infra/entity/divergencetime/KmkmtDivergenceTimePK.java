@@ -9,12 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-@Setter
-@Getter
+
 @Embeddable
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmnmtAttendanceItemSetPK implements Serializable {
+public class KmkmtDivergenceTimePK implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	/*会社ID*/
@@ -23,7 +24,4 @@ public class KmnmtAttendanceItemSetPK implements Serializable {
 	/*乖離時間ID*/
 	@Column(name = "DIVERGENCETIME_ID")
 	public int divTimeId;
-	/*勤怠項目ID*/
-	@Column(name = "ATTENDANCE_ID")
-	public int attendanceId;
 }

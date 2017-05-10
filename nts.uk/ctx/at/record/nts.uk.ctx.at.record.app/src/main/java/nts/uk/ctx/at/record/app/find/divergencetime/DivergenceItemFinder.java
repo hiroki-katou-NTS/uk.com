@@ -10,15 +10,16 @@ import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class DivergenceTimeFinder {
-
+public class DivergenceItemFinder {
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
+	//user contexts
+	String companyId = AppContexts.user().companyId();
 	
-	public List<DivergenceTimeDto> getAllDivTime(){
-		String companyId = AppContexts.user().companyId();
-		List<DivergenceTimeDto> lst = this.divTimeRepo.getAllDivTime(companyId).stream()
-				.map(c->DivergenceTimeDto.fromDomain(c))
+	public List<DivergenceItemDto> getAllDivReasonByCode(){
+		List<DivergenceItemDto> lst = this.divTimeRepo.getallDivItem(companyId)
+				.stream()
+				.map(c->DivergenceItemDto.fromDomain(c))
 				.collect(Collectors.toList());
 		return lst;
 	}

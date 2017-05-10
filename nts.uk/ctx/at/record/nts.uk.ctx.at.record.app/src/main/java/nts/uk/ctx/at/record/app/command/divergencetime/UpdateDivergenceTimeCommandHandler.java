@@ -19,7 +19,7 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateDivergenceTimeCommand> context) {
-		String companyId = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
 		DivergenceTime divTime = DivergenceTime.createSimpleFromJavaType(companyId,
 									context.getCommand().getDivTimeId(),
 									context.getCommand().getDivTimeName(),
@@ -35,7 +35,6 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 		if(checkTime == true){
 			divTimeRepo.updateDivTime(divTime);
 		}else{
-//			throw new BusinessException("nhap lai alarm time va error time");
 			throw new BusinessException(new RawErrorMessage("アラーム時間がエラー時間を超えています。"));
 		}
 		

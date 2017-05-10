@@ -26,6 +26,7 @@ module kmk011.a.viewmodel {
         enable: KnockoutObservable<boolean>;
         divTimeId: KnockoutObservable<number>;
         itemDivTime: KnockoutObservable<service.model.DivergenceTime>;
+        listDivItem: KnockoutObservableArray<service.model.DivergenceItem>;
         constructor() {
             var self = this;
             self.label_002 = ko.observable(new model.Labels());
@@ -64,13 +65,14 @@ module kmk011.a.viewmodel {
             self.selectInp = ko.observable();
             self.checkErrInput = ko.observable(false);
             self.checkErrSelect = ko.observable(false);
+            self.listDivItem = ko.observableArray([]);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
                 if(codeChanged==0){return;}
                 else{
                 self.itemDivTime(self.findDivTime(codeChanged));
-                self.alarmTime(self.itemDivTime().alarmTime.toString());
-                self.errTime(self.itemDivTime().errTime.toString());
+                self.alarmTime(self.convertTime(self.itemDivTime().alarmTime));
+                self.errTime(self.convertTime(self.itemDivTime().errTime));
                 self.selectUse(self.itemDivTime().divTimeUseSet);
                 self.selectSel(self.itemDivTime().selectSet.selectUseSet);
                 self.selectInp(self.itemDivTime().inputSet.selectUseSet);
@@ -106,6 +108,10 @@ module kmk011.a.viewmodel {
                     let rdivTimeFirst = _.first(lstDivTime);
                     self.currentCode(rdivTimeFirst.divTimeId);
                 }
+                service.getAllDivItemId().done(function(lstDivItem: Array<service.model.DivergenceItem>){
+                    self.listDivItem(lstDivItem);
+                    console.log(self.listDivItem());
+                })
                 dfd.resolve();
             })
             return dfd.promise();
@@ -128,17 +134,35 @@ module kmk011.a.viewmodel {
         }
         openDialog021(){
             var self = this;
-            nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', })    
+//            service.getAllDivItemId(self.divTimeId()).done(function(lstId: number){
+//                var listAllId = lstId;
+//                service.getDivItemIdSelected(self.divTimeId()).done(function(lstIdSel: number){
+//                    var listIdSel = lstIdSel;
+//                    nts.uk.ui.windows.setShared('KMK011_lstId', listIdSel, true);
+//                    nts.uk.ui.windows.setShared('KMK011_lstAllId', listAllId, true);
+//                    nts.uk.ui.windows.setShared('Multiple', true, true);
+//                    nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', })  
+//                })
+//            });
+                service.getDivItemIdSelected(self.divTimeId()).done(function(lstIdSel: number){
+                    var listIdSel = lstIdSel;
+                    nts.uk.ui.windows.setShared('AllAttendanceObj', self.listDivItem(), true);
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId', listIdSel, true);
+                    nts.uk.ui.windows.setShared('Multiple', true, true);
+                    console.log(listIdSel);
+                    nts.uk.ui.windows.sub.modal('../../../kdl/021/index.xhtml', { title: '乖離時間の登録＞対象項目', })  
+                })
         }
         Registration(){
             var self = this;
+            var dfd = $.Deferred();
             var select = new service.model.SelectSet(self.selectSel(),self.convert(self.checkErrSelect()));
             var input = new service.model.SelectSet(self.selectInp(),self.convert(self.checkErrInput()));
-            var divTime = new service.model.DivergenceTime(self.divTimeId(),self.divTimeName(),self.selectUse(),self.alarmTime(),self.errTime(),select,input);
+            var divTime = new service.model.DivergenceTime(self.divTimeId(),self.divTimeName(),self.selectUse(),self.convertInt(self.alarmTime()),self.convertInt(self.errTime()),select,input);
             service.updateDivTime(divTime).done(function(){
                 self.getAllDivTimeNew();
+                nts.uk.ui.dialog.alert('登録しました。');
             }).fail(function(error) {
-//                nts.uk.ui.dialog.alert(error.message);
                 $('#inpAlarmTime').ntsError('set', error.message);
             })
             dfd.resolve();
@@ -151,6 +175,16 @@ module kmk011.a.viewmodel {
             if(value == false){
                 return 0;
             }
+        }
+        convertTime(value: number): string{
+            var hours = Math.floor(value/60); 
+            var minutes = value % 60;
+            return (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes);
+        }
+        convertInt(value: string): number{
+            var hours = value.substring(0,2);
+            var minutes = value.substring(3,5);
+            return (parseFloat(hours)*60 + parseFloat(minutes));
         }
         //get all divergence time new
         getAllDivTimeNew(){
@@ -167,6 +201,13 @@ module kmk011.a.viewmodel {
             })
             dfd.resolve();
             return dfd.promise();
+        }
+        findTimeName(divTimeId: number): string{
+             service.getDivItemIdSelected(divTimeId).done(function(lstIdSel: number){
+                    var listIdSel = lstIdSel;
+//                 var lst = lstIdSel()[0].attendanceName + ' + ' +self.lstItemTime()[1].attendanceName+ ' + ' +self.lstItemTime()[2].attendanceName
+                 return divTimeId.toString();
+                })
         }
     }
     export module model{ 
