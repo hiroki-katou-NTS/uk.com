@@ -25,7 +25,7 @@ module nts.uk.pr.view.ccg015.c {
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-
+                nts.uk.ui.windows.setShared("codeOfNewTopPage", self.parentTopPageCode());
                 dfd.resolve();
                 return dfd.promise();
             }

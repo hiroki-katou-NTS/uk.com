@@ -63,9 +63,11 @@ public class TopPageServiceImpl implements TopPageService {
 	public void removeTopPage(String topPageCode, String companyId) {
 		TopPage tp = topPageRepository.findByCode(companyId, topPageCode).get();
 		topPageRepository.remove(companyId, topPageCode);
-		if (!tp.getLayoutId().equals("")) {
-			//TODO change to service of Lam san
-			layoutRepository.remove(companyId, tp.getLayoutId());
+		if (tp.getLayoutId() != null) {
+			if (!tp.getLayoutId().equals("")) {
+				// TODO change to service of Lam san
+				layoutRepository.remove(companyId, tp.getLayoutId());
+			}
 		}
 	}
 }

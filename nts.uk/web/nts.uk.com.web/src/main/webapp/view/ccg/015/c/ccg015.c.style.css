@@ -116,3 +116,6 @@ button.nts-switch-button {
 #contents-area {
 	padding: 20px !important;
 }
+#inp-name {
+	width: 180px !important;
+}
