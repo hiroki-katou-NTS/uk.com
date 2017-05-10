@@ -2,9 +2,6 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-/**
- * 
- */
 package nts.uk.file.pr.app.export.insurance.salary;
 
 import java.util.ArrayList;
@@ -32,7 +29,6 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class SocialInsuReportService.
  */
-
 @Stateless
 public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
 

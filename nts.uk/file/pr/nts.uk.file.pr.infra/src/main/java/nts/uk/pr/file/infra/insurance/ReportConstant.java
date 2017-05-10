@@ -6,6 +6,9 @@ package nts.uk.pr.file.infra.insurance;
 
 public class ReportConstant {
     
+    /** The Constant REPORT_FILE_NAME. */
+    public static final String REPORT_FILE_NAME = "給与社会保険料チェックリスト.pdf";
+    
     /** The Constant NUMBER_ZERO. */
     public static final int NUMBER_ZERO = 0;
 
@@ -77,4 +80,11 @@ public class ReportConstant {
     
     /** The Constant COLUMN_WIDTH_OFFICE_CODE. */
     public static final double COLUMN_WIDTH_OFFICE_CODE = 19;
+    
+    /**
+     * Instantiates a new report constant.
+     */
+    private ReportConstant() {
+        throw new IllegalAccessError("Utility class");
+    }
 }
