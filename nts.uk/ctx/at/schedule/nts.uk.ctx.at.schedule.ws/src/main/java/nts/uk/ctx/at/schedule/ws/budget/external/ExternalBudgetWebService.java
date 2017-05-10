@@ -8,12 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCmd;
-import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCmdHandler;
-import nts.uk.ctx.at.schedule.app.command.budget.external.InsertExternalBudgetCmd;
-import nts.uk.ctx.at.schedule.app.command.budget.external.InsertExternalBudgetCmdHandler;
-import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCmd;
-import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCmdHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.external.DeleteExternalBudgetCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.external.InsertExternalBudgetCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.external.InsertExternalBudgetCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.external.UpdateExternalBudgetCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.ExternalBudgetFinder;
 
@@ -24,13 +24,13 @@ public class ExternalBudgetWebService extends WebService {
 	private ExternalBudgetFinder find;
 
 	@Inject
-	private InsertExternalBudgetCmdHandler insert;
+	private InsertExternalBudgetCommandHandler insert;
 
 	@Inject
-	private UpdateExternalBudgetCmdHandler update;
+	private UpdateExternalBudgetCommandHandler update;
 
 	@Inject
-	private DeleteExternalBudgetCmdHandler delete;
+	private DeleteExternalBudgetCommandHandler delete;
 
 	@POST
 	@Path("findallexternalbudget")
@@ -40,19 +40,19 @@ public class ExternalBudgetWebService extends WebService {
 	
 	@POST
 	@Path("insertexternalbudget")
-	public void insertbudget(InsertExternalBudgetCmd command) {
+	public void insertbudget(InsertExternalBudgetCommand command) {
 		this.insert.handle(command);
 	}
 
 	@POST
 	@Path("updateexternalbudget")
-	public void updateData(UpdateExternalBudgetCmd command) {
+	public void updateData(UpdateExternalBudgetCommand command) {
 		this.update.handle(command);
 	}
 
 	@POST
 	@Path("deleteexternalbudget")
-	public void deleteData(DeleteExternalBudgetCmd command) {
+	public void deleteData(DeleteExternalBudgetCommand command) {
 		this.delete.handle(command);
 	}
 

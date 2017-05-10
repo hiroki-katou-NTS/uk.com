@@ -1,4 +1,4 @@
-module kdl024.viewmodel {
+module kdl024.a.viewmodel {
     export class ScreenModel {
         contraint: Array<string>;
         //Mode
@@ -38,7 +38,6 @@ module kdl024.viewmodel {
                 new ItemModelCbb('4', '単価')
             ]);
             //Defaut value 
-
             self.isEnableCbb = ko.observable(true);
             //grid list
             self.columns = ko.observableArray([
@@ -75,54 +74,73 @@ module kdl024.viewmodel {
                     self.currentItem().setSource(_items);
                     //current Code
                     self.currentItem().externalBudgetCode(lstBudget[0].externalBudgetCode);
+                    //Disable Code Input 
+                    self.isEnableInp(false);
                 } else {
                     self.isNew = true;
                     self.currentSource = _items;
                     self.currentItem().setSource(_items);
-                    $("#inpCode").prop("disabled", false);
+                    self.isEnableInp(true);
                     $('#inpCode').focus();
                     dfd.resolve();
                 }
             }).fail(function(res) {
-                alert(res);
+                nts.uk.ui.dialog.alert(res.message);
             });
             return dfd.promise();
         }
-        //update Data
-        update() {
+        //Register Data
+        register() {
             var self = this;
+            //Mode INSERT
             if (self.isNew) {
-                let newCode: string = $('#inpCode').val();
-                let current = _.find(self.currentSource, function(item) { return item.externalBudgetCode == newCode });
-                if (current) {
-                    $('#inpCode').ntsError('set', '入力したコードは、既に登録されています。');
-                } else {
-                    service.insertExternalBudget(self.currentItem()).done(function() {
-                        nts.uk.ui.dialog.alert("登録しました。")；
+                service.insertExternalBudget(self.currentItem()).done(function() {
+                    nts.uk.ui.dialog.alert("登録しました。")；
+                        //restart
+                        self.currentSource.push(new TempItem(
+                            self.currentItem().externalBudgetCode(),
+                            self.currentItem().externalBudgetName(),
+                            self.currentItem().budgetAtr(),
+                            self.currentItem().unitAtr()
+                        ));
+                        //Re sort
+                        self.currentSource.sort(function(a,b){
+                            if(a.externalBudgetCode < b.externalBudgetCode)
+                                return -1;
+                            if(a.externalBudgetCode > b.externalBudgetCode)
+                                return 1;
+                            return 0;   
+                        });
+                        //Reset list Source 
+                        self.items([]);
+                        //Re Add list source    
+                        self.items(self.currentSource);
+                        self.isNew = false;
+                        //Disable Input Code
+                        self.isEnableInp(false);
                     }).fail(function(res) {
-                        alert(res);
+                        $('#inpCode').ntsError('set', res.message);
                     });
-                    //restart
-                    self.currentSource.push(new TempItem(
-                        self.currentItem().externalBudgetCode(),
-                        self.currentItem().externalBudgetName(),
-                        self.currentItem().budgetAtr(),
-                        self.currentItem().unitAtr()
-                    ));
-                    //Reset list Source 
-                    self.items([]);
-                    //Re Add list source    
-                    self.items(self.currentSource);
-                    self.isNew = false;
-                }
+            //Mode UPDATE
             } else {
                 service.updateExternalBudget(self.currentItem()).done(function() {
                     nts.uk.ui.dialog.alert("登録しました。")；
+                    //update list source
+                    let currentIndex = _.findIndex(self.currentSource,['externalBudgetCode',self.currentItem().externalBudgetCode()]);
+                    if(currentIndex != -1){
+                        self.currentSource[currentIndex].externalBudgetName = self.currentItem().externalBudgetName();
+                        self.currentSource[currentIndex].budgetAtr = self.currentItem().budgetAtr();
+                        self.currentSource[currentIndex].unitAtr = self.currentItem().unitAtr();
+                    }
+                    self.items([]);
+                    //Re Add list source    
+                    self.items(self.currentSource);
+                    //Restart screen
+                    //self.start();
                 }).fail(function(res) {
-                    alert(res);
+                    nts.uk.ui.dialog.alert(res.message);
+                    self.start();
                 });
-                //Restart screen
-                self.start();
             }
             //enable button Del 
             $("#btnDel").prop('disabled', false);
@@ -130,26 +148,57 @@ module kdl024.viewmodel {
         //insert new Item 
         addNew() {
             var self = this;
-            self.isEnableInp = ko.observable(true);
             //current Code, 何にも、項目選択している。
             self.currentItem().externalBudgetCode(null);
             $('#inpName').val('');
-            $('#inpCode').val('');
-            $('#inpCode').focus();
+            $('#inpCode').val('');            
             self.currentItem().budgetAtr('0');
             self.currentItem().unitAtr(0);
             $("#btnDel").prop('disabled', true);
-            $("#inpCode").prop("disabled", false);
+            //Enable Code Input
+            self.isEnableInp(true);
+            $('#inpCode').focus();
+            //Change mode to NEW
             self.isNew = true;
         }
         //delete
         del() {
             var self = this;
-            service.deleteExternalBudget(self.currentItem()).done(function() {
-            }).fail(function(res) {
-                alert(res);
-            });
-            self.start();
+            nts.uk.ui.dialog.confirm("選択中のデータを削除しますか？").ifYes(function(){
+                //削除後処理                
+                service.deleteExternalBudget(self.currentItem()).done(function() {
+                   nts.uk.ui.dialog.alert("削除しました。")；
+                    //get index of selected Item
+                    var iIndex = _.findIndex(self.currentSource,['externalBudgetCode',self.currentItem().externalBudgetCode()]);
+                    //get max index of list Items
+                    var maxIndex :number = self.currentSource.length-1;                
+                    //case of : selected item is last item
+                    if(iIndex == 0){
+                        self.items([]);
+                        self.addNew();
+                    }else{
+                        if(iIndex == maxIndex){
+                            //get above item and set selected item 
+                            self.currentItem().externalBudgetCode(self.currentSource[maxIndex-1].externalBudgetCode);
+                            //Remove the last Item of currentSource               
+                            self.currentSource.splice(maxIndex,1);
+                        //case of selected item is not last item
+                        //最下行でない項目を削除した場合  
+                        }else{
+                            //get under item and set selected item
+                            self.currentItem().externalBudgetCode(self.currentSource[iIndex+1].externalBudgetCode);
+                            //remove selected item in current source 
+                            self.currentSource.splice(iIndex,1);
+                        }
+                        //Reset list Source 
+                        self.items([]);
+                        self.items(self.currentSource);
+                    }
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                    self.start();
+                });
+            });            
         }
     }
 
