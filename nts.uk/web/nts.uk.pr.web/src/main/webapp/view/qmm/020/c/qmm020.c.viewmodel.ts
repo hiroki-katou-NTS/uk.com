@@ -2,20 +2,26 @@ module qmm020.c.viewmodel {
     export class ScreenModel {
         gridColumns: Array<any> = [];
         model: KnockoutObservable<Model> = ko.observable(undefined);
-
+        
         constructor() {
             let self = this;
             self.gridColumns = [
-                { headerText: "コード", key: "employmentCode", dataType: "string", width: "100px" },
-                { headerText: "名称", key: "employmentName", dataType: "string", width: "200px" },
+                { headerText: "コード", key: "employmentCode", dataType: "string", width: "100px", template: '${employmentCode}'},
+                { headerText: "名称", key: "employmentName", dataType: "string", width: "200px", template: '${employmentName}' },
                 {
                     headerText: "給与明細書", key: "paymentDetailCode", dataType: "string", width: "250px",
-                    template: '<button class="c-btn-001" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${paymentDetailCode} ${paymentDetailName}</span>'
+                    template: '<button onclick="__viewContext.viewModel.viewmodelC.openMDialogPay()">選択</button><span>${paymentDetailCode} ${paymentDetailName}</span>'
+                },
+                {
+                    headerText: 'Detail Name', key: 'paymentDetailName', dataType: 'string', hidden: true
                 },
                 {
                     headerText: "賞与明細書", key: "bonusDetailCode", dataType: "string", width: "20%",
-                    template: '<button class="c-btn-002" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${bonusDetailCode} ${bonusDetailName}</span>'
+                    template: '<button onclick="__viewContext.viewModel.viewmodelC.openMDialogBo()">選択</button><span>${bonusDetailCode} ${bonusDetailName}</span>'
                 },
+                {
+                    headerText: 'Detail Name', key: 'bonusDetailName', dataType: 'string', hidden: true
+                }
             ];
 
             self.model(new Model({ ListItems: [], GridItems: [] }));
@@ -26,6 +32,11 @@ module qmm020.c.viewmodel {
 
         start() {
             let self = this;
+            
+            // clear all data for first load
+            self.model().ListItems.removeAll();
+            self.model().GridItems.removeAll();
+            
             // get list history data
             service.getEmployeeAllotHeaderList().done(function(data: Array<IListModel>) {
                 if (data.length > 0) {
@@ -81,7 +92,7 @@ module qmm020.c.viewmodel {
                                 //update date to igGrid
                                 self.model().updateData();
                             });
-                            
+
                         }
                     }
                 });
@@ -89,8 +100,8 @@ module qmm020.c.viewmodel {
 
         openKDialog() {
         }
-
-        openMDialog() {
+        // get paymentDetailName
+        openMDialogPay() {
             let self = this, currentItemList = self.model().currentItemList();
             if (!!currentItemList) {
                 nts.uk.ui.windows.setShared('M_BASEYM', currentItemList.startYm);
@@ -103,7 +114,29 @@ module qmm020.c.viewmodel {
                             currentItemGrid.paymentDetailCode = stmtCode;
                             service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
                                 currentItemGrid.paymentDetailName = stmtName;
+                                //update date to igGrid
+                                self.model().updateData();
+                            }).fail(function(res) {
+                                alert(res);
+                            });
+                        }
+                    });
+            }
+        }
+        //get bonusDetailName
+        openMDialogBo() {
+            let self = this, currentItemList = self.model().currentItemList();
+            if (!!currentItemList) {
+                nts.uk.ui.windows.setShared('M_BASEYM', currentItemList.startYm);
 
+                nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
+                    .onClosed(function() {
+                        let currentItemGrid = self.model().currentItemGrid();
+                        if (currentItemGrid) {
+                            let stmtCode = nts.uk.ui.windows.getShared('M_RETURN');
+                            currentItemGrid.bonusDetailCode = stmtCode;
+                            service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
+                                currentItemGrid.bonusDetailName = stmtName;
                                 //update date to igGrid
                                 self.model().updateData();
                             }).fail(function(res) {
@@ -144,14 +177,19 @@ module qmm020.c.viewmodel {
                             });
                             if (item) {
                                 t.bonusDetailCode = item.bonusDetailCode;
+                                t.bonusDetailName = item.bonusDetailName;
                                 t.paymentDetailCode = item.paymentDetailCode;
+                                t.paymentDetailName = item.paymentDetailName;
                             }
                             else {
                                 t.bonusDetailCode = '';
+                                t.bonusDetailName = '';
                                 t.paymentDetailCode = '';
+                                t.paymentDetailName = '';
                             }
                         });
                         //update date to igGrid
+                        
                         self.updateData();
                     });
                 }

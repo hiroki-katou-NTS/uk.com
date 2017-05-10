@@ -8,7 +8,7 @@ module qmm020.c.service {
         insertAllotEmployeeSetting: "pr/core/allot/insertAllEmployeeSetting",
         getEmployeeDetail: "pr/core/allot/findEmployeeDetail/{0}",
         getEmployeeName: "basic/organization/employment/findallemployments",
-        getLayoutName: "pr/core/allotlayouthist/findname/{0}"
+        getLayoutName: "pr/core/allot/findcompanyallotlayoutname/{0}"
     }
     /**
      * Get list payment date processing.
@@ -105,10 +105,15 @@ module qmm020.c.service {
     }
 
     export function getAllotLayoutName(stmtCode: string): JQueryPromise<string> {
-        let dfd = $.Deferred();
-        nts.uk.request.ajax(nts.uk.text.format(paths.getLayoutName, stmtCode))
-            .done(function(resp: number) {
-                dfd.resolve(resp);
+        var dfd = $.Deferred<any>();
+        var _path = nts.uk.text.format(paths.getLayoutName, stmtCode);
+        var options = {
+            dataType: 'text',
+            contentType: 'text/plain'
+        };
+        nts.uk.request.ajax(_path, undefined, options)
+            .done(function(res: string) {
+                dfd.resolve(res);
             })
             .fail(function(res) {
                 dfd.reject(res);
