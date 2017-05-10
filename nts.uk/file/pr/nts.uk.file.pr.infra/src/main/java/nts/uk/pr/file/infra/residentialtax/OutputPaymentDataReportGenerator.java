@@ -75,9 +75,8 @@ public class OutputPaymentDataReportGenerator extends AsposeCellsReportGenerator
 	}
 
 	private String format(Double input) {
-		DecimalFormat formatter = new DecimalFormat();
+		DecimalFormat formatter = new DecimalFormat("#0");
 		DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
-		symbols.setGroupingSeparator(',');
 		formatter.setDecimalFormatSymbols(symbols);
 		
 		return formatter.format(input);

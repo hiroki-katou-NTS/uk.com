@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
@@ -49,13 +50,16 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, year,
 				query.getResidentTaxCodeList());
 		if(personResidentTaxList.size() == 0) {
-			throw new BusinessException("データがありません。");
+			throw new BusinessException(new RawErrorMessage("データがありません。"));
 		}
 		
 		CompanyDto company = residentialTaxRepo.findCompany(companyCode);
 
 		Map<String, List<PersonResitaxDto>> personResidentTaxListMap = personResidentTaxList.stream()
 				.collect(Collectors.groupingBy(PersonResitaxDto::getResidenceCode, Collectors.toList()));
+		
+		String[]  processingYearMonth = query.getProcessingYearMonth().split("/");
+		int processingYM = Integer.parseInt(processingYearMonth[0] + processingYearMonth[1]);
 
 		for (PersonResitaxDto personResidentTax : personResidentTaxList) {
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(personResidentTax.getResidenceCode());
@@ -63,7 +67,7 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 					.collect(Collectors.toList());
 			
 			List<PaymentDetailDto> paymentDetailList = residentialTaxRepo.findPaymentDetail(companyCode, personIdList,
-					PayBonusAtr.SALARY, Integer.parseInt(query.getProcessingYearMonth()), CategoryAtr.DEDUCTION, "F108");
+					PayBonusAtr.SALARY, processingYM , CategoryAtr.DEDUCTION, "F108");
 			
 			double totalValue = paymentDetailList.stream()
 	                 .mapToDouble(x->x.getValue().doubleValue())
@@ -88,6 +92,9 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 			 reportData.setNumberPeople(totalNumberPeople.get(residentialTax.getResidenceTaxCode()).toString());
 			//DBD_004 value
 			 reportData.setValue(totalPaymentAmount.get(residentialTax.getResidenceTaxCode()));
+			 //unit(円)
+			 reportData.setUnit("円");
+			 reportData.setCheckSum(false);
 			 reportDataList.add(reportData);
 		}
 		
@@ -104,6 +111,8 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 		sumReportData.setResiTaxAutonomy("総合計");
 		sumReportData.setNumberPeople(sumNumberPeople.toString());
 		sumReportData.setValue(sumPaymentAmount);
+		sumReportData.setUnit("円");
+		sumReportData.setCheckSum(true);
 		
 		reportDataList.add(sumReportData);
 		
