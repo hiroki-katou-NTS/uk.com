@@ -34,3 +34,8 @@
 .buttonaction{
 	width: 90px;
 }
+
+.labelHeader {
+	font-weight: normal;
+	background-color: #E0F59E !important;
+}

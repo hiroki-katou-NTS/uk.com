@@ -20,6 +20,8 @@ table, td, th {
 .comment-data {
 	max-width: 450px !important;
 	height: 30px;
+	overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #comment_notification {
@@ -33,8 +35,14 @@ table, td, th {
 
 .lbl_monthlyComment {
 	padding-left: 3px;
+	font-size: 1em;
 }
 
-.buttonaction{
+.buttonaction {
 	width: 90px;
+}
+
+.labelHeader {
+	font-weight: normal;
+	background-color: #E0F59E !important;
 }

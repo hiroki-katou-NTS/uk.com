@@ -176,10 +176,22 @@ module nts.uk.pr.view.qpp021.h {
                     ],
                     autoCommit: true,
                     columns: [
-                        { headerText: 'コード', dataType: 'string', key: 'empCd', width: '10%', columnCssClass: "bgIgCol" },
-                        { headerText: '名称', dataType: 'string', key: 'empName', width: '10%', columnCssClass: "bgIgCol" },
-                        { headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'monthlyComment', width: '40%', columnCssClass: "halign-left" },
-                        { headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'initialComment', width: '40%', columnCssClass: "halign-left" }
+                        {
+                            headerText: 'コード', dataType: 'string', key: 'empCd', width: '10%', columnCssClass: "bgIgCol",
+                            headerCssClass: "labelHeader"
+                        },
+                        {
+                            headerText: '名称', dataType: 'string', key: 'empName', width: '10%', columnCssClass: "bgIgCol",
+                            headerCssClass: "labelHeader"
+                        },
+                        {
+                            headerText: '今月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'monthlyComment', width: '40%',
+                            columnCssClass: "halign-left", headerCssClass: "labelHeader"
+                        },
+                        {
+                            headerText: '毎月の給与明細書に印刷する連絡事項', dataType: 'string', key: 'initialComment', width: '40%',
+                            columnCssClass: "halign-left", headerCssClass: "labelHeader"
+                        }
                     ]
                 });
             }
