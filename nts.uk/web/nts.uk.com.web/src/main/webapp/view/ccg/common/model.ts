@@ -2,7 +2,7 @@ module ccg.model {
     
     /** Transfer data from topPage to LayoutSetting */
     export interface TransferLayoutInfo {
-        topPageCode: string;
+        parentCode: string;
         layoutID: string;
         pgType: number;
     }
