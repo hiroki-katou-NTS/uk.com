@@ -17,7 +17,7 @@ module qpp014.g.viewmodel {
         processingName: any;
         accountAtr: KnockoutObservable<number>;
         accountNo: KnockoutObservable<number>;
- 
+  
         constructor(data: any) {
             let self = this;
             self.dataBankBranch = ko.observableArray([]);

@@ -40,7 +40,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			+ " AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM"
 			+ " AND d.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR"
 			+ " AND d.qstdtPaymentDetailPK.categoryATR = :CTG_ATR" + " AND d.qstdtPaymentDetailPK.itemCode = :ITEM_CD"
-			+ " AND d.value >= :VAL";
+			+ " AND d.value > :VAL";
 
 	private String SEL_11_1 = "SELECT d FROM QstdtPaymentDetail d" + " WHERE d.qstdtPaymentDetailPK.companyCode = :CCD"
 			+ " AND d.qstdtPaymentDetailPK.personId = :PID"
@@ -48,7 +48,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			+ " AND d.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR"
 			+ " AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM"
 			+ " AND d.qstdtPaymentDetailPK.categoryATR = :CTG_ATR" + " AND d.qstdtPaymentDetailPK.itemCode = :ITEM_CD"
-			+ " AND d.value >= :VAL";
+			+ " AND d.value > :VAL";
 
 	private final String SELECT_3_1 = " SELECT c FROM QstdtPaymentHeader c "
 			+ " WHERE c.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND c.qstdtPaymentHeaderPK.personId = :PID"

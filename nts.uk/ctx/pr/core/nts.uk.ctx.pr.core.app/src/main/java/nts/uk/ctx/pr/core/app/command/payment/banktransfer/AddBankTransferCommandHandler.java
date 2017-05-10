@@ -136,19 +136,23 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 						&& basicPersonBankAccountDtoObj.get().getUseSet1().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet1(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F304");
-				} else if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
+				}
+				if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet2().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet2(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F305");
-				} else if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
+				}
+				if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet3().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet3(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F306");
-				} else if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
+				}
+				if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet4().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet4(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F307");
-				} else if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
+				}
+				if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet5().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet5(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F308");
@@ -194,6 +198,8 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 					basicPersonUseSettingDtoObj.getAccountAtr(), basicPersonUseSettingDtoObj.getAccountNo(),
 					basicPersonUseSettingDtoObj.getAccountHolderKnName());
 			bankTransferRepository.add(bankTransfer);
+		} else {
+			System.out.println("PaymentDetail Object has no exist, ERROR!");
 		}
 	}
 
@@ -231,6 +237,8 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 						basicPersonUseSettingDtoObj.getAccountHolderKnName());
 				bankTransferRepository.add(bankTransfer);
 			}
+		} else {
+			System.out.println("PaymentDetail Object has no exist, ERROR!");
 		}
 	}
 }

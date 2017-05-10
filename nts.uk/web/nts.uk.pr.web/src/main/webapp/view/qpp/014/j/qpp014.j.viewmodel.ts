@@ -21,7 +21,7 @@ module qpp014.j {
         dateOfPayment: any;
         isEnable: KnockoutObservable<boolean>;
         isHidden: KnockoutObservable<boolean>;
- 
+  
         constructor() {
             let self = this;
             self.dataBankBranch = ko.observableArray([]);

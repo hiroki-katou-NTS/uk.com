@@ -8,7 +8,7 @@ module qpp014.b.viewmodel {
         data: any;
  
         constructor(data: any) {
-            let self = this;
+            let self = this; 
             self.b_stepList = [
                 { content: '.step-1' },
                 { content: '.step-2' }

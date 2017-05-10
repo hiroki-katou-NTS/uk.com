@@ -1,6 +1,6 @@
 module qpp014.a.service {
     var path = {
-        findPayDayProcessing: "pr/proto/payment/banktransfer/findPayDayProcessing/",
+        findPayDayProcessing: "pr/proto/payment/banktransfer/findPayDayProcessing",
     };
 
     export function findAll(): JQueryPromise<any> {

@@ -12,7 +12,7 @@ module qpp014.h.viewmodel {
         processingDateInJapanEmprire: any;
         processingNo: any;
         processingName: any;
-
+ 
         constructor(data: any) {
             let self = this;
             self.dataBankBranch = ko.observableArray([]);

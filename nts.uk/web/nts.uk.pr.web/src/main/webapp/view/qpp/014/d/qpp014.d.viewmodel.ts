@@ -26,7 +26,7 @@ module qpp014.d.viewmodel {
             self.d_nextScreen = ko.computed(function() {
                 //check value of D_SEL_002 to jump to screen G or H after click E_BTN_002
                 return self.d_SEL_002_selectedCode() == 2 ? 'screen_g' : 'screen_h'; 
-            });
+            }); 
             self.processingYMNotConvert = ko.observable(data.currentProcessingYm);
             self.processingYM = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
             self.d_lbl_015 = ko.observable(data.processingNo);
@@ -43,6 +43,10 @@ module qpp014.d.viewmodel {
                 //if close button, not next screen
                 if (!nts.uk.ui.windows.getShared("closeDialog")) {
                     $('#wizard').ntsWizard("next");
+                    _.delay(() => {
+                        $("#H_LST_001").igGridSelection("selectRow", 1);
+                        $("#H_LST_001").igGridSelection("clearSelection");
+                    }, 201); // hot fix by Lam Than
                 }
             });
         }
