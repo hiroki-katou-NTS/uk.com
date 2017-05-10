@@ -107,7 +107,7 @@ module qmm020.c.service {
     export function getAllotLayoutName(stmtCode: string): JQueryPromise<string> {
         let dfd = $.Deferred();
         nts.uk.request.ajax(nts.uk.text.format(paths.getLayoutName, stmtCode))
-            .done(function(resp: string) {
+            .done(function(resp: number) {
                 dfd.resolve(resp);
             })
             .fail(function(res) {

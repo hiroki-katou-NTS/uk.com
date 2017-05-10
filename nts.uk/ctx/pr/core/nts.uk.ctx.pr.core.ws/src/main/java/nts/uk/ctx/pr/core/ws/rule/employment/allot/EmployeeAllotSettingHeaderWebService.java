@@ -17,18 +17,25 @@ import nts.uk.shr.com.context.AppContexts;
 public class EmployeeAllotSettingHeaderWebService {
 	@Inject
 	private EmployeeAllotSettingHeaderFinder find;
+
 	@POST
 	@Path("findallemployeeallotheader")
-	public List<EmployeeAllotSettingHeaderDto> GetAllEmployeeAllotSettingHeader(){
-		List<EmployeeAllotSettingHeaderDto> test = this.find.getEmployeeAllotSettingHeader(AppContexts.user().companyCode());
+	public List<EmployeeAllotSettingHeaderDto> GetAllEmployeeAllotSettingHeader() {
+		List<EmployeeAllotSettingHeaderDto> test = this.find
+				.getEmployeeAllotSettingHeader(AppContexts.user().companyCode());
 		return test;
 	}
+
 	@POST
 	@Path("findallemployeeallotheaderMax")
-	public Integer getAllotHMax (){
+	public Integer getAllotHMax() {
 		String companyCode = AppContexts.user().companyCode();
-		return this.find.getAllotHMax(companyCode).get();
+		Optional<Integer> value = this.find.getAllotHMax(companyCode);
+		if (value.isPresent()) {
+			return value.get();
+		} else {
+			return -1;
+		}
 	}
-	
-	
+
 }

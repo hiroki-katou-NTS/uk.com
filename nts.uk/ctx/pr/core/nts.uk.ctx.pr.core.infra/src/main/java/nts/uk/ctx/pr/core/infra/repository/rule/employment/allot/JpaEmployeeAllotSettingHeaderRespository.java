@@ -56,7 +56,6 @@ public class JpaEmployeeAllotSettingHeaderRespository extends JpaRepository
 	public Optional<Integer> findMaxEnd(String companyCode) {
 		Optional<Integer> result = this.queryProxy().query(MAX_END, Integer.class).setParameter("companyCode", companyCode)
 				.getSingle();
-		System.out.println(result+ "------------");
 		return result;
 	}
 
