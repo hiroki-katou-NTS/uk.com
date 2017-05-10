@@ -27,7 +27,7 @@ public class CreateTitleMenuCommandHandler extends CommandHandler<CreateTitleMen
 
 	@Override
 	protected void handle(CommandHandlerContext<CreateTitleMenuCommand> context) {
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		CreateTitleMenuCommand command = context.getCommand();
 		//Check input
 		if (StringUtil.isNullOrEmpty(command.getTitleMenuCD(), true) || StringUtil.isNullOrEmpty(command.getName(), true))

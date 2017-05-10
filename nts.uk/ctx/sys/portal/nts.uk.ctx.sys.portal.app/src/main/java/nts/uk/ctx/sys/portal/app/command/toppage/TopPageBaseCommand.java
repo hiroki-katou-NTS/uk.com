@@ -20,7 +20,7 @@ public class TopPageBaseCommand {
 	public Integer languageNumber;
 	
 	public TopPage toDomain(){
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		return  TopPage.createFromJavaType(companyId,topPageCode,layoutId, topPageName, languageNumber);
 	}
 }

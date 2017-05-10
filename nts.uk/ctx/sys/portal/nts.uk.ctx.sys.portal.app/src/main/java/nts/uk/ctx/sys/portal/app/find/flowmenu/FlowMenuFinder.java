@@ -17,13 +17,13 @@ public class FlowMenuFinder {
 	private FlowMenuRepository repository ;
 	
 	public List<FlowMenuDto> getAllFlowMenu() {
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		return this.repository.findAll(companyID).stream().map(flow -> FlowMenuDto.fromDomain(flow))
 				.collect(Collectors.toList());
 	}
 	
 	public Optional<FlowMenuDto> getFlowMenu(String toppagePartID) {
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		return this.repository.findByCode(companyID, toppagePartID).map(flow -> FlowMenuDto.fromDomain(flow));
 	}
 	

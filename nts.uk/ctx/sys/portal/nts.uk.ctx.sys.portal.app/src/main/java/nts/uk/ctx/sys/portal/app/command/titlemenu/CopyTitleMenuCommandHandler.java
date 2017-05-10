@@ -23,7 +23,7 @@ public class CopyTitleMenuCommandHandler extends CommandHandler<CopyTitleMenuCom
 
 	@Override
 	protected void handle(CommandHandlerContext<CopyTitleMenuCommand> context) {
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		CopyTitleMenuCommand command = context.getCommand();
 		//Check input
 		if (StringUtil.isNullOrEmpty(command.getTargetTitleMenuCD(), true) || StringUtil.isNullOrEmpty(command.getTargetTitleMenuName(), true))

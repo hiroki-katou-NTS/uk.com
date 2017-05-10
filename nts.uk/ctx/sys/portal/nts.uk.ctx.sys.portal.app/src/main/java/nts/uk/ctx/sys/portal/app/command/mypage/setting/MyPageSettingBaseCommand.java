@@ -41,7 +41,7 @@ public class MyPageSettingBaseCommand {
 	 * @return the my page setting
 	 */
 	public MyPageSetting toDomain() {
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		return new MyPageSetting(companyId, UseDivision.valueOf(useMyPage),
 				UseDivision.valueOf(useWidget), UseDivision.valueOf(useDashboard), UseDivision.valueOf(useFlowMenu),
 				PermissionDivision.valueOf(externalUrlPermission), this.topPagePartUseSettingDto.stream().map(item -> {

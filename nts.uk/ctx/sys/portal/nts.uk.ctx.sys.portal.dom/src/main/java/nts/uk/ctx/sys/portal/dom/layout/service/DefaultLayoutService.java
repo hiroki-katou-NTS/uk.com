@@ -58,7 +58,7 @@ public class DefaultLayoutService implements LayoutService {
 		if (StringUtil.isNullOrEmpty(layoutID, true) || !isExist(layoutID))
 			return null;
 		
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		String newLayoutID = IdentifierUtil.randomUniqueId();
 		
 		// Copy Layout

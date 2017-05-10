@@ -40,7 +40,7 @@ public class RegistryPortalLayoutCommandHandler extends CommandHandler<RegistryP
 	@Override
 	protected void handle(CommandHandlerContext<RegistryPortalLayoutCommand> context) {
 		// Data
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		RegistryPortalLayoutCommand command = context.getCommand();
 		PortalLayoutCommand layoutCommand = command.getPortalLayoutCommand();
 		List<PortalPlacementCommand> placementCommands = command.getListPortalPlacementCommand();

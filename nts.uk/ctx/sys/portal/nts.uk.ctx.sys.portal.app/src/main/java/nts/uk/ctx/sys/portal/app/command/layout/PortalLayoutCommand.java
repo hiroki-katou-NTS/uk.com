@@ -27,7 +27,7 @@ public class PortalLayoutCommand {
 
 	/** Convert to Domain with given Id */
 	public Layout toDomain(String layoutID) {
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		return Layout.createFromJavaType(companyID, layoutID, this.pgType);
 	}
 

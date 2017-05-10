@@ -27,7 +27,7 @@ public class PortalTopPagePartFinder {
 	 */
 	public ActiveTopPagePartDto findAll() {
 		// Company ID
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		
 		// List TopPage Part Type
 		List<EnumConstant> listTopPagePartType = EnumAdaptor.convertToValueNameList(TopPagePartType.class);

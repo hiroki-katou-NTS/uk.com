@@ -47,7 +47,7 @@ public class PortalPlacementCommand {
 
 	/** Convert to Domain with given ID */
 	public Placement toDomain(String placementID) {
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		return Placement.createFromJavaType(
 			companyID, placementID, layoutID, topPagePartID,
 			column, row, url, width, height);

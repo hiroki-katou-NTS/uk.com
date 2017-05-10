@@ -21,7 +21,7 @@ public class TitleMenuFinder {
 	 * @return List
 	 */
 	public List<TitleMenuDto> getAllTitleMenu() {
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		return this.repository.findAll(companyID).stream().map(title -> TitleMenuDto.fromDomain(title))
 				.collect(Collectors.toList());
 	}
@@ -33,7 +33,7 @@ public class TitleMenuFinder {
 	 * @return
 	 */
 	public Optional<TitleMenuDto> getTitleMenu(String titleMenuCD) {
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		return this.repository.findByCode(companyID, titleMenuCD).map(title -> TitleMenuDto.fromDomain(title));
 	}
 	

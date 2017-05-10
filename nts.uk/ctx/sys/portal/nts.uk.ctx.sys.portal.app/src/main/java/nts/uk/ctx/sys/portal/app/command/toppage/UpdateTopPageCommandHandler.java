@@ -27,7 +27,7 @@ public class UpdateTopPageCommandHandler extends CommandHandler<UpdateTopPageCom
 	@Override
 	protected void handle(CommandHandlerContext<UpdateTopPageCommand> context) {
 		UpdateTopPageCommand command = context.getCommand();
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		Optional<TopPage> findTopPage = topPageRepository.findByCode(companyId,command.getTopPageCode());
 		//if exist top page -> update 
 		if(findTopPage.isPresent())

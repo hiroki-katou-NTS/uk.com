@@ -60,7 +60,7 @@ public class TopPageWebService extends WebService {
 	@POST
 	@Path("findAll")
 	public List<TopPageItemDto> findAll() {
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		return topPageFinder.findAll(companyId);
 	}
 
@@ -74,7 +74,7 @@ public class TopPageWebService extends WebService {
 	@POST
 	@Path("topPageDetail/{topPageCode}")
 	public TopPageDto getTopPageDetail(@PathParam("topPageCode") String topPageCode) {
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		return topPageFinder.findByCode(companyId, topPageCode, "0");
 	}
 

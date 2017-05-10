@@ -24,7 +24,7 @@ public class CopyTopPageCommandHandler extends CommandHandler<CopyTopPageCommand
 	@Override
 	protected void handle(CommandHandlerContext<CopyTopPageCommand> context) {
 		CopyTopPageCommand command = context.getCommand();
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		boolean isCheckOverWrite = command.isCheckOverwrite;
 		String copyCode = command.getCopyCode();
 		TopPage tp = command.toDomain();

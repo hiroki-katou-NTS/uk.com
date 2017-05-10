@@ -54,7 +54,7 @@ public class DefaultPlacementService implements PlacementService {
 		if (placementID.equals(null) || !isExist(placementID))
 			return null;
 		
-		String companyID = AppContexts.user().companyID();
+		String companyID = AppContexts.user().companyId();
 		String newPlacementID = IdentifierUtil.randomUniqueId();
 		Placement placement = placementRepository.find(placementID).get();
 		Optional<ExternalUrl> externalUrl = placement.getExternalUrl();

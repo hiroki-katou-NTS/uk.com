@@ -23,6 +23,6 @@ public class CreateTitleMenuCommand {
 	private String layoutID;
 
 	public TitleMenu toDomain() {
-		return TitleMenu.createFromJavaType(AppContexts.user().companyID(), this.titleMenuCD, this.name, this.layoutID);
+		return TitleMenu.createFromJavaType(AppContexts.user().companyId(), this.titleMenuCD, this.name, this.layoutID);
 	}
 }

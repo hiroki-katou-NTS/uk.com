@@ -32,7 +32,7 @@ public class RegisterTopPageCommandHandler extends CommandHandler<RegisterTopPag
 	@Override
 	protected void handle(CommandHandlerContext<RegisterTopPageCommand> context) {
 		RegisterTopPageCommand command = context.getCommand();
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		String topPageCode = command.getTopPageCode();
 		Optional<TopPage> findTopPage = topPageRepository.findByCode(companyId, topPageCode);
 		if (findTopPage.isPresent()) {

@@ -28,7 +28,7 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 	@Override
 	protected void handle(CommandHandlerContext<DeleteTopPageCommand> context) {
 		DeleteTopPageCommand command = context.getCommand();
-		String companyId = AppContexts.user().companyID();
+		String companyId = AppContexts.user().companyId();
 		topPageService.removeTopPage(command.getTopPageCode(), companyId);
 	}
 
