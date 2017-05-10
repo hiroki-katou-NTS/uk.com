@@ -14,7 +14,6 @@ import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author LamDT 
@@ -47,7 +46,7 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 		for (Placement placement : placements) {
 			placementDtos.add(buildPlacementDto(placement));
 		}
-		return placementDtos;	
+		return placementDtos;
 	}
 
 	/** Create PlacementDto from Placement Domain
@@ -61,7 +60,7 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 			// ExternalUrl Part
 			ExternalUrl externalUrl = placement.getExternalUrl().get();
 			return new PlacementDto(
-				placement.getCompanyID(), placement.getPlacementID(), placement.getLayoutID(),
+				placement.getPlacementID(), placement.getLayoutID(),
 				placement.getColumn().v(), placement.getRow().v(),
 				fromExternalUrl(externalUrl));
 		}
@@ -70,7 +69,7 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 			Optional<TopPagePart> topPagePart = topPagePartRepository.find(placement.getToppagePartID());
 			if (topPagePart.isPresent())
 				return new PlacementDto(
-					placement.getCompanyID(), placement.getPlacementID(), placement.getLayoutID(),
+					placement.getPlacementID(), placement.getLayoutID(),
 					placement.getColumn().v(), placement.getRow().v(),
 					fromTopPagePart(topPagePart.get()));
 			return null;
@@ -85,7 +84,6 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 	@Override
 	public PlacementPartDto fromTopPagePart(TopPagePart topPagePart) {
 		return new PlacementPartDto(
-			topPagePart.getCompanyID(),
 			topPagePart.getWidth().v(), topPagePart.getHeight().v(), topPagePart.getToppagePartID(),
 			topPagePart.getCode().v(), topPagePart.getName().v(), topPagePart.getType().value,
 			null
@@ -99,9 +97,8 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 	 */
 	@Override
 	public PlacementPartDto fromExternalUrl(ExternalUrl externalUrl) {
-		String companyID = AppContexts.user().companyID();
 		return new PlacementPartDto(
-			companyID, externalUrl.getWidth().v(), externalUrl.getHeight().v(),
+			externalUrl.getWidth().v(), externalUrl.getHeight().v(),
 			null, null, null, null,
 			externalUrl.getUrl().v()
 		);

@@ -7,9 +7,6 @@ import lombok.Value;
  */
 @Value
 public class PlacementDto {
-	
-	/** Company ID */
-	private String companyID;
 
 	/** Placement GUID */
 	private String placementID;

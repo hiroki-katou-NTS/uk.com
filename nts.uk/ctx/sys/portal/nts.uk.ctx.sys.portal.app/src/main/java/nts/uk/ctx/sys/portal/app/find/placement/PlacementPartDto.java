@@ -7,9 +7,6 @@ import lombok.Value;
  */
 @Value
 public class PlacementPartDto {
-	
-	/** Company ID */
-	private String companyID;
 
 	/** Width */
 	private int width;
