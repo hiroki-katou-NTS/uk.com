@@ -1,6 +1,3 @@
-/**
- * author hieult
- */
 package nts.uk.ctx.sys.portal.infra.repository.titlemenu;
 
 import java.util.List;
@@ -13,6 +10,9 @@ import nts.uk.ctx.sys.portal.infra.entity.titlemenu.CcgmtTitleMenu;
 import nts.uk.ctx.sys.portal.infra.entity.titlemenu.CcgmtTitleMenuPK;
 
 @Stateless
+/**
+ * author hieult
+ */
 public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRepository{
 	
 	private final String SELECT= "SELECT c FROM CcgmtTitleMenu c";
@@ -72,6 +72,7 @@ public class JpaTitleMenuRepository extends JpaRepository implements TitleMenuRe
 	@Override
 	public void remove(String companyID, String titleMenuCD) {
 		this.commandProxy().remove(CcgmtTitleMenu.class, new CcgmtTitleMenuPK(companyID, titleMenuCD));
+		this.getEntityManager().flush();
 	}
 
 	private TitleMenu toDomain(CcgmtTitleMenu entity) {

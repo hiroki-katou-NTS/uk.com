@@ -6,6 +6,6 @@ public interface TitleMenuService {
 	
 	void deleteTitleMenu(String companyID, String titleMenuCD);
 	
-	void copyTitleMenu(String companyID, String sourceTitleMenuCD, String targetTitleMenuCD, boolean overwrite);
+	void copyTitleMenu(String companyID, String sourceTitleMenuCD, String targetTitleMenuCD, String targetTitleMenuName, Boolean overwrite);
 	
 }

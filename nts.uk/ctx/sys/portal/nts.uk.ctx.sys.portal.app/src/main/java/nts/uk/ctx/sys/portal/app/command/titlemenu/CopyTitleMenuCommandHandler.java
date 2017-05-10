@@ -4,8 +4,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.titlemenu.service.TitleMenuService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -23,8 +25,10 @@ public class CopyTitleMenuCommandHandler extends CommandHandler<CopyTitleMenuCom
 	protected void handle(CommandHandlerContext<CopyTitleMenuCommand> context) {
 		String companyID = AppContexts.user().companyID();
 		CopyTitleMenuCommand command = context.getCommand();
-		
-		titleMenuService.copyTitleMenu(companyID, command.getSourceTitleMenuCD(), command.getTargetTitleMenuCD(), command.getOverwrite());
+		//Check input
+		if (StringUtil.isNullOrEmpty(command.getTargetTitleMenuCD(), true) || StringUtil.isNullOrEmpty(command.getTargetTitleMenuName(), true))
+			throw new BusinessException("");
+		titleMenuService.copyTitleMenu(companyID, command.getSourceTitleMenuCD(), command.getTargetTitleMenuCD(), command.getTargetTitleMenuName(), command.getOverwrite());
 	}
 
 	

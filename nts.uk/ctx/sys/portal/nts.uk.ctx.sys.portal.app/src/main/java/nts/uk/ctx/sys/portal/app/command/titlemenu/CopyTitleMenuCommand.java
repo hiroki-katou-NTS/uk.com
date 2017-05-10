@@ -18,6 +18,8 @@ public class CopyTitleMenuCommand {
 	
 	private String targetTitleMenuCD;
 	
+	private String targetTitleMenuName;
+	
 	private Boolean overwrite;
 	
 }

@@ -55,8 +55,8 @@ public class TitleMenuWebservice extends WebService {
 
 	@POST
 	@Path("create")
-	public Boolean createTitleMenu(CreateTitleMenuCommand command) {
-		return this.createTitleMenu.handle(command);
+	public void createTitleMenu(CreateTitleMenuCommand command) {
+		this.createTitleMenu.handle(command);
 	}
 
 	@POST

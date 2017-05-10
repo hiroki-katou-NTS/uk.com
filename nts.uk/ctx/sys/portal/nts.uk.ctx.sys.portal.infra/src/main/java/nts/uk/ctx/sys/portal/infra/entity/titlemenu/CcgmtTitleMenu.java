@@ -1,6 +1,3 @@
-/**
- * author hieult
- */
 package nts.uk.ctx.sys.portal.infra.entity.titlemenu;
 
 import java.io.Serializable;
@@ -18,6 +15,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "CCGMT_TITLEMENU")
 @AllArgsConstructor
 @NoArgsConstructor
+
+/**
+ * author hieult
+ */
 public class CcgmtTitleMenu extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

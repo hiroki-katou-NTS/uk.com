@@ -11,7 +11,12 @@ import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenu;
 import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuRepository;
 
 @Stateless
-public class DefaultTitleMenuService implements TitleMenuService {
+
+/**
+ * author hieult
+ */
+
+public class DefaultTitleMenuService implements TitleMenuService  {
 
 	@Inject
 	TitleMenuRepository titleMenuRepository;
@@ -32,13 +37,12 @@ public class DefaultTitleMenuService implements TitleMenuService {
 	}
 
 	@Override
-	public void copyTitleMenu(String companyID, String sourceTitleMenuCD, String targetTitleMenuCD, boolean overwrite) {
+	public void copyTitleMenu(String companyID, String sourceTitleMenuCD, String targetTitleMenuCD, String targetTitleMenuName, Boolean overwrite) {
 		TitleMenu oldTitleMenu = titleMenuRepository.findByCode(companyID, sourceTitleMenuCD).get();
 		
 		if (isExist(companyID, targetTitleMenuCD)) {
 			if (overwrite)
-				// Delete old TitleMenu & Layout
-				deleteTitleMenu(companyID, oldTitleMenu.getTitleMenuCD().v());
+				titleMenuRepository.remove(companyID, targetTitleMenuCD);
 			else
 				throw new BusinessException("Msg_3");
 		}
@@ -47,9 +51,9 @@ public class DefaultTitleMenuService implements TitleMenuService {
 		String newLayoutId = layoutService.copyTitleMenuLayout(oldTitleMenu.getLayoutID());
 		// Create new TitleMenu				
 		TitleMenu newTitleMenu = TitleMenu.createFromJavaType(
-				oldTitleMenu.getCompanyID(), oldTitleMenu.getTitleMenuCD().v(),
-				oldTitleMenu.getName().v(), newLayoutId);
+				oldTitleMenu.getCompanyID(), targetTitleMenuCD,
+				targetTitleMenuName, newLayoutId);
 		titleMenuRepository.add(newTitleMenu);
 	}
-
+	
 }
