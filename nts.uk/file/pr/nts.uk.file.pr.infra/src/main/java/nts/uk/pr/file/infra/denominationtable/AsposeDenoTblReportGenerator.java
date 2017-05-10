@@ -62,6 +62,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 
 	/** The Constant COLUMN_INDEX. */
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+	private static final int LAST_IN_COLUMN_INDEX = 11;
 
 	/** The Constant FIRST_ROW_INDEX. */
 	private static final int FIRST_ROW_INDEX = 9;
@@ -131,7 +132,6 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			printProcess.depStack = new Stack<>();
 			printProcess.tempDenomination = new HashMap<>();
 			printProcess.tempAccumulate = 0;
-			printProcess.prevEmp = null;
 			printProcess.members = 0;
 			
 			// Fill Data
@@ -139,10 +139,8 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			
 			reportContext.getDesigner().setWorkbook(workbook);
 			reportContext.processDesigner();
-			reportContext.saveAsPdf(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
-			
-			// Save report as PDF file
-			reportContext.getWorkbook().save("D:/SalaryTableReport.xlsx");
+			reportContext.saveAsPdf(this.createNewFile(generatorContext,
+					this.getReportName(REPORT_FILE_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -223,20 +221,16 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			String empDepPath = empDep.getDepPath();
 			DepartmentData topInStack = printProcess.depStack.pop();
 			// Cumulate printed Denomination into Stack
-			if (!empDepPath.startsWith(topInStack.getDepPath())) {
-				// print Last Accumulated DepartmentData
-				this.printAccByHierarchy(printProcess, topInStack);
-			}
-			// if(topInStack.getDepPath().equals(empDepPath)){
-			// //this.calculateDenomination(prevDepFromStack, topInStack);
-			// this.printAccumulated(cells, rowIndex, topInStack);
-			// }
-			else {
+			
+			if (empDepPath.startsWith(topInStack.getDepPath())) {
 				// Calculate Accumulation
 				this.calculateDenomination(empDep, topInStack);
 				this.printAccByHierarchy(printProcess, topInStack);
 			}
-			//empDep = topInStack;
+			else {
+				// print Last Accumulated DepartmentData
+				this.printAccByHierarchy(printProcess, topInStack);
+			}
 			printProcess.prevEmp.setDepartmentData(topInStack);
 		}
 	}
@@ -413,7 +407,6 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 		
 		if (currentRow % ROWS_PER_PAGE == 0) {
 			this.createEndRowRange(printProcess);
-			//currentRow += BLANK_ROWS;
 			printProcess.rowIndex += BLANK_ROWS;
 			this.createTitle(printProcess);
 		}
@@ -605,16 +598,15 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 		DenoTableReportQuery query = printProcess.query;
 		Cells cells = printProcess.cells;
 		int rowIndex = printProcess.rowIndex;
-//		int members = printProcess.members;
 		int members = printProcess.prevEmp.getDepartmentData().getNumberOfEmp();
 		if (query.getIsPrintTotalOfDepartment()) {
 			// Fill Data to cells
-			cells.get(rowIndex, COLUMN_INDEX[0]).setValue("部門計" + SPACES1 + members + "人");
+			cells.get(rowIndex, COLUMN_INDEX[FIRST_COLUMN_INDEX]).setValue("部門計" + SPACES1 + members + "人");
 			for (Denomination d : Denomination.values()) {
 				int columnIndex = d.value + 1;
 				cells.get(rowIndex, columnIndex).setValue(printProcess.tempDenomination.get(d) + "枚");
 			}
-			cells.get(rowIndex, COLUMN_INDEX[11]).setValue(printProcess.tempAccumulate);
+			cells.get(rowIndex, COLUMN_INDEX[LAST_IN_COLUMN_INDEX]).setValue(printProcess.tempAccumulate);
 			
 			// Style for cells
 			this.setCumCellStyle(printProcess);
@@ -671,7 +663,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 				int columnIndex = d.value + 1;
 				cells.get(rowIndex, columnIndex).setValue(denomination.get(d) + "枚");
 			}
-			cells.get(rowIndex, COLUMN_INDEX[11]).setValue(amount);
+			cells.get(rowIndex, COLUMN_INDEX[LAST_IN_COLUMN_INDEX]).setValue(amount);
 			// Set Style for Cells
 
 			// Style for cells
@@ -700,7 +692,8 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			int columnIndex = d.value + 1;
 			cells.get(rowIndex, columnIndex).setValue(depToPrint.getDenomination().get(d) + "枚");
 		}
-		cells.get(rowIndex, COLUMN_INDEX[11]).setValue(depToPrint.getAccumulatedPayment());
+		cells.get(rowIndex, COLUMN_INDEX[LAST_IN_COLUMN_INDEX])
+		.setValue(depToPrint.getAccumulatedPayment());
 		
 		// Style for cells
 		this.setCumCellStyle(printProcess);
@@ -784,19 +777,23 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 				int columnIndex = d.value + 1;
 				cells.get(rowIndex, columnIndex).setValue(deno.get(d) + "枚");
 			}
-			cells.get(rowIndex, COLUMN_INDEX[11]).setValue(currentEmp.getPaymentAmount());
+			cells.get(rowIndex, COLUMN_INDEX[LAST_IN_COLUMN_INDEX]).setValue(currentEmp.getPaymentAmount());
 
 			// Style for cells
 			for (int i = FIRST_COLUMN_INDEX; i < LAST_COLUMN_INDEX; i++) {
 				Cell cell = cells.get(rowIndex, i);
-				// this.setEmpStyle(cell);
 				StyleModel stylemodel = new StyleModel();
 				stylemodel.borderType = CellsBorderType.CommonBorder;
 				stylemodel.backgroundColor = isGreen.getValue() ? LIGHT_GREEN_COLOR : null;
 				this.setCellStyle1(cell, stylemodel);
 				createLeftRightBorder(printProcess);
 			}
-			isGreen.setValue(switchColor(isGreen.getValue()));
+			//isGreen.setValue(this.switchColor(isGreen.getValue()));
+			if (isGreen.booleanValue()) {
+				isGreen.setValue(false);
+			} else {
+				isGreen.setValue(true);
+			}
 			printProcess.rowIndex ++;
 		}
 		// Breaking Page
@@ -824,7 +821,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			denoCell.setValue(deno.description);
 		}
 		// Set Header for Amount Column
-		Cell amountCell = cells.get(rowIndex, COLUMN_INDEX[11]);
+		Cell amountCell = cells.get(rowIndex, COLUMN_INDEX[LAST_IN_COLUMN_INDEX]);
 		amountCell.setValue("金額");
 
 		// Set Style for Header Row

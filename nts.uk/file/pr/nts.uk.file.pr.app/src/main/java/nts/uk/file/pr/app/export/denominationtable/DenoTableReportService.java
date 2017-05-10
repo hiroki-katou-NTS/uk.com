@@ -56,7 +56,7 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 	@Override
 	protected void handle(ExportServiceContext<DenoTableReportQuery> context) {
 
-		// Get Query
+		// GET QUERY
 		DenoTableReportQuery query = context.getQuery();	
 		String[] personIds = { "99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002",
 				"99900000-0000-0000-0000-000000000003", "99900000-0000-0000-0000-000000000004",
@@ -65,7 +65,7 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 				"99900000-0000-0000-0000-000000000009", "99900000-0000-0000-0000-000000000010"};
 			query.setPIdList(Arrays.asList(personIds));
 
-		// Query data.
+		// QUERY DATA
 		List<EmployeeData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
 		
 		List<Integer> selectedLevels = Arrays.asList(1, 2, 3, 4, 5, 6);
@@ -88,15 +88,15 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 			query = query1;
 		}
 		
-		// Division Denomination
+		// DIVISION DENOMINATION
 		items.stream().forEach(emp -> {
-			emp.setDenomination(divisionDeno(emp.getPaymentAmount(), context.getQuery()));
+			emp.setDenomination(this.divisionDeno(emp.getPaymentAmount(), context.getQuery()));
 		});
 
 		//  CONVERT YEARMONTH JAPANESE 
         StringBuilder japanYM = new StringBuilder("【処理年月：");
         japanYM.append(convertYearMonthJP(query.getYearMonth()));
-		// Create header object.
+		// CREATE HEADER OBJECT
 		DenoTableHeaderData headerData = DenoTableHeaderData.builder()
 				.departmentInfo("【部門： A部門～C部門（3部門）】")
 				.categoryInfo("【分類： 正社員～アルバイト（５分類）】")
@@ -104,13 +104,13 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 				.targetYearMonth(japanYM.toString())
 				.build();
 
-		// Create Data Source
+		// CREATE DATA SOURCE
 		val dataSource = DenominationTableData.builder()
 				.salaryChartHeader(headerData)
 				.employeeList(items)
 				.build();
 
-		// Call generator.
+		// GENERATE REPORT
 		this.generator.generate(context.getGeneratorContext(), dataSource, query);
 	}
 	
@@ -207,7 +207,7 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 					.departmentData(depData.get(i))
 					.denomination(null)
 					.build();
-			emp.setDenomination(divisionDeno(emp.getPaymentAmount(), query));
+			emp.setDenomination(this.divisionDeno(emp.getPaymentAmount(), query));
 			empList.add(emp);
 			
 			// Emp 1
@@ -218,7 +218,7 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 					.departmentData(depData.get(i))
 					.denomination(null)
 					.build();
-			emp1.setDenomination(divisionDeno(emp1.getPaymentAmount(), query));
+			emp1.setDenomination(this.divisionDeno(emp1.getPaymentAmount(), query));
 			empList.add(emp1);
 		}	
 		return empList;

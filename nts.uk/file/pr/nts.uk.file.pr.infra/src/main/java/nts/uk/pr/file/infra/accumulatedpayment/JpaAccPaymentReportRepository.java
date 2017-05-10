@@ -266,7 +266,6 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		Map<String, List<Object[]>> userMap = itemList.stream().collect(Collectors.groupingBy(item -> 
 		((PbsmtPersonBase) item[PERSON_BASE_TBL_INDEX]).getPid()));
 		for (Map.Entry<String, List<Object[]>> entry : userMap.entrySet()) {
-//			String pId = entry.getKey();
 			List<Object[]> detailData = entry.getValue();
 			// Taxable Amount
 			ItemDetails taxAmountDetails = this.setDetailsTaxAmount();
@@ -280,7 +279,8 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			ItemDetails withholTaxDetails = this.setDetailsWithholdTax();
 			Double withHoldingTax = this.sumValues(detailData, withholTaxDetails);
 			
-			String empCode = ((PclmtPersonEmpContract) detailData.get(0)[PERSON_EMP_CONTRACT_TBL_INDEX]).empCd;
+			String empCode = ((PclmtPersonEmpContract) detailData.get(0)
+					[PERSON_EMP_CONTRACT_TBL_INDEX]).empCd;
 			String empName = ((CmnmtEmp) detailData.get(0)[EMP_TBL_INDEX]).employmentName;
 			PcpmtPersonCom person = (PcpmtPersonCom) detailData.get(0)[PERSON_COM_TBL_INDEX];
 			GeneralDate endDatePersonTem = person.getEndD();
@@ -406,7 +406,7 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 				.setParameter("YEAR_k", general.query.getTargetYear())
 				.setParameter("REGULAR_COM", REGULAR_COM);// REGULAR_COM
 		this.setGeneralParams(general);
-		CollectionUtil.split(pIdList, 1000, subList ->
+		CollectionUtil.split(pIdList, ONE_THOUSAND, subList ->
 			masterResultList.addAll(general.typedQuery.setParameter("PIDs", subList).getResultList())
 		);
 		return masterResultList;

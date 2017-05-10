@@ -77,7 +77,8 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 * nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentDataSource)
 	 */
 	@Override
-	public void generate(FileGeneratorContext generatorContext, AccPaymentDataSource dataSource, AccPaymentReportQuery query) {
+	public void generate(FileGeneratorContext generatorContext, 
+			AccPaymentDataSource dataSource, AccPaymentReportQuery query) {
 		List<AccPaymentItemData> accumulatedPaymentList = dataSource.getAccPaymentItemData();
 		try {
 			val designer = this.createContext(TEMPLATE_FILE);
@@ -101,7 +102,8 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			int rangeRows = AMOUNT_PER_PAGE;
 			while(amountEmployee > 0){
 				int endIndex = startIndex + AMOUNT_PER_PAGE;
-				List<AccPaymentItemData> subList = subAccList(accumulatedPaymentList, startIndex, endIndex);				
+				List<AccPaymentItemData> subList = 
+						subAccList(accumulatedPaymentList, startIndex, endIndex);				
 				
 				// Create ranges 
 				if(amountEmployee < AMOUNT_PER_PAGE){
@@ -128,7 +130,8 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			}			
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
-			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
+			designer.saveAsExcel(this.createNewFile(generatorContext,
+					this.getReportName(REPORT_FILE_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

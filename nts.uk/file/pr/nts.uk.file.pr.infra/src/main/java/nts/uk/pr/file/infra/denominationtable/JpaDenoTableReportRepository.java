@@ -35,66 +35,26 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 	private static final int ONE_THOUSAND = 1000;
 	private static final int ONE = 1;
 	private static final int VALUE_0 = 0;
-//	private static final int SPARE_PAY_ATR = 0;
 	private static final String ITEM_CD_F304 = "F304";
 	private static final String ITEM_CD_F305 = "F305";
 	private static final String ITEM_CD_F306 = "F306";
 	private static final String ITEM_CD_F307 = "F307";
 	private static final String ITEM_CD_F308 = "F308";
-//	private static final int PAYMENT_DETAIL_TBL_INDEX = 5;
-//	private static final int PERSON_BANK_ACC_TBL_INDEX = 4;
-//	private static final int DEP_TBL_INDEX = 3;
-//	private static final int DEP_REGL_TBL_INDEX = 2;
-//	private static final int PERSON_COM_TBL_INDEX = 1;
-//	private static final int PERSON_BASE_TBL_INDEX = 0;
-	
-	
-//	private static final String CHECK_AT_PRINTING_QUERY = "SELECT h, ba, pd "
-//			+ "FROM QstdtPaymentHeader h "
-//			+ "LEFT JOIN PbamtPersonBankAccount ba "
-//			+ "ON h.qstdtPaymentHeaderPK.companyCode = :CCD "
-//			+ "AND h.qstdtPaymentHeaderPK.personId IN :PIDs "
-//			+ "AND h.qstdtPaymentHeaderPK.processingYM = :ProcessingYM "
-//			+ "AND h.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR "//0
-//			+ "AND ba.pbamtPersonBankAccountPK.companyCode = h.qstdtPaymentHeaderPK.companyCode "
-//			+ "AND ba.pbamtPersonBankAccountPK.personId = h.qstdtPaymentHeaderPK.personId "
-//			+ "LEFT JOIN QstdtPaymentDetail pd "
-//			+ "ON pd.qstdtPaymentDetailPK.companyCode = h.qstdtPaymentHeaderPK.companyCode "
-//			+ "AND pd.qstdtPaymentDetailPK.personId = h.qstdtPaymentHeaderPK.personId "
-//			+ "AND pd.qstdtPaymentDetailPK.processingYM = h.qstdtPaymentHeaderPK.processingYM "
-//			+ "AND pd.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//0
-//			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "//4
-//			+ "AND pd.value != :VALUE ";//0
-			
+	private static final int EMP_CODE_INDEX = 1;
+	private static final int EMP_NAME_INDEX = 2;
+	private static final int DEP_CODE_INDEX = 3;
+	private static final int DEP_NAME_INDEX = 4;
+	private static final int DEP_PATH_INDEX = 5;
+	private static final int PAYMENT_AMOUNT_INDEX = 6;
+	private static final int EMP_PER_DEP = 7;
+	private static final int LETTERS_PER_LEVEL_PATH = 3;
 	private static final String PAYMENT_HEADER_QUERY = "SELECT h "
 			+ "FROM QstdtPaymentHeader h "
 			+ "WHERE h.qstdtPaymentHeaderPK.companyCode = :CCD "
 			+ "AND h.qstdtPaymentHeaderPK.personId in :PIDs "
 			+ "AND h.qstdtPaymentHeaderPK.processingYM = :ProcessingYM "
-			+ "AND h.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR ";//0
-//	private static final String PERSON_BANK_ACC_QUERY = "SELECT ba "
-//			+ "FROM PbamtPersonBankAccount ba "
-//			+ "WHERE ba.pbamtPersonBankAccountPK.companyCode = :CCD "
-//			+ "AND ba.pbamtPersonBankAccountPK.personId IN :PIDs "
-//			+ "AND ((ba.useSet1 = :ONE "
-//			+ "AND ba.paymentMethod1 = :ONE) "
-//			+ "OR (ba.useSet2 = :ONE "
-//			+ "AND ba.paymentMethod2 = :ONE) "
-//			+ "OR (ba.useSet3 = :ONE "
-//			+ "AND ba.paymentMethod3 = :ONE) "
-//			+ "OR (ba.useSet4 = :ONE "
-//			+ "AND ba.paymentMethod4 = :ONE) "
-//			+ "OR (ba.useSet5 = :ONE "
-//			+ "AND ba.paymentMethod5 = :ONE) ";
-//	private static final String PAYMENT_DETAIL_QUERY = "SELECT pd "
-//			+ "FROM QstdtPaymentDetail pd "
-//			+ "WHERE pd.qstdtPaymentDetailPK.companyCode = :CCD "
-//			+ "AND pd.qstdtPaymentDetailPK.personId in :PIDs "
-//			+ "AND pd.qstdtPaymentDetailPK.processingYM = :ProcessingYM "
-//			+ "AND pd.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//0
-//			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "//4
-//			+ "AND pd.value != :VALUE "
-//			+ "";//0
+			+ "AND h.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR ";
+
 	private static final String BANK_ACC_JOIN_PAYMENT_DETAIL_QUERY = "SELECT ba, pd "
 			+ "FROM PbamtPersonBankAccount ba, "
 			+ "QstdtPaymentDetail pd "
@@ -108,50 +68,24 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 			+ "AND pd.qstdtPaymentDetailPK.companyCode = ba.pbamtPersonBankAccountPK.companyCode "
 			+ "AND pd.qstdtPaymentDetailPK.personId = ba.pbamtPersonBankAccountPK.personId "
 			+ "AND pd.qstdtPaymentDetailPK.processingYM = :ProcessingYM "
-			+ "AND pd.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "//0
-			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "//4
+			+ "AND pd.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "
+			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "
 			+ "AND pd.value != :VALUE "
-			+ "AND ((ba.useSet1 = :ONE AND ba.partialPaySet1 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F304) "
-			+ "OR (ba.useSet2 = :ONE AND ba.partialPaySet2 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F305) "
-			+ "OR (ba.useSet3 = :ONE AND ba.partialPaySet3 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F306) "
-			+ "OR (ba.useSet4 = :ONE AND ba.partialPaySet4 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F307) "
-			+ "OR (ba.useSet5 = :ONE AND ba.partialPaySet5 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F308)) "
+			+ "AND ((ba.useSet1 = :ONE AND ba.partialPaySet1 = :ONE "
+			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F304) "
+			+ "OR (ba.useSet2 = :ONE AND ba.partialPaySet2 = :ONE "
+			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F305) "
+			+ "OR (ba.useSet3 = :ONE AND ba.partialPaySet3 = :ONE "
+			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F306) "
+			+ "OR (ba.useSet4 = :ONE AND ba.partialPaySet4 = :ONE "
+			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F307) "
+			+ "OR (ba.useSet5 = :ONE AND ba.partialPaySet5 = :ONE "
+			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F308)) "
 			+ "";
 	
-//	private static final String QUERY_STRING = "SELECT pb, pc, pdr, d, ba, pd "
-//			+ "FROM PbsmtPersonBase pb "
-//			+ "LEFT JOIN PcpmtPersonCom pc "
-//			+ "ON pb.pid IN :PIDs "
-//			+ "AND pc.pcpmtPersonComPK.ccd = :CCD "
-//			+ "AND pc.pcpmtPersonComPK.pid = pb.pid "
-//			+ "LEFT JOIN PogmtPersonDepRgl pdr "
-//			+ "ON pdr.pogmtPersonDepRglPK.ccd = :CCD "
-//			+ "AND pdr.pogmtPersonDepRglPK.pid = pb.pid "
-//			+ "AND pdr.strD >= :BASE_YMD "
-//			+ "AND pdr.endD <= :BASE_YMD "
-//			+ "LEFT JOIN CmnmtDep d "
-//			+ "ON d.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd "
-//			+ "AND d.startDate >= :BASE_YMD "
-//			+ "AND d.endDate <= :BASE_YMD "
-//			+ "AND d.cmnmtDepPK.departmentCode = pdr.depcd "
-//			+ "LEFT JOIN PbamtPersonBankAccount ba "
-//			+ "ON ba.pbamtPersonBankAccountPK.companyCode = d.cmnmtDepPK.companyCode "
-//			+ "AND ba.pbamtPersonBankAccountPK.personId = pb.pid "
-//			+ "AND ba.startYearMonth >= :BASE_YM "
-//			+ "AND ba.endYearMonth <= :BASE_YM "
-//			+ "LEFT JOIN QstdtPaymentDetail pd "
-//			+ "ON pd.qstdtPaymentDetailPK.companyCode = pc.pcpmtPersonComPK.ccd "
-//			+ "AND pd.qstdtPaymentDetailPK.personId = pc.pcpmtPersonComPK.pid "
-//			+ "AND pd.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "
-//			+ "AND pd.qstdtPaymentDetailPK.processingYM = :ProcessingYM "
-//			+ "AND pd.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR "//0
-//			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "//3 (NOT 4)
-//			+ "";
-	
 	private static final String QUERY_STRING = "SELECT pb.pid, pc.scd, pb.nameB, "
-//			+ "d.cmnmtDepPK.departmentCode, d.depName, "
 			+ "pdr.depcd, d.depName, "
-			+ "d.hierarchyId, SUM(pd.value), COUNT(pdr.pogmtPersonDepRglPK.pid)  "// missing dep info
+			+ "d.hierarchyId, SUM(pd.value), COUNT(pdr.pogmtPersonDepRglPK.pid)  "
 			+ "FROM PbsmtPersonBase pb "
 			+ "LEFT JOIN PcpmtPersonCom pc "
 			+ "ON pc.pcpmtPersonComPK.pid = pb.pid "
@@ -201,12 +135,10 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 			if (CollectionUtil.isEmpty(checkingResultList)) {
 				throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 			}
-			else {
-				// Get Master Result List
-				masterResultList = this.getMasterResultList(companyCode, query);
-				if (CollectionUtil.isEmpty(checkingResultList)) {
-					throw new BusinessException(new RawErrorMessage("対象データがありません。"));
-				}
+			// Get Master Result List
+			masterResultList = this.getMasterResultList(companyCode, query);
+			if (CollectionUtil.isEmpty(checkingResultList)) {
+				throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 			}
 		}
 		
@@ -281,15 +213,15 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 		Iterator<Object[]> itemItr = resultList.iterator();
 		while (itemItr.hasNext()) {
 			Object[] objItr = itemItr.next();
-			String empCode = (String) objItr[1];
-			String empName = (String) objItr[2];
-			BigDecimal sumValues = (BigDecimal) objItr[6];
+			String empCode = (String) objItr[EMP_CODE_INDEX];
+			String empName = (String) objItr[EMP_NAME_INDEX];
+			BigDecimal sumValues = (BigDecimal) objItr[PAYMENT_AMOUNT_INDEX];
 			Double paymentAmount = sumValues.doubleValue();
-			String depCode = (String) objItr[3];
-			String depName = (String) objItr[4];
-			String depPath = (String) objItr[5];
-			int depLevel = depPath.length() / 3;
-			Long peopleInDep = (Long) objItr[7];
+			String depCode = (String) objItr[DEP_CODE_INDEX];
+			String depName = (String) objItr[DEP_NAME_INDEX];
+			String depPath = (String) objItr[DEP_PATH_INDEX];
+			int depLevel = depPath.length() / LETTERS_PER_LEVEL_PATH;
+			Long peopleInDep = (Long) objItr[EMP_PER_DEP];
 			DepartmentData depData = DepartmentData.builder()
 					.depCode(depCode)
 					.depName(depName)

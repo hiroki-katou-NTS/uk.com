@@ -69,17 +69,17 @@ module qpp009.a.viewmodel {
             
             if(self.detailItemsSetting().isPrintDepHierarchy() 
             && self.detailItemsSetting().selectedLevels().length > 5) {
-                $('#hierarchy-content').ntsError('set', 'chon nhieu hon 5 phat');
+                $('#hierarchy-content').ntsError('set', '部門階層が正しく指定されていません。');
                 hasError = true;
             }
             
             if(!self.detailItemsSetting().isPrintDepHierarchy() && self.printSetting().selectedBreakPageCode() == 4) {
-                $('#specify-break-page-select').ntsError('set', 'unselected hierarchical accumulation');
+                $('#specify-break-page-select').ntsError('set', '設定が正しくありません。');
                 hasError = true;
             }
             
             if(self.detailItemsSetting().selectedLevels().indexOf(self.printSetting().selectedBreakPageHierarchyCode()) < 0) {
-                $('#specify-break-page-hierarchy-select').ntsError('set', 'seledted hierarchy is not specified ');
+                $('#specify-break-page-hierarchy-select').ntsError('set', '設定が正しくありません。');
                 hasError = true;
                 
             }

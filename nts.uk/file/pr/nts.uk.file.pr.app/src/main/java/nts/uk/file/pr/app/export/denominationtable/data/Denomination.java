@@ -61,8 +61,6 @@ public enum Denomination {
 		this.description = description;
 	}
 	
-//	public abstract String desc();
-	
 	/**
  * Gets the value.
  *
