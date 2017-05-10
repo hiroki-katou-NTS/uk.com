@@ -30,8 +30,8 @@ module nts.uk.pr.view.qpp021.g {
                 service.findRefundPadding().done(data => {
                     self.refundPaddingThreeModel.updateDataDto(data);
                     dfd.resolve(self);
-                }).fail(function(error){
-                    console.log(error);    
+                }).fail(function(error) {
+                    console.log(error);
                 });
                 return dfd.promise();
             }
@@ -39,11 +39,14 @@ module nts.uk.pr.view.qpp021.g {
             //save RefundPaddingThree
             saveRefundPaddingThree(): void {
                 var self = this;
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                }
                 service.saveRefundPadding(self.refundPaddingThreeModel.toDto());
             }
-            
-            closeRefundPaddingThree() : void{
-                nts.uk.ui.windows.close();    
+
+            closeRefundPaddingThree(): void {
+                nts.uk.ui.windows.close();
             }
         }
 

@@ -39,6 +39,9 @@ var nts;
                                 };
                                 ScreenModel.prototype.saveRefundPaddingThree = function () {
                                     var self = this;
+                                    if ($('.nts-input').ntsError('hasError')) {
+                                        return;
+                                    }
                                     g.service.saveRefundPadding(self.refundPaddingThreeModel.toDto());
                                 };
                                 ScreenModel.prototype.closeRefundPaddingThree = function () {
