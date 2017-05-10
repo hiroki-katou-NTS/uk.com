@@ -13,3 +13,7 @@
 .form-default td {
 	padding-top: 10px;
 }
+
+.input-default {
+	width: 100px;
+}
