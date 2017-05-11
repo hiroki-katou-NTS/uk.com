@@ -392,7 +392,7 @@ module qpp011.b {
             self.B_INP_003_yearMonth.subscribe(function(newValue) {
                 if (newValue != null && newValue !== "") {
                     self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.B_INP_003_yearMonth()).format("YYYY/MM")).toString() +
-                        moment(self.B_INP_003_yearMonth()).format('DD') + " 日");
+                        moment(self.B_INP_003_yearMonth()).format('DD') + " 日)");
                 } else {
                     self.yearInJapanEmpire_B_LBL_010("");
                 }
@@ -427,7 +427,7 @@ module qpp011.b {
             self.C_INP_003_yearMonth.subscribe(function(newValue) {
                 if (newValue != null && newValue !== "") {
                     self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.C_INP_003_yearMonth()).format("YYYY/MM")).toString() +
-                        moment(self.C_INP_003_yearMonth()).format('DD') + " 日");
+                        moment(self.C_INP_003_yearMonth()).format('DD') + " 日)");
                 } else {
                     self.yearInJapanEmpire_C_LBL_010("");
                 }
@@ -504,7 +504,7 @@ module qpp011.b {
                 service.saveAsPdf(command).done(function() {
                     //
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert("");
+                    nts.uk.ui.dialog.alert(res.message);
                 });
             } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
@@ -541,9 +541,9 @@ module qpp011.b {
             if (!self.checkCValue()) {
                 return;
             }
-            if (self.selectedValue_C_LST_001().length > 0) {
-            } else {
+            if (self.selectedValue_C_LST_001().length == 0) {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
+                return;
             }
             var command = {
                 residentTaxCodeList: self.selectedValue_C_LST_001(),

@@ -67,6 +67,10 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		year = Integer.parseInt(yearMonth[0]);
 		int yearM = Integer.parseInt(yearMonth[0] + yearMonth[1]);
 
+		if (CollectionUtil.isEmpty(query.getResidentTaxCodeList())) {
+			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
+		}
+		
 		// get residential tax
 		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
 				query.getResidentTaxCodeList());
@@ -163,7 +167,7 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 			
 			Double salaryPaymentAmount = totalSalaryPaymentAmount.get(residentialTax.getResidenceTaxCode());
 			if (salaryPaymentAmount  == null) {
-				break;
+				continue;
 			}
 			Double deliveryAmountRetirement = totalDeliveryAmountRetirement.get(residentialTax.getResidenceTaxCode());
 			Double totalCityTaxMny = totalCityTaxMnyMap.get(residentialTax.getResidenceTaxCode());
@@ -205,8 +209,9 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		common.setClientCode(query.getClientCode());
 		common.setDesBranchNumber(query.getDestinationBranchNumber());
 		//Convert time Japan
-		common.setPaymentDueDate(query.getEndDate().toString());
-		common.setPaymentMonth(query.getEndDate().yearMonth().toString());
+		Integer yearMonthJapan = this.eraProvider.toJapaneseDate(query.getEndDate()).toInt();
+		common.setPaymentDueDate(yearMonthJapan.toString());
+		common.setPaymentMonth(yearMonthJapan.toString().substring(0, 4));
 		//
 		common.setClientName(company.getCompanyName());
 		common.setClientAddress(company.getAddress1() + company.getAddress2());
