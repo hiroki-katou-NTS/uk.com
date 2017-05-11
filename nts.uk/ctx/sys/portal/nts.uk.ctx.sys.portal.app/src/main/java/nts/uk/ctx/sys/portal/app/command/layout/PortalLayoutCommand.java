@@ -14,6 +14,9 @@ import nts.uk.shr.com.context.AppContexts;
 @AllArgsConstructor
 public class PortalLayoutCommand {
 
+	/** TopPage Code */
+	private String parentCode;
+	
 	/** Layout GUID */
 	private String layoutID;
 

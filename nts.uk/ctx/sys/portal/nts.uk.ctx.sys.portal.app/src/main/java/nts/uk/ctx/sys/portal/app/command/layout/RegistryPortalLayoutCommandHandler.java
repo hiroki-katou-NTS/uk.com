@@ -7,11 +7,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.app.command.placement.PortalPlacementCommand;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
+import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.service.LayoutService;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
@@ -23,10 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @Transactional
-public class RegistryPortalLayoutCommandHandler extends CommandHandler<RegistryPortalLayoutCommand> {
-
-	@Inject
-	private LayoutRepository layoutRepository;
+public class RegistryPortalLayoutCommandHandler extends CommandHandlerWithResult<RegistryPortalLayoutCommand, String> {
 
 	@Inject
 	private PlacementRepository placementRepository;
@@ -38,7 +35,7 @@ public class RegistryPortalLayoutCommandHandler extends CommandHandler<RegistryP
 	private PlacementService placementService;
 
 	@Override
-	protected void handle(CommandHandlerContext<RegistryPortalLayoutCommand> context) {
+	protected String handle(CommandHandlerContext<RegistryPortalLayoutCommand> context) {
 		// Data
 		String companyID = AppContexts.user().companyId();
 		RegistryPortalLayoutCommand command = context.getCommand();
@@ -46,10 +43,11 @@ public class RegistryPortalLayoutCommandHandler extends CommandHandler<RegistryP
 		List<PortalPlacementCommand> placementCommands = command.getListPortalPlacementCommand();
 		String layoutID = layoutCommand.getLayoutID();
 
-		// Layout registry if not exist
+		// Create Layout if not exist
 		if (!layoutService.isExist(layoutID)) {
 			layoutID = IdentifierUtil.randomUniqueId();
-			layoutRepository.add(layoutCommand.toDomain(layoutID));
+			Layout layout = layoutCommand.toDomain(layoutID);
+			layoutService.createLayout(companyID, layoutCommand.getParentCode(), layoutCommand.getPgType(), layout);
 		}
 
 		// Placements delete
@@ -62,6 +60,8 @@ public class RegistryPortalLayoutCommandHandler extends CommandHandler<RegistryP
 			placements.add(placementCommand.toDomain(IdentifierUtil.randomUniqueId()));
 		}
 		placementRepository.addAll(placements);
+		
+		return layoutID;
 	}
 
 }
