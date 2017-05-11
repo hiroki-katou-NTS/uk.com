@@ -2,8 +2,8 @@ module qmm020.a.viewmodel {
     export class ScreenModel {
         title: KnockoutObservable<string> = ko.observable('');
         tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-            new TabModel({ id: 'B', name: '会社', active: true, display: true }),
-            new TabModel({ id: 'C', name: '雇用', display: true }),
+            new TabModel({ id: 'B', name: '会社',  display: true }),
+            new TabModel({ id: 'C', name: '雇用', active: true, display: true }),
             new TabModel({ id: 'D', name: '部門', display: true }),
             new TabModel({ id: 'E', name: '分類' }),
             new TabModel({ id: 'F', name: '職位' }),
