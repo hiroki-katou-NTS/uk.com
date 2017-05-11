@@ -10,7 +10,7 @@ public class PersonId extends StringPrimitiveValue<PersonId>{
 	 */
 	private static final long serialVersionUID = 1L;
     
-	public PersonId(String rawValue) {
+	public PersonId(String rawValue) { 
 		super(rawValue);
 	}
 	

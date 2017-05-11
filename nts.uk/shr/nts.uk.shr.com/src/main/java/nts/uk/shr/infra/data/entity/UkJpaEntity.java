@@ -64,4 +64,5 @@ public abstract class UkJpaEntity extends JpaEntity {
     	this.updScd = "TEST_SCD";
     	this.updPg = "TEST_PG";
     }
+    
 }

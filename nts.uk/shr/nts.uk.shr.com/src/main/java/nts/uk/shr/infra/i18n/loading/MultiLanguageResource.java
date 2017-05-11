@@ -201,5 +201,4 @@ public class MultiLanguageResource implements IInternationalization {
 	public Map<String, String> getCustomizeResource() {
 		return companyCustomizedResource;
 	}
-
 }
