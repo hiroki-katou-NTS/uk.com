@@ -27,7 +27,7 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/qpp011a.xlsx";
 	/** The Constant REPORT_FILE_NAME. */
-	protected static final String REPORT_FILE_NAME = "テストQPP011.pdf";
+	protected static final String REPORT_FILE_NAME = "テストQPP011_{0}.pdf";
 
 	@Override
 	public void generate(FileGeneratorContext fileContext, List<ResidentTaxReportData> reportDataList) {
