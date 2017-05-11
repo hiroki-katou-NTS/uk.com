@@ -21,8 +21,11 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
+import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryItemType;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItem;
@@ -32,6 +35,7 @@ import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItem;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingRepository;
 import nts.uk.file.pr.app.export.detailpayment.PaySalaryReportRepository;
+import nts.uk.file.pr.app.export.detailpayment.data.DepartmentDto;
 import nts.uk.file.pr.app.export.detailpayment.data.EmployeeDto;
 import nts.uk.file.pr.app.export.detailpayment.data.EmployeeKey;
 import nts.uk.file.pr.app.export.detailpayment.data.PaymentConstant;
@@ -59,6 +63,23 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
             + "AND detail.qstdtPaymentDetailPK.processingYM >= :startYM "
             + "AND detail.qstdtPaymentDetailPK.processingYM <= :endYM ";
     
+    /** The Constant QUERY_EMPLOYEE. */
+    private static final String QUERY_EMPLOYEE = "SELECT com, header, dep "
+            + "FROM PcpmtPersonCom com "
+            + "LEFT JOIN QstdtPaymentHeader header ON "
+            + "header.qstdtPaymentHeaderPK.companyCode = com.pcpmtPersonComPK.ccd "
+            + "AND header.qstdtPaymentHeaderPK.personId = com.pcpmtPersonComPK.pid "
+            + "LEFT JOIN CmnmtDep dep ON "
+            + "dep.cmnmtDepPK.companyCode = header.qstdtPaymentHeaderPK.companyCode "
+            + "AND dep.startDate <= header.standardDate "
+            + "AND dep.endDate >= header.standardDate "
+            + "AND dep.cmnmtDepPK.departmentCode = header.departmentCode "
+            + "WHERE com.pcpmtPersonComPK.ccd = :companyCode "
+            + "AND com.pcpmtPersonComPK.pid IN :personIds "
+            + "AND header.qstdtPaymentHeaderPK.payBonusAtr = 0 "
+            + "AND header.qstdtPaymentHeaderPK.processingYM >= :startYM "
+            + "AND header.qstdtPaymentHeaderPK.processingYM <= :endYM ";
+    
     /** The Constant QUERY_PAYMENT_DETAIL. */
     private static final String QUERY_PAYMENT_DETAIL = "SELECT pCom.scd, detail.qstdtPaymentDetailPK.categoryATR,"
             + "detail.qstdtPaymentDetailPK.itemCode, item.itemName,"
@@ -80,6 +101,9 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
             + "AND detail.qstdtPaymentDetailPK.processingYM <= :endYM "
             + "AND detail.qstdtPaymentDetailPK.sparePayAttribute IN :sparePayAttributes "
             + "AND detail.qstdtPaymentDetailPK.itemCode IN :itemCodes";
+    
+    /** The Constant LENGTH_LEVEL. */
+    private static final int LENGTH_LEVEL = 3;
     
     /** The Constant QUERY_NUMER_EMPLOYEE_LIMIT. */
     private static final int QUERY_NUMER_EMPLOYEE_LIMIT = 1000;
@@ -129,16 +153,69 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
      * nts.uk.file.pr.app.export.detailpaymentsalary.query.PaymentSalaryQuery)
      */
     public PaymentSalaryReportData findReportData(String companyCode, PaymentSalaryQuery paySalaryQuery) {
+        PaymentSalaryReportData reportData = new PaymentSalaryReportData();
+        
         // ======================== FIND INFORMATION EMPLOYEE ========================
-        // TODO: find list department which is sorted department level.
-        List<EmployeeDto> emps = new ArrayList<>();
+        // find list employee contains department which is sorted department level.
+        List<EmployeeDto> emps = findEmployees(companyCode, paySalaryQuery);
+        reportData.setEmployees(emps);
         
         // ======================== FIND MAP AMOUNT EMPLOYEE ========================
+        Map<EmployeeKey, Double> mapEmpAmount = findMapAmount(companyCode, paySalaryQuery);
+        reportData.setMapEmployeeAmount(mapEmpAmount);
+        return reportData;
+    }
+    
+    /**
+     * Find employees.
+     *
+     * @param companyCode the company code
+     * @param payQuery the pay query
+     * @return the list
+     */
+    @SuppressWarnings("unchecked")
+    private List<EmployeeDto> findEmployees(String companyCode, PaymentSalaryQuery payQuery) {
+        EntityManager em = this.getEntityManager();
+        Query query = em.createQuery(QUERY_EMPLOYEE);
+        query.setParameter("companyCode", companyCode);
+        query.setParameter("personIds", payQuery.getPersonIds());
+        query.setParameter("startYM", payQuery.getStartDate());
+        query.setParameter("endYM", payQuery.getEndDate());
+        List<Object[]> data = query.getResultList();
+        if (data.isEmpty()) {
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
+        }
+        return data.stream().map(object -> {
+            PcpmtPersonCom com = (PcpmtPersonCom) object[0];
+            QstdtPaymentHeader header = (QstdtPaymentHeader) object[1];
+            CmnmtDep dep = (CmnmtDep) object[2];
+            
+            EmployeeDto dto = new EmployeeDto();
+            dto.setCode(com.getScd());
+            dto.setName(header.employeeName);
+
+            DepartmentDto departmentDto = new DepartmentDto();
+            departmentDto.setCode(dep.getCmnmtDepPK().getDepartmentCode());
+            departmentDto.setName(dep.getDepName());
+            departmentDto.setDepLevel(dep.getHierarchyId().length() / LENGTH_LEVEL);
+            departmentDto.setDepPath(dep.getHierarchyId());
+            departmentDto.setYearMonth(header.qstdtPaymentHeaderPK.processingYM);
+            dto.setDepartment(departmentDto);
+            return dto;
+        }).collect(Collectors.toList());
+    }
+    
+    /**
+     * Find map amount.
+     *
+     * @param companyCode the company code
+     * @param paySalaryQuery the pay salary query
+     * @return the map
+     */
+    private Map<EmployeeKey, Double> findMapAmount(String companyCode, PaymentSalaryQuery paySalaryQuery) {
         SalaryOutputSetting outputSetting = outputSettingRepo.findByCode(companyCode,
                 paySalaryQuery.getOutputSettingCode());
-        
         List<ItemMaster> masterItems = masterItemRepo.findAll(companyCode);
-        
         List<SalaryAggregateItem> aggrItems = aggrItemRepo.findAll(companyCode);
         
         // ========= FIND MAP ITEM =========
@@ -152,6 +229,9 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         
         // ========= FIND PAYMENT DETAIl =========
         List<Object[]> listObject = findPaymentDetail(companyCode, paySalaryQuery, itemCodes);
+        if (listObject.isEmpty()) {
+            return new HashMap<>();
+        }
         Map<String, List<Object[]>> mapEmp = listObject.stream()
                 .collect(Collectors.groupingBy(item -> (String)item[0]));
         
@@ -167,11 +247,8 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
             
             filterData(codeEmp, mapAmountByYm, mapItem, mapEmpAmount);
         }
-        // ========= SET REPORT DATA =========
-        PaymentSalaryReportData reportData = new PaymentSalaryReportData();
-        reportData.setEmployees(emps);
-        reportData.setMapEmployeeAmount(mapEmpAmount);
-        return reportData;
+        
+        return mapEmpAmount;
     }
     
     /**
@@ -192,6 +269,7 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 key.setYearMonth(yearMonth);
                 key.setEmployeeCode(codeEmp);
                 key.setItemName(categoryItem.itemName);
+                key.setOrderItemName(categoryItem.orderNumber);
                 key.setSalaryCategory(SalaryCategory.valueOf(categoryItem.category.value));
                 
                 List<Object[]> objectFiltereds = objectList.stream()
@@ -237,6 +315,7 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 
                 CategoryItem categoryItem = new CategoryItem();
                 categoryItem.itemCode = itemCode;
+                categoryItem.orderNumber = item.getOrderNumber();
                 categoryItem.category = category.getCategory();
                 
                 // ========= MASTER ITEM =========
@@ -290,6 +369,10 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         query.setParameter("startYM", payQuery.getStartDate());
         query.setParameter("endYM", payQuery.getEndDate());
         query.setParameter("itemCodes", itemCodes);
+        // check generate report when itemCodes empty.
+        if (itemCodes.isEmpty()) {
+            return new ArrayList<>();
+        }
         List<Integer> payAttrs = new ArrayList<>();
         if (payQuery.getIsNormalMonth()) {
             payAttrs.add(PaymentConstant.ZERO);
@@ -318,6 +401,9 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         
         /** The item name. */
         private String itemName;
+        
+        /** The order number. */
+        private int orderNumber;
         
         /** The category. */
         private SalaryCategory category;

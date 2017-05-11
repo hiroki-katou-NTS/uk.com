@@ -19,7 +19,7 @@ public class PaymentConstant {
     public static final String FORMAT_NUMBER = "#,##0_);(#,##0)";
     
     /** The Constant SPACES. */
-    public static final String SPACES = "    ";
+    public static final String SPACES = "  ";
     
     /** The Constant ROW_HEIGHT_TITLE. */
     public static final int ROW_HEIGHT_TITLE = 50;

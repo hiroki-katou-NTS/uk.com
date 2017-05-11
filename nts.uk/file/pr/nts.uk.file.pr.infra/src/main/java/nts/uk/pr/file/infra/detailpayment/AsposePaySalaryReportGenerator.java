@@ -72,7 +72,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
     private static final String REPORT_FILE_NAME = "明細一覧表.pdf";
     
     /** The Constant SHEET_NAME. */
-    private static final String SHEET_NAME = "My sheet";
+    private static final String SHEET_NAME = "Sheet 1";
     
     /*
      * (non-Javadoc)
@@ -88,11 +88,21 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             workbook.calculateFormula(true);
+            
+            // =============== CREATE NEW SHEET ===============
             createNewSheet(worksheets, reportData);
             reportContext.getDesigner().setWorkbook(workbook);
+            
+            // =============== SET DATASOURCE HEADER ===============
             reportContext.getDesigner().setDataSource(PaymentConstant.HEADER,
                     Arrays.asList(reportData.getHeaderData()));
+            
             reportContext.processDesigner();
+            
+            // =============== SET AUTO FIT ROW HEIGHT OF TITLE ROW ===============
+            worksheets.get(PaymentConstant.ZERO).autoFitRow(PaymentConstant.INDEX_ROW_TITLE);
+            
+            // =============== SAVE AS PDF ===============
             reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -144,7 +154,13 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                 PaymentConstant.ONE, PaymentConstant.NUMBER_COLUMN_PAGE);
 
         // ======== SET PRINT AREA ========
-        int lastColumn = printProcess.totalColumn - PaymentConstant.ONE;
+        int lastColumn;
+        // ========= NO HAVE DATE REPORT, PRINT AREA DEFAULT A PAGE;
+        if (printProcess.totalColumn == 0) {
+            lastColumn = PaymentConstant.NUMBER_COLUMN_PAGE;
+        } else {
+            lastColumn = printProcess.totalColumn - PaymentConstant.ONE;
+        }
         Cell cellEnd = printProcess.worksheet.getCells().get(printProcess.indexRow, lastColumn);
         String endArea = cellEnd.getName();
         String printArea = PaymentConstant.START_AREA + endArea;
@@ -215,13 +231,15 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
      * @param printProcess the print process
      */
     private void writeTitleRow(PrintProcess printProcess) {
+        if (printProcess.mapTitle == null) {
+            return;
+        }
         Cells cells = printProcess.worksheet.getCells();
         int indexRow = PaymentConstant.INDEX_ROW_TITLE;
-        cells.setRowHeight(indexRow, PaymentConstant.ROW_HEIGHT_TITLE);
-        Map<Integer, String> mapTitle = printProcess.mapTitle;
+//        cells.setRowHeight(indexRow, PaymentConstant.ROW_HEIGHT_TITLE);
         StyleModel styleModel = new StyleModel(PaymentConstant.LIGHT_BLUE_COLOR);
         
-        for (Map.Entry<Integer, String> entry : mapTitle.entrySet()) {
+        for (Map.Entry<Integer, String> entry : printProcess.mapTitle.entrySet()) {
             int indexColumn = entry.getKey();
             String item = entry.getValue();
             Cell cell = cells.get(indexRow, indexColumn);
@@ -253,6 +271,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         Map<EmployeeKey, Double> mapAmount = printProcess.mapAmount;
         // ========= FIND LIST ITEM NAME =========
         List<String> itemNames = mapAmount.entrySet().stream()
+                .sorted((p1, p2) -> p1.getKey().getOrderItemName().compareTo(p2.getKey().getOrderItemName()))
                 .map(p -> p.getKey().getItemName())
                 .distinct()
                 .collect(Collectors.toList());
@@ -432,6 +451,10 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         Map<EmployeeKey, Double> amountEmp = mapAmountItemName.entrySet().stream()
                 .filter(p -> p.getKey().getEmployeeCode().equals(emp.getCode()))
                 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+        // ========= NOT PRINT EMPLOYEE WHO HAS AMOUNT =========
+        if (amountEmp.isEmpty()) {
+            return;
+        }
         int indexRow = printProcess.indexRow;
         int indexColumn = printProcess.indexColumn;
         SalaryPrintSettingDto configure = printProcess.configure;
@@ -484,8 +507,8 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                 styleModel.drawBorderLastColPageIfNeed(cellTotalMonthly);
                 // write title row
                 if (!printProcess.isHasTitleRow) {
-                    String titleRow = convertYearMonthJP(yearMonth) + "\n社員月計\n" + emp.getCode()
-                    + PaymentConstant.SPACES + emp.getName();
+                    String titleRow = convertYearMonthJP(yearMonth) + "\n社員月計\n" + emp.getCode() + "\n"
+                            + emp.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
                 indexColumn++;
@@ -501,7 +524,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             styleModel.drawBorderLastColPageIfNeed(cellTotal);
             // write title row
             if (!printProcess.isHasTitleRow) {
-                String titleRow = "個人計\n" + emp.getCode() + PaymentConstant.SPACES + emp.getName();
+                String titleRow = "個人計\n" + emp.getCode() + "\n" + emp.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
             if (PaymentConstant.PAGE_BREAK_EMPLOYEE.equals(printProcess.configure.getPageBreakSetting())) {
@@ -570,7 +593,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                 // write title row
                 if (!printProcess.isHasTitleRow) {
                     String titleRow = convertYearMonthJP(yearMonth) + "\n部門月計\n" + prevDep.getCode()
-                    + PaymentConstant.SPACES + prevDep.getName();
+                        + prevDep.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
                 totalEmp += codeEmps.size();
@@ -591,7 +614,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
 
             // write title row
             if (!printProcess.isHasTitleRow) {
-                String titleRow = "\n部門計\n" + prevDep.getCode() + PaymentConstant.SPACES + prevDep.getName();
+                String titleRow = "\n部門計\n" + prevDep.getCode() + prevDep.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
             String numberEmp = totalEmp + "人";
@@ -700,7 +723,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
 
                 if (!printProcess.isHasTitleRow) {
                     String titleRow = convertYearMonthJP(yearMonth) + "\n部門階層月計\n" + prevDep.getCode()
-                    + PaymentConstant.SPACES + prevDep.getName();
+                    + prevDep.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
                 indexColumn++;
@@ -714,7 +737,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             styleModel.drawBorderCell(cellTotal);
 
             if (!printProcess.isHasTitleRow) {
-                String titleRow = "\n部門階層累計\n" + prevDep.getCode() + PaymentConstant.SPACES + prevDep.getName();
+                String titleRow = "\n部門階層累計\n" + prevDep.getCode() + prevDep.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
 
@@ -797,7 +820,9 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
      * @param printProcess the print process
      */
     private void writeNumberEmployee(PrintProcess printProcess) {
-        // write number employee footer report.
+        if (printProcess.mapFooter == null) {
+            return;
+        }
         Cells cells = printProcess.worksheet.getCells();
 
         Cell cellName = cells.get(printProcess.indexRow, PaymentConstant.ZERO);
@@ -861,6 +886,8 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         int numColumnBlank = PaymentConstant.NUMBER_COLUMN_PAGE - numColumnExist;
 
         StyleModel styleModel = new StyleModel();
+        styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
+        styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
         Cells cells = printProcess.worksheet.getCells();
         
         // ====== DRAW BORDER FIRST AND LAST COLUMN OF ROW HEADER CATEGORY ======

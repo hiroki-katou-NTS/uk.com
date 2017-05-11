@@ -2,16 +2,11 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-/**
- * 
- */
 package nts.uk.file.pr.app.export.detailpayment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,19 +16,14 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.printsetting.SalaryPrintSettingRepository;
-import nts.uk.file.pr.app.export.detailpayment.data.DepartmentDto;
-import nts.uk.file.pr.app.export.detailpayment.data.EmployeeDto;
-import nts.uk.file.pr.app.export.detailpayment.data.EmployeeKey;
 import nts.uk.file.pr.app.export.detailpayment.data.HeaderReportData;
 import nts.uk.file.pr.app.export.detailpayment.data.PaymentConstant;
 import nts.uk.file.pr.app.export.detailpayment.data.PaymentSalaryReportData;
 import nts.uk.file.pr.app.export.detailpayment.data.SalaryPrintSettingDto;
 import nts.uk.file.pr.app.export.detailpayment.query.PaymentSalaryQuery;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
@@ -68,31 +58,27 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
      */
     @Override
     protected void handle(ExportServiceContext<PaymentSalaryQuery> context) {
-        // get login user info
-        LoginUserContext loginUserContext = AppContexts.user();
-
-        // get company code by user login
-        String companyCode = loginUserContext.companyCode();
-
-        // get query
         PaymentSalaryQuery query = context.getQuery();
         
-        // TODO: fake employee
+        // TODO: FAKE EMPLOYEE
         List<String> personIds = Arrays.asList("99900000-0000-0000-0000-000000000001",
-                "99900000-0000-0000-0000-000000000002", "99900000-0000-0000-0000-000000000003");
+                "99900000-0000-0000-0000-000000000002", "99900000-0000-0000-0000-000000000003",
+                "99900000-0000-0000-0000-000000000004", "99900000-0000-0000-0000-000000000005");
         query.setPersonIds(personIds);
+        
+        String companyCode = AppContexts.user().companyCode();
         
         if (!this.repository.isAvailableData(companyCode, query)) {
             throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
-        
+        // ========= FIND REPORT DATA =========
         PaymentSalaryReportData reportData = this.repository.findReportData(companyCode, query);
-        // TODO: fake data.
-        reportData = fakeReportData();
-
+        
+        // ========= FIND OUTPUT SETTING =========
         SalaryPrintSettingDto configure = findSalarySetting(query);
         reportData.setConfigure(configure);
         
+        // ========= FIND HEADER REPORT =========
         HeaderReportData header = findReportHeader(query);
         reportData.setHeaderData(header);
 
@@ -212,124 +198,5 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
         JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
         return japaneseDate.era() + japaneseDate.year() + "年 " + japaneseDate.month() + "月度"; 
-    }
-
-    /**
-     * Fake report data.
-     *
-     * @return the payment salary report data
-     */
-    private PaymentSalaryReportData fakeReportData() {
-        PaymentSalaryReportData reportData = new PaymentSalaryReportData();
-        int numberOfEmployee = 1;
-        List<EmployeeDto> employees = fakeEmployees(numberOfEmployee);
-        reportData.setEmployees(employees);
-
-        Map<EmployeeKey, Double> mapEmployeeAmount = fakeMapAmount(numberOfEmployee, employees);
-        reportData.setMapEmployeeAmount(mapEmployeeAmount);
-
-        return reportData;
-    }
-
-    /**
-     * Fake employees.
-     *
-     * @param numberOfEmployee the number of employee
-     * @return the list
-     */
-    private List<EmployeeDto> fakeEmployees(int numberOfEmployee) {
-        List<EmployeeDto> result = new ArrayList<>();
-        List<DepartmentDto> depData = new ArrayList<>();
-        List<String> depPath = new ArrayList<>();
-        depPath.add("A_");
-        depPath.add("B_");
-        depPath.add("B_C");
-        depPath.add("B_C_D");
-        depPath.add("B_C_D_E");
-        depPath.add("B_F");
-        depPath.add("B_F_G");
-        depPath.add("B_H");
-        depPath.add("B_H_I");
-        depPath.add("K_");
-
-        List<String> depCode = new ArrayList<>();
-        depCode.add("A");
-        depCode.add("B");
-        depCode.add("C");
-        depCode.add("D");
-        depCode.add("E");
-        depCode.add("F");
-        depCode.add("G");
-        depCode.add("H");
-        depCode.add("I");
-        depCode.add("K");
-
-        List<Integer> depLevels = Arrays.asList(1, 1, 2, 3, 4, 2, 3, 2, 3, 1);
-        List<Integer> yearMonths = Arrays.asList(201601, 201602);
-        for (Integer yearMonth : yearMonths) {
-            for (int i = 0; i < depCode.size(); i++) {
-                DepartmentDto dep = new DepartmentDto();
-                dep.setYearMonth(yearMonth);
-                dep.setCode(depCode.get(i));
-                dep.setName("部門 " + (i + 1));
-                dep.setDepPath(depPath.get(i));
-                dep.setDepLevel(depLevels.get(i));
-                depData.add(dep);
-                for (int j = 0; j < numberOfEmployee; j++) {
-                    EmployeeDto emp = new EmployeeDto();
-                    emp.setYearMonth(yearMonth);
-                    emp.setCode(depCode.get(i) + "-E000" + (j + 1));
-                    emp.setName("E社員 " + (j + 1));
-                    emp.setDepartment(dep);
-                    result.add(emp);
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Fake map amount.
-     *
-     * @param numberOfEmployee the number of employee
-     * @param employees the employees
-     * @return the map
-     */
-    private Map<EmployeeKey, Double> fakeMapAmount(int numberOfEmployee, List<EmployeeDto> employees) {
-        Map<EmployeeKey, Double> mapEmployeeAmount = new HashMap<>();
-
-        Map<EmployeeKey, Double> mapPayment = fakeCategoryItem(SalaryCategory.Payment, employees);
-        mapEmployeeAmount.putAll(mapPayment);
-
-        Map<EmployeeKey, Double> mapDeduction = fakeCategoryItem(SalaryCategory.Deduction, employees);
-        mapEmployeeAmount.putAll(mapDeduction);
-
-        Map<EmployeeKey, Double> mapArticleOther = fakeCategoryItem(SalaryCategory.ArticleOthers, employees);
-        mapEmployeeAmount.putAll(mapArticleOther);
-
-        return mapEmployeeAmount;
-    }
-
-    /**
-     * Fake category item.
-     *
-     * @param category the category
-     * @param employees the employees
-     * @return the map
-     */
-    private Map<EmployeeKey, Double> fakeCategoryItem(SalaryCategory category, List<EmployeeDto> employees) {
-        Map<EmployeeKey, Double> map = new HashMap<>();
-        for (int j = 0; j < 10; j++) {
-            double value = j + 1;
-            for (int i = 0; i < employees.size(); i++) {
-                EmployeeKey key = new EmployeeKey();
-                key.setSalaryCategory(category);
-                key.setYearMonth(employees.get(i).getYearMonth());
-                key.setEmployeeCode(employees.get(i).getCode());
-                key.setItemName("ItemName " + value);
-                map.put(key, value);
-            }
-        }
-        return map;
     }
 }

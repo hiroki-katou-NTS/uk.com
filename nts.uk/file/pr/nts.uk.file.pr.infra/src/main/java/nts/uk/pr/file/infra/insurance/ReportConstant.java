@@ -31,7 +31,7 @@ public class ReportConstant {
     public static final String HEADER = "HEADER";
     
     /** The Constant SHEET_NAME. */
-    public static final String SHEET_NAME = "My Sheet";
+    public static final String SHEET_NAME = "Sheet 1";
     
     /** The Constant RANGE_OFFICE. */
     public static final String RANGE_OFFICE = "RangeOffice";
