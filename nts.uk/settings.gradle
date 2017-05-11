@@ -31,7 +31,10 @@ include 'ctx:sys:portal:nts.uk.ctx.sys.portal.pub'
 include 'ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp'
 include 'ctx:sys:portal:nts.uk.ctx.sys.portal.ws'
 
+include 'ctx:at:shared:nts.uk.ctx.at.shared.app'
 include 'ctx:at:shared:nts.uk.ctx.at.shared.dom'
+include 'ctx:at:shared:nts.uk.ctx.at.shared.infra'
+include 'ctx:at:shared:nts.uk.ctx.at.shared.ws'
 
 include 'ctx:at:schedule:nts.uk.ctx.at.schedule.ac'
 include 'ctx:at:schedule:nts.uk.ctx.at.schedule.app'
