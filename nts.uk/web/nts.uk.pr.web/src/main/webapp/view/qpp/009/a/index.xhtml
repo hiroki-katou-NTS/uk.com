@@ -38,10 +38,15 @@
 								<div id="time-input">
 									<span class="label with-image">
 										<i class="image image-calendar" /> <span>対象年度</span>
-									</span>
-									
-									<span id="date-picker" for="target-year-label"  data-bind="ntsDatePicker: {value: yearMonth, constraint: 'TargetYear', dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}" ></span>
-									
+									</span> <span id="date-picker" for="target-year-label"
+										data-bind="ntsDatePicker: {
+										value: yearMonth, 
+										constraint: 'TargetYear', 
+										required: true, 
+										dateFormat: 'yyyy/MM', 
+										startDate: '1900/01', 
+										endDate:'9999/12'}"></span>
+
 									<span id="japan-year" data-bind="text: japanYearmonth()"></span>
 								</div>
 								<div id="output-division" data-bind="ntsSwitchButton: {
