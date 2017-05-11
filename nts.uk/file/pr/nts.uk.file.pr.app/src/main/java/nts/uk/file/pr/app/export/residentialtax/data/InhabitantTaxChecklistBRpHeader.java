@@ -7,9 +7,7 @@ public class InhabitantTaxChecklistBRpHeader {
 	
 	private String companyName;
 
-	private String startResiTaxAutonomy;
-	
-	private String lateResiTaxAutonomy;
+	private String resiTaxAutonomy;
 	
 	private String date;
 }
