@@ -15,7 +15,7 @@ public class InsertExternalBudgetCommand {
 	private int unitAtr;
 
 	public ExternalBudget toDomain() {
-		return ExternalBudget.createFromJavaType(AppContexts.user().companyCode(), this.externalBudgetCode,
+		return ExternalBudget.createFromJavaType(AppContexts.user().companyId(), this.externalBudgetCode,
 				this.externalBudgetName, this.budgetAtr, this.unitAtr);
 	}
 }

@@ -23,7 +23,7 @@ public class DeleteExternalBudgetCommandHandler extends CommandHandler<DeleteExt
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteExternalBudgetCommand> context) {
-		String companyId = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
 		// get command
 		DeleteExternalBudgetCommand command = context.getCommand();
 		Optional<ExternalBudget> optional = this.budgetRepo.find(companyId, command.getExternalBudgetCode());
