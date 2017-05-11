@@ -119,6 +119,8 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 				} else {
 					personData.setValue(value.doubleValue());
 				}
+				
+				personData.setUnit("円");
 				personData.setCheckSum(false);
 				reportDataList.add(personData);
 			}
@@ -132,6 +134,7 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 			reportData.setName(totalNumberPeople.get(residentialTax.getResidenceTaxCode()).toString());
 			// DBD_007
 			reportData.setValue(totalPaymentAmount.get(residentialTax.getResidenceTaxCode()));
+		    reportData.setUnit("円");
 			reportData.setCheckSum(true);
 			reportDataList.add(reportData);
 		}
@@ -152,6 +155,8 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 		sumReportData.setName(sumNumberPeople.toString());
 		// DBD_007
 		sumReportData.setValue(sumPaymentAmount);
+		
+		sumReportData.setUnit("円");
 
 		sumReportData.setCheckSum(true);
 
