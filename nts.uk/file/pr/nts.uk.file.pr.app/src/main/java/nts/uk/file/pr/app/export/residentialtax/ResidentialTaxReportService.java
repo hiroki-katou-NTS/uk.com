@@ -143,11 +143,17 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 				continue;
 			}
 			
+			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(residentialTax.getResidenceTaxCode());
+			if (CollectionUtil.isEmpty(personResitaxList)) {
+				continue;
+			}
+			
 			Double salaryPaymentAmount = totalSalaryPaymentAmount.get(residentialTax.getResidenceTaxCode());
 			Double deliveryAmountRetirement = totalDeliveryAmountRetirement.get(residentialTax.getResidenceTaxCode());
-			Double totalAmountTobePaid = totalSalaryPaymentAmount.get(residentialTax.getResidenceTaxCode())
-					+ totalDeliveryAmountRetirement.get(residentialTax.getResidenceTaxCode());
-			String deliveryNumberString = deliveryNumber.get(residentialTax.getResidenceTaxCode()).toString();
+			
+			Double totalAmountTobePaid = (salaryPaymentAmount == null ? 0 : salaryPaymentAmount)
+					+ (deliveryAmountRetirement == null ? 0 : deliveryAmountRetirement);
+			Integer deliveryNumberString = deliveryNumber.get(residentialTax.getResidenceTaxCode());
 			Double actualRecieveMnyMap = totalActualRecieveMnyMap.get(residentialTax.getResidenceTaxCode());
 			ResidentTaxReportData reportData = new ResidentTaxReportData();
 			// DBD_001 residenceTaxCode
@@ -177,7 +183,7 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 			// DBD_013 cordinatePostalCode
 			reportData.setCordinatePostalCode(residentialTax.getCordinatePostalCode());
 			// DBD_014 deliveryNumber
-			reportData.setDeliveryNumber(deliveryNumberString+"人");
+			reportData.setDeliveryNumber((deliveryNumberString == null ? 0 : deliveryNumberString.toString()) +"人");
 			// DBD_015 actualRecieveMny
 			reportData.setActualRecieveMny(actualRecieveMnyMap);
 			// DBD_016 cityTaxMny

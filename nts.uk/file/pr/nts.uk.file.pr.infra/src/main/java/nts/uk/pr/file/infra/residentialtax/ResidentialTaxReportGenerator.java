@@ -91,7 +91,7 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 				//CTR_001  designatedYM
 				designer.setDataSource("CTR" + sheetNumber + "_001", reportData.getDesignatedYM());
 				//CTR_002  totalAmountTobePaid
-				designer.setDataSource("CTR" + sheetNumber + "_002", reportData.getTotalAmountTobePaid());
+				designer.setDataSource("CTR" + sheetNumber + "_002", format(reportData.getTotalAmountTobePaid()));
 				//CTR_003  dueDate
 				designer.setDataSource("CTR" + sheetNumber + "_003", reportData.getDueDate());
 				
@@ -143,6 +143,9 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 	}
 	
 	private String format(Double input) {
+		if (input == null) {
+			input = 0.0;
+		}
 		DecimalFormat formatter = new DecimalFormat();
 		DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 		symbols.setGroupingSeparator(',');
