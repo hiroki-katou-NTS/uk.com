@@ -2905,6 +2905,19 @@ button.search-btn {
 #functions-area {
   height: 40px;
   border-bottom: solid 1px #B1B1B1;
+  padding-top: 8px;
+  padding-left: 5px;
+}
+
+/* line 8, ../sass/frame/_functions.scss */
+#functions-area-bottom {
+  position: absolute;
+  bottom: 0px;
+  height: 65px;
+  width: 100%;
+  border-top: solid 1px #B1B1B1;
+  text-align: center;
+  padding-top: 8px;
 }
 
 /* line 1, ../sass/frame/_contents.scss */
