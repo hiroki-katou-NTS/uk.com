@@ -16,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
@@ -50,7 +51,7 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
         //
 		Optional<String> personText = residentialTaxRepo.findPersonText(companyCode);
 		
-		if (query.getResidentTaxCodeList() == null) {
+		if (CollectionUtil.isEmpty(query.getResidentTaxCodeList())) {
 			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
 		}
 		

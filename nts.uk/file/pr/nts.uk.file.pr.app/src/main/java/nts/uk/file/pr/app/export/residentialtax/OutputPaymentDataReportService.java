@@ -67,7 +67,7 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		year = Integer.parseInt(yearMonth[0]);
 		int yearM = Integer.parseInt(yearMonth[0] + yearMonth[1]);
 
-		if (query.getResidentTaxCodeList() == null) {
+		if (CollectionUtil.isEmpty(query.getResidentTaxCodeList())) {
 			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
 		}
 		
