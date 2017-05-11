@@ -92,7 +92,7 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 			reportData.setResiTaxAutonomy(residentialTax.getResiTaxAutonomy());
 			// DBD_003 numberPeople
 			if(totalNumberPeople.get(residentialTax.getResidenceTaxCode()) == null) {
-				break;
+				continue;
 			}
 			reportData.setNumberPeople(totalNumberPeople.get(residentialTax.getResidenceTaxCode()).toString());
 			// DBD_004 value

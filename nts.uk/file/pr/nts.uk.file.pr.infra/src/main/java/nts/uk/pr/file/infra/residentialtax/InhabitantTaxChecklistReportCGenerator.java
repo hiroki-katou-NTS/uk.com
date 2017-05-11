@@ -55,7 +55,7 @@ public class InhabitantTaxChecklistReportCGenerator extends AsposeCellsReportGen
 
 			Worksheet worksheet = reportContext.getWorkbook().getWorksheets().get(0);
 
-			int startRowIdx = 5;
+			int startRowIdx = 6;
 			int rowColorIdex = 0;
 			for (InhabitantTaxChecklistCRpData item : dataExport.getData()) {
 				// Add FormatConditions to the instance of Worksheet

@@ -97,9 +97,12 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap
 					.get(residentialTax.getResidenceTaxCode());
 			if (personResitaxList == null) {
-				break;
+				continue;
 			}
+			
+			int i = 0;
 			for (PersonResitaxDto item : personResitaxList) {
+				i++;
 				InhabitantTaxChecklistCRpData personData = new InhabitantTaxChecklistCRpData();
 				BigDecimal value = personValue.get(item.getPersonID());
 				// DBD_003
@@ -107,9 +110,9 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 				// DBD_004
 				personData.setResiTaxAutonomy(residentialTax.getResiTaxAutonomy());
 				// DBD_005
-				personData.setCode("0000001");
+				personData.setCode("0000000" + i);
 				// DBD_006
-				personData.setName("テスト名前");
+				personData.setName("テスト名前" + i);
 				// DBD_007
 				if (value == null) {
 					personData.setValue(0d);

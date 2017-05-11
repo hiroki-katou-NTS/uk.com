@@ -167,7 +167,7 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 			
 			Double salaryPaymentAmount = totalSalaryPaymentAmount.get(residentialTax.getResidenceTaxCode());
 			if (salaryPaymentAmount  == null) {
-				break;
+				continue;
 			}
 			Double deliveryAmountRetirement = totalDeliveryAmountRetirement.get(residentialTax.getResidenceTaxCode());
 			Double totalCityTaxMny = totalCityTaxMnyMap.get(residentialTax.getResidenceTaxCode());
