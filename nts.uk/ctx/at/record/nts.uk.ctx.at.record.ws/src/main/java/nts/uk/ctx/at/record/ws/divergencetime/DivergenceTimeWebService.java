@@ -20,8 +20,12 @@ import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeComma
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommandHandler;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
+import nts.uk.ctx.at.record.app.find.divergencetime.AttendanceTypeDto;
+import nts.uk.ctx.at.record.app.find.divergencetime.AttendanceTypeFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemFinder;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemNameDto;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemNameFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceTimeDto;
@@ -48,6 +52,10 @@ public class DivergenceTimeWebService extends WebService{
 	private DivergenceItemSetFinder getItemSet;
 	@Inject
 	private DivergenceItemFinder getAllItem;
+	@Inject
+	private DivergenceItemNameFinder getNameItem;
+	@Inject
+	private AttendanceTypeFinder getAttItem;
 	/**
 	 * get all divergence time
 	 * @return
@@ -118,5 +126,24 @@ public class DivergenceTimeWebService extends WebService{
 	@Path("updateTimeItemId")
 	public void updateTimeItemId(){
 		
+	}
+	/**
+	 * get name item selected
+	 * @param divTimeId
+	 * @return
+	 */
+	@POST
+	@Path("getitemname/{divTimeId}")
+	public List<DivergenceItemNameDto> getItemSelected(@PathParam("divTimeId") int divTimeId){
+		return this.getNameItem.getItemSelected(divTimeId);
+	}
+	/**
+	 * get all attendance item (divergence item)
+	 * @return
+	 */
+	@POST
+	@Path("getattitem")
+	public List<AttendanceTypeDto> getAllAttItem(){
+		return this.getAttItem.getAllItem();
 	}
 }

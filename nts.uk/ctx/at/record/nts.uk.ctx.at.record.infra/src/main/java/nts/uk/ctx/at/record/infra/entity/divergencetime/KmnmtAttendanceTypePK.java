@@ -10,17 +10,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Embeddable
-@Getter
 @Setter
+@Getter
+@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmnmtDivergenceItemPK implements Serializable{
+public class KmnmtAttendanceTypePK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/*会社ID*/
 	@Column(name = "CID")
 	public String companyId;
 	/*勤怠項目ID*/
-	@Column(name = "ID")
-	public int 	attendanceItemId;
+	@Column(name = "ATTENDANCEITEM_ID")
+	public int attendanceItemId;
+	/*勤怠項目名称*/
+	@Column(name = "ATTENDANCEITEM_TYPE")
+	public int attendanceItemType;
 }

@@ -7,18 +7,20 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemSet;
+import nts.uk.ctx.at.record.dom.divergencetime.AttendanceType;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItem;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemName;
+import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemSet;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceItemSet;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReasonPK;
-import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceItemSet;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTime;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTimePK;
+import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtAttendanceType;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtDivergenceItem;
-import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtDivergenceItemPK;
 
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
@@ -39,7 +41,16 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	private final String SELECT_FROM_DIVITEM = "SELECT c FROM KmnmtDivergenceItem c";
 	private final String SELECT_ALL_DIVITEM = SELECT_FROM_DIVITEM 
 			+ " WHERE c.kmnmtDivergenceItemPK.companyId = :companyId";
-	
+	private final String SELECT_ITEMNAME =" SELECT a.kmkmtDivergenceItemSetPK.divergenceItemId, b.divName"
+			+ " FROM KmkmtDivergenceItemSet a"+" INNER JOIN KmnmtDivergenceItem b" 
+			+ " ON a.kmkmtDivergenceItemSetPK.companyId = b.kmnmtDivergenceItemPK.companyId" 
+			+ " AND a.kmkmtDivergenceItemSetPK.divTimeId = :divTimeId"
+			+ " AND a.kmkmtDivergenceItemSetPK.companyId = :companyId"
+			+ " AND a.kmkmtDivergenceItemSetPK.divergenceItemId = b.kmnmtDivergenceItemPK.attendanceItemId";
+	private final String SELECT_FROM_ATTTYPE = " SELECT c FROM KmnmtAttendanceType c";
+	private final String SELECT_ALL_ATTENDANCEITEM = SELECT_FROM_ATTTYPE
+			+ " WHERE c.kmnmtAttendanceTypePK.companyId = :companyId"
+			+ " AND c.kmnmtAttendanceTypePK.attendanceItemType = :attendanceItemType";
 	private static DivergenceTime toDomainDivTime(KmkmtDivergenceTime entity){
 		val domain = DivergenceTime.createSimpleFromJavaType(
 				entity.kmkmtDivergenceTimePK.companyId,
@@ -73,11 +84,18 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	private static DivergenceItem toDomainDivItem(KmnmtDivergenceItem entity){
 		val domain = DivergenceItem.createSimpleFromJavaType(
 				entity.kmnmtDivergenceItemPK.companyId,
-				entity.kmnmtDivergenceItemPK.divTimeId,
+				entity.kmnmtDivergenceItemPK.attendanceItemId,
 				entity.divName,
 				entity.displayNumber,
 				entity.useAtr,
 				entity.attendanceAtr);
+		return domain;
+	}
+	private static AttendanceType toDomainAttType(KmnmtAttendanceType entity){
+		val domain = AttendanceType.createSimpleFromJavaType(
+				entity.kmnmtAttendanceTypePK.companyId,
+				entity.kmnmtAttendanceTypePK.attendanceItemId,
+				entity.kmnmtAttendanceTypePK.attendanceItemType);
 		return domain;
 	}
 	private static KmkmtDivergenceTime toEntityDivTime(DivergenceTime domain){
@@ -128,7 +146,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 				.getList(c->toDomainDivReason(c));
 	}
 	/**
-	 * get all attendance item
+	 * get all attendance item selected
 	 * @param companyId
 	 * @param divTimeCode
 	 * @return
@@ -198,4 +216,34 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 				.getList(c->toDomainDivItem(c));
 	}
 
+	/**
+	 * get all name attendance item selected
+	 * @param companyId
+	 * @param divTimeId
+	 * @return
+	 */
+	@Override
+	public List<DivergenceItemName> getItemSelected(String companyId, int divTimeId) {
+		return this.queryProxy().query(SELECT_ITEMNAME, Object[].class)
+				.setParameter("companyId", companyId)
+				.setParameter("divTimeId", divTimeId)
+				.getList(c->{
+					int id = Integer.valueOf(c[0].toString());
+					String name = (String)c[1];
+					return DivergenceItemName.createSimpleFromJavaType(id, name);
+				});
+	}
+	/**
+	 * get all item
+	 * @param companyId
+	 * @param type
+	 * @return
+	 */
+	@Override
+	public List<AttendanceType> getAllItem(String companyId, int attendanceItemType) {
+		return this.queryProxy().query(SELECT_ALL_ATTENDANCEITEM, KmnmtAttendanceType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("attendanceItemType", attendanceItemType)
+				.getList(c->toDomainAttType(c));
+	}
 }

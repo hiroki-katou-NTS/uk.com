@@ -25,6 +25,7 @@ module kmk011.a.viewmodel {
         divTimeId: KnockoutObservable<number>;
         itemDivTime: KnockoutObservable<service.model.DivergenceTime>;
         listDivItem: KnockoutObservableArray<service.model.DivergenceItem>;
+        lstItemSelected: KnockoutObservableArray<service.model.ItemSelected>;
         constructor() {
             var self = this;
             self.label_002 = ko.observable(new model.Labels());
@@ -61,6 +62,7 @@ module kmk011.a.viewmodel {
             self.checkErrInput = ko.observable(false);
             self.checkErrSelect = ko.observable(false);
             self.listDivItem = ko.observableArray([]);
+            self.lstItemSelected = ko.observableArray([]);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
                 if(codeChanged==0){return;}
@@ -73,7 +75,11 @@ module kmk011.a.viewmodel {
                 self.selectInp(self.itemDivTime().inputSet.selectUseSet);
                 self.divTimeId(self.itemDivTime().divTimeId);
                 self.divTimeName(self.itemDivTime().divTimeName);
-                self.findTimeName(self.divTimeId());
+                service.getNameItemSelected(self.divTimeId()).done(function(lstName: service.model.ItemSelected){
+                    self.lstItemSelected(lstName);
+                    self.findTimeName(self.divTimeId());
+                    console.log(self.lstItemSelected());
+                })
                 if(self.itemDivTime().inputSet.cancelErrSelReason==1){
                     self.checkErrInput(true);
                 }else{
@@ -96,17 +102,9 @@ module kmk011.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getAllDivTime().done(function(lstDivTime: Array<service.model.DivergenceTime>){
-//                service.getAllDivItemId().done(function(lstDivItem: Array<service.model.DivergenceItem>){
-//                    self.listDivItem(lstDivItem);
-//                    console.log(self.listDivItem());
-//                })
                 if(lstDivTime=== undefined || lstDivTime.length == 0){
                     self.dataSource();
                 }else{
-                    service.getAllDivItemId().done(function(lstDivItem: Array<service.model.DivergenceItem>){
-                        self.listDivItem(lstDivItem);
-                        console.log(self.listDivItem());
-                    })
                     self.currentCode(0);
                     self.dataSource(lstDivTime);
                     let rdivTimeFirst = _.first(lstDivTime);
@@ -135,12 +133,20 @@ module kmk011.a.viewmodel {
         }
         openDialog021(){
             var self = this;
-            service.getDivItemIdSelected(self.divTimeId()).done(function(lstIdSel: number){
-                var listIdSel = lstIdSel;
-                nts.uk.ui.windows.setShared('AllAttendanceObj', self.listDivItem(), true);
-                nts.uk.ui.windows.setShared('SelectedAttendanceId', listIdSel, true);
+            service.getAllAttItem().done(function(lstAllItem: Array<service.model.AttendanceType>){
+                var listAllId = [];
+                for(let j=0;j<lstAllItem.length;j++){
+                    listAllId[j] = lstAllItem[j].attendanceItemId;
+                }
+                var listIdSelect =[];
+                for(let i=0;i<self.lstItemSelected().length;i++){
+                    listIdSelect[i] = self.lstItemSelected()[i].id;
+                }
+                nts.uk.ui.windows.setShared('AllAttendanceObj', listAllId, true);
+                nts.uk.ui.windows.setShared('SelectedAttendanceId', listIdSelect, true);
                 nts.uk.ui.windows.setShared('Multiple', true, true);
-                console.log(listIdSel);
+                console.log(listIdSelect);
+                console.log(listAllId);
                 nts.uk.ui.windows.sub.modal('../../../kdl/021/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                      var lst  = nts.uk.ui.windows.getShared('');
                     
@@ -196,26 +202,20 @@ module kmk011.a.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+        //ghep ten hien thi 
         findTimeName(divTimeId: number){
             var self = this;
-             service.getDivItemIdSelected(divTimeId).done(function(lstIdSel: Array<service.model.DivergenceTimeItem>){
-                var strName = '';
-                if(lstIdSel.length<1){
-                    self.timeItemName('');
-                }else{
-                    for(let j=0;j<self.listDivItem().length;j++){
-                        if(self.listDivItem()[j].divItemId == lstIdSel[0].attendanceId) 
-                        {strName = self.listDivItem()[j].divItemName;}
-                    }  
-                    for(let i=1;i<lstIdSel.length;i++){
-                        for(let j=0;j<self.listDivItem().length;j++){
-                            if(self.listDivItem()[j].divItemId == lstIdSel[i].attendanceId) 
-                            {strName = strName + ' + ' + self.listDivItem()[j].divItemName;}
-                        }     
-                    }
-                     self.timeItemName(strName);
-                }
-            })
+            var strName = '';
+            if(self.lstItemSelected().length<1){
+                self.timeItemName('');
+            }else{
+                strName = self.lstItemSelected()[0].name;
+                if(self.lstItemSelected().length>1){
+                    for(let j=0;j<self.lstItemSelected().length;j++){
+                        strName = strName + ' + ' + self.lstItemSelected()[j].name;}
+                    }     
+                 self.timeItemName(strName);
+            }
         }
     }
     export module model{ 
