@@ -9,7 +9,12 @@ import nts.gul.text.IdentifierUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
+import nts.uk.ctx.sys.portal.dom.layout.PGType;
 import nts.uk.ctx.sys.portal.dom.placement.service.PlacementService;
+import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenu;
+import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
+import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -18,6 +23,12 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DefaultLayoutService implements LayoutService {
 
+	@Inject
+	private TopPageRepository topPageRepository;
+	
+	@Inject
+	private TitleMenuRepository titleMenuRepository;
+	
 	@Inject
 	private LayoutRepository layoutRepository;
 		
@@ -30,6 +41,24 @@ public class DefaultLayoutService implements LayoutService {
 		return layout.isPresent();
 	}
 
+	@Override
+	public void createLayout(String companyID, String parentCode, int pgType, Layout layout) {
+		if (pgType == PGType.TopPage.value) {
+			TopPage topPage = topPageRepository.findByCode(companyID, parentCode).get();
+			TopPage updatedTopPage = new TopPage(companyID, topPage.getTopPageCode(), layout.getLayoutID(), topPage.getTopPageName(), topPage.getLanguageNumber());
+			topPageRepository.update(updatedTopPage);
+		}
+		else if (pgType == PGType.TitleMenu.value) {
+			TitleMenu titleMenu = titleMenuRepository.findByCode(companyID, parentCode).get();
+			TitleMenu updatedTitleMenu = new TitleMenu(companyID, titleMenu.getTitleMenuCD(), titleMenu.getName(), layout.getLayoutID());
+			titleMenuRepository.update(updatedTitleMenu);
+		}
+		else if (pgType == PGType.MyPage.value) {
+			
+		}
+		layoutRepository.add(layout);
+	}
+	
 	@Override
 	public void deleteLayout(String companyID, String layoutID) {
 		if (isExist(layoutID)) {
