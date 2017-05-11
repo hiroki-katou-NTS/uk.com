@@ -1,6 +1,5 @@
 package nts.uk.file.pr.app.export.comparingsalarybonus;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,6 +74,7 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 					.collect(Collectors.toList());
 			lstDetailFinal.addAll(lstDetail);
 		});
+		
 		ComparingSalaryBonusReportData reportData = fakeData(companyCode, comparingQuery, lstDetailFinal);
 		this.compareGenertor.generate(context.getGeneratorContext(), reportData);
 
