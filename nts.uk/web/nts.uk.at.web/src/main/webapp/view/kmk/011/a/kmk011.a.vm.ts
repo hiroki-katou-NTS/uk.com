@@ -141,7 +141,7 @@ module kmk011.a.viewmodel {
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', listIdSel, true);
                 nts.uk.ui.windows.setShared('Multiple', true, true);
                 console.log(listIdSel);
-                nts.uk.ui.windows.sub.modal('../../../../kdl/a/021/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+                nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                      var lst  = nts.uk.ui.windows.getShared('');
                     
                 });  
