@@ -72,9 +72,10 @@
 							</td>
 							<td>	
 								<!-- A3_4: Divergence Time Name -->														
-								<input style="width: 70px" data-bind="ntsTextEditor:{
+								<input class = "nts-input" style="width: 70px" data-bind="ntsTextEditor:{
                                          value: divTimeName,
-                                         enable: false}" />
+                                         required: true,
+                                         enable: true}" />
 							</td>
 						</tr>	
 						<tr class = "row">
@@ -86,7 +87,7 @@
 								<!-- A3_6 -->
 								<button data-bind="click: openDialog021">選択</button>
 								<!-- A3_7: Time item name -->
-								<input style="width: 350px" data-bind="ntsTextEditor:{value: timeItemName}" />
+								<input class="nts-input" style="width: 350px" data-bind="ntsTextEditor:{value: timeItemName,required: true}" />
 							</td>
 						</tr>
 						<tr class = "row">

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.divergencetime;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceItemSet;
+import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceItemSetPK;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReasonPK;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTime;
@@ -119,6 +121,21 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 												domain.getDivReasonCode().v());
 		entity.divReason = domain.getDivReasonContent().v();
 		entity.requiredAtr = domain.getRequiredAtr().value;
+		return entity;
+	}
+	private static KmkmtDivergenceItemSet toEntityItemSet(DivergenceItemSet domain){
+		val entity = new KmkmtDivergenceItemSet();
+			entity.kmkmtDivergenceItemSetPK =	new KmkmtDivergenceItemSetPK(
+												domain.getCompanyId(),
+												domain.getDivTimeId(),
+												domain.getDivergenceItemId());
+		return entity;
+	}
+	private static KmkmtDivergenceItemSetPK toEntityItemSetPK(DivergenceItemSet domain){
+		val entity = new KmkmtDivergenceItemSetPK(
+												domain.getCompanyId(),
+												domain.getDivTimeId(),
+												domain.getDivergenceItemId());
 		return entity;
 	}
 	/**
@@ -246,4 +263,19 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 				.setParameter("attendanceItemType", attendanceItemType)
 				.getList(c->toDomainAttType(c));
 	}
+	@Override
+	public void addItemId(List<DivergenceItemSet> lstItemId) {
+		List<KmkmtDivergenceItemSet> listAdd = lstItemId.stream()
+						.map(c ->toEntityItemSet(c)).collect(Collectors.toList());
+		this.commandProxy().insertAll(listAdd);
+	}
+	@Override
+	public void deleteItemId(String companyId, int divTimeId) {
+		List<DivergenceItemSet> list = this.getallItembyCode(companyId, divTimeId);
+		List<KmkmtDivergenceItemSetPK> listDel = list.stream().map(c->toEntityItemSetPK(c))
+												.collect(Collectors.toList());
+		this.commandProxy().removeAll(KmkmtDivergenceItemSet.class, listDel);
+		this.getEntityManager().flush();
+	}
+	
 }

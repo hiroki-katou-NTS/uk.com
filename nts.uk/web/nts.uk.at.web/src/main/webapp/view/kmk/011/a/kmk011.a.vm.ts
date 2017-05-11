@@ -147,26 +147,42 @@ module kmk011.a.viewmodel {
                 nts.uk.ui.windows.setShared('Multiple', true, true);
                 console.log(listIdSelect);
                 console.log(listAllId);
-                nts.uk.ui.windows.sub.modal('../../../kdl/021/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                     var lst  = nts.uk.ui.windows.getShared('');
-                    
-                });  
+//                nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+//                    var list  = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                    var list = [101,104,109,113];
+                    var listUpdate = new Array<service.model.DivergenceTimeItem>();
+                    for(let i=0;i<list.length;i++){
+                        let itemUpdate = new service.model.DivergenceTimeItem(self.divTimeId(),list[i]);
+                        listUpdate.push(itemUpdate);
+                    }
+                    service.updateTimeItemId(listUpdate).done(function(){
+                        service.getNameItemSelected(self.divTimeId()).done(function(lstName: service.model.ItemSelected){
+                        self.lstItemSelected(lstName);
+                        self.findTimeName(self.divTimeId());
+                        })
+                    })
+//                });  
             })
         }
         Registration(){
             var self = this;
-            var dfd = $.Deferred();
-            var select = new service.model.SelectSet(self.selectSel(),self.convert(self.checkErrSelect()));
-            var input = new service.model.SelectSet(self.selectInp(),self.convert(self.checkErrInput()));
-            var divTime = new service.model.DivergenceTime(self.divTimeId(),self.divTimeName(),self.selectUse(),self.convertInt(self.alarmTime()),self.convertInt(self.errTime()),select,input);
-            service.updateDivTime(divTime).done(function(){
-                self.getAllDivTimeNew();
-                nts.uk.ui.dialog.alert('登録しました。');
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alert(error.message);
+             $('.nts-input').trigger("validate");
+            _.defer(() => {
+                if (nts.uk.ui.errors.hasError()===false) {
+                    var dfd = $.Deferred();
+                    var select = new service.model.SelectSet(self.selectSel(),self.convert(self.checkErrSelect()));
+                    var input = new service.model.SelectSet(self.selectInp(),self.convert(self.checkErrInput()));
+                    var divTime = new service.model.DivergenceTime(self.divTimeId(),self.divTimeName(),self.selectUse(),self.convertInt(self.alarmTime()),self.convertInt(self.errTime()),select,input);
+                    service.updateDivTime(divTime).done(function(){
+                        self.getAllDivTimeNew();
+                        nts.uk.ui.dialog.alert('登録しました。');
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alert(error.message);
+                    })
+                    dfd.resolve();
+                    return dfd.promise();
+                }
             })
-            dfd.resolve();
-            return dfd.promise();
         }
         convert(value: boolean): number{
             if(value == true){
@@ -182,9 +198,13 @@ module kmk011.a.viewmodel {
             return (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes);
         }
         convertInt(value: string): number{
-            var hours = value.substring(0,2);
-            var minutes = value.substring(3,5);
-            return (parseFloat(hours)*60 + parseFloat(minutes));
+            if(value==''||value==null||value===undefined){
+                return 0;
+            }else{
+                var hours = value.substring(0,2);
+                var minutes = value.substring(3,5);
+                return (parseFloat(hours)*60 + parseFloat(minutes));
+            }
         }
         //get all divergence time new
         getAllDivTimeNew(){
@@ -205,16 +225,18 @@ module kmk011.a.viewmodel {
         //ghep ten hien thi 
         findTimeName(divTimeId: number){
             var self = this;
+            self.timeItemName('');
             var strName = '';
             if(self.lstItemSelected().length<1){
                 self.timeItemName('');
             }else{
                 strName = self.lstItemSelected()[0].name;
                 if(self.lstItemSelected().length>1){
-                    for(let j=0;j<self.lstItemSelected().length;j++){
+                    for(let j=1;j<self.lstItemSelected().length;j++){
                         strName = strName + ' + ' + self.lstItemSelected()[j].name;}
                     }     
                  self.timeItemName(strName);
+                strName ='';
             }
         }
     }
