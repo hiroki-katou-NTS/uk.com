@@ -57,10 +57,7 @@ module qpp009.a.viewmodel {
             var hasError = false;
             // Validate year month
             $('#date-picker').ntsEditor('validate');
-            if (self.yearMonth() == null) {
-                $('#date-picker').ntsError('set', 'が入力されていません。');
-                hasError = true;
-            }
+            
             if(self.detailItemsSetting().isPrintDepHierarchy() 
             && self.detailItemsSetting().selectedLevels().length < 1) {
                  $('#hierarchy-content').ntsError('set', 'が選択されていません。');
@@ -73,15 +70,11 @@ module qpp009.a.viewmodel {
                 hasError = true;
             }
             
-            if(!self.detailItemsSetting().isPrintDepHierarchy() && self.printSetting().selectedBreakPageCode() == 4) {
+            if((!self.detailItemsSetting().isPrintDepHierarchy() && self.printSetting().selectedBreakPageCode() == 4) 
+            && (self.detailItemsSetting().selectedLevels().indexOf(self.printSetting().selectedBreakPageHierarchyCode()) < 0)) {
                 $('#specify-break-page-select').ntsError('set', '設定が正しくありません。');
-                hasError = true;
-            }
-            
-            if(self.detailItemsSetting().selectedLevels().indexOf(self.printSetting().selectedBreakPageHierarchyCode()) < 0) {
                 $('#specify-break-page-hierarchy-select').ntsError('set', '設定が正しくありません。');
                 hasError = true;
-                
             }
             return hasError;
         }
