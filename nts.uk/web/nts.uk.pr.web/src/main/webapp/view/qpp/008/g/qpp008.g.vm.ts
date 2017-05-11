@@ -124,7 +124,7 @@ module qpp008.g.viewmodel {
 
             $("#grid-comparing-different").on("change", ".reasonDifference-text", function(evt: any) {
                 let $element = $(this);
-                let selectedValue = $element.val();
+                let selectedValue = _.escape($element.val());
                 if (nts.uk.text.countHalf(selectedValue) > 30) {
                     nts.uk.ui.dialog.alert("Max length for this input is 30");
                     return;
