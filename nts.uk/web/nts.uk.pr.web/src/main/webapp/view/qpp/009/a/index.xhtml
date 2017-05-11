@@ -34,11 +34,11 @@
 					<tr>
 						<td id="contents-left">
 							<div class="select-target-year">
-								
 								<div id="time-input">
 									<span class="label with-image">
 										<i class="image image-calendar" /> <span>対象年度</span>
-									</span> <span id="date-picker" for="target-year-label"
+									</span> 
+									<span id="date-picker" for="target-year-label"
 										data-bind="ntsDatePicker: {
 										value: yearMonth, 
 										constraint: 'TargetYear', 
@@ -62,7 +62,7 @@
 								<div class="label header-label" id="detail-process-label">処理の詳細設定</div>
 								<div class="head-end"></div>
 								<div id="detail-items-setting-label" data-bind="ntsFormLabel: {}">明細・合計の出力指定 </div> 
-								<label id="detail-label">の部門構成で集計します.</label>
+								<label id="detail-label" data-bind="text: detailLabel()"></label>
 								<div id="detail-items-setting" data-bind="with: detailItemsSetting">
 									<div id="print-detail-item-checkbox" data-bind="ntsCheckBox: { checked: isPrintDetailItem }">明細  （支給した給与）を出力する</div>
 									<div id="print-total-department-checkbox">
@@ -80,8 +80,8 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: selectedLevels,
-																				enable: isPrintDepHierarchy} ">											
-										</div>										
+																				enable: isPrintDepHierarchy()} ">
+										</div>
 										<div style="margin-left: 15px">※10階層は部門計で確認できます。</div>
 									</div>
 									<div id="calculate-total-checkbox" data-bind="ntsCheckBox: {checked: isCalculateTotal}">総合計  （選択した個人の対象期間合計）を出力する。</div>
