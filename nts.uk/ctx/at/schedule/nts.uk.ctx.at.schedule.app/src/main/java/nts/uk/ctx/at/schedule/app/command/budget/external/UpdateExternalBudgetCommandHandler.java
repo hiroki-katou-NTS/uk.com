@@ -26,7 +26,7 @@ public class UpdateExternalBudgetCommandHandler extends CommandHandler<UpdateExt
 		UpdateExternalBudgetCommand command = context.getCommand();
 		// convert to server
 		ExternalBudget exBudget = command.toDomain();
-		Optional<ExternalBudget> optional = this.budgetRepo.find(AppContexts.user().companyCode(), command.getExternalBudgetCode());
+		Optional<ExternalBudget> optional = this.budgetRepo.find(AppContexts.user().companyId(), command.getExternalBudgetCode());
 		if(!optional.isPresent()){
 			throw new BusinessException(new RawErrorMessage("項目が存在しません、削除されしたようです。"));
 		}

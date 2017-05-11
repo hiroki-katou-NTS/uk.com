@@ -28,7 +28,7 @@ public class InsertExternalBudgetCommandHandler extends CommandHandler<InsertExt
 		// convert to server
 		ExternalBudget exBudget = command.toDomain();
 		// Check exist
-		Optional<ExternalBudget> optional = this.budgetRepo.find(AppContexts.user().companyCode(),
+		Optional<ExternalBudget> optional = this.budgetRepo.find(AppContexts.user().companyId(),
 				command.getExternalBudgetCode());
 		if (optional.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("入力したコードは、既に登録されています。"));
