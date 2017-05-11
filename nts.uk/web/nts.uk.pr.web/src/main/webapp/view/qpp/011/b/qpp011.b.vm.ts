@@ -466,15 +466,15 @@ module qpp011.b {
         checkBValue(): boolean {
             var self = this;
             if (!self.B_INP_001_yearMonth()) {
-                $('#B_INP_001-input').ntsError('set', 'が入力されていません');
+                $('#B_INP_001-input').ntsError('set', 'This field is required');
                 return false;
             }
             if (!self.B_INP_002_yearMonth()) {
-                $('#B_INP_002-input').ntsError('set', 'が入力されていません');
+                $('#B_INP_002-input').ntsError('set', 'This field is required');
                 return false;
             }
             if (!self.B_INP_003_yearMonth()) {
-                $('#B_INP_003-input').ntsError('set', 'が入力されていません');
+                $('#B_INP_003-input').ntsError('set', 'This field is required');
                 return false;
             }
             return true;
@@ -515,19 +515,19 @@ module qpp011.b {
         checkCValue(): boolean {
             var self = this;
             if (!self.C_INP_001_yearMonth()) {
-                $('#C_INP_001-input').ntsError('set', 'が入力されていません');
+                $('#C_INP_001-input').ntsError('set', 'This field is required');
                 return false;
             }
             if (!self.C_INP_002_yearMonth()) {
-                $('#C_INP_002-input').ntsError('set', 'が入力されていません');
+                $('#C_INP_002-input').ntsError('set', 'This field is required');
                 return false;
             }
             if (!self.C_INP_003_yearMonth()) {
-                $('#C_INP_003-input').ntsError('set', 'が入力されていません');
+                $('#C_INP_003-input').ntsError('set', 'This field is required');
                 return false;
             }
             if (!self.C_INP_004_Value()) {
-                $('#C_INP_004-input').ntsError('set', 'が入力されていません');
+                $('#C_INP_004-input').ntsError('set', 'This field is required');
                 return false;
             }
             if (self.C_INP_004_Value() && !self.C_INP_004_Value().match(/^[0-9]{2}$/)) {
