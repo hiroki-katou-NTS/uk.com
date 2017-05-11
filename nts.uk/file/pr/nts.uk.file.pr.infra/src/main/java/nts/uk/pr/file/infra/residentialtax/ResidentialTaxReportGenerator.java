@@ -2,6 +2,9 @@ package nts.uk.pr.file.infra.residentialtax;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -24,7 +27,7 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/qpp011a.xlsx";
 	/** The Constant REPORT_FILE_NAME. */
-	protected static final String REPORT_FILE_NAME = "テストQPP011.pdf";
+	protected static final String REPORT_FILE_NAME = "テストQPP011_{0}.pdf";
 
 	@Override
 	public void generate(FileGeneratorContext fileContext, List<ResidentTaxReportData> reportDataList) {
@@ -88,7 +91,7 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 				//CTR_001  designatedYM
 				designer.setDataSource("CTR" + sheetNumber + "_001", reportData.getDesignatedYM());
 				//CTR_002  totalAmountTobePaid
-				designer.setDataSource("CTR" + sheetNumber + "_002", reportData.getTotalAmountTobePaid());
+				designer.setDataSource("CTR" + sheetNumber + "_002", format(reportData.getTotalAmountTobePaid()));
 				//CTR_003  dueDate
 				designer.setDataSource("CTR" + sheetNumber + "_003", reportData.getDueDate());
 				
@@ -112,8 +115,11 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 			// save as PDF file
 			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
 			option.setAllColumnsInOnePagePerSheet(true);
-
-			designer.getWorkbook().save(this.createNewFile(fileContext, REPORT_FILE_NAME), option);
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddmmss");
+			String message = MessageFormat.format(REPORT_FILE_NAME, format1.format(cal.getTime()));
+			
+			designer.getWorkbook().save(this.createNewFile(fileContext, message), option);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -137,6 +143,9 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 	}
 	
 	private String format(Double input) {
+		if (input == null) {
+			input = 0.0;
+		}
 		DecimalFormat formatter = new DecimalFormat();
 		DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 		symbols.setGroupingSeparator(',');

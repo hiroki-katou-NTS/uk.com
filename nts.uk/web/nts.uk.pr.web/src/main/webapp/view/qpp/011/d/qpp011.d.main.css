@@ -54,6 +54,11 @@ input {
 	padding: 10px 25px;
 }
 
+.D_LST_001_class {
+	margin-top: 5px;
+    margin-left: 25px;
+}
+
 .floatLeft {
 	float: left;
 }
@@ -158,4 +163,8 @@ input {
 #D_SCH_001 .search-btn {
 	width: 70px;
 	height: 42px;
+}
+
+.fullHeight {
+	height: 100%;
 }

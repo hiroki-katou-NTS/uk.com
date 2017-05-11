@@ -16,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
@@ -50,7 +51,7 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
         //
 		Optional<String> personText = residentialTaxRepo.findPersonText(companyCode);
 		
-		if (query.getResidentTaxCodeList() == null) {
+		if (CollectionUtil.isEmpty(query.getResidentTaxCodeList())) {
 			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
 		}
 		
@@ -97,9 +98,12 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap
 					.get(residentialTax.getResidenceTaxCode());
 			if (personResitaxList == null) {
-				break;
+				continue;
 			}
+			
+			int i = 0;
 			for (PersonResitaxDto item : personResitaxList) {
+				i++;
 				InhabitantTaxChecklistCRpData personData = new InhabitantTaxChecklistCRpData();
 				BigDecimal value = personValue.get(item.getPersonID());
 				// DBD_003
@@ -107,15 +111,17 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 				// DBD_004
 				personData.setResiTaxAutonomy(residentialTax.getResiTaxAutonomy());
 				// DBD_005
-				personData.setCode("0000001");
+				personData.setCode("0000000" + i);
 				// DBD_006
-				personData.setName("テスト名前");
+				personData.setName("テスト名前" + i);
 				// DBD_007
 				if (value == null) {
 					personData.setValue(0d);
 				} else {
 					personData.setValue(value.doubleValue());
 				}
+				
+				personData.setUnit("円");
 				personData.setCheckSum(false);
 				reportDataList.add(personData);
 			}
@@ -129,6 +135,7 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 			reportData.setName(totalNumberPeople.get(residentialTax.getResidenceTaxCode()).toString());
 			// DBD_007
 			reportData.setValue(totalPaymentAmount.get(residentialTax.getResidenceTaxCode()));
+		    reportData.setUnit("円");
 			reportData.setCheckSum(true);
 			reportDataList.add(reportData);
 		}
@@ -149,6 +156,8 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 		sumReportData.setName(sumNumberPeople.toString());
 		// DBD_007
 		sumReportData.setValue(sumPaymentAmount);
+		
+		sumReportData.setUnit("円");
 
 		sumReportData.setCheckSum(true);
 

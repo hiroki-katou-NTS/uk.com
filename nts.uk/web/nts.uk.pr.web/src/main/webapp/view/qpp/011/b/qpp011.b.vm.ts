@@ -504,7 +504,7 @@ module qpp011.b {
                 service.saveAsPdf(command).done(function() {
                     //
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert("");
+                    nts.uk.ui.dialog.alert(res.message);
                 });
             } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
@@ -541,9 +541,9 @@ module qpp011.b {
             if (!self.checkCValue()) {
                 return;
             }
-            if (self.selectedValue_C_LST_001().length > 0) {
-            } else {
+            if (self.selectedValue_C_LST_001().length == 0) {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");
+                return;
             }
             var command = {
                 residentTaxCodeList: self.selectedValue_C_LST_001(),
