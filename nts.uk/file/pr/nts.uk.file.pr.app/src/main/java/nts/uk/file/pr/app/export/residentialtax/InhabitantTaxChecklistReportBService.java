@@ -43,6 +43,10 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 
 		String[] yearMonth = query.getYearMonth().split("/");
 		year = Integer.parseInt(yearMonth[0]);
+		
+		if (query.getResidentTaxCodeList() == null) {
+			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
+		}
 		// get residential tax
 		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
 				query.getResidentTaxCodeList());

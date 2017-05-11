@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -46,7 +47,13 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 
 		String[] yearMonth = query.getYearMonth().split("/");
 		year = Integer.parseInt(yearMonth[0]);
-
+        //
+		Optional<String> personText = residentialTaxRepo.findPersonText(companyCode);
+		
+		if (query.getResidentTaxCodeList() == null) {
+			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
+		}
+		
 		// get residential tax
 		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
 				query.getResidentTaxCodeList());
@@ -149,6 +156,10 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 
 		InhabitantTaxChecklistBRpHeader header = new InhabitantTaxChecklistBRpHeader();
 		int size = reportDataList.size() - 3;
+		header.setTextLabel("住民税チェックリスト（"+personText.get().toString()+"明細）");
+		String columnPersonText1 = personText.get().substring(0, 1);
+		String columnPersonText2 = personText.get().substring(1, 2);
+		header.setTextColumn(columnPersonText1+"  "+columnPersonText2+"  "+"名");
 		header.setCompanyName(company.getCompanyName());
 		header.setResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode() + " "
 				+ reportDataList.get(0).getResiTaxAutonomy() + " ～" + reportDataList.get(size).getResidenceTaxCode()
