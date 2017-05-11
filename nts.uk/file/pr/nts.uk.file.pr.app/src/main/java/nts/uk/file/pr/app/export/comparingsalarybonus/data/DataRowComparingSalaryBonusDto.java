@@ -3,24 +3,24 @@ package nts.uk.file.pr.app.export.comparingsalarybonus.data;
 import lombok.Getter;
 import lombok.Setter;
 /**
- * The Class DataRowComparingSalaryBonus
+ * The Class DataRowComparingSalaryBonusDto
  * @author lanlt
  *
  */
 @Setter
 @Getter
-public class DataRowComparingSalaryBonus {
+public class DataRowComparingSalaryBonusDto {
 	/** 項目名 */
 	private String itemName;
 
 	/** 項目額1  **/
-	private double month1;
+	private String month1;
 	
 	/** 項目額2  **/
-	private double month2;
+	private String month2;
 	
 	/**  different Salary */
-	private double differentSalary;
+	private String differentSalary;
 	
 	/** 登録状況1 **/
 	private String registrationStatus1;

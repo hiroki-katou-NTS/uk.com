@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 /**
- * ComparingSalaryBonusReportData
+ * The Class ComparingSalaryBonusReportData
  * @author lanlt
  *
  */
