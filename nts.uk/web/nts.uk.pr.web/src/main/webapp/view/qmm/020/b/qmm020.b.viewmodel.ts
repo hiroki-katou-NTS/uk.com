@@ -19,12 +19,12 @@ module qmm020.b.viewmodel {
         // start function
         start() {
             let self = this;
+            // clear all old item
+            self.listItems.removeAll();
+
             service.getAllotCompanyList()
                 .done(function(resp: Array<IListModel>) {
                     if (resp.length > 0) {
-                        // clear all old item
-                        self.listItems.removeAll();
-
                         // order by endDate with desc type and push to list source
                         _.orderBy(resp, ['endDate'], ['desc']).map((m) => {
                             self.listItems.push(new ListModel(m));
@@ -32,6 +32,10 @@ module qmm020.b.viewmodel {
 
                         // select first item
                         self.selectedId(self.listItems()[0].historyId);
+
+                        // subscrible change value function
+                        self.selectedId.valueHasMutated();
+                        self.selectedItem.valueHasMutated();
 
                         // find item has max date value
                         service.getAllotCompanyMaxDate().done(function(item: IListModel) {
@@ -46,9 +50,6 @@ module qmm020.b.viewmodel {
                     }
                 })
                 .fail(function(mes) { alert(mes); });
-
-            // subscrible change value function
-            self.selectedId.valueHasMutated();
         }
 
         // event calling by saveData event in view A
@@ -260,22 +261,5 @@ module qmm020.b.viewmodel {
         update() {
             this.text = nts.uk.time.formatYearMonth(this.startDate) + " ~ " + nts.uk.time.formatYearMonth(this.endDate);
         }
-    }
-
-    //Previous Month 
-    function previousYM(sYm: string) {
-        var preYm: number = 0;
-        if (sYm.length == 6) {
-            let sYear: string = sYm.substr(0, 4);
-            let sMonth: string = sYm.substr(4, 2);
-            //Trong truong hop thang 1 thi thang truoc la thang 12
-            if (sMonth == "01") {
-                preYm = parseInt((parseInt(sYear) - 1).toString() + "12");
-                //Truong hop con lai thi tru di 1      
-            } else {
-                preYm = parseInt(sYm) - 1;
-            }
-        }
-        return preYm;
     }
 }

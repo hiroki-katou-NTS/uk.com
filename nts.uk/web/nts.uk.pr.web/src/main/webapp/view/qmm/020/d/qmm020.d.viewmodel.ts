@@ -11,8 +11,10 @@ module qmm020.d.viewmodel {
 
             self.listTreeColumns = [{ headerText: '', key: 'code', dataType: 'string', hidden: true },
                 { headerText: 'コード/名称', key: 'name', dataType: 'string', hidden: false, width: '450px', template: '<span>${code} ${name}</span>' },
-                { headerText: '給与明細書', key: 'bonus', dataType: 'object', hidden: false, width: '250px', template: '<button class="d-btn-001" onclick="__viewContext.viewModel.viewmodelD.openMDialog()">選択</button><span>${bonus.code} ${bonus.name}</span>' },
-                { headerText: '賞与明細書', key: 'payment', dataType: 'object', hidden: false, width: '250px', template: '<button class="d-btn-002" onclick="__viewContext.viewModel.viewmodelD.openMDialog()">選択</button><span>${payment.code} ${payment.name}</span>' }];
+                { headerText: '給与明細書', key: 'paymentDetailCode', dataType: 'text', hidden: false, width: '250px', template: '<button class="d-btn-001" onclick="__viewContext.viewModel.viewmodelD.openMDialog()">選択</button><span>${paymentDetailCode} ${paymentDetailName}</span>' },
+                { headerText: '賞与明細書', key: 'bonusDetailCode', dataType: 'text', hidden: false, width: '250px', template: '<button class="d-btn-002" onclick="__viewContext.viewModel.viewmodelD.openMDialog()">選択</button><span>${bonusDetailCode} ${bonusDetailName}</span>' },
+                { headerText: '', key: 'paymentDetailName', dataType: 'text', hidden: true },
+                { headerText: '', key: 'bonusDetailName', dataType: 'text', hidden: true }];
 
             self.start();
         }
@@ -210,8 +212,11 @@ module qmm020.d.viewmodel {
 
             this.paymentDetailCode = param.paymentDetailCode || '';
             this.paymentDetailName = param.paymentDetailName || '';
+            this.update();
+        }
 
-            this.text = nts.uk.time.formatYearMonth(param.startDate) + " ~ " + nts.uk.time.formatYearMonth(param.endDate);
+        update() {
+            this.text = nts.uk.time.formatYearMonth(this.startDate) + " ~ " + nts.uk.time.formatYearMonth(this.endDate);
         }
     }
 }

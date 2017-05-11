@@ -2,8 +2,8 @@ module qmm020.a.viewmodel {
     export class ScreenModel {
         title: KnockoutObservable<string> = ko.observable('');
         tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-            new TabModel({ id: 'B', name: '会社', display: true }),
-            new TabModel({ id: 'C', name: '雇用', active: true, display: true }),
+            new TabModel({ id: 'B', name: '会社', active: true, display: true }),
+            new TabModel({ id: 'C', name: '雇用', display: true }),
             new TabModel({ id: 'D', name: '部門', display: true }),
             new TabModel({ id: 'E', name: '分類' }),
             new TabModel({ id: 'F', name: '職位' }),
@@ -26,45 +26,52 @@ module qmm020.a.viewmodel {
         };
 
         changeTab(tab: TabModel) {
-            let self = this, view = __viewContext.viewModel;
+            let self = this, view: any = __viewContext.viewModel,
+                oldtab: TabModel = _.find(self.tabs(), function(t) { return t.active() == true; });
+
+            // cancel action if tab self click
+            if (oldtab.id == tab.id) {
+                return;
+            }
+            console.log(tab.id);
             tab.active(true);
             self.title(tab.name);
-            self.tabs().map((t) => { if (t.name != tab.name) t.active(false); });
+            self.tabs().map((t) => { if (t.id != tab.id) t.active(false); });
 
             // call start function on view at here
             switch (tab.id) {
                 case 'B':
-                    if (typeof view.viewmodelB.start == 'function') {
+                    if (!!view.viewmodelB && typeof view.viewmodelB.start == 'function') {
                         view.viewmodelB.start();
                     }
                     break;
                 case 'C':
-                    if (typeof view.viewmodelC.start == 'function') {
+                    if (!!view.viewmodelC && typeof view.viewmodelC.start == 'function') {
                         view.viewmodelC.start();
                     }
                     break;
                 case 'D':
-                    if (typeof view.viewmodelD.start == 'function') {
+                    if (!!view.viewmodelD && typeof view.viewmodelD.start == 'function') {
                         view.viewmodelD.start();
                     }
                     break;
                 case 'E':
-                    if (typeof view.viewmodelE.start == 'function') {
+                    if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
                         view.viewmodelE.start();
                     }
                     break;
                 case 'F':
-                    if (typeof view.viewmodelF.start == 'function') {
+                    if (!!view.viewmodelF && typeof view.viewmodelF.start == 'function') {
                         view.viewmodelF.start();
                     }
                     break;
                 case 'G':
-                    if (typeof view.viewmodelG.start == 'function') {
+                    if (!!view.viewmodelG && typeof view.viewmodelG.start == 'function') {
                         view.viewmodelG.start();
                     }
                     break;
                 case 'H':
-                    if (typeof view.viewmodelH.start == 'function') {
+                    if (!!view.viewmodelH && typeof view.viewmodelH.start == 'function') {
                         view.viewmodelH.start();
                     }
                     break;
