@@ -167,8 +167,9 @@ module nts.uk.pr.view.ccg015.b {
             private updateMyPageSetting() {
                 var self = this;
                 service.updateMyPageSetting(self.collectData()).done(function() {
-                    nts.uk.ui.dialog.alert("登録しました。");
-                    nts.uk.ui.windows.close();
+                    nts.uk.ui.dialog.alert("登録しました。").then(function() {
+                        nts.uk.ui.windows.close();
+                    });
                 });
             }
         }
