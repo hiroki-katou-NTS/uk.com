@@ -117,3 +117,6 @@ button.nts-switch-button {
 	padding: 20px !important;
 	min-width: 1360px !important;
 }
+.btn_margin_top{
+	margin-top: 20px;
+}

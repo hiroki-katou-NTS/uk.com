@@ -67,7 +67,7 @@
 											<label>言語<br /></label>
 										</div>
 									</td>
-									<td>
+									<td colspan = "2">
 										<div id="combo-box"
 											data-bind="ntsComboBox: {
 												options: $parent.languageListOption,
@@ -88,14 +88,14 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_code"
-										class="nts-input tr120 save-error" data-name="コード"
+										class="nts-input tr40 save-error" data-name="コード"
 										data-bind="ntsTextEditor: {
 											value: topPageCode,
 											enable: $parent.isNewMode(),
 											required:true,
 											constraint: 'TopPageCode'}" />
 									</td>
-									<td><input id="inp_name" data-name="名称"
+									<td style= "padding-left: 20px;"><input id="inp_name" data-name="名称"
 										class="nts-input tr240 save-error"
 										data-bind="ntsTextEditor: {
 											value: topPageName,
@@ -106,7 +106,7 @@
 								</tr>
 
 								<tr>
-									<td><button data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()" class="x-large">レイアウト設定</button></td>
+									<td><button data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()" class="btn_margin_top x-large">レイアウト設定</button></td>
 								</tr>
 							</table>
 
