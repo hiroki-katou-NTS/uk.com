@@ -220,11 +220,30 @@ project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp') {
 //========================sys:portal ↑=====================================
 
 //=========================at:shared===================================
+project (':ctx:at:shared:nts.uk.ctx.at.shared.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+	}
+}
 project (':ctx:at:shared:nts.uk.ctx.at.shared.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.dom')
 		compile project(':ctx:at:record:nts.uk.ctx.at.record.dom')
+	}
+}
+project (':ctx:at:shared:nts.uk.ctx.at.shared.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+	}
+}
+project (':ctx:at:shared:nts.uk.ctx.at.shared.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.app')
 	}
 }
 
@@ -628,7 +647,10 @@ project (':web:nts.uk.at.web') {
 		compile project(':shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.app')
 		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.infra')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.ws')
 		
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ac')
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app')
