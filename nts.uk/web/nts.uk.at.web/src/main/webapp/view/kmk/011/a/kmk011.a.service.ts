@@ -1,8 +1,6 @@
 module kmk011.a.service {
     var paths = {
         getAllDivTime: "at/record/divergencetime/getalldivtime",
-//        getDivItemIdSel: "at/record/divergencetime/getItemSet/",
-//        getAllDivItem: "at/record/divergencetime/getAllItem",
         updateDivTime: "at/record/divergencetime/updatedivtime",
         updateTimeItemId:"at/record/divergencetime/updateTimeItemId",
         getNameItemSelected: "at/record/divergencetime/getitemname/",
