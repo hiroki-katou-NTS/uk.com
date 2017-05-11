@@ -65,5 +65,4 @@ public class SystemResourceLoading implements ISystemResourceBundle {
 		}
 		return Collections.unmodifiableMap(result);
 	}
-
 }

@@ -14,4 +14,5 @@ public class CompanyResourcePK {
 	private String companyCode;
 	@Column(name = "CODE")
 	private String code;
+	
 }

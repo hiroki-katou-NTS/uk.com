@@ -62,4 +62,5 @@ public abstract class TableEntity {
     	this.updScd = "TEST_SCD";
     	this.updPg = "TEST_PG";
     }
+    
 }

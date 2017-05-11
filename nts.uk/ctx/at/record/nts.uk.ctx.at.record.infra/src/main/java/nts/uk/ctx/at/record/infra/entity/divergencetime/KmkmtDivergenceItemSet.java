@@ -27,7 +27,7 @@ public class KmkmtDivergenceItemSet extends UkJpaEntity implements Serializable{
 	
 	@Override
 	protected Object getKey() {
-		return null;
+		return kmkmtDivergenceItemSetPK;
 	}
 
 }

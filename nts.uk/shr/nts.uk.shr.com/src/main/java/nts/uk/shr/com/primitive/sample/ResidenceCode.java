@@ -22,7 +22,6 @@ public class ResidenceCode extends CodePrimitiveValue<ResidenceCode> {
 	 *            raw value
 	 */
 	public ResidenceCode(String rawValue) {
-		super(rawValue);
+		super(rawValue); 
 	}
-
 }

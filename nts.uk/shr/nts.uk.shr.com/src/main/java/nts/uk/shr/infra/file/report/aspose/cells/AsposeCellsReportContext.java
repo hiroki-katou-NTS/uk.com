@@ -70,4 +70,5 @@ public class AsposeCellsReportContext implements AutoCloseable {
 	public void close() throws Exception {
 		this.templateFile.close();
 	}
+	
 }

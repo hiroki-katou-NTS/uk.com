@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.ws.divergencetime;
 
 import java.util.List;
 
-import javax.ejb.PostActivate;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,23 +13,22 @@ import nts.uk.ctx.at.record.app.command.divergencetime.AddDivergenceReasonComman
 import nts.uk.ctx.at.record.app.command.divergencetime.AddDivergenceReasonCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.DeleteDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.DeleteDivergenceReasonCommandHandler;
+import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceItemSetCommand;
+import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceItemSetCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommandHandler;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.AttendanceTypeDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.AttendanceTypeFinder;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemDto;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemNameDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemNameFinder;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceTimeDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceTimeFinder;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItem;
 
 @Path("at/record/divergencetime")
 @Produces("application/json")
@@ -51,11 +49,11 @@ public class DivergenceTimeWebService extends WebService{
 	@Inject
 	private DivergenceItemSetFinder getItemSet;
 	@Inject
-	private DivergenceItemFinder getAllItem;
-	@Inject
 	private DivergenceItemNameFinder getNameItem;
 	@Inject
 	private AttendanceTypeFinder getAttItem;
+	@Inject
+	private UpdateDivergenceItemSetCommandHandler updateItemId;
 	/**
 	 * get all divergence time
 	 * @return
@@ -114,18 +112,13 @@ public class DivergenceTimeWebService extends WebService{
 		return this.getItemSet.getAllDivReasonByCode(divTimeId);
 	}
 	/**
-	 * get all divergence item
-	 * @return
+	 * update time item id
+	 * @param command
 	 */
 	@POST
-	@Path("getAllItem")
-	public List<DivergenceItemDto> getAllItem(){
-		return this.getAllItem.getAllDivReasonByCode();
-	}
-	@POST
 	@Path("updateTimeItemId")
-	public void updateTimeItemId(){
-		
+	public void updateTimeItemId(List<UpdateDivergenceItemSetCommand> command){
+		this.updateItemId.handle(command);
 	}
 	/**
 	 * get name item selected

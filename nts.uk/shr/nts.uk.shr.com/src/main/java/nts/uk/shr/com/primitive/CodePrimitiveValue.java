@@ -8,7 +8,7 @@ import nts.arc.primitive.StringPrimitiveValue;
  */
 public class CodePrimitiveValue<S> extends StringPrimitiveValue<CodePrimitiveValue<S>> {
 
-	/**
+	/** 
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;

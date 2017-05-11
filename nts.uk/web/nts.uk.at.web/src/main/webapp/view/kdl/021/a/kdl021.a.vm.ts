@@ -29,16 +29,15 @@ module kdl021.a.viewmodel {
             for(let item in self.items()){
                 //console.log(self.items);      
             }
-            for (let i = 4; i <= 12; i++) {
+            for (let i = 101; i <= 201; i++) {
                 let code: string = padZero(i.toString());
-                if (i % 3 == 0) {
-                    self.selectedItems.push(code);
-                }
+                    self.selectedItems.push(i);
             };
             
-            service.getAllDivItemId().done(function(lstItem: Array<service.model.DivergenceItem>){
-                for(let item in lstItem){
-                    self.items.push(new ItemModel(lstItem[i].divItemId.toString(),lstItem[i].divItemName.toString()));
+            service.getPossibleItem(self.selectedItems).done(function(lstItem: Array<service.model.DivergenceItem>){
+                //console.log(lstItem);
+                for (let i in lstItem) {
+                    self.items.push(new ItemModel(lstItem[i].divItemId.toString(), lstItem[i].divItemName.toString()));
                 };
             })
              
@@ -61,7 +60,7 @@ module kdl021.a.viewmodel {
                 { headerText: '名称', prop: 'name', width: 230 }
             ]);
             self.currentCode = ko.observable();
-            self.currentCodeList = ko.observableArray(self.selectedItems);
+            self.currentCodeList = ko.observableArray();
             
         }
         //event When click to 設定 ボタン
@@ -93,4 +92,6 @@ module kdl021.a.viewmodel {
             this.name = name;
         }
     }
+    
+    
 }

@@ -21,4 +21,5 @@ public class CompanyResource {
 	@NotNull
 	@Column(name = "LANGUAGE_CODE")
 	private String languageCode;
+	
 }
