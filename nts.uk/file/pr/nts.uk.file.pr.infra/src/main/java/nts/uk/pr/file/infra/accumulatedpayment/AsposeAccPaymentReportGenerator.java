@@ -27,6 +27,7 @@ import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.file.pr.app.export.accumulatedpayment.AccPaymentReportGenerator;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentDataSource;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentItemData;
@@ -88,9 +89,8 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			Cells cells = worksheet.getCells();
 			
 			// Set header.
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd hh:mm");
-			worksheet.getPageSetup().setHeader(2, 
-					"&\"IPAPGothic\"&13 " + dateFormat.format(new Date()) + "\r\n&P ページ");
+			worksheet.getPageSetup().setHeader(2,
+					"&\"IPAPGothic\"&13 " + GeneralDate.today().toString() + "\r\n&P ページ");
 			designer.getDesigner().setDataSource("Header", dataSource.getHeaderData());
 			
 			// Fill data

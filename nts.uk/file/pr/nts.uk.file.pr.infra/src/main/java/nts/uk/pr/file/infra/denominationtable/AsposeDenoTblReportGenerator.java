@@ -33,6 +33,7 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.file.pr.app.export.denominationtable.DenoTableReportGenerator;
 import nts.uk.file.pr.app.export.denominationtable.data.Denomination;
 import nts.uk.file.pr.app.export.denominationtable.data.DepartmentData;
@@ -119,9 +120,8 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			Cells cells = worksheet.getCells();
 			
 			// Set header.
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd hh:mm");
 			worksheet.getPageSetup().setHeader(2,
-					"&\"IPAPGothic\"&13 " + dateFormat.format(new Date()) + "\r\n&P ページ");
+					"&\"IPAPGothic\"&13 " + GeneralDate.today().toString() + "\r\n&P ページ");
 			reportContext.getDesigner().setDataSource("Header", reportData.getSalaryChartHeader());
 			
 			// Initial Variables

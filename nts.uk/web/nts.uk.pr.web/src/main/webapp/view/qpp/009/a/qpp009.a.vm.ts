@@ -39,9 +39,10 @@ module qpp009.a.viewmodel {
         public printData() {
             var self = this;
             self.clearAllError();
-            //Validate
-            if (self.validate()) {
-                    return;
+            // Validate
+            self.validate();
+            if ($('.nts-input').ntsError('hasError')) {
+                return;
             }
             
             // Print Report
@@ -50,6 +51,7 @@ module qpp009.a.viewmodel {
                 .fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 })
+           
         }
         
         private validate(): boolean {
@@ -57,10 +59,12 @@ module qpp009.a.viewmodel {
             var hasError = false;
             // Validate year month
             $('#date-picker').ntsEditor('validate');
-            
+            if ($('#date-picker').ntsError("hasError")) {
+                hasError = true;
+            }
             if(self.detailItemsSetting().isPrintDepHierarchy() 
             && self.detailItemsSetting().selectedLevels().length < 1) {
-                 $('#hierarchy-content').ntsError('set', 'が選択されていません。');
+                 $('#hierarchy-content').ntsError('set', '1~9階層 が選択されていません。');
                 hasError = true;
             }
             
@@ -74,9 +78,11 @@ module qpp009.a.viewmodel {
             && (self.detailItemsSetting().selectedLevels().indexOf(self.printSetting().selectedBreakPageHierarchyCode()) < 0)) {
                 $('#specify-break-page-select').ntsError('set', '設定が正しくありません。');
                 $('#specify-break-page-hierarchy-select').ntsError('set', '設定が正しくありません。');
+                // TODO: Check employee list.
                 hasError = true;
             }
             return hasError;
+            
         }
         
         private clearAllError(): void {
@@ -100,16 +106,16 @@ module qpp009.a.viewmodel {
         selectedLevels: KnockoutObservableArray<number>;
 
         constructor() {
-            this.isPrintDetailItem = ko.observable(false);
-            this.isPrintTotalOfDepartment = ko.observable(true);
-            this.isPrintDepHierarchy = ko.observable(true);
+            this.isPrintDetailItem = ko.observable(true);
+            this.isPrintTotalOfDepartment = ko.observable(false);
+            this.isPrintDepHierarchy = ko.observable(false);
             this.isCalculateTotal = ko.observable(true);
             this.AccumulatedLevelList = ko.observableArray<SelectionDto>([
                 new SelectionDto(1, '1階層'), new SelectionDto(2, '2階層'), new SelectionDto(3, '3階層'),
                 new SelectionDto(4, '4階層'), new SelectionDto(5, '5階層'), new SelectionDto(6, '6階層'),
                 new SelectionDto(7, '7階層'), new SelectionDto(8, '8階層'), new SelectionDto(9, '9階層')
             ]);
-            this.selectedLevels = ko.observableArray<number>([1, 2, 3, 8, 9]);
+            this.selectedLevels = ko.observableArray<number>([]);
         }
     }
 
