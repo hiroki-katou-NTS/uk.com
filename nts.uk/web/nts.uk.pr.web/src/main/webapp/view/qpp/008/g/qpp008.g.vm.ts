@@ -20,9 +20,9 @@ module qpp008.g.viewmodel {
             self.detailDifferentListKO = ko.observableArray(self.detailDifferentList);
             self.comparativeDateEarlier = nts.uk.ui.windows.getShared('qpp008_processingYMEarlierValue');
             self.comparativeDateLater = nts.uk.ui.windows.getShared('qpp008_processingYMLaterValue');
-            self.numberOfPeople = 2;
             self.employeerIDSelection = nts.uk.ui.windows.getShared('qpp008_employyerCurrentCodeList');
-
+            self.numberOfPeople = self.employeerIDSelection.length;
+            
             self.itemCategoryChecked = ko.observableArray([
                 new ItemModel(0, '支給'),
                 new ItemModel(1, '控除'),
@@ -124,7 +124,7 @@ module qpp008.g.viewmodel {
 
             $("#grid-comparing-different").on("change", ".reasonDifference-text", function(evt: any) {
                 let $element = $(this);
-                let selectedValue = $element.val();
+                let selectedValue = _.escape($element.val());
                 if (nts.uk.text.countHalf(selectedValue) > 30) {
                     nts.uk.ui.dialog.alert("Max length for this input is 30");
                     return;
