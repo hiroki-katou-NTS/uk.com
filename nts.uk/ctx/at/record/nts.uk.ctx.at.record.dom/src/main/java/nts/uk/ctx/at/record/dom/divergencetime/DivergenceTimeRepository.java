@@ -61,5 +61,18 @@ public interface DivergenceTimeRepository {
 	 * @return
 	 */
 	Optional<DivergenceReason> getDivReason(String companyId, int divTimeId, String divReasonCode);
-	
+	/**
+	 * 
+	 * @param companyId
+	 * @param divTimeId
+	 * @return
+	 */
+	List<DivergenceItemName> getItemSelected(String companyId, int divTimeId);
+	/**
+	 * get all item
+	 * @param companyId
+	 * @param type
+	 * @return
+	 */
+	List<AttendanceType> getAllItem(String companyId, int type);
 }

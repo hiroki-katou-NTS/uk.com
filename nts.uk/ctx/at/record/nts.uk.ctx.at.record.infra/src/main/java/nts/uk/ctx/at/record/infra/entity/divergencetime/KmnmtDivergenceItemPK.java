@@ -20,7 +20,7 @@ public class KmnmtDivergenceItemPK implements Serializable{
 	/*会社ID*/
 	@Column(name = "CID")
 	public String companyId;
-	/*乖離時間ID*/
+	/*勤怠項目ID*/
 	@Column(name = "ID")
-	public int divTimeId;
+	public int 	attendanceItemId;
 }

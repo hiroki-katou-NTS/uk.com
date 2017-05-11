@@ -1,23 +1,24 @@
 module kmk011.a.service {
     var paths = {
         getAllDivTime: "at/record/divergencetime/getalldivtime",
-        getDivItemIdSel: "at/record/divergencetime/getItemSet/",
-        getAllDivItem: "at/record/divergencetime/getAllItem",
+//        getDivItemIdSel: "at/record/divergencetime/getItemSet/",
+//        getAllDivItem: "at/record/divergencetime/getAllItem",
         updateDivTime: "at/record/divergencetime/updatedivtime",
-        updateTimeItemId:"at/record/divergencetime/updateTimeItemId"
-    }
-
-    /**
-    * get all divergence item id selected(id da duoc chon)
-    */
-    export function getDivItemIdSelected(divTimeId: string): JQueryPromise<Array<model.DivergenceTimeItem>> {
-        return nts.uk.request.ajax("at", paths.getDivItemIdSel + divTimeId);
+        updateTimeItemId:"at/record/divergencetime/updateTimeItemId",
+        getNameItemSelected: "at/record/divergencetime/getitemname/",
+        getAllAttItem:"at/record/divergencetime/getattitem"
     }
     /**
-    * get all divergence item id(id co the chon)
+    * get all item selected(item da duoc chon)
     */
-    export function getAllDivItemId(): JQueryPromise<Array<model.DivergenceItem>> {
-        return nts.uk.request.ajax("at", paths.getAllDivItem);
+    export function getNameItemSelected(divTimeId: number): JQueryPromise<Array<model.ItemSelected>> {
+        return nts.uk.request.ajax("at", paths.getNameItemSelected + divTimeId);
+    }
+    /**
+    * get all attendance item id(id co the chon)
+    */
+    export function getAllAttItem(): JQueryPromise<Array<model.AttendanceType>> {
+        return nts.uk.request.ajax("at", paths.getAllAttItem);
     }
     /**
     * update time item id (da duoc chon lai)
@@ -76,6 +77,17 @@ module kmk011.a.service {
                 this.divTimeId = divTimeId;
                 this.attendanceId = attendanceId;
             }
+        }
+        export class ItemSelected{
+            id: number;
+            name: string;
+            constructor(id: number,name: string){
+                this.id = id;
+                this.name = name;
+            }
+        }
+        export class AttendanceType{
+            attendanceItemId: number;
         }
         export class DivergenceItem{
             id: number;

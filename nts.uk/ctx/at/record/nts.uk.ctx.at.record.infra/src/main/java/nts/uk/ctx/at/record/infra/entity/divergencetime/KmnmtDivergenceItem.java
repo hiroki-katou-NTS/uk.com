@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name="KMNMT_DIVERGENCE_ITEM")
+@Table(name="KMNMT_ATTENDANCE_ITEM")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KmnmtDivergenceItem extends UkJpaEntity implements Serializable{
