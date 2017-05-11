@@ -26,7 +26,7 @@
 			<div id="contents-area">
 				<div class="form-group no-margin-bottom">
 					<div id="D_LBL_001"
-						data-bind="ntsFormLabel: { required: true, constraint: 'ProcessingName' }">支払日区分1</div>
+						data-bind="ntsFormLabel: { required: true, constraint: 'ProcessingName' }"><span data-bind="text: '支払日区分' + index()"></span></div>
 					<input type="text" id="D_INP_001"
 						data-bind="ntsTextEditor: { value: inp001, constraint: 'ProcessingName', required: true, immediate: true }" />
 					<div id="D_SEL_016" data-bind="ntsCheckBox: sel016"></div>

@@ -62,7 +62,6 @@ module qmm005.e {
             services.getData(self.index()).done(function(resp: Array<any>) {
                 if (resp && resp[0] && resp[1]) {
                     self.dataSources = resp;
-                    nts.uk.ui.windows.setShared('xxx', resp);
                     self.sel003.helper.text("処理月の当月" + resp[0].payStdDay + "日");
                     self.sel007.helper.text("処理月の直前の" + resp[1].empInsStdMon + "月" + resp[1].empInsStdDay + "日");
                     self.sel008.helper.text("処理月の習前の" + resp[1].incometaxStdMon + "月" + resp[1].incometaxStdDay + "日");
