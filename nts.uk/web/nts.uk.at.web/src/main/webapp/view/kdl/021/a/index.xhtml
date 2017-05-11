@@ -7,14 +7,14 @@
 <head>
 </head>
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdl021.a.main.css" />
 			<com:scriptfile path="kdl021.a.start.js" />
 			<com:scriptfile path="kdl021.a.service.js" />
 			<com:scriptfile path="kdl021.a.vm.js" />
-			<script>var dialogSize = { width: 400 , height: 600};</script>
+			<script>var dialogSize = { width: 425 , height: 700};</script>
 		</ui:define>
 		<ui:define name="content">
 			<div id="total">
@@ -51,7 +51,7 @@
 					<div>
 						<hr></hr>
 						<button id="btnSetting" class="x-large proceed" data-bind="click: register">設定</button>
-						<button id="btnCancel" class="large">キャンセル</button>
+						<button id="btnCancel" class="large" data-bind="click: close">キャンセル</button>
 					</div>
 				</div>
 

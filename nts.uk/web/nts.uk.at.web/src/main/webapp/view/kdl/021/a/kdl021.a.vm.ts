@@ -17,17 +17,16 @@ module kdl021.a.viewmodel {
             self.allItems = [];
             //seleted items
             self.selectedItems = [];
-
+            //Add the fisrt Item
             self.items.push(new ItemModel("", "選択なし"))；
             
             for (let i = 1; i <= 15; i++) {
                 let code = padZero(i.toString());
                 let name = "残業時間" + i;
-                self.items.push(new ItemModel(code, name));
+                //self.items.push(new ItemModel(code, name));
                 self.allItems.push(new ItemModel(code, name));
             }
-            console.log(self.items());
-            for(let i in self.items()){
+            for(let item in self.items()){
                 //console.log(self.items);      
             }
             for (let i = 4; i <= 12; i++) {
@@ -36,6 +35,24 @@ module kdl021.a.viewmodel {
                     self.selectedItems.push(code);
                 }
             };
+            
+            service.getAllDivItemId().done(function(lstItem: Array<service.model.DivergenceItem>){
+                for(let item in lstItem){
+                    self.items.push(new ItemModel(lstItem[i].divItemId.toString(),lstItem[i].divItemName.toString()));
+                };
+            })
+             
+            
+            //let allAttendance : Array<any> = nts.uk.ui.windows.getShared('AllAttendanceObj');
+//            for(let i in allAttendance){
+//                self.items.push(new ItemModel(allAttendance[i].divItemId.toString(),allAttendance[i].divItemName.toString()));
+//                let key =  Object.keys(allAttendance[i])[1];
+//            };
+            
+            //debugger;
+            //nts.uk.ui.windows.getShared('SelectedAttendanceId', listIdSel, true);
+//            console.log(allAttendance);
+//            debugger;
             //let returnVal : Array<any> = nts.uk.ui.windows.getShared('');
             //console.log(self.allItems);
             //console.log(self.selectedItems);
@@ -45,6 +62,7 @@ module kdl021.a.viewmodel {
             ]);
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray(self.selectedItems);
+            
         }
         //event When click to 設定 ボタン
         register(){
@@ -53,6 +71,11 @@ module kdl021.a.viewmodel {
 //            console.log(self.selectedItems);
 //            self.currentCodeList(self.selectedIstems);
             //console.log(self.currentCodeList());
+            nts.uk.ui.windows.setShare('selectedChildAttendace',self.currentCodeList(),true);
+        }
+        //Close Dialog
+        close(){
+            nts.uk.ui.windows.close();
         }
     }
     //Format Code : Pad 0 to Code
