@@ -1,9 +1,15 @@
 package nts.uk.pr.file.infra.residentialtax;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import javax.ejb.Stateless;
 
 import com.aspose.cells.BackgroundType;
+import com.aspose.cells.BorderType;
 import com.aspose.cells.CellArea;
+import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Color;
 import com.aspose.cells.FormatCondition;
 import com.aspose.cells.FormatConditionCollection;
@@ -12,8 +18,6 @@ import com.aspose.cells.PageSetup;
 import com.aspose.cells.PdfSaveOptions;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Worksheet;
-import com.aspose.cells.BorderType;
-import com.aspose.cells.CellBorderType;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.residentialtax.InhabitantTaxChecklistBGenerator;
@@ -29,7 +33,7 @@ public class InhabitantTaxChecklistReportBGenerator extends AsposeCellsReportGen
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/qpp011b.xlsx";
 	/** The Constant REPORT_FILE_NAME. */
-	protected static final String REPORT_FILE_NAME = "テストQPP011.pdf";
+	protected static final String REPORT_FILE_NAME = "テストQPP011_{0}.pdf";
 	
 	@Override
 	public void generate(FileGeneratorContext fileContext, InhabitantTaxChecklistBReport dataExport) {
@@ -101,8 +105,12 @@ public class InhabitantTaxChecklistReportBGenerator extends AsposeCellsReportGen
 			// save as PDF file
 			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
 			option.setAllColumnsInOnePagePerSheet(true);
-
-			reportContext.getWorkbook().save(this.createNewFile(fileContext, REPORT_FILE_NAME), option);
+            
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddmmss");
+			String message = MessageFormat.format(REPORT_FILE_NAME, format1.format(cal.getTime()));
+			
+			reportContext.getWorkbook().save(this.createNewFile(fileContext, message), option);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

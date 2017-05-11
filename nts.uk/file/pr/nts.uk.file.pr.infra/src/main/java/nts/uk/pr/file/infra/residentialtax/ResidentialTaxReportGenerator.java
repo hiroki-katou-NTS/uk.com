@@ -2,6 +2,9 @@ package nts.uk.pr.file.infra.residentialtax;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -112,8 +115,11 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 			// save as PDF file
 			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
 			option.setAllColumnsInOnePagePerSheet(true);
-
-			designer.getWorkbook().save(this.createNewFile(fileContext, REPORT_FILE_NAME), option);
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddmmss");
+			String message = MessageFormat.format(REPORT_FILE_NAME, format1.format(cal.getTime()));
+			
+			designer.getWorkbook().save(this.createNewFile(fileContext, message), option);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -504,7 +504,7 @@ module qpp011.b {
                 service.saveAsPdf(command).done(function() {
                     //
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert("");
+                    nts.uk.ui.dialog.alert(res.message);
                 });
             } else {
                 nts.uk.ui.dialog.alert("納付先が選択されていせん。");

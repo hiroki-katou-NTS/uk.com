@@ -1,5 +1,9 @@
 package nts.uk.pr.file.infra.residentialtax;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import javax.ejb.Stateless;
 
 import com.aspose.cells.BackgroundType;
@@ -29,7 +33,7 @@ public class InhabitantTaxChecklistReportCGenerator extends AsposeCellsReportGen
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/qpp011c.xlsx";
 	/** The Constant REPORT_FILE_NAME. */
-	protected static final String REPORT_FILE_NAME = "テストQPP011.pdf";
+	protected static final String REPORT_FILE_NAME = "テストQPP011_{0}.pdf";
 
 	@Override
 	public void generate(FileGeneratorContext fileContext, InhabitantTaxChecklistCReport dataExport) {
@@ -108,8 +112,12 @@ public class InhabitantTaxChecklistReportCGenerator extends AsposeCellsReportGen
 			// save as PDF file
 			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
 			option.setAllColumnsInOnePagePerSheet(true);
+			
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddmmss");
+			String message = MessageFormat.format(REPORT_FILE_NAME, format1.format(cal.getTime()));
 
-			reportContext.getWorkbook().save(this.createNewFile(fileContext, REPORT_FILE_NAME), option);
+			reportContext.getWorkbook().save(this.createNewFile(fileContext, message), option);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);

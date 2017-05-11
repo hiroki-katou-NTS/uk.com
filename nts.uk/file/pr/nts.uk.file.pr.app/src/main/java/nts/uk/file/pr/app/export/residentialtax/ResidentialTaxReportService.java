@@ -25,6 +25,7 @@ import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxDto;
 import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxSlipDto;
 import nts.uk.file.pr.app.export.residentialtax.data.RetirementPaymentDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 @Stateless
 public class ResidentialTaxReportService extends ExportService<ResidentialTaxQuery> {
@@ -32,6 +33,9 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 	private ResidentialTaxGenerator generate;
 	@Inject
 	private ResidentialTaxReportRepository residentialTaxRepo;
+	
+	@Inject
+	private JapaneseErasProvider eraProvider;
 
 	@Override
 	protected void handle(ExportServiceContext<ResidentialTaxQuery> context) {
@@ -185,7 +189,8 @@ public class ResidentialTaxReportService extends ExportService<ResidentialTaxQue
 			// DBD_019 taxDemandChargeMny
 			reportData.setTaxDemandChargeMny(residentialTaxSlip.getTaxDemandChargeMny().doubleValue());
 			// DBD_020 filingDate
-			reportData.setFilingDate(residentialTaxSlip.getDueDate().toString());
+			String getDueDateJapan = this.eraProvider.toJapaneseDate(residentialTaxSlip.getDueDate()).toString();
+			reportData.setFilingDate(getDueDateJapan);
 			// CTR_001 designatedYM
 			reportData.setDesignatedYM(query.getProcessingYearMonthJapan()+"分");
 			// CTR_002 totalAmountTobePaid
