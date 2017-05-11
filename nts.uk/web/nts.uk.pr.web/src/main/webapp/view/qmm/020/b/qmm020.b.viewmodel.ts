@@ -103,22 +103,18 @@ module qmm020.b.viewmodel {
 
                             // update data
                             newItem.isMaxDate = true;
-                            if (oldItem && model.selectedMode == 1) {
+                            if (oldItem) {
                                 oldItem.isMaxDate = false;
                                 oldItem.endDate = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
                                 oldItem.update();
 
-                                // copy mode
-                                newItem.bonusDetailCode = oldItem.bonusDetailCode;
-                                newItem.bonusDetailName = oldItem.bonusDetailName;
-                                newItem.paymentDetailCode = oldItem.paymentDetailCode;
-                                newItem.paymentDetailName = oldItem.paymentDetailName;
-                            } else {
-                                // start new data
-                                newItem.bonusDetailCode = '';
-                                newItem.bonusDetailName = '';
-                                newItem.paymentDetailCode = '';
-                                newItem.paymentDetailName = '';
+                                if (model.selectedMode == 1) {
+                                    // copy mode
+                                    newItem.bonusDetailCode = oldItem.bonusDetailCode;
+                                    newItem.bonusDetailName = oldItem.bonusDetailName;
+                                    newItem.paymentDetailCode = oldItem.paymentDetailCode;
+                                    newItem.paymentDetailName = oldItem.paymentDetailName;
+                                }
                             }
 
                             // update data list on view
