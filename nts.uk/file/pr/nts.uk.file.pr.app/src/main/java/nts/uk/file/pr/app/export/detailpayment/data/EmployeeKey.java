@@ -28,4 +28,7 @@ public class EmployeeKey {
     
     /** The item name. */
     private String itemName;
+    
+    /** The order item name. */
+    private Integer orderItemName;
 }

@@ -14,9 +14,6 @@ import lombok.Setter;
 @Getter
 public class EmployeeDto {
     
-    /** The year month. */
-    private Integer yearMonth;
-
     /** The code. */
     private String code;
     
