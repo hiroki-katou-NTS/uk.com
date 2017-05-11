@@ -14,7 +14,7 @@ public class DetailEmployee {
 	List<DataRowComparingSalaryBonus> lstData;
 	List<DataRowComparingSalaryBonusDto> lstDataDto;
 
-	public static List<DataRowComparingSalaryBonusDto> convertDataRowComparingSalaryBonusDto(
+	public List<DataRowComparingSalaryBonusDto> convertDataRowComparingSalaryBonusDto(
 			List<DataRowComparingSalaryBonus> lstData) {
 		List<DataRowComparingSalaryBonusDto> lstDto = lstData.stream().map(c -> {
 			DataRowComparingSalaryBonusDto dataRowDto = new DataRowComparingSalaryBonusDto();

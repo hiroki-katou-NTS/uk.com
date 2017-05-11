@@ -54,14 +54,16 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		if (comparingQuery.getMonth1() == comparingQuery.getMonth2()) {
 			throw new BusinessException(new RawErrorMessage("設定が正しくありません。"));
 		}
-
+       // error 07
 		if (comparingQuery.getEmployeeCodeList().isEmpty()) {
-			throw new BusinessException(new RawErrorMessage("List Employee is not selected"));
+			throw new BusinessException(new RawErrorMessage("雇員リストのが選択されていません。"));
+		}
+		if(comparingQuery.getFormCode().isEmpty()){
+			throw new BusinessException(new RawErrorMessage("設定が正しくありません。"));
 		}
 
 		List<ComparingFormDetail> lstComparingFormDetail = this.compareSalaryBonusQueryRepo
 				.getPayComDetailByFormCode(companyCode, comparingQuery.getFormCode());
-		// error1
 
 		/****************** EA2 ******************/
 		List<DetailDifferentialDto> lstDetailDto = this.detailDifferentialFinder.getDetailDifferential(
@@ -75,9 +77,12 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 			lstDetailFinal.addAll(lstDetail);
 		});
 		
+		//error 10
+		if(lstDetailFinal.isEmpty()){
+			throw  new BusinessException(new RawErrorMessage("対象データがありません。"));
+		}
 		ComparingSalaryBonusReportData reportData = fakeData(companyCode, comparingQuery, lstDetailFinal);
 		this.compareGenertor.generate(context.getGeneratorContext(), reportData);
-
 	}
 
 	private ComparingSalaryBonusReportData fakeData(String companyCode, ComparingSalaryBonusQuery comparingQuery,

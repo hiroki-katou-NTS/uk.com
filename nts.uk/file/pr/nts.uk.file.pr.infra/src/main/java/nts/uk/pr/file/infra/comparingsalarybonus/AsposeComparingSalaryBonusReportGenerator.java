@@ -53,7 +53,7 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	private static final int FIRST_COLUMN = 0;
 
 	/** The Constant FIRST_ROW_INDEX. */
-	private static final int FIRST_ROW_INDEX = 9;
+	private int FIRST_ROW_INDEX = 9;
 
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
@@ -63,7 +63,7 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	private static final int ROW_HEIGHT = 28;
 	private static final int AMOUNT_PER_PAGE = 46;
 	// number of Row will start
-	private int firtRow = 0;
+	private int startRow = 0;
 	private int maxDepartment = 0;
 
 	@Override
@@ -79,11 +79,9 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			// Set print page
 			PageSetup pageSetup = worksheet.getPageSetup();
 			pageSetup.setFirstPageNumber(1);
-			int total = 9 +lstDeparmentInf.size()*(7 + lstDeparmentInf.get(0).getLstEmployee().size() * (lstDeparmentInf.get(0).getLstEmployee().get(0).getLstData().size() + 1));
-			System.out.println(lstDeparmentInf.size());
-			System.out.println(lstDeparmentInf.get(0).getLstEmployee().get(0).getLstData().size());
-			System.out.println(total);
-            int numberOfPage = this.caclulatePage(total);
+			int total = FIRST_ROW_INDEX + lstDeparmentInf.size() * (7 + lstDeparmentInf.get(0).getLstEmployee().size()
+					* (lstDeparmentInf.get(0).getLstEmployee().get(0).getLstData().size() + 1));
+			int numberOfPage = this.caclulatePage(total);
 			pageSetup.setPrintArea("A1:H" + numberOfPage * 55);
 			createRange(cells, FIRST_ROW_INDEX, 1);
 			printTitleRow(worksheets, FIRST_ROW_INDEX, reportData);
@@ -98,22 +96,17 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			String fileName = REPORT_FILE_NAME.concat(dateFM.format(date).toString()).concat(EXTENSION);
 
 			// Fill data
-			// List Item Data
-			int firstRowIndex = FIRST_ROW_INDEX;
-
 			lstDeparmentInf.stream().forEach(c -> {
-				this.maxDepartment = 1 + c.getLstEmployee().size() * c.getLstEmployee().get(0).getLstData().size()+ 4;
+				this.maxDepartment = 1 + c.getLstEmployee().size() * c.getLstEmployee().get(0).getLstData().size() + 4;
 			});
-			System.out.println(this.maxDepartment);
 			while (maxDepartment > 0) {
-				firstRowIndex = firstRowIndex + 1;
-				printDepartment(worksheets, firstRowIndex, reportData);
+				FIRST_ROW_INDEX = FIRST_ROW_INDEX + 1;
+				printDepartment(worksheets, FIRST_ROW_INDEX, reportData);
 				// print grand total
-				createRange(cells, this.firtRow + 1, 1);
-				printGrandTotal(worksheets, this.firtRow + 1, reportData);
+				createRange(cells, this.startRow, 1);
+				printGrandTotal(worksheets, this.startRow, reportData);
 				maxDepartment -= AMOUNT_PER_PAGE;
 			}
-			System.out.println(this.firtRow);
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 			PdfSaveOptions saveOptions = new PdfSaveOptions(SaveFormat.PDF);
@@ -200,37 +193,24 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			cells.merge(rowIndex, 0, 1, 8);
 			Cell departmentCode = cells.get(rowIndex, COLUMN_INDEX_DEPARTMENT[0]);
 			departmentCode.setValue("部門：" + " " + departInf.getDepcode() + "総務部　総務課　総務" + departInf.getDepname());
-			for (int c : COLUMN_INDEX) {
-				Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);
-				Style style = cells.getStyle();
-				style.setPattern(BackgroundType.SOLID);
-				style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
-				style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
-				if (c == 0) {
-					style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getGray());
-				}
-				if (c == 7) {
-					style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getGray());
-				}
-				cell.setStyle(style);
-			}
+			this.setBorderDataRow(cells, rowIndex);
 			// print employee
 			createContent(worksheets, rowIndex + 1, comparingQuery.getDeparmentInf());
-			rowIndex = this.firtRow;
+			rowIndex = this.startRow;
 			// print total Department
-			createRange(cells, this.firtRow - 1, 1);
-			printTotalDepartment(worksheets, this.firtRow - 1, comparingQuery, i);
+			createRange(cells, this.startRow - 1, 1);
+			printTotalDepartment(worksheets, this.startRow - 1, comparingQuery, i);
 
 			// print total A
-			createRange(cells, this.firtRow , 1);
-			printTotalADepartment(worksheets, this.firtRow, comparingQuery, i);
+			createRange(cells, this.startRow, 1);
+			printTotalADepartment(worksheets, this.startRow, comparingQuery, i);
 
 			// print total C
-			createRange(cells, this.firtRow + 1, 1);
-			printTotalCDepartment(worksheets, this.firtRow + 1, comparingQuery, i);
-			this.firtRow = this.firtRow + 3;
+			createRange(cells, this.startRow + 1, 1);
+			printTotalCDepartment(worksheets, this.startRow + 1, comparingQuery, i);
+			this.startRow = this.startRow + 3;
 
-			rowIndex = this.firtRow ;
+			rowIndex = this.startRow;
 		}
 
 	}
@@ -240,17 +220,17 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	 *
 	 * @param cells
 	 *            the cells
-	 * @param firstRowIndex
+	 * @param startRowIndex
 	 *            the first row index
 	 * @param lstDataRow
 	 *            the accumulated payment list
 	 */
-	private void createContent(WorksheetCollection worksheets, int firstRowIndex, List<DeparmentInf> lstDepartment) {
+	private void createContent(WorksheetCollection worksheets, int startRowIndex, List<DeparmentInf> lstDepartment) {
 		Worksheet worksheet = worksheets.get(0);
 		Cells cells = worksheet.getCells();
 
 		// Set Row height
-		cells.setRowHeightPixel(firstRowIndex, ROW_HEIGHT);
+		cells.setRowHeightPixel(startRowIndex, ROW_HEIGHT);
 
 		DeparmentInf deparmentInf = lstDepartment.get(0);
 		for (int i = 0; i < deparmentInf.getLstEmployee().size(); i++) {
@@ -258,72 +238,30 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			DetailEmployee detailEmployeeInf = deparmentInf.getLstEmployee().get(i);
 
 			// Print employee Code
-			cells.merge(firstRowIndex, 0, 1, 8);
-			Cell employeeCode = cells.get(firstRowIndex, COLUMN_INDEX_EMPLOYEE[0]);
+			cells.merge(startRowIndex, 0, 1, 8);
+			Cell employeeCode = cells.get(startRowIndex, COLUMN_INDEX_EMPLOYEE[0]);
 			employeeCode.setValue(
 					"部門コード : " + detailEmployeeInf.getPersonID() + "社員名: " + detailEmployeeInf.getPersonName());
-			for (int c : COLUMN_INDEX) {
-				Cell cell = cells.get(firstRowIndex, COLUMN_INDEX[c]);
-				Style style = cells.getStyle();
-				style.setPattern(BackgroundType.SOLID);
-				if (c == 0) {
-					style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getGray());
-				}
-				if (c == 7) {
-					style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getGray());
-				}
-				cell.setStyle(style);
-			}
-			
+			this.setBorderDataRow(cells, startRowIndex);
 			// print Data Row
 			int numberOfItemCode = detailEmployeeInf.getLstData().size();
-			this.createRange(cells, firstRowIndex + 1, numberOfItemCode);
-			for (int j = 0; j  < numberOfItemCode; j++) {
+			this.createRange(cells, startRowIndex + 1, numberOfItemCode);
+			for (int j = 0; j < numberOfItemCode; j++) {
 				DataRowComparingSalaryBonusDto dataRow = detailEmployeeInf.getLstDataDto().get(j);
-				Cell itemName = cells.get(firstRowIndex + 1, COLUMN_INDEX[0]);
-				itemName.setValue(dataRow.getItemName());
-
-				// Print month1 amount
-				Cell month1 = cells.get(firstRowIndex + 1, COLUMN_INDEX[1]);
-				month1.setValue(dataRow.getMonth1());
-
-				// Print month2 amount
-				Cell month2 = cells.get(firstRowIndex + 1, COLUMN_INDEX[2]);
-				month2.setValue(dataRow.getMonth2());
-
-				// Print Different Salary
-				Cell differentAmount = cells.get(firstRowIndex + 1, COLUMN_INDEX[3]);
-				differentAmount.setValue(dataRow.getDifferentSalary());
-
-				// Print registration1
-				Cell registration1 = cells.get(firstRowIndex + 1, COLUMN_INDEX[4]);
-				registration1.setValue(dataRow.getRegistrationStatus1());
-
-				// Print registration2
-				Cell registration2 = cells.get(firstRowIndex + 1, COLUMN_INDEX[5]);
-				registration2.setValue(dataRow.getRegistrationStatus2());
-
-				// Print reason
-				Cell reason = cells.get(firstRowIndex + 1, COLUMN_INDEX[6]);
-				reason.setValue(dataRow.getReason());
-
-				// Print confirm Status
-				Cell confirm = cells.get(firstRowIndex + 1, COLUMN_INDEX[7]);
-				confirm.setValue(dataRow.getConfirmed());
-
+				this.setDataRow(cells, dataRow, startRowIndex + 1);
 				// Set Background Color for odd rows
 				if ((j % 2) == 1) {
 					for (int c : COLUMN_INDEX) {
-						Cell oddCell = cells.get(firstRowIndex, COLUMN_INDEX[c]);
+						Cell oddCell = cells.get(startRowIndex, COLUMN_INDEX[c]);
 						setBackgroundcolor(oddCell);
 					}
 				}
 
-				firstRowIndex++;
+				startRowIndex++;
 			}
-			firstRowIndex = firstRowIndex + 1;
+			startRowIndex = startRowIndex + 1;
 		}
-		this.firtRow = firstRowIndex + 1;
+		this.startRow = startRowIndex + 1;
 	}
 
 	/**
@@ -339,46 +277,11 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		Worksheet worksheet = worksheets.get(0);
 		Cells cells = worksheet.getCells();
 		DataRowComparingSalaryBonusDto divisionTotal = comparingQuery.getLstDivisionTotal().get(i);
-		// Set Row height
-		cells.setRowHeightPixel(rowIndex, ROW_HEIGHT);
-
-		// Print itemName Header
-		Cell itemName = cells.get(rowIndex, COLUMN_INDEX[0]);
-		itemName.setValue(divisionTotal.getItemName());
-
-		// Print Month1 Header
-		Cell month1 = cells.get(rowIndex, COLUMN_INDEX[1]);
-		month1.setValue(divisionTotal.getMonth1());
-
-		// Print Month2 Header
-		Cell month2 = cells.get(rowIndex, COLUMN_INDEX[2]);
-		month2.setValue(divisionTotal.getMonth2());
-
-		// Print Diffferent Salary Header
-		Cell different = cells.get(rowIndex, COLUMN_INDEX[3]);
-		different.setValue(divisionTotal.getDifferentSalary());
-
-		// Print RegistrationStatus1 Header
-		Cell registration1 = cells.get(rowIndex, COLUMN_INDEX[4]);
-		registration1.setValue(divisionTotal.getRegistrationStatus1());
-
-		// Print RegistrationStatus2 Status Header
-		Cell registration2 = cells.get(rowIndex, COLUMN_INDEX[5]);
-		registration2.setValue(divisionTotal.getRegistrationStatus2());
-
-		// Print reason Status Header
-		Cell reason = cells.get(rowIndex, COLUMN_INDEX[6]);
-		reason.setValue(divisionTotal.getReason());
-
-		// Print confirm Status Header
-		Cell confirm = cells.get(rowIndex, COLUMN_INDEX[7]);
-		confirm.setValue(divisionTotal.getConfirmed());
-
+		this.setDataRow(cells, divisionTotal, rowIndex);
 		for (int c : COLUMN_INDEX) {
 			Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);
 			setTitleStyle(cell);
 		}
-
 	}
 
 	/**
@@ -393,42 +296,8 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			ComparingSalaryBonusReportData comparingQuery, int i) {
 		Worksheet worksheet = worksheets.get(0);
 		Cells cells = worksheet.getCells();
-		DataRowComparingSalaryBonusDto totalA = comparingQuery.getLstDivisionTotal().get(i);
-		// Set Row height
-		cells.setRowHeightPixel(rowIndex, ROW_HEIGHT);
-
-		// Print itemName Header
-		Cell itemName = cells.get(rowIndex, COLUMN_INDEX[0]);
-		itemName.setValue(totalA.getItemName());
-
-		// Print Month1 Header
-		Cell month1 = cells.get(rowIndex, COLUMN_INDEX[1]);
-		month1.setValue(totalA.getMonth1());
-
-		// Print Month2 Header
-		Cell month2 = cells.get(rowIndex, COLUMN_INDEX[2]);
-		month2.setValue("");
-
-		// Print Diffferent Salary Header
-		Cell different = cells.get(rowIndex, COLUMN_INDEX[3]);
-		different.setValue("");
-
-		// Print RegistrationStatus1 Header
-		Cell registration1 = cells.get(rowIndex, COLUMN_INDEX[4]);
-		registration1.setValue("");
-
-		// Print RegistrationStatus2 Status Header
-		Cell registration2 = cells.get(rowIndex, COLUMN_INDEX[5]);
-		registration2.setValue("");
-
-		// Print reason Status Header
-		Cell reason = cells.get(rowIndex, COLUMN_INDEX[6]);
-		reason.setValue("");
-
-		// Print confirm Status Header
-		Cell confirm = cells.get(rowIndex, COLUMN_INDEX[7]);
-		confirm.setValue("");
-
+		DataRowComparingSalaryBonusDto totalA = comparingQuery.getLstTotalA().get(i);
+		this.setDataRow(cells, totalA, rowIndex);
 		for (int c : COLUMN_INDEX) {
 			Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);
 			setTitleStyle(cell);
@@ -451,39 +320,7 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		DataRowComparingSalaryBonusDto totalC = comparingQuery.getLstTotalC().get(i);
 		// Set Row height
 		cells.setRowHeightPixel(rowIndex, ROW_HEIGHT);
-
-		// Print itemName Header
-		Cell itemName = cells.get(rowIndex, COLUMN_INDEX[0]);
-		itemName.setValue(totalC.getItemName());
-
-		// Print Month1 Header
-		Cell month1 = cells.get(rowIndex, COLUMN_INDEX[1]);
-		month1.setValue("");
-
-		// Print Month2 Header
-		Cell month2 = cells.get(rowIndex, COLUMN_INDEX[2]);
-		month2.setValue("");
-
-		// Print Diffferent Salary Header
-		Cell different = cells.get(rowIndex, COLUMN_INDEX[3]);
-		different.setValue(totalC.getDifferentSalary());
-
-		// Print RegistrationStatus1 Header
-		Cell registration1 = cells.get(rowIndex, COLUMN_INDEX[4]);
-		registration1.setValue("");
-
-		// Print RegistrationStatus2 Status Header
-		Cell registration2 = cells.get(rowIndex, COLUMN_INDEX[5]);
-		registration2.setValue("");
-
-		// Print reason Status Header
-		Cell reason = cells.get(rowIndex, COLUMN_INDEX[6]);
-		reason.setValue("");
-
-		// Print confirm Status Header
-		Cell confirm = cells.get(rowIndex, COLUMN_INDEX[7]);
-		confirm.setValue("");
-
+		this.setDataRow(cells, totalC, rowIndex);
 		for (int c : COLUMN_INDEX) {
 			Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);
 			setTitleStyle(cell);
@@ -506,44 +343,11 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		DataRowComparingSalaryBonusDto grandTotal = comparingQuery.getGrandTotal();
 		// Set Row height
 		cells.setRowHeightPixel(rowIndex, ROW_HEIGHT);
-
-		// Print itemName Header
-		Cell itemName = cells.get(rowIndex, COLUMN_INDEX[0]);
-		itemName.setValue(grandTotal.getItemName());
-
-		// Print Month1 Header
-		Cell month1 = cells.get(rowIndex, COLUMN_INDEX[1]);
-		month1.setValue(grandTotal.getMonth1());
-
-		// Print Month2 Header
-		Cell month2 = cells.get(rowIndex, COLUMN_INDEX[2]);
-		month2.setValue(grandTotal.getMonth2());
-
-		// Print Diffferent Salary Header
-		Cell different = cells.get(rowIndex, COLUMN_INDEX[3]);
-		different.setValue(grandTotal.getDifferentSalary());
-
-		// Print RegistrationStatus1 Header
-		Cell registration1 = cells.get(rowIndex, COLUMN_INDEX[4]);
-		registration1.setValue(grandTotal.getRegistrationStatus1());
-
-		// Print RegistrationStatus2 Status Header
-		Cell registration2 = cells.get(rowIndex, COLUMN_INDEX[5]);
-		registration2.setValue(grandTotal.getRegistrationStatus2());
-
-		// Print reason Status Header
-		Cell reason = cells.get(rowIndex, COLUMN_INDEX[6]);
-		reason.setValue(grandTotal.getReason());
-
-		// Print confirm Status Header
-		Cell confirm = cells.get(rowIndex, COLUMN_INDEX[7]);
-		confirm.setValue(grandTotal.getConfirmed());
-
+		this.setDataRow(cells, grandTotal, rowIndex);
 		for (int c : COLUMN_INDEX) {
 			Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);
 			setTitleStyle(cell);
 		}
-
 	}
 
 	/**
@@ -595,19 +399,71 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		style.setHorizontalAlignment(TextAlignmentType.LEFT);
 		cell.setStyle(style);
 	}
-	
+
 	/**
-	 * 	caculate number of Page
+	 * caculate number of Page
+	 * 
 	 * @param total
 	 * @return
 	 */
-	private int caclulatePage(int total){
-        int numberOfPage = total / 55;
-        int numberOfRow = total - numberOfPage * 55;
-        if (numberOfRow > 0) {
-            numberOfPage = numberOfPage + 1;
-        }
-        return numberOfPage;
+	private int caclulatePage(int total) {
+		int numberOfPage = total / 55;
+		int numberOfRow = total - numberOfPage * 55;
+		if (numberOfRow > 0) {
+			numberOfPage = numberOfPage + 1;
+		}
+		return numberOfPage;
+	}
+	
+	private void setBorderDataRow(Cells cells, int startRow){
+		for (int c : COLUMN_INDEX) {
+			Cell cell = cells.get(startRow, COLUMN_INDEX[c]);
+			Style style = cells.getStyle();
+			style.setPattern(BackgroundType.SOLID);
+			if (c == 0) {
+				style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getGray());
+			}
+			if (c == 7) {
+				style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getGray());
+			}
+			cell.setStyle(style);
+		}
+	}
+	
+	private void setDataRow(Cells cells,DataRowComparingSalaryBonusDto  dataRow, int rowIndex){
+		// Print itemName Header
+		Cell itemName = cells.get(rowIndex, COLUMN_INDEX[0]);
+		itemName.setValue(dataRow.getItemName());
+
+		// Print Month1 Header
+		Cell month1 = cells.get(rowIndex, COLUMN_INDEX[1]);
+		month1.setValue(dataRow.getMonth1());
+
+		// Print Month2 Header
+		Cell month2 = cells.get(rowIndex, COLUMN_INDEX[2]);
+		month2.setValue(dataRow.getMonth2());
+
+		// Print Diffferent Salary Header
+		Cell different = cells.get(rowIndex, COLUMN_INDEX[3]);
+		different.setValue(dataRow.getDifferentSalary());
+
+		// Print RegistrationStatus1 Header
+		Cell registration1 = cells.get(rowIndex, COLUMN_INDEX[4]);
+		registration1.setValue(dataRow.getRegistrationStatus1());
+
+		// Print RegistrationStatus2 Status Header
+		Cell registration2 = cells.get(rowIndex, COLUMN_INDEX[5]);
+		registration2.setValue(dataRow.getRegistrationStatus2());
+
+		// Print reason Status Header
+		Cell reason = cells.get(rowIndex, COLUMN_INDEX[6]);
+		reason.setValue(dataRow.getReason());
+
+		// Print confirm Status Header
+		Cell confirm = cells.get(rowIndex, COLUMN_INDEX[7]);
+		confirm.setValue(dataRow.getConfirmed());
+
+		
 	}
 
 }

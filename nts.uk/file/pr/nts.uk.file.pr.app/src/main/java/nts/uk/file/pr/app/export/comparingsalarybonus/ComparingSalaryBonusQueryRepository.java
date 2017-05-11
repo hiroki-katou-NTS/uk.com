@@ -1,12 +1,10 @@
 package nts.uk.file.pr.app.export.comparingsalarybonus;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
 import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetail;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusHeaderReportData;
-import nts.uk.file.pr.app.export.comparingsalarybonus.data.PaymentDetail;
 /**
  * The Interface ComparingSalaryBonusQueryRepository.
  */
@@ -22,10 +20,8 @@ public interface ComparingSalaryBonusQueryRepository {
 	
 	//SEL_1 from QlsptPaycompFormDetail
 	public List<ComparingFormDetail> getPayComDetailByFormCode(String companyCode, String formCode);
-	
-	
 	//EA2 
-	public List<PaymentDetail> getPaymentDetail(String companyCode, List<String> personIds, int payBonusAttr, int processingYm);
+	//public List<PaymentDetail> getPaymentDetail(String companyCode, List<String> personIds, int payBonusAttr, int processingYm);
 	
 	public List<ComparingSalaryBonusHeaderReportData> getReportHeader(String companyCode);
 }
