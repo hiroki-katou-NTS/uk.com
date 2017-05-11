@@ -161,15 +161,25 @@ module qpp014.j {
                     selectedId_J_SEL_001: self.selectedId_J_SEL_001(),
                     currentCode_J_SEL_004: self.currentCode_J_SEL_004(),
                     transferDate: nts.uk.time.yearmonthInJapanEmpire(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM")).toString() + " "
-                                + moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + " 日"
+                    + moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + " 日"
                 };
-                qpp014.j.service.saveAsPdf(command)
-                    .done(function() { })
-                    .fail(function(error) {
-                        if (error.messageId == 'ER010') {
-                            nts.uk.ui.dialog.alert("対象データがありません。");
-                        }
-                    });
+                if (self.selectedId_J_SEL_001() == 1) {
+                    qpp014.j.service.saveAsPdfA(command)
+                        .done(function() { })
+                        .fail(function(error) {
+                            if (error.messageId == 'ER010') {
+                                nts.uk.ui.dialog.alert("対象データがありません。");
+                            }
+                        });
+                } else {
+                    qpp014.j.service.saveAsPdfB(command)
+                        .done(function() { })
+                        .fail(function(error) {
+                            if (error.messageId == 'ER010') {
+                                nts.uk.ui.dialog.alert("対象データがありません。");
+                            }
+                        });
+                }
             }
         }
     }

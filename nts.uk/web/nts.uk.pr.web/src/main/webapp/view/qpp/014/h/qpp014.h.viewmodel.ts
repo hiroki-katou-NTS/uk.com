@@ -98,37 +98,8 @@ module qpp014.h.viewmodel {
          * Print file PDF
          */
         saveAsPdf(): void {
-            var self = this;
-            if (self.h_INP_001() == null || self.h_INP_001() == "") {
-                nts.uk.ui.dialog.alert("振込指定日が入力されていません。");//ER001
-            } else if (self.h_LST_001_itemsSelected() == undefined || self.h_LST_001_itemsSelected().length < 1) {
-                nts.uk.ui.dialog.alert("振込元銀行が選択されていません。");//ER007
-            } else {
-                var branchIdList = [];
-                for (let i = 0; i < self.h_LST_001_itemsSelected().length; i++) {
-                    branchIdList.push(
-                        _.find(self.h_LST_001_items(), function(x) {
-                            return x.label === self.h_LST_001_itemsSelected()[i];
-                        }).branchId);
-                }
-                var command = {
-                    fromBranchId: branchIdList,
-                    processingNo: self.processingNo(),
-                    processingYm: parseInt(self.processingDate().replace('/', '')),
-                    payDate: self.h_INP_001(),
-                    sparePayAtr: nts.uk.ui.windows.getShared("sparePayAtr"),
-                };
-                qpp014.h.service.saveAsPdf(command)
-                    .done(function() { })
-                    .fail(function(error) {
-                        if (error.messageId == 'ER010') {
-                            nts.uk.ui.dialog.alert("対象データがありません。");
-                        }
-                    });
-            }
         }
     }
-
     export class ItemModel_H_LST_001 {
         lineBankCode: string;
         branchCode: string;
