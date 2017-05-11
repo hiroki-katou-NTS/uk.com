@@ -53,5 +53,4 @@ public class DefaultStoredFileInfoRepository extends JpaRepository implements St
 		entity.storedAt = domain.getStoredAt();
 		return entity;
 	}
-
 }

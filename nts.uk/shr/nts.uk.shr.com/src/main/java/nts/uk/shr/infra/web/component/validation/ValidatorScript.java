@@ -110,5 +110,4 @@ public class ValidatorScript extends UIComponentBase {
 			throw new RuntimeException(e);
 		}
 	}
-
 }

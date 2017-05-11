@@ -22,7 +22,7 @@ public abstract class AggregateTableEntity extends UkJpaEntity {
      * version
      */
     //@Version
-	@Transient
+	@Transient 
     protected long version;
     
     /**

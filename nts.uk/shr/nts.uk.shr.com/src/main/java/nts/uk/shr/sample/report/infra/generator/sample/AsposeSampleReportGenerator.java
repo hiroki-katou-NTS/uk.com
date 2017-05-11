@@ -33,5 +33,4 @@ public class AsposeSampleReportGenerator extends AsposeCellsReportGenerator impl
 			throw new RuntimeException(e);
 		}
 	}
-
 }

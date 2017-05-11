@@ -42,4 +42,5 @@ public class CisdtAsyncTask implements Serializable {
 	@OneToOne(optional = true, cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
 	public CisdtAsyncTaskAbort abort;
+	
 }
