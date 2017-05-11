@@ -14,4 +14,5 @@ public class BankTransferReportQuery {
 	private String sparePayAtr;
 	private int selectedId_J_SEL_001;
 	private int currentCode_J_SEL_004;
+	private String transferDate;
 }

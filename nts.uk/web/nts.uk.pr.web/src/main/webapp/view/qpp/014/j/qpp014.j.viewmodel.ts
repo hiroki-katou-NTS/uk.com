@@ -21,7 +21,7 @@ module qpp014.j {
         dateOfPayment: any;
         isEnable: KnockoutObservable<boolean>;
         isHidden: KnockoutObservable<boolean>;
-  
+
         constructor() {
             let self = this;
             self.dataBankBranch = ko.observableArray([]);
@@ -56,8 +56,8 @@ module qpp014.j {
                 nts.uk.time.yearmonthInJapanEmpire(nts.uk.time.parseYearMonth(nts.uk.ui.windows.getShared("data").currentProcessingYm).format()) + ")";
 
             self.dateOfPayment = ko.observable(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM/DD") +
-                "(" + nts.uk.time.yearmonthInJapanEmpire(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM")).toString() +
-                moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + "日)");
+                "(" + nts.uk.time.yearmonthInJapanEmpire(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM")).toString() + " " +
+                moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + " 日)");
 
             self.isEnable = ko.computed(function() {
                 return self.selectedId_J_SEL_001() == 0 ? false : true;
@@ -156,14 +156,20 @@ module qpp014.j {
                     fromBranchId: branchIdList,
                     processingNo: nts.uk.ui.windows.getShared("processingNo"),
                     processingYm: nts.uk.ui.windows.getShared("data").currentProcessingYm,
-                    payDate: moment.utc(nts.uk.ui.windows.getShared("dateOfPayment"),"YYYY/MM/DD").toISOString(),
+                    payDate: moment.utc(nts.uk.ui.windows.getShared("dateOfPayment"), "YYYY/MM/DD").toISOString(),
                     sparePayAtr: nts.uk.ui.windows.getShared("sparePayAtr"),
                     selectedId_J_SEL_001: self.selectedId_J_SEL_001(),
-                    currentCode_J_SEL_004: self.currentCode_J_SEL_004()
+                    currentCode_J_SEL_004: self.currentCode_J_SEL_004(),
+                    transferDate: nts.uk.time.yearmonthInJapanEmpire(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM")).toString() + " "
+                                + moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + " 日"
                 };
                 qpp014.j.service.saveAsPdf(command)
                     .done(function() { })
-                    .fail();
+                    .fail(function(error) {
+                        if (error.messageId == 'ER010') {
+                            nts.uk.ui.dialog.alert("対象データがありません。");
+                        }
+                    });
             }
         }
     }

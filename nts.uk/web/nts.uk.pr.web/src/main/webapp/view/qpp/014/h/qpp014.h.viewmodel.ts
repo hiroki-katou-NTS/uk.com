@@ -12,7 +12,7 @@ module qpp014.h.viewmodel {
         processingDateInJapanEmprire: any;
         processingNo: any;
         processingName: any;
- 
+
         constructor(data: any) {
             let self = this;
             self.dataBankBranch = ko.observableArray([]);
@@ -114,13 +114,17 @@ module qpp014.h.viewmodel {
                 var command = {
                     fromBranchId: branchIdList,
                     processingNo: self.processingNo(),
-                    processingYm: parseInt(self.processingDate().replace('/','')),
+                    processingYm: parseInt(self.processingDate().replace('/', '')),
                     payDate: self.h_INP_001(),
                     sparePayAtr: nts.uk.ui.windows.getShared("sparePayAtr"),
                 };
                 qpp014.h.service.saveAsPdf(command)
                     .done(function() { })
-                    .fail();
+                    .fail(function(error) {
+                        if (error.messageId == 'ER010') {
+                            nts.uk.ui.dialog.alert("対象データがありません。");
+                        }
+                    });
             }
         }
     }
