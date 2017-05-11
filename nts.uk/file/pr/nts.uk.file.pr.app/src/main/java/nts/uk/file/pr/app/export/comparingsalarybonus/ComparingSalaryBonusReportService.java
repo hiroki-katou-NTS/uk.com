@@ -18,6 +18,7 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFor
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusHeaderReportData;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusReportData;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DataRowComparingSalaryBonus;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DataRowComparingSalaryBonusDto;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DeparmentInf;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DetailEmployee;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.HeaderTable;
@@ -82,15 +83,6 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 	private ComparingSalaryBonusReportData fakeData(String companyCode, ComparingSalaryBonusQuery comparingQuery,
 			List<DetailDifferentialDto> lstDetailComparing) {
 		ComparingSalaryBonusReportData reportData = new ComparingSalaryBonusReportData();
-		// TODO-LanLT: doan nay dang chua hieu tai lieu
-		// List<ComparingSalaryBonusHeaderReportData> lstheaderData;
-		// lstheaderData =
-		// this.compareSalaryBonusQueryRepo.getReportHeader(companyCode);
-		// if (lstheaderData.isEmpty()) {
-		// throw new BusinessException(new RawErrorMessage("Data is not
-		// found"));
-		// }
-		// int max = lstheaderData.size();
 		ComparingSalaryBonusHeaderReportData headerData = new ComparingSalaryBonusHeaderReportData();
 		headerData.setTitleReport("明細金額比較表");
 		headerData.setNameCompany("日通システム株式会社");
@@ -119,34 +111,44 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		lstDepartmentData.add(new DeparmentInf("0000000102", "部門2", lstDetailEmployee));
 		reportData.setDeparmentInf(lstDepartmentData);
 
-		List<DataRowComparingSalaryBonus> lstDivionsTotal = new ArrayList<>();
-		List<DataRowComparingSalaryBonus> lstTotalA = new ArrayList<>();
-		List<DataRowComparingSalaryBonus> lstTotalC = new ArrayList<>();
+		List<DataRowComparingSalaryBonusDto> lstDivionsTotal = new ArrayList<>();
+		List<DataRowComparingSalaryBonusDto> lstTotalA = new ArrayList<>();
+		List<DataRowComparingSalaryBonusDto> lstTotalC = new ArrayList<>();
 		lstDepartmentData.stream().forEach(c -> {
-			DataRowComparingSalaryBonus divionsTotal = new DataRowComparingSalaryBonus();
+			DataRowComparingSalaryBonusDto divionsTotal = new DataRowComparingSalaryBonusDto();
 			divionsTotal.setItemName("部門計");
 			if (c.getTotalMonth1() >= 0) {
-				divionsTotal.setMonth1(c.getTotalMonth1());
+				divionsTotal.setMonth1(c.getTotalMonth1().toString());
+			} else {
+				divionsTotal.setMonth1("");
 			}
 			if (c.getTotalMonth2() >= 0) {
-				divionsTotal.setMonth2(c.getTotalMonth2());
+				divionsTotal.setMonth2(c.getTotalMonth2().toString());
+			} else {
+				divionsTotal.setMonth2("");
 			}
 			if (c.getTotalDifferent() >= 0) {
-				divionsTotal.setDifferentSalary(c.getTotalDifferent());
+				divionsTotal.setDifferentSalary(c.getTotalDifferent().toString());
+			} else {
+				divionsTotal.setDifferentSalary("");
 			}
 			lstDivionsTotal.add(divionsTotal);
 
-			DataRowComparingSalaryBonus totalA = new DataRowComparingSalaryBonus();
+			DataRowComparingSalaryBonusDto totalA = new DataRowComparingSalaryBonusDto();
 			totalA.setItemName("A　部門階層累計");
 			if (c.getTotalMonth1() >= 0) {
-				totalA.setMonth1(c.getTotalMonth1());
+				totalA.setMonth1(c.getTotalMonth1().toString());
+			} else {
+				totalA.setMonth1("");
 			}
 			lstTotalA.add(totalA);
 
-			DataRowComparingSalaryBonus totalC = new DataRowComparingSalaryBonus();
+			DataRowComparingSalaryBonusDto totalC = new DataRowComparingSalaryBonusDto();
 			totalC.setItemName("C 部門階層累計");
 			if (c.getTotalDifferent() >= 0) {
-				totalC.setDifferentSalary(c.getTotalDifferent());
+				totalC.setDifferentSalary(c.getTotalDifferent().toString());
+			} else {
+				totalC.setDifferentSalary("");
 			}
 			lstTotalC.add(totalC);
 		});
@@ -155,16 +157,22 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		reportData.setLstTotalC(lstTotalC);
 
 		this.caculateGrandTotal(lstDepartmentData);
-		DataRowComparingSalaryBonus grandTotal = new DataRowComparingSalaryBonus();
+		DataRowComparingSalaryBonusDto grandTotal = new DataRowComparingSalaryBonusDto();
 		grandTotal.setItemName("総合計");
-		if (this.grandTotalMonth1 > 0) {
-			grandTotal.setMonth1(this.grandTotalMonth1);
+		if (this.grandTotalMonth1 >= 0) {
+			grandTotal.setMonth1(String.valueOf(this.grandTotalMonth1));
+		} else {
+			grandTotal.setMonth1("");
 		}
-		if (this.grandTotalMonth2 > 0) {
-			grandTotal.setMonth2(this.grandTotalMonth2);
+		if (this.grandTotalMonth2 >= 0) {
+			grandTotal.setMonth2(String.valueOf(this.grandTotalMonth2));
+		} else {
+			grandTotal.setMonth2("");
 		}
-		if (this.grandTotalDifferent > 0) {
-			grandTotal.setDifferentSalary(this.grandTotalDifferent);
+		if (this.grandTotalDifferent >= 0) {
+			grandTotal.setDifferentSalary(String.valueOf(this.grandTotalDifferent));
+		} else {
+			grandTotal.setDifferentSalary("");
 		}
 		reportData.setGrandTotal(grandTotal);
 		return reportData;
@@ -172,6 +180,7 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 
 	/**
 	 * nhung item code co employee ID giong nhau thi sap xep nhan vien do co
+	 * 
 	 * @param comparingQuery
 	 * @param lstDetailComparing
 	 * @return
@@ -212,7 +221,8 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 							return dataRow;
 
 						}).collect(Collectors.toList());
-
+				List<DataRowComparingSalaryBonusDto> lstDataDto = detailEmployee.convertDataRowComparingSalaryBonusDto(lstDataRowComparingSalaryBonus);
+                detailEmployee.setLstDataDto(lstDataDto);
 				detailEmployee.setLstData(lstDataRowComparingSalaryBonus);
 				lstDetailEmployee.add(detailEmployee);
 			}

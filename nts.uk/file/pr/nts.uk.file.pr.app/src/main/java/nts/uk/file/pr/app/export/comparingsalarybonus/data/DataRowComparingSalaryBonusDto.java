@@ -1,12 +1,16 @@
 package nts.uk.file.pr.app.export.comparingsalarybonus.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 /**
  * The Class DataRowComparingSalaryBonusDto
  * @author lanlt
  *
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 public class DataRowComparingSalaryBonusDto {
