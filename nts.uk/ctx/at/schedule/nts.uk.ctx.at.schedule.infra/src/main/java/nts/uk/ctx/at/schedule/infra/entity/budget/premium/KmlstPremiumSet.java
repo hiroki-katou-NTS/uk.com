@@ -47,8 +47,15 @@ public class KmlstPremiumSet extends UkJpaEntity{
     })
 	public KmlstExtraTime extraTime;
 	
-	@OneToMany(targetEntity = KmldtPremiumAttendance.class, cascade = CascadeType.ALL)
+	@OneToMany(targetEntity = KmldtPremiumAttendance.class, cascade = CascadeType.ALL, mappedBy = "premiumSet")
 	@JoinTable(name = "KMLDT_PREMIUM_ATTENDANCE")
+	/*@JoinTable(
+	        name="CUST_PHONE",
+	        joinColumns=
+	            @JoinColumn(name="CUST_ID", referencedColumnName="ID"),
+	        inverseJoinColumns=
+	            @JoinColumn(name="PHONE_ID", referencedColumnName="ID")
+	    )*/
 	public List<KmldtPremiumAttendance> premiumAttendances;
 	
 	@Override

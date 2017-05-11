@@ -165,8 +165,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	
 	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, String premiumCD, String attendanceCD){
 		return new KmldtPremiumAttendance(
-				new KmldpPremiumAttendancePK(companyID, historyID, attendanceCD, premiumCD)
-				);
+				new KmldpPremiumAttendancePK(companyID, historyID, attendanceCD, premiumCD),
+				null);
 	}
 	
 	private KmlstExtraTime toExtraTimeEntity(PremiumSetting premiumSetting){

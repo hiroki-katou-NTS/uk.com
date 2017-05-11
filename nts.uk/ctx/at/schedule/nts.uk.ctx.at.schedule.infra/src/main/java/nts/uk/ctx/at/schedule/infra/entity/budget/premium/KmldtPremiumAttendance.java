@@ -20,6 +20,14 @@ public class KmldtPremiumAttendance extends UkJpaEntity{
 	@EmbeddedId
 	public KmldpPremiumAttendancePK premiumAttendancePK;
 	
+	@ManyToOne
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"), 
+		@PrimaryKeyJoinColumn(name="HIS_ID",referencedColumnName="HIS_ID"),
+		@PrimaryKeyJoinColumn(name="PREMIUM_CD",referencedColumnName="PREMIUM_CD")
+	})
+	private KmlstPremiumSet premiumSet;
+	
 	@Override
 	protected Object getKey() {
 		return premiumAttendancePK;
