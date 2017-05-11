@@ -18,8 +18,8 @@ import lombok.NoArgsConstructor;
 public class KmlmpPersonCostCalculationPK {
 	
 	@Column(name="CID")
-	public String CID;
+	public String companyID;
 	
-	@Column(name="HISTORY_ID")
-	public String HID;
+	@Column(name="HIS_ID")
+	public String historyID;
 }

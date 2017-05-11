@@ -17,9 +17,16 @@ public class PremiumSetting {
 	
     private PremiumRate premiumRate;
     
+    private PremiumName premiumName;
+    
+    private String internalID;
+    
+    private UseClassification useAtr;
+    
     private List<String> timeItemIDs;
     
-    public static PremiumSetting createFromJavaType(String companyID, String historyID, String attendanceID, PremiumRate premiumRate, List<String> timeItemIDs) {
-		return new PremiumSetting(companyID, historyID, attendanceID, premiumRate, timeItemIDs);
+    public static PremiumSetting createFromJavaType(String companyID, String historyID, String attendanceID, PremiumRate premiumRate, 
+    		PremiumName premiumName, String externalID, UseClassification useAtr, List<String> timeItemIDs) {
+		return new PremiumSetting(companyID, historyID, attendanceID, premiumRate, premiumName, externalID, useAtr, timeItemIDs);
 	}
 }

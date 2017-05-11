@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.schedule.app.command.budget.premium;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
@@ -11,15 +15,37 @@ import nts.arc.time.GeneralDate;
 
 @Value
 public class DeletePremiumBudgetCommand {
-	String CID;
+	String companyID;
 
-	String HID;
+	String historyID;
 
 	String memo;
 
-	Integer unitprice;
+	Integer unitPrice;
 
-	GeneralDate startDate;
+	String startDate;
 
-	GeneralDate endDate;
+	String endDate;
+	
+	List<PremiumSetDelete> premiumSets;
+}
+
+@AllArgsConstructor
+@Value
+class PremiumSetDelete {
+	String companyID;
+	
+	String historyID;
+	
+	String attendanceID;
+	
+    BigDecimal premiumRate;
+    
+    String premiumName;
+    
+    String internalID;
+    
+    int useAtr;
+    
+    List<String> timeItemIDs;
 }

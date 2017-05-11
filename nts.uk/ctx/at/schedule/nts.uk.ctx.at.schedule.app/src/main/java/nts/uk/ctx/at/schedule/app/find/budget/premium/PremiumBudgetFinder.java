@@ -8,8 +8,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,8 +32,8 @@ public class PremiumBudgetFinder {
 	 * @return list Person Cost Calculation by company ID
 	 */
 	public List<PremiumBudgetDto> findByCompanyID() {
-		String CID = AppContexts.user().companyCode();
-		return this.personCostCalculationRepository.findByCompanyID(CID)
+		String companyID = AppContexts.user().companyId();
+		return this.personCostCalculationRepository.findByCompanyID(companyID)
 				.stream()
 				.map(x -> convertToDto(x))
 				.collect(Collectors.toList());
@@ -42,9 +44,9 @@ public class PremiumBudgetFinder {
 	 * @param HID history ID
 	 * @return single Person Cost Calculation by company ID and HID
 	 */
-	public PremiumBudgetDto findPremiumBudget(String HID) {
-		String CID = AppContexts.user().companyCode();
-		Optional<PersonCostCalculation> optional = this.personCostCalculationRepository.find(CID, HID);
+	public PremiumBudgetDto findPremiumBudget(String startDate) {
+		String companyID = AppContexts.user().companyId();
+		Optional<PersonCostCalculation> optional = this.personCostCalculationRepository.findItemByDate(companyID, GeneralDate.fromString(startDate, "yyyy/MM/dd"));
 		if(!optional.isPresent()) return null;
 		return this.convertToDto(optional.get());
 	}
@@ -54,8 +56,21 @@ public class PremiumBudgetFinder {
 				personCostCalculation.getCompanyID(), 
 				personCostCalculation.getHistoryID(), 
 				personCostCalculation.getMemo().v(), 
-				personCostCalculation.getUnitprice().unitPrice, 
+				personCostCalculation.getUnitprice().value, 
 				personCostCalculation.getStartDate(), 
-				personCostCalculation.getEndDate());
+				personCostCalculation.getEndDate(),
+				personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
+	}
+	
+	private PremiumSetDto toPremiumSetDto(PremiumSetting premiumSetting){
+		return new PremiumSetDto(
+				premiumSetting.getCompanyID(), 
+				premiumSetting.getHistoryID(), 
+				premiumSetting.getAttendanceID(), 
+				premiumSetting.getPremiumRate().v(),
+				premiumSetting.getPremiumName().v(),
+				premiumSetting.getInternalID(),
+				premiumSetting.getUseAtr().value,
+				premiumSetting.getTimeItemIDs());
 	}
 }

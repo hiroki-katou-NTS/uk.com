@@ -12,7 +12,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KMLST_EXTRA_ITEM")
+@Table(name="KMLST_EXTRA_TIME")
 public class KmlstExtraTime extends UkJpaEntity{
 	@EmbeddedId
 	public KmlspExtraTimePK extraItemPK;

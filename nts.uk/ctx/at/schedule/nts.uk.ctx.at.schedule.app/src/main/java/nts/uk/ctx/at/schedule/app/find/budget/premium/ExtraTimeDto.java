@@ -14,5 +14,5 @@ public class ExtraTimeDto {
 
 	public String timeItemID;
 
-	public int useClassification;
+	public int useAtr;
 }
