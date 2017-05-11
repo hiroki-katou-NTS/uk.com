@@ -5,6 +5,7 @@ module qpp008.c {
             nts.uk.ui.confirmSave(screenModel.currentItemDirty);
             nts.uk.ui.confirmSave(screenModel.items2Dirty);
             __viewContext.bind(screenModel);
+            $("#C_INP_002").focus();
         });
     });
 }

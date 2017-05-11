@@ -16,7 +16,7 @@
 #contents-area {
 	padding-left: 20px;
 	margin-top: 15px;
-	height: 600px;
+	height: 500px;
 	display: inline-flex;
 	max-width: 1250px;
 }
@@ -150,4 +150,8 @@
 
 .tab-content-1, .tab-content-2, .tab-content-3 {
 	height: 400px;
+}
+
+#C_LST_001 tr{
+	max-height: 24px !important;
 }

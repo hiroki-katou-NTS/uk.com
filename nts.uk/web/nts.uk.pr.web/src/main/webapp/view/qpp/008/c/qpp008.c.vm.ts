@@ -38,10 +38,11 @@ module qpp008.c.viewmodel {
         items2Dirty: nts.uk.ui.DirtyChecker;
 
         constructor() {
-            let self = this;
+            let self = this;          
             self._initFormHeader();
             self._initSwap();
             self._initFormDetail();
+
 
             self.currentCode.subscribe(function(codeChanged) {
                 if (nts.uk.text.isNullOrEmpty(codeChanged)) {
@@ -291,12 +292,10 @@ module qpp008.c.viewmodel {
                         self.currentCode(self.items()[indexItemDelete - 1].formCode);
                         return;
                     }
-
                     if (self.items().length < indexItemDelete) {
                         self.currentCode(self.items()[0].formCode);
                         return;
                     }
-
                     if (self.items().length > indexItemDelete) {
                         self.currentCode(self.items()[indexItemDelete].formCode);
                         return;
@@ -360,45 +359,6 @@ module qpp008.c.viewmodel {
                 return;
             })
         }
-
-//        getSwapUpDownList(lstSelectForTab: Array<string>, categoryAtr: number) {
-//            let self = this;
-//            if (categoryAtr === 0) {
-//                _.forEach(lstSelectForTab, function(value) {
-//                    _.forEach(self.itemsSwap(), function(itemMaster) {
-//                        if (value === itemMaster.itemCode) {
-//                            self.itemsSwap.remove(itemMaster);
-//                            self.currentCodeListSwap.push(itemMaster);
-//                            return false;
-//                        }
-//                    });
-//                });
-//            }
-//
-//            if (categoryAtr === 1) {
-//                _.forEach(lstSelectForTab, function(value) {
-//                    _.forEach(self.itemsSwap1(), function(itemMaster) {
-//                        if (value === itemMaster.itemCode) {
-//                            self.itemsSwap1.remove(itemMaster);
-//                            self.currentCodeListSwap1.push(itemMaster);
-//                            return false;
-//                        }
-//                    });
-//                });
-//            }
-//
-//            if (categoryAtr === 3) {
-//                _.forEach(lstSelectForTab, function(value) {
-//                    _.forEach(self.itemsSwap3(), function(itemMaster) {
-//                        if (value === itemMaster.itemCode) {
-//                            self.itemsSwap3.remove(itemMaster);
-//                            self.currentCodeListSwap3.push(itemMaster);
-//                            return false;
-//                        }
-//                    });
-//                });
-//            }
-//        }
     }
 
     export class ComparingFormHeader {
