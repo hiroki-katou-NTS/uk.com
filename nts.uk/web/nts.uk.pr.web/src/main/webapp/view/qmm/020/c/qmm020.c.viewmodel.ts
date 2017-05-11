@@ -2,11 +2,11 @@ module qmm020.c.viewmodel {
     export class ScreenModel {
         gridColumns: Array<any> = [];
         model: KnockoutObservable<Model> = ko.observable(undefined);
-        
+
         constructor() {
             let self = this;
             self.gridColumns = [
-                { headerText: "コード", key: "employmentCode", dataType: "string", width: "100px", template: '${employmentCode}'},
+                { headerText: "コード", key: "employmentCode", dataType: "string", width: "100px", template: '${employmentCode}' },
                 { headerText: "名称", key: "employmentName", dataType: "string", width: "200px", template: '${employmentName}' },
                 {
                     headerText: "給与明細書", key: "paymentDetailCode", dataType: "string", width: "250px",
@@ -32,11 +32,11 @@ module qmm020.c.viewmodel {
 
         start() {
             let self = this;
-            
+
             // clear all data for first load
             self.model().ListItems.removeAll();
             self.model().GridItems.removeAll();
-            
+
             // get list history data
             service.getEmployeeAllotHeaderList().done(function(data: Array<IListModel>) {
                 if (data.length > 0) {
@@ -46,7 +46,13 @@ module qmm020.c.viewmodel {
                 // get itemMax of ListItem
                 service.getAllotEmployeeMaxDate().done(function(itemMax: number) {
                     let maxDate: IListModel = _.find(self.model().ListItems(), function(obj) { return obj.endYm == itemMax; });
-                    nts.uk.ui.windows.setShared("C_MAXDATE", maxDate);
+                    self.model().ListItems().map((m) => {
+                        if (m.historyId == maxDate.historyId) {
+                            m.isMaxEnYm = true;
+                        } else {
+                            m.isMaxEnYm = false;
+                        }
+                    });
                 });
             }).fail(function(res) {
                 alert(res);
@@ -72,7 +78,7 @@ module qmm020.c.viewmodel {
                         if (value.selectedMode == 2) {
                             self.model().ListItems.push(new ListModel({ historyId: '', startYm: value.startDate, endYm: 999912 }));
                         } else {
-                            let getMaxDate = nts.uk.ui.windows.getShared('C_MAXDATE');
+                            let getMaxDate = _.find(self.model().ListItems(), function(m) { return m.isMaxEnYm; });
                             let hist = getMaxDate.historyId;
                             service.getEmployeeDetail(hist).done(function(data: Array<any>) {
                                 _.forEach(self.model().GridItems(), function(t) {
@@ -163,37 +169,41 @@ module qmm020.c.viewmodel {
         GridItems: KnockoutObservableArray<GridModel> = ko.observableArray([]);
         GridItemSelected: KnockoutObservable<string> = ko.observable(undefined);
 
+        isNewHist: KnockoutObservable<boolean>;
+
         constructor(param: IModel) {
             let self = this;
+            self.isNewHist = ko.observable(false);
             self.ListItems(param.ListItems.map((m) => { return new ListModel(m); }));
             self.GridItems(param.GridItems.map((m) => { return new GridModel(m); }));
-
-            self.ListItemSelected.subscribe((v) => {
-                if (v) {
-                    service.getEmployeeDetail(v).done(function(data: Array<any>) {
-                        _.forEach(self.GridItems(), function(t) {
-                            let item = _.find(data, function(m) {
-                                return t.employmentCode == m.employeeCode;
+            if (self.isNewHist()) {
+                self.ListItemSelected.subscribe((v) => {
+                    if (v) {
+                        service.getEmployeeDetail(v).done(function(data: Array<any>) {
+                            _.forEach(self.GridItems(), function(t) {
+                                let item = _.find(data, function(m) {
+                                    return t.employmentCode == m.employeeCode;
+                                });
+                                if (item) {
+                                    t.bonusDetailCode = item.bonusDetailCode;
+                                    t.bonusDetailName = item.bonusDetailName;
+                                    t.paymentDetailCode = item.paymentDetailCode;
+                                    t.paymentDetailName = item.paymentDetailName;
+                                }
+                                else {
+                                    t.bonusDetailCode = '';
+                                    t.bonusDetailName = '';
+                                    t.paymentDetailCode = '';
+                                    t.paymentDetailName = '';
+                                }
                             });
-                            if (item) {
-                                t.bonusDetailCode = item.bonusDetailCode;
-                                t.bonusDetailName = item.bonusDetailName;
-                                t.paymentDetailCode = item.paymentDetailCode;
-                                t.paymentDetailName = item.paymentDetailName;
-                            }
-                            else {
-                                t.bonusDetailCode = '';
-                                t.bonusDetailName = '';
-                                t.paymentDetailCode = '';
-                                t.paymentDetailName = '';
-                            }
+                            //update date to igGr    
+                            self.updateData();
                         });
-                        //update date to igGrid
-                        
-                        self.updateData();
-                    });
-                }
-            });
+                    }
+                });
+            }
+
         }
 
         updateData() {
@@ -225,11 +235,17 @@ module qmm020.c.viewmodel {
         endYm: number;
         startYm: number;
         text: string;
+        isMaxEnYm: boolean;
+
         constructor(param: IListModel) {
             this.historyId = param.historyId;
             this.endYm = param.endYm;
             this.startYm = param.startYm;
-            this.text = nts.uk.time.formatYearMonth(param.startYm) + " ~ " + nts.uk.time.formatYearMonth(param.endYm);
+            this.update();
+        }
+        
+        update() {
+            this.text = nts.uk.time.formatYearMonth(this.startYm) + " ~ " + nts.uk.time.formatYearMonth(this.endYm);
         }
     }
 
