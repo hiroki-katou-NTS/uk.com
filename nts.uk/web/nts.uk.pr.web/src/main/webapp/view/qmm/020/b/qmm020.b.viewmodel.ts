@@ -4,6 +4,17 @@ module qmm020.b.viewmodel {
         selectedId: KnockoutObservable<string> = ko.observable(undefined);
         selectedItem: KnockoutObservable<ListModel> = ko.observable(new ListModel({ historyId: '', startDate: 197001, endDate: 999912 }));
 
+        dirty: IDirty = {
+            selectedId: new nts.uk.ui.DirtyChecker(this.selectedId),
+            selectedItem: new nts.uk.ui.DirtyChecker(this.selectedItem),
+            isDirty: function() {
+                return this.selectedItem.isDirty();
+            },
+            reset: function() {
+                this.selectedId.reset();
+                this.selectedItem.reset();
+            }
+        };
         constructor() {
             var self = this;
 
@@ -18,7 +29,7 @@ module qmm020.b.viewmodel {
 
         // start function
         start() {
-            let self = this;
+            let self = this, dfd = $.Deferred();
             // clear all old item
             self.listItems.removeAll();
 
@@ -47,26 +58,22 @@ module qmm020.b.viewmodel {
                         }).fail(function(res) {
                             alert(res);
                         });
+
+                        // reset dirty
+                        self.dirty.reset();
                     }
                 })
                 .fail(function(mes) { alert(mes); });
+
+            return dfd.promise();
         }
 
         // event calling by saveData event in view A
         saveData() {
-            let self = this;
-
-            if (self.selectedItem().historyId.indexOf("_NEW_") > -1) {
-                service.insertComAllot(ko.toJS(self.selectedItem))
-                    .fail(function(res) {
-                        alert(res);
-                    });
-            } else {
-                service.updateComAllot(ko.toJS(self.selectedItem))
-                    .fail(function(res) {
-                        alert(res);
-                    });
-            }
+            let self = this, model: Array<ListModel> = ko.toJS(self.listItems);
+            // push data to server by service
+            // change function?
+            service.saveData(model);
         }
 
         //Open dialog Add History
@@ -78,7 +85,6 @@ module qmm020.b.viewmodel {
             self.listItems().map((m) => {
                 if (m.isMaxDate) {
                     self.selectedId(m.historyId);
-                    self.selectedId.valueHasMutated();
                 }
             });
 
@@ -124,7 +130,6 @@ module qmm020.b.viewmodel {
 
                             // selected new item
                             self.selectedId(id);
-                            self.selectedId.valueHasMutated();
                             self.selectedItem.valueHasMutated();
                         }
                         else {
@@ -152,27 +157,54 @@ module qmm020.b.viewmodel {
                 .onClosed(() => {
                     let model: any = nts.uk.ui.windows.getShared("K_RETURN");
                     if (model) {
+                        // search index of current item
+                        let index = _.findIndex(self.listItems(), function(m) { return m.historyId == self.selectedId(); });
                         if (model.selectedMode == 1) {
-                            let index = _.findIndex(self.listItems(), function(m) { return m.historyId == self.selectedId(); });
 
                             // call service delete item at here
                             self.listItems.splice(index, 1);
+
+                            // select to next item
+                            while (index >= self.listItems().length) {
+                                index--;
+                            }
+
+                            if (!self.listItems()[index]) {
+                                self.selectedId(undefined);
+                            } else {
+                                self.selectedId(self.listItems()[index].historyId);
+                            }
+
+                            self.selectedItem.valueHasMutated();
+
                             // call start function
                             //self.start();
                         } else {
                             // modify
+                            let startDate = nts.uk.time.parseYearMonth(model.startYm);
+                            if (startDate.success) {
+                                let current: ListModel = self.selectedItem(), neighbor = self.listItems()[index + 1];
+                                current.startDate = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 1, 1)).format("YYYYMM"));
+                                current.update();
+                                if (!!neighbor) {
+                                    neighbor.endDate = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
+                                    neighbor.update();
+                                }
 
+                                // update view data
+                                // fkc?
+                                self.listItems.push(self.listItems.pop());
+                                self.selectedId.valueHasMutated();
+                                self.selectedItem.valueHasMutated();
+                            } else {
+                                alert(startDate.msg);
+                            }
                         }
                     }
                     // clear shared data
                     nts.uk.ui.windows.setShared("K_DATA", undefined);
                     nts.uk.ui.windows.setShared("K_RETURN", undefined);
                 });
-        }
-
-        //Open L Dialog
-        openLDialog() {
-            alert('2017');
         }
 
         //Click to button Select Payment
@@ -261,5 +293,12 @@ module qmm020.b.viewmodel {
         update() {
             this.text = nts.uk.time.formatYearMonth(this.startDate) + " ~ " + nts.uk.time.formatYearMonth(this.endDate);
         }
+    }
+
+    interface IDirty {
+        selectedId: nts.uk.ui.DirtyChecker,
+        selectedItem: nts.uk.ui.DirtyChecker,
+        isDirty: any,
+        reset: any
     }
 }
