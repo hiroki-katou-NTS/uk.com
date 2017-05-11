@@ -25,9 +25,9 @@ public class DeparmentInf {
 
 		lstEmployee.stream().forEach(c -> {
 			c.getLstData().stream().forEach(s -> {
-				totalMonth1 += s.getMonth1().doubleValue();
-				totalMonth2 += s.getMonth2().doubleValue();
-				totalDifferent += s.getDifferentSalary().doubleValue();
+				totalMonth1 += s.getMonth1();
+				totalMonth2 += s.getMonth2();
+				totalDifferent += s.getDifferentSalary();
 
 			});
 		});

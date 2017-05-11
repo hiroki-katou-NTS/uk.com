@@ -12,13 +12,13 @@ public class DataRowComparingSalaryBonus {
 	private String itemName;
 
 	/** 項目額1  **/
-	private BigDecimal month1;
+	private double month1;
 	
 	/** 項目額2  **/
-	private BigDecimal month2;
+	private double month2;
 	
 	/**  different Salary */
-	private BigDecimal differentSalary;
+	private double differentSalary;
 	
 	/** 登録状況1 **/
 	private String registrationStatus1;

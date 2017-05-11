@@ -120,13 +120,15 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 				numberOfPage++;
 				firstRowIndex += AMOUNT_ROWS_IN_PAGE;
 				int totalRow = (numberOfPage +  1)* AMOUNT_ROWS_IN_PAGE;
+				// Set Print Area
+
 				System.out.println(totalRow);
 				System.out.println(numberOfPage);
 				System.out.println(this.firtRow + 1);
-				// Set Print Area
-				PageSetup pageSetup = worksheet.getPageSetup();
-				pageSetup.setPrintArea("A1:H" + totalRow);
+
 			}
+			PageSetup pageSetup = worksheet.getPageSetup();
+			pageSetup.setPrintArea("A1:H" + 120);
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 			designer.saveAsPdf(this.createNewFile(fileContext, fileName));
