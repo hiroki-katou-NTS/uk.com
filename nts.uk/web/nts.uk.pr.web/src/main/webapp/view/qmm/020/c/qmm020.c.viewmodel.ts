@@ -3,6 +3,7 @@ module qmm020.c.viewmodel {
         gridColumns: Array<any> = [];
         model: KnockoutObservable<Model> = ko.observable(undefined);
 
+
         constructor() {
             let self = this;
             self.gridColumns = [
@@ -65,46 +66,89 @@ module qmm020.c.viewmodel {
             }).fail(function(res) {
                 alert(res);
             });
+
+            self.model().ListItems.valueHasMutated();
+            self.model().GridItems.valueHasMutated();
+
+            self.model().ListItemSelected.valueHasMutated();
+            self.model().GridItemSelected.valueHasMutated();
         }
 
         openJDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared("J_DATA", { displayMode: 1, startYm: 201701, endYm: 201708 });
+            // get item has property endDate is max value
+            let oldItem: any = _.find(self.model().ListItems(), function(m) { return m.isMaxEnYm == true; }) || {};
+
+            nts.uk.ui.windows.setShared("J_DATA", { displayMode: 1, startYm: oldItem.startYm || 197001, endYm: oldItem.endYm || 999912 });
             nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" })
                 .onClosed(function() {
                     nts.uk.ui.windows.setShared("J_DATA", null);
                     let value: any = nts.uk.ui.windows.getShared('J_RETURN');
                     if (value) {
-                        if (value.selectedMode == 2) {
-                            self.model().ListItems.push(new ListModel({ historyId: '', startYm: value.startDate, endYm: 999912 }));
-                        } else {
-                            let getMaxDate = _.find(self.model().ListItems(), function(m) { return m.isMaxEnYm; });
-                            let hist = getMaxDate.historyId;
-                            service.getEmployeeDetail(hist).done(function(data: Array<any>) {
-                                _.forEach(self.model().GridItems(), function(t) {
-                                    let item = _.find(data, function(m) {
-                                        return t.employmentCode == m.employeeCode;
-                                    });
-                                    debugger;
-                                    if (item) {
-                                        t.bonusDetailCode = item.bonusDetailCode;
-                                        t.paymentDetailCode = item.paymentDetailCode;
-                                    }
-                                    else {
-                                        t.bonusDetailCode = '';
-                                        t.paymentDetailCode = '';
-                                    }
-                                });
-                                //update date to igGrid
-                                self.model().updateData();
-                            });
+                        let oldItem: ListModel = _.find(self.model().ListItems(), function(m) { return m.isMaxEnYm == true; });
+                        let startDate = nts.uk.time.parseYearMonth(value.startDate);
+                        if (startDate.success) {
+                            let id: string = '_NEW_' + self.model().ListItems.length + '_' + value.startDate,
+                                newItem: ListModel = new ListModel({ historyId: id, startYm: value.startDate, endYm: 999912 });
 
+                            if (oldItem) {
+                                oldItem.isMaxEnYm = false;
+                                oldItem.endYm = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
+                                oldItem.update();
+                            }
+                            self.model().ListItems.push(newItem);
+                            self.model().ListItems(_.orderBy(self.model().ListItems(), ['endYm'], ['desc']));
+
+                            // store old grid data
+                            let temp = self.model().GridItems();
+
+                            // selected new id (item)
+                            self.model().ListItemSelected(id);
+
+                            // copy or new mode
+                            if (value.selectedMode == 1) {
+                                //self.model().GridItems().map((f) => {
+                                //    f.bonusDetailCode = '';
+                                //    f.bonusDetailName = '';    
+                                //    f.paymentDetailCode = '';
+                                //    f.paymentDetailName = '';
+                                //});
+                                //dirty.reset();
+                                self.model().GridItems(temp);
+                                self.model().updateData();
+                                debugger;
+                            } else {
+                                self.model().GridItems().map((f) => {
+                                    f.bonusDetailCode = '';
+                                    f.bonusDetailName = '';
+                                    f.paymentDetailCode = '';
+                                    f.paymentDetailName = '';
+                                });
+                            }
                         }
+
                     }
                 });
         }
 
         openKDialog() {
+            let self = this;
+
+            self.model().GridItemSelected.valueHasMutated;
+            // set shared data for k screen
+            nts.uk.ui.windows.setShared("K_DATA", { displayMode: 1, startYm: self.selectedItem().startDate, endYm: self.selectedItem().endDate });
+
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { width: 485, height: 550, title: '履歴の編集', dialogClass: "no-close" })
+                .onClosed(() => {
+                    let value: any = nts.uk.ui.windows.getShared("K_RETURN");
+                    if (value) {
+                        if (value.selectedMode == 1) {
+                            return null;
+                        } else { }
+                    }
+
+                }
+
         }
         // get paymentDetailName
         openMDialogPay() {
@@ -118,13 +162,15 @@ module qmm020.c.viewmodel {
                         if (currentItemGrid) {
                             let stmtCode = nts.uk.ui.windows.getShared('M_RETURN');
                             currentItemGrid.paymentDetailCode = stmtCode;
-                            service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
-                                currentItemGrid.paymentDetailName = stmtName;
-                                //update date to igGrid
-                                self.model().updateData();
-                            }).fail(function(res) {
-                                alert(res);
-                            });
+                            if (stmtCode != undefined) {
+                                service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
+                                    currentItemGrid.paymentDetailName = stmtName;
+                                    //update date to igGrid
+                                    self.model().updateData();
+                                }).fail(function(res) {
+                                    alert(res);
+                                });
+                            }
                         }
                     });
             }
@@ -141,13 +187,15 @@ module qmm020.c.viewmodel {
                         if (currentItemGrid) {
                             let stmtCode = nts.uk.ui.windows.getShared('M_RETURN');
                             currentItemGrid.bonusDetailCode = stmtCode;
-                            service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
-                                currentItemGrid.bonusDetailName = stmtName;
-                                //update date to igGrid
-                                self.model().updateData();
-                            }).fail(function(res) {
-                                alert(res);
-                            });
+                            if (stmtCode != undefined) {
+                                service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
+                                    currentItemGrid.bonusDetailName = stmtName;
+                                    //update date to igGrid
+                                    self.model().updateData();
+                                }).fail(function(res) {
+                                    alert(res);
+                                });
+                            }
                         }
                     });
             }
@@ -169,41 +217,35 @@ module qmm020.c.viewmodel {
         GridItems: KnockoutObservableArray<GridModel> = ko.observableArray([]);
         GridItemSelected: KnockoutObservable<string> = ko.observable(undefined);
 
-        isNewHist: KnockoutObservable<boolean>;
-
         constructor(param: IModel) {
             let self = this;
-            self.isNewHist = ko.observable(false);
             self.ListItems(param.ListItems.map((m) => { return new ListModel(m); }));
             self.GridItems(param.GridItems.map((m) => { return new GridModel(m); }));
-            if (self.isNewHist()) {
-                self.ListItemSelected.subscribe((v) => {
-                    if (v) {
-                        service.getEmployeeDetail(v).done(function(data: Array<any>) {
-                            _.forEach(self.GridItems(), function(t) {
-                                let item = _.find(data, function(m) {
-                                    return t.employmentCode == m.employeeCode;
-                                });
-                                if (item) {
-                                    t.bonusDetailCode = item.bonusDetailCode;
-                                    t.bonusDetailName = item.bonusDetailName;
-                                    t.paymentDetailCode = item.paymentDetailCode;
-                                    t.paymentDetailName = item.paymentDetailName;
-                                }
-                                else {
-                                    t.bonusDetailCode = '';
-                                    t.bonusDetailName = '';
-                                    t.paymentDetailCode = '';
-                                    t.paymentDetailName = '';
-                                }
+            self.ListItemSelected.subscribe((v) => {
+                if (v && v.indexOf('NEW') == -1) {
+                    service.getEmployeeDetail(v).done(function(data: Array<any>) {
+                        _.forEach(self.GridItems(), function(t) {
+                            let item = _.find(data, function(m) {
+                                return t.employmentCode == m.employeeCode;
                             });
-                            //update date to igGr    
-                            self.updateData();
+                            if (item) {
+                                t.bonusDetailCode = item.bonusDetailCode;
+                                t.bonusDetailName = item.bonusDetailName;
+                                t.paymentDetailCode = item.paymentDetailCode;
+                                t.paymentDetailName = item.paymentDetailName;
+                            }
+                            else {
+                                t.bonusDetailCode = '';
+                                t.bonusDetailName = '';
+                                t.paymentDetailCode = '';
+                                t.paymentDetailName = '';
+                            }
                         });
-                    }
-                });
-            }
-
+                        //update date to igGr    
+                        self.updateData();
+                    });
+                }
+            });
         }
 
         updateData() {
@@ -243,7 +285,7 @@ module qmm020.c.viewmodel {
             this.startYm = param.startYm;
             this.update();
         }
-        
+
         update() {
             this.text = nts.uk.time.formatYearMonth(this.startYm) + " ~ " + nts.uk.time.formatYearMonth(this.endYm);
         }
