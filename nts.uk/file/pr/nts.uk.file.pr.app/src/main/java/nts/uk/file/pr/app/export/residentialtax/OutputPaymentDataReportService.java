@@ -30,6 +30,7 @@ import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxDto;
 import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxSlipDto;
 import nts.uk.file.pr.app.export.residentialtax.data.RetirementPaymentDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 /**
  * Outputting Payment Data (納付データの出力)
@@ -43,6 +44,9 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 	private OutputPaymentDataGenerator generator;
 	@Inject
 	private ResidentialTaxReportRepository residentialTaxRepo;
+	
+	@Inject
+	private JapaneseErasProvider eraProvider;
 	
 	@Override
 	protected void handle(ExportServiceContext<ResidentialTaxQuery> context) {
@@ -200,8 +204,10 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		common.setTypeCode(query.getTypeCode());
 		common.setClientCode(query.getClientCode());
 		common.setDesBranchNumber(query.getDestinationBranchNumber());
+		//Convert time Japan
 		common.setPaymentDueDate(query.getEndDate().toString());
 		common.setPaymentMonth(query.getEndDate().yearMonth().toString());
+		//
 		common.setClientName(company.getCompanyName());
 		common.setClientAddress(company.getAddress1() + company.getAddress2());
 		common.setTotalNumSalaryMi(totalNumSalaryMi.toString());

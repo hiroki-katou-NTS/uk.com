@@ -231,8 +231,11 @@ module qpp011.f {
                     processingYearMonth: self.F_Year_Month(),
                     processingDate: nts.uk.time.yearmonthInJapanEmpire(self.F_LBL_002_Year_Month()).toString(),
                 };
-                service.saveAsPdf(self.selectedRuleCode(),command).done(function() {
+                service.saveAsPdf(self.selectedRuleCode(),command).done(function(res) {
                   //
+                  if (res.error.businessException) {
+                    nts.uk.ui.dialog.alert(res.error.messageId);    
+                  }
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });

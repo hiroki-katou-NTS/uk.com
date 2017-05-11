@@ -1,8 +1,5 @@
 package nts.uk.pr.file.infra.residentialtax;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ejb.Stateless;
 
 import com.aspose.cells.BackgroundType;
@@ -13,15 +10,15 @@ import com.aspose.cells.FormatConditionCollection;
 import com.aspose.cells.FormatConditionType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.PdfSaveOptions;
-import com.aspose.cells.Row;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Worksheet;
+import com.aspose.cells.BorderType;
+import com.aspose.cells.CellBorderType;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.residentialtax.InhabitantTaxChecklistBGenerator;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBReport;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBRpData;
-import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBRpHeader;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -37,36 +34,13 @@ public class InhabitantTaxChecklistReportBGenerator extends AsposeCellsReportGen
 	@Override
 	public void generate(FileGeneratorContext fileContext, InhabitantTaxChecklistBReport dataExport) {
 		try {
-			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
-			
-			List<InhabitantTaxChecklistBRpData> reportData = null;
-			reportData = new ArrayList<>();
-			for(int i = 0; i<10; i++) {
-				InhabitantTaxChecklistBRpData r = new InhabitantTaxChecklistBRpData();
-				r.setNumberPeople("100" + i);
-				r.setResidenceTaxCode("a" + i);
-				r.setResiTaxAutonomy("b" + i);
-				r.setValue(Double.valueOf("100" + i));
-				if (i == 2 || i == 9) {
-					r.setTotal(true);
-				}
-				reportData.add(r);
-			}
-			
-			
-
-			// set datasource
-			InhabitantTaxChecklistBRpHeader header = new InhabitantTaxChecklistBRpHeader();
-			header.setCompanyName("NITTSU SYSTEM VN");
-			header.setDate("2017/05/08");
-			header.setLateResiTaxAutonomy("lateResiTaxAutonomy");
-			header.setStartResiTaxAutonomy("startResiTaxAutonomy");
+			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);		
 			 
-			reportContext.setDataSource("header", header);
-			reportContext.setDataSource("list", reportData);
+			reportContext.setDataSource("header", dataExport.getHeader());
+			reportContext.setDataSource("list", dataExport.getData());
 			
 			PageSetup pageSetup = reportContext.getWorkbook().getWorksheets().get(0).getPageSetup();
-			pageSetup.setHeader(0, header.getCompanyName());
+			pageSetup.setHeader(0, dataExport.getHeader().getCompanyName());
 			pageSetup.setHeader(2, "&D &T");
 						
 			// process data binginds in template
@@ -75,9 +49,9 @@ public class InhabitantTaxChecklistReportBGenerator extends AsposeCellsReportGen
 			
 			Worksheet worksheet = reportContext.getWorkbook().getWorksheets().get(0);
 			
-			int startRowIdx = 8;
+			int startRowIdx = 6;
 			int rowColorIdex = 0;
-			for (InhabitantTaxChecklistBRpData item : reportData) {
+			for (InhabitantTaxChecklistBRpData item : dataExport.getData()) {
 				// Add FormatConditions to the instance of Worksheet
 				int index = worksheet.getConditionalFormattings().add();
 				
@@ -103,18 +77,22 @@ public class InhabitantTaxChecklistReportBGenerator extends AsposeCellsReportGen
 				
 				// Set the background color and patter for the FormatCondition's Style
 				formatCondirion.getStyle().setPattern(BackgroundType.SOLID);
-				if (!item.isTotal()) {
+				if (!item.getCheckSum()) {
 					if (rowColorIdex%2==0) {
 						formatCondirion.getStyle().setBackgroundColor(Color.getWhite());
 					} else {
-						formatCondirion.getStyle().setBackgroundColor(Color.getBlue());
+						Color color = Color.fromArgb(204,244,145);
+						formatCondirion.getStyle().setBackgroundArgbColor(color.toArgb());
 					}
 					rowColorIdex ++;
 				}
 				
-				if (item.isTotal()) {
+				if (item.getCheckSum()) {
 					rowColorIdex = 0;
-					formatCondirion.getStyle().setBackgroundColor(Color.getRed());
+					Color color = Color.fromArgb(197,241,247);
+					formatCondirion.getStyle().setBackgroundArgbColor(color.toArgb());
+					formatCondirion.getStyle().setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+				    formatCondirion.getStyle().setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 				}  
 					
 				startRowIdx++;

@@ -1,6 +1,7 @@
 package nts.uk.pr.file.infra.residentialtax;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -8,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompany;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
+import nts.uk.ctx.basic.infra.entity.report.CmnmtCalled;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QcpmtRegalDocCom;
@@ -51,6 +53,8 @@ public class JpaResidentialTaxReportRepository extends JpaRepository implements 
 			+ "AND z.qredtRetirementPaymentPK.personId IN :personId "
 			+ "AND z.qredtRetirementPaymentPK.payDate >=:StartYearMonth "
 			+ "AND z.qredtRetirementPaymentPK.payDate <=:EndYearMonth";
+	
+	private String CMNMT_CALLED = "SELECT b.person FROM CmnmtCalled b WHERE b.insCcd = :companyCode ";
 
 	@Override
 	public List<ResidentialTaxDto> findResidentTax(String companyCode, List<String> residentTaxCodeList) {
@@ -108,8 +112,16 @@ public class JpaResidentialTaxReportRepository extends JpaRepository implements 
 	public List<PersonResitaxDto> findPersonResidentTax(String companyCode, int yearMonth,
 			List<String> residentTaxCodeList) {
 		return this.queryProxy().query(PPRMT_PERSON_RESITAX_SEL_5, PersonResitaxDto.class)
-				.setParameter("companyCd", companyCode).setParameter("residenceCode", residentTaxCodeList)
+				.setParameter("companyCd", companyCode)
+				.setParameter("residenceCode", residentTaxCodeList)
 				.setParameter("yearKey", yearMonth)
 				.getList();
+	}
+
+	@Override
+	public Optional<String> findPersonText(String companyCode) {	
+		return this.queryProxy().query(CMNMT_CALLED, CmnmtCalled.class )
+				.setParameter("companyCode", companyCode)
+				.getSingle(x -> x.getPerson());
 	}
 }

@@ -1,6 +1,7 @@
 package nts.uk.file.pr.app.export.residentialtax;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
@@ -38,6 +39,6 @@ public interface ResidentialTaxReportRepository {
 
 	List<PersonResitaxDto> findPersonResidentTax(String companyCode, int yearMonth, List<String> residentTaxCodeList);
 	
-	
-	
+	Optional<String> findPersonText(String companyCode);
+
 }
