@@ -1,5 +1,7 @@
 package nts.uk.pr.file.infra.residentialtax;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -54,9 +56,9 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 				//DBD_005  companySpecifiedNo
 				designer.setDataSource("DBD" + sheetNumber + "_005", reportData.getCompanySpecifiedNo());
 				//DBD_006  salaryPaymentAmount
-				designer.setDataSource("DBD" + sheetNumber + "_006", reportData.getSalaryPaymentAmount());
+				designer.setDataSource("DBD" + sheetNumber + "_006", format(reportData.getSalaryPaymentAmount()));
 				//DBD_007  deliveryAmountRetirement
-				designer.setDataSource("DBD" + sheetNumber + "_007", reportData.getDeliveryAmountRetirement());
+				designer.setDataSource("DBD" + sheetNumber + "_007", format(reportData.getDeliveryAmountRetirement()));
 				//DBD_008  postal
 				designer.setDataSource("DBD" + sheetNumber + "_008", reportData.getPostal());
 				//DBD_009  address1
@@ -72,15 +74,15 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 				//DBD_014  deliveryNumber
 				designer.setDataSource("DBD" + sheetNumber + "_014", reportData.getDeliveryNumber());
 				//DBD_015  actualRecieveMny
-				designer.setDataSource("DBD" + sheetNumber + "_015", reportData.getActualRecieveMny());
+				designer.setDataSource("DBD" + sheetNumber + "_015", format(reportData.getActualRecieveMny()));
 				//DBD_016  cityTaxMny
-				designer.setDataSource("DBD" + sheetNumber + "_016", reportData.getCityTaxMny());
+				designer.setDataSource("DBD" + sheetNumber + "_016", format(reportData.getCityTaxMny()));
 				//DBD_017  prefectureTaxMny
-				designer.setDataSource("DBD" + sheetNumber + "_017", reportData.getPrefectureTaxMny());
+				designer.setDataSource("DBD" + sheetNumber + "_017", format(reportData.getPrefectureTaxMny()));
 				//DBD_018  taxOverdueMny
-				designer.setDataSource("DBD" + sheetNumber + "_018", reportData.getTaxOverdueMny());
+				designer.setDataSource("DBD" + sheetNumber + "_018", format(reportData.getTaxOverdueMny()));
 				//DBD_019  taxDemandChargeMny
-				designer.setDataSource("DBD" + sheetNumber + "_019", reportData.getTaxDemandChargeMny());
+				designer.setDataSource("DBD" + sheetNumber + "_019", format(reportData.getTaxDemandChargeMny()));
 				//DBD_020  filingDate
 				designer.setDataSource("DBD" + sheetNumber + "_020", reportData.getFilingDate());
 				//CTR_001  designatedYM
@@ -132,6 +134,15 @@ public class ResidentialTaxReportGenerator extends AsposeCellsReportGenerator im
 		}
 
 		return workbook;
+	}
+	
+	private String format(Double input) {
+		DecimalFormat formatter = new DecimalFormat();
+		DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+		symbols.setGroupingSeparator(',');
+		formatter.setDecimalFormatSymbols(symbols);
+		
+		return formatter.format(input);
 	}
 
 }

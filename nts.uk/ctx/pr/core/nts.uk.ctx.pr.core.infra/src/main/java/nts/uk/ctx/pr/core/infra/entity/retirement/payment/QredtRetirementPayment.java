@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.infra.entity.retirement.payment;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

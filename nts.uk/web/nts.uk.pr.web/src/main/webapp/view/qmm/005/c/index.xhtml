@@ -19,7 +19,7 @@
 			<div id="functions-area">
 				<div class="form-group no-margin-bottom">
 					<div id="C_LBL_001"
-						data-bind="ntsFormLabel: { required: true, constraint: 'ProcessingName' }">支払日区分1</div>
+						data-bind="ntsFormLabel: { required: true, constraint: 'ProcessingName' }"><span data-bind="text: '支払日区分' + index()"></span></div>
 					<input type="text" id="C_INP_001"
 						data-bind="ntsTextEditor: { value: inp001, constraint: 'ProcessingName', required: true, immediate: true }" />
 				</div>

@@ -3,8 +3,6 @@
  */
 package nts.uk.file.pr.app.export.residentialtax;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +19,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
 import nts.uk.file.pr.app.export.residentialtax.data.PaymentDetailDto;
 import nts.uk.file.pr.app.export.residentialtax.data.PersonResitaxDto;
@@ -32,6 +30,7 @@ import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxDto;
 import nts.uk.file.pr.app.export.residentialtax.data.ResidentialTaxSlipDto;
 import nts.uk.file.pr.app.export.residentialtax.data.RetirementPaymentDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 /**
  * Outputting Payment Data (納付データの出力)
@@ -45,7 +44,10 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 	private OutputPaymentDataGenerator generator;
 	@Inject
 	private ResidentialTaxReportRepository residentialTaxRepo;
-
+	
+	@Inject
+	private JapaneseErasProvider eraProvider;
+	
 	@Override
 	protected void handle(ExportServiceContext<ResidentialTaxQuery> context) {
 		String companyCode = AppContexts.user().companyCode();
@@ -65,6 +67,10 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		year = Integer.parseInt(yearMonth[0]);
 		int yearM = Integer.parseInt(yearMonth[0] + yearMonth[1]);
 
+		if (query.getResidentTaxCodeList() == null) {
+			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
+		}
+		
 		// get residential tax
 		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
 				query.getResidentTaxCodeList());
@@ -103,8 +109,6 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		int processingYM = Integer.parseInt(processingYearMonth[0] + processingYearMonth[1]);
 		// 20170311
 		GeneralDate baseRangeStartYearMonth = GeneralDate.ymd(processingYear, processingMonth, 11);
-	    //GeneralDate baseRangeEndYearMonth = query.getEndDate();
-		GeneralDate baseRangeEndYearMonth = GeneralDate.ymd(2017, 04, 01);
 		for (ResidentialTaxSlipDto residentialTax : residentialTaxSlipDto) {
 			long numberRetirees;
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap.get(residentialTax.getResiTaxCode());
@@ -129,15 +133,15 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
                   numberRetirees = retirementPaymentList.size();
 			}else {
 				  long numberPeopleZero = retirementPaymentList.stream()
-	                     .filter(x -> x.getCityTaxMny().doubleValue() > 0  && x.getPrefectureTaxMny().doubleValue()> 0)
+	                     .filter(x -> x.getCityTaxMny() > 0  && x.getPrefectureTaxMny()> 0)
 	                     .count();
 				  numberRetirees = retirementPaymentList.size() - numberPeopleZero;
 			}
 			
-			double totalCityTaxMny = retirementPaymentList.stream().mapToDouble(x -> x.getCityTaxMny().doubleValue())
+			double totalCityTaxMny = retirementPaymentList.stream().mapToInt(x -> x.getCityTaxMny())
 					.sum();
 			double totalPrefectureTaxMny = retirementPaymentList.stream()
-					.mapToDouble(x -> x.getPrefectureTaxMny().doubleValue()).sum();
+					.mapToInt(x -> x.getPrefectureTaxMny()).sum();
 			
 			totalCityTaxMnyMap.put(residentialTax.getResiTaxCode(), totalCityTaxMny);
 			
@@ -147,7 +151,7 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 					totalPrefectureTaxMny + totalCityTaxMny + residentialTax.getTaxRetirementMny().doubleValue());
 			
 			double totalActualRecieveMny = retirementPaymentList.stream()
-					.mapToDouble(x -> x.getActualRecieveMny().doubleValue()).sum();
+					.mapToInt(x -> x.getActualRecieveMny()).sum();
 			
 			numberRetireesMap.put(residentialTax.getResiTaxCode(), numberRetirees);
 			totalActualRecieveMnyMap.put(residentialTax.getResiTaxCode(), totalActualRecieveMny);
@@ -160,7 +164,11 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 
 		List<ResidentTaxTextData> dataList = new ArrayList<ResidentTaxTextData>();
 		for (ResidentialTaxDto residentialTax : residentTaxList) {
+			
 			Double salaryPaymentAmount = totalSalaryPaymentAmount.get(residentialTax.getResidenceTaxCode());
+			if (salaryPaymentAmount  == null) {
+				break;
+			}
 			Double deliveryAmountRetirement = totalDeliveryAmountRetirement.get(residentialTax.getResidenceTaxCode());
 			Double totalCityTaxMny = totalCityTaxMnyMap.get(residentialTax.getResidenceTaxCode());
 			Double totalPrefectureTaxMny = totalPrefectureTaxMnyMap.get(residentialTax.getResidenceTaxCode());
@@ -200,8 +208,10 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		common.setTypeCode(query.getTypeCode());
 		common.setClientCode(query.getClientCode());
 		common.setDesBranchNumber(query.getDestinationBranchNumber());
-		common.setPaymentDueDate("");
-		common.setPaymentMonth("");
+		//Convert time Japan
+		common.setPaymentDueDate(query.getEndDate().toString());
+		common.setPaymentMonth(query.getEndDate().yearMonth().toString());
+		//
 		common.setClientName(company.getCompanyName());
 		common.setClientAddress(company.getAddress1() + company.getAddress2());
 		common.setTotalNumSalaryMi(totalNumSalaryMi.toString());

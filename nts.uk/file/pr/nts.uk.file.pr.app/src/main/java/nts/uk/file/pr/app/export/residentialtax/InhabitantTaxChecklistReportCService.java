@@ -6,16 +6,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistBRpHeader;
 import nts.uk.file.pr.app.export.residentialtax.data.InhabitantTaxChecklistCReport;
@@ -40,28 +42,36 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 		Integer year;
 		Map<String, Double> totalPaymentAmount = new HashMap<>();
 		Map<String, Integer> totalNumberPeople = new HashMap<>();
-        Map<String, BigDecimal> personValue = new HashMap<>();
+		Map<String, BigDecimal> personValue = new HashMap<>();
 		InhabitantTaxChecklistQuery query = context.getQuery();
-		
-		String[]  yearMonth = query.getYearMonth().split("/");
-		year = Integer.parseInt(yearMonth[0]);
 
+		String[] yearMonth = query.getYearMonth().split("/");
+		year = Integer.parseInt(yearMonth[0]);
+        //
+		Optional<String> personText = residentialTaxRepo.findPersonText(companyCode);
+		
+		if (query.getResidentTaxCodeList() == null) {
+			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
+		}
+		
 		// get residential tax
 		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
 				query.getResidentTaxCodeList());
 
 		List<PersonResitaxDto> personResidentTaxList = residentialTaxRepo.findPersonResidentTax(companyCode, year,
 				query.getResidentTaxCodeList());
-		
-		if(personResidentTaxList.size() == 0) {
-			throw new BusinessException("データがありません。");
+
+		if (personResidentTaxList.size() == 0) {
+			throw new BusinessException(new RawErrorMessage("データがありません。"));
 		}
-		
+
 		CompanyDto company = residentialTaxRepo.findCompany(companyCode);
 
 		Map<String, List<PersonResitaxDto>> personResidentTaxListMap = personResidentTaxList.stream()
 				.collect(Collectors.groupingBy(PersonResitaxDto::getResidenceCode, Collectors.toList()));
 
+		String[] processingYearMonth = query.getProcessingYearMonth().split("/");
+		int processingYM = Integer.parseInt(processingYearMonth[0] + processingYearMonth[1]);
 		for (PersonResitaxDto personResidentTax : personResidentTaxList) {
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap
 					.get(personResidentTax.getResidenceCode());
@@ -69,16 +79,15 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 					.collect(Collectors.toList());
 
 			List<PaymentDetailDto> paymentDetailList = residentialTaxRepo.findPaymentDetail(companyCode, personIdList,
-					PayBonusAtr.SALARY, Integer.parseInt(query.getProcessingYearMonth()), CategoryAtr.DEDUCTION, "F108");
+					PayBonusAtr.SALARY, processingYM, CategoryAtr.DEDUCTION, "F108");
 
 			double totalValue = paymentDetailList.stream().mapToDouble(x -> x.getValue().doubleValue()).sum();
-            for (PaymentDetailDto paymentDetail : paymentDetailList) {
-				 personValue.put(paymentDetail.getPersonId(), paymentDetail.getValue());
+			for (PaymentDetailDto paymentDetail : paymentDetailList) {
+				personValue.put(paymentDetail.getPersonId(), paymentDetail.getValue());
 			}
 			totalPaymentAmount.put(personResidentTax.getResidenceCode(), totalValue);
 			totalNumberPeople.put(personResidentTax.getResidenceCode(), personResitaxList.size());
 		}
-
 
 		List<InhabitantTaxChecklistCRpData> reportDataList = new ArrayList<InhabitantTaxChecklistCRpData>();
 
@@ -87,6 +96,9 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 			InhabitantTaxChecklistCRpData reportData = new InhabitantTaxChecklistCRpData();
 			List<PersonResitaxDto> personResitaxList = personResidentTaxListMap
 					.get(residentialTax.getResidenceTaxCode());
+			if (personResitaxList == null) {
+				break;
+			}
 			for (PersonResitaxDto item : personResitaxList) {
 				InhabitantTaxChecklistCRpData personData = new InhabitantTaxChecklistCRpData();
 				BigDecimal value = personValue.get(item.getPersonID());
@@ -99,11 +111,12 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 				// DBD_006
 				personData.setName("テスト名前");
 				// DBD_007
-				if(value == null) {
+				if (value == null) {
 					personData.setValue(0d);
 				} else {
 					personData.setValue(value.doubleValue());
-				}			
+				}
+				personData.setCheckSum(false);
 				reportDataList.add(personData);
 			}
 			// DBD_003 residenceTaxCode
@@ -116,6 +129,7 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 			reportData.setName(totalNumberPeople.get(residentialTax.getResidenceTaxCode()).toString());
 			// DBD_007
 			reportData.setValue(totalPaymentAmount.get(residentialTax.getResidenceTaxCode()));
+			reportData.setCheckSum(true);
 			reportDataList.add(reportData);
 		}
 
@@ -124,7 +138,7 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 		Double sumPaymentAmount = totalPaymentAmount.values().stream().mapToDouble(x -> x.doubleValue()).sum();
 
 		Integer sumNumberPeople = totalNumberPeople.values().stream().mapToInt(x -> x.intValue()).sum();
-		
+
 		// DBD_003 residenceTaxCode
 		sumReportData.setResidenceTaxCode("");
 		// DBD_004 resiTaxAutonomy
@@ -136,19 +150,24 @@ public class InhabitantTaxChecklistReportCService extends ExportService<Inhabita
 		// DBD_007
 		sumReportData.setValue(sumPaymentAmount);
 
+		sumReportData.setCheckSum(true);
+
 		reportDataList.add(sumReportData);
 
 		InhabitantTaxChecklistBRpHeader header = new InhabitantTaxChecklistBRpHeader();
 		int size = reportDataList.size() - 3;
+		header.setTextLabel("住民税チェックリスト（"+personText.get().toString()+"明細）");
+		String columnPersonText1 = personText.get().substring(0, 1);
+		String columnPersonText2 = personText.get().substring(1, 2);
+		header.setTextColumn(columnPersonText1+"  "+columnPersonText2+"  "+"名");
 		header.setCompanyName(company.getCompanyName());
-		header.setStartResiTaxAutonomy(
-				reportDataList.get(0).getResidenceTaxCode() + " " + reportDataList.get(0).getResiTaxAutonomy());
-		header.setLateResiTaxAutonomy(
-				reportDataList.get(size).getResidenceTaxCode() + " " + reportDataList.get(size).getResiTaxAutonomy()+"】");
-		header.setDate(query.getProcessingDate()+"度 】");
+		header.setResiTaxAutonomy(reportDataList.get(0).getResidenceTaxCode() + " "
+				+ reportDataList.get(0).getResiTaxAutonomy() + " ～" + reportDataList.get(size).getResidenceTaxCode()
+				+ " " + reportDataList.get(size).getResiTaxAutonomy() + "】");
+		header.setDate(query.getProcessingDate() + "度 】");
 
 		InhabitantTaxChecklistCReport dataReportC = new InhabitantTaxChecklistCReport();
-	    dataReportC.setData(reportDataList);
+		dataReportC.setData(reportDataList);
 		dataReportC.setHeader(header);
 		this.generate.generate(context.getGeneratorContext(), dataReportC);
 
