@@ -5,7 +5,8 @@ module qmm020.b.service {
         getLayoutName: "pr/core/allot/findcompanyallotlayoutname/{0}",
         getMaxDate: "pr/core/allot/findcompanyallotmaxdate",
         updateAllotCompanySetting: "pr/core/allot/update",
-        insertAllotCompanySetting: "pr/core/allot/insert"
+        insertAllotCompanySetting: "pr/core/allot/insert",
+        deleteAllotCompanySetting: "pr/core/allot/delete"
     }
 
     //Get list payment date processing.
@@ -51,44 +52,39 @@ module qmm020.b.service {
         return dfd.promise();
     }
 
-    //Update ALLOT company  
-    export function updateComAllot(model: any) {
-        let dfd = $.Deferred(), command: any = {
-            payStmtCode: model.payCode(),
-            bonusStmtCode: model.bonusCode(),
-            startDate: model.startYm(),
-            endDate: model.endYm(),
-            historyId: model.historyId()
-        };
-
-        nts.uk.request.ajax(paths.updateAllotCompanySetting, command)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
+    export function saveData(models: Array<any>) {
+        if (models.length > 0) {
+            models.map((m) => {
+                let data: any = {
+                    payStmtCode: m.paymentDetailCode,
+                    bonusStmtCode: m.bonusDetailCode,
+                    startDate: m.startDate,
+                    endDate: m.endDate,
+                    historyId: m.historyId
+                };
+                if (data.historyId.contains('NEW')) {
+                    data.historyId = '';
+                    nts.uk.request.ajax(paths.insertAllotCompanySetting, data);
+                }
+                else {
+                    nts.uk.request.ajax(paths.updateAllotCompanySetting, data);
+                }
             });
-
-        return dfd.promise();
+        }
     }
 
-
-    export function insertComAllot(model: any) {
-        let dfd = $.Deferred(), command: any = {
-            historyId: model.historyId(),
-            payStmtCode: model.payCode(),
-            bonusStmtCode: model.bonusCode(),
-            startDate: model.startYm(),
-            endDate: model.endYm()
-        };
-
-        nts.uk.request.ajax(paths.insertAllotCompanySetting, command)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
+    export function deleteData(model: any) {
+        let dfd = $.Deferred();
+        if (!!model) {
+            let data: any = {
+                payStmtCode: model.paymentDetailCode,
+                bonusStmtCode: model.bonusDetailCode,
+                startDate: model.startDate,
+                endDate: model.endDate,
+                historyId: model.historyId
+            };
+            nts.uk.request.ajax(paths.deleteAllotCompanySetting, data).done((resp) => { dfd.resolve(resp); }).fail((mes) => { dfd.reject(mes); });
+        }
         return dfd.promise();
     }
 }

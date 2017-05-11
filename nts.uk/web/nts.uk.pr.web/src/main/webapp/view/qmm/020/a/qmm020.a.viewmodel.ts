@@ -33,7 +33,7 @@ module qmm020.a.viewmodel {
             if (oldtab.id == tab.id) {
                 return;
             }
-            console.log(tab.id);
+            
             tab.active(true);
             self.title(tab.name);
             self.tabs().map((t) => { if (t.id != tab.id) t.active(false); });
