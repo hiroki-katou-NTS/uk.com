@@ -1,15 +1,15 @@
 module kdl021.a.service {
     var paths = {
-        getAllDivItem: "at/record/divergencetime/getPossibleItem"
+        getPossibleAttendanceItem: "at/share/attendanceitem/getPossibleAttendanceItem"
     }
     /**
     * get all divergence item id(id co the chon)
     */
-    export function getPossibleItem(arrPossible: Array<string>): JQueryPromise<Array<model.DivergenceItem>> {
-        return nts.uk.request.ajax("at", paths.getAllDivItem , arrPossible);
+    export function getPossibleItem(arrPossible: Array<string>): JQueryPromise<Array<model.AttendanceItem>> {
+        return nts.uk.request.ajax("at", paths.getPossibleAttendanceItem , arrPossible);
     }
     export module model {
-        export class DivergenceItem {
+        export class AttendanceItem {
             id: number;
             name: string;
             displayNumber: number;
