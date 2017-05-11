@@ -40,9 +40,8 @@ module qpp009.a.viewmodel {
             var self = this;
             self.clearAllError();
             // Validate
-            self.validate();
-            if ($('.nts-input').ntsError('hasError')) {
-                return;
+            if (self.validate()) {
+                    return;
             }
             
             // Print Report
@@ -59,9 +58,6 @@ module qpp009.a.viewmodel {
             var hasError = false;
             // Validate year month
             $('#date-picker').ntsEditor('validate');
-            if ($('#date-picker').ntsError("hasError")) {
-                hasError = true;
-            }
             if(self.detailItemsSetting().isPrintDepHierarchy() 
             && self.detailItemsSetting().selectedLevels().length < 1) {
                  $('#hierarchy-content').ntsError('set', '1~9階層 が選択されていません。');
@@ -81,7 +77,7 @@ module qpp009.a.viewmodel {
                 // TODO: Check employee list.
                 hasError = true;
             }
-            return hasError;
+            return hasError || $('.nts-input').ntsError('hasError');
             
         }
         
