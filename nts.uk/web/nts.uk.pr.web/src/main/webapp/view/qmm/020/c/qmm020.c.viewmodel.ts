@@ -144,7 +144,7 @@ module qmm020.c.viewmodel {
                     if (value) {
                         if (value.selectedMode == 1) {
                             return null;
-                        } else { }
+                        }
                     }
 
                 }

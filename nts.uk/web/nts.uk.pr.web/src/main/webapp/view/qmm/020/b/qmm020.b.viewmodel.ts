@@ -152,10 +152,10 @@ module qmm020.b.viewmodel {
 
             // set shared data for k screen
             nts.uk.ui.windows.setShared("K_DATA", { displayMode: 1, startYm: self.selectedItem().startDate, endYm: self.selectedItem().endDate });
-
             nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { width: 485, height: 550, title: '履歴の編集', dialogClass: "no-close" })
                 .onClosed(() => {
                     let model: any = nts.uk.ui.windows.getShared("K_RETURN");
+                    debugger;
                     if (model) {
                         // search index of current item
                         let index = _.findIndex(self.listItems(), function(m) { return m.historyId == self.selectedId(); });
