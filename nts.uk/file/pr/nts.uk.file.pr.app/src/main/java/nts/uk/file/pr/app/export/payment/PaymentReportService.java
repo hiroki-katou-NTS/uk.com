@@ -15,7 +15,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 
 /**
- * The Class SocialInsuReportService.
+ * The Class PaymentReportService.
  */
 
 @Stateless
@@ -29,9 +29,13 @@ public class PaymentReportService extends ExportService<PaymentReportQuery> {
     @Inject
     private PaymentReportRepository repository;
     
-    /* (non-Javadoc)
-     * @see nts.arc.layer.app.file.export.ExportService#handle(nts.arc.layer.app.file.export.ExportServiceContext)
-     */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.file.export.ExportService#handle(nts.arc.layer.app.file
+	 * .export.ExportServiceContext)
+	 */
     @Override
     protected void handle(ExportServiceContext<PaymentReportQuery> context) {
     	PaymentReportQuery query = context.getQuery();

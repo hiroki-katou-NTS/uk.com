@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.paymentdata;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
@@ -22,6 +21,7 @@ import nts.uk.file.pr.app.export.payment.PaymentReportRepository;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 import nts.uk.file.pr.app.export.payment.data.dto.DepartmentDto;
 import nts.uk.file.pr.app.export.payment.data.dto.EmployeeDto;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
 import nts.uk.file.pr.app.export.payment.data.dto.SalaryItemDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -47,6 +47,9 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	
 	/** The Constant CATEGORY_ATTENDANCE. */
 	public static final int CATEGORY_ATTENDANCE = 2;
+	
+	/** The Constant CATEGORY_ARTICLE. */
+	public static final int CATEGORY_ARTICLE = 3;
 
 	/** The Constant FIND_DEPARTMENT_BYCODE. */
 	public static final String FIND_DEPARTMENT_BYCODE = "SELECT dep FROM CmnmtDep dep "
@@ -87,10 +90,8 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/**
 	 * Check payment header layout.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param query
-	 *            the query
+	 * @param companyCode the company code
+	 * @param query the query
 	 * @return the list
 	 */
 	private List<QstdtPaymentHeader> checkPaymentHeaderLayout(String companyCode,
@@ -147,20 +148,6 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		}
 	}
 
-	/**
-	 * To department dto.
-	 *
-	 * @param dep
-	 *            the dep
-	 * @return the department dto
-	 */
-	private DepartmentDto toDepartmentDto(CmnmtDep dep) {
-		DepartmentDto dto = new DepartmentDto();
-		dto.setDepartmentCode(dep.getCmnmtDepPK().getDepartmentCode());
-		dto.setDepartmentName(dep.getDepName());
-		return dto;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -178,7 +165,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 		String companyCode = loginUserContext.companyCode();
 
-		List<QstdtPaymentHeader> paymentHeaders = Collections.EMPTY_LIST;
+		List<QstdtPaymentHeader> paymentHeaders = new ArrayList<>();
 
 		// type print eq LAYOUT
 		if (query.getSelectPrintTypes() == TYPE_PRINT_LAYOUT) {
@@ -190,13 +177,16 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			paymentHeaders = this.checkPaymentHeaderSpecification(companyCode, query);
 		}
 
-		List<PaymentReportData> reportDatas = paymentHeaders.stream()
+		List<PaymentReportDto> reportDatas = paymentHeaders.stream()
 			.map(header -> toHeaderData(header)).collect(Collectors.toList());
 
 		if (CollectionUtil.isEmpty(reportDatas)) {
 			throw new BusinessException("ER010");
 		}
-		return reportDatas.get(0);
+		
+		PaymentReportData reportData = new PaymentReportData();
+		reportData.setReportData(reportDatas);
+		return reportData;
 	}
 
 	/**
@@ -241,8 +231,8 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	 * @param header the header
 	 * @return the payment report data
 	 */
-	private PaymentReportData toHeaderData(QstdtPaymentHeader header) {
-		PaymentReportData reportData = new PaymentReportData();
+	private PaymentReportDto toHeaderData(QstdtPaymentHeader header) {
+		PaymentReportDto reportData = new PaymentReportDto();
 
 		// set department
 		DepartmentDto departmentDto = new DepartmentDto();
@@ -256,7 +246,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		employeeDto.setEmployeeName(header.employeeName);
 		reportData.setEmployeeInfo(employeeDto);
 
-		// 支給項目 * (categoryItem = payment)
+		// 支給項目  (categoryItem = payment)
 		reportData.setPaymentItems(this.detailHeader(header, CATEGORY_PAYMENT));
 		
 		//控除項目 (categoryItem = reduction)
@@ -265,7 +255,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		//勤怠項目 (categoryItem = attendance)
 		reportData.setAttendanceItems(this.detailHeader(header, CATEGORY_ATTENDANCE));
 		
+		//記事項目 (categoryItem = article)
+		reportData.setArticleItems(this.detailHeader(header, CATEGORY_ARTICLE));
 		
+		reportData.setProcessingYm(header.qstdtPaymentHeaderPK.processingYM);
 		return reportData;
 	}
 
