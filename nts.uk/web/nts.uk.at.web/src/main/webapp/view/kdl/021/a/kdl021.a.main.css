@@ -20,12 +20,12 @@
 #process {
 	width: 400px;
 	clear: left;
-	line-height: 100px;
+	line-height: 60px;
 	text-align: center;
 	clear: left;
 }
 
 #label {
-	line-height: 60px;
+	line-height: 40px;
 	text-align: left;
 }
