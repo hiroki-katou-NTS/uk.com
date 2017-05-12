@@ -40,15 +40,19 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 		Boolean checkTime = DivergenceTime.checkAlarmErrTime(context.getCommand().getDivTime().getAlarmTime(), context.getCommand().getDivTime().getErrTime());
 		if(checkTime == true){
 			if(check.isExit(context.getCommand().getDivTime().getSelectSet().getSelectUseSet(),context.getCommand().getDivTime().getDivTimeId())){
-				divTimeRepo.updateDivTime(divTime);
-				List<DivergenceItemSet> listUpdate = context.getCommand().getTimeItem().stream().map(c -> {
-					return new DivergenceItemSet(companyId, c.getDivTimeId(), c.getAttendanceId());
-				}).collect(Collectors.toList());
-				if (listUpdate == null) {
-					return;
+				if(context.getCommand().getTimeItem().isEmpty()){
+					divTimeRepo.updateDivTime(divTime);
+				}else{
+					List<DivergenceItemSet> listUpdate = context.getCommand().getTimeItem().stream().map(c -> {
+						return new DivergenceItemSet(companyId, c.getDivTimeId(), c.getAttendanceId());
+					}).collect(Collectors.toList());
+					if (listUpdate == null) {
+						return;
+					}
+					divTimeRepo.deleteItemId(companyId, context.getCommand().getDivTime().getDivTimeId());
+					divTimeRepo.addItemId(listUpdate);
+					divTimeRepo.updateDivTime(divTime);
 				}
-				divTimeRepo.deleteItemId(companyId, context.getCommand().getDivTime().getDivTimeId());
-				divTimeRepo.addItemId(listUpdate);
 			}else{
 				throw new BusinessException(new RawErrorMessage("Msg_32"));
 			}
