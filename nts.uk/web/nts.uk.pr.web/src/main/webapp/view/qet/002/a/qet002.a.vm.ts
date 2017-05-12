@@ -10,8 +10,8 @@ module qet002.a.viewmodel {
         constructor() {
             var self = this;
             self.targetYear = ko.observable(2017);
-            self.isLowerLimit = ko.observable(true);
-            self.isUpperLimit = ko.observable(true);
+            self.isLowerLimit = ko.observable(false);
+            self.isUpperLimit = ko.observable(false);
             self.lowerLimitValue = ko.observable(null);
             self.japanYear = ko.observable('(' + nts.uk.time.yearInJapanEmpire('2017') + ')');
             self.upperLimitValue = ko.observable(null);           
@@ -34,37 +34,12 @@ module qet002.a.viewmodel {
          * Print Report
          */
        public printData(){  
-       
+            var self = this;
+            self.clearAllError();
            // Validate
-            var hasError = false;
-            if (this.targetYear() == null) {
-                hasError = true;
-                $('#target-year-input').ntsError('set', '対象年 が入力されていません。');
+           if (self.validateData()) {
+                    return;
             }
-            if (this.isLowerLimit() && this.lowerLimitValue() == null) {
-                hasError = true;
-                $('#lower-limit-input').ntsError('set', '金額範囲下限額 が入力されていません。');
-            }
-            if (this.isUpperLimit() && this.upperLimitValue() == null) {
-                hasError = true;
-                $('#upper-limit-input').ntsError('set', '金額範囲上限額 が入力されていません。');
-            }
-            if ((this.isLowerLimit()) && (this.isUpperLimit())) {
-                if (this.lowerLimitValue() > this.upperLimitValue()) {
-                    hasError = true;
-                    $('#lower-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
-                }
-            }
-            if (!this.isLowerLimit()){
-                $('#lower-limit-input').ntsError('clear');
-            }
-            if (this.isUpperLimit() == false){
-                $('#upper-limit-input').ntsError('clear');           
-            }
-            if (hasError) {
-                return;
-            }
-           
            //Print Report
            service.printService(this).done(function(data: any) {
                console.log("YES");                
@@ -73,7 +48,45 @@ module qet002.a.viewmodel {
             })
 
         }
+
+        
+        private clearAllError(): void {
+           $('#target-year-input').ntsError('clear');
+           $('#lower-limit-input').ntsError('clear');
+           $('#upper-limit-input').ntsError('clear');
+       }
+        
+       private validateData(): boolean {
+           var self = this;
+           var hasError = false;
+
+           // Validate target year
+           $('#target-year-input').ntsEditor('validate');
+
+           // Validate 
+           if (self.isLowerLimit() && self.lowerLimitValue() == null) {
+               hasError = true;
+               $('#lower-limit-input').ntsError('set', '金額範囲下限額 が入力されていません。');
+           }
+           if (self.isUpperLimit() && self.upperLimitValue() == null) {
+               hasError = true;
+               $('#upper-limit-input').ntsError('set', '金額範囲上限額 が入力されていません。');
+           }
+           if ((self.isLowerLimit()) && (self.isUpperLimit())) {
+               if (self.lowerLimitValue() > self.upperLimitValue()) {
+                   hasError = true;
+                   $('#lower-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
+               }
+
+               if (hasError) {
+                   return;
+               }
+           }
+           // TODO: Validation relate to employee list.
+           return hasError || $('.nts-input').ntsError('hasError');
+       }
     }
+       
     
     /**
      * Accumulated Payment Result Dto

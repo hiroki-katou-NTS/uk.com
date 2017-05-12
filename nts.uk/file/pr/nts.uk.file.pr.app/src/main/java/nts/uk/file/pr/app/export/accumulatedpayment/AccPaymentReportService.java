@@ -60,15 +60,16 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 		List<AccPaymentItemData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
 		
 		//  CONVERT YEARMONTH JAPANESE 
-        StringBuilder japanYear = new StringBuilder("【期間： ");
-        japanYear.append(convertYearMonthJP(query.getTargetYear()));
+//        StringBuilder japanYear = new StringBuilder("【期間： ");
+//        japanYear.append(convertYearMonthJP(query.getTargetYear()));
 
 		// Create header object.
 		AccPaymentHeaderData headerData = AccPaymentHeaderData.builder()
 				.departmentInfo("【部門： 役員　販売促進1課　役員～製造部　製造課　製造　（31部門）】")
 				.empTypeInfo("【分類： 正社員～アルバイト（5分類）】")
 				.positionInfo("【職位： 参事～主任（10職位）】")
-				.yearMonthInfo(japanYear.toString())
+//				.yearMonthInfo(japanYear.toString())
+				.yearMonthInfo("fhh")
 				.build();
 
 		// Create data source.

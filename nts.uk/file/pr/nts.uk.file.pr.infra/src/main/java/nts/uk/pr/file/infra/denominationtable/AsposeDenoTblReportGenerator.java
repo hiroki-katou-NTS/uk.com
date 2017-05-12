@@ -433,7 +433,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			// Create End Row Range
 			this.createEndRowRange(printProcess);		
 			int nextPage = currentRow / ROWS_PER_PAGE +1;
-			int blankRowsCurrentPage = nextPage * ROWS_PER_PAGE +1 - currentRow;
+			int blankRowsCurrentPage = nextPage * ROWS_PER_PAGE + 1 - currentRow;
 			printProcess.rowIndex += (blankRowsCurrentPage + BLANK_ROWS);
 			// Create Title for Next Page
 			this.createTitle(printProcess);
