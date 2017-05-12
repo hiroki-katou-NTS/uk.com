@@ -224,10 +224,6 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			// print total A
 			createRange(cells, this.startRow, 1);
 			printTotalADepartment(worksheets, this.startRow, comparingQuery, i);
-
-			// print total C
-//			createRange(cells, this.startRow + 1, 1);
-//			printTotalCDepartment(worksheets, this.startRow + 1, comparingQuery, i);
 			this.startRow = this.startRow + 1;
 			rowIndex = this.startRow;
 		}
