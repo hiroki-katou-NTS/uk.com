@@ -7,6 +7,8 @@
  */
 package nts.uk.file.pr.app.export.payment;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,4 +19,16 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PaymentReportQuery {
+	
+	/** The processing no. */
+	private int processingNo;
+	
+	/** The select print types. * (1,2)*/ 
+	private int selectPrintTypes;
+	
+	/** The specification codes. */
+	private List<String> specificationCodes;
+	
+	
+	
 }

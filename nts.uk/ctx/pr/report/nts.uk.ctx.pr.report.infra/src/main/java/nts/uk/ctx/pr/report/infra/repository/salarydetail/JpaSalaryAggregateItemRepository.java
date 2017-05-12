@@ -42,7 +42,6 @@ public class JpaSalaryAggregateItemRepository extends JpaRepository implements S
 	@Override
 	public void add(SalaryAggregateItem aggregateItem) {
 		// TODO Auto-generated method stub
-
 	}
 
 	/*

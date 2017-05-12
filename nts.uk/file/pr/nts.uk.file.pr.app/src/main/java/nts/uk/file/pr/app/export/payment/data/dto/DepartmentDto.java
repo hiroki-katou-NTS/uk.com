@@ -15,6 +15,6 @@ public class DepartmentDto {
 	private String departmentCode;
 	
 	/** The department name. */
-	private String departmentName;
+	private String departmentName;	
 
 }
