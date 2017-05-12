@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding;
@@ -86,12 +86,12 @@ public class RefundPadding extends AggregateRoot {
 	/**
 	 * Creates the A 4 two person.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param paddingTop
-	 *            the padding top
-	 * @param paddingLeft
-	 *            the padding left
+	 * @param companyCode the company code
+	 * @param paddingLeft the padding left
+	 * @param upperAreaPaddingTop the upper area padding top
+	 * @param underAreaPaddingTop the under area padding top
+	 * @param isShowBreakLine the is show break line
+	 * @param breakLineMargin the break line margin
 	 * @return the refund padding
 	 */
 	public static RefundPadding createA4TwoPerson(String companyCode, SizeLimit paddingLeft,
@@ -111,22 +111,14 @@ public class RefundPadding extends AggregateRoot {
 	/**
 	 * Creates the A 4 three person.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param paddingLeft
-	 *            the padding left
-	 * @param upperAreaPaddingTop
-	 *            the upper area padding top
-	 * @param underAreaPaddingTop
-	 *            the under area padding top
-	 * @param isShowBreakLine
-	 *            the is show break line
-	 * @param middleAreaPaddingTop
-	 *            the middle area padding top
-	 * @param breakLineMarginTop
-	 *            the break line margin top
-	 * @param breakLineMarginButtom
-	 *            the break line margin buttom
+	 * @param companyCode the company code
+	 * @param paddingLeft the padding left
+	 * @param upperAreaPaddingTop the upper area padding top
+	 * @param underAreaPaddingTop the under area padding top
+	 * @param isShowBreakLine the is show break line
+	 * @param middleAreaPaddingTop the middle area padding top
+	 * @param breakLineMarginTop the break line margin top
+	 * @param breakLineMarginButtom the break line margin buttom
 	 * @return the refund padding
 	 */
 	public static RefundPadding createA4ThreePerson(String companyCode, SizeLimit paddingLeft,

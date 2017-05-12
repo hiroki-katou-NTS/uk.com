@@ -33,10 +33,10 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class JpaPaymentReportRepository extends JpaRepository implements PaymentReportRepository {
 
 	/** The Constant TYPE_PRINT_SPECIFICATION. */
-	public static final int TYPE_PRINT_SPECIFICATION = 1;
+	public static final int TYPE_PRINT_SPECIFICATION = 2;
 
 	/** The Constant TYPE_PRINT_LAYOUT. */
-	public static final int TYPE_PRINT_LAYOUT = 2;
+	public static final int TYPE_PRINT_LAYOUT = 1;
 	
 	
 	/** The Constant CATEGORY_PAYMENT. */
@@ -57,12 +57,14 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		+ " AND dep.cmnmtDepPK.departmentCode = :departmentCode";
 
 	/** The Constant FIND_PAYMENT_HEADER_LAYOUT. */
-	public static final String FIND_PAYMENT_HEADER_LAYOUT = "SELECT header FROM QstdtPaymentHeader "
+	public static final String FIND_PAYMENT_HEADER_LAYOUT = "SELECT header "
+		+ "FROM QstdtPaymentHeader header "
 		+ "WHERE header.qstdtPaymentHeaderPK.companyCode = :companyCode "
 		+ "AND header.qstdtPaymentHeaderPK.processingNo = :processingNo "
 		+ "AND header.qstdtPaymentHeaderPK.payBonusAtr = 0 "
 		+ "AND header.qstdtPaymentHeaderPK.processingYM = :processingYM "
-		+ "AND header.qstdtPaymentHeaderPK.sparePayAtr = 0 ";
+		+ "AND header.qstdtPaymentHeaderPK.sparePayAtr = 0 "
+		+ "AND header.layoutAtr = :layoutItem";
 
 	/** The Constant FIND_PAYMENT_HEADER_SPECIFICATION. */
 	public static final String FIND_PAYMENT_HEADER_SPECIFICATION = "SELECT header "
@@ -100,6 +102,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		return this.queryProxy().query(FIND_PAYMENT_HEADER_LAYOUT, QstdtPaymentHeader.class)
 			.setParameter("companyCode", companyCode)
 			.setParameter("processingNo", query.getProcessingNo())
+			.setParameter("layoutItem", query.getLayoutItems())
 			.setParameter("processingYM", query.getProcessingYM()).getList();
 	}
 

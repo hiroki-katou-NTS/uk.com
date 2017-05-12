@@ -33,6 +33,6 @@ public class PaymentReportQuery {
 	private List<String> specificationCodes;
 	
 	/** The layout items. */
-	private List<Integer> layoutItems;
+	private int layoutItems;
 		
 }
