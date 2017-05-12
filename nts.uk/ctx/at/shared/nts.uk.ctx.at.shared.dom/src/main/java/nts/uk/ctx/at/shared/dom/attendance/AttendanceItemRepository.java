@@ -9,6 +9,6 @@ public interface AttendanceItemRepository {
 	 * @param companyId
 	 * @return
 	 */
-	List<AttendanceItem> getPossibleAttendanceItems(String companyId, List<String> lstPossible);
+	List<AttendanceItem> getPossibleAttendanceItems(String companyId, List<Integer> lstPossible);
 
 }

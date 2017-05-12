@@ -8,22 +8,18 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Setter
-@Getter
-@Entity
-@Table(name = "KMNMT_ATTENDANCE_ITEM")
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "KMNMT_ATTENDANCE_ITEM")
 public class KmnmtAttendanceItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
-	public KmnmtAttendanceItemPK KmnmtAttendanceItemPK;
+	public KmnmtAttendanceItemPK kmnmtAttendanceItemPK;
 	/* 名称 */
 	@Column(name = "NAME")
 	public String attendanceItemName;
@@ -39,8 +35,7 @@ public class KmnmtAttendanceItem extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return kmnmtAttendanceItemPK;
 	}
 
 }

@@ -5,39 +5,28 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.divergencetime.AttendanceAtr;
-import nts.uk.ctx.at.record.dom.divergencetime.UseSetting;
-
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class AttendanceItem extends AggregateRoot{
-	/*会社ID*/
+public class AttendanceItem extends AggregateRoot {
+	/* 会社ID */
 	private String companyId;
-	/*勤怠項目ID*/
+	/* 勤怠項目ID */
 	private int attendanceId;
-	/*勤怠項目名称*/
+	/* 勤怠項目名称 */
 	private AttendanceName attendanceName;
-	/*表示番号*/
+	/* 表示番号 */
 	private int dislayNumber;
-	/*使用区分*/
+	/* 使用区分 */
 	private UseSetting useAtr;
-	/*勤怠項目属性*/	
+	/* 勤怠項目属性 */
 	private AttendanceAtr attendanceAtr;
-	
-	public static AttendanceItem createSimpleFromJavaType(String companyId,
-			int attendanceId,
-			String attendanceName,
-			int dislayNumber,
-			int useAtr,
-			int attendanceAtr){
-		return new AttendanceItem(companyId,
-				attendanceId,
-				new AttendanceName(attendanceName),
-				dislayNumber,
-				EnumAdaptor.valueOf(useAtr,UseSetting.class),
-				EnumAdaptor.valueOf(attendanceAtr,AttendanceAtr.class));
+
+	public static AttendanceItem createSimpleFromJavaType(String companyId, int attendanceId, String attendanceName,
+			int dislayNumber, int useAtr, int attendanceAtr) {
+		return new AttendanceItem(companyId, attendanceId, new AttendanceName(attendanceName), dislayNumber,
+				EnumAdaptor.valueOf(useAtr, UseSetting.class), EnumAdaptor.valueOf(attendanceAtr, AttendanceAtr.class));
 	}
 
 }
