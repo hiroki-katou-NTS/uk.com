@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.denominationtable;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,15 +33,15 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.file.pr.app.export.denominationtable.DenoTableReportGenerator;
 import nts.uk.file.pr.app.export.denominationtable.data.Denomination;
+import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableData;
 import nts.uk.file.pr.app.export.denominationtable.data.DepartmentData;
 import nts.uk.file.pr.app.export.denominationtable.data.EmployeeData;
-import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableData;
 import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
- * The Class AsposeSalaryTableReportGenerator.
+ * The Class AsposeDenoTblReportGenerator.
  */
 @Stateless
 public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator implements DenoTableReportGenerator {
@@ -63,6 +60,8 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 
 	/** The Constant COLUMN_INDEX. */
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+	
+	/** The Constant LAST_IN_COLUMN_INDEX. */
 	private static final int LAST_IN_COLUMN_INDEX = 11;
 
 	/** The Constant FIRST_ROW_INDEX. */
@@ -73,6 +72,8 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 	
 	/** The Constant ROWS_PER_PAGE. */
 	private static final int ROWS_PER_PAGE = 37;
+	
+	/** The Constant HIERARCHY_DEP_TEXT. */
 	private static final String HIERARCHY_DEP_TEXT = "部門階層素計";
 
 	/** The Constant SPACES. */
@@ -566,6 +567,11 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 		this.breakPage(printProcess);
 	}
 	
+	/**
+	 * Sets the cum cell style.
+	 *
+	 * @param printProcess the new cum cell style
+	 */
 	private void setCumCellStyle(PrintProcess printProcess) {
 		Cells cells = printProcess.cells;
 		int rowIndex = printProcess.rowIndex;
@@ -580,6 +586,11 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 		}
 	}
 	
+	/**
+	 * Break page.
+	 *
+	 * @param printProcess the print process
+	 */
 	private void breakPage(PrintProcess printProcess){
 		int breakCode = printProcess.query.getSelectedBreakPageCode();
 		if (breakCode == NONE_BREAK_CODE) {
@@ -589,6 +600,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			this.breakPageBorderLine(printProcess);
 		}
 	}
+	
 	/**
 	 * Prints the total of dep.
 	 *

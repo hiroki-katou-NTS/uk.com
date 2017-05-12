@@ -6,6 +6,7 @@ module qpp009.a.viewmodel {
         printSetting: KnockoutObservable<PrintSetting>;
         yearMonth: KnockoutObservable<number>;
         japanYearmonth: KnockoutObservable<string>;
+        detailLabel: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -21,6 +22,9 @@ module qpp009.a.viewmodel {
             self.japanYearmonth = ko.computed(() => {
                 return '(' + nts.uk.time.yearmonthInJapanEmpire(self.yearMonth()).toString() + ')';
             })
+            self.detailLabel = ko.observable("※ " + nts.uk.time.formatDate(new Date(), "yyyy/MM/dd") 
+            + " の部門構成で集計します.");
+            
 
         }
 
@@ -40,9 +44,8 @@ module qpp009.a.viewmodel {
             var self = this;
             self.clearAllError();
             // Validate
-            self.validate();
-            if ($('.nts-input').ntsError('hasError')) {
-                return;
+            if (self.validate()) {
+                    return;
             }
             
             // Print Report
@@ -59,9 +62,7 @@ module qpp009.a.viewmodel {
             var hasError = false;
             // Validate year month
             $('#date-picker').ntsEditor('validate');
-            if ($('#date-picker').ntsError("hasError")) {
-                hasError = true;
-            }
+            
             if(self.detailItemsSetting().isPrintDepHierarchy() 
             && self.detailItemsSetting().selectedLevels().length < 1) {
                  $('#hierarchy-content').ntsError('set', '1~9階層 が選択されていません。');
@@ -74,15 +75,17 @@ module qpp009.a.viewmodel {
                 hasError = true;
             }
             
-            if((!self.detailItemsSetting().isPrintDepHierarchy() && self.printSetting().selectedBreakPageCode() == 4) 
-            && (self.detailItemsSetting().selectedLevels().indexOf(self.printSetting().selectedBreakPageHierarchyCode()) < 0)) {
+            if(!self.detailItemsSetting().isPrintDepHierarchy() && self.printSetting().selectedBreakPageCode() == 4) {
                 $('#specify-break-page-select').ntsError('set', '設定が正しくありません。');
-                $('#specify-break-page-hierarchy-select').ntsError('set', '設定が正しくありません。');
-                // TODO: Check employee list.
                 hasError = true;
             }
-            return hasError;
-            
+            if (self.detailItemsSetting().isPrintDepHierarchy() && self.printSetting().selectedBreakPageCode() == 4
+            && self.detailItemsSetting().selectedLevels().indexOf(self.printSetting().selectedBreakPageHierarchyCode() < 0)) {
+                $('#specify-break-page-hierarchy-select').ntsError('set', '設定が正しくありません。');
+                hasError = true;
+            }
+            // TODO: Validation relate to employee list.
+            return hasError || $('.nts-input').ntsError('hasError');
         }
         
         private clearAllError(): void {
