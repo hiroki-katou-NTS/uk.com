@@ -46,7 +46,11 @@ module qpp011.d {
             self.dirty = new nts.uk.ui.DirtyChecker(self.currentObject);
             self.notLoopAlert = ko.observable(true);
             self.yearInJapanEmpire_LBL_012 = ko.computed(function() {
-                return "(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.date_D_INP_007()).format("YYYY/MM")).toString() + ")";
+                if (self.date_D_INP_007()) {
+                    return "(" + nts.uk.time.yearmonthInJapanEmpire(moment(self.date_D_INP_007()).format("YYYY/MM")).toString() + ")";
+                }
+                
+                return "";
             });
             //gridlist data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
             self.columns_D_LST_001 = [
