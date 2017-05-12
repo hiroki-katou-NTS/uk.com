@@ -63,10 +63,12 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 *  nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData)
 	 */
 	@Override
-	public void generate(FileGeneratorContext fileContext, List<WLOldLayoutReportData> reportDatas, WageLedgerReportQuery query) {
+	public void generate(FileGeneratorContext fileContext, List<WLOldLayoutReportData> reportDatas,
+			WageLedgerReportQuery query) {
 		// Generate report.
-		List<AsposeCellsReportContext> reportFiles = reportDatas.stream()
-				.map(data -> this.generateReport(fileContext, data, query)).collect(Collectors.toList());
+		final List<AsposeCellsReportContext> reportFiles = reportDatas.stream()
+				.map(data -> this.generateReport(data))
+				.collect(Collectors.toList());
 		
 		// Save report to file PDF.
 		try {
@@ -94,8 +96,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param query the query
 	 * @return the aspose cells report context
 	 */
-	private AsposeCellsReportContext generateReport(FileGeneratorContext fileContext, WLOldLayoutReportData reportData,
-			WageLedgerReportQuery query) {
+	private AsposeCellsReportContext generateReport(WLOldLayoutReportData reportData) {
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			
 			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
@@ -224,6 +225,10 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param monthList the month list
 	 */
 	private void fillReportItemsData(List<ReportItemDto> reportItems, PrintData printData) {
+		reportItems = reportItems.stream().filter(item -> item.isShow()).collect(Collectors.toList());
+		if (reportItems.size() == 0) {
+			return;
+		}
 		Worksheet ws = printData.reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
 		int totalItemData = reportItems.size();
@@ -284,12 +289,11 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 		Color backgroundColor = printData.isGreenRow ? GREEN_COLOR : null;
 		printData.isGreenRow = !printData.isGreenRow;
 		
-		
 		// Fill item name cell.
 		int amountColumn = printData.isPrintTotalItem ? 2 : 1;
 		Color nameColor = printData.isPrintTotalItem ? GREEN_COLOR : backgroundColor;
 		Range nameCell = cells.createRange(printData.currentRow, printData.currentColumn, 1, amountColumn);
-		nameCell.get(0, 0).setValue(item.name);
+		nameCell.get(0, 0).setValue(!item.isShowName && item.isZeroValue() ? "" : item.name);
 		nameCell.merge();
 		this.setStyleRange(nameCell, nameColor);
 		printData.currentColumn += amountColumn;
@@ -299,10 +303,14 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 				.collect(Collectors.toMap(d -> d.month, Function.identity())) : new HashMap<>();
 		List<Integer> monthList = printData.isSalaryPath ? printData.reportData.salaryMonthList
 						: printData.reportData.bonusMonthList;
+		boolean isShowValue = !item.isZeroValue() || item.isShowValue;
 		for (int j = 0; j < monthList.size(); j++) {
 			MonthlyData data = dataMap.get(monthList.get(j));
 			Cell monthCell = cells.get(printData.currentRow, printData.currentColumn);
-			monthCell.setValue(data != null ? data.amount : 0);
+			// Check show value.
+			if (isShowValue) {
+				monthCell.setValue(data != null ? data.amount : 0);
+			}
 
 			// Set style for cell.
 			StyleModel dataCellStyle = StyleModel
@@ -315,8 +323,10 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 
 		// Fill Total Cell.
 		Cell totalCell = cells.get(printData.currentRow, printData.currentColumn);
-		item.calculateTotal();
-		totalCell.setValue(item.getTotal());
+		if (isShowValue) {
+			item.calculateTotal();
+			totalCell.setValue(item.getTotal());
+		}
 		StyleModel totalCellStyle = StyleModel.createTotalCellStyle(backgroundColor);
 		this.setStyleCell(totalCell, totalCellStyle);
 		

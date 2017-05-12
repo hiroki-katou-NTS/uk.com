@@ -36,11 +36,12 @@ public class AccPaymentDto {
 	 * @param lowerLimitValue the lower limit value
 	 * @param upperLimitValue the upper limit value
 	 */
-	public AccPaymentDto(int targetYear,boolean isLowerLimit,boolean isUpperLimit,int lowerLimitValue,int upperLimitValue){
+	public AccPaymentDto(int targetYear, boolean isLowerLimit, 
+			boolean isUpperLimit, int lowerLimitValue, int upperLimitValue) {
 		this.targetYear = targetYear;
 		this.isLowerLimit = isLowerLimit;
 		this.isUpperLimit = isUpperLimit;
-		this.lowerLimitValue = lowerLimitValue;		
-		this.upperLimitValue=upperLimitValue;
+		this.lowerLimitValue = lowerLimitValue;
+		this.upperLimitValue = upperLimitValue;
 	}
 }

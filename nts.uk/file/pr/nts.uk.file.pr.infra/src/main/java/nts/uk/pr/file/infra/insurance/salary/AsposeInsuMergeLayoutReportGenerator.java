@@ -2,9 +2,6 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-/**
- * 
- */
 package nts.uk.pr.file.infra.insurance.salary;
 
 import java.lang.reflect.Field;
@@ -43,21 +40,15 @@ import nts.uk.file.pr.app.export.insurance.salary.SocialInsuMergeLayoutGenerator
 import nts.uk.pr.file.infra.insurance.ReportConstant;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AsposeSalarySocialInsuranceReportGenerator.
- *
  */
-
 @Stateless
 public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGenerator
         implements SocialInsuMergeLayoutGenerator {
 
     /** The Constant TEMPLATE_FILE. */
     private static final String TEMPLATE_FILE = "report/QPP018_2.xlsx";
-
-    /** The Constant REPORT_FILE_NAME. */
-    private static final String REPORT_FILE_NAME = "給与社会保険料チェックリスト-表示しない.pdf";
 
     /** The Constant PRINT_AREA. */
     private static final String PRINT_AREA = "A1:O";
@@ -86,7 +77,8 @@ public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGener
             reportContext.getDesigner().setDataSource(ReportConstant.HEADER, Arrays.asList(reportData.getHeaderData()));
             reportContext.processDesigner();
             
-            reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+            reportContext.saveAsPdf(this.createNewFile(fileContext,
+                    this.getReportName(ReportConstant.REPORT_FILE_NAME)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -220,7 +212,8 @@ public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGener
         }
         // setting show total all office.
         if (printProcess.configOutput.getShowTotal()) {
-            writeSummaryOffice(printProcess, reportData.getTotalAllOffice(), mapRange.get(ReportConstant.RANGE_FOOTER_EACH_OFFICE));
+            writeSummaryOffice(printProcess, reportData.getTotalAllOffice(), 
+                    mapRange.get(ReportConstant.RANGE_FOOTER_EACH_OFFICE));
         }
     }
 
@@ -236,7 +229,8 @@ public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGener
             Range rangeOffice) throws Exception {
         Range newRange = createRangeFromOtherRange(printProcess, rangeOffice);
         String officeCode = ReportConstant.OFFICE_JP.concat(office.getCode());
-        setDataRangeFirstRow(printProcess.worksheet, newRange, ReportConstant.NUMBER_ZERO, officeCode, office.getName());
+        setDataRangeFirstRow(printProcess.worksheet, newRange, ReportConstant.NUMBER_ZERO, officeCode, 
+                office.getName());
         printProcess.indexRow++;
     }
 
@@ -271,12 +265,13 @@ public class AsposeInsuMergeLayoutReportGenerator extends AsposeCellsReportGener
      * @param rangeFooterEachOffice the range footer each office
      * @throws Exception the exception
      */
-    private void writeFooterEachOffice(PrintProcess printProcess, MLayoutInsuOfficeDto office, int indexRowBeginEmployee,
-            Range rangeFooterEachOffice) throws Exception {
+    private void writeFooterEachOffice(PrintProcess printProcess, MLayoutInsuOfficeDto office, 
+            int indexRowBeginEmployee, Range rangeFooterEachOffice) throws Exception {
         int numberEmployeeOffice = office.getEmployees().size();
         String totalEmployeeOffice = String.valueOf(numberEmployeeOffice).concat(" 人");
         Range newRange = createRangeFromOtherRange(printProcess, rangeFooterEachOffice);
-        setDataRangeFirstRow(printProcess.worksheet, newRange, ReportConstant.NUMBER_ZERO, "事業所　計", totalEmployeeOffice);
+        setDataRangeFirstRow(printProcess.worksheet, newRange, ReportConstant.NUMBER_ZERO, "事業所　計",
+                totalEmployeeOffice);
         setDataTotal(printProcess.worksheet, newRange, office.getTotalEachOffice());
         printProcess.indexRow++;
     }
