@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.divergencetime;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceType;
+
 public interface DivergenceTimeRepository {
 
 	/**
@@ -86,4 +88,5 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeId
 	 */
 	void deleteItemId(String companyId, int divTimeId);
+	List<DivergenceItem> getName(String companyId, List<Integer> listAttendanceItemId);
 }

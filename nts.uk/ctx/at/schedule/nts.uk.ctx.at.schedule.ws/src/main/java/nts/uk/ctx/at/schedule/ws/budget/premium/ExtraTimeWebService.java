@@ -31,7 +31,7 @@ public class ExtraTimeWebService extends WebService {
 	
 	@POST
 	@Path("update")
-	public void update(UpdateExtraTimeCommand command){
+	public void update(List<UpdateExtraTimeCommand> command){
 		this.updateExtraTimeCommandHandler.handle(command);
 	}
 }

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlstExtraTime;
 @Stateless
 public class JpaExtraTimeRepository extends JpaRepository implements ExtraTimeRepository{
 
-	private final String findAll = "SELECT a from KmlstExtraTime a where a.extraItemPK.CID = :CID";
+	private final String findAll = "SELECT a FROM KmlstExtraTime a WHERE a.extraItemPK.companyID = :CID";
 	
 	@Override
 	public void update(ExtraTime extraTime) {
@@ -41,7 +41,7 @@ public class JpaExtraTimeRepository extends JpaRepository implements ExtraTimeRe
 	private ExtraTime convertToDomain(KmlstExtraTime kmlstExtraTime){
 		return new ExtraTime(
 				kmlstExtraTime.extraItemPK.companyID, 
-				kmlstExtraTime.extraItemPK.extraItemID, 
+				kmlstExtraTime.extraItemPK.extraTimeID, 
 				new PremiumName(kmlstExtraTime.premiumName), 
 				kmlstExtraTime.timeItemCD, 
 				EnumAdaptor.valueOf(kmlstExtraTime.useAtr, UseClassification.class));

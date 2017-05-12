@@ -12,9 +12,9 @@ public class DivergenceItem {
 	/*会社ID*/
 	private String companyId;
 	/*乖離項目ID*/
-	private int divItemId;
+	private int id;
 	/*乖離項目名称*/
-	private DivergenceTimeName divItemName;
+	private DivergenceTimeName name;
 	/*内部ID*/
 	private int dislayNumber;
 	/*使用区分*/

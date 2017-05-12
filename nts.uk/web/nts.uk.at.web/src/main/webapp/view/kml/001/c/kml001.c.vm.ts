@@ -1,4 +1,6 @@
 module kml001.c.viewmodel {
+    import servicebase = kml001.shr.servicebase;
+    import vmbase = kml001.shr.vmbase;
     export class ScreenModel {
         copyDataFlag: KnockoutObservable<boolean>;
         lastestStartDate: KnockoutObservable<string>;
@@ -15,7 +17,7 @@ module kml001.c.viewmodel {
         
         errorStartDate(): boolean {
             var self = this;
-            return ((self.newStartDate()== null)||(self.newStartDate() < self.lastestStartDate()));     
+            return ((self.newStartDate()== null)|| vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.lastestStartDate()));     
         }
         
         submitAndCloseDialog(): void {

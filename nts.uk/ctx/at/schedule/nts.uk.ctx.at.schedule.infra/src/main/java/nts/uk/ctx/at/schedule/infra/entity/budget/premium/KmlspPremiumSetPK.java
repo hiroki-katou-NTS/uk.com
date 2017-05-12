@@ -17,6 +17,6 @@ public class KmlspPremiumSetPK {
 	@Column(name="HIS_ID")
 	public String historyID;
 	
-	@Column(name="EXTRA_TIME_ID")
-	public String extraItemID;
+	@Column(name="PREMIUM_CD")
+	public String premiumCD;
 }

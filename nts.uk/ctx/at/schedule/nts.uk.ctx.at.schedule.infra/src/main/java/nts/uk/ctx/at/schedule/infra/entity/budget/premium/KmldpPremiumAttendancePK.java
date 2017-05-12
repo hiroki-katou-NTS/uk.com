@@ -16,9 +16,9 @@ public class KmldpPremiumAttendancePK {
 	@Column(name="HIS_ID")
 	public String historyID;
 	
-	@Column(name="ATTENDANCE_ID")
-	public String attendanceID;
+	@Column(name="ATTENDANCE_CD")
+	public String attendanceCD;
 	
-	@Column(name="TIME_ITEM_CD")
-	public String timeItemCD;
+	@Column(name="PREMIUM_CD")
+	public String premiumCD;
 }

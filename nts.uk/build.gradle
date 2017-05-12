@@ -230,8 +230,6 @@ project (':ctx:at:shared:nts.uk.ctx.at.shared.app') {
 project (':ctx:at:shared:nts.uk.ctx.at.shared.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.dom')
-		compile project(':ctx:at:record:nts.uk.ctx.at.record.dom')
 	}
 }
 project (':ctx:at:shared:nts.uk.ctx.at.shared.infra') {
@@ -257,6 +255,7 @@ project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ws') {
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app') {
@@ -304,6 +303,7 @@ project (':ctx:at:record:nts.uk.ctx.at.record.ws') {
 project (':ctx:at:record:nts.uk.ctx.at.record.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:record:nts.uk.ctx.at.record.app') {

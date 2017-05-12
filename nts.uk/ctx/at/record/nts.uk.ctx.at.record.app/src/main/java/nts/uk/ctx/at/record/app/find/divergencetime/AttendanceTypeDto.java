@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.app.find.divergencetime;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.divergencetime.AttendanceType;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceType;
 @Value
 public class AttendanceTypeDto {
 	/*会社ID*/

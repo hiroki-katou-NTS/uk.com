@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.record.app.command.divergencetime;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -24,7 +22,6 @@ public class UpdateDivergenceItemSetCommandHandler extends CommandHandler<List<U
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdateDivergenceItemSetCommand>> context) {
 		String companyId = AppContexts.user().companyId();
-		int length = context.getCommand().size();
 		List<DivergenceItemSet> listUpdate = context.getCommand().stream().map(c -> {
 			return new DivergenceItemSet(companyId, c.getDivTimeId(), c.getAttendanceId());
 		}).collect(Collectors.toList());

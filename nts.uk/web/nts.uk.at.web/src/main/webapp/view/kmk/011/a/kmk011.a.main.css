@@ -7,17 +7,18 @@
 .fix-button {
 	min-width: 75px;
 }
-#btn_002 {
-	border: 1px solid #aaa;
+#btn_001 {
+	margin-bottom: 20px;
+	margin-left: 30px;
 }
 
 #btn_007 {
 	margin-left: 70px;
 }
 #left-content {
-	margin-left: 20px;
+	margin-left: 30px;
 	margin-top:	20px;
-	padding: 20px;
+	padding: 25px;
 	float: left;
 	max-height: 300px;
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.divergencetime;
+package nts.uk.ctx.at.shared.dom.attendance;
 
 import lombok.AllArgsConstructor;
 
