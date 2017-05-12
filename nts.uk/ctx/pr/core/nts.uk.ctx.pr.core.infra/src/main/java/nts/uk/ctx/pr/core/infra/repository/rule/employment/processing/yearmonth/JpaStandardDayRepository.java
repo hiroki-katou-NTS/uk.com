@@ -23,6 +23,7 @@ public class JpaStandardDayRepository extends JpaRepository implements StandardD
 				.query(SELECT_ALL_BY_CCD_AND_PROCESSING_NO, QpdmtStandardDay.class)
 				.setParameter("companyCode", companyCode).setParameter("processingNo", processingNo)
 				.getList(c -> toDomain(c));
+		
 		if (standardDays.isEmpty()) {
 			return null;
 		} else {

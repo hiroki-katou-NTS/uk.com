@@ -1,11 +1,11 @@
 package nts.uk.ctx.pr.core.dom.paymentdata.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
-import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
+import nts.uk.ctx.pr.core.dom.paymentdata.PaymentDetail;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
 
 public interface PaymentDataRepository {
@@ -21,6 +21,51 @@ public interface PaymentDataRepository {
 	 */
 	Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute);
+
+	/**
+	 * Added by sonnh1
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param processingNo
+	 * @param processingYm
+	 * @param payBonusAtr
+	 * @param sparePayAtr
+	 * @param categoryAtr
+	 * @param itemCode
+	 * @return
+	 */
+	Optional<PaymentDetail> findItemWith9Property(String companyCode, String personId, int processingNo,
+			int processingYm, int payBonusAtr, int sparePayAtr, int categoryAtr, String itemCode, BigDecimal value);
+
+	/**
+	 * Added by sonnh1
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param processingNo
+	 * @param processingYm
+	 * @param payBonusAtr
+	 * @param categoryAtr
+	 * @param itemCode
+	 * @param value
+	 * @return
+	 */
+	List<PaymentDetail> findItemWith8Property(String companyCode, String personId, int processingNo, int processingYm,
+			int payBonusAtr, int categoryAtr, String itemCode, BigDecimal value);
+
+	/**
+	 * Added by sonnh1
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param processingNo
+	 * @param payBonusAttribute
+	 * @param processingYM
+	 * @return
+	 */
+	List<Payment> findItemWith5Property(String companyCode, String personId, int processingNo, int payBonusAttribute,
+			int processingYM);
 
 	/**
 	 * 
