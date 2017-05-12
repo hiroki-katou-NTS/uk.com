@@ -21,6 +21,8 @@ import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeComma
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommandHandler;
 import nts.uk.ctx.at.record.app.find.divergencetime.AttendanceTypeDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.AttendanceTypeFinder;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemDto;
+import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemNameDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemNameFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
@@ -54,6 +56,8 @@ public class DivergenceTimeWebService extends WebService{
 	private AttendanceTypeFinder getAttItem;
 	@Inject
 	private UpdateDivergenceItemSetCommandHandler updateItemId;
+	@Inject
+	private DivergenceItemFinder getName;
 	/**
 	 * get all divergence time
 	 * @return
@@ -138,5 +142,10 @@ public class DivergenceTimeWebService extends WebService{
 	@Path("getattitem")
 	public List<AttendanceTypeDto> getAllAttItem(){
 		return this.getAttItem.getAllItem();
+	}
+	@POST
+	@Path("getname")
+	public List<DivergenceItemDto> getAllName(List<Integer> listAttendanceItemId){
+		return this.getName.getAllName(listAttendanceItemId);
 	}
 }

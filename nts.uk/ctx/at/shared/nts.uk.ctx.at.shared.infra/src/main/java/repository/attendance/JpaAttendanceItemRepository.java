@@ -30,7 +30,7 @@ public class JpaAttendanceItemRepository extends JpaRepository implements Attend
 	public List<AttendanceItem> getPossibleAttendanceItems(String companyId, List<String> lstPossible) {
 
 		return this.queryProxy().query(SELECT_POSSIBLE_ITEM, KmnmtAttendanceItem.class)
-				.setParameter(companyId, AppContexts.user().companyId()).setParameter("listPossibleItem", lstPossible)
+				.setParameter("companyId", AppContexts.user().companyId()).setParameter("listPossibleItem", lstPossible)
 				.getList(c -> toDomainAttendance(c));
 	}
 

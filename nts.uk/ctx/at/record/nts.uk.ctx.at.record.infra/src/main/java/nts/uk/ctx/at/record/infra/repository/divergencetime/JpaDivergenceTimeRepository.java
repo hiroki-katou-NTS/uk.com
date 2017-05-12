@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.AttendanceType;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItem;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemName;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemSet;
@@ -23,6 +22,7 @@ import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTime;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTimePK;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtAttendanceType;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtDivergenceItem;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceType;
 
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
@@ -53,6 +53,9 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	private final String SELECT_ALL_ATTENDANCEITEM = SELECT_FROM_ATTTYPE
 			+ " WHERE c.kmnmtAttendanceTypePK.companyId = :companyId"
 			+ " AND c.kmnmtAttendanceTypePK.attendanceItemType = :attendanceItemType";
+	private final String SELECT_NAME = "SELECT c FROM KmnmtDivergenceItem c"
+			+ " WHERE c.kmnmtDivergenceItemPK.companyId = :companyId"
+			+ " AND c.kmnmtDivergenceItemPK.attendanceItemId IN :listAttendanceItemId";
 	private static DivergenceTime toDomainDivTime(KmkmtDivergenceTime entity){
 		val domain = DivergenceTime.createSimpleFromJavaType(
 				entity.kmkmtDivergenceTimePK.companyId,
@@ -276,6 +279,13 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 												.collect(Collectors.toList());
 		this.commandProxy().removeAll(KmkmtDivergenceItemSet.class, listDel);
 		this.getEntityManager().flush();
+	}
+	@Override
+	public List<DivergenceItem> getName(String companyId, List<Integer> listAttendanceItemId) {
+		return this.queryProxy().query(SELECT_NAME, KmnmtDivergenceItem.class)
+				.setParameter("companyId", companyId)
+				.setParameter("listAttendanceItemId", listAttendanceItemId)
+				.getList(c->toDomainDivItem(c));
 	}
 	
 }

@@ -4,7 +4,8 @@ module kmk011.a.service {
         updateDivTime: "at/record/divergencetime/updatedivtime",
         updateTimeItemId:"at/record/divergencetime/updateTimeItemId",
         getNameItemSelected: "at/record/divergencetime/getitemname/",
-        getAllAttItem:"at/record/divergencetime/getattitem"
+        getAllAttItem:"at/record/divergencetime/getattitem",
+        getName: "at/record/divergencetime/getname"
     }
     /**
     * get all item selected(item da duoc chon)
@@ -33,8 +34,11 @@ module kmk011.a.service {
     /**
      * update divergence time
      */
-    export function updateDivTime(divTime: model.DivergenceTime):JQueryPromise<Array<model.DivergenceTimeItem>>{
-        return nts.uk.request.ajax("at", paths.updateDivTime, divTime);
+    export function updateDivTime(Object: model.ObjectDivergence):JQueryPromise<Array<model.DivergenceTimeItem>>{
+        return nts.uk.request.ajax("at", paths.updateDivTime, Object);
+    }
+    export function getName(listAttendanceItemId: Array<number>):JQueryPromise<Array<model.ItemSelected>>{
+        return nts.uk.request.ajax("at", paths.getName,listAttendanceItemId);
     }
     export module model {
         export class DivergenceTime {
@@ -94,4 +98,20 @@ module kmk011.a.service {
             useAtr: number;
             attendanceAtr: number;
     }
+        export class TimeItemSet{
+            divTimeId: number;
+            attendanceId: number;
+            constructor(divTimeId: number,attendanceId: number){
+                this.divTimeId = divTimeId;
+                this.attendanceId = attendanceId;
+            }
+        }
+        export class ObjectDivergence{
+            divTime: DivergenceTime;
+            timeItem: List<TimeItemSet>;
+            constructor(divTime: DivergenceTime,item: List<TimeItemSet>){
+                this.divTime = divTime;
+                this.timeItem = item;
+            }
+        }
 }
