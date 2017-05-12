@@ -54,6 +54,7 @@ import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AsposePaySalaryReportGenerator.
  */
@@ -99,11 +100,9 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             
             reportContext.processDesigner();
             
-            // =============== SET AUTO FIT ROW HEIGHT OF TITLE ROW ===============
-            worksheets.get(PaymentConstant.ZERO).autoFitRow(PaymentConstant.INDEX_ROW_TITLE);
-            
             // =============== SAVE AS PDF ===============
             reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+//            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName("qpp007.xlsx")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -145,9 +144,9 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         // ===== SET HEADER =======
         int offsetLeft = 0;
         int offsetRight = 2;
-        pageSetup.setHeader(offsetLeft, "&\"IPAPGothic\"&11 " + header.getNameCompany());
+        pageSetup.setHeader(offsetLeft, "&\"Calibri\"&11 " + header.getNameCompany());
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
-        pageSetup.setHeader(offsetRight, "&\"IPAPGothic\"&11 " + dateFormat.format(new Date()) + "\n&P ページ");
+        pageSetup.setHeader(offsetRight, "&\"Calibri\"&11 " + dateFormat.format(new Date()) + "\n&P ページ");
 
         // merge row title report
         printProcess.worksheet.getCells().merge(PaymentConstant.ZERO, PaymentConstant.ZERO,
@@ -159,7 +158,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         if (printProcess.totalColumn == 0) {
             lastColumn = PaymentConstant.NUMBER_COLUMN_PAGE;
         } else {
-            lastColumn = printProcess.totalColumn - PaymentConstant.ONE;
+            lastColumn = printProcess.totalColumn + PaymentConstant.NUMBER_COLUMN_PAGE;
         }
         Cell cellEnd = printProcess.worksheet.getCells().get(printProcess.indexRow, lastColumn);
         String endArea = cellEnd.getName();
@@ -245,6 +244,11 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             Cell cell = cells.get(indexRow, indexColumn);
             cell.setValue(item);
             styleModel.drawBorderCell(cell);
+            
+            Style style = cell.getStyle();
+            style.setHorizontalAlignment(TextAlignmentType.CENTER);
+            style.setVerticalAlignment(TextAlignmentType.JUSTIFY);
+            cell.setStyle(style);
         }
     }
 
@@ -286,6 +290,17 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                 printProcess.isForebackground = true;
             }
             calAmountByItemName(printProcess, itemName);
+            
+            StyleModel styleModel;
+            if (printProcess.isForebackground) {
+                styleModel = new StyleModel(PaymentConstant.LIGHT_GREEN_COLOR);
+            } else {
+                styleModel = new StyleModel();
+            }
+            styleModel.setHorizontalBorder(printProcess.configure.getIsHorizontalLine());
+            styleModel.setVerticalBorder(printProcess.configure.getIsVerticalLine());
+            styleModel.drawBorderPageBreak(printProcess.worksheet.getCells(), printProcess.indexRow,
+                    printProcess.indexColumn);
 
             // ===== UPDATE VARIABLE ====
             printProcess.totalColumn = printProcess.indexColumn;
@@ -940,7 +955,18 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         return japaneseDate.era() + japaneseDate.year() + "年" + japaneseDate.month() + "月度"; 
     }
 
+    /**
+     * Sets the horizontal border.
+     *
+     * @param isHorizontalBorder the new horizontal border
+     */
     @Setter
+    
+    /**
+     * Checks if is horizontal border.
+     *
+     * @return true, if is horizontal border
+     */
     @Getter
     class StyleModel {
 
@@ -1079,6 +1105,52 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                 cell.setStyle(newStyle);
             }
         }
+        
+        /**
+         * Draw border page break.
+         *
+         * @param cells the cells
+         * @param indexRow the index row
+         */
+        public void drawBorderPageBreak(Cells cells, int indexRow, int totalColumn) {
+            int indexReal = indexRow + 1;
+//            && (indexReal - PaymentConstant.NUMBER_ROW_PAGE) < PaymentConstant.ZERO)
+            if (indexReal % PaymentConstant.NUMBER_ROW_FIRST_PAGE == PaymentConstant.ZERO) {
+                this.drawBorderRow(cells, totalColumn, indexRow, CellsBorderType.BottomBorder);
+                return;
+            }
+            if (indexReal % PaymentConstant.NUMBER_ROW_FIRST_PAGE == PaymentConstant.ONE) {
+                this.drawBorderRow(cells, totalColumn, indexRow, CellsBorderType.TopBorder);
+                return;
+            }
+//            if ((indexReal / PaymentConstant.NUMBER_ROW_PAGE) > PaymentConstant.ONE
+//                    && indexReal % PaymentConstant.NUMBER_ROW_PAGE == PaymentConstant.ZERO) {
+//                this.drawBorderRow(cells, totalColumn, indexRow,
+//                        CellsBorderType.BottomBorder);
+//                return;
+//            }
+//            if ((indexReal / PaymentConstant.NUMBER_ROW_PAGE) > PaymentConstant.ONE
+//                    && indexReal % PaymentConstant.NUMBER_ROW_PAGE == PaymentConstant.ONE) {
+//                this.drawBorderRow(cells, totalColumn, indexRow,
+//                        CellsBorderType.TopBorder);
+//                return;
+//            }
+        }
+        
+        /**
+         * Draw border line row top.
+         *
+         * @param cells the cells
+         * @param numberColumn the number column
+         * @param indexRow the index row
+         */
+        private void drawBorderRow(Cells cells, int numberColumn, int indexRow, CellsBorderType borderType) {
+            for (int i = 0; i < numberColumn; i++) {
+                Cell currentCell = cells.get(indexRow, i);
+                Style style = this.findStyleCell(currentCell, borderType);
+                currentCell.setStyle(style);
+            }
+        }
 
         /**
          * Clear border column empty.
@@ -1145,7 +1217,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             Style style = cell.getStyle();
             style.setForegroundColor(this.foregroundColor);
             style.setPattern(BackgroundType.SOLID);
-            style.setTextWrapped(true);
+            style.setTextWrapped(false);
 
             switch (borderType) {
                 case NoBorder :
@@ -1186,6 +1258,16 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                         style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
                     }
                     break;
+                case TopBorder :
+                    if (this.isHorizontalBorder) {
+                        style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+                    }
+                    break;
+                case BottomBorder :
+                    if (this.isHorizontalBorder) {
+                        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+                    }
+                    break;
                 case DoubleVerticalBorder :
                     if (this.isVerticalBorder) {
                         style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
@@ -1221,6 +1303,12 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         
         /** The Right border. */
         RightBorder,
+        
+        /** The Top border. */
+        TopBorder,
+        
+        /** The Bottom border. */
+        BottomBorder,
         
         /** The Double vertical border. */
         DoubleVerticalBorder
