@@ -31,6 +31,7 @@ public class CompanyAllotSettingFinder {
 	 */
 	public List<CompanyAllotSettingDto> getAllCompanyAllotSetting() {
 		String companyCode = AppContexts.user().companyCode();
+		
 		return this.companyAllotRepo.findAll(companyCode).stream()
 				.map(companyallot -> CompanyAllotSettingDto.fromDomain(companyallot))
 				.collect(Collectors.toList());

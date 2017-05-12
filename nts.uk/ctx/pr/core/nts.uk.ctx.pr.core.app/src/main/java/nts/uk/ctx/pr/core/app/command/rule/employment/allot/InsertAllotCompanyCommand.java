@@ -16,7 +16,8 @@ public class InsertAllotCompanyCommand {
 
 	// Convert to domain object from command values
 	public CompanyAllotSetting toDomain(String historyId) {
-		return CompanyAllotSetting.createFromJavaType(AppContexts.user().companyCode(), historyId, getStartDate(),
+		String companyCode = AppContexts.user().companyCode();
+		return CompanyAllotSetting.createFromJavaType(companyCode, historyId, getStartDate(),
 				getEndDate(), getPayStmtCode(), getBonusStmtCode());
 	}
 }

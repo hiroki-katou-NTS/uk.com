@@ -73,6 +73,8 @@ module qmm020.b.viewmodel {
             let self = this, model: Array<ListModel> = ko.toJS(self.listItems);
             // push data to server by service
             // change function?
+            let addItem = _.find(model, function(o){return o.historyId == 'NEW'});
+            debugger;
             service.saveData(model);
         }
 
@@ -155,27 +157,34 @@ module qmm020.b.viewmodel {
             nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { width: 485, height: 550, title: '履歴の編集', dialogClass: "no-close" })
                 .onClosed(() => {
                     let model: any = nts.uk.ui.windows.getShared("K_RETURN");
-                    debugger;
                     if (model) {
                         // search index of current item
                         let index = _.findIndex(self.listItems(), function(m) { return m.historyId == self.selectedId(); });
                         if (model.selectedMode == 1) {
 
                             // call service delete item at here
-                            self.listItems.splice(index, 1);
+                            //                            self.listItems.splice(index, 1);
+                            let dele = self.selectedItem();
+                            service.deleteData(dele).done(function(data: ListModel) {
+                                self.listItems.valueHasMutated();
+                                // select to next item
+                                while (index >= self.listItems().length) {
+                                    index--;
+                                }
 
-                            // select to next item
-                            while (index >= self.listItems().length) {
-                                index--;
-                            }
+                                if (!self.listItems()[index]) {
+                                    self.selectedId(undefined);
+                                } else {
+                                    self.selectedId(self.listItems()[index].historyId);
+                                }
 
-                            if (!self.listItems()[index]) {
-                                self.selectedId(undefined);
-                            } else {
-                                self.selectedId(self.listItems()[index].historyId);
-                            }
+                                self.selectedItem.valueHasMutated();
+                                debugger;
+                            }).fail(function(res) {
+                                alert(res);
+                            });
 
-                            self.selectedItem.valueHasMutated();
+
 
                             // call start function
                             //self.start();

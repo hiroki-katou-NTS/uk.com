@@ -24,6 +24,7 @@ public class InsertAllotCompanyCommandHandler extends CommandHandler<InsertAllot
 	protected void handle(CommandHandlerContext<InsertAllotCompanyCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		InsertAllotCompanyCommand command = context.getCommand();
+		
 
 		// Find hist Item with max date
 		Optional<CompanyAllotSetting> update = companyRepo.findMax(companyCode, 999912);

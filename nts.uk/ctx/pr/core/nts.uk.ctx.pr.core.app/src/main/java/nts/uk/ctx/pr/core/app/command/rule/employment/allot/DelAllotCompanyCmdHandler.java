@@ -15,38 +15,27 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class DelAllotCompanyCmdHandler extends CommandHandler<DelAllotCompanyCmd>{
-	
-		
+public class DelAllotCompanyCmdHandler extends CommandHandler<DelAllotCompanyCmd> {
 	@Inject
 	private CompanyAllotSettingRepository companyRepo;
-	
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<DelAllotCompanyCmd> context) {
 		DelAllotCompanyCmd command = context.getCommand();
-		
-		//delete
-		deleteObject(command);
-		//update sau delete
-		updateObject(command);
+		String companyCode = AppContexts.user().companyCode();
 
-	}
-
-	//function Delete
-	public void deleteObject(DelAllotCompanyCmd command) {
+		// delete this record
 		this.companyRepo.remove(command.getHistoryId());
-	}
-		
-	//function Update
-	public void updateObject(DelAllotCompanyCmd command) {
-		Optional<CompanyAllotSetting> allotHistPrevious = companyRepo.getPreviousHistory(
-				AppContexts.user().companyCode(),
-				command.getStartDate() - 1);
-		if(allotHistPrevious != null && allotHistPrevious.isPresent()){
-			CompanyAllotSetting comAllot = allotHistPrevious.get();
-			comAllot.setEndDate(new YearMonth(999912));
-			companyRepo.update(comAllot);
+
+		// update previous record
+		YearMonth endDate = new YearMonth(command.getStartDate()).previousMonth();
+		Optional<CompanyAllotSetting> entity = companyRepo.getPreviousHistory(companyCode, endDate.v());
+
+		if (entity.isPresent()) {
+			CompanyAllotSetting _entity = entity.get();
+			_entity.setEndDate(new YearMonth(999912));
+			companyRepo.update(_entity);
 		}
 	}
+
 }

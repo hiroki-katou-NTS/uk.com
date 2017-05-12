@@ -33,8 +33,7 @@ public class CompanyAllotSettingWebService extends WebService{
 	@POST
 	@Path("findallcompanyallot")
 	public List<CompanyAllotSettingDto> GetAllCompanyAllotSetting() {
-		List<CompanyAllotSettingDto> test = this.find.getAllCompanyAllotSetting();
-		return test;
+		return this.find.getAllCompanyAllotSetting();
 	}
 
 	@POST
