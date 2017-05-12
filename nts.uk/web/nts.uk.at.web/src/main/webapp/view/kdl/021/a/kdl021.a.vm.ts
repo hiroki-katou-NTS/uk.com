@@ -20,7 +20,6 @@ module kdl021.a.viewmodel {
             //Add the fisrt Item
             self.items.push(new ItemModel("", "選択なし"))；
             
-             
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 70 },
                 { headerText: '名称', prop: 'name', width: 230 }
@@ -32,11 +31,13 @@ module kdl021.a.viewmodel {
             //selected attendace items
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
             //set source
-            service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<service.model.DivergenceItem>){
+            if(self.posibleItems.length >0){
+                service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<service.model.DivergenceItem>){
                 for (let i in lstItem) {
                     self.items.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
-                };
-            })
+                    };
+                })
+            }
         }
         //event When click to 設定 ボタン
         register(){
@@ -49,13 +50,6 @@ module kdl021.a.viewmodel {
             nts.uk.ui.windows.close();
         }
     }
-    //Format Code : Pad 0 to Code
-    function padZero(code: string) {
-        var length: number = code.length;
-        var codeFm: string = "00000";
-        return codeFm.substr(0, 5 - length) + code;
-    }
-    //
     class ItemModel {
         code: string;
         name: string;
