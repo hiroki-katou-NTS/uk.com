@@ -209,7 +209,7 @@ public class OutputPaymentDataReportService extends ExportService<ResidentialTax
 		common.setClientCode(query.getClientCode());
 		common.setDesBranchNumber(query.getDestinationBranchNumber());
 		//Convert time Japan
-		Integer yearMonthJapan = this.eraProvider.toJapaneseDate(query.getEndDate()).toInt();
+		Integer yearMonthJapan = this.eraProvider.toJapaneseDate(query.getEndDate()).toYearMonthInt();
 		common.setPaymentDueDate(yearMonthJapan.toString());
 		common.setPaymentMonth(yearMonthJapan.toString().substring(0, 4));
 		//
