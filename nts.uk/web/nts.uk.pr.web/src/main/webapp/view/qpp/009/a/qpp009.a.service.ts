@@ -7,7 +7,7 @@ module qpp009.a {
         export function printService(data: viewmodel.ScreenModel): JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             var reportQuery = {
-                targetYear: data.targetYear(),
+                yearMonth: data.yearMonth(),
 //                detailItemsSetting: ko.toJS(data.detailItemsSetting()),
 //                printSetting: ko.toJS(data.printSetting())
                 

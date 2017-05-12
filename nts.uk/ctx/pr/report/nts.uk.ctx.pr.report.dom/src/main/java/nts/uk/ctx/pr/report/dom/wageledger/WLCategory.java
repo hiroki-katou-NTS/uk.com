@@ -19,7 +19,7 @@ public enum WLCategory {
 	Attendance(2);
 	
 	/** The value. */
-	public final Integer value;
+	public final int value;
 
 	/**
 	 * Instantiates a new category.
@@ -27,7 +27,7 @@ public enum WLCategory {
 	 * @param value the value
 	 * @param description the description
 	 */
-	private WLCategory(Integer value) {
+	private WLCategory(int value) {
 		this.value = value;
 	}
 	
