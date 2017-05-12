@@ -219,7 +219,31 @@ project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp') {
 }
 //========================sys:portal ↑=====================================
 
-
+//=========================at:shared===================================
+project (':ctx:at:shared:nts.uk.ctx.at.shared.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+	}
+}
+project (':ctx:at:shared:nts.uk.ctx.at.shared.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+project (':ctx:at:shared:nts.uk.ctx.at.shared.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+	}
+}
+project (':ctx:at:shared:nts.uk.ctx.at.shared.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.app')
+	}
+}
 
 //=========================at:schedule↓===================================
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ws') {
@@ -231,6 +255,7 @@ project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ws') {
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app') {
@@ -238,6 +263,7 @@ project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.dom')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.infra') {
@@ -277,6 +303,7 @@ project (':ctx:at:record:nts.uk.ctx.at.record.ws') {
 project (':ctx:at:record:nts.uk.ctx.at.record.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:record:nts.uk.ctx.at.record.app') {
@@ -284,6 +311,7 @@ project (':ctx:at:record:nts.uk.ctx.at.record.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:at:record:nts.uk.ctx.at.record.dom')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:record:nts.uk.ctx.at.record.infra') {
@@ -618,6 +646,11 @@ project (':web:nts.uk.at.web') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+		
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.app')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.infra')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.ws')
 		
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ac')
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app')
