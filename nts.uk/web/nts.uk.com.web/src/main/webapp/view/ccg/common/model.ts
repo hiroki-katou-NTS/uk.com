@@ -1,5 +1,6 @@
 module ccg.model {
-    
+    import ntsNumber = nts.uk.ntsNumber;
+
     /** Transfer data from topPage to LayoutSetting */
     export interface TransferLayoutInfo {
         parentCode: string;
@@ -64,17 +65,18 @@ module ccg.model {
         topPagePartID: string;
         partType: number;
         constructor(placementID: string, name: string, row: number, column: number, width: number, height: number, url?: string, topPagePartID?: string, partType?: number) {
+            // Non Agruments
+            this.isExternalUrl = (nts.uk.util.isNullOrEmpty(url)) ? false : true;
+
             this.placementID = placementID;
-            this.name = name;
-            this.row = row;
-            this.column = column;
-            this.width = width;
-            this.height = height;
+            this.name = (this.isExternalUrl) ? "外部URL" : name;
+            this.row = ntsNumber.getDecimal(row, 0);
+            this.column = ntsNumber.getDecimal(column, 0);
+            this.width = ntsNumber.getDecimal(width, 0);
+            this.height = ntsNumber.getDecimal(height, 0);
             this.url = url;
             this.topPagePartID = topPagePartID;
             this.partType = partType;
-            // Non Agruments
-            this.isExternalUrl = (nts.uk.util.isNullOrEmpty(url)) ? false : true;
         }
     }
 }

@@ -99,7 +99,7 @@ module ccg031.b.viewmodel {
         submitDialog(): void {
             var self = this;
             // Default is External Url
-            var name: string = "外部URL";
+            var name: string = "";
             var width: number = self.urlWidth();
             var height: number = self.urlHeight();
             var topPagePartID: string = "";

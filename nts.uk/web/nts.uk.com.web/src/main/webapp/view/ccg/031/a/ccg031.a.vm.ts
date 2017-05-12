@@ -2,50 +2,55 @@ module ccg031.a.viewmodel {
     import model = ccg.model;
     import windows = nts.uk.ui.windows;
     import ntsNumber = nts.uk.ntsNumber;
+    import dialog = nts.uk.ui.dialog;
+    const minRow: number = 4;
+    const minColumn: number = 6;
 
     export class ScreenModel {
         // Layout Info
+        parentCode: string;
         layoutID: string;
         pgType: number;
         // Column & Row
-        minRow: number = 4;
-        minColumn: number = 6;
-        totalRow: KnockoutObservable<number>;
-        totalColumn: KnockoutObservable<number>;
-        totalRowArray: KnockoutComputed<number[]>;
-        totalColumnArray: KnockoutComputed<number[]>;
+        layoutGrid: KnockoutObservable<LayoutGrid>;
         // Placement
         placements: KnockoutObservableArray<model.Placement>;
 
         constructor() {
             var self = this;
-            // Column & Row
-            this.totalRow = ko.observable(this.minRow);
-            this.totalColumn = ko.observable(this.minColumn);
-            this.totalRowArray = ko.computed((): Array<number> => {
-                return self.numberToArray(self.totalRow());
-            });
-            this.totalColumnArray = ko.computed((): Array<number> => {
-                return self.numberToArray(self.totalColumn());
-            });
+            // Layout Info
+            self.parentCode = null;
+            self.layoutID = null;
+            self.pgType = null;
+            // Layout Grid
+            self.layoutGrid = ko.observable(new LayoutGrid(minRow, minColumn));
             // Placement
-            this.placements = ko.observableArray([]);
+            self.placements = ko.observableArray([]);
         }
 
         /** Start Page */
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var layoutInfo: any = windows.getShared("layout");
-            self.layoutID = null;
-            self.pgType = null;
+            var layoutInfo: model.TransferLayoutInfo = windows.getShared("layout");
             if (layoutInfo !== undefined) {
+                self.parentCode = layoutInfo.parentCode;
                 self.layoutID = layoutInfo.layoutID;
                 self.pgType = layoutInfo.pgType;
             }
             service.active(self.layoutID).done((data: model.LayoutDto) => {
-                console.log(data);
-                self.reorderPartPosition();
+                if (data !== undefined) {
+                    let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
+                        return new model.Placement(item.placementID, item.placementPartDto.name,
+                            item.row, item.column,
+                            item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
+                            item.placementPartDto.topPagePartID, item.placementPartDto.type);
+                    });
+                    self.placements(listPlacement);
+                }
+                _.defer(() => {
+                    self.initDisplay();
+                });
                 dfd.resolve();
             }).fail((res: any) => {
                 dfd.fail();
@@ -56,31 +61,37 @@ module ccg031.a.viewmodel {
         /** Registry Layout */
         registryLayout(): void {
             var self = this;
-            service.registry(self.layoutID, self.pgType, self.placements()).done((data: any) => {
-                console.log(data);
-                self.refreshWidget();
-            }).fail((res) => {
-                $("body").ntsError("set", "Server Error");
-            });
+            service.registry(self.parentCode, self.layoutID, self.pgType, self.placements())
+                .done((data) => {
+                    self.layoutID = data;
+                    dialog.alert("Msg_15");
+                }).fail((res) => {
+                    dialog.alert(res.messageId);
+                });
         }
 
         /** Close Dialog */
         closeDialog(): void {
+            var self = this;
+            var layoutInfo: model.TransferLayoutInfo = {
+                parentCode: self.parentCode,
+                layoutID: self.layoutID,
+                pgType: self.pgType
+            };
+            windows.setShared("layout", layoutInfo, false);
             windows.close();
         }
 
         /** Add Column button click */
         addColumnButtonClick(): void {
-            this.addColumn(1);
-            this.setupDropable();
-            this.addOverflowClass();
+            this.layoutGrid().addColumn(1);
+            this.setupDroppable();
         }
 
         /** Add Row button click */
         addRowButtonClick(): void {
-            this.addRow(1);
-            this.setupDropable();
-            this.addOverflowClass();
+            this.layoutGrid().addRow(1);
+            this.setupDroppable();
         }
 
         /** Open Add TopPage-Part Dialog */
@@ -92,7 +103,11 @@ module ccg031.a.viewmodel {
                 let placement: model.Placement = windows.getShared("placement");
                 if (placement != undefined) {
                     self.placements.push(placement);
-                    self.refreshWidget();
+                    self.setupPositionAndSize(placement);
+                    var movingPlacementIds = self.layoutGrid().markOccupied(placement);
+                    self.reorderPlacements(movingPlacementIds, [placement.placementID]);
+                    self.markOccupiedAll();
+                    self.setupDragDrop();
                 }
                 $(element).removeClass("placeholder");
             });
@@ -106,48 +121,31 @@ module ccg031.a.viewmodel {
         /** Open Preview Dialog */
         removeWidget(placementID: string): void {
             var self = this;
-            self.placements.remove((item) => {
-                return item.placementID == placementID;
-            });
-            self.refreshWidget();
+            var placement = _.find(self.placements(), ['placementID', placementID]);
+            self.layoutGrid().clearOccupied(placement);
+            self.placements.remove(placement);
         }
 
-        /** Refresh all Widget display & binding */
-        private refreshWidget(): void {
-            var self = this;
-            // Re-order
-            self.reorderPartPosition();
-            // Drag & Drop
-            self.setupDragable();
-            self.setupDropable();
+        /** Init all Widget display & binding */
+        private initDisplay(): void {
+            this.markOccupiedAll();
+            this.autoExpandLayout();
+            this.setupPositionAndSizeAll();
+            this.setupDragDrop();
         }
 
-        /** Re-order parts position */
-        private reorderPartPosition(): void {
-            var self = this;
-
-            // Move parts
-            self.moveOverlapParts();
-
-            // Expand row & column
-            self.autoExpandLayout();
-
-            // Calculate Position & Size
-            _.forEach(self.placements(), (placement) => {
-                $("#" + placement.placementID).css({
-                    top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
-                    left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
-                    width: (placement.width * 150) + ((placement.width - 1) * 10),
-                    height: (placement.height * 150) + ((placement.height - 1) * 10)
-                });
-            });
+        /** Setup Draggable & Droppable */
+        private setupDragDrop(): void {
+            this.setupDragable();
+            this.setupDroppable();
         }
 
         /** Setup Dragable */
         private setupDragable(): void {
             $(".widget-panel").draggable({
                 opacity: .8,
-                distance: 20,
+                distance: 25,
+                scroll: true,
                 containment: ".placement-container",
                 cancel: ".panel-content,.remove-button",
                 revert: "invalid",
@@ -156,81 +154,275 @@ module ccg031.a.viewmodel {
             });
         }
 
-        /** Setup Dropable */
-        private setupDropable(): void {
+        /** Setup Droppable */
+        private setupDroppable(): void {
             var self = this;
-            $(".placement-item").droppable({
+            $(".layout-cell").droppable({
                 tolerance: "pointer",
                 classes: { "ui-droppable-hover": "hover" },
                 drop: function(event, ui) {
+                    // Update Placement position
                     let $dropable = $(event.target);
                     let $dragable = ui.draggable;
                     let placement = _.find(self.placements(), ['placementID', $dragable.attr("id")]);
-                    placement.row = $dropable.data("row");
-                    placement.column = $dropable.data("column");
-                    $dragable.position({
-                        my: "left top",
-                        at: "left top",
-                        of: $dropable,
-                        collision: "none"
-                    });
-                    self.refreshWidget();
+                    self.layoutGrid().clearOccupied(placement);
+                    placement.row = ntsNumber.getDecimal($dropable.attr("id").split("-")[1], 0);
+                    placement.column = ntsNumber.getDecimal($dropable.attr("id").split("-")[2], 0);
+                    self.setupPositionAndSize(placement);
+                    var movingPlacementIds = self.layoutGrid().markOccupied(placement);
+                    self.reorderPlacements(movingPlacementIds, [placement.placementID]);
+                    self.markOccupiedAll();
+                    self.setupDragDrop();
                 }
             });
         }
 
-        /** Move overlap part */
-        private moveOverlapParts(): void {
+        /**
+         * Re-order list Placements with a list checking Placements
+         * @param movingPlacementIds list placementID need to move
+         * @param checkingPlacementIds list placementID need to check overlap
+         */
+        private reorderPlacements(movingPlacementIds: Array<string>, checkingPlacementIds: Array<string>): void {
+            var self = this;
+            var movingPlacements = _.filter(self.placements(), (placement) => {
+                return _.includes(movingPlacementIds, placement.placementID);
+            });
+            movingPlacements = _.orderBy(movingPlacements, ['column','row'], ['asc','asc']);
+            var listOverlapPlacement: Array<string> = [];
+            _.each(movingPlacements, (movingPlacement) => {
+                self.layoutGrid().clearOccupied(movingPlacement);
+                var checkingPlacements = _.filter(self.placements(), (placement) => {
+                    return _.includes(checkingPlacementIds, placement.placementID);
+                });
+                movingPlacements = _.orderBy(movingPlacements, ['column','row'], ['asc','asc']);
+                self.shiftOverlapPart(movingPlacement, checkingPlacements);
+                // Add that moving placement to checking so that won't be move anymore
+                checkingPlacementIds.push(movingPlacement.placementID);
+                checkingPlacementIds = _.union(checkingPlacementIds);
+                _.merge(listOverlapPlacement, self.layoutGrid().markOccupied(movingPlacement));
+                self.autoExpandLayout();
+                self.setupPositionAndSize(movingPlacement, 300);
+            });
+            if (listOverlapPlacement.length > 0)
+                self.reorderPlacements.call(self, listOverlapPlacement, checkingPlacementIds);
+        }
 
+        /** Recursive move overlap part */
+        private shiftOverlapPart(movingPlacement: model.Placement, checkingPlacements: Array<model.Placement>): void {
+            var self = this;
+            var newColumnPosition: Array<number> = [];
+            _.each(checkingPlacements, (placement) => {
+                if (self.checkIntersect(movingPlacement, placement)) {
+                    movingPlacement.column = placement.column + placement.width;
+                    // Check if new position is overlap
+                    self.shiftOverlapPart.call(self, movingPlacement, _.clone(checkingPlacements));
+                }
+            });
+        }
+
+        /** Check 2 placement intersect */
+        private checkIntersect(placeA: model.Placement, placeB: model.Placement): boolean {
+            var AX1: number = placeA.column;
+            var AY1: number = placeA.row;
+            var AX2: number = placeA.column + placeA.width - 1;
+            var AY2: number = placeA.row + placeA.height - 1;
+            var BX1: number = placeB.column;
+            var BY1: number = placeB.row;
+            var BX2: number = placeB.column + placeB.width - 1;
+            var BY2: number = placeB.row + placeB.height - 1;
+            if (AX1 <= BX2 && AX2 >= BX1 &&
+                AY1 <= BY2 && AY2 >= BY1) {
+                return true;
+            }
+            return false;
+        }
+
+        /** Setup position and size for all Placements */
+        private setupPositionAndSizeAll(): void {
+            var self = this;
+            _.forEach(self.placements(), (placement) => {
+                self.setupPositionAndSize(placement);
+            });
+        }
+
+        /**
+         * Setup position and size for a Placement
+         * @param placement placement need to setup
+         * @param duration milliseconds moving a placement
+         */
+        private setupPositionAndSize(placement: model.Placement, duration?: number): void {
+            var self = this;
+            var $placement = $("#" + placement.placementID);
+            duration = duration || 0;
+            $placement.css({
+                width: (placement.width * 150) + ((placement.width - 1) * 10),
+                height: (placement.height * 150) + ((placement.height - 1) * 10)
+            });
+            if (duration === 0) {
+                $placement.css({
+                    top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
+                    left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10)
+                });
+            }
+            else {
+                $placement.animate({
+                    top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
+                    left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
+                }, duration, "easeOutCubic");
+            }
         }
 
         /** Expand layout */
         private autoExpandLayout(): void {
             var self = this;
             _.forEach(self.placements(), (placement) => {
-                let column: number = ntsNumber.getDecimal(placement.column, 0);
-                let row: number = ntsNumber.getDecimal(placement.row, 0);
-                let width: number = ntsNumber.getDecimal(placement.width, 0);
-                let height: number = ntsNumber.getDecimal(placement.height, 0);
-                // Column
-                let totalColumn = self.totalColumn();
-                let expandColumn = (column + width - 1) - totalColumn;
-                if (expandColumn > 0) self.addColumn(expandColumn);
-                // Row
-                let totalRow = self.totalRow();
-                let expandRow = (row + height - 1) - totalRow;
-                if (expandRow > 0) self.addRow(expandRow);
+                // Expand Row
+                let totalRow: number = self.layoutGrid().rows();
+                let expandRow: number = (placement.row + placement.height - 1) - totalRow;
+                if (expandRow > 0) {
+                    self.layoutGrid().addRow(expandRow);
+                    self.autoExpandLayout();
+                }
+                // Expand Column
+                let totalColumn: number = self.layoutGrid().columns();
+                let expandColumn: number = (placement.column + placement.width - 1) - totalColumn;
+                if (expandColumn > 0) {
+                    self.layoutGrid().addColumn(expandColumn);
+                    self.autoExpandLayout();
+                }
             });
         }
 
-        /** Add Column */
-        private addColumn(column?: number): void {
-            column = column || 1;
-            this.totalColumn(this.totalColumn() + column);
+        /** Setup occupied for all Placements */
+        private markOccupiedAll(): void {
+            var self = this;
+            _.each(self.placements(), (placement) => {
+                self.layoutGrid().markOccupied(placement);
+            });
         }
 
-        /** Add Row */
-        private addRow(row?: number): void {
-            row = row || 1;
-            this.totalRow(this.totalRow() + row);
+    }
+
+    /** The main layout grid information */
+    class LayoutGrid {
+        rows: KnockoutComputed<number>;
+        columns: KnockoutObservable<number>;
+        layoutRows: KnockoutObservableArray<LayoutRow>;
+        constructor(rows: number, columns: number) {
+            var self = this;
+            self.columns = ko.observable(columns);
+            self.layoutRows = ko.observableArray([]);
+            for (var row = 1; row <= rows; row++) {
+                self.layoutRows.push(new LayoutRow(row, columns));
+            };
+            self.rows = ko.computed(() => {
+                return self.layoutRows().length;
+            });
+        }
+
+        /** Add row(s) to LayoutGrid */
+        addRow(row: number) {
+            var self = this;
+            for (var i = 1; i <= row; i++) {
+                self.layoutRows.push(new LayoutRow(self.rows() + i, self.columns()));
+            }
+            self.addOverflowClass();
+        }
+
+        /** Add column(s) to LayoutGrid */
+        addColumn(column: number) {
+            var self = this;
+            for (var i = 1; i <= column; i++) {
+                _.each(self.layoutRows(), (layoutRow) => {
+                    layoutRow.layoutCells.push(new LayoutCell(layoutRow.rowIndex, self.columns() + i));
+                });
+            }
+            self.columns(self.columns() + column);
+            self.addOverflowClass();
+        }
+
+        /** Get all LayoutCell in LayoutGrid */
+        getAllCells(): Array<LayoutCell> {
+            var self = this;
+            var layoutCells: Array<LayoutCell> = [];
+            _.each(self.layoutRows(), (layoutRow) => {
+                layoutRow.layoutCells().forEach((v) => { layoutCells.push(v) });
+            });
+            return layoutCells;
+        }
+
+        /** Clear all cell Placement occupied */
+        clearOccupied(placement: model.Placement) {
+            var self = this;
+            var occupiedCells = self.getOccupiedCells(placement);
+            _.each(occupiedCells, (cell) => { cell.occupied = ""; });
+        }
+
+        /**
+         * Mark LayoutCells occupied by placement
+         * @param placement placement need to mark
+         * @return Return all Placements Id occupied there
+         */
+        markOccupied(placement: model.Placement): Array<string> {
+            var self = this;
+            var occupiedCells = self.getOccupiedCells(placement);
+            var occupiedPlacementIDs: Array<string> = [];
+            _.each(occupiedCells, (cell) => {
+                if (!nts.uk.util.isNullOrEmpty(cell.occupied) && cell.occupied !== placement.placementID)
+                    occupiedPlacementIDs.push(cell.occupied);
+                cell.occupied = placement.placementID;
+            });
+            return _.union(occupiedPlacementIDs);
+        }
+
+        /**
+         * Get LayoutCells occupied by placement
+         * @param placement placement need to mark
+         * @return Return all LayoutCells occupied
+         */
+        private getOccupiedCells(placement: model.Placement): Array<LayoutCell> {
+            var self = this;
+            var occupiedCellIDs = [];
+            for (var y = placement.row; y <= placement.row + placement.height - 1; y++) {
+                for (var x = placement.column; x <= placement.column + placement.width - 1; x++) {
+                    occupiedCellIDs.push("cell-" + y + "-" + x);
+                }
+            }
+            var occupiedCells = _.filter(self.getAllCells(), (cell) => {
+                return occupiedCellIDs.indexOf(cell.id) > -1;
+            });
+            return occupiedCells;
         }
 
         /** Add overflow class */
         private addOverflowClass(): void {
-            if (this.totalRow() > this.minRow)
-                $(".placement-container").addClass("overflow-y");
-            if (this.totalColumn() > this.minColumn)
-                $(".placement-container").addClass("overflow-x");
+            if (this.rows() > minRow) $(".placement-container").addClass("overflow-y");
+            if (this.columns() > minColumn) $(".placement-container").addClass("overflow-x");
         }
+    }
 
-        /** Convert number to Array<number> */
-        private numberToArray(value: number): Array<number> {
-            var temp = [];
-            var length = _.toInteger(value);
-            for (var i = 1; i <= length; i++) {
-                temp.push(i);
+    class LayoutRow {
+        rowIndex: number;
+        layoutCells: KnockoutObservableArray<LayoutCell>;
+        constructor(row: number, columns: number) {
+            this.rowIndex = row;
+            this.layoutCells = ko.observableArray([]);
+            for (var column = 1; column <= columns; column++) {
+                this.layoutCells.push(new LayoutCell(this.rowIndex, column));
             }
-            return temp;
+        }
+    }
+
+    class LayoutCell {
+        id: string;
+        column: number;
+        row: number;
+        occupied: string;
+        constructor(row: number, column: number) {
+            this.row = row;
+            this.column = column;
+            this.id = "cell-" + row + "-" + column;
+            this.occupied = "";
         }
     }
 }

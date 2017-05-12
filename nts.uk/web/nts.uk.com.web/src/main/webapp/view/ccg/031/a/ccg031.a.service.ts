@@ -13,9 +13,10 @@ module ccg031.a.service {
             return nts.uk.request.ajax("com", paths.active, layoutID);
     }
     
-    export function registry(layoutID: string, pgType: number, placements: Array<model.Placement>): JQueryPromise<boolean> {
+    export function registry(parentCode: string, layoutID: string, pgType: number, placements: Array<model.Placement>): JQueryPromise<string> {
         var data = {
             portalLayoutCommand: {
+                parentCode: parentCode,
                 layoutID: layoutID,
                 pgType: pgType
             },

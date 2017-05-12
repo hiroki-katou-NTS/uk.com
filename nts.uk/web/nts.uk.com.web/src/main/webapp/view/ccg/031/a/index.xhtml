@@ -8,7 +8,7 @@
 
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1280, height: 768 };</script>
+			<script>var dialogSize = { width: 1075, height: 820 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.basic.dom.company.CompanyCode
   			</com:ValidatorScript>
@@ -33,16 +33,16 @@
 					<div class="cf">
 						<div class="placement-container">
 							<!-- Grid -->
-							<com:ko-foreach bind="totalRowArray">
-								<div class="placement-row cf">
-									<com:ko-foreach bind="$parent.totalColumnArray">
-										<!-- $parent: rowIndex & $data: columnIndex -->
-										<div class="placement-item" data-bind="
-											click: $parents[1].openAddDialog.bind($parents[1], $parent, $data, $element),
-											attr: {'data-row': $parent, 'data-column': $data} "></div>
-									</com:ko-foreach>
-								</div>
-							</com:ko-foreach>
+							<div class="layout-container" data-bind="with: layoutGrid">
+								<com:ko-foreach bind="layoutRows">
+									<div class="layout-row cf">
+										<com:ko-foreach bind="layoutCells">
+											<div class="layout-cell" data-bind="attr: {'id': $data.id },
+											 click: $parents[2].openAddDialog.bind($parents[2], $data.row, $data.column, $element)"></div>
+										</com:ko-foreach>
+									</div>
+								</com:ko-foreach>
+							</div>
 							<!-- Widget -->
 							<div class="widget-container">
 								<com:ko-foreach bind="placements">
