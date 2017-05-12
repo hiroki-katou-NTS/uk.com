@@ -4,10 +4,7 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.accumulatedpayment;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -94,7 +91,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			designer.getDesigner().setDataSource("Header", dataSource.getHeaderData());
 			
 			// Fill data
-			// List Item Data
+			// Item Data List
 			int amountEmployee = accumulatedPaymentList.size();
 			int startIndex = 0;
 			int firstRowIndex = FIRST_ROW_INDEX;

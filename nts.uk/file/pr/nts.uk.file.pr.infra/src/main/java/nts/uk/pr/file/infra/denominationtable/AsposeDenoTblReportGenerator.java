@@ -363,6 +363,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 	 */
 	private void cumulateToAmount(Map<Denomination, Long> tempDenomination, 
 			MutableDouble tempAccumulate, MutableInt members, EmployeeData currentEmp){
+		
 		// Cumulate to temple variables
 		this.cumulateGrossDenomination(tempDenomination, currentEmp.getDenomination());
 		tempAccumulate.add(currentEmp.getPaymentAmount());
@@ -379,23 +380,10 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 		// Print Title Row and Department Info
 		this.createTitle(printProcess);
 		this.printDepInfo(printProcess);
+		
 		 // Cumulate To Temp Variables
 		this.cumulateToTemp(printProcess);
 		this.printEmployee(printProcess, isGreen);
-	}
-	
-/**
- * Switch color.
- *
- * @param isGreen the is green
- * @return the boolean
- */
-	private Boolean switchColor(Boolean isGreen) {
-		if (isGreen) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 	
 	/**
@@ -563,7 +551,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			createLeftRightBorder(printProcess);	
 		}
 		printProcess.rowIndex ++;
-		// Breaking Page
+		// Break Page
 		this.breakPage(printProcess);
 	}
 	
@@ -575,6 +563,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 	private void setCumCellStyle(PrintProcess printProcess) {
 		Cells cells = printProcess.cells;
 		int rowIndex = printProcess.rowIndex;
+		
 		// Style for cells
 		for (int i = FIRST_COLUMN_INDEX; i < LAST_COLUMN_INDEX; i++) {
 			Cell cell = cells.get(rowIndex, i);
@@ -612,6 +601,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 		int rowIndex = printProcess.rowIndex;
 		int members = printProcess.prevEmp.getDepartmentData().getNumberOfEmp();
 		if (query.getIsPrintTotalOfDepartment()) {
+			
 			// Fill Data to cells
 			cells.get(rowIndex, COLUMN_INDEX[FIRST_COLUMN_INDEX]).setValue("部門計" + SPACES1 + members + "人");
 			for (Denomination d : Denomination.values()) {
@@ -624,7 +614,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			this.setCumCellStyle(printProcess);
 			printProcess.rowIndex ++;
 			
-			// Breaking Page
+			// Break Page
 			this.breakPage(printProcess);
 		}
 
@@ -638,8 +628,10 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 	 */
 	private void printAccByHierarchy(PrintProcess printProcess, DepartmentData depToPrint) {
 		DenoTableReportQuery query = printProcess.query;
+		
 		// Breaking Page Code
 		int breakCode = query.getSelectedBreakPageCode();
+		
 		// Hierarchy Breaking Page code
 		int hierarchyBreakCode = query.getSelectedBreakPageHierarchyCode();
 		List<Integer> selectedLevels = query.getSelectedLevels();
@@ -647,6 +639,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 		for (int i : selectedLevels) {
 			if (depToPrintLevel == i) {
 				this.printAccumulated(printProcess, depToPrint);
+				
 				// Check for Breaking page by Hierarchy
 				if ((breakCode == HIERARCHY_BREAK_CODE) && (hierarchyBreakCode == depToPrintLevel)) {
 					this.breakPageByOption(printProcess);
@@ -676,7 +669,6 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 				cells.get(rowIndex, columnIndex).setValue(denomination.get(d) + "枚");
 			}
 			cells.get(rowIndex, COLUMN_INDEX[LAST_IN_COLUMN_INDEX]).setValue(amount);
-			// Set Style for Cells
 
 			// Style for cells
 			for (int i = FIRST_COLUMN_INDEX; i < LAST_COLUMN_INDEX; i++) {
@@ -710,7 +702,8 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 		// Style for cells
 		this.setCumCellStyle(printProcess);
 		printProcess.rowIndex ++;
-		// Breaking Page
+		
+		// Break Page
 		this.breakPage(printProcess);
 	}
 
@@ -808,7 +801,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			}
 			printProcess.rowIndex ++;
 		}
-		// Breaking Page
+		// Break Page
 		this.breakPage(printProcess);
 	}
 

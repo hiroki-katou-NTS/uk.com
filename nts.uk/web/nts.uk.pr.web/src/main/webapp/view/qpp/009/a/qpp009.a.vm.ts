@@ -80,7 +80,7 @@ module qpp009.a.viewmodel {
                 hasError = true;
             }
             if (self.detailItemsSetting().isPrintDepHierarchy() && self.printSetting().selectedBreakPageCode() == 4
-            && self.detailItemsSetting().selectedLevels().indexOf(self.printSetting().selectedBreakPageHierarchyCode() < 0)) {
+            && self.detailItemsSetting().selectedLevels().indexOf(self.printSetting().selectedBreakPageHierarchyCode()) < 0) {
                 $('#specify-break-page-hierarchy-select').ntsError('set', '設定が正しくありません。');
                 hasError = true;
             }
