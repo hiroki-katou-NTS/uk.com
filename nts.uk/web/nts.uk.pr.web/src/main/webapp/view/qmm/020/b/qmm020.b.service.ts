@@ -53,6 +53,7 @@ module qmm020.b.service {
     }
 
     export function saveData(models: Array<any>) {
+        let dfd = $.Deferred();
         if (models.length > 0) {
             models.map((m) => {
                 let data: any = {
@@ -70,6 +71,7 @@ module qmm020.b.service {
                 }
             });
         }
+        return dfd.promise();
     }
 
     export function deleteData(model: any) {

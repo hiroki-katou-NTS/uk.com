@@ -73,9 +73,13 @@ module qmm020.b.viewmodel {
             let self = this, model: Array<ListModel> = ko.toJS(self.listItems);
             // push data to server by service
             // change function?
-            let addItem = _.find(model, function(o){return o.historyId == 'NEW'});
-            debugger;
-            service.saveData(model);
+            let addItem = _.filter(model, function(m) {
+                return _.includes(m.historyId, "NEW");
+            });
+            service.saveData(addItem).done(function(data: ListModel) {
+                self.listItems.valueHasMutated();
+                debugger;
+            });
         }
 
         //Open dialog Add History
