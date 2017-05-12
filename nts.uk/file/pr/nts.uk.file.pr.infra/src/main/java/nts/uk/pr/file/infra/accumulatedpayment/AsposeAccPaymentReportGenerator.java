@@ -44,9 +44,6 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	
 	/** The Constant EXTENSION_PDF. */
 	private static final String EXTENSION_PDF = ".pdf";
-	
-	/** The Constant EXTENSION_EXCEL. */
-	private static final String EXTENSION_EXCEL = ".xlsx";
 
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/QET002.xlsx";
@@ -99,7 +96,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			designer.getDesigner().setDataSource("Header", dataSource.getHeaderData());
 			DateFormat dateFM = new SimpleDateFormat("yyyyMMddhhssmm");
 			Date date = new Date();
-			String fileName = REPORT_FILE_NAME.concat(dateFM.format(date).toString()).concat(EXTENSION_EXCEL);
+			String fileName = REPORT_FILE_NAME.concat(dateFM.format(date).toString()).concat(EXTENSION_PDF);
 
 			// Fill data
 			// List Item Data
