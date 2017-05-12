@@ -1,42 +1,49 @@
 module kdl021.a.viewmodel {
     export class ScreenModel {
-        //parameter
+        
         isMulti: boolean;
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-        allItems: Array<ItemModel>;
         posibleItems: Array<number>;
+        dataSoure: Array<ItemModel>;
 
         constructor() {
             var self = this;
             self.isMulti = true;
+            self.isMulti = nts.uk.ui.windows.getShared('Multiple');
             self.items = ko.observableArray([]);
-            //total 
-            self.allItems = [];
-            //seleted items
-            self.selectedItems = [];
             //Add the fisrt Item
             self.items.push(new ItemModel("", "選択なし"))；
-            
-             
+            //header
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 70 },
                 { headerText: '名称', prop: 'name', width: 230 }
             ]);
-            self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray();
+            self.posibleItems = [];
+            self.dataSoure =[];
+            self.start();
+        }
+        //load data
+        start(){
+            var self = this;
             //all possible attendance items
             self.posibleItems = nts.uk.ui.windows.getShared('AllAttendanceObj');
             //selected attendace items
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
             //set source
-            service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<service.model.DivergenceItem>){
+            if(self.posibleItems.length >0){
+                service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<any>){
                 for (let i in lstItem) {
-                    self.items.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
-                };
-            })
+                        self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
+                    };
+                    //set source
+                    self.items(self.dataSoure);
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+            }
         }
         //event When click to 設定 ボタン
         register(){
@@ -44,18 +51,19 @@ module kdl021.a.viewmodel {
             nts.uk.ui.windows.setShared('selectedChildAttendace',self.currentCodeList());
             nts.uk.ui.windows.close();
         }
+        //検索条件をクリアする
+        clearClick(){
+            var self = this;
+            self.items([]);
+            self.items(self.dataSoure);
+            //selected attendace items
+            self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
+        }
         //Close Dialog
         close(){
             nts.uk.ui.windows.close();
         }
     }
-    //Format Code : Pad 0 to Code
-    function padZero(code: string) {
-        var length: number = code.length;
-        var codeFm: string = "00000";
-        return codeFm.substr(0, 5 - length) + code;
-    }
-    //
     class ItemModel {
         code: string;
         name: string;
