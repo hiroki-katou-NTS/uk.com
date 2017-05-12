@@ -151,7 +151,7 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.setShared('layoutId', self.topPageModel().layoutId());
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml", {
-                    height: 350, width: 650,
+                    height: 350, width: 700,
                     title: "他のトップページコピー",
                     dialogClass: 'no-close'
                 }).onClosed(() => {

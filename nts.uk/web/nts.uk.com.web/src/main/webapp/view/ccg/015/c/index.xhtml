@@ -21,42 +21,48 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="contents-left">
-					<div style="float: left;">
-						<p>コピー元情報：</p>
-					</div>
-					<div style="float: left; margin-top: -9px;" id="lbl_code_name"
-						data-bind="ntsFormLabel: {}">
-						<label>コード/名称</label>
-					</div>
-					<div>
-						<p style="float: left;margin-left: 100px;" data-bind="text: parentTopPageCode"></p>
-						<p style="float: left;margin-left: 60px;" data-bind="text: parentTopPageName"></p>
-					</div>
-					<BR />
-					<BR />
-					<BR />
-					<div style="float: left;margin-top: 3px;">
-						<p>コピー先情報：</p>
-					</div>
-					<div style="float: left;margin-top: -5px;" id="lbl_code_name"
-						data-bind="ntsFormLabel: {constraint : ['TopPageCode','TopPageName'],required: true}">
-						<label>コード/名称</label>
-					</div>
-					<div>
-						<input id="inp-code" style="margin-left: 28px; width: 36px;" class="nts-input save-error" data-name="コード"
-							data-bind="ntsTextEditor: {
+					<table>
+						<tr>
+							<td>
+								<p>コピー元情報：</p>
+							</td>
+							<td>
+								<div id="lbl_code_name" data-bind="ntsFormLabel: {}">
+									<label>コード/名称</label>
+								</div>
+							</td>
+							<td><p data-bind="text: parentTopPageCode"></p></td>
+							<td><p class="pad_left_20"
+									data-bind="text: parentTopPageName"></p></td>
+						</tr>
+						<tr style="padding-top: 15px;">
+							<td class="pad_top_20">
+								<p>コピー先情報：</p>
+							</td>
+							<td class="pad_top_20">
+								<div id="lbl_code_name"
+									data-bind="ntsFormLabel: {constraint : ['TopPageCode','TopPageName'],required: true}">
+									<label>コード/名称</label>
+								</div>
+							</td>
+							<td class="pad_top_20"><input id="inp-code"
+								style="width: 36px;" class="nts-input save-error"
+								data-name="コード"
+								data-bind="ntsTextEditor: {
 							value: newTopPageCode,
 							required: true,
 							constraint: 'TopPageCode' 
-							}" />
-
-						<input id="inp-name" style="margin-left: 10px; width:180px!important;" class="nts-input save-error" data-name="名称"
-							data-bind="ntsTextEditor: {
+							}" /></td>
+							<td class="pad_top_20 pad_left_20"><input id="inp-name"
+								style="width: 180px !important;" class="nts-input save-error"
+								data-name="名称"
+								data-bind="ntsTextEditor: {
 							value: newTopPageName,
 							required: true,
 							constraint: 'TopPageName'
-							}" />
-					</div>
+							}" /></td>
+						</tr>
+					</table>
 				</div>
 				<hr />
 				<div class="bg-yellow" style="padding: 10px 5px;margin: 11px 156px; width: 41%;">
