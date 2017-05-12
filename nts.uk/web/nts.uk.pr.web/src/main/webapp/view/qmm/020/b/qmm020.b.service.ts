@@ -63,7 +63,6 @@ module qmm020.b.service {
                     historyId: m.historyId
                 };
                 if (data.historyId.contains('NEW')) {
-                    data.historyId = '';
                     nts.uk.request.ajax(paths.insertAllotCompanySetting, data);
                 }
                 else {
