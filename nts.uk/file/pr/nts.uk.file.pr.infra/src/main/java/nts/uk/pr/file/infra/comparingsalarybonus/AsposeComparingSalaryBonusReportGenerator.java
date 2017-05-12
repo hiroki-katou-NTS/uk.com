@@ -61,10 +61,9 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	private static final int[] COLUMN_INDEX_EMPLOYEE = { 0 };
 
 	private static final int ROW_HEIGHT = 28;
-	private static final int AMOUNT_PER_PAGE = 46;
 	// number of Row will start
 	private int startRow = 0;
-	private int maxDepartment = 0;
+	private int maxRowOfDepartments = 0;
 
 	@Override
 	public void generate(FileGeneratorContext fileContext, ComparingSalaryBonusReportData reportData) {
@@ -76,20 +75,14 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
 			Cells cells = worksheet.getCells();
+			
 			// Set print page
-			PageSetup pageSetup = worksheet.getPageSetup();
-			pageSetup.setFirstPageNumber(1);
-			int total = FIRST_ROW_INDEX + lstDeparmentInf.size() * (7 + lstDeparmentInf.get(0).getLstEmployee().size()
-					* (lstDeparmentInf.get(0).getLstEmployee().get(0).getLstData().size() + 1));
-			int numberOfPage = this.caclulatePage(total);
-			pageSetup.setPrintArea("A1:H" + numberOfPage * 55);
-			createRange(cells, FIRST_ROW_INDEX, 1);
-			printTitleRow(worksheets, FIRST_ROW_INDEX, reportData);
-			// Set header.
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd hh:mm");
-			worksheet.getPageSetup().setHeader(2,
-					"&\"Times New Roman,Bold\"&12&F" + dateFormat.format(new Date()) + "\r\n" + "&P" + " ページ");
-
+            this.printPage(worksheet, lstDeparmentInf);
+            
+            // set title of table
+		    this.setHeaderPage(worksheets, cells, reportData);
+		    
+		    // set header of page
 			designer.getDesigner().setDataSource(HEADER, Arrays.asList(reportData.getHeaderData()));
 			DateFormat dateFM = new SimpleDateFormat("yyyyMMddhhssmm");
 			Date date = new Date();
@@ -97,15 +90,15 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 
 			// Fill data
 			lstDeparmentInf.stream().forEach(c -> {
-				this.maxDepartment = 1 + c.getLstEmployee().size() * c.getLstEmployee().get(0).getLstData().size() + 4;
+				this.maxRowOfDepartments = 1 + c.getLstEmployee().size() * c.getLstEmployee().get(0).getLstData().size() + 4;
 			});
-			while (maxDepartment > 0) {
+			while (maxRowOfDepartments > 0) {
 				FIRST_ROW_INDEX = FIRST_ROW_INDEX + 1;
 				printDepartment(worksheets, FIRST_ROW_INDEX, reportData);
 				// print grand total
-				createRange(cells, this.startRow, 1);
-				printGrandTotal(worksheets, this.startRow, reportData);
-				maxDepartment -= AMOUNT_PER_PAGE;
+				createRange(cells, this.startRow - 1, 1);
+				printGrandTotal(worksheets, this.startRow - 1, reportData);
+				maxRowOfDepartments -= 46;
 			}
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
@@ -116,7 +109,34 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			throw new RuntimeException(e);
 		}
 	}
-
+	
+	/**
+	 * PRINT PAGE
+	 * @param worksheet
+	 * @param lstDeparmentInf
+	 */
+	private void printPage(	Worksheet worksheet , List<DeparmentInf> lstDeparmentInf){
+		// Set print page
+		PageSetup pageSetup = worksheet.getPageSetup();
+		pageSetup.setFirstPageNumber(1);
+		int total = FIRST_ROW_INDEX + lstDeparmentInf.size() * (7+ lstDeparmentInf.get(0).getLstEmployee().size()
+				* (lstDeparmentInf.get(0).getLstEmployee().get(0).getLstData().size() + 1)) +1;
+		System.out.println(total);
+		int numberOfPage = this.caclulatePage(total);
+		System.out.println(numberOfPage);
+		pageSetup.setPrintArea("A1:H" + numberOfPage * 55);
+	}
+	
+	private void setHeaderPage(WorksheetCollection worksheets,Cells cells, ComparingSalaryBonusReportData reportData){
+		Worksheet worksheet = worksheets.get(0);
+		createRange(cells, FIRST_ROW_INDEX, 1);
+		this.printTitleRow(worksheets, FIRST_ROW_INDEX, reportData);
+		
+		// Set header.
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd hh:mm");
+		worksheet.getPageSetup().setHeader(2,
+				"&\"Times New Roman,Bold\"&12&F" + dateFormat.format(new Date()) + "\r\n" + "&P" + " ページ");
+	}
 	/**
 	 * Prints the title row.
 	 *
@@ -206,10 +226,9 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			printTotalADepartment(worksheets, this.startRow, comparingQuery, i);
 
 			// print total C
-			createRange(cells, this.startRow + 1, 1);
-			printTotalCDepartment(worksheets, this.startRow + 1, comparingQuery, i);
-			this.startRow = this.startRow + 3;
-
+//			createRange(cells, this.startRow + 1, 1);
+//			printTotalCDepartment(worksheets, this.startRow + 1, comparingQuery, i);
+			this.startRow = this.startRow + 1;
 			rowIndex = this.startRow;
 		}
 
@@ -346,7 +365,14 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		this.setDataRow(cells, grandTotal, rowIndex);
 		for (int c : COLUMN_INDEX) {
 			Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);
-			setTitleStyle(cell);
+			Style style = cell.getStyle();
+			style.setForegroundColor(Color.fromArgb(197, 241, 247));
+			style.setPattern(BackgroundType.SOLID);
+			style.setBorder(BorderType.TOP_BORDER, CellBorderType.DOUBLE, Color.getGray());
+			style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
+			style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getGray());
+			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getGray());
+			cell.setStyle(style);
 		}
 	}
 
@@ -371,7 +397,7 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	 * Sets the title style.
 	 *
 	 * @param cell
-	 *            the new title style
+	 *  the new title style
 	 */
 	private void setTitleStyle(Cell cell) {
 		Style style = cell.getStyle();
@@ -414,6 +440,11 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		}
 		return numberOfPage;
 	}
+	/**
+	 * set Border Data Row of deparment and employee 
+	 * @param cells
+	 * @param startRow
+	 */
 	
 	private void setBorderDataRow(Cells cells, int startRow){
 		for (int c : COLUMN_INDEX) {
@@ -429,6 +460,13 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			cell.setStyle(style);
 		}
 	}
+	
+	/**
+	 * set Data Row of item code
+	 * @param cells
+	 * @param dataRow
+	 * @param rowIndex
+	 */
 	
 	private void setDataRow(Cells cells,DataRowComparingSalaryBonusDto  dataRow, int rowIndex){
 		// Print itemName Header
