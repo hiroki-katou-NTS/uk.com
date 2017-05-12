@@ -13,15 +13,13 @@ module qmm020.c.service {
     /**
      * Get list payment date processing.
      */
-    export function getEmployeeAllotHeaderList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
+    export function getEmployeeAllotHeaderList() {
+        var dfd = $.Deferred();
+        
         nts.uk.request.ajax(paths.getEmployAllotSettingHeaderList)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
+            .done((res) => { dfd.resolve(res); })
+            .fail((res) => { dfd.reject(res); });
+        
         return dfd.promise();
     }
 

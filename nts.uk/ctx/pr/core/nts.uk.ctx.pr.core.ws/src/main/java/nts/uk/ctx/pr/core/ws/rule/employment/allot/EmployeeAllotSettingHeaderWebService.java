@@ -21,16 +21,18 @@ public class EmployeeAllotSettingHeaderWebService {
 	@POST
 	@Path("findallemployeeallotheader")
 	public List<EmployeeAllotSettingHeaderDto> GetAllEmployeeAllotSettingHeader() {
-		List<EmployeeAllotSettingHeaderDto> test = this.find
-				.getEmployeeAllotSettingHeader(AppContexts.user().companyCode());
-		return test;
+		String companyCode = AppContexts.user().companyCode();
+
+		return this.find.getEmployeeAllotSettingHeader(companyCode);
 	}
 
 	@POST
 	@Path("findallemployeeallotheaderMax")
 	public Integer getAllotHMax() {
 		String companyCode = AppContexts.user().companyCode();
+
 		Optional<Integer> value = this.find.getAllotHMax(companyCode);
+
 		if (value.isPresent()) {
 			return value.get();
 		} else {

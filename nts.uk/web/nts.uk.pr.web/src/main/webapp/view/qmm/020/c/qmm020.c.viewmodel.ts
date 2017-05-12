@@ -3,7 +3,6 @@ module qmm020.c.viewmodel {
         gridColumns: Array<any> = [];
         model: KnockoutObservable<Model> = ko.observable(undefined);
 
-
         constructor() {
             let self = this;
             self.gridColumns = [
@@ -32,22 +31,22 @@ module qmm020.c.viewmodel {
         }
 
         start() {
-            let self = this;
+            let self = this, model = self.model();
 
             // clear all data for first load
-            self.model().ListItems.removeAll();
-            self.model().GridItems.removeAll();
+            model.ListItems.removeAll();
+            model.GridItems.removeAll();
 
             // get list history data
             service.getEmployeeAllotHeaderList().done(function(data: Array<IListModel>) {
                 if (data.length > 0) {
-                    data = _.orderBy(data, ['endYm'], ['desc']);
-                    data.map((m) => { self.model().ListItems.push(new ListModel(m)); });
+                    _.orderBy(data, ['endYm'], ['desc'])
+                        .map((m) => { model.ListItems.push(new ListModel(m)); });
                 }
                 // get itemMax of ListItem
                 service.getAllotEmployeeMaxDate().done(function(itemMax: number) {
-                    let maxDate: IListModel = _.find(self.model().ListItems(), function(obj) { return obj.endYm == itemMax; });
-                    self.model().ListItems().map((m) => {
+                    let maxDate: IListModel = _.find(model.ListItems(), function(obj) { return obj.endYm == itemMax; });
+                    model.ListItems().map((m) => {
                         if (m.historyId == maxDate.historyId) {
                             m.isMaxEnYm = true;
                         } else {
@@ -61,17 +60,18 @@ module qmm020.c.viewmodel {
 
             service.getEmployeeName().done(function(data: Array<IGridModel>) {
                 if (data && data.length > 0) {
-                    data.map((m) => { self.model().GridItems.push(new GridModel(m)); });
+                    data.map((m) => { model.GridItems.push(new GridModel(m)); });
+
+                    // selected first item in list box
+                    let first = model.ListItems()[0];
+                    if (first) {
+                        model.ListItemSelected(first.historyId);
+                        model.GridItems.valueHasMutated();
+                    }
                 }
             }).fail(function(res) {
                 alert(res);
             });
-
-            self.model().ListItems.valueHasMutated();
-            self.model().GridItems.valueHasMutated();
-
-            self.model().ListItemSelected.valueHasMutated();
-            self.model().GridItemSelected.valueHasMutated();
         }
 
         openJDialog() {

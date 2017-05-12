@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingHeaderRespository;
 
@@ -14,16 +13,14 @@ import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingH
 public class EmployeeAllotSettingHeaderFinder {
 	@Inject
 	private EmployeeAllotSettingHeaderRespository EmployeeAllotRepo;
-	
-	
+
 	public List<EmployeeAllotSettingHeaderDto> getEmployeeAllotSettingHeader(String companyCode) {
-		return this.EmployeeAllotRepo.findAll(companyCode).stream().map(m -> EmployeeAllotSettingHeaderDto.fromDomain(m))
-				.collect(Collectors.toList());
+		return this.EmployeeAllotRepo.findAll(companyCode).stream()
+				.map(m -> EmployeeAllotSettingHeaderDto.fromDomain(m)).collect(Collectors.toList());
 	}
-	
-	public Optional<Integer> getAllotHMax(String companyCode){
-//		String companyCode = AppContexts.user().companyCode();
+
+	public Optional<Integer> getAllotHMax(String companyCode) {
 		return this.EmployeeAllotRepo.findMaxEnd(companyCode);
 	}
-	
+
 }
