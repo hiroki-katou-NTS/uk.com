@@ -24,7 +24,7 @@ public class AttandanceItemWebService extends WebService {
 	 */
 	@POST
 	@Path("getPossibleAttendanceItem")
-	public List<AttendanceItemDto> getPossibleAttendanceItem(List<String> lstPossible) {
+	public List<AttendanceItemDto> getPossibleAttendanceItem(List<Integer> lstPossible) {
 		return this.find.getPossibleAttendanceItem(lstPossible);
 	}
 

@@ -7,7 +7,7 @@ module kdl021.a.viewmodel {
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         allItems: Array<ItemModel>;
-        selectedItems: Array<string>;
+        selectedItems: Array<number>;
 
         constructor() {
             var self = this;

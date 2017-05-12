@@ -16,7 +16,7 @@ public class AttendanceItemFinder {
 	// user contexts
 	String companyId = AppContexts.user().companyId();
 
-	public List<AttendanceItemDto> getPossibleAttendanceItem(List<String> listPossible) {
+	public List<AttendanceItemDto> getPossibleAttendanceItem(List<Integer> listPossible) {
 		List<AttendanceItemDto> lst = this.attendanceRepo
 				.getPossibleAttendanceItems(AppContexts.user().companyId(), listPossible).stream()
 				.map(c -> AttendanceItemDto.fromDomain(c)).collect(Collectors.toList());
