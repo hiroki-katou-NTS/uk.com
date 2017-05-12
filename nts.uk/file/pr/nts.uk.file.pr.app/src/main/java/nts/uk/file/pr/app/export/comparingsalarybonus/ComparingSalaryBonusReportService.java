@@ -205,16 +205,9 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 						.map(comparing -> {
 							DataRowComparingSalaryBonus dataRow = new DataRowComparingSalaryBonus();
 							dataRow.setItemName(comparing.getItemName());
-							if (comparing.getComparisonValue1().doubleValue() >= 0) {
-								dataRow.setMonth1(comparing.getComparisonValue1().doubleValue());
-
-							}
-							if (comparing.getComparisonValue2().doubleValue() >= 0) {
-								dataRow.setMonth2(comparing.getComparisonValue2().doubleValue());
-							}
-							if (comparing.getValueDifference().doubleValue() >= 0) {
-								dataRow.setDifferentSalary(comparing.getValueDifference().doubleValue());
-							}
+							dataRow.setMonth1(comparing.getComparisonValue1().doubleValue());
+							dataRow.setMonth2(comparing.getComparisonValue2().doubleValue());
+							dataRow.setDifferentSalary(comparing.getValueDifference().doubleValue());
 							dataRow.setRegistrationStatus1(comparing.getRegistrationStatus1());
 							dataRow.setRegistrationStatus2(comparing.getRegistrationStatus2());
 							dataRow.setReason(comparing.getReasonDifference());
