@@ -23,7 +23,7 @@
 				</div>				
 				<div style="float: left; margin-bottom: 20px;">
 					<div id="test">
-						<div style="width: 250px; margin-bottom: 15px;"
+						<div style="width: 250px; margin-bottom: 15px;" tabindex="1"
 							data-bind="ntsSearchBox: {comId: 'multi-list', 
 									items: items, 
 									selected: currentCodeList, 
@@ -34,7 +34,7 @@
 						</div>
 					</div>
 					<div>
-						<table id="multi-list"
+						<table id="multi-list" tabindex="2"
 							data-bind="ntsGridList: {
 										height: 400,
 										options: items,
@@ -50,8 +50,8 @@
 				<div id="process">
 					<div>
 						<hr></hr>
-						<button id="btnSetting" class="x-large proceed" data-bind="click: register">設定</button>
-						<button id="btnCancel" class="large" data-bind="click: close">キャンセル</button>
+						<button id="btnSetting" class="x-large proceed" data-bind="click: register" tabindex="3">設定</button>
+						<button id="btnCancel" class="large" data-bind="click: close" tabindex="4">キャンセル</button>
 					</div>
 				</div>
 

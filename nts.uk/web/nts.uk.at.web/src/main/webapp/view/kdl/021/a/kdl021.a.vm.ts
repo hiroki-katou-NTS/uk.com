@@ -13,8 +13,6 @@ module kdl021.a.viewmodel {
             self.isMulti = true;
             self.isMulti = nts.uk.ui.windows.getShared('Multiple');
             self.items = ko.observableArray([]);
-            //Add the fisrt Item
-            self.items.push(new ItemModel("", "選択なし"))；
             //header
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 70 },
@@ -32,6 +30,8 @@ module kdl021.a.viewmodel {
             self.posibleItems = nts.uk.ui.windows.getShared('AllAttendanceObj');
             //selected attendace items
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
+            //the fist item 
+            self.dataSoure.push(new ItemModel("", "選択なし"));
             //set source
             if(self.posibleItems.length >0){
                 service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<any>){
@@ -48,8 +48,13 @@ module kdl021.a.viewmodel {
         //event When click to 設定 ボタン
         register(){
             var self = this;
-            nts.uk.ui.windows.setShared('selectedChildAttendace',self.currentCodeList());
-            nts.uk.ui.windows.close();
+            if(self.currentCodeList().length ==0){
+                nts.uk.ui.dialog.alert("勤怠項目を選択してください。");
+            }else{
+                nts.uk.ui.windows.setShared('selectedChildAttendace',self.currentCodeList());
+                nts.uk.ui.windows.close();    
+            }
+            
         }
         //検索条件をクリアする
         clearClick(){
