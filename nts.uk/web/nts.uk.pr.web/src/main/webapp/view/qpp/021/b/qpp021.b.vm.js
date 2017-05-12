@@ -10,6 +10,7 @@ var nts;
                 (function (qpp021) {
                     var b;
                     (function (b) {
+                        var PaymentReportQueryDto = b.service.model.PaymentReportQueryDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -128,6 +129,21 @@ var nts;
                                     if (printTypeRandom == 3) {
                                         nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
                                     }
+                                };
+                                ScreenModel.prototype.collectDataQuery = function () {
+                                    var self = this;
+                                    var queryDto;
+                                    queryDto = new PaymentReportQueryDto();
+                                    queryDto.processingNo = +self.selectedCbCode();
+                                    queryDto.processingYM = 201703;
+                                    queryDto.selectPrintTypes = self.selectPrintTypeCode();
+                                    queryDto.specificationCodes = self.selectLineItemCodes();
+                                    queryDto.layoutItems = +self.selectPrintTypeListCode();
+                                    return queryDto;
+                                };
+                                ScreenModel.prototype.printPaymentData = function () {
+                                    var self = this;
+                                    b.service.paymentReportPrint(self.collectDataQuery());
                                 };
                                 return ScreenModel;
                             }());

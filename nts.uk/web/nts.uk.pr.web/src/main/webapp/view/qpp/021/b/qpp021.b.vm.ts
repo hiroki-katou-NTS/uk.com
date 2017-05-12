@@ -1,7 +1,8 @@
 module nts.uk.pr.view.qpp021.b {
-    
+
+    import PaymentReportQueryDto = service.model.PaymentReportQueryDto;
     export module viewmodel {
-        
+
         export class ScreenModel {
             stepList: Array<nts.uk.ui.NtsWizardStep>;
             stepSelected: KnockoutObservable<nts.uk.ui.NtsWizardStep>;
@@ -152,6 +153,24 @@ module nts.uk.pr.view.qpp021.b {
                     nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
                 }
             }
+
+            collectDataQuery(): PaymentReportQueryDto {
+                var self = this;
+                var queryDto: PaymentReportQueryDto;
+                queryDto = new PaymentReportQueryDto();
+                queryDto.processingNo = +self.selectedCbCode();
+                queryDto.processingYM = 201703;
+                queryDto.selectPrintTypes = self.selectPrintTypeCode();
+                queryDto.specificationCodes = self.selectLineItemCodes();
+                queryDto.layoutItems = +self.selectPrintTypeListCode();
+                return queryDto;
+            }
+
+            printPaymentData(): void {
+                var self = this;
+                service.paymentReportPrint(self.collectDataQuery());
+            }
+
         }
 
         class ComboBoxModel {

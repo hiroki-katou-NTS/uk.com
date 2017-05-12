@@ -35,10 +35,10 @@ module nts.uk.pr.view.qpp021.b {
                 selectPrintTypes: number;
 
                 /** The specification codes. */
-                specificationCodes: string[];
+                specificationCodes: number[];
 
                 /** The layout items. */
-                layoutItems: number[];
+                layoutItems: number;
             }
 
         }
