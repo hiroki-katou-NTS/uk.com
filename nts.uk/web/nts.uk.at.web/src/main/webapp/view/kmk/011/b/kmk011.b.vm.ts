@@ -32,7 +32,7 @@ module kmk011.b.viewmodel {
             self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'divReasonCode', width: 100  },
-                { headerText: '名称', key: 'divReasonContent', width: 150 }
+                { headerText: '理由', key: 'divReasonContent', width: 150 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.switchUSe3 = ko.observableArray([
@@ -199,18 +199,6 @@ module kmk011.b.viewmodel {
             return dfd.promise();
 
         }
-        /**
-         * check input: divergence reason code and divergence reason content
-         */
-//        checkInput(): boolean {
-//            var self = this;
-//            if (self.divTimeId() == '' || self.divReasonContent() == '') {
-//                alert("nhap day du thong tin");
-//                return false;
-//            } else {
-//                return true;
-//            }
-//        }
         closeDialog(){
              nts.uk.ui.windows.close();
         }
