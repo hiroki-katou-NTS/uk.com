@@ -7,7 +7,7 @@ module kdl021.a.viewmodel {
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         allItems: Array<ItemModel>;
-        selectedItems: Array<number>;
+        posibleItems: Array<number>;
 
         constructor() {
             var self = this;
@@ -20,57 +20,29 @@ module kdl021.a.viewmodel {
             //Add the fisrt Item
             self.items.push(new ItemModel("", "選択なし"))；
             
-            for (let i = 1; i <= 15; i++) {
-                let code = padZero(i.toString());
-                let name = "残業時間" + i;
-                //self.items.push(new ItemModel(code, name));
-                self.allItems.push(new ItemModel(code, name));
-            }
-            for(let item in self.items()){
-                //console.log(self.items);      
-            }
-            for (let i = 101; i <= 201; i++) {
-                let code: string = padZero(i.toString());
-                    self.selectedItems.push(i);
-            };
-            
-            service.getPossibleItem(self.selectedItems).done(function(lstItem: Array<service.model.DivergenceItem>){
-                //console.log(lstItem);
-                for (let i in lstItem) {
-                    self.items.push(new ItemModel(lstItem[i].divItemId.toString(), lstItem[i].divItemName.toString()));
-                };
-            })
              
-            
-            //let allAttendance : Array<any> = nts.uk.ui.windows.getShared('AllAttendanceObj');
-//            for(let i in allAttendance){
-//                self.items.push(new ItemModel(allAttendance[i].divItemId.toString(),allAttendance[i].divItemName.toString()));
-//                let key =  Object.keys(allAttendance[i])[1];
-//            };
-            
-            //debugger;
-            //nts.uk.ui.windows.getShared('SelectedAttendanceId', listIdSel, true);
-//            console.log(allAttendance);
-//            debugger;
-            //let returnVal : Array<any> = nts.uk.ui.windows.getShared('');
-            //console.log(self.allItems);
-            //console.log(self.selectedItems);
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 70 },
                 { headerText: '名称', prop: 'name', width: 230 }
             ]);
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray();
-            
+            //all possible attendance items
+            self.posibleItems = nts.uk.ui.windows.getShared('AllAttendanceObj');
+            //selected attendace items
+            self.currentCodeList(nts.uk.ui.windows.getShared('SelectedAttendanceId'));
+            //set source
+            service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<service.model.DivergenceItem>){
+                for (let i in lstItem) {
+                    self.items.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
+                };
+            })
         }
         //event When click to 設定 ボタン
         register(){
             var self = this;
-//            self.selectedItems.splice(1,1);
-//            console.log(self.selectedItems);
-//            self.currentCodeList(self.selectedIstems);
-            //console.log(self.currentCodeList());
-            nts.uk.ui.windows.setShare('selectedChildAttendace',self.currentCodeList(),true);
+            nts.uk.ui.windows.setShared('selectedChildAttendace',self.currentCodeList());
+            nts.uk.ui.windows.close();
         }
         //Close Dialog
         close(){

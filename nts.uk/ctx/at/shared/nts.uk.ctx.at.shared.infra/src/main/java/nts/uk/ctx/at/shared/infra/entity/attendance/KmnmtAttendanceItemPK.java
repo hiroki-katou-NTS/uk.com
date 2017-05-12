@@ -6,9 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +19,4 @@ public class KmnmtAttendanceItemPK implements Serializable{
 	/*勤怠項目ID*/
 	@Column(name = "ID")
 	public int 	attendanceItemId;
-
 }

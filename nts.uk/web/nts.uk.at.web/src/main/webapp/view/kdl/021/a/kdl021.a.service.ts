@@ -6,7 +6,6 @@ module kdl021.a.service {
     * get all divergence item id(id co the chon)
     */
     export function getPossibleItem(arrPossible: Array<number>): JQueryPromise<Array<model.AttendanceItem>> {
-        debugger;
         return nts.uk.request.ajax("at", paths.getPossibleAttendanceItem , arrPossible);
     }
     export module model {
