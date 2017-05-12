@@ -23,7 +23,10 @@ public class PaymentReportQuery {
 	/** The processing no. */
 	private int processingNo;
 	
-	/** The select print types. * (1,2)*/ 
+	/** The processing YM. */
+	private int processingYM;
+	
+	/** The select print types. */ 
 	private int selectPrintTypes;
 	
 	/** The specification codes. */
