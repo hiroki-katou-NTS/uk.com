@@ -175,6 +175,11 @@ module qpp011.d {
             //end set tree data
             let D_LST_001 = $("#D_LST_001");
             self.D_LST_001_selectedValue.subscribe(function(newValue) {
+                // clear error for all input
+                self.clearError();
+                // clean all input
+                self.cleanInput();
+                
                 let selectedRows = _.map(D_LST_001.igTreeGridSelection("selectedRows"), function(row) {
                     if (row != undefined)
                         return row.id;
@@ -240,7 +245,7 @@ module qpp011.d {
                         {
                             name: "Selection",
                             mode: "row",
-                            activeRowChanged: function(evt: any, ui: any) {
+                            rowSelectionChanged: function(evt: any, ui: any) {
                                 var selectedRows: any = ui.row;
                                 selectedValue([selectedRows.id]);
                             }
@@ -310,19 +315,42 @@ module qpp011.d {
                 })
             }
         }
+        
+        /**
+         * Clean all input
+         */
+        cleanInput(): void {
+            var self = this;
+            self.taxPayRollMoney(null);
+            self.taxBonusMoney(null)
+            self.taxOverDueMoney(null);
+            self.taxDemandChargeMoyney(null);
+            self.address(null);
+            self.headcount(null);
+            self.retirementBonusAmout(null);
+            self.cityTaxMoney(null);
+            self.prefectureTaxMoney(null);
+            self.date_D_INP_007(new Date());
+        }
+        
         clearError(): void {
-            $('#D_INP_002').ntsError('clear');
-            $('#D_INP_003').ntsError('clear');
-            $('#D_INP_004').ntsError('clear');
-            $('#D_INP_005').ntsError('clear');
+            $('#salary_portion').ntsError('clear');
+            $('#retirement_income').ntsError('clear');
+            $('#tax_over_due_money').ntsError('clear');
+            $('#tax_demand_charge_moyney').ntsError('clear');
             $('#D_INP_006').ntsError('clear');
-            $('#D_INP_008').ntsError('clear');
-            $('#D_INP_009').ntsError('clear');
-            $('#D_INP_0010').ntsError('clear');
-            $('#D_INP_0011').ntsError('clear');
+            $('#head_count').ntsError('clear');
+            $('#retirement_bonus_amout').ntsError('clear');
+            $('#city_tax_money').ntsError('clear');
+            $('#prefecture_tax_money').ntsError('clear');
         };
-        submitDialog() {
+        
+        /**
+         * Event submit form D_BTN_001
+         */
+        submitDialog(): void {
             let self = this;
+            
             let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
             if (self.D_LST_001_selectedResiTaxCode()) {
                 service.findresidentialTax(self.D_LST_001_selectedResiTaxCode(), TargetDate).done(function(data: any) {
@@ -332,11 +360,15 @@ module qpp011.d {
                         self.CreateResidentialTax(self.D_LST_001_selectedResiTaxCode());
                     }
                 }).fail(function(res) {
-                    alert("対象データがありません。");
+                    nts.uk.ui.dialog.alert("対象データがありません。");
                 })
             }
         }
-        closeDialog() {
+        
+        /**
+         * Event close dialog D_BTN_002
+         */
+        closeDialog(): void {
             nts.uk.ui.windows.close();
         }
     }
