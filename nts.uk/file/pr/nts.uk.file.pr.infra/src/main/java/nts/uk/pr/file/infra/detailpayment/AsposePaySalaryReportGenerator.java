@@ -315,7 +315,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                 header = "【控除項目】";
                 break;
             case Attendance :
-                header = "";
+                header = "【勤怠項目】";
                 break;
             case ArticleOthers :
                 header = "【記事項目】";
