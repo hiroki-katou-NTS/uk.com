@@ -25,9 +25,14 @@ module nts.uk.com.view.ccg015.a {
                     if (selectedTopPageCode) {
                         service.loadDetailTopPage(selectedTopPageCode).done(function(data: TopPageDto) {
                             self.loadTopPageItemDetail(data);
+                            $('.save-error').ntsError('clear');
                         });
                         self.isNewMode(false);
                         $("#inp_name").focus();
+                    }
+                    else {
+                        self.isNewMode(false);
+                        self.newTopPage();
                     }
                 });
                 self.languageListOption = ko.observableArray([
@@ -188,6 +193,7 @@ module nts.uk.com.view.ccg015.a {
                 self.isNewMode(true);
                 self.toppageSelectedCode("");
                 $("#inp_code").focus();
+                nts.uk.ui.errors.clearAll()
             }
 
             private removeTopPage() {
