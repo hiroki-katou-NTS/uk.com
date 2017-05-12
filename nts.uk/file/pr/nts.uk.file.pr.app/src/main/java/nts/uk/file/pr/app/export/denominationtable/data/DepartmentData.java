@@ -24,6 +24,10 @@ import lombok.Setter;
 /* (non-Javadoc)
  * @see java.lang.Object#toString()
  */
+
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
 @Builder
 
 /**
@@ -43,6 +47,12 @@ import lombok.Setter;
  *
  * @return the accumulated payment
  */
+
+/**
+ * Gets the number of emp.
+ *
+ * @return the number of emp
+ */
 @Getter
 
 /**
@@ -61,6 +71,12 @@ import lombok.Setter;
  * Sets the accumulated payment.
  *
  * @param accumulatedPayment the new accumulated payment
+ */
+
+/**
+ * Sets the number of emp.
+ *
+ * @param numberOfEmp the new number of emp
  */
 @Setter
 public class DepartmentData {

@@ -34,7 +34,6 @@ public class QPP009WebService extends WebService {
 	@POST
 	@Path("generate")
 	public ExportServiceResult generate(DenoTableReportQuery query) {
-	// TODO:
 		return this.exportService.start(query);
 	}
 

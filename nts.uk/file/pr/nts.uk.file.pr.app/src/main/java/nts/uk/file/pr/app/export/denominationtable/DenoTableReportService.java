@@ -26,7 +26,7 @@ import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 /**
- * The Class SalaryChartReportService.
+ * The Class DenoTableReportService.
  */
 @Stateless
 public class DenoTableReportService extends ExportService<DenoTableReportQuery> {
@@ -39,6 +39,7 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 	@Inject
 	private DenoTableRepository repository;
 	
+	/** The Constant TWO_THOUSANDS. */
 	private static final int TWO_THOUSANDS = 2000;
 	
 	/** The japanese provider. */
@@ -55,7 +56,11 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 	protected void handle(ExportServiceContext<DenoTableReportQuery> context) {
 
 		// GET QUERY
-		DenoTableReportQuery query = context.getQuery();	
+		DenoTableReportQuery query = context.getQuery();
+
+		// Validate.
+		this.validateData(query);
+		
 		String[] personIds = { "99900000-0000-0000-0000-000000000001", "99900000-0000-0000-0000-000000000002",
 				"99900000-0000-0000-0000-000000000003", "99900000-0000-0000-0000-000000000004",
 				"99900000-0000-0000-0000-000000000005", "99900000-0000-0000-0000-000000000006",
@@ -63,7 +68,7 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 				"99900000-0000-0000-0000-000000000009", "99900000-0000-0000-0000-000000000010"};
 			query.setPIdList(Arrays.asList(personIds));
 
-		// QUERY DATA
+		// GET ITEM DATA LIST
 		List<EmployeeData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
 		
 		// DIVISION DENOMINATION
@@ -72,8 +77,9 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 		});
 
 		//  CONVERT YEARMONTH JAPANESE 
-        StringBuilder japanYM = new StringBuilder("【処理年月：");
-        japanYM.append(convertYearMonthJP(query.getYearMonth()));
+		StringBuilder japanYM = new StringBuilder("【処理年月：");
+		japanYM.append(convertYearMonthJP(query.getYearMonth()));
+
 		// CREATE HEADER OBJECT
 		DenoTableHeaderData headerData = DenoTableHeaderData.builder()
 				.departmentInfo("【部門： A部門～C部門（3部門）】")
@@ -92,19 +98,48 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 		this.generator.generate(context.getGeneratorContext(), dataSource, query);
 	}
 	
+	private void validateData(DenoTableReportQuery query) {
+		if (query.getYearMonth() == null) {
+			throw new RuntimeException("Target Year is Empty");
+		}
+		if (query.getYearMonth() <= 190001 || query.getYearMonth() >= 999912) {
+			throw new RuntimeException("Target Year is not in range");
+		}
+		if (query.getIsPrintDepHierarchy() && query.getSelectedLevels().isEmpty()) {
+			throw new RuntimeException("1~9階層 が選択されていません。");
+		}
+		if (query.getIsPrintDepHierarchy() && query.getSelectedLevels().size() > 5) {
+			throw new RuntimeException("部門階層が正しく指定されていません。");
+		}
+		if (!query.getIsPrintDepHierarchy() && query.getSelectedBreakPageCode() == 4) {
+			throw new RuntimeException("設定が正しくありません。");
+		}
+		if (query.getIsPrintDepHierarchy() && query.getSelectedBreakPageCode() == 4
+				&& query.getSelectedLevels().indexOf(query.getSelectedBreakPageHierarchyCode()) < 0) {
+			throw new RuntimeException("設定が正しくありません。");
+		}
+	}
+	
+	/**
+	 * Convert year month JP.
+	 *
+	 * @param yearMonth the year month
+	 * @return the string
+	 */
 	private String convertYearMonthJP(Integer yearMonth) {
-        String firstDay = "01";
-        String tmpDate = yearMonth.toString().concat(firstDay);
-        String dateFormat = "yyyyMMdd";
-        GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
-        JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
-        return japaneseDate.era() + japaneseDate.year() + "年 " + japaneseDate.month() + "月度給与】";
-    }
+		String firstDay = "01";
+		String tmpDate = yearMonth.toString().concat(firstDay);
+		String dateFormat = "yyyyMMdd";
+		GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
+		JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
+		return japaneseDate.era() + japaneseDate.year() + "年 " + japaneseDate.month() + "月度給与】";
+	}
 	
 	/**
 	 * Division deno.
 	 *
 	 * @param paymentAmount the payment amount
+	 * @param query the query
 	 * @return the map
 	 */
 	private Map<Denomination, Long> divisionDeno(Double paymentAmount, DenoTableReportQuery query) {

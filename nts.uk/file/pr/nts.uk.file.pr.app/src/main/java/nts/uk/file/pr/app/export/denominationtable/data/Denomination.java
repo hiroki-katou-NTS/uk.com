@@ -62,10 +62,10 @@ public enum Denomination {
 	}
 	
 	/**
- * Gets the value.
- *
- * @return the value
- */
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
 	int getvalue(){
 		return value;
 	}

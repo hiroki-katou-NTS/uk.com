@@ -26,28 +26,66 @@ import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 
 
 /**
- * The Class JpaSalaryChartReportRepository.
+ * The Class JpaDenoTableReportRepository.
  */
 @Stateless
 public class JpaDenoTableReportRepository extends JpaRepository implements DenoTableRepository {
+	
+	/** The Constant PAY_BONUS_ATR. */
 	private static final int PAY_BONUS_ATR = 0;
+	
+	/** The Constant CTR_ATR_3. */
 	private static final int CTR_ATR_3 = 3;
+	
+	/** The Constant ONE_THOUSAND. */
 	private static final int ONE_THOUSAND = 1000;
+	
+	/** The Constant ONE. */
 	private static final int ONE = 1;
+	
+	/** The Constant VALUE_0. */
 	private static final int VALUE_0 = 0;
+	
+	/** The Constant ITEM_CD_F304. */
 	private static final String ITEM_CD_F304 = "F304";
+	
+	/** The Constant ITEM_CD_F305. */
 	private static final String ITEM_CD_F305 = "F305";
+	
+	/** The Constant ITEM_CD_F306. */
 	private static final String ITEM_CD_F306 = "F306";
+	
+	/** The Constant ITEM_CD_F307. */
 	private static final String ITEM_CD_F307 = "F307";
+	
+	/** The Constant ITEM_CD_F308. */
 	private static final String ITEM_CD_F308 = "F308";
+	
+	/** The Constant EMP_CODE_INDEX. */
 	private static final int EMP_CODE_INDEX = 1;
+	
+	/** The Constant EMP_NAME_INDEX. */
 	private static final int EMP_NAME_INDEX = 2;
+	
+	/** The Constant DEP_CODE_INDEX. */
 	private static final int DEP_CODE_INDEX = 3;
+	
+	/** The Constant DEP_NAME_INDEX. */
 	private static final int DEP_NAME_INDEX = 4;
+	
+	/** The Constant DEP_PATH_INDEX. */
 	private static final int DEP_PATH_INDEX = 5;
+	
+	/** The Constant PAYMENT_AMOUNT_INDEX. */
 	private static final int PAYMENT_AMOUNT_INDEX = 6;
+	
+	/** The Constant EMP_PER_DEP. */
 	private static final int EMP_PER_DEP = 7;
+	
+	/** The Constant LETTERS_PER_LEVEL_PATH. */
 	private static final int LETTERS_PER_LEVEL_PATH = 3;
+	
+	/** The Constant PAYMENT_HEADER_QUERY. */
 	private static final String PAYMENT_HEADER_QUERY = "SELECT h "
 			+ "FROM QstdtPaymentHeader h "
 			+ "WHERE h.qstdtPaymentHeaderPK.companyCode = :CCD "
@@ -55,6 +93,7 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 			+ "AND h.qstdtPaymentHeaderPK.processingYM = :ProcessingYM "
 			+ "AND h.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR ";
 
+	/** The Constant BANK_ACC_JOIN_PAYMENT_DETAIL_QUERY. */
 	private static final String BANK_ACC_JOIN_PAYMENT_DETAIL_QUERY = "SELECT ba, pd "
 			+ "FROM PbamtPersonBankAccount ba, "
 			+ "QstdtPaymentDetail pd "
@@ -83,7 +122,8 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F308)) "
 			+ "";
 	
-	private static final String QUERY_STRING = "SELECT pb.pid, pc.scd, pb.nameB, "
+	/** The Constant QUERY_STRING. */
+	private static final String GET_ITEM_DATA_QUERY = "SELECT pb.pid, pc.scd, pb.nameB, "
 			+ "pdr.depcd, d.depName, "
 			+ "d.hierarchyId, SUM(pd.value), COUNT(pdr.pogmtPersonDepRglPK.pid)  "
 			+ "FROM PbsmtPersonBase pb "
@@ -125,7 +165,7 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 	public List<EmployeeData> getItems(String companyCode, DenoTableReportQuery query) {
 		List<Object[]> paymentHeaderResult = this.getPaymentHeaderResult(companyCode, query);
 		List<EmployeeData> masterResultList;
-		// Check if Result List is Empty
+		// CHECK IF RESULT LIST IS EMPTY
 		if (CollectionUtil.isEmpty(paymentHeaderResult)) {
 			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
@@ -145,6 +185,13 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 		return masterResultList;
 	}
 	
+	/**
+	 * Gets the payment header result.
+	 *
+	 * @param companyCode the company code
+	 * @param query the query
+	 * @return the payment header result
+	 */
 	@SuppressWarnings("unchecked")
 	private List<Object[]> getPaymentHeaderResult(String companyCode, DenoTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
@@ -152,13 +199,20 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 		sqlQuery.setParameter("CCD", companyCode);
 		sqlQuery.setParameter("ProcessingYM", query.getYearMonth());
 		sqlQuery.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR);
-		// Get Result List
+		// GET RESULT LIST
 		List<Object[]> resultList = new ArrayList<>();
 		CollectionUtil.split(query.getPIdList(), ONE_THOUSAND,
 				subList -> resultList.addAll(sqlQuery.setParameter("PIDs", subList).getResultList()));
 		return resultList;
 	}
 	
+	/**
+	 * Gets the checking at print rss.
+	 *
+	 * @param companyCode the company code
+	 * @param query the query
+	 * @return the checking at print rss
+	 */
 	@SuppressWarnings("unchecked")
 	private List<Object[]> getCheckingAtPrintRss(String companyCode, DenoTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
@@ -174,7 +228,7 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 		sqlQuery.setParameter("ITEM_CD_F306", ITEM_CD_F306);
 		sqlQuery.setParameter("ITEM_CD_F307", ITEM_CD_F307);
 		sqlQuery.setParameter("ITEM_CD_F308", ITEM_CD_F308);
-		// Get Result List
+		// GET RESULT LIST
 		List<Object[]> resultList = new ArrayList<>();
 		CollectionUtil.split(query.getPIdList(), ONE_THOUSAND,
 				subList -> resultList.addAll(sqlQuery.setParameter("PIDs", subList).getResultList()));
@@ -182,10 +236,17 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 	}
 
 	
+	/**
+	 * Gets the master result list.
+	 *
+	 * @param companyCode the company code
+	 * @param query the query
+	 * @return the master result list
+	 */
 	@SuppressWarnings("unchecked")
 	private List<EmployeeData> getMasterResultList(String companyCode, DenoTableReportQuery query) {
 		EntityManager em = this.getEntityManager();
-		Query sqlQuery = em.createQuery(QUERY_STRING);
+		Query sqlQuery = em.createQuery(GET_ITEM_DATA_QUERY);
 		sqlQuery.setParameter("CCD", companyCode);
 		sqlQuery.setParameter("PAY_BONUS_ATR", PAY_BONUS_ATR);
 		sqlQuery.setParameter("ProcessingYM", query.getYearMonth());
@@ -200,7 +261,7 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 		sqlQuery.setParameter("ITEM_CD_F308", ITEM_CD_F308);
 		sqlQuery.setParameter("ONE", ONE);
 		
-		// Get Result List
+		// GET RESULT LIST
 		List<Object[]> resultList = new ArrayList<>();
 		CollectionUtil.split(query.getPIdList(), ONE_THOUSAND,
 				subList -> resultList.addAll(sqlQuery.setParameter("PIDs", subList).getResultList()));
@@ -208,7 +269,7 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 		if (CollectionUtil.isEmpty(resultList)) {
 			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
-		// Convert To EmployeeData List
+		// CONVERT TO EMPLOYEE DATA LIST
 		List<EmployeeData> empList = new ArrayList<>();
 		Iterator<Object[]> itemItr = resultList.iterator();
 		while (itemItr.hasNext()) {

@@ -14,8 +14,12 @@ import lombok.Setter;
 
 
 /**
- * The Class SalaryChartDataSource.
+ * The Class DenominationTableData.
  */
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
+
 /* (non-Javadoc)
  * @see java.lang.Object#toString()
  */
@@ -39,12 +43,24 @@ import lombok.Setter;
  * Gets the employee list.
  *
  * @return the employee list */
+
+/**
+ * Gets the employee list.
+ *
+ * @return the employee list
+ */
 @Getter
 
 /**
  * Sets the salary chart item data.
  *
  * @param salaryChartItemData the new salary chart item data
+ */
+
+/**
+ * Sets the employee list.
+ *
+ * @param employeeList the new employee list
  */
 
 /**

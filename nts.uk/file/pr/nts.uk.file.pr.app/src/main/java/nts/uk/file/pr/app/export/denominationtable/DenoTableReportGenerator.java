@@ -9,7 +9,7 @@ import nts.uk.file.pr.app.export.denominationtable.data.DenominationTableData;
 import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 
 /**
- * The Interface SalaryChartReportGenerator.
+ * The Interface DenoTableReportGenerator.
  */
 public interface DenoTableReportGenerator {
 

@@ -9,6 +9,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 
+/**
+ * The Class DenoTableHeaderData.
+ */
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
+
 /* (non-Javadoc)
  * @see java.lang.Object#toString()
  */
@@ -19,6 +26,12 @@ import lombok.Setter;
  *
  * @return the emp type
  */
+
+/**
+ * Gets the category info.
+ *
+ * @return the category info
+ */
 @Getter
 
 /**
@@ -26,19 +39,25 @@ import lombok.Setter;
  *
  * @param empType the new emp type
  */
+
+/**
+ * Sets the category info.
+ *
+ * @param categoryInfo the new category info
+ */
 @Setter
 public class DenoTableHeaderData {
 	
-	/** The date. */
+	/** The target year month. */
 	private String targetYearMonth;
 	
-	/** The department. */
+	/** The department info. */
 	private String departmentInfo;
 	
-	/** The position. */
+	/** The position info. */
 	private String positionInfo;
 	
-	/** The emp type. */
+	/** The category info. */
 	private String categoryInfo;
 	
 

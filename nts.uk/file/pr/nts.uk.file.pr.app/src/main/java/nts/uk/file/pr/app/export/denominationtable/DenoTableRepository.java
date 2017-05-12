@@ -11,14 +11,15 @@ import nts.uk.file.pr.app.export.denominationtable.query.DenoTableReportQuery;
 
 
 /**
- * The Interface SalarychartRepository.
+ * The Interface DenoTableRepository.
  */
 public interface DenoTableRepository {
 
 	/**
 	 * Gets the items.
 	 *
-	 * @param code the code
+	 * @param companyCode the company code
+	 * @param query the query
 	 * @return the items
 	 */
 	List<EmployeeData> getItems(String companyCode, DenoTableReportQuery query);

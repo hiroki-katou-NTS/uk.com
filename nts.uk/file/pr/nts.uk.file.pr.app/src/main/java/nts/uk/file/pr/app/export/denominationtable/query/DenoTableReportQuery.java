@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class SalaryChartReportQuery.
+ * The Class DenoTableReportQuery.
  */
 
 /**
@@ -36,7 +36,18 @@ import lombok.Setter;
  * @see java.lang.Object#toString()
  */
 
+/**
+ * Gets the checks if is break page by accumulated.
+ *
+ * @return the checks if is break page by accumulated
+ */
 @Getter
+
+/**
+ * Sets the checks if is break page by accumulated.
+ *
+ * @param isBreakPageByAccumulated the new checks if is break page by accumulated
+ */
 
 /**
  * Sets the checks if is break page by accumulated.
@@ -46,10 +57,10 @@ import lombok.Setter;
 @Setter
 public class DenoTableReportQuery {
 
-	/** The target year. */
+	/** The year month. */
 	private Integer yearMonth;
 	
-	/** The emp id list. */
+	/** The p id list. */
 	private List<String> pIdList;
 	
 	/** The selected division. */

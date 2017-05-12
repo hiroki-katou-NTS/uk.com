@@ -115,17 +115,17 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			 this.createContext(TEMPLATE_FILE);
 			 Workbook workbook = reportContext.getWorkbook();
 
-			// create worksheet and Formatting ...
+			// CREATE WORKSHEET AND FORMARTTING
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
 			Cells cells = worksheet.getCells();
 			
-			// Set header.
+			// SET HEADER
 			worksheet.getPageSetup().setHeader(2,
 					"&\"IPAPGothic\"&13 " + GeneralDate.today().toString() + "\r\n&P ページ");
 			reportContext.getDesigner().setDataSource("Header", reportData.getSalaryChartHeader());
 			
-			// Initial Variables
+			// INITIAL VARIABLES
 			PrintProcess printProcess = new PrintProcess();
 			printProcess.cells = cells;
 			printProcess.query = query;
@@ -135,7 +135,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			printProcess.tempAccumulate = 0;
 			printProcess.members = 0;
 			
-			// Fill Data
+			// FILL DATA
 			this.printData(printProcess, empList);
 			
 			reportContext.getDesigner().setWorkbook(workbook);
@@ -154,7 +154,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 	 * @param empList the emp list
 	 */
 	private void printData(PrintProcess printProcess, List<EmployeeData> empList) {
-		// Temp Gross Vaviables
+		// INITIAL TEMPLE GROSS VARIABLES
 		Map<Denomination, Long> grossTotalDenomination = new HashMap<>();
 		MutableDouble grossTotalAccumulate = new MutableDouble(0);
 		MutableInt grossTotalEmp = new MutableInt(0);
