@@ -1,8 +1,17 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KMLMT_PERSON_COST_CALC")
+@Table(name="KMLMT_COST_CALC_SET")
 public class KmlmtPersonCostCalculation extends UkJpaEntity{
 	@EmbeddedId
 	public KmlmpPersonCostCalculationPK kmlmpPersonCostCalculationPK;
@@ -27,7 +36,7 @@ public class KmlmtPersonCostCalculation extends UkJpaEntity{
 	@Column(name="MEMO")
 	public String memo;
 	
-	@Column(name="UNIT_PRICE_ATR")
+	@Column(name="UNITPRICE_ATR")
 	public int unitPrice;
 	
 	@Column(name="START_DATE")
@@ -35,6 +44,10 @@ public class KmlmtPersonCostCalculation extends UkJpaEntity{
 	
 	@Column(name="END_DATE")
 	public GeneralDate endDate;
+	
+	@OneToMany(targetEntity=KmlstPremiumSet.class, cascade = CascadeType.ALL, mappedBy = "personCost")
+	@JoinTable(name = "KMLST_PREMIUM_SET")
+	public List<KmlstPremiumSet> premiumSets;
 
 	@Override
 	protected Object getKey() {

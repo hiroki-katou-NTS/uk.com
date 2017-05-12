@@ -1,58 +1,94 @@
 module kml001.a.viewmodel {
+    import servicebase = kml001.shr.servicebase;
     import vmbase = kml001.shr.vmbase;
     export class ScreenModel {
-        gridPersonCostList: KnockoutObservableArray<GridPersonCostCalculation>;
-        currentGridPersonCost: KnockoutObservable<GridPersonCostCalculation>;
-        personCostList: KnockoutObservableArray<PersonCostCalculation>;
-        currentPersonCost: KnockoutObservable<PersonCostCalculation>;
-        extraTimeItemList: KnockoutObservableArray<ExtraTimeItem>;
-        premiumSettingList: KnockoutObservableArray<PremiumSetting>;
+        gridPersonCostList: KnockoutObservableArray<vmbase.GridPersonCostCalculation>;
+        currentGridPersonCost: KnockoutObservable<vmbase.GridPersonCostCalculation>;
+        personCostList: KnockoutObservableArray<vmbase.PersonCostCalculation>;
+        currentPersonCost: KnockoutObservable<vmbase.PersonCostCalculation>;
+        isInsert: KnockoutObservable<Boolean>;
         constructor() {
             var self = this;
-            self.personCostList = ko.observableArray([
-//                new PersonCostCalculation('','','0',0,"2014/3/3","2015/3/2"),
-//                new PersonCostCalculation('','','1',1,"2015/3/3","2016/3/2"),
-//                new PersonCostCalculation('','','2',2,"2016/3/3","2017/3/2"),
-//                new PersonCostCalculation('','','3',3,"2017/3/3","2018/3/2"),
-//                new PersonCostCalculation('','','4',4,"2018/3/3","9999/12/31")
-            ]);
-            self.currentPersonCost = ko.observable((_.first(self.personCostList())==null)?new PersonCostCalculation('','','',0,"",""):_.first(self.personCostList()));
+            self.personCostList = ko.observableArray([]);
+            self.currentPersonCost = ko.observable(new vmbase.PersonCostCalculation('','','',0,"","9999/12/31",[]));
             self.gridPersonCostList = ko.observableArray([]);
-            self.personCostList().forEach(function(item) { self.gridPersonCostList.push({dateRange: item.startDate()+" ~ "+item.endDate()})});
-            self.currentGridPersonCost = ko.observable(self.currentPersonCost().startDate()+" ~ "+self.currentPersonCost().endDate()); 
-            self.currentGridPersonCost.subscribe(function(value){
-                self.currentPersonCost(self.getPersonCostCalculationInfo(_.split(value, ' ', 1)[0]));
-            });
-            self.extraTimeItemList = ko.observableArray([
-                new ExtraTimeItem('','1','Item1','0001',1),
-                new ExtraTimeItem('','2','Item2','0002',1),
-                new ExtraTimeItem('','3','Item3','0003',1),
-                new ExtraTimeItem('','4','Item4','0004',0),
-                new ExtraTimeItem('','5','Item5','0005',1),
-                new ExtraTimeItem('','6','Item6','0006',1),
-                new ExtraTimeItem('','7','Item7','0007',0),
-                new ExtraTimeItem('','8','Item8','0008',0),
-                new ExtraTimeItem('','9','Item9','0009',1),
-                new ExtraTimeItem('','10','Item10','0010',0)
-            ]);
-            self.premiumSettingList = ko.observableArray([
-                new PremiumSetting('1',15,['01','02','03']),
-                new PremiumSetting('2',15,['11','12','13']),
-                new PremiumSetting('3',15,['21','22','23']),
-                new PremiumSetting('4',15,['31','32','33']),
-                new PremiumSetting('5',15,['41','42','43']),
-                new PremiumSetting('6',15,['51','52','53']),
-                new PremiumSetting('7',15,['61','62','63']),
-                new PremiumSetting('8',15,['71','72','73']),
-                new PremiumSetting('9',15,['81','82','83']),
-                new PremiumSetting('10',15,['91','92','93'])
-            ]);
+            self.currentGridPersonCost = ko.observable(); 
+            self.isInsert = ko.observable(true);
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            servicebase.personCostCalculationSelect()
+                .done(function(res: Array<any>) {
+                    if(res.length){
+                        self.loadData(res);
+                        self.currentGridPersonCost.subscribe(function(value){
+                            self.currentPersonCost(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, ' ', 1)[0]; }));
+                            $("#startDateInput").ntsError('clear');
+                            self.isInsert(false);
+                        });
+                        self.currentPersonCost().startDate.subscribe(function(value){
+                            if(self.isInsert()) {
+                                if(vmbase.ProcessHandler.validateDateInput(self.currentPersonCost().startDate(),_.last(self.personCostList()).startDate())) {
+                                    $("#startDateInput").ntsError('set', "ERR");    
+                                } else { $("#startDateInput").ntsError('clear'); }      
+                            }
+                        });
+                        self.isInsert(false);
+                    }
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
             return dfd.promise();
+        }
+        
+        loadData(res: Array<any>){
+            var self = this;
+            res.forEach(function(personCostCalc){
+                self.personCostList.push(vmbase.ProcessHandler.fromObjectPerconCost(personCostCalc));
+            });
+            self.currentPersonCost((_.first(self.personCostList())==null)?new vmbase.PersonCostCalculation('','','',0,"","9999/12/31",[]):_.first(self.personCostList()));
+            self.personCostList().forEach(function(item) { self.gridPersonCostList.push({dateRange: item.startDate()+" ~ "+item.endDate()})});
+            self.currentGridPersonCost(self.currentPersonCost().startDate()+" ~ "+self.currentPersonCost().endDate()); 
+        }
+        
+        saveData() {
+            var self = this;
+            if(self.isInsert()){
+                let lastStartDate;
+                if(_.size(self.personCostList())==0) {
+                    lastStartDate = "1900/01/01"
+                }else {
+                    lastStartDate = _.last(self.personCostList()).startDate();         
+                } 
+                if((self.currentPersonCost().startDate()!="")||!vmbase.ProcessHandler.validateDateInput(self.currentPersonCost().startDate(),lastStartDate)){
+                    servicebase.personCostCalculationInsert(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
+                        .done(function(res: Array<any>) {
+                            servicebase.personCostCalculationSelect()
+                                .done(function(res: Array<any>) {
+                                    self.personCostList.removeAll();
+                                    self.gridPersonCostList.removeAll();
+                                    self.loadData(res);
+                                }).fail(function(res) {
+                            
+                                });
+                        }).fail(function(res) {
+                            
+                        });
+                }
+            } else {
+                servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
+                        .done(function(res: Array<any>) {
+                            self.personCostList.removeAll();
+                            self.gridPersonCostList.removeAll();
+                            self.loadData(res);
+                        }).fail(function(res) {
+                            
+                        });    
+            }
         }
         
         /**
@@ -60,9 +96,29 @@ module kml001.a.viewmodel {
          */
         premiumDialog() {
             var self = this;
-            nts.uk.ui.windows.setShared('extraTimeItemList', self.extraTimeItemList());
+            nts.uk.ui.windows.setShared('isInsert', self.isInsert());
             nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-                        
+                if(nts.uk.ui.windows.getShared('updatePremiumSeting')==true){
+                    servicebase.personCostCalculationSelect()
+                        .done(function(res: Array<any>) {
+                            let processItem;
+                            if(self.isInsert()){
+                                processItem = self.currentPersonCost();
+                            }
+                            self.personCostList.removeAll();
+                            self.gridPersonCostList.removeAll();
+                            self.loadData(res);
+                            if(self.isInsert()){
+                                self.currentPersonCost(processItem);
+                                let lastItem = _.last(self.personCostList());
+                                self.currentPersonCost().premiumSets().forEach(function(item, index){
+                                    item.useAtr(lastItem.premiumSets()[index].useAtr());    
+                                });
+                            }
+                        }).fail(function(res) {
+                            
+                        });
+                }
             });
         }
         
@@ -76,24 +132,38 @@ module kml001.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/kml/001/c/index.xhtml", { title: "履歴の追加", dialogClass: "no-close" }).onClosed(function() {
                 let newStartDate: string = nts.uk.ui.windows.getShared('newStartDate');
                 if(newStartDate!=null) {
-                    if(lastestHistory!=null) {
-                        lastestHistory.endDate(vmbase.DateTimeProcess.getOneDayBefore(newStartDate));
-                        self.gridPersonCostList.replace(_.last(self.gridPersonCostList()),{dateRange: lastestHistory.startDate()+" ~ "+lastestHistory.endDate()});
-                    }
                     let copyDataFlag: boolean = nts.uk.ui.windows.getShared('copyDataFlag'); 
                     if(!copyDataFlag) {
-                        self.personCostList.push(new PersonCostCalculation('','','',0,newStartDate,"9999/12/31"));   
+                        if(_.size(self.personCostList())==0){
+                            self.currentPersonCost(new vmbase.PersonCostCalculation('','','',0,newStartDate,"9999/12/31",[]));
+                            let newPremiumSets = [];
+                            for (let i = 1; i <= 10; i++) { 
+                                newPremiumSets.push(new vmbase.PremiumSetting("", "", i.toString(), "", i.toString(), 1, 0, []));
+                            }
+                            self.currentPersonCost().premiumSets(newPremiumSets);
+                        } else {
+                            let premiumItemSetting = _.cloneDeep(self.currentPersonCost().premiumSets());
+                            self.currentPersonCost().companyID('');
+                            self.currentPersonCost().historyID('');
+                            self.currentPersonCost().memo('');
+                            self.currentPersonCost().unitPrice(0);
+                            self.currentPersonCost().startDate(newStartDate);
+                            self.currentPersonCost().endDate("9999/12/31");
+                            self.currentPersonCost().premiumSets([]);
+                            let newPremiumSets = [];
+                            for (let i = 1; i <= 10; i++) { 
+                                newPremiumSets.push(new vmbase.PremiumSetting("", "", i.toString(), "", i.toString(), premiumItemSetting[i-1].useAtr(), 0, []));
+                            }
+                            self.currentPersonCost().premiumSets(newPremiumSets);
+                        }
+                        self.isInsert(true);
                     } else {
-                        self.personCostList.push(new PersonCostCalculation(
-                            self.currentPersonCost().companyID(),
-                            self.currentPersonCost().historyID(),
-                            self.currentPersonCost().memo(),
-                            self.currentPersonCost().unitPrice(),
-                            newStartDate,
-                            "9999/12/31"));    
+                        let oldPremiumSets = self.currentPersonCost().premiumSets();
+                        self.currentPersonCost().startDate(newStartDate);
+                        self.currentPersonCost().endDate("9999/12/31");
+                        self.currentPersonCost().premiumSets(oldPremiumSets);
+                        self.isInsert(true);
                     }        
-                    self.gridPersonCostList.push({dateRange: newStartDate+" ~ 9999/12/31"});
-                    self.currentGridPersonCost(_.last(self.gridPersonCostList()).dateRange);  
                 }   
             });
         }
@@ -103,108 +173,27 @@ module kml001.a.viewmodel {
          */
         editDialog() {
             var self = this;
-            let beforeIndex = _.findIndex(self.personCostList(), function(o) { return o.startDate() == self.currentPersonCost().startDate(); })-1;
-            let size = _.size(self.personCostList());
-            nts.uk.ui.windows.setShared('size', size);
-            nts.uk.ui.windows.setShared('beforeStartDate', (beforeIndex>=0)?self.personCostList()[beforeIndex].startDate():"1900/1/1");
-            nts.uk.ui.windows.setShared('currentEndDate', (size>0)?self.currentPersonCost().endDate():"9999/12/31");
+            nts.uk.ui.windows.setShared('personCostList', self.personCostList());
+            nts.uk.ui.windows.setShared('currentPersonCost', self.currentPersonCost());
             nts.uk.ui.windows.sub.modal("/view/kml/001/d/index.xhtml", { title: "履歴の編集", dialogClass: "no-close" }).onClosed(function() {
-                let isUpdate: boolean = nts.uk.ui.windows.getShared('isUpdate');
-                if(isUpdate==true) {
-                    let newStartDate: string = nts.uk.ui.windows.getShared('newStartDate');
-                    self.personCostList()[beforeIndex+1].startDate(newStartDate);
-                    if(beforeIndex >= 0) self.personCostList()[beforeIndex].endDate(vmbase.DateTimeProcess.getOneDayBefore(newStartDate));
-                    self.gridPersonCostList.replace(self.gridPersonCostList()[beforeIndex+1],{dateRange: self.personCostList()[beforeIndex+1].startDate()+" ~ "+self.personCostList()[beforeIndex+1].endDate()});
-                    if(beforeIndex >= 0) self.gridPersonCostList.replace(self.gridPersonCostList()[beforeIndex],{dateRange: self.personCostList()[beforeIndex].startDate()+" ~ "+self.personCostList()[beforeIndex].endDate()});
-                    self.currentGridPersonCost(_.last(self.gridPersonCostList()).dateRange);
-                } else if(isUpdate==false) {
-                    self.personCostList.remove(_.last(self.personCostList()));
-                    let lastestHistory = _.last(self.personCostList());
-                    lastestHistory.endDate("9999/12/31");
-                    self.gridPersonCostList.remove(_.last(self.gridPersonCostList()));
-                    self.gridPersonCostList.replace(_.last(self.gridPersonCostList()),{dateRange: lastestHistory.startDate()+" ~ "+lastestHistory.endDate()});
-                    self.currentGridPersonCost(_.last(self.gridPersonCostList()).dateRange);
-                }        
+                if(nts.uk.ui.windows.getShared('isEdited')==true){
+                    servicebase.personCostCalculationSelect()
+                        .done(function(res: Array<any>) {
+                            self.personCostList.removeAll();
+                            self.gridPersonCostList.removeAll();
+                            self.loadData(res);
+                        }).fail(function(res) {
+                            
+                        });
+                }
             });;
         }
         
-        getPersonCostCalculationInfo(startDate: string): PersonCostCalculationInterface{
+        selectDialog() {
             var self = this;
-            return _.find(self.personCostList(), function(o) { return o.startDate() == startDate; });
-        }
-    }
-    
-    class GridPersonCostCalculation {
-        historyID: string;
-        dateRange: string;  
-        constructor(historyID: string, dateRange: string) {
-            var self = this;
-            self.historyID = historyID;
-            self.dateRange = dateRange;
-        }  
-    }
-
-    interface PersonCostCalculationInterface {
-        companyID: string;
-        historyID: string;
-        memo: string;
-        unitPrice: number;
-        startDate: string;
-        endDate: string;
-    }
-
-    class PersonCostCalculation {
-        companyID: KnockoutObservable<string>;
-        historyID: KnockoutObservable<string>;
-        memo: KnockoutObservable<string>;
-        unitPrice: KnockoutObservable<number>;
-        startDate: KnockoutObservable<string>;
-        endDate: KnockoutObservable<string>;
-        constructor(companyID: string, historyID: string, memo: string, unitPrice: number, startDate: string, endDate: string) {
-            var self = this;
-            self.companyID = ko.observable(companyID);
-            self.historyID = ko.observable(historyID);
-            self.memo = ko.observable(memo);
-            self.unitPrice = ko.observable(unitPrice);
-            self.startDate = ko.observable(startDate);
-            self.endDate = ko.observable(endDate);
-        }
-        static converToObject(object: PersonCostCalculationInterface): PersonCostCalculation {
-            return new PersonCostCalculation(
-                object.companyID, 
-                object.historyID, 
-                object.memo, 
-                object.unitPrice, 
-                object.startDate, 
-                object.endDate);
-        }
-    }
-    
-    class ExtraTimeItem {
-        companyID: KnockoutObservable<string>;
-        extraItemID: KnockoutObservable<string>; 
-        name: KnockoutObservable<string>;
-        timeItemID: KnockoutObservable<string>;
-        useClassification: KnockoutObservable<number>;
-        constructor(companyID: string, extraItemID: string, name: string, timeItemID: string, useClassification: number) {
-            var self = this;
-            self.extraItemID = ko.observable(extraItemID);
-            self.companyID = ko.observable(companyID);
-            self.useClassification = ko.observable(useClassification);
-            self.timeItemID = ko.observable(timeItemID);
-            self.name = ko.observable(name);
-        }
-    }
-    
-    class PremiumSetting {
-        attendanceID: KnockoutObservable<string>;
-        premiumRate: KnockoutObservable<number>;
-        timeItemID: KnockoutObservableArray<string>;
-        constructor(attendanceID: string, premiumRate: number, timeItemID: Array<string>) {
-            var self = this;
-            self.attendanceID = ko.observable(attendanceID);
-            self.premiumRate = ko.observable(premiumRate);
-            self.timeItemID = ko.observable(timeItemID);
+            nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                  
+            });
         }
     }
 }

@@ -13,6 +13,6 @@ public class KmlspExtraTimePK {
 	@Column(name="CID")
 	public String companyID;
 	
-	@Column(name="EXTRA_ITEM_ID")
-	public String extraItemID;
+	@Column(name="EXTRA_TIME_ID")
+	public String extraTimeID;
 }

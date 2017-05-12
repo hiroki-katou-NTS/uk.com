@@ -25,4 +25,14 @@
         <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
+    
+    <filter>
+    	<filter-name>RequestPreProcessor</filter-name>
+    	<filter-class>nts.uk.shr.infra.web.request.RequestPreProcessor</filter-class>
+    </filter>
+    
+    <filter-mapping>
+    	<filter-name>RequestPreProcessor</filter-name>
+    	<url-pattern>/webapi/*</url-pattern>
+    </filter-mapping>
 </web-app>

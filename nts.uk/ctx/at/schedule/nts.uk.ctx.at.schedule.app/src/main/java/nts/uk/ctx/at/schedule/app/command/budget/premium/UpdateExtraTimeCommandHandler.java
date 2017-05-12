@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.budget.premium;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -11,27 +13,30 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.ExtraTime;
 import nts.uk.ctx.at.schedule.dom.budget.premium.ExtraTimeRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
 import nts.uk.ctx.at.schedule.dom.budget.premium.UseClassification;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateExtraTimeCommandHandler extends CommandHandler<UpdateExtraTimeCommand>{
+public class UpdateExtraTimeCommandHandler extends CommandHandler<List<UpdateExtraTimeCommand>>{
 	
 	@Inject
 	private ExtraTimeRepository extraTimeRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateExtraTimeCommand> context) {
-		UpdateExtraTimeCommand command = context.getCommand();
-		this.extraTimeRepository.update(
-				new ExtraTime(
-						command.companyID, 
-						command.extraItemID, 
-						new PremiumName(command.premiumName), 
-						command.timeItemID, 
-						EnumAdaptor.valueOf(command.useClassification, UseClassification.class) 
-				)
-		);
-		
+	protected void handle(CommandHandlerContext<List<UpdateExtraTimeCommand>> context) {
+		String companyID = AppContexts.user().companyId();
+		List<UpdateExtraTimeCommand> command = context.getCommand();
+		for(UpdateExtraTimeCommand cm : command) {
+				this.extraTimeRepository.update(
+						new ExtraTime(
+								companyID, 
+								cm.extraItemID, 
+								new PremiumName(cm.name), 
+								cm.timeItemID, 
+								EnumAdaptor.valueOf(cm.useAtr, UseClassification.class) 
+						)
+				);					
+		}
 	}
 
 }

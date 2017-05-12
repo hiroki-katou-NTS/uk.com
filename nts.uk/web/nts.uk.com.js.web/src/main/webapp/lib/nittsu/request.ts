@@ -161,7 +161,10 @@ module nts.uk.request {
             contentType: options.contentType || 'application/json',
             url: webserviceLocator.serialize(),
             dataType: options.dataType || 'json',
-            data: data
+            data: data,
+            headers: {
+                'PG-Path': location.current.serialize()
+            }
         }).done(function(res) {
             if (res !== undefined && res.businessException) {
                 dfd.reject(res);

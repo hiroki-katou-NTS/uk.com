@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.schedule.dom.budget.premium.ExtraTimeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -17,7 +18,7 @@ public class ExtraTimeFinder {
 	private ExtraTimeRepository extraTimeRepository;
 	
 	public List<ExtraTimeDto> findByCompanyID(){
-		String companyID = "ABC123456789";
+		String companyID = AppContexts.user().companyId();
 		return this.extraTimeRepository.findByCompanyID(companyID)
 				.stream()
 				.map(x -> new ExtraTimeDto(companyID, x.getExtraItemID(), x.getPremiumName().v(), x.getExtraItemID(), x.getUseClassification().value))

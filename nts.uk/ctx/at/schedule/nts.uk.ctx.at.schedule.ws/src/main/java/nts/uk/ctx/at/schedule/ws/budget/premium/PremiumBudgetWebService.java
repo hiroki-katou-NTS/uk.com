@@ -48,7 +48,7 @@ public class PremiumBudgetWebService extends WebService{
 	@POST
 	@Path("findPremiumBudget")
 	public PremiumBudgetDto findByCompanyID(PremiumBudgetDto command){
-		return this.premiumBudgetFinder.findPremiumBudget(command.getHID());
+		return this.premiumBudgetFinder.findPremiumBudget(command.getHistoryID());
 	}
 	
 	@POST

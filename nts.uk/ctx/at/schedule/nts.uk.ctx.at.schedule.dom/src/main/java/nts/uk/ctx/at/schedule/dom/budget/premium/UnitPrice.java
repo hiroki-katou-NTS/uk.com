@@ -33,9 +33,9 @@ public enum UnitPrice {
 	 */
 	Contract(4);
 	
-	public final int unitPrice;
+	public final int value;
 	
-	UnitPrice(int unitPrice){
-		this.unitPrice = unitPrice;
+	UnitPrice(int value){
+		this.value = value;
 	}
 }

@@ -4,13 +4,13 @@ import lombok.Value;
 
 @Value
 public class UpdateExtraTimeCommand {
-	public String companyID;
-	
 	public String extraItemID;
 	
-	public String premiumName;
-
+	public String companyID;
+	
+	public int useAtr;
+	
 	public String timeItemID;
-
-	public int useClassification;
+	
+	public String name;
 }

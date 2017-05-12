@@ -9,9 +9,10 @@
 			<ui:define name="htmlHead">
 				<script>var dialogSize = { width: 460, height: 290 };</script>
 				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="../shr/kml001.shr.servicebase.js" />
 				<com:scriptfile path="../shr/kml001.shr.vmbase.js" />
-				<com:scriptfile path="kml001.d.start.js" />
 				<com:scriptfile path="kml001.d.vm.js" />
+				<com:scriptfile path="kml001.d.start.js" />
 				<com:stylefile path="kml001.d.main.css" />
 			</ui:define>
 			
@@ -22,7 +23,7 @@
 					</div>
 					<div class="table">
 						<div class="cell column1">
-							<div data-bind="ntsFormLabel: { required: true }">編集方法選択</div>
+							<div data-bind="ntsFormLabel: { required: isUpdate }">編集方法選択</div>
 						</div>
 						<div class="cell">
 							<span class="ntsControl">

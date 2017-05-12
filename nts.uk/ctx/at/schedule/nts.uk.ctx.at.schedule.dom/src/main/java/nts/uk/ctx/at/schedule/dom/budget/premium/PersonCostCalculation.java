@@ -32,12 +32,18 @@ public class PersonCostCalculation extends AggregateRoot {
 
 	private GeneralDate endDate;
 	
-	private List<PremiumSetting> premiumSettings; 
+	private List<PremiumSetting> premiumSettings;
 
-	public static PersonCostCalculation createFromJavaType(String companyID, Memo memo,
-			UnitPrice unitPrice, GeneralDate startDate, GeneralDate endDate, List<PremiumSetting> premiumSettings) {
-		if(PersonCostCalculationDomainService.validateHistory(companyID, startDate)) throw new BusinessException("ER065");
-		return new PersonCostCalculation(companyID, UUID.randomUUID().toString(), memo, unitPrice, startDate, endDate, premiumSettings);
-	}
+	public PersonCostCalculation(String companyID, String historyID, Memo memo, UnitPrice unitprice,
+			GeneralDate startDate, GeneralDate endDate, List<PremiumSetting> premiumSettings) {
+		super();
+		this.companyID = companyID;
+		this.historyID = historyID;
+		this.memo = memo;
+		this.unitprice = unitprice;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.premiumSettings = premiumSettings;
+	} 
 
 }
