@@ -29,6 +29,7 @@ public class PaymentReportQuery {
 	/** The specification codes. */
 	private List<String> specificationCodes;
 	
-	
-	
+	/** The layout items. */
+	private List<Integer> layoutItems;
+		
 }

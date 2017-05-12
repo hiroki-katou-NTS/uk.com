@@ -4,10 +4,15 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.paymentdata;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
+import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
 import nts.uk.file.pr.app.export.payment.PaymentReportQuery;
 import nts.uk.file.pr.app.export.payment.PaymentReportRepository;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
@@ -18,6 +23,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 /**
  * The Class JpaPaymentReportRepository.
  */
+@Stateless
 public class JpaPaymentReportRepository extends JpaRepository implements PaymentReportRepository {
 
 	/** The Constant FIND_DEPARTMENT_BYCODE. */
@@ -40,6 +46,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			.getSingle().map(dep -> {
 				return Optional.of(dep);
 			}).orElse(Optional.empty());
+	}
+	
+	private List<QstdtPaymentHeader> checkPaymentHeaderLayout(PaymentReportQuery query){
+		return new ArrayList<QstdtPaymentHeader>();
 	}
 
 	@Override
