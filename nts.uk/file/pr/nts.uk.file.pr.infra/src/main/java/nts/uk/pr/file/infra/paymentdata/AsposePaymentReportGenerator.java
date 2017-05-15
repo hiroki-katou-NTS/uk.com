@@ -26,10 +26,13 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 	implements PaymentReportGenerator {
 
 	/** The Constant TEMPLATE_PATH. */
-	private static final String TEMPLATE_PATH = "report/QPP021_H.xlsx";
-
-	/** The Constant OUTPUT_NAME. */
-	private static final String OUTPUT_NAME = "賃金テープル.xlsx";
+	private static final String TEMPLATE_PATH_H = "report/QPP021_H.xlsx";
+	
+	/** The Constant TEMPLATE_PATH_V. */
+	private static final String TEMPLATE_PATH_V = "report/QPP021_V.xlsx";
+	
+	/** The Constant OUTPUT_PDF_NAME. */
+	private static final String OUTPUT_PDF_NAME = "賃金テープル.pdf";
 
 	/** The factory. */
 	@Inject
@@ -51,10 +54,11 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 		FileGeneratorContext rptContext = context.getGeneratorContext();
 		PaymentReportQuery query = context.getQuery();
 		PaymentReportData data = this.repository.findData(query);
-		try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH)) {
+		try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_H)) {
 			PaymentGenerator generator = this.factory.createGenerator(data);
 			generator.generate(ctx, data);
-			ctx.saveAsExcel(this.createNewFile(rptContext, this.getReportName(OUTPUT_NAME)));
+			//ctx.saveAsExcel(this.createNewFile(rptContext, this.getReportName(OUTPUT_NAME)));
+			ctx.saveAsPdf(this.createNewFile(rptContext, this.getReportName(OUTPUT_PDF_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

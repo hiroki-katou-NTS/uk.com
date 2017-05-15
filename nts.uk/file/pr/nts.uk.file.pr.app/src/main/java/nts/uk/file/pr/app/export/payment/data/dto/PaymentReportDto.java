@@ -38,4 +38,7 @@ public class PaymentReportDto {
 	
 	/** The remark. */
 	private String remark;
+	
+	/** The menu. */
+	private String menu;
 }

@@ -35,8 +35,8 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 		// Set data.
 		Cells cells = ws.getCells();
 
-		cells.get(0, 0).setValue("1233");
-		cells.get(0, 1).setValue("値");
+		cells.get(0, 5).setValue("給与支給明細書");
+		cells.get(1, 0).setValue("部門コード");
 		/*
 		 * // Fill data. Map<String, Long> itemToAmountMap =
 		 * history.getValueItems() .stream()
