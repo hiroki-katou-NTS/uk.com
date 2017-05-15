@@ -20,7 +20,6 @@ __viewContext.ready(function () {
             //enable checkbox if you wish a multimode
             var multiple = true;
             //childField
-            var childField = "childs";
             //columns for treegrid
             var columns = [{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
             { headerText: "Item Text", key: 'nodeText', width: "200px", dataType: "string" }];
@@ -48,7 +47,7 @@ __viewContext.ready(function () {
                 dataSource: data,
                 primaryKey: primaryKey,
                 columns: columns,
-                childDataKey: childField,
+               
                 initialExpandDepth: 10,
                 features: [
                     {

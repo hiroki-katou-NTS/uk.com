@@ -23,8 +23,13 @@ public class JapaneseDate {
 	}
 	
 	/** sample result 100203 */
-	public int toInt () {
+	public int toFullDateInt () {
 		return (this.date.year() - this.era.startDate().year())*10000 + this.date.month()*100 + this.date.day();
+	}
+	
+	/** sample result 100203 */
+	public int toYearMonthInt () {
+		return (this.date.year() - this.era.startDate().year())*100 + this.date.month();
 	}
 	
 	/** get Japanese era 元号 */
