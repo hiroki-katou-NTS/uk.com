@@ -8,10 +8,8 @@ import javax.ejb.Stateless;
 //import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHeadDto;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMaster;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMasterRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.CompanyAllotSetting;
 //import nts.uk.ctx.pr.core.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.CompanyAllotSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -59,6 +57,7 @@ public class CompanyAllotSettingFinder {
 	 */
 	public Optional<CompanyAllotSettingDto> getMaxStartYM(){
 		String companyCode = AppContexts.user().companyCode();
+		
 		return this.companyAllotRepo.maxStart(companyCode)
 				.map(maxAllot -> CompanyAllotSettingDto.fromDomain(maxAllot));
 	}

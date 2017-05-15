@@ -75,90 +75,97 @@ module qmm020.c.viewmodel {
         }
 
         openJDialog() {
-            let self = this;
+            let self = this, model = self.model();
+
             // get item has property endDate is max value
-            let oldItem: any = _.find(self.model().ListItems(), function(m) { return m.isMaxEnYm == true; }) || {};
+            let maxItem: any = _.find(model.ListItems(), function(m) { return m.isMaxEnYm == true; }) || {};
+            debugger;
+            if (maxItem) {
+                nts.uk.ui.windows.setShared("J_DATA", { displayMode: 1, startYm: maxItem.startYm || 197001, endYm: maxItem.endYm || 999912 });
+                
+                nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" })
+                    .onClosed(function() {
 
-            nts.uk.ui.windows.setShared("J_DATA", { displayMode: 1, startYm: oldItem.startYm || 197001, endYm: oldItem.endYm || 999912 });
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" })
-                .onClosed(function() {
-                    nts.uk.ui.windows.setShared("J_DATA", null);
-                    let value: any = nts.uk.ui.windows.getShared('J_RETURN');
-                    if (value) {
-                        let oldItem: ListModel = _.find(self.model().ListItems(), function(m) { return m.isMaxEnYm == true; });
-                        let startDate = nts.uk.time.parseYearMonth(value.startDate);
-                        if (startDate.success) {
-                            let id: string = '_NEW_' + self.model().ListItems.length + '_' + value.startDate,
-                                newItem: ListModel = new ListModel({ historyId: id, startYm: value.startDate, endYm: 999912 });
+                        let value: any = nts.uk.ui.windows.getShared('J_RETURN');
+                        if (value) {
+                            let oldItem: ListModel = _.find(model.ListItems(), function(m) { return m.isMaxEnYm == true; });
+                            let startDate = nts.uk.time.parseYearMonth(value.startDate);
+                            if (startDate.success) {
+                                let id: string = '_NEW_' + model.ListItems().length + '_' + value.startDate,
+                                    newItem: ListModel = new ListModel({ historyId: id, startYm: value.startDate, endYm: 999912 });
 
-                            if (oldItem) {
-                                oldItem.isMaxEnYm = false;
-                                oldItem.endYm = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
-                                oldItem.update();
-                            }
-                            self.model().ListItems.push(newItem);
-                            self.model().ListItems(_.orderBy(self.model().ListItems(), ['endYm'], ['desc']));
+                                if (oldItem) {
+                                    oldItem.isMaxEnYm = false;
+                                    oldItem.endYm = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
+                                    oldItem.update();
+                                }
 
-                            // store old grid data
-                            let temp = self.model().GridItems();
+                                model.ListItems.push(newItem);
+                                model.ListItems(_.orderBy(model.ListItems(), ['endYm'], ['desc']));
 
-                            // selected new id (item)
-                            self.model().ListItemSelected(id);
+                                // store old grid data
+                                let temp = model.GridItems();
 
-                            // copy or new mode
-                            if (value.selectedMode == 1) {
-                                //self.model().GridItems().map((f) => {
-                                //    f.bonusDetailCode = '';
-                                //    f.bonusDetailName = '';    
-                                //    f.paymentDetailCode = '';
-                                //    f.paymentDetailName = '';
-                                //});
-                                //dirty.reset();
-                                self.model().GridItems(temp);
-                                self.model().updateData();
-                                debugger;
-                            } else {
-                                self.model().GridItems().map((f) => {
-                                    f.bonusDetailCode = '';
-                                    f.bonusDetailName = '';
-                                    f.paymentDetailCode = '';
-                                    f.paymentDetailName = '';
-                                });
+                                // selected new id (item)
+                                model.ListItemSelected(id);
+
+                                // copy or new mode
+                                if (value.selectedMode == 1) {
+                                    self.model().GridItems().map((f) => {
+                                        f.bonusDetailCode = '';
+                                        f.bonusDetailName = '';
+                                        f.paymentDetailCode = '';
+                                        f.paymentDetailName = '';
+                                    });
+
+                                    model.GridItems(temp);
+                                    //model.updateData();
+                                } else {
+                                    model.GridItems().map((f) => {
+                                        f.bonusDetailCode = '';
+                                        f.bonusDetailName = '';
+                                        f.paymentDetailCode = '';
+                                        f.paymentDetailName = '';
+                                    });
+                                }
                             }
                         }
-
-                    }
-                });
+                    });
+            }
+            // clear shared data
+            nts.uk.ui.windows.setShared("J_DATA", undefined);
+            nts.uk.ui.windows.setShared("J_RETURN", undefined);
         }
 
         openKDialog() {
-            let self = this;
+            let self = this, model = self.model();
 
-            self.model().GridItemSelected.valueHasMutated;
-            // set shared data for k screen
-            nts.uk.ui.windows.setShared("K_DATA", { displayMode: 1, startYm: self.selectedItem().startDate, endYm: self.selectedItem().endDate });
-
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { width: 485, height: 550, title: '履歴の編集', dialogClass: "no-close" })
-                .onClosed(() => {
-                    let value: any = nts.uk.ui.windows.getShared("K_RETURN");
-                    if (value) {
-                        if (value.selectedMode == 1) {
-                            return null;
+            let currentItem = model.currentItemList();
+            if (currentItem) {
+                // set shared data for k screen
+                nts.uk.ui.windows.setShared("K_DATA", { displayMode: 1, startYm: currentItem.startYm, endYm: currentItem.endYm });
+                nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { width: 485, height: 550, title: '履歴の編集', dialogClass: "no-close" })
+                    .onClosed(() => {
+                        let model: any = nts.uk.ui.windows.getShared("K_RETURN");
+                        if (model) {
+                            if (model.selectedMode == 1) {
+                                //return null;
+                            } else {
+                            }
                         }
-                    }
-
-                }
-
+                    });
+            }
         }
+
         // get paymentDetailName
         openMDialogPay() {
-            let self = this, currentItemList = self.model().currentItemList();
+            let self = this, model = self.model(), currentItemList = model.currentItemList();
             if (!!currentItemList) {
                 nts.uk.ui.windows.setShared('M_BASEYM', currentItemList.startYm);
 
                 nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
                     .onClosed(function() {
-                        let currentItemGrid = self.model().currentItemGrid();
+                        let currentItemGrid = model.currentItemGrid();
                         if (currentItemGrid) {
                             let stmtCode = nts.uk.ui.windows.getShared('M_RETURN');
                             currentItemGrid.paymentDetailCode = stmtCode;
@@ -166,7 +173,7 @@ module qmm020.c.viewmodel {
                                 service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
                                     currentItemGrid.paymentDetailName = stmtName;
                                     //update date to igGrid
-                                    self.model().updateData();
+                                    model.updateData();
                                 }).fail(function(res) {
                                     alert(res);
                                 });
@@ -175,6 +182,7 @@ module qmm020.c.viewmodel {
                     });
             }
         }
+
         //get bonusDetailName
         openMDialogBo() {
             let self = this, currentItemList = self.model().currentItemList();
@@ -277,7 +285,7 @@ module qmm020.c.viewmodel {
         endYm: number;
         startYm: number;
         text: string;
-        isMaxEnYm: boolean;
+        isMaxEnYm: boolean = false;
 
         constructor(param: IListModel) {
             this.historyId = param.historyId;

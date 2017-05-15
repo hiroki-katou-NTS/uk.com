@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.allot;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -20,12 +21,12 @@ import nts.uk.ctx.pr.core.app.find.rule.employment.allot.CompanyAllotSettingFind
 
 @Path("pr/core/allot")
 @Produces("application/json")
-public class CompanyAllotSettingWebService extends WebService{
+public class CompanyAllotSettingWebService extends WebService {
 	@Inject
 	private CompanyAllotSettingFinder find;
 	@Inject
 	private UpdateAllotCompanyCommandHandler update;
-	@Inject 
+	@Inject
 	private InsertAllotCompanyCommandHandler insert;
 	@Inject
 	private DelAllotCompanyCmdHandler delete;
@@ -42,28 +43,29 @@ public class CompanyAllotSettingWebService extends WebService{
 	public String GetAllotLayoutName(@PathParam("stmtCode") String stmtCode) {
 		return this.find.getAllotLayoutName(stmtCode);
 	}
-	
-	
+
 	@POST
 	@Path("findcompanyallotmaxdate")
 	public CompanyAllotSettingDto GetAllotMaxDate() {
-		CompanyAllotSettingDto test = this.find.getMaxStartYM().get();
-		return test;
+		Optional<CompanyAllotSettingDto> model = this.find.getMaxStartYM();
+		if (model.isPresent())
+			return model.get();
+		else
+			return null;
 	}
-	
 
 	@POST
 	@Path("update")
 	public void update(UpdateAllotCompanyCommand command) {
 		this.update.handle(command);
 	}
-	
+
 	@POST
 	@Path("insert")
 	public void insert(InsertAllotCompanyCommand command) {
 		this.insert.handle(command);
 	}
-	
+
 	@POST
 	@Path("delete")
 	public void delete(DelAllotCompanyCmd command) {

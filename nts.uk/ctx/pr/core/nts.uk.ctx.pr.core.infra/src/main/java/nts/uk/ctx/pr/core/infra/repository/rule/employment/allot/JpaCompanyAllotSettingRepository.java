@@ -18,7 +18,7 @@ public class JpaCompanyAllotSettingRepository extends JpaRepository implements C
 	private final String SEL_ALL = "SELECT c FROM QstmtStmtAllotCp c WHERE c.qstmtStmtAllotCpPK.companyCode = :companyCode";
 	private final String SEL_01 = SEL_ALL
 			+ " AND (c.paymentDetailCode != '00' OR c.bonusDetailCode != '00') ORDER BY c.startDate DESC";
-	private final String SEL_09 = SEL_ALL + " ORDER BY c.enDate DESC";
+	private final String SEL_09 = SEL_ALL + " ORDER BY c.endDate DESC";
 
 	private final String SEL_MAX = SEL_ALL + " AND c.endDate = :endDate";
 
