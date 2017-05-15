@@ -13,6 +13,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
@@ -43,6 +44,10 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 
 		String[] yearMonth = query.getYearMonth().split("/");
 		year = Integer.parseInt(yearMonth[0]);
+		
+		if (CollectionUtil.isEmpty(query.getResidentTaxCodeList())) {
+			throw new BusinessException(new RawErrorMessage("データがありません。"));//ERO１０
+		}
 		// get residential tax
 		List<ResidentialTaxDto> residentTaxList = residentialTaxRepo.findResidentTax(companyCode,
 				query.getResidentTaxCodeList());
@@ -88,7 +93,7 @@ public class InhabitantTaxChecklistReportBService extends ExportService<Inhabita
 			reportData.setResiTaxAutonomy(residentialTax.getResiTaxAutonomy());
 			// DBD_003 numberPeople
 			if(totalNumberPeople.get(residentialTax.getResidenceTaxCode()) == null) {
-				break;
+				continue;
 			}
 			reportData.setNumberPeople(totalNumberPeople.get(residentialTax.getResidenceTaxCode()).toString());
 			// DBD_004 value

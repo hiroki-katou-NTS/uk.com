@@ -54,7 +54,7 @@ public class JpaResidentialTaxReportRepository extends JpaRepository implements 
 			+ "AND z.qredtRetirementPaymentPK.payDate >=:StartYearMonth "
 			+ "AND z.qredtRetirementPaymentPK.payDate <=:EndYearMonth";
 	
-	private String CMNMT_CALLED = "SELECT b.person FROM CmnmtCalled b WHERE b.insCcd = :companyCode ";
+	private String CMNMT_CALLED = "SELECT b.person FROM CmnmtCalled b WHERE b.ccd = :companyCode ";
 
 	@Override
 	public List<ResidentialTaxDto> findResidentTax(String companyCode, List<String> residentTaxCodeList) {
@@ -120,8 +120,8 @@ public class JpaResidentialTaxReportRepository extends JpaRepository implements 
 
 	@Override
 	public Optional<String> findPersonText(String companyCode) {	
-		return this.queryProxy().query(CMNMT_CALLED, CmnmtCalled.class )
+		return this.queryProxy().query(CMNMT_CALLED, String.class )
 				.setParameter("companyCode", companyCode)
-				.getSingle(x -> x.getPerson());
+				.getSingle();
 	}
 }
