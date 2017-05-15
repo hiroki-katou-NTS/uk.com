@@ -9,11 +9,11 @@ module qet002.a.viewmodel {
 
         constructor() {
             var self = this;
-            self.targetYear = ko.observable(2017);
+            self.targetYear = ko.observable(new Date().getFullYear());
             self.isLowerLimit = ko.observable(false);
             self.isUpperLimit = ko.observable(false);
             self.lowerLimitValue = ko.observable(null);
-            self.japanYear = ko.observable('(' + nts.uk.time.yearInJapanEmpire('2017') + ')');
+            self.japanYear = ko.observable('(' + nts.uk.time.yearInJapanEmpire(self.targetYear().toString()) + ')');
             self.upperLimitValue = ko.observable(null);           
             self.targetYear.subscribe(function(val: number){
                self.japanYear(""+nts.uk.time.yearInJapanEmpire(val)); 
@@ -42,7 +42,6 @@ module qet002.a.viewmodel {
             }
            //Print Report
            service.printService(this).done(function(data: any) {
-               console.log("YES");                
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
             })
@@ -65,22 +64,16 @@ module qet002.a.viewmodel {
 
            // Validate 
            if (self.isLowerLimit() && self.lowerLimitValue() == null) {
-               hasError = true;
                $('#lower-limit-input').ntsError('set', '金額範囲下限額 が入力されていません。');
+               hasError = true;
            }
            if (self.isUpperLimit() && self.upperLimitValue() == null) {
-               hasError = true;
                $('#upper-limit-input').ntsError('set', '金額範囲上限額 が入力されていません。');
+               hasError = true;
            }
-           if ((self.isLowerLimit()) && (self.isUpperLimit())) {
-               if (self.lowerLimitValue() > self.upperLimitValue()) {
-                   hasError = true;
-                   $('#lower-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
-               }
-
-               if (hasError) {
-                   return;
-               }
+           if (self.isLowerLimit() && self.isUpperLimit() && self.lowerLimitValue() > self.upperLimitValue()) {
+               $('#lower-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
+               hasError = true;
            }
            // TODO: Validation relate to employee list.
            return hasError || $('.nts-input').ntsError('hasError');

@@ -36,9 +36,9 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 	@Inject
 	private AccPaymentRepository repository;
 	
-	/** The japanese provider. */
-    @Inject
-    private JapaneseErasProvider japaneseProvider;
+	/** The era provider. */
+	@Inject
+	private JapaneseErasProvider eraProvider;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.file.export.ExportService#handle(nts.arc.layer.app.file.export.ExportServiceContext)
@@ -56,20 +56,22 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 				"99900000-0000-0000-0000-000000000010");
 		query.setPIdList(personIds);
 		
+		// Validate.
+//		this.validateData(query);
+		
 		// Query data.
 		List<AccPaymentItemData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
 		
-		//  CONVERT YEARMONTH JAPANESE 
-//        StringBuilder japanYear = new StringBuilder("【期間： ");
-//        japanYear.append(convertYearMonthJP(query.getTargetYear()));
+		//  CONVERT YEARMONTH JAPANESE
+		StringBuilder japanYear = new StringBuilder("【期間： ");
+		japanYear.append(convertYearMonthJP(query.getTargetYear()));
 
 		// Create header object.
 		AccPaymentHeaderData headerData = AccPaymentHeaderData.builder()
 				.departmentInfo("【部門： 役員　販売促進1課　役員～製造部　製造課　製造　（31部門）】")
 				.empTypeInfo("【分類： 正社員～アルバイト（5分類）】")
 				.positionInfo("【職位： 参事～主任（10職位）】")
-//				.yearMonthInfo(japanYear.toString())
-				.yearMonthInfo("fhh")
+				.yearMonthInfo(japanYear.toString())
 				.build();
 
 		// Create data source.
@@ -80,15 +82,26 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 				.build();
 
 		// Call generator.
-		this.generator.generate(context.getGeneratorContext(),dataSource, query);		
+		this.generator.generate(context.getGeneratorContext(),dataSource, query);
 	}
-	private String convertYearMonthJP(Integer yearMonth) {
-        String firstDay = "01";
-        String tmpDate = yearMonth.toString().concat(firstDay);
-        String dateFormat = "yyyyMMdd";
-        GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
-        JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
-        return japaneseDate.era() + japaneseDate.year() + "年 " + "01月～12月迄】";
-    }
+	
+	private void validateData(AccPaymentReportQuery query) {
+		
+	}
+
+	/**
+	 * Convert year month JP.
+	 *
+	 * @param targetYear the target year
+	 * @return the string
+	 */
+	private String convertYearMonthJP(Integer targetYear) {
+		String firstDay = "0101";
+		String tmpDate = targetYear.toString().concat(firstDay);
+		String dateFormat = "yyyyMMdd";
+		GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
+		JapaneseDate japaneseDate = this.eraProvider.toJapaneseDate(generalDate);
+		return japaneseDate.era() + japaneseDate.year() + "年 " + "01月～12月迄】";
+	}
 
 }
