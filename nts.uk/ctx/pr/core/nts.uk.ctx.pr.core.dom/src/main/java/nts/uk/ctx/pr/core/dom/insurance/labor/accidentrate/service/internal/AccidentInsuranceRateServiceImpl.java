@@ -39,8 +39,8 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	@Override
 	public void validateRequiredItem(AccidentInsuranceRate rate) {
 		if (StringUtil.isNullOrEmpty(rate.getHistoryId(), true) || rate.getApplyRange() == null
-				|| CollectionUtil.isEmpty(rate.getRateItems())
-				|| rate.getRateItems().size() != RATE_ITEM_COUNT) {
+			|| CollectionUtil.isEmpty(rate.getRateItems())
+			|| rate.getRateItems().size() != RATE_ITEM_COUNT) {
 			throw new BusinessException("ER001");
 		}
 	}
@@ -79,7 +79,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 
 		// check exist
 		if (data.isPresent() && data.get().getApplyRange().getStartMonth().nextMonth().v() > rate
-				.getApplyRange().getStartMonth().v()) {
+			.getApplyRange().getStartMonth().v()) {
 			resvalue = true;
 		}
 
@@ -108,7 +108,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 * @return true, if is valid rate update
 	 */
 	private boolean isValidRateUpdate(AccidentInsuranceRate rate) {
-		return (isMonthDate(rate) || !checkExistRate(rate) || isLaterThanLastHistory(rate));
+		return isMonthDate(rate) || !checkExistRate(rate) || isLaterThanLastHistory(rate);
 	}
 
 	/**
@@ -149,12 +149,12 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 
 		if (data.isPresent()) {
 			Optional<AccidentInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
-					rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(),
-					data.get().getHistoryId());
+				rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(),
+				data.get().getHistoryId());
 
 			// check first data
 			return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth()
-					.v() >= rate.getApplyRange().getStartMonth().v()));
+				.v() >= rate.getApplyRange().getStartMonth().v()));
 		}
 
 		return true;

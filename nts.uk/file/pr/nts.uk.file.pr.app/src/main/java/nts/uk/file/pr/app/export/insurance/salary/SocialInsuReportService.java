@@ -2,9 +2,6 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-/**
- * 
- */
 package nts.uk.file.pr.app.export.insurance.salary;
 
 import java.util.ArrayList;
@@ -14,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
@@ -31,7 +29,6 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class SocialInsuReportService.
  */
-
 @Stateless
 public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
 
@@ -62,7 +59,7 @@ public class SocialInsuReportService extends ExportService<SocialInsuQuery> {
         //AppContexts.user().personId();
         
         if (!repository.isAvailableData(companyCode, loginPersonID, query)) {
-            throw new BusinessException("ER010");
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         
         // find list health insurance average earn

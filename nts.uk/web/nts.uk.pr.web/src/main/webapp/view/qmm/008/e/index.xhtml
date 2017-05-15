@@ -64,16 +64,17 @@
 			</div>
 			<div id="contents-area">
 				<!-- left -->
-				<div style="width: 40%; float: left;">
+				<div style="float: left;">
 					<div class="bg-green caret-right caret-background"
-						style="float: left; width: 350px; height: 500px; margin: 20px 50px;">
+						style="float: left; width: 340px; height: 580px; padding: 20px 20px; margin: 15px 15px;">
 						<i class="icon icon-searchbox"></i>
 						<div
 							data-bind="ntsSearchBox: {comId: 'multi-list', items: officeItems, selected: selectedOfficeCode, selectedKey: 'code', fields: ['name', 'code']}" />
-						<div style="padding-left: 14px; padding-top: 5px;">
+						<div style="padding-top: 10px;">
 							<table id="single-list"
 								data-bind="ntsGridList: {
-												height: 350,
+												height: 530,
+												width: 330,
 												options: officeItems,
 												optionsValue: 'code',
 												columns: columns2,
@@ -85,7 +86,7 @@
 					</div>
 				</div>
 				<!-- right -->
-				<div style="width: 60%; float: left;">
+				<div style="margin: 10px 10px; float: left;">
 					<div style="padding-right: 10px;">
 						<div id="tab-panel"
 							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">

@@ -41,18 +41,10 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		OutputSettingSaveCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 
-		// Validate required items.
-		if (command.getCode() == null || command.getCode().equals("")) {
-			throw new BusinessException("ER001");
-		}
-		if (command.getName() == null || command.getName().equals("")) {
-			throw new BusinessException("ER001");
-		}
-
 		if (command.isCreateMode()) {
 			// Check exist.
 			if (this.repository.isExist(companyCode, new WLOutputSettingCode(command.getCode()))) {
-				throw new BusinessException("ER005");
+				throw new BusinessException("入力したコードは既に存在しています。\r\nコードを確認してください。");
 			}
 
 			// Convert To Domain and save.
@@ -69,9 +61,9 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 			WLOutputSetting updatedOutputSetting = command.toDomain(companyCode);
 			updatedOutputSetting.validate();
 			this.repository.update(updatedOutputSetting);
-		} else {
-			throw new BusinessException("ER026");
+			return;
 		}
+		throw new IllegalStateException("Output setting is not exist!");
 	}
 
 }
