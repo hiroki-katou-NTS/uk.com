@@ -47,7 +47,7 @@ public class PaymentConstant {
     public static final int NUMBER_COLUMN_PAGE = 13;
     
     /** The Constant NUMBER_ROW_PAGE. */
-    public static final int NUMBER_ROW_PAGE = 58;
+    public static final int NUMBER_ROW_PAGE = 54;
     
     /** The Constant LIGHT_BLUE_COLOR. */
     public static final Color LIGHT_BLUE_COLOR = Color.fromArgb(197, 241, 247);
