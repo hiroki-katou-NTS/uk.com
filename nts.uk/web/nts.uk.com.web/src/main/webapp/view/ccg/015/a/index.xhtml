@@ -48,7 +48,7 @@
 										fields: ['name', 'code']}" />
 								<table id="single-list"
 									data-bind="ntsGridList: {								
-											height: 350,
+											height: 650,
 											dataSource: listTopPage,
 											primaryKey: 'code',
 											columns: columns,
@@ -103,10 +103,20 @@
 											required:true,
 											constraint: 'TopPageName'}" />
 									</td>
+									<td style="width: 400px;"></td>
 								</tr>
 
 								<tr>
 									<td><button data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()" class="btn_margin_top x-large">レイアウト設定</button></td>
+								</tr>
+								<tr>
+								<td colspan = "10" >
+									<div class="preview-area" data-bind="visible: !$parent.isNewMode()">
+										<div class="preview-container">
+											<iframe id="preview-iframe"></iframe>
+										</div>
+									</div>
+									</td>
 								</tr>
 							</table>
 

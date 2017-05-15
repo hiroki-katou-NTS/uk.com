@@ -80,26 +80,13 @@ module nts.uk.com.view.ccg015.a {
                 var self = this;
                 self.topPageModel().topPageCode(data.topPageCode);
                 self.topPageModel().topPageName(data.topPageName);
-                self.topPageModel().layoutId(data.layoutId);
-                //TODO
-                //                if (data.placements) {
-                //                    data.placements.forEach(function(item, index) {
-                //                        var placementModel = new PlacementModel();
-                //                        var topPagePartModel = new TopPagePartModel();
-                //                        //set value for top page part
-                //                        topPagePartModel.topPagePartType(item.topPagePart.topPagePartType);
-                //                        topPagePartModel.topPagePartCode(item.topPagePart.topPagePartCode);
-                //                        topPagePartModel.topPagePartName(item.topPagePart.topPagePartName);
-                //                        topPagePartModel.width(item.topPagePart.width);
-                //                        topPagePartModel.height(item.topPagePart.height);
-                //
-                //                        placementModel.row(item.row);
-                //                        placementModel.column(item.column);
-                //                        placementModel.topPagePart(topPagePartModel);
-                //
-                //                        self.topPageModel().placement().push(placementModel);
-                //                    });
-                //                }
+                if (data.layoutId != "" && data.layoutId != null) {
+                    self.topPageModel().layoutId(data.layoutId);
+                    self.changePreviewIframe(data.layoutId);
+                }
+                else {
+                    self.changePreviewIframe(null);
+                }
             }
 
             private collectData(): TopPageDto {
@@ -183,7 +170,9 @@ module nts.uk.com.view.ccg015.a {
                 var transferData: commonModel.TransferLayoutInfo = {parentCode: topPageCode, layoutID: layoutId, pgType: 0};
                 nts.uk.ui.windows.setShared('layout', transferData);
                 nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml").onClosed(() => {
-                    //TODO on Close dialog
+                    let returnInfo: commonModel.TransferLayoutInfo = nts.uk.ui.windows.getShared("layout");
+                    self.topPageModel().layoutId(returnInfo.layoutID);
+                    self.changePreviewIframe(returnInfo.layoutID);
                 });
             }
 
@@ -220,7 +209,13 @@ module nts.uk.com.view.ccg015.a {
 
                 });
             }
-
+            //for frame review layout
+            private changePreviewIframe(layoutID: string): void {
+                if (!nts.uk.util.isNullOrEmpty(layoutID))
+                    $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
+                else
+                    $("#preview-iframe").attr("src", "");
+            }
             private getIndexOfRemoveItem(code: string): number {
                 var self = this;
                 var ind = 0;

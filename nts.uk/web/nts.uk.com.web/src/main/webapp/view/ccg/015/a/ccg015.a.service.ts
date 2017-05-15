@@ -68,7 +68,6 @@ module nts.uk.com.view.ccg015.a {
                 topPageName: string;
                 languageNumber: number;
                 layoutId: string;
-                //                placements: Array<PlacementDto>;
             }
             export interface PlacementDto {
                 row: number;
