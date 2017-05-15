@@ -38,13 +38,13 @@ public class CheckListPrintSettingSaveCommand {
 	 * @return the checklist print setting
 	 */
 	public ChecklistPrintSetting toDomain(String companyCode) {
-		return new ChecklistPrintSetting(new ChecklistPrintSettingGetMementoImpl(this, companyCode));
+		return new ChecklistPrintSetting(new PrintSettingGetMementoImpl(this, companyCode));
 	}
 
 	/**
 	 * The Class ChecklistPrintSettingGetMementoImpl.
 	 */
-	public class ChecklistPrintSettingGetMementoImpl implements ChecklistPrintSettingGetMemento {
+	public class PrintSettingGetMementoImpl implements ChecklistPrintSettingGetMemento {
 
 		/** The command. */
 		private CheckListPrintSettingSaveCommand command;
@@ -58,7 +58,7 @@ public class CheckListPrintSettingSaveCommand {
 		 * @param command the command
 		 * @param companyCode the company code
 		 */
-		public ChecklistPrintSettingGetMementoImpl(CheckListPrintSettingSaveCommand command, String companyCode) {
+		public PrintSettingGetMementoImpl(CheckListPrintSettingSaveCommand command, String companyCode) {
 			super();
 			this.command = command;
 			this.companyCode = companyCode;

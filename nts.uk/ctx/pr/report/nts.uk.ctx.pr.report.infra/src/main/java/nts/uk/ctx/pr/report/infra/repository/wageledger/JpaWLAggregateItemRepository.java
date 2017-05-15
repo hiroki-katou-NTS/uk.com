@@ -87,7 +87,8 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository
-	 * #find(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode, nts.uk.ctx.pr.report.dom.company.CompanyCode)
+	 * #find(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode,
+	 *  nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
 	public WLAggregateItem findByCode(WLItemSubject subject) {

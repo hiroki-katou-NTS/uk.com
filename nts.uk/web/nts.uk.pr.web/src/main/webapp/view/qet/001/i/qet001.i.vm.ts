@@ -34,7 +34,7 @@ module qet001.i.viewmodel {
                 self.selectedTab(index);
             });
             self.selectedTab.subscribe(val => {
-                if (val == undefined || val == null) {
+                if (!val) {
                     return;
                 }
                 // reload tab.
@@ -197,9 +197,15 @@ module qet001.i.viewmodel {
 
         public save(): void {
             var self = this;
+            // clear error.
+            self.clearError();
             // Validate.
-            $('.nts-input').ntsEditor('validate');
-            if ($('.nts-input').ntsError('hasError')) {
+            $('#code-input').ntsEditor('validate');
+            $('#name-input').ntsEditor('validate')
+            if (self.aggregateItemDetail().subItems().length == 0) {
+                $('#swap-list').ntsError('set', '集約する'+ self.fullCategoryName +'項目が選択されていません。');
+            }
+            if ($('.nts-input').ntsError('hasError') || $('#swap-list').ntsError('hasError')) {
                 return;
             }
 
@@ -211,13 +217,7 @@ module qet001.i.viewmodel {
                     self.aggregateItemSelectedCode(self.aggregateItemDetail().code());
                 });
             }).fail(function(res) {
-                // clear error.
-                self.clearError();
-                if(res.messageId == 'ER005') {
-                    $('#code-input').ntsError('set', res.message);
-                } else {
-                    $('#btnSave').ntsError('set', res.message);
-                }
+               $('#code-input').ntsError('set', res.message); 
             });
         }
 
@@ -270,12 +270,15 @@ module qet001.i.viewmodel {
             $('.master-table-label').attr('style', 'width: ' + $('#swap-list-gridArea1').width() + 'px');
             $('.sub-table-label').attr('style', 'width: ' + $('#swap-list-gridArea2').width() + 'px');
         }
-
+        
+        /**
+         * Clear Error inputs.
+         */
         public clearError(): void {
             if (nts.uk.ui._viewModel) {
-                $('#btnSave').ntsError('clear');
                 $('#code-input').ntsError('clear');
                 $('#name-input').ntsError('clear');
+                $('#swap-list').ntsError('clear');
             }
         }
 
@@ -318,18 +321,18 @@ module qet001.i.viewmodel {
 
         constructor(paymentType: string, category: string,
             masterItems: service.Item[], item?: service.Item) {
-            this.code = item == undefined ? ko.observable('') : ko.observable(item.code);
-            this.name = item == undefined ? ko.observable('') : ko.observable(item.name);
+            this.code = !item ? ko.observable('') : ko.observable(item.code);
+            this.name = !item ? ko.observable('') : ko.observable(item.name);
             this.paymentType = paymentType;
             this.category = category;
-            this.showNameZeroValue = item == undefined ? ko.observable(true)
+            this.showNameZeroValue = !item ? ko.observable(true)
                 : ko.observable(item.showNameZeroValue);
-            this.showValueZeroValue = item == undefined ? ko.observable(true)
+            this.showValueZeroValue = !item ? ko.observable(true)
                 : ko.observable(item.showValueZeroValue);
-            this.subItems = item == undefined ? ko.observableArray([]) : ko.observableArray(item.subItems);
+            this.subItems = !item ? ko.observableArray([]) : ko.observableArray(item.subItems);
             this.showNameZeroCode = ko.observable(this.showNameZeroValue() ? '0' : '1');
             this.showValueZeroCode = ko.observable(this.showValueZeroValue() ? '0' : '1');
-            this.createMode = ko.observable(item == undefined);
+            this.createMode = ko.observable(!item);
             var self = this;
 
             // Computed show values variable.

@@ -58,36 +58,47 @@ public class PcpmtPersonComPK implements Serializable {
 		this.histId = histId;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ccd == null) ? 0 : ccd.hashCode());
+		result = prime * result + ((histId == null) ? 0 : histId.hashCode());
+		result = prime * result + ((pid == null) ? 0 : pid.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof PcpmtPersonComPK)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		PcpmtPersonComPK other = (PcpmtPersonComPK) object;
-		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		if ((this.pid == null && other.pid != null) || (this.pid != null && !this.pid.equals(other.pid))) {
+		PcpmtPersonComPK other = (PcpmtPersonComPK) obj;
+		if (ccd == null) {
+			if (other.ccd != null)
+				return false;
+		} else if (!ccd.equals(other.ccd))
 			return false;
-		}
-		if ((this.histId == null && other.histId != null)
-				|| (this.histId != null && !this.histId.equals(other.histId))) {
+		if (histId == null) {
+			if (other.histId != null)
+				return false;
+		} else if (!histId.equals(other.histId))
 			return false;
-		}
+		if (pid == null) {
+			if (other.pid != null)
+				return false;
+		} else if (!pid.equals(other.pid))
+			return false;
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.PcpmtPersonComPK[ ccd=" + ccd + ", pid=" + pid + ", histId=" + histId + " ]";
 	}
 
 }

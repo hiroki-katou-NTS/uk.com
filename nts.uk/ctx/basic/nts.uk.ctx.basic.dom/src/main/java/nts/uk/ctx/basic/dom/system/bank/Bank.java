@@ -4,7 +4,6 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.basic.dom.company.CompanyCode;
 import nts.uk.shr.com.primitive.Memo;
 
 public class Bank extends AggregateRoot {

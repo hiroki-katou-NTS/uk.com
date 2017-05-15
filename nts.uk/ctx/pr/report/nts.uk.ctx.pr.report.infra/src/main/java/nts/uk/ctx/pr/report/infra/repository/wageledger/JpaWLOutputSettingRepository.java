@@ -71,7 +71,7 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 				QlsptLedgerFormHead.class);
 		if (entity.isPresent()) {
 			QlsptLedgerFormHead realEntity = entity.get();
-			// Convert to Memento;
+			// Convert to Memento
 			outputSetting.saveToMemento(new JpaWLOutputSettingSetMemento(realEntity));
 			// Update to db.
 			this.commandProxy().update(realEntity);
