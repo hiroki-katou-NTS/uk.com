@@ -33,7 +33,7 @@ public class PaymentConstant {
     public static final int INDEX_FIRST_COLUMN = 0;
     
     /** The Constant INDEX_ROW_CONTENT. */
-    public static final int INDEX_ROW_CONTENT = 6;
+    public static final int INDEX_ROW_CONTENT = 7;
     
     /** The Constant ZERO. */
     public static final int ZERO = 0;
@@ -48,7 +48,7 @@ public class PaymentConstant {
     public static final int NUMBER_COLUMN_PAGE = 13;
     
     /** The Constant NUMBER_ROW_FIRST_PAGE. */
-    public static final int NUMBER_ROW_FIRST_PAGE = 65;
+    public static final int NUMBER_ROW_FIRST_PAGE = 58;
     
     /** The Constant NUMBER_ROW_PAGE. */
     public static final int NUMBER_ROW_PAGE = 63;

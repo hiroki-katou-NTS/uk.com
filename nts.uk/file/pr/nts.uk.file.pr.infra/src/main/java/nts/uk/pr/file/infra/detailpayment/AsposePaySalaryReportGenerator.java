@@ -101,7 +101,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             reportContext.processDesigner();
             
             // =============== SAVE AS PDF ===============
-//            workbook.save(this.getReportName("/Users/mrken57/Work/UniversalK/project/export/qpp007/QPP007.xlsx"));
+            workbook.save(this.getReportName("C:\\QPP007.xlsx"));
             reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
 //            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName("qpp007.xlsx")));
         } catch (Exception e) {
@@ -145,13 +145,13 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         // ===== SET HEADER =======
         int offsetLeft = 0;
         int offsetRight = 2;
-        pageSetup.setHeader(offsetLeft, "&\"Calibri\"&11 " + header.getNameCompany());
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
-        pageSetup.setHeader(offsetRight, "&\"Calibri\"&11 " + dateFormat.format(new Date()) + "\n&P ページ");
+//        pageSetup.setHeader(offsetLeft, "&\"Calibri\"&11 " + header.getNameCompany());
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+//        pageSetup.setHeader(offsetRight, "&\"Calibri\"&11 " + dateFormat.format(new Date()) + "\n&P ページ");
 
         // merge row title report
-        printProcess.worksheet.getCells().merge(PaymentConstant.ZERO, PaymentConstant.ZERO,
-                PaymentConstant.ONE, PaymentConstant.NUMBER_COLUMN_PAGE);
+//        printProcess.worksheet.getCells().merge(PaymentConstant.ZERO, PaymentConstant.ZERO,
+//                PaymentConstant.ONE, PaymentConstant.NUMBER_COLUMN_PAGE);
 
         // ======== SET PRINT AREA ========
         int lastColumn;
@@ -1015,7 +1015,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
          */
         public void drawTitleReport(Cell cell) {
             Style style = this.findStyleCell(cell, this.borderType);
-            style.setHorizontalAlignment(TextAlignmentType.CENTER);
+            //style.setHorizontalAlignment(TextAlignmentType.CENTER);
             cell.setStyle(style);
         }
 
