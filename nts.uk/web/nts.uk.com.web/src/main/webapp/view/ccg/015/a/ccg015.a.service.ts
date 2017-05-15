@@ -69,18 +69,6 @@ module nts.uk.com.view.ccg015.a {
                 languageNumber: number;
                 layoutId: string;
             }
-            export interface PlacementDto {
-                row: number;
-                column: number;
-                topPagePart: TopPagePartDto;
-            }
-            export interface TopPagePartDto {
-                topPagePartType: number;
-                topPagePartCode: string;
-                topPagePartName: string;
-                width: number;
-                height: number;
-            }
         }
     }
 }
