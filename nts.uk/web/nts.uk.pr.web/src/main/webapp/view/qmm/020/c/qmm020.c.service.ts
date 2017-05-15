@@ -1,137 +1,69 @@
 module qmm020.c.service {
+    import ajax = nts.uk.request.ajax;
+    import format = nts.uk.text.format;
+
     //duong dan   
     var paths = {
-        getEmployAllotSettingHeaderList: "pr/core/allot/findallemployeeallotheader",
-        getEmployAllotSettingDetailList: "pr/core/allot/findallemployeeallotdetail",
-        getAllEmployeeAllotSettingList: "pr/core/allot/findAllEmployeeAllotSettingList/{0}",
-        getMaxDate: "pr/core/allot/findallemployeeallotheaderMax",
-        insertAllotEmployeeSetting: "pr/core/allot/insertAllEmployeeSetting",
-        getEmployeeDetail: "pr/core/allot/findEmployeeDetail/{0}",
-        getEmployeeName: "basic/organization/employment/findallemployments",
-        getLayoutName: "pr/core/allot/findcompanyallotlayoutname/{0}"
+        getEmployAllotSettingHeaderList: "pr/core/allot/findallemployeeallotheader", //1
+        getMaxDate: "pr/core/allot/findallemployeeallotheaderMax",  //2
+        getEmployeeDetail: "pr/core/allot/findEmployeeDetail/{0}",       //5
+        getEmployeeName: "basic/organization/employment/findallemployments",   //3
+        getLayoutName: "pr/core/allot/findcompanyallotlayoutname/{0}"    //4
     }
-    /**
-     * Get list payment date processing.
-     */
+
     export function getEmployeeAllotHeaderList() {
         var dfd = $.Deferred();
-        
-        nts.uk.request.ajax(paths.getEmployAllotSettingHeaderList)
+
+        ajax(paths.getEmployAllotSettingHeaderList)
             .done((res) => { dfd.resolve(res); })
             .fail((res) => { dfd.reject(res); });
-        
+
         return dfd.promise();
     }
 
-    /**
-     * Get employee list with payment doc, bunus doc
-     */
-    export function getEmployeeAllotDetailList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getEmployAllotSettingDetailList)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
+
+
+    export function getEmployeeName() {
+        let dfd = $.Deferred();
+
+        ajax("com", paths.getEmployeeName)
+            .done((res) => { dfd.resolve(res); })
+            .fail((msg) => { dfd.reject(msg); });
+
         return dfd.promise();
     }
 
-    export function getAllEmployeeAllotSetting(histId: string): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred<Array<any>>();
-        let _path = nts.uk.text.format(paths.getAllEmployeeAllotSettingList, histId);
-        nts.uk.request.ajax("pr", _path).done(function(res: Array<any>) {
-            dfd.resolve(res);
-        }).fail(function(error) {
-            dfd.reject(error);
-        })
-        return dfd.promise();
-    }
-    export function getEmployeeName(): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.getEmployeeName)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-    export function getEmployeeDetail(histId: string): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred<Array<any>>();
-        let _path = nts.uk.text.format(paths.getEmployeeDetail, histId);
-        nts.uk.request.ajax(_path)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-    export function getAllotEmployeeMaxDate(): JQueryPromise<any> {
-        let dfd = $.Deferred<any>();
-        let _path = nts.uk.text.format(paths.getMaxDate);
+    export function getEmployeeDetail(histId: string) {
+        let dfd = $.Deferred();
+        let _path = format(paths.getEmployeeDetail, histId);
 
-        nts.uk.request.ajax(_path).done(function(res: any) {
-            dfd.resolve(res);
-        })
-            .fail(function(error) {
-                dfd.reject(error);
-            })
-        return dfd.promise();
-    }
-    export function insertAllotEm(insertAllotEmployeeCommand: any) {
-        var dfd = $.Deferred<Array<any>>();
-        let command = {} as IEmployeeModel;
-        command.historyId = insertAllotEmployeeCommand.historyId;
-        command.employeeCode = insertAllotEmployeeCommand.employeeCode;
-        command.paymentDetailCode = insertAllotEmployeeCommand.paymentDetailCode;
-        command.bonusDetailCode = insertAllotEmployeeCommand.bonusDetailCode;
-        command.startYm = insertAllotEmployeeCommand.startYm;
-        command.endYm = insertAllotEmployeeCommand.endYm;
-        nts.uk.request.ajax(paths.insertAllotEmployeeSetting, command)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
+        ajax(_path)
+            .done((res) => { dfd.resolve(res); })
+            .fail((msg) => { dfd.reject(msg); });
 
+        return dfd.promise();
     }
 
-    export function getAllotLayoutName(stmtCode: string): JQueryPromise<string> {
+    export function getMaxDate() {
+        let dfd = $.Deferred();
+
+        ajax(paths.getMaxDate)
+            .done((res) => { dfd.resolve(res); })
+            .fail((error) => { dfd.reject(error); });
+
+        return dfd.promise();
+    }
+
+
+    export function getAllotLayoutName(stmtCode: string) {
         var dfd = $.Deferred<any>();
-        var _path = nts.uk.text.format(paths.getLayoutName, stmtCode);
-        var options = {
-            dataType: 'text',
-            contentType: 'text/plain'
-        };
-        nts.uk.request.ajax(_path, undefined, options)
-            .done(function(res: string) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
+
+        var _path = format(paths.getLayoutName, stmtCode);
+
+        ajax(_path)
+            .done((res) => { dfd.resolve(res); })
+            .fail((msg) => { dfd.reject(msg); });
+
         return dfd.promise();
     }
-
-    interface IEmployeeModel {
-        companyCode?: string;
-        historyId?: string;
-
-        employeeCode?: string;
-        employeeName?: string;
-        paymentDetailCode?: string;
-        paymentDetailName?: string;
-        bonusDetailCode?: string;
-        bonusDetailName?: string;
-        startYm?: string;
-        endYm?: string;
-        startEnd?: string;
-    }
-
 }

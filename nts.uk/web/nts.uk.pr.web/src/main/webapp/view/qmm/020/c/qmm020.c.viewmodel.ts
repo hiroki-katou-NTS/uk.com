@@ -44,7 +44,7 @@ module qmm020.c.viewmodel {
                         .map((m) => { model.ListItems.push(new ListModel(m)); });
                 }
                 // get itemMax of ListItem
-                service.getAllotEmployeeMaxDate().done((itemMax: number) => {
+                service.getMaxDate().done((itemMax: number) => {
                     let maxDate: IListModel = _.find(model.ListItems(), function(obj) { return obj.endYm == itemMax; });
                     model.ListItems().map((m) => {
                         if (m.historyId == maxDate.historyId) {
@@ -150,11 +150,35 @@ module qmm020.c.viewmodel {
                 nts.uk.ui.windows.setShared("K_DATA", { displayMode: 1, startYm: currentItem.startYm, endYm: currentItem.endYm });
                 nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { width: 485, height: 550, title: '履歴の編集', dialogClass: "no-close" })
                     .onClosed(() => {
-                        let model: any = nts.uk.ui.windows.getShared("K_RETURN");
-                        if (model) {
-                            if (model.selectedMode == 1) {
-                                //return null;
+                        let value: any = nts.uk.ui.windows.getShared("K_RETURN");
+                        if (value) {
+                            // search index of current item
+                            let index = _.findIndex(model.ListItems(), function(m) { return m.historyId == model.ListItemSelected(); });
+                            if (value.selectedMode == 1) {
+                                // call service delete item at here
+                                let models = model.ListItems.splice(index, 1);
+                                // service.deleteData(models).done(function() {
+                                // call start function
+                                //self.start();
+                                //}).fail((msg) => { alert(msg); });
                             } else {
+                                // modify
+                                let startDate = nts.uk.time.parseYearMonth(value.startYm);
+                                if (startDate.success) {
+                                    let current: ListModel = model.ListItems()[index], neighbor = model.ListItems()[index + 1];
+                                    debugger;
+                                    if (!!neighbor) {
+                                        neighbor.endYm = 999912;
+                                        neighbor.update();
+                                    }
+
+                                    // update view data
+                                    model.ListItems.push(model.ListItems.pop());
+                                    model.ListItemSelected.valueHasMutated();
+                                    model.GridItemSelected.valueHasMutated();
+                                } else {
+                                    alert(startDate.msg);
+                                }
                             }
                         }
                     });
