@@ -58,6 +58,7 @@ module qet001.a {
                 name: string;
                 isAggregateItem: boolean;
                 orderNumber?: number;
+                itemKey: string;
             }
         }
     }

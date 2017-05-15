@@ -26,7 +26,7 @@
 		<ui:define name="extendedAction">
 			<button>印刷(PDF)</button>
 			<button
-				data-bind="click: OpenModalStandardMonthlyPricePensionWithDirtyCheck">標準報酬月額保険料額表</button>
+				data-bind="enable: canUpdateHistory, click: OpenModalStandardMonthlyPricePensionWithDirtyCheck">標準報酬月額保険料額表</button>
 			<button data-bind="click: OpenModalOfficeRegisterWithDirtyCheck">事業所登録</button>
 			<button>マスタ修正登録</button>
 		</ui:define>
@@ -63,6 +63,7 @@
 							<td colspan="2" class="border_none"><div id="fundInputApply"
 									style="margin-top: 20px; float: left;" class="cf"
 									data-bind="ntsSwitchButton: {
+							enable: $parent.canUpdateHistory,
 							options: $parent.pensionFundInputOptions,
 							optionsValue: 'code',
 							optionsText: 'name',
@@ -75,6 +76,7 @@
 							<td class="border_none"><div id="autoCalculate"
 									style="margin-top: 20px; float: left;" class="cf"
 									data-bind="ntsSwitchButton: {
+							enable: $parent.canUpdateHistory,
 							options: $parent.pensionCalculateOptions,
 							optionsValue: 'code',
 							optionsText: 'name',
@@ -107,69 +109,69 @@
 								<td class="bg-green tbl_pension_rate text_center" colspan="2">男子負担率（第1種）</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionSalaryPersonalSon"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalSon, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionSalaryPersonalSon, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionSalaryCompanySon"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanySon, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionSalaryCompanySon, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionBonusPersonalSon"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalSon, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionBonusPersonalSon, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionBonusCompanySon"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanySon, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionBonusCompanySon, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 							</tr>
 							<tr>
 								<td class="bg-green tbl_pension_rate text_center" colspan="2">女子負担率（第2種）</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionSalaryPersonalDaughter"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalDaughter, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionSalaryPersonalDaughter, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionSalaryCompanyDaughter"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyDaughter, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionSalaryCompanyDaughter, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionBonusPersonalDaughter"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalDaughter, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionBonusPersonalDaughter, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionBonusCompanyDaughter"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyDaughter, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionBonusCompanyDaughter, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 							</tr>
 							<tr>
 								<td class="bg-green tbl_pension_rate text_center" colspan="2">坑内員負担率（第3種）</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionSalaryPersonalUnknown"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalUnknown, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionSalaryPersonalUnknown, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionSalaryCompanyUnknown"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyUnknown, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionSalaryCompanyUnknown, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionBonusPersonalUnknown"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalUnknown, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionBonusPersonalUnknown, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input class = "save-error" id="pensionBonusCompanyUnknown"
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyUnknown, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {enable: $parent.canUpdateHistory, value: rateItems().pensionBonusCompanyUnknown, option: $parent.Rate2, constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 							</tr>
 						</tbody>
 					</table>
 
 					<div class="pad_top_10"
-						data-bind="css: { hidden: $parent.fundInputEnable() }">基金用</div>
-					<div data-bind="css: { hidden: $parent.fundInputEnable() }"
+						data-bind="if: $parent.fundInputEnable()">基金用</div>
+					<div data-bind="if: $parent.fundInputEnable()"
 						class="hr_width">
 						<hr />
 					</div>
-					<table data-bind="css: { hidden: $parent.fundInputEnable() }"
+					<table data-bind="if: $parent.fundInputEnable()"
 						id="pension_fund_rate_table">
 						<tbody>
 							<tr class="bg-green">
@@ -331,7 +333,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionSalaryPersonalComboBoxSelectedCode,
 												optionsText: 'name',
-												enable: true,
+												enable: $parent.canUpdateHistory,
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div>
@@ -342,7 +344,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionSalaryCompanyComboBoxSelectedCode,
 												optionsText: 'name',
-												enable: true,
+												enable: $parent.canUpdateHistory,
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>
@@ -352,7 +354,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionBonusPersonalComboBoxSelectedCode,
 												optionsText: 'name',
-												enable: true,
+												enable: $parent.canUpdateHistory,
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>
@@ -362,7 +364,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionBonusCompanyComboBoxSelectedCode,
 												optionsText: 'name',
-												enable: true,
+												enable: $parent.canUpdateHistory,
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>

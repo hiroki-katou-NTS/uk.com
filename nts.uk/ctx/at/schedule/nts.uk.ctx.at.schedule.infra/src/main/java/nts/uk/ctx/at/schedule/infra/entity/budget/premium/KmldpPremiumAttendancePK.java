@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -16,9 +18,9 @@ public class KmldpPremiumAttendancePK {
 	@Column(name="HIS_ID")
 	public String historyID;
 	
-	@Column(name="ATTENDANCE_CD")
-	public String attendanceCD;
+	@Column(name="PREMIUM_ID")
+	public BigDecimal premiumID;
 	
-	@Column(name="PREMIUM_CD")
-	public String premiumCD;
+	@Column(name="ATTENDANCE_ID")
+	public BigDecimal attendanceID;
 }

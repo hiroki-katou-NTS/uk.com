@@ -119,7 +119,7 @@ module nts.uk.ui.koExtentions {
             var optionsValue: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var currentSource = $grid.igGrid('option', 'dataSource');
             var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
-            if (!_.isEqual(currentSource, sources)) {
+            if ($grid.attr("filtered") !== true && $grid.attr("filtered") !== "true") {
                 let currentSources = sources.slice();
                 var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];

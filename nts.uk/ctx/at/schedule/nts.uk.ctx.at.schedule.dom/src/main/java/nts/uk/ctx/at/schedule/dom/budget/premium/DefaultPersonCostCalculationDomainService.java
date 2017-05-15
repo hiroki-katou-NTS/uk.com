@@ -18,18 +18,19 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 	private PersonCostCalculationRepository personCostCalculationRepository;
 	
 	@Override
-	public PersonCostCalculation createFromJavaType(String companyID, Memo memo, UnitPrice unitPrice,
-			GeneralDate startDate, List<PremiumSetting> premiumSettings) {
+	public PersonCostCalculation createFromJavaType(String companyID, GeneralDate startDate, 
+			UnitPrice unitPrice, Memo memo, List<PremiumSetting> premiumSettings) {
 		String historyID = UUID.randomUUID().toString();
-		return new PersonCostCalculation(companyID, historyID, memo, unitPrice, startDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), 
+		return new PersonCostCalculation(companyID, historyID, startDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), unitPrice, memo,
 				premiumSettings.stream()
 				.map(x -> new PremiumSetting(
 						companyID, 
 						historyID, 
+						x.getPremiumID(), 
+						x.getRate(), 
 						x.getAttendanceID(), 
-						x.getPremiumRate(), 
-						x.getPremiumName(), 
-						x.getInternalID(), 
+						x.getName(),
+						x.getDisplayNumber(),
 						x.getUseAtr(), 
 						x.getTimeItemIDs()))
 				.collect(Collectors.toList()));
@@ -48,18 +49,18 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 					new PersonCostCalculation(
 						beforePersonCostResult.get().getCompanyID(), 
 						beforePersonCostResult.get().getHistoryID(),
-						beforePersonCostResult.get().getMemo(), 
-						beforePersonCostResult.get().getUnitprice(), 
 						beforePersonCostResult.get().getStartDate(), 
 						personCostCalculation.getStartDate().addDays(-1), 
+						beforePersonCostResult.get().getUnitPrice(),
+						beforePersonCostResult.get().getMemo(),
 						beforePersonCostResult.get().getPremiumSettings()));
 		}
 		this.personCostCalculationRepository.add(
 				createFromJavaType(
 						personCostCalculation.getCompanyID(), 
-						personCostCalculation.getMemo(), 
-						personCostCalculation.getUnitprice(), 
-						personCostCalculation.getStartDate(), 
+						personCostCalculation.getStartDate(),
+						personCostCalculation.getUnitPrice(), 
+						personCostCalculation.getMemo(),
 						personCostCalculation.getPremiumSettings()));
 	}
 
@@ -78,10 +79,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 					new PersonCostCalculation(
 						beforePersonCostResult.get().getCompanyID(), 
 						beforePersonCostResult.get().getHistoryID(),
-						beforePersonCostResult.get().getMemo(), 
-						beforePersonCostResult.get().getUnitprice(), 
 						beforePersonCostResult.get().getStartDate(), 
 						personCostCalculation.getStartDate().addDays(-1), 
+						beforePersonCostResult.get().getUnitPrice(), 
+						beforePersonCostResult.get().getMemo(),
 						beforePersonCostResult.get().getPremiumSettings()));
 		}
 		this.personCostCalculationRepository.update(personCostCalculation);
@@ -101,10 +102,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 			new PersonCostCalculation(
 				beforePersonCostResult.get().getCompanyID(), 
 				beforePersonCostResult.get().getHistoryID(),
-				beforePersonCostResult.get().getMemo(), 
-				beforePersonCostResult.get().getUnitprice(), 
 				beforePersonCostResult.get().getStartDate(), 
 				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), 
+				beforePersonCostResult.get().getUnitPrice(), 
+				beforePersonCostResult.get().getMemo(), 
 				beforePersonCostResult.get().getPremiumSettings()));
 		this.personCostCalculationRepository.delete(personCostCalculation);
 		
