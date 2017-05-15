@@ -50,5 +50,4 @@ public class BankTransferReportBGenerator extends AsposeCellsReportGenerator imp
 			throw new RuntimeException(e);
 		}
 	}
-
 }

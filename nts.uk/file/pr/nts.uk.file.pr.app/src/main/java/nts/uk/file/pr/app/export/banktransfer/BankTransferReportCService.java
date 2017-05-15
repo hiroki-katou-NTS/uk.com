@@ -14,9 +14,9 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.file.pr.app.export.banktransfer.data.BankDto;
-import nts.uk.file.pr.app.export.banktransfer.data.BankTransferBReport;
-import nts.uk.file.pr.app.export.banktransfer.data.BankTransferBRpData;
-import nts.uk.file.pr.app.export.banktransfer.data.BankTransferBRpHeader;
+import nts.uk.file.pr.app.export.banktransfer.data.BankTransferCReport;
+import nts.uk.file.pr.app.export.banktransfer.data.BankTransferCRpData;
+import nts.uk.file.pr.app.export.banktransfer.data.BankTransferCRpHeader;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferParamRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BranchDto;
@@ -24,10 +24,10 @@ import nts.uk.file.pr.app.export.banktransfer.query.BankTransferReportQuery;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class BankTransferReportBService extends ExportService<BankTransferReportQuery> {
+public class BankTransferReportCService extends ExportService<BankTransferReportQuery> {
 
 	@Inject
-	private BankTransferRpBGenerator generator;
+	private BankTransferRpCGenerator generator;
 
 	@Inject
 	private BankTransferReportRepository bankTransferReportRepo;
@@ -48,7 +48,7 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 	private void process(BankTransferReportQuery query, String companyCode,
 			ExportServiceContext<BankTransferReportQuery> context, int sparePayAtr) {
 
-		List<BankTransferBRpData> rpDataList = new ArrayList<BankTransferBRpData>();
+		List<BankTransferCRpData> rpDataList = new ArrayList<BankTransferCRpData>();
 		for (String fromBranchId : query.getFromBranchId()) {
 			BankTransferParamRpDto bankTransferParamRp = new BankTransferParamRpDto(companyCode, fromBranchId,
 					PayBonusAtr.SALARY.value, query.getProcessingNo(), query.getProcessingYm(), query.getPayDate(),
@@ -62,10 +62,10 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 			}
 
 			for (BankTransferRpDto bankTrans : bankTransfer) {
-				BankTransferBRpData rpData = new BankTransferBRpData();
-				if (query.getSelectedId_J_SEL_001() == 1) {
-					// PERSON_BASE SEL_1
-				}
+				BankTransferCRpData rpData = new BankTransferCRpData();
+				// PERSON_BASE SEL_1
+				// to-do : sau khi select trong personBase can check dieu kien
+				// ton tai hay khong(throw ER010)
 				Optional<BranchDto> branchDto = bankTransferReportRepo.findAllBranch(companyCode,
 						bankTrans.getToBranchId());
 				if (!branchDto.isPresent()) {
@@ -76,70 +76,69 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 				if (!bankDto.isPresent()) {
 					throw new BusinessException("ER010");
 				}
-				if (query.getCurrentCode_J_SEL_004() == 0) {
-					// to- do
-				}
-				// B_DBD_002
-				rpData.setBankCode(bankDto.get().getBankCode());
-				// B_DBD_003
+				// C_DBD_001
 				rpData.setBankName(bankDto.get().getBankName());
-				// B_DBD_004
-				rpData.setBranchCode(branchDto.get().getBranchCode());
-				// B_DBD_005
+				// C_DBD_002
 				rpData.setBranchName(branchDto.get().getBranchName());
-
-				// B_DBD_006
+				// C_DBD_003
 				if (bankTrans.getFromAccountAtr() == 0) {
 					rpData.setFromAccountAtr("普通");
 				} else {
 					rpData.setFromAccountAtr("当座");
 				}
-				// B_DBD_007
+				// C_DBD_004
 				rpData.setFromAccountNo(bankTrans.getFromAccountNo());
-				// B_DBD_008
-				int countItems = (int) bankTransfer.stream()
-						.filter(tmp -> tmp.getFromBranchId() == bankTrans.getToBranchId()
-								&& tmp.getFromAccountAtr() == bankTrans.getFromAccountAtr()
-								&& tmp.getFromAccountNo().equals(bankTrans.getFromAccountNo()))
-						.count();
-				rpData.setNumPerSameType(countItems);
-				// A_DBD_009
-				rpData.setPaymentMyn(bankTrans.getPaymentMoney());
-				rpData.setUnit("円");
-				rpData.setUnitPerson("人");
+				// C_DBD_005
+				// to-do
+				if (query.getProcessingNo() == 1) {
+
+				} else if (query.getProcessingNo() == 2) {
+
+				} else if (query.getProcessingNo() == 3) {
+
+				} else if (query.getProcessingNo() == 4) {
+
+				} else {
+
+				}
+
+				// C_DBD_006
+				rpData.setPaymentMny(bankTrans.getPaymentMoney());
 
 				rpDataList.add(rpData);
 			}
 		}
-		BankTransferBRpData rpDataSum = new BankTransferBRpData();
-		rpDataSum.setBankCode("総合計");
-		// B_CTR_002 (totalPaymentMny)
-		BigDecimal sum = BigDecimal.valueOf(0);
-		int totalPerson = 0;
-		for (BankTransferBRpData bankTransferBRpData : rpDataList) {
-			sum = sum.add(bankTransferBRpData.getPaymentMyn());
-			totalPerson += bankTransferBRpData.getNumPerSameType();
+		// BankTransferCRpData rpDataSum = new BankTransferCRpData();
+		// BigDecimal totalMny = BigDecimal.ZERO;
+		// // BigDecimal mnyPerPage = BigDecimal.ZERO;
+		// rpDataSum.setTotalObjPerPage(rpDataList.size());
+		// rpDataSum.setTotalObj(rpDataList.size());
+		// for (int i = 0; i < rpDataList.size(); i++) {
+		// totalMny.add(rpDataList.get(i).getPaymentMny());
+		// }
+		// rpDataSum.setTotalMnyPerPage(totalMny);
+		// rpDataList.add(rpDataSum);
+		// for (int i = 0; i < rpDataList.size(); i += 15) {
+		// mnyPerPage.add(rpDataList.get(i).getPaymentMny());
+		// }
+
+		BankTransferCRpHeader header = new BankTransferCRpHeader();
+		// C_DBD_007
+		if (!bankTransferReportRepo.findRegalDocCnameSjis(companyCode).get().isEmpty()) {
+			header.setCNameSJIS(bankTransferReportRepo.findRegalDocCnameSjis(companyCode).get());
 		}
-		rpDataSum.setPaymentMyn(sum);
-		rpDataSum.setUnit("円");
-		// B_CTR_001 (totalPerson)
-		rpDataSum.setNumPerSameType(totalPerson);
-		rpDataSum.setUnitPerson("人");
+		header.setTotalObjPerPage(rpDataList.size());
+		header.setTotalObj(rpDataList.size());
+		BigDecimal totalMny = BigDecimal.ZERO;
+		for (int i = 0; i < rpDataList.size(); i++) {
+			totalMny = totalMny.add(rpDataList.get(i).getPaymentMny());
+		}
+		header.setTotalMnyPerPage(totalMny);
+		header.setTotalMny(totalMny);
+		BankTransferCReport reportC = new BankTransferCReport();
+		reportC.setData(rpDataList);
+		reportC.setHeader(header);
 
-		rpDataList.add(rpDataSum);
-
-		BankTransferBRpHeader header = new BankTransferBRpHeader();
-		header.setCompanyName(bankTransferReportRepo.findCompany(companyCode).getCompanyName());
-		header.setStartCode("0001 - 100 	給与分  	給与予備月 ");
-		header.setEndCode("9999 - 999	総合計	給与予備月 】");
-		header.setDate(query.getTransferDate() + "】");
-		// B_DBD_001
-		header.setPerson(bankTransferReportRepo.findAllCalled(companyCode).get());
-
-		BankTransferBReport reportB = new BankTransferBReport();
-		reportB.setData(rpDataList);
-		reportB.setHeader(header);
-
-		this.generator.generator(context.getGeneratorContext(), reportB);
+		this.generator.generate(context.getGeneratorContext(), reportC);
 	}
 }

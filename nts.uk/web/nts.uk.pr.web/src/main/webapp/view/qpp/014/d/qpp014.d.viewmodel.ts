@@ -11,7 +11,7 @@ module qpp014.d.viewmodel {
         dateOfPayment: KnockoutObservable<string>;
         d_lbl_015: KnockoutObservable<string>;
         d_lbl_016: KnockoutObservable<string>;
-
+ 
         constructor(data: any) {
             let self = this;
             self.dateOfPayment = ko.observable('2017-05-11 00:00:00');
@@ -33,20 +33,20 @@ module qpp014.d.viewmodel {
             self.d_lbl_016 = ko.observable(data.processingName);
             nts.uk.ui.windows.setShared("sparePayAtr", self.sparePayAtr(), true);
             nts.uk.ui.windows.setShared("processingNo", self.d_lbl_015(), true);
+            nts.uk.ui.windows.setShared("processingYMNotConvert", self.processingYMNotConvert(), true);
         }
 
         openEDialog() {
             var self = this;
-            nts.uk.ui.windows.setShared("processingYMNotConvert", self.processingYMNotConvert(), true);
             nts.uk.ui.windows.setShared("dateOfPayment", self.dateOfPayment(), true);
             nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function() {
                 //if close button, not next screen
                 if (!nts.uk.ui.windows.getShared("closeDialog")) {
                     $('#wizard').ntsWizard("next");
-                    _.delay(() => {
-                        $("#H_LST_001").igGridSelection("selectRow", 1);
-                        $("#H_LST_001").igGridSelection("clearSelection");
-                    }, 201); // hot fix by Lam Than
+//                    _.delay(() => {
+//                        $("#H_LST_001").igGridSelection("selectRow", 1);
+//                        $("#H_LST_001").igGridSelection("clearSelection");
+//                    }, 201); // hot fix by Lam Than
                 }
             });
         }

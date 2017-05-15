@@ -9,6 +9,7 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.file.pr.app.export.banktransfer.BankTransferReportAService;
 import nts.uk.file.pr.app.export.banktransfer.BankTransferReportBService;
+import nts.uk.file.pr.app.export.banktransfer.BankTransferReportCService;
 import nts.uk.file.pr.app.export.banktransfer.query.BankTransferReportQuery;
 
 @Path("/screen/pr/QPP014")
@@ -20,6 +21,9 @@ public class QPP014WebService extends WebService {
 	
 	@Inject
 	private BankTransferReportBService reportBService;
+	
+	@Inject
+	private BankTransferReportCService reportCService;
 
 
 	@POST
@@ -32,6 +36,12 @@ public class QPP014WebService extends WebService {
 	@Path("saveAsPdfB")
 	public ExportServiceResult exportDataToPdfB(BankTransferReportQuery query) {
 		return reportBService.start(query);
+	}
+	
+	@POST
+	@Path("saveAsPdfC")
+	public ExportServiceResult exportDataToPdfC(BankTransferReportQuery query) {
+		return reportCService.start(query);
 	}
 
 }

@@ -65,55 +65,8 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 		else if (addBankTransferCommand.getSparePayAtrOfScreenE() == 2) {
 			process1(companyCode, addBankTransferCommand, SparePayAtr.PRELIMINARY.value);
 		} else {
-			// BANK_TRANSFER DEL_1 with SPARE_PAY_ATR = 0 and 1
-			bankTransferRepository.removeAll(companyCode, addBankTransferCommand.getProcessingNoOfScreenE(),
-					addBankTransferCommand.getPayDateOfScreenE());
-			// PAYMENT_HEADER SEL_3 with PAYBONUS_ATR = 0 and SPARE_PAY_ATR = 0
-			// and 1
-			// ERRORRRR
-			List<Payment> paymentObj = paymentDataRepository.findItemWith5Property(companyCode,
-					addBankTransferCommand.getPersonId(), addBankTransferCommand.getProcessingNoOfScreenE(),
-					PayBonusAtr.SALARY.value, addBankTransferCommand.getProcessingYMOfScreenE());
-			if (paymentObj.size() > 0) {
-				// PERSON_BANK_ACCOUNT SEL_7
-				Optional<BasicPersonBankAccountDto> basicPersonBankAccountDtoObj = personBankAccountAdapter
-						.findBasePIdAndBaseYM(companyCode, addBankTransferCommand.getPersonId(),
-								addBankTransferCommand.getProcessingYMOfScreenE());
-				if (basicPersonBankAccountDtoObj.isPresent()) {
-					for (Payment x : paymentObj) {
-						if (basicPersonBankAccountDtoObj.get().getUseSet1().getUseSet() == 1
-								&& basicPersonBankAccountDtoObj.get().getUseSet1().getPaymentMethod() == 0) {
-							process2_1(companyCode, addBankTransferCommand,
-									basicPersonBankAccountDtoObj.get().getUseSet1(), basicPersonBankAccountDtoObj, x,
-									"F304");
-						} else if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
-								&& basicPersonBankAccountDtoObj.get().getUseSet2().getPaymentMethod() == 0) {
-							process2_1(companyCode, addBankTransferCommand,
-									basicPersonBankAccountDtoObj.get().getUseSet2(), basicPersonBankAccountDtoObj, x,
-									"F305");
-						} else if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
-								&& basicPersonBankAccountDtoObj.get().getUseSet3().getPaymentMethod() == 0) {
-							process2_1(companyCode, addBankTransferCommand,
-									basicPersonBankAccountDtoObj.get().getUseSet3(), basicPersonBankAccountDtoObj, x,
-									"F306");
-						} else if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
-								&& basicPersonBankAccountDtoObj.get().getUseSet4().getPaymentMethod() == 0) {
-							process2_1(companyCode, addBankTransferCommand,
-									basicPersonBankAccountDtoObj.get().getUseSet4(), basicPersonBankAccountDtoObj, x,
-									"F307");
-						} else if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
-								&& basicPersonBankAccountDtoObj.get().getUseSet5().getPaymentMethod() == 0) {
-							process2_1(companyCode, addBankTransferCommand,
-									basicPersonBankAccountDtoObj.get().getUseSet5(), basicPersonBankAccountDtoObj, x,
-									"F308");
-						}
-					}
-				} else {
-					// Save error to list
-				}
-			} else {
-				// Save error to list
-			}
+			// BANK_TRANSFER DEL_1 with SPARE_PAY_ATR = 0 & 1
+			process1_1(companyCode, addBankTransferCommand);
 		}
 	}
 
@@ -136,26 +89,70 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 						&& basicPersonBankAccountDtoObj.get().getUseSet1().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet1(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F304");
-				}
-				if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
+				} else if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet2().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet2(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F305");
-				}
-				if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
+				} else if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet3().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet3(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F306");
-				}
-				if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
+				} else if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet4().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet4(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F307");
-				}
-				if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
+				} else if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet5().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet5(),
 							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F308");
+				}
+			} else {
+				// Save error to list
+			}
+		} else {
+			// Save error to list
+		}
+	}
+
+	private void process1_1(String companyCode, AddBankTransferCommand addBankTransferCommand) {
+
+		// BANK_TRANSFER DEL_1 with SPARE_PAY_ATR = 0 and 1
+		bankTransferRepository.removeAll(companyCode, addBankTransferCommand.getProcessingNoOfScreenE(),
+				addBankTransferCommand.getPayDateOfScreenE());
+		// PAYMENT_HEADER SEL_3 with PAYBONUS_ATR = 0 and SPARE_PAY_ATR = 0
+		// and 1
+		// ERRORRRR
+		List<Payment> paymentObj = paymentDataRepository.findItemWith5Property(companyCode,
+				addBankTransferCommand.getPersonId(), addBankTransferCommand.getProcessingNoOfScreenE(),
+				PayBonusAtr.SALARY.value, addBankTransferCommand.getProcessingYMOfScreenE());
+		if (paymentObj.size() > 0) {
+			// PERSON_BANK_ACCOUNT SEL_7
+			Optional<BasicPersonBankAccountDto> basicPersonBankAccountDtoObj = personBankAccountAdapter
+					.findBasePIdAndBaseYM(companyCode, addBankTransferCommand.getPersonId(),
+							addBankTransferCommand.getProcessingYMOfScreenE());
+			if (basicPersonBankAccountDtoObj.isPresent()) {
+				for (Payment x : paymentObj) {
+					if (basicPersonBankAccountDtoObj.get().getUseSet1().getUseSet() == 1
+							&& basicPersonBankAccountDtoObj.get().getUseSet1().getPaymentMethod() == 0) {
+						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet1(),
+								basicPersonBankAccountDtoObj, x, "F304");
+					} else if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
+							&& basicPersonBankAccountDtoObj.get().getUseSet2().getPaymentMethod() == 0) {
+						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet2(),
+								basicPersonBankAccountDtoObj, x, "F305");
+					} else if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
+							&& basicPersonBankAccountDtoObj.get().getUseSet3().getPaymentMethod() == 0) {
+						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet3(),
+								basicPersonBankAccountDtoObj, x, "F306");
+					} else if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
+							&& basicPersonBankAccountDtoObj.get().getUseSet4().getPaymentMethod() == 0) {
+						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet4(),
+								basicPersonBankAccountDtoObj, x, "F307");
+					} else if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
+							&& basicPersonBankAccountDtoObj.get().getUseSet5().getPaymentMethod() == 0) {
+						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet5(),
+								basicPersonBankAccountDtoObj, x, "F308");
+					}
 				}
 			} else {
 				// Save error to list

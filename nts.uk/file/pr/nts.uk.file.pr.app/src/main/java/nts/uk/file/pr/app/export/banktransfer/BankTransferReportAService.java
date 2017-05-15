@@ -72,33 +72,39 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 
 				Optional<BranchDto> branchDto = bankTransferReportRepo.findAllBranch(companyCode,
 						bankTrans.getToBranchId());
+				if (!branchDto.isPresent()) {
+					throw new BusinessException("ER010");
+				}
 				Optional<BankDto> bankDto = bankTransferReportRepo.findAllBank(companyCode,
 						branchDto.get().getBankCode());
-				if (!branchDto.isPresent() || !bankDto.isPresent()) {
+				if (!bankDto.isPresent()) {
 					throw new BusinessException("ER010");
-				} else {
-					// A_DBD_002
-					rpData.setBankCode(bankDto.get().getBankCode());
-					// A_DBD_003
-					rpData.setBankName(bankDto.get().getBankName());
-					// A_DBD_004
-					rpData.setBranchCode(branchDto.get().getBranchCode());
-					// A_DBD_005
-					rpData.setBranchName(branchDto.get().getBranchName());
-					// A_DBD_006
-					if (bankTrans.getToAccountAtr() == 0) {
-						rpData.setToAccountAtr("普通");
-					} else {
-						rpData.setToAccountAtr("当座");
-					}
-					// A_DBD_007
-					rpData.setToAccountNo(bankTrans.getToAccountNo());
-					// A_DBD_010
-					rpData.setPaymentMyn(bankTrans.getPaymentMoney());
-					rpData.setUnit("円");
-
-					rpDataList.add(rpData);
 				}
+				if (query.getCurrentCode_J_SEL_004() == 0) {
+					// to-do
+				}
+				// A_DBD_002
+				rpData.setBankCode(bankDto.get().getBankCode());
+				// A_DBD_003
+				rpData.setBankName(bankDto.get().getBankName());
+				// A_DBD_004
+				rpData.setBranchCode(branchDto.get().getBranchCode());
+				// A_DBD_005
+				rpData.setBranchName(branchDto.get().getBranchName());
+
+				// A_DBD_006
+				if (bankTrans.getToAccountAtr() == 0) {
+					rpData.setToAccountAtr("普通");
+				} else {
+					rpData.setToAccountAtr("当座");
+				}
+				// A_DBD_007
+				rpData.setToAccountNo(bankTrans.getToAccountNo());
+				// A_DBD_010
+				rpData.setPaymentMyn(bankTrans.getPaymentMoney());
+				rpData.setUnit("円");
+
+				rpDataList.add(rpData);
 			}
 		}
 		BankTransferARpData rpDataSum = new BankTransferARpData();
@@ -116,11 +122,13 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 		rpDataList.add(rpDataSum);
 
 		BankTransferARpHeader header = new BankTransferARpHeader();
-		header.setCompanyName("【日通システム株式会社】");
+		header.setCompanyName(bankTransferReportRepo.findCompany(companyCode).getCompanyName());
+		// A_CTR_005
 		header.setCode("0001 - 100 	給与分  	給与予備月 】");
-		header.setDate(query.getTransferDate()+"】");
+		// A_CTR_006
+		header.setDate(query.getTransferDate() + "】");
 		// A_DBD_001
-		header.setPerson(bankTransferReportRepo.findAllCalled(companyCode).get().getPerson());
+		header.setPerson(bankTransferReportRepo.findAllCalled(companyCode).get());
 
 		if (query.getSparePayAtr().equals("3")) {
 			if (query.getCurrentCode_J_SEL_004() == 2) {

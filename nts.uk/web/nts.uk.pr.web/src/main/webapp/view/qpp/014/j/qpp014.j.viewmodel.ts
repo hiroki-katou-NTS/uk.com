@@ -179,7 +179,7 @@ module qpp014.j {
                                 nts.uk.ui.dialog.alert("対象データがありません。");
                             }
                         });
-                }
+                } 
             }
         }
     }
