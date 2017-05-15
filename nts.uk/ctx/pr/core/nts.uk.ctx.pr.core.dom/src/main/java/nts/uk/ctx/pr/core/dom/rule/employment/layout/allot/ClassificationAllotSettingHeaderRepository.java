@@ -9,5 +9,6 @@ public interface ClassificationAllotSettingHeaderRepository {
 	List<ClassificationAllotSettingHeader> findAll(String companyCode);
 
 	void update(ClassificationAllotSettingHeader classificationAllotSettingHeader);
-
+	void insert(ClassificationAllotSettingHeader classificationAllotSettingHeader);
+	void delete(ClassificationAllotSettingHeader classificationAllotSettingHeader);
 }

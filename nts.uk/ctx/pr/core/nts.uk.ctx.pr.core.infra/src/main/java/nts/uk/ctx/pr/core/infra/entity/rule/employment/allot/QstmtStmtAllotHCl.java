@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.YearMonth;
 
 
 @Entity
@@ -24,11 +25,11 @@ public class QstmtStmtAllotHCl implements Serializable {
 	
 	@Basic (optional = false)
 	@Column(name = "STR_YM")
-	public BigDecimal startDateYM;
+	public YearMonth startDateYM;
 	
 	@Basic (optional = false)
 	@Column (name = "END_YM")
-	public BigDecimal endDateYM;
+	public YearMonth endDateYM;
 	
 	
 
