@@ -21,7 +21,7 @@
 			<div id="function_area">
 				<!-- A1_1: Button Registration -->
 				<button id="btn_001" class="button proceed separate-button fix-button"
-						data-bind = "click: Registration">登録</button>
+						data-bind = "click: Registration" tabindex="1">登録</button>
 			<hr/>
 			</div>
 			
@@ -29,7 +29,7 @@
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div class="cf" >
 						<div style="float:left">																					
-							<table id="single-list" 
+							<table tabindex="2" id="single-list" 
 								data-bind="ntsGridList:{
 									width: 250,
 									height: 200,
@@ -57,7 +57,7 @@
 							</td>
 							<td>
 							<!-- A3_2: Setting Use -->
-								<div class="cf" data-bind="ntsSwitchButton: {
+								<div tabindex="3" class="cf" data-bind="ntsSwitchButton: {
 									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -73,7 +73,7 @@
 							</td>
 							<td>	
 								<!-- A3_4: Divergence Time Name -->														
-								<input class = "nts-input" style="width: 70px" data-bind="ntsTextEditor:{
+								<input tabindex="4" class = "nts-input" style="width: 70px" data-bind="ntsTextEditor:{
                                          value: divTimeName,
                                          required: true,
                                          enable: true}" />
@@ -86,7 +86,7 @@
 							</td>
 							<td>
 								<!-- A3_6 -->
-								<button data-bind="click: openDialog021">選択</button>
+								<button tabindex="5" data-bind="click: openDialog021">選択</button>
 								<!-- A3_7: Time item name -->
 								<input class="nts-input" style="width: 350px" data-bind="ntsTextEditor:{value: timeItemName,required: true}" />
 							</td>
@@ -98,7 +98,7 @@
 							</td>
 							<td>
 							<!-- A3_9: Alarm time -->
-								<input id="inpAlarmTime" style="width: 50px" data-bind="ntsTextEditor: {
+								<input tabindex="6" id="inpAlarmTime" style="width: 50px" data-bind="ntsTextEditor: {
                                          value: alarmTime,
                                          enable: true}" data-name = "AlarmTime" />
 							</td>
@@ -110,7 +110,7 @@
 							</td>
 							<td>
 								<!-- A3_11: Error time -->
-								<input style="width: 50px" data-bind="ntsTextEditor:{
+								<input tabindex="7" style="width: 50px" data-bind="ntsTextEditor:{
                                          value: errTime,
                                          enable: true}" />
 							</td>
@@ -122,7 +122,7 @@
 							</td>
 							<td>
 								<!-- A3_13: Set use select -->
-								<div id="inpUseSet" style = "float: left" class="cf" data-bind="ntsSwitchButton: {
+								<div tabindex="8" id="inpUseSet" style = "float: left" class="cf" data-bind="ntsSwitchButton: {
 									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -130,14 +130,14 @@
 									enable: true }">
 								</div>
 								<!-- A3_14: Open Dialog Divergence Reason -->
-								<button id="inp_003" data-bind="click: openBDialog">選択肢を設定</button>
+								<button  tabindex="9" id="inpDialog" style = "margin-left: 30px;" data-bind="click: openBDialog">選択肢を設定</button>
 							</td>					
 						</tr>
 						<tr>
 							<td></td>
 							<td>
 								<!-- A3_15: Check error(select) -->
-								<div style="margin-bottom: 10px" data-bind="ntsCheckBox:{
+								<div tabindex="10" style="margin-bottom: 10px" data-bind="ntsCheckBox:{
 									checked: checkErrSelect,
 									 enable: enable,
 									  text: '日別実績の修正で乖離理由が選択された場合、エラー／アラームの色を消す'}">
@@ -151,7 +151,7 @@
 							</td>
 							<td>
 								<!-- A3_17: Set use input -->
-								<div class="cf" data-bind="ntsSwitchButton: {
+								<div tabindex="11" class="cf" data-bind="ntsSwitchButton: {
 									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -164,7 +164,7 @@
 							<td></td>
 							<td>
 								<!-- A3_18: Check err (input) -->
-								<div data-bind="ntsCheckBox:{
+								<div tabindex="12" data-bind="ntsCheckBox:{
 									checked: checkErrInput,
 									 enable: enable,
 									  text: '日別実績の修正で乖離理由が入力された場合、エラー／アラームの色を消す'}">

@@ -6,15 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Embeddable
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Embeddable
 public class KmnmtAttendanceItemPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/*会社ID*/
@@ -23,5 +19,4 @@ public class KmnmtAttendanceItemPK implements Serializable{
 	/*勤怠項目ID*/
 	@Column(name = "ID")
 	public int 	attendanceItemId;
-
 }
