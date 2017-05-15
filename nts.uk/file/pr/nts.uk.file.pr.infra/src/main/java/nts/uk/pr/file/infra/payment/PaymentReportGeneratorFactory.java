@@ -17,7 +17,7 @@ public class PaymentReportGeneratorFactory {
 
 	/** The qualification generator. */
 	@EJB(name = "PaymentReportHorizontalGenerator")
-	private PaymentReportHorizontalGenerator paymentReportHorizontalGenerator;
+	private PaymentGenerator paymentReportHorizontalGenerator;
 
 	/**
 	 * Creates a new PaymentReportGenerator object.
@@ -26,7 +26,7 @@ public class PaymentReportGeneratorFactory {
 	 * @return the payment report generator
 	 */
 	public PaymentGenerator createGenerator(PaymentReportData data) {
-		int val = 0;
+		int val = 1;
 		switch (val) {
 		case 0:
 			return new PaymentReportVerticalGenerator();
