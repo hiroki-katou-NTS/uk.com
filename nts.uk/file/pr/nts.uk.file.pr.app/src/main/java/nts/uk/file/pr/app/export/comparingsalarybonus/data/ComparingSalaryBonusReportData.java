@@ -9,16 +9,15 @@ import lombok.Setter;
  * @author lanlt
  *
  */
-
 @Getter
 @Setter
 public class ComparingSalaryBonusReportData {
 	ComparingSalaryBonusHeaderReportData headerData;
 	HeaderTable  headerTable;
 	List<DeparmentInf> deparmentInf;
-	List<DataRowComparingSalaryBonus> lstDivisionTotal;
-	List<DataRowComparingSalaryBonus> lstTotalA;
-	List<DataRowComparingSalaryBonus> lstTotalC;
-	DataRowComparingSalaryBonus grandTotal;
+	List<DataRowComparingSalaryBonusDto> lstDivisionTotal;
+	List<DataRowComparingSalaryBonusDto> lstTotalA;
+	List<DataRowComparingSalaryBonusDto> lstTotalC;
+	DataRowComparingSalaryBonusDto grandTotal;
 	
 }
