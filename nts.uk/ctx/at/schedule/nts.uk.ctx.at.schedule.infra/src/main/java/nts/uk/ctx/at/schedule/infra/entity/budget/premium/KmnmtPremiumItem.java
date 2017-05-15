@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -12,22 +14,25 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KMLST_EXTRA_TIME")
-public class KmlstExtraTime extends UkJpaEntity{
+@Table(name="KMNMT_PREMIUM_ITEM")
+public class KmnmtPremiumItem extends UkJpaEntity{
 	@EmbeddedId
-	public KmlspExtraTimePK extraItemPK;
+	public KmnmpPremiumItemPK kmnmpPremiumItemPK;
 	
-	@Column(name="PREMIUM_NAME")
-	public String premiumName;
+	@Column(name="ATTENDANCE_ID")
+	public BigDecimal attendanceID;
 	
-	@Column(name="TIME_ITEM_CD")
-	public String timeItemCD;
+	@Column(name="NAME")
+	public String name;
+	
+	@Column(name="DISPLAY_NUMBER")
+	public BigDecimal displayNumber;
 	
 	@Column(name="USE_ATR")
 	public int useAtr;
 
 	@Override
 	protected Object getKey() {
-		return extraItemPK;
+		return kmnmpPremiumItemPK;
 	}
 }

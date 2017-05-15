@@ -6,6 +6,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate;
+import nts.uk.ctx.at.schedule.dom.budget.premium.UseAttribute;
 
 /**
  * 
@@ -14,18 +17,18 @@ import nts.arc.time.GeneralDate;
  */
 
 @Value
-public class DeletePremiumBudgetCommand {
+public class DeletePersonCostCalculationSettingCommand {
 	String companyID;
 
 	String historyID;
-
-	String memo;
-
-	Integer unitPrice;
-
+	
 	String startDate;
 
 	String endDate;
+
+	int unitPrice;
+
+	String memo;
 	
 	List<PremiumSetDelete> premiumSets;
 }
@@ -37,15 +40,17 @@ class PremiumSetDelete {
 	
 	String historyID;
 	
-	String attendanceID;
+	BigDecimal premiumID;
 	
-    BigDecimal premiumRate;
+    BigDecimal rate;
     
-    String premiumName;
+    BigDecimal attendanceID;
     
-    String internalID;
+    String name;
+    
+    BigDecimal displayNumber;
     
     int useAtr;
     
-    List<String> timeItemIDs;
+    List<BigDecimal> timeItemIDs;
 }

@@ -33,21 +33,21 @@ public class KmlmtPersonCostCalculation extends UkJpaEntity{
 	@EmbeddedId
 	public KmlmpPersonCostCalculationPK kmlmpPersonCostCalculationPK;
 	
-	@Column(name="MEMO")
-	public String memo;
-	
-	@Column(name="UNITPRICE_ATR")
-	public int unitPrice;
-	
 	@Column(name="START_DATE")
 	public GeneralDate startDate;
 	
 	@Column(name="END_DATE")
 	public GeneralDate endDate;
 	
-	@OneToMany(targetEntity=KmlstPremiumSet.class, cascade = CascadeType.ALL, mappedBy = "personCost")
+	@Column(name="UNITPRICE_ATR")
+	public int unitPrice;
+	
+	@Column(name="MEMO")
+	public String memo;
+	
+	@OneToMany(targetEntity=KmlstPremiumSet.class, cascade = CascadeType.ALL, mappedBy = "kmlmtPersonCostCalculation")
 	@JoinTable(name = "KMLST_PREMIUM_SET")
-	public List<KmlstPremiumSet> premiumSets;
+	public List<KmlstPremiumSet> kmlstPremiumSets;
 
 	@Override
 	protected Object getKey() {

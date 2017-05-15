@@ -19,7 +19,7 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.ctx.at.schedule.dom.budget.premium.UnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.premium.UseClassification;
+import nts.uk.ctx.at.schedule.dom.budget.premium.UseAttribute;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -31,32 +31,33 @@ import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
 @Transactional
-public class InsertPremiumBudgetCommandHandler extends CommandHandler<InsertPremiumBudgetCommand>{
+public class InsertPersonCostCalculationSettingCommandHandler extends CommandHandler<InsertPersonCostCalculationSettingCommand>{
 	
 	@Inject
 	private PersonCostCalculationDomainService personCostCalculationDomainService;
 	
 	@Override
-	protected void handle(CommandHandlerContext<InsertPremiumBudgetCommand> context) {
+	protected void handle(CommandHandlerContext<InsertPersonCostCalculationSettingCommand> context) {
 		String companyID = AppContexts.user().companyId();
-		InsertPremiumBudgetCommand budgetCommand = context.getCommand();
+		InsertPersonCostCalculationSettingCommand command = context.getCommand();
 		this.personCostCalculationDomainService.insertPersonCostCalculation(
 				new PersonCostCalculation(
 						companyID, 
-						budgetCommand.getHistoryID(), 
-						new Memo(budgetCommand.getMemo()), 
-						EnumAdaptor.valueOf(budgetCommand.getUnitPrice(), UnitPrice.class), 
-						GeneralDate.fromString(budgetCommand.getStartDate(), "yyyy/MM/dd"), 
-						GeneralDate.fromString(budgetCommand.getEndDate(), "yyyy/MM/dd"),
-							budgetCommand.getPremiumSets().stream()
+						command.getHistoryID(), 
+						GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"),
+						EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class), 
+						new Memo(command.getMemo()), 
+						command.getPremiumSets().stream()
 							.map(x -> new PremiumSetting(
 									x.getCompanyID(), 
 									x.getHistoryID(), 
-									x.getAttendanceID(), 
-									new PremiumRate(x.getPremiumRate()), 
-									new PremiumName(x.getPremiumName()), 
-									x.getInternalID(), 
-									EnumAdaptor.valueOf(x.getUseAtr(), UseClassification.class), 
+									x.getPremiumID(), 
+									new PremiumRate(x.getRate()), 
+									x.getAttendanceID(),
+									new PremiumName(x.getName()), 
+									x.getDisplayNumber(), 
+									EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class), 
 									x.getTimeItemIDs()))
 							.collect(Collectors.toList())
 					)

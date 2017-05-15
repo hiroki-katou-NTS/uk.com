@@ -18,18 +18,18 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name="KMLDT_PREMIUM_ATTENDANCE")
 public class KmldtPremiumAttendance extends UkJpaEntity{
 	@EmbeddedId
-	public KmldpPremiumAttendancePK premiumAttendancePK;
+	public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;
 	
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"), 
 		@PrimaryKeyJoinColumn(name="HIS_ID",referencedColumnName="HIS_ID"),
-		@PrimaryKeyJoinColumn(name="PREMIUM_CD",referencedColumnName="PREMIUM_CD")
+		@PrimaryKeyJoinColumn(name="PREMIUM_ID",referencedColumnName="PREMIUM_ID")
 	})
-	private KmlstPremiumSet premiumSet;
+	private KmlstPremiumSet kmlstPremiumSet;
 	
 	@Override
 	protected Object getKey() {
-		return premiumAttendancePK;
+		return kmldpPremiumAttendancePK;
 	}
 }

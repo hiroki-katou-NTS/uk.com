@@ -23,26 +23,26 @@ public class PersonCostCalculation extends AggregateRoot {
 	private String companyID;
 
 	private String historyID;
-
-	private Memo memo;
-
-	private UnitPrice unitprice;
-
+	
 	private GeneralDate startDate;
 
 	private GeneralDate endDate;
+
+	private UnitPrice unitPrice;
+
+	private Memo memo;
 	
 	private List<PremiumSetting> premiumSettings;
 
-	public PersonCostCalculation(String companyID, String historyID, Memo memo, UnitPrice unitprice,
-			GeneralDate startDate, GeneralDate endDate, List<PremiumSetting> premiumSettings) {
+	public PersonCostCalculation(String companyID, String historyID, GeneralDate startDate, GeneralDate endDate, 
+			UnitPrice unitPrice, Memo memo, List<PremiumSetting> premiumSettings) {
 		super();
 		this.companyID = companyID;
 		this.historyID = historyID;
-		this.memo = memo;
-		this.unitprice = unitprice;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.unitPrice = unitPrice;
+		this.memo = memo;
 		this.premiumSettings = premiumSettings;
 	} 
 

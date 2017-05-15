@@ -14,8 +14,8 @@ public interface PersonCostCalculationDomainService {
 	 * @return true input history after last record history
 	 * 
 	 */
-	public PersonCostCalculation createFromJavaType(String companyID, Memo memo,
-			UnitPrice unitPrice, GeneralDate startDate, List<PremiumSetting> premiumSettings);
+	public PersonCostCalculation createFromJavaType(String companyID, GeneralDate startDate, 
+			UnitPrice unitPrice, Memo memo, List<PremiumSetting> premiumSettings);
 	
 	public void insertPersonCostCalculation(PersonCostCalculation personCostCalculation);
 	

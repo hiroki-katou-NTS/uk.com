@@ -14,18 +14,18 @@ import nts.arc.time.GeneralDate;
  */
 
 @Value
-public class InsertPremiumBudgetCommand {
+public class InsertPersonCostCalculationSettingCommand {
 	String companyID;
 
 	String historyID;
-
-	String memo;
-
-	Integer unitPrice;
-
+	
 	String startDate;
 
 	String endDate;
+
+	int unitPrice;
+
+	String memo;
 	
 	List<PremiumSetInsert> premiumSets;
 }
@@ -37,15 +37,17 @@ class PremiumSetInsert {
 	
 	String historyID;
 	
-	String attendanceID;
+	BigDecimal premiumID;
 	
-    BigDecimal premiumRate;
+    BigDecimal rate;
     
-    String premiumName;
+    BigDecimal attendanceID;
     
-    String internalID;
+    String name;
+    
+    BigDecimal displayNumber;
     
     int useAtr;
     
-    List<String> timeItemIDs;
+    List<BigDecimal> timeItemIDs;
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate;
 
 /**
  * 
@@ -16,18 +15,18 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate;
 
 @AllArgsConstructor
 @Value
-public class PremiumBudgetDto {
+public class PersonCostCalculationSettingDto {
 	String companyID;
 
 	String historyID;
-
-	String memo;
-
-	Integer unitPrice;
-
+	
 	GeneralDate startDate;
 
 	GeneralDate endDate;
+
+	int unitPrice;
+
+	String memo;
 	
 	List<PremiumSetDto> premiumSets;
 }
@@ -39,15 +38,17 @@ class PremiumSetDto {
 	
 	String historyID;
 	
-	String attendanceID;
+	BigDecimal premiumID;
 	
-    BigDecimal premiumRate;
+    BigDecimal rate;
     
-    String premiumName;
+    BigDecimal attendanceID;
     
-    String internalID;
+    String name;
+    
+    BigDecimal displayNumber;
     
     int useAtr;
     
-    List<String> timeItemIDs;
+    List<BigDecimal> timeItemIDs;
 }

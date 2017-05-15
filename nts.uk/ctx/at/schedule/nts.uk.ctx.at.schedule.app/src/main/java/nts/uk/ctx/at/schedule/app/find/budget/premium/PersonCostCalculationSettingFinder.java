@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class PremiumBudgetFinder {
+public class PersonCostCalculationSettingFinder {
 	
 	@Inject
 	private PersonCostCalculationRepository personCostCalculationRepository;
@@ -31,7 +31,7 @@ public class PremiumBudgetFinder {
 	 * get all Person Cost Calculation by company ID
 	 * @return list Person Cost Calculation by company ID
 	 */
-	public List<PremiumBudgetDto> findByCompanyID() {
+	public List<PersonCostCalculationSettingDto> findByCompanyID() {
 		String companyID = AppContexts.user().companyId();
 		return this.personCostCalculationRepository.findByCompanyID(companyID)
 				.stream()
@@ -39,26 +39,14 @@ public class PremiumBudgetFinder {
 				.collect(Collectors.toList());
 	}
 	
-	/**
-	 * get single Person Cost Calculation by company ID and HID
-	 * @param HID history ID
-	 * @return single Person Cost Calculation by company ID and HID
-	 */
-	public PremiumBudgetDto findPremiumBudget(String startDate) {
-		String companyID = AppContexts.user().companyId();
-		Optional<PersonCostCalculation> optional = this.personCostCalculationRepository.findItemByDate(companyID, GeneralDate.fromString(startDate, "yyyy/MM/dd"));
-		if(!optional.isPresent()) return null;
-		return this.convertToDto(optional.get());
-	}
-	
-	private PremiumBudgetDto convertToDto(PersonCostCalculation personCostCalculation){
-		return new PremiumBudgetDto(
+	private PersonCostCalculationSettingDto convertToDto(PersonCostCalculation personCostCalculation){
+		return new PersonCostCalculationSettingDto(
 				personCostCalculation.getCompanyID(), 
 				personCostCalculation.getHistoryID(), 
-				personCostCalculation.getMemo().v(), 
-				personCostCalculation.getUnitprice().value, 
 				personCostCalculation.getStartDate(), 
 				personCostCalculation.getEndDate(),
+				personCostCalculation.getUnitPrice().value,
+				personCostCalculation.getMemo().v(), 
 				personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
 	}
 	
@@ -66,10 +54,11 @@ public class PremiumBudgetFinder {
 		return new PremiumSetDto(
 				premiumSetting.getCompanyID(), 
 				premiumSetting.getHistoryID(), 
-				premiumSetting.getAttendanceID(), 
-				premiumSetting.getPremiumRate().v(),
-				premiumSetting.getPremiumName().v(),
-				premiumSetting.getInternalID(),
+				premiumSetting.getPremiumID(), 
+				premiumSetting.getRate().v(),
+				premiumSetting.getAttendanceID(),
+				premiumSetting.getName().v(),
+				premiumSetting.getDisplayNumber(),
 				premiumSetting.getUseAtr().value,
 				premiumSetting.getTimeItemIDs());
 	}

@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
-public enum UseClassification {
+public enum UseAttribute {
 	NotUse(0),
 	
 	Use(1);
 	
 	public final int value;
 	
-	UseClassification(int value){
+	UseAttribute(int value){
 		this.value = value;
 	}
 }

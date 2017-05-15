@@ -12,29 +12,29 @@ module kml001.shr.vmbase {
     export interface PersonCostCalculationInterface {
         companyID: string;
         historyID: string;
-        memo: string;
-        unitPrice: number;
         startDate: string;
         endDate: string;
+        unitPrice: number;
+        memo: string;
         premiumSets: Array<any>;
     }
 
     export class PersonCostCalculation {
         companyID: KnockoutObservable<string>;
         historyID: KnockoutObservable<string>;
-        memo: KnockoutObservable<string>;
-        unitPrice: KnockoutObservable<number>;
         startDate: KnockoutObservable<string>;
         endDate: KnockoutObservable<string>;
-        premiumSets : KnockoutObservableArray<PremiumSetting>;
-        constructor(companyID: string, historyID: string, memo: string, unitPrice: number, startDate: string, endDate: string, premiumSets: Array<any>) {
+        unitPrice: KnockoutObservable<number>;
+        memo: KnockoutObservable<string>;
+        premiumSets : KnockoutObservableArray<PremiumSettingInterface>;
+        constructor(companyID: string, historyID: string, startDate: string, endDate: string, unitPrice: number, memo: string, premiumSets: Array<PremiumSettingInterface>) {
             var self = this;
             self.companyID = ko.observable(companyID);
             self.historyID = ko.observable(historyID);
-            self.memo = ko.observable(memo);
-            self.unitPrice = ko.observable(unitPrice);
             self.startDate = ko.observable(startDate);
             self.endDate = ko.observable(endDate);
+            self.unitPrice = ko.observable(unitPrice);
+            self.memo = ko.observable(memo);
             let koPremiumSets = [];
             premiumSets.forEach(function(premiumSet){koPremiumSets.push(ProcessHandler.fromObjectPremiumSet(premiumSet));});
             self.premiumSets = ko.observableArray(koPremiumSets);
@@ -44,60 +44,66 @@ module kml001.shr.vmbase {
     export interface PremiumSettingInterface {
         companyID: string;
         historyID: string;
-        attendanceID: string;
-        premiumName: string;
-        internalID: string;
+        premiumID: number;
+        rate: number;
+        attendanceID: number;
+        name: string;
+        displayNumber: number;
         useAtr: number;
-        premiumRate: number;
-        timeItemIDs: Array<any>;
+        attendanceItems: Array<number>;
     }
     
     export class PremiumSetting {
         companyID: KnockoutObservable<string>;
         historyID: KnockoutObservable<string>;
-        attendanceID: KnockoutObservable<string>; 
-        premiumName: KnockoutObservable<string>;
-        internalID: KnockoutObservable<string>;
+        premiumID: KnockoutObservable<number>; 
+        rate: KnockoutObservable<number>;
+        attendanceID: KnockoutObservable<number>;
+        name: KnockoutObservable<string>;
+        displayNumber: KnockoutObservable<number>;
         useAtr: KnockoutObservable<number>;
-        premiumRate: KnockoutObservable<number>;
-        timeItemIDs: KnockoutObservableArray<string>;
-        constructor(companyID: string, historyID: string, attendanceID: string, premiumName: string, internalID: string, useAtr: number, premiumRate: number, timeItemIDs: Array<string>) {
+        attendanceItems: KnockoutObservableArray<number>;
+        constructor(companyID: string, historyID: string, premiumID: number, rate: number, attendanceID: number, 
+            name: string, displayNumber: number, useAtr: number, attendanceItems: Array<number>) {
             var self = this;
             self.companyID = ko.observable(companyID);
             self.historyID = ko.observable(historyID);
+            self.premiumID = ko.observable(premiumID);
+            self.rate = ko.observable(rate);
             self.attendanceID = ko.observable(attendanceID);
-            self.premiumName = ko.observable(premiumName);
-            self.internalID = ko.observable(internalID);
+            self.name = ko.observable(name);
+            self.displayNumber = ko.observable(displayNumber);
             self.useAtr = ko.observable(useAtr);
-            self.premiumRate = ko.observable(premiumRate);
-            self.timeItemIDs = ko.observableArray(timeItemIDs);
+            self.attendanceItems = ko.observableArray(attendanceItems);
         }
         
     }
     
-    export class TimeItem {
-        code: string;
+    export class AttendanceItem {
+        iD: number;
         name: string;
-        constructor(code: string, name: string) {
+        constructor(iD: number, name: string) {
             var self = this;
-            self.code = code;
+            self.iD = iD;
             self.name = name;    
         }    
     }
     
-    export class ExtraTimeItem {
+    export class PremiumItem {
         companyID: KnockoutObservable<string>;
-        extraItemID: KnockoutObservable<string>; 
+        iD: KnockoutObservable<number>; 
+        attendanceID: KnockoutObservable<number>;
         name: KnockoutObservable<string>;
-        timeItemID: KnockoutObservable<string>;
+        displayNumber: KnockoutObservable<number>;
         useAtr: KnockoutObservable<number>;
-        constructor(companyID: string, extraItemID: string, name: string, timeItemID: string, useAtr: number) {
+        constructor(companyID: string, iD: number, attendanceID: number, name: string, displayNumber: number, useAtr: number) {
             var self = this;
-            self.extraItemID = ko.observable(extraItemID);
             self.companyID = ko.observable(companyID);
-            self.useAtr = ko.observable(useAtr);
-            self.timeItemID = ko.observable(timeItemID);
+            self.iD = ko.observable(iD);
+            self.attendanceID = ko.observable(attendanceID);
             self.name = ko.observable(name);
+            self.displayNumber = ko.observable(displayNumber);
+            self.useAtr = ko.observable(useAtr);
         }
     }
     
@@ -106,10 +112,10 @@ module kml001.shr.vmbase {
             return new PersonCostCalculation(
                 object.companyID, 
                 object.historyID, 
-                object.memo, 
-                object.unitPrice, 
                 object.startDate, 
                 object.endDate,
+                object.unitPrice,
+                object.memo,
                 object.premiumSets);
         }
         static toObjectPersonCost(koObject: PersonCostCalculation): PersonCostCalculationInterface {
@@ -118,10 +124,10 @@ module kml001.shr.vmbase {
             return {
                 companyID: koObject.companyID(),
                 historyID: koObject.historyID(),
-                memo: koObject.memo(),
-                unitPrice: koObject.unitPrice(),
                 startDate: koObject.startDate(),
                 endDate: koObject.endDate(),
+                unitPrice: koObject.unitPrice(),
+                memo: koObject.memo(),
                 premiumSets : premiumSets     
             };    
         }
@@ -129,23 +135,25 @@ module kml001.shr.vmbase {
             return new PremiumSetting(
                 object.companyID,
                 object.historyID,
+                object.premiumID,
+                object.rate,
                 object.attendanceID,
-                object.premiumName,
-                object.internalID,
+                object.name,
+                object.displayNumber,
                 object.useAtr,
-                object.premiumRate,
-                object.timeItemIDs);
+                object.attendanceItems);
         }
         static toObjectPremiumSet(koObject: PremiumSetting): PremiumSettingInterface {
             return {
                 companyID: koObject.companyID(),
                 historyID: koObject.historyID(),
-                attendanceID: koObject.attendanceID(), 
-                premiumName: koObject.premiumName(),
-                internalID: koObject.internalID(),
+                premiumID: koObject.premiumID(), 
+                rate: koObject.rate(),
+                attendanceID: koObject.attendanceID,
+                name: koObject.name(),
+                displayNumber: koObject.displayNumber(),
                 useAtr: koObject.useAtr(),
-                premiumRate: koObject.premiumRate(),
-                timeItemIDs: koObject.timeItemIDs()     
+                attendanceItems: koObject.attendanceItems()     
             };    
         }
         static getOneDayBefore(date: string) {

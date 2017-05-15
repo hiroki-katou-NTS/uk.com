@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -9,10 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KmlspExtraTimePK {
+public class KmnmpPremiumItemPK {
 	@Column(name="CID")
 	public String companyID;
 	
-	@Column(name="EXTRA_TIME_ID")
-	public String extraTimeID;
+	@Column(name="ID")
+	public BigDecimal iD;
 }
