@@ -330,6 +330,9 @@ module nts.uk.pr.view.base.simplehistory {
                             if (!_.isEmpty(self.masterHistoryList[0].historyList)) {
                                 self.igGridSelectedHistoryUuid(self.masterHistoryList[0].historyList[0].uuid);
                                 self.igGridSelectedHistoryUuid.valueHasMutated();
+                            } else {
+                                self.igGridSelectedHistoryUuid(self.masterHistoryList[0].code);
+                                self.igGridSelectedHistoryUuid.valueHasMutated();
                             }
                         }
                     }

@@ -40,6 +40,11 @@ public class CertifyGroupFinder {
 	@Inject
 	private CertificationRepository certifiRepository;
 
+	/**
+	 * Inits the all.
+	 *
+	 * @return the list
+	 */
 	public List<CertifyGroup> initAll() {
 
 		// Get the company login
@@ -108,38 +113,84 @@ public class CertifyGroupFinder {
 		return dataOutput;
 	}
 
+	/**
+	 * The Class CertifyGroupDefaultImpl.
+	 */
 	class CertifyGroupDefaultImpl implements CertifyGroupGetMemento {
 
+		/** The company code. */
 		private String companyCode;
 
+		/** The certify none group items. */
 		List<Certification> certifyNoneGroupItems;
 
+		/**
+		 * Instantiates a new certify group default impl.
+		 *
+		 * @param companyCode the company code
+		 * @param certifyNoneGroupItems the certify none group items
+		 */
 		public CertifyGroupDefaultImpl(String companyCode,
 			List<Certification> certifyNoneGroupItems) {
 			this.companyCode = companyCode;
 			this.certifyNoneGroupItems = certifyNoneGroupItems;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getCompanyCode()
+		 */
 		@Override
 		public String getCompanyCode() {
 			return this.companyCode;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getCode()
+		 */
 		@Override
 		public CertifyGroupCode getCode() {
 			return new CertifyGroupCode("000");
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getName()
+		 */
 		@Override
 		public CertifyGroupName getName() {
 			return new CertifyGroupName("グループ なし");
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getMultiApplySet()
+		 */
 		@Override
 		public MultipleTargetSetting getMultiApplySet() {
 			return MultipleTargetSetting.TotalMethod;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getCertifies()
+		 */
 		@Override
 		public Set<Certification> getCertifies() {
 			return certifyNoneGroupItems.stream().collect(Collectors.toSet());

@@ -18,8 +18,5 @@ public class CompanyResource {
 	private CompanyResourcePK primaryKey;
 	@Column(name = "ITEM_CONTENT")
 	private String content;
-	@NotNull
-	@Column(name = "LANGUAGE_CODE")
-	private String languageCode;
 	
 }

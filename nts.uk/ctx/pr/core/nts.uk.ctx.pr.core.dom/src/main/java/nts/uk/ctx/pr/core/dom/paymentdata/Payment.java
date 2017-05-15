@@ -12,6 +12,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;

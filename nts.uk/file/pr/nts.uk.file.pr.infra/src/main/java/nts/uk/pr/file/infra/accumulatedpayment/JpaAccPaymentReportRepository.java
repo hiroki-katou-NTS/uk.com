@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -114,7 +115,9 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	
 	/** The Constant YEAR_END_DETAIL_TBL_INDEX. */
 	private static final int YEAR_END_DETAIL_TBL_INDEX = 6;
-	private static final int THOUSAND_NUMBER = 1000;
+	
+	/** The Constant THOUSAND_NUMBER. */
+	private static final int ONE_THOUSAND = 1000;
 
 	/** The Constant QUERY_STRING. */
 	private static final String QUERY_STRING = "SELECT p,  pc, ec, e, pd, pdt, yd "
@@ -228,7 +231,7 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		}
 		// Get Result List
 		List<Object[]> resultList = new ArrayList<>();
-		CollectionUtil.split(query.getPIdList(), THOUSAND_NUMBER, subList ->
+		CollectionUtil.split(query.getPIdList(), ONE_THOUSAND, subList ->
 			resultList.addAll(general.typedQuery.setParameter("PIDs",subList).getResultList())
 		);
 		List<String> pIdList = new ArrayList<>();
@@ -238,13 +241,13 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		
 		// Check if Result List is Empty
 		if (CollectionUtil.isEmpty(resultList)) {
-			throw new BusinessException("ER010");
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		} 
 		else {
 			// Get Master Result List
 			masterResultList = this.getMasterResultList(general, pIdList);
 			if (CollectionUtil.isEmpty(masterResultList)) {
-				throw new BusinessException("ER010");
+				throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 			}
 		}
 		return this.filterData(masterResultList, general);
@@ -263,30 +266,21 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		Map<String, List<Object[]>> userMap = itemList.stream().collect(Collectors.groupingBy(item -> 
 		((PbsmtPersonBase) item[PERSON_BASE_TBL_INDEX]).getPid()));
 		for (Map.Entry<String, List<Object[]>> entry : userMap.entrySet()) {
-//			String pId = entry.getKey();
 			List<Object[]> detailData = entry.getValue();
 			// Taxable Amount
-			general.category = PAYMENT_CATEGORY;
-			general.itemCode = ITEM_CD_F001;
-			general.yearAdjusmentOne = YEAR_ADJUSTMENT_ITEM_046;
-			general.yearAdjusmentTwo = YEAR_ADJUSTMENT_ITEM_049;
-			Double taxAmount = this.sumValues(detailData, general);
+			ItemDetails taxAmountDetails = this.setDetailsTaxAmount();
+			Double taxAmount = this.sumValues(detailData, taxAmountDetails);
 
 			// Social Insurance Total Amount
-			general.category = DEDUCTION_CATEGORY;
-			general.itemCode = ITEM_CD_F005;
-			general.yearAdjusmentOne = YEAR_ADJUSTMENT_ITEM_048;
-			general.yearAdjusmentTwo = YEAR_ADJUSTMENT_ITEM_051;
-			Double socialInsAmount = this.sumValues(detailData, general);
+			ItemDetails socialInsDetails = this.setDetailsSocialIns();
+			Double socialInsAmount = this.sumValues(detailData, socialInsDetails);
 
 			// Withholding tax amount
-			general.category = DEDUCTION_CATEGORY;
-			general.itemCode = ITEM_CD_F007;
-			general.yearAdjusmentOne = YEAR_ADJUSTMENT_ITEM_047;
-			general.yearAdjusmentTwo = YEAR_ADJUSTMENT_ITEM_050;
-			Double withHoldingTax = this.sumValues(detailData, general);
+			ItemDetails withholTaxDetails = this.setDetailsWithholdTax();
+			Double withHoldingTax = this.sumValues(detailData, withholTaxDetails);
 			
-			String empCode = ((PclmtPersonEmpContract) detailData.get(0)[PERSON_EMP_CONTRACT_TBL_INDEX]).empCd;
+			String empCode = ((PclmtPersonEmpContract) detailData.get(0)
+					[PERSON_EMP_CONTRACT_TBL_INDEX]).empCd;
 			String empName = ((CmnmtEmp) detailData.get(0)[EMP_TBL_INDEX]).employmentName;
 			PcpmtPersonCom person = (PcpmtPersonCom) detailData.get(0)[PERSON_COM_TBL_INDEX];
 			GeneralDate endDatePersonTem = person.getEndD();
@@ -320,6 +314,48 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		}
 		return resultDataList;
 	}
+	
+	/**
+	 * Sets the details tax amount.
+	 *
+	 * @return the item details
+	 */
+	private ItemDetails setDetailsTaxAmount() {
+		ItemDetails itemDetails = new ItemDetails();
+		itemDetails.category = PAYMENT_CATEGORY;
+		itemDetails.itemCode = ITEM_CD_F001;
+		itemDetails.yearAdjusmentOne = YEAR_ADJUSTMENT_ITEM_046;
+		itemDetails.yearAdjusmentTwo = YEAR_ADJUSTMENT_ITEM_049;
+		return itemDetails;
+	}
+	
+	/**
+	 * Sets the details social ins.
+	 *
+	 * @return the item details
+	 */
+	private ItemDetails setDetailsSocialIns() {
+		ItemDetails itemDetails = new ItemDetails();
+		itemDetails.category = DEDUCTION_CATEGORY;
+		itemDetails.itemCode = ITEM_CD_F005;
+		itemDetails.yearAdjusmentOne = YEAR_ADJUSTMENT_ITEM_048;
+		itemDetails.yearAdjusmentTwo = YEAR_ADJUSTMENT_ITEM_051;
+		return itemDetails;
+	}
+	
+	/**
+	 * Sets the details withhold tax.
+	 *
+	 * @return the item details
+	 */
+	private ItemDetails setDetailsWithholdTax() {
+		ItemDetails itemDetails = new ItemDetails();
+		itemDetails.category = DEDUCTION_CATEGORY;
+		itemDetails.itemCode = ITEM_CD_F007;
+		itemDetails.yearAdjusmentOne = YEAR_ADJUSTMENT_ITEM_047;
+		itemDetails.yearAdjusmentTwo = YEAR_ADJUSTMENT_ITEM_050;
+		return itemDetails;
+	}
 
 	/**
 	 * Sum values.
@@ -328,7 +364,7 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	 * @param general the general
 	 * @return the double
 	 */
-	private Double sumValues(List<Object[]> detailData, GeneralVars general) {
+	private Double sumValues(List<Object[]> detailData, ItemDetails general) {
 		// Payment Detail Value
 		Double paymentDetailVal = detailData.stream().filter(data -> {
 			QstdtPaymentDetail pdt = (QstdtPaymentDetail) data[PAYMENT_DETAIL_TBL_INDEX];
@@ -370,7 +406,7 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 				.setParameter("YEAR_k", general.query.getTargetYear())
 				.setParameter("REGULAR_COM", REGULAR_COM);// REGULAR_COM
 		this.setGeneralParams(general);
-		CollectionUtil.split(pIdList, 1000, subList ->
+		CollectionUtil.split(pIdList, ONE_THOUSAND, subList ->
 			masterResultList.addAll(general.typedQuery.setParameter("PIDs", subList).getResultList())
 		);
 		return masterResultList;
@@ -399,16 +435,23 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	/**
 	 * The Class GeneralVars.
 	 */
-	class GeneralVars{
-		
+	class GeneralVars {
+
 		/** The company code. */
 		public String companyCode;
-		
+
 		/** The query. */
 		public AccPaymentReportQuery query;
-		
+
 		/** The typed query. */
 		public Query typedQuery;
+
+	}
+
+	/**
+	 * The Class ItemDetails.
+	 */
+	class ItemDetails {
 		
 		/** The category. */
 		public int category;
@@ -421,6 +464,5 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 		
 		/** The year adjusment two. */
 		public int yearAdjusmentTwo;
-
 	}
 }

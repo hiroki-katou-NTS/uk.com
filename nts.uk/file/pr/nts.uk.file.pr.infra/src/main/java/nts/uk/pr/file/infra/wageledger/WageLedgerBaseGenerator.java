@@ -160,7 +160,6 @@ public class WageLedgerBaseGenerator extends AsposeCellsReportGenerator{
 			style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
 			// Setting the line style of the right border
 			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
-		default:
 			break;
 		}
 		
