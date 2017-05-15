@@ -2,9 +2,6 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-/**
- * 
- */
 package nts.uk.file.pr.app.export.insurance.salary;
 
 import java.util.List;
@@ -16,7 +13,6 @@ import lombok.Setter;
  * The Class SocialInsuranceQuery.
  *
  */
-
 @Setter
 @Getter
 public class SocialInsuQuery {

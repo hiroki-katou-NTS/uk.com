@@ -28,7 +28,7 @@ public class CompanyResourceLoading implements ICompanyResourceBundle {
 	private EntityManagerLoader managerLoader;
 
 	private static final String SELECT_ALL = "Select e from CompanyResource e";
-	private static final String SELECT_COMPANY_ALL = "Select e from CompanyResource e where e.primaryKey.companyCode =:companyCode";
+	private static final String SELECT_COMPANY_ALL = "Select e from CompanyResource e where e.primaryKey.companyID =:companyCode";
 	// Map<company code, Map<languageCode, List<resource>>>
 	private Map<String, Map<String, List<CompanyResource>>> resource;
 
@@ -40,8 +40,8 @@ public class CompanyResourceLoading implements ICompanyResourceBundle {
 		resource = new HashMap<>();
 		EntityManager em = managerLoader.getEntityManager();
 		List<CompanyResource> compResource = em.createQuery(SELECT_ALL, CompanyResource.class).getResultList();
-		resource = compResource.stream().collect(Collectors.groupingBy((p) -> p.getPrimaryKey().getCompanyCode(),
-				Collectors.groupingBy(CompanyResource::getLanguageCode, Collectors.toList())));
+		resource = compResource.stream().collect(Collectors.groupingBy((p) -> p.getPrimaryKey().getCompanyID(),
+				Collectors.groupingBy((x) -> x.getPrimaryKey().getLanguageCode(), Collectors.toList())));
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class CompanyResourceLoading implements ICompanyResourceBundle {
 		List<CompanyResource> compResource = em.createQuery(SELECT_COMPANY_ALL, CompanyResource.class)
 				.setParameter("companyCode", event.getCompanyCode()).getResultList();
 		Map<String, List<CompanyResource>> groupedByLanguageCode = compResource.stream()
-				.collect(Collectors.groupingBy(CompanyResource::getLanguageCode, Collectors.toList()));
+				.collect(Collectors.groupingBy((x) -> x.getPrimaryKey().getLanguageCode(), Collectors.toList()));
 
 		resource.put(event.getCompanyCode(), groupedByLanguageCode);
 	}

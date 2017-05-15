@@ -83,6 +83,7 @@ module nts.uk.ui.koExtentions {
             });
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             container.data("enable", _.clone(enable));
+            container.data("init", true);
             
         }
 
@@ -140,7 +141,7 @@ module nts.uk.ui.koExtentions {
                 }) !== undefined);
             });
             // Enable
-            if(!_.isEqual(container.data("enable"), enable)){
+            if(container.data("init") || !_.isEqual(container.data("enable"), enable)){
                 container.data("enable", _.clone(enable));
                 (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
                 _.forEach(data.options(), (option) => {

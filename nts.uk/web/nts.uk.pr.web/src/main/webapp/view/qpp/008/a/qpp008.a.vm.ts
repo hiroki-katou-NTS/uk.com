@@ -68,16 +68,16 @@ module qpp008.a.viewmodel {
             self.statusRegisterSelectCode = ko.observableArray([]);
 
             self.employyerList = ko.observableArray([
-                new Employee("99900000-0000-0000-0000-000000000001", "日通　一郎", "総務部"),
-                new Employee("99900000-0000-0000-0000-000000000002", "日通　二郎", "総務部"),
-                new Employee("99900000-0000-0000-0000-000000000003", "日通　三郎", "総務部"),
-                new Employee("99900000-0000-0000-0000-000000000004", "日通　四郎", "総務部"),
-                new Employee("99900000-0000-0000-0000-000000000005", "日通　五郎", "総務部"),
-                new Employee("99900000-0000-0000-0000-000000000006", "日通　六郎", "総務部"),
-                new Employee("99900000-0000-0000-0000-000000000007", "日通　七郎", "総務部"),
-                new Employee("99900000-0000-0000-0000-000000000008", "日通　八郎", "総務部"),
-                new Employee("99900000-0000-0000-0000-000000000009", "日通　九郎", "総務部"),
-                new Employee("99900000-0000-0000-0000-0000000000010", "日通　十郎", "総務部")
+                new Employee("0000000001", "日通　一郎", ""),
+                new Employee("0000000001", "日通　二郎", ""),
+                new Employee("0000000001", "日通　三郎", ""),
+                new Employee("0000000001", "日通　四郎", ""),
+                new Employee("0000000001", "日通　五郎", ""),
+                new Employee("0000000001", "日通　六郎", ""),
+                new Employee("0000000001", "日通　七郎", ""),
+                new Employee("0000000001", "日通　八郎", ""),
+                new Employee("0000000001", "日通　九郎", ""),
+                new Employee("0000000001", "日通　十郎", "")
             ]);
             self.employyerColumns = ko.observableArray([
                 { headerText: '社員CD', prop: 'code', width: 200 },
@@ -117,7 +117,11 @@ module qpp008.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            return self.loadComparingFormHeader();
+            let dfd = $.Deferred();
+            self.loadPersonInfo();
+            self.loadComparingFormHeader();
+            dfd.resolve();
+            return dfd.promise();
         }
 
         loadComparingFormHeader() {
@@ -131,6 +135,19 @@ module qpp008.a.viewmodel {
                 dfd.resolve();
             }).fail(function(error: any) {
 
+            });
+            return dfd.promise();
+        }
+
+        loadPersonInfo() {
+            let self = this;
+            let dfd = $.Deferred();
+            self.employyerList([]);
+            service.getPersonInfo().done(function(data) {
+                self.employyerList(_.map(data, function(emp: any) {
+                    return new Employee(emp.employeeCode, emp.employeeName, "");
+                }));
+                dfd.resolve();
             });
             return dfd.promise();
         }

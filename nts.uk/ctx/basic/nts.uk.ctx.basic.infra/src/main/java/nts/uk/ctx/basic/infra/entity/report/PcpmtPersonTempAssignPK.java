@@ -65,7 +65,8 @@ public class PcpmtPersonTempAssignPK implements Serializable {
         if ((this.pid == null && other.pid != null) || (this.pid != null && !this.pid.equals(other.pid))) {
             return false;
         }
-        if ((this.histId == null && other.histId != null) || (this.histId != null && !this.histId.equals(other.histId))) {
+        if ((this.histId == null && other.histId != null) 
+        		|| (this.histId != null && !this.histId.equals(other.histId))) {
             return false;
         }
         return true;
