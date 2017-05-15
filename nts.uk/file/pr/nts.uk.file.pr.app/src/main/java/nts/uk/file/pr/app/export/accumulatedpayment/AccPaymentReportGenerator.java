@@ -20,5 +20,6 @@ public interface AccPaymentReportGenerator {
 	 * @param generatorContext the generator context
 	 * @param dataSource the data source
 	 */
-	void generate(FileGeneratorContext generatorContext, AccPaymentDataSource dataSource, AccPaymentReportQuery query);	
+	void generate(FileGeneratorContext generatorContext, 
+			AccPaymentDataSource dataSource, AccPaymentReportQuery query);	
 }

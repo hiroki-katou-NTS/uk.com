@@ -46,12 +46,8 @@ module nts.uk.pr.view.qmm008.b {
          * Function is used to load all InsuranceOfficeItem by key.
          */
         export function findInsuranceOffice(key: string): JQueryPromise<Array<model.finder.InsuranceOfficeItemDto>> {
-            var dfd = $.Deferred<Array<model.finder.InsuranceOfficeItemDto>>();
             var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-            nts.uk.request.ajax(findPath).done(function(data: any) {
-                dfd.resolve(data);
-            });
-            return dfd.promise();
+            return nts.uk.request.ajax(findPath);
         }
 
         /**
@@ -76,11 +72,7 @@ module nts.uk.pr.view.qmm008.b {
         export function getHealthInsuranceItemDetail(code: string): JQueryPromise<model.finder.HealthInsuranceRateDto> {
             var dfd = $.Deferred<model.finder.HealthInsuranceRateDto>();
             var findPath = servicePath.getHealthInsuranceItemDetail + "/" + code;
-            nts.uk.request.ajax(findPath).done(function(data: model.finder.HealthInsuranceRateDto) {
-                var healthInsuranceRateDetailData: model.finder.HealthInsuranceRateDto = data;
-                dfd.resolve(healthInsuranceRateDetailData);
-            });
-            return dfd.promise();
+            return nts.uk.request.ajax(findPath);
         }
         
         /**
@@ -89,11 +81,7 @@ module nts.uk.pr.view.qmm008.b {
         export function getAllHealthOfficeItem(): JQueryPromise<Array<model.finder.OfficeItemDto>> {
             var dfd = $.Deferred<Array<model.finder.OfficeItemDto>>();
             var findPath = servicePath.getAllHealthOfficeAndHistory;
-            nts.uk.request.ajax(findPath).done(function(data: Array<model.finder.OfficeItemDto>) {
-                var returnData: Array<model.finder.OfficeItemDto> = data;
-                dfd.resolve(returnData);
-            });
-            return dfd.promise();
+            return nts.uk.request.ajax(findPath);
         }
 
         /**

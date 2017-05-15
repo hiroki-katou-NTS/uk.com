@@ -1,6 +1,7 @@
 package nts.uk.pr.file.infra.residentialtax;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -8,8 +9,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompany;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
+import nts.uk.ctx.basic.infra.entity.report.CmnmtCalled;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QcpmtRegalDocCom;
 import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output.QcpmtRegalDocComPK;
 import nts.uk.file.pr.app.export.residentialtax.ResidentialTaxReportRepository;
@@ -25,7 +27,7 @@ public class JpaResidentialTaxReportRepository extends JpaRepository implements 
 
 	//private String CMNMT_COMPANY_SEL_3 = "SELECT e FROM ReportCmnmtCompany e WHERE e.cmnmtCompanyPk.companyCd = :companyCd";
 	private String QTXMT_RESIDENTIAL_TAX_SEL_4 = "SELECT NEW " + ResidentialTaxDto.class.getName() + ""
-			+ "(c.qtxmtResidentialTaxPk.resiTaxCode, c.resiTaxAutonomy, c.registeredName, c.companyAccountNo, c.companySpecifiedNo, c.cordinatePostalCode, c.cordinatePostOffice) "
+			+ "(c.qtxmtResidentialTaxPk.resiTaxCode, c.resiTaxAutonomy, c.registeredName, c.companyAccountNo, c.companySpecifiedNo, c.cordinatePostalCode, c.cordinatePostOffice, c.resiTaxAutonomyKana) "
 			+ "FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode IN :resiTaxCode";
 	private String QTXMT_RESIDENTIAL_TAXSLIP_SEL_2 = "SELECT NEW " + ResidentialTaxSlipDto.class.getName() + ""
 			+ "(a.qtxmtResimentTialTaxSlipPk.residentTaxCode, a.qtxmtResimentTialTaxSlipPk.yearMonth, a.taxPayRollMoney, a.taxBonusMoney, a.taxOverDueMoney, a.taxDemandChargeMoyney, a.address, a.dueDate, a.headcount, a.retirementBonusAmout, a.cityTaxMoney, a.prefectureTaxMoney) "
@@ -45,12 +47,14 @@ public class JpaResidentialTaxReportRepository extends JpaRepository implements 
 			+ "AND d.qstdtPaymentDetailPK.processingYM =:processingYM AND d.qstdtPaymentDetailPK.categoryATR =:categoryATR AND d.qstdtPaymentDetailPK.itemCode =:itemCode";
 
 	private String QREDT_RETIREMENT_PAYMENT_SEL_2 = "SELECT NEW " + RetirementPaymentDto.class.getName() + ""
-			+ "(z.qredtRetirementPaymentPK.pid, z.qredtRetirementPaymentPK.payDate, z.trialPeriodSet, z.exclusionYears, z.additionalBoardYears, z.boardYears, z.totalPaymentMny, z.deduction1Mny, z.deduction2Mny, z.deduction3Mny, z.otherRetirementPayOp, z.taxCalMethodSet, z.incomeTaxMny, z.cityTaxMny, z.prefectureTaxMny, z.totalDeductionMny, z.actualRecieveMny, z.withholdingMeno)"
+			+ "(z.qredtRetirementPaymentPK.personId, z.qredtRetirementPaymentPK.payDate, z.trialPeriodSet, z.exclusionYears, z.additionalBoardYears, z.boardYears, z.totalPaymentMoney, z.deduction1Money, z.deduction2Money, z.deduction3Money, z.retirementPayOption, z.taxCalculationMethod, z.incomeTaxMoney, z.cityTaxMoney, z.prefectureTaxMoney, z.totalDeclarationMoney, z.actualRecieveMoney, z.withholdingMeno)"
 			+ "FROM QredtRetirementPayment z "
-			+ "WHERE z.qredtRetirementPaymentPK.ccd =:companyCode "
-			+ "AND z.qredtRetirementPaymentPK.pid IN :personId "
+			+ "WHERE z.qredtRetirementPaymentPK.companyCode =:companyCode "
+			+ "AND z.qredtRetirementPaymentPK.personId IN :personId "
 			+ "AND z.qredtRetirementPaymentPK.payDate >=:StartYearMonth "
 			+ "AND z.qredtRetirementPaymentPK.payDate <=:EndYearMonth";
+	
+	private String CMNMT_CALLED = "SELECT b.person FROM CmnmtCalled b WHERE b.ccd = :companyCode ";
 
 	@Override
 	public List<ResidentialTaxDto> findResidentTax(String companyCode, List<String> residentTaxCodeList) {
@@ -108,8 +112,16 @@ public class JpaResidentialTaxReportRepository extends JpaRepository implements 
 	public List<PersonResitaxDto> findPersonResidentTax(String companyCode, int yearMonth,
 			List<String> residentTaxCodeList) {
 		return this.queryProxy().query(PPRMT_PERSON_RESITAX_SEL_5, PersonResitaxDto.class)
-				.setParameter("companyCd", companyCode).setParameter("residenceCode", residentTaxCodeList)
+				.setParameter("companyCd", companyCode)
+				.setParameter("residenceCode", residentTaxCodeList)
 				.setParameter("yearKey", yearMonth)
 				.getList();
+	}
+
+	@Override
+	public Optional<String> findPersonText(String companyCode) {	
+		return this.queryProxy().query(CMNMT_CALLED, String.class )
+				.setParameter("companyCode", companyCode)
+				.getSingle();
 	}
 }

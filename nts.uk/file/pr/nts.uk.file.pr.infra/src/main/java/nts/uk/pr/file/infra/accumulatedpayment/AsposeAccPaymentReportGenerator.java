@@ -24,6 +24,7 @@ import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.file.pr.app.export.accumulatedpayment.AccPaymentReportGenerator;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentDataSource;
 import nts.uk.file.pr.app.export.accumulatedpayment.data.AccPaymentItemData;
@@ -37,13 +38,13 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator implements AccPaymentReportGenerator {
 
 	/** The Constant REPORT_FILE_NAME. */
-	private static final String REPORT_FILE_NAME = "AccumulatedPaymentReport.pdf";
+	private static final String REPORT_FILE_NAME = "QET002.xlsx";
 
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "report/AccumulatedPaymentReport.xlsx";
+	private static final String TEMPLATE_FILE = "report/QET002.xlsx";
 
 	/** The Constant FIRST_ROW_INDEX. */
-	private static final int FIRST_ROW_INDEX = 12;
+	private static final int FIRST_ROW_INDEX = 9;
 
 	/** The Constant FIRST_COLUMN. */
 	private static final int FIRST_COLUMN = 0;
@@ -74,7 +75,8 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 * nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentDataSource)
 	 */
 	@Override
-	public void generate(FileGeneratorContext generatorContext, AccPaymentDataSource dataSource, AccPaymentReportQuery query) {
+	public void generate(FileGeneratorContext generatorContext, 
+			AccPaymentDataSource dataSource, AccPaymentReportQuery query) {
 		List<AccPaymentItemData> accumulatedPaymentList = dataSource.getAccPaymentItemData();
 		try {
 			val designer = this.createContext(TEMPLATE_FILE);
@@ -83,16 +85,22 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			Worksheet worksheet = worksheets.get(0);
 			Cells cells = worksheet.getCells();
 			
+			// Set header.
+			worksheet.getPageSetup().setHeader(2,
+					"&\"IPAPGothic\"&13 " + GeneralDate.today().toString() + "\r\n&P ページ");
+			designer.getDesigner().setDataSource("Header", dataSource.getHeaderData());
+			
 			// Fill data
-			// List Item Data			
+			// Item Data List
 			int amountEmployee = accumulatedPaymentList.size();
 			int startIndex = 0;
-			int firstRowIndex = FIRST_ROW_INDEX;			
+			int firstRowIndex = FIRST_ROW_INDEX;
 			int numberOfPage = 0;
-			int rangeRows = AMOUNT_PER_PAGE;			
-			while(amountEmployee > 0){				
+			int rangeRows = AMOUNT_PER_PAGE;
+			while(amountEmployee > 0){
 				int endIndex = startIndex + AMOUNT_PER_PAGE;
-				List<AccPaymentItemData> subList = subAccList(accumulatedPaymentList, startIndex, endIndex);				
+				List<AccPaymentItemData> subList = 
+						subAccList(accumulatedPaymentList, startIndex, endIndex);				
 				
 				// Create ranges 
 				if(amountEmployee < AMOUNT_PER_PAGE){
@@ -119,7 +127,8 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			}			
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
-			designer.saveAsPdf(this.createNewFile(generatorContext, REPORT_FILE_NAME));
+			designer.saveAsExcel(this.createNewFile(generatorContext,
+					this.getReportName(REPORT_FILE_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -276,8 +285,6 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getGray());
 		cell.setStyle(style);
 	}
-
-
 	/**
 	 * Sets the backgroundcolor.
 	 *

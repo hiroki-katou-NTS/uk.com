@@ -14,7 +14,7 @@ module nts.uk.ui.koExtentions {
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
-            var value = data.value;
+            var value = data.value; 
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
             var ISOFormat = text.getISOFormat(dateFormat);
@@ -51,6 +51,7 @@ module nts.uk.ui.koExtentions {
             container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
             var inputClass: string = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
             var $input: any = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
+            $input.attr("data-name", container.data("name"));
             container.append($input);
             if (hasDayofWeek) {
                 var lengthClass: string = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
@@ -142,7 +143,6 @@ module nts.uk.ui.koExtentions {
                 $label.text("");
             }
             container.data("init", false);
-            
             // Properties Binding
             $input.datepicker('setStartDate', startDate);
             $input.datepicker('setEndDate', endDate);

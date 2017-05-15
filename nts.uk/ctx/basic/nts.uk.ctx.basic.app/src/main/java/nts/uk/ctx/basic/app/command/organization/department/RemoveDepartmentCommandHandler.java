@@ -19,6 +19,7 @@ public class RemoveDepartmentCommandHandler extends CommandHandler<RemoveDepartm
 	@Override
 	protected void handle(CommandHandlerContext<RemoveDepartmentCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
+		// check isExistDepartment
 		if (!departmentRepository.isExistDepartment(companyCode, context.getCommand().getHistoryId(),
 				new DepartmentCode(context.getCommand().getDepartmentCode()))) {
 			throw new BusinessException("ER06");

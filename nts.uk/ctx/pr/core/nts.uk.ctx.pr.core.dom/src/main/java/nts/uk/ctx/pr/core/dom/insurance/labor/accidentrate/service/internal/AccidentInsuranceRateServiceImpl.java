@@ -39,7 +39,8 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	@Override
 	public void validateRequiredItem(AccidentInsuranceRate rate) {
 		if (StringUtil.isNullOrEmpty(rate.getHistoryId(), true) || rate.getApplyRange() == null
-			|| CollectionUtil.isEmpty(rate.getRateItems()) || rate.getRateItems().size() != RATE_ITEM_COUNT) {
+			|| CollectionUtil.isEmpty(rate.getRateItems())
+			|| rate.getRateItems().size() != RATE_ITEM_COUNT) {
 			throw new BusinessException("ER001");
 		}
 	}
@@ -107,7 +108,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 * @return true, if is valid rate update
 	 */
 	private boolean isValidRateUpdate(AccidentInsuranceRate rate) {
-		return (isMonthDate(rate) || !checkExistRate(rate) || isLaterThanLastHistory(rate));
+		return isMonthDate(rate) || !checkExistRate(rate) || isLaterThanLastHistory(rate);
 	}
 
 	/**
@@ -131,8 +132,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	// check exist rate
 	private boolean checkExistRate(AccidentInsuranceRate rate) {
-		Optional<AccidentInsuranceRate> data = this.repository.findById(rate.getCompanyCode(),
-			rate.getHistoryId());
+		Optional<AccidentInsuranceRate> data = this.repository.findById(rate.getHistoryId());
 		return data.isPresent();
 	}
 
@@ -145,17 +145,18 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	private boolean isLaterThanLastHistory(AccidentInsuranceRate rate) {
 
-		Optional<AccidentInsuranceRate> data = this.repository.findById(rate.getCompanyCode(),
-			rate.getHistoryId());
+		Optional<AccidentInsuranceRate> data = this.repository.findById(rate.getHistoryId());
 
 		if (data.isPresent()) {
 			Optional<AccidentInsuranceRate> dataUpdate = this.repository.findBetweenUpdate(
-				rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(), data.get().getHistoryId());
+				rate.getCompanyCode(), data.get().getApplyRange().getStartMonth(),
+				data.get().getHistoryId());
 
 			// check first data
-			return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth().v() >= rate
-				.getApplyRange().getStartMonth().v()));
+			return (dataUpdate.isPresent() && (dataUpdate.get().getApplyRange().getStartMonth()
+				.v() >= rate.getApplyRange().getStartMonth().v()));
 		}
+
 		return true;
 	}
 

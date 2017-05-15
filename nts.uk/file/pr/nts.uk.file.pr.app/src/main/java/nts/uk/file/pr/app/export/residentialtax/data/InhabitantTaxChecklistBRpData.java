@@ -29,4 +29,13 @@ public class InhabitantTaxChecklistBRpData {
 	 */
 	private Double value;
 	
+	/**
+	 * unit(円)
+	 */
+	private String unit;
+	
+	/**
+	 * Check column sum
+	 */
+	private Boolean checkSum;
 }

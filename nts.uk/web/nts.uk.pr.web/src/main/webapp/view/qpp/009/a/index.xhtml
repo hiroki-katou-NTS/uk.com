@@ -9,15 +9,15 @@
 		<ui:define name="htmlHead">
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="qpp009.a.vm.js" />
 			<com:scriptfile path="qpp009.a.start.js" />
  			<com:scriptfile path="qpp009.a.service.js" /> 
+			<com:scriptfile path="qpp009.a.vm.js" />
 			<script type="text/javascript">
 				// TODO: Code validate.
 				__viewContext.primitiveValueConstraints.TargetYear = {
 					valueType : 'Integer',
-					min: 1900,
-					max: 9999
+					min: 190001,
+					max: 999912
 				};
 			</script>
 		</ui:define>
@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
-					<button id="select-employee-button" class="proceed" data-bind="enable: $root.errors.isEmpty, click: printData">選択社員印刷ボタン</button>
+					<button id="select-employee-button" class="proceed" data-bind="click: printData">選択社員印刷ボタン</button>
 					<button id="print-excution-log-button">印刷実行ログボタン</button>
 				</div>
 			</div>
@@ -35,19 +35,19 @@
 						<td id="contents-left">
 							<div class="select-target-year">
 								<div id="time-input">
-									<div class="label" id="target-year-label">対象年度</div>
-	<!-- 								<input id="target-year-input" for="target-year-label" data-bind="ntsNumberEditor: {
-										value: targetYear,
-										constraint: 'TargetYear',
-										option: {
-											decimallength: 0,
-											width: '60px'
-										},
-										enable: true}"></input>  -->
-									
-									<span id="date-picker" for="target-year-label"  data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}" ></span>
-									
-									<span id="japan-year">(?????)</span>
+									<span class="label with-image">
+										<i class="image image-calendar" /> <span>対象年度</span>
+									</span> 
+									<span id="date-picker" for="target-year-label"
+										data-bind="ntsDatePicker: {
+										value: yearMonth, 
+										constraint: 'TargetYear', 
+										required: true, 
+										dateFormat: 'yyyy/MM', 
+										startDate: '1900/01', 
+										endDate:'9999/12'}"></span>
+
+									<span id="japan-year" data-bind="text: japanYearmonth()"></span>
 								</div>
 								<div id="output-division" data-bind="ntsSwitchButton: {
 										options: outputDivisions,
@@ -62,7 +62,7 @@
 								<div class="label header-label" id="detail-process-label">処理の詳細設定</div>
 								<div class="head-end"></div>
 								<div id="detail-items-setting-label" data-bind="ntsFormLabel: {}">明細・合計の出力指定 </div> 
-								<label id="detail-label">の部門構成で集計します.</label>
+								<label id="detail-label" data-bind="text: detailLabel()"></label>
 								<div id="detail-items-setting" data-bind="with: detailItemsSetting">
 									<div id="print-detail-item-checkbox" data-bind="ntsCheckBox: { checked: isPrintDetailItem }">明細  （支給した給与）を出力する</div>
 									<div id="print-total-department-checkbox">
@@ -80,8 +80,8 @@
 																				optionsValue: 'code',
 																				optionsText: 'name',
 																				value: selectedLevels,
-																				enable: isPrintDepHierarchy} ">											
-										</div>										
+																				enable: isPrintDepHierarchy()} ">
+										</div>
 										<div style="margin-left: 15px">※10階層は部門計で確認できます。</div>
 									</div>
 									<div id="calculate-total-checkbox" data-bind="ntsCheckBox: {checked: isCalculateTotal}">総合計  （選択した個人の対象期間合計）を出力する。</div>

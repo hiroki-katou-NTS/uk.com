@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
@@ -34,6 +34,14 @@ public interface HealthInsuranceRateRepository extends SimpleHistoryRepository<H
 	 * @param rate the rate
 	 */
     void remove(String historyId);
+    
+    /**
+     * Removes the by office code.
+     *
+     * @param companyCode the company code
+     * @param officeCode the office code
+     */
+    void removeByOfficeCode(String companyCode, String officeCode);
 
 	/**
 	 * Find all.

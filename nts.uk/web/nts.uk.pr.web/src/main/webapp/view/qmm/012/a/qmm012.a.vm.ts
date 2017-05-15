@@ -4,7 +4,7 @@ module qmm012.a.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any = ko.observable(0);
         enable: KnockoutObservable<boolean> = ko.observable(true);
-        NavigationMessage: KnockoutObservable<string> = ko.observable('社員に対して支払う金額の種類を登録します。」と表記');
+        NavigationMessage: KnockoutObservable<string> = ko.observable('社員に対して支払う金額の種類を登録します。');
         constructor() {
             let self = this;
             //start Switch Data
@@ -22,13 +22,13 @@ module qmm012.a.viewmodel {
                 let text;
                 switch (NewValue) {
                     case 0:
-                        text = "社員に対して支払う金額の種類を登録します。」と表記"
+                        text = "社員に対して支払う金額の種類を登録します。"
                         break;
                     case 1:
                         text = "社員から徴収する金額の種類を登録します。"
                         break;
                     case 2:
-                        text = "社員の勤怠実績（日数・回数,時間）の種類を登録します"
+                        text = "社員の勤怠実績（日数・回数,時間）の種類を登録します。"
                         break;
                 }
                 return text;

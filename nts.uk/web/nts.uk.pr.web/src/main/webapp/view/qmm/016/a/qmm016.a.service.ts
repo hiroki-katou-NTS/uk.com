@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm016 {
+module nts.uk.pr.view.qmm016.a {
     /**
      * Module service.
      */
@@ -68,8 +68,10 @@ module nts.uk.pr.view.qmm016 {
                 // Call service.
                 nts.uk.request.ajax(path.genitem, data).done((res: any) => {
                     dfd.resolve(res.elementSettings);
-                }).fail(dfd.fail);
-
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });
+                    
                 // Promise.
                 return dfd.promise();
             }
@@ -239,7 +241,7 @@ module nts.uk.pr.view.qmm016 {
         /**
          * Wgate table history dto.
          */
-        export interface WageTableHistoryDto {
+        export class WageTableHistoryDto {
             /** The head. */
             head: WageTableHeadDto;
 
@@ -257,6 +259,9 @@ module nts.uk.pr.view.qmm016 {
 
             /** The value items. */
             valueItems: Array<CellItemDto>;
+            
+            constructor() {
+            }
         }
         
         /**

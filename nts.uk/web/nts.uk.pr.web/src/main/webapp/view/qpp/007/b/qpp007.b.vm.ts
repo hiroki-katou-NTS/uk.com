@@ -35,17 +35,54 @@ module nts.uk.pr.view.qpp007.b {
             }
 
             /**
+             * Validate settings.
+             */
+            private isValidSetting(): boolean {
+                var self = this;
+                var isValid = true;
+                var model = self.salaryPrintSettingModel();
+                $('#this-contents-area').ntsError('clear');
+                if (model.showPayment() == false
+                    && model.sumPersonSet() == false
+                    && model.sumMonthPersonSet() == false
+                    && model.sumEachDeprtSet() == false
+                    && model.sumMonthDeprtSet() == false
+                    && model.sumDepHrchyIndexSet() == false
+                    && model.sumMonthDepHrchySet() == false
+                    && model.totalSet() == false
+                    && model.monthTotalSet() == false) {
+                    $('#this-contents-area').ntsError('set', '設定が正しくありません。');
+                    isValid = false;
+                }
+                if (model.sumDepHrchyIndexSet() == true
+                    || model.sumMonthDepHrchySet() == true) {
+                    if (model.numberOfSelectedIndexs() > 5) {
+                        $('#this-contents-area').ntsError('set', '部門階層が正しく指定されていません');
+                        isValid = false;
+                    }
+                    if (model.numberOfSelectedIndexs() == 0) {
+                        $('#this-contents-area').ntsError('set', '部門階層が正しく指定されていません');
+                        isValid = false;
+                    }
+                }
+                return isValid;
+            }
+
+            /**
              * Call service to save print setting.
              */
-            private saveSetting(): void {
+            public saveSetting(): void {
                 var self = this;
-                service.saveSalaryPrintSetting(ko.toJS(self.salaryPrintSettingModel));
-                nts.uk.ui.windows.close();
+                if (self.isValidSetting()) {
+                    service.saveSalaryPrintSetting(ko.toJS(self.salaryPrintSettingModel));
+                    nts.uk.ui.windows.close();
+                }
             }
+
             /**
              * Cancel and close dialog.
              */
-            private cancel(): void {
+            public cancel(): void {
                 nts.uk.ui.windows.close();
             }
         }
@@ -67,6 +104,7 @@ module nts.uk.pr.view.qpp007.b {
             hrchyIndex7: KnockoutObservable<boolean>;
             hrchyIndex8: KnockoutObservable<boolean>;
             hrchyIndex9: KnockoutObservable<boolean>;
+            numberOfSelectedIndexs: KnockoutObservable<number>;
             totalSet: KnockoutObservable<boolean>;
             monthTotalSet: KnockoutObservable<boolean>;
             constructor(dto: SalaryPrintSettingDto) {
@@ -86,6 +124,38 @@ module nts.uk.pr.view.qpp007.b {
                 this.hrchyIndex7 = ko.observable(dto.hrchyIndex7);
                 this.hrchyIndex8 = ko.observable(dto.hrchyIndex8);
                 this.hrchyIndex9 = ko.observable(dto.hrchyIndex9);
+                var self = this;
+                this.numberOfSelectedIndexs = ko.computed(() => {
+                    var count = 0;
+                    if (self.hrchyIndex1()) {
+                        count += 1;
+                    }
+                    if (self.hrchyIndex2()) {
+                        count += 1;
+                    }
+                    if (self.hrchyIndex3()) {
+                        count += 1;
+                    }
+                    if (self.hrchyIndex4()) {
+                        count += 1;
+                    }
+                    if (self.hrchyIndex5()) {
+                        count += 1;
+                    }
+                    if (self.hrchyIndex6()) {
+                        count += 1;
+                    }
+                    if (self.hrchyIndex7()) {
+                        count += 1;
+                    }
+                    if (self.hrchyIndex8()) {
+                        count += 1;
+                    }
+                    if (self.hrchyIndex9()) {
+                        count += 1;
+                    }
+                    return count;
+                });
                 this.totalSet = ko.observable(dto.totalSet);
                 this.monthTotalSet = ko.observable(dto.monthTotalSet);
             }

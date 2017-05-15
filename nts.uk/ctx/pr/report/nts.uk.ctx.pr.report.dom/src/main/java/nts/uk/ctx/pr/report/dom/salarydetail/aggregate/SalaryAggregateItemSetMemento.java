@@ -14,18 +14,11 @@ import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 public interface SalaryAggregateItemSetMemento {
 
 	/**
-	 * Sets the company code.
+	 * Sets the salary aggregate item header.
 	 *
-	 * @param companyCode the new company code
+	 * @param header the new salary aggregate item header
 	 */
-	 void setCompanyCode(String companyCode);
-
-	/**
-	 * Sets the salary aggregate item code.
-	 *
-	 * @param salaryAggregateItemCode the new salary aggregate item code
-	 */
-	void setSalaryAggregateItemCode(SalaryAggregateItemCode salaryAggregateItemCode);
+	void setSalaryAggregateItemHeader(SalaryAggregateItemHeader header);
 
 	/**
 	 * Sets the salary aggregate item name.
@@ -41,18 +34,4 @@ public interface SalaryAggregateItemSetMemento {
 	 */
 	void setSubItemCodes(Set<SalaryItem> subItemCodes);
 
-	/**
-	 * Sets the tax division.
-	 *
-	 * @param taxDivision the new tax division
-	 */
-	void setTaxDivision(TaxDivision taxDivision);
-
-	/**
-	 * Sets the item category.
-	 *
-	 * @param itemCategory the new item category
-	 */
-	// TODO: need review with EAP.
-	void setItemCategory(int itemCategory);
 }

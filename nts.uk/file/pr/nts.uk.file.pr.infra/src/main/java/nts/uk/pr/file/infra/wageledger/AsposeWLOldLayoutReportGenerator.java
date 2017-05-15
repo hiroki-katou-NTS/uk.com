@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.wageledger;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -42,7 +43,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator implements WLOldLayoutReportGenerator {
 	
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "report/WageLegerOldLayoutReportTemplate.xlsx";
+	private static final String TEMPLATE_FILE = "report/QET001_1.xlsx";
 	
 	/** The Constant ROW_START_REPORT. */
 	private static final int ROW_START_REPORT = 5;
@@ -62,10 +63,42 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 *  nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData)
 	 */
 	@Override
-	public void generate(FileGeneratorContext fileContext, WLOldLayoutReportData reportData, WageLedgerReportQuery query) {
+	public void generate(FileGeneratorContext fileContext, List<WLOldLayoutReportData> reportDatas,
+			WageLedgerReportQuery query) {
+		// Generate report.
+		final List<AsposeCellsReportContext> reportFiles = reportDatas.stream()
+				.map(data -> this.generateReport(data))
+				.collect(Collectors.toList());
 		
+		// Save report to file PDF.
 		try {
-			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
+			AsposeCellsReportContext reportContext = reportFiles.get(0);
+
+			// If have 2 or more report -> combine to 1 workbook.
+			if (reportFiles.size() > 1) {
+				for (int i = 1; i < reportFiles.size(); i++) {
+					reportContext.getWorkbook().combine(reportFiles.get(i).getWorkbook());
+				}
+			}
+
+			// Save to PDF.
+			reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Generate report.
+	 *
+	 * @param fileContext the file context
+	 * @param reportData the report data
+	 * @param query the query
+	 * @return the aspose cells report context
+	 */
+	private AsposeCellsReportContext generateReport(WLOldLayoutReportData reportData) {
+		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
+			
 			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 			HeaderReportData headerData = reportData.headerData;
 			
@@ -121,7 +154,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 			reportContext.getDesigner().process(false);
 
 			// save as PDF file
-			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
+			return reportContext;
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -192,6 +225,10 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	 * @param monthList the month list
 	 */
 	private void fillReportItemsData(List<ReportItemDto> reportItems, PrintData printData) {
+		reportItems = reportItems.stream().filter(item -> item.isShow()).collect(Collectors.toList());
+		if (reportItems.size() == 0) {
+			return;
+		}
 		Worksheet ws = printData.reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
 		int totalItemData = reportItems.size();
@@ -252,25 +289,28 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 		Color backgroundColor = printData.isGreenRow ? GREEN_COLOR : null;
 		printData.isGreenRow = !printData.isGreenRow;
 		
-		
 		// Fill item name cell.
 		int amountColumn = printData.isPrintTotalItem ? 2 : 1;
 		Color nameColor = printData.isPrintTotalItem ? GREEN_COLOR : backgroundColor;
 		Range nameCell = cells.createRange(printData.currentRow, printData.currentColumn, 1, amountColumn);
-		nameCell.get(0, 0).setValue(item.name);
+		nameCell.get(0, 0).setValue(!item.isShowName && item.isZeroValue() ? "" : item.name);
 		nameCell.merge();
 		this.setStyleRange(nameCell, nameColor);
 		printData.currentColumn += amountColumn;
 		
 		// Fill item data cells.
-		Map<Integer, MonthlyData> dataMap = item.monthlyDatas.stream()
-				.collect(Collectors.toMap(d -> d.month, Function.identity()));
+		Map<Integer, MonthlyData> dataMap = item != null ? item.monthlyDatas.stream()
+				.collect(Collectors.toMap(d -> d.month, Function.identity())) : new HashMap<>();
 		List<Integer> monthList = printData.isSalaryPath ? printData.reportData.salaryMonthList
 						: printData.reportData.bonusMonthList;
+		boolean isShowValue = !item.isZeroValue() || item.isShowValue;
 		for (int j = 0; j < monthList.size(); j++) {
 			MonthlyData data = dataMap.get(monthList.get(j));
 			Cell monthCell = cells.get(printData.currentRow, printData.currentColumn);
-			monthCell.setValue(data.amount);
+			// Check show value.
+			if (isShowValue) {
+				monthCell.setValue(data != null ? data.amount : 0);
+			}
 
 			// Set style for cell.
 			StyleModel dataCellStyle = StyleModel
@@ -283,8 +323,10 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 
 		// Fill Total Cell.
 		Cell totalCell = cells.get(printData.currentRow, printData.currentColumn);
-		item.calculateTotal();
-		totalCell.setValue(item.getTotal());
+		if (isShowValue) {
+			item.calculateTotal();
+			totalCell.setValue(item.getTotal());
+		}
 		StyleModel totalCellStyle = StyleModel.createTotalCellStyle(backgroundColor);
 		this.setStyleCell(totalCell, totalCellStyle);
 		
@@ -396,7 +438,7 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 		styleFlag.setHorizontalAlignment(true);
 		styleFlag.setVerticalAlignment(true);
 		styleFlag.setWrapText(true);
-		range.applyStyle(style, styleFlag);;
+		range.applyStyle(style, styleFlag);
 	}
 	
 	/**

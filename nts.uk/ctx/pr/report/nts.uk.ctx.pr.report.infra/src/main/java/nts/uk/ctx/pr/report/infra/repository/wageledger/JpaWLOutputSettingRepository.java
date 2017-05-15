@@ -71,7 +71,7 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 				QlsptLedgerFormHead.class);
 		if (entity.isPresent()) {
 			QlsptLedgerFormHead realEntity = entity.get();
-			// Convert to Memento;
+			// Convert to Memento
 			outputSetting.saveToMemento(new JpaWLOutputSettingSetMemento(realEntity));
 			// Update to db.
 			this.commandProxy().update(realEntity);
@@ -104,16 +104,15 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 	 * nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public WLOutputSetting findByCode(String companyCode, WLOutputSettingCode code) {
-		Optional<QlsptLedgerFormHead> entity = this.queryProxy()
-				.find(new QlsptLedgerFormHeadPK(companyCode, code.v()), QlsptLedgerFormHead.class);
-
+	public Optional<WLOutputSetting> findByCode(String companyCode, WLOutputSettingCode code) {
+		Optional<QlsptLedgerFormHead> entity = this.queryProxy().find(new QlsptLedgerFormHeadPK(companyCode, code.v()),
+				QlsptLedgerFormHead.class);
 		if (entity.isPresent()) {
-			// To Domain.
-			return new WLOutputSetting(new JpaWLOutputSettingGetMemento(entity.get()));
+			return Optional.ofNullable(new WLOutputSetting(new JpaWLOutputSettingGetMemento(entity.get())));
 		}
 
-		throw new RuntimeException("Not found entity.");
+		return Optional.empty();
+
 	}
 
 	/*

@@ -21,4 +21,5 @@ module qrm001.a.service {
     export function removeRetirementPaymentInfo(command) {
         return nts.uk.request.ajax(paths.remove, command);
     }
+    
 }

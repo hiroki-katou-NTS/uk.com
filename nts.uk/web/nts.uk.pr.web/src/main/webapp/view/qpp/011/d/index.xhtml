@@ -70,7 +70,7 @@
 									給与分 <br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_002">
-									<input data-name="給与分"
+									<input data-name="給与分" id="salary_portion"
 										data-bind="ntsNumberEditor: {
 																value: $parent.taxPayRollMoney,
 																constraint:  'ResidentTaxMoney',
@@ -90,7 +90,7 @@
 									退職所得分<br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_003">
-									<input data-name="退職所得分"
+									<input data-name="退職所得分" id="retirement_income"
 										data-bind="ntsNumberEditor: {
 																value: $parent.taxBonusMoney,
 																constraint:  'ResidentTaxMoney',
@@ -111,7 +111,7 @@
 									遅延金<br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_004">
-									<input data-name="遅延金"
+									<input data-name="遅延金" id="tax_over_due_money"
 										data-bind="ntsNumberEditor: {
 																value: $parent.taxOverDueMoney,
 																constraint:  'ResidentTaxMoney',
@@ -132,7 +132,7 @@
 									督促手数料<br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_005">
-									<input data-name="督促手数料"
+									<input data-name="督促手数料" id="tax_demand_charge_moyney"
 										data-bind="ntsNumberEditor: {
 																value: $parent.taxDemandChargeMoyney,
 																constraint:  'ResidentTaxMoney',
@@ -169,7 +169,7 @@
 							</div>
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
 								<div id="D_LBL_011" data-bind="ntsFormLabel: { }">納付期限</div>
-								<div id="D_INP_007" data-name=""
+								<div id="D_INP_007" data-name="納付期限"
 									data-bind="ntsDatePicker: {
 																value: $parent.date_D_INP_007, 
 																dateFormat: 'YYYY/MM/DD', 
@@ -184,7 +184,7 @@
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
 								<div id="D_LBL_013" data-bind="ntsFormLabel: { }">人員</div>
 								<div id="D_INP_008">
-									<input data-name="人員"
+									<input data-name="人員" id="head_count"
 										data-bind="ntsNumberEditor: {
 																value: $parent.headcount,
 																constraint:  'StaffNo',
@@ -205,7 +205,7 @@
 									退職手当等支払金額<br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_009" class="floatLeft">
-									<input data-name="退職手当等支払金額"
+									<input data-name="退職手当等支払金額" id="retirement_bonus_amout"
 										data-bind="ntsNumberEditor: {
 																value: $parent.retirementBonusAmout,
 																constraint:  'ResidentTaxMoney',
@@ -226,7 +226,7 @@
 									特別徴収税額 市民税<br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_010" class="floatLeft">
-									<input data-name="特別徴収税額 市民税"
+									<input data-name="特別徴収税額 市民税" id="city_tax_money"
 										data-bind="ntsNumberEditor: {
 																value: $parent.cityTaxMoney,
 																constraint:  'ResidentTaxMoney',
@@ -248,7 +248,7 @@
 
 								</div>
 								<div class="floatLeft" id="D_INP_011">
-									<input data-name="特別徴収税額 県民税"
+									<input data-name="特別徴収税額 県民税" id="prefecture_tax_money"
 										data-bind="ntsNumberEditor: {
 																value: $parent.prefectureTaxMoney,
 																constraint:  'ResidentTaxMoney',

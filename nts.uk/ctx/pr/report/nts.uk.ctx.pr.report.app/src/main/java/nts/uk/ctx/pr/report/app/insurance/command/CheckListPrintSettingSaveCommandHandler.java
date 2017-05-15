@@ -22,7 +22,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @Transactional
-public class CheckListPrintSettingSaveCommandHandler extends CommandHandler<CheckListPrintSettingSaveCommand> {
+public class CheckListPrintSettingSaveCommandHandler
+	extends CommandHandler<CheckListPrintSettingSaveCommand> {
 
 	/** The checklist print setting repository. */
 	@Inject
@@ -39,24 +40,24 @@ public class CheckListPrintSettingSaveCommandHandler extends CommandHandler<Chec
 	protected void handle(CommandHandlerContext<CheckListPrintSettingSaveCommand> context) {
 		CheckListPrintSettingSaveCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		
+
 		// Validate command.
 		// If 4 Select not check => throw error ER007 .
 		if (!command.getShowDeliveryNoticeAmount() && !command.getShowDetail()
-				&& !command.getShowOffice() && !command.getShowTotal()) {
+			&& !command.getShowOffice() && !command.getShowTotal()) {
 			throw new BusinessException("出力設定が選択されていません。");
 		}
-		
+
 		// Check is create or update.
 		Optional<ChecklistPrintSetting> domainOptional = this.checklistPrintSettingRepository
-				.findByCompanyCode(companyCode);
+			.findByCompanyCode(companyCode);
 		if (domainOptional.isPresent()) {
 			// Update.
 			ChecklistPrintSetting domain = command.toDomain(companyCode);
 			this.checklistPrintSettingRepository.update(domain);
 			return;
 		}
-		
+
 		// Create.
 		ChecklistPrintSetting checklistPrintSetting = command.toDomain(companyCode);
 		this.checklistPrintSettingRepository.create(checklistPrintSetting);

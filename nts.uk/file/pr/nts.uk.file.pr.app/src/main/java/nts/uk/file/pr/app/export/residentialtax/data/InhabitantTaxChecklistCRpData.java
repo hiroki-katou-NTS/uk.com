@@ -33,4 +33,14 @@ public class InhabitantTaxChecklistCRpData {
 	 * DBD_004(納付額)
 	 */
 	private Double value;
+	
+	/**
+	 * unit(円)
+	 */
+	private String unit;
+	
+	/**
+	 * Check column sum
+	 */
+	private Boolean checkSum;
 }

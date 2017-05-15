@@ -10,7 +10,8 @@ module qpp011.b.service {
         getlistLocation: "pr/core/residential/getlistLocation",
         currentProcessingNo: "pr/proto/paymentdatemaster/processing/findbylogin",
         findallRegalDoc: "pr/core/rule/law/tax/residential/output/findallRegalDoc",
-        saveAsPdf: "screen/pr/QPP011/saveAsPdf"
+        saveAsPdf: "screen/pr/QPP011/saveAsPdf",
+        saveText: "screen/pr/QPP011/savePaymentData"
     }
 
     /**
@@ -131,6 +132,10 @@ module qpp011.b.service {
 
     export function saveAsPdf(command: any): JQueryPromise<any> {
         return nts.uk.request.exportFile(paths.saveAsPdf, command);
+    }
+    
+    export function saveText(command: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile(paths.saveText, command);
     }
 
     export module model {

@@ -125,7 +125,7 @@ module nts.uk.pr.view.base.simplehistory {
 
                     // resolve.
                     dfd.resolve();
-                }).fail(dfd.fail);
+                }).fail(dfd.reject);
 
                 return dfd.promise();
             }
@@ -329,6 +329,9 @@ module nts.uk.pr.view.base.simplehistory {
                         if (self.masterHistoryList.length > 0) {
                             if (!_.isEmpty(self.masterHistoryList[0].historyList)) {
                                 self.igGridSelectedHistoryUuid(self.masterHistoryList[0].historyList[0].uuid);
+                                self.igGridSelectedHistoryUuid.valueHasMutated();
+                            } else {
+                                self.igGridSelectedHistoryUuid(self.masterHistoryList[0].code);
                                 self.igGridSelectedHistoryUuid.valueHasMutated();
                             }
                         }

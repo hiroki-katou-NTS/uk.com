@@ -19,8 +19,8 @@
 			<com:scriptfile path="qpp007.c.start.js" />
 			<script type="text/javascript">
 				var dialogSize = {
-					width : 1300,
-					height : 800
+					width : 1350,
+					height : 750
 				};
 			</script>
 		</ui:define>
@@ -45,15 +45,15 @@
 					<div id="inpSearch" class="ntsSearchBox"
 						data-bind="ntsSearchBox: {
 										comId: 'outputSettings',
-										items: 'items', 
-										selected: 'currentCode', 
+										items: outputSettings, 
+										selected: temporarySelectedCode, 
 										selectedKey: 'code', 
-										fields: ['name', 'code', 'description']}"></div>
+										fields: ['name', 'code']}"></div>
 					<div id="left-grid-list">
 						<table id="outputSettings"
 							data-bind="ntsGridList: {
 							height: 350,
-							width: 240,
+							width: 230,
 							dataSource: outputSettings,
 							primaryKey: 'code',
 							columns: ko.observableArray([
@@ -70,7 +70,7 @@
 				<!-- BEGIN CONTENT CENTER-->
 				<div id="contents-center" class="caret-right caret-background pull-left" data-bind="with: outputSettingDetailModel">
 					<div class="flex valign-center">
-						<div id="lblCodeName" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
+						<div id="lblCodeName" data-bind="ntsFormLabel: {constraint: ['SalaryOutputSettingCode', 'SalaryOutputSettingName'], required: true}">コード/名称</div>
 						<input id="inpCode" data-name="コード"
 							data-bind="ntsTextEditor: {constraint: 'SalaryOutputSettingCode', value: settingCode, required: true, enable: $parent.isNewMode()}">
 						</input>
@@ -87,7 +87,7 @@
 							<table>
 							    <tr>
 							        <td>
-							            <div data-bind="ntsFormLabel: {required: false}">表に追加できる支給項目</div>
+							            <div data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">支給</span>項目</div>
 							            <hr />
 							            <com:ko tag="template" bind="{name: 'masterlist'}"></com:ko>
 							        </td>
@@ -119,7 +119,7 @@
 							<table>
 							    <tr>
 							        <td>
-							            <div data-bind="ntsFormLabel: {required: false}">表に追加できる控除項目</div>
+							            <div data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">控除</span>項目</div>
 							            <hr />
 							            <com:ko tag="template" bind="{name: 'masterlist'}"></com:ko>
 							        </td>
@@ -150,12 +150,12 @@
 							<com:ko tag="with" bind="categorySettings()[2]">
 							<table>
 								<tr>
-								<td><div data-bind="ntsFormLabel: {required: false}">表に追加できる勤怠項目</div></td>
+								<td><div data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">勤怠</span>項目</div></td>
 								<td style="padding-left: 75px"><div data-bind="ntsFormLabel: {required: false}">表に追加した項目</div></td>
 								</tr>
 								<tr>
-								<td style="width: 260px"><hr /></td>
-								<td style="width: 300px; padding-left: 75px"><hr /></td>
+								<td style="width: 240px"><hr /></td>
+								<td style="width: 280px; padding-left: 75px"><hr /></td>
 								</tr>
 								</table>
 								<com:ko tag="template" bind="{name: 'swaplist'}"></com:ko>
@@ -166,12 +166,12 @@
 							<com:ko tag="with" bind="categorySettings()[3]">
 							<table>
 								<tr>
-								<td><div data-bind="ntsFormLabel: {required: false}">表に追加できる記事・その他項目</div></td>
+								<td><div data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">記事・その他</span>項目</div></td>
 								<td style="padding-left: 75px"><div data-bind="ntsFormLabel: {required: false}">表に追加した項目</div></td>
 								</tr>
 								<tr>
-								<td style="width: 260px"><hr /></td>
-								<td style="width: 300px; padding-left: 75px"><hr /></td>
+								<td style="width: 240px"><hr /></td>
+								<td style="width: 280px; padding-left: 75px"><hr /></td>
 								</tr>
 								</table>
 								<com:ko tag="template" bind="{name: 'swaplist'}"></com:ko>
@@ -191,9 +191,9 @@
 						<table id="aggregateOutputItems"
 							data-bind="ntsGridList: {
 							height: 500,
-							width: 300,
+							width: 280,
 							options: aggregateOutputItems,
-							primaryKey: 'code',
+							primaryKey: 'itemKey',
 							columns: aggregateOutputItemColumns,
 							value: aggregateOutputItemSelected}"
 							class="cf"></table>
@@ -207,7 +207,7 @@
 			<!-- END CONTENT AREA-->
 			<script type="text/html" id="masterlist">
 				<table id="master-items" data-bind="ntsGridList: {
-				width: 250,
+				width: 230,
 				height: 180,
 				options: masterItems,
 				optionsValue: 'code',
@@ -218,10 +218,10 @@
 				value: masterItemsSelected, multiple: true}"></table>
 				</script>
 				<script type="text/html" id="aggregatelist">
-				<div style="margin-top: 40px" data-bind="ntsFormLabel: {required: false}">表に追加できる集約項目</div>
+				<div style="margin-top: 40px" data-bind="ntsFormLabel: {required: false}">表に追加できる<span class="big-text">集約</span>項目</div>
 				<hr />
 				<table id="aggregate-items" data-bind="ntsGridList: {
-				width: 250,
+				width: 230,
 				height: 180,
 				options: aggregateItems,
 				optionsValue: 'code',
@@ -239,12 +239,12 @@
 				<div style="display: inline-block;">
 				<table id="grid-test" data-bind="ntsGridList: {
 				height: 450,
-				width: 280,
+				width: 260,
 				options: outputItems,
 				optionsValue: 'code',
 				columns: outputItemColumns,
 				value: outputItemSelected,
-				}, rended: outputItemSelected"></table>
+				}, delete: outputItemSelected"></table>
 				</div>
 				<div id="up-down" data-bind="ntsUpDown: {
 				targetSource: outputItems,
@@ -259,12 +259,11 @@
 				<div id="swap-list" data-bind="ntsSwapList: {
 				showSearchBox: { showLeft : false, showRight: false},
 				height: 450,
-				width: 600,
 				dataSource: masterItems,
 				primaryKey: 'code',
 				columns: ko.observableArray([
 				{headerText: 'コード', prop: 'code', width: 50},
-				{headerText: '名称', prop: 'name', width: 140}
+				{headerText: '名称', prop: 'name', width: 120}
 				]),
 				value: outputItems}">
 				</div>

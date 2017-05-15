@@ -22,9 +22,10 @@ module qrm001.a.viewmodel {
         select6List: KnockoutObservableArray<any>;
         select6Code: KnockoutObservableArray<KnockoutObservable<any>>;
         isUpdate: KnockoutObservable<boolean>;
+        
         constructor() {
             var self = this;
-            var dfd = $.Deferred();
+            
             //Retirement Payment Process
             self.bankTransferList = ko.observableArray([
                 new PersonBankAccount('bank1', 'branch1', '0001'),
@@ -33,6 +34,7 @@ module qrm001.a.viewmodel {
                 new PersonBankAccount('bank4', 'branch4', '0004'),
                 new PersonBankAccount('bank5', 'branch5', '0005')
             ]);
+            
             self.fullSetSelect = ko.observableArray([
                     { code: 0, name: '使用しない' },
                     { code: 1, name: '支給1' },
@@ -40,10 +42,12 @@ module qrm001.a.viewmodel {
                     { code: 3, name: '支給3' },
                     { code: 4, name: '支給4' },
                     { code: 5, name: '支給5' }]);
+            
             self.isUpdate = ko.observable(false);
             self.retirementPaymentKeyList = ko.observableArray([new RetirementPaymentKey("A0001","2016-12-28")]);
             self.retirementPaymentList = ko.observableArray([]);
             self.retirementPaymentCurrent = ko.observable(new RetirementPayment('0','0',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'0','0') );
+            
             self.select6List = ko.observableArray(self.refreshSelect(self.fullSetSelect, self.retirementPaymentCurrent, 5));
             self.select6Code = ko.observableArray([ko.observable(1),ko.observable(2),ko.observable(3),ko.observable(4),ko.observable(5)]);
             self.select6Code().forEach(function(item,index){
@@ -53,29 +57,32 @@ module qrm001.a.viewmodel {
                     self.select6List(self.refreshSelect(self.fullSetSelect, self.retirementPaymentCurrent, 5));
                 });        
             });
+            
             //Employee Process 
             self.employeeList = ko.observableArray([
-                new EmployeeInfo('999000000000000000000000000000000001','日通　一郎'),
-                new EmployeeInfo('999000000000000000000000000000000002','日通　二郎'),
-                new EmployeeInfo('999000000000000000000000000000000003','日通　三郎'),
-                new EmployeeInfo('999000000000000000000000000000000004','日通　三郎'),
-                new EmployeeInfo('999000000000000000000000000000000005','日通　三郎'),
-                new EmployeeInfo('999000000000000000000000000000000006','日通　三郎'),
-                new EmployeeInfo('999000000000000000000000000000000007','日通　三郎'),
-                new EmployeeInfo('999000000000000000000000000000000008','日通　三郎'),
-                new EmployeeInfo('999000000000000000000000000000000009','日通　三郎'),
-                new EmployeeInfo('999000000000000000000000000000000010','日通　三郎'),
-                new EmployeeInfo('0','日通　三郎')
+                new EmployeeInfo('99900000-0000-0000-0000-000000000001', "A000000000001",'日通　一郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000002', "A000000000002",'日通　二郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000003', "A000000000003",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000004', "A000000000004",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000005', "A000000000005",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000006', "A000000000006",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000007', "A000000000007",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000008', "A000000000008",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000009', "A000000000009",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000010', "A000000000010",'日通　三郎'),
+                new EmployeeInfo('0', '','日通　三郎')
             ]);
+            
             self.personCom = ko.observable(new PersonCom('000000000001',"4/25/2000","4/25/2017",0,1,1));
             self.retirementPaymentCurrent().serviceYear(new Date(self.personCom().endDate()).getFullYear() - new Date(self.personCom().startDate()).getFullYear());
             self.date = ko.observable("2016-12-28");
             self.currentEmployeeIndex = ko.observable(0);
             self.currentEmployeeIndexOld = ko.observable(0);
-            self.currentEmployeeCode = ko.observable('999000000000000000000000000000000001');
+            self.currentEmployeeCode = ko.observable('99900000-0000-0000-0000-000000000001');
             self.currentEmployee = ko.observable(self.employeeList()[self.currentEmployeeIndex()]);
             self.previous = ko.observable(false);
             self.next = ko.observable(true);
+            
             self.currentEmployeeIndex.subscribe(function(value){
                 self.previous((value === 0)?false:true);
                 self.next((value === (self.employeeList().length-1))?false:true);
@@ -393,12 +400,12 @@ module qrm001.a.viewmodel {
     
     // Person Base Object
     class EmployeeInfo {
-        personId: KnockoutObservable<any>;
-        displayId: KnockoutObservable<any>;
-        name: KnockoutObservable<any>;
-        constructor(personId: any, name: any){
+        personId: KnockoutObservable<string>;
+        employeeCode: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        constructor(personId: string, employeeCode: string, name: string){
             this.personId = ko.observable(personId);
-            this.displayId = ko.observable(personId.substring(24, 36));
+            this.employeeCode = ko.observable(employeeCode);
             this.name = ko.observable(name);    
         }   
     }

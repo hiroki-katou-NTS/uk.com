@@ -36,8 +36,8 @@ module nts.uk.pr.view.qmm008.c {
 
             errorList: KnockoutObservableArray<any>;
             dirty: nts.uk.ui.DirtyChecker;
-            backupDataDirty : KnockoutObservable<PensionRateDto>;
-            canOpenOfficeRegisterDialog : KnockoutObservable<boolean>;
+            backupDataDirty: KnockoutObservable<PensionRateDto>;
+            canOpenOfficeRegisterDialog: KnockoutObservable<boolean>;
             constructor() {
                 super({
                     functionName: '厚生年金',
@@ -72,20 +72,13 @@ module nts.uk.pr.view.qmm008.c {
                 // add history dialog
                 self.isTransistReturnData = ko.observable(false);
 
-                self.fundInputEnable = ko.observable(false);
-
                 self.isLoading = ko.observable(true);
                 self.currentOfficeCode = ko.observable('');
                 self.japanYear = ko.observable('');
                 self.sendOfficeData = ko.observable('');
 
-                self.pensionModel().fundInputApply.subscribe(function() {
-                    //change select -> hide fund input table
-                    if (self.pensionModel().fundInputApply() != 1) {
-                        self.fundInputEnable(true);
-                    } else {
-                        self.fundInputEnable(false);
-                    }
+                self.fundInputEnable = ko.computed(() => {
+                    return self.pensionModel().fundInputApply() == 1;
                 });
                 self.errorList = ko.observableArray([
                     { messageId: "ER001", message: "＊が入力されていません。" },
@@ -94,7 +87,7 @@ module nts.uk.pr.view.qmm008.c {
                     { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
                     { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
                 ]);
-                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                 self.backupDataDirty = ko.observable<PensionRateDto>();
                 self.canOpenOfficeRegisterDialog = ko.observable(true);
             } //end constructor
@@ -106,6 +99,8 @@ module nts.uk.pr.view.qmm008.c {
                 self.getAllRounding().done(function() {
                     // Resolve
                     dfd.resolve(null);
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
                 // Return.
                 return dfd.promise();
@@ -120,7 +115,10 @@ module nts.uk.pr.view.qmm008.c {
                     // Set list.
                     self.roundingList(data);
                     dfd.resolve(data);
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
+
                 // Return.
                 return dfd.promise();
             }
@@ -294,27 +292,6 @@ module nts.uk.pr.view.qmm008.c {
                 return saveVal;
             }
 
-            public save() {
-                var self = this;
-                //check auto calculate
-                if (self.pensionModel().autoCalculate() == AutoCalculateType.Auto) {
-                    nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
-                        self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
-                        //update pension
-                        service.updatePensionRate(self.pensionCollectData()).done(function() {
-                            self.backupDataDirty(self.pensionCollectData());
-                        });
-                    }).ifNo(function() {
-                    });
-                }
-                else {
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
-                    service.updatePensionRate(self.pensionCollectData()).done(function() {
-                        self.backupDataDirty(self.pensionCollectData());
-                    });
-                }
-            }
-
             /**
             * Load History detail.
             */
@@ -327,9 +304,11 @@ module nts.uk.pr.view.qmm008.c {
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.backupDataDirty(dto);
                     self.loadPension(dto);
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                    self.dirty.reset();
                     self.isLoading(false);
                     dfd.resolve();
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alert(res.message);
                 });
                 return dfd.promise();
             }
@@ -337,16 +316,48 @@ module nts.uk.pr.view.qmm008.c {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-                if (nts.uk.ui._viewModel.errors.isEmpty()) {
-                    self.save();
+                self.dirty.reset();
+                //check auto calculate
+                if (self.pensionModel().autoCalculate() == AutoCalculateType.Auto) {
+                    nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
+                        // Validate.
+                        $('.nts-input').ntsEditor('validate');
+                        if ($('.nts-input').ntsError('hasError')) {
+                            dfd.reject();
+                            return dfd.promise();
+                        }
+
+                        //update pension
+                        service.updatePensionRate(self.pensionCollectData()).done(function() {
+                            self.backupDataDirty(self.pensionCollectData());
+                        }).fail((res) => {
+                            nts.uk.ui.dialog.alert(res.message);
+                        });
+
+                    }).ifNo(function() {
+                    });
                 }
                 else {
+                    // Validate.
+                    $('.nts-input').ntsEditor('validate');
+                    if ($('.nts-input').ntsError('hasError')) {
+                        dfd.reject();
+                        return dfd.promise();
+                    }
+
+                    service.updatePensionRate(self.pensionCollectData()).done(function() {
+                        self.backupDataDirty(self.pensionCollectData());
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
                 }
+
+                dfd.resolve(self.pensionModel().historyId);
                 return dfd.promise();
             }
 
             clearErrors(): void {
-                if(nts.uk.ui._viewModel) {
+                if (nts.uk.ui._viewModel) {
                     $('.save-error').ntsError('clear');
                 }
             }

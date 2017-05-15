@@ -16,7 +16,9 @@ module qet001.b.viewmodel {
         masterItemList: service.Item[];
         isLoading: KnockoutObservable<boolean>;
         hasUpdate: KnockoutObservable<boolean>;
-        dirty: nts.uk.ui.DirtyChecker;
+        codeDirtyChecker: nts.uk.ui.DirtyChecker;
+        nameDirtyChecker: nts.uk.ui.DirtyChecker;
+        reportItemsDirtyChecker: nts.uk.ui.DirtyChecker;
         outputItemColumns: KnockoutObservableArray<any>;
         
         constructor() {
@@ -25,6 +27,7 @@ module qet001.b.viewmodel {
             this.reportItems = ko.observableArray([]);
             this.isLoading = ko.observable(true);
             this.outputItemColumns = ko.observableArray([
+                    {headerText: 'key', prop: 'itemKey', width: 50, hidden: true},
                     {headerText: '集約', prop: 'isAggregateItem', width: 40,
                         formatter: function(data: string) {
                             if (data == 'true') {
@@ -34,7 +37,7 @@ module qet001.b.viewmodel {
                         }
                     },
                     {headerText: 'コード', prop: 'code', width: 50},
-                    {headerText: '名称', prop: 'name', width: 50},
+                    {headerText: '名称', prop: 'name', width: 100},
                     {headerText: '削除', prop: 'code', width: 50,
                         formatter: function(data: string) {
                             return '<button class="delete-button icon icon-close" id="' + data + '" >'
@@ -43,16 +46,17 @@ module qet001.b.viewmodel {
                     },
                 ]);
             this.reportItemColumns = ko.observableArray([
+                    {headerText: 'key', prop: 'itemKey', width: 50, hidden: true},
                     {headerText: '区分', prop: 'categoryNameJa', width: 50},
                     {headerText: '集約', prop: 'isAggregate', width: 40,
-                        formatter: function(data: string) {
+                        formatter: function(data: string): string {
                             if (data == 'true') {
                                 return '<div class="center"><i class="icon icon-dot"></i></div>';
                             }
                             return '';
                         }
                     },
-                    {headerText: 'コード', prop: 'itemCode', width: 100},
+                    {headerText: 'コード', prop: 'itemCode', width: 50},
                     {headerText: '名称', prop: 'itemName', width: 100},
                 ]);
             this.reportItemSelected = ko.observable(null);
@@ -61,26 +65,98 @@ module qet001.b.viewmodel {
             this.hasUpdate = ko.observable(false);
             
             var self = this;
-            self.dirty = new nts.uk.ui.DirtyChecker(self.outputSettingDetail);
-            self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
+            self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingCode);
+            self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingName);
+            self.reportItemsDirtyChecker = new nts.uk.ui.DirtyChecker(self.reportItems);
+            self.outputSettings().outputSettingSelectedCode.subscribe((code: string) => {
                 self.isLoading(true);
-                if (!newVal || newVal == '') {
-                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
-                    self.isLoading(false);
-                    self.dirty.reset();
+                // Do nothing if selected same code.
+                if (self.outputSettings().temporarySelectedCode() == code) {
                     return;
                 }
-                // load detail output setting.
-                self.loadOutputSettingDetail(newVal);
-                self.isLoading(false);
-            })
-            
+                else if (code) {
+                    if (self.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                            self.outputSettings().temporarySelectedCode(code);
+                            self.loadOutputSettingDetail(code);
+                        }).ifNo(function() {
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().temporarySelectedCode());
+                        });
+                    } else {
+                        self.outputSettings().temporarySelectedCode(code);
+                        self.loadOutputSettingDetail(code);
+                    }
+                    self.isLoading(false);
+
+                } else {
+                    if (self.isDirty()) {
+                        nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
+                            self.clearError();
+                            self.outputSettings().temporarySelectedCode('');
+                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                            self.isLoading(false);
+                            self.resetDirty();
+                            return;
+                        }).ifNo(function() {
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().temporarySelectedCode());
+                        });
+                    } else {
+                        self.clearError();
+                        self.outputSettings().temporarySelectedCode('');
+                        self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                        self.isLoading(false);
+                        self.resetDirty();
+                        return;
+                    }
+                }
+            });
+
             self.outputSettingDetail.subscribe((data: OutputSettingDetail) => {
                 self.reloadReportItem();
                 data.reloadReportItems = self.reloadReportItem.bind(self);
             });
         }
-        
+
+        private resetDirty(): void {
+            var self = this;
+            self.codeDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingCode);
+            self.nameDirtyChecker = new nts.uk.ui.DirtyChecker(self.outputSettingDetail().settingName);
+            self.reportItemsDirtyChecker.reset();
+        }
+
+        private isDirty(): boolean {
+                var self = this;
+                if (self.codeDirtyChecker.isDirty()
+                    || self.nameDirtyChecker.isDirty()
+                    || self.reportItemsDirtyChecker.isDirty()) {
+                    return true;
+                }
+                return false;
+            }
+
+        private clearError(): void {
+            if (nts.uk.ui._viewModel) {
+                $('#register-button').ntsError('clear');
+                $('#code-input').ntsError('clear');
+                $('#name-input').ntsError('clear');
+            }
+        }
+
+        private validate(): void {
+            $('#register-button').ntsEditor('validate');
+            $('#code-input').ntsEditor('validate');
+            $('#name-input').ntsEditor('validate');
+        }
+
+        private hasError(): boolean {
+            if ($('#register-button').ntsError('hasError')
+                || $('#code-input').ntsError('hasError')
+                || $('#name-input').ntsError('hasError')) {
+                return true;
+            }
+            return false;
+        }
+
         /**
          * Reload report items.
          */
@@ -113,10 +189,10 @@ module qet001.b.viewmodel {
             
             // Load master items and aggregate items.
             $.when(self.loadAggregateItems(), self.loadMasterItems()).done(() => {
+                self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                 // Check output setting is empty.
                 var isHasData = outputSettings && outputSettings.length > 0;
                 if (!isHasData) {
-                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                     self.outputSettings().outputSettingSelectedCode('');
                     dfd.resolve();
                     return;
@@ -151,7 +227,7 @@ module qet001.b.viewmodel {
         public close() {
             // Dirty check.
             var self = this;
-            if (self.dirty.isDirty()) {
+            if (self.isDirty()) {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     nts.uk.ui.windows.close();
                 });
@@ -165,26 +241,21 @@ module qet001.b.viewmodel {
          */
         public save() {
             var self = this;
-            // clear error.
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
+            self.clearError();
             // Validate.
-            $('#code-input').ntsEditor('validate');
-            $('#name-input').ntsEditor('validate');
-            // Check has error.
-            if(!nts.uk.ui._viewModel.errors.isEmpty()) {
+            self.validate();
+            if (self.hasError()) {
                 return;
             }
-            var currentSelectedCode = self.outputSettings().outputSettingSelectedCode();
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                nts.uk.ui.dialog.alert('save success!').then(function() {
-                    self.loadAllOutputSetting();
-                    self.dirty.reset();
-                })
+                self.loadAllOutputSetting().done(() => {
+                    self.resetDirty();
+                    self.outputSettings().outputSettingSelectedCode(self.outputSettingDetail().settingCode());
+                });
             }).fail(function(res) {
                 $('#code-input').ntsError('set', res.message);
-            })
+            });
         }
         
         /**
@@ -193,7 +264,7 @@ module qet001.b.viewmodel {
         public remove() {
             var self = this;
             // Check selected output setting.
-            var selectedCode = self.outputSettings().outputSettingSelectedCode();
+            var selectedCode = self.outputSettings().temporarySelectedCode();
             if (!selectedCode || selectedCode == '') {
                 return;
             }
@@ -235,10 +306,10 @@ module qet001.b.viewmodel {
         public loadOutputSettingDetail(selectedCode: string): JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             var self = this;
-            
             service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
+                self.clearError();
                 self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
-                self.dirty.reset();
+                self.resetDirty();
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
@@ -283,23 +354,8 @@ module qet001.b.viewmodel {
          * Switch to create mode.
          */
         public switchToCreateMode() {
-            // clear error.
-            $('#code-input').ntsError('clear');
-            $('#name-input').ntsError('clear');
-            // Dirty check.
             var self = this;
-            if (self.dirty.isDirty()) {
-                nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
-                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
-                    self.outputSettings().outputSettingSelectedCode('');
-                }).ifNo(function() {
-                    return;
-                })
-                return;
-            }
-            
-            this.outputSettingDetail(new OutputSettingDetail(this.aggregateItemsList, this.masterItemList));
-            this.outputSettings().outputSettingSelectedCode('');
+            self.outputSettings().outputSettingSelectedCode('');
         }
     }
     
@@ -309,15 +365,17 @@ module qet001.b.viewmodel {
     export class OutputSettings {
         searchText: KnockoutObservable<string>;
         outputSettingList: KnockoutObservableArray<WageLedgerOutputSetting>;
+        temporarySelectedCode: KnockoutObservable<string>;
         outputSettingSelectedCode: KnockoutObservable<string>;
         outputSettingColumns: KnockoutObservableArray<any>;
         
         constructor() {
             this.searchText = ko.observable(null);
             this.outputSettingList = ko.observableArray([]);
+            this.temporarySelectedCode = ko.observable(null);
             this.outputSettingSelectedCode = ko.observable(null);
             this.outputSettingColumns = ko.observableArray([
-                {headerText: 'コード', prop: 'code', width: 90}, 
+                {headerText: 'コード', prop: 'code', width: 50}, 
                 {headerText: '名称', prop: 'name',  width: 100}]);
         }
     }
@@ -336,8 +394,8 @@ module qet001.b.viewmodel {
         reloadReportItems: () => void;
         
         constructor (aggregateItems: service.Item[], masterItem: service.Item[], outputSetting?: WageLedgerOutputSetting) {
-            this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
-            this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
+            this.settingCode = ko.observable(outputSetting ? outputSetting.code : '');
+            this.settingName = ko.observable(outputSetting ? outputSetting.name : '');
             this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.isOnceSheetPerPerson : false);
             this.categorySettingTabs = ko.observableArray([
                 { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment', 
@@ -354,9 +412,9 @@ module qet001.b.viewmodel {
                     enable: ko.observable(true), visible: ko.observable(true) },
             ]);
             this.selectedCategory = ko.observable('tab-salary-payment');
-            this.isCreateMode = ko.observable(outputSetting == undefined);
-            var categorySetting : CategorySetting[] = [];
-            if (outputSetting == undefined) {
+            this.isCreateMode = ko.observable(!outputSetting);
+            var categorySetting : CategorySetting[];
+            if (!outputSetting) {
                 categorySetting = this.convertCategorySettings(aggregateItems, masterItem);
             } else {
                 categorySetting = this.convertCategorySettings(aggregateItems, masterItem, outputSetting.categorySettings);
@@ -396,17 +454,16 @@ module qet001.b.viewmodel {
         private createCategorySetting(category: string, paymentType: string,
                 aggregateItems: service.Item[], masterItem: service.Item[], 
                 categorySettings?: WageledgerCategorySetting[]): CategorySetting {
-            //var categorySetting: CategorySetting;
-            var aggregateItemsInCategory = aggregateItems.filter((item) => item.category == category);
+            var aggregateItemsInCategory = aggregateItems.filter((item) => item.category == category && item.paymentType == paymentType);
             var masterItemsInCategory = masterItem.filter((item) => item.category == category);
             var cateTempSetting: WageledgerCategorySetting = {category: category, paymentType: paymentType, outputItems: []};
-            if (categorySettings == undefined) {
+            if (!categorySettings) {
                 return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, cateTempSetting);
             }
             
             var categorySetting = categorySettings.filter((item) => item.category == category 
                 && item.paymentType == paymentType)[0];
-            if (categorySetting == undefined) {
+            if (!categorySetting) {
                 categorySetting = cateTempSetting;
             }
             return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, categorySetting);
@@ -435,45 +492,61 @@ module qet001.b.viewmodel {
             this.fullCategoryName = this.getFullCategoryName(this.category, this.paymentType);
 
             // exclude item contain in setting.
-            var settingItemCode: string[] = [];
-            if (categorySetting != undefined) {
-                settingItemCode = categorySetting.outputItems.map((item) => {
-                    return item.code;
-                });
+            var masterSettingItemCode: string[] = [];
+            var aggregateSettingItemCode : string[] = [];
+            if (categorySetting) {
+                masterSettingItemCode = categorySetting.outputItems
+                    .filter(item => !item.isAggregateItem)
+                    .map((item) => {
+                        return item.code;
+                    });
+                aggregateSettingItemCode = categorySetting.outputItems
+                    .filter(item => item.isAggregateItem)
+                    .map((item) => {
+                        return item.code;
+                    });
+                categorySetting.outputItems.forEach(item => {
+                    item.itemKey = item.code + (item.isAggregateItem ? '_A' : '_NA');
+                })
             }
-            this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
-            var aggregateItemsExcluded = aggregateItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
-            var masterItemsExcluded = masterItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
+            this.outputItems = ko.observableArray(categorySetting ? categorySetting.outputItems : []);
+            var aggregateItemsExcluded = aggregateItems.filter((item) => aggregateSettingItemCode.indexOf(item.code) == -1);
+            var masterItemsExcluded = masterItems.filter((item) => masterSettingItemCode.indexOf(item.code) == -1);
             this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
             this.masterItemList = ko.observableArray(masterItemsExcluded);
             this.outputItemsSelected = ko.observable(null);
             this.aggregateItemSelected = ko.observable(null);
             this.masterItemSelected = ko.observable(null);
             var self = this;
-            self.outputItemCache = categorySetting != undefined ? categorySetting.outputItems : [];
+            self.outputItemCache = categorySetting ? categorySetting.outputItems : [];
             self.outputItems.subscribe(function(items) {
                 self.outputItemCache = items;
             });
             // Create Customs handle For event rened nts grid.
             (<any>ko.bindingHandlers).rended = {
-              init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {},
-              update: function(element, valueAccessor, allBindings, viewModel: CategorySetting, bindingContext) {
-                  var code = valueAccessor();
-                  viewModel.outputItems().forEach(item => {
-                      $('#' + item.code).on('click', function() {
-                          code(item.code);
-                          viewModel.remove();
-                          code(null);
-                      })
-                  });
-              }
+                update: function(element: any,
+                    valueAccessor: () => any,
+                    allBindings: KnockoutAllBindingsAccessor,
+                    viewModel: CategorySetting,
+                    bindingContext: KnockoutBindingContext) {
+                    var code = valueAccessor();
+                    viewModel.outputItems().forEach(item => {
+                        $('#' + item.code).on('click', function() {
+                            code(item.itemKey);
+                            viewModel.remove();
+                            code(null);
+                        })
+                    });
+                }
             };
         }
         
         public remove() {
             var self = this;
+            var seletecedAttr = self.outputItemsSelected().split('_');
             var selectedItem = self.outputItems().filter((item) => {
-                return item.code == self.outputItemsSelected();
+                var isAggregate = seletecedAttr[1] == 'A';
+                return item.code == seletecedAttr[0] && item.isAggregateItem == isAggregate;
             })[0];
             self.outputItems.remove(selectedItem);
             
@@ -502,7 +575,7 @@ module qet001.b.viewmodel {
          */
         public masterItemToDisplay() {
             // If master item is unselected => return.
-            if (this.masterItemSelected() == undefined || this.masterItemSelected() == null) {
+            if (!this.masterItemSelected()) {
                 return;
             }
             var self = this;
@@ -518,13 +591,14 @@ module qet001.b.viewmodel {
                 code: selectedItem.code,
                 name: selectedItem.name,
                 isAggregateItem: false,
+                itemKey: selectedItem.code + '_NA'
             });
             self.masterItemSelected(null);
         }
         
         public aggregateItemToDisplay() {
             // If master item is unselected => return.
-            if (this.aggregateItemSelected() == undefined || this.aggregateItemSelected() == null) {
+            if (!this.aggregateItemSelected()) {
                 return;
             }
             var self = this;
@@ -539,7 +613,8 @@ module qet001.b.viewmodel {
             self.outputItems.push({
                 code: selectedItem.code,
                 name: selectedItem.name,
-                isAggregateItem: true
+                isAggregateItem: true,
+                itemKey: selectedItem.code + '_A'
             });
             self.aggregateItemSelected(null);
         }
@@ -548,7 +623,7 @@ module qet001.b.viewmodel {
          * Get full category name by category and payment type.
          */
         private getFullCategoryName(category: string, paymentType: string) : string {
-            var categoryName = '';
+            var categoryName;
             switch(category) {
                 case Category.PAYMENT:
                     categoryName = '支給';
@@ -576,6 +651,7 @@ module qet001.b.viewmodel {
         itemCode: string;
         itemName: string;
         categoryNameJa: string;
+        itemKey: string;
         
         constructor(categoryName: string, isAggregate: boolean, itemCode: string, itemName: string) {
             this.categoryName = categoryName;
@@ -597,6 +673,7 @@ module qet001.b.viewmodel {
                 default:
                     self.categoryNameJa = '';
             }
+            self.itemKey = itemCode + isAggregate + categoryName;
         }
     }
     

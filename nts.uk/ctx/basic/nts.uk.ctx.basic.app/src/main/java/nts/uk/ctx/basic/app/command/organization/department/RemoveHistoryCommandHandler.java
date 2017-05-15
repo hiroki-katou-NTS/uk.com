@@ -1,10 +1,6 @@
 package nts.uk.ctx.basic.app.command.organization.department;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -18,13 +14,11 @@ public class RemoveHistoryCommandHandler extends CommandHandler<String> {
 
 	@Inject
 	private DepartmentRepository departmentRepository;
-	// private DepartmentDomainService departmentDomainService;
 
 	@Override
 	protected void handle(CommandHandlerContext<String> context) {
-		// TODO Auto-generated method stub
 		String companyCode = AppContexts.user().companyCode();
-
+		// check isExistHistory
 		if (!departmentRepository.isExistHistory(companyCode, context.getCommand().toString())) {
 			throw new BusinessException("ER06");
 		}

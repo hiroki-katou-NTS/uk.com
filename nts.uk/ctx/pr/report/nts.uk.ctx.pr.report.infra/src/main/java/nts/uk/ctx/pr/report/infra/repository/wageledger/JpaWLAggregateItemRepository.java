@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.report.infra.repository.wageledger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
@@ -67,6 +69,7 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 			// Update entity with new domain.
 			aggregateItem.saveToMemento(new JpaWLAggregateItemSetMemento(entity));
 			this.commandProxy().update(entity);
+			return;
 		}
 		throw new RuntimeException("Cannot update entity not exist!");
 	}
@@ -84,7 +87,8 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository
-	 * #find(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode, nts.uk.ctx.pr.report.dom.company.CompanyCode)
+	 * #find(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode,
+	 *  nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
 	public WLAggregateItem findByCode(WLItemSubject subject) {
@@ -141,6 +145,34 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 		if (paymentType != null) {
 			conditions.add(cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.payBonusAtr), paymentType.value));
 		}
+
+		// Create select.
+		cq.where(conditions.toArray(new Predicate[conditions.size()]))
+				.orderBy(cb.asc(pkPath.get(QlsptLedgerAggreHeadPK_.aggregateCd)));
+
+		// Query.
+		return em.createQuery(cq).getResultList().stream().map(res -> {
+			return new WLAggregateItem(new JpaWLAggregateItemGetMemento(res));
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<WLAggregateItem> findByCodes(String companyCode, List<String> itemCode) {
+		if (CollectionUtil.isEmpty(itemCode)) {
+			return Collections.emptyList();
+		}
+		EntityManager em = this.getEntityManager();
+		
+		// Create criteria buider.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QlsptLedgerAggreHead> cq = cb.createQuery(QlsptLedgerAggreHead.class);
+		Root<QlsptLedgerAggreHead> root = cq.from(QlsptLedgerAggreHead.class);
+
+		// Create condition list.
+		Path<QlsptLedgerAggreHeadPK> pkPath = root.get(QlsptLedgerAggreHead_.qlsptLedgerAggreHeadPK);
+		List<Predicate> conditions = new ArrayList<>();
+		conditions.add(cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.ccd), companyCode));
+		conditions.add(pkPath.get(QlsptLedgerAggreHeadPK_.aggregateCd).in(itemCode));
 
 		// Create select.
 		cq.where(conditions.toArray(new Predicate[conditions.size()]))

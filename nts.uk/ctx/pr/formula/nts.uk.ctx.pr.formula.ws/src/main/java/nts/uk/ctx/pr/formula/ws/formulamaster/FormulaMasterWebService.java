@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.formula.ws.formulamaster;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -10,13 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.formula.app.command.formulahistory.RemoveFormulaHistoryCommand;
-import nts.uk.ctx.pr.formula.app.command.formulahistory.RemoveFormulaHistoryCommandHandler;
-import nts.uk.ctx.pr.formula.app.command.formulahistory.UpdateFormulaHistoryCommandHandler;
 import nts.uk.ctx.pr.formula.app.command.formulamaster.AddFormulaMasterCommand;
 import nts.uk.ctx.pr.formula.app.command.formulamaster.AddFormulaMasterCommandHandler;
 import nts.uk.ctx.pr.formula.app.command.formulamaster.UpdateFormulaMasterCommand;
 import nts.uk.ctx.pr.formula.app.command.formulamaster.UpdateFormulaMasterCommandHandler;
+import nts.uk.ctx.pr.formula.app.find.formula.CalculationTrial;
+import nts.uk.ctx.pr.formula.app.find.formula.CalculatorDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaBasicInformationDto;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaBasicInformationFinder;
 import nts.uk.ctx.pr.formula.app.find.formula.FormulaEasyFinder;
@@ -54,6 +52,8 @@ public class FormulaMasterWebService extends WebService {
 	private FormulaEasyFinder formulaEasyFinder;
 	@Inject
 	private FormulaManualLastestHistoryFinder formulaManualLastestHistoryFinder;
+	@Inject 
+	private CalculationTrial calculationTrial;
 	
 
 	@POST
@@ -113,5 +113,11 @@ public class FormulaMasterWebService extends WebService {
 	@Path("updateFormulaMaster")
 	public void updateFormulaMaster (UpdateFormulaMasterCommand command){
 		this.updateFormulaMasterCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("trialCalculate")
+	public CalculatorDto trialCalculate (String formulaContent){
+		return this.calculationTrial.init(formulaContent);
 	}
 }
