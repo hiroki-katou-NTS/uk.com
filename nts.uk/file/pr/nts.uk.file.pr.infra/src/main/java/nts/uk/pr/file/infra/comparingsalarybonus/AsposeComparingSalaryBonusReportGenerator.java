@@ -321,29 +321,6 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	}
 
 	/**
-	 * Prints the Total C Department row.
-	 *
-	 * @param worksheets
-	 *            the worksheets
-	 * @param rowIndex
-	 *            the row index
-	 */
-	private void printTotalCDepartment(WorksheetCollection worksheets, int rowIndex,
-			ComparingSalaryBonusReportData comparingQuery, int i) {
-		Worksheet worksheet = worksheets.get(0);
-		Cells cells = worksheet.getCells();
-		DataRowComparingSalaryBonusDto totalC = comparingQuery.getLstTotalC().get(i);
-		// Set Row height
-		cells.setRowHeightPixel(rowIndex, ROW_HEIGHT);
-		this.setDataRow(cells, totalC, rowIndex);
-		for (int c : COLUMN_INDEX) {
-			Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);
-			setTitleStyle(cell);
-		}
-
-	}
-
-	/**
 	 * Prints the Grand total row.
 	 *
 	 * @param worksheets
