@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 
 /**
  * The Class PaymentReportService.
@@ -25,10 +24,6 @@ public class PaymentReportService extends ExportService<PaymentReportQuery> {
     @Inject
     private PaymentReportGenerator generator;
    
-    /** The repository. */
-    @Inject
-    private PaymentReportRepository repository;
-    
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -38,9 +33,7 @@ public class PaymentReportService extends ExportService<PaymentReportQuery> {
 	 */
     @Override
     protected void handle(ExportServiceContext<PaymentReportQuery> context) {
-    	PaymentReportQuery query = context.getQuery();
-    	PaymentReportData reportData = this.repository.findData(query);
-    	this.generator.generate(context.getGeneratorContext(), reportData);
+    	this.generator.generate(context);
     }
     
    
