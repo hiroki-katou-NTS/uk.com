@@ -76,10 +76,13 @@ module qmm020.b.viewmodel {
             let addItem = _.filter(model, function(m) {
                 return _.includes(m.historyId, "NEW");
             });
-            service.saveData(addItem).done(function(data: ListModel) {
+           service.saveData(addItem).done(function(data: ListModel) {
                 self.listItems.valueHasMutated();
                 debugger;
+            }).fail(function(res){
+                alert(res);
             });
+            
         }
 
         //Open dialog Add History
