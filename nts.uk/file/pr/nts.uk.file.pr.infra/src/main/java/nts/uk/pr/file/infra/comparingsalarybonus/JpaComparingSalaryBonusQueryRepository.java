@@ -47,6 +47,8 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 			+ " WHERE c.ccd =:ccd "
 			+ " AND IN :personId";
 	
+	
+	
 //	private final String SELEC_COMPANY_NAME = "SELECT c.cName FROM CmnmtCompany c WHERE c.cmnmtCompanyPk.companyCd :=ccd ";
 
 	/**
