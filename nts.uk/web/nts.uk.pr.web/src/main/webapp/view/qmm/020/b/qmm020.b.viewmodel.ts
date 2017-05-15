@@ -50,10 +50,12 @@ module qmm020.b.viewmodel {
 
                         // find item has max date value
                         service.getAllotCompanyMaxDate().done(function(item: IListModel) {
-                            let maxItem = _.find(self.listItems(), function(m) { return m.historyId == item.historyId; });
-                            if (maxItem) {
-                                maxItem.isMaxDate = true;
-                                self.listItems().map((m) => { if (m.historyId != maxItem.historyId) m.isMaxDate = false; });
+                            if (item) {
+                                let maxItem = _.find(self.listItems(), function(m) { return m.historyId == item.historyId; });
+                                if (maxItem) {
+                                    maxItem.isMaxDate = true;
+                                    self.listItems().map((m) => { if (m.historyId != maxItem.historyId) m.isMaxDate = false; });
+                                }
                             }
                         }).fail(function(res) {
                             alert(res);
@@ -76,13 +78,11 @@ module qmm020.b.viewmodel {
             let addItem = _.filter(model, function(m) {
                 return _.includes(m.historyId, "NEW");
             });
-           service.saveData(addItem).done(function(data: ListModel) {
+            service.saveData(addItem).done(function(data: ListModel) {
                 self.listItems.valueHasMutated();
                 debugger;
-            }).fail(function(res){
                 alert(res);
             });
-            
         }
 
         //Open dialog Add History
