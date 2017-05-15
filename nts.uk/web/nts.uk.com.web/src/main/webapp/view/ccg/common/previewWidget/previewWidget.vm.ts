@@ -3,7 +3,7 @@ module previewWidget.viewmodel {
     import windows = nts.uk.ui.windows;
 
     export class ScreenModel {
-        layoutID: string;
+        layoutID: any;
         placements: KnockoutObservableArray<model.Placement>;
 
         constructor() {
@@ -40,10 +40,10 @@ module previewWidget.viewmodel {
             windows.close();
         }
 
-        getUrlParameter(queryString: string) {
+        /** Get Url QueryString */
+        getUrlParameter(queryString: string): any {
             var url = decodeURIComponent(window.location.search.substring(1));
             var queryStrings = url.split('&');
-        
             for (var i = 0; i < queryStrings.length; i++) {
                 var queryStringName = queryStrings[i].split('=');
                 if (queryStringName[0] === queryString) {
