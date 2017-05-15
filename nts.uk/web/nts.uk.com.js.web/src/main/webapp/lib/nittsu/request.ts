@@ -176,7 +176,31 @@ module nts.uk.request {
         return dfd.promise();
     }
 
-
+    export function uploadFile(data: FormData, option?: any): $.Deferred {
+        let dfd = $.Deferred();
+        $.ajax({
+            url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data, textStatus, jqXHR) {
+                if (option.onSuccess) {
+                    option.onSuccess();
+                }
+                dfd.resolve(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if (option.onFail) {
+                    option.onFail();
+                }
+                dfd.reject(errorThrown);
+            }
+        });
+        return dfd.promise();
+    }
+    
     export function exportFile(path: string, data?: any, options?: any) {
         let dfd = $.Deferred();
 
