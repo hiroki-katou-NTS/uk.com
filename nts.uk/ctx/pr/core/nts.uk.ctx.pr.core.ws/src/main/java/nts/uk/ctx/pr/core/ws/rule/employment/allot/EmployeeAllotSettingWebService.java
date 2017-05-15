@@ -31,7 +31,7 @@ public class EmployeeAllotSettingWebService {
 		return this.employeeAllotSettingFinder.getAllEmployeeAllotSettingList(AppContexts.user().companyCode(), histid);
 	}
 	@POST
-	@Path("findEmployeeDetail/{histId}")
+	@Path("findemployeedetail/{histId}")
 	public List<EmployeeAllotSettingDto> findEmployeeDetail(@PathParam("histId") String histid){
 		return this.employeeAllotSettingFinder.getEmpDetail(AppContexts.user().companyCode(), histid);
 	}

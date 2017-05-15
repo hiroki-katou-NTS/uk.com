@@ -27,7 +27,7 @@ public class EmployeeAllotSettingHeaderWebService {
 	}
 
 	@POST
-	@Path("findallemployeeallotheaderMax")
+	@Path("findallemployeeallotheadermax")
 	public Integer getAllotHMax() {
 		String companyCode = AppContexts.user().companyCode();
 

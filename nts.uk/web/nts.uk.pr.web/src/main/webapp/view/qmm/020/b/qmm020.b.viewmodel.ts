@@ -41,6 +41,15 @@ module qmm020.b.viewmodel {
                             self.listItems.push(new ListModel(m));
                         });
 
+                        // update payment name & bonus name
+                        /*self.listItems().map((m) => {
+                            service.getAllotLayoutName(m.bonusDetailCode)
+                                .done(function(stmtName: string) { m.bonusDetailName = stmtName; });
+                            
+                            service.getAllotLayoutName(m.paymentDetailCode)
+                                .done(function(stmtName: string) { m.paymentDetailName = stmtName; });
+                        });*/
+
                         // select first item
                         self.selectedId(self.listItems()[0].historyId);
 
