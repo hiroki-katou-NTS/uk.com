@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class SalarySocialInsuranceHeaderReportData.
+ * The Class HeaderReportData.
  *
  */
 

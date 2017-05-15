@@ -269,6 +269,8 @@ module nts.uk.pr.view.qmm008.b {
                 var self = this;
                 var dfd = $.Deferred<string>();
 
+                self.dirty.reset();
+                
                 //check auto calculate
                 if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
                     nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
@@ -278,8 +280,6 @@ module nts.uk.pr.view.qmm008.b {
                             dfd.reject();
                             return dfd.promise();
                         }
-
-                        self.dirty.reset();
 
                         //update health
                         service.updateHealthRate(self.healthCollectData()).done(function() {
@@ -298,8 +298,6 @@ module nts.uk.pr.view.qmm008.b {
                         return dfd.promise();
                     }
 
-                    self.dirty.reset();
-
                     //update health
                     service.updateHealthRate(self.healthCollectData()).done(function() {
                         self.backupDataDirty(self.healthCollectData());
@@ -308,7 +306,7 @@ module nts.uk.pr.view.qmm008.b {
                     });
                 }
 
-                dfd.resolve()
+                dfd.resolve(self.healthModel().historyId)
                 return dfd.promise();
             }
 
@@ -437,7 +435,7 @@ module nts.uk.pr.view.qmm008.b {
                 this.startMonth = ko.observable("");
                 this.endMonth = ko.observable("");
                 this.officeCode = ko.observable('');
-                this.autoCalculate = ko.observable(1);
+                this.autoCalculate = ko.observable(0);
                 this.rateItems = ko.observable(new HealthInsuranceRateItemModel());
                 this.roundingMethods = ko.observable(new HealthInsuranceRoundingModel());
                 this.maxAmount = ko.observable(0);

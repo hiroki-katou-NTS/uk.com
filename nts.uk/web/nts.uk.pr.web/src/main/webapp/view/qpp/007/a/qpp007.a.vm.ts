@@ -126,16 +126,18 @@ module nts.uk.pr.view.qpp007.a {
              */
             public printSelectedEmployee(): void {
                 let self = this;
+                let dfd = $.Deferred<void>();
                 // Validate
                 self.validate();
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
                 let command = self.toJsObject();
-                service.saveAsPdf(command)
-                    .fail(function(res) {
-                        //TODO ...
-                    });
+                service.saveAsPdf(command).done(function() {
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
             }
 
             /**
@@ -164,6 +166,8 @@ module nts.uk.pr.view.qpp007.a {
                 command.pageBreakSetting = self.selectedpageBreakSetting();
                 command.startDate = self.startYearMonth();
                 command.endDate = self.endYearMonth();
+                command.isNormalMonth = self.isUsuallyAMonth();
+                command.isPreliminaryMonth = self.isPreliminaryMonth();
                 if (self.isDepartmentHierarchy()) {
                     command.hierarchy  = self.selectedHierachy();
                 }

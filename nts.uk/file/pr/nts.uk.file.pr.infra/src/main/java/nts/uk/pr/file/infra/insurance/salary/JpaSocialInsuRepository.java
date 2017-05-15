@@ -2,9 +2,6 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-/**
- * 
- */
 package nts.uk.pr.file.infra.insurance.salary;
 
 import java.util.ArrayList;
@@ -18,9 +15,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
@@ -49,12 +45,11 @@ import nts.uk.file.pr.app.export.insurance.salary.SocialInsuRepository;
  * The Class JpaSalarySocialInsuranceRepository.
  *
  */
-
 @Stateless
 public class JpaSocialInsuRepository extends JpaRepository implements SocialInsuRepository {
     
-    /** The query check data. */
-    String QUERY_CHECK_DATA = "SELECT ppd, pmd, ps, ph "
+    /** The Constant QUERY_CHECK_DATA. */
+    private static final String QUERY_CHECK_DATA = "SELECT ppd, pmd, ps, ph "
             + "FROM QpdptPayday ppd,"
             + "QpdmtPayday pmd, "
             + "PismtPersonInsuSocial ps, "
@@ -185,9 +180,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         query.setParameter("loginPid", loginPersonId);
         query.setParameter("yearMonth", yearMonth);
         query.setParameter("officeCodes", salaryQuery.getOfficeCodes());
-        String tmpDate = yearMonth.toString().concat(FIRST_DAY);
-        GeneralDate baseDate = GeneralDate.fromString(tmpDate, DATE_FORMAT);
-        query.setParameter("baseDate", baseDate);
+        query.setParameter("baseDate", convertGeneralDate(yearMonth));
         if (query.getResultList().isEmpty()) {
             return false;
         }
@@ -211,7 +204,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         int yearMonth = salaryQuery.getYearMonth();
         List<Object[]> itemList = findPersons(companyCode, salaryQuery.getOfficeCodes(), yearMonth, loginPersonId);
         if (itemList.isEmpty()) {
-            throw new BusinessException("ER010");
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         Map<Object, List<Object[]>> mapOffice = itemList.stream()
                 .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
@@ -244,7 +237,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
             
             if (reportData.objectNormals.isEmpty() || reportData.objectDeductions.isEmpty()) {
-                throw new BusinessException("ER010");
+                throw new BusinessException(new RawErrorMessage("対象データがありません。"));
             }
             List<DataRowItem> listRowItemPersonal = new ArrayList<>();
             List<DataRowItem> listRowItemCompany = new ArrayList<>();
@@ -334,7 +327,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         int yearMonth = salaryQuery.getYearMonth();
         List<Object[]> itemList = findPersons(companyCode, salaryQuery.getOfficeCodes(), yearMonth, loginPid);
         if (itemList.isEmpty()) {
-            throw new BusinessException("ER010");
+            throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
         Map<Object, List<Object[]>> mapOffice = itemList.stream()
                 .collect(Collectors.groupingBy(item -> ((QismtSocialInsuOffice) item[0]))
@@ -362,7 +355,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             reportData.objectDeductions = findPersonDeduction(companyCode, officeCode, personIds, yearMonth);
             
             if (reportData.objectNormals.isEmpty() || reportData.objectDeductions.isEmpty()) {
-                throw new BusinessException("ER010");
+                throw new BusinessException(new RawErrorMessage("対象データがありません。"));
             }
             List<MLayoutRowItem> listRowItem = new ArrayList<>();
             // list employee is printed output.
@@ -416,9 +409,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         query.setParameter("officeCodes", officeCodes);
         query.setParameter("loginPid", loginPersonId);
         query.setParameter("yearMonth", yearMonth);
-        String tmpDate = yearMonth.toString().concat(FIRST_DAY);
-        GeneralDate baseDate = GeneralDate.fromString(tmpDate, DATE_FORMAT);
-        query.setParameter("baseDate", baseDate);
+        query.setParameter("baseDate", convertGeneralDate(yearMonth));
         return query.getResultList();
     }
     
@@ -438,9 +429,7 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         Query query = em.createQuery(FIND_PERSON_NORMAL);
         query.setParameter("personIds", personIds);
         query.setParameter("companyCode", companyCode);
-        String tmpDate = yearMonth.toString().concat(FIRST_DAY);
-        GeneralDate baseDate = GeneralDate.fromString(tmpDate, DATE_FORMAT);
-        query.setParameter("baseDate", baseDate);
+        query.setParameter("baseDate", convertGeneralDate(yearMonth));
         query.setParameter("yearMonth", yearMonth);
         return query.getResultList(); 
     }
@@ -676,31 +665,31 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
                 })
                 .collect(Collectors.toList());
         // set monthly health insurance deduction.
-        double healInsuDeduction = findValueDeductionByItemCode(objectList, itemDeduction.getItemCodeHealthInsu());
+        double healInsuDeduction = findValueDeductionByItemCode(objectList, itemDeduction.itemCodeHealthInsu);
         rowItem.setMonthlyHealthInsuranceDeduction(healInsuDeduction);
         //set monthly general insurance deduction.
-        double generalInsuDeduction = findValueDeductionByItemCode(objectList, itemDeduction.getItemCodeGeneralInsu());
+        double generalInsuDeduction = findValueDeductionByItemCode(objectList, itemDeduction.itemCodeGeneralInsu);
         rowItem.setMonthlyGeneralInsuranceDeduction(generalInsuDeduction);
         // set monthly long term insurance deduction.
-        double longTermDeduction = findValueDeductionByItemCode(objectList, itemDeduction.getItemCodeLongTermInsu());
+        double longTermDeduction = findValueDeductionByItemCode(objectList, itemDeduction.itemCodeLongTermInsu);
         rowItem.setMonthlyLongTermInsuranceDeduction(longTermDeduction);
         // set monthly specific insurance deduction.
-        double specificInsuDeduction = findValueDeductionByItemCode(objectList, itemDeduction.getItemCodeSpecificInsu());
+        double specificInsuDeduction = findValueDeductionByItemCode(objectList, itemDeduction.itemCodeSpecificInsu);
         rowItem.setMonthlySpecificInsuranceDeduction(specificInsuDeduction);
         // set monthly basic insurance deduction.
-        double basicInsuDeduction = findValueDeductionByItemCode(objectList, itemDeduction.getItemCodeBasicInsu());
+        double basicInsuDeduction = findValueDeductionByItemCode(objectList, itemDeduction.itemCodeBasicInsu);
         rowItem.setMonthlyBasicInsuranceDeduction(basicInsuDeduction);
         // set welfare pension insurance deduction.
         double welfarePenInsuDeduction = findValueDeductionByItemCode(objectList,
-                itemDeduction.getItemCodeWelfarePensionInsu());
+                itemDeduction.itemCodeWelfarePensionInsu);
         rowItem.setWelfarePensionInsuranceDeduction(welfarePenInsuDeduction);
         // set welfare pension fund deduction.
         double welfarePenFundDeduction = findValueDeductionByItemCode(objectList,
-                itemDeduction.getItemCodeWelfarePensionFund());
+                itemDeduction.itemCodeWelfarePensionFund);
         rowItem.setWelfarePensionFundDeduction(welfarePenFundDeduction);
         //set child raising contribution money.
-        if (itemDeduction.getItemCodeChildRaising() != null) {
-            double childRaisingMoney = findValueDeductionByItemCode(objectList, itemDeduction.getItemCodeChildRaising());
+        if (itemDeduction.itemCodeChildRaising != null) {
+            double childRaisingMoney = findValueDeductionByItemCode(objectList, itemDeduction.itemCodeChildRaising);
             rowItem.setChildRaisingContributionMoney(childRaisingMoney);
         }
     }
@@ -768,10 +757,10 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
                 .collect(Collectors.toList());
         
         // set deduction heal insurance personal
-        double healInsuDPersonal = findValueDeductionByItemCode(listObjectItem, itemDPersonal.getItemCodeHealthInsu());
+        double healInsuDPersonal = findValueDeductionByItemCode(listObjectItem, itemDPersonal.itemCodeHealthInsu);
         item.setDeductionHealInsuPersonal(healInsuDPersonal);
         // set deduction heal insurance company
-        double healInsuDCompany = findValueDeductionByItemCode(listObjectItem, itemDCompany.getItemCodeHealthInsu());
+        double healInsuDCompany = findValueDeductionByItemCode(listObjectItem, itemDCompany.itemCodeHealthInsu);
         item.setDeductionHealInsuCompany(healInsuDCompany);
         
         // TODO: fix value
@@ -789,11 +778,11 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             
             // welfare pen fund personal.
             double welfarePensFundDPersonal = findValueDeductionByItemCode(listObjectItem, 
-                    itemDPersonal.getItemCodeWelfarePensionFund());
+                    itemDPersonal.itemCodeWelfarePensionFund);
             item.setWelfarePenFundPersonal(welfarePensFundDPersonal);
             // welfare pen fund company.
             double welfarePensFundCompany = findValueDeductionByItemCode(listObjectItem, 
-                    itemDCompany.getItemCodeWelfarePensionFund());
+                    itemDCompany.itemCodeWelfarePensionFund);
             item.setWelfarePenFundCompany(welfarePensFundCompany);
         } else { // Female
             // set welfare pen insurance personal
@@ -806,33 +795,33 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
             
             // deduction welfare pen insurance personal.
             double welfarePensFundDPersonal = findValueDeductionByItemCode(listObjectItem, 
-                    itemDPersonal.getItemCodeWelfarePensionFund());
+                    itemDPersonal.itemCodeWelfarePensionFund);
             item.setWelfarePenFundPersonal(welfarePensFundDPersonal);
             // deduction welfare pen insurance company.
             double welfarePensFundCompany = findValueDeductionByItemCode(listObjectItem, 
-                    itemDCompany.getItemCodeWelfarePensionFund());
+                    itemDCompany.itemCodeWelfarePensionFund);
             item.setWelfarePenFundCompany(welfarePensFundCompany);
         }
         // set deduction welfare pen insurance personal
         double welfarePenInsuDPersonal = findValueDeductionByItemCode(listObjectItem, 
-                itemDPersonal.getItemCodeWelfarePensionInsu());
+                itemDPersonal.itemCodeWelfarePensionInsu);
         item.setDeductionWelfarePenInsuPersonal(welfarePenInsuDPersonal);
         // set deduction welfare pen insurance company
         double welfarePenInsuDCompany = findValueDeductionByItemCode(listObjectItem, 
-                itemDCompany.getItemCodeWelfarePensionInsu());
+                itemDCompany.itemCodeWelfarePensionInsu);
         item.setDeductionWelfarePenInsuCompany(welfarePenInsuDCompany);
         
         // set deduction welfare pen fund personal
         double welfarePenFundPersonal = findValueDeductionByItemCode(listObjectItem, 
-                itemDPersonal.getItemCodeWelfarePensionFund());
+                itemDPersonal.itemCodeWelfarePensionFund);
         item.setDeductionWelfarePenFundPersonal(welfarePenFundPersonal);
         // set deduction welfare pen fund company
         double welfarePenFundCompany = findValueDeductionByItemCode(listObjectItem, 
-                itemDCompany.getItemCodeWelfarePensionFund());
+                itemDCompany.itemCodeWelfarePensionFund);
         item.setDeductionWelfarePenFundPersonal(welfarePenFundCompany);
         
         // set child raising
-        double childRaising = findValueDeductionByItemCode(listObjectItem, itemDCompany.getItemCodeChildRaising());
+        double childRaising = findValueDeductionByItemCode(listObjectItem, itemDCompany.itemCodeChildRaising);
         item.setChildRaising(childRaising);
         
         return item;
@@ -944,19 +933,30 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
     }
     
     /**
+     * Convert general date.
+     *
+     * @param yearMonth the year month
+     * @return the general date
+     */
+    private GeneralDate convertGeneralDate(Integer yearMonth) {
+        String tmpDate = yearMonth.toString().concat(FIRST_DAY);
+        return GeneralDate.fromString(tmpDate, DATE_FORMAT);
+    }
+    
+    /**
      * Inits the deduction personal.
      *
      * @return the item deduction
      */
     private ItemDeduction initDeductionPersonal() {
         ItemDeduction item = new ItemDeduction();
-        item.setItemCodeHealthInsu("F101");
-        item.setItemCodeGeneralInsu("F109");
-        item.setItemCodeLongTermInsu("F110");
-        item.setItemCodeSpecificInsu("F111");
-        item.setItemCodeBasicInsu("F112");
-        item.setItemCodeWelfarePensionInsu("F102");
-        item.setItemCodeWelfarePensionFund("F103");
+        item.itemCodeHealthInsu = "F101";
+        item.itemCodeGeneralInsu = "F109";
+        item.itemCodeLongTermInsu = "F110";
+        item.itemCodeSpecificInsu = "F111";
+        item.itemCodeBasicInsu = "F112";
+        item.itemCodeWelfarePensionInsu = "F102";
+        item.itemCodeWelfarePensionFund = "F103";
         return item;
     }
     
@@ -967,14 +967,14 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
      */
     private ItemDeduction initDeductionCompany() {
         ItemDeduction item = new ItemDeduction();
-        item.setItemCodeHealthInsu("F115");
-        item.setItemCodeGeneralInsu("F116");
-        item.setItemCodeLongTermInsu("F117");
-        item.setItemCodeSpecificInsu("F118");
-        item.setItemCodeBasicInsu("F119");
-        item.setItemCodeWelfarePensionInsu("F120");
-        item.setItemCodeWelfarePensionFund("F121");
-        item.setItemCodeChildRaising("F124");
+        item.itemCodeHealthInsu = "F115";
+        item.itemCodeGeneralInsu = "F116";
+        item.itemCodeLongTermInsu = "F117";
+        item.itemCodeSpecificInsu = "F118";
+        item.itemCodeBasicInsu = "F119";
+        item.itemCodeWelfarePensionInsu = "F120";
+        item.itemCodeWelfarePensionFund = "F121";
+        item.itemCodeChildRaising = "F124";
         return item;
     }
 
@@ -993,8 +993,6 @@ public class JpaSocialInsuRepository extends JpaRepository implements SocialInsu
         List<PensionAvgearn> listPensAvgearn;
     }
     
-    @Setter
-    @Getter
     class ItemDeduction {
         
         /** The item code health insu. */

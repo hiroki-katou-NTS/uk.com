@@ -39,6 +39,7 @@ module nts.uk.pr.view.qpp007.c {
 
                 // Define aggregateOutputItems column.
                 self.aggregateOutputItemColumns = ko.observableArray<any>([
+                    {headerText: 'key', prop: 'itemKey', width: 50, hidden: true},
                     { headerText: '区分', prop: 'categoryNameJPN', width: 40 },
                     {
                         headerText: '集約', prop: 'isAggregate', width: 40,
@@ -588,6 +589,8 @@ module nts.uk.pr.view.qpp007.c {
             name: string;
             categoryNameJPN: string;
             isAggregate: boolean;
+            itemKey: string;
+            
             constructor(code: string, name: string, categoryName: SalaryCategory, isAggregate: boolean) {
                 this.code = code;
                 this.name = name;
@@ -609,6 +612,7 @@ module nts.uk.pr.view.qpp007.c {
                     default:
                         self.categoryNameJPN = '';
                 }
+                self.itemKey = code + isAggregate + categoryName;
             }
         }
 

@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetailPK;
 public class JpaWLSettingItemSetMemento implements WLSettingItemSetMemento {
 	
 	/** The entity. */
-	protected QlsptLedgerFormDetail entity;
+	private QlsptLedgerFormDetail entity;
 	
 	/**
 	 * Instantiates a new jpa WL setting item set memento.
