@@ -59,13 +59,13 @@ public class ProcessingYearMonthWebServices extends WebService {
 	private Qmm005bCommandHandler qmm005bCommandHandler;
 
 	@POST
-	@Path("paydayrocessing/getbyccd")
+	@Path("paydayprocessing/getbyccd")
 	public List<PaydayProcessingDto> getPaydayProcessing(String companyCode) {
 		return paydayProcessingFinder.select3(companyCode);
 	}
 
 	@POST
-	@Path("paydayrocessing/getbyccdanddisatr1")
+	@Path("paydayprocessing/getbyccdanddisatr1")
 	public List<PaydayProcessingSelect4Dto> getPaydayProcessing2(String companyCode) {
 		return paydayProcessingFinder.select4(companyCode);
 	}

@@ -26,14 +26,14 @@ public enum ItemMasterCategory {
 	
 
 	/** The value. */
-	public final Integer value;
+	public final int value;
 
 	/**
 	 * Instantiates a new item master category.
 	 *
 	 * @param value the value
 	 */
-	private ItemMasterCategory(Integer value) {
+	private ItemMasterCategory(int value) {
 		this.value = value;
 	}
 

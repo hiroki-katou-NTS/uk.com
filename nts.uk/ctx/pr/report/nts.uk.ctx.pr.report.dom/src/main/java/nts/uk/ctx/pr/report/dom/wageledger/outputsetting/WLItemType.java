@@ -16,14 +16,14 @@ public enum WLItemType {
 	Aggregate(1);
 	
 	/** The value. */
-	public final Integer value;
+	public final int value;
 	
 	/**
 	 * Instantiates a new wage ledger item type.
 	 *
 	 * @param value the value
 	 */
-	private WLItemType(Integer value) {
+	private WLItemType(int value) {
 		this.value = value;
 	}
 	
