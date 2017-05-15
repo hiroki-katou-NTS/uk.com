@@ -241,6 +241,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		DepartmentDto departmentDto = new DepartmentDto();
 		departmentDto.setDepartmentCode(header.departmentCode);
 		departmentDto.setDepartmentName(header.departmentName);
+		departmentDto.setDepartmentOutput("xxxyyyzzz");
 		reportData.setDepartmentInfo(departmentDto);
 
 		// set employee

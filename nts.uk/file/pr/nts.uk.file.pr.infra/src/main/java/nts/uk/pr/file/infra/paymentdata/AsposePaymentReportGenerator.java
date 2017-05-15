@@ -25,11 +25,11 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 	implements PaymentReportGenerator {
 
-	/** The Constant TEMPLATE_PATH. */
-	private static final String TEMPLATE_PATH_H = "report/QPP021_H.xlsx";
+	/** The Constant TEMPLATE_PATH_A. */
+	private static final String TEMPLATE_PATH_A = "report/QPP021_A.xlsx";
 	
-	/** The Constant TEMPLATE_PATH_V. */
-	private static final String TEMPLATE_PATH_V = "report/QPP021_V.xlsx";
+	/** The Constant TEMPLATE_PATH_B. */
+	private static final String TEMPLATE_PATH_B = "report/QPP021_B.xlsx";
 	
 	/** The Constant OUTPUT_PDF_NAME. */
 	private static final String OUTPUT_PDF_NAME = "賃金テープル.pdf";
@@ -54,7 +54,7 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 		FileGeneratorContext rptContext = context.getGeneratorContext();
 		PaymentReportQuery query = context.getQuery();
 		PaymentReportData data = this.repository.findData(query);
-		try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_H)) {
+		try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_A)) {
 			PaymentGenerator generator = this.factory.createGenerator(data);
 			generator.generate(ctx, data);
 			//ctx.saveAsExcel(this.createNewFile(rptContext, this.getReportName(OUTPUT_NAME)));

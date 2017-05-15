@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 
 import com.aspose.cells.Cells;
 import com.aspose.cells.Worksheet;
 
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
 /**
@@ -35,8 +38,26 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 		// Set data.
 		Cells cells = ws.getCells();
 
-		cells.get(0, 5).setValue("給与支給明細書");
-		cells.get(1, 0).setValue("部門コード");
+		int startRow = 0;
+		int startCol = 5;
+		cells.get(startRow, startCol).setValue("給与支給明細書");
+		startRow++;
+		startCol = 0;
+		cells.get(startRow, startCol).setValue("部門コード");
+		startCol++;
+		cells.get(startRow, startCol).setValue("個人コード");
+		startCol++;
+		cells.get(startRow, startCol).setValue("氏名");
+
+		List<PaymentReportDto> reportData = data.getReportData();
+		PaymentReportDto dataFirst = reportData.get(0);
+		startRow++;
+		startCol = 0;
+		cells.get(startRow, startCol).setValue(dataFirst.getDepartmentInfo().getDepartmentCode());
+		startCol++;
+		cells.get(startRow, startCol).setValue(dataFirst.getEmployeeInfo().getEmployeeCode());
+		startCol++;
+		cells.get(startRow, startCol).setValue(dataFirst.getEmployeeInfo().getEmployeeName());
 		/*
 		 * // Fill data. Map<String, Long> itemToAmountMap =
 		 * history.getValueItems() .stream()
