@@ -78,7 +78,6 @@ module qmm020.b.viewmodel {
             });
            service.saveData(addItem).done(function(data: ListModel) {
                 self.listItems.valueHasMutated();
-                debugger;
             }).fail(function(res){
                 alert(res);
             });
@@ -186,7 +185,6 @@ module qmm020.b.viewmodel {
                                 }
 
                                 self.selectedItem.valueHasMutated();
-                                debugger;
                             }).fail(function(res) {
                                 alert(res);
                             });
