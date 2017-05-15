@@ -101,6 +101,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             reportContext.processDesigner();
             
             // =============== SAVE AS PDF ===============
+//            workbook.save(this.getReportName("/Users/mrken57/Work/UniversalK/project/export/qpp007/QPP007.xlsx"));
             reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
 //            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName("qpp007.xlsx")));
         } catch (Exception e) {
@@ -245,10 +246,10 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             cell.setValue(item);
             styleModel.drawBorderCell(cell);
             
-            Style style = cell.getStyle();
-            style.setHorizontalAlignment(TextAlignmentType.CENTER);
-            style.setVerticalAlignment(TextAlignmentType.JUSTIFY);
-            cell.setStyle(style);
+//            Style style = cell.getStyle();
+//            style.setHorizontalAlignment(TextAlignmentType.CENTER);
+//            style.setVerticalAlignment(TextAlignmentType.JUSTIFY);
+//            cell.setStyle(style);
         }
     }
 
@@ -1217,7 +1218,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             Style style = cell.getStyle();
             style.setForegroundColor(this.foregroundColor);
             style.setPattern(BackgroundType.SOLID);
-            style.setTextWrapped(false);
+//            style.setTextWrapped(false);
 
             switch (borderType) {
                 case NoBorder :
