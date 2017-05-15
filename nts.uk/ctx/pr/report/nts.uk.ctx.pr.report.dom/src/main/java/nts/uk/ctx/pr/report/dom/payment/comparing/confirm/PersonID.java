@@ -5,14 +5,13 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
-@StringMaxLength(12)
+@StringMaxLength(36)
 @StringCharType(CharType.ALPHA_NUMERIC)
-public class EmployeeCode extends CodePrimitiveValue<EmployeeCode> {
+public class PersonID extends CodePrimitiveValue<PersonID> {
 
 	private static final long serialVersionUID = 1L;
 
-	public EmployeeCode(String rawValue) {
+	public PersonID(String rawValue) {
 		super(rawValue);
 	}
-
 }

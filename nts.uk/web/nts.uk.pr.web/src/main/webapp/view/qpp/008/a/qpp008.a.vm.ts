@@ -12,7 +12,7 @@ module qpp008.a.viewmodel {
         statusRegisterColumns: KnockoutObservableArray<any>;
         statusRegisterSelectCode: KnockoutObservableArray<string>;
         /*Multiple selecting GridList*/
-        employyerList: KnockoutObservableArray<Employee>;
+        employyerList: KnockoutObservableArray<Employeer>;
         employyerColumns: KnockoutObservableArray<any>;
         employyerCurrentCodeList: KnockoutObservableArray<any>;
         //combobox1
@@ -67,21 +67,11 @@ module qpp008.a.viewmodel {
             ]);
             self.statusRegisterSelectCode = ko.observableArray([]);
 
-            self.employyerList = ko.observableArray([
-                new Employee("0000000001", "日通　一郎", ""),
-                new Employee("0000000001", "日通　二郎", ""),
-                new Employee("0000000001", "日通　三郎", ""),
-                new Employee("0000000001", "日通　四郎", ""),
-                new Employee("0000000001", "日通　五郎", ""),
-                new Employee("0000000001", "日通　六郎", ""),
-                new Employee("0000000001", "日通　七郎", ""),
-                new Employee("0000000001", "日通　八郎", ""),
-                new Employee("0000000001", "日通　九郎", ""),
-                new Employee("0000000001", "日通　十郎", "")
-            ]);
+            self.employyerList = ko.observableArray([]);
             self.employyerColumns = ko.observableArray([
-                { headerText: '社員CD', prop: 'code', width: 200 },
-                { headerText: '氏名', prop: 'name', width: 150 },
+                { headerText: '社員CD', prop: 'personID', hidden: 'hidden'},
+                { headerText: '社員CD', prop: 'employeeCode', width: 200 },
+                { headerText: '氏名', prop: 'employeeName', width: 150 },
                 { headerText: '所属', prop: 'note', width: 150 }
 
             ]);
@@ -145,7 +135,7 @@ module qpp008.a.viewmodel {
             self.employyerList([]);
             service.getPersonInfo().done(function(data) {
                 self.employyerList(_.map(data, function(emp: any) {
-                    return new Employee(emp.employeeCode, emp.employeeName, "");
+                    return new Employeer(emp.employeeCode, emp.employeeName, "");
                 }));
                 dfd.resolve();
             });
@@ -266,13 +256,15 @@ module qpp008.a.viewmodel {
         }
     }
 
-    class Employee {
-        code: string;
-        name: string;
+    class Employeer {
+        personID: string;
+        employeeCode: string;
+        employeeName: string;
         note: string;
-        constructor(code: string, name: string, note: string) {
-            this.code = code;
-            this.name = name;
+        constructor(personID: string, employeeCode: string, employeeName: string, note: string) {
+            this.personID = personID;
+            this.employeeCode = employeeCode;
+            this.employeeName = employeeName;
             this.note = note;
         }
     }
