@@ -20,14 +20,14 @@
 
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
-				<button data-bind="click: newTopPage" id="btn_new" class="btnStyle">新規</button>
-				<button data-bind="click: saveTopPage" class="proceed btnStyle"
+				<button tabindex="5" data-bind="click: newTopPage" id="btn_new" class="btnStyle">新規</button>
+				<button tabindex="6" data-bind="click: saveTopPage" class="proceed btnStyle"
 					id="btn_save">登録</button>
-				<button data-bind=" click: copyTopPage ,enable: !isNewMode()" id="btn_printing" class="btnStyle">コピー</button>
-				<button data-bind=" click: openFlowMenuSettingDialog" id="btn_readFromSocialTnsuranceOffice" class= "btnStyle2" >フローメニューの設定</button>
-				<button id="btn_masterCorrectionLog"
+				<button tabindex="7" data-bind=" click: copyTopPage ,enable: !isNewMode()" id="btn_printing" class="btnStyle">コピー</button>
+				<button tabindex="8" data-bind=" click: openFlowMenuSettingDialog" id="btn_readFromSocialTnsuranceOffice" class= "btnStyle2" >フローメニューの設定</button>
+				<button tabindex="9" id="btn_masterCorrectionLog"
 					data-bind="click: openMyPageSettingDialog" class= "btnStyle2" >マイページの設定</button>
-				<button data-bind="click: removeTopPage,enable: !isNewMode()" class="danger btnStyle"
+				<button tabindex="10" data-bind="click: removeTopPage,enable: !isNewMode()" class="danger btnStyle"
 					id="btn_delete">削除</button>
 			</div>
 			<div id="contents-area" data-bind="visible: true"
@@ -87,7 +87,7 @@
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="inp_code"
+									<td class="contentsRR"><input tabindex="2" id="inp_code"
 										class="nts-input tr40 save-error" data-name="コード"
 										data-bind="ntsTextEditor: {
 											value: topPageCode,
@@ -95,7 +95,7 @@
 											required:true,
 											constraint: 'TopPageCode'}" />
 									</td>
-									<td style= "padding-left: 20px;"><input id="inp_name" data-name="名称"
+									<td style= "padding-left: 20px;"><input tabindex="3" id="inp_name" data-name="名称"
 										class="nts-input tr240 save-error"
 										data-bind="ntsTextEditor: {
 											value: topPageName,
@@ -107,7 +107,7 @@
 								</tr>
 
 								<tr>
-									<td><button data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()" class="btn_margin_top x-large">レイアウト設定</button></td>
+									<td><button tabindex="4" data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()" class="btn_margin_top x-large">レイアウト設定</button></td>
 								</tr>
 								<tr>
 								<td colspan = "10" >

@@ -20,7 +20,7 @@
 					<div style="float:left;" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>マイページ利用区分<br /></label>
 					</div>
-					<div style="float:left;" class="cf"
+					<div tabindex ="1" style="float:left;" class="cf"
 						data-bind="ntsSwitchButton: {
 						options: $parent.useDivisionOptions,
 						optionsValue: 'code',
@@ -29,7 +29,7 @@
 						enable: true }"></div>
 						<BR /><BR /><BR />
 					<div>
-						<div id="tab-panel" class="cf"
+						<div tabindex ="2" id="tab-panel" class="cf"
 							data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab, direction: 'vertical' }">
 							<div id="widget" data-bind="if: $parent.selectedTab() == 'tab_widget'">
 								<com:ko tag="template" bind="{name: 'widget-template', data: topPagePartSettingItems()[0]}"></com:ko>
@@ -56,7 +56,7 @@
 					<div style="float:left;" id="widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>利用区分<br /></label>
 					</div>
-					<div style="float:left;margin-bottom: 20px;" class="cf"
+					<div tabindex ="3" style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
 						options: $parents[1].useDivisionOptions,
 						optionsValue: 'code',
@@ -83,7 +83,7 @@
 					<div style="float:left;" id="dashboard_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>利用区分<br /></label>
 					</div>
-					<div style="float:left;margin-bottom: 20px;" class="cf"
+					<div tabindex ="5" style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
 						options: $parents[1].useDivisionOptions,
 						optionsValue: 'code',
@@ -110,7 +110,7 @@
 					<div style="float:left;" id="flow_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
 						<label>利用区分<br /></label>
 					</div>
-					<div style="float:left;margin-bottom: 20px;" class="cf"
+					<div tabindex ="7" style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
 						options: $parents[1].useDivisionOptions,
 						optionsValue: 'code',
