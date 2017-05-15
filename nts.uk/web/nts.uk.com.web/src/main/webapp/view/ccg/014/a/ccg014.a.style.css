@@ -1,7 +1,7 @@
 #link1 {display: inline; background-color: #a4eeb0; vertical-align: middle; margin: 0px 30px 0px 200px; }
 #link2 {display: inline; background-color: #a4eeb0; vertical-align: middle; }
 .icon_link {width: 30px; }
-#left-content { margin-left: 20px; margin-top: 12px; padding: 20px; float: left; width: 350px; height: auto;}
+#left-content { margin-left: 20px; margin-top: 12px; padding: 20px; float: left; width: 400px; height: auto;}
 #right-content {padding-left: 94px; float: left; margin-top: 32px;}
 #texteditor1.ntsControl .nts-input{ border: 1px solid #999999;}
 #new{margin-left: 30px;}
@@ -9,3 +9,6 @@ button{padding-left: 30px; padding-right: 30px;margin-left: 15px;}
 #delete{margin-left: 50px;}
 button.x-large.fixbtn {width: 200px; height: 70px; margin: 70px 0px 0px 0px;}
 #titleMenuCD {margin-left: 60px;}
+
+.preview-container {padding:10px 0 0 10px; border:1px solid #a0a0a0; margin-top:25px; border-radius: 3px;}
+#preview-iframe {width:1005px; height:685px;}

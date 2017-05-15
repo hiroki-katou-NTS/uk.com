@@ -43,6 +43,8 @@
 						<div style="float: left">
 							<div style="width: 360px"
 								data-bind="ntsSearchBox: {
+								targetKey: 'titleMenuCD',
+								mode:'igGrid',
 								comId: 'titlemenu-list',
 								items: listTitleMenu, 
 								selected: selectedTitleMenuCD, 
@@ -53,6 +55,8 @@
 					<div class="gridlist" style="margin-bottom: 100px;">
 						<table id="titlemenu-list"
 							data-bind="ntsGridList: {
+								mode:'igGrid',
+								showNumbering: true,
 								height: 500,
 								options: listTitleMenu,
 								optionsValue: 'titleMenuCD',
@@ -67,8 +71,12 @@
 						<input id="titleMenuCD" data-bind="ntsTextEditor: {value: titleMenuCD, constraint: 'TitleMenuCD', enable: $parent.isCreate , immediate: true , required: true }" />
 						<input data-bind="ntsTextEditor: {value: name, constraint: 'Name' , required: true , immediate: true}" />
 					</div> 
-					<div class="row2"><button class="x-large fixbtn" data-bind="enable: !isCreate()">レイアウト設定</button></div>
-					<div class="row3"></div>
+					<div class="row2"><button class="x-large fixbtn" data-bind="click : open031_1Dialog,enable: !isCreate()">レイアウト設定</button></div>
+					<div class="row3" data-bind="visible: !isCreate()">
+						<div class="preview-container">
+							<iframe id="preview-iframe"></iframe>
+						</div>
+					</div>
 				</div>
 			</div>
 		</ui:define>
