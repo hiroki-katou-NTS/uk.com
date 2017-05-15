@@ -80,7 +80,7 @@ module qet001.a.viewmodel {
             $('#output-settings-selection').ntsError('clear');
             $('#target-year-input').ntsEditor('validate');
             if (self.outputTypeSelected() == OutputType.OUTPUT_SETTING_ITEMS
-                && (self.outputSettingSelectedCode() || self.outputSettingSelectedCode() == '')) {
+                && (!self.outputSettingSelectedCode() || self.outputSettingSelectedCode() == '')) {
                 $('#output-settings-selection').ntsError('set', '集約項目を出力するが入力されていません。')
             }
             // TODO: Check employee list.
