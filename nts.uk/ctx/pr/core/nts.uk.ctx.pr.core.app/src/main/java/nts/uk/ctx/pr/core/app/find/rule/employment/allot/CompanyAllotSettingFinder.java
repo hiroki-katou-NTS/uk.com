@@ -16,30 +16,20 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CompanyAllotSettingFinder {
+
 	@Inject
 	private CompanyAllotSettingRepository companyAllotRepo;
-	@Inject 
+
+	@Inject
 	private LayoutMasterRepository layoutMasterRepo;
-	
-	/**
-	 * finder all allot by company code and layout code
-	 * 
-	 * @param companyCode
-	 * @return
-	 */
+
 	public List<CompanyAllotSettingDto> getAllCompanyAllotSetting() {
 		String companyCode = AppContexts.user().companyCode();
-		
+
 		return this.companyAllotRepo.findAll(companyCode).stream()
-				.map(companyallot -> CompanyAllotSettingDto.fromDomain(companyallot))
-				.collect(Collectors.toList());
+				.map(companyallot -> CompanyAllotSettingDto.fromDomain(companyallot)).collect(Collectors.toList());
 	}
-	/**
-	 * 
-	 * @param stmtCode
-	 * @return
-	 */
-	
+
 	public String getAllotLayoutName(String stmtCode) {
 		String companyCode = AppContexts.user().companyCode();
 		Optional<LayoutMaster> layoutName = this.layoutMasterRepo.getBy_SEL_7(companyCode, stmtCode);
@@ -49,17 +39,11 @@ public class CompanyAllotSettingFinder {
 		}
 		return result;
 	}
-	
-	/**
-	 * 
-	 * @return
-	 * Get Item with Max END Date
-	 */
-	public Optional<CompanyAllotSettingDto> getMaxStartYM(){
+
+	public Optional<CompanyAllotSettingDto> getMaxStartYM() {
 		String companyCode = AppContexts.user().companyCode();
-		
-		return this.companyAllotRepo.maxStart(companyCode)
-				.map(maxAllot -> CompanyAllotSettingDto.fromDomain(maxAllot));
+
+		return this.companyAllotRepo.maxStart(companyCode).map(maxAllot -> CompanyAllotSettingDto.fromDomain(maxAllot));
 	}
-	
+
 }

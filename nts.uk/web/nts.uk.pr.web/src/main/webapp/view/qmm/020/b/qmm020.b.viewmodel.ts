@@ -72,15 +72,11 @@ module qmm020.b.viewmodel {
 
         // event calling by saveData event in view A
         saveData() {
-            let self = this, model: Array<ListModel> = ko.toJS(self.listItems);
-            // push data to server by service
-            // change function?
-            let addItem = _.filter(model, function(m) {
-                return _.includes(m.historyId, "NEW");
-            });
-            service.saveData(addItem).done(function(data: ListModel) {
+            let self = this, models: Array<ListModel> = ko.toJS(self.listItems);
+
+            service.saveData(models).done(function(data: ListModel) {
                 self.listItems.valueHasMutated();
-                debugger;
+            }).fail(function(res) {
                 alert(res);
             });
         }
@@ -168,33 +164,12 @@ module qmm020.b.viewmodel {
                         // search index of current item
                         let index = _.findIndex(self.listItems(), function(m) { return m.historyId == self.selectedId(); });
                         if (model.selectedMode == 1) {
-
                             // call service delete item at here
-                            //                            self.listItems.splice(index, 1);
-                            let dele = self.selectedItem();
-                            service.deleteData(dele).done(function(data: ListModel) {
-                                self.listItems.valueHasMutated();
-                                // select to next item
-                                while (index >= self.listItems().length) {
-                                    index--;
-                                }
-
-                                if (!self.listItems()[index]) {
-                                    self.selectedId(undefined);
-                                } else {
-                                    self.selectedId(self.listItems()[index].historyId);
-                                }
-
-                                self.selectedItem.valueHasMutated();
-                                debugger;
-                            }).fail(function(res) {
-                                alert(res);
-                            });
-
-
-
-                            // call start function
-                            //self.start();
+                            let models = self.listItems.splice(index, 1);
+                            service.deleteData(models).done(function() {
+                                // call start function
+                                self.start();
+                            }).fail((msg) => { alert(msg); });
                         } else {
                             // modify
                             let startDate = nts.uk.time.parseYearMonth(model.startYm);
@@ -208,7 +183,6 @@ module qmm020.b.viewmodel {
                                 }
 
                                 // update view data
-                                // fkc?
                                 self.listItems.push(self.listItems.pop());
                                 self.selectedId.valueHasMutated();
                                 self.selectedItem.valueHasMutated();

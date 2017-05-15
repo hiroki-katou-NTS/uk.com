@@ -44,19 +44,18 @@ module qmm020.c.viewmodel {
                         .map((m) => { model.ListItems.push(new ListModel(m)); });
                 }
                 // get itemMax of ListItem
-                service.getAllotEmployeeMaxDate().done(function(itemMax: number) {
+                service.getAllotEmployeeMaxDate().done((itemMax: number) => {
                     let maxDate: IListModel = _.find(model.ListItems(), function(obj) { return obj.endYm == itemMax; });
                     model.ListItems().map((m) => {
                         if (m.historyId == maxDate.historyId) {
                             m.isMaxEnYm = true;
+                            model.ListItemSelected(m.historyId);
                         } else {
                             m.isMaxEnYm = false;
                         }
                     });
-                });
-            }).fail(function(res) {
-                alert(res);
-            });
+                }).fail((msg) => { alert(msg); });
+            }).fail((msg) => { alert(msg); });
 
             service.getEmployeeName().done(function(data: Array<IGridModel>) {
                 if (data && data.length > 0) {
@@ -77,12 +76,17 @@ module qmm020.c.viewmodel {
         openJDialog() {
             let self = this, model = self.model();
 
+            model.ListItems().map((m) => {
+                if (m.isMaxEnYm) {
+                    model.ListItemSelected(m.historyId);
+                }
+            });
+
             // get item has property endDate is max value
             let maxItem: any = _.find(model.ListItems(), function(m) { return m.isMaxEnYm == true; }) || {};
-            debugger;
             if (maxItem) {
                 nts.uk.ui.windows.setShared("J_DATA", { displayMode: 1, startYm: maxItem.startYm || 197001, endYm: maxItem.endYm || 999912 });
-                
+
                 nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" })
                     .onClosed(function() {
 
@@ -130,11 +134,11 @@ module qmm020.c.viewmodel {
                                 }
                             }
                         }
+                        // clear shared data
+                        nts.uk.ui.windows.setShared("J_DATA", undefined);
+                        nts.uk.ui.windows.setShared("J_RETURN", undefined);
                     });
             }
-            // clear shared data
-            nts.uk.ui.windows.setShared("J_DATA", undefined);
-            nts.uk.ui.windows.setShared("J_RETURN", undefined);
         }
 
         openKDialog() {

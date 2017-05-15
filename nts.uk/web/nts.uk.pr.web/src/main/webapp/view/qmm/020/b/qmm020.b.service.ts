@@ -74,17 +74,20 @@ module qmm020.b.service {
         return dfd.promise();
     }
 
-    export function deleteData(model: any) {
+    export function deleteData(models: Array<any>) {
         let dfd = $.Deferred();
-        if (!!model) {
-            let data: any = {
-                payStmtCode: model.paymentDetailCode,
-                bonusStmtCode: model.bonusDetailCode,
-                startDate: model.startDate,
-                endDate: model.endDate,
-                historyId: model.historyId
-            };
-            nts.uk.request.ajax(paths.deleteAllotCompanySetting, data).done((resp) => { dfd.resolve(resp); }).fail((mes) => { dfd.reject(mes); });
+        if (models.length > 0) {
+            models.map((m) => {
+                let data: any = {
+                    payStmtCode: m.paymentDetailCode,
+                    bonusStmtCode: m.bonusDetailCode,
+                    startDate: m.startDate,
+                    endDate: m.endDate,
+                    historyId: m.historyId
+                };
+                
+                nts.uk.request.ajax(paths.deleteAllotCompanySetting, data).done((resp) => { dfd.resolve(resp); }).fail((mes) => { dfd.reject(mes); });
+            });
         }
         return dfd.promise();
     }
