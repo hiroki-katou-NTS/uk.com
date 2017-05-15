@@ -44,8 +44,8 @@ public class LayoutWebService extends WebService {
 	private RegisterLayoutCommandHandler registerLayoutHandler;
 	@Inject
 	private LayoutMasterFinder find;
-//	@Inject
-//	private LayoutHisFinder find1;
+	// @Inject
+	// private LayoutHisFinder find1;
 	@Inject
 	private LayoutMasterCategoryFinder categoryFinder;
 	@Inject
@@ -56,12 +56,12 @@ public class LayoutWebService extends WebService {
 	public List<LayoutHeadDto> getAllLayoutHead() {
 		return this.find.getAllLayoutHead(AppContexts.user().companyCode());
 	}
-	
+
 	@POST
 	@Path("findallMaxHistory")
 	public List<LayoutHistoryDto> getAllHistoryMaxStart(int startYm) {
-		startYm =0;
-		return this.find.getHistoryWithMaxStartYm(AppContexts.user().companyCode(),startYm);
+		startYm = 0;
+		return this.find.getHistoryWithMaxStartYm(AppContexts.user().companyCode(), startYm);
 	}
 
 	@POST
@@ -77,17 +77,11 @@ public class LayoutWebService extends WebService {
 	}
 
 	@POST
-	@Path("findlayoutdetail/{stmtCode}/{startYm}/{categoryAtr}/{itemCd}")
-	public LayoutMasterDetailDto getDetail(@PathParam("stmtCode") String stmtCode, @PathParam("startYm") int startYm,
-			@PathParam("categoryAtr") int categoryAtr, @PathParam("itemCd") String itemCd) {
-		try {
-			if (this.detailFinder.getDetail(stmtCode, startYm, categoryAtr, itemCd).isPresent()) {
-				return this.detailFinder.getDetail(stmtCode, startYm, categoryAtr, itemCd).get();
-			}
-			return null;
-		} catch (Exception ex) {
-			throw ex;
-		}
+	@Path("findlayoutdetail/{stmtCode}/{historyId}/{categoryAtr}/{itemCd}")
+	public LayoutMasterDetailDto getDetail(@PathParam("stmtCode") String stmtCode,
+			@PathParam("historyId") String historyId, @PathParam("categoryAtr") int categoryAtr,
+			@PathParam("itemCd") String itemCd) {
+		return this.detailFinder.getDetail(stmtCode, historyId, categoryAtr, itemCd);
 	}
 
 	@POST
@@ -108,6 +102,7 @@ public class LayoutWebService extends WebService {
 	public void createLayout(CreateLayoutCommand command) {
 		this.createLayoutData.handle(command);
 	}
+
 	@POST
 	@Path("updatedata")
 	public void updateData(UpdateLayoutHistoryCommand command) {

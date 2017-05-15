@@ -83,7 +83,8 @@ public class LayoutMasterDetailDto {
 				domain.getAlarm().getRange().max(),
 				domain.getAlarm().getIsUseLow().value,
 				domain.getAlarm().getRange().min(),
-				domain.getItemAbName().v());		
+				domain.getItemAbName().v()
+				);		
 	}
 	
 }

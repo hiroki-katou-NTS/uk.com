@@ -348,7 +348,7 @@ module qmm019.a {
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
             //17.03.2017 Lanlt  setShared startYm
             nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { dialogClass: 'no-close', title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
                 self.start(self.singleSelectedCode());
             });
         }
@@ -365,7 +365,7 @@ module qmm019.a {
             nts.uk.ui.windows.setShared('startYm', self.startYm());
             nts.uk.ui.windows.setShared('endYm', self.endYm());
             nts.uk.ui.windows.setShared('historyId', self.layoutMaster().historyId);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { dialogClass: 'no-close', title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
                 self.start(self.singleSelectedCode());
             });
         }

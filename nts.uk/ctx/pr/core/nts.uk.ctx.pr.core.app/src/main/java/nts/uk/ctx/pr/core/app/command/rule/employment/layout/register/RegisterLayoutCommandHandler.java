@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.app.command.rule.employment.layout.register;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -62,7 +63,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		layoutHistRepo.update(layoutHistoryRegister);
 
 		Map<String, String> mapNewLineIdTemp = new HashMap<>();
-        // code anh Lam chua thay doi DB
+		// code anh Lam chua thay doi DB
 		// Follow EAP: 03.明細レイアウトの作成-登録処理
 		// Follow EAP: 03.1.明細書マスタカテゴリ登録処理
 		// categoryProcess(command, layoutCommand, companyCode, stmtCode,
@@ -73,7 +74,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		// //Follow EAP: 03.3.明細書マスタ明細登録処理
 		// detailProcess(command, layoutCommand, companyCode, stmtCode, startYm,
 		// mapNewLineIdTemp);
-		
+
 		// Follow EAP: 03.明細レイアウトの作成-登録処理
 		// Follow EAP: 03.1.明細書マスタカテゴリ登録処理
 		categoryProcess(command, layoutCommand, companyCode, stmtCode, historyId);
@@ -99,7 +100,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			if (!detailCommand.isAdded() && detailCommand.getUpdateItemCode().equals("")) {
 				// Khong phai là Thêm mới và không phải là Update ItemCode thì
 				// chỉ update thường:
-				LayoutMasterDetail oldLayoutMasterDetail  = LayoutMasterDetail.createFromJavaType(companyCode, stmtCode,
+				LayoutMasterDetail oldLayoutMasterDetail = LayoutMasterDetail.createFromJavaType(companyCode, stmtCode,
 						detailCommand.getCategoryAtr(), detailCommand.getItemCode(), detailCommand.getAutoLineId(),
 						detailCommand.getDisplayAtr(), detailCommand.getSumScopeAtr(),
 						detailCommand.getCalculationMethod(), detailCommand.getDistributeWay(),
@@ -126,9 +127,9 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			autoLineId = mapLineIdTemp.get(detailCommand.getAutoLineId()) == null ? detailCommand.getAutoLineId()
 					: mapLineIdTemp.get(detailCommand.getAutoLineId());
 			// dành cho Thêm mới và update itemCode
-			LayoutMasterDetail NewMasterDetail = LayoutMasterDetail.createFromJavaType(companyCode, stmtCode, detailCommand.getCategoryAtr(),
-					detailCommand.getItemCode(), autoLineId, detailCommand.getDisplayAtr(),
-					detailCommand.getSumScopeAtr(), detailCommand.getCalculationMethod(),
+			LayoutMasterDetail NewMasterDetail = LayoutMasterDetail.createFromJavaType(companyCode, stmtCode,
+					detailCommand.getCategoryAtr(), detailCommand.getItemCode(), autoLineId,
+					detailCommand.getDisplayAtr(), detailCommand.getSumScopeAtr(), detailCommand.getCalculationMethod(),
 					detailCommand.getDistributeWay(), detailCommand.getDistributeSet(), detailCommand.getFormulaCode(),
 					detailCommand.getPersonalWageCode(), detailCommand.getWageTableCode(),
 					detailCommand.getCommonAmount(), detailCommand.getSetOffItemCode(), detailCommand.getCommuteAtr(),
@@ -136,7 +137,15 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 					detailCommand.getIsErrorUserLow(), detailCommand.getErrorRangeLow(),
 					detailCommand.getIsAlamUseHigh(), detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(),
 					detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn(), layoutCommand.getHistoryId());
-			detailRepo.add(NewMasterDetail);
+			Optional<LayoutMasterDetail> checkMasterDetail = detailRepo.getDetail(NewMasterDetail.getCompanyCode().v(),
+					NewMasterDetail.getStmtCode().v(), NewMasterDetail.getHistoryId(),
+					NewMasterDetail.getCategoryAtr().value, NewMasterDetail.getItemCode().v());
+			if (!checkMasterDetail.isPresent()) {
+				detailRepo.add(NewMasterDetail);
+			} else {
+				throw new BusinessException(new RawErrorMessage("既に" + NewMasterDetail.getCategoryAtr().name + "の"
+						+ NewMasterDetail.getItemCode() + "データが存在します。"));
+			}
 		}
 	}
 
@@ -154,7 +163,8 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 
 		// List<LayoutMasterLine> linesFromDB = lineRepo.getLines(companyCode,
 		// stmtCode, startYm);
-		//List<LayoutMasterLine> linesFromDB = lineRepo.getLines(companyCode, stmtCode, historyId);
+		// List<LayoutMasterLine> linesFromDB = lineRepo.getLines(companyCode,
+		// stmtCode, historyId);
 		List<LayoutMasterLine> linesFromDB = lineRepo.getLines(historyId);
 		for (LayoutLine lineCommand : command.getLineCommand()) {
 			if (linesFromDB.stream().filter(c -> c.getAutoLineId().v().equals(lineCommand.getAutoLineId())
@@ -175,8 +185,9 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			String stmtCode, String historyId) {
 		if (command.getListCategoryAtrDeleted().size() > 0) {
 			for (Integer categoryAtr : command.getListCategoryAtrDeleted()) {
-//				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByCategory(companyCode, stmtCode,
-//						historyId, categoryAtr);
+				// List<LayoutMasterDetail> detailsDelete =
+				// detailRepo.getDetailsByCategory(companyCode, stmtCode,
+				// historyId, categoryAtr);
 				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByCategory(historyId, categoryAtr);
 				detailRepo.remove(detailsDelete);
 
@@ -188,7 +199,8 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		}
 
 		List<LayoutMasterCategory> categoriesFromDB = categoryRepo.getCategories(historyId);
-		//List<LayoutMasterCategory> categoriesFromDB = categoryRepo.getCategories(companyCode, stmtCode, historyId);
+		// List<LayoutMasterCategory> categoriesFromDB =
+		// categoryRepo.getCategories(companyCode, stmtCode, historyId);
 		for (LayoutCategory categoryCommand : command.getCategoryCommand()) {
 			if (categoriesFromDB.stream().filter(c -> c.getCtAtr().value == categoryCommand.getCategoryAtr()).findAny()
 					.isPresent()) {

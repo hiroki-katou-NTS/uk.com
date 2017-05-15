@@ -19,10 +19,9 @@ module qmm019.f.service {
         return dfd.promise();
     }
 
-    export function getLayoutMasterDetail(stmtCode: String, startYm: number, categoryAtr: number, itemCd: String): JQueryPromise<any> {
+    export function getLayoutMasterDetail(stmtCode: string, historyId: string, categoryAtr: number, itemCd: String): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        var objectItem = { stmtCode: stmtCode, startYm: startYm, categoryAtr: categoryAtr, itemCd: itemCd };
-        var _path = nts.uk.text.format(paths.getLayoutMasterDetail, stmtCode, startYm, categoryAtr, itemCd);
+        var _path = nts.uk.text.format(paths.getLayoutMasterDetail, stmtCode, historyId, categoryAtr, itemCd);
         nts.uk.request.ajax(_path)
             .done(function(res) {
                 dfd.resolve(res);

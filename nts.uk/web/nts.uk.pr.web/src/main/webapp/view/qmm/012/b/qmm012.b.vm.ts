@@ -29,7 +29,7 @@ module qmm012.b.viewmodel {
         enable_B_Inp_Code: KnockoutObservable<boolean> = ko.observable(false);
         screenModel: qmm012.b.ScreenModel;
         B_Btn_DeleteButton_enable: KnockoutObservable<boolean> = ko.observable(true);
-        dirty: nts.uk.ui.DirtyChecker;
+        dirty: nts.uk.ui.DirtyChecker = new nts.uk.ui.DirtyChecker(ko.observable(null));
         dirtyItemMaster: KnockoutObservable<service.model.ItemMaster> = ko.observable(null);
         dirtyOldValue: DirtyValue = new DirtyValue(1, '', false);
         constructor(screenModel: qmm012.b.ScreenModel) {
@@ -561,6 +561,9 @@ module qmm012.b.viewmodel {
             //           NoFunction();
             //   })
             //   }
+        }
+        closeDialog() {
+            nts.uk.ui.windows.close();
         }
     }
     class DirtyValue {

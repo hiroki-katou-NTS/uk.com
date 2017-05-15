@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -30,9 +31,14 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " AND i.qcamtItemPK.ctgAtr = c.qstmtStmtLayoutDetailPk.ctgAtr)"
 			+ " WHERE c.qstmtStmtLayoutDetailPk.historyId = :historyId";
 
-	private final String SELECT_DETAIL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" + " AND c.strYm = :strYm"
-			+ " AND c.qstmtStmtLayoutDetailPk.itemCd = :itemCd";
+	private final String SELECT_DETAIL = SELECT_NO_WHERE_JOIN + " INNER JOIN QcamtItem i" + " ON ("
+			+ " i.qcamtItemPK.ccd = c.qstmtStmtLayoutDetailPk.companyCd"
+			+ " AND i.qcamtItemPK.itemCd = c.qstmtStmtLayoutDetailPk.itemCd"
+			+ " AND i.qcamtItemPK.ctgAtr = c.qstmtStmtLayoutDetailPk.ctgAtr)" + " WHERE "
+			+ "c.qstmtStmtLayoutDetailPk.companyCd = :companyCd" + " AND c.qstmtStmtLayoutDetailPk.ctgAtr = :ctgAtr"
+			+ " AND c.qstmtStmtLayoutDetailPk.itemCd = :itemCd" + " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.historyId = :historyId";
+
 	private final String SELECT_ALL_DETAILS_BY_CATEGORY = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" + " AND c.strYm = :strYm"
@@ -134,7 +140,6 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	private static LayoutMasterDetail toDomainJoin(String itemAbName, QstmtStmtLayoutDetail entity) {
 		val domain = toDomain(entity);
 		domain.setItemAbName(itemAbName);
-
 		return domain;
 	}
 
@@ -152,24 +157,26 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	}
 
 	@Override
-	public Optional<LayoutMasterDetail> getDetail(String companyCd, String stmtCd, int startYm, int categoryAtr,
+	public Optional<LayoutMasterDetail> getDetail(String companyCd, String stmtCd, String historyId, int categoryAtr,
 			String itemCd) {
-		return this.queryProxy().query(SELECT_DETAIL, QstmtStmtLayoutDetail.class).setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd).setParameter("strYm", startYm).setParameter("itemCd", itemCd)
-				.getSingle(c -> toDomain(c));
+		try {
+			Object[] object = (Object[]) this.getEntityManager().createQuery(SELECT_DETAIL)
+					.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
+					.setParameter("historyId", historyId).setParameter("itemCd", itemCd)
+					.setParameter("ctgAtr", categoryAtr).getSingleResult();
+			Optional<LayoutMasterDetail> result = Optional
+					.of(toDomainJoin(String.valueOf(object[0]), (QstmtStmtLayoutDetail) object[1]));
+			return result;
+		} catch (NoResultException e) {
+			return Optional.empty();
+		}
 
 	}
 
 	@Override
 	public void remove(String companyCode, String layoutCode, String historyId, int categoryAtr, String itemCode) {
-		val objectKey = new QstmtStmtLayoutDetailPK();
-		objectKey.companyCd = companyCode;
-		objectKey.stmtCd = layoutCode;
-		objectKey.historyId = historyId;
-		objectKey.ctgAtr = categoryAtr;
-		objectKey.itemCd = itemCode;
-		this.commandProxy().remove(QstmtStmtLayoutDetail.class, objectKey);
-
+		this.commandProxy().remove(QstmtStmtLayoutDetail.class,
+				new QstmtStmtLayoutDetailPK(companyCode, layoutCode, historyId, categoryAtr, itemCode));
 	}
 
 	@Override

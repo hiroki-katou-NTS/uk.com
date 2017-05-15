@@ -118,7 +118,7 @@ module qmm019.a {
                         } else {
                             if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
                                 listAutoLineIdDeleted.push({ categoryAtr: category.categoryAtr, autoLineId: line.autoLineId });
-                                continue;
+
                             }
                         }
                         linePosition++;
@@ -131,6 +131,7 @@ module qmm019.a {
                             });
                             sortedItemCodes.push(detailRequired.itemCode());
                         }
+
                         for (let item of sortedItemCodes) {
                             let detail: model.ItemDetail = _.find(line.details, function(itemDetail) {
                                 return itemDetail.itemCode() === item.toString();
@@ -146,10 +147,12 @@ module qmm019.a {
                                     calculationMethod: detail.calculationMethod(),
                                     displayAtr: line.lineDispayAtr,
                                     sumScopeAtr: detail.sumScopeAtr(),
-                                    setOffItemCode: detail.setOffItemCode(),
-                                    commuteAtr: detail.commuteAtr(),
+                                    formulaCode: detail.formulaCode(),
                                     personalWageCode: detail.personalWageCode(),
                                     wageTableCode: detail.wageTableCode(),
+                                    commonAmount: detail.commonAmount(),
+                                    setOffItemCode: detail.setOffItemCode(),
+                                    commuteAtr: detail.commuteAtr(),
                                     distributeWay: detail.distributeWay(),
                                     distributeSet: detail.distributeSet(),
                                     isErrorUseHigh: detail.isUseHighError(),
@@ -191,7 +194,7 @@ module qmm019.a {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {
-                    dfd.reject(res);
+                    dfd.reject(res.message);
                 })
             return dfd.promise();
         }
@@ -263,7 +266,7 @@ module qmm019.a {
                 }
                 categoryClick(data, event) {
                     var self = this;
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/k/index.xhtml', { title: '明細レイアウトの作成＞カテゴリの設定' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/k/index.xhtml', { dialogClass: 'no-close', title: '明細レイアウトの作成＞カテゴリの設定' }).onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                         if (selectedCode === "1") {
                             // cho phep print all row
@@ -293,11 +296,9 @@ module qmm019.a {
                     //if (screenQmm019().totalNormalLineNumber() + screenQmm019().totalGrayLineNumber() === 10) {return this;}
                     nts.uk.ui.windows.setShared('totalNormalLineNumber', screenQmm019().totalNormalLineNumber());
                     nts.uk.ui.windows.setShared('totalGrayLineNumber', self.totalGrayLine);
-
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml', { title: '明細レイアウトの作成＞＋行追加' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml', { dialogClass: 'no-close', title: '明細レイアウトの作成＞＋行追加' }).onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                         if (selectedCode === undefined) return this;
-
                         let autoLineId: string = "lineIdTemp-" + self.lines().length;
                         let listItemDetail: Array<ItemDetail> = new Array;
                         for (let i: number = 1; i <= 9; i++) {
@@ -306,7 +307,9 @@ module qmm019.a {
                                     itemCode: "itemTemp-" + i, itemAbName: "+", isRequired: false, itemPosColumn: i,
                                     categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
                                     setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                    distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                                    distributeSet: 0, distributeWay: 0, formulaCode: '000',
+                                    personalWageCode: "00", wageTableCode: '000',
+                                    commonAmount: 48, isUseHighError: 0,
                                     errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                                     alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0
                                 }
@@ -322,7 +325,6 @@ module qmm019.a {
                         }
                         self.lines.push(line);
                         screenQmm019().calculateLine();
-
                         screenQmm019().bindSortable();
                         screenQmm019().destroySortable();
                         screenQmm019().bindSortable();
@@ -367,7 +369,7 @@ module qmm019.a {
                 }
                 lineClick(data: Line, event) {
                     var self = this;
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/j/index.xhtml', { title: '明細レイアウトの作成＞行の設定' }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/j/index.xhtml', { dialogClass: 'no-close', title: '明細レイアウトの作成＞行の設定' }).onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                         if (selectedCode === "1") {
                             // cho phep print
@@ -412,6 +414,7 @@ module qmm019.a {
                 categoryAtr: KnockoutObservable<number>;
                 autoLineId: KnockoutObservable<string>;
                 sumScopeAtr: KnockoutObservable<number>;
+                formulaCode: KnockoutObservable<string>;
                 setOffItemCode: KnockoutObservable<string>;
                 commuteAtr: KnockoutObservable<number>;
                 calculationMethod: KnockoutObservable<number>;
@@ -419,6 +422,7 @@ module qmm019.a {
                 distributeWay: KnockoutObservable<number>;
                 personalWageCode: KnockoutObservable<string>;
                 wageTableCode: KnockoutObservable<string>;
+                commonAmount: KnockoutObservable<string>;
                 isUseHighError: KnockoutObservable<number>;
                 errRangeHigh: KnockoutObservable<number>;
                 isUseLowError: KnockoutObservable<number>;
@@ -449,6 +453,7 @@ module qmm019.a {
                     self.categoryAtr = ko.observable(itemObject.categoryAtr);
                     self.autoLineId = ko.observable(itemObject.autoLineId);
                     self.sumScopeAtr = ko.observable(itemObject.sumScopeAtr);
+                    self.formulaCode = ko.observable(itemObject.formulaCode);
                     self.setOffItemCode = ko.observable(itemObject.setOffItemCode);
                     self.commuteAtr = ko.observable(itemObject.commuteAtr);
                     self.calculationMethod = ko.observable(itemObject.calculationMethod);
@@ -456,6 +461,7 @@ module qmm019.a {
                     self.distributeWay = ko.observable(itemObject.distributeWay);
                     self.personalWageCode = ko.observable(itemObject.personalWageCode);
                     self.wageTableCode = ko.observable(itemObject.wageTableCode);
+                    self.commonAmount = ko.observable(itemObject.commonAmount);
                     self.isUseHighError = ko.observable(itemObject.isUseHighError);
                     self.errRangeHigh = ko.observable(itemObject.errRangeHigh);
                     self.isUseLowError = ko.observable(itemObject.isUseLowError);
@@ -506,13 +512,13 @@ module qmm019.a {
                         categoryId: data.categoryAtr(),
                         itemCode: data.itemCode(),
                         isUpdate: data.itemAbName() === "+" ? false : true,
-                        startYm: screenQmm019().layoutMaster().startYm,
+                        historyId: screenQmm019().layoutMaster().historyId,
                         stmtCode: screenQmm019().layoutMaster().stmtCode,
                         isNotYetSave: data.added(),
                         objectNotYetSave: data
                     };
                     nts.uk.ui.windows.setShared('param', param);
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml', { title: '項目の選択・設定', width: 1200, height: 610 }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml', { dialogClass: 'no-close', title: '項目の選択・設定', width: 1200, height: 610 }).onClosed(() => {
                         var itemResult: qmm019.f.service.model.ItemDetailModel = nts.uk.ui.windows.getShared('itemResult');
 
                         if (itemResult === undefined) return this;
