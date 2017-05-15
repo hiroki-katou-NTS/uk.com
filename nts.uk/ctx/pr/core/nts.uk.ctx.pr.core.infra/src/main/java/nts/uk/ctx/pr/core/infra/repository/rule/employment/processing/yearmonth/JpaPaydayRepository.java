@@ -45,7 +45,7 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 	public BigDecimal select1(String companyCode, int processingNo, int payBonusAtr, int processingYm,
 			int sparePayAtr) {
 		Payday domain = select3(companyCode, processingNo, payBonusAtr, processingYm, sparePayAtr);
-		
+
 		if (domain == null) {
 			return new BigDecimal(-1);
 		} else {
@@ -60,10 +60,11 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 				.setParameter("payBonusAtr", payBonusAtr).setParameter("processingYm", processingYm)
 				.setParameter("sparePayAtr", sparePayAtr).getList(c -> toDomain(c));
 
-		if (payDays.isEmpty())
+		if (payDays.isEmpty()) {
 			return null;
-		else
+		} else {
 			return payDays.get(0);
+		}
 	}
 
 	@Override
