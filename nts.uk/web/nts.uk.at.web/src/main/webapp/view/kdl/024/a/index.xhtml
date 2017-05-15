@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kdl024.a.main.css" />
+			<com:scriptfile path="kdl024.a.start.js" />
+			<com:scriptfile path="kdl024.a.service.js" />
+			<com:scriptfile path="kdl024.a.vm.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd
+				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetName
+			</com:ValidatorScript>
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="btnNew" class="btnMenu" data-bind="click: addNew">新規</button>
+				<button id="btnSave" class="btnMenu proceed" data-bind="click: register, enable: $root.errors.isEmpty">登録</button>
+				<button id="btnDel" class="btnMenu delete_btn btn_width danger"
+					data-bind="click: del" style="margin-left: 60px;">削除</button>
+				<button id="btnClose" class="btnMenu" data-bind="">閉じる</button>
+			</div>
+			<div id="content-area" class="cf">
+				<div class="left-content">
+					<div id="lstBudget" class="bg-green caret-right caret-background" data-bind="with: currentItem" >
+						<table id="single-list"
+							data-bind="ntsGridList: {								
+								height: 255,
+								dataSource: $parent.items,
+								primaryKey: 'externalBudgetCode',
+								columns: $parent.columns,
+								multiple: false,
+								required: true,
+								value: externalBudgetCode
+							}"
+							class="cf">
+						</table>
+					</div>
+				</div>
+				<div class="right-content">
+					<table id="tblContent">
+						<tr>
+							<td>
+								<div id="divInfo"
+									data-bind="ntsFormLabel: {
+													constraint: ['ExternalBudgetCd','ExternalBudgetName'] ,
+													required: true, 
+													inline:false, 
+													enable:true }">
+									コード/名称</div>
+							</td>
+							<td>
+								<input id="inpCode" data-bind="ntsTextEditor: {
+ 													value: currentItem().externalBudgetCode,
+ 													constraint: 'ExternalBudgetCd',
+													enable: isEnableInp}" 
+													data-name="BudgetCode"/>
+								<input id="inpName" data-bind="ntsTextEditor: {
+ 													value:currentItem().externalBudgetName,
+ 													constraint :'ExternalBudgetName', 
+ 													enable: true } 
+													" />
+								<BR />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="divAttribute"
+									data-bind="ntsFormLabel:{
+												required: true, 
+												inline:false, 
+												enable:true 
+									}">属性
+								</div>
+							</td>
+							<td>
+								<div id="cmbAttribute"
+									data-bind="ntsComboBox: {
+													options: itemListCbb,
+													optionsValue: 'codeCbb',
+													value: currentItem().budgetAtr,
+													optionsText: 'nameCbb',
+													enable: isEnableCbb,
+													columns: [
+														{ prop: 'nameCbb', length: 2 }
+													]}">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="divAttribute"
+									data-bind="ntsFormLabel:{
+												required: true, 
+												inline:false, 
+												enable:true 
+									}">単位
+								</div>
+							</td>
+							<td>
+								<div class="cf"
+									data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'unitId',
+											optionsText: 'unitName',
+											value: currentItem().unitAtr,
+											enable: true }">
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

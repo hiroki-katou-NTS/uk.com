@@ -19,11 +19,11 @@
         export function findIndex(arr, value, key) {
             for(var i = 0; i < arr.length; i++) {
                 var item = arr[i];
-                if(item[key]  === value) return i; 
+                if(item[key] === value) return i; 
             }
             return -1;
-        } 
-        /**  
+        }
+        /**
          * function add item to array, this function is used in combine with visitDfs function
          * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
          */

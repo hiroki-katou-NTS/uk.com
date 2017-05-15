@@ -1,0 +1,31 @@
+#test {
+	display: flex;
+	vertical-align: middle;
+}
+
+.btnMenu {
+	width: 70px;
+}
+
+#btnSelectedClear {
+	margin-bottom: 15px;
+	margin-top: 5px;
+}
+
+#total {
+	margin-left: 10px;
+	width: 400px;
+}
+
+#process {
+	width: 400px;
+	clear: left;
+	line-height: 60px;
+	text-align: center;
+	clear: left;
+}
+
+#label {
+	line-height: 40px;
+	text-align: left;
+}

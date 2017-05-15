@@ -1,0 +1,48 @@
+body {
+	overflow: hidden;
+}
+
+.column1 {
+	width: 120px;
+}
+.ntsControl {
+	margin-top: 10px;
+	display: block !important;
+}
+.dateTime-input {
+	display: inline-block;
+}
+.label:FIRST-CHILD {
+	margin-top: 5px;
+	font-size: large;
+}
+.table {
+	margin-top: 10px;
+}
+.column1 > div {
+	margin-left: 10px;
+}
+hr { margin-top: 25px; }  
+#center-bottom {
+	margin-left: 120px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+#center-bottom > button {
+	margin-right: 10px;
+}
+#dateTime-input {
+	margin-left: 20px;
+	margin-top: 5px;
+}
+#dateTime-input > label:NTH-CHILD(3) {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+.isUpdate {
+	color: black;
+}
+.isDelete {
+	color: #999999;
+}

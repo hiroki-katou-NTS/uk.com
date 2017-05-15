@@ -1788,14 +1788,9 @@ button.nts-switch-button[disabled]:hover {
   overflow: hidden;
   box-sizing: border-box;
 }
-
-/* line 51, ../sass/components/_listbox.scss */
-.ntsListBox.disabled .nts-column {
+/* line 49, ../sass/components/_listbox.scss */
+.ntsListBox.disabled {
   color: graytext;
-}
-/* line 55, ../sass/components/_listbox.scss */
-.ntsListBox.disabled tr .ui-iggrid-selectedcell {
-  background: wheat !important;
 }
 
 /* line 3, ../sass/components/_gridlist.scss */
