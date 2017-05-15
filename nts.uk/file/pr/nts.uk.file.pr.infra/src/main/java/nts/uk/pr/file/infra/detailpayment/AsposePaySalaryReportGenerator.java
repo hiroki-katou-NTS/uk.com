@@ -30,7 +30,9 @@ import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
 import com.aspose.cells.PageOrientationType;
 import com.aspose.cells.PageSetup;
+import com.aspose.cells.Range;
 import com.aspose.cells.Style;
+import com.aspose.cells.StyleFlag;
 import com.aspose.cells.TextAlignmentType;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
@@ -54,7 +56,6 @@ import nts.uk.shr.com.time.japanese.JapaneseDate;
 import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AsposePaySalaryReportGenerator.
  */
@@ -101,9 +102,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             reportContext.processDesigner();
             
             // =============== SAVE AS PDF ===============
-            workbook.save(this.getReportName("C:\\QPP007.xlsx"));
             reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
-//            reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName("qpp007.xlsx")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -145,13 +144,9 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         // ===== SET HEADER =======
         int offsetLeft = 0;
         int offsetRight = 2;
-//        pageSetup.setHeader(offsetLeft, "&\"Calibri\"&11 " + header.getNameCompany());
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
-//        pageSetup.setHeader(offsetRight, "&\"Calibri\"&11 " + dateFormat.format(new Date()) + "\n&P ページ");
-
-        // merge row title report
-//        printProcess.worksheet.getCells().merge(PaymentConstant.ZERO, PaymentConstant.ZERO,
-//                PaymentConstant.ONE, PaymentConstant.NUMBER_COLUMN_PAGE);
+        pageSetup.setHeader(offsetLeft, "&\"IPAPGothic\"&11 " + header.getNameCompany());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+        pageSetup.setHeader(offsetRight, "&\"IPAPGothic\"&11 " + dateFormat.format(new Date()) + "\n&P ページ");
 
         // ======== SET PRINT AREA ========
         int lastColumn;
@@ -159,7 +154,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         if (printProcess.totalColumn == 0) {
             lastColumn = PaymentConstant.NUMBER_COLUMN_PAGE;
         } else {
-            lastColumn = printProcess.totalColumn + PaymentConstant.NUMBER_COLUMN_PAGE;
+            lastColumn = printProcess.totalColumn - PaymentConstant.ONE;
         }
         Cell cellEnd = printProcess.worksheet.getCells().get(printProcess.indexRow, lastColumn);
         String endArea = cellEnd.getName();
@@ -236,20 +231,12 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         }
         Cells cells = printProcess.worksheet.getCells();
         int indexRow = PaymentConstant.INDEX_ROW_TITLE;
-//        cells.setRowHeight(indexRow, PaymentConstant.ROW_HEIGHT_TITLE);
         StyleModel styleModel = new StyleModel(PaymentConstant.LIGHT_BLUE_COLOR);
         
         for (Map.Entry<Integer, String> entry : printProcess.mapTitle.entrySet()) {
             int indexColumn = entry.getKey();
             String item = entry.getValue();
-            Cell cell = cells.get(indexRow, indexColumn);
-            cell.setValue(item);
-            styleModel.drawBorderCell(cell);
-            
-//            Style style = cell.getStyle();
-//            style.setHorizontalAlignment(TextAlignmentType.CENTER);
-//            style.setVerticalAlignment(TextAlignmentType.JUSTIFY);
-//            cell.setStyle(style);
+            styleModel.drawTitleReport(cells, item, indexRow, indexColumn);
         }
     }
 
@@ -608,7 +595,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
 
                 // write title row
                 if (!printProcess.isHasTitleRow) {
-                    String titleRow = convertYearMonthJP(yearMonth) + "\n部門月計\n" + prevDep.getCode()
+                    String titleRow = convertYearMonthJP(yearMonth) + "\n部門月計\n" + prevDep.getCode() + "\n"
                         + prevDep.getName();
                     mapTitle.put(indexColumn, titleRow);
                 }
@@ -630,7 +617,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
 
             // write title row
             if (!printProcess.isHasTitleRow) {
-                String titleRow = "\n部門計\n" + prevDep.getCode() + prevDep.getName();
+                String titleRow = "\n部門計\n" + prevDep.getCode() + "\n" + prevDep.getName();
                 mapTitle.put(indexColumn, titleRow);
             }
             String numberEmp = totalEmp + "人";
@@ -1013,10 +1000,52 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
          *
          * @param cell the cell
          */
-        public void drawTitleReport(Cell cell) {
-            Style style = this.findStyleCell(cell, this.borderType);
-            //style.setHorizontalAlignment(TextAlignmentType.CENTER);
-            cell.setStyle(style);
+        public void drawTitleReport(Cells cells, String title, int indexRow, int indexColumn) {
+            Range range = cells.createRange(indexRow, indexColumn, 4, 1);
+            this.setStyleRange(range);
+            
+            String[] titles = title.split("\\n");
+            
+            // ========= SET %EMPLOYEE TITLE =========
+            if (titles.length == PaymentConstant.ONE) {
+                Cell cell = cells.get(indexRow + 1, indexColumn);
+                cell.setValue(titles[PaymentConstant.ZERO]);
+                return;
+            }
+            // ========= INFORMATION EMPLOYEE TITLE =========
+            for (int i=0; i<titles.length; i++) {
+                Cell cell = cells.get(indexRow, indexColumn);
+                cell.setValue(titles[i]);
+                indexRow++;
+            }
+        }
+        
+        /**
+         * Sets the style range.
+         *
+         * @param range the new style range
+         */
+        private void setStyleRange(Range range) {
+            Style style = new Style();
+            // ========= BACKGROUND COLOR =========
+            style.setForegroundColor(this.foregroundColor);
+            style.setPattern(BackgroundType.SOLID);
+            
+            // ========= SET ALIGNMENT =========
+            style.setHorizontalAlignment(TextAlignmentType.CENTER);
+            
+            // ========= STYLE FLAG =========
+            StyleFlag styleFlag = new StyleFlag();
+            styleFlag.setCellShading(true);
+            styleFlag.setBorders(true);
+            styleFlag.setHorizontalAlignment(true);
+            range.applyStyle(style, styleFlag);
+            
+            // ========= BORDER TYPE FOR RANGE =========
+            range.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+            range.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+            range.setOutlineBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
+            range.setOutlineBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
         }
 
         /**
@@ -1072,11 +1101,6 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                 Cell currentCell = cells.get(indexRow, i);
                 Style style = this.findStyleCell(currentCell, CellsBorderType.HorizontalBorder);
                 currentCell.setStyle(style);
-
-                // ====== DRAW BORDER LAST AND FIRST COLUMN IN A PAGE ======
-                if (i > PaymentConstant.ONE) {
-                    this.drawBorderLastColPageIfNeed(currentCell);
-                }
                 
                 Cell cellAbove = cells.get(indexRow - 1, i);
                 Cell cellBelow = cells.get(indexRow + 1, i);
@@ -1115,27 +1139,14 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
          */
         public void drawBorderPageBreak(Cells cells, int indexRow, int totalColumn) {
             int indexReal = indexRow + 1;
-//            && (indexReal - PaymentConstant.NUMBER_ROW_PAGE) < PaymentConstant.ZERO)
-            if (indexReal % PaymentConstant.NUMBER_ROW_FIRST_PAGE == PaymentConstant.ZERO) {
+            if (indexReal % PaymentConstant.NUMBER_ROW_PAGE == PaymentConstant.ZERO) {
                 this.drawBorderRow(cells, totalColumn, indexRow, CellsBorderType.BottomBorder);
                 return;
             }
-            if (indexReal % PaymentConstant.NUMBER_ROW_FIRST_PAGE == PaymentConstant.ONE) {
+            if (indexReal % PaymentConstant.NUMBER_ROW_PAGE == PaymentConstant.ONE) {
                 this.drawBorderRow(cells, totalColumn, indexRow, CellsBorderType.TopBorder);
                 return;
             }
-//            if ((indexReal / PaymentConstant.NUMBER_ROW_PAGE) > PaymentConstant.ONE
-//                    && indexReal % PaymentConstant.NUMBER_ROW_PAGE == PaymentConstant.ZERO) {
-//                this.drawBorderRow(cells, totalColumn, indexRow,
-//                        CellsBorderType.BottomBorder);
-//                return;
-//            }
-//            if ((indexReal / PaymentConstant.NUMBER_ROW_PAGE) > PaymentConstant.ONE
-//                    && indexReal % PaymentConstant.NUMBER_ROW_PAGE == PaymentConstant.ONE) {
-//                this.drawBorderRow(cells, totalColumn, indexRow,
-//                        CellsBorderType.TopBorder);
-//                return;
-//            }
         }
         
         /**
@@ -1150,6 +1161,13 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
                 Cell currentCell = cells.get(indexRow, i);
                 Style style = this.findStyleCell(currentCell, borderType);
                 currentCell.setStyle(style);
+                
+                Cell cellAbove = cells.get(indexRow - 1, i);
+                Cell cellBelow = cells.get(indexRow + 1, i);
+                // ====== CLEAR BORDER COLUMN HAS VALUE EMPTY ======
+                if (cellAbove.getValue() == null && currentCell.getValue() == null && cellBelow.getValue() == null) {
+                    this.clearBorderColumnEmpty(cells, indexRow, i);
+                }
             }
         }
 
@@ -1166,6 +1184,11 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             Style style = this.findStyleCell(currentCell, CellsBorderType.NoBorder);
             style.setForegroundColor(Color.getWhite());
             currentCell.setStyle(style);
+            
+            // ====== DRAW BORDER LAST AND FIRST COLUMN IN A PAGE ======
+            if (indexColumn > PaymentConstant.ONE) {
+                this.drawBorderLastColPageIfNeed(currentCell);
+            }
             
             Cell prevCellAbove = cells.get(indexRow - 1, (indexColumn - 1) >= 0 ? (indexColumn - 1) : 0);
             Cell nextCellAbove = cells.get(indexRow - 1, indexColumn + 1);
@@ -1218,7 +1241,6 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
             Style style = cell.getStyle();
             style.setForegroundColor(this.foregroundColor);
             style.setPattern(BackgroundType.SOLID);
-//            style.setTextWrapped(false);
 
             switch (borderType) {
                 case NoBorder :
