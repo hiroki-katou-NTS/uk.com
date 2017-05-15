@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.mypage.setting;
 
 import javax.ejb.Stateless;
@@ -16,7 +20,7 @@ public class RegisterMyPageSettingCommandHandler extends CommandHandler<Register
 
 	/** The my page setting repository. */
 	@Inject
-	MyPageSettingRepository myPageSettingRepository;
+	private MyPageSettingRepository myPageSettingRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)

@@ -1,12 +1,18 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.toppage;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class DeleteTopPageCommand.
  */
 
-@Data
+@Getter
+@Setter
 public class DeleteTopPageCommand{
 	
 	/** The top page code. */

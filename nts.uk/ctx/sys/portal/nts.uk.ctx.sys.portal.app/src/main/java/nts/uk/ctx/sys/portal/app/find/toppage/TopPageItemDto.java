@@ -1,20 +1,22 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * The Class TopPageItemDto.
  */
-@Getter
-@Setter
+@Data
 public class TopPageItemDto {
 	
 	/** The top page code. */
-	public String topPageCode;
+	private String topPageCode;
 
 	/** The top page name. */
-	public String topPageName;
+	private String topPageName;
 
 	/**
 	 * Instantiates a new top page item dto.

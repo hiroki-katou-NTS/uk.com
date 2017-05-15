@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.toppage.service.internal;
 
 import java.util.Optional;
@@ -20,13 +24,13 @@ public class TopPageServiceImpl implements TopPageService {
 
 	/** The top page repository. */
 	@Inject
-	TopPageRepository topPageRepository;
+	private TopPageRepository topPageRepository;
 
 	@Inject
-	LayoutRepository layoutRepository;
+	private LayoutRepository layoutRepository;
 	
 	@Inject
-	LayoutService layoutService;
+	private LayoutService layoutService;
 
 	/*
 	 * (non-Javadoc)
@@ -59,6 +63,9 @@ public class TopPageServiceImpl implements TopPageService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.portal.dom.toppage.service.TopPageService#removeTopPage(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void removeTopPage(String topPageCode, String companyId) {
 		TopPage tp = topPageRepository.findByCode(companyId, topPageCode).get();

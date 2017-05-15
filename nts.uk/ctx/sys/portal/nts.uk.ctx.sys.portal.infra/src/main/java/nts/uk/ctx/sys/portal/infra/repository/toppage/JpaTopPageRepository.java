@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.repository.toppage;
 
 import java.util.List;
@@ -91,8 +95,7 @@ public class JpaTopPageRepository extends JpaRepository implements TopPageReposi
 	/**
 	 * To domain.
 	 *
-	 * @param t
-	 *            the t
+	 * @param t the t
 	 * @return the top page
 	 */
 	private TopPage toDomain(CcgmtTopPage t) {
@@ -103,8 +106,7 @@ public class JpaTopPageRepository extends JpaRepository implements TopPageReposi
 	/**
 	 * To entity.
 	 *
-	 * @param domain
-	 *            the domain
+	 * @param domain the domain
 	 * @return the ccgmt top page
 	 */
 	public CcgmtTopPage toEntity(TopPage domain) {

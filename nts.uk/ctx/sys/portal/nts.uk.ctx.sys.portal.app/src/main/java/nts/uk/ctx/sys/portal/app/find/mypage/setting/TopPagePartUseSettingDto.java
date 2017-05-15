@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.find.mypage.setting;
 
 import lombok.Data;
@@ -11,19 +15,19 @@ import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
 public class TopPagePartUseSettingDto {
 
 	/** The company id. */
-	public String companyId;
+	private String companyId;
 
 	/** The part item code. */
-	public String partItemCode;
+	private String partItemCode;
 
 	/** The part item name. */
-	public String partItemName;
+	private String partItemName;
 
 	/** The use division. */
-	public Integer useDivision;
+	private Integer useDivision;
 
 	/** The part type. */
-	public TopPagePartType partType;
+	private TopPagePartType partType;
 
 	/**
 	 * From domain.

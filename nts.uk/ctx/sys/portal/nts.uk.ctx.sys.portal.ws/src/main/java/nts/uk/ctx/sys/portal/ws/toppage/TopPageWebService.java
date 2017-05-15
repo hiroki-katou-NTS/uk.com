@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.ws.toppage;
 
 import java.util.List;
@@ -20,11 +24,10 @@ import nts.uk.ctx.sys.portal.app.command.toppage.UpdateTopPageCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.app.find.toppage.TopPageItemDto;
-import nts.uk.ctx.sys.portal.dom.layout.service.LayoutService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class TopPageWs.
+ * The Class TopPageWebService.
  */
 @Path("/toppage")
 @Produces("application/json")
@@ -32,25 +35,22 @@ public class TopPageWebService extends WebService {
 
 	/** The top page finder. */
 	@Inject
-	TopPageFinder topPageFinder;
+	private TopPageFinder topPageFinder;
 
 	/** The register top page command handler. */
 	@Inject
-	RegisterTopPageCommandHandler registerTopPageCommandHandler;
+	private RegisterTopPageCommandHandler registerTopPageCommandHandler;
 
 	/** The update top page command handler. */
 	@Inject
-	UpdateTopPageCommandHandler updateTopPageCommandHandler;
+	private UpdateTopPageCommandHandler updateTopPageCommandHandler;
 
 	/** The delete top page command handler. */
 	@Inject
-	DeleteTopPageCommandHandler deleteTopPageCommandHandler;
+	private DeleteTopPageCommandHandler deleteTopPageCommandHandler;
 
 	@Inject
-	CopyTopPageCommandHandler copyTopPageCommandHandler;
-
-	@Inject
-	LayoutService layoutService;
+	private CopyTopPageCommandHandler copyTopPageCommandHandler;
 
 	/**
 	 * Find all.

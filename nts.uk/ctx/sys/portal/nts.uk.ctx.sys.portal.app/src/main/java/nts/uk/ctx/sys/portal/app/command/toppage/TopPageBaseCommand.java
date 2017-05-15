@@ -1,23 +1,29 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.toppage;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.shr.com.context.AppContexts;
 
-@Data
+@Getter
+@Setter
 public class TopPageBaseCommand {
 	
 	/** The top page code. */
-	public String topPageCode;
+	private String topPageCode;
 	
 	/** The layout id. */
-	public String layoutId;
+	private String layoutId;
 	
 	/** The top page name. */
-	public String topPageName;
+	private String topPageName;
 	
 	/** The Language number. */
-	public Integer languageNumber;
+	private Integer languageNumber;
 	
 	public TopPage toDomain(){
 		String companyId = AppContexts.user().companyId();

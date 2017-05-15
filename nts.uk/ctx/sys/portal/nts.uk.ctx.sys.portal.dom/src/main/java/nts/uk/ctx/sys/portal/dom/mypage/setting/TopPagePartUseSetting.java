@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.mypage.setting;
 
 import lombok.EqualsAndHashCode;
@@ -54,6 +58,16 @@ public class TopPagePartUseSetting extends AggregateRoot {
 		this.topPagePartType = topPagePartType;
 	}
 
+	/**
+	 * Creates the from java type.
+	 *
+	 * @param companyId the company id
+	 * @param topPagePartCode the top page part code
+	 * @param topPagePartName the top page part name
+	 * @param useDivision the use division
+	 * @param topPagePartType the top page part type
+	 * @return the top page part use setting
+	 */
 	public static TopPagePartUseSetting createFromJavaType(String companyId, String topPagePartCode,
 			String topPagePartName, Integer useDivision, Integer topPagePartType) {
 		return new TopPagePartUseSetting(companyId, new TopPagePartCode(topPagePartCode),

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import lombok.Data;
@@ -11,13 +15,13 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 public class PlacementDto {
 
 	/** The row. */
-	Integer row;
+	private Integer row;
 
 	/** The column. */
-	Integer column;
+	private Integer column;
 
 	/** The top page part dto. */
-	TopPagePartDto topPagePartDto;
+	private TopPagePartDto topPagePartDto;
 
 	/**
 	 * From domain.

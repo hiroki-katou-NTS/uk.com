@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.ws.mypage.setting;
 
 import javax.ejb.Stateless;
@@ -13,21 +17,21 @@ import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class MyPageSettingWs.
+ * The Class MyPageSetWebService.
  */
 @Path("/mypage")
 @Stateless
 public class MyPageSetWebService extends WebService {
 
-	public final String defaultCompanyId = "0";
+	private final String defaultCompanyId = "000000000000-0000";
 	
 	/** The my page setting finder. */
 	@Inject
-	MyPageSettingFinder myPageSettingFinder;
+	private MyPageSettingFinder myPageSettingFinder;
 
 	/** The my page setting command handler. */
 	@Inject
-	UpdateMyPageSettingCommandHandler myPageSettingCommandHandler;
+	private UpdateMyPageSettingCommandHandler myPageSettingCommandHandler;
 
 	/**
 	 * Gets the my page setting detail.
@@ -41,6 +45,11 @@ public class MyPageSetWebService extends WebService {
 		return myPageSettingFinder.findByCompanyId(companyId);
 	}
 	
+	/**
+	 * Gets the default my page setting detail.
+	 *
+	 * @return the default my page setting detail
+	 */
 	@POST
 	@Path("getDefaultMyPageSetting")
 	public MyPageSettingDto getDefaultMyPageSettingDetail() {

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.find.mypage.setting;
 
 import java.util.Optional;
@@ -16,7 +20,7 @@ public class MyPageSettingFinder {
 
 	/** The my page setting repository. */
 	@Inject
-	MyPageSettingRepository myPageSettingRepository;
+	private MyPageSettingRepository myPageSettingRepository;
 
 	/**
 	 * Find by company id.

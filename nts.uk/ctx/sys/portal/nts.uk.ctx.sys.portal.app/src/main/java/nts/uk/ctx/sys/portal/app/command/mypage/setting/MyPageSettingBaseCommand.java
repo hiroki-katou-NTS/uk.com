@@ -1,8 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.mypage.setting;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.sys.portal.app.find.mypage.setting.TopPagePartUseSettingDto;
 import nts.uk.ctx.sys.portal.dom.enums.PermissionDivision;
 import nts.uk.ctx.sys.portal.dom.enums.UseDivision;
@@ -13,27 +19,29 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * The Class MyPageSettingBaseCommand.
  */
+@Getter
+@Setter
 public class MyPageSettingBaseCommand {
 	/** The My page setting code. */
-	public String companyId;
+	private String companyId;
 
 	/** The use my page. */
-	public Integer useMyPage;
+	private Integer useMyPage;
 
 	/** The use widget. */
-	public Integer useWidget;
+	private Integer useWidget;
 
 	/** The use dashboard. */
-	public Integer useDashboard;
+	private Integer useDashboard;
 
 	/** The use flow menu. */
-	public Integer useFlowMenu;
+	private Integer useFlowMenu;
 
 	/** The external url permission. */
-	public Integer externalUrlPermission;
+	private Integer externalUrlPermission;
 
 	/** The top page part use setting dto. */
-	public Set<TopPagePartUseSettingDto> topPagePartUseSettingDto;
+	private Set<TopPagePartUseSettingDto> topPagePartUseSettingDto;
 
 	/**
 	 * To domain.
@@ -45,8 +53,8 @@ public class MyPageSettingBaseCommand {
 		return new MyPageSetting(companyId, UseDivision.valueOf(useMyPage),
 				UseDivision.valueOf(useWidget), UseDivision.valueOf(useDashboard), UseDivision.valueOf(useFlowMenu),
 				PermissionDivision.valueOf(externalUrlPermission), this.topPagePartUseSettingDto.stream().map(item -> {
-					return TopPagePartUseSetting.createFromJavaType(companyId, item.partItemCode,
-							item.partItemName, item.useDivision, item.partType.value);
+					return TopPagePartUseSetting.createFromJavaType(companyId, item.getPartItemCode(),
+							item.getPartItemName(), item.getUseDivision(), item.getPartType().value);
 				}).collect(Collectors.toList()));
 	}
 }

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.toppage;
 
 import java.util.Optional;
@@ -20,7 +24,7 @@ public class RegisterTopPageCommandHandler extends CommandHandler<RegisterTopPag
 
 	/** The top page repository. */
 	@Inject
-	TopPageRepository topPageRepository;
+	private TopPageRepository topPageRepository;
 
 	/*
 	 * (non-Javadoc)

@@ -1,12 +1,18 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.command.toppage;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class CopyTopPageCommand.
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper=false)
 public class CopyTopPageCommand extends TopPageBaseCommand{
 	

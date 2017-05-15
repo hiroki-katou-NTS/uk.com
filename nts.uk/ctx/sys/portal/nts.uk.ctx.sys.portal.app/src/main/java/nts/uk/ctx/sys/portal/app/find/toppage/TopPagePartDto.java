@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import lombok.Data;
@@ -10,19 +14,19 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 public class TopPagePartDto {
 	
 	/** The top page part type. */
-	Integer topPagePartType;
+	private Integer topPagePartType;
 
 	/** The top page part code. */
-	String topPagePartCode;
+	private String topPagePartCode;
 
 	/** The top page part name. */
-	String topPagePartName;
+	private String topPagePartName;
 	
 	/** The width. */
-	Integer width;
+	private Integer width;
 	
 	/** The height. */
-	Integer height;
+	private Integer height;
 	
 	/**
 	 * From domain.

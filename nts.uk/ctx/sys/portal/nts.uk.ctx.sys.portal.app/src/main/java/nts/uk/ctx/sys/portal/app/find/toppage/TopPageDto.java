@@ -1,9 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
@@ -11,22 +16,23 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 /**
  * The Class TopPageDto.
  */
+@Data
 public class TopPageDto {
 
 	/** The top page code. */
-	public String topPageCode;
+	private String topPageCode;
 
 	/** The top page name. */
-	public String topPageName;
+	private String topPageName;
 
 	/** The Language number. */
-	public Integer languageNumber;
+	private Integer languageNumber;
 	
 	/** The layout id. */
-	public String layoutId;
+	private String layoutId;
 	
 	/** The placement dto. */
-	public List<PlacementDto> placementDto;
+	private List<PlacementDto> placementDto;
 
 	/**
 	 * From domain.

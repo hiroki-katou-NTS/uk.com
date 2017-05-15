@@ -1,7 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.mypage.setting;
 
 import java.util.Optional;
 
+/**
+ * The Interface MyPageSettingRepository.
+ */
 public interface MyPageSettingRepository {
 	
 	/**

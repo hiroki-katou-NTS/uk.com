@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/ 
 package nts.uk.ctx.sys.portal.app.find.toppage;
 
 import java.util.ArrayList;
@@ -22,13 +26,13 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
 @Stateless
 public class TopPageFinder {
 	@Inject
-	TopPageRepository topPageRepository;
+	private TopPageRepository topPageRepository;
 
 	@Inject
-	PlacementRepository placementRepository;
+	private PlacementRepository placementRepository;
 
 	@Inject
-	TopPagePartRepository topPagePartRepository;
+	private TopPagePartRepository topPagePartRepository;
 
 	public List<TopPageItemDto> findAll(String companyId) {
 		List<TopPage> listTopPage = topPageRepository.findAll(companyId);

@@ -1,8 +1,15 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.toppage;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
+/**
+ * The Class TopPageName.
+ */
 @StringMaxLength(30)
 public class TopPageName extends StringPrimitiveValue<TopPageName> {
 

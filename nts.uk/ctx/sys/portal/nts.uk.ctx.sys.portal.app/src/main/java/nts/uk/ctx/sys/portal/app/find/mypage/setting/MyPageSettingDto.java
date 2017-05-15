@@ -1,35 +1,41 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.app.find.mypage.setting;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 
 /**
  * The Class MyPageSettingDto.
  */
+@Data
 public class MyPageSettingDto {
 
 	/** The My page setting code. */
-	public String companyId;
+	private String companyId;
 
 	/** The use my page. */
-	public Integer useMyPage;
+	private Integer useMyPage;
 
 	/** The use widget. */
-	public Integer useWidget;
+	private Integer useWidget;
 
 	/** The use dashboard. */
-	public Integer useDashboard;
+	private Integer useDashboard;
 
 	/** The use flow menu. */
-	public Integer useFlowMenu;
+	private Integer useFlowMenu;
 
 	/** The external url permission. */
-	public Integer externalUrlPermission;
+	private Integer externalUrlPermission;
 
 	/** The top page part use setting dto. */
-	public List<TopPagePartUseSettingDto> topPagePartUseSettingDto;
+	private List<TopPagePartUseSettingDto> topPagePartUseSettingDto;
 
 	/**
 	 * From domain.

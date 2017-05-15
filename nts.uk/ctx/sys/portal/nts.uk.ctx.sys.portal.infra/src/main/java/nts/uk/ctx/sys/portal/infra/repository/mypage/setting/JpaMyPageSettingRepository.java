@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.repository.mypage.setting;
 
 import java.util.List;
@@ -15,6 +19,9 @@ import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.CcgmtPartItemSet;
 import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.CcgmtPartItemSetPK;
 import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 
+/**
+ * The Class JpaMyPageSettingRepository.
+ */
 @Stateless
 public class JpaMyPageSettingRepository extends JpaRepository implements MyPageSettingRepository {
 
@@ -22,6 +29,9 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	private final String GET_ONE_PIS = "SELECT p FROM CcgmtPartItemSet p WHERE p.ccgmtPartItemSetPK.cid = :companyId";
 	private final String GET_ONE_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.code = :topPagePartCode AND t.topPagePartType = :topPagePartType";
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository#findByCompanyId(java.lang.String)
+	 */
 	@Override
 	public Optional<MyPageSetting> findByCompanyId(String companyId) {
 		return this.queryProxy().query(GET_ONE_MPS, CcgmtMyPageSet.class).setParameter("companyId", companyId)
@@ -43,6 +53,9 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 		this.commandProxy().updateAll(partItemSetToEntity(myPageSetting.getTopPagePartUseSetting()));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository#add(nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting)
+	 */
 	@Override
 	public void add(MyPageSetting myPageSetting) {
 		// TODO Auto-generated method stub
@@ -51,8 +64,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	/**
 	 * Pus to domain.
 	 *
-	 * @param c
-	 *            the c
+	 * @param c the c
 	 * @return the top page part use setting
 	 */
 	private TopPagePartUseSetting pusToDomain(CcgmtPartItemSet c) {
@@ -73,8 +85,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	/**
 	 * Mps to domain.
 	 *
-	 * @param c
-	 *            the c
+	 * @param c the c
 	 * @return the my page setting
 	 */
 	private MyPageSetting mpsToDomain(CcgmtMyPageSet c) {
@@ -90,8 +101,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	/**
 	 * My page set to entity.
 	 *
-	 * @param domain
-	 *            the domain
+	 * @param domain the domain
 	 * @return the ccgmt my page set
 	 */
 	private CcgmtMyPageSet myPageSetToEntity(MyPageSetting domain) {
@@ -104,8 +114,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	/**
 	 * Part item set to entity.
 	 *
-	 * @param lstTopPagePartUseSetting
-	 *            the lst top page part use setting
+	 * @param lstTopPagePartUseSetting the lst top page part use setting
 	 * @return the list
 	 */
 	private List<CcgmtPartItemSet> partItemSetToEntity(List<TopPagePartUseSetting> lstTopPagePartUseSetting) {
