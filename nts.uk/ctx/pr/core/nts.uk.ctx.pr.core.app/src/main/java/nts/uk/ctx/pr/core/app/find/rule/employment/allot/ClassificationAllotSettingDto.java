@@ -10,18 +10,15 @@ public class ClassificationAllotSettingDto {
 
 	String companyCode;
 	String historyId;
+	String classificationCode;
 	String bonusDetailCode;
 	String paymentDetailCode;
-	String classificationCode;
-	String classificationName;
 
-
-	
 	public static ClassificationAllotSettingDto fromDomain(ClassificationAllotSetting classificationAllotSetting) {
 		return new ClassificationAllotSettingDto(classificationAllotSetting.getCompanyCode().v(),
-				classificationAllotSetting.getHistotyId(), classificationAllotSetting.getBonusDetailCode().v(),
-				classificationAllotSetting.getPaymentDetailCode().v(),
-				classificationAllotSetting.getClassificationCode().v(), null);
+				classificationAllotSetting.getHistotyId(), classificationAllotSetting.getClassificationCode().v(),
+				classificationAllotSetting.getBonusDetailCode().v(),
+				classificationAllotSetting.getPaymentDetailCode().v());
 	}
 
 }

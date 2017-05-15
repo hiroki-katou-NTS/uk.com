@@ -10,14 +10,13 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class InsertClassificationAllotSettingCommandHandler  extends CommandHandler<InsertClassificationAllotSettingCommand>{
+public class UpdateClassificationAllotSettingCommandHandler extends CommandHandler<UpdateClassificationAllotSettingCommand>{
 
 	@Override
-	protected void handle(CommandHandlerContext<InsertClassificationAllotSettingCommand> context) {
-		InsertClassificationAllotSettingCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<UpdateClassificationAllotSettingCommand> context) {
+		UpdateClassificationAllotSettingCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		ClassificationAllotSetting domain = ClassificationAllotSetting.createFromJavaType(companyCode, command.getHistoryId(), command.getClassificationCode(), command.getBonusDetailCode(), command.getPaymentDetailCode());
-		
 		
 	}
 	
