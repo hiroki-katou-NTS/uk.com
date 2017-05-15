@@ -327,17 +327,13 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                     categoryItem.typeItem = SalaryItemType.Master;
                     categoryItem.itemName = masterItems.stream()
                             .filter(masterItem -> {
-                                if (masterItem.getItemCode().v().equals(categoryItem.itemCode)) {
-                                    if (category.getCategory() == SalaryCategory.ArticleOthers
-                                            && (masterItem.getCategoryAtr().value == CategoryAtr.ARTICLES.value
-                                            || masterItem.getCategoryAtr().value == CategoryAtr.OTHER.value)) {
-                                        return true;
-                                    }
-                                    if (masterItem.getCategoryAtr().value == categoryItem.valueCategory) {
-                                        return true;
-                                    }
-                                }
-                                return false;
+                                boolean isEqualItemCode = masterItem.getItemCode().v().equals(categoryItem.itemCode);
+                                boolean isEqualArticle = category.getCategory() == SalaryCategory.ArticleOthers
+                                        && (masterItem.getCategoryAtr().value == CategoryAtr.ARTICLES.value
+                                                || masterItem.getCategoryAtr().value == CategoryAtr.OTHER.value);
+                                boolean isEqualOtherCategory = masterItem
+                                        .getCategoryAtr().value == categoryItem.valueCategory;
+                                return isEqualItemCode && (isEqualArticle || isEqualOtherCategory);
                             })
                             .map(masterItem -> masterItem.getItemName().v())
                             .findFirst()
