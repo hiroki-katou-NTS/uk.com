@@ -106,7 +106,7 @@ module kmk011.b.viewmodel {
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError()===false) {
                     if(self.enableCode()==false){
-                        let objectNew = self.divReasonCode()+ self.divReasonContent()+self.requiredAtr();
+                        let objectNew = self.convertCode(self.divReasonCode())+ self.divReasonContent()+self.requiredAtr();
                         if(self.objectOld==objectNew){
                             return;
                         }else{
@@ -119,9 +119,11 @@ module kmk011.b.viewmodel {
                 }
             });
         }
+
         addDivReason(){
             var self = this;
             var dfd = $.Deferred();
+            self.convertCode(self.divReasonCode());
             var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
             service.addDivReason(divReason).done(function() {
                 nts.uk.ui.dialog.alert('登録しました。');
@@ -129,6 +131,13 @@ module kmk011.b.viewmodel {
             }).fail(function(error) {
                 $('#inpCode').ntsError('set', error.message);
             });
+        }
+        convertCode(value: string){
+            var self = this;
+            if(value.length == 1) {
+                let code = '0' + value;
+                self.divReasonCode(code);}
+            else return;
         }
         updateDivReason(){
             var self = this;
