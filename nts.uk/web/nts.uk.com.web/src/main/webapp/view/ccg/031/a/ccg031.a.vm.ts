@@ -107,6 +107,7 @@ module ccg031.a.viewmodel {
                     self.setupPositionAndSize(placement);
                     var movingPlacementIds = self.layoutGrid().markOccupied(placement);
                     self.reorderPlacements(movingPlacementIds, [placement.placementID]);
+                    self.autoExpandLayout();
                     self.markOccupiedAll();
                     self.setupDragDrop();
                 }
@@ -116,7 +117,8 @@ module ccg031.a.viewmodel {
 
         /** Open Preview Dialog */
         openPreviewDialog(): void {
-
+            windows.setShared("placements", this.placements(), false);
+            windows.sub.modal("/view/ccg/031/c/index.xhtml");
         }
 
         /** Open Preview Dialog */
@@ -172,6 +174,7 @@ module ccg031.a.viewmodel {
                     self.setupPositionAndSize(placement);
                     var movingPlacementIds = self.layoutGrid().markOccupied(placement);
                     self.reorderPlacements(movingPlacementIds, [placement.placementID]);
+                    self.autoExpandLayout();
                     self.markOccupiedAll();
                     self.setupDragDrop();
                 }
@@ -197,7 +200,7 @@ module ccg031.a.viewmodel {
                 });
                 movingPlacements = _.orderBy(movingPlacements, ['column','row'], ['asc','asc']);
                 self.shiftOverlapPart(movingPlacement, checkingPlacements);
-                // Add that moving placement to checking so that won't be move anymore
+                // Add that moving placement to checking so that Placement won't be move anymore
                 checkingPlacementIds.push(movingPlacement.placementID);
                 checkingPlacementIds = _.union(checkingPlacementIds);
                 _.merge(listOverlapPlacement, self.layoutGrid().markOccupied(movingPlacement));
@@ -269,7 +272,7 @@ module ccg031.a.viewmodel {
                 $placement.animate({
                     top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
                     left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
-                }, duration, "easeOutCubic");
+                }, duration, "easeOutQuint");
             }
         }
 

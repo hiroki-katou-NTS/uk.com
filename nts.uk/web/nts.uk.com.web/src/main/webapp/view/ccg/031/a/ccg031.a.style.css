@@ -2,7 +2,7 @@
 
 /* Override base */
 #header {display: none;}
-#functions-area {position:relative; line-height:38px;}
+#functions-area {position:relative;}
 
 .ui-draggable-dragging {cursor: move;}
 
