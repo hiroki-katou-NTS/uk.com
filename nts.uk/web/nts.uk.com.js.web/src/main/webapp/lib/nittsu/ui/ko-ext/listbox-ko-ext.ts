@@ -94,12 +94,12 @@ module nts.uk.ui.koExtentions {
             container.ntsGridList('setupSelecting');
              
             
-            container.bind('iggridselectionrowselectionchanging', (evt, ui) => {
+            container.bind('iggridselectionrowselectionchanging', (evt: Event, uiX: any) => {
 //                console.log(ui);
                 if(container.data("enable") === false){ 
                     return false;        
                 }
-                let itemSelected = ui.row.id;
+                let itemSelected = uiX.row.id;
                 let dataSource = container.igGrid('option', "dataSource");
                 if(container.data("fullValue")){
                     itemSelected = _.find(dataSource, function (d){
@@ -253,7 +253,7 @@ module nts.uk.ui.koExtentions {
                 var currentSelectedItems = container.ntsGridList('getSelected');
                 if (isMultiOld) {
                     if (currentSelectedItems) {
-                        currentSelectedItems = _.map(currentSelectedItems, s => s.id);
+                        currentSelectedItems = _.map(currentSelectedItems, s => s["id"]);
                     } else {
                         currentSelectedItems = [];
                     }

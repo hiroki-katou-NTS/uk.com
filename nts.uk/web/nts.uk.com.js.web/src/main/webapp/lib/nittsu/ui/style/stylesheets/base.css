@@ -2510,10 +2510,10 @@ input.ntsSearchBox {
   border-radius: 6px;
   font-size: 14px;
   background-color: white;
-  background-image: url("searchicon.png");
-  background-position: 2px 0px;
+  background-image: url("enter mark.png");
+  background-position: right;
   background-repeat: no-repeat;
-  padding: 6px 20px 6px 40px;
+  padding: 6px 30px 6px 15px;
   -webkit-transition: width 0.4s ease-in-out;
   transition: width 0.4s ease-in-out;
 }
