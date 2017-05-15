@@ -29,10 +29,10 @@ public class PaymentConstant {
     public static final int INDEX_FIRST_COLUMN = 0;
     
     /** The Constant INDEX_ROW_TITLE. */
-    public static final int INDEX_ROW_TITLE = 7;
+    public static final int INDEX_ROW_TITLE = 6;
     
     /** The Constant INDEX_ROW_CONTENT. */
-    public static final int INDEX_ROW_CONTENT = 11;
+    public static final int INDEX_ROW_CONTENT = 10;
     
     /** The Constant ZERO. */
     public static final int ZERO = 0;
