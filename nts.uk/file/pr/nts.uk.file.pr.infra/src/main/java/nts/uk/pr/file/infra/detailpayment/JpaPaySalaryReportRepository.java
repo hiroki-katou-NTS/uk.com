@@ -79,7 +79,8 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
             + "AND com.pcpmtPersonComPK.pid IN :personIds "
             + "AND header.qstdtPaymentHeaderPK.payBonusAtr = 0 "
             + "AND header.qstdtPaymentHeaderPK.processingYM >= :startYM "
-            + "AND header.qstdtPaymentHeaderPK.processingYM <= :endYM ";
+            + "AND header.qstdtPaymentHeaderPK.processingYM <= :endYM "
+            + "ORDER BY dep.hierarchyId ASC ";
     
     /** The Constant QUERY_PAYMENT_DETAIL. */
     private static final String QUERY_PAYMENT_DETAIL = "SELECT pCom.scd, detail.qstdtPaymentDetailPK.categoryATR,"
@@ -186,24 +187,26 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         if (data.isEmpty()) {
             throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
-        return data.stream().map(object -> {
-            PcpmtPersonCom com = (PcpmtPersonCom) object[0];
-            QstdtPaymentHeader header = (QstdtPaymentHeader) object[1];
-            CmnmtDep dep = (CmnmtDep) object[2];
-            
-            EmployeeDto dto = new EmployeeDto();
-            dto.setCode(com.getScd());
-            dto.setName(header.employeeName);
-
-            DepartmentDto departmentDto = new DepartmentDto();
-            departmentDto.setCode(dep.getCmnmtDepPK().getDepartmentCode());
-            departmentDto.setName(dep.getDepName());
-            departmentDto.setDepLevel(dep.getHierarchyId().length() / LENGTH_LEVEL);
-            departmentDto.setDepPath(dep.getHierarchyId());
-            departmentDto.setYearMonth(header.qstdtPaymentHeaderPK.processingYM);
-            dto.setDepartment(departmentDto);
-            return dto;
-        }).collect(Collectors.toList());
+        return data.stream()
+                .map(object -> {
+                    PcpmtPersonCom com = (PcpmtPersonCom) object[0];
+                    QstdtPaymentHeader header = (QstdtPaymentHeader) object[1];
+                    CmnmtDep dep = (CmnmtDep) object[2];
+                    
+                    EmployeeDto dto = new EmployeeDto();
+                    dto.setCode(com.getScd());
+                    dto.setName(header.employeeName);
+        
+                    DepartmentDto departmentDto = new DepartmentDto();
+                    departmentDto.setCode(dep.getCmnmtDepPK().getDepartmentCode());
+                    departmentDto.setName(dep.getDepName());
+                    departmentDto.setDepLevel(dep.getHierarchyId().length() / LENGTH_LEVEL);
+                    departmentDto.setDepPath(dep.getHierarchyId());
+                    departmentDto.setYearMonth(header.qstdtPaymentHeaderPK.processingYM);
+                    dto.setDepartment(departmentDto);
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
     
     /**
@@ -294,17 +297,6 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                     }
                 }
                 mapAmount.put(key, amount);
-                
-                for (int i=0; i<10; i++) {
-                    EmployeeKey tmpkey = new EmployeeKey();
-                    tmpkey.setYearMonth(yearMonth);
-                    tmpkey.setEmployeeCode(codeEmp);
-                    tmpkey.setItemName(categoryItem.itemName + " - " + (i + 1));
-                    tmpkey.setOrderItemName(categoryItem.orderNumber* 10 + i);
-                    tmpkey.setSalaryCategory(SalaryCategory.valueOf(categoryItem.valueCategory));
-                    mapAmount.put(tmpkey, amount);
-                }
-                
             });
         });
     }
