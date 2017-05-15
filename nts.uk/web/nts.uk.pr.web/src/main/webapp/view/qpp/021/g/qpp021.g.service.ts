@@ -1,11 +1,22 @@
 module nts.uk.pr.view.qpp021.g {
     export module service {
         var paths: any = {
-            findAllEmployee: "basic/organization/employment/findallemployments",
-            findContactItemSettings: "ctx/pr/report/payment/contact/item/findSettings",
-            saveContactItemSettings: "ctx/pr/report/payment/contact/item/save"
-
+            findRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/three/find",
+            saveRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/three/save"
         };
+
+        //connection service find
+        export function findRefundPadding(): JQueryPromise<model.RefundPaddingThreeDto> {
+            //call service server
+            return nts.uk.request.ajax(paths.findRefundPadding);
+        }
+        
+        //connection service save
+        export function saveRefundPadding(dto: model.RefundPaddingThreeDto): JQueryPromise<void> {
+            //call service server
+            var data = { dto: dto };
+            return nts.uk.request.ajax(paths.saveRefundPadding, data);
+        }
 
 
         export module model {
@@ -23,15 +34,16 @@ module nts.uk.pr.view.qpp021.g {
 
                 /** The padding left. */
                 paddingLeft: number;
-                
+
                 /** The break line margin top. */
                 breakLineMarginTop: number;
-                
+
                 /** The break line margin buttom. */
                 breakLineMarginButtom: number;
-                
+
                 /** The is show break line. */
                 isShowBreakLine: number;
             }
         }
     }
+}

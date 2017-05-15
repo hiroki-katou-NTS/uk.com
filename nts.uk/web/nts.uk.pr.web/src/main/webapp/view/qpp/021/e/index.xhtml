@@ -7,60 +7,102 @@
 
 <body>
 
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
-			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
-
+			<script>
+				var dialogSize = {
+					width : 500,
+					height : 490
+				};
+			</script>
 			<com:stylefile path="qpp021.e.main.css" />
+			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="qpp021.e.start.js" />
-			<com:scriptfile path="qpp021.e.vm.js" />
 			<com:scriptfile path="qpp021.e.service.js" />
-			<com:scriptfile path="/lib/nittsu/ui/file.js" />
+			<com:scriptfile path="qpp021.e.vm.js" />
+			<com:ValidatorScript>
+			    nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.SizeLimit
+			</com:ValidatorScript>
 		</ui:define>
 
+		<!-- 余白設定 -->
 		<ui:define name="content">
 
-			<div id="functions-area">
-				<button id="btn-001" data-bind="click: print, enable: listBox.isEmpty()" class="separate-1 proceed">選択した社員を印刷</button>
-				<button id="btn-002" class="separate-1">印刷の設定</button>
-				<a id="lbl-001" class="separate-1">給与明細書</a>
+			<!-- BEGIN CONTENT AREA-->
+			<div id="this-contents-area">
+				<label>印字位置の調整を行ってください。 </label> <br /> <label>※この設定は翌月以降の明細書にも反映されます。</label>
+				<table style="width: 460px;">
+					<tr>
+						<td colspan="4"><br /></td>
+					</tr>
+					<tr>
+						<td>余白の設定</td>
+						<td colspan="3">単位 1mm [?]</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<hr />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div data-bind="ntsFormLabel: {constraint:'SizeLimit'}">
+								<label>余白補正<br /></label>
+							</div>
+						</td>
+						<td>上</td>
+						<td colspan="2"><input class="input-default"
+							data-bind="ntsNumberEditor: {
+								value: refundPaddingOnceModel.paddingTop,
+								option: sizeLimitOption,
+								constraint: 'SizeLimit'}, hasFocus: true" />
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="3">※数値が大きいほど印字位置が下がります。</td>
+					</tr>
+					<tr>
+						<td colspan="4"><br /></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>左</td>
+						<td colspan="2"><input class="input-default"
+							data-bind="ntsNumberEditor: {
+								value: refundPaddingOnceModel.paddingLeft,
+								option: sizeLimitOption,
+								constraint: 'SizeLimit'}" />
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="3">※数値が大きいほど印字位置が右に移動します。</td>
+					</tr>
+					<tr>
+						<td colspan="4"><br /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><br /></td>
+					</tr>
+					<tr>
+						<td colspan="4" style="text-align: center;">
+							<button class="large" data-bind="click: preview" style="width: 120px;">テスト印字</button>
+						</td>
+					</tr>
+				</table>
 			</div>
+			<br />
+			<hr />
+			<!-- END CONTENT AREA-->
 
-			<div id="contents-area"  class="cf">
-				<div id="left-content">
-					<div data-bind="with: listBox">
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
-											   optionsText: 'name',
-											   multiple: true,
-											   value: selectedCodes,
-											   enable: true,
-											   rows: 21,
-											   columns: [
-													{ prop: 'code', length: 12 },
-													{ prop: 'name', length: 12 }
-											   ]}"
-							class="cf"></div>
-					</div>
-				</div>
-				<div id="right-content">
-					<span id="lbl-002">処理の詳細設定</span> <br />
-					<div id="lbl-003" style="float: left;" data-bind="ntsFormLabel: {required: true }">
-						帳票の選択
-					</div>
-					<div id="sel-001" data-bind="with: radioBox">
-						<div data-bind="ntsRadioBoxGroup: {
-									options: items,
-									optionsValue: 'value',
-									optionsText: 'text',
-									value: selectedValue}"></div>
-					</div>
-				</div>
+			<!-- BEGIN FUNCTION AREA-->
+			<div id="this-functions-area" class="halign-center">
+				<button class="proceed x-large" data-bind="click: save"
+					style="margin-right: 10px">登録</button>
+				<button data-bind="click: close">キャンセル</button>
 			</div>
-
+			<!-- END FUNCTION AREA-->
 		</ui:define>
 	</ui:composition>
 </body>

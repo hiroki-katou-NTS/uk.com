@@ -2,15 +2,11 @@ package nts.uk.ctx.pr.report.dom.payment.comparing.setting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class ComparingPrintSet extends AggregateRoot {
 
 	private String companyCode;

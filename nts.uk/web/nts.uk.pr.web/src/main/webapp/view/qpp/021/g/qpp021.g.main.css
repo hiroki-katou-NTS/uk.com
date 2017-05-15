@@ -42,8 +42,8 @@
 	display: inline-block;
 }
 
-.comment-data {
-	margin-left: 33px;
+.setting-data {
+	width: 100px;
 }
 
 #selectSpliteLineOutput {

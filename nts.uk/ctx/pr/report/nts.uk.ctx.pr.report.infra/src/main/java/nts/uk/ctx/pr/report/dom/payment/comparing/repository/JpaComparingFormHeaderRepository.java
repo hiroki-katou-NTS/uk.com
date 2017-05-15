@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeader;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeaderRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormHead;
 import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormHeadPK;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormHeader;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormHeaderRepository;
 
 @Stateless
 public class JpaComparingFormHeaderRepository extends JpaRepository implements ComparingFormHeaderRepository {

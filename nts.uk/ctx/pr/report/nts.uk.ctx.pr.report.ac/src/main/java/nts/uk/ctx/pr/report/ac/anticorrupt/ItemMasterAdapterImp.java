@@ -7,10 +7,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.finder.itemmaster.ItemMasterPub;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingItemMaster;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ItemCode;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ItemMasterAdapter;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ItemName;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingItemMaster;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ItemCode;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ItemMasterAdapter;
+import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ItemName;
 
 @Stateless
 public class ItemMasterAdapterImp implements ItemMasterAdapter {

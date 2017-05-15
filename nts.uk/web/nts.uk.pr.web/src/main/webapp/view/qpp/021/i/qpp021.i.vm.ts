@@ -140,9 +140,9 @@ module qpp021.i.viewmodel {
                 ],
                 autoCommit: true,
                 columns: [
-                    { headerText: 'コード', dataType: 'string', key: 'employeeCode', width: '20%', columnCssClass: "bgIgCol" },
-                    { headerText: '名称', dataType: 'string', key: 'employeeName', width: '20%', columnCssClass: "bgIgCol" },
-                    { headerText: '今月の給与明細に印刷する個人へのコメント', dataType: 'string', key: 'comment', width: '60%', columnCssClass: "halign-right" }
+                    { headerText: 'コード', dataType: 'string', key: 'employeeCode', width: '20%', columnCssClass: "bgIgCol", headerCssClass: "labelHeader" },
+                    { headerText: '名称', dataType: 'string', key: 'employeeName', width: '20%', columnCssClass: "bgIgCol", headerCssClass: "labelHeader" },
+                    { headerText: '今月の給与明細に印刷する個人へのコメント', dataType: 'string', key: 'comment', width: '60%', columnCssClass: "halign-left", headerCssClass: "labelHeader" }
                 ]
             });
         }

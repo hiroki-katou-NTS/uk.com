@@ -13,10 +13,18 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                findAllEmployee: "basic/organization/employment/findallemployments",
-                                findContactItemSettings: "ctx/pr/report/payment/contact/item/findSettings",
-                                saveContactItemSettings: "ctx/pr/report/payment/contact/item/save"
+                                findRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/three/find",
+                                saveRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/three/save"
                             };
+                            function findRefundPadding() {
+                                return nts.uk.request.ajax(paths.findRefundPadding);
+                            }
+                            service.findRefundPadding = findRefundPadding;
+                            function saveRefundPadding(dto) {
+                                var data = { dto: dto };
+                                return nts.uk.request.ajax(paths.saveRefundPadding, data);
+                            }
+                            service.saveRefundPadding = saveRefundPadding;
                             var model;
                             (function (model) {
                                 var RefundPaddingThreeDto = (function () {

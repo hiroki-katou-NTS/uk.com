@@ -3,6 +3,10 @@
 	margin: 5px;
 }
 
+#functions-area-content {
+	width: 900px;
+}
+
 .function-area {
 	padding-left: 20px;
 	padding-top: 10px;
@@ -12,9 +16,9 @@
 #contents-area {
 	padding-left: 20px;
 	margin-top: 15px;
-	height: 600px;
+	height: 500px;
 	display: inline-flex;
-	max-width: 1230px;
+	max-width: 1250px;
 }
 
 .caret-background.caret-right:after {
@@ -31,15 +35,14 @@
 }
 
 .nts-left-content {
-	width: 280px;
+	width: 295px !important;
 	padding: 15px !important;
 	float: left;
 	height: 500px;
-
 }
 
-.nts-right-content {	
-	padding: 0px 15px;
+.nts-right-content {
+	padding-left: 15px;
 	width: 975px;
 	float: left;
 }
@@ -67,11 +70,14 @@
 	float: left;
 }
 
-#D_LST_001-grid1_container, #D_LST_001-grid2_container,
-	#E_LST_001-grid1_container, #E_LST_001-grid2_container,
-	#F_LST_001-grid1_container, #F_LST_001-grid2_container,
+#D_LST_001-gridArea1, #D_LST_001-gridArea2, #E_LST_001-gridArea1,
+	#E_LST_001-gridArea2, #F_LST_001-gridArea1, #F_LST_001-gridArea2,
 	#C_LST_002_container {
 	border: 1px solid gray !important;
+}
+
+#C_LST_002_container {
+	padding-right: 1px !important;
 }
 
 .nts-left-content .caret-background.caret-right:after {
@@ -98,11 +104,11 @@
 
 .divRightBottom {
 	padding-top: 5px;
-	width: 975px;
+	width: 950px;
 }
 
 .div-right-bottom-right {
-	width: 700px;
+	width: 685px;
 	float: left;
 	height: auto;
 }
@@ -138,10 +144,14 @@
 }
 
 .tabPanel {
-	width: 680px;
+	width: 665px;
 	height: 500px;
 }
 
 .tab-content-1, .tab-content-2, .tab-content-3 {
 	height: 400px;
+}
+
+#C_LST_001 tr{
+	max-height: 24px !important;
 }

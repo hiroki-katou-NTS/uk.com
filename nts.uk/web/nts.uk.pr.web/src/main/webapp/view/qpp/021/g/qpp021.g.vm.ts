@@ -7,20 +7,16 @@ module nts.uk.pr.view.qpp021.g {
 
         export class ScreenModel {
             refundPaddingThreeModel: RefundPaddingThreeModel;
-            marginTop: KnockoutObservable<string>;
-            marginMiddle: KnockoutObservable<string>;
-            marginXyz: KnockoutObservable<string>;
-            marginLeft: KnockoutObservable<string>;
-            lineCorrect: KnockoutObservable<string>;
-            underLine: KnockoutObservable<string>;
-            textEditorOption: KnockoutObservable<any>;
+            sizeLimitOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
             spliteLineOutput: KnockoutObservableArray<any>;
-            selectedRuleCode: KnockoutObservable<number>;
 
             constructor() {
                 var self = this;
                 self.refundPaddingThreeModel = new RefundPaddingThreeModel();
-                self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                self.sizeLimitOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3,
+                    decimallength: 2
+                }));
                 self.spliteLineOutput = ko.observableArray([
                     { code: 0, name: 'する' },
                     { code: 1, name: 'しない' },
@@ -31,8 +27,31 @@ module nts.uk.pr.view.qpp021.g {
             startPage(): JQueryPromise<this> {
                 var self = this;
                 var dfd = $.Deferred<this>();
-                dfd.resolve(self);
+                service.findRefundPadding().done(data => {
+                    self.refundPaddingThreeModel.updateDataDto(data);
+                    dfd.resolve(self);
+                }).fail(function(error) {
+                    console.log(error);
+                });
+
                 return dfd.promise();
+            }
+
+            //save RefundPaddingThree
+            saveRefundPaddingThree(): void {
+                var self = this;
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                }
+                service.saveRefundPadding(self.refundPaddingThreeModel.toDto()).done(function(){
+                    self.closeRefundPaddingThree();    
+                }).fail(function(error){
+                   self.closeRefundPaddingThree(); 
+                });
+            }
+
+            closeRefundPaddingThree(): void {
+                nts.uk.ui.windows.close();
             }
         }
 
@@ -71,10 +90,24 @@ module nts.uk.pr.view.qpp021.g {
             updateDataDto(dto: RefundPaddingThreeDto) {
                 this.upperAreaPaddingTop(dto.upperAreaPaddingTop);
                 this.middleAreaPaddingTop(dto.middleAreaPaddingTop);
+                this.underAreaPaddingTop(dto.underAreaPaddingTop);
                 this.paddingLeft(dto.paddingLeft);
                 this.breakLineMarginTop(dto.breakLineMarginTop);
                 this.breakLineMarginButtom(dto.breakLineMarginButtom);
                 this.isShowBreakLine(dto.isShowBreakLine);
+            }
+
+            toDto(): RefundPaddingThreeDto {
+                var dto: RefundPaddingThreeDto;
+                dto = new RefundPaddingThreeDto();
+                dto.upperAreaPaddingTop = this.upperAreaPaddingTop();
+                dto.middleAreaPaddingTop = this.middleAreaPaddingTop();
+                dto.underAreaPaddingTop = this.underAreaPaddingTop();
+                dto.paddingLeft = this.paddingLeft();
+                dto.breakLineMarginTop = this.breakLineMarginTop();
+                dto.breakLineMarginButtom = this.breakLineMarginButtom();
+                dto.isShowBreakLine = this.isShowBreakLine();
+                return dto;
             }
         }
     }

@@ -38,10 +38,11 @@ module qpp008.c.viewmodel {
         items2Dirty: nts.uk.ui.DirtyChecker;
 
         constructor() {
-            let self = this;
+            let self = this;          
             self._initFormHeader();
             self._initSwap();
             self._initFormDetail();
+
 
             self.currentCode.subscribe(function(codeChanged) {
                 if (nts.uk.text.isNullOrEmpty(codeChanged)) {
@@ -50,14 +51,17 @@ module qpp008.c.viewmodel {
                     }
                     return;
                 }
+                self.isEnableDeleteBtn(true);
                 if (codeChanged === self.previousCurrentCode) {
                     return;
                 }
                 if (!self.currentItemDirty.isDirty() && !self.items2Dirty.isDirty()) {
+                    self.clearError();
                     self.processWhenCurrentCodeChange(codeChanged);
                     return;
                 }
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                    self.clearError();
                     self.processWhenCurrentCodeChange(codeChanged);
                 }).ifCancel(function() {
                     self.currentCode(self.previousCurrentCode);
@@ -138,18 +142,22 @@ module qpp008.c.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            return self.reload(true);
+            let dfd = $.Deferred();
+            self.reload(true).done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
 
         refreshLayout(): void {
             let self = this;
+            self.clearError();
             self.currentItem(self.mappingFromJS(new ComparingFormHeader('', '')));
             self.currentCode(null);
             self.previousCurrentCode = null;
             self.allowEditCode(true);
             self.isUpdate(false);
             self.isEnableDeleteBtn(false);
-            self.clearError();
             self.getComparingFormForTab(null).done(function() {
                 self.currentItemDirty.reset();
                 self.items2Dirty.reset();
@@ -193,17 +201,17 @@ module qpp008.c.viewmodel {
                 });
                 if (self.items().length <= 0) {
                     self.refreshLayout();
-                    dfd.resolve(data);
+                    dfd.resolve();
                     return;
                 }
                 self.isEnableDeleteBtn(true);
                 self.items2Dirty.reset();
-                if (isReload) {   
-                    self.currentCode(self.items()[0].formCode)
+                if (isReload) {
+                    self.currentCode(nts.uk.ui.windows.getShared('qpp008_form_header_code_set'));
                 } else if (!nts.uk.text.isNullOrEmpty(reloadCode)) {
                     self.currentCode(reloadCode)
                 }
-                dfd.resolve(data);
+                dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
             });
@@ -238,23 +246,27 @@ module qpp008.c.viewmodel {
                 return new ComparingFormDetail(item.itemCode, item.categoryAtr, i);
             });
             let insertUpdateDataModel = new InsertUpdateDataModel(nts.uk.text.padLeft(newformCode, '0', 2), newformName, comparingFormDetailList);
+            if (self.isUpdate()) {
+                service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function() {
+                    self.reload(false, nts.uk.text.padLeft(newformCode, '0', 2));
+                    self.currentItemDirty.reset();
+                    dfd.resolve();
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alert(error.message).then(function() {
+                        self.currentItemDirty.reset();
+                        self.reload(true);
+                    })
+                });
+                return dfd.promise();
+            }
             service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function() {
                 self.reload(false, nts.uk.text.padLeft(newformCode, '0', 2));
                 self.currentItemDirty.reset();
-                if (self.isUpdate() === false) {
-                    self.isUpdate(true);
-                    self.allowEditCode(false);
-                }
+                self.isUpdate(true);
+                self.allowEditCode(false);
                 dfd.resolve();
             }).fail(function(error) {
-                if (error.message === '1') {
-                    let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
-                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード'));
-                } else if (error.message === '2') {
-                    nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
-                        self.reload(true);
-                    })
-                }
+                nts.uk.ui.dialog.alert(error.message);
             });
             return dfd.promise();
         }
@@ -280,24 +292,20 @@ module qpp008.c.viewmodel {
                         self.currentCode(self.items()[indexItemDelete - 1].formCode);
                         return;
                     }
-
                     if (self.items().length < indexItemDelete) {
                         self.currentCode(self.items()[0].formCode);
                         return;
                     }
-
                     if (self.items().length > indexItemDelete) {
                         self.currentCode(self.items()[indexItemDelete].formCode);
                         return;
                     }
                 });
-
             }).fail(function(error) {
-                if (error.message === '2') {
-                    nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
-                        self.reload(true);
-                    })
-                }
+                nts.uk.ui.dialog.alert(error.message).then(function() {
+                    self.currentItemDirty.reset();
+                    self.reload(true);
+                })
             });
         }
 
@@ -326,9 +334,9 @@ module qpp008.c.viewmodel {
                 self.itemsSwap(data.lstItemMasterForTab_0);
                 self.itemsSwap1(data.lstItemMasterForTab_1);
                 self.itemsSwap3(data.lstItemMasterForTab_3);
-                self.getSwapUpDownList(data.lstSelectForTab_0, 0);
-                self.getSwapUpDownList(data.lstSelectForTab_1, 1);
-                self.getSwapUpDownList(data.lstSelectForTab_3, 3);
+                self.currentCodeListSwap(data.lstSelectForTab_0);
+                self.currentCodeListSwap1(data.lstSelectForTab_1);
+                self.currentCodeListSwap3(data.lstSelectForTab_3);
                 dfd.resolve(data);
             }).fail(function(error) {
                 alert(error.message);
@@ -336,53 +344,20 @@ module qpp008.c.viewmodel {
             return dfd.promise();
         }
 
-        closeDialog(): any {
-            nts.uk.ui.windows.close();
-        }
-
-        getSwapUpDownList(lstSelectForTab: Array<string>, categoryAtr: number) {
+        closeDialog() {
             let self = this;
-            if (categoryAtr === 0) {
-                _.forEach(lstSelectForTab, function(value) {
-                    _.forEach(self.itemsSwap(), function(itemMaster) {
-                        if (value === itemMaster.itemCode) {
-                            self.itemsSwap.remove(itemMaster);
-                            itemMaster.categoryAtrName = "支";
-                            itemMaster.categoryAtr = 0;
-                            self.currentCodeListSwap.push(itemMaster);
-                            return false;
-                        }
-                    });
-                });
+            if (!self.items2Dirty.isDirty() && !self.currentItemDirty.isDirty()) {
+                nts.uk.ui.windows.setShared('qpp008_form_header_code', self.currentCode(), true);
+                nts.uk.ui.windows.close();
+                return;
             }
-
-            if (categoryAtr === 1) {
-                _.forEach(lstSelectForTab, function(value) {
-                    _.forEach(self.itemsSwap1(), function(itemMaster) {
-                        if (value === itemMaster.itemCode) {
-                            self.itemsSwap1.remove(itemMaster);
-                            itemMaster.categoryAtrName = "控";
-                            itemMaster.categoryAtr = 1;
-                            self.currentCodeListSwap1.push(itemMaster);
-                            return false;
-                        }
-                    });
-                });
-            }
-
-            if (categoryAtr === 3) {
-                _.forEach(lstSelectForTab, function(value) {
-                    _.forEach(self.itemsSwap3(), function(itemMaster) {
-                        if (value === itemMaster.itemCode) {
-                            self.itemsSwap3.remove(itemMaster);
-                            itemMaster.categoryAtrName = "記";
-                            itemMaster.categoryAtr = 3;
-                            self.currentCodeListSwap3.push(itemMaster);
-                            return false;
-                        }
-                    });
-                });
-            }
+            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                self.items2Dirty.reset();
+                self.currentItemDirty.reset();
+                nts.uk.ui.windows.close();
+            }).ifCancel(function() {
+                return;
+            })
         }
     }
 
@@ -398,9 +373,9 @@ module qpp008.c.viewmodel {
     export class ItemMaster {
         itemCode: string;
         itemName: string;
-        categoryAtrName: string;
         categoryAtr: number;
-        constructor(itemCode: string, itemName: string, categoryAtrName: string, categoryAtr: number) {
+        categoryAtrName: string;
+        constructor(itemCode: string, itemName: string, categoryAtr: number, categoryAtrName: string) {
             this.itemCode = itemCode;
             this.itemName = itemName;
             this.categoryAtrName = categoryAtrName;
@@ -412,12 +387,12 @@ module qpp008.c.viewmodel {
         lstItemMasterForTab_0: Array<ItemMaster>;
         lstItemMasterForTab_1: Array<ItemMaster>;
         lstItemMasterForTab_3: Array<ItemMaster>;
-        lstSelectForTab_0: Array<string>;
-        lstSelectForTab_1: Array<string>;
-        lstSelectForTab_3: Array<string>;
+        lstSelectForTab_0: Array<ItemMaster>;
+        lstSelectForTab_1: Array<ItemMaster>;
+        lstSelectForTab_3: Array<ItemMaster>;
         constructor(lstItemMasterForTab_0: Array<ItemMaster>, lstItemMasterForTab_1: Array<ItemMaster>,
-            lstItemMasterForTab_3: Array<ItemMaster>, lstSelectForTab_0: Array<string>,
-            lstSelectForTab_1: Array<string>, lstSelectForTab_3: Array<string>) {
+            lstItemMasterForTab_3: Array<ItemMaster>, lstSelectForTab_0: Array<ItemMaster>,
+            lstSelectForTab_1: Array<ItemMaster>, lstSelectForTab_3: Array<ItemMaster>) {
             this.lstItemMasterForTab_0 = lstItemMasterForTab_0;
             this.lstItemMasterForTab_1 = lstItemMasterForTab_0;
             this.lstItemMasterForTab_3 = lstItemMasterForTab_1;

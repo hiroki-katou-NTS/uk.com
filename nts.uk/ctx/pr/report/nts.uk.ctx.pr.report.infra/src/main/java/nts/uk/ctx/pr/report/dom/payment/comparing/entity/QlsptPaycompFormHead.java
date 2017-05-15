@@ -22,7 +22,11 @@ public class QlsptPaycompFormHead extends UkJpaEntity implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "FORM_NAME")
 	public String formName;
-
+	
+	@Basic(optional = false)
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer = 0;
+	
 	@Override
 	protected Object getKey() {
 		return paycompFormHeadPK;
