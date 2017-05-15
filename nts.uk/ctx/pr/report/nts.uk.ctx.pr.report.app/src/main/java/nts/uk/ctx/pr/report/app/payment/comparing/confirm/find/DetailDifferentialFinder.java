@@ -41,15 +41,11 @@ public class DetailDifferentialFinder {
 			BigDecimal valueDifference = new BigDecimal(0).subtract(s.getComparisonValue1().v());
 			String reasonDifference = "";
 			int confirmedStatus = 0;
-			if (s.getComparisonValue1().v().compareTo(new BigDecimal(-1)) == 0) {
-				if (detalDiff.isPresent()) {
-					comparisonValue2 = detalDiff.get().getComparisonValue2().v();
-					registrationStatus2 = detalDiff.get().getRegistrationStatus2().value;
-					valueDifference = detalDiff.get().getComparisonValue2().v().subtract(new BigDecimal(0));
-					detailDifferential2.remove(detalDiff.get());
-				} else {
-					
-				}
+			if (detalDiff.isPresent()) {
+				comparisonValue2 = detalDiff.get().getComparisonValue2().v();
+				registrationStatus2 = detalDiff.get().getRegistrationStatus2().value;
+				valueDifference = detalDiff.get().getComparisonValue2().v().subtract(new BigDecimal(0));
+				detailDifferential2.remove(detalDiff.get());
 			}
 
 			Optional<PaycompConfirm> payCompComfirmFilter = payCompComfirm.stream()
