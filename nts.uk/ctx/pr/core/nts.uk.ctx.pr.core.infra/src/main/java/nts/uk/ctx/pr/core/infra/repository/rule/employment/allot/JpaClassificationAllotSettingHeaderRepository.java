@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingHeader;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingHeaderRepository;
@@ -29,11 +28,21 @@ public class JpaClassificationAllotSettingHeaderRepository extends JpaRepository
 	// }
 	// return Optional.of(toDomain(psettings.get(0)));
 	// }
+	@Override
+	public void insert(ClassificationAllotSettingHeader classificationAllotSettingHeader) {
+		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void delete(ClassificationAllotSettingHeader classificationAllotSettingHeader) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	private ClassificationAllotSettingHeader toDomain(QstmtStmtAllotHCl entity) {
-		val domain = ClassificationAllotSettingHeader.createFromJavaType(entity.qstmtStmtAllotHClPK.companyCode,
+		return ClassificationAllotSettingHeader.createFromJavaType(entity.qstmtStmtAllotHClPK.companyCode,
 				entity.qstmtStmtAllotHClPK.historyId, entity.startDateYM, entity.endDateYM);
-		return domain;
 	}
 
 	@Override
@@ -55,5 +64,7 @@ public class JpaClassificationAllotSettingHeaderRepository extends JpaRepository
 		QstmtStmtAllotHCl entity = new QstmtStmtAllotHCl(key, domain.getStartDateYM(),domain.getEndDateYM());
 		return entity;
 	}
+
+	
 
 }

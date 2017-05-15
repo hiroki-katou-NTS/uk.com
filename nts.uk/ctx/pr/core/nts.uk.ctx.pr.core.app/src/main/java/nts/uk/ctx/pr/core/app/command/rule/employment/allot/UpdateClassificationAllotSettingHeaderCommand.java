@@ -1,9 +1,8 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.allot;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingHeader;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -13,8 +12,8 @@ public class UpdateClassificationAllotSettingHeaderCommand {
 
 	String companyCode;
 	String historyId;
-	BigDecimal startDateYM;
-	BigDecimal endDateYM;
+	YearMonth startDateYM;
+	YearMonth endDateYM;
 
 	/**
 	 * Convert to domain object from command values
