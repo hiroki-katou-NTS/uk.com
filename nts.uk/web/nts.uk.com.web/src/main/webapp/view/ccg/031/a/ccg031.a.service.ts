@@ -22,7 +22,7 @@ module ccg031.a.service {
             },
             listPortalPlacementCommand: placements
         };
-        return nts.uk.request.ajax("com", paths.registry, data);
+        return nts.uk.request.ajax("com", paths.registry, data, {dataType: 'text'});
     }
     
 }

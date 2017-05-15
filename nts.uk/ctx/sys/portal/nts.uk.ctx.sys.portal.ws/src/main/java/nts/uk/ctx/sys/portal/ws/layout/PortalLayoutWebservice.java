@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.portal.app.find.layout.PortalLayoutFinder;
  * @author LamDT
  */
 @Path("sys/portal/layout")
-@Produces("application/json")
+@Produces({"application/json","text/plain"})
 public class PortalLayoutWebservice {
 
 	@Inject

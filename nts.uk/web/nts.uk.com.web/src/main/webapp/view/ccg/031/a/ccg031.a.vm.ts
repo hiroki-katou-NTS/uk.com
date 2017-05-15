@@ -3,6 +3,7 @@ module ccg031.a.viewmodel {
     import windows = nts.uk.ui.windows;
     import ntsNumber = nts.uk.ntsNumber;
     import dialog = nts.uk.ui.dialog;
+    import resource = nts.uk.resource;
     const minRow: number = 4;
     const minColumn: number = 6;
 
@@ -64,9 +65,9 @@ module ccg031.a.viewmodel {
             service.registry(self.parentCode, self.layoutID, self.pgType, self.placements())
                 .done((data) => {
                     self.layoutID = data;
-                    dialog.alert("Msg_15");
+                    dialog.alert(resource.getMessage("Msg_15"));
                 }).fail((res) => {
-                    dialog.alert(res.messageId);
+                    dialog.alert(resource.getMessage(res.messageId));
                 });
         }
 
