@@ -21,6 +21,7 @@ module kmk011.b.viewmodel {
         divTimeId: KnockoutObservable<string>;
         index_of_itemDelete: any;
         objectOld: any;
+        enableDel: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.label_002 = ko.observable(new model.Labels());
@@ -46,8 +47,10 @@ module kmk011.b.viewmodel {
             self.enableCode = ko.observable(false);
             self.itemDivReason = ko.observable(null);
             self.divTimeId = ko.observable(null);
+            self.enableDel = ko.observable(true);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
+                var t0 = performance.now();
                 self.itemDivReason(self.findItemDivTime(codeChanged));
                 if(self.itemDivReason()===undefined||self.itemDivReason()==null){
                     return;
@@ -57,7 +60,10 @@ module kmk011.b.viewmodel {
                     self.divReasonCode(self.itemDivReason().divReasonCode);
                     self.divReasonContent(self.itemDivReason().divReasonContent);
                     self.requiredAtr(self.itemDivReason().requiredAtr);
+                    self.enableDel(true);
                 }
+                var t1 = performance.now();
+                console.log("Selection process " + (t1 - t0) + " milliseconds.");
             });
         }
         
@@ -99,6 +105,14 @@ module kmk011.b.viewmodel {
             self.divReasonContent("");
             self.requiredAtr(0);
             self.enableCode(true);
+            self.clearError();
+            self.enableDel(false);
+        }
+        
+        clearError(): void {
+            if ($('.nts-editor').ntsError("hasError")) {
+                $('.nts-input').ntsError('clear');
+            }
         }
         RegistrationDivReason(){
             var self = this;

@@ -7,10 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 900, height: 500 };</script>
+			<script>var dialogSize = { width: 900, height: 500 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
-				nts.uk.shr.com.primitive.Memo
+				nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk011.b.main.css" />
@@ -21,23 +21,28 @@
 		<ui:define name="content">
 			<div id="function_area">
 				<!-- B1_1: Button New -->
-				<button tabindex="1" id="btn_001" class="button separate-button fix-button"
-						data-bind ="click: refreshData">新規</button>
+				<button tabindex="1" id="btn_001"
+					class="button separate-button fix-button"
+					data-bind="click: refreshData">新規</button>
 				<!-- B1_2: Button Registration -->
-				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button"
-						data-bind = "click: RegistrationDivReason">登録</button>
+				<button tabindex="2" id="btn_002"
+					class="button proceed separate-button fix-button"
+					data-bind="click: RegistrationDivReason">登録</button>
 				<!-- B1_3: Button Delete -->
-				<button tabindex="3" id="btn_005" class="button danger separate-button fix-button"
-						data-bind = "click: deleteDivReason">削除</button>	
-				<!-- B1_4: Button Close -->	
-				<button tabindex="4" id="btn_004" class="button separate-button fix-button"
-						data-bind = "click: closeDialog">閉じる</button>
+				<button tabindex="3" id="btn_005"
+					class="button danger separate-button fix-button"
+					data-bind="click: deleteDivReason, enable: enableDel">削除</button>
+				<!-- B1_4: Button Close -->
+				<button tabindex="4" id="btn_004"
+					class="button separate-button fix-button"
+					data-bind="click: closeDialog">閉じる</button>
 				<hr />
 			</div>
 			<div id="content-area">
-				<div id="left-content" style="float:left" class="bg-green caret-right caret-background">
-					<div style="float:left; margin: 20px" >																					
-						<table tabindex="5" id="single-list" 
+				<div id="left-content" style="float: left"
+					class="bg-green caret-right caret-background">
+					<div style="float: left; margin: 20px">
+						<table tabindex="5" id="single-list"
 							data-bind="ntsGridList:{
 								width: 280,
 								height: 250,
@@ -50,36 +55,44 @@
 							class="cf">
 						</table>
 					</div>
-				</div> 
+				</div>
 				<div id="right-content" style="float: left;">
-					<table >
+					<table>
 						<colgroup>
 							<col width="180px" />
 							<col width="*" />
 						</colgroup>
-						<tr class = "row">
+						<tr class="row">
 							<td>
 								<!-- B3_1: Label -->
 								<div data-bind="ntsFormLabel: {required: true }">対象項目</div>
 							</td>
 							<td>
-								<!-- B3_2: Divergence Reason Code -->
-								<input tabindex="6" class = "nts-input" id="inpCode" style="width: 20px" data-bind="ntsTextEditor: {
-                                          value: divReasonCode, enable: enableCode,required: true}" data-name="Code"/>
-								<!-- B3_3: Divergence Reason Content -->
-								<input tabindex="7" class = "nts-input2" data-bind="ntsTextEditor: {
+								<!-- B3_2: Divergence Reason Code --> <input tabindex="6"
+								class="nts-input" id="inpCode" style="width: 20px"
+								data-bind="ntsTextEditor: {
+                                          value: divReasonCode,
+                                          constraint: 'DiverdenceReasonCode', 
+                                          enable: enableCode, 
+                                          required: true}"
+								data-name="Code" /> 
+								<!-- B3_3: Divergence Reason Content --> <input
+								tabindex="7" class="nts-input" id="inpReason" 
+								data-bind="ntsTextEditor: {
                                           value: divReasonContent,
+                                          constraint: 'DivergenceReasonContent',
                                           required: true}" />
 							</td>
 						</tr>
-						<tr class = "row">
+						<tr class="row">
 							<td>
 								<!-- B3_4 -->
 								<div data-bind="ntsFormLabel: {}">乖離理由の入力</div>
 							</td>
 							<td>
 								<!-- B3_5 -->
-								<div tabindex="8" class="cf" data-bind="ntsSwitchButton: {
+								<div tabindex="8" class="cf"
+									data-bind="ntsSwitchButton: {
 									options: switchUSe3,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -91,8 +104,7 @@
 						<tr>
 							<td></td>
 							<td>
-								<!-- B3_6 -->
-								<label id="A_LBL_003">※入力カラムを表示しない場合、必須チェックしない</label>
+								<!-- B3_6 --> <label id="A_LBL_003">※入力カラムを表示しない場合、必須チェックしない</label>
 							</td>
 						</tr>
 					</table>
