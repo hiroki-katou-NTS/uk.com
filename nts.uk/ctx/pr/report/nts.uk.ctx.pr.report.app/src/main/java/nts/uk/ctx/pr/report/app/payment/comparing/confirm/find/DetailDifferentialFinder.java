@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ComfirmDifferentRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.PaycompConfirm;
+import nts.uk.ctx.pr.report.dom.payment.comparing.setting.ComparingPrintSet;
+import nts.uk.ctx.pr.report.dom.payment.comparing.setting.ComparingPrintSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -20,6 +22,12 @@ public class DetailDifferentialFinder {
 	@Inject
 	private ComfirmDifferentRepository comfirmDiffRepository;
 
+	@Inject
+	private ComparingPrintSetRepository printSetRepository;
+	
+	private int showItemIfCfWithNull = 0;
+	private int showItemIfSameValue = 0;
+	
 	public List<DetailDifferentialDto> getDetailDifferential(int processingYMEarlier, int processingYMLater,
 			List<String> personIDs) {
 		String companyCode = AppContexts.user().companyCode();
@@ -29,6 +37,11 @@ public class DetailDifferentialFinder {
 				.getDetailDifferentialWithLaterYM(companyCode, processingYMLater, personIDs);
 		List<PaycompConfirm> payCompComfirm = this.comfirmDiffRepository.getPayCompComfirm(companyCode, personIDs,
 				processingYMEarlier, processingYMLater);
+		ComparingPrintSet comparingPrintSet = this.printSetRepository.getComparingPrintSet(companyCode).orElse(null);		
+		if(comparingPrintSet != null){
+			this.showItemIfCfWithNull = comparingPrintSet.getShowItemIfCfWithNull().value;
+			this.showItemIfSameValue = comparingPrintSet.getShowItemIfSameValue().value;
+		}
 
 		List<DetailDifferential> detailDifferential = detailDifferential1.stream().map(s -> {
 			Optional<DetailDifferential> detalDiff = detailDifferential2.stream()
@@ -44,10 +57,9 @@ public class DetailDifferentialFinder {
 			if (detalDiff.isPresent()) {
 				comparisonValue2 = detalDiff.get().getComparisonValue2().v();
 				registrationStatus2 = detalDiff.get().getRegistrationStatus2().value;
-				valueDifference = detalDiff.get().getComparisonValue2().v().subtract(new BigDecimal(0));
+				valueDifference = detalDiff.get().getComparisonValue2().v().subtract(s.getComparisonValue1().v());
 				detailDifferential2.remove(detalDiff.get());
 			}
-
 			Optional<PaycompConfirm> payCompComfirmFilter = payCompComfirm.stream()
 					.filter(c -> s.getPersonID().v().equals(c.getPersonID().v())
 							&& s.getCategoryAtr().value == c.getCategoryAtr().value
@@ -88,10 +100,26 @@ public class DetailDifferentialFinder {
 
 		}).collect(Collectors.toList());
 		detailDifferential.addAll(detailDifferential2Map);
+		//filter by setting print SEL_010 and SEL_011
+		
+		detailDifferential = detailDifferential.stream().filter(d -> {
+			if (this.showItemIfCfWithNull == 0
+					&& d.getComparisonValue1().v().compareTo(new BigDecimal(-1)) == 0
+					&& d.getComparisonValue2().v().compareTo(new BigDecimal(-1)) == 0) {
+				return false;
+			}
+			if (this.showItemIfSameValue == 0
+					&& d.getValueDifference().v().compareTo(new BigDecimal(0)) == 0) {
+				return false;
+			}
+			return true;
+		}).collect(Collectors.toList());
+		
 		/** end detailDifferential2 map detailDifferential1 */
 		Comparator<DetailDifferential> c = (p, o) -> p.getEmployeeCode().v().compareTo(o.getEmployeeCode().v());
 		c = c.thenComparing((p, o) -> p.getItemCode().v().compareTo(o.getItemCode().v()));
 		detailDifferential.sort(c);
+
 		return detailDifferential.stream()
 				.map(s -> new DetailDifferentialDto(s.getPersonID().v(), s.getEmployeeCode().v(),
 						s.getEmployeeName().v(), s.getItemCode().v(), s.getItemName().v(), s.getCategoryAtr().value,

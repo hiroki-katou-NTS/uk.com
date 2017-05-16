@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.masterpage.PersonInfoRepositor
 
 @Stateless
 public class JpaPersonInfoRepositoryRepository extends JpaRepository implements PersonInfoRepository {
-	private final String SELECT_PERSON_INFO = "SELECT  pb.pid as personID, pc.scd as employeerCode, pd.nameOfficial as employeerName FROM PcpmtPersonCom pc, PbsmtPersonBase pb"
+	private final String SELECT_PERSON_INFO = "SELECT  pb.pid as personID, pc.scd as employeerCode, pb.nameOfficial as employeerName FROM PcpmtPersonCom pc, PbsmtPersonBase pb"
 			+ " WHERE pc.pcpmtPersonComPK.pid = pb.pid AND pc.pcpmtPersonComPK.ccd = :ccd";
 
 	@Override
