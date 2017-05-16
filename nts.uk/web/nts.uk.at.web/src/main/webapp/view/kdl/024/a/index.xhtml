@@ -21,11 +21,11 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="btnNew" class="btnMenu" data-bind="click: addNew">新規</button>
-				<button id="btnSave" class="btnMenu proceed" data-bind="click: register, enable: $root.errors.isEmpty">登録</button>
+				<button id="btnNew" class="btnMenu" data-bind="click: addNew" tabindex="1">新規</button>
+				<button id="btnSave" class="btnMenu proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="2">登録</button>
 				<button id="btnDel" class="btnMenu delete_btn btn_width danger"
-					data-bind="click: del" style="margin-left: 60px;">削除</button>
-				<button id="btnClose" class="btnMenu" data-bind="">閉じる</button>
+					data-bind="click: del" style="margin-left: 60px;" tabindex="3">削除</button>
+				<button id="btnClose" class="btnMenu" data-bind="click: close" tabindex="4">閉じる</button>
 			</div>
 			<div id="content-area" class="cf">
 				<div class="left-content">
@@ -61,12 +61,13 @@
  													value: currentItem().externalBudgetCode,
  													constraint: 'ExternalBudgetCd',
 													enable: isEnableInp}" 
-													data-name="BudgetCode"/>
+													data-name="BudgetCode"
+													tabindex="5"/>
 								<input id="inpName" data-bind="ntsTextEditor: {
  													value:currentItem().externalBudgetName,
  													constraint :'ExternalBudgetName', 
- 													enable: true } 
-													" />
+ 													enable: true } "
+ 													tabindex="6"/>
 								<BR />
 							</td>
 						</tr>
@@ -76,8 +77,8 @@
 									data-bind="ntsFormLabel:{
 												required: true, 
 												inline:false, 
-												enable:true 
-									}">属性
+												enable:true }">
+												属性
 								</div>
 							</td>
 							<td>
@@ -90,7 +91,8 @@
 													enable: isEnableCbb,
 													columns: [
 														{ prop: 'nameCbb', length: 2 }
-													]}">
+													]}"
+									tabindex="7">
 								</div>
 							</td>
 						</tr>
@@ -111,7 +113,7 @@
 											optionsValue: 'unitId',
 											optionsText: 'unitName',
 											value: currentItem().unitAtr,
-											enable: true }">
+											enable: true }" tabindex="8">
 								</div>
 							</td>
 						</tr>

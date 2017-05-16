@@ -35,7 +35,7 @@ module kdl021.a.viewmodel {
             //set source
             if(self.posibleItems.length >0){
                 service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<any>){
-                for (let i in lstItem) {
+                    for (let i in lstItem) {
                         self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
                     };
                     //set source
@@ -43,7 +43,11 @@ module kdl021.a.viewmodel {
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
+            
             }
+            //勤怠項目の指定が0件の場合
+            //set source
+            self.items(self.dataSoure);
         }
         //event When click to 設定 ボタン
         register(){

@@ -161,6 +161,10 @@ module kdl024.a.viewmodel {
             //Change mode to NEW
             self.isNew = true;
         }
+        //close dialog
+        close(){
+            nts.uk.ui.windows.close();
+        }
         //delete
         del() {
             var self = this;
@@ -201,7 +205,7 @@ module kdl024.a.viewmodel {
             });            
         }
     }
-
+    
     interface IItem {
         externalBudgetCode: string;
         externalBudgetName: string;
@@ -241,8 +245,9 @@ module kdl024.a.viewmodel {
                 //console.log(current);
                 if (current) {
                     self.externalBudgetCode(current.externalBudgetCode);
+                    //alert(padZero(current.externalBudgetCode));
                     self.externalBudgetName(current.externalBudgetName);
-                    //Khong hieu tai sao 
+                    //K hieu t s 
                     //self.budgetAtr(current.budgetAtr.toString());
                     self.unitAtr(current.unitAtr);
                     self.budgetAtr(current.budgetAtr.toString());
