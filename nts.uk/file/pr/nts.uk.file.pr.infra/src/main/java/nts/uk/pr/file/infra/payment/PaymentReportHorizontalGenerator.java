@@ -99,6 +99,7 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 		pushDataItem("勤怠", dataFirst.getAttendanceItems());
 		startRow--;
 		pushDataItem("記事", dataFirst.getArticleItems());
+		
 	}
 
 	private void pushData(String objectValue, int startRow, int startCol, Style style) {
