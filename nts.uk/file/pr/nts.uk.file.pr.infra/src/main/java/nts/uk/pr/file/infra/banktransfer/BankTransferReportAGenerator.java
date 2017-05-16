@@ -1,5 +1,8 @@
 package nts.uk.pr.file.infra.banktransfer;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,34 +38,35 @@ public class BankTransferReportAGenerator extends AsposeCellsReportGenerator imp
 			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
 			List<BankTransferARpData> rpData = report.getData();
 
-			if (!addSheet(reportContext, report)) {
+			if (!addSheet(fileGeneratorContext, reportContext, report)) {
 				// set datasource
 				reportContext.setDataSource("header", report.getHeader());
 				reportContext.setDataSource("list", rpData);
-			}
 		
-			PageSetup pageSetup = reportContext.getWorkbook().getWorksheets().get(0).getPageSetup();
-			pageSetup.setHeader(0, report.getHeader().getCompanyName());
-			pageSetup.setHeader(2, "&D &T");
+				PageSetup pageSetup = reportContext.getWorkbook().getWorksheets().get(0).getPageSetup();
+				pageSetup.setHeader(0, report.getHeader().getCompanyName());
+				pageSetup.setHeader(2, "&D &T");
+				
+				// process data binginds in template
+				reportContext.getWorkbook().calculateFormula(true);
+				reportContext.getDesigner().process(false);
+				
+				// set color for row
+				BankTranferReportUtil.rowColor(reportContext.getWorkbook(), rpData.size(), 0);
+				
+				// save as PDF file
+				PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
+				option.setAllColumnsInOnePagePerSheet(true);
+	
+				reportContext.getWorkbook().save(this.createNewFile(fileGeneratorContext, BankTranferReportUtil.getFileName(REPORT_FILE_NAME)), option);
+			}
 			
-			// process data binginds in template
-			reportContext.getWorkbook().calculateFormula(true);
-			reportContext.getDesigner().process(false);
-			
-			// set color for row
-			BankTranferReportUtil.rowColor(reportContext, rpData.size());
-			
-			// save as PDF file
-			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
-			option.setAllColumnsInOnePagePerSheet(true);
-
-			reportContext.getWorkbook().save(this.createNewFile(fileGeneratorContext, BankTranferReportUtil.getFileName(REPORT_FILE_NAME)), option);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	private boolean addSheet(AsposeCellsReportContext reportContext, BankTransferAReport report) {
+	private boolean addSheet(FileGeneratorContext fileGeneratorContext, AsposeCellsReportContext reportContext, BankTransferAReport report) {
 		if (!report.getSparePayAtr().equals("3")) {
 			return false;
 		}
@@ -86,12 +90,35 @@ public class BankTransferReportAGenerator extends AsposeCellsReportGenerator imp
 			Worksheet worksheet = workbook.getWorksheets().get(sheetNumber);
 			worksheet.replace("header", String.valueOf("header_" + sheetNumber));
 			worksheet.replace("list", String.valueOf("list_" + sheetNumber));
-			
+			 
 			// set datasource
 			designer.setDataSource("header_" + sheetNumber, report.getHeader());
 			designer.setDataSource("list_" + sheetNumber, rpData);
 			
+			// set color for row
+			BankTranferReportUtil.rowColor(workbook, rpData.size(), sheetNumber);
+			
+			PageSetup pageSetup = designer.getWorkbook().getWorksheets().get(sheetNumber).getPageSetup();
+			pageSetup.setHeader(0, report.getHeader().getCompanyName());
+			pageSetup.setHeader(2, "&D &T");
+			
 			sheetNumber ++;
+		}
+		
+		try {
+			
+			// process data binginds in template
+			designer.getWorkbook().calculateFormula(true);
+			designer.process(false);
+			
+			// save as PDF file
+			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
+			option.setAllColumnsInOnePagePerSheet(true);
+			
+			designer.getWorkbook().save(this.createNewFile(fileGeneratorContext, BankTranferReportUtil.getFileName(REPORT_FILE_NAME)), option);
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 		
 		return true;		

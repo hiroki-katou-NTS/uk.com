@@ -16,19 +16,17 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
-import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
-
 public class BankTranferReportUtil {
 	
 	private final static int START_ROW_INDEX = 9;
 	
 	/**
 	 * Set color for row
-	 * @param reportContext
+	 * @param workBook
 	 * @param rpData
 	 */
-	public static void rowColor(AsposeCellsReportContext reportContext, int rpDataSize) {
-		Worksheet worksheet = reportContext.getWorkbook().getWorksheets().get(0);
+	public static void rowColor(Workbook workBook, int rpDataSize, int sheetNumber) {
+		Worksheet worksheet = workBook.getWorksheets().get(sheetNumber);
 		
 		int startRowIdx = START_ROW_INDEX;
 		int rowColorIdex = 0;

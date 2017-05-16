@@ -42,7 +42,7 @@ public class BankTransferReportBGenerator extends AsposeCellsReportGenerator imp
 			reportContext.getDesigner().process(false);
 			
 			// set color for row
-			BankTranferReportUtil.rowColor(reportContext, rpData.size());
+			BankTranferReportUtil.rowColor(reportContext.getWorkbook(), rpData.size(), 0);
 						
 			// save as PDF file
 			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
