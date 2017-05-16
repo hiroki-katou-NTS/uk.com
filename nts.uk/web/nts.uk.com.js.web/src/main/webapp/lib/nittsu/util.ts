@@ -487,6 +487,8 @@
                  */
                 while(whileCondition: (taskResult: any) => boolean): IConfiguration;
                 
+                after(runAfterMilliseconds: number): IConfiguration;
+                
                 /**
                  * Set pause time as milliseconds.
                  */
@@ -501,6 +503,7 @@
                 taskFunction: () => JQueryPromise<any>;
                 whileCondition: (taskResult: any) => boolean;
                 pauseMilliseconds = 0;
+                runAfter = 0;
                 
                 task(taskFunction: () => JQueryDeferred<any>) {
                     this.taskFunction = taskFunction;
@@ -517,9 +520,18 @@
                     return this;
                 }
                 
+                after(runAfterMilliseconds: number) {
+                    this.runAfter = runAfterMilliseconds;
+                    return this;   
+                }
+                
                 run() {
                     let dfd = $.Deferred();
-                    this.repeat(dfd);
+                    if (this.runAfter > 0){
+                        setTimeout(() => this.repeat(dfd), this.runAfter);    
+                    } else {
+                        this.repeat(dfd);    
+                    }
                     return dfd.promise();
                 }
                 
