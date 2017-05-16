@@ -12,7 +12,9 @@ import com.aspose.cells.Color;
 import com.aspose.cells.FormatCondition;
 import com.aspose.cells.FormatConditionCollection;
 import com.aspose.cells.FormatConditionType;
+import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
+import com.aspose.cells.WorksheetCollection;
 
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
@@ -88,5 +90,27 @@ public class BankTranferReportUtil {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyyMMddmmss");
 		return MessageFormat.format(reportFileName, format1.format(cal.getTime()));
+	}
+	
+	/**
+	 * Add a work sheet
+	 * @param workbook new workbook
+	 * @param worksheet main worksheet
+	 * @return
+	 */
+	public static Workbook addWorksheet(Workbook workbook, Worksheet worksheet) {
+		// Workbookに宛名のsheetとテンプレートのsheetを追加
+		try {
+			WorksheetCollection worksheets = workbook.getWorksheets();
+
+			int mainSheet = worksheets.add();
+			worksheets.get(mainSheet).copy(worksheet);
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+			// LOGGER.error("Failed create workbook. " + e.getMessage());
+		}
+
+		return workbook;
 	}
 }
