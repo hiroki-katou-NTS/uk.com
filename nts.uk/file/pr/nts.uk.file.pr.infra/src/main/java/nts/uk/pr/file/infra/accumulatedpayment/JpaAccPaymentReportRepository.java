@@ -277,6 +277,8 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			String empCode = ((PclmtPersonEmpContract) detailData.get(0)
 					[PERSON_EMP_CONTRACT_TBL_INDEX]).empCd;
 			String empName = ((CmnmtEmp) detailData.get(0)[EMP_TBL_INDEX]).employmentName;
+			
+			// Enrolment Status
 			PcpmtPersonCom person = (PcpmtPersonCom) detailData.get(0)[PERSON_COM_TBL_INDEX];
 			GeneralDate endDatePersonTem = person.getEndD();
 			String enrollmentStatus;
@@ -287,6 +289,7 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 				enrollmentStatus = RETIRED;
 			}
 
+			// Directional Status
 			PcpmtPersonTempAssign tempAssign = (PcpmtPersonTempAssign) detailData.get(0)[PERSON_TEMP_ASSIGN_TBL_INDEX];
 			GeneralDate endDatePersonTempAsign = tempAssign.getEndD();
 			String directionalStatus;

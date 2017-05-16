@@ -63,17 +63,15 @@ module qet002.a.viewmodel {
            $('#target-year-input').ntsEditor('validate');
 
            // Validate 
-           if (self.isLowerLimit() && self.lowerLimitValue() == null) {
-               $('#lower-limit-input').ntsError('set', '金額範囲下限額 が入力されていません。');
-               hasError = true;
+           if (self.isLowerLimit()) {
+               $('#lower-limit-input').ntsEditor('validate');
            }
-           if (self.isUpperLimit() && self.upperLimitValue() == null) {
-               $('#upper-limit-input').ntsError('set', '金額範囲上限額 が入力されていません。');
-               hasError = true;
+           if (self.isUpperLimit()) {
+               $('#upper-limit-input').ntsEditor('validate');
            }
            if (self.isLowerLimit() && self.isUpperLimit() && self.lowerLimitValue() > self.upperLimitValue()) {
                $('#lower-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
-               hasError = true;
+               $('#upper-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
            }
            // TODO: Validation relate to employee list.
            return hasError || $('.nts-input').ntsError('hasError');

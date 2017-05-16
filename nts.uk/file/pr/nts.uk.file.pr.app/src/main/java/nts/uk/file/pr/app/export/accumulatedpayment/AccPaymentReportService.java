@@ -57,7 +57,7 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 		query.setPIdList(personIds);
 		
 		// Validate.
-//		this.validateData(query);
+		this.validateData(query);
 		
 		// Query data.
 		List<AccPaymentItemData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
@@ -86,7 +86,22 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 	}
 	
 	private void validateData(AccPaymentReportQuery query) {
-		
+		if (query.getTargetYear() == null) {
+			throw new RuntimeException("Target Year is Empty");
+		}
+		if (query.getTargetYear() < 1900 || query.getTargetYear() > 9999) {
+			throw new RuntimeException("Target Year is not in range");
+		}
+		if(query.getIsLowerLimit() && query.getLowerLimitValue() == null) {
+			throw new RuntimeException("金額範囲下限額 が入力されていません。");
+		}
+		if(query.getIsUpperLimit() && query.getUpperLimitValue() == null) {
+			throw new RuntimeException("金額範囲上限額 が入力されていません。");
+		}
+		if(query.getIsLowerLimit() && query.getIsUpperLimit() 
+				&& (query.getLowerLimitValue().intValue() > query.getUpperLimitValue().intValue())) {
+			throw new RuntimeException("金額の範囲が正しく指定されていません。");
+		}
 	}
 
 	/**

@@ -82,9 +82,10 @@
 													decimallength: 0,
 													currencyformat: 'JPY',
 													currencyposition: 'right',
-													width: '120px'
+													width: '120px',
 												},
 												constraint: 'LowerLimit',
+												required: true,
 												enable: isLowerLimit()}" />
 										<label>以上 ～</label>
 										<div id="upper-limit-checkbox" data-bind="ntsCheckBox: { checked: isUpperLimit }"></div>
@@ -97,6 +98,7 @@
 													width: '120px'
 												},
 												constraint: 'UpperLimit',
+												required: true,
 												enable: isUpperLimit()}" />
 										<label>以下</label>
 									</div>
