@@ -104,6 +104,8 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 				// A_DBD_010
 				rpData.setPaymentMyn(bankTrans.getPaymentMoney());
 				rpData.setUnit("円");
+				
+				rpData.setSparePayAtr(bankTrans.getSparePayAtr());
 
 				rpDataList.add(rpData);
 			}
@@ -147,6 +149,7 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 		BankTransferAReport reportA = new BankTransferAReport();
 		reportA.setData(rpDataList);
 		reportA.setHeader(header);
+		reportA.setSparePayAtr(query.getSparePayAtr());
 
 		this.generator.generator(context.getGeneratorContext(), reportA);
 	}

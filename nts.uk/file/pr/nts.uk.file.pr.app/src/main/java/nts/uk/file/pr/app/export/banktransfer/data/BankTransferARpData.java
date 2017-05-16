@@ -30,4 +30,6 @@ public class BankTransferARpData {
 	private BigDecimal paymentMyn;
 	
 	private String unit;
+	
+	private int sparePayAtr;
 }

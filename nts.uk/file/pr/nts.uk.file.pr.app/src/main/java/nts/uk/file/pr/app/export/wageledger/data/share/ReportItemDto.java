@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import nts.gul.collection.CollectionUtil;
 
 /**
  * The Class ReportItemDto.
@@ -41,7 +42,7 @@ public class ReportItemDto {
 	 * @return the total
 	 */
 	@Getter
-	private long total;
+	private Long total;
 	
 	/**
 	 * Calculate total.
@@ -49,7 +50,27 @@ public class ReportItemDto {
 	public void calculateTotal() {
 		this.total = this.monthlyDatas.stream().mapToLong(data -> data.amount).sum();
 	}
-
+	
+	/**
+	 * Checks if is zero value.
+	 *
+	 * @return true, if is zero value
+	 */
+	public boolean isZeroValue() {
+		if (CollectionUtil.isEmpty(monthlyDatas)) {
+			return true;
+		}
+		return this.monthlyDatas.stream().allMatch(data -> data.amount == 0);
+	}
+	
+	/**
+	 * Checks if is show.
+	 *
+	 * @return true, if is show
+	 */
+	public boolean isShow() {
+		return !(this.isZeroValue() && !this.isShowName && !this.isShowValue);
+	}
 	/**
 	 * Instantiates a new report item dto.
 	 *
