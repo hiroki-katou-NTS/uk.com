@@ -39,7 +39,7 @@ public class BankTranferReportUtil {
 			FormatConditionCollection conditionCollection = worksheet.getConditionalFormattings().get(index);
 			
 			// Define a CellsArea on which conditional formatting will be applicable
-			CellArea area = CellArea.createCellArea("A" +  startRowIdx, "F" + startRowIdx);
+			CellArea area = CellArea.createCellArea("A" +  startRowIdx, "O" + startRowIdx);
 
 			// Add area to the instance of FormatConditions
 			conditionCollection.addArea(area);
@@ -68,7 +68,7 @@ public class BankTranferReportUtil {
 				rowColorIdex ++;
 			}
 			
-			if (i == rpDataSize) {
+			if (i == rpDataSize - 1) {
 				rowColorIdex = 0;
 				Color color = Color.fromArgb(197,241,247);
 				formatCondirion.getStyle().setBackgroundArgbColor(color.toArgb());

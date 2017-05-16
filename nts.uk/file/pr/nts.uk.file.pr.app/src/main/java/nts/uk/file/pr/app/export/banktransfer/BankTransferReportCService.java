@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
@@ -69,12 +70,12 @@ public class BankTransferReportCService extends ExportService<BankTransferReport
 				Optional<BranchDto> branchDto = bankTransferReportRepo.findAllBranch(companyCode,
 						bankTrans.getToBranchId());
 				if (!branchDto.isPresent()) {
-					throw new BusinessException("ER010");
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));//ER010
 				}
 				Optional<BankDto> bankDto = bankTransferReportRepo.findAllBank(companyCode,
 						branchDto.get().getBankCode());
 				if (!bankDto.isPresent()) {
-					throw new BusinessException("ER010");
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));//ER010
 				}
 				// C_DBD_001
 				rpData.setBankName(bankDto.get().getBankName());

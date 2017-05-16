@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
@@ -69,12 +71,12 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 				Optional<BranchDto> branchDto = bankTransferReportRepo.findAllBranch(companyCode,
 						bankTrans.getToBranchId());
 				if (!branchDto.isPresent()) {
-					throw new BusinessException("ER010");
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));//ER010
 				}
 				Optional<BankDto> bankDto = bankTransferReportRepo.findAllBank(companyCode,
 						branchDto.get().getBankCode());
 				if (!bankDto.isPresent()) {
-					throw new BusinessException("ER010");
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));//ER010
 				}
 				if (query.getCurrentCode_J_SEL_004() == 0) {
 					// to- do
@@ -97,18 +99,30 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 				// B_DBD_007
 				rpData.setFromAccountNo(bankTrans.getFromAccountNo());
 				// B_DBD_008
-				int countItems = (int) bankTransfer.stream()
-						.filter(tmp -> tmp.getFromBranchId() == bankTrans.getToBranchId()
+				List<BankTransferRpDto> bankTransferObj = bankTransfer.stream()
+						.filter(tmp -> tmp.getFromBranchId().equals(bankTrans.getToBranchId())
 								&& tmp.getFromAccountAtr() == bankTrans.getFromAccountAtr()
 								&& tmp.getFromAccountNo().equals(bankTrans.getFromAccountNo()))
-						.count();
-				rpData.setNumPerSameType(countItems);
+						.collect(Collectors.toList());
+				rpData.setNumPerSameType(bankTransferObj.size());
 				// A_DBD_009
-				rpData.setPaymentMyn(bankTrans.getPaymentMoney());
+				BigDecimal pMny = BigDecimal.ZERO;
+				for(BankTransferRpDto obj : bankTransferObj){
+					pMny = pMny.add(obj.getPaymentMoney());
+				}
+				rpData.setPaymentMyn(pMny);
+				
 				rpData.setUnit("円");
 				rpData.setUnitPerson("人");
 
-				rpDataList.add(rpData);
+				if (rpDataList.stream()
+						.filter(x -> x.getBankCode().equals(rpData.getBankCode())
+								&& x.getBranchCode().equals(rpData.getBranchCode())
+								&& x.getFromAccountNo().equals(rpData.getFromAccountNo())
+								&& x.getFromAccountAtr().equals(rpData.getFromAccountAtr()))
+						.count() < 1) {
+					rpDataList.add(rpData);
+				}
 			}
 		}
 		BankTransferBRpData rpDataSum = new BankTransferBRpData();

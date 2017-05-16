@@ -167,19 +167,15 @@ module qpp014.j {
                     qpp014.j.service.saveAsPdfA(command)
                         .done(function() { })
                         .fail(function(error) {
-                            if (error.messageId == 'ER010') {
-                                nts.uk.ui.dialog.alert("対象データがありません。");
-                            }
+                            nts.uk.ui.dialog.alert(error.message);
                         });
                 } else {
                     qpp014.j.service.saveAsPdfB(command)
                         .done(function() { })
                         .fail(function(error) {
-                            if (error.messageId == 'ER010') {
-                                nts.uk.ui.dialog.alert("対象データがありません。");
-                            }
+                            nts.uk.ui.dialog.alert(error.message);
                         });
-                } 
+                }
             }
         }
     }

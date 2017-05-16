@@ -123,9 +123,7 @@ module qpp014.h.viewmodel {
                 qpp014.h.service.saveAsPdfC(command)
                     .done(function() { })
                     .fail(function(error) {
-                        if (error.messageId == 'ER010') {
-                            nts.uk.ui.dialog.alert("対象データがありません。");
-                        }
+                        nts.uk.ui.dialog.alert(error.message);
                     });
             }
         }
