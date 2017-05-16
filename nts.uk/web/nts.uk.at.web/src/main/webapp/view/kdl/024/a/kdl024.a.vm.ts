@@ -94,6 +94,10 @@ module kdl024.a.viewmodel {
             var self = this;
             //Mode INSERT
             if (self.isNew) {
+                //Format Code to Formular "000" 
+                let currentCode: string = self.currentItem().externalBudgetCode();
+                self.currentItem().externalBudgetCode(padZero(currentCode));
+                //insert process
                 service.insertExternalBudget(self.currentItem()).done(function() {
                     nts.uk.ui.dialog.alert("登録しました。")；
                         //restart
@@ -161,6 +165,10 @@ module kdl024.a.viewmodel {
             //Change mode to NEW
             self.isNew = true;
         }
+        //close dialog
+        close(){
+            nts.uk.ui.windows.close();
+        }
         //delete
         del() {
             var self = this;
@@ -198,10 +206,10 @@ module kdl024.a.viewmodel {
                     nts.uk.ui.dialog.alert(res.message);
                     self.start();
                 });
-            });            
+            }); 
         }
     }
-
+    
     interface IItem {
         externalBudgetCode: string;
         externalBudgetName: string;
@@ -238,21 +246,25 @@ module kdl024.a.viewmodel {
 
             self.externalBudgetCode.subscribe(function(newValue) {
                 var current = _.find(self.listSource, function(item) { return item.externalBudgetCode == newValue; });
-                //console.log(current);
                 if (current) {
                     self.externalBudgetCode(current.externalBudgetCode);
                     self.externalBudgetName(current.externalBudgetName);
-                    //Khong hieu tai sao 
-                    //self.budgetAtr(current.budgetAtr.toString());
                     self.unitAtr(current.unitAtr);
                     self.budgetAtr(current.budgetAtr.toString());
                 }
             });
+            
         }
         setSource(list: Array<any>) {
             var self = this;
             self.listSource = list || [];
         }
+    }
+    //Format Zero "000"
+    function padZero(code:string){
+        let format :string ="000";
+        let length : number = code.length;
+        return format.substr(0,3-length) + code;
     }
     //item Combo Box
     class ItemModelCbb {

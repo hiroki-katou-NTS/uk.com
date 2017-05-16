@@ -76,15 +76,10 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 
 	@Override
 	public Optional<ExternalBudget> find(String companyId, String externalBudgetCd) {
-		try {
 			return this.queryProxy().query(SELECTED_ITEM, KscstExternalBudget.class)
 					.setParameter("companyId", companyId)
 					.setParameter("externalBudgetCd", externalBudgetCd)
 					.getSingle(c -> toDomain(c));
-		} catch (Exception e) {
-			throw e;
-		}
-
 	}
 
 }
