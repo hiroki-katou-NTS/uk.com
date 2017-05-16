@@ -135,7 +135,7 @@ module qpp008.a.viewmodel {
             self.employyerList([]);
             service.getPersonInfo().done(function(data) {
                 self.employyerList(_.map(data, function(emp: any) {
-                    return new EmployeerInfo(emp.personID, emp.employeeCode, emp.employeeName, emp.departmentCode, emp.departmentName);
+                    return new EmployeerInfo(emp.personID, emp.employeeCode, emp.employeeName, "", "Hard code");
                 }));
                 dfd.resolve();
             });
