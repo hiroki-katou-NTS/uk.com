@@ -74,18 +74,6 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 				entity.diffReason, entity.confirmSTS);
 	}
 
-	private static QlsdtPaycompConfirm convertToEntityPaycompConfirm(PaycompConfirm domain) {
-		val entity = new QlsdtPaycompConfirm();
-		val entityPK = new QlsdtPaycompConfirmPK(domain.getCompanyCode(), domain.getEmployeeCode().v(),
-				domain.getProcessingYMEarlier().v(), domain.getProcessingYMLater().v(), domain.getCategoryAtr().value,
-				domain.getItemCode().v());
-		entity.paycompConfirmPK = entityPK;
-		entity.confirmSTS = domain.getConfirmedStatus().value;
-		entity.diffAmount = domain.getValueDifference().v();
-		entity.diffReason = domain.getReasonDifference().v();
-		return entity;
-	}
-
 	@Override
 	public List<SalaryBonusDetail> getContentReportEarlyMonth(String companyCode, List<String> PIDs, int yearMonth1,
 			String formCode) {
