@@ -162,7 +162,6 @@ module nts.uk.pr.view.qmm016.a {
                         startMonth: self.history().startYearMonth()
                     }).done(res => {
                         dfd.resolve(res.uuid);
-                        self.valueItems(self.history().detailViewModel.getCellItem());
                         self.headDirtyChecker.reset();
                         self.settingDirtyChecker.reset();
                         self.valuesDirtyChecker.reset();

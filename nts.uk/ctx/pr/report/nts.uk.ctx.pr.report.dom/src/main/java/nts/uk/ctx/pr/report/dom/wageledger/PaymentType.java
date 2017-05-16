@@ -16,14 +16,14 @@ public enum PaymentType {
 	Bonus(1);
 	
 	/** The value. */
-	public final Integer value;
+	public final int value;
 	
 	/**
 	 * Instantiates a new payment type.
 	 *
 	 * @param value the value
 	 */
-	private PaymentType(Integer value) {
+	private PaymentType(int value) {
 		this.value = value;
 	}
 	

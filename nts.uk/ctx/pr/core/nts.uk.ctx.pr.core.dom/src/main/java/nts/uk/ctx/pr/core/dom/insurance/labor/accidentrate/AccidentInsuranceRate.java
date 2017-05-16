@@ -20,17 +20,6 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
  * The Class AccidentInsuranceRate.
  */
 
-/**
- * Gets the rate items.
- *
- * @return the rate items
- */
-
-/**
- * Gets the rate items.
- *
- * @return the rate items
- */
 @Getter
 public class AccidentInsuranceRate extends DomainObject {
 
@@ -86,13 +75,6 @@ public class AccidentInsuranceRate extends DomainObject {
 	 * @param start the start
 	 * @return the accident insurance rate
 	 */
-	/*
-	 * Copy with date.
-	 *
-	 * @param start
-	 *            the start
-	 * @return the accident insurance rate
-	 */
 	public AccidentInsuranceRate copyWithDate(YearMonth start) {
 		AccidentInsuranceRate newDomain = new AccidentInsuranceRate();
 		newDomain.companyCode = this.companyCode;
@@ -106,15 +88,6 @@ public class AccidentInsuranceRate extends DomainObject {
 	 *
 	 * @param companyCode the company code
 	 * @param startYearMonth the start year month
-	 * @return the accident insurance rate
-	 */
-	/*
-	 * Creates the with intial.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param startYearMonth
-	 *            the start year month
 	 * @return the accident insurance rate
 	 */
 	public static final AccidentInsuranceRate createWithIntial(String companyCode,
@@ -143,21 +116,11 @@ public class AccidentInsuranceRate extends DomainObject {
 	 * @param businessTypeEnum the business type enum
 	 * @return the insu biz rate item
 	 */
-	/*
-	 * Value intial.
-	 *
-	 * @param businessTypeEnum
-	 *            the business type enum
-	 * @return the insu biz rate item
-	 */
 	public static final InsuBizRateItem valueIntial(BusinessTypeEnum businessTypeEnum) {
 		return new InsuBizRateItem(businessTypeEnum, Double.valueOf("0"), RoundingMethod.RoundUp);
 	}
 
 	/**
-	 * Sets the max date.
-	 */
-	/*
 	 * Sets the max date.
 	 */
 	public void setMaxDate() {
@@ -169,12 +132,6 @@ public class AccidentInsuranceRate extends DomainObject {
 	 *
 	 * @param yearMonth the new start
 	 */
-	/*
-	 * Sets the start.
-	 *
-	 * @param yearMonth
-	 *            the new start
-	 */
 	public void setStart(YearMonth yearMonth) {
 		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
 	}
@@ -183,12 +140,6 @@ public class AccidentInsuranceRate extends DomainObject {
 	 * Sets the end.
 	 *
 	 * @param yearMonth the new end
-	 */
-	/*
-	 * Sets the end.
-	 *
-	 * @param yearMonth
-	 *            the new end
 	 */
 	public void setEnd(YearMonth yearMonth) {
 		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
