@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 import nts.arc.i18n.custom.ISystemResourceBundle;
 import nts.arc.i18n.custom.ResourceType;
 import nts.arc.layer.infra.data.EntityManagerLoader;
+import nts.uk.shr.infra.i18n.SystemProperties;
 import nts.uk.shr.infra.i18n.entity.SystemResource;
 
 @Startup
@@ -38,14 +39,21 @@ public class SystemResourceLoading implements ISystemResourceBundle {
 
 		// group by language
 		Map<String, List<SystemResource>> resourceGroupingByLanguage = resource.stream()
-				.collect(Collectors.groupingBy(SystemResource::getLanguageCode, Collectors.toList()));
+				.collect(Collectors.groupingBy((x) -> x.getPk().getLanguageCode(), Collectors.toList()));
 
 		resourceGroupingByLanguage.forEach((k, v) -> {
 
 			// Map<Locale,Map<Type,Map<ProgramID,Map<id,content>>>>
-			Map<ResourceType, Map<String, Map<String, String>>> groupByProgram = v.stream().collect(
-					Collectors.groupingBy(SystemResource::getType, Collectors.groupingBy(SystemResource::getProgramId,
-							Collectors.toMap(SystemResource::getCode, SystemResource::getContent))));
+			Map<ResourceType, Map<String, Map<String, String>>> groupByProgram = v.stream()
+					.collect(Collectors.groupingBy(SystemResource::getType,
+							Collectors.groupingBy((x) -> x.getPk().getProgramId(), Collectors.toMap((x) -> {
+								if (SystemProperties.SYSTEM_ID.equals(x.getPk().getProgramId())) {
+									return x.getPk().getCode();
+								} else {
+									return x.getPk().getProgramId() + SystemProperties.UNDERSCORE + x.getPk().getCode();
+								}
+
+							}, SystemResource::getContent))));
 
 			tempGroupByProgram.put(k, groupByProgram);
 
@@ -60,6 +68,7 @@ public class SystemResourceLoading implements ISystemResourceBundle {
 		Map<String, Map<String, String>> result = systemResourceGroupByProgram
 				.getOrDefault(language.getLanguage(), new HashMap<ResourceType, Map<String, Map<String, String>>>())
 				.get(type);
+
 		if (result == null) {
 			return new HashMap<String, Map<String, String>>();
 		}

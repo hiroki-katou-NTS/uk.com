@@ -75,7 +75,7 @@
 								</div>
 								<div class="cell valign-center">
 									<div>
-										<input id="startDateInput" data-name="印刷用名称" class="data-required" data-bind="ntsTextEditor: {
+										<input id="startDateInput" data-name="有効開始日" class="data-required" data-bind="ntsTextEditor: {
 											value: currentPersonCost().startDate,
 											option: { width: '90px' },
 											required: true, 
@@ -88,7 +88,7 @@
 									<div data-bind="ntsFormLabel: { required: true }">人件費を計算する際に使用する単価</div>
 								</div>
 								<div class="cell valign-center">
-									<div id="combo-box" data-bind="ntsComboBox: {
+									<div id="combo-box" data-name="単価" data-bind="ntsComboBox: {
 															options: ko.observableArray([
 												                { code: 0, name: '単価1' },
 												                { code: 1, name: '単価2' },
@@ -104,8 +104,8 @@
 								</div>
 							</div>
 							<div class="table">
-								<div class="item-valign-top" data-bind="ntsFormLabel: {}">メモ</div>
-								<textarea id="inp-2" data-name="メモ" data-bind="ntsMultilineEditor: {
+								<div class="item-valign-top" data-bind="ntsFormLabel: { constraint: 'Memo' }">メモ</div>
+								<textarea id="inp-2" data-name="備考" data-bind="ntsMultilineEditor: {
 									value: currentPersonCost().memo,
 									constraint: 'Memo'}" />
 							</div>
@@ -120,11 +120,11 @@
 									</thead>
 									<tbody data-bind="foreach: currentPersonCost().premiumSets">
 										<tr data-bind="css: { notUse: useAtr() == 0 }">
-											<td data-bind="text: (premiumName()=='')?'ITEM'+($index()+1):premiumName()"></td>
+											<td data-bind="text: (name()=='')?'ITEM'+($index()+1):name()"></td>
 											<td>
 												<span>
 													<input class="premiumInput premiumPercent" data-bind="ntsNumberEditor: {
-															value: premiumRate,
+															value: rate,
 															constraint: 'PremiumRate',
 															option: { width: '35px' },
 															required: true, 
@@ -140,7 +140,7 @@
 													<input class="premiumInput premiumItems" data-bind="ntsTextEditor: {
 													value: ko.pureComputed(function () {
 														let s;
-														ko.utils.arrayForEach($parent.currentPersonCost().premiumSets()[$index()].timeItemIDs(), function(item) { if (!s) { s = item } else {s+=' + '+item; } });
+														ko.utils.arrayForEach($parent.currentPersonCost().premiumSets()[$index()].attendanceItems(), function(item) { if (!s) { s = item; } else {s+=' + '+item; } });
 														return s;
 													}),
 													constraint: 'Memo',

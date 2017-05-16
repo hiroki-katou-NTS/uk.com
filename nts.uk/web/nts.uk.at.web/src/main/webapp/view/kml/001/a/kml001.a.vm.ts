@@ -10,7 +10,7 @@ module kml001.a.viewmodel {
         constructor() {
             var self = this;
             self.personCostList = ko.observableArray([]);
-            self.currentPersonCost = ko.observable(new vmbase.PersonCostCalculation('','','',0,"","9999/12/31",[]));
+            self.currentPersonCost = ko.observable(new vmbase.PersonCostCalculation('','',"","9999/12/31",0,'',[]));
             self.gridPersonCostList = ko.observableArray([]);
             self.currentGridPersonCost = ko.observable(); 
             self.isInsert = ko.observable(true);
@@ -50,7 +50,7 @@ module kml001.a.viewmodel {
             res.forEach(function(personCostCalc){
                 self.personCostList.push(vmbase.ProcessHandler.fromObjectPerconCost(personCostCalc));
             });
-            self.currentPersonCost((_.first(self.personCostList())==null)?new vmbase.PersonCostCalculation('','','',0,"","9999/12/31",[]):_.first(self.personCostList()));
+            self.currentPersonCost((_.first(self.personCostList())==null)?new vmbase.PersonCostCalculation('','',"","9999/12/31",0,'',[]):_.first(self.personCostList()));
             self.personCostList().forEach(function(item) { self.gridPersonCostList.push({dateRange: item.startDate()+" ~ "+item.endDate()})});
             self.currentGridPersonCost(self.currentPersonCost().startDate()+" ~ "+self.currentPersonCost().endDate()); 
         }
@@ -135,24 +135,24 @@ module kml001.a.viewmodel {
                     let copyDataFlag: boolean = nts.uk.ui.windows.getShared('copyDataFlag'); 
                     if(!copyDataFlag) {
                         if(_.size(self.personCostList())==0){
-                            self.currentPersonCost(new vmbase.PersonCostCalculation('','','',0,newStartDate,"9999/12/31",[]));
+                            self.currentPersonCost(new vmbase.PersonCostCalculation('','',newStartDate,"9999/12/31",0,'',[]));
                             let newPremiumSets = [];
                             for (let i = 1; i <= 10; i++) { 
-                                newPremiumSets.push(new vmbase.PremiumSetting("", "", i.toString(), "", i.toString(), 1, 0, []));
+                                newPremiumSets.push(new vmbase.PremiumSetting("", "", i, 0, i, "", i, 1, []));
                             }
                             self.currentPersonCost().premiumSets(newPremiumSets);
                         } else {
                             let premiumItemSetting = _.cloneDeep(self.currentPersonCost().premiumSets());
                             self.currentPersonCost().companyID('');
                             self.currentPersonCost().historyID('');
-                            self.currentPersonCost().memo('');
-                            self.currentPersonCost().unitPrice(0);
                             self.currentPersonCost().startDate(newStartDate);
                             self.currentPersonCost().endDate("9999/12/31");
+                            self.currentPersonCost().unitPrice(0);
+                            self.currentPersonCost().memo('');
                             self.currentPersonCost().premiumSets([]);
                             let newPremiumSets = [];
                             for (let i = 1; i <= 10; i++) { 
-                                newPremiumSets.push(new vmbase.PremiumSetting("", "", i.toString(), "", i.toString(), premiumItemSetting[i-1].useAtr(), 0, []));
+                                newPremiumSets.push(new vmbase.PremiumSetting("", "", i, 0, i, "", i, premiumItemSetting[i-1].useAtr(), []));
                             }
                             self.currentPersonCost().premiumSets(newPremiumSets);
                         }

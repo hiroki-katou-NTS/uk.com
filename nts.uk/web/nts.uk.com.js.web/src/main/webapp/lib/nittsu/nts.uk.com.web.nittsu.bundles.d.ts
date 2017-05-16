@@ -1,5 +1,4 @@
-/// <reference path="../../src/main/webapp/lib/nittsu/ui/viewcontext.d.ts" />
-/// <reference path="../../src/main/webapp/lib/generic/momentjs/moment.d.ts" />
+
 declare module nts.uk.ntsNumber {
     function isNumber(value: any, isDecimalValue?: boolean, option?: any): boolean;
     var trunc: (value: number) => number;

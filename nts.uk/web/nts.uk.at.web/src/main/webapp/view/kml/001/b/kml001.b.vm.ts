@@ -2,26 +2,27 @@ module kml001.b.viewmodel {
     import servicebase = kml001.shr.servicebase;
     import vmbase = kml001.shr.vmbase;
     export class ScreenModel {
-        extraTimeItemList: KnockoutObservableArray<vmbase.ExtraTimeItem>;
+        premiumItemList: KnockoutObservableArray<vmbase.PremiumItem>;
         isInsert: Boolean;
         constructor() {
             var self = this;
-            self.extraTimeItemList = ko.observableArray([]);   
-            self.isInsert = nts.uk.ui.windows.getShared('personCostList');
+            self.premiumItemList = ko.observableArray([]);   
+            self.isInsert = nts.uk.ui.windows.getShared('isInsert');
         }
         
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            servicebase.extraTimeSelect()
+            servicebase.premiumItemSelect()
                 .done(function(data) {
                     data.forEach(function(item){
-                        self.extraTimeItemList.push(
-                            new vmbase.ExtraTimeItem(
+                        self.premiumItemList.push(
+                            new vmbase.PremiumItem(
                                 item.companyID,
-                                item.extraItemID,
-                                item.premiumName,
-                                item.timeItemID,
+                                item.iD,
+                                item.attendanceID,
+                                item.name,
+                                item.displayNumber,
                                 item.useAtr
                             ));
                     });
@@ -35,12 +36,12 @@ module kml001.b.viewmodel {
         
         submitAndCloseDialog(): void {
             var self = this;
-            let extraItemListCommand = [];
-            ko.utils.arrayForEach(self.extraTimeItemList(), function(item) { extraItemListCommand.push(ko.mapping.toJS(item)) });
-            servicebase.extraTimeUpdate(extraItemListCommand)
+            let premiumItemListCommand = [];
+            ko.utils.arrayForEach(self.premiumItemList(), function(item) { premiumItemListCommand.push(ko.mapping.toJS(item)) });
+            servicebase.premiumItemUpdate(premiumItemListCommand)
                 .done(function(res: Array<any>) {
                     if(self.isInsert){
-                        nts.uk.ui.windows.setShared('premiumSets', ko.mapping.toJS(extraItemListCommand));    
+                        nts.uk.ui.windows.setShared('premiumSets', ko.mapping.toJS(premiumItemListCommand));    
                     }
                     nts.uk.ui.windows.setShared('updatePremiumSeting', true);
                     nts.uk.ui.windows.close();

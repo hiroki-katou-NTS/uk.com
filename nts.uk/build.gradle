@@ -100,7 +100,7 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.17'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.23'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.24'
 	}
 }
 
@@ -558,6 +558,7 @@ project (':web:nts.uk.com.web') {
 		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
 		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp')
 		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.ws')
+		
 	}
 }
 //=====================nts.uk.com.js.web↓============================
@@ -670,6 +671,7 @@ project (':web:nts.uk.at.web') {
 
 		// implement eraAdapter
 		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
+		
 	}
 }
 //=====================nts.uk.at.web↑==============================

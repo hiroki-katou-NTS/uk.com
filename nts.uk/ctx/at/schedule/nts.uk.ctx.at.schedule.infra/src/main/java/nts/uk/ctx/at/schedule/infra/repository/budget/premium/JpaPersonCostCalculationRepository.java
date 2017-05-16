@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,14 +19,14 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.ctx.at.schedule.dom.budget.premium.UnitPrice;
-import nts.uk.ctx.at.schedule.dom.budget.premium.UseClassification;
+import nts.uk.ctx.at.schedule.dom.budget.premium.UseAttribute;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmldpPremiumAttendancePK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmldtPremiumAttendance;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlmpPersonCostCalculationPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlmtPersonCostCalculation;
-import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlspExtraTimePK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmpPremiumItemPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlspPremiumSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlstExtraTime;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmtPremiumItem;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlstPremiumSet;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -107,23 +108,24 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		return new PersonCostCalculation(
 				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.companyID, 
 				kmlmtPersonCostCalculation.kmlmpPersonCostCalculationPK.historyID, 
-				new Memo(kmlmtPersonCostCalculation.memo), 
-				EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class) , 
 				kmlmtPersonCostCalculation.startDate, 
 				kmlmtPersonCostCalculation.endDate,
-				kmlmtPersonCostCalculation.premiumSets.stream().map(x -> toDomainPremiumSetting(x)).collect(Collectors.toList()));
+				EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPrice, UnitPrice.class), 
+				new Memo(kmlmtPersonCostCalculation.memo),
+				kmlmtPersonCostCalculation.kmlstPremiumSets.stream().map(x -> toDomainPremiumSetting(x)).collect(Collectors.toList()));
 	}
 	
 	private PremiumSetting toDomainPremiumSetting(KmlstPremiumSet kmlstPremiumSet) {
 		return new PremiumSetting(
 				kmlstPremiumSet.kmlspPremiumSet.companyID, 
 				kmlstPremiumSet.kmlspPremiumSet.historyID, 
-				kmlstPremiumSet.kmlspPremiumSet.premiumCD, 
+				kmlstPremiumSet.kmlspPremiumSet.premiumID, 
 				new PremiumRate(kmlstPremiumSet.premiumRate),
-				new PremiumName(kmlstPremiumSet.extraTime.premiumName),
-				kmlstPremiumSet.extraTime.timeItemCD,
-				EnumAdaptor.valueOf(kmlstPremiumSet.extraTime.useAtr, UseClassification.class) ,
-				kmlstPremiumSet.premiumAttendances.stream().map(x -> x.premiumAttendancePK.attendanceCD).collect(Collectors.toList()));
+				kmlstPremiumSet.kmnmtPremiumItem.attendanceID,
+				new PremiumName(kmlstPremiumSet.kmnmtPremiumItem.name),
+				kmlstPremiumSet.kmnmtPremiumItem.displayNumber,
+				EnumAdaptor.valueOf(kmlstPremiumSet.kmnmtPremiumItem.useAtr, UseAttribute.class),
+				kmlstPremiumSet.kmldtPremiumAttendances.stream().map(x -> x.kmldpPremiumAttendancePK.attendanceID).collect(Collectors.toList()));
 	}
 	
 	/**
@@ -137,10 +139,10 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 						personCostCalculation.getCompanyID(), 
 						personCostCalculation.getHistoryID()
 				), 
-				personCostCalculation.getMemo().v(), 
-				personCostCalculation.getUnitprice().value, 
 				personCostCalculation.getStartDate(), 
 				personCostCalculation.getEndDate(),
+				personCostCalculation.getUnitPrice().value, 
+				personCostCalculation.getMemo().v(), 
 				personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetEntity(x)).collect(Collectors.toList()));
 	}
 	
@@ -149,33 +151,34 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				new KmlspPremiumSetPK(
 						premiumSetting.getCompanyID(), 
 						premiumSetting.getHistoryID(), 
-						premiumSetting.getAttendanceID()
+						premiumSetting.getPremiumID()
 				), 
-				premiumSetting.getPremiumRate().v(),
+				premiumSetting.getRate().v(),
 				null,
-				toExtraTimeEntity(premiumSetting),
+				toPremiumItemEntity(premiumSetting),
 				premiumSetting.getTimeItemIDs().stream().map(x -> toPremiumAttendanceEntity(
 								premiumSetting.getCompanyID(), 
 								premiumSetting.getHistoryID(), 
-								premiumSetting.getAttendanceID(), 
+								premiumSetting.getPremiumID(), 
 								x)
 						).collect(Collectors.toList())
 				);
 	}
 	
-	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, String premiumCD, String attendanceCD){
+	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, BigDecimal premiumID, BigDecimal attendanceID){
 		return new KmldtPremiumAttendance(
-				new KmldpPremiumAttendancePK(companyID, historyID, attendanceCD, premiumCD),
+				new KmldpPremiumAttendancePK(companyID, historyID, premiumID, attendanceID),
 				null);
 	}
 	
-	private KmlstExtraTime toExtraTimeEntity(PremiumSetting premiumSetting){
-		return new KmlstExtraTime(
-				new KmlspExtraTimePK(
+	private KmnmtPremiumItem toPremiumItemEntity(PremiumSetting premiumSetting){
+		return new KmnmtPremiumItem(
+				new KmnmpPremiumItemPK(
 						premiumSetting.getCompanyID(), 
-						premiumSetting.getAttendanceID()), 
-				premiumSetting.getPremiumName().v(), 
-				premiumSetting.getInternalID(), 
+						premiumSetting.getPremiumID()), 
+				premiumSetting.getAttendanceID(),
+				premiumSetting.getName().v(), 
+				premiumSetting.getDisplayNumber(), 
 				premiumSetting.getUseAtr().value);
 	}
 }

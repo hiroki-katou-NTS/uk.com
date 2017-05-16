@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 980, height: 500 };</script>
+		<script>var dialogSize = { width: 900, height: 500 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
 				nts.uk.shr.com.primitive.Memo
@@ -21,23 +21,23 @@
 		<ui:define name="content">
 			<div id="function_area">
 				<!-- B1_1: Button New -->
-				<button id="btn_001" class="button separate-button fix-button"
+				<button tabindex="1" id="btn_001" class="button separate-button fix-button"
 						data-bind ="click: refreshData">新規</button>
 				<!-- B1_2: Button Registration -->
-				<button id="btn_002" class="button proceed separate-button fix-button"
+				<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button"
 						data-bind = "click: RegistrationDivReason">登録</button>
 				<!-- B1_3: Button Delete -->
-				<button id="btn_005" class="button danger separate-button fix-button"
+				<button tabindex="3" id="btn_005" class="button danger separate-button fix-button"
 						data-bind = "click: deleteDivReason">削除</button>	
 				<!-- B1_4: Button Close -->	
-				<button id="btn_004" class="button separate-button fix-button"
+				<button tabindex="4" id="btn_004" class="button separate-button fix-button"
 						data-bind = "click: closeDialog">閉じる</button>
 				<hr />
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float:left" class="bg-green caret-right caret-background">
 					<div style="float:left; margin: 20px" >																					
-						<table id="single-list" 
+						<table tabindex="5" id="single-list" 
 							data-bind="ntsGridList:{
 								width: 280,
 								height: 250,
@@ -64,10 +64,10 @@
 							</td>
 							<td>
 								<!-- B3_2: Divergence Reason Code -->
-								<input class = "nts-input" id="inpCode" style="width: 20px" data-bind="ntsTextEditor: {
+								<input tabindex="6" class = "nts-input" id="inpCode" style="width: 20px" data-bind="ntsTextEditor: {
                                           value: divReasonCode, enable: enableCode,required: true}" data-name="Code"/>
 								<!-- B3_3: Divergence Reason Content -->
-								<input class = "nts-input2" data-bind="ntsTextEditor: {
+								<input tabindex="7" class = "nts-input2" data-bind="ntsTextEditor: {
                                           value: divReasonContent,
                                           required: true}" />
 							</td>
@@ -79,7 +79,7 @@
 							</td>
 							<td>
 								<!-- B3_5 -->
-								<div class="cf" data-bind="ntsSwitchButton: {
+								<div tabindex="8" class="cf" data-bind="ntsSwitchButton: {
 									options: switchUSe3,
 									optionsValue: 'code',
 									optionsText: 'name',

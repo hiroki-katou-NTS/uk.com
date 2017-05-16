@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.EqualsAndHashCode;
@@ -13,20 +14,33 @@ public class PremiumSetting {
 	
 	private String historyID;
 	
-	private String attendanceID;
+	private BigDecimal premiumID;
 	
-    private PremiumRate premiumRate;
+    private PremiumRate rate;
     
-    private PremiumName premiumName;
+    private BigDecimal attendanceID;
     
-    private String internalID;
+    private PremiumName name;
     
-    private UseClassification useAtr;
+    private BigDecimal displayNumber;
     
-    private List<String> timeItemIDs;
+    private UseAttribute useAtr;
     
-    public static PremiumSetting createFromJavaType(String companyID, String historyID, String attendanceID, PremiumRate premiumRate, 
-    		PremiumName premiumName, String externalID, UseClassification useAtr, List<String> timeItemIDs) {
-		return new PremiumSetting(companyID, historyID, attendanceID, premiumRate, premiumName, externalID, useAtr, timeItemIDs);
+    private List<BigDecimal> timeItemIDs;
+
+	public PremiumSetting(String companyID, String historyID, BigDecimal premiumID, PremiumRate rate,
+			BigDecimal attendanceID, PremiumName name, BigDecimal displayNumber, UseAttribute useAtr,
+			List<BigDecimal> timeItemIDs) {
+		super();
+		this.companyID = companyID;
+		this.historyID = historyID;
+		this.premiumID = premiumID;
+		this.rate = rate;
+		this.attendanceID = attendanceID;
+		this.name = name;
+		this.displayNumber = displayNumber;
+		this.useAtr = useAtr;
+		this.timeItemIDs = timeItemIDs;
 	}
+    
 }

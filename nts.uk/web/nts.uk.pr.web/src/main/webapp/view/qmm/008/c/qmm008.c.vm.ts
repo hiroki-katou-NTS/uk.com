@@ -72,20 +72,13 @@ module nts.uk.pr.view.qmm008.c {
                 // add history dialog
                 self.isTransistReturnData = ko.observable(false);
 
-                self.fundInputEnable = ko.observable(false);
-
                 self.isLoading = ko.observable(true);
                 self.currentOfficeCode = ko.observable('');
                 self.japanYear = ko.observable('');
                 self.sendOfficeData = ko.observable('');
 
-                self.pensionModel().fundInputApply.subscribe(function() {
-                    //change select -> hide fund input table
-                    if (self.pensionModel().fundInputApply() != 1) {
-                        self.fundInputEnable(true);
-                    } else {
-                        self.fundInputEnable(false);
-                    }
+                self.fundInputEnable = ko.computed(() => {
+                    return self.pensionModel().fundInputApply() == 1;
                 });
                 self.errorList = ko.observableArray([
                     { messageId: "ER001", message: "＊が入力されていません。" },
@@ -323,7 +316,7 @@ module nts.uk.pr.view.qmm008.c {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-
+                self.dirty.reset();
                 //check auto calculate
                 if (self.pensionModel().autoCalculate() == AutoCalculateType.Auto) {
                     nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
@@ -333,8 +326,6 @@ module nts.uk.pr.view.qmm008.c {
                             dfd.reject();
                             return dfd.promise();
                         }
-
-                        self.dirty.reset();
 
                         //update pension
                         service.updatePensionRate(self.pensionCollectData()).done(function() {
@@ -354,8 +345,6 @@ module nts.uk.pr.view.qmm008.c {
                         return dfd.promise();
                     }
 
-                    self.dirty.reset();
-
                     service.updatePensionRate(self.pensionCollectData()).done(function() {
                         self.backupDataDirty(self.pensionCollectData());
                     }).fail((res) => {
@@ -363,8 +352,7 @@ module nts.uk.pr.view.qmm008.c {
                     });
                 }
 
-                dfd.resolve();
-
+                dfd.resolve(self.pensionModel().historyId);
                 return dfd.promise();
             }
 

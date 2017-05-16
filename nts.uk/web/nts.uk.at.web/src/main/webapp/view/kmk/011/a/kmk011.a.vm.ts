@@ -149,9 +149,9 @@ module kmk011.a.viewmodel {
                 nts.uk.ui.windows.setShared('Multiple', true, true);
                 console.log(listIdSelect);
                 console.log(listAllId);
-//                nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-//                    var list  = nts.uk.ui.windows.getShared('selectedChildAttendace');
-                    var list = [101,104,109,113];
+                nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+                    var list  = nts.uk.ui.windows.getShared('selectedChildAttendace');
+//                    var list = [101,104,109,113];
                 self.list(list);
                     var listUpdate = new Array<service.model.DivergenceTimeItem>();
                     for(let i=0;i<list.length;i++){
@@ -164,7 +164,7 @@ module kmk011.a.viewmodel {
                         self.findTimeName(self.divTimeId());
                         })
                     })
-//                });  
+                });  
 //            })
         }
         Registration(){

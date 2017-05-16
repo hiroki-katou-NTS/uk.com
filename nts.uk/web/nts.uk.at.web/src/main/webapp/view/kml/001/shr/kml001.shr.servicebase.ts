@@ -4,8 +4,8 @@ module kml001.shr.servicebase {
         personCostCalculationInsert: "at/budget/premium/insert",
         personCostCalculationUpdate: "at/budget/premium/update",
         personCostCalculationDelete: "at/budget/premium/delete",
-        extraTimeSelect: "at/budget/premium/extraTime/findBycompanyID",
-        extraTimeUpdate: "at/budget/premium/extraTime/update"
+        premiumItemSelect: "at/budget/premium/premiumItem/findBycompanyID",
+        premiumItemUpdate: "at/budget/premium/premiumItem/update"
     }
     
     export function personCostCalculationSelect(): JQueryPromise<any> {
@@ -56,9 +56,9 @@ module kml001.shr.servicebase {
         return dfd.promise();
     }
     
-    export function extraTimeSelect(): JQueryPromise<any> {
+    export function premiumItemSelect(): JQueryPromise<any> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.extraTimeSelect)
+        nts.uk.request.ajax(paths.premiumItemSelect)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
@@ -68,9 +68,9 @@ module kml001.shr.servicebase {
         return dfd.promise();
     }
     
-    export function extraTimeUpdate(command): JQueryPromise<any> {
+    export function premiumItemUpdate(command): JQueryPromise<any> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.extraTimeUpdate, command)
+        nts.uk.request.ajax(paths.premiumItemUpdate, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })

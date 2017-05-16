@@ -2,9 +2,6 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-/**
- * 
- */
 package nts.uk.pr.file.infra.insurance.salary;
 
 import java.lang.reflect.Field;
@@ -45,7 +42,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
  * The Class AsposeSalarySocialInsuranceReportGenerator.
- *
  */
 @Stateless
 public class AsposeSocialInsuReportGenerator extends AsposeCellsReportGenerator
@@ -53,9 +49,6 @@ public class AsposeSocialInsuReportGenerator extends AsposeCellsReportGenerator
 
     /** The Constant TEMPLATE_FILE. */
     private static final String TEMPLATE_FILE = "report/QPP018_1.xlsx";
-
-    /** The Constant REPORT_FILE_NAME. */
-    private static final String REPORT_FILE_NAME = "給与社会保険料チェックリスト.pdf";
 
     /** The Constant PRINT_AREA. */
     private static final String PRINT_AREA = "A1:Q";
@@ -92,7 +85,8 @@ public class AsposeSocialInsuReportGenerator extends AsposeCellsReportGenerator
             // combine personal and company workbook 
             workbookPersonal.combine(workbookCompany);
             
-            reportContext.saveAsPdf(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+            reportContext.saveAsPdf(this.createNewFile(fileContext,
+                    this.getReportName(ReportConstant.REPORT_FILE_NAME)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -270,12 +264,14 @@ public class AsposeSocialInsuReportGenerator extends AsposeCellsReportGenerator
             boolean isCompany) throws Exception {
         Range newRange = createRangeFromOtherRange(printProcess, rangeOffice);
         String officeCode = ReportConstant.OFFICE_JP.concat(office.getCode());
-        setDataRangeFirstRow(printProcess.worksheet, newRange, ReportConstant.NUMBER_ZERO, officeCode, office.getName());
+        setDataRangeFirstRow(printProcess.worksheet, newRange, ReportConstant.NUMBER_ZERO, officeCode,
+                office.getName());
         
         if (!isCompany) {
             int indexColumnLast = NUMBER_COLUMN - ReportConstant.NUMBER_ONE;
             printProcess.worksheet.getCells().hideColumn(indexColumnLast);
-            Style style = newRange.get(ReportConstant.NUMBER_ZERO, indexColumnLast - ReportConstant.NUMBER_ONE).getStyle();
+            Style style = newRange.get(ReportConstant.NUMBER_ZERO, indexColumnLast - ReportConstant.NUMBER_ONE)
+                    .getStyle();
             style.setPattern(BackgroundType.SOLID);
             style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
             newRange.get(ReportConstant.NUMBER_ZERO, indexColumnLast - ReportConstant.NUMBER_ONE).setStyle(style);
@@ -319,7 +315,8 @@ public class AsposeSocialInsuReportGenerator extends AsposeCellsReportGenerator
         int numberEmployeeOffice = office.getEmployeeDtos().size();
         String totalEmployeeOffice = String.valueOf(numberEmployeeOffice).concat(" 人");
         Range newRange = createRangeFromOtherRange(printProcess, rangeFooterEachOffice);
-        setDataRangeFirstRow(printProcess.worksheet, newRange, ReportConstant.NUMBER_ZERO, "事業所　計", totalEmployeeOffice);
+        setDataRangeFirstRow(printProcess.worksheet, newRange, ReportConstant.NUMBER_ZERO, "事業所　計",
+                totalEmployeeOffice);
         setDataTotal(printProcess.worksheet, newRange, office.getTotalEachOffice());
         printProcess.indexRow++;
     }
@@ -373,7 +370,8 @@ public class AsposeSocialInsuReportGenerator extends AsposeCellsReportGenerator
      * @param isForegroundColor the is foreground color
      */
     @SuppressWarnings("rawtypes")
-    private void writeDataEmployee(PrintProcess printProcess, DataRowItem rowData, Range range, boolean isForegroundColor) {
+    private void writeDataEmployee(PrintProcess printProcess, DataRowItem rowData, Range range,
+            boolean isForegroundColor) {
         Cells cells = printProcess.worksheet.getCells();
         int indexRowCurrent = range.getFirstRow();
         List valueOfAttributes = convertObjectToList(rowData);

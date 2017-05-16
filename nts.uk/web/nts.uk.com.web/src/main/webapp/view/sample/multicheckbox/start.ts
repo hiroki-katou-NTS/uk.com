@@ -18,7 +18,7 @@ __viewContext.ready(function () {
                 new BoxModel(3, 'box 3')
             ]);
             self.selectedIds = ko.observableArray([1,2]);
-            self.enable = ko.observable(true);
+            self.enable = ko.observable(false);
             self.value = ko.observable(0);
         }
         

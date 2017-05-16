@@ -30,7 +30,6 @@ input, textarea {
 	padding-left: 5px;
 	padding-right: 5px;
 }
-textarea { margin-left: 10px;}
 
 .pull-left {
 	width: 330px;
@@ -65,7 +64,7 @@ textarea { margin-left: 10px;}
 }
 
 #inp-2 {
-	width: 440px;
+	width: 390px;
 	height: 100px;
 }
 #dateRange-list_dateRange {
@@ -129,6 +128,7 @@ textarea { margin-left: 10px;}
 	width: 600px;
 	height: 140px;
 	background-color: #F2F2F2;
+	border-radius: 5px;
 }
 #formula {
 	width: 515px;
