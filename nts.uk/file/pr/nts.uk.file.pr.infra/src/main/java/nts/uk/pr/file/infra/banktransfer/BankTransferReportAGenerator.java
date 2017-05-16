@@ -63,7 +63,7 @@ public class BankTransferReportAGenerator extends AsposeCellsReportGenerator imp
 	}
 	
 	private boolean addSheet(AsposeCellsReportContext reportContext, BankTransferAReport report) {
-		if (!StringUtil.isNullOrEmpty(report.getSparePayAtr(), true)) {
+		if (!report.getSparePayAtr().equals("3")) {
 			return false;
 		}
 		
