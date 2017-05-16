@@ -27,8 +27,8 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 			+ "AND d.qstdtPaymentDetailPK.categoryATR = i.qcamtItemPK.ctgAtr AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd "
 			+ "INNER JOIN PbsmtPersonBase p ON p.pid = d.qstdtPaymentDetailPK.personId "
 			+ "INNER JOIN PcpmtPersonCom pc ON pc.pcpmtPersonComPK.pid = p.pid "
-			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :ccd AND pc.pid IN :personIDs AND d.qstdtPaymentDetailPK.processingYM = :processYM "
-			+ "AND d.qstdtPaymentDetailPK.categoryATR in (0,1,3) ORDER BY p.scd, d.qstdtPaymentDetailPK.itemCode";
+			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :ccd AND p.pid IN :personIDs AND d.qstdtPaymentDetailPK.processingYM = :processYM "
+			+ "AND d.qstdtPaymentDetailPK.categoryATR in (0,1,3) ORDER BY pc.scd, d.qstdtPaymentDetailPK.itemCode";
 
 	private final String SELECT_PAYCOMP_COMFIRM = "SELECT c FROM QlsdtPaycompConfirm as c WHERE "
 			+ "c.paycompConfirmPK.companyCode = :companyCode AND c.paycompConfirmPK.personId IN :personId "

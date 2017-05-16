@@ -12,7 +12,7 @@ module qpp008.a.viewmodel {
         statusRegisterColumns: KnockoutObservableArray<any>;
         statusRegisterSelectCode: KnockoutObservableArray<string>;
         /*Multiple selecting GridList*/
-        employyerList: KnockoutObservableArray<Employeer>;
+        employyerList: KnockoutObservableArray<EmployeerInfo>;
         employyerColumns: KnockoutObservableArray<any>;
         employyerCurrentCodeList: KnockoutObservableArray<any>;
         //combobox1
@@ -135,7 +135,7 @@ module qpp008.a.viewmodel {
             self.employyerList([]);
             service.getPersonInfo().done(function(data) {
                 self.employyerList(_.map(data, function(emp: any) {
-                    return new Employeer(emp.employeeCode, emp.employeeName, "");
+                    return new EmployeerInfo(emp.personID, emp.employeeCode, emp.employeeName, "");
                 }));
                 dfd.resolve();
             });
@@ -256,7 +256,7 @@ module qpp008.a.viewmodel {
         }
     }
 
-    class Employeer {
+    class EmployeerInfo {
         personID: string;
         employeeCode: string;
         employeeName: string;
