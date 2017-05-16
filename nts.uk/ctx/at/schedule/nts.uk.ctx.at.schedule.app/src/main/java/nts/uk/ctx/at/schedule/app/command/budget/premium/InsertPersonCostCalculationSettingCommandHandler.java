@@ -58,7 +58,7 @@ public class InsertPersonCostCalculationSettingCommandHandler extends CommandHan
 									new PremiumName(x.getName()), 
 									x.getDisplayNumber(), 
 									EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class), 
-									x.getTimeItemIDs()))
+									x.getAttendanceItems()))
 							.collect(Collectors.toList())
 					)
 		);

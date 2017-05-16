@@ -11,18 +11,18 @@ public class PremiumItem {
 	
 	private String companyID;
 	
-	private BigDecimal iD;
+	private Integer iD;
 	
-	private BigDecimal attendanceID;
+	private Integer attendanceID;
 	
 	private PremiumName name;
 
-	private BigDecimal displayNumber;
+	private Integer displayNumber;
 
 	private UseAttribute useAtr;
 
-	public PremiumItem(String companyID, BigDecimal iD, BigDecimal attendanceID, PremiumName name,
-			BigDecimal displayNumber, UseAttribute useAtr) {
+	public PremiumItem(String companyID, Integer iD, Integer attendanceID, PremiumName name,
+			Integer displayNumber, UseAttribute useAtr) {
 		super();
 		this.companyID = companyID;
 		this.iD = iD;

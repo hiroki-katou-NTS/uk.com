@@ -56,9 +56,36 @@ $("#file_upload").ntsFileUpload(option).done(function(res) {
 			                        
 					]]>
 					</pre>
+					<h2>create own file stereo</h2>
+					step1: create class implements
+					nts.arc.layer.infra.file.constraint.FileStereo step2: add stereo
+					type name into nts.uk.shr.infra.file.constraint.FileStereoFactory
+					<pre>
+					<![CDATA[
+@Getter
+public class ExampleStereoType implements FileStereo {
+	private long limitedSize = 5000;
+	private List<String> supportedExtension = new ArrayList<>();
+	private List<String> downloadRights = new ArrayList<>();
+	private List<String> uploadRights = new ArrayList<>();
+	private List<String> deleteRights = new ArrayList<>();
 
-				<input type="file" id="file_upload" name="aaa" /> <input
-							type="button" id="button" value="upload" />
+}
+
+
+public class FileStereoFactory {
+	private static Map<String, Class<? extends FileStereo>> fileStereos;
+	static {
+		fileStereos = new HashMap<>();
+
+		fileStereos.put("flowmenu", ExampleStereoType.class);
+
+	}
+}
+						]]>
+					</pre>
+					<input type="file" id="file_upload" name="aaa" /> <input
+						type="button" id="button" value="upload" />
 				</div>
 			</div>
 		</ui:define>

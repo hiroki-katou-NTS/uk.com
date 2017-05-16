@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItemRepository;
 import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
@@ -17,8 +19,11 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 	@Inject
 	private PersonCostCalculationRepository personCostCalculationRepository;
 	
+	@Inject
+	private AttendanceItemRepository attendanceItemRepository;
+	
 	@Override
-	public PersonCostCalculation createFromJavaType(String companyID, GeneralDate startDate, 
+	public PersonCostCalculation createPersonCostCalculationFromJavaType(String companyID, GeneralDate startDate, 
 			UnitPrice unitPrice, Memo memo, List<PremiumSetting> premiumSettings) {
 		String historyID = UUID.randomUUID().toString();
 		return new PersonCostCalculation(companyID, historyID, startDate, GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), unitPrice, memo,
@@ -32,7 +37,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 						x.getName(),
 						x.getDisplayNumber(),
 						x.getUseAtr(), 
-						x.getTimeItemIDs()))
+						x.getAttendanceItems()))
 				.collect(Collectors.toList()));
 	}
 
@@ -56,7 +61,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 						beforePersonCostResult.get().getPremiumSettings()));
 		}
 		this.personCostCalculationRepository.add(
-				createFromJavaType(
+				createPersonCostCalculationFromJavaType(
 						personCostCalculation.getCompanyID(), 
 						personCostCalculation.getStartDate(),
 						personCostCalculation.getUnitPrice(), 

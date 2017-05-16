@@ -20,9 +20,7 @@ import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReason;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceReasonPK;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTime;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmkmtDivergenceTimePK;
-import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtAttendanceType;
 import nts.uk.ctx.at.record.infra.entity.divergencetime.KmnmtDivergenceItem;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceType;
 
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
@@ -96,13 +94,13 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 				entity.attendanceAtr);
 		return domain;
 	}
-	private static AttendanceType toDomainAttType(KmnmtAttendanceType entity){
+	/*private static AttendanceType toDomainAttType(KmnmtAttendanceType entity){
 		val domain = AttendanceType.createSimpleFromJavaType(
 				entity.kmnmtAttendanceTypePK.companyId,
 				entity.kmnmtAttendanceTypePK.attendanceItemId,
 				entity.kmnmtAttendanceTypePK.attendanceItemType);
 		return domain;
-	}
+	}*/
 	private static KmkmtDivergenceTime toEntityDivTime(DivergenceTime domain){
 		val entity = new KmkmtDivergenceTime();
 		entity.kmkmtDivergenceTimePK = new KmkmtDivergenceTimePK(
@@ -259,13 +257,13 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * @param type
 	 * @return
 	 */
-	@Override
+	/*@Override
 	public List<AttendanceType> getAllItem(String companyId, int attendanceItemType) {
 		return this.queryProxy().query(SELECT_ALL_ATTENDANCEITEM, KmnmtAttendanceType.class)
 				.setParameter("companyId", companyId)
 				.setParameter("attendanceItemType", attendanceItemType)
 				.getList(c->toDomainAttType(c));
-	}
+	}*/
 	@Override
 	public void addItemId(List<DivergenceItemSet> lstItemId) {
 		List<KmkmtDivergenceItemSet> listAdd = lstItemId.stream()

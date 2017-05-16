@@ -19,8 +19,6 @@ import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCom
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommandHandler;
-import nts.uk.ctx.at.record.app.find.divergencetime.AttendanceTypeDto;
-import nts.uk.ctx.at.record.app.find.divergencetime.AttendanceTypeFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemNameDto;
@@ -52,8 +50,6 @@ public class DivergenceTimeWebService extends WebService{
 	private DivergenceItemSetFinder getItemSet;
 	@Inject
 	private DivergenceItemNameFinder getNameItem;
-	@Inject
-	private AttendanceTypeFinder getAttItem;
 	@Inject
 	private UpdateDivergenceItemSetCommandHandler updateItemId;
 	@Inject
@@ -133,15 +129,6 @@ public class DivergenceTimeWebService extends WebService{
 	@Path("getitemname/{divTimeId}")
 	public List<DivergenceItemNameDto> getItemSelected(@PathParam("divTimeId") int divTimeId){
 		return this.getNameItem.getItemSelected(divTimeId);
-	}
-	/**
-	 * get all attendance item (divergence item)
-	 * @return
-	 */
-	@POST
-	@Path("getattitem")
-	public List<AttendanceTypeDto> getAllAttItem(){
-		return this.getAttItem.getAllItem();
 	}
 	@POST
 	@Path("getname")

@@ -16,5 +16,5 @@ public class KmnmpPremiumItemPK {
 	public String companyID;
 	
 	@Column(name="ID")
-	public BigDecimal iD;
+	public Integer iD;
 }

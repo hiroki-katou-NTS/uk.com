@@ -7,12 +7,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.budget.premium.DefaultPersonCostCalculationDomainService;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
@@ -156,7 +158,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				premiumSetting.getRate().v(),
 				null,
 				toPremiumItemEntity(premiumSetting),
-				premiumSetting.getTimeItemIDs().stream().map(x -> toPremiumAttendanceEntity(
+				premiumSetting.getAttendanceItems().stream().map(x -> toPremiumAttendanceEntity(
 								premiumSetting.getCompanyID(), 
 								premiumSetting.getHistoryID(), 
 								premiumSetting.getPremiumID(), 
@@ -165,7 +167,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				);
 	}
 	
-	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, BigDecimal premiumID, BigDecimal attendanceID){
+	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, Integer premiumID, Integer attendanceID){
 		return new KmldtPremiumAttendance(
 				new KmldpPremiumAttendancePK(companyID, historyID, premiumID, attendanceID),
 				null);

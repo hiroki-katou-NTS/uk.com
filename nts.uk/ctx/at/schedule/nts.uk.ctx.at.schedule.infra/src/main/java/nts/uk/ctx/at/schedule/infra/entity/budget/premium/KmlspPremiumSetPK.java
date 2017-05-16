@@ -20,5 +20,5 @@ public class KmlspPremiumSetPK {
 	public String historyID;
 	
 	@Column(name="PREMIUM_ID")
-	public BigDecimal premiumID;
+	public Integer premiumID;
 }

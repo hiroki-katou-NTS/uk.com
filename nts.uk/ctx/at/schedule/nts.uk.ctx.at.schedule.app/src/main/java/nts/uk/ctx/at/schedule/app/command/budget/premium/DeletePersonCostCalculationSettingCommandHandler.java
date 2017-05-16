@@ -60,7 +60,7 @@ public class DeletePersonCostCalculationSettingCommandHandler extends CommandHan
 									new PremiumName(x.getName()), 
 									x.getDisplayNumber(), 
 									EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class), 
-									x.getTimeItemIDs()))
+									x.getAttendanceItems()))
 							.collect(Collectors.toList())
 				)
 		);

@@ -60,6 +60,6 @@ public class PersonCostCalculationSettingFinder {
 				premiumSetting.getName().v(),
 				premiumSetting.getDisplayNumber(),
 				premiumSetting.getUseAtr().value,
-				premiumSetting.getTimeItemIDs());
+				premiumSetting.getAttendanceItems());
 	}
 }
