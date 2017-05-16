@@ -17,7 +17,7 @@ public class PersonInfoFinder {
 
 	public List<PersonInfoDto> getPersonInfo() {
 		return this.personInfoRepository.getPersonInfo(AppContexts.user().companyCode()).stream()
-				.map(p -> new PersonInfoDto(p.getEmployeeCode().v(), p.getEmployeeName().v()))
+				.map(p -> new PersonInfoDto(p.getPersonID().v(), p.getEmployeeCode().v(), p.getEmployeeName().v()))
 				.collect(Collectors.toList());
 	};
 }

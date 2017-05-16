@@ -5,12 +5,13 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DetailDifferentialDto {
+
+	private String personID;
 
 	private String employeeCode;
 
@@ -19,9 +20,9 @@ public class DetailDifferentialDto {
 	private String itemCode;
 
 	private String itemName;
-	
+
 	private int categoryAtr;
-	
+
 	private String categoryAtrName;
 
 	private BigDecimal comparisonValue1;
@@ -37,12 +38,4 @@ public class DetailDifferentialDto {
 	private String registrationStatus2;
 
 	private int confirmedStatus;
-
-	public static DetailDifferentialDto createFromJavaType(DetailDifferential domain) {
-		return new DetailDifferentialDto(domain.getEmployeeCode().v(), domain.getEmployeeName().v(),
-				domain.getItemCode().v(), domain.getItemName().v(), domain.getCategoryAtr().value, domain.getCategoryAtr().name,
-				domain.getComparisonValue1().v(), domain.getComparisonValue2().v(), domain.getValueDifference().v(),
-				domain.getReasonDifference().v(), domain.getRegistrationStatus1().name,
-				domain.getRegistrationStatus2().name, domain.getConfirmedStatus().value);
-	}
 }

@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ComfirmDifferentRepository;
@@ -17,8 +19,8 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsdtPaycompConfirmPK;
 @Stateless
 public class JpaComfirmDifferentRepository extends JpaRepository implements ComfirmDifferentRepository {
 
-	private final String SELECT_DETAIL_DIFFERENT_YM = "SELECT p.pid, d.qstdtPaymentDetailPK.itemCode, "
-			+ "i.itemAbName, i.qcamtItemPK.ctgAtr, d.value , h.makeMethodFlag, d.qstdtPaymentDetailPK.companyCode, p.nameOfficial "
+	private final String SELECT_DETAIL_DIFFERENT_YM = "SELECT DISTINCT pc.scd, d.qstdtPaymentDetailPK.itemCode, "
+			+ "i.itemAbName, i.qcamtItemPK.ctgAtr, d.value , h.makeMethodFlag, d.qstdtPaymentDetailPK.companyCode, p.nameOfficial, p.pid "
 			+ "FROM QstdtPaymentDetail d INNER JOIN  QstdtPaymentHeader h "
 			+ "ON h.qstdtPaymentHeaderPK.companyCode = d.qstdtPaymentDetailPK.companyCode AND h.qstdtPaymentHeaderPK.personId = d.qstdtPaymentDetailPK.personId "
 			+ "AND h.qstdtPaymentHeaderPK.processingNo = d.qstdtPaymentDetailPK.processingNo AND h.qstdtPaymentHeaderPK.payBonusAtr = d.qstdtPaymentDetailPK.payBonusAttribute "
@@ -26,8 +28,9 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 			+ "INNER JOIN QcamtItem_v1 i ON h.qstdtPaymentHeaderPK.companyCode = i.qcamtItemPK.ccd "
 			+ "AND d.qstdtPaymentDetailPK.categoryATR = i.qcamtItemPK.ctgAtr AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd "
 			+ "INNER JOIN PbsmtPersonBase p ON p.pid = d.qstdtPaymentDetailPK.personId "
-			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :ccd AND p.pid IN :personId AND d.qstdtPaymentDetailPK.processingYM = :processYM "
-			+ "AND d.qstdtPaymentDetailPK.categoryATR in (0,1,3) ORDER BY d.qstdtPaymentDetailPK.personId, d.qstdtPaymentDetailPK.itemCode";
+			+ "INNER JOIN PcpmtPersonCom pc ON pc.pcpmtPersonComPK.pid = p.pid "
+			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :ccd AND pc.pid IN :personIDs AND d.qstdtPaymentDetailPK.processingYM = :processYM "
+			+ "AND d.qstdtPaymentDetailPK.categoryATR in (0,1,3) ORDER BY p.scd, d.qstdtPaymentDetailPK.itemCode";
 
 	private final String SELECT_PAYCOMP_COMFIRM = "SELECT c FROM QlsdtPaycompConfirm as c WHERE "
 			+ "c.paycompConfirmPK.companyCode = :companyCode AND c.paycompConfirmPK.personId IN :personId "
@@ -37,7 +40,7 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 	public List<DetailDifferential> getDetailDifferentialWithEarlyYM(String companyCode, int processingYMEarlier,
 			List<String> personIDs) {
 		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
-				.setParameter("personId", personIDs).setParameter("processYM", processingYMEarlier).getList(s -> {
+				.setParameter("personIDs", personIDs).setParameter("processYM", processingYMEarlier).getList(s -> {
 					String employeeCode = s[0].toString();
 					String itemCode = s[1].toString();
 					String itemName = s[2].toString();
@@ -47,10 +50,11 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 					int registrationStatus1 = Integer.valueOf(s[5].toString());
 					int registrationStatus2 = 0;
 					String companyCd = s[6].toString();
-					String employeeName = s[7].toString();
-					return convertToDomainDetailDifferential(companyCd, employeeCode, employeeName, itemCode, itemName,
-							categoryAtr, comparisonValue1, comparisonValue2, new BigDecimal(0), "", registrationStatus1,
-							registrationStatus2, 0);
+					String employeeName = s[7].toString(); 
+					String personId = s[8].toString();
+					return convertToDomainDetailDifferential(companyCd, personId, employeeCode, employeeName, itemCode,
+							itemName, categoryAtr, comparisonValue1, comparisonValue2, new BigDecimal(0), "",
+							registrationStatus1, registrationStatus2, 0);
 				});
 	}
 
@@ -58,7 +62,7 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 	public List<DetailDifferential> getDetailDifferentialWithLaterYM(String companyCode, int processingYMLater,
 			List<String> personIDs) {
 		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
-				.setParameter("personId", personIDs).setParameter("processYM", processingYMLater).getList(s -> {
+				.setParameter("personIDs", personIDs).setParameter("processYM", processingYMLater).getList(s -> {
 					String employeeCode = s[0].toString();
 					String itemCode = s[1].toString();
 					String itemName = s[2].toString();
@@ -69,9 +73,10 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 					int registrationStatus2 = Integer.valueOf(s[5].toString());
 					String companyCd = s[6].toString();
 					String employeeName = s[7].toString();
-					return convertToDomainDetailDifferential(companyCd, employeeCode, employeeName, itemCode, itemName,
-							categoryAtr, comparisonValue1, comparisonValue2, new BigDecimal(0), "", registrationStatus1,
-							registrationStatus2, 0);
+					String personId = s[8].toString();
+					return convertToDomainDetailDifferential(companyCd, personId, employeeCode, employeeName, itemCode,
+							itemName, categoryAtr, comparisonValue1, comparisonValue2, new BigDecimal(0), "",
+							registrationStatus1, registrationStatus2, 0);
 				});
 	}
 
@@ -98,14 +103,14 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 		this.commandProxy().updateAll(qlsdtPaycompConfirmList);
 	}
 
-	private static DetailDifferential convertToDomainDetailDifferential(String companyCode, String employeeCode,
-			String employeeName, String itemCode, String itemName, int categoryAtr, BigDecimal comparisonValue1,
-			BigDecimal comparisonValue2, BigDecimal valueDifference, String reasonDifference, int registrationStatus1,
-			int registrationStatus2, int confirmedStatus) {
+	private static DetailDifferential convertToDomainDetailDifferential(String companyCode, String personID,
+			String employeeCode, String employeeName, String itemCode, String itemName, int categoryAtr,
+			BigDecimal comparisonValue1, BigDecimal comparisonValue2, BigDecimal valueDifference,
+			String reasonDifference, int registrationStatus1, int registrationStatus2, int confirmedStatus) {
 
-		return DetailDifferential.createFromJavaType(companyCode, employeeCode, employeeName, itemCode, itemName,
-				categoryAtr, comparisonValue1, comparisonValue2, valueDifference, reasonDifference, registrationStatus1,
-				registrationStatus2, confirmedStatus);
+		return DetailDifferential.createFromJavaType(companyCode, personID, employeeCode, employeeName, itemCode,
+				itemName, categoryAtr, comparisonValue1, comparisonValue2, valueDifference, reasonDifference,
+				registrationStatus1, registrationStatus2, confirmedStatus);
 	}
 
 	private static PaycompConfirm convertToDomainPaycompConfirm(QlsdtPaycompConfirm entity) {
@@ -118,7 +123,7 @@ public class JpaComfirmDifferentRepository extends JpaRepository implements Comf
 
 	private static QlsdtPaycompConfirm convertToEntityPaycompConfirm(PaycompConfirm domain) {
 		val entity = new QlsdtPaycompConfirm();
-		val entityPK = new QlsdtPaycompConfirmPK(domain.getCompanyCode(), domain.getEmployeeCode().v(),
+		val entityPK = new QlsdtPaycompConfirmPK(domain.getCompanyCode(), domain.getPersonID().v(),
 				domain.getProcessingYMEarlier().v(), domain.getProcessingYMLater().v(), domain.getCategoryAtr().value,
 				domain.getItemCode().v());
 		entity.paycompConfirmPK = entityPK;
