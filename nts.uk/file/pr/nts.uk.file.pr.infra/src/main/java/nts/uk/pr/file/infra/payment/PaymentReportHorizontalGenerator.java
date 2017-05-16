@@ -29,18 +29,13 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 	/** The start col. */
 	private int startCol = 0;
 
-	/** The style header row. */
-	private Style styleHeaderRow;
-
-	/** The style value row. */
-	private Style styleValueRow;
-
 	/** The style payment header row. */
 	private Style stylePaymentHeaderRow;
 
 	/** The style payment value row. */
 	private Style stylePaymentValueRow;
 
+	/** The cells. */
 	private Cells cells;
 
 	/*
@@ -62,20 +57,18 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 
 		// set name
 		startRow = 0;
-		startCol = 5;
+		startCol = 8;
 		cells.get(startRow, startCol).setValue("給与支給明細書");
 
 		// set department title
 		startRow++;
 		startCol = 0;
 		cells.get(startRow, startCol).setValue("部門コード");
-		styleHeaderRow = cells.get(startRow, startCol).getStyle();
-		styleValueRow = cells.get(startRow, startCol).getStyle();
 		stylePaymentHeaderRow = cells.getCellStyle(4, 0);
 		stylePaymentValueRow = cells.getCellStyle(4, 1);
-		startCol++;
+		startCol += 2;
 		cells.get(startRow, startCol).setValue("個人コード");
-		startCol++;
+		startCol += 2;
 		cells.get(startRow, startCol).setValue("氏名");
 
 		List<PaymentReportDto> reportData = data.getReportData();
@@ -87,9 +80,9 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 		cells.get(startRow, startCol).setValue(dataFirst.getDepartmentInfo().getDepartmentCode());
 
 		// set employee info
-		startCol++;
+		startCol += 2;
 		cells.get(startRow, startCol).setValue(dataFirst.getEmployeeInfo().getEmployeeCode());
-		startCol++;
+		startCol += 2;
 		cells.get(startRow, startCol).setValue(dataFirst.getEmployeeInfo().getEmployeeName());
 
 		// reset start cells
@@ -99,19 +92,33 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 		pushDataItem("勤怠", dataFirst.getAttendanceItems());
 		startRow--;
 		pushDataItem("記事", dataFirst.getArticleItems());
-		
+
 	}
 
+	/**
+	 * Push data.
+	 *
+	 * @param objectValue the object value
+	 * @param startRow the start row
+	 * @param startCol the start col
+	 * @param style the style
+	 */
 	private void pushData(String objectValue, int startRow, int startCol, Style style) {
 		cells.get(startRow, startCol).setValue(objectValue);
 		cells.get(startRow, startCol).setStyle(style);
 	}
 
+	/**
+	 * Push data item.
+	 *
+	 * @param itemName the item name
+	 * @param dataItem the data item
+	 */
 	private void pushDataItem(String itemName, List<SalaryItemDto> dataItem) {
 		startCol = 0;
 		pushData(itemName, startRow, startCol, stylePaymentHeaderRow);
 		startCol++;
-		int startMert = startRow;
+		int startMerge = startRow;
 		for (int index = 0; index < dataItem.size(); index++) {
 			// next row
 			if (index > 0 && index % 9 == 0) {
@@ -119,15 +126,42 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 				pushData("", startRow + 1, 0, stylePaymentHeaderRow);
 				pushData("", startRow + 2, 0, stylePaymentHeaderRow);
 				startRow += 2;
-				startCol++;
+				startCol += 1;
 			}
 			SalaryItemDto item = dataItem.get(index);
-			pushData(item.getItemName(), startRow, startCol, stylePaymentValueRow);
-			pushData(item.getItemVal().toString(), startRow + 1, startCol, styleValueRow);
-			startCol++;
+			pushDataHeader(item.getItemName(), startRow, startCol);
+			pushDataValue(item.getItemVal().toString(), startRow, startCol);
+			startCol += 2;
 		}
 		pushData("", startRow + 1, 0, stylePaymentHeaderRow);
-		cells.merge(startMert, 0, startRow - startMert + 2, 1);
-		startRow += 3;
+		startRow += 2;
+		cells.merge(startMerge, 0, startRow - startMerge, 1);
+		startRow++;
+	}
+
+	/**
+	 * Push data value.
+	 *
+	 * @param data the data
+	 * @param startRow the start row
+	 * @param startCol the start col
+	 */
+	private void pushDataValue(String data, int startRow, int startCol) {
+		pushData(data, startRow, startCol, stylePaymentValueRow);
+		pushData("", startRow, startCol + 1, stylePaymentValueRow);
+		cells.merge(startRow, startCol, 1, 2);
+	}
+
+	/**
+	 * Push data header.
+	 *
+	 * @param data the data
+	 * @param startRow the start row
+	 * @param startCol the start col
+	 */
+	private void pushDataHeader(String data, int startRow, int startCol) {
+		pushData(data, startRow + 1, startCol, stylePaymentValueRow);
+		pushData("", startRow + 1, startCol + 1, stylePaymentValueRow);
+		cells.merge(startRow + 1, startCol, 1, 2);
 	}
 }

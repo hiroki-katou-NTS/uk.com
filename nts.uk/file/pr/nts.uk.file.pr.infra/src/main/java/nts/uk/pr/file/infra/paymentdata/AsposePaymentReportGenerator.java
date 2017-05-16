@@ -63,6 +63,7 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 				data);
 			generator.generate(ctx, data);
 			ctx.saveAsPdf(this.createNewFile(rptContext, this.getReportName(OUTPUT_PDF_NAME)));
+			//ctx.saveAsExcel(this.createNewFile(rptContext, this.getReportName(OUTPUT_PDF_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
