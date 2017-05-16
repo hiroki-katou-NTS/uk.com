@@ -3,7 +3,7 @@
 		<div class="bg-green caret-right caret-background">
 			<div class="b-btns-34">
 				<button id="B_BTN_003" data-bind="click: openJDialog">履歴追加</button>
-				<button id="B_BTN_004" data-bind="click: openKDialog">履歴編集</button>
+				<button id="B_BTN_004" data-bind="click: openKDialog, enable: selectedItem().isMaxDate == true">履歴編集</button>
 			</div>
 			<div id="B_LST_001"
 				data-bind="ntsListBox: {

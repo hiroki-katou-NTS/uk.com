@@ -16,34 +16,26 @@ import nts.uk.shr.com.context.AppContexts;
 @Path("pr/core/allot")
 @Produces("application/json")
 public class EmployeeAllotSettingWebService {
-	
+
 	@Inject
 	private EmployeeAllotSettingFinder employeeAllotSettingFinder;
+
 	@POST
 	@Path("findallemployeeallotdetail")
-	public List<EmployeeAllotSettingDto> GetAllEmployeeAllotSettingDetailList(String histId){
-		return this.employeeAllotSettingFinder.getAllEmployeeAllotDetailSetting(AppContexts.user().companyCode(),histId);
+	public List<EmployeeAllotSettingDto> GetAllEmployeeAllotSettingDetailList(String histId) {
+		return this.employeeAllotSettingFinder.getAllEmployeeAllotDetailSetting(AppContexts.user().companyCode(),
+				histId);
 	}
-	
+
 	@POST
 	@Path("findAllEmployeeAllotSettingList/{histId}")
-	public List<EmployeeAllSettingDto> getAllEmployeeAllotSettingList(@PathParam("histId") String histid ){
+	public List<EmployeeAllSettingDto> getAllEmployeeAllotSettingList(@PathParam("histId") String histid) {
 		return this.employeeAllotSettingFinder.getAllEmployeeAllotSettingList(AppContexts.user().companyCode(), histid);
 	}
+
 	@POST
 	@Path("findemployeedetail/{histId}")
-	public List<EmployeeAllotSettingDto> findEmployeeDetail(@PathParam("histId") String histid){
+	public List<EmployeeAllotSettingDto> findEmployeeDetail(@PathParam("histId") String histid) {
 		return this.employeeAllotSettingFinder.getEmpDetail(AppContexts.user().companyCode(), histid);
 	}
-	
-//	@POST
-//	@Path("insert")
-//	public void insert(insertAllotEmployeeCommand command) {
-//		this.insert.handle(command);
-//	}
-	
-//	@POST
-//	@Path("findAllEmployeeName")
-//	public List<>
-	
 }

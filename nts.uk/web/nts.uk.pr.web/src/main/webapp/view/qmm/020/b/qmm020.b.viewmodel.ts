@@ -15,6 +15,7 @@ module qmm020.b.viewmodel {
                 this.selectedItem.reset();
             }
         };
+
         constructor() {
             var self = this;
 
@@ -42,20 +43,13 @@ module qmm020.b.viewmodel {
                         });
 
                         // update payment name & bonus name
-                        /*self.listItems().map((m) => {
+                        self.listItems().map((m) => {
                             service.getAllotLayoutName(m.bonusDetailCode)
-                                .done(function(stmtName: string) { m.bonusDetailName = stmtName; });
-                            
+                                .done((stmtName: string) => { m.bonusDetailName = stmtName; });
+
                             service.getAllotLayoutName(m.paymentDetailCode)
-                                .done(function(stmtName: string) { m.paymentDetailName = stmtName; });
-                        });*/
-
-                        // select first item
-                        self.selectedId(self.listItems()[0].historyId);
-
-                        // subscrible change value function
-                        self.selectedId.valueHasMutated();
-                        self.selectedItem.valueHasMutated();
+                                .done((stmtName: string) => { m.paymentDetailName = stmtName; });
+                        });
 
                         // find item has max date value
                         service.getAllotCompanyMaxDate().done(function(item: IListModel) {
@@ -63,7 +57,21 @@ module qmm020.b.viewmodel {
                                 let maxItem = _.find(self.listItems(), function(m) { return m.historyId == item.historyId; });
                                 if (maxItem) {
                                     maxItem.isMaxDate = true;
+                                    self.selectedId(maxItem.historyId);
                                     self.listItems().map((m) => { if (m.historyId != maxItem.historyId) m.isMaxDate = false; });
+                                }
+                                else {
+                                    // select first item
+                                    let firstItem = self.listItems()[0];
+                                    if (firstItem) {
+                                        self.selectedId(firstItem.historyId);
+                                    }
+                                }
+                            } else {
+                                // select first item
+                                let firstItem = self.listItems()[0];
+                                if (firstItem) {
+                                    self.selectedId(firstItem.historyId);
                                 }
                             }
                         }).fail(function(res) {
@@ -220,13 +228,11 @@ module qmm020.b.viewmodel {
 
                     //get payment Name
                     service.getAllotLayoutName(selectedCode)
-                        .done(function(stmtName: string) {
+                        .done((stmtName: string) => {
                             self.selectedItem().paymentDetailName = stmtName;
                             // update value
                             self.selectedId.valueHasMutated();
-                        }).fail(function(res) {
-                            alert(res);
-                        });
+                        }).fail((res) => { alert(res); });
                 });
         }
 

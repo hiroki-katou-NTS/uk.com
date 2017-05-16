@@ -48,10 +48,11 @@ public class CompanyAllotSettingWebService extends WebService {
 	@Path("findcompanyallotmaxdate")
 	public CompanyAllotSettingDto GetAllotMaxDate() {
 		Optional<CompanyAllotSettingDto> model = this.find.getMaxStartYM();
-		if (model.isPresent())
+		if (model.isPresent()) {
 			return model.get();
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@POST

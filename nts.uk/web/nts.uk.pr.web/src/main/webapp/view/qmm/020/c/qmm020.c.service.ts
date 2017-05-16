@@ -4,17 +4,18 @@ module qmm020.c.service {
 
     //duong dan   
     var paths = {
-        getEmployAllotSettingHeaderList: "pr/core/allot/findallemployeeallotheader", //1
-        getMaxDate: "pr/core/allot/findallemployeeallotheaderMax",  //2
-        getEmployeeDetail: "pr/core/allot/findEmployeeDetail/{0}",       //5
-        getEmployeeName: "basic/organization/employment/findallemployments",   //3
-        getLayoutName: "pr/core/allot/findcompanyallotlayoutname/{0}"    //4
+        getAllot: "pr/core/allot/findallemployeeallotheader",
+        deleteAllot: 'pr/core/allot/deleteallotheader',
+        getMaxDate: "pr/core/allot/findallemployeeallotheadermax",
+        getEmpDetail: "pr/core/allot/findemployeedetail/{0}",
+        getEmp: "basic/organization/employment/findallemployments",
+        getLayoutName: "pr/core/allot/findcompanyallotlayoutname/{0}",
     }
 
-    export function getEmployeeAllotHeaderList() {
+    export function getAllots() {
         var dfd = $.Deferred();
 
-        ajax(paths.getEmployAllotSettingHeaderList)
+        ajax(paths.getAllot)
             .done((res) => { dfd.resolve(res); })
             .fail((res) => { dfd.reject(res); });
 
@@ -22,11 +23,10 @@ module qmm020.c.service {
     }
 
 
-
-    export function getEmployeeName() {
+    export function getEmployees() {
         let dfd = $.Deferred();
 
-        ajax("com", paths.getEmployeeName)
+        ajax("com", paths.getEmp)
             .done((res) => { dfd.resolve(res); })
             .fail((msg) => { dfd.reject(msg); });
 
@@ -35,7 +35,7 @@ module qmm020.c.service {
 
     export function getEmployeeDetail(histId: string) {
         let dfd = $.Deferred();
-        let _path = format(paths.getEmployeeDetail, histId);
+        let _path = format(paths.getEmpDetail, histId);
 
         ajax(_path)
             .done((res) => { dfd.resolve(res); })
@@ -55,15 +55,60 @@ module qmm020.c.service {
     }
 
 
-    export function getAllotLayoutName(stmtCode: string) {
-        var dfd = $.Deferred<any>();
 
-        var _path = format(paths.getLayoutName, stmtCode);
+    export function getAllotLayoutName(param) {
+        let dfd = $.Deferred();
 
-        ajax(_path)
-            .done((res) => { dfd.resolve(res); })
-            .fail((msg) => { dfd.reject(msg); });
+        let _path = format(paths.getLayoutName, param);
 
+        ajax(_path, undefined, {
+            dataType: 'text',
+            contentType: 'text/plain'
+        })
+            .done((resp: string) => { dfd.resolve(resp); })
+            .fail((msg: string) => { dfd.reject(msg); });
+
+        return dfd.promise();
+    }
+
+    export function saveData(models: Array<any>) {
+        let dfd = $.Deferred();
+        if (models.length > 0) {
+            models.map((m) => {
+                let data: any = {
+                    historyId: '',
+                    endYm: 0,
+                    startYm: 0,
+                    arrays: [
+                        {},
+                        {},
+                        {},
+                        {}
+                    ]
+                }
+            });
+        }
+        return dfd.promise();
+    }
+
+    export function deleteData(models: Array<any>) {
+        let dfd = $.Deferred();
+        if (models.length > 0) {
+            models.map((m) => {
+                console.log(m);
+                let data: any = {
+                    historyId: m.historyId,
+                    startYm: m.startYm,
+                    endYm: m.endYm,
+                    employees: [
+                        
+                    ]
+                };
+                ajax(paths.deleteAllot, data)
+                    .done((resp) => { dfd.resolve(resp); })
+                    .fail((msg) => { dfd.reject(msg); });
+            });
+        }
         return dfd.promise();
     }
 }

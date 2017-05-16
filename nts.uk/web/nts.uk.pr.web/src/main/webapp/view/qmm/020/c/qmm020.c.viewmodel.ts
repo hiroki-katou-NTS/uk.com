@@ -38,52 +38,74 @@ module qmm020.c.viewmodel {
             model.GridItems.removeAll();
 
             // get list history data
-            service.getEmployeeAllotHeaderList().done(function(data: Array<IListModel>) {
+            service.getAllots().done(function(data: Array<IListModel>) {
                 if (data.length > 0) {
                     _.orderBy(data, ['endYm'], ['desc'])
                         .map((m) => { model.ListItems.push(new ListModel(m)); });
+
+                    // get itemMax of ListItem
+                    service.getMaxDate().done((itemMax: number) => {
+                        let maxDate: IListModel = _.find(model.ListItems(), function(obj) { return obj.endYm == itemMax; });
+                        model.ListItems().map((m) => {
+                            if (m.historyId == maxDate.historyId) {
+                                m.isMaxEndYm = true;
+                                model.ListItemSelected(m.historyId);
+                            } else {
+                                m.isMaxEndYm = false;
+                            }
+                        });
+
+                    }).fail((msg) => { alert(msg); });
                 }
-                // get itemMax of ListItem
-                service.getMaxDate().done((itemMax: number) => {
-                    let maxDate: IListModel = _.find(model.ListItems(), function(obj) { return obj.endYm == itemMax; });
-                    model.ListItems().map((m) => {
-                        if (m.historyId == maxDate.historyId) {
-                            m.isMaxEnYm = true;
-                            model.ListItemSelected(m.historyId);
-                        } else {
-                            m.isMaxEnYm = false;
+
+                // load right table data
+                service.getEmployees().done(function(data: Array<IGridModel>) {
+                    if (data && data.length > 0) {
+                        data.map((m) => {
+                            if (m.bonusDetailCode) {
+                                service.getAllotLayoutName(m.bonusDetailCode).done((stmtName: string) => {
+                                    m.bonusDetailName = stmtName;
+                                    model.updateData();
+                                }).fail(function(res) {
+                                    alert(res);
+                                });
+                            }
+                            if (m.paymentDetailCode) {
+                                service.getAllotLayoutName(m.paymentDetailCode).done((stmtName: string) => {
+                                    m.paymentDetailName = stmtName;
+                                    model.updateData();
+                                }).fail(function(res) {
+                                    alert(res);
+                                });
+                            }
+                            model.GridItems.push(new GridModel(m));
+
+                        });
+
+                        // selected first item in list box
+                        let first = model.ListItems()[0];
+                        if (first) {
+                            model.ListItemSelected(first.historyId);
                         }
-                    });
-                }).fail((msg) => { alert(msg); });
-            }).fail((msg) => { alert(msg); });
-
-            service.getEmployeeName().done(function(data: Array<IGridModel>) {
-                if (data && data.length > 0) {
-                    data.map((m) => { model.GridItems.push(new GridModel(m)); });
-
-                    // selected first item in list box
-                    let first = model.ListItems()[0];
-                    if (first) {
-                        model.ListItemSelected(first.historyId);
-                        model.GridItems.valueHasMutated();
                     }
-                }
-            }).fail(function(res) {
-                alert(res);
-            });
+                }).fail((msg) => { alert(msg); });
+
+            }).fail((msg) => { alert(msg); });
         }
 
+        // add new item
         openJDialog() {
             let self = this, model = self.model();
 
+            // select to max item
             model.ListItems().map((m) => {
-                if (m.isMaxEnYm) {
+                if (m.isMaxEndYm) {
                     model.ListItemSelected(m.historyId);
                 }
             });
 
             // get item has property endDate is max value
-            let maxItem: any = _.find(model.ListItems(), function(m) { return m.isMaxEnYm == true; }) || {};
+            let maxItem: any = _.find(model.ListItems(), function(m) { return m.isMaxEndYm == true; }) || {};
             if (maxItem) {
                 nts.uk.ui.windows.setShared("J_DATA", { displayMode: 1, startYm: maxItem.startYm || 197001, endYm: maxItem.endYm || 999912 });
 
@@ -92,18 +114,21 @@ module qmm020.c.viewmodel {
 
                         let value: any = nts.uk.ui.windows.getShared('J_RETURN');
                         if (value) {
-                            let oldItem: ListModel = _.find(model.ListItems(), function(m) { return m.isMaxEnYm == true; });
+                            let oldItem: ListModel = _.find(model.ListItems(), function(m) { return m.isMaxEndYm == true; });
                             let startDate = nts.uk.time.parseYearMonth(value.startDate);
                             if (startDate.success) {
                                 let id: string = '_NEW_' + model.ListItems().length + '_' + value.startDate,
-                                    newItem: ListModel = new ListModel({ historyId: id, startYm: value.startDate, endYm: 999912 });
+                                    newItem: ListModel = new ListModel({ historyId: id, startYm: value.startDate, endYm: 999912, isMaxEndYm: true });
 
+                                // update old item
                                 if (oldItem) {
-                                    oldItem.isMaxEnYm = false;
+
+                                    oldItem.isMaxEndYm = false;
                                     oldItem.endYm = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
                                     oldItem.update();
                                 }
 
+                                // add new item to list
                                 model.ListItems.push(newItem);
                                 model.ListItems(_.orderBy(model.ListItems(), ['endYm'], ['desc']));
 
@@ -123,7 +148,7 @@ module qmm020.c.viewmodel {
                                     });
 
                                     model.GridItems(temp);
-                                    //model.updateData();
+                                    model.updateData();
                                 } else {
                                     model.GridItems().map((f) => {
                                         f.bonusDetailCode = '';
@@ -131,6 +156,7 @@ module qmm020.c.viewmodel {
                                         f.paymentDetailCode = '';
                                         f.paymentDetailName = '';
                                     });
+                                    model.updateData();
                                 }
                             }
                         }
@@ -157,25 +183,42 @@ module qmm020.c.viewmodel {
                             if (value.selectedMode == 1) {
                                 // call service delete item at here
                                 let models = model.ListItems.splice(index, 1);
-                                // service.deleteData(models).done(function() {
-                                // call start function
-                                //self.start();
-                                //}).fail((msg) => { alert(msg); });
+                                if (models.length == 1) {
+                                    let $m = models[0], data = [
+                                        {
+                                            historyId: $m.historyId,
+                                            startYm: $m.startYm,
+                                            endYm: $m.endYm,
+                                            employees: model.GridItems().map((m) => {
+                                                return {
+                                                    historyId: m.historyId,
+                                                    employmentCode: m.employmentCode,
+                                                    bonusDetailCode: m.bonusDetailCode,
+                                                    paymentDetailCode: m.paymentDetailCode
+                                                };
+                                            })
+                                        }
+                                    ];
+                                    service.deleteData(data).done(function() {
+                                        //call start function
+                                        self.start();
+                                    }).fail((msg) => { alert(msg); });
+                                }
                             } else {
                                 // modify
                                 let startDate = nts.uk.time.parseYearMonth(value.startYm);
                                 if (startDate.success) {
                                     let current: ListModel = model.ListItems()[index], neighbor = model.ListItems()[index + 1];
-                                    debugger;
+                                    current.startYm = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 1, 1)).format("YYYYMM"));
+                                    current.update();
+
                                     if (!!neighbor) {
-                                        neighbor.endYm = 999912;
+                                        neighbor.endYm = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
                                         neighbor.update();
                                     }
 
                                     // update view data
                                     model.ListItems.push(model.ListItems.pop());
-                                    model.ListItemSelected.valueHasMutated();
-                                    model.GridItemSelected.valueHasMutated();
                                 } else {
                                     alert(startDate.msg);
                                 }
@@ -187,9 +230,9 @@ module qmm020.c.viewmodel {
 
         // get paymentDetailName
         openMDialogPay() {
-            let self = this, model = self.model(), currentItemList = model.currentItemList();
+            let self = this, model = self.model(), currentItemList = model.currentItemList(), currentItemGrid = model.currentItemGrid();
             if (!!currentItemList) {
-                nts.uk.ui.windows.setShared('M_BASEYM', currentItemList.startYm);
+                nts.uk.ui.windows.setShared('M_BASEYM', { baseYm: currentItemList.startYm, baseCode: currentItemGrid.paymentDetailCode });
 
                 nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
                     .onClosed(function() {
@@ -198,7 +241,7 @@ module qmm020.c.viewmodel {
                             let stmtCode = nts.uk.ui.windows.getShared('M_RETURN');
                             currentItemGrid.paymentDetailCode = stmtCode;
                             if (stmtCode != undefined) {
-                                service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
+                                service.getAllotLayoutName(stmtCode).done((stmtName: string) => {
                                     currentItemGrid.paymentDetailName = stmtName;
                                     //update date to igGrid
                                     model.updateData();
@@ -213,24 +256,23 @@ module qmm020.c.viewmodel {
 
         //get bonusDetailName
         openMDialogBo() {
-            let self = this, currentItemList = self.model().currentItemList();
+            let self = this, model = self.model(), currentItemList = model.currentItemList(), currentItemGrid = model.currentItemGrid();
             if (!!currentItemList) {
-                nts.uk.ui.windows.setShared('M_BASEYM', currentItemList.startYm);
+                nts.uk.ui.windows.setShared('M_BASEYM', { baseYm: currentItemList.startYm, baseCode: currentItemGrid.bonusDetailCode });
 
                 nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
                     .onClosed(function() {
-                        let currentItemGrid = self.model().currentItemGrid();
+                        let currentItemGrid = model.currentItemGrid();
                         if (currentItemGrid) {
                             let stmtCode = nts.uk.ui.windows.getShared('M_RETURN');
                             currentItemGrid.bonusDetailCode = stmtCode;
                             if (stmtCode != undefined) {
-                                service.getAllotLayoutName(stmtCode).done(function(stmtName: string) {
+                                service.getAllotLayoutName(stmtCode).done((stmtName: string) => {
                                     currentItemGrid.bonusDetailName = stmtName;
+
                                     //update date to igGrid
-                                    self.model().updateData();
-                                }).fail(function(res) {
-                                    alert(res);
-                                });
+                                    model.updateData();
+                                }).fail((msg) => { alert(msg); });
                             }
                         }
                     });
@@ -238,6 +280,25 @@ module qmm020.c.viewmodel {
         }
 
         saveData() {
+            let self = this, model = self.model(),
+                item: IListModel = model.currentItemList(),
+                data: Array<any> = [{
+                    historyId: item.historyId,
+                    startYm: item.startYm,
+                    endYm: item.endYm,
+                    employees: model.GridItems().map((m) => {
+                        return {
+                            historyId: m.historyId,
+                            employmentCode: m.employmentCode,
+                            bonusDetailCode: m.bonusDetailCode,
+                            paymentDetailCode: m.paymentDetailCode
+                        };
+                    })
+                }];
+
+            service.saveData(data).done((resp) => {
+                
+            });
         }
     }
 
@@ -257,18 +318,27 @@ module qmm020.c.viewmodel {
             let self = this;
             self.ListItems(param.ListItems.map((m) => { return new ListModel(m); }));
             self.GridItems(param.GridItems.map((m) => { return new GridModel(m); }));
+
             self.ListItemSelected.subscribe((v) => {
                 if (v && v.indexOf('NEW') == -1) {
                     service.getEmployeeDetail(v).done(function(data: Array<any>) {
-                        _.forEach(self.GridItems(), function(t) {
+                        self.GridItems().map((t) => {
                             let item = _.find(data, function(m) {
                                 return t.employmentCode == m.employeeCode;
                             });
+
                             if (item) {
                                 t.bonusDetailCode = item.bonusDetailCode;
-                                t.bonusDetailName = item.bonusDetailName;
+                                service.getAllotLayoutName(t.bonusDetailCode).done((resp: string) => {
+                                    t.bonusDetailName = resp;
+                                    self.updateData();
+                                });
+
                                 t.paymentDetailCode = item.paymentDetailCode;
-                                t.paymentDetailName = item.paymentDetailName;
+                                service.getAllotLayoutName(t.paymentDetailCode).done((resp: string) => {
+                                    t.paymentDetailName = resp;
+                                    self.updateData();
+                                });
                             }
                             else {
                                 t.bonusDetailCode = '';
@@ -277,8 +347,11 @@ module qmm020.c.viewmodel {
                                 t.paymentDetailName = '';
                             }
                         });
-                        //update date to igGr    
+                        //update date to igGrid
                         self.updateData();
+                        if (self.GridItems()[0]) {
+                            self.GridItemSelected(self.GridItems()[0].employmentCode);
+                        }
                     });
                 }
             });
@@ -295,6 +368,11 @@ module qmm020.c.viewmodel {
             return _.find(self.ListItems(), function(t: IListModel) { return t.historyId == self.ListItemSelected(); });
         }
 
+        deleteOrUpdate(): boolean {
+            let self = this, item = self.currentItemList();
+            return item && item.isMaxEndYm;
+        }
+
         currentItemGrid(): IGridModel {
             let self = this;
             return _.find(self.GridItems(), function(t: IGridModel) { return t.employmentCode == self.GridItemSelected(); });
@@ -305,6 +383,7 @@ module qmm020.c.viewmodel {
         historyId: string;
         endYm: number;
         startYm: number;
+        isMaxEndYm: boolean;
     }
 
     // list view model
@@ -313,12 +392,13 @@ module qmm020.c.viewmodel {
         endYm: number;
         startYm: number;
         text: string;
-        isMaxEnYm: boolean = false;
+        isMaxEndYm: boolean = false;
 
         constructor(param: IListModel) {
             this.historyId = param.historyId;
             this.endYm = param.endYm;
             this.startYm = param.startYm;
+            this.isMaxEndYm = param.isMaxEndYm || false;
             this.update();
         }
 

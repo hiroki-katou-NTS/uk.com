@@ -39,13 +39,6 @@ public class JpaEmployeeAllotSettingHeaderRespository extends JpaRepository
 		return domain;
 	}
 
-	private static QstmtStmtAllotHEm toEntity(EmployeeAllotSettingHeader employeeAllotSettingHeader) {
-		return new QstmtStmtAllotHEm(
-				new QstmtStmtAllotHEmPK(AppContexts.user().companyCode(), employeeAllotSettingHeader.getHistoryId()),
-				employeeAllotSettingHeader.getStartYm().v(), employeeAllotSettingHeader.getEndYm().v());
-
-	}
-
 	@Override
 	public List<EmployeeAllotSettingHeader> findAll(String companyCode) {
 		return this.queryProxy().query(SEL_1, QstmtStmtAllotHEm.class).setParameter("companyCode", companyCode)
@@ -54,9 +47,16 @@ public class JpaEmployeeAllotSettingHeaderRespository extends JpaRepository
 
 	@Override
 	public Optional<Integer> findMaxEnd(String companyCode) {
-		Optional<Integer> result = this.queryProxy().query(MAX_END, Integer.class).setParameter("companyCode", companyCode)
-				.getSingle();
+		Optional<Integer> result = this.queryProxy().query(MAX_END, Integer.class)
+				.setParameter("companyCode", companyCode).getSingle();
 		return result;
 	}
 
+	@Override
+	public void delete(EmployeeAllotSettingHeader domain) {
+		String companyCode = AppContexts.user().companyCode();
+		QstmtStmtAllotHEmPK qstmtStmtAllotHEmPK = new QstmtStmtAllotHEmPK(companyCode, domain.getHistoryId());
+
+		this.commandProxy().remove(QstmtStmtAllotHEm.class, qstmtStmtAllotHEmPK);
+	}
 }
