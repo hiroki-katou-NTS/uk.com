@@ -12,4 +12,5 @@ public interface ComparingSalaryBonusQueryRepository {
 	public List<SalaryBonusDetail> getContentReportLaterMonth(String companyCode, List<String> PIDs, int yearMonth1, String formCode);
 	public List<PaycompConfirm> getPayCompComfirm(String companyCode, List<String> personIDs, int processYMEarly,
 			int processYMLater);
+	public List<String> getDepartmentCodeList(String companyCode, List<String> PIDs, int yearMonth1, String formCode);
 }

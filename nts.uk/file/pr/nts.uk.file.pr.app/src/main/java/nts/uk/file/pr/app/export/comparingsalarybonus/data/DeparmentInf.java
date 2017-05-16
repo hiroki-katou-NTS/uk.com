@@ -10,13 +10,15 @@ import lombok.Setter;
 public class DeparmentInf {
 	private String Depcode;
 	private String Depname;
+	private String hyrachi;
 	List<DetailEmployee> lstEmployee;
 	private Double totalMonth1 = 0.0;
 	private Double totalMonth2 = 0.0;
 	private Double totalDifferent = 0.0;
-	public DeparmentInf(String depCode, String depName, List<DetailEmployee> lstEmployee) {
+	public DeparmentInf(String depCode, String depName, String hyrachi,List<DetailEmployee> lstEmployee) {
 	  this.Depcode = depCode;
 	  this.Depname = depName;
+	  this.hyrachi = hyrachi;
 	  this.lstEmployee = lstEmployee;
 	  total(lstEmployee);
 	}
