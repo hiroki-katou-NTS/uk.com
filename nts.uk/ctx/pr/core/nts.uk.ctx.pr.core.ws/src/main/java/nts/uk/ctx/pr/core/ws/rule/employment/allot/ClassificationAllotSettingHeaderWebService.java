@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.UpdateClassificationAllotSettingHeaderCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.UpdateClassificationAllotSettingHeaderHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.UpdateClassificationAllotSettingHeaderCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.UpdateClassificationAllotSettingHeaderHandler;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.ClassificationAllotSettingHeaderDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.ClassificationAllotSettingHeaderFinder;
 import nts.uk.shr.com.context.AppContexts;

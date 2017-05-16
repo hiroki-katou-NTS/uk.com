@@ -10,12 +10,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.DelAllotCompanyCmd;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.DelAllotCompanyCmdHandler;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.InsertAllotCompanyCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.InsertAllotCompanyCommandHandler;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.UpdateAllotCompanyCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.UpdateAllotCompanyCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.DelAllotCompanyCmd;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.DelAllotCompanyCmdHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.InsertAllotCompanyCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.InsertAllotCompanyCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.UpdateAllotCompanyCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.UpdateAllotCompanyCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.CompanyAllotSettingDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.CompanyAllotSettingFinder;
 

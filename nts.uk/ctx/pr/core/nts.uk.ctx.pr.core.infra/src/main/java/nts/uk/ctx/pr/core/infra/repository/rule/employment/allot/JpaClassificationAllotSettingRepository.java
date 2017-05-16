@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSetting;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingRespository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.classification.ClassificationAllotSetting;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.classification.ClassificationAllotSettingRespository;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotCl;
 
 @Stateless

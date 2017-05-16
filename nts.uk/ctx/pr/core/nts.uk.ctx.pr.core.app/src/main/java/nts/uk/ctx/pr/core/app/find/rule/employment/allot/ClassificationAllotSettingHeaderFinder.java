@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingHeaderRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.classification.ClassificationAllotSettingHeaderRepository;
 
 @Stateless
 public class ClassificationAllotSettingHeaderFinder {

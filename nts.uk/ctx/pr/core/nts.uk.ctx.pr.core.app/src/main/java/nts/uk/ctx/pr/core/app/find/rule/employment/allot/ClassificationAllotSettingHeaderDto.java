@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.find.rule.employment.allot;
 
 import lombok.Value;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSettingHeader;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.classification.ClassificationAllotSettingHeader;
 
 @Value
 public class ClassificationAllotSettingHeaderDto {
