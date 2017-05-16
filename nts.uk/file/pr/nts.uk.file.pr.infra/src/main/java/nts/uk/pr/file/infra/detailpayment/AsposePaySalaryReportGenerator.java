@@ -154,7 +154,7 @@ public class AsposePaySalaryReportGenerator extends AsposeCellsReportGenerator
         if (printProcess.totalColumn == 0) {
             lastColumn = PaymentConstant.NUMBER_COLUMN_PAGE;
         } else {
-            lastColumn = printProcess.totalColumn + PaymentConstant.NUMBER_COLUMN_PAGE;
+            lastColumn = printProcess.totalColumn - PaymentConstant.ONE;
         }
         Cell cellEnd = printProcess.worksheet.getCells().get(printProcess.indexRow, lastColumn);
         String endArea = cellEnd.getName();
