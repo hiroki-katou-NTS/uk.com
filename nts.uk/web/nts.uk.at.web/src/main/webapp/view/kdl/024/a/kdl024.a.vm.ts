@@ -94,6 +94,10 @@ module kdl024.a.viewmodel {
             var self = this;
             //Mode INSERT
             if (self.isNew) {
+                //Format Code to Formular "000" 
+                let currentCode: string = self.currentItem().externalBudgetCode();
+                self.currentItem().externalBudgetCode(padZero(currentCode));
+                //insert process
                 service.insertExternalBudget(self.currentItem()).done(function() {
                     nts.uk.ui.dialog.alert("登録しました。")；
                         //restart
@@ -202,7 +206,7 @@ module kdl024.a.viewmodel {
                     nts.uk.ui.dialog.alert(res.message);
                     self.start();
                 });
-            });            
+            }); 
         }
     }
     
@@ -242,22 +246,25 @@ module kdl024.a.viewmodel {
 
             self.externalBudgetCode.subscribe(function(newValue) {
                 var current = _.find(self.listSource, function(item) { return item.externalBudgetCode == newValue; });
-                //console.log(current);
                 if (current) {
                     self.externalBudgetCode(current.externalBudgetCode);
-                    //alert(padZero(current.externalBudgetCode));
                     self.externalBudgetName(current.externalBudgetName);
-                    //K hieu t s 
-                    //self.budgetAtr(current.budgetAtr.toString());
                     self.unitAtr(current.unitAtr);
                     self.budgetAtr(current.budgetAtr.toString());
                 }
             });
+            
         }
         setSource(list: Array<any>) {
             var self = this;
             self.listSource = list || [];
         }
+    }
+    //Format Zero "000"
+    function padZero(code:string){
+        let format :string ="000";
+        let length : number = code.length;
+        return format.substr(0,3-length) + code;
     }
     //item Combo Box
     class ItemModelCbb {
