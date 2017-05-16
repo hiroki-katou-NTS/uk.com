@@ -17,7 +17,15 @@ public class PersonInfo extends AggregateRoot {
 
 	private EmployeeName employeeName;
 
-	public static PersonInfo createFromJavaType(String personID, String employeeCode, String employeeName) {
-		return new PersonInfo(new PersonID(personID), new EmployeeCode(employeeCode), new EmployeeName(employeeName));
+	private DepartmentCode departmentCode;
+
+	private DepartmentName departmentName;
+
+	public static PersonInfo createFromJavaType(String personID, String employeeCode, String employeeName,
+			String departmentCode, String departmentName) {
+		return new PersonInfo(new PersonID(personID), new EmployeeCode(employeeCode), new EmployeeName(employeeName),
+				new DepartmentCode(departmentCode), new DepartmentName(departmentName)
+
+		);
 	}
 }

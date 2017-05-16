@@ -10,8 +10,11 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.masterpage.PersonInfoRepositor
 
 @Stateless
 public class JpaPersonInfoRepositoryRepository extends JpaRepository implements PersonInfoRepository {
-	private final String SELECT_PERSON_INFO = "SELECT  pb.pid as personID, pc.scd as employeerCode, pb.nameOfficial as employeerName FROM PcpmtPersonCom pc, PbsmtPersonBase pb"
-			+ " WHERE pc.pcpmtPersonComPK.pid = pb.pid AND pc.pcpmtPersonComPK.ccd = :ccd";
+	private final String SELECT_PERSON_INFO = "SELECT DISTINCT pb.pid, pc.scd, pb.nameOfficial, c.cmnmtDepPK.departmentCode, c.depName FROM PcpmtPersonCom pc"
+			+ " INNER JOIN PbsmtPersonBase pb ON pc.pcpmtPersonComPK.pid = pb.pid"
+			+ " INNER JOIN CmnmtDep c ON c.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd"
+			+ " AND c.cmnmtDepPK.historyId = pc.pcpmtPersonComPK.histId" 
+			+ " WHERE pc.pcpmtPersonComPK.ccd = :ccd";
 
 	@Override
 	public List<PersonInfo> getPersonInfo(String companyCode) {
@@ -20,7 +23,10 @@ public class JpaPersonInfoRepositoryRepository extends JpaRepository implements 
 					String personID = p[0].toString();
 					String employeeCode = p[1].toString();
 					String employeeName = p[2].toString();
-					return PersonInfo.createFromJavaType(personID, employeeCode, employeeName);
+					String departmentCode = p[3].toString();
+					String departmentName = p[4].toString();
+					return PersonInfo.createFromJavaType(personID, employeeCode, employeeName, departmentCode,
+							departmentName);
 				});
 	}
 

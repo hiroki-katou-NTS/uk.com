@@ -12,4 +12,8 @@ public class PersonInfoDto {
 	private String employeeCode;
 
 	private String employeeName;
+	
+	private String departmentCode;
+
+	private String departmentName;
 }
