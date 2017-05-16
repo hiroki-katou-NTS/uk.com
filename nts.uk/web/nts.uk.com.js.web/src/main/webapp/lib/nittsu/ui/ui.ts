@@ -10,6 +10,7 @@ module nts.uk.ui {
 			autoOpen: false,
 			draggable: true,
 			resizable: false,
+            dialogClass: "no-close",
 			create: function(event) {
 				$(event.target).dialog('widget').css({ position: 'fixed' });
 			}
@@ -177,7 +178,7 @@ module nts.uk.ui {
 				var subWindow = ScreenWindow.createSubWindow(parentwindow);
 				this.windows[subWindow.id] = subWindow;
 
-				options = $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
+				options = $.extend(DEFAULT_DIALOG_OPTIONS, options);
 
 				subWindow.setupAsDialog(path, options);
 
