@@ -22,16 +22,16 @@ public class PaymentReportGeneratorFactory {
 	/**
 	 * Creates a new PaymentReportGenerator object.
 	 *
+	 * @param pageOrientation the page orientation
 	 * @param data the data
-	 * @return the payment report generator
+	 * @return the payment generator
 	 */
-	public PaymentGenerator createGenerator(PaymentReportData data) {
-		int val = 1;
-		switch (val) {
-		case 0:
+	public PaymentGenerator createGenerator(String pageOrientation, PaymentReportData data) {
+		switch (pageOrientation) {
+		case "LANDSCAPE":
 			return new PaymentReportVerticalGenerator();
 
-		case 1:
+		case "PORTRAIT":
 			return paymentReportHorizontalGenerator;
 
 		default:

@@ -34,5 +34,10 @@ public class PaymentReportQuery {
 	
 	/** The layout items. */
 	private int layoutItems;
+	
+	
+	/** The page orientation. */
+	//PORTRAIT : A LANDSCAPE: B
+	private String pageOrientation;
 		
 }
