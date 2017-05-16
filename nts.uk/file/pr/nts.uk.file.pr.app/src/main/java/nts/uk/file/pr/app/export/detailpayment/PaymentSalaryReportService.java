@@ -65,6 +65,7 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
                 "99900000-0000-0000-0000-000000000002", "99900000-0000-0000-0000-000000000003",
                 "99900000-0000-0000-0000-000000000004", "99900000-0000-0000-0000-000000000005");
         query.setPersonIds(personIds);
+        this.validateInput(query);
         
         String companyCode = AppContexts.user().companyCode();
         
@@ -95,6 +96,9 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         SalaryPrintSettingDto dto = new SalaryPrintSettingDto();
         String companyCode = AppContexts.user().companyCode();
         SalaryPrintSetting salary = salaryPrintRepo.find(companyCode);
+        if (salary == null) {
+            throw new RuntimeException("Do not configure setting print report.");
+        }
         
         dto.setShowPayment(salary.getShowPayment());
         dto.setSumPersonSet(salary.getSumPersonSet());
@@ -115,6 +119,9 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         dto.setPageBreakSetting(query.getPageBreakSetting());
         dto.setHierarchy(query.getHierarchy());
         dto.setOutputLanguage(query.getOutputLanguage());
+        
+        // ====== VALIDATE OUTPUT SETTING ======
+        this.validateOutputSetting(dto);
         
         return dto;
     }
@@ -198,5 +205,39 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
         JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
         return japaneseDate.era() + japaneseDate.year() + "年 " + japaneseDate.month() + "月度"; 
+    }
+    
+    /**
+     * Validate input.
+     *
+     * @param command the command
+     */
+    private void validateInput(PaymentSalaryQuery command) {
+        if (command.getPersonIds().isEmpty()) {
+            throw new RuntimeException("社員一覧未選択エラー");
+        }
+        if (command.getOutputFormatType().isEmpty()) {
+            throw new RuntimeException("出力項目設定未選択エラー");
+        }
+        if (!command.getIsNormalMonth() && !command.getIsPreliminaryMonth()) {
+            throw new RuntimeException("通常月と予備月が指定されていません。");
+        }
+    }
+    
+    /**
+     * Validate output setting.
+     *
+     * @param configure the configure
+     */
+    private void validateOutputSetting(SalaryPrintSettingDto configure) {
+        if (PaymentConstant.PAGE_BREAK_HIERARCHY_DEPARTMENT.equals(configure.getPageBreakSetting())) {
+            if (!(configure.getSumDepHrchyIndexSet() && configure.getSumMonthDepHrchySet())) {
+                throw new BusinessException(new RawErrorMessage("設定が正しくありません。"));
+            }
+            if (!configure.getHierarchy().isEmpty()
+                    && !configure.getSelectedLevels().contains(configure.getHierarchy())) {
+                throw new BusinessException(new RawErrorMessage("設定が正しくありません。"));
+            }
+        }
     }
 }

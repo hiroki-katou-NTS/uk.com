@@ -391,9 +391,6 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         if (payQuery.getIsPreliminaryMonth()) {
             payAttrs.add(PaymentConstant.ONE);
         }
-        if (payAttrs.isEmpty()) {
-            throw new BusinessException(new RawErrorMessage("通常月と予備月が指定されていません。"));
-        }
         query.setParameter("sparePayAttributes", payAttrs);
         List select = query.getResultList();
         if (select.isEmpty()) {
