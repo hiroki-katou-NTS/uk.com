@@ -71,13 +71,6 @@ public interface DivergenceTimeRepository {
 	 */
 	List<DivergenceItemName> getItemSelected(String companyId, int divTimeId);
 	/**
-	 * get all item
-	 * @param companyId
-	 * @param type
-	 * @return
-	 */
-	List<AttendanceType> getAllItem(String companyId, int type);
-	/**
 	 * add list item id new
 	 * @param lstItemId
 	 */

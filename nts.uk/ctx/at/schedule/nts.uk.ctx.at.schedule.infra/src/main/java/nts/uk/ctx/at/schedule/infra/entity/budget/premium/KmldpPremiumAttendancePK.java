@@ -19,8 +19,8 @@ public class KmldpPremiumAttendancePK {
 	public String historyID;
 	
 	@Column(name="PREMIUM_ID")
-	public BigDecimal premiumID;
+	public Integer premiumID;
 	
 	@Column(name="ATTENDANCE_ID")
-	public BigDecimal attendanceID;
+	public Integer attendanceID;
 }

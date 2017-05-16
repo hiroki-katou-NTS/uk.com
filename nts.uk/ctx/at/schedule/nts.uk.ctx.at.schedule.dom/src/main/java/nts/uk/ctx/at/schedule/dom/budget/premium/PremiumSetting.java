@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -14,23 +15,23 @@ public class PremiumSetting {
 	
 	private String historyID;
 	
-	private BigDecimal premiumID;
+	private Integer premiumID;
 	
     private PremiumRate rate;
     
-    private BigDecimal attendanceID;
+    private Integer attendanceID;
     
     private PremiumName name;
     
-    private BigDecimal displayNumber;
+    private Integer displayNumber;
     
     private UseAttribute useAtr;
     
-    private List<BigDecimal> timeItemIDs;
+    private List<Integer> attendanceItems;
 
-	public PremiumSetting(String companyID, String historyID, BigDecimal premiumID, PremiumRate rate,
-			BigDecimal attendanceID, PremiumName name, BigDecimal displayNumber, UseAttribute useAtr,
-			List<BigDecimal> timeItemIDs) {
+	public PremiumSetting(String companyID, String historyID, Integer premiumID, PremiumRate rate,
+			Integer attendanceID, PremiumName name, Integer displayNumber, UseAttribute useAtr,
+			List<Integer> attendanceItems) {
 		super();
 		this.companyID = companyID;
 		this.historyID = historyID;
@@ -40,7 +41,7 @@ public class PremiumSetting {
 		this.name = name;
 		this.displayNumber = displayNumber;
 		this.useAtr = useAtr;
-		this.timeItemIDs = timeItemIDs;
+		this.attendanceItems = attendanceItems;
 	}
     
 }

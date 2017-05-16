@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 
 /**
  * 
@@ -37,17 +38,17 @@ class PremiumSetInsert {
 	
 	String historyID;
 	
-	BigDecimal premiumID;
+	Integer premiumID;
 	
-    BigDecimal rate;
+	Integer rate;
     
-    BigDecimal attendanceID;
+	Integer attendanceID;
     
     String name;
     
-    BigDecimal displayNumber;
+    Integer displayNumber;
     
     int useAtr;
     
-    List<BigDecimal> timeItemIDs;
+    List<Integer> attendanceItems;
 }

@@ -12,13 +12,13 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.UseAttribute;
 public class PremiumItemDto {
 	private String companyID;
 	
-	private BigDecimal iD;
+	private Integer iD;
 	
-	private BigDecimal attendanceID;
+	private Integer attendanceID;
 	
 	private String name;
 
-	private BigDecimal displayNumber;
+	private Integer displayNumber;
 
 	private int useAtr;
 }

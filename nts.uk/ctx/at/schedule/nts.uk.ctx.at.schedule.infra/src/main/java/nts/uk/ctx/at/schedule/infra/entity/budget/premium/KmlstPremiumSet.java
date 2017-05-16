@@ -30,7 +30,7 @@ public class KmlstPremiumSet extends UkJpaEntity{
 	public KmlspPremiumSetPK kmlspPremiumSet;
 	
 	@Column(name="PREMIUM_RATE")
-	public BigDecimal premiumRate;
+	public Integer premiumRate;
 	
 
 	@ManyToOne

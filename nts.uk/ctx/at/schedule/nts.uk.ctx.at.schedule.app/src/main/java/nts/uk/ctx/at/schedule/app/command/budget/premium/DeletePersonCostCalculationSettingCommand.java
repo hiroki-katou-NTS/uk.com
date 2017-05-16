@@ -9,6 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.UseAttribute;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 
 /**
  * 
@@ -40,17 +41,17 @@ class PremiumSetDelete {
 	
 	String historyID;
 	
-	BigDecimal premiumID;
+	Integer premiumID;
 	
-    BigDecimal rate;
+	Integer rate;
     
-    BigDecimal attendanceID;
+	Integer attendanceID;
     
     String name;
     
-    BigDecimal displayNumber;
+    Integer displayNumber;
     
     int useAtr;
     
-    List<BigDecimal> timeItemIDs;
+    List<Integer> attendanceItems;
 }

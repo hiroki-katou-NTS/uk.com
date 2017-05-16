@@ -20,13 +20,13 @@ public class KmnmtPremiumItem extends UkJpaEntity{
 	public KmnmpPremiumItemPK kmnmpPremiumItemPK;
 	
 	@Column(name="ATTENDANCE_ID")
-	public BigDecimal attendanceID;
+	public Integer attendanceID;
 	
 	@Column(name="NAME")
 	public String name;
 	
 	@Column(name="DISPLAY_NUMBER")
-	public BigDecimal displayNumber;
+	public Integer displayNumber;
 	
 	@Column(name="USE_ATR")
 	public int useAtr;
