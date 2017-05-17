@@ -16,9 +16,9 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div data-bind="with: myPageSettingModel" id="contents-left">
-					<div>トップページでマイページを利用する詳細項目を設定してください。</div><BR />
+					<div>#{i18n.getText('CCG015_21')}</div><BR />
 					<div style="float:left;" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>マイページ利用区分<br /></label>
+						<label>#{i18n.getText('CCG015_20')}<br /></label>
 					</div>
 					<div tabindex ="1" style="float:left;" class="cf"
 						data-bind="ntsSwitchButton: {
@@ -48,13 +48,13 @@
 				</div>
 				<hr />
 				<div id="this-functions-area" class="control-group halign-center">
-					<button data-bind = "click : updateMyPageSetting" class="btn-default proceed x-large">決定</button>
-					<button onclick="nts.uk.ui.windows.close()">キャンセル</button>
+					<button data-bind = "click : updateMyPageSetting" class="btn-default proceed x-large">#{i18n.getText('CCG015_30')}</button>
+					<button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button>
 				</div>
 			</div>
 			<script type="text/html" id="widget-template">
 					<div style="float:left;" id="widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>利用区分<br /></label>
+						<label>#{i18n.getText('CCG015_28')}<br /></label>
 					</div>
 					<div tabindex ="3" style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
@@ -81,7 +81,7 @@
 			
 			<script type="text/html" id="dashboard-template">
 					<div style="float:left;" id="dashboard_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>利用区分<br /></label>
+						<label>#{i18n.getText('CCG015_28')}<br /></label>
 					</div>
 					<div tabindex ="5" style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
@@ -108,7 +108,7 @@
 			
 			<script type="text/html" id="flow-template">
 					<div style="float:left;" id="flow_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>利用区分<br /></label>
+						<label>#{i18n.getText('CCG015_28')}<br /></label>
 					</div>
 					<div tabindex ="7" style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
@@ -135,7 +135,7 @@
 			
 			<script type="text/html" id="tab-URL-template">
 					<div style="float:left;" id="lbl_code_name" data-bind="ntsFormLabel: {required: true}">
-						<label>許可区分<br /></label>
+						<label>#{i18n.getText('CCG015_32')}<br /></label>
 					</div>
 					<div style="float:left;margin-bottom: 20px;" class="cf"
 						data-bind="ntsSwitchButton: {
