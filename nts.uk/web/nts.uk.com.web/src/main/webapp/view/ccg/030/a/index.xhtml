@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1300, height: 700 };</script>
+			<script>var dialogSize = { width: 1300, height: 720 };</script>
 			<com:ValidatorScript>
 					
 					nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode
@@ -25,9 +25,8 @@
 		<ui:define name="content">
 			<div id="functions-area"  class="headerStyle">
 				<button class ="btnSetting" data-bind="click: createNewFlowMenu">新規</button>
-				<button class="proceed btnSetting" id = "btnRegistry" data-bind="click: registryFlowMenu, enable: $root.errors.isEmpty">登録</button>
-				
-				<button class="danger btnSetting" id = "btnDelete" data-bind="click: deleteNewFlowMenu, enable: enableDeleteMenu">削除</button>
+				<button class="proceed btnSetting" id="btnRegistry" data-bind="click: registryFlowMenu, enable: $root.errors.isEmpty">登録</button>
+				<button class="danger btnSetting" id="btnDelete" data-bind="click: deleteNewFlowMenu, enable: !isCreate()">削除</button>
 				<button class ="btnSetting" id ="btn004" data-bind= "click : closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area" class="cf">
@@ -37,85 +36,72 @@
 						<div style="float: left">
 							<div id="searchBox" style="width: 360px"							
 								data-bind="ntsSearchBox: {
-								comId: 'multi-list',
-								items: items, 
-								selected: currentCode, 
-								selectedKey: 'code', 
-								fields: ['name', 'code']}" />
+								comId: 'flow-menu-list',
+								items: listFlowMenu, 
+								selected: selectedFlowMenuCD, 
+								selectedKey: 'topPageCode', 
+								fields: ['topPageCode', 'topPageName']}" />
 						</div>
 					</div>
 					<div class="gridlist" style="margin-bottom: 20px;">
-						<table id="multi-list"
+						<table id="flow-menu-list"
 							data-bind="ntsGridList: {
 								height: 460,
-								options: items,
-								optionsValue: 'code',
+								options: listFlowMenu,
+								optionsValue: 'topPageCode',
 								columns: columns,
 								multiple: false,
-								value: currentCode
-						}"
-							class="cf">
+								value: selectedFlowMenuCD}">
 						</table>
 					</div>
 				</div>
 				<div id="right-content">
-					<div id="row1" class="valign-center control-group">
-						<div
-							data-bind="ntsFormLabel: { constraint: 'TopPagePartCode',constraint: ['TopPagePartCode','TopPagePartName'], required: true }">コード/名称</div>
-						<div id="textcode" data-bind="with: toppagepartcode">
-							<input id = "inpCode"
-								data-bind="ntsTextEditor: {
-								value: value,
-								constraint: 'TopPagePartCode',
-								option: option,
-								required: true,
-								enable: enableCode,
-								readonly: false}" />
-						</div>
-						<div id="textname" data-bind="with: toppagepartname">
-							<input id="inpName"
-								data-bind="ntsTextEditor: {
-								value: value,
-								constraint: 'TopPagePartName',
-								option: option,
-								required: true,
-								enable: true,
-								readonly: false}" />
-						</div>
-					</div>
-					<div id="row2" class="valign-center control-group">
-						<div data-bind="ntsFormLabel: { required: true }">ファイル設定</div>
-						<button id="fileup">ファイルのアップロード</button>
-						<label id = "fileName" data-bind="text: fileName"></label>
-						<button id = "btnFileDelete" class="danger btnSetting" data-bind="enable: enableDeleteFile">削除</button>
-					</div>
-					<button id="filedown" class="danger" data-bind = "enable: enableDownload">ファイルのダウンロード</button>
-					<div id="row3" class="valign-center control-group"
-						style="padding-top: 10px;">
-						<div
-							data-bind="ntsFormLabel: { required: true }">サイズ</div>
-						<span style="margin-left: 140px">横</span>
-						<div id="textwidth" data-bind="with: width">
-							<input
-								data-bind="ntsTextEditor: {
-								value: value,
-								constraint: 'Width',
-								option: {width: '10px'},
-								required: true}" />
-						</div>
-						<span>マス</span> 
-						<span style="margin-left: 35px;">縦</span>
-						<div id="textheight" data-bind="with: height">
-							<input
-								data-bind="ntsTextEditor: {
-								value: value,
-								constraint: 'Height',
-								option: {width: '10px'},
-								required: true}" />
-						</div>
-						<span>マス</span>
-					</div>
-					<button id="preview" data-bind="click : open030B_Dialog" style="margin-top: 25px;">プレビュー</button>
+					<table class="right-layout">
+						<colgroup>
+							<col width="220px" />
+							<col width="450px" />
+							<col width="*" />
+						</colgroup>
+						<tr data-bind="with: selectedFlowMenu">
+							<td><div data-bind="ntsFormLabel: { constraint: 'TopPagePartCode',constraint: ['TopPagePartCode','TopPagePartName'], required: true }">コード/名称</div></td>
+							<td>
+								<input id="inpCode" data-bind="ntsTextEditor: { value: topPageCode, constraint: 'TopPagePartCode', required: true , enable: $parent.isCreate}" />
+								<input id="inpName" data-bind="ntsTextEditor: { value: topPageName, constraint: 'TopPagePartName', required: true}" />
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><div data-bind="ntsFormLabel: { required: true }">ファイル設定</div></td>
+							<td>
+								<button id="fileup" class="btn-upload" data-bind="click: uploadFile">ファイルのアップロード</button>
+								<input type="file" id="file_upload" />
+								<label id="fileName" class="hyperlink" data-bind="text: selectedFlowMenu.fileName"></label>
+							</td>
+							<td><button class="danger" data-bind = "enable: !isCreate()">削除</button></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><button class="btn-download" data-bind="enable: !isCreate()">ファイルのダウンロード</button></td>
+							<td></td>
+						</tr>
+						<tr  data-bind="with: selectedFlowMenu">
+							<td><div data-bind="ntsFormLabel: { required: true }">サイズ</div></td>
+							<td>
+								<span>横</span>
+								<input id ="inp_width" class="input-size" data-bind="ntsTextEditor: { value: widthSize, constraint: 'Width', required: true , immediate:true}" />
+								<span>マス</span>
+								<span>縦</span>
+								<input id ="inp_height" class="input-size" data-bind="ntsTextEditor: { value: heightSize, constraint: 'Height', required: true , immediate: true }" />
+								<span>マス</span>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><button id="preview" data-bind="click : open030B_Dialog" style="margin-top: 25px;">プレビュー</button></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</table>					
 				</div>
 			</div>
 		</ui:define>

@@ -12,46 +12,9 @@
 	width: 660px;
 	margin-top: 32px;
 }
-#textcode {
-	display: inline; 
-}
-#inpCode{
-	width: 60px !important;
-}
-#textname {
-	display: inline;	 
-}
-#inpName{
-	width: 250px !important;
-}
-#filedown {margin-top: 30px; margin-left: 200px;}
-.valign-center.control-group {margin-top: 20px;}
-#fileup{margin-left: 103px;}
-#textwidth, #textheight {
-	display: inline-block;
-	margin-left: 3px;
-	margin-right: 3px;
-}
-	
-.btnSetting{
-	margin-right: 15px;
-	width: 80px !important;	
-}
 
-.headerStyle{
-	margin: 20px;
-}
-#btnRegistry{
-	margin-right: 60px !important;
-}
-#searchBox{
-	margin-bottom: 10px;
-}
-#fileName{
-	width: 200px;
-	color: blue;
-	text-decoration: underline;
-}
-#btnFileDelete{
-	float: right;
-}
+.right-layout td {border: solid #fff; border-width:0 10px 10px 0;}
+
+.btn-upload,
+.btn-download {min-width: 175px;}
+.input-size {width: 20px;}

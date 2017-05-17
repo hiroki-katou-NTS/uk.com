@@ -10,17 +10,26 @@
 			<script>var dialogSize = { width: 900, height: 700 };</script>
 
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../common/common.css" />
 			<com:stylefile path="ccg030.b.style.css" />
 			<com:scriptfile path="ccg030.b.start.js" />
 			<com:scriptfile path="ccg030.b.vm.js" />
-			<com:scriptfile path="ccg030.b.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
-				<div class="preview"></div>
-				<hr style="width: 100%;" />
-				<button id="btnclose" data-bind="click : closeDialog" style= "margin-left: 50%;">閉じる</button>
+				<div class="preview">
+					<div id="preview-flowmenu" class="widget-panel preview" data-bind="with: flowmenu">
+						<div class="panel-header">
+							<span class="title" data-bind="text: topPageName()"></span>
+						</div>
+						<div class="panel-content placeholder">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button id="btnclose" data-bind="click : closeDialog">閉じる</button>
 			</div>
 		</ui:define>
 	</ui:composition>
