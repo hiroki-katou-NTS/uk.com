@@ -26,9 +26,9 @@
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
 				<div class="label-area">
-					<label class="label-lg">選択位置：</label>
-					<label class="label-lg label-row"><span>上から</span> <span data-bind="text: positionRow">1</span><span>マス目</span></label>
-					<label class="label-lg label-column"><span>左から</span> <span data-bind="text: positionColumn">1</span><span>マス目</span></label>
+					<label class="label-lg">#{i18n.getText('CCG031_9')}</label>
+					<label class="label-lg label-row"><span>#{i18n.getText('CCG031_10')}</span> <span data-bind="text: positionRow"></span><span>#{i18n.getText('CCG031_12')}</span></label>
+					<label class="label-lg label-column"><span>#{i18n.getText('CCG031_11')}</span> <span data-bind="text: positionColumn"></span><span>#{i18n.getText('CCG031_12')}</span></label>
 				</div>
 				<div class="part-area">
 					<div id="combo-box" class="animated-background" data-bind="ntsComboBox: {
@@ -41,7 +41,7 @@
 					<div class="part-container">
 						<!-- TopPage Part -->
 						<div class="top-page-part" data-bind="visible: !isExternalUrl()">
-							<label class="label add-widget-label">追加したいウィジェットを選んでください。</label>
+							<label class="label add-widget-label" data-bind="text: instructionText"></label>
 							<div class="cf">
 								<div class="col-1 pull-left">
 									<div class="toppage-part-list-placeholder placeholder">
@@ -67,12 +67,12 @@
 										</div>
 										<div class="panel-content">
 											<div class="valign-center control-group">
-												<div data-bind="ntsFormLabel: {required: true}">サイズ</div>
-												<label class="label-width"><span>横</span><span data-bind="text: width"></span><span>マス</span></label>
+												<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG031_20')}</div>
+												<label class="label-width"><span>#{i18n.getText('CCG031_21')}</span><span data-bind="text: width"></span><span>#{i18n.getText('CCG031_23')}</span></label>
 												<label>x</label>
-												<label class="label-height"><span>縦</span><span data-bind="text: height"></span><span>マス</span></label>
+												<label class="label-height"><span>#{i18n.getText('CCG031_22')}</span><span data-bind="text: height"></span><span>#{i18n.getText('CCG031_23')}</span></label>
 											</div>
-											<label>※サイズは固定で変更不可</label>
+											<label>#{i18n.getText('CCG031_24')}</label>
 										</div>
 									</div>
 								</div>
@@ -83,17 +83,17 @@
 							<div class="widget-panel">
 								<div class="panel-header">
 									<span class="square green"></span>
-									<span class="title">外部URL</span>
+									<span class="title">#{i18n.getText('CCG031_14')}</span>
 								</div>
 								<div class="panel-content">
 									<div class="valign-center control-group">
-										<div data-bind="ntsFormLabel: {required: true}">サイズ</div>
-										<label class="label-width"><span>横</span> <input class="input-width" data-bind="ntsNumberEditor: {value: urlWidth, constraint: 'Width'}" /> <span>マス</span></label>
-										<label class="label-height"><span>縦</span> <input class="input-height" data-bind="ntsNumberEditor: {value: urlHeight, constraint: 'Height'}" /> <span>マス</span></label>
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG031_20')}</div>
+										<label class="label-width"><span>#{i18n.getText('CCG031_21')}</span> <input class="nts-validate input-width" data-bind="ntsNumberEditor: {value: urlWidth, constraint: 'Width', required: true}" /> <span>#{i18n.getText('CCG031_23')}</span></label>
+										<label class="label-height"><span>#{i18n.getText('CCG031_22')}</span> <input class="nts-validate input-height" data-bind="ntsNumberEditor: {value: urlHeight, constraint: 'Height', required: true}" /> <span>#{i18n.getText('CCG031_23')}</span></label>
 									</div>
 									<div class="valign-center control-group">
-										<div data-bind="ntsFormLabel: {required: true}">URL</div>
-										<input class="input-url" data-bind="ntsTextEditor: {value: url, constraint: 'Url'}" />
+										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG031_29')}</div>
+										<input class="nts-validate input-url" data-bind="ntsTextEditor: {value: url, constraint: 'Url', required: true}" />
 									</div>
 								</div>
 							</div>
@@ -101,9 +101,9 @@
 					</div>
 				</div>
 			</div>
-			<div id="functions-area">
-				<button class="btn x-large btn-register proceed" data-bind="click: submitDialog">決定</button>
-				<button class="btn btn-close" data-bind="click: closeDialog">キャンセル</button>
+			<div id="functions-area-bottom">
+				<button class="btn x-large btn-register proceed" data-bind="click: submitDialog, enable: $root.errors.isEmpty">#{i18n.getText('CCG031_25')}</button>
+				<button class="btn btn-close" data-bind="click: closeDialog">#{i18n.getText('CCG031_26')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

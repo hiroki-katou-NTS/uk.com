@@ -2,7 +2,7 @@
 
 /* Override base */
 #header {display: none;}
-#functions-area {position: relative; border-top: solid 1px #B1B1B1; border-bottom: none; padding:15px 0; text-align: center;}
+#functions-area-bottom {}
 
 /* Common */
 html, body {overflow: visible;}

@@ -10,5 +10,5 @@
 .btn-register {margin-left: 10px;}
 .btn-close {margin-left: 50px;}
 
-.btn-addcolumn {height: 630px;}
+.btn-addcolumn {height: 630px; width: 30px; white-space:normal;}
 .btn-addrow {width: 950px;}

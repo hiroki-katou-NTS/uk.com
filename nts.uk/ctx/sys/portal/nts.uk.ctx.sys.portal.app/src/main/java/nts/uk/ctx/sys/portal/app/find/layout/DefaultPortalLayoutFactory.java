@@ -24,22 +24,12 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 	@Inject
 	private TopPagePartRepository topPagePartRepository;
 
-	/** Create LayoutDto from Layout Domain
-	 * 
-	 * @param
-	 * @return LayoutDto
-	 */
 	@Override
 	public LayoutDto buildLayoutDto(Layout layout, List<Placement> placements) {
 		List<PlacementDto> placementDtos = buildPlacementDto(placements);
 		return new LayoutDto(layout.getCompanyID(), layout.getLayoutID(), layout.getPgType().value, placementDtos);
 	}
 
-	/** Create List PlacementDto from List Placement Domain
-	 * 
-	 * @param
-	 * @return List PlacementDto
-	 */
 	@Override
 	public List<PlacementDto> buildPlacementDto(List<Placement> placements) {
 		List<PlacementDto> placementDtos = new ArrayList<PlacementDto>();
@@ -49,11 +39,6 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 		return placementDtos;
 	}
 
-	/** Create PlacementDto from Placement Domain
-	 * 
-	 * @param
-	 * @return PlacementDto
-	 */
 	@Override
 	public PlacementDto buildPlacementDto(Placement placement) {
 		if (placement.isExternalUrl()) {
@@ -76,11 +61,6 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 		}
 	}
 
-	/** Create PlacementPartDto from TopPage Part Domain 
-	 * 
-	 * @param
-	 * @return PlacementPartDto
-	 */
 	@Override
 	public PlacementPartDto fromTopPagePart(TopPagePart topPagePart) {
 		return new PlacementPartDto(
@@ -90,11 +70,6 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 		);
 	}
 
-	/** Create PlacementPartDto from ExternalUrl Domain
-	 * 
-	 * @param
-	 * @return PlacementPartDto
-	 */
 	@Override
 	public PlacementPartDto fromExternalUrl(ExternalUrl externalUrl) {
 		return new PlacementPartDto(
