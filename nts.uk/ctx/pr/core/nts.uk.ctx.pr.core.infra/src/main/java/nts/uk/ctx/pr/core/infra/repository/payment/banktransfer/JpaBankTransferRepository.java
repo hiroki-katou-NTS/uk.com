@@ -25,7 +25,7 @@ public class JpaBankTransferRepository extends JpaRepository implements BankTran
 			+ "AND b.qbkdtBankTransferPK.processingNo = :processingNo "
 			+ "AND b.qbkdtBankTransferPK.payBonusAtr = :payBonusAtr " + "AND b.processingYm = :processingYm "
 			+ "AND b.qbkdtBankTransferPK.payDate = :payDate " + "AND b.qbkdtBankTransferPK.sparePayAtr = :sparePayAtr";
-	
+
 	private final String SEL_1_1 = SEL + "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
 			+ "AND b.qbkdtBankTransferPK.fromBranchId = :fromBranchId "
 			+ "AND b.qbkdtBankTransferPK.processingNo = :processingNo "
@@ -83,7 +83,7 @@ public class JpaBankTransferRepository extends JpaRepository implements BankTran
 				.setParameter("processingYm", param.getProcessYearMonth()).setParameter("payDate", param.getPayDate())
 				.setParameter("sparePayAtr", param.getSparePayAtr()).getList(x -> toDomain(x));
 	}
-	
+
 	@Override
 	public List<BankTransfer> findBySEL1_1(BankTransferParam param) {
 		return this.queryProxy().query(SEL_1_1, QbkdtBankTransfer.class)
@@ -115,9 +115,10 @@ public class JpaBankTransferRepository extends JpaRepository implements BankTran
 	}
 
 	@Override
-	public void removeAll(String companyCode, int processingNo, GeneralDate payDate) {
+	public void removeAll(String companyCode, int payBonusAtr, int processingNo, GeneralDate payDate) {
 		this.getEntityManager().createQuery(DEL_ALL, QbkdtBankTransfer.class).setParameter("companyCode", companyCode)
-				.setParameter("processingNo", processingNo).setParameter("payDate", payDate).executeUpdate();
+				.setParameter("payBonusAtr", payBonusAtr).setParameter("processingNo", processingNo)
+				.setParameter("payDate", payDate).executeUpdate();
 	}
 
 	/**
