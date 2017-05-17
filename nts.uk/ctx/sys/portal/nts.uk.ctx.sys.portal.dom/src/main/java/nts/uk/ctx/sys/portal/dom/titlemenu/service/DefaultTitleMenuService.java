@@ -32,8 +32,11 @@ public class DefaultTitleMenuService implements TitleMenuService  {
 
 	@Override
 	public void deleteTitleMenu(String companyID, String titleMenuCD) {
-		titleMenuRepository.remove(companyID, titleMenuCD);
-		// TODO: Delete Layout
+		Optional<TitleMenu> checkTitleMenu = titleMenuRepository.findByCode(companyID, titleMenuCD);
+		if (checkTitleMenu.isPresent()){
+			titleMenuRepository.remove(companyID, titleMenuCD);
+			layoutService.deleteLayout(companyID, checkTitleMenu.get().getLayoutID());
+		}
 	}
 
 	@Override
