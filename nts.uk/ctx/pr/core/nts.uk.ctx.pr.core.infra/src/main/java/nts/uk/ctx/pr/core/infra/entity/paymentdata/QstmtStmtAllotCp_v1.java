@@ -29,4 +29,9 @@ public class QstmtStmtAllotCp_v1 extends AggregateTableEntity {
 	@Basic(optional = false)
 	@Column(name = "BONUS_STMT_CD")
 	public String bonusDetailCode;
+
+	@Override
+	protected Object getKey() {
+		return this.qstmtStmtAllotCpPK;
+	}
 }

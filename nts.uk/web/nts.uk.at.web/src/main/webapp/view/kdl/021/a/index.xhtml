@@ -19,7 +19,7 @@
 		<ui:define name="content">
 			<div id="total">
 				<div id="label">
-					<label>対象項目を選択してください。</label>
+					<label>#{i18n.getText('QPP015_1')}</label>
 				</div>				
 				<div style="float: left; margin-bottom: 20px;">
 					<div id="test">
@@ -30,7 +30,7 @@
 									selectedKey: 'code', 
 									fields: ['name', 'code']}" />
 						<div>
-							<button id="btnSelectedClear" data-bind="click :clearClick">検索条件をクリアする</button>
+							<button id="btnSelectedClear" data-bind="click :clearClick" value="">検索条件をクリアする</button>
 						</div>
 					</div>
 					<div>

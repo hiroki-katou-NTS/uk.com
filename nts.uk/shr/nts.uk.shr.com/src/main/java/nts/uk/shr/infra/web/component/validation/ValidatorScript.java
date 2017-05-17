@@ -9,6 +9,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import lombok.val;
+import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.PrimitiveValueConstraintPackage;
 import nts.uk.shr.infra.web.component.internal.TagContentsUtil;
 
@@ -80,6 +81,13 @@ public class ValidatorScript extends UIComponentBase {
 	        	String parametersString = Helper.getAnnotationParametersString(representationOfAnnotation);
 				writeConstraint(rw, constraintName, parametersString);
 	        });
+		writeConstraint(rw, pvClass);
+	}
+	
+	private static void writeConstraint(ResponseWriter rw, Class<?> pvClass) {
+		if (HalfIntegerPrimitiveValue.class.isAssignableFrom(pvClass)) {
+			writeConstraintParameter(rw, "charType", "'HalfInt'");
+		}
 	}
 	
 	private static void writeConstraint(ResponseWriter rw, String constraintName, String parametersString) {
