@@ -8,6 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.bank.BankAdapter;
@@ -71,9 +73,6 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 	}
 
 	private void process1(String companyCode, AddBankTransferCommand addBankTransferCommand, int sparePayAtr) {
-		bankTransferRepository.remove(companyCode, PayBonusAtr.SALARY.value,
-				addBankTransferCommand.getProcessingNoOfScreenE(), addBankTransferCommand.getPayDateOfScreenE(),
-				sparePayAtr);
 		// PAYMENT_HEADER SEL_3 with PAYBONUS_ATR = 0 and SPARE_PAY_ATR = 0
 		Optional<Payment> paymentObj = paymentDataRepository.find(companyCode, addBankTransferCommand.getPersonId(),
 				addBankTransferCommand.getProcessingNoOfScreenE(), PayBonusAtr.SALARY.value,
@@ -115,10 +114,6 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 	}
 
 	private void process1_1(String companyCode, AddBankTransferCommand addBankTransferCommand) {
-
-		// BANK_TRANSFER DEL_1 with SPARE_PAY_ATR = 0 and 1
-		bankTransferRepository.removeAll(companyCode, addBankTransferCommand.getProcessingNoOfScreenE(),
-				addBankTransferCommand.getPayDateOfScreenE());
 		// PAYMENT_HEADER SEL_3 with PAYBONUS_ATR = 0 and SPARE_PAY_ATR = 0
 		// and 1
 		// ERRORRRR
@@ -179,12 +174,10 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 				CategoryAtr.ARTICLES.value, itemCode, BigDecimal.ZERO);
 		if (paymentDetailObj.isPresent()) {
 			// NOTE: dang bi loi
-			// addBankTransferCommand.getPaymentMoney() thay cho
-			// paymentDetailObj.get().getPaymentMoney()
 			BankTransfer bankTransfer = BankTransfer.createFromJavaType(companyCode,
 					addBankTransferCommand.getCompanyNameKana(), addBankTransferCommand.getPersonId(),
 					paymentObj.get().getDepartmentCode(), addBankTransferCommand.getPayDateOfScreenE(),
-					PayBonusAtr.SALARY.value, addBankTransferCommand.getPaymentMoney(),
+					PayBonusAtr.SALARY.value, paymentDetailObj.get().getValue(),
 					addBankTransferCommand.getProcessingNoOfScreenE(),
 					addBankTransferCommand.getProcessingYMOfScreenE(), sparePayAtr);
 			bankTransfer.fromBank(basicLineBankDtoObj.get().getBranchId(), basicBankDtoObj.get().getBankNameKana(),
@@ -196,7 +189,7 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 					basicPersonUseSettingDtoObj.getAccountHolderKnName());
 			bankTransferRepository.add(bankTransfer);
 		} else {
-			System.out.println("PaymentDetail Object has no exist, ERROR!");
+			throw new BusinessException(new RawErrorMessage("PaymentDetail Object has no exist, ERROR!"));
 		}
 	}
 
@@ -216,13 +209,11 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 				itemCode, BigDecimal.ZERO);
 		if (paymentDetailObj.size() > 0) {
 			// NOTE: dang bi loi
-			// addBankTransferCommand.getPaymentMoney() thay cho
-			// paymentDetailObj.get().getPaymentMoney()
 			for (PaymentDetail x : paymentDetailObj) {
 				BankTransfer bankTransfer = BankTransfer.createFromJavaType(companyCode,
 						addBankTransferCommand.getCompanyNameKana(), addBankTransferCommand.getPersonId(),
 						paymentObj.getDepartmentCode(), addBankTransferCommand.getPayDateOfScreenE(),
-						PayBonusAtr.SALARY.value, addBankTransferCommand.getPaymentMoney(),
+						PayBonusAtr.SALARY.value, x.getValue(),
 						addBankTransferCommand.getProcessingNoOfScreenE(),
 						addBankTransferCommand.getProcessingYMOfScreenE(), x.getSparePayAtr().value);
 				bankTransfer.fromBank(basicLineBankDtoObj.get().getBranchId(), basicBankDtoObj.get().getBankNameKana(),
@@ -235,7 +226,7 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 				bankTransferRepository.add(bankTransfer);
 			}
 		} else {
-			System.out.println("PaymentDetail Object has no exist, ERROR!");
+			throw new BusinessException(new RawErrorMessage("PaymentDetail Object has no exist, ERROR!"));
 		}
 	}
 }
