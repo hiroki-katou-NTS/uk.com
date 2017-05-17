@@ -1,4 +1,19 @@
 module qmm019.f.attendItem.service {
+    var paths = {
+        getItemSalary: "pr/core/itemattend/find/{0}",
+    };
+    export function getSalaryItem(itemCode): JQueryPromise<model.AttendItemModel> {
+        let dfd = $.Deferred<model.AttendItemModel>();
+        var _path = nts.uk.text.format(paths.getItemSalary, itemCode);
+        nts.uk.request.ajax(_path).done(function(res: model.AttendItemModel) {
+            dfd.resolve(res);
+        })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+
+    }
     export module model {
         export class AttendItemModel {
             avePayAtr: number;

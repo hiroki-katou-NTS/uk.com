@@ -16,6 +16,12 @@
 			<com:scriptfile path="qmm019.f.vm.js" />
 			<com:scriptfile path="qmm019.f.start.js" />
 			<com:scriptfile path="qmm019.f.service.js" />
+			<com:scriptfile path="salaryItem/qmm019.f.salaryItem.vm.js" />
+			<com:scriptfile path="salaryItem/qmm019.f.salaryItem.service.js" />
+			<com:scriptfile path="deductItem/qmm019.f.deductItem.vm.js" />
+			<com:scriptfile path="deductItem/qmm019.f.deductItem.service.js" />
+			<com:scriptfile path="attendItem/qmm019.f.attendItem.vm.js" />
+			<com:scriptfile path="attendItem/qmm019.f.attendItem.service.js" />
 			<com:stylefile path="main.css" />
 
 			<script>var dialogSize = { width: 1100, height: 690 };</script>
@@ -29,7 +35,6 @@
 					};
 				</script>
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
 				<div style="margin-left: 20px; padding: 5px 0px 5px 25px;"
@@ -62,10 +67,10 @@
 						value: selectedCode 
 					}"
 							class="cf"></table>
-						<!-- <input id="INP_001" style="margin-left: 10px; margin-top: 5px; width: 125px" type="text" maxlength="20" />
-					<button id="SCH_001" style="width: 68px; margin-left: 5px" data-bind="click: searchItem">検索</button>
-					 -->
-
+						<!-- 
+						<input id="INP_001" style="margin-left: 10px; margin-top: 5px; width: 125px" type="text" maxlength="20" />
+						<button id="SCH_001" style="width: 68px; margin-left: 5px" data-bind="click: searchItem">検索</button>
+					 	-->
 						<!-- 	<div data-bind="with: listBox">
 						<div id="list-box"
 							data-bind="ntsListBox: {options: itemList,
@@ -80,32 +85,39 @@
 													{ prop: 'name', length: 12 }
 											   ]}"
 							class="cf"></div>
-					</div>
-					 -->
+						</div>
+						 -->
 					</div>
 					<button class="large disabled" id="F_Btn_ItemNameRegistration"
 						data-bind="click:registerItemName">↑項目名の登録を行う</button>
 				</div>
-				<com:ko-if bind="listBox().itemDtoSelected()">
-					<div class="right-content">
-						<div style="margin-bottom: 5px;" class="form-label"
-							data-bind="with: listBox">
-							<label id="LBL_004">コード/名称</label> <a
-								data-bind="text: selectedCode">コード</a><a
-								data-bind="text: selectedName">名称</a>
-						</div>
-						<br />
-						<div data-bind="if: isCategoryAtrEqual0()">
+				<div class="right-content">
+					<div style="margin-bottom: 5px;" class="form-label"
+						data-bind="with: listBox">
+						<label id="LBL_004">コード/名称</label> <a
+							data-bind="text: selectedCode">コード</a><a
+							data-bind="text: selectedName">名称</a>
+					</div>
+					<br />
+					<com:ko-if bind="isCategoryAtrEqual0()">
+						<div id="ItemSalaryScreen"
+							data-bind=" with:screenModel.salaryItemScreen">
 							<ui:include src="salaryItem/index.xhtml" />
 						</div>
-						<div data-bind="if: isCategoryAtrEqual1()">
+					</com:ko-if>
+					<com:ko-if bind="isCategoryAtrEqual1()">
+						<div id="ItemDeductScreen"
+							data-bind="if: isCategoryAtrEqual1(), with:screenModel.deductItemScreen">
 							<ui:include src="deductItem/index.xhtml" />
 						</div>
-						<div data-bind="if: isCategoryAtrEqual2()">
+					</com:ko-if>
+					<com:ko-if bind="isCategoryAtrEqual2()">
+						<div id="ItemAttendScreen"
+							data-bind="if: isCategoryAtrEqual2() , with:screenModel.attendItemScreen">
 							<ui:include src="attendItem/index.xhtml" />
 						</div>
-					</div>
-				</com:ko-if>
+					</com:ko-if>
+				</div>
 				<div
 					style="width: 100%; height: 30px; float: left; text-align: center;">
 					<hr />

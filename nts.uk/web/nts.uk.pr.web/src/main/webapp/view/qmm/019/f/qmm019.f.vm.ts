@@ -12,18 +12,17 @@ module qmm019.f.viewmodel {
 
     //get the model from app
     export class ItemDto {
-        companyCode: KnockoutObservable<String>;
-        itemCode: KnockoutObservable<String>;
+        itemCode: KnockoutObservable<string>;
         categoryAtr: KnockoutObservable<number>;
-        itemAbName: KnockoutObservable<String>;
+        itemAbName: KnockoutObservable<string>;
         checkUseHighError: KnockoutObservable<boolean> = ko.observable(false);
-        errRangeHigh: KnockoutObservable<string> = ko.observable('0');
+        errRangeHigh: KnockoutObservable<number> = ko.observable(0);
         checkUseLowError: KnockoutObservable<boolean> = ko.observable(false);
-        errRangeLow: KnockoutObservable<string> = ko.observable('0');
+        errRangeLow: KnockoutObservable<number> = ko.observable(0);
         checkUseHighAlam: KnockoutObservable<boolean> = ko.observable(false);
-        alamRangeHigh: KnockoutObservable<string> = ko.observable('0');
+        alamRangeHigh: KnockoutObservable<number> = ko.observable(0);
         checkUseLowAlam: KnockoutObservable<boolean> = ko.observable(false);
-        alamRangeLow: KnockoutObservable<string> = ko.observable('0');
+        alamRangeLow: KnockoutObservable<number> = ko.observable(0);
         commuteAtr: KnockoutObservable<number> = ko.observable(0);
         calculationMethod: KnockoutObservable<number> = ko.observable(0);
         distributeSet: KnockoutObservable<number> = ko.observable(0);
@@ -31,6 +30,29 @@ module qmm019.f.viewmodel {
         personalWageCode: KnockoutObservable<string> = ko.observable('');
         sumScopeAtr: KnockoutObservable<number> = ko.observable(0);
         taxAtr: KnockoutObservable<number> = ko.observable(0);
+        constructor(itemCode: string, categoryAtr: number, itemAbName: string, checkUseHighError: boolean, errRangeHigh: number, checkUseLowError: boolean, errRangeLow: number,
+            checkUseHighAlam: boolean, alamRangeHigh: number, checkUseLowAlam: boolean, alamRangeLow: number, commuteAtr: number, calculationMethod: number, distributeSet: number, distributeWay: number,
+            personalWageCode: string, sumScopeAtr: number, taxAtr: number
+        ) {
+            this.itemCode = ko.observable(itemCode);
+            this.categoryAtr = ko.observable(categoryAtr);
+            this.itemAbName = ko.observable(itemAbName);
+            this.checkUseHighError = ko.observable(checkUseHighError);
+            this.errRangeHigh = ko.observable(errRangeHigh);
+            this.checkUseLowError = ko.observable(checkUseLowError);
+            this.errRangeLow = ko.observable(errRangeLow);
+            this.checkUseHighAlam = ko.observable(checkUseHighAlam);
+            this.alamRangeHigh = ko.observable(alamRangeHigh);
+            this.checkUseLowAlam = ko.observable(checkUseLowAlam);
+            this.alamRangeLow = ko.observable(alamRangeLow);
+            this.commuteAtr = ko.observable(commuteAtr);
+            this.calculationMethod = ko.observable(calculationMethod);
+            this.distributeSet = ko.observable(distributeSet);
+            this.distributeWay = ko.observable(distributeWay);
+            this.personalWageCode = ko.observable(personalWageCode);
+            this.sumScopeAtr = ko.observable(sumScopeAtr);
+            this.taxAtr = ko.observable(taxAtr);
+        }
     }
 
     export class ListBox {
@@ -42,31 +64,41 @@ module qmm019.f.viewmodel {
         isEnable: KnockoutObservable<any>;
         selectedCodes: KnockoutObservableArray<any>;
         itemDtoSelected: KnockoutObservable<any> = ko.observable(null);
-        listItemDto: Array<ItemDto>;
+        itemMasterDtoSelected: KnockoutObservable<service.model.ItemMasterDto> = ko.observable(null);
+        listItemDto: Array<service.model.ItemMasterDto>;
         checkUseHighError: KnockoutObservable<boolean> = ko.observable(false);
         checkUseLowError: KnockoutObservable<boolean> = ko.observable(false);
         checkUseHighAlam: KnockoutObservable<boolean> = ko.observable(false);
         checkUseLowAlam: KnockoutObservable<boolean> = ko.observable(false);
+        screenMode: qmm019.f.ScreenModel;
 
-        constructor(listItemDto, currentItemCode, isUpdate, stmtCode, historyId, categoryAtr, isNotYetSave, objectNotYetSave) {
+        constructor(screenMode: qmm019.f.ScreenModel, listItemDto, currentItemCode, isUpdate, stmtCode, historyId, categoryAtr, isNotYetSave, objectNotYetSave) {
             var self = this;
             // set list item dto
             self.listItemDto = listItemDto;
             self.itemName = ko.observable('');
+            self.screenMode = screenMode;
             //subcribe list box's change
             self.selectedCode.subscribe(function(codeChange) {
-                var item: ItemDto = self.getItemDtoSelected(codeChange);
-                if (item) {
-                    if (categoryAtr > -1 && categoryAtr < 3) {
-                        service.getItem(item.categoryAtr, item.itemCode).done(function(res) {
-                            self.setLayoutData(self.createItemDtoWithFindResult(item, res));
-                        });
-                    } else {
-                        self.setLayoutData(self.createItemDtoEmpty(item));
-                    }
+                var item: service.model.ItemMasterDto = self.getItemDtoSelected(codeChange);
+                self.itemMasterDtoSelected(item);
+                
+            });
+            self.itemMasterDtoSelected.subscribe(function(newItem) {
+                switch (newItem.categoryAtr) {
+                    case 0:
+                        self.screenMode.salaryItemScreen.itemMasterDto(newItem);
+                        break;
+                    case 1:
+                        self.screenMode.deductItemScreen.itemMasterDto(newItem);
+                        break;
+                    case 2:
+                        self.screenMode.attendItemScreen.itemMasterDto(newItem);
+                        break;
+                    default:
+                           self.setLayoutData(self.createItemDtoEmpty(newItem));
                 }
             });
-
             if (isUpdate == true) {
                 if (isNotYetSave) {
                     self.selectedCode(currentItemCode);
@@ -111,6 +143,7 @@ module qmm019.f.viewmodel {
 
 
         }
+
         createItemDtoTypeKo(item) {
             if (item) {
                 return {
@@ -213,13 +246,19 @@ module qmm019.f.viewmodel {
         }
         setLayoutData(item) {
             let self = this;
-            self.itemDtoSelected(item);
-            self.checkUseHighError(self.itemDtoSelected().checkUseHighError());
-            self.checkUseLowError(self.itemDtoSelected().checkUseLowError());
-            self.checkUseHighAlam(self.itemDtoSelected().checkUseHighAlam());
-            self.checkUseLowAlam(self.itemDtoSelected().checkUseLowAlam());
+            switch (item.categoryAtr) {
+                case 0:
+                    self.screenMode.salaryItemScreen.setItemDtoSelected(item);
+                    break;
+                case 1:
+                    self.screenMode.deductItemScreen.setItemDtoSelected(item);
+                    break;
+                case 2:
+                    self.screenMode.attendItemScreen.setItemDtoSelected(item);
+                    break;
+            }
         }
-        getItemDtoSelected(codeChange): ItemDto {
+        getItemDtoSelected(codeChange): service.model.ItemMasterDto {
             var self = this;
             var item = _.find(self.listItemDto, function(item) {
                 return item.itemCode == codeChange;
@@ -286,8 +325,8 @@ module qmm019.f.viewmodel {
         timeEditorOption: any;
         paramIsNotYetSave: boolean;
         paramObjectNotYetSave: any;
-
-        constructor(data) {
+        screenModel: qmm019.f.ScreenModel;
+        constructor(screenModel: qmm019.f.ScreenModel, data) {
             var self = this;
             self.paramItemCode = data.itemCode;
             self.paramCategoryAtr = ko.observable(data.categoryId);
@@ -297,6 +336,7 @@ module qmm019.f.viewmodel {
             self.paramIsNotYetSave = data.isNotYetSave;
             self.paramObjectNotYetSave = data.objectNotYetSave;
             self.taxAtr = data.taxAtr;
+            self.screenModel = screenModel;
             if (self.paramCategoryAtr() === 0) {
                 self.itemAtr("支給項目");
             } else if (self.paramCategoryAtr() === 1) {
@@ -306,26 +346,12 @@ module qmm019.f.viewmodel {
             } else if (self.paramCategoryAtr() === 3) {
                 self.itemAtr(' 記事項目');
             }
-
-
-            var itemListSumScopeAtr = ko.observableArray([
-                new ItemModel(0, '合計対象外'),
-                new ItemModel(1, '合計対象内'),
-                new ItemModel(2, '合計対象外（現物）'),
-                new ItemModel(3, '合計対象内（現物）')
-            ]);
+           
             var itemListSumScopeAtr1 = ko.observableArray([
                 new ItemModel(0, '合計対象外'),
                 new ItemModel(1, '合計対象内')
             ]);
-            var itemListCalcMethod0 = ko.observableArray([
-                new ItemModel(0, '手入力'),
-                new ItemModel(1, '個人情報'),
-                new ItemModel(2, '計算式'),
-                new ItemModel(3, '賃金テーブル'),
-                new ItemModel(4, '共通金額'),
-                new ItemModel(9, 'システム計算')
-            ]);
+            
             var itemListCalcMethod1 = ko.observableArray([
                 new ItemModel(0, '手入力'),
                 new ItemModel(1, '個人情報'),
@@ -344,13 +370,7 @@ module qmm019.f.viewmodel {
                 new ItemModel(0, '交通機関'),
                 new ItemModel(1, '交通用具')
             ]);
-            if (self.paramCategoryAtr() == 0) {
-                //計算方法
-                self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod0));
-                //内訳区分
-                //「合計対象内（現物）」と「合計対象外（現物）」は項目区分が「支給項目」の場合のみ表示
-                self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr));
-            } else if (self.paramCategoryAtr() == 1) {
+             if (self.paramCategoryAtr() == 1) {
                 //計算方法
                 //6 支給相殺は項目区分が「控除項目」の場合のみ表示する。
                 self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod1));
@@ -415,7 +435,7 @@ module qmm019.f.viewmodel {
             qmm019.f.service.getItemsByCategory(self.paramCategoryAtr()).done(function(data1) {
                 if (data1 !== null) {
                     self.listItemDto = data1;
-                    self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode,
+                    self.listBox = ko.observable(new ListBox(self.screenModel, self.listItemDto, self.paramItemCode,
                         self.paramIsUpdate, self.paramStmtCode, self.paramHistoryId, self.paramCategoryAtr(), self.paramIsNotYetSave, self.paramObjectNotYetSave));
                     if (self.paramIsUpdate == false) {
                         dfd.resolve();
@@ -519,15 +539,7 @@ module qmm019.f.viewmodel {
             }
         }
 
-        openHDialog() {
-            var self = this;
-            nts.uk.ui.windows.setShared('categoryAtr', self.paramCategoryAtr());
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml', { title: '明細レイアウトの作成＞個人金額コードの選択', dialogClass: 'no-close' }).onClosed(() => {
-                self.wageCode(nts.uk.ui.windows.getShared('selectedCode'));
-                self.wageName(nts.uk.ui.windows.getShared('selectedName'));
-                return this;
-            });
-        }
+        
         registerItemName() {
             nts.uk.ui.windows.setShared('isDialog', true);
             nts.uk.ui.windows.sub.modal('/view/qmm/012/b/index.xhtml', { dialogClass: 'no-close', title: '項目名の登録', width: 1280, height: 690 }).onClosed(function(): any {

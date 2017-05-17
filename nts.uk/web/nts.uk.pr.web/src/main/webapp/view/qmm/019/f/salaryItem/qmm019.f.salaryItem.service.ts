@@ -1,4 +1,19 @@
 module qmm019.f.salaryItem.service {
+    var paths = {
+        getItemSalary: "pr/core/itemsalary/find/{0}",
+    };
+    export function getSalaryItem(itemCode): JQueryPromise<model.ItemSalaryModel> {
+        let dfd = $.Deferred<model.ItemSalaryModel>();
+        var _path = nts.uk.text.format(paths.getItemSalary, itemCode);
+        nts.uk.request.ajax(_path).done(function(res: model.ItemSalaryModel) {
+            dfd.resolve(res);
+        })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+
+    }
     export module model {
         export class ItemSalaryModel {
             taxAtr: number;

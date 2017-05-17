@@ -99,5 +99,17 @@ module qmm019.f.service {
             personalWageCode: string;
             personalWageName: string;
         }
+        export class ItemMasterDto {
+            itemCode: string;
+            itemAbName: string;
+            categoryAtr: number;
+            constructor(itemCode: string,
+                itemAbName: string,
+                categoryAtr: number) {
+                this.itemCode = itemCode;
+                this.itemAbName = itemAbName;
+                this.categoryAtr = categoryAtr;
+            }
+        }
     }
 }
