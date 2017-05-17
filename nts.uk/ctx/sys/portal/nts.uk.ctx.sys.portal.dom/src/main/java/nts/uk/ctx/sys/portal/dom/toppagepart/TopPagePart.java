@@ -1,9 +1,9 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.size.Height;
 import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
@@ -12,27 +12,45 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.size.Width;
 /**
  * @author LamDT
  */
-@Value
-@EqualsAndHashCode(callSuper = false)
-public class TopPagePart extends DomainObject {
+@Getter
+@AllArgsConstructor
+public class TopPagePart extends AggregateRoot {
 
 	/** Company ID */
-	String companyID;
+	private String companyID;
 
 	/** Toppage Part GUID */
-	String toppagePartID;
+	private String toppagePartID;
 
 	/** ToppagePart Code */
-	TopPagePartCode code;
+	private TopPagePartCode code;
 
 	/** ToppagePart Name */
-	TopPagePartName name;
+	private TopPagePartName name;
 
 	/** Enum ToppagePart Type */
-	TopPagePartType type;
+	private TopPagePartType type;
 
 	/** Size */
-	Size size;
+	private Size size;
+	
+    /**
+     * Create TopPagePart from Java type 
+     * 
+     * @param
+     * @return TopPagePart
+     **/
+    public static TopPagePart createFromJavaType(String companyID, String topPagePartID,
+    		String topPagePartCode, String topPagePartName, int topPagePartType,
+    		int width, int height){
+        return new TopPagePart(
+            companyID, topPagePartID,
+            new TopPagePartCode(topPagePartCode),
+            new TopPagePartName(topPagePartName),
+            EnumAdaptor.valueOf(topPagePartType, TopPagePartType.class),
+            Size.createFromJavaType(width, height)
+        );
+    }
 	
 	/** Quickly get Size.width */
 	public Width getWidth() {
@@ -43,20 +61,19 @@ public class TopPagePart extends DomainObject {
 	public Height getHeight() {
 		return this.size.getHeight();
 	}
-
-	/**
-	 * Create TopPagePart from Java type 
-	 * 
-	 * @param
-	 * @return TopPagePart
-	 **/
-	public static TopPagePart createFromJavaType(String companyID, String topPagePartID, String topPagePartCode, String topPagePartName, int topPagePartType, int width, int height){
-		return new TopPagePart(
-			companyID, topPagePartID,
-			new TopPagePartCode(topPagePartCode),
-			new TopPagePartName(topPagePartName),
-			EnumAdaptor.valueOf(topPagePartType, TopPagePartType.class),
-			Size.createFromJavaType(width, height)
-		);
+	
+	/** Set TopPagePart Name */
+	public void setName(String name) {
+		this.name = new TopPagePartName(name);
+	}
+	
+	/** Set TopPagePart Type */
+	public void setType(int type) {
+		this.type = EnumAdaptor.valueOf(type, TopPagePartType.class);
+	}
+	
+	/** Set TopPagePart Size */
+	public void setSize(int width, int height) {
+		this.size = Size.createFromJavaType(width, height);
 	}
 }
