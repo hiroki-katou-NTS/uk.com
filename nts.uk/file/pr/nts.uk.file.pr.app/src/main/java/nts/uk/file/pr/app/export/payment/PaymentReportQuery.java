@@ -37,7 +37,7 @@ public class PaymentReportQuery {
 	
 	
 	/** The page orientation. */
-	//PORTRAIT : A LANDSCAPE: B
+	//LANDSCAPE : A ; PORTRAIT : B
 	private String pageOrientation;
 		
 }

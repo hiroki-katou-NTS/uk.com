@@ -28,10 +28,10 @@ public class PaymentReportGeneratorFactory {
 	 */
 	public PaymentGenerator createGenerator(String pageOrientation, PaymentReportData data) {
 		switch (pageOrientation) {
-		case "LANDSCAPE":
+		case "PORTRAIT":
 			return new PaymentReportVerticalGenerator();
 
-		case "PORTRAIT":
+		case "LANDSCAPE":
 			return paymentReportHorizontalGenerator;
 
 		default:

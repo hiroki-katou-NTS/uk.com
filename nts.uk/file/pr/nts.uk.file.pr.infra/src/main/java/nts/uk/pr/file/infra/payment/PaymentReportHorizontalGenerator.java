@@ -29,9 +29,12 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 	/** The start col. */
 	private int startCol = 0;
 
-	/** The style payment header row. */
-	private Style stylePaymentHeaderRow;
+	/** The style payment header title. */
+	private Style stylePaymentHeaderTitle;
 
+	/** The style payment value header. */
+	private Style stylePaymentValueHeader;
+	
 	/** The style payment value row. */
 	private Style stylePaymentValueRow;
 
@@ -64,8 +67,9 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 		startRow++;
 		startCol = 0;
 		cells.get(startRow, startCol).setValue("部門コード");
-		stylePaymentHeaderRow = cells.getCellStyle(4, 0);
-		stylePaymentValueRow = cells.getCellStyle(4, 1);
+		stylePaymentHeaderTitle = cells.getCellStyle(4, 0);
+		stylePaymentValueHeader = cells.getCellStyle(4, 1);
+		stylePaymentValueRow = cells.getCellStyle(5, 1);
 		startCol += 2;
 		cells.get(startRow, startCol).setValue("個人コード");
 		startCol += 2;
@@ -116,15 +120,15 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 	 */
 	private void pushDataItem(String itemName, List<SalaryItemDto> dataItem) {
 		startCol = 0;
-		pushData(itemName, startRow, startCol, stylePaymentHeaderRow);
+		pushData(itemName, startRow, startCol, stylePaymentHeaderTitle);
 		startCol++;
 		int startMerge = startRow;
 		for (int index = 0; index < dataItem.size(); index++) {
 			// next row
 			if (index > 0 && index % 9 == 0) {
 				startCol = 0;
-				pushData("", startRow + 1, 0, stylePaymentHeaderRow);
-				pushData("", startRow + 2, 0, stylePaymentHeaderRow);
+				pushData("", startRow + 1, 0, stylePaymentHeaderTitle);
+				pushData("", startRow + 2, 0, stylePaymentHeaderTitle);
 				startRow += 2;
 				startCol += 1;
 			}
@@ -133,7 +137,7 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 			pushDataValue(item.getItemVal().toString(), startRow, startCol);
 			startCol += 2;
 		}
-		pushData("", startRow + 1, 0, stylePaymentHeaderRow);
+		pushData("", startRow + 1, 0, stylePaymentHeaderTitle);
 		startRow += 2;
 		cells.merge(startMerge, 0, startRow - startMerge, 1);
 		startRow++;
@@ -147,9 +151,9 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 	 * @param startCol the start col
 	 */
 	private void pushDataValue(String data, int startRow, int startCol) {
-		pushData(data, startRow, startCol, stylePaymentValueRow);
-		pushData("", startRow, startCol + 1, stylePaymentValueRow);
-		cells.merge(startRow, startCol, 1, 2);
+		pushData(data, startRow + 1, startCol, stylePaymentValueRow);
+		pushData("", startRow + 1, startCol + 1, stylePaymentValueRow);
+		cells.merge(startRow + 1, startCol, 1, 2);
 	}
 
 	/**
@@ -160,8 +164,8 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 	 * @param startCol the start col
 	 */
 	private void pushDataHeader(String data, int startRow, int startCol) {
-		pushData(data, startRow + 1, startCol, stylePaymentValueRow);
-		pushData("", startRow + 1, startCol + 1, stylePaymentValueRow);
-		cells.merge(startRow + 1, startCol, 1, 2);
+		pushData(data, startRow, startCol, stylePaymentValueHeader);
+		pushData("", startRow, startCol + 1, stylePaymentValueHeader);
+		cells.merge(startRow, startCol, 1, 2);
 	}
 }
