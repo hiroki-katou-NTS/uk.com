@@ -1,0 +1,87 @@
+.screen-c .caret-left {
+	border-width: 15px 20px;
+	margin-top: -15px;
+	color: #D90000;
+}
+
+.screen-c .left-content>.bg-green {
+	width: 187px;
+	background-color: #E0F59E;
+}
+
+.screen-c .right-content {
+	padding-left: 35px;
+}
+
+.screen-c #C_LST_001_container {
+	margin-top: 10px !important;
+}
+
+.screen-c #C_LST_002, .screen-c #C_LST_002_grid_container, .screen-c #C_LST_002_grid_virtualContainer,
+	.screen-c #C_LST_002_grid_displayContainer, .screen-c  #C_LST_002 #C_LST_002_grid td
+	{
+	width: 170px !important;
+	max-width: none !important;
+	max-width: initial !important;
+}
+
+
+.screen-c #C_LST_002_grid_virtualContainer {
+	background-color: #FCFCFC;
+}
+
+.screen-c #C_LST_002_grid_displayContainer {
+	background-color: #FCFCFC !important;
+}
+
+.screen-c #C_LST_002_container {
+	margin-top: 10px;
+}
+
+.screen-c  #C_LST_002 #C_LST_002_grid tr:focus {
+	outline: none;
+	background-color: #c3f1f7 !important;
+}
+
+.screen-c #C_LST_002 #C_LST_002_grid .nts-column:focus {
+	outline: none;
+}
+
+.screen-c .ntsListBox tbody tr .nts-column {
+	color: #68737b;
+}
+
+.screen-c .ntsListBox tbody tr .ui-iggrid-selectedcell, .screen-c #C_LST_002 #C_LST_002_grid .nts-column.ui-iggrid-selectedcell.ui-state-active
+	{
+	background-color: #c3f1f7 !important;
+}
+.screen-c .ui-iggrid-rowselector-header,
+.screen-c .ui-iggrid-rowselector-class{
+	width: 0px !important;
+}
+
+.screen-c .right-content .content-box {
+	padding-left: 20px;
+}
+
+.screen-c .ntsSearchBox {
+	width: 300px !important;
+}
+
+
+.screen-c .ui-widget-header {
+	color: #000;
+	background-color: #CFF1A5;
+}
+
+.screen-c .C_BTN_34 {
+	margin-bottom: 10px;
+}
+
+.screen-c .C_BTN_34 #C_BTN_004 {
+	float: right;
+}
+
+.screen-c .c-btn-001, .screen-c .c-btn-002 {
+	margin-right: 5px;
+}

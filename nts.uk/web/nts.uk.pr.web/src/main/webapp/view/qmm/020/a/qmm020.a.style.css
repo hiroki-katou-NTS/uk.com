@@ -1,0 +1,28 @@
+.caret-left {
+	border-width: 15px 20px;
+	margin-top: -15px;
+	color: #D90000;
+}
+
+.bg-green {
+	background-color: #E0F59E;
+}
+
+.nts-list-box .ui-selected {
+	background-color: #ccffff;
+	color: #000000;
+}
+
+.nts-list-box .ui-selecting {
+	background: #ccffff;
+}
+
+.sidebar-content-header>div {
+	display: inline-block;
+}
+
+#A_BTN_001 {
+	padding-left: 30px;
+	padding-right: 30px;
+	background-color: #a4eeb0;
+}

@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="qmm020.style.css" />
+			<com:scriptfile path="qmm020.a.start.js" />
+			<com:scriptfile path="qmm020.a.viewmodel.js" />
+			<com:scriptfile path="qmm020.a.service.js" />
+			<com:scriptfile path="../b/qmm020.b.viewmodel.js" />
+			<com:scriptfile path="../b/qmm020.b.service.js" />
+			<com:scriptfile path="../c/qmm020.c.viewmodel.js" />
+			<com:scriptfile path="../c/qmm020.c.service.js" />
+			<com:scriptfile path="../d/qmm020.d.viewmodel.js" />
+			<com:scriptfile path="../d/qmm020.d.service.js" />
+		</ui:define>
+
+		<ui:define name="sidebar">
+			<div data-bind="with: viewmodelA">
+				<ul class="navigator"
+					data-bind="foreach: tabs().filter(function(t) { return t.display() == true; })">
+					<li><a
+						data-bind="text: name, 
+						click: changeTab,
+						css: { 'active': active },
+						attr: { href: '#tabpanel-' + ($index() + 1) }"></a></li>
+				</ul>
+			</div>
+			<div class="divider"></div>
+			<span>ログインをしなおしてください</span>
+			<button>?</button>
+		</ui:define>
+		<ui:define name="sidebar-content">
+			<div class="sidebar-content-header" data-bind="with: viewmodelA">
+				<span class="title" data-bind="text: title">会社</span>
+				<div>
+					<button id="A_BTN_001" data-bind="click: saveData">登録</button>
+				</div>
+				<div data-bind="if: title().indexOf('職位') == -1">
+					<button id="A_BTN_002" data-bind="click: ">個人の設定状況確認</button>
+					<button id="A_BTN_003" data-bind="click: ">利用単位の設定</button>
+					<button id="A_BTN_004" data-bind="click: ">マスタ修正ログ</button>
+				</div>
+			</div>
+			<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelB"
+				style="display: none;">
+				<div class="screen-b">
+					<ui:include src="../b/index.xhtml" />
+				</div>
+			</div>
+			<div id="tabpanel-2" role="tabpanel" data-bind="with : viewmodelC"
+				style="display: none;">
+				<div class="screen-c">
+					<ui:include src="../c/index.xhtml" />
+				</div>
+			</div>
+			<div id="tabpanel-3" role="tabpanel" data-bind="with: viewmodelD"
+				style="display: none;">
+				<div class="screen-d">
+					<ui:include src="../d/index.xhtml" />
+				</div>
+			</div>
+			<div id="tabpanel-4" role="tabpanel" style="display: none;">
+				<!-- <div class="screen-e">
+					<ui:include src="../e/index.xhtml" />
+				</div> -->
+			</div>
+			<div id="tabpanel-5" role="tabpanel" style="display: none;">
+				<!-- <div class="screen-f">
+					<ui:include src="../f/index.xhtml" />
+				</div> -->
+			</div>
+			<div id="tabpanel-6" role="tabpanel" style="display: none;">
+				<!-- <div class="screen-g">
+					<ui:include src="../g/index.xhtml" />
+				</div> -->
+			</div>
+			<div id="tabpanel-7" role="tabpanel" style="display: none;">
+				<!-- <div class="screen-h">
+					<ui:include src="../h/index.xhtml" />
+				</div> -->
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

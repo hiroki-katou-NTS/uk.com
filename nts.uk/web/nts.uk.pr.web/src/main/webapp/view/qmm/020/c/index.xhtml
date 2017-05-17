@@ -1,0 +1,45 @@
+<div class="contents-area" data-bind="with: model">
+	<div class="left-content">
+		<div class="bg-green caret-right caret-background">
+			<div class="C_BTN_34">
+				<button id="C_BTN_003" data-bind="click: $parent.openJDialog.bind($parent)">履歴追加</button>
+				<button id="C_BTN_004" data-bind="click: $parent.openKDialog.bind($parent), enable: deleteOrUpdate() == true">履歴編集</button>
+			</div>
+			<div id="C_LST_002"
+				data-bind="ntsListBox: {
+						options: ListItems,
+						optionsValue: 'historyId',
+						optionsText: 'text',
+						value: ListItemSelected,
+						enable: true,
+						rows:5,
+						required: true,
+						columns: [
+							{ prop: 'text', length: 12 }
+						]}">
+			</div>
+		</div>
+	</div>
+	<div class="right-content">
+		<div id="C_LBL_004" data-bind="ntsFormLabel: {}">雇用に明細書を紐付ける</div>
+		<hr />
+		<div class="content-box">
+			<div class="searchBox"
+				data-bind="ntsSearchBox: {
+					comId: 'C_LST_001',
+					items: GridItems,
+					selected: GridItemSelected,
+					selectedKey: 'employmentCode',
+					fields: ['employmentCode', 'employmentName']}" />
+			<table id="C_LST_001"
+				data-bind="ntsGridList: {
+					width: 800,								
+					height: 350,
+					dataSource: GridItems,
+					primaryKey: 'employmentCode',
+					columns: $parent.gridColumns,
+					multiple: false,
+					value: GridItemSelected}"></table>
+		</div>
+	</div>
+</div>

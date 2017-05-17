@@ -231,7 +231,7 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 		pensionRate.officeCode = officeCode;
 		pensionRate.applyRange = MonthRange.toMaxDate(startYearMonth);
 		pensionRate.autoCalculate = CalculateMethod.Auto;
-		pensionRate.fundInputApply = FundInputApply.Yes;
+		pensionRate.fundInputApply = FundInputApply.No;
 		pensionRate.maxAmount = new CommonAmount(BigDecimal.ZERO);
 		pensionRate.childContributionRate = new Ins2Rate(BigDecimal.ZERO);
 		pensionRate.fundRateItems = setDafaultFunRateItems();

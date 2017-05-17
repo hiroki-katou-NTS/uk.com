@@ -1,0 +1,75 @@
+package nts.uk.ctx.pr.core.ws.rule.employment.allot;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.DelAllotCompanyCmd;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.DelAllotCompanyCmdHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.InsertAllotCompanyCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.InsertAllotCompanyCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.UpdateAllotCompanyCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.UpdateAllotCompanyCommandHandler;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.company.CompanyAllotSettingDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.company.CompanyAllotSettingFinder;
+
+@Path("pr/core/allot")
+@Produces("application/json")
+public class CompanyAllotSettingWebService extends WebService {
+	@Inject
+	private CompanyAllotSettingFinder find;
+	@Inject
+	private UpdateAllotCompanyCommandHandler update;
+	@Inject
+	private InsertAllotCompanyCommandHandler insert;
+	@Inject
+	private DelAllotCompanyCmdHandler delete;
+
+	@POST
+	@Path("findallcompanyallot")
+	public List<CompanyAllotSettingDto> GetAllCompanyAllotSetting() {
+		return this.find.getAllCompanyAllotSetting();
+	}
+
+	@POST
+	@Path("findcompanyallotlayoutname/{stmtCode}")
+	@Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+	public String GetAllotLayoutName(@PathParam("stmtCode") String stmtCode) {
+		return this.find.getAllotLayoutName(stmtCode);
+	}
+
+	@POST
+	@Path("findcompanyallotmaxdate")
+	public CompanyAllotSettingDto GetAllotMaxDate() {
+		Optional<CompanyAllotSettingDto> model = this.find.getMaxStartYM();
+		if (model.isPresent()) {
+			return model.get();
+		} else {
+			return null;
+		}
+	}
+
+	@POST
+	@Path("update")
+	public void update(UpdateAllotCompanyCommand command) {
+		this.update.handle(command);
+	}
+
+	@POST
+	@Path("insert")
+	public void insert(InsertAllotCompanyCommand command) {
+		this.insert.handle(command);
+	}
+
+	@POST
+	@Path("delete")
+	public void delete(DelAllotCompanyCmd command) {
+		this.delete.handle(command);
+	}
+}

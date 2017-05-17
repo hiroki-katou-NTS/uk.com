@@ -1,0 +1,51 @@
+<div class="contents-area">
+	<div class="left-content">
+		<div class="bg-green caret-right caret-background">
+			<div class="b-btns-34">
+				<button id="B_BTN_003" data-bind="click: openJDialog">履歴追加</button>
+				<button id="B_BTN_004" data-bind="click: openKDialog, enable: selectedItem().isMaxDate == true">履歴編集</button>
+			</div>
+			<div id="B_LST_001"
+				data-bind="ntsListBox: {
+						options: listItems,
+						optionsValue: 'historyId',
+						optionsText: 'text',
+						multiple: false,
+						value: selectedId,
+						enable: true,
+						rows:5,
+						required: true,
+						columns: [{ prop: 'text', length: 8 }]}">
+			</div>
+		</div>
+	</div>
+	<div class="right-content">
+		<label id="B_LBL_001">全社に対して設定できる明細書は、</label>
+		<div class="triangle-label">
+			<div>
+				<ul>
+					<li><label id="B_LBL_002">給与明細書</label></li>
+					<li><label id="B_LBL_003">賞与 明細書</label></li>
+				</ul>
+			</div>
+			<div>
+				<label id="B_LBL_004">それぞれ、一種類です。</label>
+			</div>
+		</div>
+		<hr />
+		<div class="bottom-group" data-bind="with: selectedItem">
+			<div class="form-group">
+				<div id="B_LBL_005" data-bind="ntsFormLabel: {}">給与明細書</div>
+				<button id="B_BTN_001" data-bind="click: $parent.openPaymentMDialog.bind($parent)">選択</button>
+				<label id="B_LBL_006" data-bind="text: paymentDetailCode"></label>
+				<label id="B_LBL_007" data-bind="text: paymentDetailName"></label>
+			</div>
+			<div class="form-group">
+				<div id="B_LBL_008" data-bind="ntsFormLabel: {}">賞与明細書</div>
+				<button id="B_BTN_002" data-bind="click: $parent.openBonusMDialog.bind($parent)">選択</button>
+				<label id="B_LBL_009" data-bind="text: bonusDetailCode"></label>
+				<label id="B_LBL_010" data-bind="text: bonusDetailName"></label>
+			</div>
+		</div>
+	</div>
+</div>
