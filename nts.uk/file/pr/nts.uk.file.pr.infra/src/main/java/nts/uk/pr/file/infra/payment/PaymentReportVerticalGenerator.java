@@ -90,25 +90,31 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 
 	}
 
+	/**
+	 * Sets the page header.
+	 */
 	private void setPageHeader() {
 		cells.get("D1").setValue("給与明細書");
 		// TODO: convert to Japanese era.
 		cells.get("D2").setValue(employee.getProcessingYm());
 	}
 
+	/**
+	 * Sets the employee info.
+	 */
 	private void setEmployeeInfo() {
-		cells.get("B4").setValue("部門コード");
+		cells.get("C4").setValue("部門コード");
 		cells.get("F4").setValue("個人コード");
 		cells.get("H4").setValue("氏名");
-		cells.get("B4").setStyle(nameStyle);
-		cells.get("F4").setStyle(nameStyle);
-		cells.get("H4").setStyle(nameStyle);
-		cells.get("B5").setValue(employee.getDepartmentInfo().getDepartmentCode());
+		cells.get("C5").setValue(employee.getDepartmentInfo().getDepartmentCode());
 		cells.get("F5").setValue(employee.getEmployeeInfo().getEmployeeCode());
 		cells.get("H5").setValue(employee.getEmployeeInfo().getEmployeeName());
 
 	}
 
+	/**
+	 * Sets the category content.
+	 */
 	private void setCategoryContent() {
 		CategoryWriter writer = new CategoryWriter();
 
@@ -145,13 +151,11 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 	/**
 	 * Sets the up page.
 	 *
-	 * @param worksheet
-	 *            the new up page
+	 * @param worksheet the new up page
 	 */
 	private void setupPage(Worksheet worksheet) {
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setOrientation(PageOrientationType.PORTRAIT);
-		pageSetup.setTopMargin(5);
 	}
 
 	/**
@@ -188,8 +192,7 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		/**
 		 * Write category content.
 		 *
-		 * @param listItem
-		 *            the list item
+		 * @param listItem the list item
 		 */
 		protected void writeCategoryContent(List<SalaryItemDto> listItem) {
 			listItem.forEach(item -> {
@@ -200,9 +203,13 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 				Cell valueCell = cells.get(currentRow + 1, currentColumn);
 				nameCell.setStyle(nameStyle);
 				valueCell.setStyle(valueStyle);
-
-				nameCell.setValue(item.getItemName());
-				valueCell.setValue(item.getItemVal());
+				if (item.isView()) {
+					nameCell.setValue(currentRow);
+					valueCell.setValue(item.getItemVal());
+				} else {
+					nameCell.setValue(currentRow);
+					valueCell.setValue(" ");
+				}
 				currentColumn++;
 			});
 			enter();
@@ -213,8 +220,7 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		/**
 		 * Write section title.
 		 *
-		 * @param title
-		 *            the title
+		 * @param title the title
 		 */
 		protected void writeSectionTitle(String title) {
 			Cell sectionTitle = cells.get(firstRow - 1, FIRST_COLUMN);
@@ -225,8 +231,7 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		/**
 		 * Write category header.
 		 *
-		 * @param headerName
-		 *            the header name
+		 * @param headerName the header name
 		 */
 		protected void writeCategoryHeader(String headerName) {
 			cells.get(firstRow, FIRST_COLUMN).setValue(headerName);
