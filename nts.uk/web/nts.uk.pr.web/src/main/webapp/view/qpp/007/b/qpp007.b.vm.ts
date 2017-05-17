@@ -51,7 +51,7 @@ module nts.uk.pr.view.qpp007.b {
                     && model.sumMonthDepHrchySet() == false
                     && model.totalSet() == false
                     && model.monthTotalSet() == false) {
-                    $('#this-contents-area').ntsError('set', '部門階層が正しく指定されていません');
+                    $('#this-contents-area').ntsError('set', '設定が正しくありません。');
                     isValid = false;
                 }
                 if (model.sumDepHrchyIndexSet() == true
@@ -61,7 +61,7 @@ module nts.uk.pr.view.qpp007.b {
                         isValid = false;
                     }
                     if (model.numberOfSelectedIndexs() == 0) {
-                        $('#this-contents-area').ntsError('set', '設定が正しくありません。');
+                        $('#this-contents-area').ntsError('set', '部門階層が正しく指定されていません');
                         isValid = false;
                     }
                 }

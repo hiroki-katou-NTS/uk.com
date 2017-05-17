@@ -113,7 +113,8 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call QWTMT_WAGETABLE_CERTIFY_G (QwtmtWagetableCertifyG SQL)
-		CriteriaQuery<QwtmtWagetableCertifyG> cq = criteriaBuilder.createQuery(QwtmtWagetableCertifyG.class);
+		CriteriaQuery<QwtmtWagetableCertifyG> cq = criteriaBuilder
+			.createQuery(QwtmtWagetableCertifyG.class);
 
 		// root data
 		Root<QwtmtWagetableCertifyG> root = cq.from(QwtmtWagetableCertifyG.class);
@@ -125,9 +126,9 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// eq CompanyCode
-		lstpredicateWhere.add(criteriaBuilder.equal(
-			root.get(QwtmtWagetableCertifyG_.qwtmtWagetableCertifyGPK).get(QwtmtWagetableCertifyGPK_.ccd),
-			companyCode));
+		lstpredicateWhere
+			.add(criteriaBuilder.equal(root.get(QwtmtWagetableCertifyG_.qwtmtWagetableCertifyGPK)
+				.get(QwtmtWagetableCertifyGPK_.ccd), companyCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -137,7 +138,8 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 
 		// exclude select
 		List<CertifyGroup> lstCertifyGroup = query.getResultList().stream()
-			.map(item -> new CertifyGroup(new JpaCertifyGroupGetMemento(item))).collect(Collectors.toList());
+			.map(item -> new CertifyGroup(new JpaCertifyGroupGetMemento(item)))
+			.collect(Collectors.toList());
 		return lstCertifyGroup;
 	}
 
@@ -167,14 +169,14 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// eq CompanyCode (where)
-		lstpredicateWhere.add(criteriaBuilder.equal(
-			root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.ccd),
-			companyCode));
+		lstpredicateWhere
+			.add(criteriaBuilder.equal(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+				.get(QwtmtWagetableCertifyPK_.ccd), companyCode));
 
 		// eq CerticationCode (where)
-		lstpredicateWhere.add(criteriaBuilder.equal(
-			root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.certifyCd),
-			certifyCode));
+		lstpredicateWhere
+			.add(criteriaBuilder.equal(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+				.get(QwtmtWagetableCertifyPK_.certifyCd), certifyCode));
 
 		lstpredicateWhere
 			.add(criteriaBuilder.notEqual(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)

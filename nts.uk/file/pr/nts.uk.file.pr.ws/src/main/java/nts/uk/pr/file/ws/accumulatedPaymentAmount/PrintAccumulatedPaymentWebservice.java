@@ -8,6 +8,4 @@ import nts.arc.layer.ws.WebService;
 @Path("/screen/pr/QET002")
 @Produces("application/json")
 public class PrintAccumulatedPaymentWebservice extends WebService {
-
-	
 }

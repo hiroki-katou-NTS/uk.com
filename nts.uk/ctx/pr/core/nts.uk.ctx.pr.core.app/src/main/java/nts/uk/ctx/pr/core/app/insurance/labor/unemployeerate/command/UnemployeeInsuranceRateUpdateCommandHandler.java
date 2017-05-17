@@ -61,8 +61,8 @@ public class UnemployeeInsuranceRateUpdateCommandHandler
 		this.service.validateDateRangeUpdate(insuranceRate);
 
 		// call get by id
-		Optional<UnemployeeInsuranceRate> data = this.repository.findById(insuranceRate.getCompanyCode(),
-			insuranceRate.getHistoryId());
+		Optional<UnemployeeInsuranceRate> data = this.repository
+			.findById(insuranceRate.getCompanyCode(), insuranceRate.getHistoryId());
 
 		// get <= start
 		if (data.isPresent()) {
@@ -72,7 +72,8 @@ public class UnemployeeInsuranceRateUpdateCommandHandler
 
 			// update end year month start previous
 			if (dataPrevious.isPresent()) {
-				dataPrevious.get().setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
+				dataPrevious.get()
+					.setEnd(insuranceRate.getApplyRange().getStartMonth().previousMonth());
 				this.repository.update(dataPrevious.get());
 			}
 
