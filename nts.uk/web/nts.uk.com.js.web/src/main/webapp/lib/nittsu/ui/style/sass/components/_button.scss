@@ -198,5 +198,10 @@ button {
     &.auto-height{
     	height: auto;
     }
+    
+    &:focus {
+	  border-color: #0096f2;
+	  box-shadow: 0 2px 2px 0 #0096f2;
+	}
 	
 }
