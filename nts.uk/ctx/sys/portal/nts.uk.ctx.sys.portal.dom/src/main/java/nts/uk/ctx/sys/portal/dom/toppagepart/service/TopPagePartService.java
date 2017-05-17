@@ -1,14 +1,24 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart.service;
 
+/**
+ * @author HieuLT
+ */
 public interface TopPagePartService {
+	
 	/**
 	 * check data is exit with companyId, code and type
-	 * @param companyId
-	 * @param code
-	 * @param type
+	 * 
+	 * @param 
 	 * @return
 	 * true: is data
 	 * false: no data
 	 */
-	boolean isExit(String companyId, String flowMenuCD, int type);
+	boolean isExist(String companyID, String flowMenuCD, int type);
+	
+	/**
+	 * Delete TopPagePart & Placements using it
+	 * 
+	 * @param topPagePartID
+	 */
+	void deleteTopPagePart(String companyID, String topPagePartID);
 }

@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * @author LamDT
  */
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringCharType(CharType.NUMERIC)
 @StringMaxLength(4)
 public class TopPagePartCode extends StringPrimitiveValue<TopPagePartCode> {
 
