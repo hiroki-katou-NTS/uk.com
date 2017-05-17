@@ -135,7 +135,7 @@ module kmk011.a.viewmodel {
         }
         openDialog021(){
             var self = this;
-            service.getAllAttItem().done(function(lstAllItem: Array<service.model.AttendanceType>){
+            service.getAllAttItem(1).done(function(lstAllItem: Array<service.model.AttendanceType>){
                 var listAllId = [];
                 for(let j=0;j<lstAllItem.length;j++){
                     listAllId[j] = lstAllItem[j].attendanceItemId;

@@ -4,7 +4,7 @@ module kmk011.a.service {
         updateDivTime: "at/record/divergencetime/updatedivtime",
         updateTimeItemId:"at/record/divergencetime/updateTimeItemId",
         getNameItemSelected: "at/record/divergencetime/getitemname/",
-        getAllAttItem:"at/record/divergencetime/getattitem",
+        getAllAttItem:"at/share/attendanceType/getByType/",
         getName: "at/record/divergencetime/getname"
     }
     /**
@@ -16,8 +16,8 @@ module kmk011.a.service {
     /**
     * get all attendance item id(id co the chon)
     */
-    export function getAllAttItem(): JQueryPromise<Array<model.AttendanceType>> {
-        return nts.uk.request.ajax("at", paths.getAllAttItem);
+    export function getAllAttItem(divType: number): JQueryPromise<Array<model.AttendanceType>> {
+        return nts.uk.request.ajax("at", paths.getAllAttItem + divType);
     }
     /**
     * update time item id (da duoc chon lai)
