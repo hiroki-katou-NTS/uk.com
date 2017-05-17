@@ -19,7 +19,30 @@ time, mark, audio, video {
   font-size: 100%;
   vertical-align: baseline;
 }
-
+.ui-dialog-titlebar-icon{
+	max-width:20px;
+	max-height:20px;
+	float:left;
+	display:inline-block;
+	margin-right:5px;
+	margin: .1em 0;
+}
+.ui-dialog-buttonpane-resize{
+				right:0px;
+				bottom:0px;
+				position:absolute;
+				max-width:20px;
+				max-height:20px;
+		}
+.control{
+	position:absolute;
+	right:10px;
+	bottom:0px;
+	color:gray;
+}
+.ui-dialog-titlebar-container{
+	width:100%;
+}
 /* line 22, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
 html {
   /*line-height: 1; mod kitahira */
@@ -2058,6 +2081,7 @@ button.nts-switch-button[disabled]:hover {
   margin: 0px;
   border-top: solid 1px #767171;
   text-align: center;
+  position:relative;
 }
 /* line 47, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane .ui-dialog-buttonset {
