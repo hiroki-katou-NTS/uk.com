@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
@@ -14,6 +16,8 @@ public class UpdateClassificationAllotSettingHeaderCommand {
 	String historyId;
 	YearMonth startDateYM;
 	YearMonth endDateYM;
+	
+	List<UpdateClassificationAllotSettingCommand> updateAllotCommand;
 
 	/**
 	 * Convert to domain object from command values

@@ -8,6 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.DeleteClassificationAllotSettingHeaderCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.DeleteClassificationAllotSettingHeaderHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.InsertClassificationAllotSettingHeaderCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.InsertClassificationAllotSettingHeaderHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.UpdateClassificationAllotSettingHeaderCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.UpdateClassificationAllotSettingHeaderHandler;
 import nts.uk.ctx.pr.core.app.find.rule.employment.allot.ClassificationAllotSettingHeaderDto;
@@ -23,6 +27,12 @@ public class ClassificationAllotSettingHeaderWebService {
 
 	@Inject
 	private UpdateClassificationAllotSettingHeaderHandler updateClassificationAllotSetting;
+	
+	@Inject
+	private InsertClassificationAllotSettingHeaderHandler insertClassificationAllotSetting;
+	
+	@Inject
+	private DeleteClassificationAllotSettingHeaderHandler deleteClassificationSetting;
 
 	@POST
 	@Path("getallclassificationallotsettingheader")
@@ -30,10 +40,24 @@ public class ClassificationAllotSettingHeaderWebService {
 		String companyCode = AppContexts.user().companyCode();
 		return this.find.getAllClassificationAllotSettingHeader(companyCode);
 	}
+	
+	@POST
+	@Path("insertclassificationallotsettingheader")
+	public void insert(InsertClassificationAllotSettingHeaderCommand command){
+		this.insertClassificationAllotSetting.handle(command);
+	}
 
 	@POST
 	@Path("updateclassificationallotsettingheader")
 	public void update(UpdateClassificationAllotSettingHeaderCommand command) {
 		this.updateClassificationAllotSetting.handle(command);
 	}
+	@POST
+	@Path("deleteclassifaicationallotsettingheader")
+	public void delete(DeleteClassificationAllotSettingHeaderCommand command){
+		this.deleteClassificationSetting.handle(command);
+		
+	}
+	
+	
 }

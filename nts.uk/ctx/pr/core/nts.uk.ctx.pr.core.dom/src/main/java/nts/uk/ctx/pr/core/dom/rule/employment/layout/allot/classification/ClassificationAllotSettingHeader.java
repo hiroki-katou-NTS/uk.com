@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.classification;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
