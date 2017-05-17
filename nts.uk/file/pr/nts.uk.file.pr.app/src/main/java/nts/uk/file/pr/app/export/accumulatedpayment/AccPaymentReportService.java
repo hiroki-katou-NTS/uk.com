@@ -107,6 +107,10 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 				&& (query.getLowerLimitValue().intValue() > query.getUpperLimitValue().intValue())) {
 			throw new RuntimeException("金額の範囲が正しく指定されていません。");
 		}
+		if ((query.getIsLowerLimit() && query.getLowerLimitValue().intValue() < 0) 
+				|| (query.getIsUpperLimit() && query.getUpperLimitValue().intValue() < 0)) {
+			throw new RuntimeException("The Limit Values is not in range");
+		}
 	}
 
 	/**

@@ -40,7 +40,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator implements AccPaymentReportGenerator {
 
 	/** The Constant REPORT_FILE_NAME. */
-	private static final String REPORT_FILE_NAME = "QET002.xlsx";
+	private static final String REPORT_FILE_NAME = "累計支給額チェックリスト.xlsx";
 
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/QET002.xlsx";
@@ -68,6 +68,12 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	
 	/** The Constant ROW_HEIGHT. */
 	private static final int ROW_HEIGHT = 28;
+	
+	/** The Constant LIGHT_BLUE_COLOR. */
+	private static final Color LIGHT_BLUE_COLOR = Color.fromArgb(197, 241, 247);
+	
+	/** The Constant LIGHT_GREEN_COLOR. */
+	private static final Color LIGHT_GREEN_COLOR = Color.fromArgb(199, 243, 145);
 
 	/*
 	 * (non-Javadoc)
@@ -279,7 +285,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void setTitleStyle(Cell cell){
 		Style style = cell.getStyle();
-		style.setForegroundColor(Color.fromArgb(197, 241, 247));
+		style.setForegroundColor(LIGHT_BLUE_COLOR);
 		style.setPattern(BackgroundType.SOLID);
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
@@ -294,7 +300,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void setBackgroundcolor(Cell cell){
 		Style style = cell.getStyle();
-		style.setForegroundColor(Color.fromArgb(199, 243, 145));
+		style.setForegroundColor(LIGHT_GREEN_COLOR);
 		style.setPattern(BackgroundType.SOLID);
 		cell.setStyle(style);
 	}
