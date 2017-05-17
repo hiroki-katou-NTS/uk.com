@@ -10,5 +10,5 @@ public interface TopPagePartService {
 	 * true: is data
 	 * false: no data
 	 */
-	boolean isExit(String companyId, String code, int type);
+	boolean isExit(String companyId, String flowMenuCD, int type);
 }

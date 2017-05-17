@@ -11,8 +11,8 @@ public enum TopPagePartType {
 	/** The Dash board. */
 	DashBoard(1),
 	
-	/** The Folow menu. */
-	FolowMenu(2),
+	/** The Flow menu. */
+	FlowMenu(2),
 
 	/** The External Url. */
 	ExternalUrl(3);
