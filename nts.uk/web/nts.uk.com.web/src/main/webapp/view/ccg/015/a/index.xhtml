@@ -20,15 +20,22 @@
 
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
-				<button tabindex="5" data-bind="click: newTopPage" id="btn_new" class="btnStyle">新規</button>
-				<button tabindex="6" data-bind="click: saveTopPage" class="proceed btnStyle"
-					id="btn_save">登録</button>
-				<button tabindex="7" data-bind=" click: copyTopPage ,enable: !isNewMode()" id="btn_printing" class="btnStyle">コピー</button>
-				<button tabindex="8" data-bind=" click: openFlowMenuSettingDialog" id="btn_readFromSocialTnsuranceOffice" class= "btnStyle2" >フローメニューの設定</button>
+				<button tabindex="5" data-bind="click: newTopPage" id="btn_new"
+					class="btnStyle">新規</button>
+				<button tabindex="6" data-bind="click: saveTopPage"
+					class="proceed btnStyle" id="btn_save">登録</button>
+				<button tabindex="7"
+					data-bind=" click: copyTopPage ,enable: !isNewMode()"
+					id="btn_printing" class="btnStyle">コピー</button>
+				<button tabindex="8" data-bind=" click: openFlowMenuSettingDialog"
+					id="btn_readFromSocialTnsuranceOffice" class="btnStyle2">フローメニューの設定</button>
 				<button tabindex="9" id="btn_masterCorrectionLog"
-					data-bind="click: openMyPageSettingDialog" class= "btnStyle2" >マイページの設定</button>
-				<button tabindex="10" data-bind="click: removeTopPage,enable: !isNewMode()" class="danger btnStyle"
-					id="btn_delete">削除</button>
+					data-bind="click: openMyPageSettingDialog" class="btnStyle2">マイページの設定</button>
+				<button tabindex="10"
+					data-bind="click: removeTopPage,enable: !isNewMode()"
+					class="danger btnStyle" id="btn_delete">削除</button>
+				<div style="float: right;"
+					data-bind="ntsFunctionPanel: {width: 200, headerText: '関連画面へ切り替え', dataSource: listLinkScreen}"></div>
 			</div>
 			<div id="contents-area" data-bind="visible: true"
 				style="display: none">
