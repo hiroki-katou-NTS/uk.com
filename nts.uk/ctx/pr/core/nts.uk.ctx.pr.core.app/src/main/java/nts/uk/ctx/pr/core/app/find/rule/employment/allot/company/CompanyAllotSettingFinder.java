@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.find.rule.employment.allot.classification;
+package nts.uk.ctx.pr.core.app.find.rule.employment.allot.company;
 
 import java.util.List;
 import java.util.Optional;
