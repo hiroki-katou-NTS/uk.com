@@ -1,15 +1,18 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.allot;
 
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.ClassificationAllotSettingFinder;
+
 @Path("pr/core/allot/")
 @Produces(MediaType.APPLICATION_JSON)
 public class ClassificationAllotSettingWebService {
-//
-//	@Inject
-//	private ClassificationAllotSettingFinder find;
+
+	@Inject
+	private ClassificationAllotSettingFinder find;
 //
 //	@POST
 //	@Path("getallclassificationallotsetting") 

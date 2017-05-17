@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.find.rule.employment.allot;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.ClassificationAllotSetting;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.classification.ClassificationAllotSetting;
 
 @Data
 @AllArgsConstructor

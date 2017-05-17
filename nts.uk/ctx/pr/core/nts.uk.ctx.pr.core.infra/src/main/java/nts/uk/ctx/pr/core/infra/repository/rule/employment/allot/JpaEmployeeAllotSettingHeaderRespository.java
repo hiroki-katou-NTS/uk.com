@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingHeader;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingHeaderRespository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.employee.EmployeeAllotSettingHeader;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.employee.EmployeeAllotSettingHeaderRespository;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotHEm;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotHEmPK;
 import nts.uk.shr.com.context.AppContexts;

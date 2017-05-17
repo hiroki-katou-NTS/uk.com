@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingHeaderRespository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.employee.EmployeeAllotSettingHeaderRespository;
 
 @Stateless
 public class EmployeeAllotSettingHeaderFinder {
