@@ -37,17 +37,19 @@ var qrm001;
                     });
                     //Employee Process 
                     self.employeeList = ko.observableArray([
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000001', "A000000000001", '日通　一郎'),
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000002', "A000000000002", '日通　二郎'),
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000003', "A000000000003", '日通　三郎'),
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000004', "A000000000004", '日通　三郎'),
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000005', "A000000000005", '日通　三郎'),
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000006', "A000000000006", '日通　三郎'),
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000007', "A000000000007", '日通　三郎'),
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000008', "A000000000008", '日通　三郎'),
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000009', "A000000000009", '日通　三郎'),
-                        new EmployeeInfo('99900000-0000-0000-0000-000000000010', "A000000000010", '日通　三郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000001', "000000000001", '日通　一郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000002', "000000000002", '日通　二郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000003', "000000000003", '日通　三郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000004', "000000000004", '日通　三郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000005', "000000000005", '日通　三郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000006', "000000000006", '日通　三郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000007', "000000000007", '日通　三郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000008', "000000000008", '日通　三郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000009', "000000000009", '日通　三郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000010', "000000000010", '日通　三郎'),
+                        new EmployeeInfo('99900000-0000-0000-0000-000000000011', "000000000011", '日通　三郎'),
                     ]);
+                    self.dateOfPayment = ko.observable('');
                     self.personCom = ko.observable(new PersonCom('000000000001', "4/25/2000", "4/25/2017", 0, 1, 1));
                     self.retirementPaymentCurrent().serviceYear(new Date(self.personCom().endDate()).getFullYear() - new Date(self.personCom().startDate()).getFullYear());
                     self.date = ko.observable("2016-12-28");
@@ -111,7 +113,7 @@ var qrm001;
                     qrm001.a.service.getRetirementPaymentList(personId).done(function (data) {
                         if (!data.length) {
                             self.isUpdate(false);
-                            self.rebind(self.retirementPaymentCurrent(), new RetirementPayment('0', '0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '0', '0'));
+                            self.rebind(self.retirementPaymentCurrent(), new RetirementPayment(self.currentEmployeeCode(), '0', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '0', '0'));
                         }
                         else {
                             self.isUpdate(true);
@@ -137,7 +139,7 @@ var qrm001;
                 // save submit Data ( register or update )
                 ScreenModel.prototype.saveData = function (isUpdate) {
                     var self = this;
-                    self.retirementPaymentCurrent().payDate(self.date());
+                    self.retirementPaymentCurrent().payDate(self.dateOfPayment());
                     var command = ko.mapping.toJS(self.retirementPaymentCurrent());
                     if (isUpdate) {
                         qrm001.a.service.updateRetirementPaymentInfo(command);
