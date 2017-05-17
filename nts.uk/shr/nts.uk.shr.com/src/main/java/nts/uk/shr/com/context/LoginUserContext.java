@@ -1,10 +1,6 @@
 package nts.uk.shr.com.context;
 
 public class LoginUserContext {
-
-	public String companyId() {
-		return this.contractCode() + "-" + this.companyCode();
-	}
 	
 	public String companyCode() {
 		return "0001";
@@ -20,5 +16,9 @@ public class LoginUserContext {
 	
 	public String contractCode() {
 		return "000000000000";
+	}
+	
+	public String companyId() {
+		return this.contractCode() + "-" + this.companyCode();
 	}
 }

@@ -188,6 +188,16 @@
         export function allKatakana(text: string) {
             return regexp.allFullKatakanaReg.test(text);
         }
+        
+        /**
+         * Determines if text is half integer
+         * @param text text to check
+         */
+        export function halfInt(text: string) {
+            var val = parseFloat(text);
+            if (val !== NaN && (val * 2) % 1 === 0) return true;
+            return false;
+        }
 
         /**
          * 文字列中のHTML記号をサニタイズする
@@ -217,6 +227,16 @@
          */
         export function toUpperCaseFirst(text: string) {
             return text.charAt(0).toUpperCase() + text.slice(1);
+        }
+        
+        /**
+         * Convert lower case text to upper case one
+         * @param text text to convert
+         */
+        export function toUpperCase(text: string) {
+            return text.replace(/[a-z]/g, function(c) {
+                return String.fromCharCode(c.charCodeAt(0) - 0x20);
+            });
         }
 
         /**
@@ -379,7 +399,14 @@
                 '全角',
                 1,
                 nts.uk.util.alwaysTrue),
-
+            Kana: new CharType(
+                'カナ',
+                1,
+                nts.uk.text.allFullKatakana),
+            HalfInt: new CharType(
+                '半整数',
+                0.5,
+                nts.uk.text.halfInt)
         };
 
         export function getCharType(primitiveValueName: string): CharType {
