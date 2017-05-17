@@ -8,8 +8,6 @@ import java.util.List;
 
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
-import com.aspose.cells.PageOrientationType;
-import com.aspose.cells.PageSetup;
 import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
@@ -25,6 +23,12 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  */
 public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator implements PaymentGenerator {
 
+	/** The Constant TOTAL_HEADER_COLUMNS. */
+	public static final int TOTAL_HEADER_COLUMNS = 1;
+
+	/** The Constant CATEGORY_START_ROW. */
+	public static final int CATEGORY_START_ROW = 9;
+
 	/** The Constant FIRST_ITEM. */
 	public static final int FIRST_ITEM = 0;
 
@@ -36,24 +40,6 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 
 	/** The Constant ITEMS_PER_ROW. */
 	public static final int ITEMS_PER_ROW = 9;
-
-	/** The section title style. */
-	private Style sectionTitleStyle;
-
-	/** The header style. */
-	private Style headerStyle;
-
-	/** The name style. */
-	private Style nameStyle;
-
-	/** The value style. */
-	private Style valueStyle;
-
-	/** The cells. */
-	private Cells cells;
-
-	/** The employee. */
-	private PaymentReportDto employee;
 
 	/*
 	 * (non-Javadoc)
@@ -69,124 +55,154 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		Worksheet worksheet = workbook.getWorksheets().get(FIRST_ITEM);
 		worksheet.setName(SHEET_NAME);
 
-		// Setup page.
-		this.setupPage(worksheet);
-
 		// Get first employee
-		this.employee = reportData.getReportData().get(FIRST_ITEM);
+		PaymentReportDto employee = reportData.getReportData().get(FIRST_ITEM);
 
 		// Get cells.
-		this.cells = worksheet.getCells();
+		Cells cells = worksheet.getCells();
 
 		// Get style from template.
-		this.valueStyle = cells.get("B11").getStyle();
-		this.nameStyle = cells.get("B10").getStyle();
-		this.headerStyle = cells.get("A10").getStyle();
-		this.sectionTitleStyle = cells.get("A8").getStyle();
+		TemplateStyle templateStyle = new TemplateStyle();
+		templateStyle.headerStyle = (cells.get("A10").getStyle());
+		templateStyle.nameStyle = cells.get("B10").getStyle();
+		templateStyle.sectionTitleStyle = cells.get("A8").getStyle();
+		templateStyle.valueStyle = cells.get("B11").getStyle();
 
-		this.setPageHeader();
-		this.setEmployeeInfo();
-		this.setCategoryContent();
+		PrintData data = new PrintData();
+		data.cells = cells;
+		data.employee = employee;
+		data.templateStyle = templateStyle;
 
-	}
-
-	/**
-	 * Sets the page header.
-	 */
-	private void setPageHeader() {
-		cells.get("D1").setValue("給与明細書");
-		// TODO: convert to Japanese era.
-		cells.get("D2").setValue(employee.getProcessingYm());
-	}
-
-	/**
-	 * Sets the employee info.
-	 */
-	private void setEmployeeInfo() {
-		cells.get("C4").setValue("部門コード");
-		cells.get("F4").setValue("個人コード");
-		cells.get("H4").setValue("氏名");
-		cells.get("C5").setValue(employee.getDepartmentInfo().getDepartmentCode());
-		cells.get("F5").setValue(employee.getEmployeeInfo().getEmployeeCode());
-		cells.get("H5").setValue(employee.getEmployeeInfo().getEmployeeName());
+		this.printContent(data);
 
 	}
 
 	/**
-	 * Sets the category content.
-	 */
-	private void setCategoryContent() {
-		CategoryWriter writer = new CategoryWriter();
-
-		// Print Payment items.
-		writer.writeSectionTitle("支給額");
-		writer.writeCategoryHeader("支給");
-		writer.writeCategoryContent(employee.getPaymentItems());
-		writer.nextRow();
-		writer.nextRow();
-
-		// Print Deduction items.
-		writer.writeSectionTitle("控除");
-		writer.writeCategoryHeader("控除");
-		writer.writeCategoryContent(employee.getDeductionItems());
-		writer.nextRow();
-		writer.nextRow();
-		writer.nextRow();
-
-		writer.writeSectionTitle("勤怠/記事");
-		// Print Attendance items.
-		writer.writeCategoryHeader("勤怠");
-		writer.writeCategoryContent(employee.getAttendanceItems());
-		// Print Article items.
-		writer.writeCategoryHeader("記事");
-		writer.writeCategoryContent(employee.getArticleItems());
-		writer.nextRow();
-
-		// Remarks.
-		Cell remark = cells.get(writer.currentRow, FIRST_COLUMN);
-		remark.setValue("備考:");
-		remark.setStyle(sectionTitleStyle);
-	}
-
-	/**
-	 * Sets the up page.
+	 * Prints the content.
 	 *
-	 * @param worksheet the new up page
+	 * @param printData the print data
 	 */
-	private void setupPage(Worksheet worksheet) {
-		PageSetup pageSetup = worksheet.getPageSetup();
-		pageSetup.setOrientation(PageOrientationType.PORTRAIT);
+	private void printContent(PrintData printData) {
+		ContentWriter writer = new ContentWriter(printData);
+
+		// Print header.
+		writer.writePageHeader();
+		writer.writeEmployeeInfo();
+
+		// Print content.
+		writer.printPayment();
+		writer.printDeduction();
+		writer.printAttendance();
+		writer.printArticle();
+
+		// Print remark;
+		writer.writeRemark();
+
 	}
 
 	/**
-	 * The Class CategoryWriter.
+	 * The Class TemplateStyle.
 	 */
-	private class CategoryWriter {
+	protected class TemplateStyle {
 
-		/** The first row. */
-		protected int firstRow = 9;
+		/** The section title style. */
+		protected Style sectionTitleStyle;
 
-		/** The current row. */
-		protected int currentRow = firstRow;
+		/** The header style. */
+		protected Style headerStyle;
 
-		/** The current column. */
-		protected int currentColumn = FIRST_COLUMN + 1;
+		/** The name style. */
+		protected Style nameStyle;
+
+		/** The value style. */
+		protected Style valueStyle;
 
 		/**
-		 * Enter.
+		 * Instantiates a new template style.
+		 */
+		public TemplateStyle() {
+			this.sectionTitleStyle = new Style();
+			this.headerStyle = new Style();
+			this.nameStyle = new Style();
+			this.valueStyle = new Style();
+		}
+	}
+
+	/**
+	 * The Class PrintData.
+	 */
+	protected class PrintData {
+
+		/** The template style. */
+		protected TemplateStyle templateStyle;
+
+		/** The cells. */
+		protected Cells cells;
+
+		/** The employee. */
+		protected PaymentReportDto employee;
+	}
+
+	/**
+	 * The Class ContentWriter.
+	 */
+	private class ContentWriter {
+
+		/** The template style. */
+		private TemplateStyle templateStyle;
+
+		/** The cells. */
+		private Cells cells;
+
+		/** The employee. */
+		private PaymentReportDto employee;
+
+		/** The first row. */
+		private int firstRow = CATEGORY_START_ROW;
+
+		/** The current row. */
+		private int currentRow = CATEGORY_START_ROW;
+
+		/** The current column. */
+		private int currentColumn = FIRST_COLUMN + TOTAL_HEADER_COLUMNS;
+
+		/**
+		 * Instantiates a new content writer.
+		 *
+		 * @param reportData the report data
+		 */
+		public ContentWriter(PrintData reportData) {
+			this.templateStyle = reportData.templateStyle;
+			this.cells = reportData.cells;
+			this.employee = reportData.employee;
+		}
+
+		/**
+		 * Write remark.
+		 */
+		private void writeRemark() {
+			Cell remark = cells.get(currentRow, FIRST_COLUMN);
+			remark.setValue("備考:");
+			remark.setStyle(templateStyle.sectionTitleStyle);
+		}
+
+		/**
+		 * Next item line.
 		 */
 		// Reset column & enter 2 rows.
-		protected void enter() {
-			currentColumn = FIRST_COLUMN + 1;
+		private void nextItemLine() {
+			currentColumn = FIRST_COLUMN + TOTAL_HEADER_COLUMNS;
 			currentRow += 2;
 		}
 
 		/**
-		 * Next row.
+		 * Break lines.
+		 *
+		 * @param numberOfLine the number of line
 		 */
-		protected void nextRow() {
-			currentRow += 1;
-			firstRow += 1;
+		private void breakLines(int numberOfLine) {
+			currentRow += numberOfLine;
+			firstRow += numberOfLine;
 		}
 
 		/**
@@ -194,25 +210,100 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		 *
 		 * @param listItem the list item
 		 */
-		protected void writeCategoryContent(List<SalaryItemDto> listItem) {
+		private void writeCategoryContent(List<SalaryItemDto> listItem) {
 			listItem.forEach(item -> {
-				if (currentColumn == ITEMS_PER_ROW + 1) {
-					enter();
+				if (currentColumn == ITEMS_PER_ROW + TOTAL_HEADER_COLUMNS) {
+					nextItemLine();
 				}
+
+				// Get cell.
 				Cell nameCell = cells.get(currentRow, currentColumn);
 				Cell valueCell = cells.get(currentRow + 1, currentColumn);
-				nameCell.setStyle(nameStyle);
-				valueCell.setStyle(valueStyle);
+
+				// Set style & value.
+				nameCell.setStyle(templateStyle.nameStyle);
+				valueCell.setStyle(templateStyle.valueStyle);
 				if (item.isView()) {
-					nameCell.setValue(currentRow);
+					nameCell.setValue(item.getItemName());
 					valueCell.setValue(item.getItemVal());
 				} else {
-					nameCell.setValue(currentRow);
+					nameCell.setValue(" ");
 					valueCell.setValue(" ");
 				}
 				currentColumn++;
 			});
-			enter();
+		}
+
+		/**
+		 * Prints the payment.
+		 */
+		private void printPayment() {
+			writeSectionTitle("支給額");
+			writeCategoryHeader("支給");
+			writeCategoryContent(employee.getPaymentItems());
+			nextCategory();
+			breakLines(2);
+
+		};
+
+		/**
+		 * Prints the deduction.
+		 */
+		private void printDeduction() {
+			writeSectionTitle("控除");
+			writeCategoryHeader("控除");
+			writeCategoryContent(employee.getDeductionItems());
+			nextCategory();
+			breakLines(3);
+		};
+
+		/**
+		 * Prints the attendance.
+		 */
+		private void printAttendance() {
+			writeSectionTitle("勤怠/記事");
+			writeCategoryHeader("勤怠");
+			writeCategoryContent(employee.getAttendanceItems());
+			nextCategory();
+		};
+
+		/**
+		 * Prints the article.
+		 */
+		private void printArticle() {
+			writeCategoryHeader("記事");
+			writeCategoryContent(employee.getArticleItems());
+			nextCategory();
+			breakLines(1);
+		};
+
+		/**
+		 * Write page header.
+		 */
+		private void writePageHeader() {
+			cells.get("D1").setValue("給与明細書");
+			// TODO: convert to Japanese era.
+			cells.get("D2").setValue(employee.getProcessingYm());
+		}
+
+		/**
+		 * Write employee info.
+		 */
+		private void writeEmployeeInfo() {
+			cells.get("C4").setValue("部門コード");
+			cells.get("F4").setValue("個人コード");
+			cells.get("H4").setValue("氏名");
+			cells.get("C5").setValue(employee.getDepartmentInfo().getDepartmentCode());
+			cells.get("F5").setValue(employee.getEmployeeInfo().getEmployeeCode());
+			cells.get("H5").setValue(employee.getEmployeeInfo().getEmployeeName());
+
+		}
+
+		/**
+		 * Next category.
+		 */
+		private void nextCategory() {
+			nextItemLine();
 			mergeHeader();
 			firstRow = currentRow;
 		}
@@ -222,10 +313,10 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		 *
 		 * @param title the title
 		 */
-		protected void writeSectionTitle(String title) {
+		private void writeSectionTitle(String title) {
 			Cell sectionTitle = cells.get(firstRow - 1, FIRST_COLUMN);
 			sectionTitle.setValue(title);
-			sectionTitle.setStyle(sectionTitleStyle);
+			sectionTitle.setStyle(templateStyle.sectionTitleStyle);
 		}
 
 		/**
@@ -233,22 +324,21 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		 *
 		 * @param headerName the header name
 		 */
-		protected void writeCategoryHeader(String headerName) {
+		private void writeCategoryHeader(String headerName) {
 			cells.get(firstRow, FIRST_COLUMN).setValue(headerName);
 		}
 
 		/**
 		 * Merge header.
 		 */
-		protected void mergeHeader() {
-			final int totalColumns = 1;
-			final int totalRows = currentRow - firstRow;
+		private void mergeHeader() {
+			final int totalHeaderRows = currentRow - firstRow;
 			int temp = firstRow;
 			while (temp < currentRow) {
-				cells.get(temp, FIRST_COLUMN).setStyle(headerStyle);
+				cells.get(temp, FIRST_COLUMN).setStyle(templateStyle.headerStyle);
 				temp++;
 			}
-			cells.merge(firstRow, FIRST_COLUMN, totalRows, totalColumns);
+			cells.merge(firstRow, FIRST_COLUMN, totalHeaderRows, TOTAL_HEADER_COLUMNS);
 		}
 	}
 }
