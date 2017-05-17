@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
@@ -94,22 +96,22 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			// Item Data List
 			int amountEmployee = accumulatedPaymentList.size();
 			int startIndex = 0;
-			int firstRowIndex = FIRST_ROW_INDEX;
+			MutableInt firstRowIndex = new MutableInt(FIRST_ROW_INDEX);
 			int numberOfPage = 0;
 			int rangeRows = AMOUNT_PER_PAGE;
 			while(amountEmployee > 0){
 				int endIndex = startIndex + AMOUNT_PER_PAGE;
 				List<AccPaymentItemData> subList = 
-						subAccList(accumulatedPaymentList, startIndex, endIndex);				
+						this.subAccList(accumulatedPaymentList, startIndex, endIndex);
 				
 				// Create ranges 
 				if(amountEmployee < AMOUNT_PER_PAGE){
 					rangeRows= Math.min(amountEmployee, AMOUNT_PER_PAGE);
 				}
-				createRange(cells, firstRowIndex, rangeRows);
+				createRange(cells, firstRowIndex.getValue(), rangeRows);
 				
 				// Print Title 
-				printTitleRow(worksheets, firstRowIndex-1);	
+				printTitleRow(worksheets, firstRowIndex.decrementAndGet());	
 				
 				// Print content
 				createContent(cells, firstRowIndex, subList);
@@ -118,7 +120,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 				amountEmployee -= AMOUNT_PER_PAGE;
 				startIndex += AMOUNT_PER_PAGE;
 				numberOfPage++;
-				firstRowIndex += AMOUNT_ROWS_IN_PAGE;
+				firstRowIndex.addAndGet(AMOUNT_ROWS_IN_PAGE);
 				
 				// Set Print Area				
 				PageSetup pageSetup = worksheet.getPageSetup();
@@ -187,51 +189,51 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 * @param firstRowIndex the first row index
 	 * @param accumulatedPaymentList the accumulated payment list
 	 */
-	private void createContent(Cells cells, int firstRowIndex,
+	private void createContent(Cells cells, MutableInt firstRowIndex,
 			List<AccPaymentItemData> accumulatedPaymentList){
 		for(int i = 0; i < accumulatedPaymentList.size(); i++){
 			// Set Row height
-			cells.setRowHeightPixel(firstRowIndex, ROW_HEIGHT);
+			cells.setRowHeightPixel(firstRowIndex.getValue(), ROW_HEIGHT);
 			
 			AccPaymentItemData accPayment = accumulatedPaymentList.get(i);			
 			// Print Employee Code and Name
-			Cell empCell = cells.get(firstRowIndex, COLUMN_INDEX[0]);		
+			Cell empCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[0]);		
 			empCell.setValue(accPayment.getEmpCode() + SPACES + accPayment.getEmpName());
 			
 			// Print Tax Amount
-			Cell taxAmountCell = cells.get(firstRowIndex, COLUMN_INDEX[1]);
+			Cell taxAmountCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[1]);
 			taxAmountCell.setValue(accPayment.getTaxAmount());
 			
 			// Print Social Insurance 
-			Cell socialInsCell = cells.get(firstRowIndex, COLUMN_INDEX[2]);
+			Cell socialInsCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[2]);
 			socialInsCell.setValue(accPayment.getSocialInsuranceAmount());	
 			
 			// Print Amount after tax deduction
 			double deductedTaxValue = taxAmountCell.getDoubleValue() - socialInsCell.getDoubleValue();
 			
-			Cell afterTaxDeductionCell = cells.get(firstRowIndex, COLUMN_INDEX[3]);
+			Cell afterTaxDeductionCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[3]);
 			afterTaxDeductionCell.setValue(deductedTaxValue);
 			
 			// Print Witholding Tax Amount
-			Cell widthHoldingTaxAmCell = cells.get(firstRowIndex, COLUMN_INDEX[4]);
+			Cell widthHoldingTaxAmCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[4]);
 			widthHoldingTaxAmCell.setValue(accPayment.getWidthHoldingTaxAmount());
 			
 			// Print Enrolment Status
-			Cell enrolmentCell = cells.get(firstRowIndex, COLUMN_INDEX[5]);
+			Cell enrolmentCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[5]);
 			enrolmentCell.setValue(accPayment.getEnrollmentStatus());
 			
 			// Print Direction Status
-			Cell directionCell = cells.get(firstRowIndex, COLUMN_INDEX[6]);
+			Cell directionCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[6]);
 			directionCell.setValue(accPayment.getDirectionalStatus());
 			
 			// Set Background Color for odd rows
 			if ((i % 2) == 1) {
 				for(int c: COLUMN_INDEX){
-					Cell oddCell = cells.get(firstRowIndex, COLUMN_INDEX[c]);
+					Cell oddCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[c]);
 					setBackgroundcolor(oddCell);
 				}
 			}
-			firstRowIndex ++;
+			firstRowIndex.increment();
 		}
 	}
 

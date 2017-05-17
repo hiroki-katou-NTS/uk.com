@@ -71,7 +71,6 @@ module qet002.a.viewmodel {
            }
            if (self.isLowerLimit() && self.isUpperLimit() && self.lowerLimitValue() > self.upperLimitValue()) {
                $('#lower-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
-               $('#upper-limit-input').ntsError('set', '金額の範囲が正しく指定されていません。');
            }
            // TODO: Validation relate to employee list.
            return hasError || $('.nts-input').ntsError('hasError');
