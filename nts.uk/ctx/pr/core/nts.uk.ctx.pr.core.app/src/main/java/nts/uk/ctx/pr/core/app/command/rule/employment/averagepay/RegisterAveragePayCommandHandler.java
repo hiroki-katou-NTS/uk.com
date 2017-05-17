@@ -77,7 +77,7 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 				.map(x -> x.getItemCode().v())
 				.collect(Collectors.toList());
 		if(!itemSelectedSalarys.isEmpty()) {
-			this.itemSalaryRespository.updateItems(companyCode, itemSelectedSalarys, AvePayAtr.Object);
+			averagePay.updateItemSalary(itemSelectedSalarys, AvePayAtr.Object);
 		}
 		
 		// if 明細書項目から選択 is selected
@@ -96,7 +96,7 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 					.map(x -> x.getItemCode().v())
 					.collect(Collectors.toList());
 			if(!itemSelectedAttends.isEmpty()) {
-				this.itemAttendRespository.updateItems(companyCode, itemSelectedAttends, AvePayAtr.Object);
+				averagePay.updateItemAttend(itemSelectedAttends, AvePayAtr.Object);
 			}
 		}
 	}
