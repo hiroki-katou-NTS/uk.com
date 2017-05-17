@@ -19,6 +19,13 @@ time, mark, audio, video {
   font-size: 100%;
   vertical-align: baseline;
 }
+.ui-dialog .ui-resizable-se {
+    width: 14px;
+    height: 14px;
+    right: 3px;
+    bottom: 3px;
+    background-position: -80px -224px;
+}
 .ui-dialog-titlebar-icon{
 	max-width:20px;
 	max-height:20px;

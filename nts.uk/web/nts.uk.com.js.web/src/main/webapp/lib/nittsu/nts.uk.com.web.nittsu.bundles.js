@@ -2602,9 +2602,6 @@ var nts;
                                 $headerContainer.append($(this).parent().find(".ui-dialog-title"));
                                 $(this).parent().children(".ui-dialog-titlebar").prepend($headerContainer);
                             }
-                            //resize icon
-                            var $resizeicon = $('<img>').addClass("ui-dialog-buttonpane-resize").attr("src", "/nts.uk.com.js.web/lib/nittsu/ui/style/images/resize.png");
-                            $(this).parent().find(".ui-dialog-buttonpane").append($resizeicon);
                         },
                         close: function (event) {
                             $(this).dialog('destroy');

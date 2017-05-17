@@ -302,10 +302,6 @@ module nts.uk.ui {
                             $headerContainer.append($(this).parent().find(".ui-dialog-title"));
                             $(this).parent().children(".ui-dialog-titlebar").prepend($headerContainer);
                         }
-
-                        //resize icon
-                        var $resizeicon = $('<img>').addClass("ui-dialog-buttonpane-resize").attr("src", "/nts.uk.com.js.web/lib/nittsu/ui/style/images/resize.png");
-                        $(this).parent().find(".ui-dialog-buttonpane").append($resizeicon);
                     },
                     close: function(event) {
                         $(this).dialog('destroy');
@@ -354,8 +350,8 @@ module nts.uk.ui {
                 }
             };
         };
-        export function alertError(message){
-           var then = $.noop;
+        export function alertError(message) {
+            var then = $.noop;
             var $dialog = $('<div/>').hide();
             $(function() {
                 $dialog.appendTo('body').dialog({
@@ -380,7 +376,7 @@ module nts.uk.ui {
                 then: function(callback) {
                     then = callback;
                 }
-            }; 
+            };
         }
 		/**
 		 * Show alert dialog.
@@ -390,7 +386,7 @@ module nts.uk.ui {
 		 * @returns handler
 		 */
         export function alert(text) {
-           var then = $.noop;
+            var then = $.noop;
             var $dialog = $('<div/>').hide();
             $(function() {
                 $dialog.appendTo('body').dialog({
