@@ -65,6 +65,7 @@ module nts.uk.com.view.ccg015.a {
                 var dfd = $.Deferred<void>();
                 self.listTopPage([]);
                 service.loadTopPage().done(function(data: Array<TopPageItemDto>) {
+                    //if data # empty
                     if (data.length > 0) {
                         data.forEach(function(item, index) {
                             self.listTopPage.push(new Node(item.topPageCode, item.topPageName, null));
@@ -106,10 +107,7 @@ module nts.uk.com.view.ccg015.a {
             private saveTopPage() {
                 var self = this;
                 $('.nts-input').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
-
-                }
-                else {
+                if (!$('.nts-input').ntsError('hasError')) {
                     //check update or create
                     if (self.isNewMode()) {
                         service.registerTopPage(self.collectData()).done(function() {
@@ -134,7 +132,6 @@ module nts.uk.com.view.ccg015.a {
                     title: "マイページの設定",
                     dialogClass: 'no-close'
                 }).onClosed(() => {
-                    //TODO
                 });
 
             }
@@ -153,7 +150,6 @@ module nts.uk.com.view.ccg015.a {
                     self.loadTopPageList().done(function() {
                         self.toppageSelectedCode(codeOfNewTopPage);
                     });
-                    //TODO 
                 });
 
             }
@@ -163,10 +159,9 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
                     height: 650, width: 1300,
-                    title: "フローメニューの設定",//TODO change name
+                    title: "フローメニューの設定",
                     dialogClass: 'no-close'
                 }).onClosed(() => {
-                    //TODO on Close dialog
                 });
             }
 
@@ -200,20 +195,20 @@ module nts.uk.com.view.ccg015.a {
                     var listLength = self.listTopPage().length;
                     service.deleteTopPage(self.toppageSelectedCode()).done(function() {
                         //delete success
+                        //remove follow
+                        self.loadTopPageList().done(function() {
+                            var lst = self.listTopPage();
+                            if (lst.length > 0) {
+                                if (removeIndex < listLength - 1) {
+                                    self.toppageSelectedCode(lst[removeIndex].code);
+                                }
+                                else {
+                                    self.toppageSelectedCode(lst[removeIndex - 1].code);
+                                }
+                            }
+                        });
                     }).fail();
-                    self.loadTopPageList().done(function() {
-                        var lst = self.listTopPage();
-                        if (lst.length > 0) {
-                            if (removeIndex < listLength - 1) {
-                                self.toppageSelectedCode(lst[removeIndex].code);
-                            }
-                            else {
-                                self.toppageSelectedCode(lst[removeIndex - 1].code);
-                            }
-                        }
-                    });
                 }).ifNo(function() {
-
                 });
             }
             //for frame review layout
