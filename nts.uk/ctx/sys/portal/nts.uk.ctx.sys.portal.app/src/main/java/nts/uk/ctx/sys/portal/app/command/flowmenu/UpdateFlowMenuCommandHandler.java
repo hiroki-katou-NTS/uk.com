@@ -12,11 +12,8 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
-import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
-import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -25,38 +22,25 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 	
 	@Inject
 	public FlowMenuRepository repository;
-	
-	@Inject
-	public TopPagePartRepository repositoryTop;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
-		
 		String companyId = AppContexts.user().companyId();
-		String topPagePartId = context.getCommand().getToppagePartID();
-		//check topPagePartId is Existence	
-		Optional<FlowMenu> getFlowMenu = repository.getFlowMenu(companyId, topPagePartId);
-		Optional<TopPagePart> getTopPagePart = repositoryTop.find(topPagePartId);
+		UpdateFlowMenuCommand command = context.getCommand();
 		
-		if(!getFlowMenu.isPresent() || !getTopPagePart.isPresent()){
+		// Check FlowMenu is Existence	
+		Optional<FlowMenu> checkFlowMenu = repository.getFlowMenu(companyId, context.getCommand().getToppagePartID());
+		if(!checkFlowMenu.isPresent()){
 			throw new BusinessException("ER026");
 		}
-		FlowMenu flowMenuInf = getFlowMenu.get();
-		FlowMenu infor = FlowMenu.createFromJavaType(flowMenuInf.getCompanyID(),
-				flowMenuInf.getToppagePartID(),
-				flowMenuInf.getFileID(),
-				context.getCommand().getFileName(),
-				context.getCommand().getDefClassAtr());
-		repository.update(infor);
 		
-		TopPagePart topPage = getTopPagePart.get();
-		TopPagePart topInf = TopPagePart.createFromJavaType(topPage.getCompanyID(), 
-				topPage.getToppagePartID(), 
-				topPage.getCode().v(), 
-				context.getCommand().getTopPageName(), 
-				topPage.getType().value, 
-				context.getCommand().getWidthSize(),
-				context.getCommand().getHeightSize());
-		repositoryTop.update(topInf);
+		// Update FLowMenu
+		FlowMenu flowMenu = checkFlowMenu.get();
+		flowMenu.setName(command.getTopPageName());
+		flowMenu.setSize(command.getWidthSize(), command.getHeightSize());
+		flowMenu.setFileID(command.getFileID());
+		flowMenu.setFileName(command.getFileName());
+		flowMenu.setDefClassAtr(command.getDefClassAtr());
+		repository.update(flowMenu);
 	}
 }

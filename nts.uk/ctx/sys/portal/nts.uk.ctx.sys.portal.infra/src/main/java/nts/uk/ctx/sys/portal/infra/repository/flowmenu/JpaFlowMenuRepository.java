@@ -1,148 +1,119 @@
-/**
- * author hieult
- */
 package nts.uk.ctx.sys.portal.infra.repository.flowmenu;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuTopPagePart;
 import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenu;
 import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenuPK;
+import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
+import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
 
-
+/**
+ * author hieult
+ */
 @Stateless
 public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepository{
 	
-	private final String SELECT_FLOWMENU = "SELECT m.ccgmtFlowMenuPK.toppagePartID,  m.fileName, m.defClassAtr, t.code, t.name, t.topPagePartType, t.width, t.height "
-			+ " FROM CcgmtFlowMenu m "
-			+ " INNER JOIN CcgmtTopPagePart t "
-			+ " ON m.ccgmtFlowMenuPK.toppagePartID = t.ccgmtTopPagePartPK.topPagePartID "
-			+ " AND m.ccgmtFlowMenuPK.companyID = :companyId ORDER BY t.code";
-	private final String FLOWMENU_BY_TOPPAGEPARTID = SELECT_FLOWMENU + " AND m.ccgmtFlowMenuPK.toppagePartID = :topPagePartId";
-	
+	private final String SELECT_BASE = "SELECT m, t"
+									+ " FROM CcgmtFlowMenu m JOIN CcgmtTopPagePart t"
+									+ " ON m.ccgmtFlowMenuPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID";
+	private final String SELECT_SINGLE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.topPagePartID = :topPagePartID";
+	private final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID";
 	private final String FLOWMENU_INFOR = "SELECT c from CcgmtFlowMenu c "
-			+ " WHERE c.ccgmtFlowMenuPK.companyID = :companyId "
-			+ " AND c.ccgmtFlowMenuPK.toppagePartID = :topPagePartId";
-	
-	
-	/**
-	 * Get List FlowMenu
-	 * @param companyID
-	 * @return List of FlowMenu
-	 */
+										+ " WHERE c.ccgmtFlowMenuPK.companyID = :companyID "
+										+ " AND c.ccgmtFlowMenuPK.topPagePartID = :topPagePartID";
+
 	@Override
-	public List<FlowMenuTopPagePart> findAll(String companyID) {
-		return this.queryProxy()
-				.query(SELECT_FLOWMENU, Object[].class)
-				.setParameter("companyId", companyID)
-				.getList(c -> {
-					String toppagePartID = (String) c[0];
-					String fileName = (String) c[1];
-					int defClassAtr = Integer.valueOf(c[2].toString());
-					String code = (String) c[3];
-					String name = (String) c[4];
-					int type = Integer.valueOf(c[5].toString());
-					int widthSize = Integer.valueOf(c[6].toString());
-					int heightSize = Integer.valueOf(c[7].toString());
-					return FlowMenuTopPagePart.createFromJavaType(toppagePartID, 
-							fileName, 
-							defClassAtr, 
-							code, 
-							name, 
-							type, 
-							widthSize,
-							heightSize);
-				});
+	public List<FlowMenu> findAll(String companyID) {
+		return this.queryProxy().query(SELECT_BY_COMPANY, Object[].class)
+				.setParameter("companyID", companyID)
+				.getList(c -> joinObjectToDomain(c));
 	}
-	/**
-	 * Get Optional FlowMenu
-	 * @param companyID 
-	 * @param toppagePartID
-	 * @return Optinal FlowMenu
-	 */
+
 	@Override
-	public Optional<FlowMenuTopPagePart> findByCode(String companyID, String toppagePartID) {
-		return this.queryProxy()
-				.query(FLOWMENU_BY_TOPPAGEPARTID, Object[].class)
-				.setParameter("companyId", companyID)
-				.setParameter("topPagePartId", toppagePartID)
-				.getSingle(c -> {
-					String fileName = (String) c[1];
-					int defClassAtr = Integer.valueOf(c[2].toString());
-					String code = (String) c[3];
-					String name = (String) c[4];
-					int type = Integer.valueOf(c[5].toString());
-					int widthSize = Integer.valueOf(c[6].toString());
-					int heightSize = Integer.valueOf(c[7].toString());
-					return FlowMenuTopPagePart.createFromJavaType(toppagePartID, 
-							fileName, 
-							defClassAtr, 
-							code, 
-							name, 
-							type, 
-							widthSize,
-							heightSize);
-				});
+	public Optional<FlowMenu> findByCode(String companyID, String topPagePartID) {
+		return this.queryProxy().query(SELECT_SINGLE, Object[].class)
+				.setParameter("topPagePartID", topPagePartID)
+				.getSingle(c -> joinObjectToDomain(c));
 	}
-	/**
-	 * Add
-	 * @param flow FlowMenu
-	 * @return
-	 */
+
 	@Override
 	public void add(FlowMenu flow) {
 		this.commandProxy().insert(toEntity(flow));
-		
 	}
-	/**
-	 * Update
-	 * @param flow FlowMenu
-	 * @return
-	 */
+
 	@Override
 	public void update(FlowMenu flow) {
 		CcgmtFlowMenu entity = toEntity(flow);
 		this.commandProxy().update(entity);
 	}
-	/**
-	 * Remove
-	 * @param companyID
-	 * @param toppagePartID
-	 * @return
-	 */
+
 	@Override
-	public void remove(String companyID, String toppagePartID) {
-		this.commandProxy().remove(CcgmtFlowMenu.class, new CcgmtFlowMenuPK(companyID, toppagePartID));
-		
-	}
-	private CcgmtFlowMenu toEntity(FlowMenu domain) {
-		return new CcgmtFlowMenu(new CcgmtFlowMenuPK(domain.getCompanyID(), 
-				domain.getToppagePartID()),
-				domain.getFileID(), 
-				domain.getFileName().v(),
-				domain.getDefClassAtr().value);
-	}
-	@Override
-	public Optional<FlowMenu> getFlowMenu(String companyId, String topPagePartId) {
-		return this.queryProxy()
-				.query(FLOWMENU_INFOR, CcgmtFlowMenu.class)
-				.setParameter("companyId", companyId)
-				.setParameter("topPagePartId", topPagePartId)
-				.getSingle(c ->  toDomain(c));
-		
+	public void remove(String companyID, String topPagePartID) {
+		this.commandProxy().remove(CcgmtFlowMenu.class, new CcgmtFlowMenuPK(companyID, topPagePartID));
+		this.getEntityManager().flush();
 	}
 	
+	@Override
+	public Optional<FlowMenu> getFlowMenu(String companyID, String topPagePartID) {
+		return this.queryProxy()
+				.query(FLOWMENU_INFOR, CcgmtFlowMenu.class)
+				.setParameter("companyID", companyID)
+				.setParameter("topPagePartID", topPagePartID)
+				.getSingle(c ->  toDomain(c));
+	}
+	
+	/**
+	 * Convert domain to Infra entity
+	 * @param domain
+	 * @return CcgmtFlowMenu
+	 */
+	private CcgmtFlowMenu toEntity(FlowMenu domain) {
+		CcgmtTopPagePart topPagePart = new CcgmtTopPagePart(
+			new CcgmtTopPagePartPK(domain.getCompanyID(), domain.getToppagePartID()),
+			domain.getCode().v(), domain.getName().v(), domain.getType().value,
+			domain.getWidth().v(), domain.getHeight().v(), null
+		);
+		return new CcgmtFlowMenu(
+				new CcgmtFlowMenuPK(domain.getCompanyID(), domain.getToppagePartID()),
+				domain.getFileID(), 
+				domain.getFileName().v(),
+				domain.getDefClassAtr().value,
+				topPagePart);
+	}
+	
+	/**
+	 * Convert Infra entity to domain
+	 * @param entity
+	 * @return FlowMenu
+	 */
 	private FlowMenu toDomain(CcgmtFlowMenu entity){
-		return FlowMenu.createFromJavaType(entity.ccgmtFlowMenuPK.companyID, 
-				entity.ccgmtFlowMenuPK.toppagePartID, 
+		return FlowMenu.createFromJavaType(
+				entity.ccgmtFlowMenuPK.companyID, entity.ccgmtFlowMenuPK.topPagePartID,
+				entity.topPagePart.code, entity.topPagePart.name,
+				entity.topPagePart.topPagePartType, entity.topPagePart.width, entity.topPagePart.height,
 				entity.fileID, 
 				entity.fileName, 
 				entity.defClassAtr);
+	}
+	
+	/**
+	 * Convert Join FlowMenu & TopPagePart entity to domain
+	 * @param entity
+	 * @return FlowMenu
+	 */
+	private FlowMenu joinObjectToDomain(Object[] entity) {
+		CcgmtFlowMenu flowMenu = (CcgmtFlowMenu) entity[0];
+		CcgmtTopPagePart topPagePart = (CcgmtTopPagePart) entity[1];
+		return FlowMenu.createFromJavaType(
+				flowMenu.ccgmtFlowMenuPK.companyID, flowMenu.ccgmtFlowMenuPK.topPagePartID,
+				topPagePart.code, topPagePart.name,
+				topPagePart.topPagePartType, topPagePart.width, topPagePart.height,
+				flowMenu.fileID, 
+				flowMenu.fileName, 
+				flowMenu.defClassAtr);
 	}
 }

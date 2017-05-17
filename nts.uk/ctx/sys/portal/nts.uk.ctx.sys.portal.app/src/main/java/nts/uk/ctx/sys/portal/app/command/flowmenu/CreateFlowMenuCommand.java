@@ -1,14 +1,14 @@
-/**
- * @author hieult
- */
+
 package nts.uk.ctx.sys.portal.app.command.flowmenu;
 
 import lombok.Getter;
-import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
-import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author hieult
+ */
 @Getter
 public class CreateFlowMenuCommand {
 	//top page code
@@ -19,26 +19,19 @@ public class CreateFlowMenuCommand {
 	private int widthSize;
 	//height size
 	private int heightSize;
+	
+	/** File ID */
+	private String fileID;
+	
 	// file name
 	private String fileName;
+	// Def Class attribute	
+	private int defClassAtr;
 	
-	public FlowMenu toDomain (String topPagePartId){
-		return FlowMenu.createFromJavaType(AppContexts.user().companyId(),
-				topPagePartId,
-				IdentifierUtil.randomUniqueId(),
-				this.fileName,
-				0);
+	public FlowMenu toDomain(String topPagePartId){
+		return FlowMenu.createFromJavaType(AppContexts.user().companyId(), topPagePartId,
+				topPageCode, topPageName,
+				TopPagePartType.FlowMenu.value, widthSize, heightSize,
+				fileID, fileName, defClassAtr);
 	}
-	
-	public TopPagePart toTopPagePart(String topPagePartId){
-		return TopPagePart.createFromJavaType(AppContexts.user().companyId(),
-				topPagePartId, 
-				this.topPageCode,
-				this.topPageName,
-				2,
-				this.widthSize,
-				this.heightSize);
-		
-	}
-
 }

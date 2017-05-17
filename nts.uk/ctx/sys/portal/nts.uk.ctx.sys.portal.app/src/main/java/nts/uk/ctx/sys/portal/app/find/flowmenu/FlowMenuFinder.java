@@ -1,6 +1,3 @@
-/**
- * @author hieult
- */
 package nts.uk.ctx.sys.portal.app.find.flowmenu;
 
 import java.util.List;
@@ -11,6 +8,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
+
+/**
+ * @author hieult
+ */
 @Stateless
 public class FlowMenuFinder {
 	@Inject
@@ -18,13 +19,14 @@ public class FlowMenuFinder {
 	
 	public List<FlowMenuDto> getAllFlowMenu() {
 		String companyID = AppContexts.user().companyId();
-		return this.repository.findAll(companyID).stream().map(flow -> FlowMenuDto.fromDomain(flow))
+		return repository.findAll(companyID).stream()
+				.map(flow -> FlowMenuDto.fromDomain(flow))
 				.collect(Collectors.toList());
 	}
 	
 	public Optional<FlowMenuDto> getFlowMenu(String toppagePartID) {
 		String companyID = AppContexts.user().companyId();
-		return this.repository.findByCode(companyID, toppagePartID).map(flow -> FlowMenuDto.fromDomain(flow));
+		return repository.findByCode(companyID, toppagePartID).map(flow -> FlowMenuDto.fromDomain(flow));
 	}
 	
 }

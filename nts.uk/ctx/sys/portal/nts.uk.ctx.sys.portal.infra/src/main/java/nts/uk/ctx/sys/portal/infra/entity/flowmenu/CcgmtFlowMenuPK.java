@@ -23,6 +23,6 @@ public class CcgmtFlowMenuPK implements Serializable {
 	public String companyID;
 	@NotNull
 	@Column(name = "TOPPAGE_PART_ID")
-	public String toppagePartID;
+	public String topPagePartID;
 
 }

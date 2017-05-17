@@ -4,8 +4,6 @@
 package nts.uk.ctx.sys.portal.app.command.flowmenu;
 
 import lombok.Value;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
-import nts.uk.shr.com.context.AppContexts;
 
 @Value
 public class UpdateFlowMenuCommand {
@@ -18,8 +16,12 @@ public class UpdateFlowMenuCommand {
 	private int widthSize;
 	//height size
 	private int heightSize;
+	
+	/** File ID */
+	private String fileID;
+	
 	// file name
 	private String fileName;
-	//
+	// Def Class Atr
 	private int defClassAtr;
 }

@@ -21,6 +21,9 @@ import nts.uk.ctx.sys.portal.app.find.flowmenu.FlowMenuFinder;
 
 @Path("sys/portal/flowmenu")
 @Produces("application/json")
+/**
+ * @author hieult
+ */
 public class FlowMenuWebservice extends WebService {
 
 	@Inject
