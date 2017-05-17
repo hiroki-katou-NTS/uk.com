@@ -28,6 +28,8 @@ module kdl024.a.viewmodel {
                 { unitId: '1', unitName: '時間帯別' }
             ]);
             //Input Code
+            console.log(nts.uk.resource.getText("1"));
+            //debugger;
             self.isEnableInp = ko.observable(false);
             //Combobox
             self.itemListCbb = ko.observableArray([

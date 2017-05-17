@@ -21,11 +21,11 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="btnNew" class="btnMenu" data-bind="click: addNew" tabindex="1">新規</button>
-				<button id="btnSave" class="btnMenu proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="2">登録</button>
+				<button id="btnNew" class="btnMenu" data-bind="click: addNew" tabindex="1">#{i18n.getText('KDL024_1')}</button>
+				<button id="btnSave" class="btnMenu proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('KDL024_2')}</button>
 				<button id="btnDel" class="btnMenu delete_btn btn_width danger"
-					data-bind="click: del" style="margin-left: 60px;" tabindex="3">削除</button>
-				<button id="btnClose" class="btnMenu" data-bind="click: close" tabindex="4">閉じる</button>
+					data-bind="click: del" style="margin-left: 60px;" tabindex="3">#{i18n.getText('KDL024_3')}</button>
+				<button id="btnClose" class="btnMenu" data-bind="click: close" tabindex="4">#{i18n.getText('KDL024_4')}</button>
 			</div>
 			<div id="content-area" class="cf">
 				<div class="left-content">
