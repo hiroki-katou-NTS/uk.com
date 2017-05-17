@@ -4114,7 +4114,7 @@ var nts;
                             }) !== undefined);
                         });
                         // Enable
-                        if (container.data("init") || !_.isEqual(container.data("enable"), enable)) {
+                        if ((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)) {
                             container.data("enable", _.clone(enable));
                             (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
                             _.forEach(data.options(), function (option) {
