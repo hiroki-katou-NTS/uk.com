@@ -55,7 +55,7 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 		PaymentReportQuery query = context.getQuery();
 		PaymentReportData data = this.repository.findData(query);
 		String teamplate = TEMPLATE_PATH_A;
-		if (query.getPageOrientation().equals("PORTRAIT")) {
+		if ("PORTRAIT".equals(query.getPageOrientation())) {
 			teamplate = TEMPLATE_PATH_B;
 		}
 		try (AsposeCellsReportContext ctx = this.createContext(teamplate)) {
@@ -63,7 +63,8 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 				data);
 			generator.generate(ctx, data);
 			ctx.saveAsPdf(this.createNewFile(rptContext, this.getReportName(OUTPUT_PDF_NAME)));
-			//ctx.saveAsExcel(this.createNewFile(rptContext, this.getReportName(OUTPUT_PDF_NAME)));
+			// ctx.saveAsExcel(this.createNewFile(rptContext,
+			// this.getReportName(OUTPUT_PDF_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

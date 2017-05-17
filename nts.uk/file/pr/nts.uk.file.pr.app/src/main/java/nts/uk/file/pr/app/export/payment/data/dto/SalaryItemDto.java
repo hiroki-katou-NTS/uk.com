@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SalaryItemDto {
-	
+
 	/** The item name. */
 	private String itemName;
 
@@ -21,4 +21,12 @@ public class SalaryItemDto {
 
 	/** The is view. */
 	private boolean isView;
+
+	public static SalaryItemDto defaultData() {
+		SalaryItemDto dto = new SalaryItemDto();
+		dto.setItemName("");
+		dto.setItemVal(BigDecimal.ZERO);
+		dto.setView(false);
+		return dto;
+	}
 }

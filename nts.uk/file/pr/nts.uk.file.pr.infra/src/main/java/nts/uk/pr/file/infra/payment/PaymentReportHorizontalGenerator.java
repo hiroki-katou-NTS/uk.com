@@ -18,16 +18,22 @@ import nts.uk.file.pr.app.export.payment.data.dto.SalaryItemDto;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
 /**
- * The Class OneDemensionGenerator.
+ * The Class PaymentReportHorizontalGenerator.
  */
 @Stateless(name = "PaymentReportHorizontalGenerator")
 public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 
+	/** The Constant TOTAL_COLUMN_INLINE. */
+	private static final int TOTAL_COLUMN_INLINE = 9;
+	
 	/** The start row. */
 	private int startRow = 0;
 
 	/** The start col. */
 	private int startCol = 0;
+	
+	/** The column. */
+	private int column = 0;
 
 	/** The style payment header title. */
 	private Style stylePaymentHeaderTitle;
@@ -123,37 +129,25 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 		pushData(itemName, startRow, startCol, stylePaymentHeaderTitle);
 		startCol++;
 		int startMerge = startRow;
-		for (int index = 0; index < dataItem.size(); index++) {
+		column = 0;
+		dataItem.forEach(item->{
 			// next row
-			if (index > 0 && index % 9 == 0) {
+			if (TOTAL_COLUMN_INLINE == column) {
 				startCol = 0;
 				pushData("", startRow + 1, 0, stylePaymentHeaderTitle);
 				pushData("", startRow + 2, 0, stylePaymentHeaderTitle);
 				startRow += 2;
 				startCol += 1;
+				column = 0;
 			}
-			SalaryItemDto item = dataItem.get(index);
-			pushDataHeader(item.getItemName(), startRow, startCol);
-			pushDataValue(item.getItemVal().toString(), startRow, startCol);
+			pushDataValue(item, startRow, startCol);
 			startCol += 2;
-		}
+			column++;
+		});
 		pushData("", startRow + 1, 0, stylePaymentHeaderTitle);
 		startRow += 2;
 		cells.merge(startMerge, 0, startRow - startMerge, 1);
 		startRow++;
-	}
-
-	/**
-	 * Push data value.
-	 *
-	 * @param data the data
-	 * @param startRow the start row
-	 * @param startCol the start col
-	 */
-	private void pushDataValue(String data, int startRow, int startCol) {
-		pushData(data, startRow + 1, startCol, stylePaymentValueRow);
-		pushData("", startRow + 1, startCol + 1, stylePaymentValueRow);
-		cells.merge(startRow + 1, startCol, 1, 2);
 	}
 
 	/**
@@ -163,9 +157,24 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 	 * @param startRow the start row
 	 * @param startCol the start col
 	 */
-	private void pushDataHeader(String data, int startRow, int startCol) {
-		pushData(data, startRow, startCol, stylePaymentValueHeader);
+	private void pushDataValue(SalaryItemDto dto, int startRow, int startCol) {
+		if(dto.isView()){
+			
+		pushData(dto.getItemName(), startRow, startCol, stylePaymentValueHeader);
 		pushData("", startRow, startCol + 1, stylePaymentValueHeader);
 		cells.merge(startRow, startCol, 1, 2);
+		
+		pushData(dto.getItemVal().toString(), startRow + 1, startCol, stylePaymentValueRow);
+		pushData("", startRow + 1, startCol + 1, stylePaymentValueRow);
+		cells.merge(startRow + 1, startCol, 1, 2);
+		}
+		else {
+			pushData("", startRow, startCol, stylePaymentValueHeader);
+			pushData("", startRow, startCol + 1, stylePaymentValueHeader);
+			cells.merge(startRow, startCol, 1, 2);
+			pushData("", startRow + 1, startCol, stylePaymentValueRow);
+			pushData("", startRow + 1, startCol + 1, stylePaymentValueRow);
+			cells.merge(startRow + 1, startCol, 1, 2);
+		}
 	}
 }

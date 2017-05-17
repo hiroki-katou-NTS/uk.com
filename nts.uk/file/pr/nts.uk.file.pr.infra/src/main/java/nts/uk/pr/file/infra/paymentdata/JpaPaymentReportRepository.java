@@ -6,6 +6,7 @@ package nts.uk.pr.file.infra.paymentdata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -31,25 +32,32 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class JpaPaymentReportRepository extends JpaRepository implements PaymentReportRepository {
+	/** The Constant TOTAL_COLUMN_INLINE. */
+	private static final int TOTAL_COLUMN_INLINE = 9;
 
 	/** The Constant TYPE_PRINT_SPECIFICATION. */
 	public static final int TYPE_PRINT_SPECIFICATION = 2;
 
 	/** The Constant TYPE_PRINT_LAYOUT. */
 	public static final int TYPE_PRINT_LAYOUT = 1;
-	
-	
+
 	/** The Constant CATEGORY_PAYMENT. */
 	public static final int CATEGORY_PAYMENT = 0;
-	
+
 	/** The Constant CATEGORY_DEDUCTION. */
 	public static final int CATEGORY_DEDUCTION = 1;
-	
+
 	/** The Constant CATEGORY_ATTENDANCE. */
 	public static final int CATEGORY_ATTENDANCE = 2;
-	
+
 	/** The Constant CATEGORY_ARTICLE. */
 	public static final int CATEGORY_ARTICLE = 3;
+	
+	/** The print line position. */
+	int printLinePosition = 0;
+	
+	/** The column position. */
+	int columnPosition = 0;
 
 	/** The Constant FIND_DEPARTMENT_BYCODE. */
 	public static final String FIND_DEPARTMENT_BYCODE = "SELECT dep FROM CmnmtDep dep "
@@ -63,8 +71,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		+ "AND header.qstdtPaymentHeaderPK.processingNo = :processingNo "
 		+ "AND header.qstdtPaymentHeaderPK.payBonusAtr = 0 "
 		+ "AND header.qstdtPaymentHeaderPK.processingYM = :processingYM "
-		+ "AND header.qstdtPaymentHeaderPK.sparePayAtr = 0 "
-		+ "AND header.layoutAtr = :layoutItem";
+		+ "AND header.qstdtPaymentHeaderPK.sparePayAtr = 0 " + "AND header.layoutAtr = :layoutItem";
 
 	/** The Constant FIND_PAYMENT_HEADER_SPECIFICATION. */
 	public static final String FIND_PAYMENT_HEADER_SPECIFICATION = "SELECT header "
@@ -84,16 +91,20 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		+ "AND detail.qstdtPaymentDetailPK.payBonusAttribute = 0 "
 		+ "AND detail.qstdtPaymentDetailPK.processingYM = :processingYM "
 		+ "AND detail.qstdtPaymentDetailPK.sparePayAttribute = 0 "
+		+ "AND detail.printLinePosition != -1 "
 		+ "AND detail.qstdtPaymentDetailPK.categoryATR = :categoryItem "
 		+ "AND detail.qstdtPaymentDetailPK.itemCode = item.qcamtItemPK.itemCd "
 		+ "AND detail.qstdtPaymentDetailPK.categoryATR = item.qcamtItemPK.ctgAtr "
-		+ "AND detail.qstdtPaymentDetailPK.companyCode = item.qcamtItemPK.ccd ";
+		+ "AND detail.qstdtPaymentDetailPK.companyCode = item.qcamtItemPK.ccd "
+		+ "ORDER BY detail.printLinePosition ASC , detail.columnPosition ASC ";
 
 	/**
 	 * Check payment header layout.
 	 *
-	 * @param companyCode the company code
-	 * @param query the query
+	 * @param companyCode
+	 *            the company code
+	 * @param query
+	 *            the query
 	 * @return the list
 	 */
 	private List<QstdtPaymentHeader> checkPaymentHeaderLayout(String companyCode,
@@ -109,8 +120,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/**
 	 * Check payment header specification.
 	 *
-	 * @param companyCode the company code
-	 * @param query the query
+	 * @param companyCode
+	 *            the company code
+	 * @param query
+	 *            the query
 	 * @return the list
 	 */
 	private List<QstdtPaymentHeader> checkPaymentHeaderSpecification(String companyCode,
@@ -186,7 +199,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		if (CollectionUtil.isEmpty(reportDatas)) {
 			throw new BusinessException("ER010");
 		}
-		
+
 		PaymentReportData reportData = new PaymentReportData();
 		reportData.setReportData(reportDatas);
 		return reportData;
@@ -195,8 +208,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/**
 	 * Detail header.
 	 *
-	 * @param header the header
-	 * @param category the category
+	 * @param header
+	 *            the header
+	 * @param category
+	 *            the category
 	 * @return the list
 	 */
 	private List<SalaryItemDto> detailHeader(QstdtPaymentHeader header, int category) {
@@ -211,20 +226,75 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			.setParameter("categoryItem", category).getList();
 
 		// to Dto data
-		List<SalaryItemDto> salaryItems = dataDetailHeader.stream().map(detail -> {
-			SalaryItemDto dto = new SalaryItemDto();
-			if (detail[1] instanceof QcamtItem) {
-				QcamtItem item = (QcamtItem) detail[1];
-				dto.setItemName(item.itemName);
-			}
+		List<SalaryItemDto> salaryItems = new ArrayList<>();
+		printLinePosition = 0;
+		columnPosition = 0;
+		dataDetailHeader.forEach(detail -> {
+			
+			QstdtPaymentDetail paymentDetail = new QstdtPaymentDetail();
+			QcamtItem item = new QcamtItem(); 
 			if (detail[0] instanceof QstdtPaymentDetail) {
-				QstdtPaymentDetail paymentDetail = (QstdtPaymentDetail) detail[0];
-				dto.setItemVal(paymentDetail.value);
+				paymentDetail = (QstdtPaymentDetail) detail[0];
 			}
+			
+			if (paymentDetail.printLinePosition != printLinePosition) {
+				salaryItems.addAll(defaultDataColumn(columnPosition + 1, TOTAL_COLUMN_INLINE));
+				salaryItems.addAll(
+					defaultDataLine(printLinePosition + 1, paymentDetail.printLinePosition));
+				columnPosition = 0;
+				printLinePosition = paymentDetail.printLinePosition ; 
+			}
+			
+			if(paymentDetail.columnPosition != columnPosition){
+				salaryItems.addAll(defaultDataColumn(columnPosition+1, paymentDetail.columnPosition));
+				columnPosition = paymentDetail.columnPosition;
+			}
+			SalaryItemDto dto = new SalaryItemDto();
+			if(detail[1] instanceof QcamtItem){
+				item = (QcamtItem) detail[1];
+			}
+			dto.setItemName(item.itemName);
+			dto.setItemVal(paymentDetail.value);
 			dto.setView(true);
-			return dto;
-		}).collect(Collectors.toList());
+			salaryItems.add(dto);
+		});
 		
+		salaryItems.addAll(defaultDataColumn(columnPosition + 1, TOTAL_COLUMN_INLINE));
+
+		return salaryItems;
+	}
+
+	/**
+	 * Default data line.
+	 *
+	 * @param startLine the start line
+	 * @param endLine the end line
+	 * @return the list
+	 */
+	private List<SalaryItemDto> defaultDataLine(int startLine, int endLine) {
+		List<SalaryItemDto> salaryItems = new ArrayList<>();
+		for (int index = startLine; index <= endLine; index++) {
+			for (int jndex = 1; jndex <= TOTAL_COLUMN_INLINE; jndex++) {
+				salaryItems.add(SalaryItemDto.defaultData());
+			}
+		}
+		return salaryItems;
+	}
+	
+	
+
+	/**
+	 * Default data column.
+	 *
+	 * @param startColum the start colum
+	 * @param endColum the end colum
+	 * @return the list
+	 */
+	private List<SalaryItemDto> defaultDataColumn(int startColum, int endColum) {
+		List<SalaryItemDto> salaryItems = new ArrayList<>();
+		for(int index = startColum; index<= endColum; index++){
+			salaryItems.add(SalaryItemDto.defaultData());
+		}
 		return salaryItems;
 	}
 
@@ -232,7 +302,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	 * To header data.
 	 *
 	 * @param header the header
-	 * @return the payment report data
+	 * @return the payment report dto
 	 */
 	private PaymentReportDto toHeaderData(QstdtPaymentHeader header) {
 		PaymentReportDto reportData = new PaymentReportDto();
@@ -250,18 +320,18 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		employeeDto.setEmployeeName(header.employeeName);
 		reportData.setEmployeeInfo(employeeDto);
 
-		// 支給項目  (categoryItem = payment)
+		// 支給項目 (categoryItem = payment)
 		reportData.setPaymentItems(this.detailHeader(header, CATEGORY_PAYMENT));
-		
-		//控除項目 (categoryItem = reduction)
+
+		// 控除項目 (categoryItem = reduction)
 		reportData.setDeductionItems(this.detailHeader(header, CATEGORY_DEDUCTION));
-		
-		//勤怠項目 (categoryItem = attendance)
+
+		// 勤怠項目 (categoryItem = attendance)
 		reportData.setAttendanceItems(this.detailHeader(header, CATEGORY_ATTENDANCE));
-		
-		//記事項目 (categoryItem = article)
+
+		// 記事項目 (categoryItem = article)
 		reportData.setArticleItems(this.detailHeader(header, CATEGORY_ARTICLE));
-		
+
 		reportData.setProcessingYm(header.qstdtPaymentHeaderPK.processingYM);
 		return reportData;
 	}
