@@ -10,8 +10,8 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.DeleteEmployeeAllotHeaderCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.DeleteEmployeeAllotHeaderCommandHandler;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllotSettingHeaderDto;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.EmployeeAllotSettingHeaderFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.employee.EmployeeAllotSettingHeaderDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.employee.EmployeeAllotSettingHeaderFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/allot")
