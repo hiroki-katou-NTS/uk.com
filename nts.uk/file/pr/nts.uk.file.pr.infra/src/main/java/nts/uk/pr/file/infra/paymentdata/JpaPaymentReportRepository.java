@@ -6,7 +6,6 @@ package nts.uk.pr.file.infra.paymentdata;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -227,7 +226,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 		// to Dto data
 		List<SalaryItemDto> salaryItems = new ArrayList<>();
-		printLinePosition = 0;
+		printLinePosition = 1;
 		columnPosition = 0;
 		dataDetailHeader.forEach(detail -> {
 			
@@ -236,19 +235,11 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			if (detail[0] instanceof QstdtPaymentDetail) {
 				paymentDetail = (QstdtPaymentDetail) detail[0];
 			}
-			
-			if (paymentDetail.printLinePosition != printLinePosition) {
-				salaryItems.addAll(defaultDataColumn(columnPosition + 1, TOTAL_COLUMN_INLINE));
-				salaryItems.addAll(
-					defaultDataLine(printLinePosition + 1, paymentDetail.printLinePosition));
-				columnPosition = 0;
-				printLinePosition = paymentDetail.printLinePosition ; 
-			}
-			
-			if(paymentDetail.columnPosition != columnPosition){
-				salaryItems.addAll(defaultDataColumn(columnPosition+1, paymentDetail.columnPosition));
-				columnPosition = paymentDetail.columnPosition;
-			}
+			// begin 
+			salaryItems.addAll(defaultDataBeginEnd(printLinePosition,
+				paymentDetail.printLinePosition, columnPosition, paymentDetail.columnPosition));
+			printLinePosition = paymentDetail.printLinePosition;
+			columnPosition = paymentDetail.columnPosition;
 			SalaryItemDto dto = new SalaryItemDto();
 			if(detail[1] instanceof QcamtItem){
 				item = (QcamtItem) detail[1];
@@ -264,6 +255,27 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		return salaryItems;
 	}
 
+	/**
+	 * Default data begin end.
+	 *
+	 * @param startLine the start line
+	 * @param endLine the end line
+	 * @param startColum the start colum
+	 * @param endColum the end colum
+	 * @return the list
+	 */
+	
+	private List<SalaryItemDto> defaultDataBeginEnd(int startLine, int endLine, int startColum, int endColum){
+		if(startLine == endLine){
+			return defaultDataColumn(startColum + 1, endColum - 1);
+		}
+		List<SalaryItemDto> salaryItems = new ArrayList<>();
+		salaryItems.addAll(defaultDataColumn(startColum+1, TOTAL_COLUMN_INLINE));
+		salaryItems.addAll(defaultDataLine(startLine + 1, endLine - 1));
+		salaryItems.addAll(defaultDataColumn(1, endColum - 1));
+		return salaryItems;
+	}
+	
 	/**
 	 * Default data line.
 	 *

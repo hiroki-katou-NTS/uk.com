@@ -113,7 +113,7 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 	 * @param startCol the start col
 	 * @param style the style
 	 */
-	private void pushData(String objectValue, int startRow, int startCol, Style style) {
+	private void pushData(Object objectValue, int startRow, int startCol, Style style) {
 		cells.get(startRow, startCol).setValue(objectValue);
 		cells.get(startRow, startCol).setStyle(style);
 	}
@@ -164,7 +164,7 @@ public class PaymentReportHorizontalGenerator implements PaymentGenerator {
 		pushData("", startRow, startCol + 1, stylePaymentValueHeader);
 		cells.merge(startRow, startCol, 1, 2);
 		
-		pushData(dto.getItemVal().toString(), startRow + 1, startCol, stylePaymentValueRow);
+		pushData(dto.getItemVal(), startRow + 1, startCol, stylePaymentValueRow);
 		pushData("", startRow + 1, startCol + 1, stylePaymentValueRow);
 		cells.merge(startRow + 1, startCol, 1, 2);
 		}
