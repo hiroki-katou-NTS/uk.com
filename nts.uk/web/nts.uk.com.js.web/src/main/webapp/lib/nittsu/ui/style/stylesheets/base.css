@@ -19,7 +19,37 @@ time, mark, audio, video {
   font-size: 100%;
   vertical-align: baseline;
 }
-
+.ui-dialog .ui-resizable-se {
+    width: 14px;
+    height: 14px;
+    right: 3px;
+    bottom: 3px;
+    background-position: -80px -224px;
+}
+.ui-dialog-titlebar-icon{
+	max-width:20px;
+	max-height:20px;
+	float:left;
+	display:inline-block;
+	margin-right:5px;
+	margin: .1em 0;
+}
+.ui-dialog-buttonpane-resize{
+				right:0px;
+				bottom:0px;
+				position:absolute;
+				max-width:20px;
+				max-height:20px;
+		}
+.control{
+	position:absolute;
+	right:10px;
+	bottom:0px;
+	color:gray;
+}
+.ui-dialog-titlebar-container{
+	width:100%;
+}
 /* line 22, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
 html {
   /*line-height: 1; mod kitahira */
@@ -975,6 +1005,11 @@ button.x-large:active {
 button.auto-height {
   height: auto;
 }
+/* line 202, ../sass/components/_button.scss */
+button:focus {
+  border-color: #0096f2;
+  box-shadow: 0 2px 2px 0 #0096f2;
+}
 
 /*****************************
   Caret
@@ -1146,7 +1181,11 @@ button.caret-bottom:after, button.caret-top:after, button.caret-left:after, butt
   position: absolute;
   color: #888888;
 }
-/* line 148, ../sass/components/_caret.scss */
+/* line 154, ../sass/components/_caret.scss */
+button:focus.caret-bottom:after, button:focus.caret-top:after, button:focus.caret-left:after, button:focus.caret-right:after {
+  color: #0096f2;
+}
+/* line 160, ../sass/components/_caret.scss */
 button.caret-bottom:after {
   top: 100%;
   left: 50%;
@@ -1155,7 +1194,7 @@ button.caret-bottom:after {
   border-left-width: 1.5em;
   margin-left: -1.5em;
 }
-/* line 157, ../sass/components/_caret.scss */
+/* line 169, ../sass/components/_caret.scss */
 button.caret-top:after {
   bottom: 100%;
   left: 50%;
@@ -1164,45 +1203,45 @@ button.caret-top:after {
   border-left-width: 1.5em;
   margin-left: -1.5em;
 }
-/* line 166, ../sass/components/_caret.scss */
+/* line 178, ../sass/components/_caret.scss */
 button.caret-left:after {
   right: 100%;
   top: 50%;
   margin-top: -1em;
 }
-/* line 167, ../sass/components/_caret.scss */
+/* line 179, ../sass/components/_caret.scss */
 button.caret-right:after {
   left: 100%;
   top: 50%;
   margin-top: -1em;
 }
 
-/* line 171, ../sass/components/_caret.scss */
+/* line 184, ../sass/components/_caret.scss */
 .caret-background:after {
   position: absolute;
   border-width: 30px 18px;
   color: #E0F59E;
 }
-/* line 176, ../sass/components/_caret.scss */
+/* line 189, ../sass/components/_caret.scss */
 .caret-background.caret-right:after {
   top: 30px;
   left: 100%;
 }
-/* line 177, ../sass/components/_caret.scss */
+/* line 190, ../sass/components/_caret.scss */
 .caret-background.caret-left:after {
   top: 30px;
   right: 100%;
 }
-/* line 178, ../sass/components/_caret.scss */
+/* line 191, ../sass/components/_caret.scss */
 .caret-background.caret-top:after {
   bottom: 100%;
 }
-/* line 179, ../sass/components/_caret.scss */
+/* line 192, ../sass/components/_caret.scss */
 .caret-background.caret-bottom:after {
   top: 100%;
 }
 
-/* line 183, ../sass/components/_caret.scss */
+/* line 196, ../sass/components/_caret.scss */
 .caret-overlay:before {
   content: '';
   position: absolute;
@@ -1210,7 +1249,7 @@ button.caret-right:after {
   color: rgba(0, 0, 0, 0.2);
   font-size: 12px;
 }
-/* line 190, ../sass/components/_caret.scss */
+/* line 203, ../sass/components/_caret.scss */
 .caret-overlay.caret-right:before {
   border-left: 1em solid;
   border-top: 1em solid transparent;
@@ -1219,7 +1258,7 @@ button.caret-right:after {
   left: 100%;
   margin-top: -1em;
 }
-/* line 196, ../sass/components/_caret.scss */
+/* line 209, ../sass/components/_caret.scss */
 .caret-overlay.caret-left:before {
   border-right: 1em solid;
   border-top: 1em solid transparent;
@@ -1228,7 +1267,7 @@ button.caret-right:after {
   right: 100%;
   margin-top: -1em;
 }
-/* line 202, ../sass/components/_caret.scss */
+/* line 215, ../sass/components/_caret.scss */
 .caret-overlay.caret-top:before {
   border-bottom: 1em solid;
   border-right: 1em solid transparent;
@@ -1237,7 +1276,7 @@ button.caret-right:after {
   left: 50%;
   margin-left: -1em;
 }
-/* line 208, ../sass/components/_caret.scss */
+/* line 221, ../sass/components/_caret.scss */
 .caret-overlay.caret-bottom:before {
   border-top: 1em solid;
   border-right: 1em solid transparent;
@@ -1246,60 +1285,60 @@ button.caret-right:after {
   left: 50%;
   margin-left: -1em;
 }
-/* line 215, ../sass/components/_caret.scss */
+/* line 228, ../sass/components/_caret.scss */
 .caret-overlay:after {
   position: absolute;
   border-width: 10px;
   color: #fff;
 }
-/* line 221, ../sass/components/_caret.scss */
+/* line 234, ../sass/components/_caret.scss */
 .caret-overlay.caret-right:after {
   top: 50%;
   left: 100%;
   margin-top: -10px;
 }
-/* line 222, ../sass/components/_caret.scss */
+/* line 235, ../sass/components/_caret.scss */
 .caret-overlay.caret-left:after {
   top: 50%;
   right: 100%;
   margin-top: -10px;
 }
-/* line 223, ../sass/components/_caret.scss */
+/* line 236, ../sass/components/_caret.scss */
 .caret-overlay.caret-top:after {
   bottom: 100%;
   left: 50%;
   margin-left: -10px;
 }
-/* line 224, ../sass/components/_caret.scss */
+/* line 237, ../sass/components/_caret.scss */
 .caret-overlay.caret-bottom:after {
   top: 100%;
   left: 50%;
   margin-left: -10px;
 }
 
-/* line 227, ../sass/components/_caret.scss */
+/* line 240, ../sass/components/_caret.scss */
 .caret-helpbutton {
   position: absolute;
   font-size: 10px;
 }
-/* line 231, ../sass/components/_caret.scss */
+/* line 244, ../sass/components/_caret.scss */
 .caret-helpbutton:before {
   content: '';
   position: absolute;
   border-width: 1.1em;
   color: rgba(0, 0, 0, 0.15);
 }
-/* line 237, ../sass/components/_caret.scss */
+/* line 250, ../sass/components/_caret.scss */
 .caret-helpbutton:after {
   position: absolute;
   border-width: 2em;
   color: #E0F59E;
 }
-/* line 243, ../sass/components/_caret.scss */
+/* line 256, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-right {
   right: 0;
 }
-/* line 245, ../sass/components/_caret.scss */
+/* line 258, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-right:before {
   top: 0.5em;
   border-left: 2.1em solid;
@@ -1308,18 +1347,18 @@ button.caret-right:after {
   margin-right: -0.1em;
   margin-top: -0.1em;
 }
-/* line 253, ../sass/components/_caret.scss */
+/* line 266, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-right:after {
   top: 0.5em;
   border-left: 2em solid;
   border-top: 1em solid transparent;
   border-bottom: 1em solid transparent;
 }
-/* line 260, ../sass/components/_caret.scss */
+/* line 273, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-left {
   left: -2em;
 }
-/* line 262, ../sass/components/_caret.scss */
+/* line 275, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-left:before {
   top: 0.5em;
   border-right: 2.1em solid;
@@ -1328,18 +1367,18 @@ button.caret-right:after {
   margin-left: -0.1em;
   margin-top: -0.1em;
 }
-/* line 270, ../sass/components/_caret.scss */
+/* line 283, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-left:after {
   top: 0.5em;
   border-right: 2em solid;
   border-top: 1em solid transparent;
   border-bottom: 1em solid transparent;
 }
-/* line 277, ../sass/components/_caret.scss */
+/* line 290, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-top {
   top: -2em;
 }
-/* line 279, ../sass/components/_caret.scss */
+/* line 292, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-top:before {
   left: 0.5em;
   border-bottom: 2.1em solid;
@@ -1348,18 +1387,18 @@ button.caret-right:after {
   margin-left: -0.1em;
   margin-top: -0.1em;
 }
-/* line 287, ../sass/components/_caret.scss */
+/* line 300, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-top:after {
   left: 0.5em;
   border-bottom: 2em solid;
   border-right: 1em solid transparent;
   border-left: 1em solid transparent;
 }
-/* line 294, ../sass/components/_caret.scss */
+/* line 307, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-bottom {
   bottom: 0;
 }
-/* line 296, ../sass/components/_caret.scss */
+/* line 309, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-bottom:before {
   left: 0.5em;
   border-top: 2.1em solid;
@@ -1368,7 +1407,7 @@ button.caret-right:after {
   margin-left: -0.1em;
   margin-bottom: -0.1em;
 }
-/* line 304, ../sass/components/_caret.scss */
+/* line 317, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-bottom:after {
   left: 0.5em;
   border-top: 2em solid;
@@ -2044,6 +2083,7 @@ button.nts-switch-button[disabled]:hover {
   margin: 0px;
   border-top: solid 1px #767171;
   text-align: center;
+  position:relative;
 }
 /* line 47, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane .ui-dialog-buttonset {

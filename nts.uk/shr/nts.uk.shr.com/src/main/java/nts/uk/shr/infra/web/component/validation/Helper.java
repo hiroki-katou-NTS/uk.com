@@ -6,6 +6,7 @@ import java.util.Map;
 
 import lombok.val;
 import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
@@ -57,6 +58,7 @@ class Helper {
 		CHARTYPE_NAMES_MAP.put(CharType.ALPHA_NUMERIC.name(), "AlphaNumeric");
 		CHARTYPE_NAMES_MAP.put(CharType.ALPHABET.name(), "Alphabet");
 		CHARTYPE_NAMES_MAP.put(CharType.NUMERIC.name(), "Numeric");
+		CHARTYPE_NAMES_MAP.put(CharType.KANA.name(), "Kana");
 	}
 	
 	static String getValueType(Class<?> inputClass) {
@@ -67,6 +69,8 @@ class Helper {
 		} else if (LongPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "Integer";
 		} else if (DecimalPrimitiveValue.class.isAssignableFrom(inputClass)) {
+			return "Decimal";
+		} else if (HalfIntegerPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "Decimal";
 		} else {
 			throw new RuntimeException("not supported: " + inputClass.getName());
