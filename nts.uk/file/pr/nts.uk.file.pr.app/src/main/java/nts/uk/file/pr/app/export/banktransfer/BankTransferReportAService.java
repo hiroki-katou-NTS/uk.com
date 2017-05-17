@@ -2,7 +2,9 @@ package nts.uk.file.pr.app.export.banktransfer;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -48,7 +50,10 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 
 	private void process(BankTransferReportQuery query, String companyCode,
 			ExportServiceContext<BankTransferReportQuery> context, int sparePayAtr) {
-		List<BankTransferARpData> rpDataList = new ArrayList<BankTransferARpData>();
+		Map<String, String> persons = fixPerson();
+		
+		List<BankTransferARpData> salaryPreliminaryMonthList = new ArrayList<BankTransferARpData>();
+		List<BankTransferARpData> salaryPortionList = new ArrayList<BankTransferARpData>();
 		for (String fromBranchId : query.getFromBranchId()) {
 			BankTransferParamRpDto bankTransferParamRp = new BankTransferParamRpDto(companyCode, fromBranchId,
 					PayBonusAtr.SALARY.value, query.getProcessingNo(), query.getProcessingYm(), query.getPayDate(),
@@ -60,13 +65,13 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 			} else {
 				bankTransfer = bankTransferReportRepo.findBySEL1(bankTransferParamRp);
 			}
-
+			
 			for (BankTransferRpDto bankTrans : bankTransfer) {
 				BankTransferARpData rpData = new BankTransferARpData();
 				// A_DBD_008 (PERSON_COM)
-				rpData.setScd("0000000001");
+				rpData.setScd(persons.get(bankTrans.getPersonId()));
 				// A_DBD_009 (PERSON_BASE)
-				rpData.setName("山");
+				rpData.setName("個人 郎");
 				if (query.getSelectedId_J_SEL_001() == 1) {
 					// PERSON_BASE SEL_1
 				}
@@ -99,31 +104,26 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 				} else {
 					rpData.setToAccountAtr("当座");
 				}
+				
 				// A_DBD_007
 				rpData.setToAccountNo(bankTrans.getToAccountNo());
 				// A_DBD_010
 				rpData.setPaymentMyn(bankTrans.getPaymentMoney());
 				rpData.setUnit("円");
-				
-				rpData.setSparePayAtr(bankTrans.getSparePayAtr());
 
-				rpDataList.add(rpData);
+				rpData.setSparePayAtr(bankTrans.getSparePayAtr());
+				
+				rpData.setRowTotal(false);
+				
+				if (SparePayAtr.NORMAL.value == bankTrans.getSparePayAtr()) {
+					salaryPortionList.add(rpData);	
+				} else {
+					salaryPreliminaryMonthList.add(rpData);
+				}
 			}
 		}
-		BankTransferARpData rpDataSum = new BankTransferARpData();
-		rpDataSum.setBankCode("総合計");
-		// A_CTR_002 (totalPaymentMny)
-		BigDecimal sum = BigDecimal.valueOf(0);
-		for (BankTransferARpData bankTransferARpData : rpDataList) {
-			sum = sum.add(bankTransferARpData.getPaymentMyn());
-		}
-		rpDataSum.setPaymentMyn(sum);
-		rpDataSum.setUnit("円");
-		// A_CTR_001 (totalPerson)
-		rpDataSum.setName(String.valueOf(rpDataList.size()) + "人");
-
-		rpDataList.add(rpDataSum);
-
+		
+		// set header
 		BankTransferARpHeader header = new BankTransferARpHeader();
 		header.setCompanyName(bankTransferReportRepo.findCompany(companyCode).getCompanyName());
 		// A_CTR_005
@@ -132,25 +132,54 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 		header.setDate(query.getTransferDate() + "】");
 		// A_DBD_001
 		header.setPerson(bankTransferReportRepo.findAllCalled(companyCode).get());
-
-		if (query.getSparePayAtr().equals("3")) {
-			if (query.getCurrentCode_J_SEL_004() == 2) {
-				// A_CTR_003
-				header.setState("【給与分】");
-				// A_CTR_004
-				// header.setState("【給与予備月】");
-			} else {
-				header.setState("");
-			}
-		} else {
-			header.setState("");
-		}
-
+		
+		// row total
+		this.totalSalary(salaryPortionList);
+		this.totalSalary(salaryPreliminaryMonthList);
+		
 		BankTransferAReport reportA = new BankTransferAReport();
-		reportA.setData(rpDataList);
+		reportA.setSalaryPortionList(salaryPortionList);
+		reportA.setSalaryPreliminaryMonthList(salaryPreliminaryMonthList);
 		reportA.setHeader(header);
 		reportA.setSparePayAtr(query.getSparePayAtr());
 
 		this.generator.generator(context.getGeneratorContext(), reportA);
+	}
+	
+	/**
+	 * Total salary preliminary month
+	 */
+	private void totalSalary(List<BankTransferARpData> salaryPreliminaryMonthList) {
+		if (salaryPreliminaryMonthList == null) {
+			return;
+		}
+		
+		BankTransferARpData rpDataSum = new BankTransferARpData();
+		rpDataSum.setBankCode("総合計");
+		// A_CTR_002 (totalPaymentMny)
+		BigDecimal sum = BigDecimal.valueOf(0);
+		for (BankTransferARpData bankTransferARpData : salaryPreliminaryMonthList) {
+			sum = sum.add(bankTransferARpData.getPaymentMyn());
+		}
+		rpDataSum.setPaymentMyn(sum);
+		rpDataSum.setUnit("円");
+		// A_CTR_001 (totalPerson)
+		rpDataSum.setName(String.valueOf(salaryPreliminaryMonthList.size()) + "人");
+		rpDataSum.setRowTotal(true);
+		
+		salaryPreliminaryMonthList.add(rpDataSum);
+	}
+	
+	/**
+	 * Fix data
+	 * @return
+	 */
+	private Map<String, String> fixPerson() {
+		Map<String, String> result = new HashMap<>();
+		for(int i=0; i< 10; i++) {
+			result.put("99900000-0000-0000-0000-00000000000" + (i+1), "000000000" + (i +1));
+		}
+		
+		return result;
 	}
 }
