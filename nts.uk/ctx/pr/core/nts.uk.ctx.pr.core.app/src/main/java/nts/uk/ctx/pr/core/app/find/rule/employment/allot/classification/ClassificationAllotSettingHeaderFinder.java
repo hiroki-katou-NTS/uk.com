@@ -12,19 +12,11 @@ public class ClassificationAllotSettingHeaderFinder {
 
 	@Inject
 	private ClassificationAllotSettingHeaderRepository classificationAllotSettingHeaderRespository;
-	
-	public List<ClassificationAllotSettingHeaderDto>getAllClassificationAllotSettingHeader(String companyCode) {
+
+	public List<ClassificationAllotSettingHeaderDto> getAllClassificationAllotSettingHeader(String companyCode) {
 		return this.classificationAllotSettingHeaderRespository.findAll(companyCode).stream()
-				.map(m -> ClassificationAllotSettingHeaderDto.fromDomain(m))
-				.collect(Collectors.toList());
-		
+				.map(m -> ClassificationAllotSettingHeaderDto.fromDomain(m)).collect(Collectors.toList());
+
 	}
-	
-	/*public List<ClassificationAllotSettingHeaderDto>getHistory (String companyCode ,String historyId) {
-		return this.classificationAllotSettingHeaderRespository.findbyHistoryId(companyCode, historyId).stream()
-				.map( m -> ClassificationAllotSettingHeaderDto.fromDomain(m))
-				.collect(Collectors.toList());
-																
-	}*/
-	
+
 }

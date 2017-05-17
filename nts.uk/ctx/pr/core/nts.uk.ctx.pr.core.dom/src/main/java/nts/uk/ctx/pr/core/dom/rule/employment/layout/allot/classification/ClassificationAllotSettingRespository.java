@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ClassificationAllotSettingRespository {
-	Optional<ClassificationAllotSetting> find(String companyCode, String historyId , String classificationCode);
+//	Optional<ClassificationAllotSetting> find(String companyCode, String historyId , String classificationCode);
 	//find all, return list
 	List<ClassificationAllotSetting> findAll(String companyCode);
 	
-	List<ClassificationAllotSetting> findbyHistoryId(String companyCode, String historyId);
+//	List<ClassificationAllotSetting> findbyHistoryId(String companyCode, String historyId);
  
 									
 
