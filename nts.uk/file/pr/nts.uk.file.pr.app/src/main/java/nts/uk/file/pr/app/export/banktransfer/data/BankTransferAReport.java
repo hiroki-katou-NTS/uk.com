@@ -8,5 +8,5 @@ import lombok.Data;
 public class BankTransferAReport {
 	private BankTransferARpHeader header;
 	private List<BankTransferARpData> data;
-	private String sparePayAtr;
+	private int sparePayAtr;
 }

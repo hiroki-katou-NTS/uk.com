@@ -1,8 +1,5 @@
 package nts.uk.pr.file.infra.banktransfer;
 
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +13,6 @@ import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.file.pr.app.export.banktransfer.BankTransferRpAGenerator;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferAReport;
@@ -67,7 +63,7 @@ public class BankTransferReportAGenerator extends AsposeCellsReportGenerator imp
 	}
 	
 	private boolean addSheet(FileGeneratorContext fileGeneratorContext, AsposeCellsReportContext reportContext, BankTransferAReport report) {
-		if (!report.getSparePayAtr().equals("3")) {
+		if (report.getSparePayAtr() != 3) {
 			return false;
 		}
 		

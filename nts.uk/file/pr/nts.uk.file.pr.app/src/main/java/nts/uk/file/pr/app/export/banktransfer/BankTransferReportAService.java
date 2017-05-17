@@ -37,9 +37,9 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 	protected void handle(ExportServiceContext<BankTransferReportQuery> context) {
 		String companyCode = AppContexts.user().companyCode();
 		BankTransferReportQuery query = context.getQuery();
-		if (query.getSparePayAtr().equals("1")) {
+		if (query.getSparePayAtr() == 1) {
 			process(query, companyCode, context, SparePayAtr.NORMAL.value);
-		} else if (query.getSparePayAtr().equals("2")) {
+		} else if (query.getSparePayAtr() == 2) {
 			process(query, companyCode, context, SparePayAtr.PRELIMINARY.value);
 		} else {
 			process(query, companyCode, context, 0);
@@ -55,7 +55,7 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 					sparePayAtr);
 			// BANK_TRANSFER SEL_1
 			List<BankTransferRpDto> bankTransfer = new ArrayList<BankTransferRpDto>();
-			if (query.getSparePayAtr().equals("3")) {
+			if (query.getSparePayAtr()== 3) {
 				bankTransfer = bankTransferReportRepo.findBySEL1_1(bankTransferParamRp);
 			} else {
 				bankTransfer = bankTransferReportRepo.findBySEL1(bankTransferParamRp);
@@ -133,7 +133,7 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 		// A_DBD_001
 		header.setPerson(bankTransferReportRepo.findAllCalled(companyCode).get());
 
-		if (query.getSparePayAtr().equals("3")) {
+		if (query.getSparePayAtr() == 3) {
 			if (query.getCurrentCode_J_SEL_004() == 2) {
 				// A_CTR_003
 				header.setState("【給与分】");
