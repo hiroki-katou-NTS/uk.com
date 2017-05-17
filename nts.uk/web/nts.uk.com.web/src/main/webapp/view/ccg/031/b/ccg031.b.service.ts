@@ -3,7 +3,7 @@ module ccg031.b.service {
         findAll: "sys/portal/topagepart/findAll",
     }
     
-    export function findAll(): JQueryPromise<any> {
-        return nts.uk.request.ajax(paths.findAll);
+    export function findAll(pgType: number): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.findAll, pgType.toString());
     }
 }

@@ -4,9 +4,11 @@ module ccg031.a.viewmodel {
     import ntsNumber = nts.uk.ntsNumber;
     import dialog = nts.uk.ui.dialog;
     import resource = nts.uk.resource;
-    const minRow: number = 4;
-    const minColumn: number = 6;
-
+    const MINROW: number = 4;
+    const MINCOLUMN: number = 6;
+    const ANIMATION_EASETYPE: string = "easeOutQuint";
+    const ANIMATION_DURATION: number = 350;
+    
     export class ScreenModel {
         // Layout Info
         parentCode: string;
@@ -24,7 +26,7 @@ module ccg031.a.viewmodel {
             self.layoutID = null;
             self.pgType = null;
             // Layout Grid
-            self.layoutGrid = ko.observable(new LayoutGrid(minRow, minColumn));
+            self.layoutGrid = ko.observable(new LayoutGrid(MINROW, MINCOLUMN));
             // Placement
             self.placements = ko.observableArray([]);
         }
@@ -65,7 +67,8 @@ module ccg031.a.viewmodel {
             service.registry(self.parentCode, self.layoutID, self.pgType, self.placements())
                 .done((data) => {
                     self.layoutID = data;
-                    dialog.alert(resource.getMessage("Msg_15"));
+                    dialog.alert("Msg_15");
+                    //dialog.alert(resource.getMessage("Msg_15"));
                 }).fail((res) => {
                     dialog.alert(resource.getMessage(res.messageId));
                 });
@@ -99,6 +102,7 @@ module ccg031.a.viewmodel {
         openAddDialog(row: number, column: number, element: HTMLElement): void {
             var self = this;
             $(element).addClass("placeholder");
+            windows.setShared("pgtype", self.pgType, false);
             windows.setShared("size", { row: row, column: column }, false);
             windows.sub.modal("/view/ccg/031/b/index.xhtml").onClosed(() => {
                 let placement: model.Placement = windows.getShared("placement");
@@ -205,7 +209,7 @@ module ccg031.a.viewmodel {
                 checkingPlacementIds = _.union(checkingPlacementIds);
                 _.merge(listOverlapPlacement, self.layoutGrid().markOccupied(movingPlacement));
                 self.autoExpandLayout();
-                self.setupPositionAndSize(movingPlacement, 300);
+                self.setupPositionAndSize(movingPlacement, ANIMATION_DURATION);
             });
             if (listOverlapPlacement.length > 0)
                 self.reorderPlacements.call(self, listOverlapPlacement, checkingPlacementIds);
@@ -272,7 +276,7 @@ module ccg031.a.viewmodel {
                 $placement.animate({
                     top: ((placement.row - 1) * 150) + ((placement.row - 1) * 10),
                     left: ((placement.column - 1) * 150) + ((placement.column - 1) * 10),
-                }, duration, "easeOutQuint");
+                }, duration, ANIMATION_EASETYPE);
             }
         }
 
@@ -400,8 +404,8 @@ module ccg031.a.viewmodel {
 
         /** Add overflow class */
         private addOverflowClass(): void {
-            if (this.rows() > minRow) $(".placement-container").addClass("overflow-y");
-            if (this.columns() > minColumn) $(".placement-container").addClass("overflow-x");
+            if (this.rows() > MINROW) $(".placement-container").addClass("overflow-y");
+            if (this.columns() > MINCOLUMN) $(".placement-container").addClass("overflow-x");
         }
     }
 

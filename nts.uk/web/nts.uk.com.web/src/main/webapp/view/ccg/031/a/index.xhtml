@@ -23,9 +23,9 @@
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button class="btn btn-register proceed" data-bind="click: registryLayout">登録</button>
-				<button class="btn btn-preview" data-bind="click: openPreviewDialog">プレビュー</button>
-				<button class="btn btn-close" data-bind="click: closeDialog">閉じる</button>
+				<button class="btn btn-register proceed" data-bind="click: registryLayout">#{i18n.getText('CCG031_2')}</button>
+				<button class="btn btn-preview" data-bind="click: openPreviewDialog">#{i18n.getText('CCG031_3')}</button>
+				<button class="btn btn-close" data-bind="click: closeDialog">#{i18n.getText('CCG031_4')}</button>
 			</div>
 
 			<div id="contents-area" class="cf">
@@ -60,9 +60,9 @@
 								</com:ko-foreach>
 							</div>
 						</div>
-						<button class="btn-addcolumn" data-bind="click: addColumnButtonClick">列<br/>の<br/>追<br/>加</button>
+						<button class="btn-addcolumn" data-bind="click: addColumnButtonClick">#{i18n.getText('CCG031_5')}</button>
 					</div>
-					<button class="btn-addrow" data-bind="click: addRowButtonClick">行の追加</button>
+					<button class="btn-addrow" data-bind="click: addRowButtonClick">#{i18n.getText('CCG031_6')}</button>
 				</div>
 			</div>
 		</ui:define>

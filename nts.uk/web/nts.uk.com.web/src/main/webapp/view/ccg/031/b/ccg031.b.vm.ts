@@ -2,8 +2,11 @@ module ccg031.b.viewmodel {
     import model = ccg.model;
     import util = nts.uk.util;
     import windows = nts.uk.ui.windows;
-    
+    import errors = nts.uk.ui.errors;
+    import resource = nts.uk.resource;
     export class ScreenModel {
+        // PGType
+        pgType: number;
         // Position
         positionRow: KnockoutObservable<number>;
         positionColumn: KnockoutObservable<number>;
@@ -21,13 +24,16 @@ module ccg031.b.viewmodel {
         urlWidth: KnockoutObservable<number>;
         urlHeight: KnockoutObservable<number>;
         url: KnockoutObservable<string>;
-
+        // UI Binding
+        instructionText: KnockoutObservable<string>;
         constructor() {
             var self = this;
+            // PGType
+            self.pgType = 0;
             // Position
             self.positionRow = ko.observable(null);
             self.positionColumn = ko.observable(null);
-            //TopPage Part
+            // TopPage Part
             self.listPartType = ko.observableArray([]);
             self.selectedPartType = ko.observable(null);
             self.selectedPartType.subscribe((value) => { self.filterPartType(value); });
@@ -46,17 +52,20 @@ module ccg031.b.viewmodel {
             self.urlWidth = ko.observable(null);
             self.urlHeight = ko.observable(null);
             self.url = ko.observable(null);
+            // UI Binding
+            self.instructionText = ko.observable('');
         }
 
         /** Start Page */
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            // Position
+            // Shared
+            self.pgType = windows.getShared("pgtype");
             self.positionRow(windows.getShared("size").row);
             self.positionColumn(windows.getShared("size").column);
             // Get Type and Part
-            service.findAll().done((data: any) => {
+            service.findAll(self.pgType).done((data: any) => {
                 // Binding TopPage Part Type
                 self.listPartType(data.listTopPagePartType);
                 // Binding TopPage Part
@@ -71,32 +80,60 @@ module ccg031.b.viewmodel {
             return dfd.promise();
         }
 
+        /** Submit Dialog */
+        submitDialog(): void {
+            var self = this;
+            $(".nts-validate").trigger("validate");
+            _.defer(() => {
+                //if (!errors.hasError()) {
+                if ($(".nts-validate").ntsError("hasError")) {
+                    var placement: model.Placement = self.buildReturnPlacement();
+                    windows.setShared("placement", placement, false);
+                    windows.close();
+                }
+            });
+        }
+
+        /** Close Dialog */
+        closeDialog(): void {
+            windows.close();
+        }
+        
         /** Filter by Type */
-        filterPartType(partType: number): void {
+        private filterPartType(partType: number): void {
             var isExternalUrl: boolean = (partType === 3);
             this.isExternalUrl(isExternalUrl);
             if (isExternalUrl !== true) {
+                if (nts.uk.ui._viewModel)
+                    errors.clearAll();
                 var listPart = _.filter(this.allPart(), ['type', partType]);
                 this.listPart(listPart);
                 this.isExternalUrl(isExternalUrl);
                 this.selectFirstPart();
             }
+            // Instruction Text
+            if (partType === 0)
+                this.instructionText("CCG031_17");
+            if (partType === 1)
+                this.instructionText("CCG031_24");
+            if (partType === 2)
+                this.instructionText("CCG031_19");
         }
-
+        
         /** Change Selected Part */
-        changeSelectedPart(partID: string): void {
+        private changeSelectedPart(partID: string): void {
             var selectedPart: model.TopPagePartDto = _.find(this.allPart(), ['topPagePartID', partID]);
             this.selectedPart(selectedPart);
         }
-
+        
         /** Select first Part */
-        selectFirstPart(): void {
+        private selectFirstPart(): void {
             var firstPart: model.TopPagePartDto = _.head(this.listPart());
             (firstPart !== undefined) ? this.selectedPartID(firstPart.topPagePartID) : this.selectedPartID(null);
         }
 
-        /** Submit Dialog */
-        submitDialog(): void {
+        /** Build a return Placement for LayoutSetting */
+        private buildReturnPlacement(): model.Placement {
             var self = this;
             // Default is External Url
             var name: string = "";
@@ -120,15 +157,9 @@ module ccg031.b.viewmodel {
                 util.randomId(), name,
                 self.positionRow(), self.positionColumn(),
                 width, height, url, topPagePartID, topPagePartType);
-            windows.setShared("placement", placement, false);
-            windows.close();
+            return placement;
         }
-
-        /** Close Dialog */
-        closeDialog(): void {
-            windows.close();
-        }
-
+        
     }
 
 }
