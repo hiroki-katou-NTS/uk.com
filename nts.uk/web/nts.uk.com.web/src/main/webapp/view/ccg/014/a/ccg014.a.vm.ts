@@ -42,19 +42,6 @@ module ccg014.a.viewmodel {
             return dfd;
         }
 
-        /** Get Selected TitleMenu */
-        findSelectedTitleMenu(titleMenuCD: string) {
-            var self = this;
-            var selectedTitleMenu = _.find(self.listTitleMenu(), ['titleMenuCD', titleMenuCD]);
-            if (selectedTitleMenu !== undefined) {
-                self.isCreate(false);
-                self.selectedTitleMenu(new model.TitleMenu(selectedTitleMenu.titleMenuCD, selectedTitleMenu.name, selectedTitleMenu.layoutID));
-            }
-            else {
-                self.selectedTitleMenu(new model.TitleMenu("", "", ""));
-            }
-        }
-
         /** Create Button Click */
         createButtonClick() {
             var self = this;
@@ -140,6 +127,19 @@ module ccg014.a.viewmodel {
             windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: 'フローメニューの設定', dialogClass: "no-close" });
         }
 
+        /** Get Selected TitleMenu */
+        private findSelectedTitleMenu(titleMenuCD: string) {
+            var self = this;
+            var selectedTitleMenu = _.find(self.listTitleMenu(), ['titleMenuCD', titleMenuCD]);
+            if (selectedTitleMenu !== undefined) {
+                self.isCreate(false);
+                self.selectedTitleMenu(new model.TitleMenu(selectedTitleMenu.titleMenuCD, selectedTitleMenu.name, selectedTitleMenu.layoutID));
+            }
+            else {
+                self.selectedTitleMenu(new model.TitleMenu("", "", ""));
+            }
+        }
+
         /** Init Mode */
         private changeInitMode(isCreate: boolean) {
             var self = this;
@@ -151,6 +151,7 @@ module ccg014.a.viewmodel {
                 _.defer(() => { errors.clearAll(); });
             }
         }
+        
         clearError(): any {
             var self = this;
             if (self.selectedTitleMenu().titleMenuCD !== null) { errors.clearAll(); }

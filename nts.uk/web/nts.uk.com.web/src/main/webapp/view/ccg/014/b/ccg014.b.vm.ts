@@ -1,5 +1,6 @@
 module ccg014.b.viewmodel {
 
+
     export class ScreenModel {
         titlecode: KnockoutObservable<string>;
         titlename: KnockoutObservable<string>;
@@ -8,11 +9,15 @@ module ccg014.b.viewmodel {
         checkOverwritting: KnockoutObservable<boolean>;
         constructor(data) {
             var self = this;
-            self.titlecode = ko.observable(data.titleMenuCD());
-            self.titlename = ko.observable(data.name());
+            self.titlecode = ko.observable(data.titleMenuCD);
+            self.titlename = ko.observable(data.name);
             self.copyTitleCD = ko.observable('');
             self.copyName = ko.observable('');
             self.checkOverwritting = ko.observable(true);
+            if (nts.uk.util.isNullOrEmpty(self.copyTitleCD())) {
+                _.defer(() => { $("#copycode").focus(); });
+            }
+
         }
 
         /** Close Dialog */
@@ -20,16 +25,21 @@ module ccg014.b.viewmodel {
             nts.uk.ui.windows.close();
         }
 
+        clearError(): any {
+            var self = this;
+            if (self.titlecode !== null) { nts.uk.ui.errors.clearAll(); }
+            if (self.titlename !== null) { nts.uk.ui.errors.clearAll(); }
+        }
+
         /* Copy TitleMenu */
         submitClickButton() {
             var self = this;
-            service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.copyName(), self.checkOverwritting()).done(() => {
-                nts.uk.ui.dialog.confirm("Do you want to say \"Hello World!\"?").ifYes(function() {
+            nts.uk.ui.dialog.confirm("Xac nhan Copy").ifYes(function() {
+                service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.copyName(), self.checkOverwritting()).done(() => {
                     self.cancel_Dialog();
-                })
-            })
-            .fail((res) => {
-                nts.uk.ui.dialog.alert(res.messageId);
+                }).fail((res) => {
+                   nts.uk.ui.dialog.alert("Msg_3 Da duoc dang ki");
+                });
             });
         }
     }

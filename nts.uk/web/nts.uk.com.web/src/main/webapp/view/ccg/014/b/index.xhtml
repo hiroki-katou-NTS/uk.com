@@ -30,12 +30,8 @@
 				<div class="row2" style="margin-top: 5px;">
 					<span style="text-align: center; margin-right: 30px;">コピー先情報：</span>
 					<div data-bind="ntsFormLabel: { constraint: ['TitleMenuCD' , 'Name'], required: true }">コード/名称</div>
-					<div id="copycode">
-						<input data-bind="ntsTextEditor: {value: copyTitleCD, constraint: 'TitleMenuCD', required: true}" />
-					</div>
-					<div id="copyname">
-						<input data-bind="ntsTextEditor: {value: copyName, constraint: 'Name', required: true}" />
-					</div>	
+					<input id="copycode" data-bind="ntsTextEditor: {value: copyTitleCD, constraint: 'TitleMenuCD', required: true}" />
+	     			<input id="copyname" data-bind="ntsTextEditor: {value: copyName, constraint: 'Name', required: true }" />
 				</div>
 				<hr style="width: 100%; margin-top: 30px;" />
 				<div id="checkOverwritting" data-bind="ntsCheckBox: { checked: checkOverwritting }">設定済みの場合は、データを上書きします。</div>
