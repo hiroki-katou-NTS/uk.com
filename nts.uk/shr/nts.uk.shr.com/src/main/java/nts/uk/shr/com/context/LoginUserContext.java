@@ -19,6 +19,6 @@ public class LoginUserContext {
 	}
 	
 	public String companyId() {
-		return this.contractCode() + this.companyCode();
+		return this.contractCode() + "-" + this.companyCode();
 	}
 }
