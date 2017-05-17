@@ -2,17 +2,13 @@ package nts.uk.pr.file.infra.comparingsalarybonus;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ComfirmDifferentRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.PaycompConfirm;
 import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsdtPaycompConfirm;
-import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsdtPaycompConfirmPK;
 import nts.uk.file.pr.app.export.comparingsalarybonus.ComparingSalaryBonusQueryRepository;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.SalaryBonusDetail;
 
@@ -26,7 +22,8 @@ import nts.uk.file.pr.app.export.comparingsalarybonus.data.SalaryBonusDetail;
 public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 		implements ComparingSalaryBonusQueryRepository {
 
-	private String SELECT_1 = "SELECT  DISTINCT i.itemAbName, h.qstdtPaymentHeaderPK.processingYM, h.employeeName, h.specificationCode, h.makeMethodFlag, d.qstdtPaymentDetailPK.personId, d.qstdtPaymentDetailPK.categoryATR,  d.qstdtPaymentDetailPK.itemCode ,d.value, pb.nameB, pc.scd, dep.depName, dep.cmnmtDepPK.departmentCode, dep.hierarchyId"
+	private String SELECT_1 = "SELECT i.itemAbName, h.qstdtPaymentHeaderPK.processingYM, h.employeeName, h.specificationCode, h.makeMethodFlag, d.qstdtPaymentDetailPK.personId, "
+			+ " d.qstdtPaymentDetailPK.categoryATR,  d.qstdtPaymentDetailPK.itemCode ,d.value, pb.nameB, pc.scd, dep.depName, dep.cmnmtDepPK.departmentCode, dep.hierarchyId"
 			+ "  FROM QlsptPaycompFormDetail c" + " INNER JOIN QcamtItem_v1 i"
 			+ " ON i.qcamtItemPK.ctgAtr = c.paycompFormDetailPK.categoryATR  AND i.qcamtItemPK.itemCd = c.paycompFormDetailPK.itemCode "
 			+ " AND i.qcamtItemPK.ccd  = c.paycompFormDetailPK.companyCode  " + " INNER JOIN  QstdtPaymentHeader h"
@@ -124,10 +121,10 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 	}
 
 	@Override
-	public List<String> getDepartmentCodeList(String companyCode, List<String> PIDs, int yearMonth1, String formCode) {
+	public List<?> getDepartmentCodeList(String companyCode, List<String> PIDs, int yearMonth1, String formCode) {
 		return this.queryProxy().query(SELECT_DEPCODE, Object[].class).setParameter("formCode", formCode)
 				.setParameter("personId", PIDs).setParameter("processingYM", yearMonth1)
-				.setParameter("companyCode", companyCode).getList(c -> toDomainString(c));
+				.setParameter("companyCode", companyCode).getList();
 	}
 
 }
