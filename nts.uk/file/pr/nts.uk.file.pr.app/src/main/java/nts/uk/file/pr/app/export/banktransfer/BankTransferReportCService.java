@@ -21,6 +21,7 @@ import nts.uk.file.pr.app.export.banktransfer.data.BankTransferCRpHeader;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferParamRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BranchDto;
+import nts.uk.file.pr.app.export.banktransfer.data.PersonBankAccountDto;
 import nts.uk.file.pr.app.export.banktransfer.query.BankTransferReportQuery;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -37,17 +38,17 @@ public class BankTransferReportCService extends ExportService<BankTransferReport
 	protected void handle(ExportServiceContext<BankTransferReportQuery> context) {
 		String companyCode = AppContexts.user().companyCode();
 		BankTransferReportQuery query = context.getQuery();
-		if (query.getSparePayAtr().equals("1")) {
+		if (query.getSparePayAtr() == 1) {
 			process(query, companyCode, context, SparePayAtr.NORMAL.value);
-		} else if (query.getSparePayAtr().equals("2")) {
+		} else if (query.getSparePayAtr()== 2) {
 			process(query, companyCode, context, SparePayAtr.PRELIMINARY.value);
 		} else {
-			process(query, companyCode, context, 0);
+			process(query, companyCode, context, null);
 		}
 	}
 
 	private void process(BankTransferReportQuery query, String companyCode,
-			ExportServiceContext<BankTransferReportQuery> context, int sparePayAtr) {
+			ExportServiceContext<BankTransferReportQuery> context, Integer sparePayAtr) {
 
 		List<BankTransferCRpData> rpDataList = new ArrayList<BankTransferCRpData>();
 		for (String fromBranchId : query.getFromBranchId()) {
@@ -56,7 +57,7 @@ public class BankTransferReportCService extends ExportService<BankTransferReport
 					sparePayAtr);
 			// BANK_TRANSFER SEL_1
 			List<BankTransferRpDto> bankTransfer = new ArrayList<BankTransferRpDto>();
-			if (query.getSparePayAtr().equals("3")) {
+			if (query.getSparePayAtr() == 3) {
 				bankTransfer = bankTransferReportRepo.findBySEL1_1(bankTransferParamRp);
 			} else {
 				bankTransfer = bankTransferReportRepo.findBySEL1(bankTransferParamRp);
@@ -67,15 +68,21 @@ public class BankTransferReportCService extends ExportService<BankTransferReport
 				// PERSON_BASE SEL_1
 				// to-do : sau khi select trong personBase can check dieu kien
 				// ton tai hay khong(throw ER010)
+
+				Optional<PersonBankAccountDto> personBankAccountDto = bankTransferReportRepo
+						.findPerBankAccBySEL3(companyCode, bankTrans.getPersonId(), query.getProcessingYm());
+				if (!personBankAccountDto.isPresent()) {
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));// ER010
+				}
 				Optional<BranchDto> branchDto = bankTransferReportRepo.findAllBranch(companyCode,
 						bankTrans.getToBranchId());
 				if (!branchDto.isPresent()) {
-					throw new BusinessException(new RawErrorMessage("対象データがありません。"));//ER010
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));// ER010
 				}
 				Optional<BankDto> bankDto = bankTransferReportRepo.findAllBank(companyCode,
 						branchDto.get().getBankCode());
 				if (!bankDto.isPresent()) {
-					throw new BusinessException(new RawErrorMessage("対象データがありません。"));//ER010
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));// ER010
 				}
 				// C_DBD_001
 				rpData.setBankName(bankDto.get().getBankName());
@@ -90,17 +97,16 @@ public class BankTransferReportCService extends ExportService<BankTransferReport
 				// C_DBD_004
 				rpData.setFromAccountNo(bankTrans.getFromAccountNo());
 				// C_DBD_005
-				// to-do
 				if (query.getProcessingNo() == 1) {
-
+					rpData.setAccHolderName(personBankAccountDto.get().getAccountHolderName1());
 				} else if (query.getProcessingNo() == 2) {
-
+					rpData.setAccHolderName(personBankAccountDto.get().getAccountHolderName2());
 				} else if (query.getProcessingNo() == 3) {
-
+					rpData.setAccHolderName(personBankAccountDto.get().getAccountHolderName3());
 				} else if (query.getProcessingNo() == 4) {
-
+					rpData.setAccHolderName(personBankAccountDto.get().getAccountHolderName4());
 				} else {
-
+					rpData.setAccHolderName(personBankAccountDto.get().getAccountHolderName5());
 				}
 
 				// C_DBD_006

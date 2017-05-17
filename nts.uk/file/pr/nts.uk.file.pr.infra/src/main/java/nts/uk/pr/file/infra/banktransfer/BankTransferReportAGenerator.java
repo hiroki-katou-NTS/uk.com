@@ -1,8 +1,6 @@
 package nts.uk.pr.file.infra.banktransfer;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -75,7 +73,7 @@ public class BankTransferReportAGenerator extends AsposeCellsReportGenerator imp
 	}
 	
 	private boolean addSheet(FileGeneratorContext fileGeneratorContext, AsposeCellsReportContext reportContext, BankTransferAReport report) {
-		if (!report.getSparePayAtr().equals("3")) {
+		if (report.getSparePayAtr() != 3) {
 			return false;
 		}
 		

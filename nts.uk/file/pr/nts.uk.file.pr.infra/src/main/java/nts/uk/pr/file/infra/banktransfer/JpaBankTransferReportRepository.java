@@ -13,6 +13,7 @@ import nts.uk.file.pr.app.export.banktransfer.data.BankDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferParamRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BranchDto;
+import nts.uk.file.pr.app.export.banktransfer.data.PersonBankAccountDto;
 import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
 
 @Stateless
@@ -48,6 +49,11 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 	private String SEL_CALLED = "SELECT e.person FROM CmnmtCalled e WHERE e.ccd = :companyCode";
 
 	private String QCPMT_REGAL_DOC_COM = "SELECT f.regalDocCnameSjis FROM QcpmtRegalDocCom f WHERE f.qcpmtRegalDocComPK.ccd = :companyCode ";
+
+	private String PERSON_BANK_ACCOUNT_SEL_3 = "SELECT NEW " + PersonBankAccountDto.class.getName() + ""
+			+ "(g.accountHolderName1, g.accountHolderName2, g.accountHolderName3, g.accountHolderName4, g.accountHolderName5)"
+			+ "FROM PbamtPersonBankAccount g WHERE g.pbamtPersonBankAccountPK.companyCode = :companyCode AND g.pbamtPersonBankAccountPK.personId = :personId "
+			+ "AND g.startYearMonth < :baseYM AND g.endYearMonth > :baseYM";
 
 	@Override
 	public List<BankTransferRpDto> findBySEL1(BankTransferParamRpDto param) {
@@ -99,4 +105,9 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 				.map(x -> new CompanyDto(x.cmnmtCompanyPk.companyCd, x.cName, x.postal, x.address1, x.address2)).get();
 	}
 
+	@Override
+	public Optional<PersonBankAccountDto> findPerBankAccBySEL3(String companyCode, String personId, int baseYM) {
+		return this.queryProxy().query(PERSON_BANK_ACCOUNT_SEL_3, PersonBankAccountDto.class).setParameter("companyCode", companyCode)
+				.setParameter("personId", personId).setParameter("baseYM", baseYM).getSingle();
+	}
 }
