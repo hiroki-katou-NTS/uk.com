@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
@@ -21,14 +21,14 @@ import nts.arc.i18n.custom.ISessionLocale;
 import nts.arc.i18n.custom.ISystemResourceBundle;
 import nts.arc.i18n.custom.ResourceItem;
 import nts.arc.i18n.custom.ResourceType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.SystemProperties;
 
-@Stateless
+@Stateful
 public class MultiLanguageResource implements IInternationalization {
-	// fixed company code for test
 
 	private String getCompanyCode() {
-		return SystemProperties.companyCode;
+		return AppContexts.user().companyCode();
 	}
 
 	@Inject
@@ -173,7 +173,7 @@ public class MultiLanguageResource implements IInternationalization {
 		Map<String, String> codeName = new HashMap<>();
 		codeName.putAll(codeNameResource.getOrDefault(SystemProperties.SYSTEM_ID, new HashMap<>()));
 		codeName.putAll(codeNameResource.getOrDefault(programId, new HashMap<>()));
-		//company customized will override system default if conflict
+		// company customized will override system default if conflict
 		codeName.putAll(companyCustomizedResource);
 		return codeName;
 
