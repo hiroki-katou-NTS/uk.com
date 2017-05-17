@@ -55,7 +55,7 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 		PaymentReportQuery query = context.getQuery();
 		PaymentReportData data = this.repository.findData(query);
 		String teamplate = TEMPLATE_PATH_A;
-		if (query.getPageOrientation().equals("LANDSCAPE")) {
+		if (query.getPageOrientation().equals("PORTRAIT")) {
 			teamplate = TEMPLATE_PATH_B;
 		}
 		try (AsposeCellsReportContext ctx = this.createContext(teamplate)) {

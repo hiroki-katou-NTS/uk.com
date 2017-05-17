@@ -41,4 +41,8 @@ public class PaymentReportDto {
 	
 	/** The menu. */
 	private String menu;
+	
+	/** The config. */
+	private RefundPaddingDto config;
+	
 }
