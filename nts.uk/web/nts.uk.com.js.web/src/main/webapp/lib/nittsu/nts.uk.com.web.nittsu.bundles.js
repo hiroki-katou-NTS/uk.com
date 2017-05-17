@@ -542,6 +542,7 @@ var nts;
                 var Configuration = (function () {
                     function Configuration() {
                         this.pauseMilliseconds = 0;
+                        this.runAfter = 0;
                     }
                     Configuration.prototype.task = function (taskFunction) {
                         this.taskFunction = taskFunction;
@@ -555,9 +556,19 @@ var nts;
                         this.pauseMilliseconds = pauseMilliseconds;
                         return this;
                     };
+                    Configuration.prototype.after = function (runAfterMilliseconds) {
+                        this.runAfter = runAfterMilliseconds;
+                        return this;
+                    };
                     Configuration.prototype.run = function () {
+                        var _this = this;
                         var dfd = $.Deferred();
-                        this.repeat(dfd);
+                        if (this.runAfter > 0) {
+                            setTimeout(function () { return _this.repeat(dfd); }, this.runAfter);
+                        }
+                        else {
+                            this.repeat(dfd);
+                        }
                         return dfd.promise();
                     };
                     Configuration.prototype.repeat = function (dfd) {
