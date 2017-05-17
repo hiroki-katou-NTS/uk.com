@@ -9,6 +9,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.classification.ClassificationAllotSettingHeader;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.classification.ClassificationAllotSettingHeaderRepository;
 import nts.uk.shr.com.context.AppContexts;
+
 @Stateless
 @Transactional
 public class InsertClassificationAllotSettingHeaderHandler extends CommandHandler<InsertClassificationAllotSettingHeaderCommand> {
