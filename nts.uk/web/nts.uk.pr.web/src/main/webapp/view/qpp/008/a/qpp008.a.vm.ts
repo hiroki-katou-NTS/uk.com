@@ -69,10 +69,10 @@ module qpp008.a.viewmodel {
 
             self.employyerList = ko.observableArray([]);
             self.employyerColumns = ko.observableArray([
-                { headerText: '社員CD', prop: 'personID', hidden: 'hidden'},
+                { headerText: '社員CD', prop: 'personID', hidden: 'hidden' },
                 { headerText: '社員CD', prop: 'employeeCode', width: 200 },
                 { headerText: '氏名', prop: 'employeeName', width: 150 },
-                { headerText: '所属', prop: 'note', width: 150 }
+                { headerText: '所属', prop: 'departmentName', width: 150 }
 
             ]);
             self.employyerCurrentCodeList = ko.observableArray([]);
@@ -135,7 +135,7 @@ module qpp008.a.viewmodel {
             self.employyerList([]);
             service.getPersonInfo().done(function(data) {
                 self.employyerList(_.map(data, function(emp: any) {
-                    return new EmployeerInfo(emp.personID, emp.employeeCode, emp.employeeName, "");
+                    return new EmployeerInfo(emp.personID, emp.employeeCode, emp.employeeName, "", "Hard code");
                 }));
                 dfd.resolve();
             });
@@ -260,12 +260,14 @@ module qpp008.a.viewmodel {
         personID: string;
         employeeCode: string;
         employeeName: string;
-        note: string;
-        constructor(personID: string, employeeCode: string, employeeName: string, note: string) {
+        departmentCode: string;
+        departmentName: string;
+        constructor(personID: string, employeeCode: string, employeeName: string, departmentCode: string, departmentName: string) {
             this.personID = personID;
             this.employeeCode = employeeCode;
             this.employeeName = employeeName;
-            this.note = note;
+            this.departmentCode = departmentCode;
+            this.departmentName = departmentName;
         }
     }
 

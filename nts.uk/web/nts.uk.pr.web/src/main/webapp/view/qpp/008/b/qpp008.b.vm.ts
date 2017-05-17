@@ -131,7 +131,6 @@ module qpp008.b.viewmodel {
         sumEachDeprtSet: KnockoutObservable<boolean>;
         sumDepHrchyIndexSet: KnockoutObservable<boolean>;
         hrchyIndexSelectId: KnockoutObservableArray<number> = ko.observableArray([]);
-        multiCheckBoxEnable: KnockoutObservable<boolean>;
         constructor(settingMapping: any) {
             let self = this;
             if (settingMapping) {
@@ -148,7 +147,6 @@ module qpp008.b.viewmodel {
                 if (settingMapping.hrchyIndex3 > 2) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex3); }
                 if (settingMapping.hrchyIndex4 > 3) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex4); }
                 if (settingMapping.hrchyIndex5 > 4) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex5); }
-                self.multiCheckBoxEnable = ko.observable(settingMapping.sumDepHrchyIndexSet === 0 ? false : true);
             } else {
                 self.plushBackColor = ko.observable("#cfe2f3");
                 self.minusBackColor = ko.observable("#f4cccc");
@@ -159,7 +157,6 @@ module qpp008.b.viewmodel {
                 self.sumEachDeprtSet = ko.observable(false);
                 self.sumDepHrchyIndexSet = ko.observable(false);
                 self.hrchyIndexSelectId = ko.observableArray([]);
-                self.multiCheckBoxEnable = ko.observable(false);
             }
         }
     }

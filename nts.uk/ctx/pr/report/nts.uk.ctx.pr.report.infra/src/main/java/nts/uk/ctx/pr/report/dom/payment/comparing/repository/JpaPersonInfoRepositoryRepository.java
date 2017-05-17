@@ -20,7 +20,7 @@ public class JpaPersonInfoRepositoryRepository extends JpaRepository implements 
 					String personID = p[0].toString();
 					String employeeCode = p[1].toString();
 					String employeeName = p[2].toString();
-					return PersonInfo.createFromJavaType(personID, employeeCode, employeeName);
+					return PersonInfo.createFromJavaType(personID, employeeCode, employeeName, "", "");
 				});
 	}
 
