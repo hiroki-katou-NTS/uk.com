@@ -553,11 +553,13 @@
 
 
         export function getText(code: string): string {
-            return names[code];
+            let text = names[code];
+            return text?text:code;
         }
 
         export function getMessage(messageId: string, ...params: any[]): string {
             let message = messages[messageId];
+            if(message== undefined){return messageId;}
             message = formatParams(message, params);
             message = formatCompDependParam(message);
             return message;
