@@ -14,8 +14,8 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.Inser
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.InsertClassificationAllotSettingHeaderHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.UpdateClassificationAllotSettingHeaderCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.UpdateClassificationAllotSettingHeaderHandler;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.ClassificationAllotSettingHeaderDto;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.ClassificationAllotSettingHeaderFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.classification.ClassificationAllotSettingHeaderDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.classification.ClassificationAllotSettingHeaderFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/allot")

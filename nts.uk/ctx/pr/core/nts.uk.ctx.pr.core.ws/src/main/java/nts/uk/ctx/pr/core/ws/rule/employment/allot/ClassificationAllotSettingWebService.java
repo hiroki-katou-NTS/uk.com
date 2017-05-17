@@ -5,7 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.ClassificationAllotSettingFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.classification.ClassificationAllotSettingFinder;
 
 @Path("pr/core/allot/")
 @Produces(MediaType.APPLICATION_JSON)

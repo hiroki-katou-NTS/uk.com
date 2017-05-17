@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.find.rule.employment.allot;
+package nts.uk.ctx.pr.core.app.find.rule.employment.allot.classification;
 
 import lombok.Value;
 import nts.arc.time.YearMonth;
