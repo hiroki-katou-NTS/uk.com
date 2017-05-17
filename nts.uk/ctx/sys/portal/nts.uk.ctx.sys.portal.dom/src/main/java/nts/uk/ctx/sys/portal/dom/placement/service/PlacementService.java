@@ -32,10 +32,17 @@ public interface PlacementService {
 	String copyPlacement(String placementID, String targetLayoutID);
 
 	/**
-	 * Delete List Placement from Source Layout to Target Layout
+	 * Delete List Placement by Layout
 	 * 
 	 * @param
 	 */
 	void deletePlacementByLayout(String companyID, String layoutID);
+	
+	/**
+	 * Delete List Placement by TopPagePart
+	 * 
+	 * @param
+	 */
+	void deletePlacementByTopPagePart(String companyID, String topPagePartID);
 	
 }

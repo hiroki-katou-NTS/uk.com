@@ -85,4 +85,14 @@ public class DefaultPlacementService implements PlacementService {
 		placementRepository.removeAll(companyID, placementIDs);
 	}
 
+	@Override
+	public void deletePlacementByTopPagePart(String companyID, String topPagePartID) {
+		List<String> placementIDs = new ArrayList<String>();
+		List<Placement> placements = placementRepository.findByTopPagePart(topPagePartID);
+		for (Placement placement : placements) {
+			placementIDs.add(placement.getPlacementID());
+		}
+		placementRepository.removeAll(companyID, placementIDs);
+	}
+
 }

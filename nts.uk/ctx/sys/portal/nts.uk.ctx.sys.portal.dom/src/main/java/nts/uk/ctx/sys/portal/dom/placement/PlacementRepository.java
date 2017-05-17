@@ -28,6 +28,14 @@ public interface PlacementRepository {
 	List<Placement> findByLayout(String layoutID);
 
 	/**
+	 * Find Placement by Layout
+	 *
+	 * @param topPagePartID
+	 * @return List Placement
+	 */
+	List<Placement> findByTopPagePart(String topPagePartID);
+	
+	/**
 	 * Remove a Placement
 	 *
 	 * @param companyID

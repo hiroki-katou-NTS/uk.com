@@ -21,6 +21,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtPlacement c WHERE c.ccgmtPlacementPK.placementID = :placementID";
 	private final String SELECT_BY_LAYOUT = "SELECT c FROM CcgmtPlacement c WHERE c.layoutID = :layoutID";
+	private final String SELECT_BY_TOPPAGEPART = "SELECT c FROM CcgmtPlacement c WHERE c.topPagePartID = :topPagePartID";
 
 	@Override
 	public Optional<Placement> find(String placementID) {
@@ -33,6 +34,13 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	public List<Placement> findByLayout(String layoutID) {
 		return this.queryProxy().query(SELECT_BY_LAYOUT, CcgmtPlacement.class)
 				.setParameter("layoutID", layoutID)
+				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<Placement> findByTopPagePart(String topPagePartID) {
+		return this.queryProxy().query(SELECT_BY_TOPPAGEPART, CcgmtPlacement.class)
+				.setParameter("topPagePartID", topPagePartID)
 				.getList(c -> toDomain(c));
 	}
 
