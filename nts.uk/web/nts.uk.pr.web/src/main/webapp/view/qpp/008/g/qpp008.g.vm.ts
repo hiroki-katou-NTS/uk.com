@@ -266,6 +266,7 @@ module qpp008.g.viewmodel {
 
     class DetailsEmployeer {
         selectId: number;
+        personID: string;
         employeeCode: string;
         employeeName: string;
         categoryAtr: number;
@@ -283,6 +284,7 @@ module qpp008.g.viewmodel {
             let self = this;
             if (data) {
                 self.selectId = selectId;
+                self.personID = data.personID; 
                 self.employeeCode = data.employeeCode;
                 self.employeeName = data.employeeName;
                 self.categoryAtr = data.categoryAtr;
@@ -311,7 +313,7 @@ module qpp008.g.viewmodel {
     }
 
     class PaycompConfirmModel {
-        employeeCode: string;
+        personID: string;
         processingYMEarlier: number;
         processingYMLater: number;
         categoryAtr: number;
@@ -321,7 +323,7 @@ module qpp008.g.viewmodel {
         reasonDifference: string;
         constructor(empInfo: DetailsEmployeer, processingYMEarlier: number, processingYMLater: number) {
             let self = this;
-            self.employeeCode = empInfo.employeeCode;
+            self.personID = empInfo.personID;
             self.processingYMEarlier = processingYMEarlier;
             self.processingYMLater = processingYMLater;
             self.categoryAtr = empInfo.categoryAtr;

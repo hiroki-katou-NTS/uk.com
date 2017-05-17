@@ -19,7 +19,12 @@ public enum RegistrationStatus {
 	/**
 	 * 2:未作成
 	 */
-	NOT_CREATION(2, "未作成");
+	NOT_CREATION(2, "未作成"),
+	
+	/**
+	 * -1:未作成
+	 */
+	OTHER(-1, "");
 
 	public final int value;
 	public final String name;

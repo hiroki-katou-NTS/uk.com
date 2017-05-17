@@ -7,7 +7,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PersonInfoDto {
 
+	private String personID;
+	
 	private String employeeCode;
 
 	private String employeeName;
+	
+	private String departmentCode;
+
+	private String departmentName;
 }

@@ -1,17 +1,17 @@
-package nts.uk.ctx.pr.report.dom.payment.comparing.confirm;
+package nts.uk.ctx.pr.report.dom.payment.comparing.masterpage;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
-@StringMaxLength(12)
+@StringMaxLength(10)
 @StringCharType(CharType.ALPHA_NUMERIC)
-public class EmployeeCode extends CodePrimitiveValue<EmployeeCode> {
+public class DepartmentCode extends CodePrimitiveValue<DepartmentCode> {
 
 	private static final long serialVersionUID = 1L;
 
-	public EmployeeCode(String rawValue) {
+	public DepartmentCode(String rawValue) {
 		super(rawValue);
 	}
 
