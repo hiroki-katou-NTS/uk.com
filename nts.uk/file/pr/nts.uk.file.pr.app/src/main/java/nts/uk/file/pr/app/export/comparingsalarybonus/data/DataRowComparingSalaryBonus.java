@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class DataRowComparingSalaryBonus {
+	
+	private String itemCode;
 	/** 項目名 */
 	private String itemName;
 

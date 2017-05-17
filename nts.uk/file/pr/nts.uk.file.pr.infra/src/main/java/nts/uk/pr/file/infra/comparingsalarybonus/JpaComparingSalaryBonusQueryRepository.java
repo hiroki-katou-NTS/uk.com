@@ -22,7 +22,7 @@ import nts.uk.file.pr.app.export.comparingsalarybonus.data.SalaryBonusDetail;
 public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 		implements ComparingSalaryBonusQueryRepository {
 
-	private String SELECT_1 = "SELECT i.itemAbName, h.qstdtPaymentHeaderPK.processingYM, h.employeeName, h.specificationCode, h.makeMethodFlag, d.qstdtPaymentDetailPK.personId, "
+	private String SELECT_1 = "SELECT DISTINCT i.itemAbName, h.qstdtPaymentHeaderPK.processingYM, h.employeeName, h.specificationCode, h.makeMethodFlag, d.qstdtPaymentDetailPK.personId, "
 			+ " d.qstdtPaymentDetailPK.categoryATR,  d.qstdtPaymentDetailPK.itemCode ,d.value, pb.nameB, pc.scd, dep.depName, dep.cmnmtDepPK.departmentCode, dep.hierarchyId"
 			+ "  FROM QlsptPaycompFormDetail c" + " INNER JOIN QcamtItem_v1 i"
 			+ " ON i.qcamtItemPK.ctgAtr = c.paycompFormDetailPK.categoryATR  AND i.qcamtItemPK.itemCd = c.paycompFormDetailPK.itemCode "

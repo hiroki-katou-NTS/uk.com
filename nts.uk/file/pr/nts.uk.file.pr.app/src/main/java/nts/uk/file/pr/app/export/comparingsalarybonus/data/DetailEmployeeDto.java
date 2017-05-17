@@ -6,9 +6,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class DepartmentFlatMap {
-	private String Depcode;
-	private String Depname;
-	private String hyrachi;
-	DetailEmployeeDto employee;
+public class DetailEmployeeDto {
+	private String personID;
+	private String personName;
+	DataRowComparingSalaryBonus dataRow;
 }
