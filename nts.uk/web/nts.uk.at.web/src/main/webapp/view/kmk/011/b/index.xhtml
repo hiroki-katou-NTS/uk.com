@@ -23,19 +23,19 @@
 				<!-- B1_1: Button New -->
 				<button tabindex="1" id="btn_001"
 					class="button separate-button fix-button"
-					data-bind="click: refreshData">新規</button>
+					data-bind="click: refreshData">#{i18n.getText('KMK011_19')}</button>
 				<!-- B1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
-					data-bind="click: RegistrationDivReason">登録</button>
+					data-bind="click: RegistrationDivReason">#{i18n.getText('KMK011_3')}</button>
 				<!-- B1_3: Button Delete -->
 				<button tabindex="3" id="btn_005"
 					class="button danger separate-button fix-button"
-					data-bind="click: deleteDivReason, enable: enableDel">削除</button>
+					data-bind="click: deleteDivReason, enable: enableDel">#{i18n.getText('KMK011_20')}</button>
 				<!-- B1_4: Button Close -->
 				<button tabindex="4" id="btn_004"
 					class="button separate-button fix-button"
-					data-bind="click: closeDialog">閉じる</button>
+					data-bind="click: closeDialog">#{i18n.getText('KMK011_21')}</button>
 				<hr />
 			</div>
 			<div id="content-area">
@@ -65,7 +65,7 @@
 						<tr class="row">
 							<td>
 								<!-- B3_1: Label -->
-								<div data-bind="ntsFormLabel: {required: true }">対象項目</div>
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_22')}</div>
 							</td>
 							<td>
 								<!-- B3_2: Divergence Reason Code --> <input tabindex="6"
@@ -87,7 +87,7 @@
 						<tr class="row">
 							<td>
 								<!-- B3_4 -->
-								<div data-bind="ntsFormLabel: {}">乖離理由の入力</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_22')}</div>
 							</td>
 							<td>
 								<!-- B3_5 -->
@@ -104,7 +104,7 @@
 						<tr>
 							<td></td>
 							<td>
-								<!-- B3_6 --> <label id="A_LBL_003">※入力カラムを表示しない場合、必須チェックしない</label>
+								<!-- B3_6 --> <label id="A_LBL_003">※#{i18n.getText('KMK011_27')}</label>
 							</td>
 						</tr>
 					</table>
