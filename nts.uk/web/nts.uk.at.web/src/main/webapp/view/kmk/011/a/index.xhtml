@@ -21,7 +21,7 @@
 			<div id="function_area">
 				<!-- A1_1: Button Registration -->
 				<button id="btn_001" class="button proceed separate-button fix-button"
-						data-bind = "click: Registration" tabindex="1">登録</button>
+						data-bind = "click: Registration" tabindex="1">#{i18n.getText('KMK011_3')}</button>
 			<hr/>
 			</div>
 			
@@ -53,7 +53,7 @@
 						<tr class = "row">
 							<td>
 							<!-- A3_1 -->
-								<div data-bind="ntsFormLabel: {}">使用設定</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_6')}</div>
 							</td>
 							<td>
 							<!-- A3_2: Setting Use -->
@@ -69,7 +69,7 @@
 						<tr class = "row">
 							<td data-bind="with: label_003" >
 								<!--A3_3 -->
-								<div data-bind="ntsFormLabel: {required: true }">名称</div>
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_9')}</div>
 							</td>
 							<td>	
 								<!-- A3_4: Divergence Time Name -->														
@@ -82,11 +82,11 @@
 						<tr class = "row">
 							<td>
 							<!-- A3_5 -->
-								<div data-bind="ntsFormLabel: {required: true }">対象項目</div>
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_10')}</div>
 							</td>
 							<td>
 								<!-- A3_6 -->
-								<button tabindex="5" data-bind="click: openDialog021">選択</button>
+								<button tabindex="5" data-bind="click: openDialog021">#{i18n.getText('KMK011_11')}</button>
 								<!-- A3_7: Time item name -->
 								<input class="nts-input" style="width: 350px" data-bind="ntsTextEditor:{value: timeItemName,required: true}" />
 							</td>
@@ -94,7 +94,7 @@
 						<tr class = "row">
 							<td>
 								<!-- A3_8: Label -->
-								<div data-bind="ntsFormLabel: {}">アラーム時間</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_12')}</div>
 							</td>
 							<td>
 							<!-- A3_9: Alarm time -->
@@ -106,7 +106,7 @@
 						<tr class = "row">
 							<td>
 							<!-- A3_10: Label -->
-								<div class = "row" data-bind="ntsFormLabel: {}">エラー時間</div>
+								<div class = "row" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_13')}</div>
 							</td>
 							<td>
 								<!-- A3_11: Error time -->
@@ -118,7 +118,7 @@
 						<tr class = "row">
 							<td>
 								<!-- A3_12: Label -->
-								<div data-bind="ntsFormLabel: {}">乖離理由の選択</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_14')}</div>
 							</td>
 							<td>
 								<!-- A3_13: Set use select -->
@@ -130,7 +130,7 @@
 									enable: true }">
 								</div>
 								<!-- A3_14: Open Dialog Divergence Reason -->
-								<button  tabindex="9" id="inpDialog" style = "margin-left: 30px;" data-bind="click: openBDialog">選択肢を設定</button>
+								<button  tabindex="9" id="inpDialog" style = "margin-left: 30px;" data-bind="click: openBDialog">#{i18n.getText('KMK011_15')}</button>
 							</td>					
 						</tr>
 						<tr>
@@ -140,19 +140,21 @@
 								<div tabindex="10" style="margin-bottom: 10px" data-bind="ntsCheckBox:{
 									checked: checkErrSelect,
 									 enable: enable,
-									  text: '日別実績の修正で乖離理由が選択された場合、エラー／アラームの色を消す'}">
+									  text: '#{i18n.getText('KMK011_16')}'}">
 								 </div>
 							</td>
 						</tr>
 						<tr class = "row">
 							<td>
 								<!-- A3_16: Label -->
-								<div data-bind="ntsFormLabel: {}">乖離理由の入力</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_17')}</div>
 							</td>
 							<td>
 								<!-- A3_17: Set use input -->
 								<div tabindex="11" class="cf" data-bind="ntsSwitchButton: {
-									options: useSet,
+									options: ([
+						                    { code: '1', name: '#{i18n.getText('SYSTEM_Enum_UseAtr_Use')}' },
+						                    { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }]),
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectInp,
@@ -167,7 +169,7 @@
 								<div tabindex="12" data-bind="ntsCheckBox:{
 									checked: checkErrInput,
 									 enable: enable,
-									  text: '日別実績の修正で乖離理由が入力された場合、エラー／アラームの色を消す'}">
+									  text: '#{i18n.getText('KMK011_18')}'}">
 								 </div>
 							</td>
 						</tr>

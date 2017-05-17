@@ -27,6 +27,8 @@ module kmk011.a.viewmodel {
         listDivItem: KnockoutObservableArray<service.model.DivergenceItem>;
         lstItemSelected: KnockoutObservableArray<service.model.ItemSelected>;
         list: KnockoutObservable<string>;
+        use: KnockoutObservable<string>;
+        notUse: KnockoutObservable<string>;
         constructor() {
             var self = this;
             self.list = ko.observable();
@@ -46,6 +48,8 @@ module kmk011.a.viewmodel {
                 new model.TimeItem(2,'勤怠項目名称2'),
                 new model.TimeItem(3,'勤怠項目名称3')
                 ]);
+//            self.use = ko.observable(nts.uk.resource.getText("Enum_UseAtr_Use"));
+//            self.use = ko.observable('使用する')
             self.useSet = ko.observableArray([
                     { code: '1', name: '使用する' },
                     { code: '0', name: '使用しない' },
