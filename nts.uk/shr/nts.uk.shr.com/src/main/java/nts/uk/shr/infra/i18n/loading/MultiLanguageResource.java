@@ -54,14 +54,14 @@ public class MultiLanguageResource implements IInternationalization {
 
 	private void loadSystemResource() {
 		codeNameResource = systemResourceBundle.getResource(currentLanguage.getSessionLocale(), ResourceType.CODE_NAME);
-		if (codeNameResource == null) {
+		if (codeNameResource == null||codeNameResource.isEmpty()) {
 			codeNameResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.CODE_NAME);
 		}
 
 		Map<String, Map<String, String>> tempMessageResource = systemResourceBundle
 				.getResource(currentLanguage.getSessionLocale(), ResourceType.MESSAGE);
-		if (tempMessageResource == null) {
+		if (tempMessageResource == null||tempMessageResource.isEmpty()) {
 			tempMessageResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.MESSAGE);
 		}
