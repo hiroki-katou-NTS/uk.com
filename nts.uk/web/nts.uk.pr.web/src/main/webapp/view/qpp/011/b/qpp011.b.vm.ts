@@ -564,6 +564,43 @@ module qpp011.b {
                 nts.uk.ui.dialog.alert(res.message);
             });
         }
+        
+        /**
+         * Event to tab b
+         */
+        eventTabB(): void {
+            var self = this;   
+            self.clearCError(); 
+        }
+        
+        /**
+         * Event to tab c
+         */
+        eventTabC(): void {
+            var self = this;
+            self.clearBError();    
+        }
+        
+        /**
+         * Clear error for all input at screen B
+         */
+        clearBError(): void {
+            var self = this;
+            $("#B_INP_001-input").ntsError('clear');
+            $("#B_INP_002-input").ntsError('clear');
+            $("#B_INP_003-input").ntsError('clear');
+        }
+        
+        /**
+         * Clear error for all input at screen C
+         */
+        clearCError(): void {
+            var self = this;
+            $("#C_INP_001-input").ntsError('clear');
+            $("#C_INP_002-input").ntsError('clear');
+            $("#C_INP_003-input").ntsError('clear');
+            $("#C_INP_004-input").ntsError('clear');    
+        }
     }
     export class BoxModel {
         id: number;

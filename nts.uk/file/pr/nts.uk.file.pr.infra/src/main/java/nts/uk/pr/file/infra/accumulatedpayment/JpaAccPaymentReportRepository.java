@@ -282,7 +282,8 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			PcpmtPersonCom person = (PcpmtPersonCom) detailData.get(0)[PERSON_COM_TBL_INDEX];
 			GeneralDate endDatePersonTem = person.getEndD();
 			String enrollmentStatus;
-			if(endDatePersonTem == null || endDatePersonTem.year() >= general.query.getTargetYear().intValue()){
+			if (endDatePersonTem == null || 
+					endDatePersonTem.year() >= general.query.getTargetYear().intValue()) {
 				enrollmentStatus = ENROLMENT;
 			}
 			else {
@@ -290,10 +291,12 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 			}
 
 			// Directional Status
-			PcpmtPersonTempAssign tempAssign = (PcpmtPersonTempAssign) detailData.get(0)[PERSON_TEMP_ASSIGN_TBL_INDEX];
+			PcpmtPersonTempAssign tempAssign = 
+					(PcpmtPersonTempAssign) detailData.get(0)[PERSON_TEMP_ASSIGN_TBL_INDEX];
 			GeneralDate endDatePersonTempAsign = tempAssign.getEndD();
 			String directionalStatus;
-			if (endDatePersonTempAsign == null || endDatePersonTempAsign.year() <= general.query.getTargetYear()) {
+			if (endDatePersonTempAsign == null || 
+					endDatePersonTempAsign.year() <= general.query.getTargetYear()) {
 				directionalStatus = BLANK;
 			}
 			else {

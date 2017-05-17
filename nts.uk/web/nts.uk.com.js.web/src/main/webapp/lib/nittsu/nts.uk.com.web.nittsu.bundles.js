@@ -1811,7 +1811,10 @@ var nts;
                     contentType: options.contentType || 'application/json',
                     url: webserviceLocator.serialize(),
                     dataType: options.dataType || 'json',
-                    data: data
+                    data: data,
+                    headers: {
+                        'PG-Path': location.current.serialize()
+                    }
                 }).done(function (res) {
                     if (res !== undefined && res.businessException) {
                         dfd.reject(res);
@@ -4057,6 +4060,7 @@ var nts;
                         });
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         container.data("enable", _.clone(enable));
+                        container.data("init", true);
                     };
                     NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data
@@ -4110,7 +4114,7 @@ var nts;
                             }) !== undefined);
                         });
                         // Enable
-                        if (!_.isEqual(container.data("enable"), enable)) {
+                        if (container.data("init") || !_.isEqual(container.data("enable"), enable)) {
                             container.data("enable", _.clone(enable));
                             (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
                             _.forEach(data.options(), function (option) {

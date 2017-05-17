@@ -64,7 +64,7 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 		
 		//  CONVERT YEARMONTH JAPANESE
 		StringBuilder japanYear = new StringBuilder("【期間： ");
-		japanYear.append(convertYearMonthJP(query.getTargetYear()));
+		japanYear.append(this.convertYearMonthJP(query.getTargetYear()));
 
 		// Create header object.
 		AccPaymentHeaderData headerData = AccPaymentHeaderData.builder()
@@ -85,6 +85,11 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 		this.generator.generate(context.getGeneratorContext(),dataSource, query);
 	}
 	
+	/**
+	 * Validate data.
+	 *
+	 * @param query the query
+	 */
 	private void validateData(AccPaymentReportQuery query) {
 		if (query.getTargetYear() == null) {
 			throw new RuntimeException("Target Year is Empty");
@@ -92,15 +97,19 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 		if (query.getTargetYear() < 1900 || query.getTargetYear() > 9999) {
 			throw new RuntimeException("Target Year is not in range");
 		}
-		if(query.getIsLowerLimit() && query.getLowerLimitValue() == null) {
+		if (query.getIsLowerLimit() && query.getLowerLimitValue() == null) {
 			throw new RuntimeException("金額範囲下限額 が入力されていません。");
 		}
-		if(query.getIsUpperLimit() && query.getUpperLimitValue() == null) {
+		if (query.getIsUpperLimit() && query.getUpperLimitValue() == null) {
 			throw new RuntimeException("金額範囲上限額 が入力されていません。");
 		}
-		if(query.getIsLowerLimit() && query.getIsUpperLimit() 
+		if (query.getIsLowerLimit() && query.getIsUpperLimit()
 				&& (query.getLowerLimitValue().intValue() > query.getUpperLimitValue().intValue())) {
 			throw new RuntimeException("金額の範囲が正しく指定されていません。");
+		}
+		if ((query.getIsLowerLimit() && query.getLowerLimitValue().intValue() < 0) 
+				|| (query.getIsUpperLimit() && query.getUpperLimitValue().intValue() < 0)) {
+			throw new RuntimeException("The Limit Values is not in range");
 		}
 	}
 

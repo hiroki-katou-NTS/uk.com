@@ -78,7 +78,7 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 
 		//  CONVERT YEARMONTH JAPANESE 
 		StringBuilder japanYM = new StringBuilder("【処理年月：");
-		japanYM.append(convertYearMonthJP(query.getYearMonth()));
+		japanYM.append(this.convertYearMonthJP(query.getYearMonth()));
 
 		// CREATE HEADER OBJECT
 		DenoTableHeaderData headerData = DenoTableHeaderData.builder()

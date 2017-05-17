@@ -76,3 +76,9 @@ div#payment-range {
 #payment-range-label{
 	font-size: 18px;
 }
+#lower-limit-input{	
+	width: 142px;
+}
+#upper-limit-input{
+	width: 142px;
+}
