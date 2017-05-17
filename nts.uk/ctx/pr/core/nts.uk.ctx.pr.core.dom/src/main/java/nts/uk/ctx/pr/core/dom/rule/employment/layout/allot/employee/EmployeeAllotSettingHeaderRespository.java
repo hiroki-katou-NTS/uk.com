@@ -1,5 +1,4 @@
-package nts.uk.ctx.pr.core.dom.rule.employment.layout.allot;
-
+package nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.employee;
 import java.util.List;
 import java.util.Optional;
 

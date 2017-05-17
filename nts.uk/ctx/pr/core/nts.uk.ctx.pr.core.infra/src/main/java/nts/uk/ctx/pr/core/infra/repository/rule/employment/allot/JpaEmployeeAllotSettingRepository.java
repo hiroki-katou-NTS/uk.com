@@ -7,10 +7,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllSetting;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSetting;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingHeader;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.EmployeeAllotSettingRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.employee.EmployeeAllSetting;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.employee.EmployeeAllotSetting;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.employee.EmployeeAllotSettingHeader;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.allot.employee.EmployeeAllotSettingRepository;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotCp;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotEm;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotEmPK;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.allot.QstmtStmtAllotHEm;
