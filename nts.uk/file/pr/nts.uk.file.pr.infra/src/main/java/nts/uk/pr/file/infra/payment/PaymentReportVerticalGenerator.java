@@ -52,6 +52,9 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 	/** The cells. */
 	private Cells cells;
 
+	/** The employee. */
+	private PaymentReportDto employee;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -64,9 +67,16 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 	public void generate(AsposeCellsReportContext context, PaymentReportData reportData) {
 		Workbook workbook = context.getWorkbook();
 		Worksheet worksheet = workbook.getWorksheets().get(FIRST_ITEM);
-		this.setupPage(worksheet);
-		this.cells = worksheet.getCells();
 		worksheet.setName(SHEET_NAME);
+
+		// Setup page.
+		this.setupPage(worksheet);
+
+		// Get first employee
+		this.employee = reportData.getReportData().get(FIRST_ITEM);
+
+		// Get cells.
+		this.cells = worksheet.getCells();
 
 		// Get style from template.
 		this.valueStyle = cells.get("B11").getStyle();
@@ -74,15 +84,19 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		this.headerStyle = cells.get("A10").getStyle();
 		this.sectionTitleStyle = cells.get("A8").getStyle();
 
-		// Get first employee
-		PaymentReportDto employee = reportData.getReportData().get(FIRST_ITEM);
+		this.setPageHeader();
+		this.setEmployeeInfo();
+		this.setCategoryContent();
 
-		// Set Title.
+	}
+
+	private void setPageHeader() {
 		cells.get("D1").setValue("給与明細書");
 		// TODO: convert to Japanese era.
 		cells.get("D2").setValue(employee.getProcessingYm());
+	}
 
-		// Set Employee information.
+	private void setEmployeeInfo() {
 		cells.get("B4").setValue("部門コード");
 		cells.get("F4").setValue("個人コード");
 		cells.get("H4").setValue("氏名");
@@ -93,15 +107,19 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		cells.get("F5").setValue(employee.getEmployeeInfo().getEmployeeCode());
 		cells.get("H5").setValue(employee.getEmployeeInfo().getEmployeeName());
 
-		// Write category content.
+	}
+
+	private void setCategoryContent() {
 		CategoryWriter writer = new CategoryWriter();
 
+		// Print Payment items.
 		writer.writeSectionTitle("支給額");
 		writer.writeCategoryHeader("支給");
 		writer.writeCategoryContent(employee.getPaymentItems());
 		writer.nextRow();
 		writer.nextRow();
 
+		// Print Deduction items.
 		writer.writeSectionTitle("控除");
 		writer.writeCategoryHeader("控除");
 		writer.writeCategoryContent(employee.getDeductionItems());
@@ -110,9 +128,10 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		writer.nextRow();
 
 		writer.writeSectionTitle("勤怠/記事");
+		// Print Attendance items.
 		writer.writeCategoryHeader("勤怠");
 		writer.writeCategoryContent(employee.getAttendanceItems());
-
+		// Print Article items.
 		writer.writeCategoryHeader("記事");
 		writer.writeCategoryContent(employee.getArticleItems());
 		writer.nextRow();
@@ -121,17 +140,18 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		Cell remark = cells.get(writer.currentRow, FIRST_COLUMN);
 		remark.setValue("備考:");
 		remark.setStyle(sectionTitleStyle);
-
 	}
 
 	/**
 	 * Sets the up page.
 	 *
-	 * @param worksheet the new up page
+	 * @param worksheet
+	 *            the new up page
 	 */
 	private void setupPage(Worksheet worksheet) {
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setOrientation(PageOrientationType.PORTRAIT);
+		pageSetup.setTopMargin(5);
 	}
 
 	/**
@@ -168,7 +188,8 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		/**
 		 * Write category content.
 		 *
-		 * @param listItem the list item
+		 * @param listItem
+		 *            the list item
 		 */
 		protected void writeCategoryContent(List<SalaryItemDto> listItem) {
 			listItem.forEach(item -> {
@@ -192,7 +213,8 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		/**
 		 * Write section title.
 		 *
-		 * @param title the title
+		 * @param title
+		 *            the title
 		 */
 		protected void writeSectionTitle(String title) {
 			Cell sectionTitle = cells.get(firstRow - 1, FIRST_COLUMN);
@@ -203,7 +225,8 @@ public class PaymentReportVerticalGenerator extends AsposeCellsReportGenerator i
 		/**
 		 * Write category header.
 		 *
-		 * @param headerName the header name
+		 * @param headerName
+		 *            the header name
 		 */
 		protected void writeCategoryHeader(String headerName) {
 			cells.get(firstRow, FIRST_COLUMN).setValue(headerName);
