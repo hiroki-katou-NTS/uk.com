@@ -16,8 +16,8 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.InsertAllotC
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.InsertAllotCompanyCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.UpdateAllotCompanyCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.UpdateAllotCompanyCommandHandler;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.CompanyAllotSettingDto;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.CompanyAllotSettingFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.classification.CompanyAllotSettingDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.classification.CompanyAllotSettingFinder;
 
 @Path("pr/core/allot")
 @Produces("application/json")
