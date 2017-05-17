@@ -1,37 +1,22 @@
 @CHARSET "UTF-8";
 
-#inpCode {
-	width: 40px !important;
+#contents-area {
+	margin-top: 20px;
+	margin-left: 50px;
+	min-width: 560px;
 }
-#inpName {
-	width: 250px !important;
+
+#functions-area {
+	margin-top: 15px;
+	padding: 0 135px;
 }
-#inpBudget {
-	width: 120px !important;
+
+.open-dialog {
+	width: 250px;
+	margin: 30px;
 }
-.symbol-right {
-	width: 120px !important;
-}
-.nts-switch-button {
-	min-width: 80px;
-	font-size: 13px !important;
-	height: 30px !important;
-	padding: 3px 7px !important;
-	margin-bottom: 3px !important;
-}
-.btn-default {
-	margin-left: 10px;
-	min-width: 80px;
-}
-textarea {
-	height: 130px;
-}
-.form-default td{
-	padding-bottom: 6px;
-}
-.btn-switch {
-	padding-left: 20px;
-}
-.lbl-switch {
-	padding-left: 20px;
+
+.open-dialog:after {
+	border-width: 16px;
+	color: #97D155 !important;
 }
