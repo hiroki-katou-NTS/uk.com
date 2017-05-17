@@ -13,6 +13,11 @@ public final class DefaultSettingKeys {
     public static final String COMPANY_CODE = "0000";
     
     /**
+     * CompanyCode
+     */
+    public static final String COMPANY_ID = CONTRACT_CODE + "-" + COMPANY_CODE;
+    
+    /**
      * static class
      */
     private DefaultSettingKeys() {
