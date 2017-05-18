@@ -462,7 +462,9 @@ var nts;
                     this.option = option;
                 }
                 NumberFormatter.prototype.format = function (source) {
-                    return source === '' ? source : uk.ntsNumber.formatNumber(source, this.option.option);
+                    return nts.uk.util.isNullOrEmpty(source) ? (!nts.uk.util.isNullOrEmpty(this.option.option.defaultValue)
+                        ? this.option.option.defaultValue : source)
+                        : uk.ntsNumber.formatNumber(source, this.option.option);
                 };
                 return NumberFormatter;
             }());
