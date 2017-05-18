@@ -63,10 +63,10 @@ module qpp014.g.viewmodel {
                 var tmp = _.find(self.dataLineBank(), function(x) {
                     return x.lineBankCode == newValue;
                 });
-                if(tmp.accountAtr == 0){
+                if (tmp.accountAtr == 0) {
                     self.accountAtr('普通');
-                }else{
-                    self.accountAtr('当座');    
+                } else {
+                    self.accountAtr('当座');
                 }
                 self.accountNo(tmp.accountNo);
                 self.g_SEL_002_items(tmp.consignors);
@@ -130,9 +130,30 @@ module qpp014.g.viewmodel {
                 nts.uk.ui.dialog.alert("委託者コードが入力されていません。");
             } else if (self.g_INP_002().toString() == "") {
                 nts.uk.ui.dialog.alert("種別コードが入力されていません。");
+            } else if (!self.g_INP_002().toString().match(/^[0-9]{2}$/)) {
+                nts.uk.ui.dialog.alert("Invalid Number");
+                $('#G_INP_002').ntsError('set', '00〜99の間の値を入力してください');
             } else if (self.g_SEL_001_itemSelected() == null || self.g_SEL_001_itemSelected() == '' || self.g_SEL_001_itemSelected() == undefined) {
                 nts.uk.ui.dialog.alert("振込元銀行名が選択されていません。");
             } else {
+                var lineBankObj = _.find(self.dataLineBank(), function(x) {
+                    return x.lineBankCode === self.g_SEL_001_itemSelected();
+                });
+                var bankBranchObj = _.find(self.dataBankBranch2(), function(x) {
+                    return x.branchId === lineBankObj.branchId;
+                });
+                var tmp = {
+                    consignorCode: self.g_SEL_002_itemSelected(),
+                    requesterName: lineBankObj.requesterName,
+                    transferDate: self.g_INP_001(),
+                    bankCode: bankBranchObj.parentCode,
+                    bankName : bankBranchObj.parentName,
+                    branchCode : bankBranchObj.code,
+                    branchName : bankBranchObj.name,
+                    accountAtr: self.accountAtr(),
+                    accountNo: self.accountNo(),
+                };
+                nts.uk.ui.windows.setShared("transferObject", tmp, true);
                 nts.uk.ui.windows.setShared("processingDateInJapanEmprire", self.processingDateInJapanEmprire(), true);
                 nts.uk.ui.windows.setShared("label", self.g_SEL_001_items()[_.findIndex(self.g_SEL_001_items(), function(x) {
                     return x.code === self.g_SEL_001_itemSelected();

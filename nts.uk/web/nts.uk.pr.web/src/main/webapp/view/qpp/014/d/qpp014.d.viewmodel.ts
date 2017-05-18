@@ -35,6 +35,20 @@ module qpp014.d.viewmodel {
             nts.uk.ui.windows.setShared("processingNo", self.d_lbl_015(), true);
             nts.uk.ui.windows.setShared("processingYMNotConvert", self.processingYMNotConvert(), true);
 
+//            $.when(self.findDataScreenD()).done().fail();
+        }
+
+        findDataScreenD(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            qpp014.d.service.findDataScreenD(+self.d_lbl_015())
+                .done(function(data) {
+                    self.d_LST_001_items(data);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });
+            return dfd.promise();
         }
 
         buttonFilter(): void {
