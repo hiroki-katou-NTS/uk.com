@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="kmf001.c.service.js" />
+			<com:scriptfile path="kmf001.c.vm.js" />
+			<com:scriptfile path="kmf001.c.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="functions-area">
+				<div style="margin: 10px 20px;">
+					<!--#{i18n.getText('KMF001_27')}-->
+					<button class="pull-left btn-default">休暇の選択に戻る</button>
+					<!-- #{i18n.getText('KMF001_28')} -->
+					<button class="proceed btn-default">登録</button>
+					<!-- #{i18n.getText('KMF001_14')} -->
+					<label class="pull-right btn-default">休暇の設定</label>
+					<!-- #{i18n.getText('KMF001_29')} -->
+					<button class="pull-right">年休付与テーブルの登録</button>
+				</div>
+			</div>
+
+			<div id="contents-area">
+				<div>
+					<!-- ＃{i18n.getText('KMF001_32')} -->
+					<div data-bind="ntsFormLabel: {required: false}" style="margin-right: 50px;">年休の管理</div>
+					<span
+						data-bind="ntsSwitchButton: {
+										options: manageStatus,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: selectedManage,
+										enable: true }">
+					</span>
+					<div class="hr_width">
+						<hr />
+					</div>
+					<table>
+
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
