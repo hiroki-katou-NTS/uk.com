@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsdtPaycompConfirmPK;
 @Stateless
 public class JpaComfirmDifferentRepository extends JpaRepository implements ComfirmDifferentRepository {
 
-	private final String SELECT_DETAIL_DIFFERENT_YM = "SELECT DISTINCT pc.scd, d.qstdtPaymentDetailPK.itemCode, "
+	private final String SELECT_DETAIL_DIFFERENT_YM = "SELECT pc.scd, d.qstdtPaymentDetailPK.itemCode, "
 			+ "i.itemAbName, i.qcamtItemPK.ctgAtr, d.value , h.makeMethodFlag, d.qstdtPaymentDetailPK.companyCode, p.nameOfficial, p.pid "
 			+ "FROM QstdtPaymentDetail d INNER JOIN  QstdtPaymentHeader h "
 			+ "ON h.qstdtPaymentHeaderPK.companyCode = d.qstdtPaymentDetailPK.companyCode AND h.qstdtPaymentHeaderPK.personId = d.qstdtPaymentDetailPK.personId "
