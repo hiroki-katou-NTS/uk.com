@@ -12,6 +12,9 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * The Class CcgmtPartItemSetPK.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
@@ -24,12 +27,7 @@ public class CcgmtPartItemSetPK implements Serializable {
 	@Column(name = "CID")
 	public String cid;
 
-	/** The top page part code. */
-	@Column(name = "PART_ITEM_CODE")
-	public String partItemCode;
-	
-
-	/** The top page part type. */
-	@Column(name = "PART_TYPE")
-	public int partType;
+	/** The top page part id. */
+	@Column(name = "TOP_PAGE_PART_ID")
+	public String topPagePartId;
 }

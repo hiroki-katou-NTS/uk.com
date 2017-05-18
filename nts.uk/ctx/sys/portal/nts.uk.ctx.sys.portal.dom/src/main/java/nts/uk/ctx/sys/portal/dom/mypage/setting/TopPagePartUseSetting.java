@@ -21,6 +21,9 @@ public class TopPagePartUseSetting extends AggregateRoot {
 
 	/** The company id. */
 	private String companyId;
+	
+	/** The top page part id. */
+	private String topPagePartId;
 
 	/** The top page part code. */
 	private TopPagePartCode topPagePartCode;
@@ -37,21 +40,18 @@ public class TopPagePartUseSetting extends AggregateRoot {
 	/**
 	 * Instantiates a new top page part use setting.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param topPagePartCode
-	 *            the top page part code
-	 * @param topPagePartName
-	 *            the top page part name
-	 * @param useDivision
-	 *            the use division
-	 * @param topPagePartType
-	 *            the top page part type
+	 * @param companyId the company id
+	 * @param topPagePartId the top page part id
+	 * @param topPagePartCode the top page part code
+	 * @param topPagePartName the top page part name
+	 * @param useDivision the use division
+	 * @param topPagePartType the top page part type
 	 */
-	public TopPagePartUseSetting(String companyId, TopPagePartCode topPagePartCode, TopPagePartName topPagePartName,
+	public TopPagePartUseSetting(String companyId,String topPagePartId,TopPagePartCode topPagePartCode, TopPagePartName topPagePartName,
 			UseDivision useDivision, TopPagePartType topPagePartType) {
 		super();
 		this.companyId = companyId;
+		this.topPagePartId = topPagePartId;
 		this.topPagePartCode = topPagePartCode;
 		this.topPagePartName = topPagePartName;
 		this.useDivision = useDivision;
@@ -68,9 +68,9 @@ public class TopPagePartUseSetting extends AggregateRoot {
 	 * @param topPagePartType the top page part type
 	 * @return the top page part use setting
 	 */
-	public static TopPagePartUseSetting createFromJavaType(String companyId, String topPagePartCode,
+	public static TopPagePartUseSetting createFromJavaType(String companyId,String topPagePartId, String topPagePartCode,
 			String topPagePartName, Integer useDivision, Integer topPagePartType) {
-		return new TopPagePartUseSetting(companyId, new TopPagePartCode(topPagePartCode),
+		return new TopPagePartUseSetting(companyId,topPagePartId, new TopPagePartCode(topPagePartCode),
 				new TopPagePartName(topPagePartName), UseDivision.valueOf(useDivision),
 				TopPagePartType.valueOf(topPagePartType));
 	}

@@ -114,15 +114,26 @@
 								</tr>
 
 								<tr>
-									<td><button tabindex="4" data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()" class="btn_margin_top x-large">#{i18n.getText('CCG015_14')}</button></td>
+									<td><button tabindex="4"
+											data-bind=" click: $parent.openLayoutSettingDialog.bind($parent) ,enable: !$parent.isNewMode()"
+											class="btn_margin_top x-large">#{i18n.getText('CCG015_14')}</button></td>
 								</tr>
 								<tr>
-								<td colspan = "10" >
-									<div class="preview-area" data-bind="visible: !$parent.isNewMode()">
-										<div class="preview-container">
-											<iframe id="preview-iframe"></iframe>
+									<td colspan="10" data-bind="visible: !$parent.isNewMode()">
+										<div class="preview-area">
+											<div class="preview-container">
+												<iframe id="preview-iframe"></iframe>
+											</div>
 										</div>
-									</div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="10" data-bind="visible: $parent.isNewMode()">
+										<div class="preview-area">
+											<div class="preview-container">
+												<iframe id="nodata-iframe"></iframe>
+											</div>
+										</div>
 									</td>
 								</tr>
 							</table>

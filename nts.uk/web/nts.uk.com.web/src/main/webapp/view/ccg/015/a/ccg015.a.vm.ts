@@ -112,6 +112,9 @@ module nts.uk.com.view.ccg015.a {
                     if (self.isNewMode()) {
                         service.registerTopPage(self.collectData()).done(function() {
                             nts.uk.ui.dialog.alert("登録しました。");
+                            self.loadTopPageList().done(function() {
+                                self.toppageSelectedCode(self.collectData().topPageCode);
+                            });
                         }).fail(function(res) {
                             alert(res.messageId);
                         });
@@ -119,11 +122,11 @@ module nts.uk.com.view.ccg015.a {
                     else {
                         service.updateTopPage(self.collectData()).done(function() {
                             nts.uk.ui.dialog.alert("登録しました。");
+                            self.loadTopPageList().done(function() {
+                                self.toppageSelectedCode(self.collectData().topPageCode);
+                            });
                         });
                     }
-                    self.loadTopPageList().done(function() {
-                        self.toppageSelectedCode(self.collectData().topPageCode);
-                    });
                 }
             }
             private openMyPageSettingDialog() {
@@ -184,7 +187,9 @@ module nts.uk.com.view.ccg015.a {
                 self.isNewMode(true);
                 self.toppageSelectedCode("");
                 $("#inp_code").focus();
-                nts.uk.ui.errors.clearAll()
+                if ($('.nts-input').ntsError('hasError')) {
+                    nts.uk.ui.errors.clearAll();
+                }
             }
 
             private removeTopPage() {

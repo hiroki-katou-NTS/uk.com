@@ -88,13 +88,13 @@ module nts.uk.pr.view.ccg015.b {
 
                 data.topPagePartUseSettingDto.forEach(function(item, index) {
                     if (item.partType == TopPagePartsType.Widget) {
-                        self.myPageSettingModel().topPagePartSettingItems()[0].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision));
+                        self.myPageSettingModel().topPagePartSettingItems()[0].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                     if (item.partType == TopPagePartsType.Dashboard) {
-                        self.myPageSettingModel().topPagePartSettingItems()[1].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision));
+                        self.myPageSettingModel().topPagePartSettingItems()[1].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                     if (item.partType == TopPagePartsType.FolowMenu) {
-                        self.myPageSettingModel().topPagePartSettingItems()[2].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision));
+                        self.myPageSettingModel().topPagePartSettingItems()[2].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                 });
                 dfd.resolve();
@@ -135,7 +135,8 @@ module nts.uk.pr.view.ccg015.b {
                                 partItemCode: item2.itemCode,
                                 partItemName: item2.itemName,
                                 useDivision: item2.useItem(),
-                                partType: self.convertPartType(item.partType())
+                                partType: self.convertPartType(item.partType()),
+                                topPagePartId: item2.topPagePartId
                             }
                         }
                         else {
@@ -144,7 +145,8 @@ module nts.uk.pr.view.ccg015.b {
                                 partItemCode: item2.itemCode,
                                 partItemName: item2.itemName,
                                 useDivision: item2.useItem,
-                                partType: self.convertPartType(item.partType())
+                                partType: self.convertPartType(item.partType()),
+                                topPagePartId: item2.topPagePartId
                             }
                         }
                         if (settingItem.partType != TopPagePartsType.ExternalUrl) {
@@ -195,10 +197,12 @@ module nts.uk.pr.view.ccg015.b {
             itemCode: string;
             itemName: string;
             useItem: KnockoutObservable<number>;
-            constructor(itemCode: string, itemName: string, useItem: number) {
+            topPagePartId: string;
+            constructor(itemCode: string, itemName: string, useItem: number, topPagePartId: string) {
                 this.itemCode = itemCode;
                 this.itemName = itemName;
                 this.useItem = ko.observable(useItem);
+                this.topPagePartId = topPagePartId;
             }
         }
         export class TopPagePartsType {

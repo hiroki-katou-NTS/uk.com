@@ -53,7 +53,7 @@ public class MyPageSettingBaseCommand {
 		return new MyPageSetting(companyId, UseDivision.valueOf(useMyPage),
 				UseDivision.valueOf(useWidget), UseDivision.valueOf(useDashboard), UseDivision.valueOf(useFlowMenu),
 				PermissionDivision.valueOf(externalUrlPermission), this.topPagePartUseSettingDto.stream().map(item -> {
-					return TopPagePartUseSetting.createFromJavaType(companyId, item.getPartItemCode(),
+					return TopPagePartUseSetting.createFromJavaType(companyId,item.getTopPagePartId(),item.getPartItemCode(),
 							item.getPartItemName(), item.getUseDivision(), item.getPartType().value);
 				}).collect(Collectors.toList()));
 	}

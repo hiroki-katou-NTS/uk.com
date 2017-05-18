@@ -58,6 +58,7 @@ module nts.uk.pr.view.ccg015.b {
                 partItemName: string;
                 useDivision: number;
                 partType: string;
+                topPagePartId: string;
             }
         }
     }

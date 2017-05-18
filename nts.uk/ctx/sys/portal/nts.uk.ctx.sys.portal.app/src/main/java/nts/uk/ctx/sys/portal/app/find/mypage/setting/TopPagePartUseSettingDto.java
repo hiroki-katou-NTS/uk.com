@@ -17,6 +17,9 @@ public class TopPagePartUseSettingDto {
 	/** The company id. */
 	private String companyId;
 
+	/** The top page part id. */
+	private String topPagePartId;
+	
 	/** The part item code. */
 	private String partItemCode;
 
@@ -37,6 +40,7 @@ public class TopPagePartUseSettingDto {
 	 */
 	public static TopPagePartUseSettingDto fromDomain(TopPagePartUseSetting topPagePartSettingItem) {
 		TopPagePartUseSettingDto topPagePartSettingItemDto = new TopPagePartUseSettingDto();
+		topPagePartSettingItemDto.topPagePartId = topPagePartSettingItem.getTopPagePartId();
 		topPagePartSettingItemDto.partItemCode = topPagePartSettingItem.getTopPagePartCode().toString();
 		topPagePartSettingItemDto.partItemName = topPagePartSettingItem.getTopPagePartName().toString();
 		topPagePartSettingItemDto.useDivision = topPagePartSettingItem.getUseDivision().value;

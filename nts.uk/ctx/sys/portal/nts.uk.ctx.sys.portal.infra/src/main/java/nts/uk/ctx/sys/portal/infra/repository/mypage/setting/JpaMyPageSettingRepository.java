@@ -27,7 +27,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 
 	private final String GET_ONE_MPS = "SELECT m FROM CcgmtMyPageSet m WHERE m.cid = :companyId";
 	private final String GET_ONE_PIS = "SELECT p FROM CcgmtPartItemSet p WHERE p.ccgmtPartItemSetPK.cid = :companyId";
-	private final String GET_ONE_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.code = :topPagePartCode AND t.topPagePartType = :topPagePartType";
+	private final String GET_ONE_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.ccgmtTopPagePartPK.topPagePartID = :topPagePartId";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository#findByCompanyId(java.lang.String)
@@ -70,9 +70,8 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	private TopPagePartUseSetting pusToDomain(CcgmtPartItemSet c) {
 		CcgmtTopPagePart tpp = this.queryProxy().query(GET_ONE_TPP, CcgmtTopPagePart.class)
 				.setParameter("companyId", c.ccgmtPartItemSetPK.cid)
-				.setParameter("topPagePartCode", c.ccgmtPartItemSetPK.partItemCode)
-				.setParameter("topPagePartType", c.ccgmtPartItemSetPK.partType).getSingle().get();
-		TopPagePartUseSetting pus = TopPagePartUseSetting.createFromJavaType(c.ccgmtPartItemSetPK.cid, tpp.code,
+				.setParameter("topPagePartId", c.ccgmtPartItemSetPK.topPagePartId).getSingle().get();
+		TopPagePartUseSetting pus = TopPagePartUseSetting.createFromJavaType(c.ccgmtPartItemSetPK.cid,c.ccgmtPartItemSetPK.topPagePartId,tpp.code,
 				tpp.name, c.useAtr, tpp.topPagePartType);
 		// if update DB (no remove)
 		// TopPagePartUseSetting pus =
@@ -119,8 +118,7 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 */
 	private List<CcgmtPartItemSet> partItemSetToEntity(List<TopPagePartUseSetting> lstTopPagePartUseSetting) {
 		List<CcgmtPartItemSet> lstEntity = lstTopPagePartUseSetting.stream().map(item -> {
-			CcgmtPartItemSetPK key = new CcgmtPartItemSetPK(item.getCompanyId(), item.getTopPagePartCode().v(),
-					item.getTopPagePartType().value);
+			CcgmtPartItemSetPK key = new CcgmtPartItemSetPK(item.getCompanyId(), item.getTopPagePartId());
 			CcgmtPartItemSet entity = new CcgmtPartItemSet(key,item.getUseDivision().value);
 			return entity;
 		}).collect(Collectors.toList());
