@@ -29,22 +29,22 @@ __viewContext.ready(function() {
         controls: [
             {
                 controlName: "テキストボックス", properties: [
-                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#text-1" },
-                    { propertyName: "項目名", link: "link" },
-                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#text-1" },
-                    { propertyName: "カンマ編集", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#currency-1" },
-                    { propertyName: "単位", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#currency-1" },
+                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#primitivevalue" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" },
+                    { propertyName: "カンマ編集", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#commachar" },
+                    { propertyName: "単位", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#unit" },
                     { propertyName: "Enterマーク", link: "link" },
-                    { propertyName: "精度", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#yyyymm" },
+                    { propertyName: "精度", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#inputpattern" },
                     { propertyName: "曜日表示", link: "/nts.uk.com.web/view/sample/datepicker/datepicker.xhtml#dayofweek" },
                     { propertyName: "日付送り", link: "link" }
                 ]
             },
             {
                 controlName: "期間入力フォーム", properties: [
-                    { propertyName: "精度", link: "link" },
-                    { propertyName: "項目名", link: "link" },
-                    { propertyName: "最長期間", link: "link" },
+                    { propertyName: "精度", link: "/nts.uk.com.web/view/sample/datepicker/datepicker.xhtml#dayofweek" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
+                    { propertyName: "最長期間", link: "/nts.uk.com.web/view/sample/datepicker/datepicker.xhtml#maxdate" },
                     { propertyName: "期間送り", link: "link" }
                 ]
             },
