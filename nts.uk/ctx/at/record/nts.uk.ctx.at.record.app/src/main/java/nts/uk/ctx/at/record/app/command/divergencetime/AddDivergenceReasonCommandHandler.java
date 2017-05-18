@@ -29,7 +29,7 @@ public class AddDivergenceReasonCommandHandler extends CommandHandler<AddDiverge
 													context.getCommand().getDivTimeId(),
 													context.getCommand().getDivReasonCode());
 		if(divReasonF.isPresent()){
-			throw new BusinessException(new RawErrorMessage("入力したコードは、既に登録されています。"));
+			throw new BusinessException(new RawErrorMessage("Msg_3"));
 		}else{
 			divTimeRepo.addDivReason(divReason);
 		}

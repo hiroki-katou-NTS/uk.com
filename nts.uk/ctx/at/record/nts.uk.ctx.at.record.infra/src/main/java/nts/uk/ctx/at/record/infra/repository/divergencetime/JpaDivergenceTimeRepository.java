@@ -47,10 +47,6 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 			+ " AND a.kmkmtDivergenceItemSetPK.divTimeId = :divTimeId"
 			+ " AND a.kmkmtDivergenceItemSetPK.companyId = :companyId"
 			+ " AND a.kmkmtDivergenceItemSetPK.divergenceItemId = b.kmnmtDivergenceItemPK.attendanceItemId";
-	private final String SELECT_FROM_ATTTYPE = " SELECT c FROM KmnmtAttendanceType c";
-	private final String SELECT_ALL_ATTENDANCEITEM = SELECT_FROM_ATTTYPE
-			+ " WHERE c.kmnmtAttendanceTypePK.companyId = :companyId"
-			+ " AND c.kmnmtAttendanceTypePK.attendanceItemType = :attendanceItemType";
 	private final String SELECT_NAME = "SELECT c FROM KmnmtDivergenceItem c"
 			+ " WHERE c.kmnmtDivergenceItemPK.companyId = :companyId"
 			+ " AND c.kmnmtDivergenceItemPK.attendanceItemId IN :listAttendanceItemId";
