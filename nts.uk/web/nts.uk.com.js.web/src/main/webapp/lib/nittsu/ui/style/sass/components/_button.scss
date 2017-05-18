@@ -120,7 +120,8 @@ button {
     padding: $_base_padding_v $_base_padding_h;
     margin-bottom: $_base_border_bottom_width;
    	box-shadow: 0 $_base_border_bottom_width $button-boxshadow-base-color;
-
+	overflow: visible;
+	
     &:active {
         top: $_base_border_bottom_width;
 		box-shadow: 0 0 #999;
