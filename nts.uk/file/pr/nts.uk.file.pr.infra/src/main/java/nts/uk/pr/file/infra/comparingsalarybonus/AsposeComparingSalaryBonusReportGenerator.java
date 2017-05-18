@@ -89,7 +89,7 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			Date date = new Date();
 			String fileName = REPORT_FILE_NAME.concat(dateFM.format(date).toString()).concat(EXTENSION);
 
-			// Fill data
+//			// Fill data
 			lstDeparmentInf.stream().forEach(c -> {
 				this.maxRowOfDepartments = 1 + c.getLstEmployee().size() * c.getLstEmployee().get(0).getLstData().size()
 						+ 4;
@@ -269,6 +269,8 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 						this.startRow += 1;
 					}
 				}
+
+				this.startRow = this.startRow + 1;
 				rowIndex = this.startRow;
 			}
 			i+= departmentHyrachi.getNumberOfChild() - 1;

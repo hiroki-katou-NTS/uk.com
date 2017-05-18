@@ -28,7 +28,6 @@ import nts.uk.file.pr.app.export.comparingsalarybonus.data.DetailEmployeeDto;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.HeaderTable;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.SalaryBonusDetail;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.TotalByHyrachi;
-import nts.uk.file.pr.app.export.comparingsalarybonus.data.TotalValue;
 import nts.uk.file.pr.app.export.comparingsalarybonus.query.ComparingSalaryBonusQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
