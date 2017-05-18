@@ -262,15 +262,15 @@ module nts.uk.ui {
             text?: string;
         }
         export class Message {
-            messageId: string;
+            d: string;
             messageParams?: any[];
         }
         function createNoticeDialog(message, buttons, header?: DialogHeader) {
             var $control = $('<div/>').addClass('control');
             let text;
             if (typeof message === "object") {
-                text = nts.uk.resource.getMessage(message.messageId, message.messageParams);
-                $control.append(message.messageId);
+                text = nts.uk.resource.getMessage(message.id, message.messageParams);
+                $control.append(message.id);
             } else {
                 text = message;
             }
