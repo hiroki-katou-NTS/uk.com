@@ -32,6 +32,9 @@ public class SalaryPrintSettingFinder {
 	public SalaryPrintSettingDto find() {
 		String companyCode = AppContexts.user().companyCode();
 		SalaryPrintSetting domain = repository.find(companyCode);
+		if (domain == null) {
+		    domain = SalaryPrintSetting.createWithIntial(companyCode);
+		}
 		SalaryPrintSettingDto dto = SalaryPrintSettingDto.builder().companyCode(companyCode)
 				.hrchyIndex1(domain.getHrchyIndex1()).hrchyIndex2(domain.getHrchyIndex2())
 				.hrchyIndex3(domain.getHrchyIndex3()).hrchyIndex4(domain.getHrchyIndex4())
