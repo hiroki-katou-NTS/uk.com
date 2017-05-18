@@ -184,8 +184,12 @@ public class MultiLanguageResource implements IInternationalization {
 
 		Map<ResourceType, Map<String, String>> result = new HashMap<>();
 		result.put(ResourceType.MESSAGE, getAllMessage());
-		result.put(ResourceType.CODE_NAME, getCodeNameResourceOfProgram(programId));
-
+		//result.put(ResourceType.CODE_NAME, getCodeNameResourceOfProgram(programId));
+		//TODO: temporaty fix for test, get all of company
+		Map<String, String> fixedForTest = new HashMap<>();
+		codeNameResource.entrySet().stream().map(x->x.getValue()).forEach(x->fixedForTest.putAll(x));
+		result.put(ResourceType.CODE_NAME,fixedForTest);
+		
 		return result;
 	}
 

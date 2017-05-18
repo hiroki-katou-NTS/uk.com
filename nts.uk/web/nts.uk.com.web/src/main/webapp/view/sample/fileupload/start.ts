@@ -6,6 +6,8 @@ __viewContext.ready(function() {
             alert(err);
         });
     });
-
+    $("#download").click(function(){
+        nts.uk.request.specials.donwloadFile($("#fileid").val());    
+    });
 
 });
