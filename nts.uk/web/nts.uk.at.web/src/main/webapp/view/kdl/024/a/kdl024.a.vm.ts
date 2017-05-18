@@ -181,9 +181,8 @@ module kdl024.a.viewmodel {
                     //get max index of list Items
                     var maxIndex :number = self.currentSource.length-1; 
 
-                    debugger;
                     //case of : selected item is last item
-                    if(iIndex == 0){
+                    if(self.currentSource.length == 1 && iIndex == 0){
                         self.currentSource = [];
                         self.items([]);
                         self.addNew();
