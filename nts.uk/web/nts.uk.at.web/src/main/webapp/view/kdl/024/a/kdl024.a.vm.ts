@@ -24,25 +24,25 @@ module kdl024.a.viewmodel {
             self.isNew = false;
             //Switch button 
             self.roundingRules = ko.observableArray([
-                { unitId: '0', unitName: '日別' },
-                { unitId: '1', unitName: '時間帯別' }
+                { unitId: '0', unitName: nts.uk.resource.getText('KDL024_10') },
+                { unitId: '1', unitName: nts.uk.resource.getText('KDL024_11') }
             ]);
             //Input Code
             self.isEnableInp = ko.observable(false);
             //Combobox
             self.itemListCbb = ko.observableArray([
-                new ItemModelCbb('0', '時間'),
-                new ItemModelCbb('1', '人数'),
-                new ItemModelCbb('2', '金額'),
-                new ItemModelCbb('3', '数値'),
-                new ItemModelCbb('4', '単価')
+                new ItemModelCbb('0', nts.uk.resource.getText('Enum_Attribute_Time')),
+                new ItemModelCbb('1', nts.uk.resource.getText('Enum_Attribute_PeopleNum')),
+                new ItemModelCbb('2', nts.uk.resource.getText('Enum_Attribute_Money')),
+                new ItemModelCbb('3', nts.uk.resource.getText('Enum_Attribute_Numeric')),
+                new ItemModelCbb('4', nts.uk.resource.getText('Enum_Attribute_Price'))
             ]);
             //Defaut value 
             self.isEnableCbb = ko.observable(true);
             //grid list
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KDL024_5'), key: 'externalBudgetCode', width: 40 },
-                { headerText: '名称', key: 'externalBudgetName', width: 150 }
+                { headerText: nts.uk.resource.getText('KDL024_6'), key: 'externalBudgetName', width: 150 }
             ]);
             self.items = ko.observableArray([]);
             self.currentItem = ko.observable(new Item({
@@ -179,9 +179,12 @@ module kdl024.a.viewmodel {
                     //get index of selected Item
                     var iIndex = _.findIndex(self.currentSource,['externalBudgetCode',self.currentItem().externalBudgetCode()]);
                     //get max index of list Items
-                    var maxIndex :number = self.currentSource.length-1;                
+                    var maxIndex :number = self.currentSource.length-1; 
+
+                    debugger;
                     //case of : selected item is last item
                     if(iIndex == 0){
+                        self.currentSource = [];
                         self.items([]);
                         self.addNew();
                     }else{
