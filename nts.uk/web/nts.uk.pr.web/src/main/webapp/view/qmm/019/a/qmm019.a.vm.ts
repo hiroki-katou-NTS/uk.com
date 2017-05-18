@@ -340,7 +340,7 @@ module qmm019.a {
             self.bindSortable();
         }
 
-        openADialog() {
+        openDDialog() {
             var self = this;
             if (self.singleSelectedCode() == null)
                 return false;

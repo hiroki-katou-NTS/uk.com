@@ -155,7 +155,6 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			for (LayoutLine lineDeleteCommand : command.getListAutoLineIdDeleted()) {
 				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByLine(lineDeleteCommand.getAutoLineId());
 				detailRepo.remove(detailsDelete);
-
 				lineRepo.remove(companyCode, layoutCommand.getHistoryId(), lineDeleteCommand.getAutoLineId(),
 						lineDeleteCommand.getCategoryAtr(), stmtCode);
 			}

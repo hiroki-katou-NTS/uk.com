@@ -83,16 +83,15 @@
 			</div>
 			<br />
 			<!-- 按分方法 -->
-			<div style="margin-left: 100px;"
-				data-bind="with: comboBoxDistributeWay">
+			<div style="margin-left: 100px;">
 				<div id="SEL_004"
 					data-bind="ntsComboBox: {
-							options: itemList,
+							options: itemListDistributeWay ,
 							optionsValue: 'id',
-							value: selectedCode,
+							value: distributeWaySelectedCode,
 							optionsText: 'name',
 							editable: false,
-							enable: enable()}"
+							enable: (switchButton().selectedRuleCode() != 0)}"
 					class="cf"></div>
 			</div>
 			<br />

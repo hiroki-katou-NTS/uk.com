@@ -518,11 +518,9 @@ module qmm019.a {
                         objectNotYetSave: data
                     };
                     nts.uk.ui.windows.setShared('param', param);
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml', { dialogClass: 'no-close', title: '項目の選択・設定', width: 1200, height: 610 }).onClosed(() => {
-                        var itemResult: qmm019.f.service.model.ItemDetailModel = nts.uk.ui.windows.getShared('itemResult');
-
-                        if (itemResult === undefined) return this;
-
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml', { dialogClass: 'no-close', title: '項目の選択・設定', width: 1200, height: 620 }).onClosed(() => {
+                        if (nts.uk.ui.windows.getShared('itemResult') === undefined) return this;
+                        let itemResult = ko.mapping.toJS(nts.uk.ui.windows.getShared('itemResult'));
                         if (data.itemAbName() === "+") {
                             // Them moi
                             self.itemCode(itemResult.itemCode);
@@ -546,13 +544,13 @@ module qmm019.a {
                         self.distributeSet(itemResult.distributeSet);
                         self.distributeWay(itemResult.distributeWay);
                         self.personalWageCode(itemResult.personalWageCode);
-                        self.isUseHighError(itemResult.isUseHighError ? 1 : 0);
+                        self.isUseHighError(itemResult.checkUseHighError ? 1 : 0);
                         self.errRangeHigh(itemResult.errRangeHigh === null ? 0 : itemResult.errRangeHigh);
-                        self.isUseLowError(itemResult.isUseLowError ? 1 : 0);
+                        self.isUseLowError(itemResult.checkUseLowError ? 1 : 0);
                         self.errRangeLow(itemResult.errRangeLow === null ? 0 : itemResult.errRangeLow);
-                        self.isUseHighAlam(itemResult.isUseHighAlam ? 1 : 0);
+                        self.isUseHighAlam(itemResult.checkUseHighAlam ? 1 : 0);
                         self.alamRangeHigh(itemResult.alamRangeHigh === null ? 0 : itemResult.alamRangeHigh);
-                        self.isUseLowAlam(itemResult.isUseLowAlam ? 1 : 0);
+                        self.isUseLowAlam(itemResult.checkUseLowAlam ? 1 : 0);
                         self.alamRangeLow(itemResult.alamRangeLow === null ? 0 : itemResult.alamRangeLow);
 
                         return this;

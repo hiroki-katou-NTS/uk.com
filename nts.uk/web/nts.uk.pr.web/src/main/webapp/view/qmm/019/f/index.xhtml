@@ -92,11 +92,15 @@
 						data-bind="click:registerItemName">↑項目名の登録を行う</button>
 				</div>
 				<div class="right-content">
-					<div style="margin-bottom: 5px;" class="form-label"
-						data-bind="with: listBox">
-						<label id="LBL_004">コード/名称</label> <a
-							data-bind="text: selectedCode">コード</a><a
-							data-bind="text: selectedName">名称</a>
+					<div data-bind="with: listBox">
+						<com:ko-if bind="(selectedCode()!='')">
+							<div style="margin-bottom: 5px;" class="form-label">
+								<label id="LBL_004">コード/名称</label> <a
+									data-bind="text: selectedCode">コード</a> <a
+									data-bind="text: selectedName">名称</a>
+
+							</div>
+						</com:ko-if>
 					</div>
 					<br />
 					<com:ko-if bind="isCategoryAtrEqual0()">
@@ -107,13 +111,13 @@
 					</com:ko-if>
 					<com:ko-if bind="isCategoryAtrEqual1()">
 						<div id="ItemDeductScreen"
-							data-bind="if: isCategoryAtrEqual1(), with:screenModel.deductItemScreen">
+							data-bind=" with:screenModel.deductItemScreen">
 							<ui:include src="deductItem/index.xhtml" />
 						</div>
 					</com:ko-if>
 					<com:ko-if bind="isCategoryAtrEqual2()">
 						<div id="ItemAttendScreen"
-							data-bind="if: isCategoryAtrEqual2() , with:screenModel.attendItemScreen">
+							data-bind=" with:screenModel.attendItemScreen">
 							<ui:include src="attendItem/index.xhtml" />
 						</div>
 					</com:ko-if>

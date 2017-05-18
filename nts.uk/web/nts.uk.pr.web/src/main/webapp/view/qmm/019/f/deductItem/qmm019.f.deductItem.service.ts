@@ -2,7 +2,7 @@ module qmm019.f.deductItem.service {
     var paths = {
         getItemSalary: "pr/core/itemdeduct/find/{0}",
     };
-    export function getSalaryItem(itemCode): JQueryPromise<model.DeductItemModel> {
+    export function getDeductItem(itemCode): JQueryPromise<model.DeductItemModel> {
         let dfd = $.Deferred<model.DeductItemModel>();
         var _path = nts.uk.text.format(paths.getItemSalary, itemCode);
         nts.uk.request.ajax(_path).done(function(res: model.DeductItemModel) {
