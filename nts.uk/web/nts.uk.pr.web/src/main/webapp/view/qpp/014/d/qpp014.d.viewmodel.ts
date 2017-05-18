@@ -19,7 +19,7 @@ module qpp014.d.viewmodel {
             self.d_SEL_002_selectedCode = ko.observable(1);
             self.d_LST_001_items = ko.observableArray([]);
             for (let i = 1; i < 31; i++) {
-                self.d_LST_001_items.push(({ code: '00' + i, name: '基本給' + i, description: ('description' + i) }));
+                self.d_LST_001_items.push(({ scd: '00' + i, nameB: '基本給' + i, paymentMethod1: ('description' + i), paymentMethod2: ('description' + i), paymentMethod3: ('description' + i), paymentMethod4: ('description' + i), paymentMethod5: ('description' + i) }));
             }
             self.countItems = ko.observable(self.d_LST_001_items().length);
             self.d_LST_001_itemSelected = ko.observable(0);
@@ -35,7 +35,7 @@ module qpp014.d.viewmodel {
             nts.uk.ui.windows.setShared("processingNo", self.d_lbl_015(), true);
             nts.uk.ui.windows.setShared("processingYMNotConvert", self.processingYMNotConvert(), true);
 
-//            $.when(self.findDataScreenD()).done().fail();
+            //            $.when(self.findDataScreenD()).done().fail();
         }
 
         findDataScreenD(): JQueryPromise<any> {
