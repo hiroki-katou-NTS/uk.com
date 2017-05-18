@@ -12,6 +12,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttendRespository;
@@ -70,6 +71,9 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 		
 		// QCAMT_ITEM_SALARY.SEL_2
 		List<ItemSalary> itemSalarys = this.itemSalaryRespository.findAll(companyCode);
+		if (CollectionUtil.isEmpty(itemSalarys)) {
+			throw new RuntimeException("Not found data in item salary");
+		}
 		
 		// QCAMT_ITEM_SALARY.UPD_2: item salary selected
 		List<String> itemSelectedSalarys = itemSalarys.stream()
@@ -83,12 +87,15 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 		// if 明細書項目から選択 is selected
 		if (averagePay.isAttenDayStatementItem()) { 
 			
-			if(command.getSelectedAttendItems().isEmpty()){
+			if (command.getSelectedAttendItems().isEmpty()){
 				throw new BusinessException("ER007");
 			}
 			
 			// QCAMT_ITEM_ATTEND.SEL_3
 			List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);
+			if (CollectionUtil.isEmpty(itemAttends)) {
+				throw new RuntimeException("Not found data in item attend");
+			}
 			
 			// QCAMT_ITEM_ATTEND.UPD_2: item attend selected
 			List<String> itemSelectedAttends = itemAttends.stream()
