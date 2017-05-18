@@ -150,8 +150,8 @@ module qpp008.b.viewmodel {
             } else {
                 self.plushBackColor = ko.observable("#cfe2f3");
                 self.minusBackColor = ko.observable("#f4cccc");
-                self.showItemIfCfWithNull = ko.observable(0);
-                self.showItemIfSameValue = ko.observable(0);
+                self.showItemIfCfWithNull = ko.observable(1);
+                self.showItemIfSameValue = ko.observable(1);
                 self.showPayment = ko.observable(true);
                 self.totalSet = ko.observable(true);
                 self.sumEachDeprtSet = ko.observable(false);
