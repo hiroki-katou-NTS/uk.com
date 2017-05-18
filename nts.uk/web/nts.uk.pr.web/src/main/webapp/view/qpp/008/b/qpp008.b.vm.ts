@@ -20,13 +20,13 @@ module qpp008.b.viewmodel {
             /*Switch*/
             //B_SEL_010
             self.roundingRules = ko.observableArray([
-                { code: '1', name: '表示する' },
                 { code: '0', name: '表示しない' },
+                { code: '1', name: '表示する' },
             ]);
             //B_SEL_011
             self.roundingRules1 = ko.observableArray([
-                { code1: '1', name1: '表示する' },
                 { code1: '0', name1: '表示しない' },
+                { code1: '1', name1: '表示する' },
             ]);
 
             self.hrchyIndexArray = ko.computed(function() {
