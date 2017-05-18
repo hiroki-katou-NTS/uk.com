@@ -752,6 +752,17 @@ var nts;
             }
             text_3.allKatakana = allKatakana;
             /**
+             * Determines if text is half integer
+             * @param text text to check
+             */
+            function halfInt(text) {
+                var val = parseFloat(text);
+                if (val !== NaN && (val * 2) % 1 === 0)
+                    return true;
+                return false;
+            }
+            text_3.halfInt = halfInt;
+            /**
              * 文字列中のHTML記号をサニタイズする
              * @param text 変換対象の文字列
              */
@@ -783,6 +794,16 @@ var nts;
                 return text.charAt(0).toUpperCase() + text.slice(1);
             }
             text_3.toUpperCaseFirst = toUpperCaseFirst;
+            /**
+             * Convert lower case text to upper case one
+             * @param text text to convert
+             */
+            function toUpperCase(text) {
+                return text.replace(/[a-z]/g, function (c) {
+                    return String.fromCharCode(c.charCodeAt(0) - 0x20);
+                });
+            }
+            text_3.toUpperCase = toUpperCase;
             /**
             * 指定された文字列が、null、undefined、Emptyか判定する
             * @param text 判定対象の文字列
@@ -919,6 +940,8 @@ var nts;
                 Alphabet: new CharType('半角英字', 0.5, nts.uk.text.allHalfAlphabet),
                 Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
                 Any: new CharType('全角', 1, nts.uk.util.alwaysTrue),
+                Kana: new CharType('カナ', 1, nts.uk.text.allFullKatakana),
+                HalfInt: new CharType('半整数', 0.5, nts.uk.text.halfInt)
             };
             function getCharType(primitiveValueName) {
                 var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
@@ -2069,11 +2092,17 @@ var nts;
                         }
                         // Check CharType
                         if (this.charType !== null && this.charType !== undefined) {
-                            if (this.charType.viewName === '半角数字' || this.charType.viewName === '半角英数字') {
+                            if (this.charType.viewName === '半角数字') {
                                 inputText = uk.text.toOneByteAlphaNumberic(inputText);
+                            }
+                            else if (this.charType.viewName === '半角英数字') {
+                                inputText = uk.text.toOneByteAlphaNumberic(uk.text.toUpperCase(inputText));
                             }
                             else if (this.charType.viewName === 'カタカナ') {
                                 inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
+                            }
+                            else if (this.charType.viewName === 'カナ') {
+                                inputText = uk.text.hiraganaToKatakana(uk.text.oneByteKatakanaToTwoByte(inputText));
                             }
                             if (!this.charType.validate(inputText)) {
                                 result.fail('Invalid text');
@@ -2122,7 +2151,7 @@ var nts;
                             inputText = uk.text.replaceAll(inputText.toString(), this.option.groupseperator, '');
                         }
                         if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber)) {
-                            result.fail('invalid number');
+                            result.fail({ id: "Msg_001" });
                             return result;
                         }
                         var value = isDecimalNumber ?
@@ -2253,9 +2282,29 @@ var nts;
                         // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
                         // 原因がわかるまでひとまずdeferを使っておく
                         _.defer(function () {
-                            var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
-                            if (duplicate.length == 0)
+                            var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.messageText == error.messageText; });
+                            if (duplicate.length == 0) {
+                                if (typeof error.message === "string") {
+                                    error.messageText = error.message;
+                                    error.message = "";
+                                }
+                                else {
+                                    if (error.$control.length > 0) {
+                                        var controlNameId = error.$control.eq(0).attr("data-name");
+                                        if (controlNameId) {
+                                            error.messageText = nts.uk.resource.getMessage(error.message.id, nts.uk.resource.getText(controlNameId));
+                                        }
+                                        else {
+                                            error.messageText = nts.uk.resource.getMessage(error.message.id);
+                                        }
+                                    }
+                                    else {
+                                        error.messageText = nts.uk.resource.getMessage(error.message.id);
+                                    }
+                                    error.message = error.message.id;
+                                }
                                 _this.errors.push(error);
+                            }
                         });
                     };
                     ErrorsViewModel.prototype.hasError = function () {
@@ -5453,7 +5502,12 @@ var nts;
                         var dialogWidth = 40 + 35 + 17;
                         headers.forEach(function (header, index) {
                             if (ko.unwrap(header.visible)) {
-                                dialogWidth += ko.unwrap(header.width);
+                                if (typeof ko.unwrap(header.width) === "number") {
+                                    dialogWidth += ko.unwrap(header.width);
+                                }
+                                else {
+                                    dialogWidth += 200;
+                                }
                             }
                         });
                         // Create dialog
@@ -5462,12 +5516,17 @@ var nts;
                             modal: modal,
                             closeOnEscape: false,
                             width: dialogWidth,
+                            maxHeight: 500,
                             buttons: dialogbuttons,
                             dialogClass: "no-close",
                             open: function () {
                                 $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                 $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                                 $('.ui-widget-overlay').last().css('z-index', 120000);
+                                //                    let $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
+                                //                    $headerContainer.append($("<img>").attr("src", "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png").addClass("ui-dialog-titlebar-icon");
+                                //                    $headerContainer.append($(this).parent().find(".ui-dialog-title"));
+                                //                    $(this).parent().children(".ui-dialog-titlebar").append($headerContainer);
                             },
                             close: function (event) {
                                 bindingContext.$data.option.show(false);
@@ -5485,53 +5544,65 @@ var nts;
                         var errors = ko.unwrap(data.errors);
                         var headers = ko.unwrap(option.headers);
                         var displayrows = ko.unwrap(option.displayrows);
-                        var maxrows = ko.unwrap(option.maxrows);
+                        //var maxrows: number = ko.unwrap(option.maxrows);
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var $dialog = $("#ntsErrorDialog");
                         if (show == true) {
-                            $dialog.dialog("open");
                             // Create Error Table
                             var $errorboard = $("<div id='error-board'></div>");
                             var $errortable = $("<table></table>");
                             // Header
-                            var $header = $("<thead><tr></tr></thead>");
-                            $header.find("tr").append("<th style='width: 35px'></th>");
+                            var $header = $("<thead></thead>");
+                            var $headerRow_1 = $("<tr></tr>");
+                            $headerRow_1.append("<th style='display:none;'></th>");
                             headers.forEach(function (header, index) {
                                 if (ko.unwrap(header.visible)) {
                                     var $headerElement = $("<th>" + ko.unwrap(header.text) + "</th>").width(ko.unwrap(header.width));
-                                    $header.find("tr").append($headerElement);
+                                    $headerRow_1.append($headerElement);
                                 }
                             });
+                            $header.append($headerRow_1);
                             $errortable.append($header);
                             // Body
                             var $body = $("<tbody></tbody>");
                             errors.forEach(function (error, index) {
-                                if (index < maxrows) {
-                                    // Row
-                                    var $row_1 = $("<tr></tr>");
-                                    $row_1.append("<td style='width:35px'>" + (index + 1) + "</td>");
-                                    headers.forEach(function (header) {
-                                        if (ko.unwrap(header.visible))
-                                            if (error.hasOwnProperty(ko.unwrap(header.name))) {
-                                                // TD
-                                                var $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>").width(ko.unwrap(header.width));
-                                                $row_1.append($column);
-                                            }
-                                    });
-                                    $body.append($row_1);
-                                }
+                                // Row
+                                var $row = $("<tr></tr>");
+                                $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
+                                headers.forEach(function (header) {
+                                    if (ko.unwrap(header.visible))
+                                        if (error.hasOwnProperty(ko.unwrap(header.name))) {
+                                            // TD
+                                            var $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>");
+                                            $row.append($column);
+                                        }
+                                });
+                                $body.append($row);
                             });
                             $errortable.append($body);
                             $errorboard.append($errortable);
                             // Errors over maxrows message
                             var $message = $("<div></div>");
-                            if (errors.length > maxrows)
-                                $message.text("Showing " + maxrows + " in total " + errors.length + " errors");
                             $dialog.html("");
                             $dialog.append($errorboard).append($message);
-                            // Calculate body height base on displayrow
-                            $body.height(Math.min(displayrows, errors.length) * $(">:first-child", $body).outerHeight() + 1);
+                            //                $dialog.on("dialogresizestop dialogopen", function() {
+                            $dialog.on("dialogopen", function () {
+                                var maxrowsHeight = 0;
+                                var index = 0;
+                                $(this).find("table tbody tr").each(function () {
+                                    if (index < displayrows) {
+                                        index++;
+                                        maxrowsHeight += $(this).height();
+                                    }
+                                });
+                                maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 + 4 + $(this).find("table thead").height();
+                                if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
+                                    maxrowsHeight = $dialog.dialog("option", "maxHeight");
+                                }
+                                $dialog.dialog("option", "height", maxrowsHeight);
+                            });
+                            $dialog.dialog("open");
                         }
                         else {
                             $dialog.dialog("close");
@@ -8297,7 +8368,8 @@ var nts;
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
                         // Add OK Button
-                        this.buttons.push({ text: "OK",
+                        this.buttons.push({
+                            text: "OK",
                             "class": "yes",
                             size: "large",
                             color: "proceed",
@@ -8318,7 +8390,8 @@ var nts;
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
                         // Add OK Button
-                        this.buttons.push({ text: "はい",
+                        this.buttons.push({
+                            text: "はい",
                             "class": "yes ",
                             size: "large",
                             color: "danger",
@@ -8328,7 +8401,8 @@ var nts;
                             }
                         });
                         // Add Cancel Button
-                        this.buttons.push({ text: "いいえ",
+                        this.buttons.push({
+                            text: "いいえ",
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -8349,7 +8423,8 @@ var nts;
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
                         // Add OK Button
-                        this.buttons.push({ text: "はい",
+                        this.buttons.push({
+                            text: "はい",
                             "class": "yes ",
                             size: "large",
                             color: "proceed",
@@ -8359,7 +8434,8 @@ var nts;
                             }
                         });
                         // Add Cancel Button
-                        this.buttons.push({ text: "いいえ",
+                        this.buttons.push({
+                            text: "いいえ",
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -8378,16 +8454,17 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new nts.uk.ui.errors.ErrorHeader("location", "エラー箇所", 115, true),
-                            new nts.uk.ui.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                            new nts.uk.ui.errors.ErrorHeader("messageText", "エラー内容", "auto", true),
+                            new nts.uk.ui.errors.ErrorHeader("message", "エラーコード", 150, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
-                        this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
+                        //this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
                         this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
                         this.buttons = [];
                         // Add Close Button
-                        this.buttons.push({ text: "閉じる",
+                        this.buttons.push({
+                            text: "閉じる",
                             "class": "yes ",
                             size: "large",
                             color: "",
@@ -8412,11 +8489,12 @@ var nts;
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
-                        this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
+                        //this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
                         this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
                         this.buttons = [];
                         // Add Close Button
-                        this.buttons.push({ text: "閉じる",
+                        this.buttons.push({
+                            text: "閉じる",
                             "class": "yes ",
                             size: "large",
                             color: "",
