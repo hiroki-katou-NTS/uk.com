@@ -1,4 +1,4 @@
-#test {
+#boxSearch {
 	display: flex;
 	vertical-align: middle;
 }
@@ -28,4 +28,9 @@
 #label {
 	line-height: 40px;
 	text-align: left;
+}
+
+.clear-btn:before {
+	width: 130px !important;
+	content: "TEST" !important;
 }

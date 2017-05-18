@@ -20,18 +20,23 @@
 			<div id="total">
 				<div id="label">
 					<label>#{i18n.getText('KDL021_2')}</label>
-				</div>				
+				</div>
 				<div style="float: left; margin-bottom: 20px;">
-					<div id="test">
-						<div style="width: 250px; margin-bottom: 15px;" tabindex="1"
-							data-bind="ntsSearchBox: {comId: 'multi-list', 
+					<div id="boxSearch">
+						<div style="width: 370px; margin-bottom: 15px;" tabindex="1"
+							data-bind="ntsSearchBox: {
+									searchMode: 'filter',
+									targetKey: 'code',
+									comId: 'multi-list', 
 									items: items, 
 									selected: currentCodeList, 
 									selectedKey: 'code', 
-									fields: ['name', 'code']}" />
-						<div>
-							<button id="btnSelectedClear" data-bind="click :clearClick" value="">検索条件をクリアする</button>
-						</div>
+									fields: ['name', 'code'],
+									mode: 'igGrid'}" />
+<!-- 						<div> -->
+<!-- 							<button id="btnSelectedClear" data-bind="click :clearClick" -->
+<!-- 								value="">検索条件をクリアする</button> -->
+<!-- 						</div> -->
 					</div>
 					<div>
 						<table id="multi-list" tabindex="2"
@@ -50,8 +55,10 @@
 				<div id="process">
 					<div>
 						<hr></hr>
-						<button id="btnSetting" class="x-large proceed" data-bind="click: register" tabindex="3">#{i18n.getText('KDL021_1')}</button>
-						<button id="btnCancel" class="large" data-bind="click: close" tabindex="4">#{i18n.getText('KDL021_2')}</button>
+						<button id="btnSetting" class="x-large proceed"
+							data-bind="click: register" tabindex="3">#{i18n.getText('KDL021_5')}</button>
+						<button id="btnCancel" class="large" data-bind="click: close"
+							tabindex="4">#{i18n.getText('KDL021_6')}</button>
 					</div>
 				</div>
 

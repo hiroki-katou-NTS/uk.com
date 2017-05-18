@@ -28,9 +28,6 @@ module kdl024.a.viewmodel {
                 { unitId: '1', unitName: '時間帯別' }
             ]);
             //Input Code
-            console.log(nts.uk.resource.getText("KDL024_1"));
-            console.log(nts.uk.resource.getText("Enum_Attribute_Time"));
-            debugger;
             self.isEnableInp = ko.observable(false);
             //Combobox
             self.itemListCbb = ko.observableArray([
@@ -102,7 +99,7 @@ module kdl024.a.viewmodel {
                 self.currentItem().externalBudgetCode(padZero(currentCode));
                 //insert process
                 service.insertExternalBudget(self.currentItem()).done(function() {
-                    nts.uk.ui.dialog.alert("登録しました。")；
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'))；
                         //restart
                         self.currentSource.push(new TempItem(
                             self.currentItem().externalBudgetCode(),
@@ -131,7 +128,7 @@ module kdl024.a.viewmodel {
             //Mode UPDATE
             } else {
                 service.updateExternalBudget(self.currentItem()).done(function() {
-                    nts.uk.ui.dialog.alert("登録しました。")；
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'))；
                     //update list source
                     let currentIndex = _.findIndex(self.currentSource,['externalBudgetCode',self.currentItem().externalBudgetCode()]);
                     if(currentIndex != -1){
@@ -175,10 +172,10 @@ module kdl024.a.viewmodel {
         //delete
         del() {
             var self = this;
-            nts.uk.ui.dialog.confirm("選択中のデータを削除しますか？").ifYes(function(){
+            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function(){
                 //削除後処理                
                 service.deleteExternalBudget(self.currentItem()).done(function() {
-                   nts.uk.ui.dialog.alert("削除しました。")；
+                   nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'))；
                     //get index of selected Item
                     var iIndex = _.findIndex(self.currentSource,['externalBudgetCode',self.currentItem().externalBudgetCode()]);
                     //get max index of list Items
