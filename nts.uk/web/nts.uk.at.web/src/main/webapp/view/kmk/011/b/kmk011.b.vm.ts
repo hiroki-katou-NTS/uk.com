@@ -66,6 +66,7 @@ module kmk011.b.viewmodel {
                 if(lstDivReason=== undefined || lstDivReason.length == 0){
                     self.dataSource();
                     self.enableCode(true);
+                    $("#inpCode").focus();
                 }else{
                     self.dataSource(lstDivReason);
                     let reasonFirst = _.first(lstDivReason);
@@ -93,6 +94,7 @@ module kmk011.b.viewmodel {
             self.enableCode(true);
             self.clearError();
             self.enableDel(false);
+            $("#inpCode").focus();
         }
         
         clearError(): void {

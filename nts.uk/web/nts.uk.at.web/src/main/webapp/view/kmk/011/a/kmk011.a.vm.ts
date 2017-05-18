@@ -23,9 +23,11 @@ module kmk011.a.viewmodel {
         list: KnockoutObservable<string>;
         use: KnockoutObservable<string>;
         notUse: KnockoutObservable<string>;
+        enableUse: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.list = ko.observable();
+            self.enableUse = ko.observable();
             self.currentCode = ko.observable(1);
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divTimeId', width: 100  },
@@ -55,6 +57,7 @@ module kmk011.a.viewmodel {
             self.currentCode.subscribe(function(codeChanged) {
                 if(codeChanged==0){return;}
                 else{
+                self.selectUse(null);
                 self.itemDivTime(self.findDivTime(codeChanged));
                 self.alarmTime(self.convertTime(self.itemDivTime().alarmTime));
                 self.errTime(self.convertTime(self.itemDivTime().errTime));
@@ -80,6 +83,15 @@ module kmk011.a.viewmodel {
                 }
                     }
             });
+            
+            self.selectUse.subscribe(function(codeChanged){
+                if(codeChanged==1){
+                    self.enableUse(true);
+                }else{
+                    self.enableUse(false);
+                }
+            })
+            
         }
         /**
          * start page

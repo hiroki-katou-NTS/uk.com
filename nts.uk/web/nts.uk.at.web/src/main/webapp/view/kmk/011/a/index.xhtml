@@ -76,7 +76,7 @@
 								<input tabindex="4" class = "nts-input" style="width: 70px" data-bind="ntsTextEditor:{
                                          value: divTimeName,
                                          required: true,
-                                         enable: true}" />
+                                         enable: enableUse}" />
 							</td>
 						</tr>	
 						<tr class = "row">
@@ -86,9 +86,12 @@
 							</td>
 							<td>
 								<!-- A3_6 -->
-								<button tabindex="5" data-bind="click: openDialog021">#{i18n.getText('KMK011_11')}</button>
+								<button tabindex="5" data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
 								<!-- A3_7: Time item name -->
-								<input class="nts-input" style="width: 350px" data-bind="ntsTextEditor:{value: timeItemName,required: true}" />
+								<input class="nts-input" style="width: 350px" data-bind="ntsTextEditor:{
+										value: timeItemName,
+										required: true,
+										enable: enableUse}" />
 							</td>
 						</tr>
 						<tr class = "row">
@@ -100,7 +103,7 @@
 							<!-- A3_9: Alarm time -->
 								<input tabindex="6" id="inpAlarmTime" style="width: 50px" data-bind="ntsTextEditor: {
                                          value: alarmTime,
-                                         enable: true}" data-name = "AlarmTime" />
+                                         enable: enableUse}" data-name = "AlarmTime" />
 							</td>
 						</tr>
 						<tr class = "row">
@@ -112,7 +115,7 @@
 								<!-- A3_11: Error time -->
 								<input tabindex="7" style="width: 50px" data-bind="ntsTextEditor:{
                                          value: errTime,
-                                         enable: true}" />
+                                         enable: enableUse}" />
 							</td>
 						</tr>
 						<tr class = "row">
@@ -127,10 +130,10 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectSel,
-									enable: true }">
+									enable: enableUse }">
 								</div>
 								<!-- A3_14: Open Dialog Divergence Reason -->
-								<button  tabindex="9" id="inpDialog" style = "margin-left: 30px;" data-bind="click: openBDialog">#{i18n.getText('KMK011_15')}</button>
+								<button  tabindex="9" id="inpDialog" style = "margin-left: 30px;" data-bind="click: openBDialog, enable: enableUse">#{i18n.getText('KMK011_15')}</button>
 							</td>					
 						</tr>
 						<tr>
@@ -139,7 +142,7 @@
 								<!-- A3_15: Check error(select) -->
 								<div tabindex="10" style="margin-bottom: 10px" data-bind="ntsCheckBox:{
 									checked: checkErrSelect,
-									 enable: enable,
+									 enable: enableUse,
 									  text: '#{i18n.getText('KMK011_16')}'}">
 								 </div>
 							</td>
@@ -156,7 +159,7 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectInp,
-									enable: true }">
+									enable: enableUse }">
 								</div>
 							</td>
 						</tr>
@@ -166,7 +169,7 @@
 								<!-- A3_18: Check err (input) -->
 								<div tabindex="12" data-bind="ntsCheckBox:{
 									checked: checkErrInput,
-									 enable: enable,
+									 enable: enableUse,
 									  text: '#{i18n.getText('KMK011_18')}'}">
 								 </div>
 							</td>
