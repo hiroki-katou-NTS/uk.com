@@ -4,6 +4,7 @@ module ccg031.b.viewmodel {
     import windows = nts.uk.ui.windows;
     import errors = nts.uk.ui.errors;
     import resource = nts.uk.resource;
+    
     export class ScreenModel {
         // PGType
         pgType: number;
@@ -44,8 +45,8 @@ module ccg031.b.viewmodel {
             self.selectedPart = ko.observable(null);
             self.listPartColumn = [
                 { headerText: "ID", key: "topPagePartID", dataType: "string", hidden: true },
-                { headerText: "コード", key: "code", dataType: "string", width: 50 },
-                { headerText: "名称", key: "name", dataType: "string" },
+                { headerText: resource.getText("CCG031_27"), key: "code", dataType: "string", width: 50 },
+                { headerText: resource.getText("CCG031_28"), key: "name", dataType: "string" },
             ];
             // External Url
             self.isExternalUrl = ko.observable(false);
@@ -83,10 +84,10 @@ module ccg031.b.viewmodel {
         /** Submit Dialog */
         submitDialog(): void {
             var self = this;
-            $(".nts-validate").trigger("validate");
+            if (self.isExternalUrl() === true)
+                $(".nts-validate").trigger("validate");
             _.defer(() => {
-                //if (!errors.hasError()) {
-                if ($(".nts-validate").ntsError("hasError")) {
+                if (!$(".nts-validate").ntsError("hasError")) {
                     var placement: model.Placement = self.buildReturnPlacement();
                     windows.setShared("placement", placement, false);
                     windows.close();
@@ -105,19 +106,19 @@ module ccg031.b.viewmodel {
             this.isExternalUrl(isExternalUrl);
             if (isExternalUrl !== true) {
                 if (nts.uk.ui._viewModel)
-                    errors.clearAll();
+                    $(".nts-validate").ntsError("clear");
                 var listPart = _.filter(this.allPart(), ['type', partType]);
                 this.listPart(listPart);
                 this.isExternalUrl(isExternalUrl);
                 this.selectFirstPart();
             }
-            // Instruction Text
+            // UI binding: Instruction Text
             if (partType === 0)
-                this.instructionText("CCG031_17");
+                this.instructionText(resource.getText("CCG031_17"));
             if (partType === 1)
-                this.instructionText("CCG031_24");
+                this.instructionText(resource.getText("CCG031_24"));
             if (partType === 2)
-                this.instructionText("CCG031_19");
+                this.instructionText(resource.getText("CCG031_19"));
         }
         
         /** Change Selected Part */
@@ -145,12 +146,17 @@ module ccg031.b.viewmodel {
             
             // In case is TopPagePart
             if (self.selectedPartType() !== 3) {
-                name = self.selectedPart().name;
-                width = self.selectedPart().width;
-                height = self.selectedPart().height;
-                topPagePartID = self.selectedPart().topPagePartID;
-                topPagePartType = self.selectedPart().type;
-                url = "";
+                if (self.selectedPart() !== undefined) {
+                    name = self.selectedPart().name;
+                    width = self.selectedPart().width;
+                    height = self.selectedPart().height;
+                    topPagePartID = self.selectedPart().topPagePartID;
+                    topPagePartType = self.selectedPart().type;
+                    url = "";
+                }
+                else {
+                    return null;
+                }
             }
             
             var placement: model.Placement = new model.Placement(

@@ -94,14 +94,12 @@
 		table {
 			border-collapse: collapse;
 			width: 100%;
-			min-width: 510px;
 			margin: 0;
 		}
 		
 		table th,
 		table td {
 			border: solid 1px #bbb;
-			white-space: nowrap;
 			padding: 3px;
 			height: 24px;
 			font-family: "Meiryo UI";
@@ -115,14 +113,16 @@
 		}
 		
 		table thead tr{
-			display: block;
+
 			position: relative;
 		}
 		
 		table tbody {
-			float:left;
-			display: block;
+
 			overflow: auto;
+		}
+		table tbody tr td:last-child{
+			color:gray;
 		}
 	}
 }

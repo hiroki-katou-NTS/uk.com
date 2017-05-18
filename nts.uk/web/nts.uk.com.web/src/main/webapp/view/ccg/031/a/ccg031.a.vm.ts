@@ -49,11 +49,10 @@ module ccg031.a.viewmodel {
                             item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
                             item.placementPartDto.topPagePartID, item.placementPartDto.type);
                     });
+                    listPlacement = _.orderBy(listPlacement, ['column','row'], ['asc','asc']);
                     self.placements(listPlacement);
                 }
-                _.defer(() => {
-                    self.initDisplay();
-                });
+                _.defer(() => { self.initDisplay(); });
                 dfd.resolve();
             }).fail((res: any) => {
                 dfd.fail();
@@ -67,8 +66,7 @@ module ccg031.a.viewmodel {
             service.registry(self.parentCode, self.layoutID, self.pgType, self.placements())
                 .done((data) => {
                     self.layoutID = data;
-                    dialog.alert("Msg_15");
-                    //dialog.alert(resource.getMessage("Msg_15"));
+                    dialog.alert(resource.getMessage("Msg_15"));
                 }).fail((res) => {
                     dialog.alert(resource.getMessage(res.messageId));
                 });
@@ -135,10 +133,15 @@ module ccg031.a.viewmodel {
 
         /** Init all Widget display & binding */
         private initDisplay(): void {
-            this.markOccupiedAll();
-            this.autoExpandLayout();
-            this.setupPositionAndSizeAll();
-            this.setupDragDrop();
+            var self = this;
+            self.autoExpandLayout();
+            self.markOccupiedAll();
+            if (self.placements().length > 0) {
+                var movingPlacementIds = self.layoutGrid().markOccupied(self.placements()[0]);
+                self.reorderPlacements(movingPlacementIds, [self.placements()[0].placementID]);
+            }
+            self.setupPositionAndSizeAll();
+            self.setupDragDrop();
         }
 
         /** Setup Draggable & Droppable */
@@ -228,7 +231,7 @@ module ccg031.a.viewmodel {
             });
         }
 
-        /** Check 2 placement intersect */
+        /** Check 2 placements is intersect */
         private checkIntersect(placeA: model.Placement, placeB: model.Placement): boolean {
             var AX1: number = placeA.column;
             var AY1: number = placeA.row;

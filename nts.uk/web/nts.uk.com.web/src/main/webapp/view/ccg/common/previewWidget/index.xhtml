@@ -25,18 +25,23 @@
 				<div class="placement-wraper">
 					<div class="placement-container overflow-x overflow-y">
 						<div class="widget-container">
-							<com:ko-foreach bind="placements">
-								<div class="widget-panel preview" data-bind="attr: {id: placementID}">
-									<div class="panel-header">
-										<span class="title" data-bind="text: name"></span>
+							<com:ko-if bind="isEmpty">
+								<span class="empty-message">#{i18n.getText("CCG014_15")}</span>
+							</com:ko-if>
+							<com:ko tag="ifnot" bind="isEmpty">
+								<com:ko-foreach bind="placements">
+									<div class="widget-panel preview" data-bind="attr: {id: placementID}, visible: !$parent.isEmpty()" style="display:none;">
+										<div class="panel-header">
+											<span class="title" data-bind="text: name"></span>
+										</div>
+										<div class="panel-content placeholder">
+											<!-- External Url -->
+											<iframe data-bind="visible: isExternalUrl, attr:{src: url}"  />
+											<!-- TopPage Part -->
+										</div>
 									</div>
-									<div class="panel-content placeholder">
-										<!-- External Url -->
-										<iframe data-bind="visible: isExternalUrl, attr:{src: url}"  />
-										<!-- TopPage Part -->
-									</div>
-								</div>
-							</com:ko-foreach>
+								</com:ko-foreach>
+							</com:ko>
 						</div>
 					</div>
 				</div>

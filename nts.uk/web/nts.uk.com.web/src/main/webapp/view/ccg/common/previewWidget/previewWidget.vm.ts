@@ -1,22 +1,31 @@
 module previewWidget.viewmodel {
     import model = ccg.model;
     import windows = nts.uk.ui.windows;
+    import location = nts.uk.request.location;
 
     export class ScreenModel {
         layoutID: any;
         placements: KnockoutObservableArray<model.Placement>;
+        isEmpty: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
             self.layoutID = null;
             self.placements = ko.observableArray([]);
+            self.placements.subscribe((changes) => {
+                if (changes.length > 0)
+                    self.isEmpty(false);
+                else
+                    self.isEmpty(true);
+            });
+            self.isEmpty = ko.observable(true);
         }
 
         /** Start Page */
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.layoutID = self.getUrlParameter('layoutid');
+            self.layoutID = location.current.queryString.items['layoutid'];
             service.active(self.layoutID).done((data: model.LayoutDto) => {
                 if (data !== undefined) {
                     let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
@@ -40,18 +49,6 @@ module previewWidget.viewmodel {
             windows.close();
         }
 
-        /** Get Url QueryString */
-        getUrlParameter(queryString: string): any {
-            var url = decodeURIComponent(window.location.search.substring(1));
-            var queryStrings = url.split('&');
-            for (var i = 0; i < queryStrings.length; i++) {
-                var queryStringName = queryStrings[i].split('=');
-                if (queryStringName[0] === queryString) {
-                    return queryStringName[1] === undefined ? true : queryStringName[1];
-                }
-            }
-        };
-        
         /** Init all Widget display & binding */
         private initDisplay(): void {
             this.setupPositionAndSizeAll();
