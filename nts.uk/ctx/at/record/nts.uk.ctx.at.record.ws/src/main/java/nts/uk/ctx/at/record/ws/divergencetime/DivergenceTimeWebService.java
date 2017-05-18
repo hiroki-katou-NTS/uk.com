@@ -63,6 +63,10 @@ public class DivergenceTimeWebService extends WebService{
 	public List<DivergenceTimeDto> getAllDivTime(){
 		return this.getAllDivTime.getAllDivTime();
 	}
+	/**
+	 * update divergence time
+	 * @param command
+	 */
 	@POST
 	@Path("updatedivtime")
 	public void updateDivTime(UpdateDivergenceTimeCommand command){
@@ -87,6 +91,10 @@ public class DivergenceTimeWebService extends WebService{
 	public void addDivReason(AddDivergenceReasonCommand command){
 		this.addDivReason.handle(command);
 	}
+	/**
+	 * update divergence reason
+	 * @param command
+	 */
 	@POST
 	@Path("updatedivreason")
 	public void updateDivReason(UpdateDivergenceReasonCommand command){
@@ -130,6 +138,11 @@ public class DivergenceTimeWebService extends WebService{
 	public List<DivergenceItemNameDto> getItemSelected(@PathParam("divTimeId") int divTimeId){
 		return this.getNameItem.getItemSelected(divTimeId);
 	}
+	/**
+	 * get all time item name
+	 * @param listAttendanceItemId
+	 * @return
+	 */
 	@POST
 	@Path("getname")
 	public List<DivergenceItemDto> getAllName(List<Integer> listAttendanceItemId){

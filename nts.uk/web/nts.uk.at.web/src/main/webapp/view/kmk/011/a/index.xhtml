@@ -67,7 +67,7 @@
 							</td>
 						</tr>
 						<tr class = "row">
-							<td data-bind="with: label_003" >
+							<td>
 								<!--A3_3 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_9')}</div>
 							</td>
@@ -152,9 +152,7 @@
 							<td>
 								<!-- A3_17: Set use input -->
 								<div tabindex="11" class="cf" data-bind="ntsSwitchButton: {
-									options: ([
-						                    { code: '1', name: '#{i18n.getText('SYSTEM_Enum_UseAtr_Use')}' },
-						                    { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }]),
+									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectInp,

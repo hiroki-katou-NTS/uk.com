@@ -2,11 +2,6 @@ module kmk011.a.viewmodel {
 
     export class ScreenModel {
         //A_label_x
-        label_002: KnockoutObservable<model.Labels>;
-        label_003: KnockoutObservable<model.Labels>;
-        label_004: KnockoutObservable<model.Labels>;
-        label_005: KnockoutObservable<model.Labels>;
-        label_006: KnockoutObservable<model.Labels>;
         columns: KnockoutObservableArray<any>;
         dataSource: KnockoutObservableArray<model.Item>;
         currentCode: KnockoutObservable<any>;
@@ -14,7 +9,6 @@ module kmk011.a.viewmodel {
         selectUse: KnockoutObservable<any>;
         selectSel: KnockoutObservable<any>;
         selectInp: KnockoutObservable<any>;
-        lstItemTime: KnockoutObservableArray<model.TimeItem>;
         divTimeName: KnockoutObservable<string>;
         timeItemName: KnockoutObservable<string>;
         alarmTime: KnockoutObservable<string>;
@@ -32,27 +26,15 @@ module kmk011.a.viewmodel {
         constructor() {
             var self = this;
             self.list = ko.observable();
-            self.label_002 = ko.observable(new model.Labels());
-            self.label_003 = ko.observable(new model.Labels());
-            self.label_004 = ko.observable(new model.Labels());
-            self.label_005 = ko.observable(new model.Labels());
-            self.label_006 = ko.observable(new model.Labels());
             self.currentCode = ko.observable(1);
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'divTimeId', width: 100  },
-                { headerText: '名称', key: 'divTimeName', width: 150 }
+                { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divTimeId', width: 100  },
+                { headerText: nts.uk.resource.getText('KMK011_5'), key: 'divTimeName', width: 150 }
             ]);
             self.dataSource = ko.observableArray([]);
-            self.lstItemTime = ko.observableArray([
-                new model.TimeItem(1,'勤怠項目名称1'),
-                new model.TimeItem(2,'勤怠項目名称2'),
-                new model.TimeItem(3,'勤怠項目名称3')
-                ]);
-//            self.use = ko.observable(nts.uk.resource.getText("Enum_UseAtr_Use"));
-//            self.use = ko.observable('使用する')
             self.useSet = ko.observableArray([
-                    { code: '1', name: '使用する' },
-                    { code: '0', name: '使用しない' },
+                    { code: '1', name: nts.uk.resource.getText("Enum_UseAtr_Use")},
+                    { code: '0', name: nts.uk.resource.getText("Enum_UseAtr_NotUse")},
                 ]);
             self.divTimeName = ko.observable('');    
             self.timeItemName = ko.observable('');
@@ -155,8 +137,7 @@ module kmk011.a.viewmodel {
                 console.log(listAllId);
                 nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                     var list  = nts.uk.ui.windows.getShared('selectedChildAttendace');
-//                    var list = [101,104,109,113];
-                self.list(list);
+                    self.list(list);
                     var listUpdate = new Array<service.model.DivergenceTimeItem>();
                     for(let i=0;i<list.length;i++){
                         let itemUpdate = new service.model.DivergenceTimeItem(self.divTimeId(),list[i]);
@@ -190,14 +171,13 @@ module kmk011.a.viewmodel {
                     var Object = new service.model.ObjectDivergence(divTime,listAdd);
                     service.updateDivTime(Object).done(function(){
                         self.getAllDivTimeNew();
-                        nts.uk.ui.dialog.alert('登録しました。');
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                     }).fail(function(error) {
                         if(error.message == 'Msg_82'){
-                            $('#inpAlarmTime').ntsError('set', 'アラーム時間');
+                            $('#inpAlarmTime').ntsError('set', nts.uk.resource.getMessage(error.message));
                         }else{
-                            $('#inpDialog').ntsError('set', '選択肢の設定');
+                            $('#inpDialog').ntsError('set', nts.uk.resource.getMessage(error.message));
                         }
-//                        nts.uk.ui.dialog.alert(error.message);
                     })
                     dfd.resolve();
                     return dfd.promise();
@@ -258,39 +238,6 @@ module kmk011.a.viewmodel {
                  self.timeItemName(strName);
                 strName ='';
             }
-        }
-    }
-    export module model{ 
-        export class Labels {
-            constraint: string = 'LayoutCode';
-            inline: KnockoutObservable<boolean>;
-            required: KnockoutObservable<boolean>;
-            enable: KnockoutObservable<boolean>;
-            constructor() {
-                var self = this;
-                self.inline = ko.observable(true);
-                self.required = ko.observable(true);
-                self.enable = ko.observable(true);
-            }
-        }
-    
-        export class BoxModel {
-            id: number;
-            name: string;
-            constructor(id, name) {
-                var self = this;
-                self.id = id;
-                self.name = name;
-            }
-        }
-        
-        export class TimeItem{
-            attendanceId: number;
-            attendanceName: string;
-            constructor(attendanceId: number, attendanceName: string){
-                this.attendanceId = attendanceId;
-                this.attendanceName = attendanceName;
-            }     
         }
     }
 }

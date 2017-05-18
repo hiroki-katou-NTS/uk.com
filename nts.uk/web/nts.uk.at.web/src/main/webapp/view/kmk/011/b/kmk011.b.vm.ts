@@ -2,18 +2,11 @@ module kmk011.b.viewmodel {
 
     export class ScreenModel {
         //A_label_x
-        label_002: KnockoutObservable<model.Labels>;
-        label_003: KnockoutObservable<model.Labels>;
-        label_004: KnockoutObservable<model.Labels>;
-        label_005: KnockoutObservable<model.Labels>;
-        label_006: KnockoutObservable<model.Labels>;
-        sel_002: KnockoutObservable<string>;
         columns: KnockoutObservableArray<any>;
         dataSource: KnockoutObservableArray<model.Item>;
         currentCode: KnockoutObservable<string>;
         switchUSe3: KnockoutObservableArray<any>;
         requiredAtr: KnockoutObservable<any>;
-        inp_A34: KnockoutObservable<string>;
         divReasonCode: KnockoutObservable<string>;
         divReasonContent: KnockoutObservable<string>;
         enableCode: KnockoutObservable<boolean>;
@@ -24,24 +17,17 @@ module kmk011.b.viewmodel {
         enableDel: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-            self.label_002 = ko.observable(new model.Labels());
-            self.label_003 = ko.observable(new model.Labels());
-            self.label_004 = ko.observable(new model.Labels());
-            self.label_005 = ko.observable(new model.Labels());
-            self.label_006 = ko.observable(new model.Labels());
-            self.sel_002 = ko.observable('');
             self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'divReasonCode', width: 100  },
-                { headerText: '理由', key: 'divReasonContent', width: 150 }
+                { headerText: nts.uk.resource.getText('KMK011_37'), key: 'divReasonCode', width: 100  },
+                { headerText: nts.uk.resource.getText('KMK011_38'), key: 'divReasonContent', width: 150 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.switchUSe3 = ko.observableArray([
-                    { code: '1', name: '必須する' },
-                    { code: '0', name: '必須しない' },
+                    { code: '1', name: nts.uk.resource.getText("Enum_DivergenceReasonInputRequiredAtr_Required") },
+                    { code: '0', name: nts.uk.resource.getText("Enum_DivergenceReasonInputRequiredAtr_Optional") },
                 ]);
             self.requiredAtr = ko.observable(0);    
-            self.inp_A34 = ko.observable('時間１');    
             self.divReasonCode = ko.observable('');
             self.divReasonContent = ko.observable('');
             self.enableCode = ko.observable(false);
@@ -140,10 +126,10 @@ module kmk011.b.viewmodel {
             self.convertCode(self.divReasonCode());
             var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
             service.addDivReason(divReason).done(function() {
-                nts.uk.ui.dialog.alert('登録しました。');
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                 self.getAllDivReasonNew();
             }).fail(function(error) {
-                $('#inpCode').ntsError('set', error.message);
+                $('#inpCode').ntsError('set', nts.uk.resource.getMessage(error.message));
             });
         }
         convertCode(value: string){
@@ -184,14 +170,14 @@ module kmk011.b.viewmodel {
         //delete divergence reason
         deleteDivReason(){
             var self = this;
-            nts.uk.ui.dialog.confirm('選択中のデータを削除しますか？').ifYes(function(){
+            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function(){
                 let divReason = self.itemDivReason();
                 self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
                 service.deleteDivReason(divReason).done(function(){
                     self.getDivReasonList_afterDelete();
-                    nts.uk.ui.dialog.alert('削除しました。');
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'));
                 });
-            }).ifCancel(function(){
+            }).ifNo(function(){
                 return;
             })
         }
@@ -227,19 +213,6 @@ module kmk011.b.viewmodel {
         }
     }
     export module model{ 
-        export class Labels {
-            constraint: string = 'LayoutCode';
-            inline: KnockoutObservable<boolean>;
-            required: KnockoutObservable<boolean>;
-            enable: KnockoutObservable<boolean>;
-            constructor() {
-                var self = this;
-                self.inline = ko.observable(true);
-                self.required = ko.observable(true);
-                self.enable = ko.observable(true);
-            }
-        }
-    
         export class Item{
             divTimeId: number;
             divReasonCode: string;
