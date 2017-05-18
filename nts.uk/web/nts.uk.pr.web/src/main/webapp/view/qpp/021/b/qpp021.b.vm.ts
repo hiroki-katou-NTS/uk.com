@@ -53,10 +53,7 @@ module nts.uk.pr.view.qpp021.b {
                     new PrintTypeModel(2, 'レーザー　A4　縦向き　3人'),
                     new PrintTypeModel(3, 'レーザー　A4　横向き　2人'),
                     new PrintTypeModel(4, 'レーザー(圧着式)　縦向き　1人'),
-                    new PrintTypeModel(5, 'レーザー(圧着式)　横向き　1人'),
-                    new PrintTypeModel(6, 'ドットプリンタ　連続用紙　1人'),
-                    new PrintTypeModel(7, 'PAYS単票'),
-                    new PrintTypeModel(8, 'PAYS連続')
+                    new PrintTypeModel(5, 'レーザー(圧着式)　横向き　1人')
                 ]);
                 self.selectPrintTypeListCode = ko.observable(0);
 
@@ -140,18 +137,43 @@ module nts.uk.pr.view.qpp021.b {
             }
 
             openDialogRefundPadding(): void {
-                var printTypeRandom = Math.floor((Math.random() * 3) + 1);
-                if (printTypeRandom == 1) {
-                    nts.uk.ui.windows.sub.modal('/view/qpp/021/e/index.xhtml', { title: '余白設定', dialogClass: 'no-close' });
+                var self = this;
+                var pageRefundPadding: number;
+                switch (+self.selectPrintTypeListCode()) {
+                    case 0:
+                        pageRefundPadding = 1;
+                        break;
+                    case 1:
+                        pageRefundPadding = 2;
+                        break;
+                    case 2:
+                        pageRefundPadding = 3;
+                        break;
+                    case 3:
+                        pageRefundPadding = 2;
+                        break;
+                    case 4:
+                        pageRefundPadding = 1;
+                        break;
+                    case 5:
+                        pageRefundPadding = 1;
+                        break;
+                    default:
+                        break;
+                }
+                switch (pageRefundPadding) {
+                    case 1:
+                        nts.uk.ui.windows.sub.modal('/view/qpp/021/e/index.xhtml', { title: '余白設定', dialogClass: 'no-close' });
+                        break;
+                    case 2:
+                        nts.uk.ui.windows.sub.modal('/view/qpp/021/f/index.xhtml', { title: '余白設定2', dialogClass: 'no-close' });
+                        break;
+                    case 3:
+                        nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
+                        break;
+                    default: break;
                 }
 
-                if (printTypeRandom == 2) {
-                    nts.uk.ui.windows.sub.modal('/view/qpp/021/f/index.xhtml', { title: '余白設定2', dialogClass: 'no-close' });
-                }
-
-                if (printTypeRandom == 3) {
-                    nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
-                }
             }
 
             collectDataQuery(): PaymentReportQueryDto {
