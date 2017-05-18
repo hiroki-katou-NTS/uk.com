@@ -101,11 +101,11 @@ module nts.uk.ui.validation {
             var isDecimalNumber = false;
             if (this.option !== undefined) {
                 if(nts.uk.util.isNullOrUndefined(inputText) || inputText.trim().length <= 0){
-                    if(this.option['required'] === true){    
+                    if(this.option['required'] === true && nts.uk.util.isNullOrEmpty(this.option['defaultValue'])){    
                         result.fail('This field is required.');
                         return result;
                     } else {
-                        result.success('');
+                        result.success(this.option['defaultValue']);
                         return result;
                     }    
                 }
