@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.PaycompConfirm;
 import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsdtPaycompConfirm;
 import nts.uk.file.pr.app.export.comparingsalarybonus.ComparingSalaryBonusQueryRepository;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DepartmentDto;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.SalaryBonusDetail;
 
 /**
@@ -23,7 +24,7 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 		implements ComparingSalaryBonusQueryRepository {
 
 	private String SELECT_1 = "SELECT DISTINCT i.itemAbName, h.qstdtPaymentHeaderPK.processingYM, h.employeeName, h.specificationCode, h.makeMethodFlag, d.qstdtPaymentDetailPK.personId, "
-			+ " d.qstdtPaymentDetailPK.categoryATR,  d.qstdtPaymentDetailPK.itemCode ,d.value, pb.nameB, pc.scd, dep.depName, dep.cmnmtDepPK.departmentCode, dep.hierarchyId"
+			+ " d.qstdtPaymentDetailPK.categoryATR,  d.qstdtPaymentDetailPK.itemCode ,d.value, pb.nameB, pc.scd, dep.depName, dep.cmnmtDepPK.departmentCode, dep.hierarchyId, dep.cmnmtDepPK.historyId "
 			+ "  FROM QlsptPaycompFormDetail c" + " INNER JOIN QcamtItem_v1 i"
 			+ " ON i.qcamtItemPK.ctgAtr = c.paycompFormDetailPK.categoryATR  AND i.qcamtItemPK.itemCd = c.paycompFormDetailPK.itemCode "
 			+ " AND i.qcamtItemPK.ccd  = c.paycompFormDetailPK.companyCode  " + " INNER JOIN  QstdtPaymentHeader h"
@@ -36,11 +37,11 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 			+ " AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd " + " INNER JOIN PbsmtPersonBase pb"
 			+ " ON pb.pid = d.qstdtPaymentDetailPK.personId"
 			+ " INNER JOIN PcpmtPersonCom pc ON pc.pcpmtPersonComPK.pid = d.qstdtPaymentDetailPK.personId AND pc.pcpmtPersonComPK.ccd = d.qstdtPaymentDetailPK.companyCode"
-			+ " INNER JOIN  CmnmtDep dep ON dep.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd AND dep.startDate = h.standardDate "
+			+ " INNER JOIN  CmnmtDep dep ON dep.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd AND  h.standardDate > dep.startDate AND  h.standardDate < dep.endDate "
 			+ " WHERE c.paycompFormDetailPK.formCode = :formCode AND  h.qstdtPaymentHeaderPK.personId IN :personId"
 			+ " AND h.qstdtPaymentHeaderPK.payBonusAtr = 0" + " AND h.qstdtPaymentHeaderPK.processingYM =:processingYM"
 			+ " AND   c.paycompFormDetailPK.companyCode =:companyCode ORDER BY dep.cmnmtDepPK.departmentCode";
-	private final String SELECT_DEPCODE = "SELECT DISTINCT dep.cmnmtDepPK.departmentCode"
+	private final String SELECT_DEPCODE = "SELECT DISTINCT dep.cmnmtDepPK.departmentCode, dep.cmnmtDepPK.historyId, dep.hierarchyId "
 			+ "  FROM QlsptPaycompFormDetail c" + " INNER JOIN QcamtItem_v1 i"
 			+ " ON i.qcamtItemPK.ctgAtr = c.paycompFormDetailPK.categoryATR  AND i.qcamtItemPK.itemCd = c.paycompFormDetailPK.itemCode "
 			+ " AND i.qcamtItemPK.ccd  = c.paycompFormDetailPK.companyCode  " + " INNER JOIN  QstdtPaymentHeader h"
@@ -53,10 +54,11 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 			+ " AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd " + " INNER JOIN PbsmtPersonBase pb"
 			+ " ON pb.pid = d.qstdtPaymentDetailPK.personId"
 			+ " INNER JOIN PcpmtPersonCom pc ON pc.pcpmtPersonComPK.pid = d.qstdtPaymentDetailPK.personId AND pc.pcpmtPersonComPK.ccd = d.qstdtPaymentDetailPK.companyCode"
-			+ " INNER JOIN  CmnmtDep dep ON dep.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd AND dep.startDate = h.standardDate "
+			+ " INNER JOIN  CmnmtDep dep ON dep.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd AND  h.standardDate > dep.startDate AND  h.standardDate < dep.endDate"
 			+ " WHERE c.paycompFormDetailPK.formCode = :formCode AND  h.qstdtPaymentHeaderPK.personId IN :personId"
 			+ " AND h.qstdtPaymentHeaderPK.payBonusAtr = 0" + " AND h.qstdtPaymentHeaderPK.processingYM =:processingYM"
-			+ " AND   c.paycompFormDetailPK.companyCode =:companyCode ORDER BY dep.cmnmtDepPK.departmentCode";
+			+ " AND c.paycompFormDetailPK.companyCode =:companyCode "
+			+ " ORDER BY dep.cmnmtDepPK.departmentCode";
 	private final String SELECT_PAYCOMP_COMFIRM = "SELECT c FROM QlsdtPaycompConfirm as c WHERE "
 			+ "c.paycompConfirmPK.companyCode = :companyCode AND c.paycompConfirmPK.personId IN :personId "
 			+ "AND c.paycompConfirmPK.processYMEarly = :processYMEarly AND c.paycompConfirmPK.processYMLater = :processYMLater";
@@ -77,15 +79,18 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 		salary.setDepartmentCode(salaryBonusDetail[12].toString());
 		salary.setDepartmentName(salaryBonusDetail[11].toString());
 		salary.setHierarchyId(salaryBonusDetail[13].toString());
+		salary.setHistoryId(salaryBonusDetail[14].toString());
 		return salary;
 	}
 	
-	private final String toDomainString(Object[] obj) {
-		
-		return obj[0].toString();
-		
+	private final DepartmentDto toDomainDepartment(Object[] department) {
+		val department1 = new DepartmentDto();
+		department1.setDepCode(department[0].toString());
+		department1.setHistoryId(department[1].toString());
+		department1.setHyrachi(department[2].toString());
+		return department1;
 	}
-
+	
 	private static PaycompConfirm convertToDomainPaycompConfirm(QlsdtPaycompConfirm entity) {
 
 		return PaycompConfirm.createFromJavaType(entity.paycompConfirmPK.companyCode, entity.paycompConfirmPK.personId,
@@ -121,10 +126,10 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 	}
 
 	@Override
-	public List<?> getDepartmentCodeList(String companyCode, List<String> PIDs, int yearMonth1, String formCode) {
+	public List<DepartmentDto> getDepartmentCodeList(String companyCode, List<String> PIDs, int yearMonth1, String formCode) {
 		return this.queryProxy().query(SELECT_DEPCODE, Object[].class).setParameter("formCode", formCode)
 				.setParameter("personId", PIDs).setParameter("processingYM", yearMonth1)
-				.setParameter("companyCode", companyCode).getList();
+				.setParameter("companyCode", companyCode).getList(c -> toDomainDepartment(c));
 	}
 
 }

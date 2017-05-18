@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class DataRowComparingSalaryBonusDto {
+	private String hyrachi ="";
 	/** 項目名 */
 	private String itemName;
 

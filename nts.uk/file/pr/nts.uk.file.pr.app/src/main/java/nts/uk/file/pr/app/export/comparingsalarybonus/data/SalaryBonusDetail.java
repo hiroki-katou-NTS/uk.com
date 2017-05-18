@@ -26,4 +26,5 @@ public class SalaryBonusDetail {
 	private String departmentName;
 	private String departmentCode;
 	private String hierarchyId;
+	private String historyId;
 }

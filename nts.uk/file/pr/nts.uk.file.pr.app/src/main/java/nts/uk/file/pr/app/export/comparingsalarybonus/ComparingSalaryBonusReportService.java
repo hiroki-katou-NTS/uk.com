@@ -11,19 +11,24 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.ctx.pr.report.app.payment.comparing.confirm.find.DetailDifferentialDto;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.ComfirmDifferentRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.PaycompConfirm;
+import nts.uk.ctx.pr.report.dom.payment.comparing.setting.ComparingPrintSet;
+import nts.uk.ctx.pr.report.dom.payment.comparing.setting.ComparingPrintSetRepository;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusHeaderReportData;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusReportData;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DataRowComparingSalaryBonus;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DataRowComparingSalaryBonusDto;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DeparmentInf;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DepartmentDto;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DepartmentFlatMap;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DepartmentHyrachi;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DetailEmployee;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DetailEmployeeDto;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.HeaderTable;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.SalaryBonusDetail;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.TotalByHyrachi;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.TotalValue;
 import nts.uk.file.pr.app.export.comparingsalarybonus.query.ComparingSalaryBonusQuery;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -40,6 +45,9 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 	@Inject
 	private ComfirmDifferentRepository comfirmDiffRepository;
 
+	@Inject
+	private ComparingPrintSetRepository comparingPrintSetRepository;
+
 	private double grandTotalMonth1 = 0.0;
 	private double grandTotalMonth2 = 0.0;
 	private double grandTotalDifferent = 0.0;
@@ -49,140 +57,6 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		ComparingSalaryBonusQuery comparingQuery = context.getQuery();
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyCode = loginUserContext.companyCode();
-		List<SalaryBonusDetail> lstEarlyMonth = this.compareSalaryBonusQueryRepo.getContentReportEarlyMonth(companyCode,
-				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(), comparingQuery.getFormCode());
-		List<SalaryBonusDetail> lstLaterMonth = this.compareSalaryBonusQueryRepo.getContentReportEarlyMonth(companyCode,
-				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth2(), comparingQuery.getFormCode());
-		List<PaycompConfirm> payCompComfirm = this.comfirmDiffRepository.getPayCompComfirm(companyCode,
-				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(), comparingQuery.getMonth2());
-		List<?> lstDepcodeMonth1 = this.compareSalaryBonusQueryRepo.getDepartmentCodeList(companyCode,
-				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(), comparingQuery.getFormCode());
-		List<String> lstDepcode1 = lstDepcodeMonth1.stream().map(c -> {
-			return c.toString();
-		}).collect(Collectors.toList());
-
-		List<DepartmentFlatMap> lstDepartment = lstEarlyMonth.stream().map(c -> {
-			SalaryBonusDetail salary = lstLaterMonth.stream().filter(s -> s.getItemCode().equals(c.getItemCode())
-					&& s.getPersonId().equals(c.getPersonId()) && s.getDepartmentCode().equals(c.getDepartmentCode())
-					&& s.getCategoryATR().equals(c.getCategoryATR()) && s.getHierarchyId().equals(c.getHierarchyId())
-					&& s.getMakeMethodFlag().equals(c.getMakeMethodFlag()) && s.getScd().equals(c.getScd())
-					&& s.getSpecificationCode().equals(c.getSpecificationCode())).findFirst().orElse(null);
-			DataRowComparingSalaryBonus dataRow = new DataRowComparingSalaryBonus();
-			dataRow.setItemCode(c.getItemCode());
-			dataRow.setItemName(c.getItemAbName());
-			dataRow.setMonth1(c.getValue().doubleValue());
-			dataRow.setMonth2(-1);
-			dataRow.setDifferentSalary(0 - c.getValue().doubleValue());
-			if (c.getMakeMethodFlag().equals("1")) {
-				dataRow.setRegistrationStatus1("初期データ作成");
-			} else if (c.getMakeMethodFlag().equals("0")) {
-				dataRow.setRegistrationStatus1("就業システム連動");
-			} else {
-				dataRow.setRegistrationStatus1("");
-			}
-			dataRow.setRegistrationStatus2("");
-			if (salary != null) {
-				dataRow.setMonth2(salary.getValue().doubleValue());
-				if (salary.getMakeMethodFlag().equals("1")) {
-					dataRow.setRegistrationStatus2("初期データ作成");
-				} else if (salary.getMakeMethodFlag().equals("0")) {
-					dataRow.setRegistrationStatus2("就業システム連動");
-				}
-				dataRow.setDifferentSalary(salary.getValue().doubleValue() - c.getValue().doubleValue());
-				lstLaterMonth.remove(salary);
-			}
-			PaycompConfirm payConfirm = payCompComfirm.stream()
-					.filter(p -> p.getPersonID().equals(c.getPersonId()) && p.getItemCode().equals(c.getItemCode())
-							&& p.getProcessingYMEarlier().equals(c.getProcessingYM())
-							&& p.getProcessingYMLater().equals(c.getProcessingYM())
-							&& p.getCategoryAtr().equals(c.getCategoryATR()))
-					.findFirst().orElse(null);
-			if (payConfirm != null) {
-				dataRow.setReason(payConfirm.getReasonDifference().v());
-				if (payConfirm.getConfirmedStatus().value == 1) {
-					dataRow.setConfirmed("O");
-				} else {
-					dataRow.setConfirmed("");
-				}
-			} else {
-				dataRow.setConfirmed("");
-				dataRow.setReason("");
-			}
-			DetailEmployeeDto detailEmployee = new DetailEmployeeDto(c.getPersonId(), c.getEmployeeName(), dataRow);
-			DepartmentFlatMap deparmentInf = new DepartmentFlatMap(c.getDepartmentCode(), c.getDepartmentName(),
-					c.getHierarchyId(), detailEmployee);
-			return deparmentInf;
-
-		}).collect(Collectors.toList());
-
-		List<DepartmentFlatMap> lstDepartmentLasterYM = lstLaterMonth.stream().map(c -> {
-			DataRowComparingSalaryBonus dataRow = new DataRowComparingSalaryBonus();
-			dataRow.setItemCode(c.getItemCode());
-			dataRow.setItemName(c.getItemAbName());
-			dataRow.setMonth1(-1);
-			dataRow.setMonth2(c.getValue().doubleValue());
-			dataRow.setDifferentSalary(c.getValue().doubleValue());
-			if (c.getMakeMethodFlag().equals("1")) {
-				dataRow.setRegistrationStatus2("初期データ作成");
-			} else if (c.getMakeMethodFlag().equals("0")) {
-				dataRow.setRegistrationStatus2("就業システム連動");
-			} else {
-				dataRow.setRegistrationStatus2("");
-			}
-			dataRow.setRegistrationStatus1("");
-			PaycompConfirm payConfirm = payCompComfirm.stream()
-					.filter(p -> p.getPersonID().equals(c.getPersonId()) && p.getItemCode().equals(c.getItemCode())
-							&& p.getProcessingYMEarlier().equals(c.getProcessingYM())
-							&& p.getProcessingYMLater().equals(c.getProcessingYM())
-							&& p.getCategoryAtr().equals(c.getCategoryATR()))
-					.findFirst().orElse(null);
-			if (payConfirm != null) {
-				dataRow.setReason(payConfirm.getReasonDifference().v());
-				if (payConfirm.getConfirmedStatus().value == 1) {
-					dataRow.setConfirmed("O");
-				} else {
-					dataRow.setConfirmed("");
-				}
-			} else {
-				dataRow.setConfirmed("");
-				dataRow.setReason("");
-			}
-			DetailEmployeeDto detailEmployee = new DetailEmployeeDto(c.getPersonId(), c.getEmployeeName(), dataRow);
-			DepartmentFlatMap deparmentInf = new DepartmentFlatMap(c.getDepartmentCode(), c.getDepartmentName(),
-					c.getHierarchyId(), detailEmployee);
-			return deparmentInf;
-		}).collect(Collectors.toList());
-		lstDepartment.addAll(lstDepartmentLasterYM);
-
-		List<DeparmentInf> lstDepartmentFinal = new ArrayList<>();
-		lstDepcode1.stream().forEach(c -> {
-			DetailEmployee detail = new DetailEmployee();
-			List<DetailEmployee> lstEmployee = new ArrayList<>();
-			DepartmentFlatMap department = lstDepartment.stream().filter(dep -> dep.getDepcode().equals(c)).findFirst()
-					.orElse(null);
-			comparingQuery.getEmployeeCodeList().stream().forEach(em -> {
-				List<DepartmentFlatMap> lstDepartment2 = lstDepartment.stream()
-						.filter(dep -> dep.getDepcode().equals(c) && dep.getEmployee().getPersonID().equals(em))
-						.collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
-				if (lstDepartment2.size() > 0) {
-					List<DataRowComparingSalaryBonus> lstDataRow = new ArrayList<>();
-					lstDepartment2.stream().forEach(dep -> {
-						lstDataRow.add(dep.getEmployee().getDataRow());
-					});
-
-					detail.setPersonID(lstDepartment2.get(0).getEmployee().getPersonID());
-					detail.setPersonName(lstDepartment2.get(0).getEmployee().getPersonName());
-					detail.setLstData(lstDataRow);
-					lstEmployee.add(detail);
-				}
-			});
-			if (department != null) {
-				lstDepartmentFinal
-						.add(new DeparmentInf(c, department.getDepname(), department.getHyrachi(), lstEmployee));
-			}
-			System.out.println(lstDepartmentFinal.size());
-		});
-		System.out.println(lstDepartmentFinal.size());
 		// error1
 		if (comparingQuery.getMonth1() == 0 || comparingQuery.getMonth2() == 0) {
 			throw new BusinessException(new RawErrorMessage("比較年月1、比較年月2 が入力されていません。"));
@@ -198,7 +72,7 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		if (comparingQuery.getFormCode().isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("設定が正しくありません。"));
 		}
-
+		List<DeparmentInf> lstDepartmentFinal = this.filterData(comparingQuery, companyCode);
 		// error 10
 		if (lstDepartmentFinal.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
@@ -218,12 +92,13 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 			List<DeparmentInf> lstDepartmentData) {
 		ComparingSalaryBonusReportData reportData = new ComparingSalaryBonusReportData();
 		ComparingSalaryBonusHeaderReportData headerData = new ComparingSalaryBonusHeaderReportData();
+		ComparingPrintSet comparingPrintSet = this.comparingPrintSetRepository.getComparingPrintSet(companyCode)
+				.orElse(null);
 		HeaderTable headerTable = new HeaderTable();
 		this.setDataHeader(comparingQuery, headerData, headerTable);
 		reportData.setHeaderData(headerData);
 		reportData.setHeaderTable(headerTable);
 		reportData.setDeparmentInf(lstDepartmentData);
-
 		// set total of department
 		List<DataRowComparingSalaryBonusDto> lstDivionsTotal = new ArrayList<>();
 		List<DataRowComparingSalaryBonusDto> lstTotalA = new ArrayList<>();
@@ -233,11 +108,47 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		reportData.setLstTotalA(lstTotalA);
 		reportData.setLstTotalC(lstTotalC);
 
+		// set total Hyrachi of department
+		List<Integer> lstHyrachi = new ArrayList<>();
+		if (comparingPrintSet.getHrchyIndex1().value > 0) {
+			lstHyrachi.add(comparingPrintSet.getHrchyIndex1().value);
+		}
+		if (comparingPrintSet.getHrchyIndex2().value > 0) {
+			lstHyrachi.add(comparingPrintSet.getHrchyIndex2().value);
+		}
+		if (comparingPrintSet.getHrchyIndex3().value > 0) {
+			lstHyrachi.add(comparingPrintSet.getHrchyIndex3().value);
+		}
+		if (comparingPrintSet.getHrchyIndex4().value > 0) {
+			lstHyrachi.add(comparingPrintSet.getHrchyIndex4().value);
+		}
+		if (comparingPrintSet.getHrchyIndex5().value > 0) {
+			lstHyrachi.add(comparingPrintSet.getHrchyIndex5().value);
+		}
+
 		// caculate and set data of grand total
 		this.caculateGrandTotal(lstDepartmentData);
+		List<TotalByHyrachi> lstTotal = this.calculateTotalByHyrachi(lstDepartmentData, lstHyrachi, comparingQuery,
+				companyCode);
+		List<DataRowComparingSalaryBonusDto> lstTotalHyrachi = lstTotal.stream().map(c -> {
+			DataRowComparingSalaryBonusDto dataRow = new DataRowComparingSalaryBonusDto();
+			dataRow.setItemName("部門階層累計");
+			dataRow.setHyrachi(c.getHyrachi());
+			dataRow.setMonth1(String.valueOf(c.getGrandTotalHyrachi1()));
+			dataRow.setMonth2(String.valueOf(c.getGrandTotalHyrachi2()));
+			dataRow.setDifferentSalary(String.valueOf(c.getGrandTotalDifferentHyrachi()));
+			return dataRow;
+		}).collect(Collectors.toList());
+		reportData.setLstHyrachiTotal(lstTotalHyrachi);
+		List<DepartmentHyrachi> lstDepartmentHyrachi = this.caculateParent(comparingQuery, companyCode, lstDepartmentData);
+		reportData.setLstDepartmentHyrachi(lstDepartmentHyrachi);
 		DataRowComparingSalaryBonusDto grandTotal = new DataRowComparingSalaryBonusDto();
 		this.setGrandTotal(grandTotal);
 		reportData.setGrandTotal(grandTotal);
+		if (comparingPrintSet != null) {
+			reportData.setConfigPrint(comparingPrintSet);
+		}
+
 		return reportData;
 	}
 
@@ -362,6 +273,192 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 			this.grandTotalMonth2 += c.getTotalMonth2();
 			this.grandTotalDifferent += c.getTotalDifferent();
 		});
+	}
+
+	private List<DeparmentInf> filterData(ComparingSalaryBonusQuery comparingQuery, String companyCode) {
+		List<SalaryBonusDetail> lstEarlyMonth = this.compareSalaryBonusQueryRepo.getContentReportEarlyMonth(companyCode,
+				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(), comparingQuery.getFormCode());
+		List<SalaryBonusDetail> lstLaterMonth = this.compareSalaryBonusQueryRepo.getContentReportEarlyMonth(companyCode,
+				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth2(), comparingQuery.getFormCode());
+		List<PaycompConfirm> payCompComfirm = this.comfirmDiffRepository.getPayCompComfirm(companyCode,
+				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(), comparingQuery.getMonth2());
+		List<DepartmentDto> lstDepcodeMonth1 = this.compareSalaryBonusQueryRepo.getDepartmentCodeList(companyCode,
+				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(), comparingQuery.getFormCode());
+		List<DepartmentFlatMap> lstDepartment = lstEarlyMonth.stream().map(c -> {
+			SalaryBonusDetail salary = lstLaterMonth.stream().filter(s -> s.getItemCode().equals(c.getItemCode())
+					&& s.getPersonId().equals(c.getPersonId()) && s.getDepartmentCode().equals(c.getDepartmentCode())
+					&& s.getCategoryATR().equals(c.getCategoryATR()) && s.getHierarchyId().equals(c.getHierarchyId())
+					&& s.getMakeMethodFlag().equals(c.getMakeMethodFlag()) && s.getScd().equals(c.getScd())
+					&& s.getSpecificationCode().equals(c.getSpecificationCode())).findFirst().orElse(null);
+			DataRowComparingSalaryBonus dataRow = new DataRowComparingSalaryBonus();
+			dataRow.setItemCode(c.getItemCode());
+			dataRow.setItemName(c.getItemAbName());
+			dataRow.setMonth1(c.getValue().doubleValue());
+			dataRow.setMonth2(-1);
+			dataRow.setDifferentSalary(0 - c.getValue().doubleValue());
+			if (c.getMakeMethodFlag().equals("1")) {
+				dataRow.setRegistrationStatus1("初期データ作成");
+			} else if (c.getMakeMethodFlag().equals("0")) {
+				dataRow.setRegistrationStatus1("就業システム連動");
+			} else {
+				dataRow.setRegistrationStatus1("");
+			}
+			dataRow.setRegistrationStatus2("");
+			if (salary != null) {
+				dataRow.setMonth2(salary.getValue().doubleValue());
+				if (salary.getMakeMethodFlag().equals("1")) {
+					dataRow.setRegistrationStatus2("初期データ作成");
+				} else if (salary.getMakeMethodFlag().equals("0")) {
+					dataRow.setRegistrationStatus2("就業システム連動");
+				}
+				dataRow.setDifferentSalary(salary.getValue().doubleValue() - c.getValue().doubleValue());
+				lstLaterMonth.remove(salary);
+			}
+			PaycompConfirm payConfirm = payCompComfirm.stream()
+					.filter(p -> p.getPersonID().equals(c.getPersonId()) && p.getItemCode().equals(c.getItemCode())
+							&& p.getProcessingYMEarlier().equals(c.getProcessingYM())
+							&& p.getProcessingYMLater().equals(c.getProcessingYM())
+							&& p.getCategoryAtr().equals(c.getCategoryATR()))
+					.findFirst().orElse(null);
+			if (payConfirm != null) {
+				dataRow.setReason(payConfirm.getReasonDifference().v());
+				if (payConfirm.getConfirmedStatus().value == 1) {
+					dataRow.setConfirmed("O");
+				} else {
+					dataRow.setConfirmed("");
+				}
+			} else {
+				dataRow.setConfirmed("");
+				dataRow.setReason("");
+			}
+			DetailEmployeeDto detailEmployee = new DetailEmployeeDto(c.getPersonId(), c.getEmployeeName(), dataRow);
+			DepartmentFlatMap deparmentInf = new DepartmentFlatMap(c.getDepartmentCode(), c.getDepartmentName(),
+					c.getHierarchyId(), detailEmployee);
+			return deparmentInf;
+
+		}).collect(Collectors.toList());
+
+		List<DepartmentFlatMap> lstDepartmentLasterYM = lstLaterMonth.stream().map(c -> {
+			DataRowComparingSalaryBonus dataRow = new DataRowComparingSalaryBonus();
+			dataRow.setItemCode(c.getItemCode());
+			dataRow.setItemName(c.getItemAbName());
+			dataRow.setMonth1(-1);
+			dataRow.setMonth2(c.getValue().doubleValue());
+			dataRow.setDifferentSalary(c.getValue().doubleValue());
+			if (c.getMakeMethodFlag().equals("1")) {
+				dataRow.setRegistrationStatus2("初期データ作成");
+			} else if (c.getMakeMethodFlag().equals("0")) {
+				dataRow.setRegistrationStatus2("就業システム連動");
+			} else {
+				dataRow.setRegistrationStatus2("");
+			}
+			dataRow.setRegistrationStatus1("");
+			PaycompConfirm payConfirm = payCompComfirm.stream()
+					.filter(p -> p.getPersonID().equals(c.getPersonId()) && p.getItemCode().equals(c.getItemCode())
+							&& p.getProcessingYMEarlier().equals(c.getProcessingYM())
+							&& p.getProcessingYMLater().equals(c.getProcessingYM())
+							&& p.getCategoryAtr().equals(c.getCategoryATR()))
+					.findFirst().orElse(null);
+			if (payConfirm != null) {
+				dataRow.setReason(payConfirm.getReasonDifference().v());
+				if (payConfirm.getConfirmedStatus().value == 1) {
+					dataRow.setConfirmed("O");
+				} else {
+					dataRow.setConfirmed("");
+				}
+			} else {
+				dataRow.setConfirmed("");
+				dataRow.setReason("");
+			}
+			DetailEmployeeDto detailEmployee = new DetailEmployeeDto(c.getPersonId(), c.getEmployeeName(), dataRow);
+			DepartmentFlatMap deparmentInf = new DepartmentFlatMap(c.getDepartmentCode(), c.getDepartmentName(),
+					c.getHierarchyId(), detailEmployee);
+			return deparmentInf;
+		}).collect(Collectors.toList());
+		lstDepartment.addAll(lstDepartmentLasterYM);
+
+		List<DeparmentInf> lstDepartmentFinal = new ArrayList<>();
+		lstDepcodeMonth1.stream().forEach(c -> {
+			List<DetailEmployee> lstEmployee = new ArrayList<>();
+			DepartmentFlatMap department = lstDepartment.stream().filter(dep -> dep.getDepcode().equals(c.getDepCode()))
+					.findFirst().orElse(null);
+			comparingQuery.getEmployeeCodeList().stream().forEach(em -> {
+				List<DepartmentFlatMap> lstDepartment2 = lstDepartment.stream()
+						.filter(dep -> dep.getDepcode().equals(c.getDepCode())
+								&& dep.getEmployee().getPersonID().equals(em))
+						.collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+				if (lstDepartment2.size() > 0) {
+					List<DataRowComparingSalaryBonus> lstDataRow = new ArrayList<>();
+					lstDepartment2.stream().forEach(dep -> {
+						lstDataRow.add(dep.getEmployee().getDataRow());
+					});
+					DetailEmployee detail = new DetailEmployee();
+					detail.setPersonID(lstDepartment2.get(0).getEmployee().getPersonID());
+					detail.setPersonName(lstDepartment2.get(0).getEmployee().getPersonName());
+					detail.setLstData(lstDataRow);
+					List<DataRowComparingSalaryBonusDto> lstDataDto = detail
+							.convertDataRowComparingSalaryBonusDto(lstDataRow);
+					detail.setLstDataDto(lstDataDto);
+					lstEmployee.add(detail);
+				}
+			});
+			if (department != null) {
+				lstDepartmentFinal.add(new DeparmentInf(c.getDepCode(), department.getDepname(), c.getHistoryId(),
+						department.getHyrachi(), lstEmployee));
+			}
+		});
+		return lstDepartmentFinal;
+	}
+
+	private List<TotalByHyrachi> calculateTotalByHyrachi(List<DeparmentInf> lstDepartInf, List<Integer> lstHyrachi,
+			ComparingSalaryBonusQuery comparingQuery, String companyCode) {
+		List<TotalByHyrachi> lstTotalByHyrachi = new ArrayList<>();
+		List<DepartmentDto> lstDepcodeMonth1 = this.compareSalaryBonusQueryRepo.getDepartmentCodeList(companyCode,
+				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(), comparingQuery.getFormCode());
+		List<DepartmentDto> departmentParents = lstDepcodeMonth1.stream().filter(dm -> dm.getHyrachi().length() == 3)
+				.collect(Collectors.toList());
+
+		departmentParents.stream().forEach(c -> {
+			List<DeparmentInf> lstDepartFilter = lstDepartInf.stream()
+					.filter(s -> (s.getHyrachi().substring(0, 3)).equals(c.getHyrachi())).collect(Collectors.toList());
+			TotalByHyrachi totalByHyrachi = new TotalByHyrachi();
+			totalByHyrachi.setHyrachi(c.getHyrachi());
+			for (int hyrachi : lstHyrachi) {
+				lstDepartFilter.stream().forEach(dep -> {
+					if (dep.getLengthHyrachi() == hyrachi) {
+						totalByHyrachi
+								.setGrandTotalHyrachi1(totalByHyrachi.getGrandTotalHyrachi1() + dep.getTotalMonth1());
+						totalByHyrachi
+								.setGrandTotalHyrachi2(totalByHyrachi.getGrandTotalHyrachi2() + dep.getTotalMonth2());
+						totalByHyrachi.setGrandTotalDifferentHyrachi(
+								totalByHyrachi.getGrandTotalDifferentHyrachi() + dep.getTotalDifferent());
+					}
+				});
+			}
+			lstTotalByHyrachi.add(totalByHyrachi);
+
+		});
+		return lstTotalByHyrachi;
+	}
+
+	private List<DepartmentHyrachi> caculateParent(ComparingSalaryBonusQuery comparingQuery, String companyCode,
+			List<DeparmentInf> lstDepartInf) {
+		List<DepartmentDto> lstDepcodeMonth1 = this.compareSalaryBonusQueryRepo.getDepartmentCodeList(companyCode,
+				comparingQuery.getEmployeeCodeList(), comparingQuery.getMonth1(), comparingQuery.getFormCode());
+		List<DepartmentHyrachi> lstDepartmentHyrachi = new ArrayList<>();
+		List<DepartmentDto> departmentParents = lstDepcodeMonth1.stream().filter(dm -> dm.getHyrachi().length() == 3)
+				.collect(Collectors.toList());
+
+		departmentParents.stream().forEach(c -> {
+			List<DeparmentInf> lstDepartFilter = lstDepartInf.stream()
+					.filter(s -> (s.getHyrachi().substring(0, 3)).equals(c.getHyrachi())).collect(Collectors.toList());
+			DepartmentHyrachi department = new DepartmentHyrachi();
+			department.setDepcode(c.getDepCode());
+			department.setHyrachiParent(c.getHyrachi());
+			department.setNumberOfChild(lstDepartFilter.size());
+			lstDepartmentHyrachi.add(department);
+		});
+		return lstDepartmentHyrachi;
 	}
 
 }

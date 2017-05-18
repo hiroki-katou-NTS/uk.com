@@ -31,6 +31,7 @@ import nts.uk.file.pr.app.export.comparingsalarybonus.ComparingSalaryBonusGenera
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusReportData;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DataRowComparingSalaryBonusDto;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DeparmentInf;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DepartmentHyrachi;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DetailEmployee;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.HeaderTable;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -75,14 +76,14 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
 			Cells cells = worksheet.getCells();
-			
+
 			// Set print page
-            this.printPage(worksheet, lstDeparmentInf);
-            
-            // set title of table
-		    this.setHeaderPage(worksheets, cells, reportData);
-		    
-		    // set header of page
+			this.printPage(worksheet, lstDeparmentInf);
+
+			// set title of table
+			this.setHeaderPage(worksheets, cells, reportData);
+
+			// set header of page
 			designer.getDesigner().setDataSource(HEADER, Arrays.asList(reportData.getHeaderData()));
 			DateFormat dateFM = new SimpleDateFormat("yyyyMMddhhssmm");
 			Date date = new Date();
@@ -90,14 +91,17 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 
 			// Fill data
 			lstDeparmentInf.stream().forEach(c -> {
-				this.maxRowOfDepartments = 1 + c.getLstEmployee().size() * c.getLstEmployee().get(0).getLstData().size() + 4;
+				this.maxRowOfDepartments = 1 + c.getLstEmployee().size() * c.getLstEmployee().get(0).getLstData().size()
+						+ 4;
 			});
 			while (maxRowOfDepartments > 0) {
 				FIRST_ROW_INDEX = FIRST_ROW_INDEX + 1;
 				printDepartment(worksheets, FIRST_ROW_INDEX, reportData);
 				// print grand total
-				createRange(cells, this.startRow - 1, 1);
-				printGrandTotal(worksheets, this.startRow - 1, reportData);
+				if (reportData.getConfigPrint().getTotalSet().value == 1) {
+					createRange(cells, this.startRow, 1);
+					printGrandTotal(worksheets, this.startRow, reportData);
+				}
 				maxRowOfDepartments -= 46;
 			}
 			designer.getDesigner().setWorkbook(workbook);
@@ -109,34 +113,36 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * PRINT PAGE
+	 * 
 	 * @param worksheet
 	 * @param lstDeparmentInf
 	 */
-	private void printPage(	Worksheet worksheet , List<DeparmentInf> lstDeparmentInf){
+	private void printPage(Worksheet worksheet, List<DeparmentInf> lstDeparmentInf) {
 		// Set print page
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
-		int total = FIRST_ROW_INDEX + lstDeparmentInf.size() * (7+ lstDeparmentInf.get(0).getLstEmployee().size()
-				* (lstDeparmentInf.get(0).getLstEmployee().get(0).getLstData().size() + 1)) +1;
+		int total = FIRST_ROW_INDEX + lstDeparmentInf.size() * (7 + lstDeparmentInf.get(0).getLstEmployee().size()
+				* (lstDeparmentInf.get(0).getLstEmployee().get(0).getLstData().size() + 1)) + 1;
 		System.out.println(total);
 		int numberOfPage = this.caclulatePage(total);
 		System.out.println(numberOfPage);
 		pageSetup.setPrintArea("A1:H" + numberOfPage * 55);
 	}
-	
-	private void setHeaderPage(WorksheetCollection worksheets,Cells cells, ComparingSalaryBonusReportData reportData){
+
+	private void setHeaderPage(WorksheetCollection worksheets, Cells cells, ComparingSalaryBonusReportData reportData) {
 		Worksheet worksheet = worksheets.get(0);
 		createRange(cells, FIRST_ROW_INDEX, 1);
 		this.printTitleRow(worksheets, FIRST_ROW_INDEX, reportData);
-		
+
 		// Set header.
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd hh:mm");
 		worksheet.getPageSetup().setHeader(2,
 				"&\"Times New Roman,Bold\"&12&F" + dateFormat.format(new Date()) + "\r\n" + "&P" + " ページ");
 	}
+
 	/**
 	 * Prints the title row.
 	 *
@@ -208,24 +214,64 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		cells.setRowHeightPixel(rowIndex, ROW_HEIGHT);
 
 		for (int i = 0; i < comparingQuery.getDeparmentInf().size(); i++) {
-			DeparmentInf departInf = comparingQuery.getDeparmentInf().get(i);
-			// Print Department code
-			cells.merge(rowIndex, 0, 1, 8);
-			Cell departmentCode = cells.get(rowIndex, COLUMN_INDEX_DEPARTMENT[0]);
-			departmentCode.setValue("部門：" + " " + departInf.getDepcode() + "総務部　総務課　総務" + departInf.getDepname());
-			this.setBorderDataRow(cells, rowIndex);
-			// print employee
-			createContent(worksheets, rowIndex + 1, comparingQuery.getDeparmentInf());
-			rowIndex = this.startRow;
-			// print total Department
-			createRange(cells, this.startRow - 1, 1);
-			printTotalDepartment(worksheets, this.startRow - 1, comparingQuery, i);
+			DepartmentHyrachi departmentHyrachi = comparingQuery.getLstDepartmentHyrachi().get(i);
+			if (departmentHyrachi.getNumberOfChild() == 1) {
+				DeparmentInf departInf = comparingQuery.getDeparmentInf().get(i);
+				// Print Department code
+				cells.merge(rowIndex, 0, 1, 8);
+				Cell departmentCode = cells.get(rowIndex, COLUMN_INDEX_DEPARTMENT[0]);
+				System.out.println(departmentHyrachi.getHyrachiParent());
+				departmentCode.setValue("部門：" + " " + departInf.getDepcode() + "総務部　総務課　総務" + departInf.getDepname());
+				this.setBorderDataRow(cells, rowIndex);
+				if (comparingQuery.getConfigPrint().getShowPayment().value == 1) {
+					// print employee
+					createContent(worksheets, comparingQuery, rowIndex + 1, comparingQuery.getDeparmentInf());
+				}
+				if (comparingQuery.getConfigPrint().getSumEachDeprtSet().value == 1) {
+					rowIndex = this.startRow;
+					// print total Department
+					createRange(cells, this.startRow - 1, 1);
+					printTotalDepartment(worksheets, this.startRow - 1, comparingQuery, i);
+				}
 
-			// print total A
-			createRange(cells, this.startRow, 1);
-			printTotalADepartment(worksheets, this.startRow, comparingQuery, i);
-			this.startRow = this.startRow + 1;
-			rowIndex = this.startRow;
+				if (comparingQuery.getConfigPrint().getSumDepHrchyIndexSet().value == 1) {
+					createRange(cells, this.startRow, 1);
+					printTotalADepartment(worksheets, this.startRow, comparingQuery, i);
+				}
+
+				this.startRow = this.startRow + 1;
+				rowIndex = this.startRow;
+				continue;
+			}
+			for (int j = 0; j < departmentHyrachi.getNumberOfChild(); j++) {
+				DeparmentInf departInf = comparingQuery.getDeparmentInf().get(i + j);
+				// Print Department code
+				cells.merge(rowIndex, 0, 1, 8);
+				Cell departmentCode = cells.get(rowIndex, COLUMN_INDEX_DEPARTMENT[0]);
+				departmentCode.setValue("部門：" + " " + departInf.getDepcode() + "総務部　総務課　総務" + departInf.getDepname());
+				this.setBorderDataRow(cells, rowIndex);
+				if (comparingQuery.getConfigPrint().getShowPayment().value == 1) {
+					// print employee
+					createContent(worksheets, comparingQuery, rowIndex + 1, comparingQuery.getDeparmentInf());
+				}
+				if (comparingQuery.getConfigPrint().getSumEachDeprtSet().value == 1) {
+					rowIndex = this.startRow;
+					// print total Department
+					createRange(cells, this.startRow - 1, 1);
+					printTotalDepartment(worksheets, this.startRow - 1, comparingQuery, i);
+				}
+
+				if (comparingQuery.getConfigPrint().getSumDepHrchyIndexSet().value == 1) {
+					// print total Hyrachi
+					if (j == (departmentHyrachi.getNumberOfChild() - 1)) {
+						createRange(cells, this.startRow, 1);
+						printTotalADepartment(worksheets, this.startRow, comparingQuery, j);
+						this.startRow += 1;
+					}
+				}
+				rowIndex = this.startRow;
+			}
+			i+= departmentHyrachi.getNumberOfChild() - 1;
 		}
 
 	}
@@ -240,7 +286,8 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	 * @param lstDataRow
 	 *            the accumulated payment list
 	 */
-	private void createContent(WorksheetCollection worksheets, int startRowIndex, List<DeparmentInf> lstDepartment) {
+	private void createContent(WorksheetCollection worksheets, ComparingSalaryBonusReportData reportData,
+			int startRowIndex, List<DeparmentInf> lstDepartment) {
 		Worksheet worksheet = worksheets.get(0);
 		Cells cells = worksheet.getCells();
 
@@ -251,9 +298,11 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		for (int i = 0; i < deparmentInf.getLstEmployee().size(); i++) {
 
 			DetailEmployee detailEmployeeInf = deparmentInf.getLstEmployee().get(i);
-
+			if (reportData.getConfigPrint().getShowPayment().value == 1) {
+				cells.merge(startRowIndex, 0, 1, 8);
+			}
 			// Print employee Code
-			cells.merge(startRowIndex, 0, 1, 8);
+
 			Cell employeeCode = cells.get(startRowIndex, COLUMN_INDEX_EMPLOYEE[0]);
 			employeeCode.setValue(
 					"部門コード : " + detailEmployeeInf.getPersonID() + "社員名: " + detailEmployeeInf.getPersonName());
@@ -311,7 +360,7 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			ComparingSalaryBonusReportData comparingQuery, int i) {
 		Worksheet worksheet = worksheets.get(0);
 		Cells cells = worksheet.getCells();
-		DataRowComparingSalaryBonusDto totalA = comparingQuery.getLstTotalA().get(i);
+		DataRowComparingSalaryBonusDto totalA = comparingQuery.getLstHyrachiTotal().get(i);
 		this.setDataRow(cells, totalA, rowIndex);
 		for (int c : COLUMN_INDEX) {
 			Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);
@@ -370,7 +419,7 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 	 * Sets the title style.
 	 *
 	 * @param cell
-	 *  the new title style
+	 *            the new title style
 	 */
 	private void setTitleStyle(Cell cell) {
 		Style style = cell.getStyle();
@@ -413,13 +462,15 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		}
 		return numberOfPage;
 	}
+
 	/**
-	 * set Border Data Row of deparment and employee 
+	 * set Border Data Row of deparment and employee
+	 * 
 	 * @param cells
 	 * @param startRow
 	 */
-	
-	private void setBorderDataRow(Cells cells, int startRow){
+
+	private void setBorderDataRow(Cells cells, int startRow) {
 		for (int c : COLUMN_INDEX) {
 			Cell cell = cells.get(startRow, COLUMN_INDEX[c]);
 			Style style = cells.getStyle();
@@ -433,15 +484,16 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			cell.setStyle(style);
 		}
 	}
-	
+
 	/**
 	 * set Data Row of item code
+	 * 
 	 * @param cells
 	 * @param dataRow
 	 * @param rowIndex
 	 */
-	
-	private void setDataRow(Cells cells,DataRowComparingSalaryBonusDto  dataRow, int rowIndex){
+
+	private void setDataRow(Cells cells, DataRowComparingSalaryBonusDto dataRow, int rowIndex) {
 		// Print itemName Header
 		Cell itemName = cells.get(rowIndex, COLUMN_INDEX[0]);
 		itemName.setValue(dataRow.getItemName());
@@ -474,7 +526,6 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		Cell confirm = cells.get(rowIndex, COLUMN_INDEX[7]);
 		confirm.setValue(dataRow.getConfirmed());
 
-		
 	}
 
 }
