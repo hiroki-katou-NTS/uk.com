@@ -49,6 +49,8 @@
 								<div id="tabs-call" class="cf">
 									<h3>Set error for a control</h3>
 									<pre><![CDATA[$('#residence-code').ntsError('set', 'えらーです');]]></pre>
+									<h3>Set error for a control by message id </h3>
+									<pre><![CDATA[$('#residence-code').ntsError('set', {id:"Msg_001"});]]></pre>
 									<h3>Clear errors of a control</h3>
 									<pre><![CDATA[$('#residence-code').ntsError('clear');]]></pre>
 									<h3>Clear grouping errors</h3>
@@ -183,15 +185,7 @@ $('.save-error').ntsError('clear');]]></pre>
 																						<td>
 																							<b>Type:</b> number<br/>
 																							<b>Default:</b> 10<br/>
-																							Number of display rows  
-																						</td>
-																					</tr>
-																					<tr>
-																						<td>maxrows</td>
-																						<td>
-																							<b>Type:</b> number<br/>
-																							<b>Default:</b> 1000<br/>
-																							Number of max display errors  
+																							Number of  display errors  
 																						</td>
 																					</tr>
 																					<tr>
