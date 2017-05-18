@@ -13,7 +13,6 @@ module previewWidget.viewmodel {
             self.layoutID = null;
             self.placements = ko.observableArray([]);
             self.placements.subscribe((changes) => {
-                console.log(changes);
                 if (changes.length > 0)
                     self.isEmpty(false);
                 else
