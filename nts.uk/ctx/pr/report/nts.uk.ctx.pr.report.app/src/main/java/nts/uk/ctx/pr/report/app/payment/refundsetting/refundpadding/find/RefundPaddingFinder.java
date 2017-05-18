@@ -45,6 +45,8 @@ public class RefundPaddingFinder {
 		RefundPaddingThreeOut dto = new RefundPaddingThreeOut();
 		if (optionalFinder.isPresent()) {
 			optionalFinder.get().saveToMemento(dto);
+		} else {
+			dto.defaultData();
 		}
 		return dto;
 	}
@@ -66,6 +68,8 @@ public class RefundPaddingFinder {
 		RefundPaddingTwoOut dto = new RefundPaddingTwoOut();
 		if (optionalFinder.isPresent()) {
 			optionalFinder.get().saveToMemento(dto);
+		} else {
+			dto.defaultData();
 		}
 		return dto;
 	}
@@ -87,6 +91,8 @@ public class RefundPaddingFinder {
 		RefundPaddingOnceOut dto = new RefundPaddingOnceOut();
 		if (optionalFinder.isPresent()) {
 			optionalFinder.get().saveToMemento(dto);
+		} else {
+			dto.defaultData();
 		}
 		return dto;
 	}

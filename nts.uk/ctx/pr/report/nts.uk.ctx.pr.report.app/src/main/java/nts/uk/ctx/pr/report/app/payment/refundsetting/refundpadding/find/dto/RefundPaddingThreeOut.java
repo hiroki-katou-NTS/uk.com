@@ -41,6 +41,19 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 	/** The is show break line. */
 	private int isShowBreakLine;
 
+	
+	/**
+	 * Default data.
+	 */
+	public void defaultData(){
+		this.upperAreaPaddingTop = BigDecimal.ZERO;
+		this.middleAreaPaddingTop = BigDecimal.ZERO;
+		this.underAreaPaddingTop = BigDecimal.ZERO;
+		this.paddingLeft = BigDecimal.ZERO;
+		this.breakLineMarginTop = BigDecimal.ZERO;
+		this.breakLineMarginButtom = BigDecimal.ZERO;
+		this.isShowBreakLine = 0;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
