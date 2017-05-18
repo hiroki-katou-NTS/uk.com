@@ -43,9 +43,9 @@ public interface MyPageSettingRepository {
 	void update(MyPageSetting myPageSetting);
 	
 	/**
-	 * Adds the.
+	 * Adds the top page part use setting.
 	 *
-	 * @param myPageSetting the my page setting
+	 * @param topPagePartUseSetting the top page part use setting
 	 */
-	void add(MyPageSetting myPageSetting);
+	void addTopPagePartUseSetting(TopPagePartUseSetting topPagePartUseSetting);
 }

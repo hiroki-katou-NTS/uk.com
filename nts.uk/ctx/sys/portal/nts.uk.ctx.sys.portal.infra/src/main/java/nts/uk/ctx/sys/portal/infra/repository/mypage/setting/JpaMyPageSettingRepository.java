@@ -53,12 +53,20 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 		this.commandProxy().updateAll(partItemSetToEntity(myPageSetting.getTopPagePartUseSetting()));
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param topPagePartUseSetting the top page part use setting
+	 */
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository#add(nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting)
 	 */
 	@Override
-	public void add(MyPageSetting myPageSetting) {
-		// TODO Auto-generated method stub
+	public void addTopPagePartUseSetting(TopPagePartUseSetting topPagePartUseSetting) {
+		CcgmtPartItemSetPK key = new CcgmtPartItemSetPK(topPagePartUseSetting.getCompanyId(),
+				topPagePartUseSetting.getTopPagePartId());
+		CcgmtPartItemSet entity = new CcgmtPartItemSet(key, topPagePartUseSetting.getUseDivision().value);
+		this.commandProxy().update(entity);
 	}
 
 	/**
