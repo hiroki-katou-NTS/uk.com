@@ -97,10 +97,10 @@
 					<div id="G_LBL_014" data-bind="ntsFormLabel: {required: true}">種別コード</div>
 				</div>
 				<div class="divLine-col-2">
-					<div data-bind="with: viewmodelg.g_INP_002">
+					<div data-bind="with: viewmodelg">
 						<input data-name="種別コード" id="G_INP_002"
 							data-bind="ntsNumberEditor: { 
-								value: value, 
+								value: g_INP_002, 
 								required: true,
 								enable: true }" />
 					</div>

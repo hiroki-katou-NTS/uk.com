@@ -65,17 +65,21 @@ module qpp014.d.viewmodel {
 
         openEDialog(): void {
             var self = this;
-            nts.uk.ui.windows.setShared("dateOfPayment", self.dateOfPayment(), true);
-            nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function() {
-                //if close button, not next screen
-                if (!nts.uk.ui.windows.getShared("closeDialog")) {
-                    $('#wizard').ntsWizard("next");
-                    //                    _.delay(() => {
-                    //                        $("#H_LST_001").igGridSelection("selectRow", 1);
-                    //                        $("#H_LST_001").igGridSelection("clearSelection");
-                    //                    }, 201); // hot fix by Lam Than
-                }
-            });
+            if (self.dateOfPayment() == '') {
+                nts.uk.ui.dialog.alert("振込日が入力されていません。");
+            } else {
+                nts.uk.ui.windows.setShared("dateOfPayment", self.dateOfPayment(), true);
+                nts.uk.ui.windows.sub.modal("/view/qpp/014/e/index.xhtml", { title: "振込データの作成結果一覧", dialogClass: "no-close" }).onClosed(function() {
+                    //if close button, not next screen
+                    if (!nts.uk.ui.windows.getShared("closeDialog")) {
+                        $('#wizard').ntsWizard("next");
+                        //                    _.delay(() => {
+                        //                        $("#H_LST_001").igGridSelection("selectRow", 1);
+                        //                        $("#H_LST_001").igGridSelection("clearSelection");
+                        //                    }, 201); // hot fix by Lam Than
+                    }
+                });
+            }
         }
     }
 };
