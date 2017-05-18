@@ -45,14 +45,14 @@
 								<pre>
 									<![CDATA[
 nts.uk.ui.dialog.info("Do you want to say \"Hello World!\"?")
-nts.uk.ui.dialog.info({ messageId: "messageid" });
+nts.uk.ui.dialog.info({ id: "messageid" });
 									]]>
 								</pre>
 								<h2>alert single error</h2>
 								<pre>
 									<![CDATA[
 nts.uk.ui.dialog.alertError("Do you want to say \"Hello World!\"?")
-nts.uk.ui.dialog.alertError({ messageId: "messageid", messageParams: ["1", "2"]})
+nts.uk.ui.dialog.alertError({ id: "messageid", messageParams: ["1", "2"]})
 									]]>
 								</pre>
 							</div>
@@ -93,7 +93,7 @@ nts.uk.ui.dialog.alertError({ messageId: "messageid", messageParams: ["1", "2"]}
 												<td><b>show information dialog<br />
 												</b><b class="color">args:</b> can be object or plain text
 													message<br /> 1.if argument data type is Object,this
-													object has following attributes <br />messageId:string
+													object has following attributes <br />id:string
 													//required<br /> messageParams: object[]//optional <br />
 													2.argument data type is plain text</td>
 											</tr>
@@ -102,7 +102,7 @@ nts.uk.ui.dialog.alertError({ messageId: "messageid", messageParams: ["1", "2"]}
 												<td><b>show single error dialog<br /></b> <b
 													class="color">args:</b> can be object or plain text message<br />
 													1.if argument data type is Object,this object has following
-													attributes <br />messageId:string //required <br />messageParams:
+													attributes <br />id:string //required <br />messageParams:
 													object[]//optional <br /> 2.argument data type is plain
 													text</td>
 											</tr>

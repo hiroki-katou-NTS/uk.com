@@ -2,76 +2,6 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
-        var ntsNumber;
-        (function (ntsNumber) {
-            function isInteger(value, option) {
-                if (option !== undefined && option.groupseperator() !== undefined) {
-                    value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
-                }
-                return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
-            }
-            function isDecimal(value, option) {
-                if (option !== undefined) {
-                    var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
-                    value = isDecimal(value) || seperator === undefined ? value : uk.text.replaceAll(value.toString(), seperator, '');
-                }
-                return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
-            }
-            function isNumber(value, isDecimalValue, option) {
-                if (isDecimalValue) {
-                    return isDecimal(value, option);
-                }
-                else {
-                    return isInteger(value, option);
-                }
-            }
-            ntsNumber.isNumber = isNumber;
-            ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
-            function getDecimal(value, scale) {
-                var scaleX = Math.pow(10, scale);
-                return ntsNumber.trunc(value * scaleX) / scaleX;
-            }
-            ntsNumber.getDecimal = getDecimal;
-            function formatNumber(value, formatOption) {
-                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
-                    return value;
-                }
-                var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
-                var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
-                var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
-                var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
-                var formattedValue = "";
-                var stringValue = uk.text.replaceAll(value.toString(), groupSeperator, '');
-                var isMinus = stringValue.charAt(0) === '-';
-                var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
-                if (groupLength > 0) {
-                    var x = values[0].split('').reverse().join('');
-                    for (var i = 0; i < x.length;) {
-                        formattedValue += x.substr(i, groupLength) + (x.length > i + groupLength ? groupSeperator : "");
-                        i += groupLength;
-                    }
-                    formattedValue = formattedValue.split('').reverse().join('');
-                }
-                else {
-                    formattedValue = values[0];
-                }
-                if (values[1] === undefined || decimalLength > values[1].length) {
-                    values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
-                }
-                else {
-                    values[1] = values[1].substr(0, decimalLength);
-                }
-                values[1] = uk.text.splitOrPadRight(values[1], decimalLength, '0');
-                return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
-            }
-            ntsNumber.formatNumber = formatNumber;
-        })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
         var KeyCodes;
         (function (KeyCodes) {
             KeyCodes.Tab = 9;
@@ -591,7 +521,8 @@ var nts;
         var resource;
         (function (resource) {
             function getText(code) {
-                return names[code];
+                var text = names[code];
+                return text ? text : code;
             }
             resource.getText = getText;
             function getMessage(messageId) {
@@ -600,6 +531,9 @@ var nts;
                     params[_i - 1] = arguments[_i];
                 }
                 var message = messages[messageId];
+                if (message == undefined) {
+                    return messageId;
+                }
                 message = formatParams(message, params);
                 message = formatCompDependParam(message);
                 return message;
@@ -1151,6 +1085,76 @@ var nts;
             }());
             text_3.TimeFormatter = TimeFormatter;
         })(text = uk.text || (uk.text = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ntsNumber;
+        (function (ntsNumber) {
+            function isInteger(value, option) {
+                if (option !== undefined && option.groupseperator() !== undefined) {
+                    value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
+                }
+                return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
+            }
+            function isDecimal(value, option) {
+                if (option !== undefined) {
+                    var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
+                    value = isDecimal(value) || seperator === undefined ? value : uk.text.replaceAll(value.toString(), seperator, '');
+                }
+                return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
+            }
+            function isNumber(value, isDecimalValue, option) {
+                if (isDecimalValue) {
+                    return isDecimal(value, option);
+                }
+                else {
+                    return isInteger(value, option);
+                }
+            }
+            ntsNumber.isNumber = isNumber;
+            ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
+            function getDecimal(value, scale) {
+                var scaleX = Math.pow(10, scale);
+                return ntsNumber.trunc(value * scaleX) / scaleX;
+            }
+            ntsNumber.getDecimal = getDecimal;
+            function formatNumber(value, formatOption) {
+                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
+                    return value;
+                }
+                var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
+                var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
+                var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
+                var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
+                var formattedValue = "";
+                var stringValue = uk.text.replaceAll(value.toString(), groupSeperator, '');
+                var isMinus = stringValue.charAt(0) === '-';
+                var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
+                if (groupLength > 0) {
+                    var x = values[0].split('').reverse().join('');
+                    for (var i = 0; i < x.length;) {
+                        formattedValue += x.substr(i, groupLength) + (x.length > i + groupLength ? groupSeperator : "");
+                        i += groupLength;
+                    }
+                    formattedValue = formattedValue.split('').reverse().join('');
+                }
+                else {
+                    formattedValue = values[0];
+                }
+                if (values[1] === undefined || decimalLength > values[1].length) {
+                    values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
+                }
+                else {
+                    values[1] = values[1].substr(0, decimalLength);
+                }
+                values[1] = uk.text.splitOrPadRight(values[1], decimalLength, '0');
+                return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
+            }
+            ntsNumber.formatNumber = formatNumber;
+        })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="reference.ts"/>
@@ -2599,8 +2603,28 @@ var nts;
             ui_1.localize = localize;
             var dialog;
             (function (dialog) {
-                function createNoticeDialog(text, buttons) {
+                var DialogHeader = (function () {
+                    function DialogHeader() {
+                    }
+                    return DialogHeader;
+                }());
+                dialog.DialogHeader = DialogHeader;
+                var Message = (function () {
+                    function Message() {
+                    }
+                    return Message;
+                }());
+                dialog.Message = Message;
+                function createNoticeDialog(message, buttons, header) {
                     var $control = $('<div/>').addClass('control');
+                    var text;
+                    if (typeof message === "object") {
+                        text = nts.uk.resource.getMessage(message.id, message.messageParams);
+                        $control.append(message.id);
+                    }
+                    else {
+                        text = message;
+                    }
                     text = text.replace(/\n/g, '<br />');
                     var $this = $('<div/>').addClass('notice-dialog')
                         .append($('<div/>').addClass('text').append(text))
@@ -2610,6 +2634,9 @@ var nts;
                         dialogClass: "no-close",
                         width: 'auto',
                         modal: true,
+                        minWidth: 300,
+                        maxWidth: 800,
+                        maxHeight: 400,
                         closeOnEscape: false,
                         buttons: buttons,
                         open: function () {
@@ -2617,12 +2644,23 @@ var nts;
                             $('.ui-widget-overlay').last().css('z-index', 120000);
                             $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                             $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                            //add header icon if it has
+                            if (header && header.icon) {
+                                var $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
+                                $headerContainer.append($("<img>").attr("src", header.icon).addClass("ui-dialog-titlebar-icon"));
+                                $headerContainer.append($(this).parent().find(".ui-dialog-title"));
+                                $(this).parent().children(".ui-dialog-titlebar").prepend($headerContainer);
+                            }
                         },
                         close: function (event) {
                             $(this).dialog('destroy');
                             $(event.target).remove();
                         }
                     });
+                    //add header text if it has
+                    if (header && header.text) {
+                        $this.dialog("option", "title", header.text);
+                    }
                     return $this;
                 }
                 /**
@@ -2648,7 +2686,7 @@ var nts;
                                     $this.dialog('close');
                                     then();
                                 }
-                            }]);
+                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/infor.png", text: nts.uk.resource.getText("infor") });
                     }, 0);
                     return {
                         then: function (callback) {
@@ -2658,6 +2696,31 @@ var nts;
                 }
                 dialog.info = info;
                 ;
+                function alertError(message) {
+                    var then = $.noop;
+                    var $dialog = $('<div/>').hide();
+                    $(function () {
+                        $dialog.appendTo('body').dialog({
+                            autoOpen: false
+                        });
+                    });
+                    setTimeout(function () {
+                        var $this = createNoticeDialog(message, [{
+                                text: "はい",
+                                "class": "large",
+                                click: function () {
+                                    $this.dialog('close');
+                                    then();
+                                }
+                            }], { icon: "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png", text: nts.uk.resource.getText("error") });
+                    }, 0);
+                    return {
+                        then: function (callback) {
+                            then = callback;
+                        }
+                    };
+                }
+                dialog.alertError = alertError;
                 /**
                  * Show alert dialog.
                  *
@@ -2666,7 +2729,28 @@ var nts;
                  * @returns handler
                  */
                 function alert(text) {
-                    return info(text);
+                    var then = $.noop;
+                    var $dialog = $('<div/>').hide();
+                    $(function () {
+                        $dialog.appendTo('body').dialog({
+                            autoOpen: false
+                        });
+                    });
+                    setTimeout(function () {
+                        var $this = createNoticeDialog(text, [{
+                                text: "はい",
+                                "class": "large",
+                                click: function () {
+                                    $this.dialog('close');
+                                    then();
+                                }
+                            }]);
+                    }, 0);
+                    return {
+                        then: function (callback) {
+                            then = callback;
+                        }
+                    };
                 }
                 dialog.alert = alert;
                 ;
