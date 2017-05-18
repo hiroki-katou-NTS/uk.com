@@ -218,10 +218,7 @@ module nts.uk.com.view.ccg015.a {
             }
             //for frame review layout
             private changePreviewIframe(layoutID: string): void {
-                if (!nts.uk.util.isNullOrEmpty(layoutID))
                     $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
-                else
-                    $("#preview-iframe").attr("src", "");
             }
             private getIndexOfRemoveItem(code: string): number {
                 var self = this;
