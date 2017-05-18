@@ -266,8 +266,8 @@ module qmm019.f.viewmodel {
         itemName: KnockoutObservable<any>;
         selectedCode: KnockoutObservable<number>;
         itemList: KnockoutObservableArray<any>;
-        enable: any;
-        constructor(itemList, enable?) {
+        enable: KnockoutObservable<Boolean>;
+        constructor(itemList) {
             var self = this;
             if (itemList !== null) {
                 self.itemList = itemList;
@@ -277,11 +277,7 @@ module qmm019.f.viewmodel {
             }
             self.itemName = ko.observable('');
             self.selectedCode = ko.observable(null);
-            if (enable) {
-                self.enable = ko.observable(enable() == 0 ? false : true);
-            } else {
-                enable = ko.observable(true);
-            }
+            self.enable = ko.observable(true);
         }
 
     }

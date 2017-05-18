@@ -13,6 +13,7 @@ module qmm019.f.salaryItem.viewmodel {
         wageName: KnockoutObservable<string> = ko.observable('');
         switchButton: KnockoutObservable<qmm019.f.viewmodel.SwitchButton>;
         itemListDistributeWay: KnockoutObservableArray<any>;
+        comboBoxCommutingClassification: KnockoutObservable<qmm019.f.viewmodel.ComboBox>;
         constructor() {
             let self = this;
             var itemListSumScopeAtr = ko.observableArray([
@@ -34,6 +35,10 @@ module qmm019.f.salaryItem.viewmodel {
                 new qmm019.f.viewmodel.ItemModel(1, '日数控除'),
                 new qmm019.f.viewmodel.ItemModel(2, '計算式')
             ]);
+            var itemListCommutingClassification = ko.observableArray([
+                new qmm019.f.viewmodel.ItemModel(0, '交通機関'),
+                new qmm019.f.viewmodel.ItemModel(1, '交通用具')
+            ]);
             self.itemMasterDto.subscribe(function(NewItem) {
                 self.loadLayoutData(NewItem).done(function(itemDto: qmm019.f.viewmodel.ItemDto) {
                     self.setItemDtoSelected(itemDto);
@@ -46,6 +51,7 @@ module qmm019.f.salaryItem.viewmodel {
                 self.checkUseLowAlam(NewItem.checkUseLowAlam());
                 self.distributeWaySelectedCode(NewItem.distributeWay());
                 self.switchButton().selectedRuleCode(NewItem.distributeSet());
+                self.comboBoxCommutingClassification().selectedCode(NewItem.commuteAtr())
             });
             //計算方法
             self.comboBoxCalcMethod = ko.observable(new qmm019.f.viewmodel.ComboBox(itemListCalcMethod));
@@ -53,6 +59,7 @@ module qmm019.f.salaryItem.viewmodel {
             //「合計対象内（現物）」と「合計対象外（現物）」は項目区分が「支給項目」の場合のみ表示
             self.comboBoxSumScopeAtr = ko.observable(new qmm019.f.viewmodel.ComboBox(itemListSumScopeAtr));
             self.switchButton = ko.observable(new qmm019.f.viewmodel.SwitchButton());
+            self.comboBoxCommutingClassification = ko.observable(new qmm019.f.viewmodel.ComboBox(itemListCommutingClassification));
         }
         loadLayoutData(itemMaster: qmm019.f.service.model.ItemMasterDto): JQueryPromise<qmm019.f.viewmodel.ItemDto> {
             let self = this;
@@ -87,13 +94,17 @@ module qmm019.f.salaryItem.viewmodel {
                 nts.uk.ui.windows.getSelf().setHeight(670);
                 return true;
             } else {
-                nts.uk.ui.windows.getSelf().setHeight(620);
+                if ((self.itemDtoSelected().taxAtr() == 3 || self.itemDtoSelected().taxAtr() == 4) && self.comboBoxCalcMethod().selectedCode() == 0) {
+                    nts.uk.ui.windows.getSelf().setHeight(670);
+                } else {
+                    nts.uk.ui.windows.getSelf().setHeight(630);
+                }
                 return false;
             }
         }
         openHDialog() {
             var self = this;
-            nts.uk.ui.windows.setShared('categoryAtr', self.itemDtoSelected().categoryAtr);
+            nts.uk.ui.windows.setShared('categoryAtr', self.itemDtoSelected().categoryAtr());
             nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml', { title: '明細レイアウトの作成＞個人金額コードの選択', dialogClass: 'no-close' }).onClosed(() => {
                 self.wageCode(nts.uk.ui.windows.getShared('selectedCode'));
                 self.wageName(nts.uk.ui.windows.getShared('selectedName'));
@@ -103,7 +114,7 @@ module qmm019.f.salaryItem.viewmodel {
         getItemDto(): qmm019.f.viewmodel.ItemDto {
             let self = this;
             let ItemDto = new qmm019.f.viewmodel.ItemDto(self.itemDtoSelected().itemCode(), self.itemDtoSelected().categoryAtr(), self.itemDtoSelected().itemAbName(), self.checkUseHighError(), self.itemDtoSelected().errRangeHigh(), self.checkUseLowError(), self.itemDtoSelected().errRangeLow(),
-                self.checkUseHighAlam(), self.itemDtoSelected().alamRangeHigh(), self.checkUseLowAlam(), self.itemDtoSelected().alamRangeLow(), 0, self.comboBoxCalcMethod().selectedCode(), self.switchButton().selectedRuleCode(), self.distributeWaySelectedCode(), '00', self.comboBoxSumScopeAtr().selectedCode(), self.itemDtoSelected().taxAtr());
+                self.checkUseHighAlam(), self.itemDtoSelected().alamRangeHigh(), self.checkUseLowAlam(), self.itemDtoSelected().alamRangeLow(), self.comboBoxCommutingClassification().selectedCode(), self.comboBoxCalcMethod().selectedCode(), self.switchButton().selectedRuleCode(), self.distributeWaySelectedCode(), '00', self.comboBoxSumScopeAtr().selectedCode(), self.itemDtoSelected().taxAtr());
             return ItemDto;
         }
         setMasterDto(itemMasterDto) {

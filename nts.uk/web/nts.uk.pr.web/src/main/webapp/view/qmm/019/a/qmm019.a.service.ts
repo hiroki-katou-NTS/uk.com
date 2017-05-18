@@ -518,7 +518,7 @@ module qmm019.a {
                         objectNotYetSave: data
                     };
                     nts.uk.ui.windows.setShared('param', param);
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml', { dialogClass: 'no-close', title: '項目の選択・設定', width: 1200, height: 620 }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml', { dialogClass: 'no-close', title: '項目の選択・設定', width: 1200, height: 630 }).onClosed(() => {
                         if (nts.uk.ui.windows.getShared('itemResult') === undefined) return this;
                         let itemResult = ko.mapping.toJS(nts.uk.ui.windows.getShared('itemResult'));
                         if (data.itemAbName() === "+") {

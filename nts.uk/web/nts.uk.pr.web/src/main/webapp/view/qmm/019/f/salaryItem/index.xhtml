@@ -39,7 +39,7 @@
 			</div>
 			<hr />
 			<!-- CategoryAtr = 0||1 and select 個人情報参照-->
-			<div class="form-label required" style="margin-bottom: 20px"
+			<div class="form-label required" style="margin-bottom:10px"
 				data-bind="visible: checkPersonalInformationReference()">
 				<label>コード/名称</label>
 				<button data-bind="click: openHDialog"
@@ -54,7 +54,7 @@
 						<label style="float: left" id="LBL_018">通勤区分</label>
 					</div>
 					<div
-						data-bind="with: $root.content.comboBoxCommutingClassification"
+						data-bind="with: comboBoxCommutingClassification"
 						style="display: inline-block">
 						<div style="margin: 0 0 0 15px; float: left" id="SEL_009"
 							data-bind="ntsComboBox: {
@@ -63,7 +63,7 @@
 															value: selectedCode,
 															optionsText: 'name',
 															editable: false,
-															enable: enable}"
+															enable: enable }"
 							class="cf"></div>
 					</div>
 				</div>
