@@ -53,6 +53,10 @@ module nts.uk.pr.view.qpp021.g {
             closeRefundPaddingThree(): void {
                 nts.uk.ui.windows.close();
             }
+            
+            previewRefundPaddingThree(): void{
+                service.previewRefundPaddingThree();    
+            }
         }
 
         export class RefundPaddingThreeModel {

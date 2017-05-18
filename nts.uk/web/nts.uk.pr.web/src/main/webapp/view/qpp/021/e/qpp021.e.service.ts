@@ -1,9 +1,11 @@
 module nts.uk.pr.view.qpp021.e {
 
+    
     export module service {
 
         var paths: any = {
             findRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/once/find",
+            previewRefundPaddingOnce: "screen/pr/QPP021/preview/refundpadding/once",
             saveRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/once/save"
         };
 
@@ -20,6 +22,11 @@ module nts.uk.pr.view.qpp021.e {
             return nts.uk.request.ajax(paths.saveRefundPadding, data);
         }
 
+        // connection preview 
+        export function previewRefundPaddingOnce(): JQueryPromise<any>{
+            var data= {pageLayout : 'E'};
+            return nts.uk.request.exportFile(paths.previewRefundPaddingOnce, data);
+        }
         export module model {
 
             export class RefundPaddingOnceDto {
@@ -28,6 +35,26 @@ module nts.uk.pr.view.qpp021.e {
 
                 /** The padding left. */
                 paddingLeft: number;
+            }
+            
+            export class PaymentReportQueryDto {
+
+                /** The processing no. */
+                processingNo: number;
+
+                /** The processing YM. */
+                processingYM: number;
+
+                /** The select prit types. */
+                selectPrintTypes: number;
+
+                /** The specification codes. */
+                specificationCodes: number[];
+
+                /** The layout items. */
+                layoutItems: number;
+                
+                pageOrientation: string;
             }
         }
     }

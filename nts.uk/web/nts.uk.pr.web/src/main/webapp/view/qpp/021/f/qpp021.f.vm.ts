@@ -56,6 +56,11 @@ module nts.uk.pr.view.qpp021.f {
             public onCloseBtnClicked(): void {
                 nts.uk.ui.windows.close();
             }
+            
+            private previewRefundPaddingTwo(): void {
+                console.log('YES');
+                service.previewRefundPaddingTwo();    
+            }
 
         }
 
