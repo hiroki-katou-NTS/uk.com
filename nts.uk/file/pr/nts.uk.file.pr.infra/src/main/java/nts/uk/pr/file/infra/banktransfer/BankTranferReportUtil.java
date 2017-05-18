@@ -58,7 +58,7 @@ public class BankTranferReportUtil {
 			// Set the background color and patter for the FormatCondition's Style
 			formatCondirion.getStyle().setPattern(BackgroundType.SOLID);
 			
-			if (i < rpDataSize) {
+			if (i < (rpDataSize - 1)) {
 				if (rowColorIdex%2==0) {
 					formatCondirion.getStyle().setBackgroundColor(Color.getWhite());
 				} else {
@@ -68,7 +68,7 @@ public class BankTranferReportUtil {
 				rowColorIdex ++;
 			}
 			
-			if (i == rpDataSize - 1) {
+			if (i == (rpDataSize - 1)) {
 				rowColorIdex = 0;
 				Color color = Color.fromArgb(197,241,247);
 				formatCondirion.getStyle().setBackgroundArgbColor(color.toArgb());
