@@ -7,92 +7,60 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="qmm020.k.main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../../../../lib/nittsu/ui/textbox-options.js" />
+			<com:stylefile path="qmm020.k.style.css" />
 			<com:scriptfile path="qmm020.k.start.js" />
 			<com:scriptfile path="qmm020.k.viewmodel.js" />
 			<com:scriptfile path="qmm020.k.service.js" />
-			<script>var dialogSize = { width: 500, height: 360};</script>
-			<style>
-.nts-list-box * {
-	box-sizing: border-box
-}
-</style>
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area" style="margin-left: 10px; margin-top: 10px">
-				<div class="cf">
+			<div class="contents-area">
+				<div id="K_LBL_001">履歴情報を確認し、削除または修正を行ってください。</div>
+				<div class="form-group-radio">
+					<div id="K_LBL_002" data-bind="ntsFormLabel: { required: true }">編集方法の選択</div>
 					<div>
-						<label id="F_LBL_001">履歴情報を確認し、削除または修正を行ってください。</label>
+						<div class="ntsControl">
+							<label class="ntsRadioBox"> <input type="radio"
+								name="textRadio"
+								data-bind="checkedValue: 1, checked: selectedMode" /> <span
+								class="box"></span><span class="label" data-bind="text: '履歴を削除する'"></span>
+							</label>
+						</div>
+						<div class="ntsControl">
+							<label class="ntsRadioBox"> <input type="radio"
+								name="textRadio"
+								data-bind="checkedValue: 2, checked: selectedMode" /> <span
+								class="box"></span><span class="label" data-bind="text: '履歴を修正する'"></span>
+							</label>
+						</div>
 					</div>
-					<br />
-					<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
-					<!-- EDIT HISTORY  -->
-					<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
-					<table>
-						<tr valign="top">
-							<td style="width: 150px; float: left;">
-								<div class="form-label inline required">
-									<label id="LBL_005">編集方法の選択</label>
-								</div>
-							</td>
-							<td>
-								<div class="selectStyle">
-									<div id="SEL_001" data-bind="foreach: itemsRadio">
-										<span class="ntsControl"> <label class="ntsRadioBox">
-											<input type="radio" name="textRadio" data-bind="checkedValue: value, 
-															checked: $parent.isRadioCheck,
-															enable: true" />
-										<span class="box"></span> 
-										<span class="label" data-bind="text: text"></span>
-										</label>
-										</span>
-									</div>
-									<div>
-										<div style="display: flex; margin-top: 10px">
-											<div class="form-label inline required">
-												<label id="K_LBL_003">期間</label>
-											</div>
-											<div>
-												<input id="K_INP_001" maxlength="7"
-													style="ime-mode: inactive"
-													data-bind="ntsTimeEditor: {
-															value: selectStartYm, 
-															option: timeEditorOption, 
-															enable: enableYm}">
-												</input>
-											</div>
-											<div>
-												<label> ~ </label>
-												<label id="K_LBL_004" style="display: inline-block;" data-bind="text: endYM"></label>
-											</div>	
-										</div>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="form-label inline required">
-									<label id="K_LBL_005">部門基準日</label>
-								</div>
-							</td>
-							<td><label id="K_LBL_006">2016/04</label></td>
-						</tr>
-					</table>
-					<br />
-					<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-					<!-- THEM LICH SU  -->
-					<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
 				</div>
-				<hr></hr>
-				<div>
-					<button class="x-large proceed" id="K_BTN_001"
-						data-bind="click: historyProcess, enable: $root.errors.isEmpty">決定</button>
-					<button class="large" id="K_BTN_002" data-bind="click: closeDialog">キャンセル</button>
-					<br />
+				<div class="form-group padding-left">
+					<div id="" data-bind="ntsFormLabel: {}">期間</div>
+					<div  data-bind="ntsDatePicker: {
+								value: startYm,
+								dateFormat: 'YYYY/MM',
+								required: true,
+								enable: selectedMode() != 1,
+								readonly: false }"></div>
+					<label id="K_LBL_004"><span>～</span><span
+						data-bind="style: {display: displayMode() == 3 ? 'none' : ''}">9999/12</span></label>
+					<div  data-bind="style: {display: displayMode() == 3 ? '' : 'none'}, ntsDatePicker: {
+								value: endYm,
+								dateFormat: 'YYYY/MM',
+								required: true,
+								enable: selectedMode() != 1,
+								readonly: false }"></div>
 				</div>
+				<div class="form-group" data-bind="style: {display: displayMode() == 2 ? '' : 'none'}">
+					<div id="K_LBL_005" data-bind="ntsFormLabel: {}">部門基準日</div>
+					<label id="K_LBL_006" data-bind="text: '2017/04/01'"></label>
+				</div>
+			</div>
+			<div class="functions-area">
+				<button class="x-large" id="K_BTN_001"
+					data-bind="click: historyProcess, enable: $root.errors.isEmpty">決定</button>
+				<button class="large" id="K_BTN_002" data-bind="click: closeDialog">キャンセル</button>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -12,8 +12,8 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="qpp021.b.main.css" />
 			<com:scriptfile path="qpp021.b.start.js" />
-			<com:scriptfile path="qpp021.b.vm.js" />
 			<com:scriptfile path="qpp021.b.service.js" />
+			<com:scriptfile path="qpp021.b.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -66,8 +66,8 @@
 								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">プリンタの選択</div>
 								<span class="ntsControl"> <label class="ntsRadioBox">
 										<input type="radio" name="textRadioPrintType"
-										data-bind="checkedValue: 1, checked: selectPrinterCategory, enable: true" /> <span
-										class="box"></span><span class="label"
+										data-bind="checkedValue: 1, checked: selectPrinterCategory, enable: true" />
+										<span class="box"></span><span class="label"
 										data-bind="text: 'レーザープリンタ用帳表（圧着式用も含みます）'"></span>
 								</label>
 								</span>
@@ -143,15 +143,18 @@
 									</td>
 									<td style="vertical-align: top;">
 										<div class="B_BTN_001_002_003">
-											<button id="B_BTN_001" class="small" data-bind="click: openDialogScreenD">詳細設定</button>
+											<button id="B_BTN_001" class="small"
+												data-bind="click: openDialogScreenD">詳細設定</button>
 										</div>
 
 										<div class="B_BTN_001_002_003">
-											<button id="B_BTN_002" class="small" data-bind="click: openDialogRefundPadding">余白設定</button>
+											<button id="B_BTN_002" class="small"
+												data-bind="click: openDialogRefundPadding">余白設定</button>
 										</div>
 
 										<div class="B_BTN_001_002_003">
-											<button id="B_BTN_003" class="small" data-bind="click: openDialogScreenH">連絡事項の入力</button>
+											<button id="B_BTN_003" class="small"
+												data-bind="click: openDialogScreenH">連絡事項の入力</button>
 										</div>
 
 										<div class="B_BTN_004">
@@ -161,7 +164,8 @@
 										</div>
 
 										<div class="B_BTN_005">
-											<button id="B_BTN_005" class="large proceed" data-bind="">全員印刷</button>
+											<button id="B_BTN_005" class="large proceed"
+												data-bind="click: printPaymentData">全員印刷</button>
 										</div>
 
 									</td>
@@ -182,12 +186,10 @@
 								<div class="content-step2-right-gridLsit"></div>
 								<div
 									class="content-step2-right-button valign-center control-group">
-									<button id="c-button-001" class="normal" data-bind="click: previous">
-										←レイアウト選択へ戻る
-									</button>
-									<button id="c-button-002" class="normal" data-bind="click: openDialogScreenI">
-										選択社員にコメントを登録する
-									</button>
+									<button id="c-button-001" class="normal"
+										data-bind="click: previous">←レイアウト選択へ戻る</button>
+									<button id="c-button-002" class="normal"
+										data-bind="click: openDialogScreenI">選択社員にコメントを登録する</button>
 									<button id="c-button-003" class="large proceed" data-bind="">印刷</button>
 								</div>
 							</div>

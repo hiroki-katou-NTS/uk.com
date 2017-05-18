@@ -6,4 +6,7 @@ __viewContext.ready(function() {
         viewmodelD: new qmm020.d.viewmodel.ScreenModel()
     };
     __viewContext.bind(__viewContext.viewModel);
+    
+    // show active tab panel 
+    $('.navigator li a.active').trigger('click');
 });

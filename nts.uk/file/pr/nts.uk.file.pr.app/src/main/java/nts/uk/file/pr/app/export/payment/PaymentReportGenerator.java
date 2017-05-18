@@ -7,8 +7,7 @@
  */
 package nts.uk.file.pr.app.export.payment;
 
-import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
+import nts.arc.layer.app.file.export.ExportServiceContext;
 
 /**
  * The Interface PaymentReportGenerator.
@@ -21,5 +20,5 @@ public interface PaymentReportGenerator {
      * @param fileContext the file context
      * @param reportData the report data
      */
-    void generate(FileGeneratorContext fileContext, PaymentReportData reportData);
+    void generate(ExportServiceContext<PaymentReportQuery> context);
 }
