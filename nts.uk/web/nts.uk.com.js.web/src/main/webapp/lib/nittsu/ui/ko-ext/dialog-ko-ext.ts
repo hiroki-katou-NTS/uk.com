@@ -1,7 +1,7 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
-    
+
     /**
      * Dialog binding handler
      */
@@ -99,7 +99,12 @@ module nts.uk.ui.koExtentions {
             var dialogWidth: number = 40 + 35 + 17;
             headers.forEach(function(header, index) {
                 if (ko.unwrap(header.visible)) {
-                    dialogWidth += ko.unwrap(header.width);
+                    if (typeof ko.unwrap(header.width) === "number") {
+                        dialogWidth += ko.unwrap(header.width);
+                    } else {
+                        dialogWidth += 200;
+                    }
+
                 }
             });
             // Create dialog
@@ -109,12 +114,18 @@ module nts.uk.ui.koExtentions {
 
                 closeOnEscape: false,
                 width: dialogWidth,
+                maxHeight: 500,
                 buttons: dialogbuttons,
                 dialogClass: "no-close",
                 open: function() {
                     $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                     $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                     $('.ui-widget-overlay').last().css('z-index', 120000);
+
+                    //                    let $headerContainer = $("<div'></div>").addClass("ui-dialog-titlebar-container");
+                    //                    $headerContainer.append($("<img>").attr("src", "/nts.uk.com.js.web/lib/nittsu/ui/style/images/error.png").addClass("ui-dialog-titlebar-icon");
+                    //                    $headerContainer.append($(this).parent().find(".ui-dialog-title"));
+                    //                    $(this).parent().children(".ui-dialog-titlebar").append($headerContainer);
                 },
                 close: function(event) {
                     bindingContext.$data.option.show(false);
@@ -133,55 +144,74 @@ module nts.uk.ui.koExtentions {
             var errors: Array<any> = ko.unwrap(data.errors);
             var headers: Array<any> = ko.unwrap(option.headers);
             var displayrows: number = ko.unwrap(option.displayrows);
-            var maxrows: number = ko.unwrap(option.maxrows);
+            //var maxrows: number = ko.unwrap(option.maxrows);
             var autoclose: boolean = ko.unwrap(option.autoclose);
             var show: boolean = ko.unwrap(option.show);
 
             var $dialog = $("#ntsErrorDialog");
 
             if (show == true) {
-                $dialog.dialog("open");
+                
                 // Create Error Table
                 var $errorboard = $("<div id='error-board'></div>");
                 var $errortable = $("<table></table>");
                 // Header
-                var $header = $("<thead><tr></tr></thead>");
-                $header.find("tr").append("<th style='width: 35px'></th>");
+                var $header = $("<thead></thead>");
+                let $headerRow = $("<tr></tr>");
+                $headerRow.append("<th style='display:none;'></th>");
+
                 headers.forEach(function(header, index) {
                     if (ko.unwrap(header.visible)) {
                         let $headerElement = $("<th>" + ko.unwrap(header.text) + "</th>").width(ko.unwrap(header.width));
-                        $header.find("tr").append($headerElement);
+                        $headerRow.append($headerElement);
                     }
                 });
+
+                $header.append($headerRow);
                 $errortable.append($header);
+
                 // Body
                 var $body = $("<tbody></tbody>");
                 errors.forEach(function(error, index) {
-                    if (index < maxrows) {
-                        // Row
-                        let $row = $("<tr></tr>");
-                        $row.append("<td style='width:35px'>" + (index + 1) + "</td>");
-                        headers.forEach(function(header) {
-                            if (ko.unwrap(header.visible))
-                                if (error.hasOwnProperty(ko.unwrap(header.name))) {
-                                    // TD
-                                    let $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>").width(ko.unwrap(header.width));
-                                    $row.append($column);
-                                }
-                        });
-                        $body.append($row);
-                    }
+                    // Row
+                    let $row = $("<tr></tr>");
+                    $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
+                    headers.forEach(function(header) {
+                        if (ko.unwrap(header.visible))
+                            if (error.hasOwnProperty(ko.unwrap(header.name))) {
+                                // TD
+                                let $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>");
+
+                                $row.append($column);
+                            }
+                    });
+                    $body.append($row);
                 });
                 $errortable.append($body);
                 $errorboard.append($errortable);
                 // Errors over maxrows message
                 var $message = $("<div></div>");
-                if (errors.length > maxrows)
-                    $message.text("Showing " + maxrows + " in total " + errors.length + " errors");
                 $dialog.html("");
                 $dialog.append($errorboard).append($message);
-                // Calculate body height base on displayrow
-                $body.height(Math.min(displayrows, errors.length) * $(">:first-child", $body).outerHeight() + 1);
+
+//                $dialog.on("dialogresizestop dialogopen", function() {
+                $dialog.on("dialogopen", function() {
+                    var maxrowsHeight = 0;
+                    var index = 0;
+                    $(this).find("table tbody tr").each(function() {
+                        if (index < displayrows) {
+                            index++;
+                            maxrowsHeight += $(this).height();
+                        }
+                    });
+                    maxrowsHeight = maxrowsHeight + 33 + 20 + 20 + 55 +4 + $(this).find("table thead").height();
+                    if (maxrowsHeight > $dialog.dialog("option", "maxHeight")) {
+                        maxrowsHeight = $dialog.dialog("option", "maxHeight");
+                    }
+                    $dialog.dialog("option", "height", maxrowsHeight);
+                });
+                
+                $dialog.dialog("open");
             }
             else {
                 $dialog.dialog("close");
@@ -189,7 +219,7 @@ module nts.uk.ui.koExtentions {
             }
         }
     }
-    
+
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
     ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
 }
