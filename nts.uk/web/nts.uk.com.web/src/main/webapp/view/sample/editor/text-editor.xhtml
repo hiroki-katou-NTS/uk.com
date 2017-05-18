@@ -32,6 +32,10 @@
 					<div id="content" class="cf">
 						<h1>TextEditor</h1>
 						<h2>Overview</h2>
+						<div id="read-only-textbox" data-bind="with: texteditor">
+							<h3>Read-Only TextEditor</h3>
+							<input id="read-only-text" data-name="read-only-text" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: true, enable: enable, readonly: true}" />
+						</div>
 						<div data-bind="with: texteditor">
 							<h3>TextEditor</h3>
 							<input id="text-1" data-name="text-1" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: true, enable: enable, readonly: readonly}" />
