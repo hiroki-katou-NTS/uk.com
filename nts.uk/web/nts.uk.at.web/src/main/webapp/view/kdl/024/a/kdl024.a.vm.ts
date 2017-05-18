@@ -28,8 +28,9 @@ module kdl024.a.viewmodel {
                 { unitId: '1', unitName: '時間帯別' }
             ]);
             //Input Code
-            console.log(nts.uk.resource.getText("1"));
-            //debugger;
+            console.log(nts.uk.resource.getText("KDL024_1"));
+            console.log(nts.uk.resource.getText("Enum_Attribute_Time"));
+            debugger;
             self.isEnableInp = ko.observable(false);
             //Combobox
             self.itemListCbb = ko.observableArray([
@@ -43,7 +44,7 @@ module kdl024.a.viewmodel {
             self.isEnableCbb = ko.observable(true);
             //grid list
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'externalBudgetCode', width: 40 },
+                { headerText: nts.uk.resource.getText('KDL024_5'), key: 'externalBudgetCode', width: 40 },
                 { headerText: '名称', key: 'externalBudgetName', width: 150 }
             ]);
             self.items = ko.observableArray([]);
