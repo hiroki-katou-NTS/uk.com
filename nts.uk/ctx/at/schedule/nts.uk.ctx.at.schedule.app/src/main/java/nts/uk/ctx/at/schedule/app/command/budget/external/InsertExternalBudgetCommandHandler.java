@@ -35,7 +35,7 @@ public class InsertExternalBudgetCommandHandler extends CommandHandler<InsertExt
 		Optional<ExternalBudget> optional = this.budgetRepo.find(AppContexts.user().companyId(),
 				command.getExternalBudgetCode());
 		if (optional.isPresent()) {
-			throw new BusinessException(new RawErrorMessage(internationalization.getItemName("Msg_3"+"done")));
+			throw new BusinessException(new RawErrorMessage(internationalization.getItemName("Msg_3")));
 		}
 		// insert process
 		budgetRepo.insert(exBudget);
