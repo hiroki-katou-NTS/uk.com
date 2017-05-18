@@ -66,11 +66,12 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public Optional<PaymentDetail> findItemWith9Property(String companyCode, String personId, int processingNo,
 			int processingYm, int payBonusAtr, int sparePayAtr, int categoryAtr, String itemCode, BigDecimal value) {
-		return this.queryProxy().query(SEL_11, PaymentDetail.class).setParameter("CCD", companyCode)
+		return this.queryProxy().query(SEL_11, QstdtPaymentDetail.class).setParameter("CCD", companyCode)
 				.setParameter("PID", personId).setParameter("PROCESSING_NO", processingNo)
 				.setParameter("PROCESSING_YM", processingYm).setParameter("PAY_BONUS_ATR", payBonusAtr)
 				.setParameter("SPARE_PAY_ATR", sparePayAtr).setParameter("CTG_ATR", categoryAtr)
-				.setParameter("ITEM_CD", itemCode).setParameter("VAL", value).getSingle();
+				.setParameter("ITEM_CD", itemCode).setParameter("VAL", value)
+				.getSingle().map(c -> paymentDetailToDomain(c));
 	}
 
 	@Override

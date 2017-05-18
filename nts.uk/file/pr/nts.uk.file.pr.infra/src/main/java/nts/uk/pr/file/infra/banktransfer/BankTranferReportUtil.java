@@ -16,6 +16,8 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
+import nts.gul.text.StringUtil;
+
 public class BankTranferReportUtil {
 	
 	private final static int START_ROW_INDEX = 9;
@@ -110,5 +112,30 @@ public class BankTranferReportUtil {
 		}
 
 		return workbook;
+	}
+	
+	/**
+	 * Create space for text
+	 * @param text
+	 * @param size
+	 * @return
+	 */
+	public static String createspace(String text, int size) {
+		StringBuffer result = new StringBuffer();
+		int count = 0;
+		if (StringUtil.isNullOrEmpty(text, true)) {
+			count = size;
+		} else {
+			result.append(text);
+			if(text.length() < size ){
+				count = size - text.length();
+			}
+		}	
+		
+		for (int i = 0; i < count; i++) {
+			result.append(" ");
+		}
+		
+		return result.toString();
 	}
 }
