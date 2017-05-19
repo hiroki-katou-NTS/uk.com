@@ -21,9 +21,6 @@ public class PaymentReportData {
 	/** The report data. */
 	private List<PaymentReportDto> reportData;
 	
-	/** The japanese year month. */
-	private String japaneseYearMonth;
-	
 	/** The config. */
 	private RefundPaddingDto config;
 }
