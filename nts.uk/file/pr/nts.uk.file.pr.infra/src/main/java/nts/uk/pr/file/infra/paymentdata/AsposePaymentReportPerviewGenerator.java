@@ -67,53 +67,42 @@ public class AsposePaymentReportPerviewGenerator extends AsposeCellsReportGenera
 	 */
 	@Override
 	public void generate(FileGeneratorContext fileContext, PaymentReportPreviewQuery query) {
-		switch (query.getPageLayout()) {
-		case PAGE_E1:
-			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_E1)) {
+		try {
+			AsposeCellsReportContext ctx = null;
+			switch (query.getPageLayout()) {
+			case PAGE_E1:
+				ctx = this.createContext(TEMPLATE_PATH_E1);
 				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			break;
-		case PAGE_E2:
-			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_E2)) {
+				break;
+			case PAGE_E2:
+				ctx = this.createContext(TEMPLATE_PATH_E2);
 				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			break;
-		case PAGE_E3:
-			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_E3)) {
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			break;
-		case PAGE_F1:
-			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_F1)) {
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			break;
-		case PAGE_F2:
-			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_F2)) {
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			break;
-		case PAGE_G:
-			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_G)) {
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			break;
 
-		default:
-			break;
+				break;
+			case PAGE_E3:
+				ctx = this.createContext(TEMPLATE_PATH_E3);
+				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
+				break;
+			case PAGE_F1:
+				ctx = this.createContext(TEMPLATE_PATH_F1);
+				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
+				break;
+			case PAGE_F2:
+				ctx = this.createContext(TEMPLATE_PATH_F2);
+				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
+				break;
+			case PAGE_G:
+				ctx = this.createContext(TEMPLATE_PATH_G);
+				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
+				break;
+				
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
+
 	}
 
 }
