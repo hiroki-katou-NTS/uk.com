@@ -186,7 +186,7 @@ module nts.uk.com.view.ccg015.a {
                 self.isNewMode(true);
                 self.toppageSelectedCode("");
                 $("#inp_code").focus();
-                if ($('.nts-input').ntsError('hasError')) {
+                if (nts.uk.ui.errors.hasError()) {
                     nts.uk.ui.errors.clearAll();
                 }
             }
