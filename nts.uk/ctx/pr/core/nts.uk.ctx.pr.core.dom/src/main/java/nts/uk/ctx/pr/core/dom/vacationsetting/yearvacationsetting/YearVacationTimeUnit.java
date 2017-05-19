@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.dom.vacationsetting.yearvacationsetting;
 
 /**
@@ -6,22 +10,25 @@ package nts.uk.ctx.pr.core.dom.vacationsetting.yearvacationsetting;
 public enum YearVacationTimeUnit {
 
 	/** The One minute. */
-	OneMinute(0),
+	OneMinute(0, "1分"),
 
 	/** The Fifteen minute. */
-	FifteenMinute(1),
+	FifteenMinute(1, "15分"),
 
 	/** The Thirty minute. */
-	ThirtyMinute(2),
+	ThirtyMinute(2, "30分"),
 
 	/** The One hour. */
-	OneHour(3),
+	OneHour(3, "1時間"),
 
 	/** The Two hour. */
-	TwoHour(4);
+	TwoHour(4, "2時間");
 
 	/** The value. */
 	public int value;
+	
+	/** The description. */
+	public String description;
 
 	/** The Constant values. */
 	private final static YearVacationTimeUnit[] values = YearVacationTimeUnit.values();
@@ -31,8 +38,9 @@ public enum YearVacationTimeUnit {
 	 *
 	 * @param value the value
 	 */
-	private YearVacationTimeUnit(int value) {
+	private YearVacationTimeUnit(int value, String description) {
 		this.value = value;
+		this.description = description;
 	}
 
 	/**

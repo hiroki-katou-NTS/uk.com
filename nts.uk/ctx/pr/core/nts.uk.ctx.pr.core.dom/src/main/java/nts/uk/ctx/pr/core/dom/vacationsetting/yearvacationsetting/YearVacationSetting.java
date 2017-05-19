@@ -1,29 +1,31 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.dom.vacationsetting.yearvacationsetting;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.pr.core.dom.vacation.setting.ManageDistinct;
 
-// TODO: Auto-generated Javadoc
 /**
- * Gets the year vacation manage.
- *
- * @return the year vacation manage
+ * The Class YearVacationSetting.
  */
 @Getter
 public class YearVacationSetting extends DomainObject {
 
-	/** The company id. */
-	private String companyId;
-	
-	/** The time manage. */
-	private Manage timeManage;
-	
-	/** The time manage setting. */
-	private YearVacationTimeManageSetting timeManageSetting;
-	
-	/** The year vacation manage. */
-	private Manage yearVacationManage;
-	
-	/** The manage setting. */
-	private YearVacationManageSetting manageSetting;
+    /** The company id. */
+    private String companyId;
+
+    /** The year manage type. */
+    private ManageDistinct yearManageType;
+
+    /** The manage setting. */
+    private YearVacationManageSetting yearManageSetting;
+    
+    /** The time manage type. */
+    private ManageDistinct timeManageType;
+    
+    /** The time manage setting. */
+    private YearVacationTimeManageSetting timeManageSetting;
 }
