@@ -16,9 +16,9 @@ module kmk011.a.viewmodel {
         checkErrSelect: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
         divTimeId: KnockoutObservable<number>;
-        itemDivTime: KnockoutObservable<service.model.DivergenceTime>;
-        listDivItem: KnockoutObservableArray<service.model.DivergenceItem>;
-        lstItemSelected: KnockoutObservableArray<service.model.DivergenceItem>;
+        itemDivTime: KnockoutObservable<model.DivergenceTime>;
+        listDivItem: KnockoutObservableArray<model.DivergenceItem>;
+        lstItemSelected: KnockoutObservableArray<model.DivergenceItem>;
         list: KnockoutObservable<string>;
         use: KnockoutObservable<string>;
         notUse: KnockoutObservable<string>;
@@ -59,37 +59,35 @@ module kmk011.a.viewmodel {
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
                 if (codeChanged == 0) { return; }
-                else {
-                    self.selectUse(null);
-                    self.itemDivTime(self.findDivTime(codeChanged));
-                    self.alarmTime(self.convertTime(self.itemDivTime().alarmTime));
-                    self.errTime(self.convertTime(self.itemDivTime().errTime));
-                    self.selectUse(self.itemDivTime().divTimeUseSet);
-                    self.selectSel(self.itemDivTime().selectSet.selectUseSet);
-                    self.selectInp(self.itemDivTime().inputSet.selectUseSet);
-                    self.divTimeId(self.itemDivTime().divTimeId);
-                    self.divTimeName(self.itemDivTime().divTimeName);
-                    service.getItemSelected(self.divTimeId()).done(function(lstItem: Array<service.model.TimeItemSet>) {
-                        var listItemId = [];
-                        for (let j = 0; j < lstItem.length; j++) {
-                            listItemId[j] = lstItem[j].attendanceId;
-                        }
-                        service.getNameItemSelected(listItemId).done(function(lstName: Array<service.model.DivergenceItem>){
-                           self.lstItemSelected(lstName);
-                            self.findTimeName(self.divTimeId()); 
-                        });
+                self.selectUse(null);
+                self.itemDivTime(self.findDivTime(codeChanged));
+                self.alarmTime(self.convertTime(self.itemDivTime().alarmTime));
+                self.errTime(self.convertTime(self.itemDivTime().errTime));
+                self.selectUse(self.itemDivTime().divTimeUseSet);
+                self.selectSel(self.itemDivTime().selectSet.selectUseSet);
+                self.selectInp(self.itemDivTime().inputSet.selectUseSet);
+                self.divTimeId(self.itemDivTime().divTimeId);
+                self.divTimeName(self.itemDivTime().divTimeName);
+                service.getItemSelected(self.divTimeId()).done(function(lstItem: Array<model.TimeItemSet>) {
+                    var listItemId = [];
+                    for (let j = 0; j < lstItem.length; j++) {
+                        listItemId[j] = lstItem[j].attendanceId;
+                    }
+                    service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>){
+                       self.lstItemSelected(lstName);
+                        self.findTimeName(self.divTimeId()); 
+                    });
 
-                    })
-                    if (self.itemDivTime().inputSet.cancelErrSelReason == 1) {
-                        self.checkErrInput(true);
-                    } else {
-                        self.checkErrInput(false);
-                    }
-                    if (self.itemDivTime().selectSet.cancelErrSelReason == 1) {
-                        self.checkErrSelect(true);
-                    } else {
-                        self.checkErrSelect(false);
-                    }
+                })
+                if (self.itemDivTime().inputSet.cancelErrSelReason == 1) {
+                    self.checkErrInput(true);
+                } else {
+                    self.checkErrInput(false);
+                }
+                if (self.itemDivTime().selectSet.cancelErrSelReason == 1) {
+                    self.checkErrSelect(true);
+                } else {
+                    self.checkErrSelect(false);
                 }
             });
             //subscribe selectUse
@@ -138,7 +136,7 @@ module kmk011.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            service.getAllDivTime().done(function(lstDivTime: Array<service.model.DivergenceTime>) {
+            service.getAllDivTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
                 if (lstDivTime === undefined || lstDivTime.length == 0) {
                     self.dataSource();
                 } else {
@@ -157,7 +155,7 @@ module kmk011.a.viewmodel {
         findDivTime(value: number): any {
             let self = this;
             var itemModel = null;
-            return _.find(self.dataSource(), function(obj: service.model.DivergenceTime) {
+            return _.find(self.dataSource(), function(obj: model.DivergenceTime) {
                 return obj.divTimeId == value;
             })
         }
@@ -168,7 +166,7 @@ module kmk011.a.viewmodel {
         }
         openDialog021() {
             var self = this;
-            service.getAllAttItem(1).done(function(lstAllItem: Array<service.model.AttendanceType>) {
+            service.getAllAttItem(1).done(function(lstAllItem: Array<model.AttendanceType>) {
                 var listAllId = [];
                 for (let j = 0; j < lstAllItem.length; j++) {
                     listAllId[j] = lstAllItem[j].attendanceItemId;
@@ -183,18 +181,17 @@ module kmk011.a.viewmodel {
                 nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                     var list = nts.uk.ui.windows.getShared('selectedChildAttendace');
                     self.list(list);
-                    var listUpdate = new Array<service.model.DivergenceTimeItem>();
+                    var listUpdate = new Array<model.DivergenceTimeItem>();
                     for (let i = 0; i < list.length; i++) {
-                        let itemUpdate = new service.model.DivergenceTimeItem(self.divTimeId(), list[i]);
+                        let itemUpdate = new model.DivergenceTimeItem(self.divTimeId(), list[i]);
                         listUpdate.push(itemUpdate);
                     }
-                    service.getNameItemSelected(list).done(function(lstName: Array<service.model.DivergenceItem>) {
+                    service.getNameItemSelected(list).done(function(lstName: Array<model.DivergenceItem>) {
                         self.lstItemSelected(lstName);
                         self.findTimeName(self.divTimeId());
                     })
                 })
             });
-            //            })
         }
         Registration() {
             var self = this;
@@ -202,17 +199,17 @@ module kmk011.a.viewmodel {
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
                     var dfd = $.Deferred();
-                    var select = new service.model.SelectSet(self.selectSel(), self.convert(self.checkErrSelect()));
-                    var input = new service.model.SelectSet(self.selectInp(), self.convert(self.checkErrInput()));
-                    var divTime = new service.model.DivergenceTime(self.divTimeId(), self.divTimeName(), self.selectUse(), self.convertInt(self.alarmTime()), self.convertInt(self.errTime()), select, input);
-                    var listAdd = new Array<service.model.TimeItemSet>();
+                    var select = new model.SelectSet(self.selectSel(), self.convert(self.checkErrSelect()));
+                    var input = new model.SelectSet(self.selectInp(), self.convert(self.checkErrInput()));
+                    var divTime = new model.DivergenceTime(self.divTimeId(), self.divTimeName(), self.selectUse(), self.convertInt(self.alarmTime()), self.convertInt(self.errTime()), select, input);
+                    var listAdd = new Array<model.TimeItemSet>();
                     if (self.list() != null) {
                         for (let k = 0; k < self.list().length; k++) {
-                            let add = new service.model.TimeItemSet(self.divTimeId(), self.list()[k]);
+                            let add = new model.TimeItemSet(self.divTimeId(), self.list()[k]);
                             listAdd.push(add);
                         }
                     }
-                    var Object = new service.model.ObjectDivergence(divTime, listAdd);
+                    var Object = new model.ObjectDivergence(divTime, listAdd);
                     service.updateDivTime(Object).done(function() {
                         self.getAllDivTimeNew();
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
@@ -255,13 +252,13 @@ module kmk011.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             self.dataSource();
-            service.getAllDivTime().done(function(lstDivTime: Array<service.model.DivergenceTime>) {
+            service.getAllDivTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
                 self.currentCode('');
                 self.dataSource(lstDivTime);
                 self.currentCode(self.divTimeId());
                 dfd.resolve();
             }).fail(function(error) {
-                alert(error.message);
+                nts.uk.ui.dialog.alert(error.message);
             })
             dfd.resolve();
             return dfd.promise();
@@ -282,6 +279,81 @@ module kmk011.a.viewmodel {
                 }
                 self.timeItemName(strName);
                 strName = '';
+            }
+        }
+    }
+    export module model {
+        export class DivergenceTime {
+            divTimeId: number;
+            divTimeUseSet: number;
+            divTimeName: string;
+            alarmTime: number;
+            errTime: number;
+            selectSet: SelectSet;
+            inputSet: SelectSet;
+            constructor(divTimeId: number, divTimeName: string,
+                divTimeUseSet: number,
+                alarmTime: number, errTime: number,
+                selectSet: SelectSet,
+                inputSet: SelectSet) {
+                var self = this;
+                self.divTimeId = divTimeId;
+                self.divTimeName = divTimeName;
+                self.divTimeUseSet = divTimeUseSet;
+                self.alarmTime = alarmTime;
+                self.errTime = errTime;
+                self.selectSet = selectSet;
+                self.inputSet = inputSet;
+            }
+        }
+        export class SelectSet {
+            selectUseSet: number;
+            cancelErrSelReason: number;
+            constructor(selectUseSet: number, cancelErrSelReason: number) {
+                this.selectUseSet = selectUseSet;
+                this.cancelErrSelReason = cancelErrSelReason;
+            }
+        }
+        export class DivergenceTimeItem {
+            divTimeId: number;
+            attendanceId: number;
+            constructor(divTimeId: number, attendanceId: number) {
+                this.divTimeId = divTimeId;
+                this.attendanceId = attendanceId;
+            }
+        }
+        export class ItemSelected {
+            id: number;
+            name: string;
+            constructor(id: number, name: string) {
+                this.id = id;
+                this.name = name;
+            }
+        }
+        export class AttendanceType {
+            attendanceItemId: number;
+        }
+        export class DivergenceItem {
+            attendanceItemId: number;
+            attendanceItemName: string;
+            displayNumber: number;
+            useAtr: number;
+            attendanceAtr: number;
+        }
+        export class TimeItemSet {
+            divTimeId: number;
+            attendanceId: number;
+            constructor(divTimeId: number, attendanceId: number) {
+                this.divTimeId = divTimeId;
+                this.attendanceId = attendanceId;
+            }
+        }
+        export class ObjectDivergence {
+            divTime: DivergenceTime;
+            timeItem: List<TimeItemSet>;
+            constructor(divTime: DivergenceTime, item: List<TimeItemSet>) {
+                this.divTime = divTime;
+                this.timeItem = item;
             }
         }
     }

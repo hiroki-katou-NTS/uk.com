@@ -37,7 +37,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 		val domain = DivergenceTime.createSimpleFromJavaType(
 				entity.kmkmtDivergenceTimePK.companyId,
 				entity.kmkmtDivergenceTimePK.divTimeId,
-				entity.getDivTimeName(),
+				entity.divTimeName,
 				entity.divTimeUseSet,
 				entity.alarmTime,
 				entity.errTime,

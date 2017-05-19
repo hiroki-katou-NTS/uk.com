@@ -39,14 +39,13 @@ module kmk011.b.viewmodel {
                 self.itemDivReason(self.findItemDivTime(codeChanged));
                 if (self.itemDivReason() === undefined || self.itemDivReason() == null) {
                     return;
-                } else {
-                    self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
-                    self.enableCode(false);
-                    self.divReasonCode(self.itemDivReason().divReasonCode);
-                    self.divReasonContent(self.itemDivReason().divReasonContent);
-                    self.requiredAtr(self.itemDivReason().requiredAtr);
-                    self.enableDel(true);
                 }
+                self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
+                self.enableCode(false);
+                self.divReasonCode(self.itemDivReason().divReasonCode);
+                self.divReasonContent(self.itemDivReason().divReasonContent);
+                self.requiredAtr(self.itemDivReason().requiredAtr);
+                self.enableDel(true);
             });
         }
 
@@ -108,9 +107,8 @@ module kmk011.b.viewmodel {
                         let objectNew = self.convertCode(self.divReasonCode()) + self.divReasonContent() + self.requiredAtr();
                         if (self.objectOld == objectNew) {
                             return;
-                        } else {
-                            self.updateDivReason();
                         }
+                        self.updateDivReason();
                     } else
                         if (self.enableCode() == true) {//add divergence
                             self.addDivReason();
@@ -146,7 +144,7 @@ module kmk011.b.viewmodel {
             service.updateDivReason(divReason).done(function() {
                 self.getAllDivReasonNew();
             }).fail(function(res) {
-                alert(res.message);
+                nts.uk.ui.dialog.alert(res.message);
                 dfd.reject(res);
             });
         }
@@ -162,7 +160,7 @@ module kmk011.b.viewmodel {
                 self.currentCode(self.divReasonCode());
                 dfd.resolve();
             }).fail(function(error) {
-                alert(error.message);
+                nts.uk.ui.dialog.alert(error.message);
             })
             dfd.resolve();
             return dfd.promise();
@@ -202,7 +200,7 @@ module kmk011.b.viewmodel {
 
                 dfd.resolve();
             }).fail(function(error) {
-                alert(error.message);
+                nts.uk.ui.dialog.alert(error.message);
             })
             dfd.resolve();
             return dfd.promise();

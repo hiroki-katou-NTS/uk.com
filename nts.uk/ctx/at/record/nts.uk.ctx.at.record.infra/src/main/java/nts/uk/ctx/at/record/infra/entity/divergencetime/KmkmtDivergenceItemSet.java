@@ -7,13 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Setter
-@Getter
 @Entity
 @Table(name="KMKMT_DIVERGENCE_ITEM_SET")
 @AllArgsConstructor
