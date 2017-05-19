@@ -212,6 +212,7 @@ module nts.uk.ui.koExtentions {
         EVENT_PICK: string = "pick." + this.NAMESPACE;
         YM_FORMAT: string = "YYYY/MM";
         YMD_FORMAT: string = "YYYY/MM/DD";
+        DATE_SPLITTER: string = "/";
         
         // Use this method to get an instance.
         static getInstance($input: JQuery): DatePickerNormalizer {
@@ -297,7 +298,8 @@ module nts.uk.ui.koExtentions {
         private setColorLevel(): void {
             if (this.options.format === this.YM_FORMAT) this.colorLevel = this.MONTHS;
             else if (this.options.format === this.YMD_FORMAT) this.colorLevel = this.DAYS;
-            this.selectedView = this.colorLevel;
+            // Only set to colorLevel in initialization.
+            if (this.selectedView === undefined) this.selectedView = this.colorLevel;
         }
         
         color(): void {
@@ -546,9 +548,9 @@ module nts.uk.ui.koExtentions {
             this.viewMonth = viewTime.getMonth() + 1;
             this.defaultMonths = this.options.months;
             var parsedTime;
-            if (this.options.format === this.YMD_FORMAT) parsedTime = time.parseYearMonthDate(initValue);
-            else if (this.options.format === this.YM_FORMAT) parsedTime = time.parseYearMonth(initValue); 
-            if (parsedTime.success) {
+            if (this.options.format === this.YMD_FORMAT) parsedTime = this.parseDate(initValue);
+            else if (this.options.format === this.YM_FORMAT) parsedTime = this.parseDate(initValue); 
+            if (parsedTime !== undefined) {
                 this.year = parsedTime.year;
                 this.month = parsedTime.month;
                 this.date = parsedTime.date;
@@ -565,11 +567,23 @@ module nts.uk.ui.koExtentions {
             }
             this.color();
             // Pick time
-            if (colorLevel === this.MONTHS && this.allowPickMonth()) {
+            if (this.selectedView === this.MONTHS && this.allowPickMonth()) {
+                if (this.viewMonth < this.fiscalMonth && this.viewYear === this.year) this.clearPicked();
                 this.pickMonth();
-            } else if (colorLevel === this.DAYS && this.allowPickDate()) {
+            } else if (this.selectedView === this.DAYS && this.allowPickDate()) {
                 this.pickDate();
             }
+        }
+        
+        parseDate(date: string): any {
+            var exp = new RegExp(/\d+\/\d+(\/\d+)?/);
+            if (exp.test(date) === false) return;
+            var dateParts = date.split(this.DATE_SPLITTER);
+            return {
+                        year: parseInt(dateParts[0]),
+                        month: parseInt(dateParts[1]),
+                        date: dateParts[2] !== undefined ? parseInt(dateParts[2]) : undefined
+                   };
         }
         
         onShow(): DatePickerNormalizer {

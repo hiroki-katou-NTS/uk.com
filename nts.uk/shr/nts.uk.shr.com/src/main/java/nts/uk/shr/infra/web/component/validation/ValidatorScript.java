@@ -1,7 +1,10 @@
 package nts.uk.shr.infra.web.component.validation;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponentBase;
@@ -73,7 +76,7 @@ public class ValidatorScript extends UIComponentBase {
 
 	private static void writeConstraints(ResponseWriter rw, Class<?> pvClass) {
 		
-		Arrays.asList(pvClass.getDeclaredAnnotations()).stream()
+		annotationsStream(pvClass)
 			.map(a -> a.toString())
 			.filter(r -> r.contains(PrimitiveValueConstraintPackage.NAME))
 	        .forEach(representationOfAnnotation -> {
@@ -117,5 +120,15 @@ public class ValidatorScript extends UIComponentBase {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	/**
+	 * Get annotations stream of pvClass and its super class.
+	 * @param pvClass pvClass
+	 * @return annotations stream
+	 */
+	private static Stream<Annotation> annotationsStream(Class<?> pvClass) {
+		return Stream.concat(Arrays.asList(pvClass.getDeclaredAnnotations()).stream(), 
+							Arrays.asList(pvClass.getSuperclass().getDeclaredAnnotations()).stream());
 	}
 }
