@@ -55,28 +55,28 @@ __viewContext.ready(function() {
             },
             {
                 controlName: "テキストボックス--時間", properties: [
-                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#primitivevalue" },
-                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
-                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" }
+                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#primitivevalue" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#itemname" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#placeholder" }
                 ]
             },
             {
                 controlName: "テキストボックス--時刻", properties: [
-                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#primitivevalue" },
-                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
-                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" }
+                   { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#day-primitivevalue" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#day-itemname" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#day-placeholder" }
                 ]
             },
             {
                 controlName: "テキストボックス--社員コード", properties: [
-                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
-                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#employeecocde" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#employeecocde" },
                     { propertyName: "Enterマーク", link: "link" }
                 ]
             },
             {
                 controlName: "テキストボックス--パスワード", properties: [
-                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#password" },
                     { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" },
                     { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#primitivevalue" }
                 ]
