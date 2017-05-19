@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1300,
+					height : 600
+				};
+			</script>
+			
+			<script
+				src="http://www.igniteui.com/data-files/adventureworks.min.js"></script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="qpp008.g.main.css" />
+			<com:scriptfile path="qpp008.g.start.js" />
+			<com:scriptfile path="qpp008.g.vm.js" />
+			<com:scriptfile path="qpp008.g.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" class="function-area">
+				<button id="register-g-btn-001" class="proceed" data-bind = "click: registerData">登録</button>
+				<button id="PDF-output-g-btn-002">PDF出力</button>
+				<button id="close-dialog-g-btn-003" data-bind = "click: closeDialog">閉じる</button>
+			</div>
+			<div id="contents-area">
+
+				<div class="div-contents-one valign-center control-group">
+					<div id="comparative-date-lbl-001" data-bind="ntsFormLabel: {}">比較年月</div>
+					<label id="comparative-date-value-lbl-002"><span
+						data-bind="text: comparativeDateEarlier"></span> と <span
+						data-bind="text: comparativeDateLater"></span> を比較</label>
+					<div id="mumber-people-lbl-003" data-bind="ntsFormLabel: {}">対象者</div>
+					<label id="mumber-people-value-lbl-004"><span
+						data-bind="text: numberOfPeople"></span>人</label>
+					<hr />
+				</div>
+				<div class="div-contents-two">
+					<div id="confirmation-status-lbl-007" data-bind="ntsFormLabel: {}">確認状況の一括変更</div>
+					<div id="div-contents-two-right">
+						<button data-bind = "click: checkedAllComfirmStatus">チェックをつける</button>
+						<span>表示されているデータを全て確認済みにします（チェックをつけます）</span>
+						<button data-bind = "click: unCheckedAllComfirmStatus">チェックをはずす</button>
+						<span>表示されているデータを全て未確認にします（チェックをはずします）</span>
+					</div>
+
+				</div>
+				<div id="div-contents-three">
+					<div id="G_LBL_010" data-bind="ntsFormLabel: {}">対象データの絞り込み設定</div>
+					<div class="valign-center control-group">
+						<div class="setting-filter-g">
+							<div class="valign-center control-group">
+								<label id="check-item-lbl-005">確認する項目区分</label>
+								<div class="col-100px"
+									data-bind="ntsMultiCheckBox: {
+									options: itemCategoryChecked,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedItemCategoryCode,
+									enable: true }"></div>
+							</div>
+							<div class="confirmed-Squeezing-div valign-top control-group">
+								<label id="confirmed-Squeezing-lbl-006">確認済みのしぼり込み</label> <span
+									class="confirmed-Squeezing-sel-004"
+									data-bind="ntsSwitchButton: {
+									options: confirmedSqueezingSwitch,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedconfirmedCode,
+									enable: true }">
+								</span>
+							</div>
+						</div>
+						<button class="large search-btn caret-bottom"
+							id="search-btn-sch-001" data-bind = "click: refineComparingDifferrent">絞り込み</button>
+					</div>
+				</div>
+				<div>
+					<table id="grid-comparing-different" class="ui-iggrid-headertable"></table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
