@@ -45,7 +45,7 @@
 							<div class="cf">
 								<div class="col-1 pull-left">
 									<div class="toppage-part-list-placeholder placeholder">
-										<table id="toppage-part-list" data-bind="ntsGridList: {								
+										<table data-name="#{i18n.getText('CCG031_15')}" id="toppage-part-list" data-bind="ntsGridList: {								
 											height: 340,
 											width: '100%',
 											dataSource: listPart,
@@ -103,7 +103,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button class="btn x-large btn-register proceed" data-bind="click: submitDialog, enable: $root.errors.isEmpty">#{i18n.getText('CCG031_25')}</button>
-				<button class="btn btn-close" data-bind="click: closeDialog">#{i18n.getText('CCG031_26')}</button>
+				<button class="btn large btn-close" data-bind="click: closeDialog">#{i18n.getText('CCG031_26')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

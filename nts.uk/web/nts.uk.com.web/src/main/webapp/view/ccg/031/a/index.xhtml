@@ -60,9 +60,16 @@
 								</com:ko-foreach>
 							</div>
 						</div>
-						<button class="btn-addcolumn" data-bind="click: addColumnButtonClick">#{i18n.getText('CCG031_5')}</button>
+						<div class="right-area">
+							<button class="btn-addcolumn" data-bind="click: addColumnButtonClick">#{i18n.getText('CCG031_5')}</button>
+							<i class="icon icon-arrow icon-button-arrow-right"></i>
+						</div>
 					</div>
-					<button class="btn-addrow" data-bind="click: addRowButtonClick">#{i18n.getText('CCG031_6')}</button>
+					<div class="bottom-area">
+						<button class="btn-addrow" data-bind="click: addRowButtonClick">#{i18n.getText('CCG031_6')}</button>
+						<br/>
+						<i class="icon icon-arrow icon-button-arrow-bottom"></i>
+					</div>
 				</div>
 			</div>
 		</ui:define>

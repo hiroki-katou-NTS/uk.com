@@ -7,8 +7,8 @@ module ccg031.a.viewmodel {
     const MINROW: number = 4;
     const MINCOLUMN: number = 6;
     const ANIMATION_EASETYPE: string = "easeOutQuint";
-    const ANIMATION_DURATION: number = 350;
-    
+    const ANIMATION_DURATION: number = 500;
+
     export class ScreenModel {
         // Layout Info
         parentCode: string;
@@ -49,7 +49,7 @@ module ccg031.a.viewmodel {
                             item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
                             item.placementPartDto.topPagePartID, item.placementPartDto.type);
                     });
-                    listPlacement = _.orderBy(listPlacement, ['column','row'], ['asc','asc']);
+                    listPlacement = _.orderBy(listPlacement, ['column', 'row'], ['asc', 'asc']);
                     self.placements(listPlacement);
                 }
                 _.defer(() => { self.initDisplay(); });
@@ -198,14 +198,14 @@ module ccg031.a.viewmodel {
             var movingPlacements = _.filter(self.placements(), (placement) => {
                 return _.includes(movingPlacementIds, placement.placementID);
             });
-            movingPlacements = _.orderBy(movingPlacements, ['column','row'], ['asc','asc']);
+            movingPlacements = _.orderBy(movingPlacements, ['column', 'row'], ['asc', 'asc']);
             var listOverlapPlacement: Array<string> = [];
             _.each(movingPlacements, (movingPlacement) => {
                 self.layoutGrid().clearOccupied(movingPlacement);
                 var checkingPlacements = _.filter(self.placements(), (placement) => {
                     return _.includes(checkingPlacementIds, placement.placementID);
                 });
-                movingPlacements = _.orderBy(movingPlacements, ['column','row'], ['asc','asc']);
+                movingPlacements = _.orderBy(movingPlacements, ['column', 'row'], ['asc', 'asc']);
                 self.shiftOverlapPart(movingPlacement, checkingPlacements);
                 // Add that moving placement to checking so that Placement won't be move anymore
                 checkingPlacementIds.push(movingPlacement.placementID);

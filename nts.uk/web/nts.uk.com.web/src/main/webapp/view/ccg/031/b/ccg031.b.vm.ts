@@ -4,7 +4,7 @@ module ccg031.b.viewmodel {
     import windows = nts.uk.ui.windows;
     import errors = nts.uk.ui.errors;
     import resource = nts.uk.resource;
-    
+
     export class ScreenModel {
         // PGType
         pgType: number;
@@ -99,7 +99,7 @@ module ccg031.b.viewmodel {
         closeDialog(): void {
             windows.close();
         }
-        
+
         /** Filter by Type */
         private filterPartType(partType: number): void {
             var isExternalUrl: boolean = (partType === 3);
@@ -120,13 +120,13 @@ module ccg031.b.viewmodel {
             if (partType === 2)
                 this.instructionText(resource.getText("CCG031_19"));
         }
-        
+
         /** Change Selected Part */
         private changeSelectedPart(partID: string): void {
             var selectedPart: model.TopPagePartDto = _.find(this.allPart(), ['topPagePartID', partID]);
             this.selectedPart(selectedPart);
         }
-        
+
         /** Select first Part */
         private selectFirstPart(): void {
             var firstPart: model.TopPagePartDto = _.head(this.listPart());
@@ -143,7 +143,7 @@ module ccg031.b.viewmodel {
             var topPagePartID: string = "";
             var topPagePartType: number = null;
             var url: string = self.url();
-            
+
             // In case is TopPagePart
             if (self.selectedPartType() !== 3) {
                 if (self.selectedPart() !== undefined) {
@@ -158,14 +158,14 @@ module ccg031.b.viewmodel {
                     return null;
                 }
             }
-            
+
             var placement: model.Placement = new model.Placement(
                 util.randomId(), name,
                 self.positionRow(), self.positionColumn(),
                 width, height, url, topPagePartID, topPagePartType);
             return placement;
         }
-        
+
     }
 
 }
