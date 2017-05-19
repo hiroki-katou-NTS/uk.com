@@ -114,7 +114,7 @@ module nts.uk.ui.validation {
             }
 
             if (!ntsNumber.isNumber(inputText, isDecimalNumber)) {
-                result.fail({id:"Msg_001"});
+                result.fail('invalid number');
                 return result;
             }
             var value = isDecimalNumber ?
