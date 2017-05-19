@@ -113,7 +113,7 @@ module kmk011.a.viewmodel {
             });
             //subscribe selectSel
             self.selectSel.subscribe(function(codeChanged) {
-                if (codeChanged == 1) {
+                if (codeChanged == 1 && self.selectUse()==1) {
                     self.enableSelect(true);
                 } else {
                     self.enableSelect(false);
@@ -121,7 +121,7 @@ module kmk011.a.viewmodel {
             });
             //subscribe selectInp
             self.selectInp.subscribe(function(codeChanged) {
-                if (codeChanged == 1) {
+                if (codeChanged == 1 && self.selectUse()==1) {
                     self.enableInput(true);
                 } else {
                     self.enableInput(false);
@@ -181,6 +181,7 @@ module kmk011.a.viewmodel {
                 nts.uk.ui.windows.setShared('Multiple', true, true);
                 nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                     var list = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                    if(list == null || list === undefined) return;
                     self.list(list);
                     var listUpdate = new Array<model.DivergenceTimeItem>();
                     for (let i = 0; i < list.length; i++) {
@@ -215,7 +216,7 @@ module kmk011.a.viewmodel {
                         self.getAllDivTimeNew();
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                     }).fail(function(error) {
-                        if (error.message == 'Msg_82') {
+                        if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);
                         } else {
                             $('#inpDialog').ntsError('set', error);
@@ -249,9 +250,8 @@ module kmk011.a.viewmodel {
             }
         }
         clearError(): void {
-            if ($('.nts-editor').ntsError("hasError")==true) {
-                $('.nts-input2').ntsError('clear');
-//                nts.uk.ui.errors.clearAll()
+            if ($('.nts-validate').ntsError("hasError")==true) {
+                $('.nts-validate').ntsError('clear');
             }
         }
         //get all divergence time new

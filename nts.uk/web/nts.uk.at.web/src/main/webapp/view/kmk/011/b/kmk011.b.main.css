@@ -1,5 +1,4 @@
 @CHARSET "UTF-8";
-
 .separate-button {
 	margin-left: 10px;
 	margin-top: 10px;
@@ -32,6 +31,10 @@
 #inp_003 {
 	float: right;
 	margin-left: 30px;
+}
+
+#nts-input-name {
+	width: 0px !important;
 }
 
 .row {
