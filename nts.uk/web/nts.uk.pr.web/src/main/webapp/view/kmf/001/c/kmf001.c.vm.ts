@@ -25,7 +25,7 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 self.manageStatus = ko.observableArray([
                     {value: 0, name: "管理する"},
-                    {value: 1, name: "管理しな"}
+                    {value: 1, name: "管理しない"}
                 ]);
                 self.selectedAnnualManage = ko.observable(0);
                 self.selectedAddAttendanceDay = ko.observable(0);

@@ -5,19 +5,17 @@
 package nts.uk.ctx.pr.core.dom.vacationsetting.yearvacationsetting;
 
 import lombok.Getter;
+import nts.uk.ctx.pr.core.dom.vacation.setting.ApplyPermission;
 
 /**
- * The Class YearVacationTimeManageSetting.
+ * The Class AcquisitionVacationSetting.
  */
 @Getter
-public class YearVacationTimeManageSetting {
+public class AcquisitionVacationSetting {
+
+	/** The year vacation priority. */
+	private ApplyPermission yearVacationPriority;
 	
-	/** The is enough time one day. */
-	private boolean isEnoughTimeOneDay;
-	
-	/** The time unit. */
-	private YearVacationTimeUnit timeUnit;
-	
-	/** The max day. */
-	private YearVacationTimeMaxDay maxDay;
+	/** The permit type. */
+	private PreemptionPermit permitType;
 }
