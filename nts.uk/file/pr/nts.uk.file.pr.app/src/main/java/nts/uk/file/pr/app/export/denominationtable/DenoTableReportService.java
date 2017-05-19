@@ -78,7 +78,7 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 
 		//  CONVERT YEARMONTH JAPANESE 
 		StringBuilder japanYM = new StringBuilder("【処理年月：");
-		japanYM.append(convertYearMonthJP(query.getYearMonth()));
+		japanYM.append(this.convertYearMonthJP(query.getYearMonth()));
 
 		// CREATE HEADER OBJECT
 		DenoTableHeaderData headerData = DenoTableHeaderData.builder()
@@ -100,10 +100,10 @@ public class DenoTableReportService extends ExportService<DenoTableReportQuery> 
 	
 	private void validateData(DenoTableReportQuery query) {
 		if (query.getYearMonth() == null) {
-			throw new RuntimeException("Target Year is Empty");
+			throw new RuntimeException("Target Year Monrh is Empty");
 		}
-		if (query.getYearMonth() <= 190001 || query.getYearMonth() >= 999912) {
-			throw new RuntimeException("Target Year is not in range");
+		if (query.getYearMonth() < 190001 || query.getYearMonth() > 999912) {
+			throw new RuntimeException("Target Year Month is not in range");
 		}
 		if (query.getIsPrintDepHierarchy() && query.getSelectedLevels().isEmpty()) {
 			throw new RuntimeException("1~9階層 が選択されていません。");

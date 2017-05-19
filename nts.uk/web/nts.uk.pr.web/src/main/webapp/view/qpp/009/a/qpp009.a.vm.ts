@@ -50,10 +50,9 @@ module qpp009.a.viewmodel {
             
             // Print Report
             service.printService(this).done(function() {
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
             })
-                .fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
-                })
            
         }
         

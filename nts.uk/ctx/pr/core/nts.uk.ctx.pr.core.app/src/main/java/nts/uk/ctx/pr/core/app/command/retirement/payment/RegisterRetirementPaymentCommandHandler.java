@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.command.retirement.payment;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -27,7 +27,7 @@ import nts.uk.shr.com.primitive.PersonId;
  * @author Doan Duy Hung
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class RegisterRetirementPaymentCommandHandler extends CommandHandler<RegisterRetirementPaymentCommand>{
 	@Inject
@@ -35,20 +35,20 @@ public class RegisterRetirementPaymentCommandHandler extends CommandHandler<Regi
 	
 	@Override
 	protected void handle(CommandHandlerContext<RegisterRetirementPaymentCommand> context) {
-		// TODO Auto-generated method stub
+		
 		RegisterRetirementPaymentCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		Optional<RetirementPayment> reOptional = this.retirementPaymentRepository.findRetirementPaymentInfo(
 																new CompanyCode(companyCode), 
 																new PersonId(command.getPersonId().toString()), 
-																GeneralDate.fromString(command.getPayDate(), "yyyy/MM/dd"));
+																command.getPayDate());
 		if(reOptional.isPresent()) {
 			throw new RuntimeException("Item already exist");
 		}
 		RetirementPayment retirementPayment = new RetirementPayment(
 				new CompanyCode(companyCode), 
 				new PersonId(command.getPersonId()), 
-				GeneralDate.fromString(command.getPayDate(), "yyyy/MM/dd"),
+				command.getPayDate(),
 				EnumAdaptor.valueOf(command.getTrialPeriodSet(), TrialPeriodSet.class),
 				new PaymentYear(command.getExclusionYears()), 
 				new PaymentYear(command.getAdditionalBoardYears()), 

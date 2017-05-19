@@ -8,12 +8,13 @@ module qpp014.i {
         timer: nts.uk.ui.sharedvm.KibanTimer;
         transferBank: any;
         processingDateInJapanEmprire: any;
+        tmp: any;
         constructor() {
             var self = this;
             $('#successful').css('display', 'none');
-            //$('#stop').css('display', 'none');
-            $('#error').css('display', 'none');
-            //nts.uk.ui.windows.getSelf().setHeight(570);
+            $('#stop').css('display', 'none');
+            //$('#error').css('display', 'none');
+            nts.uk.ui.windows.getSelf().setHeight(570);
             self.timer = new nts.uk.ui.sharedvm.KibanTimer('timer');
             self.items_I_LST_003 = ko.observableArray([]);
             for (let i = 1; i < 14; i++) {
@@ -22,8 +23,20 @@ module qpp014.i {
             self.currentCode_I_LST_003 = ko.observable();
             self.processingDateInJapanEmprire = ko.observable(nts.uk.ui.windows.getShared("processingDateInJapanEmprire"));
             self.transferBank = ko.observable(nts.uk.ui.windows.getShared("label"));
+            self.tmp = nts.uk.ui.windows.getShared("transferObject");
         }
-  
+
+        /**
+         * Print file PDF
+         */
+        saveAsPdf(): void {
+            var self = this;
+            qpp014.i.service.saveAsPdfI(self.tmp)
+                .done(function() { })
+                .fail(function(error) {
+                });
+        }
+
         /**
          * close dialog
          */

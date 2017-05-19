@@ -149,7 +149,9 @@ public class RetirementPayment extends AggregateRoot {
 		this.statementMemo = statementMemo;
 		if(this.taxCalculationMethod.value==0){
 			RetirementPaymentDomainService.autoCalculate(this);
-		} else RetirementPaymentDomainService.manualCalculate(this);
+		} else {
+			RetirementPaymentDomainService.manualCalculate(this);
+		}
 	}
 	
 	/**

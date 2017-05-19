@@ -47,7 +47,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator implements DenoTableReportGenerator {
 
 	/** The Constant REPORT_FILE_NAME. */
-	private static final String REPORT_FILE_NAME = "SalaryTableReport.pdf";
+	private static final String REPORT_FILE_NAME = "給与賞与還付金金種表.pdf";
 
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/QPP009.xlsx";
@@ -433,7 +433,7 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 			// Create End Row Range
 			this.createEndRowRange(printProcess);		
 			int nextPage = currentRow / ROWS_PER_PAGE +1;
-			int blankRowsCurrentPage = nextPage * ROWS_PER_PAGE +1 - currentRow;
+			int blankRowsCurrentPage = nextPage * ROWS_PER_PAGE + 1 - currentRow;
 			printProcess.rowIndex += (blankRowsCurrentPage + BLANK_ROWS);
 			// Create Title for Next Page
 			this.createTitle(printProcess);
@@ -793,7 +793,6 @@ public class AsposeDenoTblReportGenerator extends AsposeCellsReportGenerator imp
 				this.setCellStyle1(cell, stylemodel);
 				createLeftRightBorder(printProcess);
 			}
-			//isGreen.setValue(this.switchColor(isGreen.getValue()));
 			if (isGreen.booleanValue()) {
 				isGreen.setValue(false);
 			} else {

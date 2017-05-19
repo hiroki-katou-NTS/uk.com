@@ -1,0 +1,157 @@
+.function-area button {
+	min-width: 80px;
+	margin: 5px;
+}
+
+#functions-area-content {
+	width: 900px;
+}
+
+.function-area {
+	padding-left: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#contents-area {
+	padding-left: 20px;
+	margin-top: 15px;
+	height: 500px;
+	display: inline-flex;
+	max-width: 1250px;
+}
+
+.caret-background.caret-right:after {
+	top: 75px;
+	left: 100%;
+}
+
+#C_BTN_003 {
+	margin-left: 140px !important;
+}
+
+#C_BTN_004 {
+	margin-left: 25px !important;
+}
+
+.nts-left-content {
+	width: 295px !important;
+	padding: 15px !important;
+	float: left;
+	height: 500px;
+}
+
+.nts-right-content {
+	padding-left: 15px;
+	width: 975px;
+	float: left;
+}
+
+.C_INP_23 {
+	margin-left: 70px;
+	display: inline-block
+}
+
+#C_INP_002 {
+	width: 40px !important;
+	text-align: center !important;
+}
+
+#C_INP_003 {
+	width: 335px !important;
+}
+
+.div-pading-LBL_002 {
+	margin-left: 75px;
+}
+
+.LBL_1_2 {
+	width: 245px;
+	float: left;
+}
+
+#D_LST_001-gridArea1, #D_LST_001-gridArea2, #E_LST_001-gridArea1,
+	#E_LST_001-gridArea2, #F_LST_001-gridArea1, #F_LST_001-gridArea2,
+	#C_LST_002_container {
+	border: 1px solid gray !important;
+}
+
+#C_LST_002_container {
+	padding-right: 1px !important;
+}
+
+.nts-left-content .caret-background.caret-right:after {
+	top: 50px !important;
+}
+
+.divRightTop {
+	padding-left: 5px;
+	padding-bottom: 5px;
+}
+
+.divRightTop.form-label {
+	display: inline-block;
+}
+
+.divSearch {
+	padding: 20px 0px 10px 0px !important;
+}
+
+.content-LST_001-left {
+	width: 100% !important;
+	padding: 15px;
+}
+
+.divRightBottom {
+	padding-top: 5px;
+	width: 950px;
+}
+
+.div-right-bottom-right {
+	width: 685px;
+	float: left;
+	height: auto;
+}
+
+.div-right-bottom-right>swapUpDown {
+	float: left;
+}
+
+.divRBt1down {
+	height: 350px;
+}
+
+.div-right-bottom-left {
+	width: 250px;
+	margin-top: 55px;
+	float: left;
+}
+
+#helpButton {
+	margin-left: 10px;
+}
+
+.tabPanel .caret-right {
+	position: absolute;
+	color: #E0F59E;
+	left: 100%;
+	top: 50%;
+}
+
+.tabPanel .caret-right:after {
+	margin-top: -2.7em;
+	border-width: 2.7em 1.7em;
+}
+
+.tabPanel {
+	width: 665px;
+	height: 500px;
+}
+
+.tab-content-1, .tab-content-2, .tab-content-3 {
+	height: 400px;
+}
+
+#C_LST_001 tr{
+	max-height: 24px !important;
+}

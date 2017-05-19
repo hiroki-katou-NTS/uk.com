@@ -29,4 +29,3 @@ var qrm001;
         })(service = a.service || (a.service = {}));
     })(a = qrm001.a || (qrm001.a = {}));
 })(qrm001 || (qrm001 = {}));
-//# sourceMappingURL=qrm001.a.service.js.map
