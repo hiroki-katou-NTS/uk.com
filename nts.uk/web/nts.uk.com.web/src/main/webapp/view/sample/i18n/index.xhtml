@@ -32,6 +32,7 @@
 						public void greeting(){
 							System.out.println(internationalization.getItemName("code"));
 							System.out.println(internationalization.getItemName("code","param1","param2",......));
+							System.out.println(internationalization.getItemName("code",new String[]{"a","b"}));
 						}
 					}
 					</pre>
@@ -40,10 +41,11 @@
 					<![CDATA[
 					//remove space character after #
 					<h:inputText value="# {i18n.getText('QPP015_1')}"></h:inputText>
-					<div># {i18n.getText('QPP015_1')}</div>      
+					<div># {i18n.getText('KMF004_106')}</div>      
 					                   
 					//get text with params
-					<h:inputText value="# {i18n.getText('QPP015_1',"param1","param2",.....)}"></h:inputText>
+					<h:inputText value="# {i18n.getText('QPP015_1',["param1","param2",.....])}"></h:inputText>
+					<div># {i18n.getText('KMF004_106',['a','b'])}</div>   
 					]]>
 					</pre>
 					<h2>Use in js</h2>
@@ -51,12 +53,10 @@
 						<![CDATA[
 							nts.uk.resource.getText("code")
 							//get text with params
-							nts.uk.resource.getText("code",param1,param2.....)
-							//or 
 							nts.uk.resource.getText("code",[param1,param2])
 							
 							
-							nts.uk.resource.getMessage("message id", param1, param2,...,paramX);
+							nts.uk.resource.getMessage("message id",[ param1, param2,...,paramX]);
 											
 							//because Enum is considered as text so we use getText to get enum'name 
 							nts.uk.resource.getText("Enum_Color_RED")
