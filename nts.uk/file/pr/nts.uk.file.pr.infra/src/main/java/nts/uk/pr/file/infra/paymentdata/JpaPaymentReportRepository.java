@@ -222,7 +222,6 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		// return data
 		PaymentReportData reportData = new PaymentReportData();
 		reportData.setReportData(reportDatas);
-		reportData.setJapaneseYearMonth(this.convertYearMonthJP(query.getProcessingYM()));
 		return reportData;
 	}
 
@@ -373,6 +372,11 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		reportData.setRemark(
 			repository.getRemark(new ContactItemsCode(new JpaPaymentContactCodeGetMemento(header)),
 				header.employeeCode));
+		
+		// set year month
+		reportData.setJapaneseYearMonth(
+			this.convertYearMonthJP(header.qstdtPaymentHeaderPK.processingYM));
+
 		return reportData;
 	}
 	  
