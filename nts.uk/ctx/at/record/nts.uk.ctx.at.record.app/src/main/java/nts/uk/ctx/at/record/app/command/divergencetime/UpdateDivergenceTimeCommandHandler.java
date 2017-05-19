@@ -54,11 +54,11 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 					divTimeRepo.updateDivTime(divTime);
 				}
 			}else{
-				throw new BusinessException(new RawErrorMessage("Msg_32"));
+				throw new BusinessException("Msg_32");
 			}
 			
 		}else{
-			throw new BusinessException(new RawErrorMessage("Msg_82"));
+			throw new BusinessException("Msg_82");
 		}
 		
 	}

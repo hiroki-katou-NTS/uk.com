@@ -58,6 +58,7 @@ module kmk011.a.viewmodel {
             self.lstItemSelected = ko.observableArray([]);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
+                self.clearError();
                 if (codeChanged == 0) { return; }
                 self.selectUse(null);
                 self.itemDivTime(self.findDivTime(codeChanged));
@@ -215,9 +216,9 @@ module kmk011.a.viewmodel {
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                     }).fail(function(error) {
                         if (error.message == 'Msg_82') {
-                            $('#inpAlarmTime').ntsError('set', nts.uk.resource.getMessage(error.message));
+                            $('#inpAlarmTime').ntsError('set', error);
                         } else {
-                            $('#inpDialog').ntsError('set', nts.uk.resource.getMessage(error.message));
+                            $('#inpDialog').ntsError('set', error);
                         }
                     })
                     dfd.resolve();
@@ -245,6 +246,12 @@ module kmk011.a.viewmodel {
                 var hours = value.substring(0, 2);
                 var minutes = value.substring(3, 5);
                 return (parseFloat(hours) * 60 + parseFloat(minutes));
+            }
+        }
+        clearError(): void {
+            if ($('.nts-editor').ntsError("hasError")==true) {
+                $('.nts-input2').ntsError('clear');
+//                nts.uk.ui.errors.clearAll()
             }
         }
         //get all divergence time new

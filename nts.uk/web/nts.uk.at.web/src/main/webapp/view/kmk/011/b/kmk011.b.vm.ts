@@ -102,7 +102,7 @@ module kmk011.b.viewmodel {
             var self = this;
             $('.nts-input').trigger("validate");
             _.defer(() => {
-                if (nts.uk.ui.errors.hasError() === false) {
+                if (!$('.nts-editor').ntsError("hasError")) {
                     if (self.enableCode() == false) {
                         let objectNew = self.convertCode(self.divReasonCode()) + self.divReasonContent() + self.requiredAtr();
                         if (self.objectOld == objectNew) {
@@ -126,7 +126,7 @@ module kmk011.b.viewmodel {
                 nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                 self.getAllDivReasonNew();
             }).fail(function(error) {
-                $('#inpCode').ntsError('set', nts.uk.resource.getMessage(error.message));
+                $('#inpCode').ntsError('set', error);
             });
         }
         convertCode(value: string) {
