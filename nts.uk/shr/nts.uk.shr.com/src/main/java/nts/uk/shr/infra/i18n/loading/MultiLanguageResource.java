@@ -1,5 +1,6 @@
 package nts.uk.shr.infra.i18n.loading;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +84,7 @@ public class MultiLanguageResource implements IInternationalization {
 	}
 
 	@Override
-	public Optional<String> getItemName(String id) {
+	public Optional<String> getItemName(String id, String... params) {
 
 		String text = companyCustomizedResource.get(id);
 		if (text != null)
@@ -93,13 +94,15 @@ public class MultiLanguageResource implements IInternationalization {
 		text = allSystemCodeName.get(id);
 		if (text != null) {
 			text = replaceCompanyDenpendItem(text);
+			if (params.length > 0)
+				text = replaceMessageParameter(text, Arrays.asList(params));
 		}
 		return text == null ? Optional.empty() : Optional.of(text);
 	}
 
 	@Override
 	public Optional<String> getMessage(String messageId, String... params) {
-		return getMessage(messageId, Arrays.asList(params));
+		return getMessage(messageId, params.length > 0 ? Arrays.asList(params) : new ArrayList<String>());
 	}
 
 	@Override
