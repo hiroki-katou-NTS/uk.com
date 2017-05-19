@@ -11,7 +11,7 @@ __viewContext.ready(function () {
         }
         
         setErrorToResidenceCode() {
-            $('#residence-code').ntsError('set', 'えらーです');
+            $('#residence-code').ntsError('set', 'えらーです  a a a a a a aa a a a a a a a a a a a a a a a a a a a a a a a a a a');
         }
         
         clearErrorToResidenceCode() {
