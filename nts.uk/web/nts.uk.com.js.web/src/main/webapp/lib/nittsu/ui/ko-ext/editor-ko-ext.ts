@@ -243,6 +243,10 @@ module nts.uk.ui.koExtentions {
                 $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
                 $parent.attr("data-content", this.editorOption.symbolChar);
             }
+            if(!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue) 
+                && nts.uk.util.isNullOrEmpty(data.value())){
+                data.value(this.editorOption.defaultValue);        
+            }
         }
 
         getDefaultOption(): any {

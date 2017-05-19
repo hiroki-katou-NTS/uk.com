@@ -521,7 +521,9 @@
             }
 
             format(source: any): string {
-                return source === '' ? source: ntsNumber.formatNumber(source, this.option.option);
+                return nts.uk.util.isNullOrEmpty(source) ? (!nts.uk.util.isNullOrEmpty(this.option.option.defaultValue) 
+                    ? this.option.option.defaultValue : source) 
+                        : ntsNumber.formatNumber(source, this.option.option);
             }
         }
 
