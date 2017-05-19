@@ -19,49 +19,46 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>
-					<div class="label">新しく作成する履歴の、作成情報を入力してください。</div>
+					<div class="label">#{i18n.getText('KML001_43')}</div>
 				</div>
 				<div class="table">
 					<div class="cell column1">
-						<div data-bind="ntsFormLabel: { required: true }">期間</div>	
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_44')}</div>	
 					</div>
 					<div class="cell">
 						<div class="dateTime-input">
 							<div>
-								<input id="startDateInput" data-bind="ntsTextEditor: {
+								<input id="startDateInput" data-name="期間" data-bind="ntsTimeEditor: {
 									value: newStartDate,
-									option: { width: '90px' },
+									option: { width: '90px', inputFormat: 'date' },
 									required: true,
 									enable: true }" />
 							</div>
 						</div>
-						<label>~</label>
-						<label>9999/12/31</label>
+						<label>#{i18n.getText('KML001_40')}</label>
+						<label>#{i18n.getText('KML001_45')}</label>
 					</div>
 				</div>
-				<div class="table">
+				<div class="table" data-bind="style: { visibility: (size()==0)?'hidden':'visible' }">
 					<div class="cell column1">
-						<div data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div>
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_46')}</div>
 					</div>
 					<div class="cell">
-						<span class="ntsControl">
-							<label class="ntsRadioBox">
-								<input type="radio" name="textRadio" data-bind="checkedValue: true, checked: copyDataFlag, enable: true" />
-								<span class="box"></span><span class="label" data-bind="text: '最新履歴('+lastestStartDate()+')から引き継ぐ'"></span>
-							</label>
-						</span>
-						<span class="ntsControl">
-							<label class="ntsRadioBox">
-								<input type="radio" name="textRadio" data-bind="checkedValue: false, checked: copyDataFlag, enable: true" />
-								<span class="box"></span><span class="label" data-bind="text: '初めから作成する'"></span>
-							</label>
-						</span>
+						<div data-name="履歴の引継ぎ" data-bind="ntsRadioBoxGroup: {
+									options: ko.observableArray([
+							            { value: true, name: '最新履歴('+lastestStartDate()+')から引き継ぐ' },
+							            { value: false, name: '#{i18n.getText('KML001_48')}'}
+							        ]),
+									optionsValue: 'value',
+									optionsText: 'name',
+									value: copyDataFlag,
+									enable: true }"></div>
 					</div>
 				</div>
 				<hr />
 				<div id="center-bottom" class="valign-center control-group">
-					<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">決定</button>
-					<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">キャンセル</button>
+					<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
+					<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>
 				</div>
 			</div>
 		</ui:define>

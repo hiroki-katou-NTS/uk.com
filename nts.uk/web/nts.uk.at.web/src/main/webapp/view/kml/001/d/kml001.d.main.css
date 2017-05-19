@@ -9,6 +9,13 @@ body {
 	margin-top: 10px;
 	display: block !important;
 }
+.form-label:FIRST-CHILD {
+	vertical-align: middle;
+}
+.ntsRadioBox {
+    display: block;
+    margin-bottom: 8px;
+}
 .dateTime-input {
 	display: inline-block;
 }
@@ -45,4 +52,12 @@ hr { margin-top: 25px; }
 }
 .isDelete {
 	color: #999999;
+}
+.form-label-update {
+	color: black;
+	border-color: #97D155 !important;
+}
+.form-label-delete {
+	color: #999999;
+	border-color: #999999 !important;
 }

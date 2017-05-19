@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItem;
@@ -14,7 +15,11 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
 import nts.uk.ctx.at.schedule.dom.budget.premium.UseAttribute;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @Stateless
 @Transactional
 public class UpdatePremiumItemCommandHandler extends CommandHandler<List<UpdatePremiumItemCommand>>{
@@ -26,6 +31,11 @@ public class UpdatePremiumItemCommandHandler extends CommandHandler<List<UpdateP
 	protected void handle(CommandHandlerContext<List<UpdatePremiumItemCommand>> context) {
 		String companyID = AppContexts.user().companyId();
 		List<UpdatePremiumItemCommand> commands = context.getCommand();
+		int allUse = 0;
+		for(UpdatePremiumItemCommand command : commands) {
+			allUse+=command.getUseAtr();
+		}
+		if(allUse==0) throw new BusinessException("ER066");
 		for(UpdatePremiumItemCommand command : commands) {
 				this.premiumItemRepository.update(
 						new PremiumItem(

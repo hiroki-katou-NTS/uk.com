@@ -4,12 +4,13 @@ module kml001.b.viewmodel {
     export class ScreenModel {
         premiumItemList: KnockoutObservableArray<vmbase.PremiumItem>;
         isInsert: Boolean;
+        allUse: KnockoutObservable<number>;
         constructor() {
             var self = this;
             self.premiumItemList = ko.observableArray([]);   
             self.isInsert = nts.uk.ui.windows.getShared('isInsert');
+            
         }
-        
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -19,12 +20,26 @@ module kml001.b.viewmodel {
                         self.premiumItemList.push(
                             new vmbase.PremiumItem(
                                 item.companyID,
-                                item.iD,
+                                item.id,
                                 item.attendanceID,
                                 item.name,
                                 item.displayNumber,
                                 item.useAtr
                             ));
+                    });
+                    self.allUse = ko.pureComputed(function(){
+                        let x: number = 0;
+                        self.premiumItemList().forEach(function(item) { 
+                            x+=parseInt(item.useAtr().toString());
+                        });        
+                        return x;
+                    });
+                    self.allUse.subscribe(function(value){
+                        if(value==0) {
+                            $("#premium-set-tbl").ntsError('set', vmbase.MSG.MSG066);     
+                        } else {
+                            $("#premium-set-tbl").ntsError('clear');  
+                        }    
                     });
                     dfd.resolve();
                 })
@@ -37,7 +52,9 @@ module kml001.b.viewmodel {
         submitAndCloseDialog(): void {
             var self = this;
             let premiumItemListCommand = [];
-            ko.utils.arrayForEach(self.premiumItemList(), function(item) { premiumItemListCommand.push(ko.mapping.toJS(item)) });
+            ko.utils.arrayForEach(self.premiumItemList(), function(item) { 
+                premiumItemListCommand.push(ko.mapping.toJS(item));
+            });
             servicebase.premiumItemUpdate(premiumItemListCommand)
                 .done(function(res: Array<any>) {
                     if(self.isInsert){
@@ -47,7 +64,8 @@ module kml001.b.viewmodel {
                     nts.uk.ui.windows.close();
                 }).fail(function(res) {
                     
-                });;
+                });
+            
         }
         
         closeDialog(): void {

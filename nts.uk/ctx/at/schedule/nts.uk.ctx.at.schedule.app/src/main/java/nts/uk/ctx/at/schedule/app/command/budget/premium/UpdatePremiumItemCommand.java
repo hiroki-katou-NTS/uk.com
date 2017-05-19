@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.schedule.app.command.budget.premium;
 
-import java.math.BigDecimal;
-
 import lombok.Value;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @Value
 public class UpdatePremiumItemCommand {
 	private String companyID;

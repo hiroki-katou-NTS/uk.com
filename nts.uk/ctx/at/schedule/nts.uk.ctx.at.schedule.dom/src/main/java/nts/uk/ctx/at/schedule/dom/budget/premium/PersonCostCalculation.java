@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
 import java.util.List;
-import java.util.UUID;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.primitive.Memo;
@@ -45,5 +43,4 @@ public class PersonCostCalculation extends AggregateRoot {
 		this.memo = memo;
 		this.premiumSettings = premiumSettings;
 	} 
-
 }

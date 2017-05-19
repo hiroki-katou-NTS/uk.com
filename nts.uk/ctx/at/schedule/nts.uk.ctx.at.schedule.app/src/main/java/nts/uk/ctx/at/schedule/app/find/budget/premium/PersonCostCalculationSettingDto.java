@@ -1,12 +1,10 @@
 package nts.uk.ctx.at.schedule.app.find.budget.premium;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 
 /**
  * 
