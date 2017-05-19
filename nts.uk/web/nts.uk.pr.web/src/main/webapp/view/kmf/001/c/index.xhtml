@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="kmf001.c.service.js" />
 			<com:scriptfile path="kmf001.c.vm.js" />
@@ -29,22 +30,250 @@
 			</div>
 
 			<div id="contents-area">
-				<div>
+				<div style="margin-left: 30px;padding-top: 10px;">
 					<!-- ＃{i18n.getText('KMF001_32')} -->
-					<div data-bind="ntsFormLabel: {required: false}" style="margin-right: 50px;">年休の管理</div>
-					<span
-						data-bind="ntsSwitchButton: {
+					<div data-bind="ntsFormLabel: {required: true}"
+						style="margin-right: 50px;">年休の管理</div>
+					<span data-bind="ntsSwitchButton: {
 										options: manageStatus,
 										optionsValue: 'value',
 										optionsText: 'name',
-										value: selectedManage,
+										value: selectedAnnualManage,
 										enable: true }">
 					</span>
 					<div class="hr_width">
 						<hr />
 					</div>
-					<table>
+					<table id="table" >
+						<!-- BEGIN 年次有給休暇の扱い -->
+						<tr>
+							<td colspan="4"><div data-bind="ntsFormLabel: {}">年次有給休暇の扱い</div><!-- KMF001_31 -->
+								<div class="hr_width">
+									<hr />
+								</div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_33 -->
+							<td><label class="content-label">出勤日数として加算</label></td>
+							<td><div
+								data-bind="ntsSwitchButton: {
+										options: manageStatus,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: selectedAddAttendanceDay,
+										enable: enableAnnualVacation }"></div></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_34 -->
+							<td><label class="content-label">半休の上限管理</label></td>
+							<td><div
+								data-bind="ntsSwitchButton: {
+										options: manageStatus,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: selectedMaxSemiVacation,
+										enable: enableAnnualVacation }"></div></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_133 -->
+							<td><label class="content-label">半休の上限回数</label></td>
+							<td><div id="combo-box" data-bind="ntsComboBox: {
+										options: yearVacationPriorityList,
+										optionsValue: 'value',
+										value: selectedYearVacation,
+										optionsText: 'name',
+										editable: false,
+										enable: enableAnnualVacation,
+										columns: [
+											{prop: 'name', length: 10 }
+										]}"></div></td>
+										
+							<!-- KMF001_132 -->
+							<td><label class="content-label">会社の上限回数</label></td>
+							<td><input data-bind="enable: enableAnnualVacation"/></td>
+						</tr>
+						<tr>
+							<!-- KMF001_35 -->
+							<td><label class="content-label">上限日数設定</label></td>
+							<!-- KMF001_36 -->
+							<td><label class="content-label">付与上限日数</label>
+								<input data-bind="enable: enableAnnualVacation"/>
+							</td>
 
+							<td><label class="content-label">残数上限日数</label></td>
+							<td><input data-bind="enable: enableAnnualVacation"/></td>
+						</tr>
+						<tr>
+							<!-- KMF001_38 -->
+							<td><label class="content-label">保持できる年数</label></td>
+							<td><input data-bind="enable: enableAnnualVacation" /></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<!-- END 年次有給休暇の扱い -->
+						
+						<!-- BEGIN 年休取得の設定 -->
+						<tr>
+							<!-- ＃KMF001_39 -->
+							<td colspan="4"><div data-bind="ntsFormLabel: {}">年休取得の設定</div>
+								<div class="hr_width">
+									<hr />
+								</div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_40 -->
+							<td><label class="content-label">年休の先取り</label></td>
+							<td><div
+								data-bind="ntsSwitchButton: {
+										options: permissionList,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: selectedPermission,
+										enable: enableAnnualVacation }"></div></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_41 -->
+							<td><label class="content-label">年休の消化優先</label></td>
+							<td><div id="combo-box" data-bind="ntsComboBox: {
+										options: yearVacationPriorityList,
+										optionsValue: 'value',
+										value: selectedYearVacation,
+										optionsText: 'name',
+										editable: false,
+										enable: enableAnnualVacation,
+										columns: [
+											{prop: 'name', length: 10 }
+										]}"></div></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<!-- END 年休取得の設定 -->
+						
+						<!-- BEGIN 表示設定 -->
+						<tr>
+							<!-- ＃KMF001_128 -->
+							<td colspan="4"><div data-bind="ntsFormLabel: {}">表示設定</div>
+								<div class="hr_width">
+									<hr />
+								</div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_129 -->
+							<td><label class="content-label">年休の先取り</label></td>
+							<td><div data-bind="ntsSwitchButton: {
+										options: yearRoundRemainingList,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: selectedNumberRemainingOfYear,
+										enable: enableAnnualVacation }"></div></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_130 -->
+							<td><label class="content-label">年休、時間年休の次回付与日数</label></td>
+							<td><div data-bind="ntsSwitchButton: {
+										options: yearRoundRemainingList,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: selectedNextGrantAnunalVacation,
+										enable: enableAnnualVacation }"></div></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<!-- END 表示設定 -->
+						
+						<!-- BEGIN 時間年休 -->
+						<tr>
+							<!-- ＃KMF001_51 -->
+							<td colspan="4"><div data-bind="ntsFormLabel: {}">時間年休</div>
+								<div class="hr_width">
+									<hr />
+								</div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_52 -->
+							<td><label class="content-label">時間管理</label></td>
+							<td><div
+								data-bind="ntsSwitchButton: {
+										options: manageStatus,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: selectedTimeManagement,
+										enable: enableAnnualVacation }"></div></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_53 -->
+							<td><label class="content-label">消化単位</label></td>
+							<td><div id="combo-box" data-bind="ntsComboBox: {
+										options: yearVacationPriorityList,
+										optionsValue: 'value',
+										value: selectedYearVacation,
+										optionsText: 'name',
+										editable: false,
+										enable: enableAnnualVacation,
+										columns: [
+											{prop: 'name', length: 10 }
+										]}"></div></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_54 -->
+							<td><label class="content-label">時間年休の上限日数管理</label></td>
+							<td><div data-bind="ntsSwitchButton: {
+										options: manageStatus,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: selectedManageUpperLimitDayVacation,
+										enable: enableAnnualVacation }"></div></td>
+										
+							<td><div></div></td>
+							<td><div></div></td>
+						</tr>
+						<tr>
+							<!-- KMF001_134 -->
+							<td><label class="content-label">時間年休の上限日数設定</label></td>
+							<td><div id="combo-box" data-bind="ntsComboBox: {
+										options: yearVacationPriorityList,
+										optionsValue: 'value',
+										value: selectedYearVacation,
+										optionsText: 'name',
+										editable: false,
+										enable: enableAnnualVacation,
+										columns: [
+											{prop: 'name', length: 10 }
+										]}"></div></td>
+										
+							<!-- KMF001_135 -->
+							<td><label class="content-label">会社の上限日数</label></td>
+							<td><input data-bind="enable: enableAnnualVacation"/></td>
+						</tr>
+						<tr>
+							<!-- KMF001_155 -->
+							<td colspan="4"><div  class="content-label"
+									data-bind="ntsCheckBox: { checked: true,
+									enable: enableAnnualVacation,
+									text: '年次有給休暇の期限が切れた時、一日の時間未満の時間年休を積立年休とする' }"></div></td>
+						</tr>
+						<!-- END時間年休 -->
 					</table>
 				</div>
 			</div>
