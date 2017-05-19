@@ -33,4 +33,27 @@ public class ComCompensLeave extends DomainObject {
 		this.setting = setting;
 	}
 
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new labor insurance office.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public ComCompensLeave(ComCompensLeaveGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.setting = memento.getSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(ComCompensLeaveSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setSetting(this.setting);
+	}
+
 }

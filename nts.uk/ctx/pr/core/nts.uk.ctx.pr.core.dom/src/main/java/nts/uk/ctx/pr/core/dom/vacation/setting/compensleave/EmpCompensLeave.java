@@ -8,7 +8,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class EmploymentCompensatoryLeave.
+ * The Class EmpCompensLeave.
  */
 @Getter
 public class EmpCompensLeave extends DomainObject {
@@ -16,7 +16,7 @@ public class EmpCompensLeave extends DomainObject {
 	/** The company id. */
 	private String companyId;
 
-	/** The emp contract type. */
+	/** The emp contract type code. */
 	private String empContractTypeCode;
 
 	/** The setting. */
@@ -38,6 +38,31 @@ public class EmpCompensLeave extends DomainObject {
 		this.companyId = companyId;
 		this.empContractTypeCode = empContractTypeCode;
 		this.setting = setting;
+	}
+
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new emp compens leave.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public EmpCompensLeave(EmpCompensLeaveGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.empContractTypeCode = memento.getEmpContractTypeCode();
+		this.setting = memento.getSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(EmpCompensLeaveSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setEmpContractTypeCode(this.empContractTypeCode);
+		memento.setSetting(this.setting);
 	}
 
 }
