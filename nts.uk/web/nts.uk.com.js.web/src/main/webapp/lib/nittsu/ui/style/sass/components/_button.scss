@@ -122,8 +122,33 @@ button {
    	box-shadow: 0 $_base_border_bottom_width $button-boxshadow-base-color;
 	overflow: visible;
 	
+    &:focus {
+	  border-color: #0096f2;
+	  box-shadow: 0 2px 2px 0 #0096f2;
+	  	&.small {
+	    	/* END: SAME ALL SIZES */
+	    }
+	    
+	    &.large {
+    		$_thickness_gap: 1px;
+	    	$_border_bottom_width: $_base_border_bottom_width + $_thickness_gap;
+	 	    box-shadow: 0 $_border_bottom_width #0096f2;
+	    	
+	    	/* END: SAME ALL SIZES */
+	    }
+	    
+	    &.x-large {
+    		$_thickness_gap: 2px;
+	    	$_border_bottom_width: $_base_border_bottom_width + $_thickness_gap;
+	    	
+	  	 	box-shadow: 0 $_border_bottom_width #0096f2;
+	    	/* END: SAME ALL SIZES */
+		}
+	}
+	
     &:active {
         top: $_base_border_bottom_width;
+        border-color: $button-boxshadow-base-color;
 		box-shadow: 0 0 #999;
     }
     
@@ -145,6 +170,7 @@ button {
     	
     	&:active {
     		top: $_border_bottom_width;
+    		border-color: $button-boxshadow-base-color;
 			box-shadow: 0 0 $button-boxshadow-base-color;
     	}
     	/* END: SAME ALL SIZES */
@@ -168,7 +194,8 @@ button {
     	
     	&:active {
     		top: $_border_bottom_width;
-			box-shadow: 0 0 $button-boxshadow-base-color;
+    		border-color: $button-boxshadow-base-color;
+			box-shadow: 0 0 $button-boxshadow-base-color !important;
     	}
     	/* END: SAME ALL SIZES */
     }
@@ -191,7 +218,8 @@ button {
     	
     	&:active {
     		top: $_border_bottom_width;
-			box-shadow: 0 0 $button-boxshadow-base-color;
+    		border-color: $button-boxshadow-base-color;
+			box-shadow: 0 0 $button-boxshadow-base-color !important;
     	}
     	/* END: SAME ALL SIZES */
 	}
@@ -199,10 +227,5 @@ button {
     &.auto-height{
     	height: auto;
     }
-    
-    &:focus {
-	  border-color: #0096f2;
-	  box-shadow: 0 2px 2px 0 #0096f2;
-	}
 	
 }

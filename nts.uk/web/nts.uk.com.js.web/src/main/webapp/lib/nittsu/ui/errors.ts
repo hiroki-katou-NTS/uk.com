@@ -49,17 +49,24 @@ module nts.uk.ui.errors {
                         error.messageText = error.message;
                         error.message = "";
                     } else {
-                        if (error.$control.length > 0) {
-                            let controlNameId = error.$control.eq(0).attr("data-name");
-                            if (controlNameId) {
-                                error.messageText = nts.uk.resource.getMessage(error.message.id, nts.uk.resource.getText(controlNameId));
-                            } else {
-                                error.messageText = nts.uk.resource.getMessage(error.message.id);
-                            }
+                        //business exception
+                        if (error.message.message) {
+                            error.messageText = error.message.message;
+                            error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                         } else {
-                            error.messageText = nts.uk.resource.getMessage(error.message.id);
+                            if (error.$control.length > 0) {
+                                let controlNameId = error.$control.eq(0).attr("data-name");
+                                if (controlNameId) {
+                                    error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                } else {
+                                    error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
+                                }
+                            } else {
+                                error.messageText = nts.uk.resource.getMessage(error.message.messageId);
+
+                            }
+                            error.message = error.message.messageId;
                         }
-                        error.message = error.message.id;
 
                     }
                     this.errors.push(error);

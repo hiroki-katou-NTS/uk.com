@@ -2,6 +2,76 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
+        var ntsNumber;
+        (function (ntsNumber) {
+            function isInteger(value, option) {
+                if (option !== undefined && option.groupseperator() !== undefined) {
+                    value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
+                }
+                return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
+            }
+            function isDecimal(value, option) {
+                if (option !== undefined) {
+                    var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
+                    value = isDecimal(value) || seperator === undefined ? value : uk.text.replaceAll(value.toString(), seperator, '');
+                }
+                return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
+            }
+            function isNumber(value, isDecimalValue, option) {
+                if (isDecimalValue) {
+                    return isDecimal(value, option);
+                }
+                else {
+                    return isInteger(value, option);
+                }
+            }
+            ntsNumber.isNumber = isNumber;
+            ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
+            function getDecimal(value, scale) {
+                var scaleX = Math.pow(10, scale);
+                return ntsNumber.trunc(value * scaleX) / scaleX;
+            }
+            ntsNumber.getDecimal = getDecimal;
+            function formatNumber(value, formatOption) {
+                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
+                    return value;
+                }
+                var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
+                var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
+                var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
+                var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
+                var formattedValue = "";
+                var stringValue = uk.text.replaceAll(value.toString(), groupSeperator, '');
+                var isMinus = stringValue.charAt(0) === '-';
+                var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
+                if (groupLength > 0) {
+                    var x = values[0].split('').reverse().join('');
+                    for (var i = 0; i < x.length;) {
+                        formattedValue += x.substr(i, groupLength) + (x.length > i + groupLength ? groupSeperator : "");
+                        i += groupLength;
+                    }
+                    formattedValue = formattedValue.split('').reverse().join('');
+                }
+                else {
+                    formattedValue = values[0];
+                }
+                if (values[1] === undefined || decimalLength > values[1].length) {
+                    values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
+                }
+                else {
+                    values[1] = values[1].substr(0, decimalLength);
+                }
+                values[1] = uk.text.splitOrPadRight(values[1], decimalLength, '0');
+                return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
+            }
+            ntsNumber.formatNumber = formatNumber;
+        })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
         var KeyCodes;
         (function (KeyCodes) {
             KeyCodes.Tab = 9;
@@ -520,26 +590,19 @@ var nts;
         })(deferred = uk.deferred || (uk.deferred = {}));
         var resource;
         (function (resource) {
-            function getText(code) {
-                var params = [];
-                for (var _i = 1; _i < arguments.length; _i++) {
-                    params[_i - 1] = arguments[_i];
-                }
+            function getText(code, params) {
                 var text = names[code];
                 if (text) {
                     text = formatCompDependParam(text);
                     text = formatParams(text, params);
+                    return text;
                 }
                 return code;
             }
             resource.getText = getText;
-            function getMessage(messageId) {
-                var params = [];
-                for (var _i = 1; _i < arguments.length; _i++) {
-                    params[_i - 1] = arguments[_i];
-                }
+            function getMessage(messageId, params) {
                 var message = messages[messageId];
-                if (message == undefined) {
+                if (!message) {
                     return messageId;
                 }
                 message = formatParams(message, params);
@@ -558,7 +621,7 @@ var nts;
                 return message;
             }
             function formatParams(message, args) {
-                if (args == undefined)
+                if (args == null || args.length == 0)
                     return message;
                 var paramRegex = /{([0-9])+(:\\w+)?}/;
                 var matches;
@@ -1095,76 +1158,6 @@ var nts;
             }());
             text_3.TimeFormatter = TimeFormatter;
         })(text = uk.text || (uk.text = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ntsNumber;
-        (function (ntsNumber) {
-            function isInteger(value, option) {
-                if (option !== undefined && option.groupseperator() !== undefined) {
-                    value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
-                }
-                return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
-            }
-            function isDecimal(value, option) {
-                if (option !== undefined) {
-                    var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
-                    value = isDecimal(value) || seperator === undefined ? value : uk.text.replaceAll(value.toString(), seperator, '');
-                }
-                return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
-            }
-            function isNumber(value, isDecimalValue, option) {
-                if (isDecimalValue) {
-                    return isDecimal(value, option);
-                }
-                else {
-                    return isInteger(value, option);
-                }
-            }
-            ntsNumber.isNumber = isNumber;
-            ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
-            function getDecimal(value, scale) {
-                var scaleX = Math.pow(10, scale);
-                return ntsNumber.trunc(value * scaleX) / scaleX;
-            }
-            ntsNumber.getDecimal = getDecimal;
-            function formatNumber(value, formatOption) {
-                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
-                    return value;
-                }
-                var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
-                var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
-                var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
-                var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
-                var formattedValue = "";
-                var stringValue = uk.text.replaceAll(value.toString(), groupSeperator, '');
-                var isMinus = stringValue.charAt(0) === '-';
-                var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
-                if (groupLength > 0) {
-                    var x = values[0].split('').reverse().join('');
-                    for (var i = 0; i < x.length;) {
-                        formattedValue += x.substr(i, groupLength) + (x.length > i + groupLength ? groupSeperator : "");
-                        i += groupLength;
-                    }
-                    formattedValue = formattedValue.split('').reverse().join('');
-                }
-                else {
-                    formattedValue = values[0];
-                }
-                if (values[1] === undefined || decimalLength > values[1].length) {
-                    values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
-                }
-                else {
-                    values[1] = values[1].substr(0, decimalLength);
-                }
-                values[1] = uk.text.splitOrPadRight(values[1], decimalLength, '0');
-                return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
-            }
-            ntsNumber.formatNumber = formatNumber;
-        })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="reference.ts"/>
@@ -2166,7 +2159,7 @@ var nts;
                             inputText = uk.text.replaceAll(inputText.toString(), this.option.groupseperator, '');
                         }
                         if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber)) {
-                            result.fail({ id: "Msg_001" });
+                            result.fail('invalid number');
                             return result;
                         }
                         var value = isDecimalNumber ?
@@ -2304,19 +2297,26 @@ var nts;
                                     error.message = "";
                                 }
                                 else {
-                                    if (error.$control.length > 0) {
-                                        var controlNameId = error.$control.eq(0).attr("data-name");
-                                        if (controlNameId) {
-                                            error.messageText = nts.uk.resource.getMessage(error.message.id, nts.uk.resource.getText(controlNameId));
-                                        }
-                                        else {
-                                            error.messageText = nts.uk.resource.getMessage(error.message.id);
-                                        }
+                                    //business exception
+                                    if (error.message.message) {
+                                        error.messageText = error.message.message;
+                                        error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                                     }
                                     else {
-                                        error.messageText = nts.uk.resource.getMessage(error.message.id);
+                                        if (error.$control.length > 0) {
+                                            var controlNameId = error.$control.eq(0).attr("data-name");
+                                            if (controlNameId) {
+                                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                            }
+                                            else {
+                                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
+                                            }
+                                        }
+                                        else {
+                                            error.messageText = nts.uk.resource.getMessage(error.message.messageId);
+                                        }
+                                        error.message = error.message.messageId;
                                     }
-                                    error.message = error.message.id;
                                 }
                                 _this.errors.push(error);
                             }
@@ -2634,8 +2634,17 @@ var nts;
                     var $control = $('<div/>').addClass('control');
                     var text;
                     if (typeof message === "object") {
-                        text = nts.uk.resource.getMessage(message.id, message.messageParams);
-                        $control.append(message.id);
+                        //business exception
+                        if (message.message) {
+                            text = message.message;
+                            if (message.messageId) {
+                                $control.append(message.messageId);
+                            }
+                        }
+                        else {
+                            text = nts.uk.resource.getMessage(message.messageId, message.messageParams);
+                            $control.append(message.messageId);
+                        }
                     }
                     else {
                         text = message;
@@ -3280,12 +3289,12 @@ var nts;
                                 return nts.uk.request.uploadFile(formData, option);
                             }
                             else {
-                                dfd.reject({ message: "please select file", messageId: -1 });
+                                dfd.reject({ message: "please select file", messageId: "-1" });
                                 return dfd.promise();
                             }
                         }
                         else {
-                            dfd.reject({ messageId: 0, message: "can not find control" });
+                            dfd.reject({ messageId: "0", message: "can not find control" });
                         }
                         return dfd.promise();
                     };
@@ -8737,54 +8746,6 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var sharedvm;
-            (function (sharedvm) {
-                var KibanTimer = (function () {
-                    function KibanTimer(target) {
-                        var self = this;
-                        self.elapsedSeconds = 0;
-                        self.formatted = ko.observable(uk.time.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
-                        self.targetComponent = target;
-                        self.isTimerStart = ko.observable(false);
-                        self.oldDated = ko.observable(undefined);
-                        document.getElementById(self.targetComponent).innerHTML = self.formatted();
-                    }
-                    KibanTimer.prototype.run = function (timer) {
-                        var x = new Date().getTime() - timer.oldDated().getTime();
-                        x = Math.floor(x / 1000);
-                        timer.elapsedSeconds = x;
-                        document.getElementById(timer.targetComponent).innerHTML
-                            = uk.time.formatSeconds(x, 'hh:mm:ss');
-                    };
-                    KibanTimer.prototype.start = function () {
-                        var self = this;
-                        if (!self.isTimerStart()) {
-                            self.oldDated(new Date());
-                            self.isTimerStart(true);
-                            self.interval = setInterval(self.run, 1000, self);
-                        }
-                    };
-                    KibanTimer.prototype.end = function () {
-                        var self = this;
-                        if (self.isTimerStart()) {
-                            self.oldDated(undefined);
-                            self.isTimerStart(false);
-                            clearInterval(self.interval);
-                        }
-                    };
-                    return KibanTimer;
-                }());
-                sharedvm.KibanTimer = KibanTimer;
-            })(sharedvm = ui.sharedvm || (ui.sharedvm = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -8882,6 +8843,54 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
             })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var sharedvm;
+            (function (sharedvm) {
+                var KibanTimer = (function () {
+                    function KibanTimer(target) {
+                        var self = this;
+                        self.elapsedSeconds = 0;
+                        self.formatted = ko.observable(uk.time.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
+                        self.targetComponent = target;
+                        self.isTimerStart = ko.observable(false);
+                        self.oldDated = ko.observable(undefined);
+                        document.getElementById(self.targetComponent).innerHTML = self.formatted();
+                    }
+                    KibanTimer.prototype.run = function (timer) {
+                        var x = new Date().getTime() - timer.oldDated().getTime();
+                        x = Math.floor(x / 1000);
+                        timer.elapsedSeconds = x;
+                        document.getElementById(timer.targetComponent).innerHTML
+                            = uk.time.formatSeconds(x, 'hh:mm:ss');
+                    };
+                    KibanTimer.prototype.start = function () {
+                        var self = this;
+                        if (!self.isTimerStart()) {
+                            self.oldDated(new Date());
+                            self.isTimerStart(true);
+                            self.interval = setInterval(self.run, 1000, self);
+                        }
+                    };
+                    KibanTimer.prototype.end = function () {
+                        var self = this;
+                        if (self.isTimerStart()) {
+                            self.oldDated(undefined);
+                            self.isTimerStart(false);
+                            clearInterval(self.interval);
+                        }
+                    };
+                    return KibanTimer;
+                }());
+                sharedvm.KibanTimer = KibanTimer;
+            })(sharedvm = ui.sharedvm || (ui.sharedvm = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

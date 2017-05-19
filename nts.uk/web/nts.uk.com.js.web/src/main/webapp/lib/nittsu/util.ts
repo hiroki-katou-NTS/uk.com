@@ -551,18 +551,19 @@
     export module resource {
 
 
-        export function getText(code: string, ...params: any[]): string {
+        export function getText(code: string, params: string[]): string {
             let text = names[code];
             if (text) {
                 text = formatCompDependParam(text);
                 text = formatParams(text, params);
+                return text;
             }
             return code;
         }
 
-        export function getMessage(messageId: string, ...params: any[]): string {
+        export function getMessage(messageId: string, params: string[]): string {
             let message = messages[messageId];
-            if (message == undefined) { return messageId; }
+            if (!message) { return messageId; }
             message = formatParams(message, params);
             message = formatCompDependParam(message);
             return message;
@@ -578,7 +579,7 @@
             return message;
         }
         function formatParams(message: string, args: string[]) {
-            if (args == undefined) return message;
+            if (args==null||args.length==0) return message;
             let paramRegex = /{([0-9])+(:\\w+)?}/;
             let matches: string[];
             while (matches = paramRegex.exec(message)) {
