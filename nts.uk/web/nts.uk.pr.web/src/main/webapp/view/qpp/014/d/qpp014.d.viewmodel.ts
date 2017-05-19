@@ -42,10 +42,13 @@ module qpp014.d.viewmodel {
             var dfd = $.Deferred();
             qpp014.d.service.findDataScreenD(+self.d_lbl_015())
                 .done(function(data) {
+                    var items = [];
                     _.forEach(data, function(x) {
-                        self.d_LST_001_items().push(new ItemModel_D_LST_001(x.scd, x.nameB, x.paymentMethod1, x.paymentMethod2, x.paymentMethod3, x.paymentMethod4, x.paymentMethod5));
+                        items.push(new ItemModel_D_LST_001(x.scd, x.nameB, x.paymentMethod1, x.paymentMethod2, x.paymentMethod3, x.paymentMethod4, x.paymentMethod5));
                     });
+                    self.d_LST_001_items(items);
                     self.countItems(self.d_LST_001_items().length);
+                    bindGrind(items);
                     dfd.resolve();
                 }).fail(function(res) {
                     dfd.reject(res);
@@ -119,3 +122,38 @@ module qpp014.d.viewmodel {
     }
 
 };
+
+function bindGrind(dataSource) {
+    $("#D_LST_001").igGrid({
+                        dataSource: dataSource,
+                        primaryKey: 'scd',
+                        width: '740px',
+                        height: '280px',
+                        autoCommit: false,
+                        dataSourceType: 'json',
+                        autoGenerateColumns: false,
+                        features: [
+                            {
+                                name: 'Selection',
+                                mode: 'row'
+                            },
+                            {
+                                name: 'MultiColumnHeaders'
+                            }
+                        ],
+                        columns: [
+                            { headerText: 'コード', key: 'scd', dataType: 'string', columnCssClass: 'text_align', width: '15%' },
+                            { headerText: '名称', key: 'nameB', dataType: 'string', width: '15%' },
+                            {
+                                headerText: '振込元設定', width: '70%',
+                                group: [
+                                    { headerText: '支払1', key: 'paymentMethod1', dataType: 'string', width: '14%' },
+                                    { headerText: '支払2', key: 'paymentMethod2', dataType: 'string', width: '14%' },
+                                    { headerText: '支払3', key: 'paymentMethod3', dataType: 'string', width: '14%' },
+                                    { headerText: '支払4', key: 'paymentMethod4', dataType: 'string', width: '14%' },
+                                    { headerText: '支払5', key: 'paymentMethod5', dataType: 'string', width: '14%' }
+                                ]
+                            }
+                        ]
+                });
+}
