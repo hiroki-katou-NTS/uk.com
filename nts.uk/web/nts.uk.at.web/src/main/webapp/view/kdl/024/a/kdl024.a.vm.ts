@@ -61,6 +61,7 @@ module kdl024.a.viewmodel {
                 }
                 else {
                     self.isNew(true);
+                    $('#inpCode').focus();
                 }
                 dfd.resolve();
             }).fail(function(res) {
@@ -93,6 +94,7 @@ module kdl024.a.viewmodel {
                         self.selectedBudgetCode(self.currentItem().externalBudgetCode());
                         self.isNew(false);
                     }).fail(function(res) {
+                        debugger;
                         $('#inpCode').ntsError('set',res);
                     });
             }
@@ -154,15 +156,13 @@ module kdl024.a.viewmodel {
         /** Change Change Create/Update mode */
         private changeMode(isNew: boolean): void {
             var self = this;
-            $('.nts-checkvalue').ntsError('clear');
+            if (nts.uk.ui._viewModel !== undefined)
+                $('.nts-checkvalue').ntsError('clear');
             if (isNew === true) {
                 //current Code, 何にも、項目選択している。
                 self.selectedBudgetCode(null);
                 //Enable Code Input
                 $('#inpCode').focus();
-            }
-            else {
-                
             }
         }
         
