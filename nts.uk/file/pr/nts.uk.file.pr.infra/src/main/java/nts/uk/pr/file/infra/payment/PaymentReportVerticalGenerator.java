@@ -104,7 +104,7 @@ public class PaymentReportVerticalGenerator extends PaymentReportBaseGenerator i
 		list.add(new CellValue(5, 2, "部門コード"));
 		list.add(new CellValue(5, 5, "個人コード"));
 		list.add(new CellValue(5, 7, "氏名"));
-		list.add(new CellValue(2, 3, employee.getProcessingYm()));
+		list.add(new CellValue(2, 3, employee.getJapaneseYearMonth()));
 		list.add(new CellValue(6, 2, employee.getDepartmentInfo().getDepartmentCode()));
 		list.add(new CellValue(6, 5, employee.getEmployeeInfo().getEmployeeCode()));
 		list.add(new CellValue(6, 7, employee.getEmployeeInfo().getEmployeeName()));
