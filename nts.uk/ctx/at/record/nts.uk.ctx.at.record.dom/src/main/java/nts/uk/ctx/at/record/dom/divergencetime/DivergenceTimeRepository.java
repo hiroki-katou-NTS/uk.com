@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.dom.divergencetime;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceType;
-
 public interface DivergenceTimeRepository {
 
 	/**
@@ -27,12 +25,6 @@ public interface DivergenceTimeRepository {
 	 * @return
 	 */
 	List<DivergenceItemSet> getallItembyCode(String companyId, int divTimeId);
-	/**
-	 * get all divergence item
-	 * @param companyId
-	 * @return
-	 */
-	List<DivergenceItem> getallDivItem(String companyId);
 	/**
 	 * update divergence time
 	 * @param divTime
@@ -64,13 +56,6 @@ public interface DivergenceTimeRepository {
 	 */
 	Optional<DivergenceReason> getDivReason(String companyId, int divTimeId, String divReasonCode);
 	/**
-	 * getItemSelected
-	 * @param companyId
-	 * @param divTimeId
-	 * @return
-	 */
-	List<DivergenceItemName> getItemSelected(String companyId, int divTimeId);
-	/**
 	 * add list item id new
 	 * @param lstItemId
 	 */
@@ -81,5 +66,4 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeId
 	 */
 	void deleteItemId(String companyId, int divTimeId);
-	List<DivergenceItem> getName(String companyId, List<Integer> listAttendanceItemId);
 }

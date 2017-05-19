@@ -2,16 +2,22 @@ module kmk011.a.service {
     var paths = {
         getAllDivTime: "at/record/divergencetime/getalldivtime",
         updateDivTime: "at/record/divergencetime/updatedivtime",
-        updateTimeItemId:"at/record/divergencetime/updateTimeItemId",
-        getNameItemSelected: "at/record/divergencetime/getitemname/",
-        getAllAttItem:"at/share/attendanceType/getByType/",
-        getName: "at/record/divergencetime/getname"
+        updateTimeItemId: "at/record/divergencetime/updateTimeItemId",
+        getAllAttItem: "at/share/attendanceType/getByType/",
+        getItemSet: "at/record/divergencetime/getitemset/",
+        getAllName: "at/share/attendanceitem/getPossibleAttendanceItem"
     }
     /**
     * get all item selected(item da duoc chon)
     */
-    export function getNameItemSelected(divTimeId: number): JQueryPromise<Array<model.ItemSelected>> {
-        return nts.uk.request.ajax("at", paths.getNameItemSelected + divTimeId);
+    export function getItemSelected(divTimeId: number): JQueryPromise<Array<model.TimeItemSet>> {
+        return nts.uk.request.ajax("at", paths.getItemSet + divTimeId);
+    }
+    /**
+    * get name(item da duoc chon)
+    */
+    export function getNameItemSelected(lstItemId: Array<number>): JQueryPromise<Array<model.DivergenceItem>> {
+        return nts.uk.request.ajax("at", paths.getAllName, lstItemId);
     }
     /**
     * get all attendance item id(id co the chon)
@@ -22,24 +28,22 @@ module kmk011.a.service {
     /**
     * update time item id (da duoc chon lai)
     */
-    export function updateTimeItemId(lstItemId: Array<model.DivergenceTimeItem>):JQueryPromise<Array<model.DivergenceTimeItem>>{
+    export function updateTimeItemId(lstItemId: Array<model.DivergenceTimeItem>): JQueryPromise<Array<model.DivergenceTimeItem>> {
         return nts.uk.request.ajax("at", paths.updateTimeItemId, lstItemId);
     }
     /**
     * get all divergence time
     */
-    export function getAllDivTime(): JQueryPromise<Array<model.DivergenceTime>>{
+    export function getAllDivTime(): JQueryPromise<Array<model.DivergenceTime>> {
         return nts.uk.request.ajax("at", paths.getAllDivTime);
     }
     /**
      * update divergence time
      */
-    export function updateDivTime(Object: model.ObjectDivergence):JQueryPromise<Array<model.DivergenceTimeItem>>{
+    export function updateDivTime(Object: model.ObjectDivergence): JQueryPromise<Array<model.DivergenceTimeItem>> {
         return nts.uk.request.ajax("at", paths.updateDivTime, Object);
     }
-    export function getName(listAttendanceItemId: Array<number>):JQueryPromise<Array<model.ItemSelected>>{
-        return nts.uk.request.ajax("at", paths.getName,listAttendanceItemId);
-    }
+    
     export module model {
         export class DivergenceTime {
             divTimeId: number;
@@ -49,11 +53,11 @@ module kmk011.a.service {
             errTime: number;
             selectSet: SelectSet;
             inputSet: SelectSet;
-            constructor(divTimeId: number,divTimeName: string,
-                        divTimeUseSet: number,
-                        alarmTime: number,errTime: number,
-                        selectSet: SelectSet,
-                        inputSet: SelectSet){
+            constructor(divTimeId: number, divTimeName: string,
+                divTimeUseSet: number,
+                alarmTime: number, errTime: number,
+                selectSet: SelectSet,
+                inputSet: SelectSet) {
                 var self = this;
                 self.divTimeId = divTimeId;
                 self.divTimeName = divTimeName;
@@ -64,54 +68,55 @@ module kmk011.a.service {
                 self.inputSet = inputSet;
             }
         }
-        export class SelectSet{
+        export class SelectSet {
             selectUseSet: number;
             cancelErrSelReason: number;
-            constructor(selectUseSet: number,cancelErrSelReason: number){
+            constructor(selectUseSet: number, cancelErrSelReason: number) {
                 this.selectUseSet = selectUseSet;
                 this.cancelErrSelReason = cancelErrSelReason;
             }
         }
-        export class DivergenceTimeItem{
+        export class DivergenceTimeItem {
             divTimeId: number;
             attendanceId: number;
-            constructor(divTimeId: number,attendanceId: number){
+            constructor(divTimeId: number, attendanceId: number) {
                 this.divTimeId = divTimeId;
                 this.attendanceId = attendanceId;
             }
         }
-        export class ItemSelected{
+        export class ItemSelected {
             id: number;
             name: string;
-            constructor(id: number,name: string){
+            constructor(id: number, name: string) {
                 this.id = id;
                 this.name = name;
             }
         }
-        export class AttendanceType{
+        export class AttendanceType {
             attendanceItemId: number;
         }
-        export class DivergenceItem{
-            id: number;
-            name: string;
+        export class DivergenceItem {
+            attendanceItemId: number;
+            attendanceItemName: string;
             displayNumber: number;
             useAtr: number;
             attendanceAtr: number;
-    }
-        export class TimeItemSet{
+        }
+        export class TimeItemSet {
             divTimeId: number;
             attendanceId: number;
-            constructor(divTimeId: number,attendanceId: number){
+            constructor(divTimeId: number, attendanceId: number) {
                 this.divTimeId = divTimeId;
                 this.attendanceId = attendanceId;
             }
         }
-        export class ObjectDivergence{
+        export class ObjectDivergence {
             divTime: DivergenceTime;
             timeItem: List<TimeItemSet>;
-            constructor(divTime: DivergenceTime,item: List<TimeItemSet>){
+            constructor(divTime: DivergenceTime, item: List<TimeItemSet>) {
                 this.divTime = divTime;
                 this.timeItem = item;
             }
         }
+    }
 }

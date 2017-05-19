@@ -1,5 +1,4 @@
 module kmk011.b.viewmodel {
-
     export class ScreenModel {
         //A_label_x
         columns: KnockoutObservableArray<any>;
@@ -19,15 +18,15 @@ module kmk011.b.viewmodel {
             var self = this;
             self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KMK011_37'), key: 'divReasonCode', width: 100  },
+                { headerText: nts.uk.resource.getText('KMK011_37'), key: 'divReasonCode', width: 100 },
                 { headerText: nts.uk.resource.getText('KMK011_38'), key: 'divReasonContent', width: 150 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.switchUSe3 = ko.observableArray([
-                    { code: '1', name: nts.uk.resource.getText("Enum_DivergenceReasonInputRequiredAtr_Required") },
-                    { code: '0', name: nts.uk.resource.getText("Enum_DivergenceReasonInputRequiredAtr_Optional") },
-                ]);
-            self.requiredAtr = ko.observable(0);    
+                { code: '1', name: nts.uk.resource.getText("Enum_DivergenceReasonInputRequiredAtr_Required") },
+                { code: '0', name: nts.uk.resource.getText("Enum_DivergenceReasonInputRequiredAtr_Optional") },
+            ]);
+            self.requiredAtr = ko.observable(0);
             self.divReasonCode = ko.observable('');
             self.divReasonContent = ko.observable('');
             self.enableCode = ko.observable(false);
@@ -36,12 +35,11 @@ module kmk011.b.viewmodel {
             self.enableDel = ko.observable(true);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
-                var t0 = performance.now();
                 self.clearError();
                 self.itemDivReason(self.findItemDivTime(codeChanged));
-                if(self.itemDivReason()===undefined||self.itemDivReason()==null){
+                if (self.itemDivReason() === undefined || self.itemDivReason() == null) {
                     return;
-                }else{
+                } else {
                     self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
                     self.enableCode(false);
                     self.divReasonCode(self.itemDivReason().divReasonCode);
@@ -49,26 +47,24 @@ module kmk011.b.viewmodel {
                     self.requiredAtr(self.itemDivReason().requiredAtr);
                     self.enableDel(true);
                 }
-                var t1 = performance.now();
-                console.log("Selection process " + (t1 - t0) + " milliseconds.");
             });
         }
-        
+
         /**
          * start page
          * get all divergence reason
          */
-        startPage(): JQueryPromise<any>{
+        startPage(): JQueryPromise<any> {
             var self = this;
             self.currentCode('');
             var dfd = $.Deferred();
             self.divTimeId(nts.uk.ui.windows.getShared("KMK011_divTimeId"));
             service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
-                if(lstDivReason=== undefined || lstDivReason.length == 0){
+                if (lstDivReason === undefined || lstDivReason.length == 0) {
                     self.dataSource();
                     self.enableCode(true);
                     $("#inpCode").focus();
-                }else{
+                } else {
                     self.dataSource(lstDivReason);
                     let reasonFirst = _.first(lstDivReason);
                     self.currentCode(reasonFirst.divReasonCode);
@@ -87,7 +83,7 @@ module kmk011.b.viewmodel {
                 return obj.divReasonCode == value;
             })
         }
-        refreshData(){
+        refreshData() {
             var self = this;
             self.divReasonCode(null);
             self.divReasonContent("");
@@ -97,37 +93,37 @@ module kmk011.b.viewmodel {
             self.enableDel(false);
             $("#inpCode").focus();
         }
-        
+
         clearError(): void {
             if ($('.nts-editor').ntsError("hasError")) {
                 $('.nts-input').ntsError('clear');
             }
         }
-        RegistrationDivReason(){
+        RegistrationDivReason() {
             var self = this;
-             $('.nts-input').trigger("validate");
+            $('.nts-input').trigger("validate");
             _.defer(() => {
-                if (nts.uk.ui.errors.hasError()===false) {
-                    if(self.enableCode()==false){
-                        let objectNew = self.convertCode(self.divReasonCode())+ self.divReasonContent()+self.requiredAtr();
-                        if(self.objectOld==objectNew){
+                if (nts.uk.ui.errors.hasError() === false) {
+                    if (self.enableCode() == false) {
+                        let objectNew = self.convertCode(self.divReasonCode()) + self.divReasonContent() + self.requiredAtr();
+                        if (self.objectOld == objectNew) {
                             return;
-                        }else{
+                        } else {
                             self.updateDivReason();
                         }
-                    }else
-                    if(self.enableCode()==true){//add divergence
-                        self.addDivReason();
-                    }
+                    } else
+                        if (self.enableCode() == true) {//add divergence
+                            self.addDivReason();
+                        }
                 }
             });
         }
 
-        addDivReason(){
+        addDivReason() {
             var self = this;
             var dfd = $.Deferred();
             self.convertCode(self.divReasonCode());
-            var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
+            var divReason = new model.Item(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.addDivReason(divReason).done(function() {
                 nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                 self.getAllDivReasonNew();
@@ -135,17 +131,18 @@ module kmk011.b.viewmodel {
                 $('#inpCode').ntsError('set', nts.uk.resource.getMessage(error.message));
             });
         }
-        convertCode(value: string){
+        convertCode(value: string) {
             var self = this;
-            if(value.length == 1) {
+            if (value.length == 1) {
                 let code = '0' + value;
-                self.divReasonCode(code);}
+                self.divReasonCode(code);
+            }
             else return;
         }
-        updateDivReason(){
+        updateDivReason() {
             var self = this;
             var dfd = $.Deferred();
-            var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
+            var divReason = new model.Item(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.updateDivReason(divReason).done(function() {
                 self.getAllDivReasonNew();
             }).fail(function(res) {
@@ -154,7 +151,7 @@ module kmk011.b.viewmodel {
             });
         }
         //get all divergence reason new
-        getAllDivReasonNew(){
+        getAllDivReasonNew() {
             var self = this;
             var dfd = $.Deferred<any>();
             self.dataSource();
@@ -171,16 +168,16 @@ module kmk011.b.viewmodel {
             return dfd.promise();
         }
         //delete divergence reason
-        deleteDivReason(){
+        deleteDivReason() {
             var self = this;
-            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function(){
+            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function() {
                 let divReason = self.itemDivReason();
                 self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
-                service.deleteDivReason(divReason).done(function(){
+                service.deleteDivReason(divReason).done(function() {
                     self.getDivReasonList_afterDelete();
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'));
                 });
-            }).ifNo(function(){
+            }).ifNo(function() {
                 return;
             })
         }
@@ -211,22 +208,22 @@ module kmk011.b.viewmodel {
             return dfd.promise();
 
         }
-        closeDialog(){
-             nts.uk.ui.windows.close();
+        closeDialog() {
+            nts.uk.ui.windows.close();
         }
     }
-    export module model{ 
-        export class Item{
+    export module model {
+        export class Item {
             divTimeId: number;
             divReasonCode: string;
-            divReasonContent: string;  
+            divReasonContent: string;
             requiredAtr: number;
-            constructor(divTimeId: number,divReasonCode: string,divReasonContent: string,requiredAtr: number){
+            constructor(divTimeId: number, divReasonCode: string, divReasonContent: string, requiredAtr: number) {
                 this.divTimeId = divTimeId;
                 this.divReasonCode = divReasonCode;
-                this.divReasonContent = divReasonContent;    
+                this.divReasonContent = divReasonContent;
                 this.requiredAtr = requiredAtr;
-            }      
+            }
         }
     }
 }

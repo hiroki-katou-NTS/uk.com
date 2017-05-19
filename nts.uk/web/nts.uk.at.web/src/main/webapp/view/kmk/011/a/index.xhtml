@@ -20,16 +20,17 @@
 		<ui:define name="content">
 			<div id="function_area">
 				<!-- A1_1: Button Registration -->
-				<button id="btn_001" class="button proceed separate-button fix-button"
-						data-bind = "click: Registration" tabindex="1">#{i18n.getText('KMK011_3')}</button>
-			<hr/>
+				<button id="btn_001"
+					class="button proceed separate-button fix-button"
+					data-bind="click: Registration" tabindex="1">#{i18n.getText('KMK011_3')}</button>
+				<hr />
 			</div>
-			
+
 			<div id="content-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
-					<div class="cf" >
-						<div style="float:left">																					
-							<table tabindex="2" id="single-list" 
+					<div class="cf">
+						<div style="float: left">
+							<table tabindex="2" id="single-list"
 								data-bind="ntsGridList:{
 									width: 250,
 									height: 200,
@@ -45,19 +46,20 @@
 					</div>
 				</div>
 				<div id="right-content">
-					<table >
+					<table>
 						<colgroup>
 							<col width="180px" />
 							<col width="*" />
 						</colgroup>
-						<tr class = "row">
+						<tr class="row">
 							<td>
-							<!-- A3_1 -->
+								<!-- A3_1 -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_6')}</div>
 							</td>
 							<td>
-							<!-- A3_2: Setting Use -->
-								<div tabindex="3" class="cf" data-bind="ntsSwitchButton: {
+								<!-- A3_2: Setting Use -->
+								<div tabindex="3" class="cf"
+									data-bind="ntsSwitchButton: {
 									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -66,95 +68,109 @@
 								</div>
 							</td>
 						</tr>
-						<tr class = "row">
+						<tr class="row">
 							<td>
 								<!--A3_3 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_9')}</div>
 							</td>
-							<td>	
-								<!-- A3_4: Divergence Time Name -->														
-								<input tabindex="4" class = "nts-input" style="width: 70px" data-bind="ntsTextEditor:{
+							<td>
+								<!-- A3_4: Divergence Time Name --> 
+								<input tabindex="4" class="nts-input" 
+								style="width: 70px"
+								data-bind="ntsTextEditor:{
                                          value: divTimeName,
                                          required: true,
                                          enable: enableUse}" />
 							</td>
-						</tr>	
-						<tr class = "row">
+						</tr>
+						<tr class="row">
 							<td>
-							<!-- A3_5 -->
+								<!-- A3_5 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_10')}</div>
 							</td>
 							<td>
 								<!-- A3_6 -->
-								<button tabindex="5" data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
-								<!-- A3_7: Time item name -->
-								<input class="nts-input" style="width: 350px" data-bind="ntsTextEditor:{
+								<button tabindex="5"
+									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
+								<!-- A3_7: Time item name --> 
+								<input class="nts-input"
+								style="width: 350px"
+								data-bind="ntsTextEditor:{
 										value: timeItemName,
 										required: true,
 										enable: enableUse}" />
 							</td>
 						</tr>
-						<tr class = "row">
+						<tr class="row">
 							<td>
 								<!-- A3_8: Label -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_12')}</div>
 							</td>
 							<td>
-							<!-- A3_9: Alarm time -->
-								<input tabindex="6" id="inpAlarmTime" style="width: 50px" data-bind="ntsTextEditor: {
+								<!-- A3_9: Alarm time --> 
+								<input tabindex="6" id="inpAlarmTime"
+								style="width: 50px"
+								data-bind="ntsTextEditor: {
                                          value: alarmTime,
-                                         enable: enableUse}" data-name = "AlarmTime" />
+                                         enable: enableUse}"
+								data-name="AlarmTime" />
 							</td>
 						</tr>
-						<tr class = "row">
+						<tr class="row">
 							<td>
-							<!-- A3_10: Label -->
-								<div class = "row" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_13')}</div>
+								<!-- A3_10: Label -->
+								<div class="row" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_13')}</div>
 							</td>
 							<td>
-								<!-- A3_11: Error time -->
-								<input tabindex="7" style="width: 50px" data-bind="ntsTextEditor:{
+								<!-- A3_11: Error time --> 
+								<input tabindex="7"
+								style="width: 50px"
+								data-bind="ntsTextEditor:{
                                          value: errTime,
                                          enable: enableUse}" />
 							</td>
 						</tr>
-						<tr class = "row">
+						<tr class="row">
 							<td>
 								<!-- A3_12: Label -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_14')}</div>
 							</td>
 							<td>
 								<!-- A3_13: Set use select -->
-								<div tabindex="8" id="inpUseSet" style = "float: left" class="cf" data-bind="ntsSwitchButton: {
+								<div tabindex="8" id="inpUseSet" style="float: left" class="cf"
+									data-bind="ntsSwitchButton: {
 									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectSel,
 									enable: enableUse }">
-								</div>
+								</div> 
 								<!-- A3_14: Open Dialog Divergence Reason -->
-								<button  tabindex="9" id="inpDialog" style = "margin-left: 30px;" data-bind="click: openBDialog, enable: enableSelect">#{i18n.getText('KMK011_15')}</button>
-							</td>					
+								<button tabindex="9" id="inpDialog" style="margin-left: 30px;"
+									data-bind="click: openBDialog, enable: enableSelect">#{i18n.getText('KMK011_15')}</button>
+							</td>
 						</tr>
 						<tr>
 							<td></td>
 							<td>
 								<!-- A3_15: Check error(select) -->
-								<div tabindex="10" style="margin-bottom: 10px" data-bind="ntsCheckBox:{
+								<div tabindex="10" style="margin-bottom: 10px"
+									data-bind="ntsCheckBox:{
 									checked: checkErrSelect,
 									 enable: enableSelect,
 									  text: '#{i18n.getText('KMK011_16')}'}">
-								 </div>
+								</div>
 							</td>
 						</tr>
-						<tr class = "row">
+						<tr class="row">
 							<td>
 								<!-- A3_16: Label -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_17')}</div>
 							</td>
 							<td>
 								<!-- A3_17: Set use input -->
-								<div tabindex="11" class="cf" data-bind="ntsSwitchButton: {
+								<div tabindex="11" class="cf"
+									data-bind="ntsSwitchButton: {
 									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -167,11 +183,12 @@
 							<td></td>
 							<td>
 								<!-- A3_18: Check err (input) -->
-								<div tabindex="12" data-bind="ntsCheckBox:{
+								<div tabindex="12"
+									data-bind="ntsCheckBox:{
 									checked: checkErrInput,
 									 enable: enableInput,
 									  text: '#{i18n.getText('KMK011_18')}'}">
-								 </div>
+								</div>
 							</td>
 						</tr>
 					</table>

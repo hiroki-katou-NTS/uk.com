@@ -19,10 +19,6 @@ import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCom
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceReasonCommandHandler;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommand;
 import nts.uk.ctx.at.record.app.command.divergencetime.UpdateDivergenceTimeCommandHandler;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemDto;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemFinder;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemNameDto;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemNameFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonDto;
@@ -49,11 +45,7 @@ public class DivergenceTimeWebService extends WebService{
 	@Inject
 	private DivergenceItemSetFinder getItemSet;
 	@Inject
-	private DivergenceItemNameFinder getNameItem;
-	@Inject
 	private UpdateDivergenceItemSetCommandHandler updateItemId;
-	@Inject
-	private DivergenceItemFinder getName;
 	/**
 	 * get all divergence time
 	 * @return
@@ -115,7 +107,7 @@ public class DivergenceTimeWebService extends WebService{
 	 * @return
 	 */
 	@POST
-	@Path("getItemSet/{divTimeId}")
+	@Path("getitemset/{divTimeId}")
 	public List<DivergenceItemSetDto> getItemSet(@PathParam("divTimeId") String divTimeId){
 		return this.getItemSet.getAllDivReasonByCode(divTimeId);
 	}
@@ -127,25 +119,5 @@ public class DivergenceTimeWebService extends WebService{
 	@Path("updateTimeItemId")
 	public void updateTimeItemId(List<UpdateDivergenceItemSetCommand> command){
 		this.updateItemId.handle(command);
-	}
-	/**
-	 * get name item selected
-	 * @param divTimeId
-	 * @return
-	 */
-	@POST
-	@Path("getitemname/{divTimeId}")
-	public List<DivergenceItemNameDto> getItemSelected(@PathParam("divTimeId") int divTimeId){
-		return this.getNameItem.getItemSelected(divTimeId);
-	}
-	/**
-	 * get all time item name
-	 * @param listAttendanceItemId
-	 * @return
-	 */
-	@POST
-	@Path("getname")
-	public List<DivergenceItemDto> getAllName(List<Integer> listAttendanceItemId){
-		return this.getName.getAllName(listAttendanceItemId);
 	}
 }

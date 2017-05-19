@@ -1,4 +1,4 @@
-package service;
+package nts.uk.ctx.at.record.dom.divergencetime.service;
 
 public interface DivergenceReasonService {
 	/**
