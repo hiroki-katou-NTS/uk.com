@@ -2298,8 +2298,8 @@ var nts;
                                 else {
                                     //business exception
                                     if (error.message.message) {
-                                        error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                                         error.messageText = error.message.message;
+                                        error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                                     }
                                     else {
                                         if (error.$control.length > 0) {
@@ -3288,12 +3288,12 @@ var nts;
                                 return nts.uk.request.uploadFile(formData, option);
                             }
                             else {
-                                dfd.reject({ message: "please select file", messageId: -1 });
+                                dfd.reject({ message: "please select file", messageId: "-1" });
                                 return dfd.promise();
                             }
                         }
                         else {
-                            dfd.reject({ messageId: 0, message: "can not find control" });
+                            dfd.reject({ messageId: "0", message: "can not find control" });
                         }
                         return dfd.promise();
                     };

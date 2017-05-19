@@ -51,8 +51,8 @@ module nts.uk.ui.errors {
                     } else {
                         //business exception
                         if (error.message.message) {
-                            error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                             error.messageText = error.message.message;
+                            error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                         } else {
                             if (error.$control.length > 0) {
                                 let controlNameId = error.$control.eq(0).attr("data-name");
