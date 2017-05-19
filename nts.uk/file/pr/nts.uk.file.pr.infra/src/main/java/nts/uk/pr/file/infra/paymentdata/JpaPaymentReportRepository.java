@@ -9,13 +9,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
+import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
+import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository;
 import nts.uk.file.pr.app.export.payment.PaymentReportQuery;
 import nts.uk.file.pr.app.export.payment.PaymentReportRepository;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
@@ -25,12 +29,22 @@ import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
 import nts.uk.file.pr.app.export.payment.data.dto.SalaryItemDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.japanese.JapaneseDate;
+import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 /**
  * The Class JpaPaymentReportRepository.
  */
 @Stateless
 public class JpaPaymentReportRepository extends JpaRepository implements PaymentReportRepository {
+	
+	/** The japanese provider. */
+	@Inject
+	private JapaneseErasProvider japaneseProvider; 
+	
+	/** The repository. */
+	@Inject
+	private ContactItemsSettingRepository repository;
 	
 	/** The Constant TOTAL_COLUMN_INLINE. */
 	private static final int TOTAL_COLUMN_INLINE = 9;
@@ -208,6 +222,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		// return data
 		PaymentReportData reportData = new PaymentReportData();
 		reportData.setReportData(reportDatas);
+		reportData.setJapaneseYearMonth(this.convertYearMonthJP(query.getProcessingYM()));
 		return reportData;
 	}
 
@@ -353,9 +368,26 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 		// 記事項目 (categoryItem = article)
 		reportData.setArticleItems(this.detailHeader(header, CATEGORY_ARTICLE));
-
-		reportData.setProcessingYm(header.qstdtPaymentHeaderPK.processingYM);
+		
+		// set remark
+		reportData.setRemark(
+			repository.getRemark(new ContactItemsCode(new JpaPaymentContactCodeGetMemento(header)),
+				header.employeeCode));
 		return reportData;
 	}
-
+	  
+  	/**
+  	 * Convert year month JP.
+  	 *
+  	 * @param yearMonth the year month
+  	 * @return the string
+  	 */
+  	private String convertYearMonthJP(Integer yearMonth) {
+	        String firstDay = "01";
+	        String tmpDate = yearMonth.toString().concat(firstDay);
+	        String dateFormat = "yyyyMMdd";
+	        GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
+	        JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
+	        return japaneseDate.era() + japaneseDate.year() + "年 " + japaneseDate.month() + "月度"; 
+	    }
 }

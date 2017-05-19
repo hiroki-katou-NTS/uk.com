@@ -32,17 +32,11 @@ public class PaymentReportDto {
 
 	/** 記事項目*/
 	private List<SalaryItemDto> articleItems;
-
-	/** The processing ym. */
-	private int processingYm;
 	
 	/** The remark. */
 	private String remark;
 	
 	/** The menu. */
 	private String menu;
-	
-	/** The config. */
-	private RefundPaddingDto config;
 	
 }

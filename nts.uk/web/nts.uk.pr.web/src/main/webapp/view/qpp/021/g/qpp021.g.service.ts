@@ -2,7 +2,8 @@ module nts.uk.pr.view.qpp021.g {
     export module service {
         var paths: any = {
             findRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/three/find",
-            saveRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/three/save"
+            saveRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/three/save",
+            previewRefundPaddingThree: "screen/pr/QPP021/preview/refundpadding/three",
         };
 
         //connection service find
@@ -18,6 +19,13 @@ module nts.uk.pr.view.qpp021.g {
             return nts.uk.request.ajax(paths.saveRefundPadding, data);
         }
 
+        
+        //connection service preview
+        export function previewRefundPaddingThree(): JQueryPromise<any>{
+            //call service server
+            var data = { pageLayout: 'G' };
+            return nts.uk.request.exportFile(paths.previewRefundPaddingThree, data);
+        }
 
         export module model {
 

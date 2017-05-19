@@ -1,13 +1,12 @@
 @CHARSET "UTF-8";
 
 #this-contents-area {
-	margin-top: 20px;
-	margin-left: 20px;
-	min-width: 560px;
+	margin: 20px;
+		min-width: 460px;
 }
 
 #this-functions-area {
-	margin-top: 15px;
+	margin-top: 20px;
 }
 
 .form-default td {
@@ -16,4 +15,13 @@
 
 .input-default {
 	width: 100px;
+}
+
+.lbl_printingPositionBig {
+	margin-left: 170px;
+}
+
+#content_settingMargin {
+	display: inline-block;
+	margin-left: 70px;
 }

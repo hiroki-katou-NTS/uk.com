@@ -25,4 +25,14 @@ public interface ContactItemsSettingRepository {
 	 * @param contactItemsSetting the contact items setting
 	 */
 	void save(ContactItemsSetting contactItemsSetting);
+	
+	
+	/**
+	 * Gets the remark.
+	 *
+	 * @param code the code
+	 * @param empCd the emp cd
+	 * @return the remark
+	 */
+	String getRemark(ContactItemsCode code, String empCd);
 }

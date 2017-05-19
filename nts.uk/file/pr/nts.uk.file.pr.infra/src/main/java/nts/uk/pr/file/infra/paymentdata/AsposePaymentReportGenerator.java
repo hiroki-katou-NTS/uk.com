@@ -59,12 +59,9 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 			teamplate = TEMPLATE_PATH_B;
 		}
 		try (AsposeCellsReportContext ctx = this.createContext(teamplate)) {
-			PaymentGenerator generator = this.factory.createGenerator(query.getPageOrientation(),
-				data);
+			PaymentGenerator generator = this.factory.createGenerator(query.getPageOrientation(),data);
 			generator.generate(ctx, data);
 			ctx.saveAsPdf(this.createNewFile(rptContext, this.getReportName(OUTPUT_PDF_NAME)));
-			// ctx.saveAsExcel(this.createNewFile(rptContext,
-			// this.getReportName(OUTPUT_PDF_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
