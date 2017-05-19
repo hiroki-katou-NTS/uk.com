@@ -69,7 +69,7 @@ module nts.uk.ui.option {
         textalign?: string;
         symbolChar?: string;
         symbolPosition?: string;
-        defaultValue?: boolean
+        defaultValue?: string;
     }
 
     export class NumberEditorOption extends EditorOptionBase {
@@ -79,7 +79,7 @@ module nts.uk.ui.option {
         decimallength: number;
         symbolChar: string;
         symbolPosition: string;
-        defaultValue: boolean;
+        defaultValue: string;
         
         constructor(option?: INumberEditorOption) {
             super();

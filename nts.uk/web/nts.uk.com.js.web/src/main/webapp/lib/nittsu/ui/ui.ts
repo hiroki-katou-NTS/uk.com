@@ -269,8 +269,17 @@ module nts.uk.ui {
             var $control = $('<div/>').addClass('control');
             let text;
             if (typeof message === "object") {
-                text = nts.uk.resource.getMessage(message.id, message.messageParams);
-                $control.append(message.id);
+                //business exception
+                if (message.message) {
+                    text = message.message;
+                    if (message.messageId) {
+                        $control.append(message.messageId);
+                    }
+                } else {
+                    text = nts.uk.resource.getMessage(message.messageId, message.messageParams);
+                    $control.append(message.messageId);
+                }
+
             } else {
                 text = message;
             }

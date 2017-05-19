@@ -590,18 +590,19 @@ var nts;
         })(deferred = uk.deferred || (uk.deferred = {}));
         var resource;
         (function (resource) {
-            function getText(code) {
+            function getText(code, params) {
                 var text = names[code];
-                return text ? text : code;
+                if (text) {
+                    text = formatCompDependParam(text);
+                    text = formatParams(text, params);
+                    return text;
+                }
+                return code;
             }
             resource.getText = getText;
-            function getMessage(messageId) {
-                var params = [];
-                for (var _i = 1; _i < arguments.length; _i++) {
-                    params[_i - 1] = arguments[_i];
-                }
+            function getMessage(messageId, params) {
                 var message = messages[messageId];
-                if (message == undefined) {
+                if (!message) {
                     return messageId;
                 }
                 message = formatParams(message, params);
@@ -610,7 +611,7 @@ var nts;
             }
             resource.getMessage = getMessage;
             function formatCompDependParam(message) {
-                var compDependceParamRegex = /｛#(\w*)｝/;
+                var compDependceParamRegex = /{#(\w*)}/;
                 var matches;
                 while (matches = compDependceParamRegex.exec(message)) {
                     var code = matches[1];
@@ -620,9 +621,9 @@ var nts;
                 return message;
             }
             function formatParams(message, args) {
-                if (args == undefined)
+                if (args == null || args.length == 0)
                     return message;
-                var paramRegex = /｛([0-9])+(:\\w+)?｝/;
+                var paramRegex = /{([0-9])+(:\\w+)?}/;
                 var matches;
                 while (matches = paramRegex.exec(message)) {
                     var code = matches[1];
@@ -1879,13 +1880,18 @@ var nts;
                         if (option.onSuccess) {
                             option.onSuccess();
                         }
-                        dfd.resolve(data);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         if (option.onFail) {
                             option.onFail();
                         }
-                        dfd.reject(errorThrown);
+                    }
+                }).done(function (res) {
+                    if (res !== undefined && res.businessException) {
+                        dfd.reject(res);
+                    }
+                    else {
+                        dfd.resolve(res);
                     }
                 });
                 return dfd.promise();
@@ -2153,7 +2159,7 @@ var nts;
                             inputText = uk.text.replaceAll(inputText.toString(), this.option.groupseperator, '');
                         }
                         if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber)) {
-                            result.fail({ id: "Msg_001" });
+                            result.fail('invalid number');
                             return result;
                         }
                         var value = isDecimalNumber ?
@@ -2291,19 +2297,26 @@ var nts;
                                     error.message = "";
                                 }
                                 else {
-                                    if (error.$control.length > 0) {
-                                        var controlNameId = error.$control.eq(0).attr("data-name");
-                                        if (controlNameId) {
-                                            error.messageText = nts.uk.resource.getMessage(error.message.id, nts.uk.resource.getText(controlNameId));
-                                        }
-                                        else {
-                                            error.messageText = nts.uk.resource.getMessage(error.message.id);
-                                        }
+                                    //business exception
+                                    if (error.message.message) {
+                                        error.messageText = error.message.message;
+                                        error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                                     }
                                     else {
-                                        error.messageText = nts.uk.resource.getMessage(error.message.id);
+                                        if (error.$control.length > 0) {
+                                            var controlNameId = error.$control.eq(0).attr("data-name");
+                                            if (controlNameId) {
+                                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                            }
+                                            else {
+                                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
+                                            }
+                                        }
+                                        else {
+                                            error.messageText = nts.uk.resource.getMessage(error.message.messageId);
+                                        }
+                                        error.message = error.message.messageId;
                                     }
-                                    error.message = error.message.id;
                                 }
                                 _this.errors.push(error);
                             }
@@ -2621,8 +2634,17 @@ var nts;
                     var $control = $('<div/>').addClass('control');
                     var text;
                     if (typeof message === "object") {
-                        text = nts.uk.resource.getMessage(message.id, message.messageParams);
-                        $control.append(message.id);
+                        //business exception
+                        if (message.message) {
+                            text = message.message;
+                            if (message.messageId) {
+                                $control.append(message.messageId);
+                            }
+                        }
+                        else {
+                            text = nts.uk.resource.getMessage(message.messageId, message.messageParams);
+                            $control.append(message.messageId);
+                        }
                     }
                     else {
                         text = message;
@@ -3267,12 +3289,12 @@ var nts;
                                 return nts.uk.request.uploadFile(formData, option);
                             }
                             else {
-                                dfd.reject({ message: "please select file", messageId: -1 });
+                                dfd.reject({ message: "please select file", messageId: "-1" });
                                 return dfd.promise();
                             }
                         }
                         else {
-                            dfd.reject({ messageId: 0, message: "can not find control" });
+                            dfd.reject({ messageId: "0", message: "can not find control" });
                         }
                         return dfd.promise();
                     };
