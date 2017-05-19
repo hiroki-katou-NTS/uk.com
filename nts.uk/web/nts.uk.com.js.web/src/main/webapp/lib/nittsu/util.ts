@@ -554,7 +554,10 @@
 
         export function getText(code: string): string {
             let text = names[code];
-            return text?text:code;
+            if(text){
+               return  formatCompDependParam(text);
+            }
+            return code;
         }
 
         export function getMessage(messageId: string, ...params: any[]): string {
@@ -565,7 +568,7 @@
             return message;
         }
         function formatCompDependParam(message: string) {
-            let compDependceParamRegex = /｛#(\w*)｝/;
+            let compDependceParamRegex = /{#(\w*)}/;
             let matches: string[];
             while (matches = compDependceParamRegex.exec(message)) {
                 let code = matches[1];
@@ -576,7 +579,7 @@
         }
         function formatParams(message: string, args: string[]) {
             if (args == undefined) return message;
-            let paramRegex = /｛([0-9])+(:\\w+)?｝/;
+            let paramRegex = /{([0-9])+(:\\w+)?}/;
             let matches: string[];
             while (matches = paramRegex.exec(message)) {
                 let code = matches[1];
