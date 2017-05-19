@@ -11,7 +11,7 @@ public class BankTransferReportQuery {
 	private int processingNo;
 	private int processingYm;
 	private GeneralDate payDate;
-	private String sparePayAtr;
+	private int sparePayAtr;
 	private int selectedId_J_SEL_001;
 	private int currentCode_J_SEL_004;
 	private String transferDate;

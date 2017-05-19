@@ -30,4 +30,8 @@ public class BankTransferARpData {
 	private BigDecimal paymentMyn;
 	
 	private String unit;
+	
+	private int sparePayAtr;
+	
+	private boolean isRowTotal;
 }

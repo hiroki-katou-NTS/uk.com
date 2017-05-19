@@ -1,6 +1,7 @@
 module qpp014.e.service {
     var paths: any = {
-        addBankTransfer: "pr/proto/payment/banktransfer/add"
+        addBankTransfer: "pr/proto/payment/banktransfer/add",
+        removeBankTransfer: "pr/proto/payment/banktransfer/remove"
     }
 
     /**
@@ -8,6 +9,10 @@ module qpp014.e.service {
      */
     export function addBankTransfer(command: any): JQueryPromise<any> {
         return nts.uk.request.ajax(paths.addBankTransfer, command);
+    }
+    
+     export function removeBankTransfer(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.removeBankTransfer, command);
     }
 }
 

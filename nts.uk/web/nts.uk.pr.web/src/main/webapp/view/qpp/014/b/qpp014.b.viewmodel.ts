@@ -23,7 +23,7 @@ module qpp014.b.viewmodel {
             self.viewmodeld.sparePayAtr.subscribe(function(newValue) {
                 nts.uk.ui.windows.setShared("sparePayAtr", newValue, true);
             });
-
+ 
             //transfer data between screen d and screen g
             self.viewmodelg.g_INP_001(ko.computed(function() {
                 return self.viewmodelg.g_INP_001(self.viewmodeld.dateOfPayment());
