@@ -89,7 +89,7 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			Date date = new Date();
 			String fileName = REPORT_FILE_NAME.concat(dateFM.format(date).toString()).concat(EXTENSION);
 
-//			// Fill data
+			// // Fill data
 			lstDeparmentInf.stream().forEach(c -> {
 				this.maxRowOfDepartments = 1 + c.getLstEmployee().size() * c.getLstEmployee().get(0).getLstData().size()
 						+ 4;
@@ -126,9 +126,7 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 		pageSetup.setFirstPageNumber(1);
 		int total = FIRST_ROW_INDEX + lstDeparmentInf.size() * (7 + lstDeparmentInf.get(0).getLstEmployee().size()
 				* (lstDeparmentInf.get(0).getLstEmployee().get(0).getLstData().size() + 1)) + 1;
-		System.out.println(total);
 		int numberOfPage = this.caclulatePage(total);
-		System.out.println(numberOfPage);
 		pageSetup.setPrintArea("A1:H" + numberOfPage * 55);
 	}
 
@@ -220,7 +218,6 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 				// Print Department code
 				cells.merge(rowIndex, 0, 1, 8);
 				Cell departmentCode = cells.get(rowIndex, COLUMN_INDEX_DEPARTMENT[0]);
-				System.out.println(departmentHyrachi.getHyrachiParent());
 				departmentCode.setValue("部門：" + " " + departInf.getDepcode() + "総務部　総務課　総務" + departInf.getDepname());
 				this.setBorderDataRow(cells, rowIndex);
 				if (comparingQuery.getConfigPrint().getShowPayment().value == 1) {
@@ -269,13 +266,10 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 						this.startRow += 1;
 					}
 				}
-
-				this.startRow = this.startRow + 1;
 				rowIndex = this.startRow;
 			}
-			i+= departmentHyrachi.getNumberOfChild() - 1;
+			i += departmentHyrachi.getNumberOfChild() - 1;
 		}
-
 	}
 
 	/**
@@ -306,8 +300,8 @@ public class AsposeComparingSalaryBonusReportGenerator extends AsposeCellsReport
 			// Print employee Code
 
 			Cell employeeCode = cells.get(startRowIndex, COLUMN_INDEX_EMPLOYEE[0]);
-			employeeCode.setValue(
-					"部門コード : " + detailEmployeeInf.getPersonID() + "社員名: " + detailEmployeeInf.getPersonName());
+			employeeCode
+					.setValue("部門コード : " + detailEmployeeInf.getSCD() + "社員名: " + detailEmployeeInf.getPersonName());
 			this.setBorderDataRow(cells, startRowIndex);
 			// print Data Row
 			int numberOfItemCode = detailEmployeeInf.getLstData().size();

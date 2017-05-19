@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class DetailEmployeeDto {
 	private String personID;
+	private String sCD;
 	private String personName;
 	DataRowComparingSalaryBonus dataRow;
 }

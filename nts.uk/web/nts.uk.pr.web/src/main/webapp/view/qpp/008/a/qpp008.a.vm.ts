@@ -156,6 +156,8 @@ module qpp008.a.viewmodel {
             command.monthJapan2 = nts.uk.time.yearInJapanEmpire(self.processingYMLaterValue().trim().replace("/", "").charAt[0]).toString();
             command.monthJapan2 = command.monthJapan2 + " " + self.processingYMLaterValue().split("/")[1] + "月";
             command.formCode = self.formHeaderSelectCode();
+            command.gradeSelectedCode = self.gradeSelectedCode();
+            command.pagingSelectedCode = self.pagingSelectedCode();
             command.payBonusAttr = 0;
             return command;
         }
@@ -168,9 +170,8 @@ module qpp008.a.viewmodel {
             let command: any;
             command = self.toJSObjet();
             service.saveAsPdf(command).done(function() {
-                console.log(command);
             }).fail(function(res: any) {
-                console.log(res.message);
+              nts.uk.ui.dialog.alert(res.message);
             });
         }
 

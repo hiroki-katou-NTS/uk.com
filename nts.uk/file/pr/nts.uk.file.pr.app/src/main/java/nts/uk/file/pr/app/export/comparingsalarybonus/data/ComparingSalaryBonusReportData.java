@@ -23,5 +23,6 @@ public class ComparingSalaryBonusReportData {
 	List<DataRowComparingSalaryBonusDto> lstTotalC;
 	DataRowComparingSalaryBonusDto grandTotal;
 	ComparingPrintSet configPrint;
+	PrintMode printMode;
 	
 }

@@ -26,6 +26,7 @@ import nts.uk.file.pr.app.export.comparingsalarybonus.data.DepartmentHyrachi;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DetailEmployee;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.DetailEmployeeDto;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.HeaderTable;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.PrintMode;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.SalaryBonusDetail;
 import nts.uk.file.pr.app.export.comparingsalarybonus.data.TotalByHyrachi;
 import nts.uk.file.pr.app.export.comparingsalarybonus.query.ComparingSalaryBonusQuery;
@@ -146,7 +147,11 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		reportData.setGrandTotal(grandTotal);
 		if (comparingPrintSet != null) {
 			reportData.setConfigPrint(comparingPrintSet);
-		}
+		} 
+		PrintMode printMode = new PrintMode();
+		printMode.setGradeSelectedCode(comparingQuery.getGradeSelectedCode());
+		printMode.setPagingSelectedCode(comparingQuery.getPagingSelectedCode());
+		reportData.setPrintMode(printMode);
 
 		return reportData;
 	}
@@ -330,7 +335,7 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 				dataRow.setConfirmed("");
 				dataRow.setReason("");
 			}
-			DetailEmployeeDto detailEmployee = new DetailEmployeeDto(c.getPersonId(), c.getEmployeeName(), dataRow);
+			DetailEmployeeDto detailEmployee = new DetailEmployeeDto(c.getPersonId(), c.getScd(), c.getEmployeeName(), dataRow);
 			DepartmentFlatMap deparmentInf = new DepartmentFlatMap(c.getDepartmentCode(), c.getDepartmentName(),
 					c.getHierarchyId(), detailEmployee);
 			return deparmentInf;
@@ -369,7 +374,7 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 				dataRow.setConfirmed("");
 				dataRow.setReason("");
 			}
-			DetailEmployeeDto detailEmployee = new DetailEmployeeDto(c.getPersonId(), c.getEmployeeName(), dataRow);
+			DetailEmployeeDto detailEmployee = new DetailEmployeeDto(c.getPersonId(), c.getScd(), c.getEmployeeName(), dataRow);
 			DepartmentFlatMap deparmentInf = new DepartmentFlatMap(c.getDepartmentCode(), c.getDepartmentName(),
 					c.getHierarchyId(), detailEmployee);
 			return deparmentInf;
@@ -393,6 +398,7 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 					});
 					DetailEmployee detail = new DetailEmployee();
 					detail.setPersonID(lstDepartment2.get(0).getEmployee().getPersonID());
+					detail.setSCD(lstDepartment2.get(0).getEmployee().getSCD());
 					detail.setPersonName(lstDepartment2.get(0).getEmployee().getPersonName());
 					detail.setLstData(lstDataRow);
 					List<DataRowComparingSalaryBonusDto> lstDataDto = detail
