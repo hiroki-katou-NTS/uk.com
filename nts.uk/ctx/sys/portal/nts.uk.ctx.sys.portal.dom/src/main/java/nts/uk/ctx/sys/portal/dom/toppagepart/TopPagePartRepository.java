@@ -30,7 +30,26 @@ public interface TopPagePartRepository {
 	 * @return List TopPagePart
 	 */
 	List<TopPagePart> findByType(String companyID, int type);
-
+	
+	/**
+	 * Find all TopPagePart by TopPagePartType and IDs
+	 *
+	 * @param companyID
+	 * @param topPagePartTypes List TopPagePartType you need to find in
+	 * @param topPagePartIDs List active TopPagePartID you need to find in
+	 * @return List TopPagePart
+	 */
+	List<TopPagePart> findByTypeAndIDs(String companyID, List<Integer> topPagePartTypes, List<String> topPagePartIDs);
+	
+	/**
+	 * find top page part data by code and type
+	 * @param companyId
+	 * @param code
+	 * @param type
+	 * @return
+	 */
+	Optional<TopPagePart> findByCodeAndType(String companyId, String code, int type);
+	
 	/**
 	 * Remove a TopPagePart
 	 *
@@ -52,13 +71,5 @@ public interface TopPagePartRepository {
 	 * @param topPagePart
 	 */
 	void update(TopPagePart topPagePart);
-	/**
-	 * find top page part data by code and type
-	 * @param companyId
-	 * @param code
-	 * @param type
-	 * @return
-	 */
-	Optional<TopPagePart> dataByCodeAndType(String companyId, String code, int type);
 
 }

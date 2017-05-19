@@ -3,66 +3,61 @@ package nts.uk.ctx.sys.portal.app.find.layout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementDto;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementPartDto;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
-import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.service.TopPagePartService;
 
 /**
  * @author LamDT 
  */
 @Stateless
 public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
-
-	@Inject
-	private TopPagePartRepository topPagePartRepository;
+	
+	@Inject TopPagePartService topPagePartService;
 
 	@Override
-	public LayoutDto buildLayoutDto(Layout layout, List<Placement> placements) {
-		List<PlacementDto> placementDtos = buildPlacementDto(placements);
+	public LayoutDto buildLayoutDto(Layout layout, List<Placement> placements) {		
+		List<PlacementDto> placementDtos = buildPlacementDto(layout, placements);
 		return new LayoutDto(layout.getCompanyID(), layout.getLayoutID(), layout.getPgType().value, placementDtos);
 	}
 
-	@Override
-	public List<PlacementDto> buildPlacementDto(List<Placement> placements) {
+	private List<PlacementDto> buildPlacementDto(Layout layout, List<Placement> placements) {
+		List<EnumConstant> usingTopPagePartTypes = topPagePartService.getTopPagePartTypeByPGType(layout.getCompanyID(), layout.getPgType());
+		List<String> topPagePartIDs = placements.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
+		List<TopPagePart> activeTopPageParts = topPagePartService.getActiveTopPagePartByID(layout.getCompanyID(), usingTopPagePartTypes, topPagePartIDs);
+		
 		List<PlacementDto> placementDtos = new ArrayList<PlacementDto>();
 		for (Placement placement : placements) {
-			placementDtos.add(buildPlacementDto(placement));
+			if (placement.isExternalUrl()) {
+				ExternalUrl externalUrl = placement.getExternalUrl().get();
+				placementDtos.add(new PlacementDto(
+					placement.getPlacementID(), placement.getLayoutID(),
+					placement.getColumn().v(), placement.getRow().v(),
+					fromExternalUrl(externalUrl)));
+			}
+			else {
+				Optional<TopPagePart> topPagePart = activeTopPageParts.stream().filter(c -> c.getToppagePartID().equals(placement.getToppagePartID())).findFirst();
+				if (topPagePart.isPresent())
+					placementDtos.add(new PlacementDto(
+						placement.getPlacementID(), placement.getLayoutID(),
+						placement.getColumn().v(), placement.getRow().v(),
+						fromTopPagePart(topPagePart.get())));
+			}
 		}
 		return placementDtos;
 	}
 
-	@Override
-	public PlacementDto buildPlacementDto(Placement placement) {
-		if (placement.isExternalUrl()) {
-			// ExternalUrl Part
-			ExternalUrl externalUrl = placement.getExternalUrl().get();
-			return new PlacementDto(
-				placement.getPlacementID(), placement.getLayoutID(),
-				placement.getColumn().v(), placement.getRow().v(),
-				fromExternalUrl(externalUrl));
-		}
-		else {
-			// TopPage Part
-			Optional<TopPagePart> topPagePart = topPagePartRepository.find(placement.getToppagePartID());
-			if (topPagePart.isPresent())
-				return new PlacementDto(
-					placement.getPlacementID(), placement.getLayoutID(),
-					placement.getColumn().v(), placement.getRow().v(),
-					fromTopPagePart(topPagePart.get()));
-			return null;
-		}
-	}
-
-	@Override
-	public PlacementPartDto fromTopPagePart(TopPagePart topPagePart) {
+	private PlacementPartDto fromTopPagePart(TopPagePart topPagePart) {
 		return new PlacementPartDto(
 			topPagePart.getWidth().v(), topPagePart.getHeight().v(), topPagePart.getToppagePartID(),
 			topPagePart.getCode().v(), topPagePart.getName().v(), topPagePart.getType().value,
@@ -70,8 +65,7 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 		);
 	}
 
-	@Override
-	public PlacementPartDto fromExternalUrl(ExternalUrl externalUrl) {
+	private PlacementPartDto fromExternalUrl(ExternalUrl externalUrl) {
 		return new PlacementPartDto(
 			externalUrl.getWidth().v(), externalUrl.getHeight().v(),
 			null, null, null, null,

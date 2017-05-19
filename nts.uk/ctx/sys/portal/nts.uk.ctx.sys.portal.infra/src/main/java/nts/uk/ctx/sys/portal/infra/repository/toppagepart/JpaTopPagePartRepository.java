@@ -20,6 +20,9 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID";
 	private final String SELECT_BY_COMPANY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID";
 	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";
+	private final String SELECT_BY_TYPE_AND_IDS = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID "
+												+ "AND c.ccgmtTopPagePartPK.topPagePartID IN :topPagePartIDs "
+												+ "AND c.topPagePartType IN :topPagePartTypes";
 	private final String SELECT_BY_CODE_AND_TYPE = SELECT_BY_TYPE + " AND c.code = :code";
 
 	@Override
@@ -44,6 +47,24 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 				.getList(c -> toDomain(c));
 	}
 
+	@Override
+	public Optional<TopPagePart> findByCodeAndType(String companyId, String code, int type) {
+		return this.queryProxy().query(SELECT_BY_CODE_AND_TYPE, CcgmtTopPagePart.class)
+				.setParameter("companyID", companyId)
+				.setParameter("topPagePartType", type)
+				.setParameter("code", code)
+				.getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public List<TopPagePart> findByTypeAndIDs(String companyID, List<Integer> topPagePartTypes, List<String> topPagePartIDs) {
+		 return this.queryProxy().query(SELECT_BY_TYPE_AND_IDS, CcgmtTopPagePart.class)
+					.setParameter("companyID", companyID)
+					.setParameter("topPagePartIDs", topPagePartIDs)
+					.setParameter("topPagePartTypes", topPagePartTypes)
+					.getList(c -> toDomain(c));
+	}
+	
 	@Override
 	public void remove(String companyID, String topPagePartID) {
 		this.commandProxy().remove(CcgmtTopPagePart.class, new CcgmtTopPagePartPK(companyID, topPagePartID));
@@ -88,14 +109,5 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 			domain.getSize().getWidth().v(), domain.getSize().getHeight().v(),
 			null
 		);
-	}
-
-	@Override
-	public Optional<TopPagePart> dataByCodeAndType(String companyId, String code, int type) {
-		return this.queryProxy().query(SELECT_BY_CODE_AND_TYPE, CcgmtTopPagePart.class)
-				.setParameter("companyID", companyId)
-				.setParameter("topPagePartType", type)
-				.setParameter("code", code)
-				.getSingle(c -> toDomain(c));
 	}
 }
