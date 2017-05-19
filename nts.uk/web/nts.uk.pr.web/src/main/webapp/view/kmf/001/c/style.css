@@ -1,17 +1,5 @@
 @CHARSET "UTF-8";
 
-#inpCode {
-	width: 40px !important;
-}
-#inpName {
-	width: 250px !important;
-}
-#inpBudget {
-	width: 120px !important;
-}
-.symbol-right {
-	width: 120px !important;
-}
 .nts-switch-button {
 	min-width: 80px;
 	font-size: 13px !important;
@@ -23,15 +11,26 @@
 	margin-left: 20px;
 	min-width: 80px;
 }
-.form-default td{
-	padding-bottom: 6px;
+#contents-area {
+	height: 800px;
+	overflow-y: scroll;
 }
-.btn-switch {
-	padding-left: 20px;
+#table {
+	margin-top: 30px;
+	margin-left: 50px;
+	margin-bottom: 50px;
 }
-.lbl-switch {
-	padding-left: 20px;
+table#table tr td {
+	padding-top: 15px;
+	margin-left: 10px;
+}
+table#table tr td label.content-label {
+	padding-left: 50px;
+	padding-right: 20px;
 }
 .hr_width {
 	width: 760px;
+}
+table#table tr td.title {
+	padding-bottom: 35px;
 }

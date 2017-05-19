@@ -28,33 +28,33 @@ module nts.uk.pr.view.kmf001.a {
             }
 
             // 年次有給休暇
-            public openAnnualPaidLeaveSettingDialog(): void {
-                nts.uk.ui.windows.sub.modal('/view/kmf/001/c/index.xhtml', { title: '優先順位の設定', dialogClass: 'no-close' });
+            public openAnnualPaidLeaveSettingPage(): void {
+                nts.uk.request.jump("/view/kmf/001/c/index.xhtml", {});
             }
 
             // 積立年休
-            public openYearlyReservedSettingDialog(): void {
-                nts.uk.ui.windows.sub.modal('/view/kmf/001/d/index.xhtml', { title: '優先順位の設定', dialogClass: 'no-close' });
+            public openYearlyReservedSettingPage(): void {
+                nts.uk.request.jump("/view/kmf/001/d/index.xhtml", {});
             }
 
             // 代休
-            public openTemporaryHolidaysSettingDialog(): void {
-                nts.uk.ui.windows.sub.modal('/view/kmf/001/f/index.xhtml', { title: '優先順位の設定', dialogClass: 'no-close' });
+            public openTemporaryHolidaysSettingPage(): void {
+                nts.uk.request.jump("/view/kmf/001/f/index.xhtml", {});
             }
 
             // 振休
-            public openResurgenceSettingDialog(): void {
-                nts.uk.ui.windows.sub.modal('/view/kmf/001/h/index.xhtml', { title: '優先順位の設定', dialogClass: 'no-close' });
+            public openResurgenceSettingPage(): void {
+                nts.uk.request.jump("/view/kmf/001/h/index.xhtml", {});
             }
 
             // 60H超休
-            public open60hOvertimeSettingDialog(): void {
-                nts.uk.ui.windows.sub.modal('/view/kmf/001/j/index.xhtml', { title: '優先順位の設定', dialogClass: 'no-close' });
+            public open60hOvertimeSettingPage(): void {
+                nts.uk.request.jump("/view/kmf/001/j/index.xhtml", {});
             }
 
             // 看護介護休暇
-            public openNursingCareLeaveSettingDialog(): void {
-                nts.uk.ui.windows.sub.modal('/view/kmf/001/l/index.xhtml', { title: '優先順位の設定', dialogClass: 'no-close' });
+            public openNursingCareLeaveSettingPage(): void {
+                nts.uk.request.jump("/view/kmf/001/l/index.xhtml", {});
             }
         }
     }
