@@ -55,29 +55,29 @@ module qpp014.d.viewmodel {
         }
 
         buttonFilter(): void {
-            var self = this;
-            switch (self.sparePayAtr()) {
-                case 1: {
-                    for (let i = 1; i < 11; i++) {
-                        self.d_LST_001_items.push(({ code: '10' + i, name: '基本給' + i, description: ('description' + i) }));
-                    }
-                    break;
-                }
-                case 2: {
-                    for (let i = 1; i < 21; i++) {
-                        self.d_LST_001_items.push(({ code: '20' + i, name: '基本給' + i, description: ('description' + i) }));
-                    }
-                    //                    $('#D_LST_001').igGrid('option', 'dataSource', self.d_LST_001_items());
-                    //                    $('#D_LST_001').igGrid("dataBind");
-                    break;
-                }
-                case 3: {
-                    for (let i = 1; i < 31; i++) {
-                        self.d_LST_001_items.push(({ code: '30' + i, name: '基本給' + i, description: ('description' + i) }));
-                    }
-                    break;
-                }
-            }
+//            var self = this;
+//            switch (self.sparePayAtr()) {
+//                case 1: {
+//                    for (let i = 1; i < 11; i++) {
+//                        self.d_LST_001_items.push(({ code: '10' + i, name: '基本給' + i, description: ('description' + i) }));
+//                    }
+//                    break;
+//                }
+//                case 2: {
+//                    for (let i = 1; i < 21; i++) {
+//                        self.d_LST_001_items.push(({ code: '20' + i, name: '基本給' + i, description: ('description' + i) }));
+//                    }
+//                    //                    $('#D_LST_001').igGrid('option', 'dataSource', self.d_LST_001_items());
+//                    //                    $('#D_LST_001').igGrid("dataBind");
+//                    break;
+//                }
+//                case 3: {
+//                    for (let i = 1; i < 31; i++) {
+//                        self.d_LST_001_items.push(({ code: '30' + i, name: '基本給' + i, description: ('description' + i) }));
+//                    }
+//                    break;
+//                }
+//            }
         }
 
         openEDialog(): void {

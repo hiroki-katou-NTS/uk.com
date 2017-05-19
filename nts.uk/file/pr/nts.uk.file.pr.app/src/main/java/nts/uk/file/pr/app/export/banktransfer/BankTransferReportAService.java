@@ -20,7 +20,6 @@ import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.file.pr.app.export.banktransfer.data.BankDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BankReportData;
-import nts.uk.file.pr.app.export.banktransfer.data.BankTransferAReport;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferARpData;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferARpHeader;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferParamRpDto;

@@ -153,8 +153,8 @@ module qpp014.j {
                         }).branchId);
                 }
                 var command = {
-                    outputOrder : self.selectedId_J_SEL_001() == 1 ? self.selectedCode_J_SEL_002() : '',
-                    ouputName : self.selectedId_J_SEL_001() == 1 ? self.selectedCode_J_SEL_003() : '',
+                    outputOrder : self.selectedId_J_SEL_001() == 1 ? self.selectedCode_J_SEL_002() : null,
+                    ouputName : self.selectedId_J_SEL_001() == 1 ? self.selectedCode_J_SEL_003() : null,
                     fromBranchId: branchIdList,
                     processingNo: nts.uk.ui.windows.getShared("processingNo"),
                     processingYm: nts.uk.ui.windows.getShared("data").currentProcessingYm,
