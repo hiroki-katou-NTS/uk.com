@@ -11,4 +11,6 @@ public class ListOfScreenDDto {
 	int paymentMethod3;
 	int paymentMethod4;
 	int paymentMethod5;
+	String pId;
+	int sparePayAtr;
 }

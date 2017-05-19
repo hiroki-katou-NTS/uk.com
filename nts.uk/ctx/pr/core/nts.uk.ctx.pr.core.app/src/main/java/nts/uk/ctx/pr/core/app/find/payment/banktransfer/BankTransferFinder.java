@@ -57,7 +57,9 @@ public class BankTransferFinder {
 					basicPersonBankAccDto.get().getUseSet2().getPaymentMethod(),
 					basicPersonBankAccDto.get().getUseSet3().getPaymentMethod(),
 					basicPersonBankAccDto.get().getUseSet4().getPaymentMethod(),
-					basicPersonBankAccDto.get().getUseSet5().getPaymentMethod()));
+					basicPersonBankAccDto.get().getUseSet5().getPaymentMethod(),
+					basicPersonBankAccDto.get().getPersonID(),
+					x.getSparePayAtr().value));
 		}
 		BankTransferDto result = new BankTransferDto(listOfScreenDDto, payday.get().getPayDate());
 		return result;

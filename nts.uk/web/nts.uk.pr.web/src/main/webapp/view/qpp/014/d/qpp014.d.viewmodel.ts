@@ -11,6 +11,7 @@ module qpp014.d.viewmodel {
         dateOfPayment: KnockoutObservable<string>;
         d_lbl_015: KnockoutObservable<string>;
         d_lbl_016: KnockoutObservable<string>;
+        data: KnockoutObservable<any>;
 
         constructor(data: any) {
             let self = this;
@@ -32,6 +33,7 @@ module qpp014.d.viewmodel {
             nts.uk.ui.windows.setShared("processingNo", self.d_lbl_015(), true);
             nts.uk.ui.windows.setShared("processingYMNotConvert", self.processingYMNotConvert(), true);
             self.findDataScreenD();
+            self.data = ko.observable();
         }
 
         findDataScreenD(): JQueryPromise<any> {
@@ -39,6 +41,7 @@ module qpp014.d.viewmodel {
             var dfd = $.Deferred();
             qpp014.d.service.findDataScreenD(+self.d_lbl_015())
                 .done(function(data) {
+                    self.data(data);
                     var items = [];
                     _.forEach(data.listOfScreenDDto, function(x) {
                         items.push(new ItemModel_D_LST_001(x.scd, x.nameB, x.paymentMethod1, x.paymentMethod2, x.paymentMethod3, x.paymentMethod4, x.paymentMethod5));
@@ -55,29 +58,39 @@ module qpp014.d.viewmodel {
         }
 
         buttonFilter(): void {
-//            var self = this;
-//            switch (self.sparePayAtr()) {
-//                case 1: {
-//                    for (let i = 1; i < 11; i++) {
-//                        self.d_LST_001_items.push(({ code: '10' + i, name: '基本給' + i, description: ('description' + i) }));
-//                    }
-//                    break;
-//                }
-//                case 2: {
-//                    for (let i = 1; i < 21; i++) {
-//                        self.d_LST_001_items.push(({ code: '20' + i, name: '基本給' + i, description: ('description' + i) }));
-//                    }
-//                    //                    $('#D_LST_001').igGrid('option', 'dataSource', self.d_LST_001_items());
-//                    //                    $('#D_LST_001').igGrid("dataBind");
-//                    break;
-//                }
-//                case 3: {
-//                    for (let i = 1; i < 31; i++) {
-//                        self.d_LST_001_items.push(({ code: '30' + i, name: '基本給' + i, description: ('description' + i) }));
-//                    }
-//                    break;
-//                }
-//            }
+            var self = this;
+            switch (self.sparePayAtr()) {
+                case 1: {
+                    var obj = [];
+                    obj =_.find(self.data().listOfScreenDDto, function(x){
+                        return x.sparePayAtr === 0; 
+                    });
+                    _.forEach(obj, function(x) {
+                        self.d_LST_001_items.push(new ItemModel_D_LST_001(x.scd, x.nameB, x.paymentMethod1, x.paymentMethod2, x.paymentMethod3, x.paymentMethod4, x.paymentMethod5));
+                    });
+                    break;
+                }
+                case 2: {
+                    var obj = [];
+                    obj =_.find(self.data().listOfScreenDDto, function(x){
+                        return x.sparePayAtr === 1; 
+                    });
+                    _.forEach(obj, function(x) {
+                        self.d_LST_001_items.push(new ItemModel_D_LST_001(x.scd, x.nameB, x.paymentMethod1, x.paymentMethod2, x.paymentMethod3, x.paymentMethod4, x.paymentMethod5));
+                    });
+                    break;
+                }
+                case 3: {
+//                    var obj = [];
+//                    obj =_.find(self.data().listOfScreenDDto, function(x){
+//                        return x.sparePayAtr === 3; 
+//                    });
+//                    _.forEach(obj, function(x) {
+//                        self.d_LST_001_items.push(new ItemModel_D_LST_001(x.scd, x.nameB, x.paymentMethod1, x.paymentMethod2, x.paymentMethod3, x.paymentMethod4, x.paymentMethod5));
+//                    });
+                    break;
+                }
+            }
         }
 
         openEDialog(): void {
