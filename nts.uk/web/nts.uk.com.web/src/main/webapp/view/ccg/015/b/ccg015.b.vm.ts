@@ -93,7 +93,7 @@ module nts.uk.pr.view.ccg015.b {
                     if (item.partType == TopPagePartsType.Dashboard) {
                         self.myPageSettingModel().topPagePartSettingItems()[1].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
-                    if (item.partType == TopPagePartsType.FolowMenu) {
+                    if (item.partType == TopPagePartsType.FlowMenu) {
                         self.myPageSettingModel().topPagePartSettingItems()[2].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                 });
@@ -108,7 +108,7 @@ module nts.uk.pr.view.ccg015.b {
                     if (item.partType == TopPagePartsType.Dashboard) {
                         $("#dashboard-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
                     }
-                    if (item.partType == TopPagePartsType.FolowMenu) {
+                    if (item.partType == TopPagePartsType.FlowMenu) {
                         $("table#flow-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
                     }
                 });
@@ -161,7 +161,7 @@ module nts.uk.pr.view.ccg015.b {
                 switch (partType) {
                     case 0: return "Widget";
                     case 1: return "DashBoard";
-                    case 2: return "FolowMenu";
+                    case 2: return "FlowMenu";
                     case 3: return "ExternalUrl";
                     default: return "Widget";
                 }
@@ -208,13 +208,13 @@ module nts.uk.pr.view.ccg015.b {
         export class TopPagePartsType {
             static Widget = "Widget";
             static Dashboard = "DashBoard";
-            static FolowMenu = "FolowMenu";
+            static FlowMenu = "FlowMenu";
             static ExternalUrl = "ExternalUrl";
         }
         export enum TopPagePartsEnum {
             Widget = 0,
             Dashboard = 1,
-            FolowMenu = 2
+            FlowMenu = 2
         }
         export enum UseType {
             Use = 1,
