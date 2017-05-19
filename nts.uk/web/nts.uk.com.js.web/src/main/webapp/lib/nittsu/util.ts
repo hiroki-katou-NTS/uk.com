@@ -1,11 +1,11 @@
 ﻿module nts.uk {
-    
+
     export module KeyCodes {
         export const Tab = 9;
     }
 
     export module util {
-    
+
         /**
          * 常にtrueを返す関数が必要になったらこれ
          */
@@ -17,12 +17,12 @@
          * if key presented will perform find index of item in array which contain key equal to the 'item' parameter
          */
         export function findIndex(arr, value, key) {
-            for(var i = 0; i < arr.length; i++) {
+            for (var i = 0; i < arr.length; i++) {
                 var item = arr[i];
-                if(item[key]  === value) return i; 
+                if (item[key] === value) return i;
             }
             return -1;
-        } 
+        }
         /**  
          * function add item to array, this function is used in combine with visitDfs function
          * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
@@ -35,12 +35,12 @@
          */
         export function visitDfs(node, func, childField, arr?) {
             if (func) {
-                if(arr)
+                if (arr)
                     func(node, arr);
                 else func(node);
             }
             var childs = node[childField];
-            $.each(childs, function (child) {
+            $.each(childs, function(child) {
                 visitDfs(childs[child], func, childField, arr);
             });
         }
@@ -49,8 +49,8 @@
          */
         export function flatArray(arr, childField) {
             var flatArr = [];
-            if(!childField) return arr;
-            for(var i = 0; i < arr.length; i++) {
+            if (!childField) return arr;
+            for (var i = 0; i < arr.length; i++) {
                 var item = arr[i];
                 visitDfs(item, addToArray, childField, flatArr);
             }
@@ -89,7 +89,7 @@
                 }
                 return false;
             });
-            return filtered; 
+            return filtered;
         }
         /**
          * SearchBox helper function to jump next search
@@ -105,7 +105,7 @@
                 if (current) {
                     for (var i = 0; i < arr.length - 1; i++) {
                         var item = arr[i];
-                        if (item[selectedKey] === current) return arr[i + 1][selectedKey];                      
+                        if (item[selectedKey] === current) return arr[i + 1][selectedKey];
                     }
                 }
                 if (selectedKey) return arr[0][selectedKey];
@@ -113,14 +113,14 @@
             }
             return undefined;
         }
-         
+
         /**
          * Returns true if the target is null or undefined.
          */
         export function isNullOrUndefined(target: any): boolean {
             return target === null || target === undefined;
         }
-    
+
         /**
          * Returns true if the target is null or undefined or blank.
          * @param  {any} [target] Target need to check
@@ -129,24 +129,24 @@
         export function isNullOrEmpty(target: any): boolean {
             return (target === undefined || target === null || target.length == 0);
         }
-        
+
         /**
          * Generate random identifier string (UUIDv4)
          */
         export function randomId() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 var r = Math.random() * 16 | 0;
                 return ((c == 'x') ? r : (r & 0x3 | 0x8)).toString(16);
             });
         }
-    
+
         /**
          * Returns true if current window is in frame.
          */
         export function isInFrame() {
             return window.parent != window;
         }
-    
+
         /**
          * valueMaybeEmptyがnullまたはundefinedの場合、defaultValueを返す。
          * そうでなければ、valueMaybeEmptyを返す。
@@ -154,7 +154,7 @@
         export function orDefault(valueMaybeEmpty: any, defaultValue: any) {
             return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
         }
-    
+
         /**
          * Returns true if expects contains actual.
          */
@@ -164,23 +164,23 @@
             }
             return false;
         };
-        
-        export function createTreeFromString(original: string, openChar: string, closeChar: string, 
-            seperatorChar: string, operatorChar: Array<string>): Array<TreeObject>[]{
+
+        export function createTreeFromString(original: string, openChar: string, closeChar: string,
+            seperatorChar: string, operatorChar: Array<string>): Array<TreeObject>[] {
             let result = convertToTree(original, openChar, closeChar, seperatorChar, 1, operatorChar).result;
-//            result = moveToParentIfEmpty(result);
+            //            result = moveToParentIfEmpty(result);
             return result;
         }
-        
-        function moveToParentIfEmpty(tree: Array<TreeObject>[]) : Array<TreeObject>[]{
+
+        function moveToParentIfEmpty(tree: Array<TreeObject>[]): Array<TreeObject>[] {
             let result = [];
-            _.forEach(tree, function (e : TreeObject) {
-                if(e.children.length > 0){
+            _.forEach(tree, function(e: TreeObject) {
+                if (e.children.length > 0) {
                     e.children = moveToParentIfEmpty(e.children);
-                    if(text.isNullOrEmpty(e.value)){
+                    if (text.isNullOrEmpty(e.value)) {
                         result = result.concat(e.children);
-                    }else{
-                        result.push(e);    
+                    } else {
+                        result.push(e);
                     }
                 } else {
                     result.push(e);
@@ -188,123 +188,123 @@
             })
             return result;
         }
-        
+
         function convertToTree(original: string, openChar: string, closeChar: string, separatorChar: string, index: number, operatorChar: Array<string>)
-            : {"result": Array<TreeObject>[], "index": number}{
+            : { "result": Array<TreeObject>[], "index": number } {
             let result = [];
-            while (original.trim().length > 0){  
+            while (original.trim().length > 0) {
                 let firstOpenIndex = original.indexOf(openChar);
-                if(firstOpenIndex < 0){
+                if (firstOpenIndex < 0) {
                     let values = original.split(separatorChar);
-                    _.forEach(values, function(value){
+                    _.forEach(values, function(value) {
                         let data = splitByArray(value, operatorChar.slice());
-                        _.each(data, function(v){
-                           let object = new TreeObject();
+                        _.each(data, function(v) {
+                            let object = new TreeObject();
                             object.value = v;
                             object.children = [];
                             object.isOperator = operatorChar.indexOf(v) >= 0;
-                            result.push(object); 
-                        });     
-                    }); 
+                            result.push(object);
+                        });
+                    });
                     return {
                         "result": result,
-                        "index": index    
-                    };             
-                }else{
+                        "index": index
+                    };
+                } else {
                     let object = new TreeObject();
                     object.value = original.substring(0, firstOpenIndex).trim();
                     object.index = index;
                     let closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
-                    if(closeIndex >= 0){
+                    if (closeIndex >= 0) {
                         index++;
                         let res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index, operatorChar);
                         object.children = res.result;
                         index = res.index++;
-                        result.push(object);              
+                        result.push(object);
                         let firstSeperatorIndex = original.indexOf(separatorChar, closeIndex);
-                        if(firstSeperatorIndex >= 0){
-                            original = original.substring(firstSeperatorIndex + 1, original.length).trim();    
-                        }else{
+                        if (firstSeperatorIndex >= 0) {
+                            original = original.substring(firstSeperatorIndex + 1, original.length).trim();
+                        } else {
                             return {
                                 "result": result,
-                                "index": index    
-                            };    
+                                "index": index
+                            };
                         }
-                    }else {
+                    } else {
                         return {
                             "result": result,
-                            "index": index    
-                        };        
-                    }    
+                            "index": index
+                        };
+                    }
                 }
             }
-            
+
             return {
-                    "result": result,
-                    "index": index    
-                };
+                "result": result,
+                "index": index
+            };
         }
-        
-        function splitByArray(original: string, operatorChar: Array<string>){
+
+        function splitByArray(original: string, operatorChar: Array<string>) {
             let temp = [];
-            let result = [];      
-            if(original.trim().length <= 0){
+            let result = [];
+            if (original.trim().length <= 0) {
                 return temp;
             }
-            if (operatorChar.length <= 0){
-                return [original];        
+            if (operatorChar.length <= 0) {
+                return [original];
             }
-            let operator : string = operatorChar.shift();  
-            while (original.trim().length > 0){  
-                let index = original.indexOf(operator); 
-                if(index >= 0){ 
-                    temp.push(original.substring(0, index).trim());            
+            let operator: string = operatorChar.shift();
+            while (original.trim().length > 0) {
+                let index = original.indexOf(operator);
+                if (index >= 0) {
+                    temp.push(original.substring(0, index).trim());
                     temp.push(original.substring(index, index + 1).trim());
                     original = original.substring(index + 1, original.length).trim()
                 } else {
                     temp.push(original);
-                    break;    
-                }    
+                    break;
+                }
             }
-            _.each(temp, function(value){
-                result = result.concat(splitByArray(value, operatorChar));    
-            });     
-            return result;       
+            _.each(temp, function(value) {
+                result = result.concat(splitByArray(value, operatorChar));
+            });
+            return result;
         }
-        
-        function findIndexOfCloseChar(original: string, openChar: string, closeChar: string, firstOpenIndex: number): number{
+
+        function findIndexOfCloseChar(original: string, openChar: string, closeChar: string, firstOpenIndex: number): number {
             let openCount = 0;
             let closeCount = 0;
-            for(var i = firstOpenIndex; i < original.length; i++){
-                if(original.charAt(i) === openChar){
+            for (var i = firstOpenIndex; i < original.length; i++) {
+                if (original.charAt(i) === openChar) {
                     openCount++;
-                } else if(original.charAt(i) === closeChar){
+                } else if (original.charAt(i) === closeChar) {
                     closeCount++;
-                }     
-                if(openCount > 0 && openCount === closeCount){
+                }
+                if (openCount > 0 && openCount === closeCount) {
                     return i;
-                } 
+                }
             }
-            
+
             return -1;
         }
-        
-        export class TreeObject{
+
+        export class TreeObject {
             value: string;
             isOperator: boolean;
             children: Array<TreeObject>[];
             index: number;
-            
-            constructor(value?: string, children?: Array<TreeObject>[], index?: number, isOperator?: boolean){
+
+            constructor(value?: string, children?: Array<TreeObject>[], index?: number, isOperator?: boolean) {
                 var self = this;
-                
+
                 self.value = value;
                 self.children = children;
                 self.index = index;
                 self.isOperator = isOperator;
             }
         }
-    
+
         /**
          * Like Java Optional
          */
@@ -312,51 +312,51 @@
             export function of<V>(value: V) {
                 return new Optional(value);
             }
-    
+
             export function empty() {
                 return new Optional(null);
             }
-    
+
             export class Optional<V> {
                 value: V;
-    
+
                 constructor(value: V) {
                     this.value = orDefault(value, null);
                 }
-    
+
                 ifPresent(consumer: (value: V) => {}) {
                     if (this.isPresent) {
                         consumer(this.value);
                     }
                     return this;
                 }
-    
+
                 ifEmpty(action: () => {}) {
                     if (!this.isPresent) {
                         action();
                     }
                     return this;
                 }
-    
+
                 map<M>(mapper: (value: V) => M): Optional<M> {
                     return this.isPresent ? of(mapper(this.value)) : empty();
                 }
-    
+
                 isPresent(): boolean {
                     return this.value !== null;
                 }
-    
+
                 get(): V {
                     if (!this.isPresent) {
                         throw new Error('not present');
                     }
                     return this.value;
                 }
-    
+
                 orElse(stead: V): V {
                     return this.isPresent ? this.value : stead;
                 }
-    
+
                 orElseThrow(errorBuilder: () => Error) {
                     if (!this.isPresent) {
                         throw errorBuilder();
@@ -364,40 +364,40 @@
                 }
             }
         }
-        
+
         export class Range {
             start: number;
             end: number;
-            
+
             constructor(start: number, end: number) {
                 if (start > end) {
                     throw new Error('start is larger than end');
                 }
-                
+
                 this.start = start;
                 this.end = end;
             }
-            
+
             contains(value: number) {
                 return this.start <= value && value <= this.end;
             }
-            
+
             greaterThan(value: number) {
                 return value < this.start;
             }
-            
+
             greaterThanOrEqualTo(value: number) {
                 return value <= this.start;
             }
-            
+
             lessThan(value: number) {
                 return this.end < value;
             }
-            
+
             lessThanOrEqualTo(value: number) {
                 return this.end <= value;
             }
-            
+
             distanceFrom(value: number) {
                 if (this.greaterThan(value)) {
                     return value - this.start;
@@ -409,30 +409,30 @@
             }
         }
     }
-    
+
     export class WebStorageWrapper {
-        
+
         nativeStorage: Storage;
-        
+
         constructor(nativeStorage: Storage) {
             this.nativeStorage = nativeStorage;
         }
-        
+
         setItem(key: string, value: string) {
             if (value === undefined) {
                 return;
             }
             this.nativeStorage.setItem(key, value);
         }
-        
+
         setItemAsJson(key: string, value: any) {
             this.setItem(key, JSON.stringify(value));
         }
-        
+
         containsKey(key: string) {
             return this.getItem(key) !== null;
         };
-        
+
         getItem(key: string): util.optional.Optional<string> {
             var value: string = this.nativeStorage.getItem(key);
             if (value === null || value === undefined || value === 'undefined') {
@@ -440,28 +440,28 @@
             }
             return util.optional.of(value);
         }
-        
+
         getItemAndRemove(key: string) {
             var item = this.getItem(key);
             this.removeItem(key);
             return item;
         }
-        
+
         removeItem(key: string) {
             this.nativeStorage.removeItem(key);
         }
-        
+
         clear() {
             this.nativeStorage.clear();
         }
     }
-    
-    
+
+
     /**
      * Utilities about jquery deferred
      */
     export module deferred {
-        
+
         /**
          * Repeats a task with jQuery Deferred
          */
@@ -470,71 +470,71 @@
             configurator(conf);
             return repeater.begin(conf);
         }
-        
+
         export module repeater {
             export function begin(conf: IConfiguration) {
                 return (<Configuration>conf).run();
             }
-            
+
             export interface IConfiguration {
                 /**
                  * Set task returns JQueryPromise.
                  */
                 task(taskFunction: () => JQueryPromise<any>): IConfiguration;
-                
+
                 /**
                  * Set condition to repeat task.
                  */
                 while(whileCondition: (taskResult: any) => boolean): IConfiguration;
-                
+
                 after(runAfterMilliseconds: number): IConfiguration;
-                
+
                 /**
                  * Set pause time as milliseconds.
                  */
                 pause(pauseMilliseconds: number): IConfiguration;
             }
-            
+
             export function createConfiguration(): IConfiguration {
                 return new Configuration();
             }
-            
+
             class Configuration implements IConfiguration {
                 taskFunction: () => JQueryPromise<any>;
                 whileCondition: (taskResult: any) => boolean;
                 pauseMilliseconds = 0;
                 runAfter = 0;
-                
+
                 task(taskFunction: () => JQueryDeferred<any>) {
                     this.taskFunction = taskFunction;
                     return this;
                 }
-                
+
                 while(whileCondition: (taskResult: any) => boolean) {
                     this.whileCondition = whileCondition;
                     return this;
                 }
-                
+
                 pause(pauseMilliseconds: number) {
                     this.pauseMilliseconds = pauseMilliseconds;
                     return this;
                 }
-                
+
                 after(runAfterMilliseconds: number) {
                     this.runAfter = runAfterMilliseconds;
-                    return this;   
+                    return this;
                 }
-                
+
                 run() {
                     let dfd = $.Deferred();
-                    if (this.runAfter > 0){
-                        setTimeout(() => this.repeat(dfd), this.runAfter);    
+                    if (this.runAfter > 0) {
+                        setTimeout(() => this.repeat(dfd), this.runAfter);
                     } else {
-                        this.repeat(dfd);    
+                        this.repeat(dfd);
                     }
                     return dfd.promise();
                 }
-                
+
                 repeat(dfd: JQueryDeferred<any>) {
                     this.taskFunction().done(res => {
                         if (this.whileCondition(res)) {
@@ -552,17 +552,18 @@
     export module resource {
 
 
-        export function getText(code: string): string {
+        export function getText(code: string, ...params: any[]): string {
             let text = names[code];
-            if(text){
-               return  formatCompDependParam(text);
+            if (text) {
+                text = formatCompDependParam(text);
+                text = formatParams(text, params);
             }
             return code;
         }
 
         export function getMessage(messageId: string, ...params: any[]): string {
             let message = messages[messageId];
-            if(message== undefined){return messageId;}
+            if (message == undefined) { return messageId; }
             message = formatParams(message, params);
             message = formatCompDependParam(message);
             return message;
@@ -590,5 +591,5 @@
         }
     }
     export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
-    
+
 }
