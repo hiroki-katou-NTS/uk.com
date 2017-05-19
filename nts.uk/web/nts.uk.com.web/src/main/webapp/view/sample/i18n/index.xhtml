@@ -31,6 +31,7 @@
 						
 						public void greeting(){
 							System.out.println(internationalization.getItemName("code"));
+							System.out.println(internationalization.getItemName("code","param1","param2",......));
 						}
 					}
 					</pre>
@@ -39,7 +40,10 @@
 					<![CDATA[
 					//remove space character after #
 					<h:inputText value="# {i18n.getText('QPP015_1')}"></h:inputText>
-					<div># {i18n.getText('QPP015_1')}</div>                         
+					<div># {i18n.getText('QPP015_1')}</div>      
+					                   
+					//get text with params
+					<h:inputText value="# {i18n.getText('QPP015_1',"param1","param2",.....)}"></h:inputText>
 					]]>
 					</pre>
 					<h2>Use in js</h2>
