@@ -170,7 +170,7 @@ public class SalaryPrintSetting extends DomainObject {
 		setting.hrchyIndex8 = false;
 		setting.hrchyIndex9 = false;
 		setting.monthTotalSet = false;
-		setting.showPayment = false;
+		setting.showPayment = true;
 		setting.sumDepHrchyIndexSet = false;
 		setting.sumEachDeprtSet = false;
 		setting.sumMonthDepHrchySet = false;
