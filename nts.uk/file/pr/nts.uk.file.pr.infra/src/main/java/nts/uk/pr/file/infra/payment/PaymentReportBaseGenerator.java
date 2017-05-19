@@ -18,21 +18,15 @@ import nts.uk.file.pr.app.export.payment.data.dto.SalaryItemDto;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
- * The Class BasePaymentReportGenerator.
+ * The Class PaymentReportBaseGenerator.
  */
-public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenerator {
+public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenerator {
 
 	/** The Constant FIRST_SHEET. */
 	public static final int FIRST_SHEET = 0;
 
 	/** The Constant HEADER_WIDTH. */
 	public static final int HEADER_WIDTH = 1;
-
-	/** The Constant ITEM_WIDTH. */
-	public static final int ITEM_WIDTH = 1;
-
-	/** The Constant CATEGORY_START_ROW. */
-	public static final int CATEGORY_START_ROW = 9;
 
 	/** The Constant FIRST_COLUMN. */
 	public static final int FIRST_COLUMN = 0;
@@ -61,6 +55,12 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	/** The page header range. */
 	protected Range pageHeaderRange;
 
+	/** The item width. */
+	private int itemWidth;
+
+	/** The category start row. */
+	private int categoryStartRow;
+
 	/** The first row. */
 	private int firstRow = FIRST_ROW;
 
@@ -71,7 +71,21 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	private int currentColumn = FIRST_COLUMN + HEADER_WIDTH;
 
 	/** The max columns per item line. */
-	private int maxColumnsPerItemLine = ITEMS_PER_ROW * ITEM_WIDTH + HEADER_WIDTH;
+	private int maxColumnsPerItemLine;
+
+	/**
+	 * Gets the item width.
+	 *
+	 * @return the item width
+	 */
+	abstract int getItemWidth();
+
+	/**
+	 * Gets the category start row.
+	 *
+	 * @return the category start row
+	 */
+	abstract int getCategoryStartRow();
 
 	/**
 	 * Prints the page content.
@@ -102,6 +116,9 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 		this.templateStyle = new TemplateStyle();
 		this.setPageHeaderRange();
 		this.setTemplateStyle();
+		this.itemWidth = this.getItemWidth();
+		this.categoryStartRow = this.getCategoryStartRow();
+		this.maxColumnsPerItemLine = ITEMS_PER_ROW * this.itemWidth + HEADER_WIDTH;
 	}
 
 	/**
@@ -133,8 +150,8 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 			}
 
 			// Get item cell.
-			Range nameCell = cells.createRange(currentRow, currentColumn, ITEM_HEIGHT, ITEM_WIDTH);
-			Range valueCell = cells.createRange(currentRow + 1, currentColumn, ITEM_HEIGHT, ITEM_WIDTH);
+			Range nameCell = cells.createRange(currentRow, currentColumn, ITEM_HEIGHT, itemWidth);
+			Range valueCell = cells.createRange(currentRow + 1, currentColumn, ITEM_HEIGHT, itemWidth);
 
 			// Merge cell.
 			nameCell.merge();
@@ -154,7 +171,7 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 			}
 
 			// Next item.
-			currentColumn += ITEM_WIDTH;
+			currentColumn += itemWidth;
 		});
 	}
 
@@ -163,7 +180,7 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	 */
 	protected void printPageHeader() {
 		// On first page.
-		if (currentRow < CATEGORY_START_ROW) {
+		if (currentRow < categoryStartRow) {
 			printCellValue(getHeaderTemplate());
 		}
 		// On other pages.
@@ -176,8 +193,8 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 			// Set value.
 			printCellValue(getHeaderTemplate());
 		}
-		firstRow += CATEGORY_START_ROW;
-		currentRow += CATEGORY_START_ROW;
+		firstRow += categoryStartRow;
+		currentRow += categoryStartRow;
 	}
 
 	/**
@@ -300,18 +317,6 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 
 	/**
 	 * The Class CellValue.
-	 */
-
-	/**
-	 * Gets the value.
-	 *
-	 * @return the value
-	 */
-	
-	/**
-	 * Gets the value.
-	 *
-	 * @return the value
 	 */
 	@Getter
 	protected class CellValue {

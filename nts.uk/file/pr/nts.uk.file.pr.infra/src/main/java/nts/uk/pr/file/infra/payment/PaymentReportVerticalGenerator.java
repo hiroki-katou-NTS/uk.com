@@ -15,10 +15,16 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 /**
  * The Class PaymentReportVerticalGenerator.
  */
-public class PaymentReportVerticalGenerator extends BasePaymentReportGenerator implements PaymentGenerator {
+public class PaymentReportVerticalGenerator extends PaymentReportBaseGenerator implements PaymentGenerator {
 
 	/** The Constant SHEET_NAME. */
 	public static final String SHEET_NAME = "SHEET 1";
+
+	/** The Constant ITEM_WIDTH. */
+	public static final int ITEM_WIDTH = 1;
+
+	/** The Constant CATEGORY_START_ROW. */
+	public static final int CATEGORY_START_ROW = 9;
 
 	/*
 	 * (non-Javadoc)
@@ -130,6 +136,28 @@ public class PaymentReportVerticalGenerator extends BasePaymentReportGenerator i
 	@Override
 	void setPageHeaderRange() {
 		pageHeaderRange = cells.createRange("A1", "I7");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemWidth()
+	 */
+	@Override
+	int getItemWidth() {
+		return ITEM_WIDTH;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getCategoryStartRow()
+	 */
+	@Override
+	int getCategoryStartRow() {
+		return CATEGORY_START_ROW;
 	}
 
 }
