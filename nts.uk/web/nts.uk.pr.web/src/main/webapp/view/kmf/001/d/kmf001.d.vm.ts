@@ -1,4 +1,4 @@
-module nts.uk.pr.view.kmf001.a {
+module nts.uk.pr.view.kmf001.d {
     export module viewmodel {
         export class ScreenModel {
             
