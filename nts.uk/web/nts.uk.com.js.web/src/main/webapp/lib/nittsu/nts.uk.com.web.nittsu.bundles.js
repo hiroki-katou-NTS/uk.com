@@ -521,9 +521,14 @@ var nts;
         var resource;
         (function (resource) {
             function getText(code) {
+                var params = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    params[_i - 1] = arguments[_i];
+                }
                 var text = names[code];
                 if (text) {
-                    return formatCompDependParam(text);
+                    text = formatCompDependParam(text);
+                    text = formatParams(text, params);
                 }
                 return code;
             }
