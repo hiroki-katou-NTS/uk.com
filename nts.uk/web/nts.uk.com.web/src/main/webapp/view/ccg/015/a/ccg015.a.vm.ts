@@ -19,8 +19,8 @@ module nts.uk.com.view.ccg015.a {
                 self.toppageSelectedCode = ko.observable(null);
                 self.topPageModel = ko.observable(new TopPageModel());
                 self.columns = ko.observableArray([
-                    { headerText: "コード", width: "50px", key: 'code', dataType: "string", hidden: false },
-                    { headerText: "名称", width: "300px", key: 'nodeText', dataType: "string" }
+                    { headerText: nts.uk.resource.getText("CCG015_11"), width: "50px", key: 'code', dataType: "string", hidden: false },
+                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "300px", key: 'nodeText', dataType: "string" }
                 ]);
                 self.isNewMode = ko.observable(true);
                 self.toppageSelectedCode.subscribe(function(selectedTopPageCode: string) {
@@ -44,9 +44,9 @@ module nts.uk.com.view.ccg015.a {
                 ]);
                 self.languageSelectedCode = ko.observable("0");
                 self.listLinkScreen = ko.observableArray([
-                    { icon: linkIconImage, text: 'ダッシュボード表示設定へ', action: function(evt, ui) {/*TODO go to ccg011*/ } },
-                    { icon: linkIconImage, text: 'タイトルメニュー作成へ', action: function(evt, ui) { nts.uk.request.jump("/view/ccg/014/a/index.xhtml"); } },
-                    { icon: linkIconImage, text: 'トップページの設定へ', action: function(evt, ui) {/*TODO go to ccg018*/ } },
+                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_17"), action: function(evt, ui) {/*TODO go to ccg011*/ } },
+                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_18"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/014/a/index.xhtml"); } },
+                    { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) {/*TODO go to ccg018*/ } },
                 ]);
                 //end constructor
             }
@@ -161,7 +161,6 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('topPageCode', self.topPageModel().topPageCode());
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.sub.modal("/view/ccg/030/a/index.xhtml", {
-                    height: 650, width: 1300,
                     title: "フローメニューの設定",
                     dialogClass: 'no-close'
                 }).onClosed(() => {

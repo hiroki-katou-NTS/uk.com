@@ -31,7 +31,7 @@ public class RegisterMyPageSettingCommandHandler extends CommandHandler<Register
 		// to Domain
 		MyPageSetting mps = command.toDomain();
 		// add
-		myPageSettingRepository.add(mps);
+//		myPageSettingRepository.add(mps);
 	}
 
 }

@@ -16,26 +16,26 @@ module nts.uk.pr.view.ccg015.b {
             constructor() {
                 var self = this;
                 self.useDivisionOptions = ko.observableArray([
-                    { code: '1', name: '利用する' },
-                    { code: '0', name: '利用しない' }
+                    { code: '1', name: nts.uk.resource.getText("CCG015_22") },
+                    { code: '0', name: nts.uk.resource.getText("CCG015_23") }
                 ]);
                 self.permissionDivisionOptions = ko.observableArray([
-                    { code: '1', name: '許可する' },
-                    { code: '0', name: '許可しない' }
+                    { code: '1', name: nts.uk.resource.getText("CCG015_33") },
+                    { code: '0', name: nts.uk.resource.getText("CCG015_34") }
                 ]);
                 self.selectedUsingMyPage = ko.observable(0);
                 self.tabs = ko.observableArray([
-                    { id: 'tab_widget', title: 'ウィジェット', content: '#widget', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_dash_board', title: 'ダッシュボード', content: '#dash_board', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_flow_menu', title: 'フローメニュー', content: '#flow_menu', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab_url', title: '外部URL', content: '#url', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab_widget', title: nts.uk.resource.getText("Enum_ToppagePartsType_Widget"), content: '#widget', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab_dash_board', title: nts.uk.resource.getText("Enum_ToppagePartsType_Dashboard"), content: '#dash_board', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab_flow_menu', title: nts.uk.resource.getText("Enum_ToppagePartsType_Flowmenu"), content: '#flow_menu', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab_url', title: nts.uk.resource.getText("Enum_ToppagePartsType_Url"), content: '#url', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selectedTab = ko.observable('tab_widget');
                 self.myPageSettingModel = ko.observable(new MyPageSettingModel());
                 self.columns = ko.observableArray([
-                    { headerText: "コード", width: "70px", key: 'itemCode', dataType: "string", hidden: false },
-                    { headerText: "名称", width: "200px", key: 'itemName', dataType: "string" },
-                    { headerText: "マイページ利用設定", key: 'useItem', width: "300px", controlType: 'switch' }
+                    { headerText: nts.uk.resource.getText("CCG015_11"), width: "70px", key: 'itemCode', dataType: "string", hidden: false },
+                    { headerText: nts.uk.resource.getText("CCG015_12"), width: "200px", key: 'itemName', dataType: "string" },
+                    { headerText: nts.uk.resource.getText("CCG015_29"), key: 'useItem', width: "300px", controlType: 'switch' }
                 ]);
                 this.currentCode = ko.observable("w1");
                 self.data = ko.observable(null);
