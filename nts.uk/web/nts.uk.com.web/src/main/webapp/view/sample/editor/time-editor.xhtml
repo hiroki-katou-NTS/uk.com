@@ -218,10 +218,49 @@
 					</article>
 					<div>
 						<h1>Example</h1>
-						<h3></h3>
-						<div id="inputpattern">
+						<h2>時間</h2>
+						<div id="primitivevalue">
+						<h3>PrimitiveValue</h3>
 							<pre>
-						<![CDATA[<input data-name="Date Editor" data-bind="ntsTimeEditor: {inputFormat: 'DD/MM/YYYY'}" />
+							//do not set mode, defautl is time of day
+						<![CDATA[<input  data-bind="ntsTimeEditor: {inputFormat: 'time',constraint: 'LayoutCode'}" />
+						]]>
+						</pre>
+						</div>
+						<div id="itemname">
+						<h3>項目名</h3>
+							<pre>
+						<![CDATA[<input data-name="text-id" data-bind="ntsTimeEditor: { inputFormat: 'time'}" />
+						]]>
+						</pre>
+						</div>
+						<div id="placeholder">
+						<h3>透かし文字</h3>
+							<pre>
+						<![CDATA[<input data-bind="ntsTimeEditor: { inputFormat: 'time',option:{placeholder;'x'}}" />
+						]]>
+						</pre>
+						</div>
+						<h2>時刻</h2>
+						<div id="day-primitivevalue">
+						<h3>PrimitiveValue</h3>
+							<pre>
+							//do not set mode, defautl is time of day
+						<![CDATA[<input  data-bind="ntsTimeEditor: {inputFormat: 'time',mode:'time', constraint: 'LayoutCode'}" />
+						]]>
+						</pre>
+						</div>
+						<div id="day-itemname">
+						<h3>項目名</h3>
+							<pre>
+						<![CDATA[<input data-name="text-id" data-bind="ntsTimeEditor: { mode:'time', inputFormat: 'time'}" />
+						]]>
+						</pre>
+						</div>
+						<div id="day-placeholder">
+						<h3>透かし文字</h3>
+							<pre>
+						<![CDATA[<input data-bind="ntsTimeEditor: {mode:'time',  inputFormat: 'time',option:{placeholder;'x'}}" />
 						]]>
 						</pre>
 						</div>

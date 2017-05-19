@@ -29,18 +29,94 @@
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<h1>NumberEditor</h1>
+					<h2 id="integer">整数</h2>
 					<div data-bind="with: numbereditor">
 						<input id="number-1"
 							data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span> <span
 							data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 					</div>
+					<div>
+						<h3>PrimitiveValue</h3>
+						<pre>
+//do not set decimallength in option
+//if you set decimallength, it become decimal input control
+self.numbereditor = {
+constraint: 'PrimitiveValue',
+option:{ 
+	//code here
+},
+//code here
+};
+						</pre>
+					</div>
+
 					<br />
+					<h2 id="decimal">実数</h2>
 					<div data-bind="with: numbereditor2">
 						<input id="number-2"
 							data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span> <span
 							data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+					</div>
+					<div>
+						<h3>PrimitiveValue</h3>
+						<pre>
+//if you set decimallength, it become decimal input control
+//if not,it is integer input
+self.numbereditor = {
+	constraint: 'PrimitiveValue',
+	option:{
+		decimallength: 2
+	},
+//code here
+};
+						</pre>
+					</div>
+					<div>
+						<h2>Options</h2>
+						<div>
+							<h3 id="name">項目名</h3>
+							<pre>
+<![CDATA[<input  data-name="text_id"  />]]>
+						</pre>
+						</div>
+						<div>
+							<h3 id="comma">カンマ編集</h3>
+							<pre>
+self.numbereditor = {
+//code here
+option:{ 
+	grouplength: 3
+},
+//code here
+};
+						</pre>
+						</div>
+						<div>
+							<h3 id="unit">単位</h3>
+							<pre>
+self.numbereditor = {
+//code here
+option:{ 
+	symbolChar: '$'
+},
+//code here
+};
+						</pre>
+						</div>
+						<div>
+							<h3 id="placeholder">透かし文字</h3>
+							<pre>
+self.numbereditor = {
+//code here
+option:{ 
+	placeholder: 'input integer'
+},
+//code here
+};
+						</pre>
+						</div>
 					</div>
 					<hr />
 					<h1>CurrencyEditor</h1>
@@ -166,8 +242,7 @@
 									<tbody>
 										<tr>
 											<td>value</td>
-											<td><b>Type:</b> KnockoutObservable&lt;number|string&gt;<br />
-											</td>
+											<td><b>Type:</b> KnockoutObservable&lt;number|string&gt;<br /></td>
 										</tr>
 										<tr>
 											<td>constraint<br /> <i>(optional)</i></td>
@@ -255,6 +330,11 @@
 																	Align text to right<br /> <i>center</i>: Align text to
 																	center</td>
 															</tr>
+															<tr>
+																<td>defaultValue<br /> <i>(optional)</i></td>
+																<td><b>Type:</b> number<br /> <b>Default:</b>
+																	false<br /> Set default Value when textbox is empty</td>
+															</tr>
 														</tbody>
 													</table>
 												</div>
@@ -318,6 +398,11 @@
 																	Align text to right<br /> <i>center</i>: Align text to
 																	center</td>
 															</tr>
+															<tr>
+																<td>defaultValue<br /> <i>(optional)</i></td>
+																<td><b>Type:</b> number<br /> <b>Default:</b>
+																	false<br /> Set default Value when textbox is empty</td>
+															</tr>
 														</tbody>
 													</table>
 												</div></td>
@@ -327,33 +412,6 @@
 							</div>
 						</div>
 					</article>
-					<div>
-						<h1>Example</h1>
-						<div>
-							<h3>カンマ編集</h3>
-							<div id="commachar">
-								<pre>
-<![CDATA[self.numbereditor2 = {
-		//some code here
-		option: ko.mapping.fromJS({
-		grouplength: 3}),
-		//some code here
-};]]>
-							</pre>
-							</div>
-							<h3>単位</h3>
-							<div id="unit">
-								<pre>
-<![CDATA[self.numbereditor2 = {
-//code here
-	option: ko.mapping.fromJS({symbolChar: '$'}),
-//code here
-};]]>
-								</pre>
-							</div>
-						</div>
-					</div>
-
 					<div class="footer cf">
 						<button class="previous large">Previous</button>
 						<button class="next proceed large">Next</button>

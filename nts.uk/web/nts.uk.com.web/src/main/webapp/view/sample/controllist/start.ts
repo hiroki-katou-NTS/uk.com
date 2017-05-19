@@ -27,17 +27,80 @@ __viewContext.ready(function() {
 
     var viewModel = {
         controls: [
+            
             {
-                controlName: "テキストボックス", properties: [
+                controlName: "テキストボックス--文字列", properties: [
                     { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#primitivevalue" },
                     { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" }
+                ]
+            },
+            {
+                controlName: "テキストボックス--整数", properties: [
+                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#integer" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#name" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#placeholder" },
+                    { propertyName: "カンマ編集", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#comma" },
+                    { propertyName: "単位", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#unit" }
+                ]
+            },
+            {
+                controlName: "テキストボックス--実数", properties: [
+                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#decimal" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#name" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#placeholder" },
+                    { propertyName: "カンマ編集", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#comma" },
+                    { propertyName: "単位", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#unit" }
+                ]
+            },
+            {
+                controlName: "テキストボックス--時間", properties: [
+                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#primitivevalue" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#itemname" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#placeholder" }
+                ]
+            },
+            {
+                controlName: "テキストボックス--時刻", properties: [
+                   { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#day-primitivevalue" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#day-itemname" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#day-placeholder" }
+                ]
+            },
+            {
+                controlName: "テキストボックス--社員コード", properties: [
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#employeecocde" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#employeecocde" },
+                    { propertyName: "Enterマーク", link: "link" }
+                ]
+            },
+            {
+                controlName: "テキストボックス--パスワード", properties: [
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#password" },
                     { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" },
-                    { propertyName: "カンマ編集", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#commachar" },
-                    { propertyName: "単位", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#unit" },
-                    { propertyName: "Enterマーク", link: "link" },
+                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#primitivevalue" }
+                ]
+            },
+            {
+                controlName: "テキストボックス--複数行", properties: [
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" },
+                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#primitivevalue" }
+                ]
+            },
+            {
+                controlName: "テキストボックス--日付", properties: [
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
                     { propertyName: "精度", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#inputpattern" },
                     { propertyName: "曜日表示", link: "/nts.uk.com.web/view/sample/datepicker/datepicker.xhtml#dayofweek" },
                     { propertyName: "日付送り", link: "link" }
+                ]
+            },
+            {
+                controlName: "テキストボックス--検索", properties: [
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" },
+                    { propertyName: "Enterマーク", link: "link" }
                 ]
             },
             {
