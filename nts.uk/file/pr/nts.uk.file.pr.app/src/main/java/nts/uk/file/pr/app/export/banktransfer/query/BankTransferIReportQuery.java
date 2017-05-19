@@ -47,4 +47,9 @@ public class BankTransferIReportQuery {
 	 * G_LBL_012
 	 */
 	private String accountNo; // 7
+	
+	private int processingNo;
+	private int processingYm;
+	private int sparePayAtr;
+	private String branchId;
 }

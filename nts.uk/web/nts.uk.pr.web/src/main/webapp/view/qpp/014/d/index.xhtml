@@ -6,13 +6,6 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<script
-			src="http://www.igniteui.com/js/external/knockout.mapping-latest.js"
-			type="text/javascript"></script>
-		<script
-			src="http://cdn-na.infragistics.com/igniteui/2016.2/latest/js/extensions/infragistics.datasource.knockoutjs.js"></script>
-		<script
-			src="http://cdn-na.infragistics.com/igniteui/2016.2/latest/js/extensions/infragistics.ui.grid.knockout-extensions.js"></script>
 		<com:scriptfile path="../d/qpp014.d.viewmodel.js" />
 		<com:scriptfile path="../d/qpp014.d.service.js" />
 		<com:stylefile path="../d/qpp014.d.main.css" />
@@ -63,38 +56,7 @@
 				</div>
 				<div data-bind="with: viewmodeld">
 					<table id="D_LST_001"
-						data-bind="igGrid: {
-						dataSource: d_LST_001_items,
-		                primaryKey: 'scd',
-		                width: '740px',
-		                height: '280px',
-		                autoCommit: false,
-		                dataSourceType: 'json',
-		                autoGenerateColumns: false,
-		                features: [
-		                    {
-		                        name: 'Selection',
-		                        mode: 'row'
-		                    },
-		                    {
-		                        name: 'MultiColumnHeaders'
-		                    }
-		                ],
-		                columns: [
-		                    { headerText: 'コード', key: 'scd', dataType: 'string', columnCssClass: 'text_align', width: '15%' },
-		                    { headerText: '名称', key: 'nameB', dataType: 'string', width: '15%' },
-		                    {
-		                        headerText: '振込元設定', width: '70%',
-		                        group: [
-		                            { headerText: '支払1', key: 'paymentMethod1', dataType: 'string', width: '14%' },
-		                            { headerText: '支払2', key: 'paymentMethod2', dataType: 'string', width: '14%' },
-		                            { headerText: '支払3', key: 'paymentMethod3', dataType: 'string', width: '14%' },
-		                            { headerText: '支払4', key: 'paymentMethod4', dataType: 'string', width: '14%' },
-		                            { headerText: '支払5', key: 'paymentMethod5', dataType: 'string', width: '14%' }
-		                        ]
-		                    }
-		                ]
-				}"></table>
+						data-bind=""></table>
 				</div>
 			</div>
 			<div class="divLine">
