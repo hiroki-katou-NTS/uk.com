@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.flowmenu.service;
 
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
+
 /**
  * @author HieuLT
  */
@@ -13,6 +15,14 @@ public interface FlowMenuService {
 	 */
 	boolean isExist(String companyID, String topPagePartId);
 
+	/**
+	 * Create FlowMenu
+	 * 
+	 * @param
+	 */
+	void createFlowMenu(FlowMenu flowMenu);
+
+	
 	/**
 	 * Delete FlowMenu
 	 * 
