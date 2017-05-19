@@ -18,9 +18,6 @@ module qpp014.d.viewmodel {
             self.sparePayAtr = ko.observable(1);
             self.d_SEL_002_selectedCode = ko.observable(1);
             self.d_LST_001_items = ko.observableArray([]);
-            //            for (let i = 1; i < 31; i++) {
-            //                self.d_LST_001_items.push(new ItemModel_D_LST_001('00' + i, '基本給' + i, 'description' + i, 'description' + i, 'description' + i, 'description' + i, 'description' + i));
-            //            }
             self.countItems = ko.observable(0);
             self.d_LST_001_itemSelected = ko.observable(0);
             self.d_nextScreen = ko.computed(function() {
@@ -43,7 +40,7 @@ module qpp014.d.viewmodel {
             qpp014.d.service.findDataScreenD(+self.d_lbl_015())
                 .done(function(data) {
                     var items = [];
-                    _.forEach(data, function(x) {
+                    _.forEach(data.listOfScreenDDto, function(x) {
                         items.push(new ItemModel_D_LST_001(x.scd, x.nameB, x.paymentMethod1, x.paymentMethod2, x.paymentMethod3, x.paymentMethod4, x.paymentMethod5));
                     });
                     self.d_LST_001_items(items);
@@ -59,28 +56,28 @@ module qpp014.d.viewmodel {
 
         buttonFilter(): void {
             var self = this;
-            //            switch (self.sparePayAtr()) {
-            //                case 1: {
-            //                    for (let i = 1; i < 11; i++) {
-            //                        self.d_LST_001_items.push(({ code: '10' + i, name: '基本給' + i, description: ('description' + i) }));
-            //                    }
-            //                    break;
-            //                }
-            //                case 2: {
-            //                    for (let i = 1; i < 21; i++) {
-            //                        self.d_LST_001_items.push(({ code: '20' + i, name: '基本給' + i, description: ('description' + i) }));
-            //                    }
-            //                    //                    $('#D_LST_001').igGrid('option', 'dataSource', self.d_LST_001_items());
-            //                    //                    $('#D_LST_001').igGrid("dataBind");
-            //                    break;
-            //                }
-            //                case 3: {
-            //                    for (let i = 1; i < 31; i++) {
-            //                        self.d_LST_001_items.push(({ code: '30' + i, name: '基本給' + i, description: ('description' + i) }));
-            //                    }
-            //                    break;
-            //                }
-            //            }
+            switch (self.sparePayAtr()) {
+                case 1: {
+                    for (let i = 1; i < 11; i++) {
+                        self.d_LST_001_items.push(({ code: '10' + i, name: '基本給' + i, description: ('description' + i) }));
+                    }
+                    break;
+                }
+                case 2: {
+                    for (let i = 1; i < 21; i++) {
+                        self.d_LST_001_items.push(({ code: '20' + i, name: '基本給' + i, description: ('description' + i) }));
+                    }
+                    //                    $('#D_LST_001').igGrid('option', 'dataSource', self.d_LST_001_items());
+                    //                    $('#D_LST_001').igGrid("dataBind");
+                    break;
+                }
+                case 3: {
+                    for (let i = 1; i < 31; i++) {
+                        self.d_LST_001_items.push(({ code: '30' + i, name: '基本給' + i, description: ('description' + i) }));
+                    }
+                    break;
+                }
+            }
         }
 
         openEDialog(): void {
@@ -126,35 +123,35 @@ module qpp014.d.viewmodel {
 
 function bindGrind(dataSource) {
     $("#D_LST_001").igGrid({
-                        dataSource: dataSource,
-                        primaryKey: 'scd',
-                        width: '740px',
-                        height: '280px',
-                        autoCommit: false,
-                        dataSourceType: 'json',
-                        autoGenerateColumns: false,
-                        features: [
-                            {
-                                name: 'Selection',
-                                mode: 'row'
-                            },
-                            {
-                                name: 'MultiColumnHeaders'
-                            }
-                        ],
-                        columns: [
-                            { headerText: 'コード', key: 'scd', dataType: 'string', columnCssClass: 'text_align', width: '15%' },
-                            { headerText: '名称', key: 'nameB', dataType: 'string', width: '15%' },
-                            {
-                                headerText: '振込元設定', width: '70%',
-                                group: [
-                                    { headerText: '支払1', key: 'paymentMethod1', dataType: 'string', width: '14%' },
-                                    { headerText: '支払2', key: 'paymentMethod2', dataType: 'string', width: '14%' },
-                                    { headerText: '支払3', key: 'paymentMethod3', dataType: 'string', width: '14%' },
-                                    { headerText: '支払4', key: 'paymentMethod4', dataType: 'string', width: '14%' },
-                                    { headerText: '支払5', key: 'paymentMethod5', dataType: 'string', width: '14%' }
-                                ]
-                            }
-                        ]
-                });
+        dataSource: dataSource,
+        primaryKey: 'scd',
+        width: '740px',
+        height: '280px',
+        autoCommit: false,
+        dataSourceType: 'json',
+        autoGenerateColumns: false,
+        features: [
+            {
+                name: 'Selection',
+                mode: 'row'
+            },
+            {
+                name: 'MultiColumnHeaders'
+            }
+        ],
+        columns: [
+            { headerText: 'コード', key: 'scd', dataType: 'string', columnCssClass: 'text_align', width: '15%' },
+            { headerText: '名称', key: 'nameB', dataType: 'string', width: '15%' },
+            {
+                headerText: '振込元設定', width: '70%',
+                group: [
+                    { headerText: '支払1', key: 'paymentMethod1', dataType: 'string', width: '14%' },
+                    { headerText: '支払2', key: 'paymentMethod2', dataType: 'string', width: '14%' },
+                    { headerText: '支払3', key: 'paymentMethod3', dataType: 'string', width: '14%' },
+                    { headerText: '支払4', key: 'paymentMethod4', dataType: 'string', width: '14%' },
+                    { headerText: '支払5', key: 'paymentMethod5', dataType: 'string', width: '14%' }
+                ]
+            }
+        ]
+    });
 }
