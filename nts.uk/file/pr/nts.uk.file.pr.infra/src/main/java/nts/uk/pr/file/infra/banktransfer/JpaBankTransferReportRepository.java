@@ -42,6 +42,12 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 	private String SEL_2_BRANCH = "SELECT NEW " + BranchDto.class.getName() + ""
 			+ "(c.branchName, c.branchCode, c.bankCode)"
 			+ "FROM CbkmtBranch c WHERE c.ckbmtBranchPK.companyCode = :companyCode AND c.ckbmtBranchPK.branchId = :branchId";
+	
+	private String SEL_2_1_BRANCH = "SELECT NEW " + BranchDto.class.getName() + ""
+			+ "(c.ckbmtBranchPK.branchId, c.branchName, c.branchCode, c.bankCode, b.bankName) "
+			+ "FROM CbkmtBranch c "
+			+ "LEFT JOIN CbkmtBank b ON c.bankCode = b.cbkmtBankPK.bankCode "
+			+ "WHERE c.ckbmtBranchPK.companyCode = :companyCode AND c.ckbmtBranchPK.branchId IN :branchId";
 
 	private String SEL_2_BANK = "SELECT NEW " + BankDto.class.getName() + "" + "(d.bankName, d.cbkmtBankPK.bankCode)"
 			+ "FROM CbkmtBank d WHERE d.cbkmtBankPK.companyCode = :companyCode AND d.cbkmtBankPK.bankCode = :bankCode";
@@ -72,6 +78,14 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 				.setParameter("fromBranchId", param.getFromBranchId())
 				.setParameter("payBonusAtr", param.getPayBonusAtr()).setParameter("processingNo", param.getProcessNo())
 				.setParameter("processingYm", param.getProcessingYM()).setParameter("payDate", param.getPayDate())
+				.getList();
+	}
+	
+	@Override
+	public List<BranchDto> findAllBranch(String companyCode, List<String> branchIds) {
+		return this.queryProxy().query(SEL_2_1_BRANCH, BranchDto.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("branchId", branchIds)
 				.getList();
 	}
 

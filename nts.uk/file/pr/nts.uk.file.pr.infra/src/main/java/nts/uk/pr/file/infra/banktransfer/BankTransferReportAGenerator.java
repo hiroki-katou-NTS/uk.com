@@ -29,33 +29,64 @@ public class BankTransferReportAGenerator extends AsposeCellsReportGenerator imp
 	protected static final String REPORT_FILE_NAME = "テストQPP014_{0}.pdf";
 
 	@Override
-	public void generator(FileGeneratorContext fileGeneratorContext, BankTransferAReport report) {
+	public void generator(FileGeneratorContext fileGeneratorContext, List<BankTransferARpData> report) {
 		try {
 			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
-			List<BankTransferARpData> rpData = selectDataSource(report);
-
-			if (!addSheet(fileGeneratorContext, reportContext, report)) {
+			
+			Worksheet mainWorkSheet = reportContext.getWorkbook().getWorksheets().get(0);
+			Workbook workbook = new Workbook();
+			workbook.getWorksheets().removeAt(0);
+			WorkbookDesigner designer = new WorkbookDesigner();
+			designer.setWorkbook(workbook);
+			
+			int sheetNumber = 0;
+			for (BankTransferARpData item : report) {
+				workbook = BankTranferReportUtil.addWorksheet(workbook, mainWorkSheet);
+				
+				Worksheet worksheet = workbook.getWorksheets().get(sheetNumber);
+				worksheet.replace("header", String.valueOf("header_" + sheetNumber));
+				worksheet.replace("list", String.valueOf("list_" + sheetNumber));
+				
 				// set datasource
-				reportContext.setDataSource("header", report.getHeader());
-				reportContext.setDataSource("list", rpData);
-		
-				PageSetup pageSetup = reportContext.getWorkbook().getWorksheets().get(0).getPageSetup();
-				pageSetup.setHeader(0, report.getHeader().getCompanyName());
+				designer.setDataSource("header_" + sheetNumber, item.getHeader());
+				designer.setDataSource("list_" + sheetNumber, item.getDataSalaryList());
+				
+				// set color for row
+				BankTranferReportUtil.rowColor(workbook, item.getDataSalaryList().size(), sheetNumber);
+				
+				PageSetup pageSetup = designer.getWorkbook().getWorksheets().get(sheetNumber).getPageSetup();
+				pageSetup.setHeader(0, item.getHeader().getCompanyName());
 				pageSetup.setHeader(2, "&D &T");
 				
 				// process data binginds in template
-				reportContext.getWorkbook().calculateFormula(true);
-				reportContext.getDesigner().process(false);
+//				reportContext.getWorkbook().calculateFormula(true);
+//				reportContext.getDesigner().process(false);
 				
-				// set color for row
-				BankTranferReportUtil.rowColor(reportContext.getWorkbook(), rpData.size(), 0);
+//				// save as PDF file
+//				PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
+//				option.setAllColumnsInOnePagePerSheet(true);
+//	
+//				reportContext.getWorkbook().save(this.createNewFile(fileGeneratorContext, BankTranferReportUtil.getFileName(REPORT_FILE_NAME)), option);
 				
-				// save as PDF file
-				PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
-				option.setAllColumnsInOnePagePerSheet(true);
-	
-				reportContext.getWorkbook().save(this.createNewFile(fileGeneratorContext, BankTranferReportUtil.getFileName(REPORT_FILE_NAME)), option);
+				sheetNumber ++;
 			}
+			
+			// process data binginds in template
+			designer.getWorkbook().calculateFormula(true);
+			designer.process(false);
+			
+			// save as PDF file
+			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
+			option.setAllColumnsInOnePagePerSheet(true);
+			
+			String fileName = BankTranferReportUtil.getFileName(REPORT_FILE_NAME);
+			designer.getWorkbook().save(this.createNewFile(fileGeneratorContext, fileName), option);
+			
+//			List<BankTransferARpData> rpData = selectDataSource(report);
+//
+//			if (!addSheet(fileGeneratorContext, reportContext, report)) {
+//				
+//			}
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
