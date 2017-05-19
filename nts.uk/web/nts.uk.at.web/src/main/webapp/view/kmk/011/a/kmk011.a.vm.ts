@@ -24,10 +24,14 @@ module kmk011.a.viewmodel {
         use: KnockoutObservable<string>;
         notUse: KnockoutObservable<string>;
         enableUse: KnockoutObservable<boolean>;
+        enableSelect: KnockoutObservable<boolean>;
+        enableInput: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.list = ko.observable();
             self.enableUse = ko.observable();
+            self.enableSelect = ko.observable();
+            self.enableInput = ko.observable();
             self.currentCode = ko.observable(1);
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divTimeId', width: 100  },
@@ -83,14 +87,42 @@ module kmk011.a.viewmodel {
                 }
                     }
             });
-            
+            //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged){
                 if(codeChanged==1){
                     self.enableUse(true);
+                    if(self.selectSel()==1){
+                        self.enableSelect(true);
+                    }else{
+                        self.enableSelect(false);
+                    }
+                    if(self.selectInp()==1){
+                        self.enableInput(true);
+                    }else{
+                        self.enableInput(false);
+                    }
                 }else{
                     self.enableUse(false);
+                    self.enableSelect(false);
+                    self.enableInput(false);
                 }
-            })
+            });
+            //subscribe selectSel
+            self.selectSel.subscribe(function(codeChanged){
+                if(codeChanged==1){
+                    self.enableSelect(true);
+                }else{
+                    self.enableSelect(false);
+                }
+            });
+            //subscribe selectInp
+            self.selectInp.subscribe(function(codeChanged){
+                if(codeChanged==1){
+                    self.enableInput(true);
+                }else{
+                    self.enableInput(false);
+                }
+            });
             
         }
         /**

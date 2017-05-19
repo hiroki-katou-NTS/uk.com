@@ -37,6 +37,7 @@ module kmk011.b.viewmodel {
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
                 var t0 = performance.now();
+                self.clearError();
                 self.itemDivReason(self.findItemDivTime(codeChanged));
                 if(self.itemDivReason()===undefined||self.itemDivReason()==null){
                     return;

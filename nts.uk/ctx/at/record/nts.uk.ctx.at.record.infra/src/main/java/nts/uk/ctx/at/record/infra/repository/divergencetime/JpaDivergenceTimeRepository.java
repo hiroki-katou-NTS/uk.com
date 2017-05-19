@@ -103,6 +103,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 												domain.getCompanyId(),
 												domain.getDivTimeId());
 		entity.divTimeName = domain.getDivTimeName().toString();
+		entity.divTimeUseSet = domain.getDivTimeUseSet().value;
 		entity.alarmTime = Integer.valueOf(domain.getAlarmTime().toString());
 		entity.errTime = Integer.valueOf(domain.getErrTime().toString());
 		entity.selectUseSet = Integer.valueOf(domain.getSelectSet().getSelectUseSet().value);
