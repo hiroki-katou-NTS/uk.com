@@ -33,11 +33,11 @@ module nts.uk.ui.jqueryExtentions {
                 if ($(this)[0].files[0]) {
                     return nts.uk.request.uploadFile(formData, option);
                 } else {
-                    dfd.reject({ message: "please select file", messageId: -1 });
+                    dfd.reject({ message: "please select file", messageId: "-1" });
                     return dfd.promise();
                 }
             } else {
-                dfd.reject({ messageId: 0, message: "can not find control" });
+                dfd.reject({ messageId: "0", message: "can not find control" });
             }
             return dfd.promise();
         }
