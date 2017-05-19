@@ -1,7 +1,9 @@
 package nts.uk.shr.infra.file.constraint;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -9,6 +11,8 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.i18n.I18NText;
+import nts.arc.i18n.RawI18NTextParameter;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.constraint.FileConstraintsChecker;
 import nts.arc.layer.infra.file.constraint.FileStereo;
@@ -29,14 +33,16 @@ public class FileConstraintsCheckerImp implements FileConstraintsChecker {
 			FileStereo fileStereo = stereo.get();
 			// check size
 			if (fileInfor.getOriginalSize() > fileStereo.getLimitedSize()) {
-				throw new BusinessException(new RawErrorMessage("file size excesses "));
+				throw new BusinessException(
+						I18NText.main("Msg_70").addRaw(fileStereo.getLimitedSize() / (10e6)).build());
 			}
 			// authorization
 			// TODO:
 			// check extension
 			if (!fileStereo.getSupportedExtension().isEmpty()
 					&& !fileStereo.getSupportedExtension().contains(getFileExtension(fileInfor.getOriginalName()))) {
-				throw new BusinessException(new RawErrorMessage("file extension is not supported"));
+				throw new BusinessException(I18NText.main("Msg_77")
+						.addRaw(fileStereo.getSupportedExtension().stream().collect(Collectors.joining(","))).build());
 			}
 		}
 	}
