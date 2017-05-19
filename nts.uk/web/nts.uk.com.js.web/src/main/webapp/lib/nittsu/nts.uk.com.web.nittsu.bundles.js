@@ -525,6 +525,7 @@ var nts;
                 if (text) {
                     text = formatCompDependParam(text);
                     text = formatParams(text, params);
+                    return text;
                 }
                 return code;
             }
