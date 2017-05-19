@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.schedule.app.command.budget.external;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -26,8 +24,8 @@ public class UpdateExternalBudgetCommandHandler extends CommandHandler<UpdateExt
 		UpdateExternalBudgetCommand command = context.getCommand();
 		// convert to server
 		ExternalBudget exBudget = command.toDomain();
-		Optional<ExternalBudget> optional = this.budgetRepo.find(AppContexts.user().companyId(), command.getExternalBudgetCode());
-		if(!optional.isPresent()){
+		
+		if(!this.budgetRepo.find(AppContexts.user().companyId(), command.getExternalBudgetCode()).isPresent()){
 			throw new BusinessException(new RawErrorMessage("項目が存在しません、削除されしたようです。"));
 		}
 		// update process

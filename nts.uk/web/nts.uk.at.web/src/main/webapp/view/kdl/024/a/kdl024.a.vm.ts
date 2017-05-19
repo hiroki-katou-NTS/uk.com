@@ -1,215 +1,148 @@
 module kdl024.a.viewmodel {
     export class ScreenModel {
         contraint: Array<string>;
-        //Mode
-        isNew: boolean;
-        //List
-        items: KnockoutObservableArray<Item>;
-        currentItem: KnockoutObservable<Item>;
-        currentSource: Array<Item>;
+        // Mode
+        isNew: KnockoutObservable<boolean>;
+        // BudgetList
+        listBudget: KnockoutObservableArray<BudgetItemDto>;
+        selectedBudgetCode: KnockoutObservable<string>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
-        //Switch button
+        // Details Item
+        currentItem: KnockoutObservable<BudgetItem>;
+        // Switch Rouding Rules
         roundingRules: KnockoutObservableArray<any>;
-        //Input Code
-        isEnableInp: KnockoutObservable<boolean>;
-        //Combobox
+        // Combobox Section Type
         itemListCbb: KnockoutObservableArray<ItemModelCbb>;
-        itemNameCbb: KnockoutObservable<string>;
-        currentCodeCbb: KnockoutObservable<number>
-        isEnableCbb: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
-            //Mode
-            self.isNew = false;
-            //Switch button 
-            self.roundingRules = ko.observableArray([
-                { unitId: '0', unitName: nts.uk.resource.getText('KDL024_10') },
-                { unitId: '1', unitName: nts.uk.resource.getText('KDL024_11') }
-            ]);
-            //Input Code
-            self.isEnableInp = ko.observable(false);
-            //Combobox
-            self.itemListCbb = ko.observableArray([
-                new ItemModelCbb('0', nts.uk.resource.getText('Enum_Attribute_Section_Time')),
-                new ItemModelCbb('1', nts.uk.resource.getText('Enum_Attribute_Section_PeopleNum')),
-                new ItemModelCbb('2', nts.uk.resource.getText('Enum_Attribute_Section_Money')),
-                new ItemModelCbb('3', nts.uk.resource.getText('Enum_Attribute_Section_Numeric')),
-                new ItemModelCbb('4', nts.uk.resource.getText('Enum_Attribute_Section_Price'))
-            ]);
-            //Defaut value 
-            self.isEnableCbb = ko.observable(true);
-            //grid list
+            // Mode
+            self.isNew = ko.observable(false);
+            self.isNew.subscribe((newValue) => {
+                self.changeMode(newValue);
+            });
+            // Budget list
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KDL024_5'), key: 'externalBudgetCode', width: 40 },
                 { headerText: nts.uk.resource.getText('KDL024_6'), key: 'externalBudgetName', width: 150 }
             ]);
-            self.items = ko.observableArray([]);
-            self.currentItem = ko.observable(new Item({
-                externalBudgetCode: '',
-                externalBudgetName: '',
-                budgetAtr: 0,
-                unitAtr: 0
-            }))
-            self.currentItem().externalBudgetCode.subscribe(function(codeChanged) {
-                if(self.currentItem().externalBudgetName()===null ||self.currentItem().externalBudgetName()===undefined){
-                    return;
-                }else{
-                   self.isEnableInp(false);
-                }
+            self.listBudget = ko.observableArray([]);
+            self.selectedBudgetCode = ko.observable('');
+            self.selectedBudgetCode.subscribe((newCode) => {
+                self.findBudgetByCode(newCode);
             });
-            self.start();
+            // Details
+            self.currentItem = ko.observable(null)
+            // Switch button 
+            self.roundingRules = ko.observableArray([
+                { unitId: 0, unitName: nts.uk.resource.getText('KDL024_10') },
+                { unitId: 1, unitName: nts.uk.resource.getText('KDL024_11') }
+            ]);
+            // Combobox Section Type
+            self.itemListCbb = ko.observableArray([
+                new ItemModelCbb(0, nts.uk.resource.getText('Enum_Attribute_Section_Time')),
+                new ItemModelCbb(1, nts.uk.resource.getText('Enum_Attribute_Section_PeopleNum')),
+                new ItemModelCbb(2, nts.uk.resource.getText('Enum_Attribute_Section_Money')),
+                new ItemModelCbb(3, nts.uk.resource.getText('Enum_Attribute_Section_Numeric')),
+                new ItemModelCbb(4, nts.uk.resource.getText('Enum_Attribute_Section_Price'))
+            ]);
         }
-        //start
+
+        /** Start page */
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            //get list budget   
-            service.getListExternalBudget().done(function(lstBudget: any) {
-                let _items: Array<TempItem> = [];
+            // Get list budget   
+            service.getListExternalBudget().done(function(lstBudget: IBudgetItem) {
                 if (lstBudget.length > 0) {
-                    self.isNew = false;
-                    for (let i in lstBudget) {
-                        let item = lstBudget[i];
-                        _items.push(new TempItem(item.externalBudgetCode, item.externalBudgetName, item.budgetAtr, item.unitAtr));
-                    }
-                    //Set sourse to list
-                    self.items(_items);
-                    //get all data from database to array
-                    self.currentSource = _items;
-                    //get all data from Server 
-                    self.currentItem().setSource(_items);
-                    //current Code
-                    self.currentItem().externalBudgetCode(lstBudget[0].externalBudgetCode);
-                    //Disable Code Input 
-                    self.isEnableInp(false);
-                } else {
-                    self.isNew = true;
-                    self.currentSource = _items;
-                    self.currentItem().setSource(_items);
-                    self.isEnableInp(true);
-                    $('#inpCode').focus();
-                    dfd.resolve();
+                    self.isNew(false);
+                    self.listBudget(lstBudget);
+                    self.findItemByIndex(0);
                 }
+                else {
+                    self.isNew(true);
+                }
+                dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
             });
             return dfd.promise();
         }
+
         //Register Data
         register() {
             var self = this;
             //Mode INSERT
-            if (self.isNew) {
+            if (self.isNew()) {
                 //Format Code to Formular "000" 
                 let currentCode: string = self.currentItem().externalBudgetCode();
-                self.currentItem().externalBudgetCode(padZero(currentCode));
+                self.currentItem().externalBudgetCode(self.padZero(currentCode));
                 //insert process
                 service.insertExternalBudget(self.currentItem()).done(function() {
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'))；
-                        //restart
-                        self.currentSource.push(new TempItem(
-                            self.currentItem().externalBudgetCode(),
-                            self.currentItem().externalBudgetName(),
-                            self.currentItem().budgetAtr(),
-                            self.currentItem().unitAtr()
-                        ));
-                        //Re sort
-                        self.currentSource.sort(function(a,b){
-                            if(a.externalBudgetCode < b.externalBudgetCode)
-                                return -1;
-                            if(a.externalBudgetCode > b.externalBudgetCode)
-                                return 1;
-                            return 0;   
+                        // Add new item
+                        self.listBudget.push({
+                            externalBudgetCode: self.currentItem().externalBudgetCode(),
+                            externalBudgetName: self.currentItem().externalBudgetName(),
+                            budgetAtr: self.currentItem().budgetAtr(),
+                            unitAtr: self.currentItem().unitAtr()
                         });
-                        //Reset list Source 
-                        self.items([]);
-                        //Re Add list source    
-                        self.items(self.currentSource);
-                        self.isNew = false;
-                        //Disable Input Code
-                        self.isEnableInp(false);
+                        //Re-sort
+                        self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
+                        self.selectedBudgetCode(self.currentItem().externalBudgetCode());
+                        self.isNew(false);
                     }).fail(function(res) {
-                        $('#inpCode').ntsError('set', res.message);
+                        $('#inpCode').ntsError('set',res);
                     });
+            }
             //Mode UPDATE
-            } else {
+            else {
                 service.updateExternalBudget(self.currentItem()).done(function() {
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'))；
                     //update list source
-                    let currentIndex = _.findIndex(self.currentSource,['externalBudgetCode',self.currentItem().externalBudgetCode()]);
-                    if(currentIndex != -1){
-                        self.currentSource[currentIndex].externalBudgetName = self.currentItem().externalBudgetName();
-                        self.currentSource[currentIndex].budgetAtr = self.currentItem().budgetAtr();
-                        self.currentSource[currentIndex].unitAtr = self.currentItem().unitAtr();
+                    let updateItem = _.find(self.listBudget(),['externalBudgetCode',self.selectedBudgetCode()]);
+                    if(updateItem !== undefined){
+                        self.listBudget.remove(updateItem);
+                        updateItem.externalBudgetName = self.currentItem().externalBudgetName();
+                        updateItem.budgetAtr = self.currentItem().budgetAtr();
+                        updateItem.unitAtr = self.currentItem().unitAtr();
+                        self.listBudget.push(updateItem);
                     }
-                    self.items([]);
-                    //Re Add list source    
-                    self.items(self.currentSource);
-                    //Restart screen
-                    //self.start();
+                    self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                     self.start();
                 });
             }
-            //enable button Del 
-            $("#btnDel").prop('disabled', false);
         }
-        //insert new Item 
+        
+        /** Add new Button click */
         addNew() {
             var self = this;
-            //current Code, 何にも、項目選択している。
-            self.currentItem().externalBudgetCode(null);
-            self.currentItem().externalBudgetName(null);    
-            self.currentItem().budgetAtr(0);
-            self.currentItem().unitAtr(0);
-            $("#btnDel").prop('disabled', true);
-            //Enable Code Input
-            self.isEnableInp(true);
-            $('#inpCode').ntsError('clear');
-            $('#inpName').ntsError('clear');
-            $('#inpCode').focus();
-            //Change mode to NEW
-            self.isNew = true;
+            self.isNew(true);
         }
-        //close dialog
+        
+        /** Close dialog */
         close(){
             nts.uk.ui.windows.close();
         }
-        //delete
+        
+        /** Delete selected Item */
         del() {
             var self = this;
             nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function(){
-                //削除後処理                
+                //削除後処理 
                 service.deleteExternalBudget(self.currentItem()).done(function() {
                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'))；
-                    //get index of selected Item
-                    var iIndex = _.findIndex(self.currentSource,['externalBudgetCode',self.currentItem().externalBudgetCode()]);
-                    //get max index of list Items
-                    var maxIndex :number = self.currentSource.length-1; 
-                    //case of : selected item is last item
-                    if(self.currentSource.length == 1 && iIndex == 0){
-                        self.currentSource = [];
-                        self.items([]);
-                        self.addNew();
-                    }else{
-                        if(iIndex == maxIndex){
-                            //get above item and set selected item 
-                            self.currentItem().externalBudgetCode(self.currentSource[maxIndex-1].externalBudgetCode);
-                            //Remove the last Item of currentSource               
-                            self.currentSource.splice(maxIndex,1);
-                        //case of selected item is not last item
-                        //最下行でない項目を削除した場合  
-                        }else{
-                            //get under item and set selected item
-                            self.currentItem().externalBudgetCode(self.currentSource[iIndex+1].externalBudgetCode);
-                            //remove selected item in current source 
-                            self.currentSource.splice(iIndex,1);
-                        }
-                        //Reset list Source 
-                        self.items([]);
-                        self.items(self.currentSource);
+                    var deletedIndex = _.findIndex(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
+                    var deletedItem = _.find(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
+                    self.listBudget.remove(deletedItem);
+                    if(self.listBudget().length === 0) {
+                        self.selectedBudgetCode(null);
+                    }
+                    else {
+                        self.findItemByIndex(_.min([deletedIndex, self.listBudget().length - 1]));
                     }
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -217,65 +150,78 @@ module kdl024.a.viewmodel {
                 });
             }); 
         }
+        
+        /** Change Change Create/Update mode */
+        private changeMode(isNew: boolean): void {
+            var self = this;
+            $('.nts-checkvalue').ntsError('clear');
+            if (isNew === true) {
+                //current Code, 何にも、項目選択している。
+                self.selectedBudgetCode(null);
+                //Enable Code Input
+                $('#inpCode').focus();
+            }
+            else {
+                
+            }
+        }
+        
+        /** Find selected item by code */
+        private findBudgetByCode(externalBudgetCode: string): void {
+            var self = this;
+            var currentItem = _.find(self.listBudget(), function(item) { return item.externalBudgetCode == externalBudgetCode; });
+            if (currentItem !== undefined) {
+                self.isNew(false);
+                self.currentItem(new BudgetItem(currentItem.externalBudgetCode, currentItem.externalBudgetName, currentItem.budgetAtr, currentItem.unitAtr));
+            }
+            else {
+                self.isNew(true);
+                self.currentItem(new BudgetItem("", "", 0, 0));
+            }
+        }
+        
+        /** Select item by index */
+        private findItemByIndex(index: number): void {
+            var self = this;
+            var currentItem = _.nth(self.listBudget(), index);
+            if (currentItem !== undefined)
+                self.selectedBudgetCode(currentItem.externalBudgetCode);
+            else
+                self.selectedBudgetCode(null);
+        }
+        
+        /** Add zero number for Code */
+        private padZero(code:string){
+            let format :string ="000";
+            let length : number = code.length;
+            return format.substr(0,3-length) + code;
+        }
+        
     }
     
-    interface IItem {
+    interface BudgetItemDto {
         externalBudgetCode: string;
         externalBudgetName: string;
         budgetAtr: number;
         unitAtr: number;
-    }
-    class TempItem {
-        externalBudgetCode: string;
-        externalBudgetName: string;
-        budgetAtr: number;
-        unitAtr: number;
-        constructor(externalBudgetCode: string, externalBudgetName: string, budgetAtr: number, unitAtr: number) {
-            var self = this;
-            self.externalBudgetCode = externalBudgetCode;
-            self.externalBudgetName = externalBudgetName;
-            self.budgetAtr = budgetAtr;
-            self.unitAtr = unitAtr;
-        }
     }
 
-    //item LIST Budget
-    class Item {
+    /** Budget Observable Class */
+    class BudgetItem {
         externalBudgetCode: KnockoutObservable<string>;
         externalBudgetName: KnockoutObservable<string>;
         budgetAtr: KnockoutObservable<number>;
         unitAtr: KnockoutObservable<number>;
-        listSource: Array<any>;
-        constructor(p: IItem) {
+        constructor(externalBudgetCode: string, externalBudgetName: string, budgetAtr: number, unitAtr: number) {
             var self = this;
-            self.externalBudgetCode = ko.observable(p.externalBudgetCode);
-            self.externalBudgetName = ko.observable(p.externalBudgetName);
-            self.budgetAtr = ko.observable(p.budgetAtr);
-            self.unitAtr = ko.observable(p.unitAtr);
-
-            self.externalBudgetCode.subscribe(function(newValue) {
-                var current = _.find(self.listSource, function(item) { return item.externalBudgetCode == newValue; });
-                if (current) {
-                    self.externalBudgetCode(current.externalBudgetCode);
-                    self.externalBudgetName(current.externalBudgetName);
-                    self.unitAtr(current.unitAtr);
-                    self.budgetAtr(current.budgetAtr.toString());
-                }
-            });
-            
-        }
-        setSource(list: Array<any>) {
-            var self = this;
-            self.listSource = list || [];
+            self.externalBudgetCode = ko.observable(externalBudgetCode);
+            self.externalBudgetName = ko.observable(externalBudgetName);
+            self.budgetAtr = ko.observable(budgetAtr);
+            self.unitAtr = ko.observable(unitAtr);
         }
     }
-    //Format Zero "000"
-    function padZero(code:string){
-        let format :string ="000";
-        let length : number = code.length;
-        return format.substr(0,3-length) + code;
-    }
-    //item Combo Box
+    
+    /**item Combo Box */
     class ItemModelCbb {
         codeCbb: string;
         nameCbb: string;
