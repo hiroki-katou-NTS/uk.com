@@ -38,6 +38,7 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 			+ " ON pb.pid = d.qstdtPaymentDetailPK.personId"
 			+ " INNER JOIN PcpmtPersonCom pc ON pc.pcpmtPersonComPK.pid = d.qstdtPaymentDetailPK.personId AND pc.pcpmtPersonComPK.ccd = d.qstdtPaymentDetailPK.companyCode"
 			+ " INNER JOIN  CmnmtDep dep ON dep.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd AND  h.standardDate > dep.startDate AND  h.standardDate < dep.endDate "
+			+ " AND dep.cmnmtDepPK.departmentCode = h.departmentCode "
 			+ " WHERE c.paycompFormDetailPK.formCode = :formCode AND  h.qstdtPaymentHeaderPK.personId IN :personId"
 			+ " AND h.qstdtPaymentHeaderPK.payBonusAtr = 0" + " AND h.qstdtPaymentHeaderPK.processingYM =:processingYM"
 			+ " AND   c.paycompFormDetailPK.companyCode =:companyCode ORDER BY dep.cmnmtDepPK.departmentCode";
@@ -55,6 +56,7 @@ public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 			+ " ON pb.pid = d.qstdtPaymentDetailPK.personId"
 			+ " INNER JOIN PcpmtPersonCom pc ON pc.pcpmtPersonComPK.pid = d.qstdtPaymentDetailPK.personId AND pc.pcpmtPersonComPK.ccd = d.qstdtPaymentDetailPK.companyCode"
 			+ " INNER JOIN  CmnmtDep dep ON dep.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd AND  h.standardDate > dep.startDate AND  h.standardDate < dep.endDate"
+			+ " AND dep.cmnmtDepPK.departmentCode = h.departmentCode "
 			+ " WHERE c.paycompFormDetailPK.formCode = :formCode AND  h.qstdtPaymentHeaderPK.personId IN :personId"
 			+ " AND h.qstdtPaymentHeaderPK.payBonusAtr = 0" + " AND h.qstdtPaymentHeaderPK.processingYM =:processingYM"
 			+ " AND c.paycompFormDetailPK.companyCode =:companyCode "
