@@ -36,6 +36,9 @@ public class PaymentReportDto {
 	/** The remark. */
 	private String remark;
 	
+	/** The japanese year month. */
+	private String japaneseYearMonth;
+	
 	/** The menu. */
 	private String menu;
 	
