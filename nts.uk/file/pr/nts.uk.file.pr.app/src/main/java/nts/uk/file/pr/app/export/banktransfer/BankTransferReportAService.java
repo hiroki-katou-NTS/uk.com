@@ -65,7 +65,17 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 			
 			// header
 			BranchDto branch = branchMap.get(fromBranchId);
-			String title = MessageFormat.format("{0} - {1} {2} {3}　】", branch.getBankCode(), branch.getBranchCode(), branch.getBankName(), branch.getBranchName());
+			// set name kana
+			String bankName = branch.getBankName();
+			String branchName = branch.getBranchName();
+			if (query.getSelectedId_J_SEL_001() == 1) {
+				if (query.getOuputName() != null && query.getOuputName().intValue() == 1) {
+					bankName = branch.getBankNameKana();
+					branchName = branch.getBranchNameKana();
+				}
+			}
+			
+			String title = MessageFormat.format("{0} - {1} {2} {3}　】", branch.getBankCode(), branch.getBranchCode(), bankName, branch.getBranchName(), branchName);
 			BankTransferARpHeader header = getHeader(query, companyCode, title);
 			rpBankData.setHeader(header);
 			
@@ -105,14 +115,24 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 				if (query.getCurrentCode_J_SEL_004() == 0) {
 					// to-do
 				}
+				
+				bankName = bankDto.get().getBankName();
+				branchName = branchDto.get().getBranchName();
+				if (query.getSelectedId_J_SEL_001() == 1) {
+					if (query.getOuputName() != null && query.getOuputName().intValue() == 1) {
+						bankName = bankDto.get().getBankNameKana();
+						branchName = branchDto.get().getBranchNameKana();
+					}
+				}
+				
 				// A_DBD_002
 				rpData.setBankCode(bankDto.get().getBankCode());
 				// A_DBD_003
-				rpData.setBankName(bankDto.get().getBankName());
+				rpData.setBankName(bankName);
 				// A_DBD_004
 				rpData.setBranchCode(branchDto.get().getBranchCode());
 				// A_DBD_005
-				rpData.setBranchName(branchDto.get().getBranchName());
+				rpData.setBranchName(branchName);
 
 				// A_DBD_006
 				if (bankTrans.getToAccountAtr() == 0) {
