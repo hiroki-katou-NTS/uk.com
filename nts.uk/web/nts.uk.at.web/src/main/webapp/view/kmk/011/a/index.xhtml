@@ -133,7 +133,7 @@
 									enable: enableUse }">
 								</div>
 								<!-- A3_14: Open Dialog Divergence Reason -->
-								<button  tabindex="9" id="inpDialog" style = "margin-left: 30px;" data-bind="click: openBDialog, enable: enableUse">#{i18n.getText('KMK011_15')}</button>
+								<button  tabindex="9" id="inpDialog" style = "margin-left: 30px;" data-bind="click: openBDialog, enable: enableSelect">#{i18n.getText('KMK011_15')}</button>
 							</td>					
 						</tr>
 						<tr>
@@ -142,7 +142,7 @@
 								<!-- A3_15: Check error(select) -->
 								<div tabindex="10" style="margin-bottom: 10px" data-bind="ntsCheckBox:{
 									checked: checkErrSelect,
-									 enable: enableUse,
+									 enable: enableSelect,
 									  text: '#{i18n.getText('KMK011_16')}'}">
 								 </div>
 							</td>
@@ -169,7 +169,7 @@
 								<!-- A3_18: Check err (input) -->
 								<div tabindex="12" data-bind="ntsCheckBox:{
 									checked: checkErrInput,
-									 enable: enableUse,
+									 enable: enableInput,
 									  text: '#{i18n.getText('KMK011_18')}'}">
 								 </div>
 							</td>
