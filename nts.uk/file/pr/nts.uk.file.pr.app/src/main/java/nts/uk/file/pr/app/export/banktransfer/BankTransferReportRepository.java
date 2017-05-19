@@ -37,6 +37,14 @@ public interface BankTransferReportRepository {
 	 * @return branchDto
 	 */
 	Optional<BranchDto> findAllBranch(String companyCode, String branchId);
+	
+	/**
+	 * Get list branch
+	 * @param companyCode
+	 * @param branchIds
+	 * @return
+	 */
+	List<BranchDto> findAllBranch(String companyCode, List<String> branchIds);
 
 	/**
 	 * 
