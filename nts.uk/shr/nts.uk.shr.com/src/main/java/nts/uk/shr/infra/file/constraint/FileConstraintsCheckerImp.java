@@ -2,6 +2,7 @@ package nts.uk.shr.infra.file.constraint;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -29,14 +30,15 @@ public class FileConstraintsCheckerImp implements FileConstraintsChecker {
 			FileStereo fileStereo = stereo.get();
 			// check size
 			if (fileInfor.getOriginalSize() > fileStereo.getLimitedSize()) {
-				throw new BusinessException(new RawErrorMessage("file size excesses "));
+				throw new BusinessException("Msg_70", (fileStereo.getLimitedSize() / 1024) + "");
 			}
 			// authorization
 			// TODO:
 			// check extension
 			if (!fileStereo.getSupportedExtension().isEmpty()
 					&& !fileStereo.getSupportedExtension().contains(getFileExtension(fileInfor.getOriginalName()))) {
-				throw new BusinessException(new RawErrorMessage("file extension is not supported"));
+				throw new BusinessException("Msg_77",
+						fileStereo.getSupportedExtension().stream().collect(Collectors.joining(",")));
 			}
 		}
 	}
