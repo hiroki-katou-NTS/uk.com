@@ -521,7 +521,8 @@ var nts;
         var resource;
         (function (resource) {
             function getText(code) {
-                return names[code];
+                var text = names[code];
+                return text ? text : code;
             }
             resource.getText = getText;
             function getMessage(messageId) {
@@ -530,6 +531,9 @@ var nts;
                     params[_i - 1] = arguments[_i];
                 }
                 var message = messages[messageId];
+                if (message == undefined) {
+                    return messageId;
+                }
                 message = formatParams(message, params);
                 message = formatCompDependParam(message);
                 return message;
