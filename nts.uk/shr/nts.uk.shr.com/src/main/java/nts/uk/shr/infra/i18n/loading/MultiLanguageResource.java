@@ -54,14 +54,14 @@ public class MultiLanguageResource implements IInternationalization {
 
 	private void loadSystemResource() {
 		codeNameResource = systemResourceBundle.getResource(currentLanguage.getSessionLocale(), ResourceType.CODE_NAME);
-		if (codeNameResource == null||codeNameResource.isEmpty()) {
+		if (codeNameResource == null || codeNameResource.isEmpty()) {
 			codeNameResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.CODE_NAME);
 		}
 
 		Map<String, Map<String, String>> tempMessageResource = systemResourceBundle
 				.getResource(currentLanguage.getSessionLocale(), ResourceType.MESSAGE);
-		if (tempMessageResource == null||tempMessageResource.isEmpty()) {
+		if (tempMessageResource == null || tempMessageResource.isEmpty()) {
 			tempMessageResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.MESSAGE);
 		}
@@ -91,7 +91,9 @@ public class MultiLanguageResource implements IInternationalization {
 
 		Map<String, String> allSystemCodeName = groupResource(codeNameResource);
 		text = allSystemCodeName.get(id);
-
+		if (text != null) {
+			text = replaceCompanyDenpendItem(text);
+		}
 		return text == null ? Optional.empty() : Optional.of(text);
 	}
 
@@ -184,12 +186,13 @@ public class MultiLanguageResource implements IInternationalization {
 
 		Map<ResourceType, Map<String, String>> result = new HashMap<>();
 		result.put(ResourceType.MESSAGE, getAllMessage());
-		//result.put(ResourceType.CODE_NAME, getCodeNameResourceOfProgram(programId));
-		//TODO: temporaty fix for test, get all of company
+		// result.put(ResourceType.CODE_NAME,
+		// getCodeNameResourceOfProgram(programId));
+		// TODO: temporaty fix for test, get all of company
 		Map<String, String> fixedForTest = new HashMap<>();
-		codeNameResource.entrySet().stream().map(x->x.getValue()).forEach(x->fixedForTest.putAll(x));
-		result.put(ResourceType.CODE_NAME,fixedForTest);
-		
+		codeNameResource.entrySet().stream().map(x -> x.getValue()).forEach(x -> fixedForTest.putAll(x));
+		result.put(ResourceType.CODE_NAME, fixedForTest);
+
 		return result;
 	}
 

@@ -1,39 +1,28 @@
 package nts.uk.ctx.sys.portal.app.command.flowmenu;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
-import nts.uk.ctx.sys.portal.dom.toppagepart.service.TopPagePartService;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.sys.portal.dom.flowmenu.service.FlowMenuService;
 
-
-@Stateless
-@Transactional
 /**
  * @author hieult
  */
+@Stateless
+@Transactional
 public class CreateFlowMenuCommandHandler extends CommandHandler<CreateFlowMenuCommand> {
 	
 	@Inject
-	public FlowMenuRepository flowMenuRepository;
-
-	@Inject
-	public TopPagePartService service;
+	private FlowMenuService flowMenuService;
+	
 	@Override
 	protected void handle(CommandHandlerContext<CreateFlowMenuCommand> context) {
 		String topPagePartId = IdentifierUtil.randomUniqueId();
-		String companyId = AppContexts.user().companyId();
-		String flowMenuCD = context.getCommand().getTopPageCode();
-		//check code
-		if(service.isExist(companyId, flowMenuCD, 2)){
-			throw new BusinessException("Msg_3");
-		}
+		CreateFlowMenuCommand command = context.getCommand();
 		
-		flowMenuRepository.add(context.getCommand().toDomain(topPagePartId));
+		flowMenuService.createFlowMenu(command.toDomain(topPagePartId));
 	}	
 }
