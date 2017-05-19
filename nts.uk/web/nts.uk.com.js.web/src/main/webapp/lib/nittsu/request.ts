@@ -189,13 +189,19 @@ module nts.uk.request {
                 if (option.onSuccess) {
                     option.onSuccess();
                 }
-                dfd.resolve(data);
+                
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 if (option.onFail) {
                     option.onFail();
                 }
-                dfd.reject(errorThrown);
+               
+            }
+        }).done(function(res) {
+            if (res !== undefined && res.businessException) {
+                dfd.reject(res);
+            } else {
+                dfd.resolve(res);
             }
         });
         return dfd.promise();
