@@ -9,7 +9,7 @@ __viewContext.ready(function () {
             self.value = ko.observable("123");
             // TextEditor
             self.texteditor = {
-                value: ko.observable(''),
+                value: ko.observable('2222'),
                 constraint: 'WLAggregateItemCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",

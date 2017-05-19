@@ -29,22 +29,22 @@ __viewContext.ready(function() {
         controls: [
             {
                 controlName: "テキストボックス", properties: [
-                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#text-1" },
-                    { propertyName: "項目名", link: "link" },
-                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#text-1" },
-                    { propertyName: "カンマ編集", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#currency-1" },
-                    { propertyName: "単位", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#currency-1" },
+                    { propertyName: "PrimitiveValue", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#primitivevalue" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
+                    { propertyName: "透かし文字", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#placeholder" },
+                    { propertyName: "カンマ編集", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#commachar" },
+                    { propertyName: "単位", link: "/nts.uk.com.web/view/sample/editor/number-editor.xhtml#unit" },
                     { propertyName: "Enterマーク", link: "link" },
-                    { propertyName: "精度", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#yyyymm" },
+                    { propertyName: "精度", link: "/nts.uk.com.web/view/sample/editor/time-editor.xhtml#inputpattern" },
                     { propertyName: "曜日表示", link: "/nts.uk.com.web/view/sample/datepicker/datepicker.xhtml#dayofweek" },
                     { propertyName: "日付送り", link: "link" }
                 ]
             },
             {
                 controlName: "期間入力フォーム", properties: [
-                    { propertyName: "精度", link: "link" },
-                    { propertyName: "項目名", link: "link" },
-                    { propertyName: "最長期間", link: "link" },
+                    { propertyName: "精度", link: "/nts.uk.com.web/view/sample/datepicker/datepicker.xhtml#dayofweek" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#itemname" },
+                    { propertyName: "最長期間", link: "/nts.uk.com.web/view/sample/datepicker/datepicker.xhtml#maxdate" },
                     { propertyName: "期間送り", link: "link" }
                 ]
             },
@@ -76,48 +76,48 @@ __viewContext.ready(function() {
             },
             {
                 controlName: "グリッドリスト", properties: [
-                    { propertyName: "選択モード", link: "http://localhost:8080/nts.uk.com.web/view/sample/gridlist/gridlist.xhtml" },
-                    { propertyName: "項目名", link: "http://localhost:8080/nts.uk.com.web/view/sample/gridlist/gridlist.xhtml" },
-                    { propertyName: "ソート", link: "link" },
-                    { propertyName: "任意列ソート", link: "link" },
-                    { propertyName: "列幅可変", link: "http://localhost:8080/nts.uk.com.web/view/sample/gridlist/gridlist.xhtml" },
-                    { propertyName: "ページング", link: "http://localhost:8080/nts.uk.com.web/view/sample/gridlist/gridlist.xhtml" },
+                    { propertyName: "選択モード", link: "/nts.uk.com.web/view/sample/gridlist/gridlist.xhtml#single-list_container" },
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/gridlist/gridlist.xhtml#single-list_container" },
+                    { propertyName: "ソート", link: "/nts.uk.com.web/view/sample/gridlist/gridlist.xhtml#single-list_container" },
+                    { propertyName: "任意列ソート", link: "/nts.uk.com.web/view/sample/gridlist/gridlist.xhtml#single-list_container" },
+                    { propertyName: "列幅可変", link: "link" },
+                    { propertyName: "ページング", link: "link" },
                 ]
             },
             {
                 controlName: "シンプルリスト", properties: [
-                    { propertyName: "選択モード", link: "/nts.uk.com.web/view/sample/listbox/listbox.xhtml" },
+                    { propertyName: "選択モード", link: "/nts.uk.com.web/view/sample/listbox/listbox.xhtml#list-box" },
                     { propertyName: "項目名", link: "link" },
                     { propertyName: "ソート", link: "link" }
                 ]
             },
             {
                 controlName: "ツリーリスト", properties: [
-                    { propertyName: "選択モード", link: "/nts.uk.com.web/view/sample/treegrid/treegrid.xhtml" },
+                    { propertyName: "選択モード", link: "/nts.uk.com.web/view/sample/treegrid/treegrid.xhtml#treegrid2_container" },
                     { propertyName: "項目名", link: "link" },
                     { propertyName: "ソート", link: "link" }
                 ]
             },
             {
                 controlName: "親子リスト", properties: [
-                    { propertyName: "選択モード", link: "link" },
+                    { propertyName: "選択モード", link: "/nts.uk.com.web/view/sample/treegrid/treegrid.xhtml#treegrid2_container" },
                     { propertyName: "項目名", link: "link" }
                 ]
             },
             {
                 controlName: "親子リスト親ノード", properties: [
-                    { propertyName: "ソート", link: "link" }
+                    { propertyName: "ソート", link: "/nts.uk.com.web/view/sample/treegrid/treegrid.xhtml#treegrid2_container" }
                 ]
             },
             {
                 controlName: "親子リスト子ノード", properties: [
-                    { propertyName: "ソート", link: "link" },
+                    { propertyName: "ソート", link: "/nts.uk.com.web/view/sample/treegrid/treegrid.xhtml#treegrid2_container" },
                     { propertyName: "選択可能", link: "link" }
                 ]
             },
             {
                 controlName: "リスト列項目", properties: [
-                    { propertyName: "Enum", link: "link" }
+                    { propertyName: "Enum", link: "/nts.uk.com.web/view/sample/listbox/listbox.xhtml#list-box" }
                 ]
             },
             {
@@ -127,51 +127,51 @@ __viewContext.ready(function() {
             },
             {
                 controlName: "ラジオボタングループ", properties: [
-                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/radioboxgroup/radioboxgroup.xhtml" },
-                    { propertyName: "Enum", link: "link" }
+                    { propertyName: "項目名", link: "link" },
+                    { propertyName: "Enum", link: "/nts.uk.com.web/view/sample/radioboxgroup/radioboxgroup.xhtml#first-list" }
                 ]
             },
             {
                 controlName: "ラジオボタン", properties: [
-                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/radiobox/radiobox.xhtml" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/radiobox/radiobox.xhtml#radio-box" }
                 ]
             },
             {
                 controlName: "チェックボックス", properties: [
-                    { propertyName: "テキスト", link: "http://localhost:8080/nts.uk.com.web/view/sample/checkbox/checkbox.xhtml" },
-                    { propertyName: "スタイル", link: "link" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/checkbox/checkbox.xhtml#checkbox" },
+                    { propertyName: "スタイル", link: "/nts.uk.com.web/view/sample/checkbox/checkbox.xhtml#checkbox" }
                 ]
             },
             {
                 controlName: "スイッチボタングループ", properties: [
-                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/switch/switch.xhtml" },
+                    { propertyName: "項目名", link: "link" },
                     { propertyName: "Enum", link: "link" }
                 ]
             },
             {
                 controlName: "スイッチボタン", properties: [
-                    { propertyName: "テキスト", link: "link" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/switch/switch.xhtml#switch-button" }
                 ]
             },
             {
                 controlName: "スワップリスト", properties: [
-                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/swaplist/swaplist.xhtml" }
+                    { propertyName: "項目名", link: "/nts.uk.com.web/view/sample/swaplist/swaplist.xhtml#swap-list_container" }
                 ]
             },
             {
                 controlName: "ボタン", properties: [
-                    { propertyName: "テキスト", link: "link" },
-                    { propertyName: "色", link: "link" },
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/commoncss/button.xhtml" },
+                    { propertyName: "色", link: "/nts.uk.com.web/view/sample/commoncss/button.xhtml" },
                     { propertyName: "サイズ", link: "/nts.uk.com.web/view/sample/commoncss/button.xhtml" },
-                    { propertyName: "アイコン", link: "link" },
-                    { propertyName: "キャレット", link: "link" }
+                    { propertyName: "アイコン", link: "/nts.uk.com.web/view/sample/commoncss/button.xhtml" },
+                    { propertyName: "キャレット", link: "/nts.uk.com.web/view/sample/commoncss/caret.xhtml" }
                 ]
             },
             {
                 controlName: "ファンクションボタン", properties: [
-                    { propertyName: "テキスト", link: "link" },
-                    { propertyName: "色", link: "link" },
-                    { propertyName: "アイコン", link: "link" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/commoncss/button.xhtml" },
+                    { propertyName: "色", link: "/nts.uk.com.web/view/sample/commoncss/button.xhtml" },
+                    { propertyName: "アイコン", link: "/nts.uk.com.web/view/sample/commoncss/button.xhtml" }
                 ]
             },
             {
@@ -182,40 +182,40 @@ __viewContext.ready(function() {
             },
             {
                 controlName: "タブグループ", properties: [
-                    { propertyName: "配置方向", link: "link" }
+                    { propertyName: "配置方向", link: "/nts.uk.com.web/view/sample/tabpanel/tabpanel.xhtml#tab-panel#tab-panel2" }
                 ]
             },
             {
                 controlName: "タブ", properties: [
-                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/tabpanel/tabpanel.xhtml" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/tabpanel/tabpanel.xhtml#tab-panel" }
                 ]
             },
             {
                 controlName: "サイドバー", properties: [
-                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/sidebar/sidebar.xhtml" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/sidebar/sidebar-sub.xhtml#sidebar-area" }
                 ]
             },
             {
                 controlName: "サイドバーリンクラベル", properties: [
-                    { propertyName: "テキスト", link: "link" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/sidebar/sidebar-sub.xhtml#sidebar-area" }
                 ]
             },
             {
                 controlName: "リンクラベル", properties: [
                     { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/linkbutton/linkbutton.xhtml" },
-                    { propertyName: "スタイル", link: "link" }
+                    { propertyName: "スタイル", link: "/nts.uk.com.web/view/sample/linkbutton/linkbutton.xhtml" }
                 ]
             },
             {
                 controlName: "アコーディオン", properties: [
                     { propertyName: "ヘッダテキスト", link: "/nts.uk.com.web/view/sample/commoncss/accordion.xhtml" },
-                    { propertyName: "スタイル", link: "link" }
+                    { propertyName: "スタイル", link: "/nts.uk.com.web/view/sample/commoncss/accordion.xhtml" }
                 ]
             },
             {
                 controlName: "はてなアイコン", properties: [
-                    { propertyName: "画像ファイル", link: "link" },
-                    { propertyName: "スタイル", link: "link" }
+                    { propertyName: "画像ファイル", link: "/nts.uk.com.web/view/sample/helpbutton/help-button.xhtml" },
+                    { propertyName: "スタイル", link: "/nts.uk.com.web/view/sample/helpbutton/help-button.xhtml" }
                 ]
             },
             {
@@ -226,23 +226,23 @@ __viewContext.ready(function() {
             },
             {
                 controlName: "ウィザード", properties: [
-                    { propertyName: "-", link: "/nts.uk.com.web/view/sample/wizard/wizard.xhtml" }
+                    { propertyName: "-", link: "/nts.uk.com.web/view/sample/wizard/wizard.xhtml#wizard" }
                 ]
             },
             {
                 controlName: "ウィザードタイトル", properties: [
-                    { propertyName: "アイコン", link: "link" },
-                    { propertyName: "テキスト", link: "link" }
+                    { propertyName: "アイコン", link: "/nts.uk.com.web/view/sample/wizard/wizard.xhtml#wizard" },
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/wizard/wizard.xhtml#wizard" }
                 ]
             },
             {
                 controlName: "ウィザードステップ", properties: [
-                    { propertyName: "テキスト", link: "link" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/wizard/wizard.xhtml#wizard" }
                 ]
             },
             {
                 controlName: "ウィザード終端", properties: [
-                    { propertyName: "テキスト", link: "link" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/wizard/wizard.xhtml#wizard" }
                 ]
             },
             {
@@ -252,32 +252,32 @@ __viewContext.ready(function() {
             },
             {
                 controlName: "警告ラベル", properties: [
-                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/label/form-label.xhtml" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/commoncss/label.xhtml#warning-label" }
                 ]
             },
             {
                 controlName: "フォームラベル", properties: [
                     { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/label/form-label.xhtml" },
-                    { propertyName: "ラインの色", link: "link" },
-                    { propertyName: "スタイル", link: "link" },
+                    { propertyName: "ラインの色", link: "/nts.uk.com.web/view/sample/label/form-label.xhtml" },
+                    { propertyName: "スタイル", link: "/nts.uk.com.web/view/sample/label/form-label.xhtml" },
                     { propertyName: "制約表示", link: "link" }
                 ]
             },
             {
                 controlName: "グリッドヘッダラベル", properties: [
-                    { propertyName: "テキスト", link: "link" },
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/gridlist/gridlist.xhtml#single-list_headers_v" },
                     { propertyName: "制約表示", link: "link" }
                 ]
             },
             {
                 controlName: "表示専用テキストボックス", properties: [
-                    { propertyName: "-", link: "link" }
+                    { propertyName: "-", link: "/nts.uk.com.web/view/sample/editor/text-editor.xhtml#read-only-textbox" }
                 ]
             },
             {
                 controlName: "ガイドメッセージ", properties: [
-                    { propertyName: "テキスト", link: "link" },
-                    { propertyName: "対象項目", link: "link" }
+                    { propertyName: "テキスト", link: "/nts.uk.com.web/view/sample/userguide/user-guide.xhtml" },
+                    { propertyName: "対象項目", link: "/nts.uk.com.web/view/sample/userguide/user-guide.xhtml" }
                 ]
             },
             {
@@ -303,7 +303,7 @@ __viewContext.ready(function() {
             },
             {
                 controlName: "ポップアップパネル", properties: [
-                    { propertyName: "-", link: "link" }
+                    { propertyName: "-", link: "/nts.uk.com.web/view/sample/popup/popup.xhtml" }
                 ]
             },
             {
@@ -313,14 +313,14 @@ __viewContext.ready(function() {
             },
             {
                 controlName: "ファンクションパネル", properties: [
-                    { propertyName: "ボタンテキスト", link: "link" }
+                    { propertyName: "ボタンテキスト", link: "/nts.uk.com.web/view/sample/functionpanel/index.xhtml" }
                 ]
             },
             {
                 controlName: "リスト検索フォーム", properties: [
-                    { propertyName: "対象リスト", link: "link" },
-                    { propertyName: "対象列", link: "link" },
-                    { propertyName: "検索モード", link: "link" }
+                    { propertyName: "対象リスト", link: "/nts.uk.com.web/view/sample/searchbox/searchbox.xhtml" },
+                    { propertyName: "対象列", link: "/nts.uk.com.web/view/sample/searchbox/searchbox.xhtml" },
+                    { propertyName: "検索モード", link: "/nts.uk.com.web/view/sample/searchbox/searchbox.xhtml" }
                 ]
             },
         ]
