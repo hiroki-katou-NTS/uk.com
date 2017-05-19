@@ -40,16 +40,18 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 			+ "AND b.qbkdtBankTransferPK.payDate = :payDate ";
 
 	private String SEL_2_BRANCH = "SELECT NEW " + BranchDto.class.getName() + ""
-			+ "(c.branchName, c.branchCode, c.bankCode)"
-			+ "FROM CbkmtBranch c WHERE c.ckbmtBranchPK.companyCode = :companyCode AND c.ckbmtBranchPK.branchId = :branchId";
+			+ "(c.ckbmtBranchPK.branchId, c.branchName, c.branchKnName, c.branchCode, c.bankCode, b.bankName, b.bankKnName) "
+			+ "FROM CbkmtBranch c "
+			+ "LEFT JOIN CbkmtBank b ON c.bankCode = b.cbkmtBankPK.bankCode "
+			+ "WHERE c.ckbmtBranchPK.companyCode = :companyCode AND c.ckbmtBranchPK.branchId = :branchId";
 	
 	private String SEL_2_1_BRANCH = "SELECT NEW " + BranchDto.class.getName() + ""
-			+ "(c.ckbmtBranchPK.branchId, c.branchName, c.branchCode, c.bankCode, b.bankName) "
+			+ "(c.ckbmtBranchPK.branchId, c.branchName, c.branchKnName, c.branchCode, c.bankCode, b.bankName, b.bankKnName) "
 			+ "FROM CbkmtBranch c "
 			+ "LEFT JOIN CbkmtBank b ON c.bankCode = b.cbkmtBankPK.bankCode "
 			+ "WHERE c.ckbmtBranchPK.companyCode = :companyCode AND c.ckbmtBranchPK.branchId IN :branchId";
 
-	private String SEL_2_BANK = "SELECT NEW " + BankDto.class.getName() + "" + "(d.bankName, d.cbkmtBankPK.bankCode)"
+	private String SEL_2_BANK = "SELECT NEW " + BankDto.class.getName() + "" + "(d.bankName, d.cbkmtBankPK.bankCode, d.bankKnName)"
 			+ "FROM CbkmtBank d WHERE d.cbkmtBankPK.companyCode = :companyCode AND d.cbkmtBankPK.bankCode = :bankCode";
 
 	private String SEL_CALLED = "SELECT e.person FROM CmnmtCalled e WHERE e.ccd = :companyCode";
