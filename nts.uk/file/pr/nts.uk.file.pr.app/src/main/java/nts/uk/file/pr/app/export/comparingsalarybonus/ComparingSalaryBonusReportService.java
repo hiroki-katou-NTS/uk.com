@@ -65,10 +65,6 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 		if (comparingQuery.getMonth1() == comparingQuery.getMonth2()) {
 			throw new BusinessException(new RawErrorMessage("設定が正しくありません。"));
 		}
-		// error 07
-		if (comparingQuery.getEmployeeCodeList().isEmpty()) {
-			throw new BusinessException(new RawErrorMessage("雇員リストのが選択されていません。"));
-		}
 		if (comparingQuery.getFormCode().isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("設定が正しくありません。"));
 		}
@@ -209,7 +205,7 @@ public class ComparingSalaryBonusReportService extends ExportService<ComparingSa
 			lstDivionsTotal.add(divionsTotal);
 
 			DataRowComparingSalaryBonusDto totalA = new DataRowComparingSalaryBonusDto();
-			totalA.setItemName("部門階層累計");
+			totalA.setItemName(c.getDepname() + " 部門階層累計");
 			if (c.getTotalMonth1() >= 0) {
 				totalA.setMonth1(c.getTotalMonth1().toString());
 			} else {
