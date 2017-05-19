@@ -31,11 +31,11 @@ module kdl024.a.viewmodel {
             self.isEnableInp = ko.observable(false);
             //Combobox
             self.itemListCbb = ko.observableArray([
-                new ItemModelCbb('0', nts.uk.resource.getText('Enum_Attribute_Time')),
-                new ItemModelCbb('1', nts.uk.resource.getText('Enum_Attribute_PeopleNum')),
-                new ItemModelCbb('2', nts.uk.resource.getText('Enum_Attribute_Money')),
-                new ItemModelCbb('3', nts.uk.resource.getText('Enum_Attribute_Numeric')),
-                new ItemModelCbb('4', nts.uk.resource.getText('Enum_Attribute_Price'))
+                new ItemModelCbb('0', nts.uk.resource.getText('Enum_Attribute_Section_Time')),
+                new ItemModelCbb('1', nts.uk.resource.getText('Enum_Attribute_Section_PeopleNum')),
+                new ItemModelCbb('2', nts.uk.resource.getText('Enum_Attribute_Section_Money')),
+                new ItemModelCbb('3', nts.uk.resource.getText('Enum_Attribute_Section_Numeric')),
+                new ItemModelCbb('4', nts.uk.resource.getText('Enum_Attribute_Section_Price'))
             ]);
             //Defaut value 
             self.isEnableCbb = ko.observable(true);
@@ -51,6 +51,13 @@ module kdl024.a.viewmodel {
                 budgetAtr: 0,
                 unitAtr: 0
             }))
+            self.currentItem().externalBudgetCode.subscribe(function(codeChanged) {
+                if(self.currentItem().externalBudgetName()===null ||self.currentItem().externalBudgetName()===undefined){
+                    return;
+                }else{
+                   self.isEnableInp(false);
+                }
+            });
             self.start();
         }
         //start
@@ -154,13 +161,14 @@ module kdl024.a.viewmodel {
             var self = this;
             //current Code, 何にも、項目選択している。
             self.currentItem().externalBudgetCode(null);
-            $('#inpName').val('');
-            $('#inpCode').val('');            
-            self.currentItem().budgetAtr('0');
+            self.currentItem().externalBudgetName(null);    
+            self.currentItem().budgetAtr(0);
             self.currentItem().unitAtr(0);
             $("#btnDel").prop('disabled', true);
             //Enable Code Input
             self.isEnableInp(true);
+            $('#inpCode').ntsError('clear');
+            $('#inpName').ntsError('clear');
             $('#inpCode').focus();
             //Change mode to NEW
             self.isNew = true;
@@ -180,7 +188,6 @@ module kdl024.a.viewmodel {
                     var iIndex = _.findIndex(self.currentSource,['externalBudgetCode',self.currentItem().externalBudgetCode()]);
                     //get max index of list Items
                     var maxIndex :number = self.currentSource.length-1; 
-
                     //case of : selected item is last item
                     if(self.currentSource.length == 1 && iIndex == 0){
                         self.currentSource = [];
