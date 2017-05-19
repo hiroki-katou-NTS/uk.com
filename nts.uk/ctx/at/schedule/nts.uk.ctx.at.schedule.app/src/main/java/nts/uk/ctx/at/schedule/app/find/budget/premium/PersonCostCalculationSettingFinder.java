@@ -1,14 +1,12 @@
 package nts.uk.ctx.at.schedule.app.find.budget.premium;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
@@ -39,6 +37,11 @@ public class PersonCostCalculationSettingFinder {
 				.collect(Collectors.toList());
 	}
 	
+	/**
+	 * convert PersonCostCalculation to PersonCostCalculationSettingDto
+	 * @param personCostCalculation PersonCostCalculation Object
+	 * @return PersonCostCalculationSettingDto Object
+	 */
 	private PersonCostCalculationSettingDto convertToDto(PersonCostCalculation personCostCalculation){
 		return new PersonCostCalculationSettingDto(
 				personCostCalculation.getCompanyID(), 
@@ -50,6 +53,11 @@ public class PersonCostCalculationSettingFinder {
 				personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetDto(x)).collect(Collectors.toList()));
 	}
 	
+	/**
+	 * convert PremiumSetting to PremiumSetDto
+	 * @param premiumSetting PremiumSetting Object
+	 * @return PremiumSetDto Object
+	 */
 	private PremiumSetDto toPremiumSetDto(PremiumSetting premiumSetting){
 		return new PremiumSetDto(
 				premiumSetting.getCompanyID(), 

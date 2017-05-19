@@ -1,10 +1,8 @@
 module kml001.shr.vmbase {
     export class GridPersonCostCalculation {
-        historyID: string;
         dateRange: string;  
-        constructor(historyID: string, dateRange: string) {
+        constructor(dateRange: string) {
             var self = this;
-            self.historyID = historyID;
             self.dateRange = dateRange;
         }  
     }
@@ -16,7 +14,7 @@ module kml001.shr.vmbase {
         endDate: string;
         unitPrice: number;
         memo: string;
-        premiumSets: Array<any>;
+        premiumSets: Array<PremiumSettingInterface>;
     }
 
     export class PersonCostCalculation {
@@ -26,7 +24,7 @@ module kml001.shr.vmbase {
         endDate: KnockoutObservable<string>;
         unitPrice: KnockoutObservable<number>;
         memo: KnockoutObservable<string>;
-        premiumSets : KnockoutObservableArray<PremiumSettingInterface>;
+        premiumSets : KnockoutObservableArray<PremiumSetting>;
         constructor(companyID: string, historyID: string, startDate: string, endDate: string, unitPrice: number, memo: string, premiumSets: Array<PremiumSettingInterface>) {
             var self = this;
             self.companyID = ko.observable(companyID);
@@ -62,7 +60,7 @@ module kml001.shr.vmbase {
         name: KnockoutObservable<string>;
         displayNumber: KnockoutObservable<number>;
         useAtr: KnockoutObservable<number>;
-        attendanceItems: KnockoutObservableArray<number>;
+        attendanceItems: KnockoutObservableArray<AttendanceItem>;
         constructor(companyID: string, historyID: string, premiumID: number, rate: number, attendanceID: number, 
             name: string, displayNumber: number, useAtr: number, attendanceItems: Array<number>) {
             var self = this;
@@ -74,7 +72,11 @@ module kml001.shr.vmbase {
             self.name = ko.observable(name);
             self.displayNumber = ko.observable(displayNumber);
             self.useAtr = ko.observable(useAtr);
-            self.attendanceItems = ko.observableArray(attendanceItems);
+            let koAttendanceItems = [];
+            attendanceItems.forEach(function(item){
+                koAttendanceItems.push(new vmbase.AttendanceItem(item, item.toString()));
+            });
+            self.attendanceItems = ko.observableArray(koAttendanceItems);
         }
         
     }
@@ -119,7 +121,7 @@ module kml001.shr.vmbase {
                 object.premiumSets);
         }
         static toObjectPersonCost(koObject: PersonCostCalculation): PersonCostCalculationInterface {
-            let premiumSets = [];
+            let premiumSets: Array<PremiumSettingInterface> = [];
             koObject.premiumSets().forEach(function(koPremiumSet){premiumSets.push(ProcessHandler.toObjectPremiumSet(koPremiumSet));});
             return {
                 companyID: koObject.companyID(),
@@ -149,11 +151,11 @@ module kml001.shr.vmbase {
                 historyID: koObject.historyID(),
                 premiumID: koObject.premiumID(), 
                 rate: koObject.rate(),
-                attendanceID: koObject.attendanceID,
+                attendanceID: koObject.attendanceID(),
                 name: koObject.name(),
                 displayNumber: koObject.displayNumber(),
                 useAtr: koObject.useAtr(),
-                attendanceItems: koObject.attendanceItems()     
+                attendanceItems: _.map(koObject.attendanceItems() , function(item){ return item.iD})   
             };    
         }
         static getOneDayBefore(date: string) {
@@ -183,9 +185,12 @@ module kml001.shr.vmbase {
         OTHER = 9
     }
 
-    export enum Error {
-        ER001 = <any>"が入力されていません。",
-        ER007 = <any>"が選択されていません。",
-        ER010 = <any>"対象データがありません。",
+    export enum MSG {
+        MSG015 = <any>"登録しました。",
+        MSG018 = <any>"選択中のデータを削除しますか？",
+        MSG065 = <any>"最新の履歴の有効開始日より以前の有効開始日を登録できません。",
+        MSG066 = <any>"割増項目が設定されてません。",
+        MSG102 = <any>"最新の履歴開始日以前に履歴を追加することはできません。",
+        MSG128 = <any>"最後の履歴を削除することができません。"
     }
 }
