@@ -138,6 +138,7 @@ module nts.uk.pr.view.qpp021.b {
 
             openDialogRefundPadding(): void {
                 var self = this;
+                 nts.uk.ui.windows.setShared("printtype", +self.selectPrintTypeListCode());
                 var pageRefundPadding: number;
                 switch (+self.selectPrintTypeListCode()) {
                     case 0:
@@ -185,7 +186,7 @@ module nts.uk.pr.view.qpp021.b {
                 queryDto.selectPrintTypes = self.selectPrintTypeCode();
                 queryDto.specificationCodes = self.selectLineItemCodes();
                 queryDto.layoutItems = +self.selectPrintTypeListCode();
-                queryDto.pageOrientation = 'LANDSCAPE';
+                queryDto.pageOrientation = 'PORTRAIT';
                 return queryDto;
             }
 

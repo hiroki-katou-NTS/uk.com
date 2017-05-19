@@ -21,9 +21,9 @@ module nts.uk.pr.view.qpp021.f {
         }
 
 
-        export function previewRefundPaddingTwo(): JQueryPromise<any> {
+        export function previewRefundPaddingTwo(pageLayout: string): JQueryPromise<any> {
             //call service server
-            var data = { pageLayout: 'F' };
+            var data = { pageLayout: pageLayout };
             return nts.uk.request.exportFile(paths.previewRefundPaddingTwo, data);
         }
 

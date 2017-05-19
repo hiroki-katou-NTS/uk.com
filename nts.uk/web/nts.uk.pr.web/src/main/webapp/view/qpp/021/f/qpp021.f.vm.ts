@@ -7,6 +7,7 @@ module nts.uk.pr.view.qpp021.f {
             refundPaddingTwoModel: RefundPaddingTwoModel;
             splitLineOutput: KnockoutObservable<any>;
             sizeLimitOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
+            printtype: number;
             constructor() {
                 var self = this;
                 self.refundPaddingTwoModel = new RefundPaddingTwoModel();
@@ -18,6 +19,7 @@ module nts.uk.pr.view.qpp021.f {
                     grouplength: 3,
                     decimallength: 2
                 }));
+                self.printtype = nts.uk.ui.windows.getShared("printtype");
             }
 
             //start page
@@ -43,10 +45,10 @@ module nts.uk.pr.view.qpp021.f {
                     return;
                 }
                 // Save.
-                service.saveRefundPadding(self.refundPaddingTwoModel.toDto()).done(function(){
+                service.saveRefundPadding(self.refundPaddingTwoModel.toDto()).done(function() {
                     self.onCloseBtnClicked();
-                }).fail(function(){
-                    self.onCloseBtnClicked();    
+                }).fail(function() {
+                    self.onCloseBtnClicked();
                 })
             }
 
@@ -56,10 +58,19 @@ module nts.uk.pr.view.qpp021.f {
             public onCloseBtnClicked(): void {
                 nts.uk.ui.windows.close();
             }
-            
+
             private previewRefundPaddingTwo(): void {
-                console.log('YES');
-                service.previewRefundPaddingTwo();    
+                var self = this;
+                var pageLayout: string = 'F1';
+                switch (self.printtype) {
+                    case 1:
+                        pageLayout = 'F1';
+                        break;
+                    case 3:
+                        pageLayout = 'F2';
+                        break;
+                }
+                service.previewRefundPaddingTwo(pageLayout);
             }
 
         }

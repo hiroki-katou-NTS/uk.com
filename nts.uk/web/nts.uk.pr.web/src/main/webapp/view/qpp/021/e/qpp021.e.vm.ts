@@ -8,7 +8,7 @@ module nts.uk.pr.view.qpp021.e {
 
             refundPaddingOnceModel: RefundPaddingOnceModel;
             sizeLimitOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
-
+            printtype: number;
             constructor() {
                 var self = this;
                 self.refundPaddingOnceModel = new RefundPaddingOnceModel();
@@ -16,6 +16,7 @@ module nts.uk.pr.view.qpp021.e {
                     grouplength: 3,
                     decimallength: 2
                 }));
+                self.printtype = nts.uk.ui.windows.getShared("printtype");
             }
 
             public startPage(): JQueryPromise<any> {
@@ -32,7 +33,19 @@ module nts.uk.pr.view.qpp021.e {
 
             public previewRefundPaddingOnce() {
                 var self = this;
-                service.previewRefundPaddingOnce();
+                var pageLayout: string = 'E1';
+                switch(self.printtype){
+                    case 0:
+                        pageLayout = 'E1';
+                        break;
+                    case 4:
+                        pageLayout = 'E2';
+                        break;
+                    case 5:
+                        pageLayout = 'E3';
+                        break;
+                }
+                service.previewRefundPaddingOnce(pageLayout);
             }
 
             public save() {

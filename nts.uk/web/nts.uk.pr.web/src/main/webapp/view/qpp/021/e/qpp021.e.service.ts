@@ -23,8 +23,8 @@ module nts.uk.pr.view.qpp021.e {
         }
 
         // connection preview 
-        export function previewRefundPaddingOnce(): JQueryPromise<any>{
-            var data= {pageLayout : 'E'};
+        export function previewRefundPaddingOnce(pageLayout: string): JQueryPromise<any>{
+            var data= {pageLayout : pageLayout};
             return nts.uk.request.exportFile(paths.previewRefundPaddingOnce, data);
         }
         export module model {
