@@ -388,7 +388,7 @@ module qmm012.c.viewmodel {
             let self = this;
             //set selected code to session
             nts.uk.ui.windows.setShared('commuNoTaxLimitCode', self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '');
-            nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close", title: "非課税限度額の設定" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/012/k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close", title: "非課税限度額の設定" }).onClosed(function(): any {
                 if (nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'))
                     self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
             });
@@ -398,7 +398,7 @@ module qmm012.c.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
-            nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/012/h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
                 self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
             });
         }
@@ -407,7 +407,7 @@ module qmm012.c.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
-            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/012/i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
                 self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
             });
         }

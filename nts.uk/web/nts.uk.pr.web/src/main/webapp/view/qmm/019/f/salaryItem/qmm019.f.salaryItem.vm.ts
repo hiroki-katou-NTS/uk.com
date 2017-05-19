@@ -14,6 +14,10 @@ module qmm019.f.salaryItem.viewmodel {
         switchButton: KnockoutObservable<qmm019.f.viewmodel.SwitchButton>;
         itemListDistributeWay: KnockoutObservableArray<any>;
         comboBoxCommutingClassification: KnockoutObservable<qmm019.f.viewmodel.ComboBox>;
+        itemRegInfo: KnockoutObservable<service.model.ItemRegInfo> = ko.observable(null);
+        itemRegExpand: KnockoutObservable<boolean> = ko.observable(false);
+        breakdownItemList: KnockoutObservableArray<any> = ko.observableArray([]);
+        breakdownListSelected: KnockoutObservable<any> = ko.observable(null);
         constructor() {
             let self = this;
             var itemListSumScopeAtr = ko.observableArray([
@@ -51,7 +55,8 @@ module qmm019.f.salaryItem.viewmodel {
                 self.checkUseLowAlam(NewItem.checkUseLowAlam());
                 self.distributeWaySelectedCode(NewItem.distributeWay());
                 self.switchButton().selectedRuleCode(NewItem.distributeSet());
-                self.comboBoxCommutingClassification().selectedCode(NewItem.commuteAtr())
+                self.comboBoxCommutingClassification().selectedCode(NewItem.commuteAtr());
+                self.loadItemRegInfo(NewItem);
             });
             //計算方法
             self.comboBoxCalcMethod = ko.observable(new qmm019.f.viewmodel.ComboBox(itemListCalcMethod));
@@ -60,6 +65,17 @@ module qmm019.f.salaryItem.viewmodel {
             self.comboBoxSumScopeAtr = ko.observable(new qmm019.f.viewmodel.ComboBox(itemListSumScopeAtr));
             self.switchButton = ko.observable(new qmm019.f.viewmodel.SwitchButton());
             self.comboBoxCommutingClassification = ko.observable(new qmm019.f.viewmodel.ComboBox(itemListCommutingClassification));
+            self.itemRegExpand.subscribe(function(newValue) {
+                if (newValue) {
+                    self.loadItemRegInfo(self.itemDtoSelected()).done(function() {
+                        $('#content').toggle("slow");
+                    });
+                } else {
+                    $('#content').toggle("slow");
+                }
+            });
+
+
         }
         loadLayoutData(itemMaster: qmm019.f.service.model.ItemMasterDto): JQueryPromise<qmm019.f.viewmodel.ItemDto> {
             let self = this;
@@ -88,6 +104,22 @@ module qmm019.f.salaryItem.viewmodel {
             let self = this;
             self.itemDtoSelected(itemDto);
         }
+        loadItemRegInfo(itemDto: qmm019.f.viewmodel.ItemDto): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if (self.itemRegExpand()) {
+                service.getItemSalaryRegInfo(itemDto.itemCode()).done(function(itemRegInfoResult) {
+                    if (itemRegInfoResult) {
+                        let itemRegInfo = new service.model.ItemRegInfo(itemRegInfoResult);
+                        self.itemRegInfo(itemRegInfo);
+                    }
+                    dfd.resolve();
+                });
+            }
+            return dfd.promise();
+        }
+
+
         checkPersonalInformationReference(): boolean {
             var self = this;
             if (self.comboBoxCalcMethod().selectedCode() == 1) {
@@ -120,6 +152,15 @@ module qmm019.f.salaryItem.viewmodel {
         setMasterDto(itemMasterDto) {
             let self = this;
             self.itemMasterDto(itemMasterDto);
+        }
+        expandContent() {
+            let self = this;
+            self.itemRegExpand(!self.itemRegExpand());
+        }
+        genExpandSymbol() {
+            let self = this;;
+
+            return self.itemRegExpand() ? '&#8896;' : '&#8897;';
         }
     }
 
