@@ -7,8 +7,8 @@ public class RetirementPaymentDomainService {
 	 * @param retirementPayment Retirement Payment
 	 */
 	public static void autoCalculate(RetirementPayment retirementPayment) {
-		int serviceYear = 20; 
-		int age = 30;
+		int serviceYear = 17 - retirementPayment.getExclusionYears().v(); 
+		int year = retirementPayment.getPayDate().year();
 		int retirementPayOption = retirementPayment.getRetirementPayOption().value;
 		int totalPaymentMoney = retirementPayment.getTotalPaymentMoney().v();
 		int incomeTax = retirementPayment.getIncomeTaxMoney().v();
@@ -30,7 +30,9 @@ public class RetirementPaymentDomainService {
         	else if((18000000 <= totalPaymentMoney)&&(totalPaymentMoney < 40000000)) incomeTax =  totalPaymentMoney*40/100-2796000;
         	else if((40000000 <= totalPaymentMoney)) incomeTax =  totalPaymentMoney*45/100-4796000;
         	else incomeTax =  totalPaymentMoney*0-0;
-            if((25 <= age) && (age <= 49)) incomeTax *= 102.1/100;
+            if((2013 <= year) && (year <= 2035)) {
+            	incomeTax *= 102.1/100;
+            };
         }
         int cityTax = (tax*6/100)*90/100;
         int prefectureTax = (tax*4/100)*90/100;
