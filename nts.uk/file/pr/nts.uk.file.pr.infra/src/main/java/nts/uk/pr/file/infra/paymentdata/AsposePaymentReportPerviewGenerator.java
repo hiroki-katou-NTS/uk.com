@@ -19,11 +19,20 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposePaymentReportPerviewGenerator extends AsposeCellsReportGenerator
 	implements PaymentReportPreviewGenerator {
 
-	/** The Constant PAGE_E. */
-	private static final String PAGE_E = "E";
+	/** The Constant PAGE_E1. */
+	private static final String PAGE_E1 = "E1";
+
+	/** The Constant PAGE_E2. */
+	private static final String PAGE_E2 = "E2";
+
+	/** The Constant PAGE_E3. */
+	private static final String PAGE_E3 = "E3";
 
 	/** The Constant PAGE_F. */
-	private static final String PAGE_F = "F";
+	private static final String PAGE_F1 = "F1";
+
+	/** The Constant PAGE_F2. */
+	private static final String PAGE_F2 = "F2";
 
 	/** The Constant PAGE_G. */
 	private static final String PAGE_G = "G";
@@ -31,8 +40,17 @@ public class AsposePaymentReportPerviewGenerator extends AsposeCellsReportGenera
 	/** The Constant TEMPLATE_PATH_E1. */
 	private static final String TEMPLATE_PATH_E1 = "report/QPP021_E1.xlsx";
 
+	/** The Constant TEMPLATE_PATH_E2. */
+	private static final String TEMPLATE_PATH_E2 = "report/QPP021_E2.xlsx";
+
+	/** The Constant TEMPLATE_PATH_E3. */
+	private static final String TEMPLATE_PATH_E3 = "report/QPP021_E3.xlsx";
+
 	/** The Constant TEMPLATE_PATH_F1. */
 	private static final String TEMPLATE_PATH_F1 = "report/QPP021_F1.xlsx";
+
+	/** The Constant TEMPLATE_PATH_F2. */
+	private static final String TEMPLATE_PATH_F2 = "report/QPP021_F2.xlsx";
 
 	/** The Constant TEMPLATE_PATH_G. */
 	private static final String TEMPLATE_PATH_G = "report/QPP021_G.xlsx";
@@ -50,15 +68,36 @@ public class AsposePaymentReportPerviewGenerator extends AsposeCellsReportGenera
 	@Override
 	public void generate(FileGeneratorContext fileContext, PaymentReportPreviewQuery query) {
 		switch (query.getPageLayout()) {
-		case PAGE_E:
+		case PAGE_E1:
 			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_E1)) {
 				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 			break;
-		case PAGE_F:
+		case PAGE_E2:
+			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_E2)) {
+				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			break;
+		case PAGE_E3:
+			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_E3)) {
+				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			break;
+		case PAGE_F1:
 			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_F1)) {
+				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			break;
+		case PAGE_F2:
+			try (AsposeCellsReportContext ctx = this.createContext(TEMPLATE_PATH_F2)) {
 				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
 			} catch (Exception e) {
 				throw new RuntimeException(e);
