@@ -96,10 +96,12 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	abstract void setTemplateStyle();
 
 	/**
-	 * Instantiates a new base payment report generator.
+	 * Inits the.
 	 */
-	public BasePaymentReportGenerator() {
+	protected void init() {
 		this.templateStyle = new TemplateStyle();
+		this.setPageHeaderRange();
+		this.setTemplateStyle();
 	}
 
 	/**

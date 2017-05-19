@@ -38,6 +38,9 @@ public class PaymentReportVerticalGenerator extends BasePaymentReportGenerator i
 		// Get cells.
 		cells = workSheet.getCells();
 
+		// Initialize setting.
+		super.init();
+
 		// Print report data.
 		reportData.getReportData().forEach(emp -> {
 			employee = emp;
