@@ -8,13 +8,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.ctx.pr.core.dom.payment.banktransfer.adapter.BasicPersonBankAccountDto;
 import nts.uk.ctx.pr.core.dom.payment.banktransfer.adapter.PersonBankAccountAdapter;
-import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayProcessingRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday.Payday;
 import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.paydayprocessing.PaydayProcessing;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,19 +27,24 @@ public class BankTransferFinder {
 	private PaydayProcessingRepository paydayProcessingRepo;
 
 	@Inject
+	private PaydayRepository paydayRepo;
+
+	@Inject
 	private PaymentDataRepository paymentDataRepo;
 
 	@Inject
 	private PersonBankAccountAdapter personBankAccountAdapter;
 
-	public List<BankTransferDto> findDataForScreenD(int processingNo) {
+	public BankTransferDto findDataForScreenD(int processingNo) {
 		String companyCode = AppContexts.user().companyCode();
 		Optional<PaydayProcessing> paydayProcessing = paydayProcessingRepo.select2(companyCode, processingNo);
-		List<Payment> paymentHeader = paymentDataRepo.findPaymentHeaderSelect5(companyCode, processingNo,
+		Optional<Payday> payday = paydayRepo.select13(companyCode, processingNo, PayBonusAtr.SALARY.value,
+				paydayProcessing.get().getCurrentProcessingYm().v(), SparePayAtr.NORMAL.value);
+ 		List<Payment> paymentHeader = paymentDataRepo.findPaymentHeaderSelect5(companyCode, processingNo,
 				paydayProcessing.get().getCurrentProcessingYm().v(), PayBonusAtr.SALARY.value,
 				SparePayAtr.NORMAL.value);
 		int i = 1;
-		List<BankTransferDto> result = new ArrayList<>();
+		List<ListOfScreenDDto> listOfScreenDDto = new ArrayList<>();
 		for (Payment x : paymentHeader) {
 			Optional<BasicPersonBankAccountDto> basicPersonBankAccDto = personBankAccountAdapter.findBasePIdAndBaseYM(
 					companyCode, x.getPersonId().v(), paydayProcessing.get().getCurrentProcessingYm().v());
@@ -46,12 +53,13 @@ public class BankTransferFinder {
 			// PERSON_COM SEL_1
 			String scd = "A000000000000" + i;
 			i += 1;
-			result.add(new BankTransferDto(scd, nameB, basicPersonBankAccDto.get().getUseSet1().getPaymentMethod(),
+			listOfScreenDDto.add(new ListOfScreenDDto(scd, nameB, basicPersonBankAccDto.get().getUseSet1().getPaymentMethod(),
 					basicPersonBankAccDto.get().getUseSet2().getPaymentMethod(),
 					basicPersonBankAccDto.get().getUseSet3().getPaymentMethod(),
 					basicPersonBankAccDto.get().getUseSet4().getPaymentMethod(),
 					basicPersonBankAccDto.get().getUseSet5().getPaymentMethod()));
 		}
+		BankTransferDto result = new BankTransferDto(listOfScreenDDto, payday.get().getPayDate());
 		return result;
 	}
 }

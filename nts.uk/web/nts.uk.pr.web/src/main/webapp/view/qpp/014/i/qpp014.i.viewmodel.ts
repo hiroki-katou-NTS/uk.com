@@ -12,9 +12,9 @@ module qpp014.i {
         constructor() {
             var self = this;
             $('#successful').css('display', 'none');
-            //$('#stop').css('display', 'none');
-            $('#error').css('display', 'none');
-            //nts.uk.ui.windows.getSelf().setHeight(570);
+            $('#stop').css('display', 'none');
+            //$('#error').css('display', 'none');
+            nts.uk.ui.windows.getSelf().setHeight(570);
             self.timer = new nts.uk.ui.sharedvm.KibanTimer('timer');
             self.items_I_LST_003 = ko.observableArray([]);
             for (let i = 1; i < 14; i++) {

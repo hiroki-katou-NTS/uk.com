@@ -53,7 +53,7 @@ public class Qpp014WebService extends WebService {
 
 	@POST
 	@Path("findDataScreenD/{processingNo}")
-	public List<BankTransferDto> findData(@PathParam("processingNo") int processingNo) {
+	public BankTransferDto findData(@PathParam("processingNo") int processingNo) {
 		return bankTransferFinder.findDataForScreenD(processingNo);
 	}
 }

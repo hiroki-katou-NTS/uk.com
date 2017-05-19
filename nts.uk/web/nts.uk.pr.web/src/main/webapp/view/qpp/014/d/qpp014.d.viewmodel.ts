@@ -14,7 +14,7 @@ module qpp014.d.viewmodel {
 
         constructor(data: any) {
             let self = this;
-            self.dateOfPayment = ko.observable('2017-05-11 00:00:00');
+            self.dateOfPayment = ko.observable(null);
             self.sparePayAtr = ko.observable(1);
             self.d_SEL_002_selectedCode = ko.observable(1);
             self.d_LST_001_items = ko.observableArray([]);
@@ -42,10 +42,11 @@ module qpp014.d.viewmodel {
             var dfd = $.Deferred();
             qpp014.d.service.findDataScreenD(+self.d_lbl_015())
                 .done(function(data) {
-                    _.forEach(data, function(x) {
+                    _.forEach(data.listOfScreenDDto, function(x) {
                         self.d_LST_001_items().push(new ItemModel_D_LST_001(x.scd, x.nameB, x.paymentMethod1, x.paymentMethod2, x.paymentMethod3, x.paymentMethod4, x.paymentMethod5));
                     });
                     self.countItems(self.d_LST_001_items().length);
+                    self.dateOfPayment(data.payDate);
                     dfd.resolve();
                 }).fail(function(res) {
                     dfd.reject(res);
