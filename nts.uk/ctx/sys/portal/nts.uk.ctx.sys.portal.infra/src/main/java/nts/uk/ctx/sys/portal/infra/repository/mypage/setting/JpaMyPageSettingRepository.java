@@ -144,4 +144,13 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 		this.commandProxy().remove(CcgmtPartItemSet.class, new CcgmtPartItemSetPK(companyId, topPagePartId));
 		this.getEntityManager().flush();
 	}
+
+	@Override
+	public List<TopPagePartUseSetting> findTopPagePartUseSettingByCompanyId(String companyId) {
+		// get list item setting
+		List<TopPagePartUseSetting> lstTopPagePartUseSetting = this.queryProxy()
+				.query(GET_ONE_PIS, CcgmtPartItemSet.class).setParameter("companyId", companyId)
+				.getList(p -> pusToDomain(p));
+		return lstTopPagePartUseSetting;
+	}
 }

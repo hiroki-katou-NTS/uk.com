@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.mypage.setting;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,6 +28,14 @@ public interface MyPageSettingRepository {
 	 * @return the optional
 	 */
 	Optional<TopPagePartUseSetting> findTopPagePartUseSettingById(String companyId, String topPagePartId);
+	
+	/**
+	 * Find top page part use setting by company id.
+	 *
+	 * @param CompanyId the company id
+	 * @return the list
+	 */
+	List<TopPagePartUseSetting> findTopPagePartUseSettingByCompanyId(String companyId);
 	
 	/**
 	 * Removes the top page part use setting by id.
