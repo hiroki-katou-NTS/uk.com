@@ -8,12 +8,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCST_EXTERNAL_BUDGET")
-public class KscstExternalBudget {
+public class KscstExternalBudget extends UkJpaEntity{
 
 	@EmbeddedId
 	public KstscExternalBudgetPK kscstExternalBudgetPk;

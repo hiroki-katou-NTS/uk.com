@@ -8,9 +8,10 @@ module kdl024.a.service {
     /**
      * get list External Budget
      */
-    export function getListExternalBudget(): JQueryPromise<Array<model.ExternalBudgetDto>> {
+    export function getListExternalBudget(): JQueryPromise<Array<viewmodel.ExternalBudgetDto>> {
         return nts.uk.request.ajax("at", paths.getExternalBudgetList);
     }
+    
     /**
      * Update Budget
      * 
@@ -33,8 +34,8 @@ module kdl024.a.service {
         command.unitAtr = insertBudgetCmd.unitAtr();
         return nts.uk.request.ajax(paths.insertExternalBudget, command);
     }
-    //Delelte
-    //Insert 
+    
+    //Delete
     export function deleteExternalBudget(deleteBudgetCmd: any) {
         let command = {} as model.ExternalBudgetDto;
         command.externalBudgetCode = deleteBudgetCmd.externalBudgetCode();
