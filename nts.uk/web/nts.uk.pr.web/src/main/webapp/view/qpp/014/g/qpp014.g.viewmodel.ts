@@ -11,6 +11,7 @@ module qpp014.g.viewmodel {
         g_INP_002: KnockoutObservable<number>;
         g_SEL_003_itemSelected: KnockoutObservable<any>;
         yearMonthDateInJapanEmpire: any;
+        processingYm: any;
         processingDate: any;
         processingDateInJapanEmprire: any;
         processingNo: any;
@@ -31,7 +32,8 @@ module qpp014.g.viewmodel {
             self.accountAtr = ko.observable('');
             self.accountNo = ko.observable(0);
             self.g_INP_002 = ko.observable(12);
-            self.processingDate = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
+            self.processingYm = data.currentProcessingYm;
+            self.processingDate = ko.observable(nts.uk.time.formatYearMonth(self.processingYm));
             self.processingDateInJapanEmprire = ko.computed(function() {
                 return nts.uk.time.yearmonthInJapanEmpire(self.processingDate()).toString();
             });
@@ -43,7 +45,7 @@ module qpp014.g.viewmodel {
                 return "(" + nts.uk.time.yearInJapanEmpire(moment(self.g_INP_001()).format('YYYY')).toString() +
                     moment(self.g_INP_001()).format('MM') + " 月 " + moment(self.g_INP_001()).format('DD') + " 日)";
             });
-            self.processingNo = ko.observable(data.processingNo + ' : ');
+            self.processingNo = data.processingNo;
             self.processingName = ko.observable(data.processingName + ' )');
             $.when(self.findAllBankBranch()).done(function() {
                 self.findAllLineBank().done(function() {
@@ -124,14 +126,14 @@ module qpp014.g.viewmodel {
          */
         openIDialog() {
             var self = this;
-            if (self.g_INP_001() == "") {
-                nts.uk.ui.dialog.alert("振込指定日が入力されていません。");
+            if (self.g_INP_001() == '') {
+                nts.uk.ui.dialog.alert('振込指定日が入力されていません。');
             } else if (self.g_SEL_002_itemSelected() == null || self.g_SEL_002_itemSelected() == '' || self.g_SEL_002_itemSelected() == undefined) {
-                nts.uk.ui.dialog.alert("委託者コードが入力されていません。");
-            } else if (self.g_INP_002().toString() == "") {
-                nts.uk.ui.dialog.alert("種別コードが入力されていません。");
+                nts.uk.ui.dialog.alert('委託者コードが入力されていません。');
+            } else if (self.g_INP_002().toString() == '') {
+                nts.uk.ui.dialog.alert('種別コードが入力されていません。');
             } else if (!self.g_INP_002().toString().match(/^[0-9]{2}$/)) {
-                nts.uk.ui.dialog.alert("Invalid Number");
+                nts.uk.ui.dialog.alert('Invalid Number');
                 $('#G_INP_002').ntsError('set', '00〜99の間の値を入力してください');
             } else if (self.g_SEL_001_itemSelected() == null || self.g_SEL_001_itemSelected() == '' || self.g_SEL_001_itemSelected() == undefined) {
                 nts.uk.ui.dialog.alert("振込元銀行名が選択されていません。");
@@ -143,6 +145,10 @@ module qpp014.g.viewmodel {
                     return x.branchId === lineBankObj.branchId;
                 });
                 var tmp = {
+                    processingNo: self.processingNo,
+                    processingYm: self.processingYm,
+                    sparePayAtr: nts.uk.ui.windows.getShared("sparePayAtr"),
+                    branchId: lineBankObj.branchId,
                     consignorCode: self.g_SEL_002_itemSelected(),
                     requesterName: lineBankObj.requesterName,
                     transferDate: self.g_INP_001(),

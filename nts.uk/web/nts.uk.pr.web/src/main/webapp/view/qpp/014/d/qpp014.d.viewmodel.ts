@@ -5,7 +5,7 @@ module qpp014.d.viewmodel {
         processingYM: KnockoutObservable<string>;
         sparePayAtr: KnockoutObservable<number>;
         d_SEL_002_selectedCode: KnockoutObservable<any>;
-        d_LST_001_items: KnockoutObservableArray<any>;
+        d_LST_001_items: KnockoutObservableArray<ItemModel_D_LST_001>;
         d_LST_001_itemSelected: KnockoutObservable<any>;
         d_nextScreen: KnockoutObservable<string>;
         dateOfPayment: KnockoutObservable<string>;
@@ -18,10 +18,10 @@ module qpp014.d.viewmodel {
             self.sparePayAtr = ko.observable(1);
             self.d_SEL_002_selectedCode = ko.observable(1);
             self.d_LST_001_items = ko.observableArray([]);
-            for (let i = 1; i < 31; i++) {
-                self.d_LST_001_items.push(({ scd: '00' + i, nameB: '基本給' + i, paymentMethod1: ('description' + i), paymentMethod2: ('description' + i), paymentMethod3: ('description' + i), paymentMethod4: ('description' + i), paymentMethod5: ('description' + i) }));
-            }
-            self.countItems = ko.observable(self.d_LST_001_items().length);
+            //            for (let i = 1; i < 31; i++) {
+            //                self.d_LST_001_items.push(new ItemModel_D_LST_001('00' + i, '基本給' + i, 'description' + i, 'description' + i, 'description' + i, 'description' + i, 'description' + i));
+            //            }
+            self.countItems = ko.observable(0);
             self.d_LST_001_itemSelected = ko.observable(0);
             self.d_nextScreen = ko.computed(function() {
                 //check value of D_SEL_002 to jump to screen G or H after click E_BTN_002
@@ -34,8 +34,7 @@ module qpp014.d.viewmodel {
             nts.uk.ui.windows.setShared("sparePayAtr", self.sparePayAtr(), true);
             nts.uk.ui.windows.setShared("processingNo", self.d_lbl_015(), true);
             nts.uk.ui.windows.setShared("processingYMNotConvert", self.processingYMNotConvert(), true);
-
-            //            $.when(self.findDataScreenD()).done().fail();
+            self.findDataScreenD();
         }
 
         findDataScreenD(): JQueryPromise<any> {
@@ -43,7 +42,10 @@ module qpp014.d.viewmodel {
             var dfd = $.Deferred();
             qpp014.d.service.findDataScreenD(+self.d_lbl_015())
                 .done(function(data) {
-                    self.d_LST_001_items(data);
+                    _.forEach(data, function(x) {
+                        self.d_LST_001_items().push(new ItemModel_D_LST_001(x.scd, x.nameB, x.paymentMethod1, x.paymentMethod2, x.paymentMethod3, x.paymentMethod4, x.paymentMethod5));
+                    });
+                    self.countItems(self.d_LST_001_items().length);
                     dfd.resolve();
                 }).fail(function(res) {
                     dfd.reject(res);
@@ -53,28 +55,28 @@ module qpp014.d.viewmodel {
 
         buttonFilter(): void {
             var self = this;
-            switch (self.sparePayAtr()) {
-                case 1: {
-                    for (let i = 1; i < 11; i++) {
-                        self.d_LST_001_items.push(({ code: '10' + i, name: '基本給' + i, description: ('description' + i) }));
-                    }
-                    break;
-                }
-                case 2: {
-                    for (let i = 1; i < 21; i++) {
-                        self.d_LST_001_items.push(({ code: '20' + i, name: '基本給' + i, description: ('description' + i) }));
-                    }
-                    //                    $('#D_LST_001').igGrid('option', 'dataSource', self.d_LST_001_items());
-                    //                    $('#D_LST_001').igGrid("dataBind");
-                    break;
-                }
-                case 3: {
-                    for (let i = 1; i < 31; i++) {
-                        self.d_LST_001_items.push(({ code: '30' + i, name: '基本給' + i, description: ('description' + i) }));
-                    }
-                    break;
-                }
-            }
+            //            switch (self.sparePayAtr()) {
+            //                case 1: {
+            //                    for (let i = 1; i < 11; i++) {
+            //                        self.d_LST_001_items.push(({ code: '10' + i, name: '基本給' + i, description: ('description' + i) }));
+            //                    }
+            //                    break;
+            //                }
+            //                case 2: {
+            //                    for (let i = 1; i < 21; i++) {
+            //                        self.d_LST_001_items.push(({ code: '20' + i, name: '基本給' + i, description: ('description' + i) }));
+            //                    }
+            //                    //                    $('#D_LST_001').igGrid('option', 'dataSource', self.d_LST_001_items());
+            //                    //                    $('#D_LST_001').igGrid("dataBind");
+            //                    break;
+            //                }
+            //                case 3: {
+            //                    for (let i = 1; i < 31; i++) {
+            //                        self.d_LST_001_items.push(({ code: '30' + i, name: '基本給' + i, description: ('description' + i) }));
+            //                    }
+            //                    break;
+            //                }
+            //            }
         }
 
         openEDialog(): void {
@@ -96,4 +98,24 @@ module qpp014.d.viewmodel {
             }
         }
     }
+    export class ItemModel_D_LST_001 {
+        scd: string;
+        nameB: string;
+        paymentMethod1: string;
+        paymentMethod2: string;
+        paymentMethod3: string;
+        paymentMethod4: string;
+        paymentMethod5: string;
+
+        constructor(scd: string, nameB: string, paymentMethod1: string, paymentMethod2: string, paymentMethod3: string, paymentMethod4: string, paymentMethod5: string) {
+            this.scd = scd;
+            this.nameB = nameB;
+            this.paymentMethod1 = paymentMethod1;
+            this.paymentMethod2 = paymentMethod2;
+            this.paymentMethod3 = paymentMethod3;
+            this.paymentMethod4 = paymentMethod4;
+            this.paymentMethod5 = paymentMethod5;
+        }
+    }
+
 };
