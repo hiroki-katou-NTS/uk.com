@@ -14,12 +14,12 @@ public class CustomResourceBundle {
 	@Inject
 	IInternationalization internationalization;
 
-	public String getText(String itemId) {
+	public String getText(String itemId,String ...params) {
 		if (null == itemId || itemId.isEmpty()) {
 			return "not found";
 		}
-		Optional<String> text = internationalization.getItemName(itemId);
-		return text.orElse("not found");
+		Optional<String> text = internationalization.getItemName(itemId,params);
+		return text.orElse(itemId);
 	}
 	
 }
