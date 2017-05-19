@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
 
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
@@ -14,9 +16,6 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
  * The Class PaymentReportVerticalGenerator.
  */
 public class PaymentReportVerticalGenerator extends BasePaymentReportGenerator implements PaymentGenerator {
-
-	/** The Constant FIRST_ITEM. */
-	public static final int FIRST_ITEM = 0;
 
 	/** The Constant SHEET_NAME. */
 	public static final String SHEET_NAME = "SHEET 1";
@@ -32,29 +31,27 @@ public class PaymentReportVerticalGenerator extends BasePaymentReportGenerator i
 	@Override
 	public void generate(AsposeCellsReportContext context, PaymentReportData reportData) {
 		Workbook workbook = context.getWorkbook();
-		Worksheet worksheet = workbook.getWorksheets().get(FIRST_ITEM);
-		worksheet.setName(SHEET_NAME);
+		// Get workSheet.
+		workSheet = workbook.getWorksheets().get(FIRST_SHEET);
+		workSheet.setName(SHEET_NAME);
 
 		// Get cells.
-		cells = worksheet.getCells();
+		cells = workSheet.getCells();
 
-		// Get style from template.
-		templateStyle = new TemplateStyle();
-		templateStyle.headerStyle = (cells.get("A10").getStyle());
-		templateStyle.nameStyle = cells.get("B10").getStyle();
-		templateStyle.remarkStyle = cells.get("A8").getStyle();
-		templateStyle.valueStyle = cells.get("B11").getStyle();
-
-		hPageBreaks = worksheet.getHorizontalPageBreaks();
-		pageHeaderRange = cells.createRange("A1", "I7");
-
+		// Print report data.
 		reportData.getReportData().forEach(emp -> {
 			employee = emp;
 			printData();
 		});
-
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.BasePaymentReportGenerator#printPageContent(
+	 * )
+	 */
 	@Override
 	void printPageContent() {
 
@@ -82,6 +79,54 @@ public class PaymentReportVerticalGenerator extends BasePaymentReportGenerator i
 
 		// Print remark;
 		printRemark();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.BasePaymentReportGenerator#getHeaderTemplate
+	 * ()
+	 */
+	@Override
+	List<CellValue> getHeaderTemplate() {
+		List<CellValue> list = new ArrayList<>();
+		list.add(new CellValue(0, 3, "給与明細書"));
+		list.add(new CellValue(5, 2, "部門コード"));
+		list.add(new CellValue(5, 5, "個人コード"));
+		list.add(new CellValue(5, 7, "氏名"));
+		list.add(new CellValue(2, 3, employee.getProcessingYm()));
+		list.add(new CellValue(6, 2, employee.getDepartmentInfo().getDepartmentCode()));
+		list.add(new CellValue(6, 5, employee.getEmployeeInfo().getEmployeeCode()));
+		list.add(new CellValue(6, 7, employee.getEmployeeInfo().getEmployeeName()));
+		return list;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.BasePaymentReportGenerator#setTemplateStyle(
+	 * )
+	 */
+	@Override
+	void setTemplateStyle() {
+		// Get style from template.
+		templateStyle.headerStyle = getStyle("A10");
+		templateStyle.nameStyle = getStyle("B10");
+		templateStyle.remarkStyle = getStyle("A8");
+		templateStyle.valueStyle = getStyle("B11");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.BasePaymentReportGenerator#
+	 * setPageHeaderRange()
+	 */
+	@Override
+	void setPageHeaderRange() {
+		pageHeaderRange = cells.createRange("A1", "I7");
 	}
 
 }

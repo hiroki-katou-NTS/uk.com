@@ -1,22 +1,34 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
 import java.util.List;
 
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
-import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.Range;
 import com.aspose.cells.Style;
+import com.aspose.cells.Worksheet;
 
+import lombok.Getter;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
 import nts.uk.file.pr.app.export.payment.data.dto.SalaryItemDto;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+/**
+ * The Class BasePaymentReportGenerator.
+ */
 public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenerator {
 
-	/** The Constant TOTAL_HEADER_COLUMNS. */
+	/** The Constant FIRST_SHEET. */
+	public static final int FIRST_SHEET = 0;
+
+	/** The Constant HEADER_WIDTH. */
 	public static final int HEADER_WIDTH = 1;
 
+	/** The Constant ITEM_WIDTH. */
 	public static final int ITEM_WIDTH = 1;
 
 	/** The Constant CATEGORY_START_ROW. */
@@ -25,13 +37,20 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	/** The Constant FIRST_COLUMN. */
 	public static final int FIRST_COLUMN = 0;
 
+	/** The Constant FIRST_ROW. */
+	public static final int FIRST_ROW = 0;
+
 	/** The Constant ITEMS_PER_ROW. */
 	public static final int ITEMS_PER_ROW = 9;
 
+	/** The Constant ITEM_HEIGHT. */
 	public static final int ITEM_HEIGHT = 1;
 
 	/** The template style. */
 	protected TemplateStyle templateStyle;
+
+	/** The work sheet. */
+	protected Worksheet workSheet;
 
 	/** The cells. */
 	protected Cells cells;
@@ -39,41 +58,70 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	/** The employee. */
 	protected PaymentReportDto employee;
 
-	protected HorizontalPageBreakCollection hPageBreaks;
-
+	/** The page header range. */
 	protected Range pageHeaderRange;
 
 	/** The first row. */
-	private int firstRow = CATEGORY_START_ROW;
+	private int firstRow = FIRST_ROW;
 
 	/** The current row. */
-	private int currentRow = CATEGORY_START_ROW;
+	private int currentRow = FIRST_ROW;
 
 	/** The current column. */
 	private int currentColumn = FIRST_COLUMN + HEADER_WIDTH;
 
+	/** The max columns per item line. */
 	private int maxColumnsPerItemLine = ITEMS_PER_ROW * ITEM_WIDTH + HEADER_WIDTH;
 
+	/**
+	 * Prints the page content.
+	 */
 	abstract void printPageContent();
 
-	protected void breakPage() {
-		hPageBreaks.add(currentRow);
+	/**
+	 * Sets the page header range.
+	 */
+	abstract void setPageHeaderRange();
+
+	/**
+	 * Gets the header template.
+	 *
+	 * @return the header template
+	 */
+	abstract List<CellValue> getHeaderTemplate();
+
+	/**
+	 * Sets the template style.
+	 */
+	abstract void setTemplateStyle();
+
+	/**
+	 * Instantiates a new base payment report generator.
+	 */
+	public BasePaymentReportGenerator() {
+		this.templateStyle = new TemplateStyle();
 	}
 
 	/**
-	 * Write remark.
+	 * Break page.
+	 */
+	protected void breakPage() {
+		workSheet.getHorizontalPageBreaks().add(currentRow);
+	}
+
+	/**
+	 * Prints the remark.
 	 */
 	protected void printRemark() {
 		Cell remark = cells.get(currentRow, FIRST_COLUMN);
-		remark.setValue("備考:");
+		remark.setValue("備考: " + employee.getRemark());
 		remark.setStyle(templateStyle.remarkStyle);
 	}
 
 	/**
-	 * Write category content.
+	 * Prints the category content.
 	 *
-	 * @param listItem
-	 *            the list item
+	 * @param listItem the list item
 	 */
 	protected void printCategoryContent(List<SalaryItemDto> listItem) {
 		listItem.forEach(item -> {
@@ -109,47 +157,33 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	}
 
 	/**
-	 * Write page header.
+	 * Prints the page header.
 	 */
 	protected void printPageHeader() {
-		if (currentRow == CATEGORY_START_ROW) {
-			cells.get("D1").setValue("給与明細書");
-			// TODO: convert to Japanese era.
-			cells.get("D3").setValue(employee.getProcessingYm());
-			printEmployeeInfo();
-		} else {
+		// On first page.
+		if (currentRow < CATEGORY_START_ROW) {
+			printCellValue(getHeaderTemplate());
+		}
+		// On other pages.
+		else {
+			// Copy style
 			Range newPageHeaderRange = cells.createRange(currentRow, FIRST_COLUMN, pageHeaderRange.getRowCount(),
 					pageHeaderRange.getColumnCount());
-			try {
-				newPageHeaderRange.copy(pageHeaderRange);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				firstRow += CATEGORY_START_ROW;
-				currentRow += CATEGORY_START_ROW;
-			}
-		}
-	}
+			newPageHeaderRange.copyStyle(pageHeaderRange);
 
-	/**
-	 * Write employee info.
-	 */
-	private void printEmployeeInfo() {
-		cells.get("C6").setValue("部門コード");
-		cells.get("F6").setValue("個人コード");
-		cells.get("H6").setValue("氏名");
-		cells.get("C7").setValue(employee.getDepartmentInfo().getDepartmentCode());
-		cells.get("F7").setValue(employee.getEmployeeInfo().getEmployeeCode());
-		cells.get("H7").setValue(employee.getEmployeeInfo().getEmployeeName());
+			// Set value.
+			printCellValue(getHeaderTemplate());
+		}
+		firstRow += CATEGORY_START_ROW;
+		currentRow += CATEGORY_START_ROW;
 	}
 
 	/**
 	 * Break lines.
 	 *
-	 * @param numberOfLine
-	 *            the number of line
+	 * @param numberOfLine the number of line
 	 */
-	void breakLines(int numberOfLine) {
+	protected void breakLines(int numberOfLine) {
 		currentRow += numberOfLine;
 		firstRow += numberOfLine;
 	}
@@ -160,7 +194,7 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	protected void nextItemLine() {
 		// Reset column & enter 2 rows.
 		currentColumn = FIRST_COLUMN + HEADER_WIDTH;
-		currentRow += ITEM_HEIGHT * 2;
+		currentRow += ITEM_HEIGHT + ITEM_HEIGHT;
 	}
 
 	/**
@@ -173,25 +207,43 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	}
 
 	/**
-	 * Write section title.
+	 * Prints the section title.
 	 *
-	 * @param title
-	 *            the title
+	 * @param title the title
 	 */
 	protected void printSectionTitle(String title) {
-		Cell sectionTitle = cells.get(firstRow - 1, FIRST_COLUMN);
+		Cell sectionTitle = cells.get(firstRow - ITEM_HEIGHT, FIRST_COLUMN);
 		sectionTitle.setValue(title);
 		sectionTitle.setStyle(templateStyle.remarkStyle);
 	}
 
 	/**
-	 * Write category header.
+	 * Prints the category header.
 	 *
-	 * @param headerName
-	 *            the header name
+	 * @param headerName the header name
 	 */
 	protected void printCategoryHeader(String headerName) {
 		cells.get(firstRow, FIRST_COLUMN).setValue(headerName);
+	}
+
+	/**
+	 * Prints the data.
+	 */
+	protected void printData() {
+		printPageHeader();
+		printPageContent();
+		breakLines(1);
+		breakPage();
+	}
+
+	/**
+	 * Gets the style.
+	 *
+	 * @param cellName the cell name
+	 * @return the style
+	 */
+	protected Style getStyle(String cellName) {
+		return cells.get(cellName).getStyle();
 	}
 
 	/**
@@ -204,11 +256,16 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 		header.setStyle(templateStyle.headerStyle);
 	}
 
-	protected void printData() {
-		printPageHeader();
-		printPageContent();
-		breakLines(1);
-		breakPage();
+	/**
+	 * Prints the cell value.
+	 *
+	 * @param list the list
+	 */
+	private void printCellValue(List<CellValue> list) {
+		list.forEach(item -> {
+			cells.get(item.getRow(), item.getCol()).setValue(item.getValue());
+		});
+
 	}
 
 	/**
@@ -216,7 +273,7 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 	 */
 	protected class TemplateStyle {
 
-		/** The section title style. */
+		/** The remark style. */
 		protected Style remarkStyle;
 
 		/** The header style. */
@@ -237,6 +294,48 @@ public abstract class BasePaymentReportGenerator extends AsposeCellsReportGenera
 			this.nameStyle = new Style();
 			this.valueStyle = new Style();
 		}
+	}
+
+	/**
+	 * The Class CellValue.
+	 */
+
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
+	
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
+	@Getter
+	protected class CellValue {
+
+		/** The row. */
+		private int row;
+
+		/** The col. */
+		private int col;
+
+		/** The value. */
+		private Object value;
+
+		/**
+		 * Instantiates a new cell value.
+		 *
+		 * @param row the row
+		 * @param col the col
+		 * @param value the value
+		 */
+		public CellValue(int row, int col, Object value) {
+			this.row = row + currentRow;
+			this.col = col;
+			this.value = value;
+		}
+
 	}
 
 }
