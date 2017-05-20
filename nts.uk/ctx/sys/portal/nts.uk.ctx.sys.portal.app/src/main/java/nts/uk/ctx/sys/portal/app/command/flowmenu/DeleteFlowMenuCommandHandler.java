@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
+import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.flowmenu.DefClassAtr;
@@ -28,6 +30,9 @@ public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuC
 	@Inject
 	private FlowMenuService flowMenuService;
 	
+	@Inject
+	IInternationalization internationalization;
+	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteFlowMenuCommand> context) {		
 		String companyID = AppContexts.user().companyId();
@@ -38,7 +43,7 @@ public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuC
 			throw new BusinessException("ER026");
 		}
 		if(getFlowMenu.get().getDefClassAtr() == DefClassAtr.Default){
-			throw new BusinessException("Msg_76");
+			throw new BusinessException(new RawErrorMessage("Msg_76"));
 		}
 		
 		flowMenuService.deleteFlowMenu(companyID, topPagePartId);

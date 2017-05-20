@@ -22,22 +22,22 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="row1">
-					<span style="text-align: center;margin-right: 30px;">コピー元情報：</span>
-					<div data-bind="ntsFormLabel: {}">コード/名称</div>
+					<span style="text-align: center;margin-right: 30px;">#{i18n.getText('CCG014_17')}</span>
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG014_13')}</div>
 					<span id="titleMenuCD" data-bind="text: titlecode"></span> 
 					<span id="Name" data-bind="text: titlename"></span>
 				</div>
 				<div class="row2" style="margin-top: 5px;">
-					<span style="text-align: center; margin-right: 30px;">コピー先情報：</span>
-					<div data-bind="ntsFormLabel: { constraint: ['TitleMenuCD' , 'Name'], required: true }">コード/名称</div>
+					<span style="text-align: center; margin-right: 30px;">#{i18n.getText('CCG014_18')}</span>
+					<div data-bind="ntsFormLabel: { constraint: ['TitleMenuCD' , 'Name'], required: true }">#{i18n.getText('CCG014_13')}</div>
 					<input id="copycode" data-bind="ntsTextEditor: {value: copyTitleCD, constraint: 'TitleMenuCD', required: true}" />
 	     			<input id="copyname" data-bind="ntsTextEditor: {value: copyName, constraint: 'Name', required: true }" />
 				</div>
 				<hr style="width: 100%; margin-top: 30px;" />
-				<div id="checkOverwritting" data-bind="ntsCheckBox: { checked: checkOverwritting }">設定済みの場合は、データを上書きします。</div>
+				<div id="checkOverwritting" data-bind="ntsCheckBox: { checked: checkOverwritting }">#{i18n.getText('CCG014_23')}</div>
 				<div class="button">
-					<button id="execution" class="proceed x-large fixbtn" data-bind="click: submitClickButton" >実行</button>
-					<button id="cancel" data-bind="click: cancel_Dialog">キャンセル</button>
+					<button id="execution" class="proceed x-large fixbtn" data-bind="click: submitClickButton" >#{i18n.getText('CCG014_3')}</button>
+					<button id="cancel" data-bind="click: cancel_Dialog">#{i18n.getText('CCG014_19')}</button>
 				</div>
 			</div>
 		</ui:define>

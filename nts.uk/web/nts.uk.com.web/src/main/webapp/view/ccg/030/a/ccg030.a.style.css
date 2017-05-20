@@ -9,7 +9,7 @@
 #right-content {
 	padding-left: 40px; 
 	float: left; 
-	width: 660px;
+	width: 810px;
 	margin-top: 32px;
 }
 
@@ -17,4 +17,11 @@
 
 .btn-upload,
 .btn-download {min-width: 175px;}
-.input-size {width: 20px;}
+.input-size {width: 40px;}
+button {padding: 0px 20px 0px 20px;}
+button#btnRegistry.proceed.btnSetting{margin-left: 20px; margin-right: 50px; }
+button.btnSetting{margin-left: 20px;}
+.container{width: 1350px;}
+
+.no-wrap{white-space: nowrap;}
+#flow-menu-list .icon-dot {margin-top:3px;} 

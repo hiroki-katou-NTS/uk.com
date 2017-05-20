@@ -2,7 +2,8 @@ module ccg014.a.viewmodel {
     import commonModel = ccg.model;
     import windows = nts.uk.ui.windows;
     import errors = nts.uk.ui.errors;
-
+    import resource = nts.uk.resource;
+    
     export class ScreenModel {
         // TitleMenu List
         listTitleMenu: KnockoutObservableArray<any>;
@@ -22,8 +23,8 @@ module ccg014.a.viewmodel {
                 self.changePreviewIframe(self.selectedTitleMenu().layoutID());
             });
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'titleMenuCD', width: 70 },
-                { headerText: '名称', key: 'name', width: 260 }
+                { headerText: resource.getText('CCG014_11'), key: 'titleMenuCD', width: 70 },
+                { headerText: resource.getText('CCG014_12'), key: 'name', width: 260 }
             ]);
             // TitleMenu Details
             self.selectedTitleMenu = ko.observable(null);
@@ -54,26 +55,26 @@ module ccg014.a.viewmodel {
             var titleMenu = ko.mapping.toJS(self.selectedTitleMenu);
             var titleMenuCD = titleMenu.titleMenuCD;
             $(".nts-input").trigger("validate");
-            _.delay(() => {
-                if (!errors.hasError()) {
+            _.defer(() => {
+                if (!$(".nts-input").ntsError("hasError")) {
                     if (self.isCreate() === true) {
                         service.createTitleMenu(titleMenu).done((data) => {
-                            nts.uk.ui.dialog.alert("登録しました。");
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                             self.reloadData().done(() => {
                                 self.selectTitleMenuByIndexByCode(titleMenuCD);
                             });
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alert("入力したコードは、既に登録されています。");
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_3"));
                         });
                     }
                     else {
                         service.updateTitleMenu(titleMenu).done((data) => {
                             self.reloadData();
-                            nts.uk.ui.dialog.alert("登録しました。");
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                         });
                     }
                 }
-            }, 100);
+            });
         }
 
         /**Delete Button Click */
@@ -148,7 +149,10 @@ module ccg014.a.viewmodel {
                 _.defer(() => { $("#titleMenuCD").focus(); });
             }
             else {
-                _.defer(() => { errors.clearAll(); });
+                _.defer(() => {
+                    errors.clearAll();
+                    $(".nts-input").ntsError("clear");
+                });
             }
         }
         
@@ -196,10 +200,7 @@ module ccg014.a.viewmodel {
         }
 
         private changePreviewIframe(layoutID: string): void {
-            if (!nts.uk.util.isNullOrEmpty(layoutID))
-                $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
-            else
-                $("#preview-iframe").attr("src", "");
+            $("#preview-iframe").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
         }
 
     }

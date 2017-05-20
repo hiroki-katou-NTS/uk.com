@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.StringUtil;
@@ -24,6 +25,9 @@ public class CreateTitleMenuCommandHandler extends CommandHandler<CreateTitleMen
 	
 	@Inject
 	private TitleMenuService titleMenuService;
+	
+	@Inject
+	IInternationalization internationalization;
 
 	@Override
 	protected void handle(CommandHandlerContext<CreateTitleMenuCommand> context) {

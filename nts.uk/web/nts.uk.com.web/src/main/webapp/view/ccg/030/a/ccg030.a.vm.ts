@@ -25,9 +25,9 @@ module ccg030.a.viewmodel {
                 self.findFlowMenu(value);
             });
             self.columns = ko.observableArray([
-                { headerText: '既定', key: 'defClassAtr', width: 50 },
-                { headerText: 'コード', key: 'topPageCode', width: 80 },
-                { headerText: '名称', key: 'topPageName', width: 230 }
+                { headerText: nts.uk.resource.getText("CCG030_19"), key: 'defClassAtr', width: 40, columnCssClass: 'halign-center', template: '{{if ${defClassAtr} == 1 }}<i class="icon icon-dot "></i>{{/if}}' },
+                { headerText: nts.uk.resource.getText("CCG030_9"), key: 'topPageCode', width: 60 },
+                { headerText: nts.uk.resource.getText("CCG030_10"), key: 'topPageName', width: 260 }
             ]);
             // Details
             self.selectedFlowMenu = ko.observable(null);
@@ -66,23 +66,23 @@ module ccg030.a.viewmodel {
             var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
             if (util.isNullOrEmpty(self.selectedFlowMenu().fileID())
-                $('#file_upload').ntsError('set', 'Mày chưa chọn file');
+                $('#file_upload').ntsError('set', 'Chưa chọn file');
             _.delay(() => {
                 if (!errors.hasError()) {
                     if (self.isCreate() === true) {
                         service.createFlowMenu(flowMenu).done((data) => {
-                            nts.uk.ui.dialog.alert("登録しました。");
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                             self.reloadData().done(() => {
                                 self.selectFlowMenuByIndexByCode(topPageCode);
                             });
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alert("入力したコードは、既に登録されています。");
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_3"));
                         });
                     }
                     else {
                         service.updateFlowMenu(flowMenu).done((data) => {
                             self.reloadData();
-                            nts.uk.ui.dialog.alert("登録しました。");
+                            nts.uk.ui.dialog.alert("Msg_15");
                         });
                     }
 //                    $("#file_upload").ntsFileUpload({stereoType:"any"}).done(function(res: Array<string>) {
@@ -98,7 +98,7 @@ module ccg030.a.viewmodel {
         deleteNewFlowMenu() {
             var self = this;
             if (self.selectedFlowMenuCD() !== null) {
-                nts.uk.ui.dialog.confirm("Msg_18 Co xoa ko").ifYes(function() {
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
                     service.deleteFlowMenu(self.selectedFlowMenu().toppagePartID())
                     .done(() => {
                         var index = _.findIndex(self.listFlowMenu(), ['titleMenuCD', self.selectedFlowMenu().topPageCode()]);
@@ -106,9 +106,9 @@ module ccg030.a.viewmodel {
                         self.reloadData().done(() => {
                             self.selectFlowMenuByIndex(index);
                         });
-                        nts.uk.ui.dialog.alert("Msg_16 Da xoa");
-                    }).fail((res) => {
-                        nts.uk.ui.dialog.alert("Thất bại con mẹ nó rồi!");
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"));
+                    }).fail((res) => {                        
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_76"));
                     });
                 });
             }
@@ -158,6 +158,7 @@ module ccg030.a.viewmodel {
             var dfd = $.Deferred();
             /** Get list FlowMenu*/
             service.fillAllFlowMenu().done(function(listFlowMenu: Array<any>) {
+                listFlowMenu = _.orderBy(listFlowMenu, ["topPageCode"], ["asc"]);
                 self.listFlowMenu(listFlowMenu);
                 if (listFlowMenu.length > 0) {
                     self.isCreate(false);
@@ -201,16 +202,16 @@ module ccg030.a.viewmodel {
                 self.selectedFlowMenuCD(null);
         }
 
-        //list  message
-        private initListMessage(): any {
-            var self = this;
-            self.listMessage.push(new ItemMessage("Msg_76", "既定フローメニューは削除できません。"));
-            self.listMessage.push(new ItemMessage("Msg_3", "入力したコードは、既に登録されています。"));
-            self.listMessage.push(new ItemMessage("Msg_18", "選択中のデータを削除しますか？"));
-            self.listMessage.push(new ItemMessage("Msg_15", "登録しました。"));
-            self.listMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
-            self.listMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
-        }
+//        //list  message
+//        private initListMessage(): any {
+//            var self = this;
+//            self.listMessage.push(new ItemMessage("Msg_76", "既定フローメニューは削除できません。"));
+//            self.listMessage.push(new ItemMessage("Msg_3", "入力したコードは、既に登録されています。"));
+//            self.listMessage.push(new ItemMessage("Msg_18", "選択中のデータを削除しますか？"));
+//            self.listMessage.push(new ItemMessage("Msg_15", "登録しました。"));
+//            self.listMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
+//            self.listMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
+//        }
 
         private messName(messCode: string): string {
             var self = this;
