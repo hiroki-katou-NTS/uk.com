@@ -39,9 +39,9 @@
 					<div class="cf" id="D_SEL_001"
 						data-bind="ntsSwitchButton: {
 									options: ko.observableArray([
-							            { code: '1', name: '給与' },
-							            { code: '2', name: '給与予備' },
-							            { code: '3', name: '給与・給与予備' }
+							            { code: 1, name: '給与' },
+							            { code: 2, name: '給与予備' },
+							            { code: 3, name: '給与・給与予備' }
 							        ]),
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -51,7 +51,7 @@
 				</div>
 			</div>
 			<div class="divLine" id="D-divLine4">
-				<button id="D_BTN_001">この条件で対象者を絞込み</button>
+				<button id="D_BTN_001" data-bind="click: viewmodeld.buttonFilter.bind(viewmodeld)">この条件で対象者を絞込み</button>
 				<span class="caret-bottom"></span>
 			</div>
 			<div class="divLine" id="D-divLine5">
@@ -60,10 +60,10 @@
 					<label data-bind='text: viewmodeld.countItems'></label> <label
 						class="unit">人</label>
 				</div>
-				<div>
+				<div data-bind="with: viewmodeld">
 					<table id="D_LST_001"
 						data-bind="igGrid: {
-						dataSource: viewmodeld.d_LST_001_items,
+						dataSource: d_LST_001_items,
 		                primaryKey: 'code',
 		                width: '740px',
 		                height: '280px',
