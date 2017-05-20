@@ -49,6 +49,7 @@ public class JpaBankTransferRepository extends JpaRepository implements BankTran
 
 	private final String DEL_ALL = "DELETE FROM QbkdtBankTransfer b "
 			+ "WHERE b.qbkdtBankTransferPK.ccd = :companyCode "
+			+ "AND b.qbkdtBankTransferPK.payBonusAtr = :payBonusAtr "
 			+ "AND b.qbkdtBankTransferPK.processingNo = :processingNo "
 			+ "AND b.qbkdtBankTransferPK.payDate = :payDate";
 

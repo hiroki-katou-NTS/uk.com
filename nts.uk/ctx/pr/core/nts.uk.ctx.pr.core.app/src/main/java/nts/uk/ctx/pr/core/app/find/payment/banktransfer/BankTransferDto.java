@@ -1,14 +1,12 @@
 package nts.uk.ctx.pr.core.app.find.payment.banktransfer;
 
+import java.util.List;
+
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 
 @Value
 public class BankTransferDto {
-	String scd;
-	String nameB;
-	int paymentMethod1;
-	int paymentMethod2;
-	int paymentMethod3;
-	int paymentMethod4;
-	int paymentMethod5;
+	List<ListOfScreenDDto> listOfScreenDDto;
+	GeneralDate payDate;
 }

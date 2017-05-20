@@ -1,8 +1,10 @@
 package nts.uk.file.pr.app.export.banktransfer;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -49,9 +51,28 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 
 	private void process(BankTransferReportQuery query, String companyCode,
 			ExportServiceContext<BankTransferReportQuery> context, int sparePayAtr) {
-
+		// get branch
+		List<BranchDto> branchList = bankTransferReportRepo.findAllBranch(companyCode, query.getFromBranchId());
+		Map<String, BranchDto> branchMap = branchList.stream().collect(Collectors.toMap(BranchDto::getBranchId, x -> x));
+				
 		List<BankTransferBRpData> rpDataList = new ArrayList<BankTransferBRpData>();
+		
+		BankTransferBRpHeader header = new BankTransferBRpHeader();
+		
+		int index = 0;
 		for (String fromBranchId : query.getFromBranchId()) {
+			if (index == 0) {
+				BranchDto branch = branchMap.get(fromBranchId);
+				String title = MessageFormat.format("{0} - {1} {2} {3}", branch.getBankCode(), branch.getBranchCode(), branch.getBankName(), branch.getBranchName());
+				header.setStartCode(title);
+			}
+			
+			if (index == (query.getFromBranchId().size() - 1)) {
+				BranchDto branch = branchMap.get(fromBranchId);
+				String title = MessageFormat.format("{0} - {1} {2} {3}　】", branch.getBankCode(), branch.getBranchCode(), branch.getBankName(), branch.getBranchName());
+				header.setEndCode(title);
+			}
+			
 			BankTransferParamRpDto bankTransferParamRp = new BankTransferParamRpDto(companyCode, fromBranchId,
 					PayBonusAtr.SALARY.value, query.getProcessingNo(), query.getProcessingYm(), query.getPayDate(),
 					sparePayAtr);
@@ -124,6 +145,8 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 					rpDataList.add(rpData);
 				}
 			}
+			
+			index ++;
 		}
 		BankTransferBRpData rpDataSum = new BankTransferBRpData();
 		rpDataSum.setBankCode("総合計");
@@ -142,10 +165,7 @@ public class BankTransferReportBService extends ExportService<BankTransferReport
 
 		rpDataList.add(rpDataSum);
 
-		BankTransferBRpHeader header = new BankTransferBRpHeader();
 		header.setCompanyName(bankTransferReportRepo.findCompany(companyCode).getCompanyName());
-		header.setStartCode("0001 - 100 	給与分  	給与予備月 ");
-		header.setEndCode("9999 - 999	総合計	給与予備月 】");
 		header.setDate(query.getTransferDate() + "】");
 		// B_DBD_001
 		header.setPerson(bankTransferReportRepo.findAllCalled(companyCode).get());

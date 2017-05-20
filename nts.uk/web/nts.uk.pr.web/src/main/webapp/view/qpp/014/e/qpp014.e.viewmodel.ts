@@ -29,7 +29,7 @@ module qpp014.e {
             }
             self.dataFixed = ko.observableArray([]);
             //fix data to add to db BANK_TRANSFER
-            for (let i = 1; i < 4; i++) {
+            for (let i = 1; i < 8; i++) {
                 self.dataFixed.push(new TestArray("companyNameKana" + i, "99900000-0000-0000-0000-00000000000" + i, "depCode" + i,
                     moment.utc(Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString() + Math.floor(Math.random() * (28 - 1 + 1) + 1).toString(), 'YYYYMMDD').toISOString(),
                     Math.floor(Math.random() * 2), Math.floor(Math.random() * 1001), 1, Math.floor(Math.random() * 2), Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString(),

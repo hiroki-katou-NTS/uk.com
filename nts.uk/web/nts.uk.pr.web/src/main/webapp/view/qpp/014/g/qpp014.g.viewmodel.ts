@@ -8,16 +8,17 @@ module qpp014.g.viewmodel {
         g_SEL_001_itemSelected: KnockoutObservable<any>;
         g_SEL_002_items: KnockoutObservableArray<ItemModel_G_SEL_002>;
         g_SEL_002_itemSelected: KnockoutObservable<any>;
-        g_INP_002: any;
+        g_INP_002: KnockoutObservable<number>;
         g_SEL_003_itemSelected: KnockoutObservable<any>;
         yearMonthDateInJapanEmpire: any;
+        processingYm: any;
         processingDate: any;
         processingDateInJapanEmprire: any;
         processingNo: any;
         processingName: any;
-        accountAtr: KnockoutObservable<number>;
+        accountAtr: KnockoutObservable<string>;
         accountNo: KnockoutObservable<number>;
-   
+
         constructor(data: any) {
             let self = this;
             self.dataBankBranch = ko.observableArray([]);
@@ -28,12 +29,11 @@ module qpp014.g.viewmodel {
             self.g_SEL_002_items = ko.observableArray([]);
             self.g_SEL_002_itemSelected = ko.observable();
             self.g_SEL_001_itemSelected = ko.observable();
-            self.accountAtr = ko.observable(0);
+            self.accountAtr = ko.observable('');
             self.accountNo = ko.observable(0);
-            self.g_INP_002 = {
-                value: ko.observable(12)
-            };
-            self.processingDate = ko.observable(nts.uk.time.formatYearMonth(data.currentProcessingYm));
+            self.g_INP_002 = ko.observable(12);
+            self.processingYm = data.currentProcessingYm;
+            self.processingDate = ko.observable(nts.uk.time.formatYearMonth(self.processingYm));
             self.processingDateInJapanEmprire = ko.computed(function() {
                 return nts.uk.time.yearmonthInJapanEmpire(self.processingDate()).toString();
             });
@@ -45,7 +45,7 @@ module qpp014.g.viewmodel {
                 return "(" + nts.uk.time.yearInJapanEmpire(moment(self.g_INP_001()).format('YYYY')).toString() +
                     moment(self.g_INP_001()).format('MM') + " 月 " + moment(self.g_INP_001()).format('DD') + " 日)";
             });
-            self.processingNo = ko.observable(data.processingNo + ' : ');
+            self.processingNo = data.processingNo;
             self.processingName = ko.observable(data.processingName + ' )');
             $.when(self.findAllBankBranch()).done(function() {
                 self.findAllLineBank().done(function() {
@@ -60,12 +60,16 @@ module qpp014.g.viewmodel {
                     self.g_SEL_001_items(tmp);
                 });
             });
-            
-            self.g_SEL_001_itemSelected.subscribe(function(newValue : any) {
+
+            self.g_SEL_001_itemSelected.subscribe(function(newValue: any) {
                 var tmp = _.find(self.dataLineBank(), function(x) {
                     return x.lineBankCode == newValue;
                 });
-                self.accountAtr(tmp.accountAtr);
+                if (tmp.accountAtr == 0) {
+                    self.accountAtr('普通');
+                } else {
+                    self.accountAtr('当座');
+                }
                 self.accountNo(tmp.accountNo);
                 self.g_SEL_002_items(tmp.consignors);
             });
@@ -122,12 +126,47 @@ module qpp014.g.viewmodel {
          */
         openIDialog() {
             var self = this;
-            nts.uk.ui.windows.setShared("processingDateInJapanEmprire", self.processingDateInJapanEmprire(), true);
-            nts.uk.ui.windows.setShared("label", self.g_SEL_001_items()[_.findIndex(self.g_SEL_001_items(), function(x) {
-                return x.code === self.g_SEL_001_itemSelected();
-            })].label, true);
-            nts.uk.ui.windows.sub.modal("/view/qpp/014/i/index.xhtml", { title: "振込データテキスト出力結果一覧", dialogClass: "no-close" }).onClosed(function() {
-            });
+            if (self.g_INP_001() == '') {
+                nts.uk.ui.dialog.alert('振込指定日が入力されていません。');
+            } else if (self.g_SEL_002_itemSelected() == null || self.g_SEL_002_itemSelected() == '' || self.g_SEL_002_itemSelected() == undefined) {
+                nts.uk.ui.dialog.alert('委託者コードが入力されていません。');
+            } else if (self.g_INP_002().toString() == '') {
+                nts.uk.ui.dialog.alert('種別コードが入力されていません。');
+            } else if (!self.g_INP_002().toString().match(/^[0-9]{2}$/)) {
+                nts.uk.ui.dialog.alert('Invalid Number');
+                $('#G_INP_002').ntsError('set', '00〜99の間の値を入力してください');
+            } else if (self.g_SEL_001_itemSelected() == null || self.g_SEL_001_itemSelected() == '' || self.g_SEL_001_itemSelected() == undefined) {
+                nts.uk.ui.dialog.alert("振込元銀行名が選択されていません。");
+            } else {
+                var lineBankObj = _.find(self.dataLineBank(), function(x) {
+                    return x.lineBankCode === self.g_SEL_001_itemSelected();
+                });
+                var bankBranchObj = _.find(self.dataBankBranch2(), function(x) {
+                    return x.branchId === lineBankObj.branchId;
+                });
+                var tmp = {
+                    processingNo: self.processingNo,
+                    processingYm: self.processingYm,
+                    sparePayAtr: nts.uk.ui.windows.getShared("sparePayAtr"),
+                    branchId: lineBankObj.branchId,
+                    consignorCode: self.g_SEL_002_itemSelected(),
+                    requesterName: lineBankObj.requesterName,
+                    transferDate: self.g_INP_001(),
+                    bankCode: bankBranchObj.parentCode,
+                    bankName : bankBranchObj.parentName,
+                    branchCode : bankBranchObj.code,
+                    branchName : bankBranchObj.name,
+                    accountAtr: self.accountAtr(),
+                    accountNo: self.accountNo(),
+                };
+                nts.uk.ui.windows.setShared("transferObject", tmp, true);
+                nts.uk.ui.windows.setShared("processingDateInJapanEmprire", self.processingDateInJapanEmprire(), true);
+                nts.uk.ui.windows.setShared("label", self.g_SEL_001_items()[_.findIndex(self.g_SEL_001_items(), function(x) {
+                    return x.code === self.g_SEL_001_itemSelected();
+                })].label, true);
+                nts.uk.ui.windows.sub.modal("/view/qpp/014/i/index.xhtml", { title: "振込データテキスト出力結果一覧", dialogClass: "no-close" }).onClosed(function() {
+                });
+            }
         }
     }
 

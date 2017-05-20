@@ -74,11 +74,11 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 
 	private void process1(String companyCode, AddBankTransferCommand addBankTransferCommand, int sparePayAtr) {
 		// PAYMENT_HEADER SEL_3 with PAYBONUS_ATR = 0 and SPARE_PAY_ATR = 0
-		Optional<Payment> paymentObj = paymentDataRepository.find(companyCode, addBankTransferCommand.getPersonId(),
-				addBankTransferCommand.getProcessingNoOfScreenE(), PayBonusAtr.SALARY.value,
-				addBankTransferCommand.getProcessingYMOfScreenE(), sparePayAtr);
+		Optional<Payment> paymentHeaderObj = paymentDataRepository.find(companyCode,
+				addBankTransferCommand.getPersonId(), addBankTransferCommand.getProcessingNoOfScreenE(),
+				PayBonusAtr.SALARY.value, addBankTransferCommand.getProcessingYMOfScreenE(), sparePayAtr);
 		// After perform SEL_3 of PAYMENT_HEADER, if exist, next process
-		if (paymentObj.isPresent()) {
+		if (paymentHeaderObj.isPresent()) {
 			// PERSON_BANK_ACCOUNT SEL_7
 			Optional<BasicPersonBankAccountDto> basicPersonBankAccountDtoObj = personBankAccountAdapter
 					.findBasePIdAndBaseYM(companyCode, addBankTransferCommand.getPersonId(),
@@ -87,23 +87,27 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 				if (basicPersonBankAccountDtoObj.get().getUseSet1().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet1().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet1(),
-							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F304");
-				} else if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
+							basicPersonBankAccountDtoObj, paymentHeaderObj, sparePayAtr, "F304");
+				}
+				if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet2().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet2(),
-							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F305");
-				} else if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
+							basicPersonBankAccountDtoObj, paymentHeaderObj, sparePayAtr, "F305");
+				}
+				if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet3().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet3(),
-							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F306");
-				} else if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
+							basicPersonBankAccountDtoObj, paymentHeaderObj, sparePayAtr, "F306");
+				}
+				if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet4().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet4(),
-							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F307");
-				} else if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
+							basicPersonBankAccountDtoObj, paymentHeaderObj, sparePayAtr, "F307");
+				}
+				if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
 						&& basicPersonBankAccountDtoObj.get().getUseSet5().getPaymentMethod() == 0) {
 					process2(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet5(),
-							basicPersonBankAccountDtoObj, paymentObj, sparePayAtr, "F308");
+							basicPersonBankAccountDtoObj, paymentHeaderObj, sparePayAtr, "F308");
 				}
 			} else {
 				// Save error to list
@@ -117,33 +121,37 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 		// PAYMENT_HEADER SEL_3 with PAYBONUS_ATR = 0 and SPARE_PAY_ATR = 0
 		// and 1
 		// ERRORRRR
-		List<Payment> paymentObj = paymentDataRepository.findItemWith5Property(companyCode,
+		List<Payment> paymentHeaderObj = paymentDataRepository.findItemWith5Property(companyCode,
 				addBankTransferCommand.getPersonId(), addBankTransferCommand.getProcessingNoOfScreenE(),
 				PayBonusAtr.SALARY.value, addBankTransferCommand.getProcessingYMOfScreenE());
-		if (paymentObj.size() > 0) {
+		if (paymentHeaderObj.size() > 0) {
 			// PERSON_BANK_ACCOUNT SEL_7
 			Optional<BasicPersonBankAccountDto> basicPersonBankAccountDtoObj = personBankAccountAdapter
 					.findBasePIdAndBaseYM(companyCode, addBankTransferCommand.getPersonId(),
 							addBankTransferCommand.getProcessingYMOfScreenE());
 			if (basicPersonBankAccountDtoObj.isPresent()) {
-				for (Payment x : paymentObj) {
+				for (Payment x : paymentHeaderObj) {
 					if (basicPersonBankAccountDtoObj.get().getUseSet1().getUseSet() == 1
 							&& basicPersonBankAccountDtoObj.get().getUseSet1().getPaymentMethod() == 0) {
 						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet1(),
 								basicPersonBankAccountDtoObj, x, "F304");
-					} else if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
+					}
+					if (basicPersonBankAccountDtoObj.get().getUseSet2().getUseSet() == 1
 							&& basicPersonBankAccountDtoObj.get().getUseSet2().getPaymentMethod() == 0) {
 						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet2(),
 								basicPersonBankAccountDtoObj, x, "F305");
-					} else if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
+					}
+					if (basicPersonBankAccountDtoObj.get().getUseSet3().getUseSet() == 1
 							&& basicPersonBankAccountDtoObj.get().getUseSet3().getPaymentMethod() == 0) {
 						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet3(),
 								basicPersonBankAccountDtoObj, x, "F306");
-					} else if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
+					}
+					if (basicPersonBankAccountDtoObj.get().getUseSet4().getUseSet() == 1
 							&& basicPersonBankAccountDtoObj.get().getUseSet4().getPaymentMethod() == 0) {
 						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet4(),
 								basicPersonBankAccountDtoObj, x, "F307");
-					} else if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
+					}
+					if (basicPersonBankAccountDtoObj.get().getUseSet5().getUseSet() == 1
 							&& basicPersonBankAccountDtoObj.get().getUseSet5().getPaymentMethod() == 0) {
 						process2_1(companyCode, addBankTransferCommand, basicPersonBankAccountDtoObj.get().getUseSet5(),
 								basicPersonBankAccountDtoObj, x, "F308");
@@ -159,7 +167,7 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 
 	private void process2(String companyCode, AddBankTransferCommand addBankTransferCommand,
 			BasicPersonUseSettingDto basicPersonUseSettingDtoObj,
-			Optional<BasicPersonBankAccountDto> basicPersonBankAccountDtoObj, Optional<Payment> paymentObj,
+			Optional<BasicPersonBankAccountDto> basicPersonBankAccountDtoObj, Optional<Payment> paymentHeaderObj,
 			int sparePayAtr, String itemCode) {
 		Optional<BasicLineBankDto> basicLineBankDtoObj = lineBankAdapter.find(companyCode,
 				basicPersonUseSettingDtoObj.getFromLineBankCd());
@@ -174,11 +182,10 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 				CategoryAtr.ARTICLES.value, itemCode, BigDecimal.ZERO);
 		if (paymentDetailObj.isPresent()) {
 			// NOTE: dang bi loi
-			BankTransfer bankTransfer = BankTransfer.createFromJavaType(companyCode,
-					addBankTransferCommand.getCompanyNameKana(), addBankTransferCommand.getPersonId(),
-					paymentObj.get().getDepartmentCode(), addBankTransferCommand.getPayDateOfScreenE(),
-					PayBonusAtr.SALARY.value, paymentDetailObj.get().getValue(),
-					addBankTransferCommand.getProcessingNoOfScreenE(),
+			BankTransfer bankTransfer = BankTransfer.createFromJavaType(companyCode, "companyNameKana",
+					"99900000-0000-0000-0000-000000000001", paymentHeaderObj.get().getDepartmentCode(),
+					addBankTransferCommand.getPayDateOfScreenE(), PayBonusAtr.SALARY.value,
+					paymentDetailObj.get().getValue(), addBankTransferCommand.getProcessingNoOfScreenE(),
 					addBankTransferCommand.getProcessingYMOfScreenE(), sparePayAtr);
 			bankTransfer.fromBank(basicLineBankDtoObj.get().getBranchId(), basicBankDtoObj.get().getBankNameKana(),
 					basicBankBranchDtoObj.get().getBankBranchNameKana(), basicLineBankDtoObj.get().getAccountAtr(),
@@ -195,7 +202,8 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 
 	private void process2_1(String companyCode, AddBankTransferCommand addBankTransferCommand,
 			BasicPersonUseSettingDto basicPersonUseSettingDtoObj,
-			Optional<BasicPersonBankAccountDto> basicPersonBankAccountDtoObj, Payment paymentObj, String itemCode) {
+			Optional<BasicPersonBankAccountDto> basicPersonBankAccountDtoObj, Payment paymentHeaderObj,
+			String itemCode) {
 		Optional<BasicLineBankDto> basicLineBankDtoObj = lineBankAdapter.find(companyCode,
 				basicPersonUseSettingDtoObj.getFromLineBankCd());
 		Optional<BasicBankBranchDto> basicBankBranchDtoObj = bankBranchAdapter.find(companyCode,
@@ -210,10 +218,9 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 		if (paymentDetailObj.size() > 0) {
 			// NOTE: dang bi loi
 			for (PaymentDetail x : paymentDetailObj) {
-				BankTransfer bankTransfer = BankTransfer.createFromJavaType(companyCode,
-						addBankTransferCommand.getCompanyNameKana(), addBankTransferCommand.getPersonId(),
-						paymentObj.getDepartmentCode(), addBankTransferCommand.getPayDateOfScreenE(),
-						PayBonusAtr.SALARY.value, x.getValue(),
+				BankTransfer bankTransfer = BankTransfer.createFromJavaType(companyCode, "companyNameKana2",
+						"11100000-0000-0000-0000-000000000001", paymentHeaderObj.getDepartmentCode(),
+						addBankTransferCommand.getPayDateOfScreenE(), PayBonusAtr.SALARY.value, x.getValue(),
 						addBankTransferCommand.getProcessingNoOfScreenE(),
 						addBankTransferCommand.getProcessingYMOfScreenE(), x.getSparePayAtr().value);
 				bankTransfer.fromBank(basicLineBankDtoObj.get().getBranchId(), basicBankDtoObj.get().getBankNameKana(),

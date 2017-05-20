@@ -1,11 +1,13 @@
 package nts.uk.file.pr.app.export.banktransfer;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,7 +19,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.file.pr.app.export.banktransfer.data.BankDto;
-import nts.uk.file.pr.app.export.banktransfer.data.BankTransferAReport;
+import nts.uk.file.pr.app.export.banktransfer.data.BankReportData;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferARpData;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferARpHeader;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferParamRpDto;
@@ -52,12 +54,35 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 			ExportServiceContext<BankTransferReportQuery> context, int sparePayAtr) {
 		Map<String, String> persons = fixPerson();
 		
-		List<BankTransferARpData> salaryPreliminaryMonthList = new ArrayList<BankTransferARpData>();
-		List<BankTransferARpData> salaryPortionList = new ArrayList<BankTransferARpData>();
+		List<BankTransferARpData> rpBankDataList = new ArrayList<>();
+		
+		// get branch
+		List<BranchDto> branchList = bankTransferReportRepo.findAllBranch(companyCode, query.getFromBranchId());
+		Map<String, BranchDto> branchMap = branchList.stream().collect(Collectors.toMap(BranchDto::getBranchId, x -> x));
+		
 		for (String fromBranchId : query.getFromBranchId()) {
+			BankTransferARpData rpBankData = new BankTransferARpData();
+			
+			// header
+			BranchDto branch = branchMap.get(fromBranchId);
+			// set name kana
+			String bankName = branch.getBankName();
+			String branchName = branch.getBranchName();
+			if (query.getSelectedId_J_SEL_001() == 1) {
+				if (query.getOuputName() != null && query.getOuputName().intValue() == 1) {
+					bankName = branch.getBankNameKana();
+					branchName = branch.getBranchNameKana();
+				}
+			}
+			
+			String title = MessageFormat.format("{0} - {1} {2} {3}　】", branch.getBankCode(), branch.getBranchCode(), bankName, branch.getBranchName(), branchName);
+			BankTransferARpHeader header = getHeader(query, companyCode, title);
+			rpBankData.setHeader(header);
+			
 			BankTransferParamRpDto bankTransferParamRp = new BankTransferParamRpDto(companyCode, fromBranchId,
 					PayBonusAtr.SALARY.value, query.getProcessingNo(), query.getProcessingYm(), query.getPayDate(),
 					sparePayAtr);
+			
 			// BANK_TRANSFER SEL_1
 			List<BankTransferRpDto> bankTransfer = new ArrayList<BankTransferRpDto>();
 			if (query.getSparePayAtr()== 3) {
@@ -66,8 +91,9 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 				bankTransfer = bankTransferReportRepo.findBySEL1(bankTransferParamRp);
 			}
 			
+			List<BankReportData> salaryDataList = new ArrayList<>();
 			for (BankTransferRpDto bankTrans : bankTransfer) {
-				BankTransferARpData rpData = new BankTransferARpData();
+				BankReportData rpData = new BankReportData();
 				// A_DBD_008 (PERSON_COM)
 				rpData.setScd(persons.get(bankTrans.getPersonId()));
 				// A_DBD_009 (PERSON_BASE)
@@ -89,14 +115,24 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 				if (query.getCurrentCode_J_SEL_004() == 0) {
 					// to-do
 				}
+				
+				bankName = bankDto.get().getBankName();
+				branchName = branchDto.get().getBranchName();
+				if (query.getSelectedId_J_SEL_001() == 1) {
+					if (query.getOuputName() != null && query.getOuputName().intValue() == 1) {
+						bankName = bankDto.get().getBankNameKana();
+						branchName = branchDto.get().getBranchNameKana();
+					}
+				}
+				
 				// A_DBD_002
 				rpData.setBankCode(bankDto.get().getBankCode());
 				// A_DBD_003
-				rpData.setBankName(bankDto.get().getBankName());
+				rpData.setBankName(bankName);
 				// A_DBD_004
 				rpData.setBranchCode(branchDto.get().getBranchCode());
 				// A_DBD_005
-				rpData.setBranchName(branchDto.get().getBranchName());
+				rpData.setBranchName(branchName);
 
 				// A_DBD_006
 				if (bankTrans.getToAccountAtr() == 0) {
@@ -115,50 +151,45 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 				
 				rpData.setRowTotal(false);
 				
-				if (SparePayAtr.NORMAL.value == bankTrans.getSparePayAtr()) {
-					salaryPortionList.add(rpData);	
-				} else {
-					salaryPreliminaryMonthList.add(rpData);
-				}
+				salaryDataList.add(rpData);	
 			}
-		}
-		
+			
+			// row total
+			this.totalSalary(salaryDataList);
+			rpBankData.setDataSalaryList(salaryDataList);
+			
+			rpBankDataList.add(rpBankData);
+		}		
+
+		this.generator.generator(context.getGeneratorContext(), rpBankDataList);
+	}
+
+	private BankTransferARpHeader getHeader(BankTransferReportQuery query, String companyCode, String fromBank) {
 		// set header
 		BankTransferARpHeader header = new BankTransferARpHeader();
 		header.setCompanyName(bankTransferReportRepo.findCompany(companyCode).getCompanyName());
 		// A_CTR_005
-		header.setCode("0001 - 100 	給与分  	給与予備月 】");
+		header.setCode(fromBank);
 		// A_CTR_006
-		header.setDate(query.getTransferDate() + "】");
+		header.setDate(query.getTransferDate() + "　】");
 		// A_DBD_001
 		header.setPerson(bankTransferReportRepo.findAllCalled(companyCode).get());
-		
-		// row total
-		this.totalSalary(salaryPortionList);
-		this.totalSalary(salaryPreliminaryMonthList);
-		
-		BankTransferAReport reportA = new BankTransferAReport();
-		reportA.setSalaryPortionList(salaryPortionList);
-		reportA.setSalaryPreliminaryMonthList(salaryPreliminaryMonthList);
-		reportA.setHeader(header);
-		reportA.setSparePayAtr(query.getSparePayAtr());
-
-		this.generator.generator(context.getGeneratorContext(), reportA);
+		return header;
 	}
 	
 	/**
 	 * Total salary preliminary month
 	 */
-	private void totalSalary(List<BankTransferARpData> salaryPreliminaryMonthList) {
+	private void totalSalary(List<BankReportData> salaryPreliminaryMonthList) {
 		if (salaryPreliminaryMonthList == null) {
 			return;
 		}
 		
-		BankTransferARpData rpDataSum = new BankTransferARpData();
+		BankReportData rpDataSum = new BankReportData();
 		rpDataSum.setBankCode("総合計");
 		// A_CTR_002 (totalPaymentMny)
 		BigDecimal sum = BigDecimal.valueOf(0);
-		for (BankTransferARpData bankTransferARpData : salaryPreliminaryMonthList) {
+		for (BankReportData bankTransferARpData : salaryPreliminaryMonthList) {
 			sum = sum.add(bankTransferARpData.getPaymentMyn());
 		}
 		rpDataSum.setPaymentMyn(sum);

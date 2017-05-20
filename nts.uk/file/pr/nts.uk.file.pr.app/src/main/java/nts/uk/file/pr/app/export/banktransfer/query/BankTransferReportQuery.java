@@ -7,6 +7,8 @@ import nts.arc.time.GeneralDate;
 
 @Data
 public class BankTransferReportQuery {
+	private Integer outputOrder;
+	private Integer ouputName;
 	private List<String> fromBranchId;
 	private int processingNo;
 	private int processingYm;
