@@ -154,8 +154,13 @@ var nts;
                         .pause(1000); });
                 })
                     .done(function (res) {
-                    specials.donwloadFile(res.id);
-                    dfd.resolve(res);
+                    if (res.failed || res.status == "ABORTED") {
+                        dfd.reject(res.error);
+                    }
+                    else {
+                        specials.donwloadFile(res.id);
+                        dfd.resolve(res);
+                    }
                 })
                     .fail(function (res) {
                     dfd.reject(res);

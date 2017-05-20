@@ -1084,7 +1084,9 @@ var nts;
                     this.option = option;
                 }
                 NumberFormatter.prototype.format = function (source) {
-                    return source === '' ? source : uk.ntsNumber.formatNumber(source, this.option.option);
+                    return nts.uk.util.isNullOrEmpty(source) ? (!nts.uk.util.isNullOrEmpty(this.option.option.defaultValue)
+                        ? this.option.option.defaultValue : source)
+                        : uk.ntsNumber.formatNumber(source, this.option.option);
                 };
                 return NumberFormatter;
             }());
@@ -1811,10 +1813,7 @@ var nts;
                     contentType: options.contentType || 'application/json',
                     url: webserviceLocator.serialize(),
                     dataType: options.dataType || 'json',
-                    data: data,
-                    headers: {
-                        'PG-Path': location.current.serialize()
-                    }
+                    data: data
                 }).done(function (res) {
                     if (res !== undefined && res.businessException) {
                         dfd.reject(res);
@@ -2063,12 +2062,12 @@ var nts;
                         var isDecimalNumber = false;
                         if (this.option !== undefined) {
                             if (nts.uk.util.isNullOrUndefined(inputText) || inputText.trim().length <= 0) {
-                                if (this.option['required'] === true) {
+                                if (this.option['required'] === true && nts.uk.util.isNullOrEmpty(this.option['defaultValue'])) {
                                     result.fail('This field is required.');
                                     return result;
                                 }
                                 else {
-                                    result.success('');
+                                    result.success(this.option['defaultValue']);
                                     return result;
                                 }
                             }
@@ -3017,6 +3016,7 @@ var nts;
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
                         this.symbolChar = (option !== undefined && option.symbolChar !== undefined) ? option.symbolChar : "";
                         this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
+                        this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
                     }
                     return NumberEditorOption;
                 }(EditorOptionBase));
@@ -3036,6 +3036,7 @@ var nts;
                         this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
+                        this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
                     }
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
@@ -4114,7 +4115,7 @@ var nts;
                             }) !== undefined);
                         });
                         // Enable
-                        if (container.data("init") || !_.isEqual(container.data("enable"), enable)) {
+                        if ((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)) {
                             container.data("enable", _.clone(enable));
                             (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
                             _.forEach(data.options(), function (option) {
@@ -4893,6 +4894,10 @@ var nts;
                         else if (this.editorOption.symbolChar !== undefined && this.editorOption.symbolChar !== "" && this.editorOption.symbolPosition !== undefined) {
                             $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
                             $parent.attr("data-content", this.editorOption.symbolChar);
+                        }
+                        if (!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue)
+                            && nts.uk.util.isNullOrEmpty(data.value())) {
+                            data.value(this.editorOption.defaultValue);
                         }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
