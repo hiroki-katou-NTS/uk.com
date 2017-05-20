@@ -30,17 +30,16 @@
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div class="cf">
 						<div style="float: left">
-							<table tabindex="2" id="single-list"
+							<table tabindex="2" id="single-list-dataSource"
 								data-bind="ntsGridList:{
-									width: 250,
+									width: 350,
 									height: 200,
 									options: dataSource,								
 									optionsValue: 'divTimeId',
 									columns: columns,
 									multiple: false,
 									value: currentCode,
-									enable: true}"
-								class="cf">
+									enable: true}" >
 							</table>
 						</div>
 					</div>
@@ -76,8 +75,7 @@
 							<td>
 								<!-- A3_4: Divergence Time Name -->
 								 <input tabindex="4"
-								class="nts-input" id="nts-input-name" style = "width: 150px;"
-								
+								class="nts-input" id="div-time-name" 
 								data-bind="ntsTextEditor:{
                                          value: divTimeName,
                                          required: true,

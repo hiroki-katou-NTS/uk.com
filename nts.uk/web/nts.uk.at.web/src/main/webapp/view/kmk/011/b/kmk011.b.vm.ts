@@ -19,7 +19,7 @@ module kmk011.b.viewmodel {
             self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMK011_37'), key: 'divReasonCode', width: 100 },
-                { headerText: nts.uk.resource.getText('KMK011_38'), key: 'divReasonContent', width: 150 }
+                { headerText: nts.uk.resource.getText('KMK011_38'), key: 'divReasonContent', width: 200 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.switchUSe3 = ko.observableArray([
