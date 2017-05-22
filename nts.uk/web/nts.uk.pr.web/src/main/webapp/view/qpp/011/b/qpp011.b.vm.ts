@@ -116,7 +116,7 @@ module qpp011.b {
             self.numbereditor = {
                 value: self.C_INP_004_Value,
                 constraint: '',
-                option:{ width: "18" },
+                option: { width: "18" },
                 required: ko.observable(true),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
@@ -335,19 +335,48 @@ module qpp011.b {
                 });
                 $(gridID).setupSearchScroll("igTreeGrid");
             }
+
+
+
             self.selectedValue_B_LST_001 = ko.observableArray([]);
             let $B_LST_001 = $("#B_LST_001");
-            self.selectedValue_B_LST_001.subscribe(function(newValue) {
-                let selectedRows = _.map($B_LST_001.igTreeGridSelection("selectedRows"), function(row) {
+            self.selectedValue_B_LST_001.subscribe(function(newValue: Array<any>) {
+                let selectedRows: Array<any> = _.map($B_LST_001.igTreeGridSelection("selectedRows"), function(row) {
                     if (row)
-                        return row.position;
+                        return row.id;
                 });
-                if (!_.isEqual(selectedRows, newValue)) {
-                    $B_LST_001.igTreeGridSelection("clearSelection");
-                    newValue.forEach(function(id) {
-                        $B_LST_001.igTreeGridSelection("selectRowById", id);
-                    });
-                }
+                //  $B_LST_001.igTreeGridSelection("clearSelection");
+                let selectedCodes: Array<any>;
+                //  if (newValue.length > selectedRows.length) {
+                selectedCodes = newValue;
+                newValue.forEach(function(id) {
+                    if (self.findObject(id).typeBranch != "Item") {
+                        let childArray = self.findChild(id);
+                        childArray.forEach(function(child: TreeItem) {
+                            selectedCodes.push(child.position);
+                        });
+                    }
+                });
+                //                    } else {
+                //                        selectedCodes = selectedRows;
+                //                        selectedRows.forEach(function(id) {
+                //                            if (self.findObject(id).typeBranch != "Item") {
+                //                                let childArray = self.findChild(id);
+                //                                childArray.forEach(function(child: TreeItem) {
+                //                                    selectedCodes.splice(childArray.indexOf(child.position, 0), 1);
+                //                                });
+                //                            }
+                //                        });
+                //
+                //                    }
+                selectedCodes.forEach(function(id) {
+                    $B_LST_001.igTreeGridSelection("selectRowById", id);
+                });
+
+
+
+
+
             });
             self.selectedValue_C_LST_001 = ko.observableArray([]);
             let $C_LST_001 = $("#C_LST_001");
@@ -363,7 +392,7 @@ module qpp011.b {
                     });
                 }
             });
-            
+
             //B
             //001
             self.B_INP_001_yearMonth = ko.observable('2017/12');
@@ -436,7 +465,31 @@ module qpp011.b {
 
 
         }
+        findChild(id) {
+            let self = this;
+            let childArray = [];
+            let dataSource: Array<TreeItem> = self.B_LST_001_Data();
+            for (let branch of dataSource) {
+                if (branch.child == id) {
+                    for (let item of dataSource) {
+                        if (item.child == Number(branch.position)) {
+                            childArray.push(item);
+                        }
+                    }
+                    childArray.push(branch);
+                }
+            }
+            return childArray;
+        }
+        findObject(value: String) {
+            let self = this;
+            let dataSource = self.B_LST_001_Data();
 
+            if (!dataSource || !dataSource.length) {
+                return undefined;
+            }
+            return _.find(dataSource, function(item: TreeItem) { return item.position == value; });
+        }
         openDDialog() {
             let self = this;
             if (!self.B_INP_001_yearMonth()) {
@@ -532,7 +585,7 @@ module qpp011.b {
             }
             if (self.C_INP_004_Value() && !self.C_INP_004_Value().match(/^[0-9]{2}$/)) {
                 $('#C_INP_004-input').ntsError('set', '00〜99の間の値を入力してください');
-                return false;    
+                return false;
             }
             return true;
         }
@@ -564,23 +617,23 @@ module qpp011.b {
                 nts.uk.ui.dialog.alert(res.message);
             });
         }
-        
+
         /**
          * Event to tab b
          */
         eventTabB(): void {
-            var self = this;   
-            self.clearCError(); 
+            var self = this;
+            self.clearCError();
         }
-        
+
         /**
          * Event to tab c
          */
         eventTabC(): void {
             var self = this;
-            self.clearBError();    
+            self.clearBError();
         }
-        
+
         /**
          * Clear error for all input at screen B
          */
@@ -590,7 +643,7 @@ module qpp011.b {
             $("#B_INP_002-input").ntsError('clear');
             $("#B_INP_003-input").ntsError('clear');
         }
-        
+
         /**
          * Clear error for all input at screen C
          */
@@ -599,7 +652,7 @@ module qpp011.b {
             $("#C_INP_001-input").ntsError('clear');
             $("#C_INP_002-input").ntsError('clear');
             $("#C_INP_003-input").ntsError('clear');
-            $("#C_INP_004-input").ntsError('clear');    
+            $("#C_INP_004-input").ntsError('clear');
         }
     }
     export class BoxModel {
