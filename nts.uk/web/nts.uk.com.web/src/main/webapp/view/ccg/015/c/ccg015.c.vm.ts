@@ -44,12 +44,11 @@ module nts.uk.pr.view.ccg015.c {
                         copyCode: self.parentTopPageCode()
                     };
                     service.copyTopPage(data).done(function() {
-                        nts.uk.ui.dialog.alert("登録しました。").then(function() {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15")).then(function() {
                             nts.uk.ui.windows.close();
                         }); 
                     }).fail(function(res) {
-                        //TODO
-                        nts.uk.ui.dialog.alert("入力したコードは、既に登録されています。");
+                        nts.uk.ui.dialog.alert(res.message);
                     });
                 }
 

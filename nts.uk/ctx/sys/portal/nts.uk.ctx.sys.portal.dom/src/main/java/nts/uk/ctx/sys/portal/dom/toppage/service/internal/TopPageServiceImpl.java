@@ -51,8 +51,7 @@ public class TopPageServiceImpl implements TopPageService {
 						newLayoutId, topPage.getTopPageName().v(), topPage.getLanguageNumber());
 				topPageRepository.update(newTopPage);
 			} else {
-				// TODO change message
-				throw new BusinessException("#Msg_3");
+				throw new BusinessException("Msg_3");
 			}
 		} else {
 			// register new
