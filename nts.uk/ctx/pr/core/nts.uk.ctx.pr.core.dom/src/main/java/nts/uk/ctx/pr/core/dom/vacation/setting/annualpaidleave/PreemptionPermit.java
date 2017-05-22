@@ -2,18 +2,18 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.vacationsetting.yearvacationsetting;
+package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
 /**
- * The Enum MaxDayReference.
+ * The Enum PreemptionPermit.
  */
-public enum MaxDayReference {
-    
-	/** The Company uniform. */
-	CompanyUniform(0, "会社一律"),
+public enum PreemptionPermit {
 
-	/** The Refer annual grant table. */
-	ReferAnnualGrantTable(1, "年休付与テーブルを参照");
+	/** The fifo. */
+	FIFO(0, "先入れ先出し"),
+
+	/** The lifo. */
+	LIFO(1, "後入れ先出し");
 
 	/** The value. */
 	public int value;
@@ -22,15 +22,15 @@ public enum MaxDayReference {
 	public String description;
 
 	/** The Constant values. */
-	private final static MaxDayReference [] values = MaxDayReference.values();
+	private final static PreemptionPermit[] values = PreemptionPermit.values();
 
 	/**
-	 * Instantiates a new max day reference.
+	 * Instantiates a new preemption permit.
 	 *
 	 * @param value the value
 	 * @param description the description
 	 */
-	private MaxDayReference(int value, String description) {
+	private PreemptionPermit(int value, String description) {
 		this.value = value;
 		this.description = description;
 	}
@@ -39,16 +39,16 @@ public enum MaxDayReference {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the max day reference
+	 * @return the preemption permit
 	 */
-	public static MaxDayReference valueOf(Integer value) {
+	public static PreemptionPermit valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (MaxDayReference val : MaxDayReference.values) {
+		for (PreemptionPermit val : PreemptionPermit.values) {
 			if (val.value == value) {
 				return val;
 			}

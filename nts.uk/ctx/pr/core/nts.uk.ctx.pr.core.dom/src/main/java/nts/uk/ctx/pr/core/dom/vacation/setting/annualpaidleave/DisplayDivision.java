@@ -1,7 +1,7 @@
 /*
  * 
  */
-package nts.uk.ctx.pr.core.dom.vacationsetting.yearvacationsetting;
+package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
 /**
  * The Enum DisplayDivision.

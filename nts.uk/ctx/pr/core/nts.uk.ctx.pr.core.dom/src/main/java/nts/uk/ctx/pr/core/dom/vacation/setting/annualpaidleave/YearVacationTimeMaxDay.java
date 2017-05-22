@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.vacationsetting.yearvacationsetting;
+package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.vacation.setting.ManageDistinct;
@@ -13,9 +13,8 @@ import nts.uk.ctx.pr.core.dom.vacation.setting.ManageDistinct;
 @Getter
 public class YearVacationTimeMaxDay {
     
-    /** The time manage. */
-    // TODO: not find 時間年休上限日数
-    private int timeManage;
+    /** The max time day. */
+    private MaxTimeDay maxTimeDay;
     
     /** The manage type. */
     private ManageDistinct manageType;
