@@ -27,6 +27,7 @@
 						<button data-bind="click: deselectAll">Deselect all</button>
 						<button data-bind="click: addItem">Add</button>
 						<button data-bind="click: removeItem">Remove</button>
+						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<hr />
 						Single selecting mode
 						<table id="single-list" data-bind="ntsGridList: {								
@@ -34,12 +35,12 @@
 								dataSource: items,
 								primaryKey: 'code',
 								columns: columns2,
+								enable: enable,
 								deleteOptions : {visible : true, deleteField: 'deletable'},
 								multiple: false,
 								features: [{name: 'Switch', options: switchOptions, optionsValue: 'code', optionsText: 'name'}],
 								value: currentCode
-							}"
-							class="cf"></table>
+							}"></table>
 						<br/>
 						currentCode: <span data-bind="text: currentCode"></span>
 						<hr />
@@ -49,10 +50,10 @@
 								options: items,
 								optionsValue: 'code',
 								columns: columns,
+								enable: enable,
 								multiple: true,
 								value: currentCodeList
-							}"
-							class="cf"></table>
+							}"></table>
 						<br />
 						<button data-bind="click: addDeleteButton">Add Delete Button</button>
 						currentCodeList: <span data-bind="text: currentCodeList"></span>
@@ -79,8 +80,7 @@
 	features: [{name: 'Switch', options: switchOptions, optionsValue: 'code', optionsText: 'name'}],
 	multiple: false,
 	value: currentCode
-}"
-class="cf"></table>
+}"></table>
 <!--MULTI SELECTION EXAMPLE-->
 Multiple selectng mode
 <table id="multi-list" data-bind="ntsGridList: {
@@ -90,8 +90,7 @@ Multiple selectng mode
 		columns: columns,
 		multiple: true,
 		value: currentCodeList
-	}"
-	class="cf"></table>
+	}"></table>
 <br />
 currentCodeList: <span data-bind="text: currentCodeList"></span>]]></pre>
 									<h2>API</h2>
