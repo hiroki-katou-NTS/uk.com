@@ -130,10 +130,4 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 		return ITEM_WIDTH;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
-	 * getCategoryStartRow()
-	 */
 }

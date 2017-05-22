@@ -19,11 +19,6 @@ public class PaymentReportPostCardGenerator extends PaymentReportBaseGenerator i
 		return 0;
 	}
 
-	@Override
-	int getCategoryStartRow() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	void printPageContent() {

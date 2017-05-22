@@ -20,11 +20,6 @@ public class PaymentReportVerticalTwoGenerator extends PaymentReportBaseGenerato
 		return 0;
 	}
 
-	@Override
-	int getCategoryStartRow() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	void printPageContent() {
