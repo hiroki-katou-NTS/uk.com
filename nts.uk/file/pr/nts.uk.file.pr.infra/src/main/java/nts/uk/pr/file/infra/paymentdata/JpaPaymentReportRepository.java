@@ -131,7 +131,8 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		return this.queryProxy().query(FIND_PAYMENT_HEADER_LAYOUT, QstdtPaymentHeader.class)
 			.setParameter("companyCode", companyCode)
 			.setParameter("processingNo", query.getProcessingNo())
-			.setParameter("layoutItem", query.getLayoutItems())
+			.setParameter("layoutItem", "01")
+			//TODO FAKE LAYOUT ITEM
 			.setParameter("processingYM", query.getProcessingYM()).getList();
 	}
 
