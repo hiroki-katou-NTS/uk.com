@@ -1,5 +1,7 @@
 @import url("salaryItem/main.css");
 
+@import url("attendItem/main.css");
+
 body * {
 	vertical-align: middle;
 }
@@ -19,7 +21,7 @@ body * {
 
 .right-content {
 	float: right;
-	width: 780px;
+	width: 800px;
 	padding-top: 10px;
 }
 
@@ -92,7 +94,8 @@ span.nts-editor-wrapped {
 	margin-left: 30px;
 }
 
-#INP_002, #INP_003, #INP_004, #INP_005 {
+#INP_002, #INP_003, #INP_004, #INP_005, #INP_006, #INP_007, #INP_008,
+	#INP_009 {
 	width: 110px;
 }
 

@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.FixPayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.InsAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.LimitMnyAtr;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,7 +34,7 @@ public class ItemSalaryDto {
 	private int alRangeHighAtr;
 	private BigDecimal alRangeHigh;
 	private String memo;
-	private int limitMnyAtr;
+	private LimitMnyAtr limitMnyAtr;
 	private String limitMnyRefItemCode;
 	private BigDecimal limitMny;
 
@@ -45,7 +46,7 @@ public class ItemSalaryDto {
 				domain.getApplyForHourlyPayEmp().value, domain.getAvePayAtr(), domain.getErrRangeLowAtr().value,
 				domain.getErrRangeLow().v(), domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(),
 				domain.getAlRangeLowAtr().value, domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value,
-				domain.getAlRangeHigh().v(), domain.getMemo().v(), domain.getLimitMnyAtr().value,
+				domain.getAlRangeHigh().v(), domain.getMemo().v(), domain.getLimitMnyAtr(),
 				domain.getLimitMnyRefItemCode().v(), domain.getLimitMny() != null ? domain.getLimitMny().v() : null);
 	}
 }

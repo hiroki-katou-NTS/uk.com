@@ -52,26 +52,26 @@ module qmm019.f.salaryItem.service {
             limitMny: number;
         }
         export class ItemSalaryKo {
-            taxAtr: KnockoutObservable<number>;
-            socialInsAtr: KnockoutObservable<number>;
-            laborInsAtr: KnockoutObservable<number>;
-            fixPayAtr: KnockoutObservable<number>;
+            taxAtr: KnockoutObservable<any>;
+            socialInsAtr: KnockoutObservable<any>;
+            laborInsAtr: KnockoutObservable<any>;
+            fixPayAtr: KnockoutObservable<any>;
             applyForAllEmpFlg: KnockoutObservable<number>;
             applyForMonthlyPayEmp: KnockoutObservable<number>;
             applyForDaymonthlyPayEmp: KnockoutObservable<number>;
             applyForDaylyPayEmp: KnockoutObservable<number>;
             applyForHourlyPayEmp: KnockoutObservable<number>;
-            avePayAtr: KnockoutObservable<number>;
-            errRangeLowAtr: KnockoutObservable<number>;
+            avePayAtr: KnockoutObservable<any>;
+            errRangeLowAtr: KnockoutObservable<any>;
             errRangeLow: KnockoutObservable<number>;
-            errRangeHighAtr: KnockoutObservable<number>;
+            errRangeHighAtr: KnockoutObservable<any>;
             errRangeHigh: KnockoutObservable<number>;
-            alRangeLowAtr: KnockoutObservable<number>;
+            alRangeLowAtr: KnockoutObservable<any>;
             alRangeLow: KnockoutObservable<number>;
-            alRangeHighAtr: KnockoutObservable<number>;
+            alRangeHighAtr: KnockoutObservable<any>;
             alRangeHigh: KnockoutObservable<number>;
             memo: KnockoutObservable<string>;
-            limitMnyAtr: KnockoutObservable<number>;
+            limitMnyAtr: KnockoutObservable<any>;
             limitMnyRefItemCode: KnockoutObservable<string>;
             limitMny: KnockoutObservable<number>;
             constructor(data) {
@@ -104,15 +104,15 @@ module qmm019.f.salaryItem.service {
         export class ItemMasterKo {
             itemCode: KnockoutObservable<string>;
             itemName: KnockoutObservable<string>;
-            categoryAtr: KnockoutObservable<number>;
+            categoryAtr: KnockoutObservable<any>;
             categoryAtrName: KnockoutObservable<string>;
             itemAbName: KnockoutObservable<string>;
             itemAbNameO: KnockoutObservable<string>;
             itemAbNameE: KnockoutObservable<string>;
             displaySet: KnockoutObservable<number>;
             uniteCode: KnockoutObservable<string>;
-            zeroDisplaySet: KnockoutObservable<number>;
-            itemDisplayAtr: KnockoutObservable<number>;
+            zeroDisplaySet: KnockoutObservable<any>;
+            itemDisplayAtr: KnockoutObservable<any>;
             fixAtr: KnockoutObservable<number>;
             constructor(data) {
                 this.itemCode = ko.observable(data.itemCode);

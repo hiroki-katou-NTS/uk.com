@@ -62,7 +62,6 @@ module qmm019.f.viewmodel {
         selectedName: KnockoutObservable<any>;
         isEnable: KnockoutObservable<any>;
         selectedCodes: KnockoutObservableArray<any>;
-        itemMasterDtoSelected: KnockoutObservable<service.model.ItemMasterDto> = ko.observable(null);
         listItemDto: Array<service.model.ItemMasterDto>;
         screenMode: qmm019.f.ScreenModel;
 
@@ -96,22 +95,7 @@ module qmm019.f.viewmodel {
             }
             self.selectedCode.subscribe(function(codeChange) {
                 var item: service.model.ItemMasterDto = self.getItemDtoSelected(codeChange);
-                self.itemMasterDtoSelected(item);
-            });
-            self.itemMasterDtoSelected.subscribe(function(newItem) {
-                switch (newItem.categoryAtr) {
-                    case 0:
-                        self.screenMode.salaryItemScreen.itemMasterDto(newItem);
-                        break;
-                    case 1:
-                        self.screenMode.deductItemScreen.itemMasterDto(newItem);
-                        break;
-                    case 2:
-                        self.screenMode.attendItemScreen.itemMasterDto(newItem);
-                        break;
-                    default:
-                        self.setLayoutData(self.createItemDtoEmpty(newItem));
-                }
+                self.changeSubItemData(item);
             });
             self.isEnable = ko.observable(true);
             self.selectedCodes = ko.observableArray([]);
@@ -134,7 +118,22 @@ module qmm019.f.viewmodel {
 
 
         }
-
+        changeSubItemData(itemMaster: service.model.ItemMasterDto) {
+            let self = this;
+            switch (itemMaster.categoryAtr) {
+                case 0:
+                    self.screenMode.salaryItemScreen.changeSubItemData(itemMaster);
+                    break;
+                case 1:
+                    self.screenMode.deductItemScreen.changeSubItemData(itemMaster);
+                    break;
+                case 2:
+                    self.screenMode.attendItemScreen.changeSubItemData(itemMaster);
+                    break;
+                default:
+                    self.setLayoutData(self.createItemDtoEmpty(itemMaster));
+            }
+        }
         createItemDtoTypeKo(item) {
             if (item) {
                 return {
@@ -247,6 +246,9 @@ module qmm019.f.viewmodel {
                         break;
                     case 2:
                         self.screenMode.attendItemScreen.setItemDtoSelected(itemDto);
+                        break;
+                    case 3:
+                        self.screenMode.articleItemScreen.setItemDtoSelected(itemDto);
                         break;
                 }
             }
@@ -383,70 +385,6 @@ module qmm019.f.viewmodel {
                     self.listItemDto = data1;
                     self.listBox = ko.observable(new ListBox(self.screenModel, self.listItemDto, self.paramItemCode,
                         self.paramIsUpdate, self.paramStmtCode, self.paramHistoryId, self.paramCategoryAtr(), self.paramIsNotYetSave, self.paramObjectNotYetSave));
-                    if (self.paramIsUpdate == false) {
-                        dfd.resolve();
-                    } else {
-                        if (self.paramIsNotYetSave) {
-                            if (self.comboBoxSumScopeAtr !== undefined) {
-                                self.comboBoxSumScopeAtr().selectedCode(self.paramObjectNotYetSave.sumScopeAtr());
-                            }
-                            if (self.comboBoxCalcMethod !== undefined) {
-                                self.comboBoxCalcMethod().selectedCode(self.paramObjectNotYetSave.calculationMethod());
-                            }
-                            if (self.comboBoxDistributeWay !== undefined) {
-                                self.comboBoxDistributeWay().selectedCode(self.paramObjectNotYetSave.distributeWay());
-                            }
-                            if (self.switchButton !== undefined) {
-                                self.switchButton().selectedRuleCode(self.paramObjectNotYetSave.distributeSet());
-                            }
-                            if (self.comboBoxCommutingClassification !== undefined) {
-                                self.comboBoxCommutingClassification().selectedCode(self.paramObjectNotYetSave.commuteAtr());
-                            }
-                            self.wageCode(self.paramObjectNotYetSave.personalWageCode());
-                            qmm019.f.service.getListPersonalWages(self.paramCategoryAtr()).done(function(lstPersonalWage) {
-                                var tmp = _.find(lstPersonalWage, function(personalWage) { return personalWage.personalWageCode == self.paramObjectNotYetSave.personalWageCode() });
-                                if (tmp !== undefined) {
-                                    self.wageName(tmp.personalWageName);
-                                } else {
-                                    self.wageName('');
-                                }
-                                dfd.resolve();
-                            });
-                        } else {
-                            qmm019.f.service.getLayoutMasterDetail(self.paramStmtCode,
-                                self.paramHistoryId, self.paramCategoryAtr(), self.paramItemCode).done(function(data) {
-                                    if (data != null) {
-                                        if (self.comboBoxSumScopeAtr !== undefined) {
-                                            self.comboBoxSumScopeAtr().selectedCode(data.sumScopeAtr);
-                                        }
-                                        if (self.comboBoxCalcMethod !== undefined) {
-                                            self.comboBoxCalcMethod().selectedCode(data.calculationMethod);
-                                        }
-                                        if (self.comboBoxDistributeWay !== undefined) {
-                                            self.comboBoxDistributeWay().selectedCode(data.distributeWay);
-                                        }
-                                        if (self.switchButton !== undefined) {
-                                            self.switchButton().selectedRuleCode(data.distributeSet);
-                                        }
-                                        if (self.comboBoxCommutingClassification !== undefined) {
-                                            self.comboBoxCommutingClassification().selectedCode(data.commuteAtr);
-                                        }
-                                        self.wageCode(data.personalWageCode);
-                                        qmm019.f.service.getListPersonalWages(self.paramCategoryAtr()).done(function(lstPersonalWage) {
-                                            var tmp = _.find(lstPersonalWage, function(personalWage) { return personalWage.personalWageCode == data.personalWageCode });
-                                            if (tmp !== undefined) {
-                                                self.wageName(tmp.personalWageName);
-                                            } else {
-                                                self.wageName('');
-                                            }
-                                            dfd.resolve();
-                                        });
-                                    } else {
-                                        dfd.resolve();
-                                    }
-                                });
-                        }
-                    }
                 }
                 else {
                     self.listItemDto = ko.observableArray();
@@ -487,8 +425,10 @@ module qmm019.f.viewmodel {
 
 
         registerItemName() {
+            let self = this;
             nts.uk.ui.windows.setShared('isDialog', true);
             nts.uk.ui.windows.sub.modal('/view/qmm/012/b/index.xhtml', { dialogClass: 'no-close', title: '項目名の登録', width: 1280, height: 690 }).onClosed(function(): any {
+                self.start();
             });
         }
         getItemDtoSelected(): ItemDto {
@@ -505,7 +445,8 @@ module qmm019.f.viewmodel {
                     itemDto = self.screenModel.attendItemScreen.getItemDto();
                     break;
                 default:
-                    itemDto = self.screenModel.attendItemScreen.createDefaltItemDto(self.listBox().itemMasterDtoSelected());
+                    let itemMaster: service.model.ItemMasterDto = self.listBox().getItemDtoSelected(self.listBox().selectedCode());
+                    itemDto = self.screenModel.attendItemScreen.createDefaltItemDto(itemMaster);
             }
             return itemDto;
         }

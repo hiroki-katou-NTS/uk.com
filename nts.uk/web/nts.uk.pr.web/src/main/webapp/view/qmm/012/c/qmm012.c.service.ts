@@ -28,15 +28,15 @@ module qmm012.c {
         export module model {
             export class ItemSalary {
                 taxAtr: number;
-                socialInsAtr: number;
-                laborInsAtr: number;
-                fixPayAtr: number;
+                socialInsAtr: any;
+                laborInsAtr: any;
+                fixPayAtr: any;
                 applyForAllEmpFlg: number;
                 applyForMonthlyPayEmp: number;
                 applyForDaymonthlyPayEmp: number;
                 applyForDaylyPayEmp: number;
                 applyForHourlyPayEmp: number;
-                avePayAtr: number;
+                avePayAtr: any;
                 errRangeLowAtr: number;
                 errRangeLow: number;
                 errRangeHighAtr: number;
@@ -46,7 +46,7 @@ module qmm012.c {
                 alRangeHighAtr: number;
                 alRangeHigh: number;
                 memo: string;
-                limitMnyAtr: number;
+                limitMnyAtr: any;
                 limitMnyRefItemCode: string;
                 limitMny: number;
                 constructor(

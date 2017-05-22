@@ -1,6 +1,5 @@
 module qmm019.f.salaryItem.viewmodel {
     export class ScreenModel {
-        itemMasterDto: KnockoutObservable<qmm019.f.service.model.ItemMasterDto> = ko.observable(null);
         itemDtoSelected: KnockoutObservable<qmm019.f.viewmodel.ItemDto> = ko.observable(null);
         checkUseHighError: KnockoutObservable<boolean> = ko.observable(false);
         checkUseLowError: KnockoutObservable<boolean> = ko.observable(false);
@@ -16,7 +15,6 @@ module qmm019.f.salaryItem.viewmodel {
         comboBoxCommutingClassification: KnockoutObservable<qmm019.f.viewmodel.ComboBox>;
         itemRegInfo: KnockoutObservable<service.model.ItemRegInfo> = ko.observable(null);
         itemRegExpand: KnockoutObservable<boolean> = ko.observable(false);
-        breakdownItemList: KnockoutObservableArray<any> = ko.observableArray([]);
         breakdownListSelected: KnockoutObservable<any> = ko.observable(null);
         constructor() {
             let self = this;
@@ -43,11 +41,7 @@ module qmm019.f.salaryItem.viewmodel {
                 new qmm019.f.viewmodel.ItemModel(0, '交通機関'),
                 new qmm019.f.viewmodel.ItemModel(1, '交通用具')
             ]);
-            self.itemMasterDto.subscribe(function(NewItem) {
-                self.loadLayoutData(NewItem).done(function(itemDto: qmm019.f.viewmodel.ItemDto) {
-                    self.setItemDtoSelected(itemDto);
-                });
-            });
+
             self.itemDtoSelected.subscribe(function(NewItem) {
                 self.checkUseHighError(NewItem.checkUseHighError());
                 self.checkUseLowError(NewItem.checkUseLowError());
@@ -76,6 +70,12 @@ module qmm019.f.salaryItem.viewmodel {
             });
 
 
+        }
+        changeSubItemData(itemMaster: qmm019.f.service.model.ItemMasterDto) {
+            let self = this;
+            self.loadLayoutData(itemMaster).done(function(itemDto: qmm019.f.viewmodel.ItemDto) {
+                self.setItemDtoSelected(itemDto);
+            });
         }
         loadLayoutData(itemMaster: qmm019.f.service.model.ItemMasterDto): JQueryPromise<qmm019.f.viewmodel.ItemDto> {
             let self = this;
@@ -149,17 +149,12 @@ module qmm019.f.salaryItem.viewmodel {
                 self.checkUseHighAlam(), self.itemDtoSelected().alamRangeHigh(), self.checkUseLowAlam(), self.itemDtoSelected().alamRangeLow(), self.comboBoxCommutingClassification().selectedCode(), self.comboBoxCalcMethod().selectedCode(), self.switchButton().selectedRuleCode(), self.distributeWaySelectedCode(), '00', self.comboBoxSumScopeAtr().selectedCode(), self.itemDtoSelected().taxAtr());
             return ItemDto;
         }
-        setMasterDto(itemMasterDto) {
-            let self = this;
-            self.itemMasterDto(itemMasterDto);
-        }
         expandContent() {
             let self = this;
             self.itemRegExpand(!self.itemRegExpand());
         }
         genExpandSymbol() {
-            let self = this;;
-
+            let self = this;
             return self.itemRegExpand() ? '&#8896;' : '&#8897;';
         }
     }

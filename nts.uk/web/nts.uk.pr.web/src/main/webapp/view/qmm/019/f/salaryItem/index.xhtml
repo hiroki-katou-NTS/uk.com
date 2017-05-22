@@ -5,7 +5,7 @@
 <body>
 	<!-- 内訳区分 -->
 	<div data-bind="if:itemDtoSelected()">
-		<div id="leftContent">
+		<div class="leftContent">
 			<div style="margin-bottom: 5px; margin-top: 5px" id="uchiWakeKubun"
 				class="form-label required">
 				<label id="LBL_007">内訳区分</label>
@@ -171,7 +171,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="rightContent">
+		<div class="rightContent">
 			<div id="itemRegistrationInformation">
 				<div id="itemRegTitle" data-bind="click:expandContent">
 					項目名の登録 の登録情報
@@ -203,32 +203,32 @@
 							</tr>
 							<tr>
 								<td class="tbHeader">限度金額</td>
-								<td data-bind="text:itemSalary().limitMny()"></td>
+								<td data-bind="text:itemSalary().limitMnyAtr().text"></td>
 
 							</tr>
 							<tr>
 								<td class="tbHeader">社会保険区分</td>
-								<td data-bind="text:itemSalary().socialInsAtr()"></td>
+								<td data-bind="text:itemSalary().socialInsAtr().text"></td>
 
 							</tr>
 							<tr>
 								<td class="tbHeader">労働保険区分</td>
-								<td data-bind="text:itemSalary().laborInsAtr()"></td>
+								<td data-bind="text:itemSalary().laborInsAtr().text"></td>
 
 							</tr>
 							<tr>
 								<td class="tbHeader">固定賃金</td>
-								<td data-bind="text:itemSalary().fixPayAtr()"></td>
+								<td data-bind="text:itemSalary().fixPayAtr().text"></td>
 
 							</tr>
 							<tr>
 								<td class="tbHeader">平均賃金</td>
-								<td data-bind="text:itemSalary().avePayAtr()"></td>
+								<td data-bind="text:itemSalary().avePayAtr().text"></td>
 
 							</tr>
 							<tr>
 								<td class="tbHeader">ゼロ表示区分</td>
-								<td data-bind="text:itemMaster().zeroDisplaySet()"></td>
+								<td data-bind="text:itemMaster().zeroDisplaySet().text"></td>
 
 							</tr>
 							<tr>

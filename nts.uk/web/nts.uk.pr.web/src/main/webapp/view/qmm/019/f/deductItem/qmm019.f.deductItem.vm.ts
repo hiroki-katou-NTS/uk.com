@@ -1,6 +1,6 @@
 module qmm019.f.deductItem.viewmodel {
     export class ScreenModel {
-        itemMasterDto: KnockoutObservable<qmm019.f.service.model.ItemMasterDto> = ko.observable(null);
+
         itemDtoSelected: KnockoutObservable<qmm019.f.viewmodel.ItemDto> = ko.observable(null);
         checkUseHighError: KnockoutObservable<boolean> = ko.observable(false);
         checkUseLowError: KnockoutObservable<boolean> = ko.observable(false);
@@ -13,6 +13,9 @@ module qmm019.f.deductItem.viewmodel {
         switchButton: KnockoutObservable<qmm019.f.viewmodel.SwitchButton>;
         distributeWayselected: KnockoutObservable<number> = ko.observable(0);
         itemListDistributeWay: KnockoutObservableArray<any>;
+        itemRegInfo: KnockoutObservable<service.model.ItemRegInfo> = ko.observable(null);
+        itemRegExpand: KnockoutObservable<boolean> = ko.observable(false);
+        breakdownListSelected: KnockoutObservable<any> = ko.observable(null);
         constructor() {
             let self = this;
             var itemListSumScopeAtr = ko.observableArray([
@@ -40,18 +43,29 @@ module qmm019.f.deductItem.viewmodel {
             //内訳区分
             self.comboBoxSumScopeAtr = ko.observable(new qmm019.f.viewmodel.ComboBox(itemListSumScopeAtr));
             self.switchButton = ko.observable(new qmm019.f.viewmodel.SwitchButton());
-            self.itemMasterDto.subscribe(function(NewItem) {
-                self.loadLayoutData(NewItem).done(function(itemDto: qmm019.f.viewmodel.ItemDto) {
-                    self.setItemDtoSelected(itemDto);
-                });
-            });
             self.itemDtoSelected.subscribe(function(NewItem) {
                 self.checkUseHighError(NewItem.checkUseHighError());
                 self.checkUseLowError(NewItem.checkUseLowError());
                 self.checkUseHighAlam(NewItem.checkUseHighAlam());
                 self.checkUseLowAlam(NewItem.checkUseLowAlam());
                 self.distributeWayselected(NewItem.distributeWay());
-                self.switchButton().selectedRuleCode(NewItem.distributeSet())
+                self.switchButton().selectedRuleCode(NewItem.distributeSet());
+                self.loadItemRegInfo(NewItem);
+            });
+            self.itemRegExpand.subscribe(function(newValue) {
+                if (newValue) {
+                    self.loadItemRegInfo(self.itemDtoSelected()).done(function() {
+                        $('#content').toggle("slow");
+                    });
+                } else {
+                    $('#content').toggle("slow");
+                }
+            });
+        }
+        changeSubItemData(itemMaster: qmm019.f.service.model.ItemMasterDto) {
+            let self = this;
+            self.loadLayoutData(itemMaster).done(function(itemDto: qmm019.f.viewmodel.ItemDto) {
+                self.setItemDtoSelected(itemDto);
             });
         }
         loadLayoutData(itemMaster: qmm019.f.service.model.ItemMasterDto): JQueryPromise<qmm019.f.viewmodel.ItemDto> {
@@ -60,6 +74,20 @@ module qmm019.f.deductItem.viewmodel {
             service.getDeductItem(itemMaster.itemCode).done(function(itemDeduct: service.model.DeductItemModel) {
                 dfd.resolve(self.createNewItemDto(itemMaster, itemDeduct));
             });
+            return dfd.promise();
+        }
+        loadItemRegInfo(itemDto: qmm019.f.viewmodel.ItemDto): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if (self.itemRegExpand()) {
+                service.getItemDeductRegInfo(itemDto.itemCode()).done(function(itemRegInfoResult) {
+                    if (itemRegInfoResult) {
+                        let itemRegInfo = new service.model.ItemRegInfo(itemRegInfoResult);
+                        self.itemRegInfo(itemRegInfo);
+                    }
+                    dfd.resolve();
+                });
+            }
             return dfd.promise();
         }
         createNewItemDto(itemMaster: qmm019.f.service.model.ItemMasterDto, itemDeduct: service.model.DeductItemModel): qmm019.f.viewmodel.ItemDto {
@@ -106,9 +134,13 @@ module qmm019.f.deductItem.viewmodel {
                 self.checkUseHighAlam(), self.itemDtoSelected().alamRangeHigh(), self.checkUseLowAlam(), self.itemDtoSelected().alamRangeLow(), 0, self.comboBoxCalcMethod().selectedCode(), self.switchButton().selectedRuleCode(), self.distributeWayselected(), '00', self.comboBoxSumScopeAtr().selectedCode(), self.itemDtoSelected().taxAtr());
             return ItemDto;
         }
-        setMasterDto(itemMasterDto) {
+        expandContent() {
             let self = this;
-            self.itemMasterDto(itemMasterDto);
+            self.itemRegExpand(!self.itemRegExpand());
+        }
+        genExpandSymbol() {
+            let self = this;
+            return self.itemRegExpand() ? '&#8896;' : '&#8897;';
         }
     }
 

@@ -109,7 +109,7 @@ module qmm012.d.viewmodel {
             self.CurrentItemDeduct.subscribe(function(ItemDeduct: service.model.ItemDeduct) {
                 self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
                 self.CurrentAlRangeLow(ItemDeduct ? ItemDeduct.alRangeLow : 0);
-                self.CurrentDeductAtr(ItemDeduct ? ItemDeduct.deductAtr : 0);
+                self.CurrentDeductAtr(ItemDeduct ? ItemDeduct.deductAtr.value : 0);
                 self.CurrentErrRangeHigh(ItemDeduct ? ItemDeduct.errRangeHigh : 0);
                 self.CurrentErrRangeLow(ItemDeduct ? ItemDeduct.errRangeLow : 0);
                 self.CurrentMemo(ItemDeduct ? ItemDeduct.memo : "");

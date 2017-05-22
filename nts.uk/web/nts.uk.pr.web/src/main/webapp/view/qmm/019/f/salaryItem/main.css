@@ -2,13 +2,16 @@
 	background-color: #F2F2F2;
 	width: 320px;
 	border-radius: 5px;
+	position: fixed;
+	top: 18px;
+	right: 15px;
 }
 
-#rightContent {
+.rightContent {
 	float: right;
 }
 
-#leftContent {
+.leftContent {
 	float: left;
 }
 
