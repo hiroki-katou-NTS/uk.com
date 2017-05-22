@@ -7,7 +7,7 @@ package nts.uk.ctx.pr.core.dom.vacation.setting.retentionyearly;
 import lombok.Getter;
 
 /**
- * The Class UpperLimitSetting.
+ * The Class UpperLimitSetting. 上限設定
  */
 @Getter
 public class UpperLimitSetting {

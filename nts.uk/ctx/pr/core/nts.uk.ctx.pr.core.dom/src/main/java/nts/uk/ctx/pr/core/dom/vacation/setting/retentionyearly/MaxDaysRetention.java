@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * The Class MaxDaysOffCumulation.
+ * The Class MaxDaysRetention. 積立年休上限日数
  */
 @IntegerMaxValue(999)
 @IntegerMinValue(0)

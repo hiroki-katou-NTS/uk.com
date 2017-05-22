@@ -8,7 +8,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class CumulationYearlySetting.
+ * The Class RetentionYearlySetting. 積立年休設定
  */
 @Getter
 public class RetentionYearlySetting extends DomainObject{

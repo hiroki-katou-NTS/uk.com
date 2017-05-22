@@ -9,7 +9,7 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * The Class RetentionYearsAmount.
+ * The Class RetentionYearsAmount.積立年休保持年数
  */
 @IntegerMaxValue(99)
 @IntegerMinValue(0)
