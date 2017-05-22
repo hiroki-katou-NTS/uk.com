@@ -12,7 +12,7 @@ import lombok.Value;
  */
 
 @Value
-public class DeletePersonCostCalculationSettingCommand {
+public class DeletePersonCostCalculationCommand {
 	String companyID;
 
 	String historyID;

@@ -9,8 +9,12 @@ module kml001.b.viewmodel {
             var self = this;
             self.premiumItemList = ko.observableArray([]);   
             self.isInsert = nts.uk.ui.windows.getShared('isInsert');
-            
+            self.textKML001_18 = nts.uk.resource.getText("KML001_18",[__viewContext.primitiveValueConstraints.PremiumName.maxLength/2]);
         }
+        
+        /**
+         * get data on start page
+         */
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -49,6 +53,9 @@ module kml001.b.viewmodel {
             return dfd.promise();
         }
         
+        /**
+         * save data and close dialog
+         */
         submitAndCloseDialog(): void {
             var self = this;
             let premiumItemListCommand = [];
@@ -68,6 +75,9 @@ module kml001.b.viewmodel {
             
         }
         
+        /**
+         * close dialog and do nothing
+         */
         closeDialog(): void {
             nts.uk.ui.windows.close();   
         }

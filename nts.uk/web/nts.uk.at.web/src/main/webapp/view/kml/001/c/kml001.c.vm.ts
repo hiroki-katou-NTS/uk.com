@@ -6,6 +6,7 @@ module kml001.c.viewmodel {
         lastestStartDate: KnockoutObservable<string>;
         newStartDate: KnockoutObservable<string>;
         size: KnockoutObservable<number>;
+        textKML001_47: KnockoutObservable<string>;
         constructor() {
             var self = this;
             self.copyDataFlag = ko.observable(true);
@@ -15,13 +16,20 @@ module kml001.c.viewmodel {
                 if(self.errorStartDate()) $("#startDateInput").ntsError('set', vmbase.MSG.MSG102);     
             });
             self.size = ko.observable(nts.uk.ui.windows.getShared('size'));
+            self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47',[self.lastestStartDate()]));
         }
         
+        /**
+         * check error on new input date
+         */
         errorStartDate(): boolean {
             var self = this;
             return ((self.newStartDate()== null)|| vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.lastestStartDate()));     
         }
         
+        /**
+         * process parameter and close dialog 
+         */
         submitAndCloseDialog(): void {
             var self = this;
             if(self.errorStartDate()) $("#startDateInput").ntsError('set', vmbase.MSG.MSG102); 
@@ -32,6 +40,9 @@ module kml001.c.viewmodel {
             }
         }
         
+        /**
+         * close dialog and do nothing
+         */
         closeDialog(): void {
             $("#startDateInput").ntsError('clear');
             nts.uk.ui.windows.close();   

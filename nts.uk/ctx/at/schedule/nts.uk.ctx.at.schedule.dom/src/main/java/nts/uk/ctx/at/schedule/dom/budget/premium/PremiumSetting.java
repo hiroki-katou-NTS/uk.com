@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class PremiumSetting {

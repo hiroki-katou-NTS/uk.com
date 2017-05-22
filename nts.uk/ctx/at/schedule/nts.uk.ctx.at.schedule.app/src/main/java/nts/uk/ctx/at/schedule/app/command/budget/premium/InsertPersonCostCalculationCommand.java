@@ -12,7 +12,7 @@ import lombok.Value;
  */
 
 @Value
-public class UpdatePersonCostCalculationSettingCommand {
+public class InsertPersonCostCalculationCommand {
 	String companyID;
 
 	String historyID;
@@ -25,12 +25,12 @@ public class UpdatePersonCostCalculationSettingCommand {
 
 	String memo;
 	
-	List<PremiumSetUpdate> premiumSets;
+	List<PremiumSetInsert> premiumSets;
 }
 
 @AllArgsConstructor
 @Value
-class PremiumSetUpdate {
+class PremiumSetInsert {
 	String companyID;
 	
 	String historyID;

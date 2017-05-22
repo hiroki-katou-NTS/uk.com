@@ -29,7 +29,9 @@
 						<tr>
 							<th>#{i18n.getText('KML001_21')}</th>
 							<th>#{i18n.getText('KML001_17')}</th>
-							<th><div data-bind="ntsFormLabel: { constraint: 'PremiumName' }">#{i18n.getText('KML001_18','19')}</div></th>
+							<th data-bind="text: textKML001_18">
+								<!-- <div data-bind="ntsFormLabel: { constraint: 'PremiumName' }">#{i18n.getText('KML001_18','__viewContext.primitiveValueConstraints.PremiumName.maxLength/2')}</div> -->
+							</th>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: premiumItemList">

@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
+import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,20 +21,41 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class PersonCostCalculationSettingFinder {
+public class PersonCostCalculationFinder {
 	
 	@Inject
 	private PersonCostCalculationRepository personCostCalculationRepository;
+	
+	@Inject
+	private PremiumItemRepository premiumItemRepository;
 	
 	/**
 	 * get all Person Cost Calculation by company ID
 	 * @return list Person Cost Calculation by company ID
 	 */
-	public List<PersonCostCalculationSettingDto> findByCompanyID() {
+	public List<PersonCostCalculationSettingDto> findPersonCostCalculationByCompanyID() {
 		String companyID = AppContexts.user().companyId();
 		return this.personCostCalculationRepository.findByCompanyID(companyID)
 				.stream()
 				.map(x -> convertToDto(x))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * get List Premium Item  by company ID
+	 * @return List Premium Item  by company ID
+	 */
+	public List<PremiumItemDto> findPremiumItemByCompanyID(){
+		String companyID = AppContexts.user().companyId();
+		return this.premiumItemRepository.findByCompanyID(companyID)
+				.stream()
+				.map(x -> new PremiumItemDto(
+						companyID, 
+						x.getID(),
+						x.getAttendanceID(),
+						x.getName().v(), 
+						x.getDisplayNumber(), 
+						x.getUseAtr().value))
 				.collect(Collectors.toList());
 	}
 	

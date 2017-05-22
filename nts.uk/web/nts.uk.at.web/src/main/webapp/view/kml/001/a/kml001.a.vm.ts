@@ -10,6 +10,7 @@ module kml001.a.viewmodel {
         lastStartDate: string;
         isInsert: KnockoutObservable<Boolean>;
         constructor() {
+            $('#formula-child-1').html(nts.uk.resource.getText('KML001_7'));
             var self = this;
             self.personCostList = ko.observableArray([]);
             self.currentPersonCost = ko.observable(new vmbase.PersonCostCalculation('', '', "", "9999/12/31", 0, '', []));
@@ -31,7 +32,10 @@ module kml001.a.viewmodel {
                 }
             });
         }
-
+        
+        /**
+         * get data on start page
+         */
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -81,7 +85,10 @@ module kml001.a.viewmodel {
             });
             return dfd.promise();
         }
-
+        
+        /**
+         * set new data to element on screen
+         */
         private loadData(res: Array<any>, index: number) {
             var self = this;
             res.forEach(function(personCostCalc) {
@@ -103,7 +110,10 @@ module kml001.a.viewmodel {
                 self.lastStartDate = _.last(self.personCostList()).startDate();
             } 
         }
-
+        
+        /**
+         * get list item for each premium setting
+         */
         private getItem(iDList: Array<number>, index: number) {
             var self = this;
             var dfd = $.Deferred();
@@ -120,7 +130,10 @@ module kml001.a.viewmodel {
                     });
             }
         }
-
+        
+        /**
+         * insert/update new person cost calculation 
+         */
         saveData(): void {
             var self = this;
             if (self.isInsert()) {
@@ -161,7 +174,7 @@ module kml001.a.viewmodel {
         }
 
         /**
-         * 
+         * open premium dialog
          */
         premiumDialog(): void {
             var self = this;
@@ -211,7 +224,7 @@ module kml001.a.viewmodel {
         }
 
         /**
-         * 
+         * open create dialog
          */
         createDialog(): void {
             var self = this;
@@ -264,7 +277,7 @@ module kml001.a.viewmodel {
         }
 
         /**
-         * 
+         * open edit dialog
          */
         editDialog(): void {
             var self = this;
@@ -286,7 +299,10 @@ module kml001.a.viewmodel {
                 }
             });;
         }
-
+        
+        /**
+         * open select item dialog
+         */
         selectDialog(data, index): void {
             var self = this;
             let currentList = [];

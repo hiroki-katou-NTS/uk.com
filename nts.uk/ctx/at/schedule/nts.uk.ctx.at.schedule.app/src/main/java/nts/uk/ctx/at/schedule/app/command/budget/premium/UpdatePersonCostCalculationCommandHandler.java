@@ -28,23 +28,23 @@ import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
 @Transactional
-public class DeletePersonCostCalculationSettingCommandHandler extends CommandHandler<DeletePersonCostCalculationSettingCommand>{
+public class UpdatePersonCostCalculationCommandHandler extends CommandHandler<UpdatePersonCostCalculationCommand>{
 
 	@Inject
 	private PersonCostCalculationDomainService personCostCalculationDomainService;
 	
 	@Override
-	protected void handle(CommandHandlerContext<DeletePersonCostCalculationSettingCommand> context) {
+	protected void handle(CommandHandlerContext<UpdatePersonCostCalculationCommand> context) {
 		String companyID = AppContexts.user().companyId();
-		DeletePersonCostCalculationSettingCommand command = context.getCommand();
-		this.personCostCalculationDomainService.deletePersonCostCalculation(
+		UpdatePersonCostCalculationCommand command = context.getCommand();
+		this.personCostCalculationDomainService.updatePersonCostCalculation(
 				new PersonCostCalculation(
 						companyID, 
 						command.getHistoryID(), 
 						GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), 
-						GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"), 
+						GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"),
 						EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class),
-						new Memo(command.getMemo()),
+						new Memo(command.getMemo()), 
 						command.getPremiumSets().stream()
 							.map(x -> new PremiumSetting(
 									x.getCompanyID(), 
