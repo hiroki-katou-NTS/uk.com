@@ -31,4 +31,9 @@ public class KscstExternalBudget extends UkJpaEntity{
 	@Column(name = "UNIT_ATR")
 	public int unitAtr;
 
+	@Override
+	protected Object getKey() {
+		return kscstExternalBudgetPk;
+	}
+
 }

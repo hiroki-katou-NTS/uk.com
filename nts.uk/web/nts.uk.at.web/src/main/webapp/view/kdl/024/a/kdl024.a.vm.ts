@@ -18,9 +18,9 @@ module kdl024.a.viewmodel {
             var self = this;
             // Mode
             self.isNew = ko.observable(false);
-            self.isNew.subscribe((newValue) => {
-                self.changeMode(newValue);
-            });
+//            self.isNew.subscribe((newValue) => {
+//                self.changeMode(newValue);
+//            });
             // Budget list
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KDL024_5'), key: 'externalBudgetCode', width: 40 },
@@ -94,9 +94,8 @@ module kdl024.a.viewmodel {
                         self.selectedBudgetCode(self.currentItem().externalBudgetCode());
                         self.isNew(false);
                     }).fail(function(res) {
-                        debugger;
                         $('#inpCode').ntsError('set',res);
-                    });
+                    }); 
             }
             //Mode UPDATE
             else {
@@ -123,6 +122,12 @@ module kdl024.a.viewmodel {
         addNew() {
             var self = this;
             self.isNew(true);
+            if (nts.uk.ui._viewModel !== undefined)
+                $('.nts-checkvalue').ntsError('clear');
+            //current Code, 何にも、項目選択している。
+            self.selectedBudgetCode(null);
+            //Enable Code Input
+            $('#inpCode').focus();
         }
         
         /** Close dialog */
@@ -154,16 +159,16 @@ module kdl024.a.viewmodel {
         }
         
         /** Change Change Create/Update mode */
-        private changeMode(isNew: boolean): void {
+        private changeMode(isNew: KnockoutObservable<boolean>): void {
             var self = this;
-            if (nts.uk.ui._viewModel !== undefined)
-                $('.nts-checkvalue').ntsError('clear');
-            if (isNew === true) {
-                //current Code, 何にも、項目選択している。
-                self.selectedBudgetCode(null);
-                //Enable Code Input
-                $('#inpCode').focus();
-            }
+//            if (nts.uk.ui._viewModel !== undefined)
+//                $('.nts-checkvalue').ntsError('clear');
+//            if (isNew === true) {
+//                //current Code, 何にも、項目選択している。
+//                self.selectedBudgetCode(null);
+//                //Enable Code Input
+//                $('#inpCode').focus();
+//            }
         }
         
         /** Find selected item by code */
