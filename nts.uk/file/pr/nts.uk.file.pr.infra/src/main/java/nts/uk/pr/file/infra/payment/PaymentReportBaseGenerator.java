@@ -58,9 +58,6 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/** The item width. */
 	private int itemWidth;
 
-	/** The category start row. */
-	private int categoryStartRow;
-
 	/** The first row. */
 	private int firstRow = FIRST_ROW;
 
@@ -79,13 +76,6 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * @return the item width
 	 */
 	abstract int getItemWidth();
-
-	/**
-	 * Gets the category start row.
-	 *
-	 * @return the category start row
-	 */
-	abstract int getCategoryStartRow();
 
 	/**
 	 * Prints the page content.
@@ -117,8 +107,17 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		this.setPageHeaderRange();
 		this.setTemplateStyle();
 		this.itemWidth = this.getItemWidth();
-		this.categoryStartRow = this.getCategoryStartRow();
 		this.maxColumnsPerItemLine = ITEMS_PER_ROW * this.itemWidth + HEADER_WIDTH;
+	}
+
+	/**
+	 * Sets the item width.
+	 *
+	 * @param width the new item width
+	 */
+	protected void setItemWidth(double width) {
+		Range itemRange = cells.createRange(FIRST_COLUMN + HEADER_WIDTH, maxColumnsPerItemLine, false);
+		itemRange.setColumnWidth(width);
 	}
 
 	/**
@@ -179,8 +178,9 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * Prints the page header.
 	 */
 	protected void printPageHeader() {
+		int pageHeaderRowCount = pageHeaderRange.getRowCount();
 		// On first page.
-		if (currentRow < categoryStartRow) {
+		if (currentRow == FIRST_ROW) {
 			printCellValue(getHeaderTemplate());
 		}
 		// On other pages.
@@ -188,13 +188,17 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 			// Copy style
 			Range newPageHeaderRange = cells.createRange(currentRow, FIRST_COLUMN, pageHeaderRange.getRowCount(),
 					pageHeaderRange.getColumnCount());
-			newPageHeaderRange.copyStyle(pageHeaderRange);
+			try {
+				newPageHeaderRange.copy(pageHeaderRange);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			// Set value.
 			printCellValue(getHeaderTemplate());
 		}
-		firstRow += categoryStartRow;
-		currentRow += categoryStartRow;
+		firstRow += pageHeaderRowCount;
+		currentRow += pageHeaderRowCount;
 	}
 
 	/**
@@ -246,10 +250,38 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	}
 
 	/**
+	 * Sets the current row height.
+	 *
+	 * @param height the new current row height
+	 */
+	protected void setCurrentRowHeight(double height) {
+		cells.setRowHeight(currentRow, height);
+	}
+
+	/**
+	 * Sets the margin top.
+	 *
+	 * @param height the new margin top
+	 */
+	protected void setMarginTop(double height) {
+		cells.setRowHeight(FIRST_ROW, height);
+	}
+
+	/**
+	 * Sets the margin left.
+	 *
+	 * @param height the new margin left
+	 */
+	protected void setMarginLeft(double height) {
+		cells.setRowHeight(FIRST_COLUMN, height);
+	}
+
+	/**
 	 * Prints the data.
 	 */
 	protected void printData() {
 		printPageHeader();
+		breakLines(2);
 		printPageContent();
 		breakLines(1);
 		breakPage();
@@ -317,6 +349,12 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 
 	/**
 	 * The Class CellValue.
+	 */
+	
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
 	 */
 	@Getter
 	protected class CellValue {
