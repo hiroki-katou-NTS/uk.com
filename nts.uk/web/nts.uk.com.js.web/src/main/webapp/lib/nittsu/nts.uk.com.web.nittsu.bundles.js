@@ -3630,8 +3630,12 @@ var nts;
                                 mousePos = null;
                                 dragSelectRange = [];
                                 $(window).unbind('mousemove.NtsGridListDragging');
-                                //                    $grid.triggerHandler('selectionchanged');  
+                                if ($grid.data("selectUpdated") === true) {
+                                    $grid.triggerHandler('selectionchanged');
+                                }
+                                //$grid.triggerHandler('selectionchanged');  
                                 clearInterval(timerAutoScroll);
+                                $grid.data("selectUpdated", false);
                             });
                         });
                         function updateSelections() {
@@ -3661,6 +3665,7 @@ var nts;
                                 }
                             }
                             dragSelectRange = newDragSelectRange;
+                            $grid.data("selectUpdated", true);
                         }
                     }
                     function setupSelectingEvents($grid) {
@@ -6603,7 +6608,7 @@ var nts;
                         var data = valueAccessor();
                         $(element).addClass("ntsControl");
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        $(element).data("enable", _.clone(enable));
+                        $(element).data("enable", null);
                     };
                     /**
                      * Update
