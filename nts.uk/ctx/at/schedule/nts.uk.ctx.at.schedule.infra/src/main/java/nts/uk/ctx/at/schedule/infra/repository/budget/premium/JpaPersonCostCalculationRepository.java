@@ -1,20 +1,14 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.premium;
 
-import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.premium.DefaultPersonCostCalculationDomainService;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
@@ -26,10 +20,10 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmldpPremiumAttendance
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmldtPremiumAttendance;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlmpPersonCostCalculationPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlmtPersonCostCalculation;
-import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmpPremiumItemPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlspPremiumSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmtPremiumItem;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmlstPremiumSet;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmpPremiumItemPK;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmtPremiumItem;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -102,9 +96,9 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	}
 	
 	/**
-	 * convert Entity Object to Domain Object
-	 * @param kmlmtPersonCostCalculation Entity Object
-	 * @return Domain Object
+	 * convert PersonCostCalculation Entity Object to PersonCostCalculation Domain Object
+	 * @param kmlmtPersonCostCalculation PersonCostCalculation Entity Object
+	 * @return PersonCostCalculation Domain Object
 	 */
 	private PersonCostCalculation toDomainPersonCostCalculation(KmlmtPersonCostCalculation kmlmtPersonCostCalculation){
 		return new PersonCostCalculation(
@@ -117,6 +111,11 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				kmlmtPersonCostCalculation.kmlstPremiumSets.stream().map(x -> toDomainPremiumSetting(x)).collect(Collectors.toList()));
 	}
 	
+	/**
+	 * convert PremiumSetting Entity Object to PremiumSetting Domain Object
+	 * @param kmlstPremiumSet PremiumSetting Entity Object
+	 * @return PremiumSetting Domain Object
+	 */
 	private PremiumSetting toDomainPremiumSetting(KmlstPremiumSet kmlstPremiumSet) {
 		return new PremiumSetting(
 				kmlstPremiumSet.kmlspPremiumSet.companyID, 
@@ -131,9 +130,9 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	}
 	
 	/**
-	 * convert Domain Object to Entity Object
-	 * @param personCostCalculation Domain Object
-	 * @return Entity Object
+	 * convert PersonCostCalculation Domain Object to PersonCostCalculation Entity Object
+	 * @param personCostCalculation PersonCostCalculation Domain Object
+	 * @return PersonCostCalculation Entity Object
 	 */
 	private KmlmtPersonCostCalculation toPersonCostCalculationEntity(PersonCostCalculation personCostCalculation) {
 		return new KmlmtPersonCostCalculation(
@@ -148,6 +147,11 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				personCostCalculation.getPremiumSettings().stream().map(x -> toPremiumSetEntity(x)).collect(Collectors.toList()));
 	}
 	
+	/**
+	 * convert PremiumSetting Domain Object to PremiumSetting Entity Object
+	 * @param premiumSetting PremiumSetting Domain Object
+	 * @return PremiumSetting Entity Object
+	 */
 	private KmlstPremiumSet toPremiumSetEntity(PremiumSetting premiumSetting) {
 		return new KmlstPremiumSet(
 				new KmlspPremiumSetPK(
@@ -167,12 +171,25 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				);
 	}
 	
+	/**
+	 * convert PremiumAttendance Domain Object to PremiumAttendance Entity Object
+	 * @param companyID company ID
+	 * @param historyID history ID
+	 * @param premiumID premium ID
+	 * @param attendanceID attendance ID
+	 * @return PremiumAttendance Entity Object
+	 */
 	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, Integer premiumID, Integer attendanceID){
 		return new KmldtPremiumAttendance(
 				new KmldpPremiumAttendancePK(companyID, historyID, premiumID, attendanceID),
 				null);
 	}
 	
+	/**
+	 * create PremiumItem Entity Object from PremiumSetting Domain Object
+	 * @param premiumSetting PremiumSetting Domain Object
+	 * @return PremiumItem Entity Object
+	 */
 	private KmnmtPremiumItem toPremiumItemEntity(PremiumSetting premiumSetting){
 		return new KmnmtPremiumItem(
 				new KmnmpPremiumItemPK(

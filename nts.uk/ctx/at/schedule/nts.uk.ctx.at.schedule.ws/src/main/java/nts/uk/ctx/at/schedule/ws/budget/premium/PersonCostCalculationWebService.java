@@ -8,14 +8,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.DeletePersonCostCalculationSettingCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.DeletePersonCostCalculationSettingCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.InsertPersonCostCalculationSettingCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.InsertPersonCostCalculationSettingCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePersonCostCalculationSettingCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePersonCostCalculationSettingCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.DeletePersonCostCalculationCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.DeletePersonCostCalculationCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.InsertPersonCostCalculationCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.InsertPersonCostCalculationCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePersonCostCalculationCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePersonCostCalculationCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePremiumItemCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.UpdatePremiumItemCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationSettingDto;
-import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationSettingFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinder;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.PremiumItemDto;
 
 /**
  * 
@@ -23,44 +26,58 @@ import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationSetti
  *
  */
 
-@Path("at/budget/premium")
+@Path("at/schedule/budget/premium")
 @Produces("application/json")
 public class PersonCostCalculationWebService extends WebService{
 	
 	@Inject
-	private InsertPersonCostCalculationSettingCommandHandler insertPersonCostCalculationSettingCommandHandler;
+	private InsertPersonCostCalculationCommandHandler insertPersonCostCalculationSettingCommandHandler;
 	
 	@Inject
-	private PersonCostCalculationSettingFinder personCostCalculationSettingFinder;
+	private PersonCostCalculationFinder personCostCalculationSettingFinder;
 	
 	@Inject
-	private UpdatePersonCostCalculationSettingCommandHandler updatePersonCostCalculationSettingCommandHandler;
+	private UpdatePersonCostCalculationCommandHandler updatePersonCostCalculationSettingCommandHandler;
 	
 	@Inject
-	private DeletePersonCostCalculationSettingCommandHandler deletePersonCostCalculationSettingCommandHandler;
+	private DeletePersonCostCalculationCommandHandler deletePersonCostCalculationSettingCommandHandler;
+	
+	@Inject
+	private UpdatePremiumItemCommandHandler updatePremiumItemCommandHandler;
 	
 	@POST
-	@Path("insert")
-	public void insert(InsertPersonCostCalculationSettingCommand command){
+	@Path("insertPersonCostCalculation")
+	public void insert(InsertPersonCostCalculationCommand command){
 		this.insertPersonCostCalculationSettingCommandHandler.handle(command);
 	}
 	
 	@POST
-	@Path("findBycompanyID")
-	public List<PersonCostCalculationSettingDto> find(){
-		return this.personCostCalculationSettingFinder.findByCompanyID();
+	@Path("findPersonCostCalculationByCompanyID")
+	public List<PersonCostCalculationSettingDto> findPersonCostCalculationByCompanyID(){
+		return this.personCostCalculationSettingFinder.findPersonCostCalculationByCompanyID();
 	}
 	
 	@POST
-	@Path("update")
-	public void update(UpdatePersonCostCalculationSettingCommand command){
+	@Path("updatePersonCostCalculation")
+	public void update(UpdatePersonCostCalculationCommand command){
 		this.updatePersonCostCalculationSettingCommandHandler.handle(command);
 	}
 	
 	@POST
-	@Path("delete")
-	public void delete(DeletePersonCostCalculationSettingCommand command){
+	@Path("deletePersonCostCalculation")
+	public void delete(DeletePersonCostCalculationCommand command){
 		this.deletePersonCostCalculationSettingCommandHandler.handle(command);
 	}
 
+	@POST
+	@Path("findPremiumItemByCompanyID")
+	public List<PremiumItemDto> findPremiumItemByCompanyID(){
+		return this.personCostCalculationSettingFinder.findPremiumItemByCompanyID();
+	}
+	
+	@POST
+	@Path("updatePremiumItem")
+	public void update(List<UpdatePremiumItemCommand> command){
+		this.updatePremiumItemCommandHandler.handle(command);
+	}
 }

@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
-import java.math.BigDecimal;
-
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class PremiumItem {

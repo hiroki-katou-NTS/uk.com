@@ -28,15 +28,15 @@ import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
 @Transactional
-public class InsertPersonCostCalculationSettingCommandHandler extends CommandHandler<InsertPersonCostCalculationSettingCommand>{
+public class InsertPersonCostCalculationCommandHandler extends CommandHandler<InsertPersonCostCalculationCommand>{
 	
 	@Inject
 	private PersonCostCalculationDomainService personCostCalculationDomainService;
 	
 	@Override
-	protected void handle(CommandHandlerContext<InsertPersonCostCalculationSettingCommand> context) {
+	protected void handle(CommandHandlerContext<InsertPersonCostCalculationCommand> context) {
 		String companyID = AppContexts.user().companyId();
-		InsertPersonCostCalculationSettingCommand command = context.getCommand();
+		InsertPersonCostCalculationCommand command = context.getCommand();
 		this.personCostCalculationDomainService.insertPersonCostCalculation(
 				new PersonCostCalculation(
 						companyID, 

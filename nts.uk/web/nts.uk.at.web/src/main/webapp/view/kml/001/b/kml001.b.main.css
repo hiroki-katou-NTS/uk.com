@@ -46,7 +46,7 @@ body {
 	background-color: #EDFAC2;
 }
 #premium-set-tbl th:FIRST-CHILD {
-	width: 75px;
+	width: 83px;
 }
 #premium-set-tbl th:NTH-CHILD(2) {
 	width: 186px;

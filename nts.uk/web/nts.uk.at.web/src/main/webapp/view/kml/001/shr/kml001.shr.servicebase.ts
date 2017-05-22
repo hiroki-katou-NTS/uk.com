@@ -1,11 +1,11 @@
 module kml001.shr.servicebase {
     var paths: any = {
-        personCostCalculationSelect: "at/budget/premium/findBycompanyID",
-        personCostCalculationInsert: "at/budget/premium/insert",
-        personCostCalculationUpdate: "at/budget/premium/update",
-        personCostCalculationDelete: "at/budget/premium/delete",
-        premiumItemSelect: "at/budget/premium/premiumItem/findBycompanyID",
-        premiumItemUpdate: "at/budget/premium/premiumItem/update",
+        personCostCalculationSelect: "at/schedule/budget/premium/findPersonCostCalculationByCompanyID",
+        personCostCalculationInsert: "at/schedule/budget/premium/insertPersonCostCalculation",
+        personCostCalculationUpdate: "at/schedule/budget/premium/updatePersonCostCalculation",
+        personCostCalculationDelete: "at/schedule/budget/premium/deletePersonCostCalculation",
+        premiumItemSelect: "at/schedule/budget/premium/findPremiumItemByCompanyID",
+        premiumItemUpdate: "at/schedule/budget/premium/updatePremiumItem",
         getAttendanceItems: "at/share/attendanceitem/getPossibleAttendanceItem",
         getAttendanceItemByType:  "at/share/attendanceType/getByType/",
     }

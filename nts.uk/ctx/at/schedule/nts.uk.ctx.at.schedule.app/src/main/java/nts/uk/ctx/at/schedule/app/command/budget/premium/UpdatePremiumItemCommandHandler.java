@@ -31,11 +31,15 @@ public class UpdatePremiumItemCommandHandler extends CommandHandler<List<UpdateP
 	protected void handle(CommandHandlerContext<List<UpdatePremiumItemCommand>> context) {
 		String companyID = AppContexts.user().companyId();
 		List<UpdatePremiumItemCommand> commands = context.getCommand();
+		
+		// Check all PremiumItem useAtr, if all is not use throw Exception;
 		int allUse = 0;
 		for(UpdatePremiumItemCommand command : commands) {
 			allUse+=command.getUseAtr();
 		}
 		if(allUse==0) throw new BusinessException("ER066");
+		
+		//update PremiumItem
 		for(UpdatePremiumItemCommand command : commands) {
 				this.premiumItemRepository.update(
 						new PremiumItem(

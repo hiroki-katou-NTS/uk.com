@@ -12,7 +12,11 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
 import nts.uk.ctx.at.schedule.dom.budget.premium.UseAttribute;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmpPremiumItemPK;
 import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmtPremiumItem;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @Stateless
 public class JpaPremiumItemRepository extends JpaRepository implements PremiumItemRepository{
 
@@ -29,6 +33,11 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 				.getList(x -> convertToDomain(x));
 	}
 	
+	/**
+	 * convert PremiumItem Domain Object to PremiumItem Entity Object
+	 * @param premiumItem PremiumItem Domain Object
+	 * @return PremiumItem Entity Object
+	 */
 	private KmnmtPremiumItem convertToEntity(PremiumItem premiumItem){
 		return new KmnmtPremiumItem(
 				new KmnmpPremiumItemPK(premiumItem.getCompanyID(), premiumItem.getID()),
@@ -38,6 +47,11 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 				premiumItem.getUseAtr().value);
 	}
 	
+	/**
+	 * convert PremiumItem Entity Object to PremiumItem Domain Object
+	 * @param kmnmtPremiumItem PremiumItem Entity Object
+	 * @return PremiumItem Domain Object
+	 */ 
 	private PremiumItem convertToDomain(KmnmtPremiumItem kmnmtPremiumItem){
 		return new PremiumItem(
 				kmnmtPremiumItem.kmnmpPremiumItemPK.companyID, 

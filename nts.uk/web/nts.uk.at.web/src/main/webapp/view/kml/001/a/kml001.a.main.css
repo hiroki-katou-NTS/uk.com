@@ -141,6 +141,7 @@ input, textarea {
 }
 #formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(1){
 	width: 300px;
+	vertical-align: top;
 }
 #formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(1) > .label{
 	margin-left: 20px;
@@ -156,9 +157,10 @@ input, textarea {
 	width: 40px;
 }
 #formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(3) > .cell{
-	height: 35px;
+	height: 40px;
 }
 img {
+	margin-top: 5px; 
 	position: absolute;
     height: 90px;
 }

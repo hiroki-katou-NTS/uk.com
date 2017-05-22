@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 900, height: 500 };</script>
+			<script>var dialogSize = { width: 960, height: 500 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
 				nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
@@ -44,15 +44,14 @@
 					<div style="float: left; margin: 20px">
 						<table tabindex="5" id="single-list"
 							data-bind="ntsGridList:{
-								width: 280,
+								width: 330,
 								height: 250,
 								options: dataSource,								
 								optionsValue: 'divReasonCode',
 								columns: columns,
 								multiple: false,
 								value: currentCode,
-								enable: true}"
-							class="cf">
+								enable: true}">
 						</table>
 					</div>
 				</div>
@@ -76,8 +75,9 @@
                                           constraint: 'DiverdenceReasonCode', 
                                           enable: enableCode, 
                                           required: true}"
-								data-name="Code" /> <!-- B3_3: Divergence Reason Content --> <input
-								tabindex="7" class="nts-input" id="inpReason"
+								data-name="Code" /> 
+								<!-- B3_3: Divergence Reason Content --> 
+								<input tabindex="7" class="nts-input" id="inpReason"
 								data-bind="ntsTextEditor: {
                                           value: divReasonContent,
                                           constraint: 'DivergenceReasonContent',

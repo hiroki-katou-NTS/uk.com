@@ -1,10 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalRange;
 import nts.arc.primitive.constraint.IntegerRange;
 /**
  * 
@@ -13,6 +9,11 @@ import nts.arc.primitive.constraint.IntegerRange;
  */
 @IntegerRange(max=100,min=0)
 public class PremiumRate extends IntegerPrimitiveValue<PremiumRate>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4727391399987061483L;
 
 	public PremiumRate(Integer rawValue) {
 		super(rawValue);

@@ -110,6 +110,10 @@ module kml001.shr.vmbase {
     }
     
     export class ProcessHandler {
+        
+        /**
+         * convert PersonCostCalculation JS object to PersonCostCalculation knockoutJS object 
+         */
         static fromObjectPerconCost(object: PersonCostCalculationInterface): PersonCostCalculation {
             return new PersonCostCalculation(
                 object.companyID, 
@@ -120,6 +124,10 @@ module kml001.shr.vmbase {
                 object.memo,
                 object.premiumSets);
         }
+        
+        /**
+         * convert PersonCostCalculation knockoutJS object to PersonCostCalculation JS object
+         */
         static toObjectPersonCost(koObject: PersonCostCalculation): PersonCostCalculationInterface {
             let premiumSets: Array<PremiumSettingInterface> = [];
             koObject.premiumSets().forEach(function(koPremiumSet){premiumSets.push(ProcessHandler.toObjectPremiumSet(koPremiumSet));});
@@ -133,6 +141,10 @@ module kml001.shr.vmbase {
                 premiumSets : premiumSets     
             };    
         }
+        
+        /**
+         * convert PremiumSetting JS object to PremiumSetting knockoutJS object 
+         */
         static fromObjectPremiumSet(object: PremiumSettingInterface): PremiumSetting {
             return new PremiumSetting(
                 object.companyID,
@@ -145,6 +157,10 @@ module kml001.shr.vmbase {
                 object.useAtr,
                 object.attendanceItems);
         }
+        
+        /**
+         * convert PremiumSetting knockoutJS object to PremiumSetting JS object
+         */
         static toObjectPremiumSet(koObject: PremiumSetting): PremiumSettingInterface {
             return {
                 companyID: koObject.companyID(),
@@ -158,31 +174,53 @@ module kml001.shr.vmbase {
                 attendanceItems: _.map(koObject.attendanceItems() , function(item){ return item.iD})   
             };    
         }
+        
+        /**
+         * get one day before input date as string format
+         */
         static getOneDayBefore(date: string) {
             let numberDate = Date.parse(date);
+            // get before day by subtraction one day milliseconds
             let dayBefore = new Date(numberDate - 24 * 60 * 60 * 1000);
             return dayBefore.getFullYear() + '/' + (dayBefore.getMonth() + 1) + '/' + dayBefore.getDate();
         }
-
+        
+        /**
+         * get one day after input date as string format
+         */
         static getOneDayAfter(date: string) {
             let numberDate = Date.parse(date);
+            // get after day by addition one day milliseconds
             let dayBefore = new Date(numberDate + 24 * 60 * 60 * 1000);
             return dayBefore.getFullYear() + '/' + (dayBefore.getMonth() + 1) + '/' + dayBefore.getDate();
         }
+        
+        /**
+         * check input date in range, if date in range return true
+         */
         static validateDateRange(inputDate: string, startDate: string, endDate: string){
             return (Date.parse(startDate) <= Date.parse(inputDate))&&(Date.parse(inputDate)<=Date.parse(endDate));    
         }
+        
+        /**
+         * check input date before or equal date
+         */
         static validateDateInput(inputDate: string, date: string){
             return (Date.parse(inputDate) <= Date.parse(date));
         }
     }
 
-    export enum CategoryAtr {
-        PAYMENT = 0,
-        DEDUCTION = 1,
-        PERSONAL_TIME = 2,
-        ARTICLES = 3,
-        OTHER = 9
+    export enum UseAtr {
+        NotUse = 0,
+        Use = 1
+    }
+    
+    export enum UnitPrice {
+        Price_1 = 0,
+        Price_2 = 1, 
+        Price_3 = 2,
+        Standard = 3,
+        Contract = 4
     }
 
     export enum MSG {
