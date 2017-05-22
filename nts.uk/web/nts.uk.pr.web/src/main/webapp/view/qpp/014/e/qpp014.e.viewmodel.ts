@@ -7,7 +7,7 @@ module qpp014.e {
         currentCode_E_LST_003: KnockoutObservable<any>;
         timer: nts.uk.ui.sharedvm.KibanTimer;
         dateOfPayment: KnockoutObservable<any>;
-        dataFixed: KnockoutObservableArray<any>;
+        data: KnockoutObservableArray<any>;
         numberOfPerson: KnockoutObservable<number>;
         processingState: KnockoutObservable<string>;
         numberOfProcessSuccess: KnockoutObservable<number>;
@@ -27,15 +27,15 @@ module qpp014.e {
             for (let i = 1; i < 10; i++) {
                 self.e_errorList.push(new ItemModel_E_LST_003('00' + i, '基本給', "description " + i));
             }
-            self.dataFixed = ko.observableArray([]);
+            self.data = ko.observableArray(nts.uk.ui.windows.getShared("dataFromD"));
             //fix data to add to db BANK_TRANSFER
-            for (let i = 1; i < 8; i++) {
-                self.dataFixed.push(new TestArray("companyNameKana" + i, "99900000-0000-0000-0000-00000000000" + i, "depCode" + i,
-                    moment.utc(Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString() + Math.floor(Math.random() * (28 - 1 + 1) + 1).toString(), 'YYYYMMDD').toISOString(),
-                    Math.floor(Math.random() * 2), Math.floor(Math.random() * 1001), 1, Math.floor(Math.random() * 2), Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString(),
-                    { branchId: "00000000" + i, bankNameKana: "frBankKNN" + i, branchNameKana: "frBranchKNN" + i, accountAtr: Math.floor(Math.random() * 2), accountNo: "00" + i },
-                    { branchId: "10000000" + i, bankNameKana: "toBankKNN" + i, branchNameKana: "toBranchKNN" + i, accountAtr: Math.floor(Math.random() * 2), accountNo: "00" + i, accountNameKana: "toAccKNName" + i }));
-            }
+//            for (let i = 1; i < 8; i++) {
+//                self.dataFixed.push(new TestArray("companyNameKana" + i, "99900000-0000-0000-0000-00000000000" + i, "depCode" + i,
+//                    moment.utc(Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString() + Math.floor(Math.random() * (28 - 1 + 1) + 1).toString(), 'YYYYMMDD').toISOString(),
+//                    Math.floor(Math.random() * 2), Math.floor(Math.random() * 1001), 1, Math.floor(Math.random() * 2), Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString(),
+//                    { branchId: "00000000" + i, bankNameKana: "frBankKNN" + i, branchNameKana: "frBranchKNN" + i, accountAtr: Math.floor(Math.random() * 2), accountNo: "00" + i },
+//                    { branchId: "10000000" + i, bankNameKana: "toBankKNN" + i, branchNameKana: "toBranchKNN" + i, accountAtr: Math.floor(Math.random() * 2), accountNo: "00" + i, accountNameKana: "toAccKNName" + i }));
+//            }
             self.currentCode_E_LST_003 = ko.observable();
             self.dateOfPayment = ko.observable(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM/DD"));
             self.processingYM = ko.observable(nts.uk.time.formatYearMonth(nts.uk.ui.windows.getShared("processingYMNotConvert")));
@@ -44,7 +44,7 @@ module qpp014.e {
         startPage(): void {
             var self = this;
             var index = ko.observable(0);
-            self.numberOfPerson(self.dataFixed().length);
+            self.numberOfPerson(self.data().length);
             if (self.numberOfPerson() > 0) {
                 self.processingState('データの作成中');
             } else {
@@ -59,7 +59,7 @@ module qpp014.e {
             }
             $.when(qpp014.e.service.removeBankTransfer(cmd))
                 .done(function() {
-                    _.forEach(self.dataFixed(), function(bankTransfer) {
+                    _.forEach(self.data(), function(bankTransfer) {
                         
                         self.addBankTransfer(bankTransfer).done(function() {
                             //if add data to DB success, go to dialog "Success"
@@ -83,22 +83,23 @@ module qpp014.e {
         addBankTransfer(bankTransfer): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            
             var command = {
                 processingNoOfScreenE: nts.uk.ui.windows.getShared("processingNo"),
                 payDateOfScreenE: moment.utc(nts.uk.ui.windows.getShared("dateOfPayment")).toISOString(),
                 sparePayAtrOfScreenE: nts.uk.ui.windows.getShared("sparePayAtr"),
                 processingYMOfScreenE: nts.uk.ui.windows.getShared("processingYMNotConvert"),
-                companyNameKana: bankTransfer.companyNameKana,
-                personId: bankTransfer.personId,
-                departmentCode: bankTransfer.departmentCode,
-                paymentDate: bankTransfer.paymentDate,
-                paymentBonusAtr: bankTransfer.paymentBonusAtr,
-                paymentMoney: bankTransfer.paymentMoney,
-                processingNo: bankTransfer.processingNo,
-                sparePaymentAtr: bankTransfer.sparePaymentAtr,
-                processingYM: bankTransfer.processingYM,
-                fromBank: { branchId: bankTransfer.fromBank.branchId, bankNameKana: bankTransfer.fromBank.bankNameKana, branchNameKana: bankTransfer.fromBank.branchNameKana, accountAtr: bankTransfer.fromBank.accountAtr, accountNo: bankTransfer.fromBank.accountNo },
-                toBank: { branchId: bankTransfer.toBank.branchId, bankNameKana: bankTransfer.toBank.bankNameKana, branchNameKana: bankTransfer.toBank.branchNameKana, accountAtr: bankTransfer.toBank.accountAtr, accountNo: bankTransfer.toBank.accountNo, accountNameKana: bankTransfer.toBank.accountNameKana },
+//                companyNameKana: bankTransfer.companyNameKana,
+                personId: bankTransfer.pid,
+//                departmentCode: bankTransfer.departmentCode,
+//                paymentDate: bankTransfer.paymentDate,
+//                paymentBonusAtr: bankTransfer.paymentBonusAtr,
+//                paymentMoney: bankTransfer.paymentMoney,
+//                processingNo: bankTransfer.processingNo,
+//                sparePaymentAtr: bankTransfer.sparePaymentAtr,
+//                processingYM: bankTransfer.processingYM,
+//                fromBank: { branchId: bankTransfer.fromBank.branchId, bankNameKana: bankTransfer.fromBank.bankNameKana, branchNameKana: bankTransfer.fromBank.branchNameKana, accountAtr: bankTransfer.fromBank.accountAtr, accountNo: bankTransfer.fromBank.accountNo },
+//                toBank: { branchId: bankTransfer.toBank.branchId, bankNameKana: bankTransfer.toBank.bankNameKana, branchNameKana: bankTransfer.toBank.branchNameKana, accountAtr: bankTransfer.toBank.accountAtr, accountNo: bankTransfer.toBank.accountNo, accountNameKana: bankTransfer.toBank.accountNameKana },
             }
 
             qpp014.e.service.addBankTransfer(command)

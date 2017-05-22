@@ -8,5 +8,7 @@ import nts.arc.time.GeneralDate;
 @Value
 public class BankTransferDto {
 	List<ListOfScreenDDto> listOfScreenDDto;
+	List<ListOfScreenDDto> listOfScreenDDto0;
+	List<ListOfScreenDDto> listOfScreenDDto1;
 	GeneralDate payDate;
 }

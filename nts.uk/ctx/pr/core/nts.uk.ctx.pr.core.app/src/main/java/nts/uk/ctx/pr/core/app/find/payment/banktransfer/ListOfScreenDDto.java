@@ -12,5 +12,4 @@ public class ListOfScreenDDto {
 	int paymentMethod4;
 	int paymentMethod5;
 	String pId;
-	int sparePayAtr;
 }
