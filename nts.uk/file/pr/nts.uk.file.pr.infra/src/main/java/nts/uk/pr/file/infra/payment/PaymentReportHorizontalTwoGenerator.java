@@ -11,9 +11,6 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	/** The Constant ITEM_WIDTH. */
 	public static final int ITEM_WIDTH = 2;
 
-	/** The Constant CATEGORY_START_ROW. */
-	public static final int CATEGORY_START_ROW = 4;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -32,11 +29,15 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 		cells = workSheet.getCells();
 
 		super.init();
+		// super.setItemWidth(3);
 
 		data.getReportData().forEach(item -> {
 			employee = item;
 			super.printData();
 		});
+
+		//PageSetup pageSetup = workSheet.getPageSetup();
+		//pageSetup.setTopMargin(0);
 
 	}
 
@@ -80,7 +81,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	void setPageHeaderRange() {
-		pageHeaderRange = cells.createRange("A1", "L3");
+		pageHeaderRange = cells.createRange("A1", "J3");
 	}
 
 	/*
@@ -93,13 +94,10 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	@Override
 	List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
-		list.add(new CellValue(0, 8, "給与明細書"));
-		list.add(new CellValue(1, 0, "部門コード"));
-		list.add(new CellValue(1, 2, "個人コード"));
-		list.add(new CellValue(1, 4, "氏名"));
-		list.add(new CellValue(2, 0, employee.getDepartmentInfo().getDepartmentCode()));
-		list.add(new CellValue(2, 2, employee.getEmployeeInfo().getEmployeeCode()));
-		list.add(new CellValue(2, 4, employee.getEmployeeInfo().getEmployeeName()));
+		list.add(new CellValue(0, 7, employee.getJapaneseYearMonth()));
+		list.add(new CellValue(1, 0, employee.getDepartmentInfo().getDepartmentCode()));
+		list.add(new CellValue(1, 2, employee.getEmployeeInfo().getEmployeeCode()));
+		list.add(new CellValue(1, 3, employee.getEmployeeInfo().getEmployeeName()));
 		return list;
 	}
 
@@ -113,10 +111,10 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	@Override
 	void setTemplateStyle() {
 		// Get style from template.
-		templateStyle.headerStyle = getStyle("A5");
-		templateStyle.nameStyle = getStyle("B5");
-		templateStyle.valueStyle = getStyle("B6");
-		templateStyle.remarkStyle = getStyle("J2");
+		templateStyle.headerStyle = getStyle("A4");
+		templateStyle.nameStyle = getStyle("B4");
+		templateStyle.valueStyle = getStyle("B5");
+		templateStyle.remarkStyle = getStyle("B7");
 	}
 
 	/*
