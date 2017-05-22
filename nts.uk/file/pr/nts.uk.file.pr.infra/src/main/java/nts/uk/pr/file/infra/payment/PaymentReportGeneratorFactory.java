@@ -22,7 +22,7 @@ public class PaymentReportGeneratorFactory {
 	 */
 	public PaymentGenerator createGenerator(PaymentReportData data) {
 
-		switch (data.getSelectPrintTypes()) {
+		switch (data.getLayoutItem()) {
 		case 0:
 			return new PaymentReportVerticalOneGenerator();
 		case 1:

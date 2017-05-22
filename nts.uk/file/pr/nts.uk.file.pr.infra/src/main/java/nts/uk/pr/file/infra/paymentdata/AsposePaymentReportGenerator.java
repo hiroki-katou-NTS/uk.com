@@ -32,7 +32,7 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 	private static final String TEMPLATE_POSTCARD = "report/QPP021_A.xlsx";
 	
 	/** The Constant TEMPLATE_VERTICALONEPERSON. */
-	private static final String TEMPLATE_VERTICAL_ONE_PERSON = "report/QPP021_A.xlsx";
+	private static final String TEMPLATE_VERTICAL_ONE_PERSON = "report/QPP021_B.xlsx";
 	
 	/** The Constant TEMPLATE_VERTICAL_TWO_PERSON. */
 	private static final String TEMPLATE_VERTICAL_TWO_PERSON = "report/QPP021_A.xlsx";
@@ -69,7 +69,7 @@ public class AsposePaymentReportGenerator extends AsposeCellsReportGenerator
 		PaymentReportData data = this.repository.findData(query);
 		String teamplate = TEAMPLATE_ZFOLDED;
 		
-		switch (query.getSelectPrintTypes()) {
+		switch (query.getLayoutItems()) {
 		case 0:
 			teamplate = TEMPLATE_VERTICAL_ONE_PERSON;
 			break;

@@ -235,6 +235,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		// return data
 		PaymentReportData reportData = new PaymentReportData();
 		reportData.setReportData(reportDatas);
+		reportData.setLayoutItem(query.getLayoutItems());
 		return reportData;
 	}
 
