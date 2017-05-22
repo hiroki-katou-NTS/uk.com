@@ -309,7 +309,7 @@ module kml001.a.viewmodel {
             ko.utils.arrayForEach(data.attendanceItems(), function(attendanceItem: vmbase.AttendanceItem) {
                 currentList.push(attendanceItem.iD);
             });
-            nts.uk.ui.windows.setShared('SelectedAttendanceId', currentList);
+            nts.uk.ui.windows.setShared('SelectedAttendanceId', currentList,true);
             nts.uk.ui.windows.setShared('Multiple', true);
             servicebase.getAttendanceItemByType(0)
                 .done(function(res: Array<any>) {
