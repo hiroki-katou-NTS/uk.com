@@ -37,7 +37,9 @@ module ccg031.b.viewmodel {
             // TopPage Part
             self.listPartType = ko.observableArray([]);
             self.selectedPartType = ko.observable(null);
-            self.selectedPartType.subscribe((value) => { self.filterPartType(value); });
+            self.selectedPartType.subscribe((value) => { 
+                self.filterPartType(value);
+            });
             self.allPart = ko.observableArray([]);
             self.listPart = ko.observableArray([]);
             self.selectedPartID = ko.observable(null);
@@ -107,7 +109,7 @@ module ccg031.b.viewmodel {
             if (isExternalUrl !== true) {
                 if (nts.uk.ui._viewModel)
                     $(".nts-validate").ntsError("clear");
-                var listPart = _.filter(this.allPart(), ['type', partType]);
+                var listPart = _.chain(this.allPart()).filter(['type', partType]).sortBy("code").value();
                 this.listPart(listPart);
                 this.isExternalUrl(isExternalUrl);
                 this.selectFirstPart();

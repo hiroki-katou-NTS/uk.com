@@ -222,11 +222,13 @@ module ccg031.a.viewmodel {
         private shiftOverlapPart(movingPlacement: model.Placement, checkingPlacements: Array<model.Placement>): void {
             var self = this;
             var newColumnPosition: Array<number> = [];
-            _.each(checkingPlacements, (placement) => {
-                if (self.checkIntersect(movingPlacement, placement)) {
-                    movingPlacement.column = placement.column + placement.width;
-                    // Check if new position is overlap
-                    self.shiftOverlapPart.call(self, movingPlacement, _.clone(checkingPlacements));
+            _.each(checkingPlacements, (checkingPlacement) => {
+                if (!_.isEqual(movingPlacement, checkingPlacement)) {
+                    if (self.checkIntersect(movingPlacement, checkingPlacement)) {
+                        movingPlacement.column = checkingPlacement.column + checkingPlacement.width;
+                        // Check if new position is overlap
+                        self.shiftOverlapPart.call(self, movingPlacement, _.clone(checkingPlacements));
+                    }
                 }
             });
         }
