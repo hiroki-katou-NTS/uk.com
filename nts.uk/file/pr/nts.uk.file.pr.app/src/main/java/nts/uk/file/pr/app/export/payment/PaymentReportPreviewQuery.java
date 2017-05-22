@@ -20,5 +20,4 @@ public class PaymentReportPreviewQuery {
 	
 	/** The page layout. */
 	private String pageLayout;
-		
 }

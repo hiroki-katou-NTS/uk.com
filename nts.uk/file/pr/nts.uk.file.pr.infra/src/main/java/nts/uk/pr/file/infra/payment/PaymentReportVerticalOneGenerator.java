@@ -142,15 +142,4 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 		return ITEM_WIDTH;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
-	 * getCategoryStartRow()
-	 */
-	@Override
-	int getCategoryStartRow() {
-		return CATEGORY_START_ROW;
-	}
-
 }

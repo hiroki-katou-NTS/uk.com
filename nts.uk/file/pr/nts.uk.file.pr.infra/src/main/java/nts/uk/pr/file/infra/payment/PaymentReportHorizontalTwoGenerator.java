@@ -136,9 +136,4 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
 	 * getCategoryStartRow()
 	 */
-	@Override
-	int getCategoryStartRow() {
-		return CATEGORY_START_ROW;
-	}
-
 }
