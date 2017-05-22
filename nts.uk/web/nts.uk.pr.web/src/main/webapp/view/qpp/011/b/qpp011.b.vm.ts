@@ -320,10 +320,25 @@ module qpp011.b {
                             multipleSelection: true,
                             rowSelectionChanged: function(evt: any, ui: any) {
                                 var selectedRows: Array<any> = ui.selectedRows;
+                                if (ui.row.index != -1) {
+                                    if (self.findObject(ui.row.id).typeBranch != "Item") {
+                                        let selectedCodes = [];
+                                        let childArray = self.findChild(ui.row.id);
+                                        childArray.forEach(function(child: TreeItem) {
+                                            selectedCodes.push(child.position);
+                                        });
+                                        selectedRows = _.filter(selectedRows, function(row) {
+                                            return _.find(selectedCodes, function(removeChild) {
+                                                return removeChild.toString() === row.id.toString();
+                                            }) === undefined;
+                                        });
+                                    }
+                                }
                                 selectedValue(_.map(selectedRows, function(row) {
                                     return row.id;
                                 }));
                             }
+
                         },
                         {
                             name: "RowSelectors",
@@ -345,11 +360,12 @@ module qpp011.b {
                     if (row)
                         return row.id;
                 });
-                //  $B_LST_001.igTreeGridSelection("clearSelection");
+                $B_LST_001.igTreeGridSelection("clearSelection");
                 let selectedCodes: Array<any>;
                 //  if (newValue.length > selectedRows.length) {
-                selectedCodes = newValue;
+                selectedCodes = [];
                 newValue.forEach(function(id) {
+                    selectedCodes.push(id);
                     if (self.findObject(id).typeBranch != "Item") {
                         let childArray = self.findChild(id);
                         childArray.forEach(function(child: TreeItem) {
@@ -357,26 +373,9 @@ module qpp011.b {
                         });
                     }
                 });
-                //                    } else {
-                //                        selectedCodes = selectedRows;
-                //                        selectedRows.forEach(function(id) {
-                //                            if (self.findObject(id).typeBranch != "Item") {
-                //                                let childArray = self.findChild(id);
-                //                                childArray.forEach(function(child: TreeItem) {
-                //                                    selectedCodes.splice(childArray.indexOf(child.position, 0), 1);
-                //                                });
-                //                            }
-                //                        });
-                //
-                //                    }
                 selectedCodes.forEach(function(id) {
                     $B_LST_001.igTreeGridSelection("selectRowById", id);
                 });
-
-
-
-
-
             });
             self.selectedValue_C_LST_001 = ko.observableArray([]);
             let $C_LST_001 = $("#C_LST_001");
