@@ -34,7 +34,7 @@ public class FileConstraintsCheckerImp implements FileConstraintsChecker {
 			// check size
 			if (fileInfor.getOriginalSize() > fileStereo.getLimitedSize()) {
 				throw new BusinessException(
-						I18NText.main("Msg_70").addRaw(fileStereo.getLimitedSize() / (10e6)).build());
+						I18NText.main("Msg_70").addRaw(fileStereo.getLimitedSize() / (1024.0*1024.0)).build());
 			}
 			// authorization
 			// TODO:
