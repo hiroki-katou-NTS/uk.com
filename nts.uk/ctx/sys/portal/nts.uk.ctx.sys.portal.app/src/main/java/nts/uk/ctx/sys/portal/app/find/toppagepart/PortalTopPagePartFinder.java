@@ -29,10 +29,10 @@ public class PortalTopPagePartFinder {
 		String companyID = AppContexts.user().companyId();
 		
 		// List TopPage Part Type
-		List<EnumConstant> usingTopPagePartType = topPagePartSerivce.getTopPagePartTypeByPGType(companyID, EnumAdaptor.valueOf(pgType, PGType.class));
+		List<EnumConstant> usingTopPagePartType = topPagePartSerivce.getAllActiveTopPagePartType(companyID, EnumAdaptor.valueOf(pgType, PGType.class));
 		
 		//List TopPage Part
-		List<TopPagePartDto> listTopPagePart = topPagePartSerivce.getAllActiveTopPagePart(companyID, usingTopPagePartType)
+		List<TopPagePartDto> listTopPagePart = topPagePartSerivce.getAllActiveTopPagePart(companyID, EnumAdaptor.valueOf(pgType, PGType.class))
 				.stream().map(topPagePart -> TopPagePartDto.fromDomain(topPagePart))
 				.collect(Collectors.toList());
 

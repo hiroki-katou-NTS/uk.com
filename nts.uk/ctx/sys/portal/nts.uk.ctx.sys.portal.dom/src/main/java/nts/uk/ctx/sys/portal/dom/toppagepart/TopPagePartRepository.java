@@ -32,6 +32,15 @@ public interface TopPagePartRepository {
 	List<TopPagePart> findByType(String companyID, int type);
 	
 	/**
+	 * Find all TopPagePart by TopPagePartTypes
+	 *
+	 * @param companyID
+	 * @param topPagePartTypes List TopPagePartType you need to find in
+	 * @return List TopPagePart
+	 */
+	List<TopPagePart> findByTypes(String companyID, List<Integer> topPagePartTypes);
+	
+	/**
 	 * Find all TopPagePart by TopPagePartType and IDs
 	 *
 	 * @param companyID
@@ -39,7 +48,7 @@ public interface TopPagePartRepository {
 	 * @param topPagePartIDs List active TopPagePartID you need to find in
 	 * @return List TopPagePart
 	 */
-	List<TopPagePart> findByTypeAndIDs(String companyID, List<Integer> topPagePartTypes, List<String> topPagePartIDs);
+	List<TopPagePart> findByTypesAndIDs(String companyID, List<Integer> topPagePartTypes, List<String> topPagePartIDs);
 	
 	/**
 	 * find top page part data by code and type

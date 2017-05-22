@@ -3,12 +3,8 @@ package nts.uk.ctx.sys.portal.app.find.layout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementDto;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementPartDto;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
@@ -32,9 +28,7 @@ public class DefaultPortalLayoutFactory implements PortalLayoutFactory {
 	}
 
 	private List<PlacementDto> buildPlacementDto(Layout layout, List<Placement> placements) {
-		List<EnumConstant> usingTopPagePartTypes = topPagePartService.getTopPagePartTypeByPGType(layout.getCompanyID(), layout.getPgType());
-		List<String> topPagePartIDs = placements.stream().map(c -> c.getToppagePartID()).collect(Collectors.toList());
-		List<TopPagePart> activeTopPageParts = topPagePartService.getActiveTopPagePartByID(layout.getCompanyID(), usingTopPagePartTypes, topPagePartIDs);
+		List<TopPagePart> activeTopPageParts = topPagePartService.getAllActiveTopPagePart(layout.getCompanyID(), layout.getPgType());
 		
 		List<PlacementDto> placementDtos = new ArrayList<PlacementDto>();
 		for (Placement placement : placements) {

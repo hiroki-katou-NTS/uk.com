@@ -34,7 +34,7 @@ public interface TopPagePartService {
 	 * @param pgType
 	 * @return List EnumConstant of TopPagePartType
 	 */
-	List<EnumConstant> getTopPagePartTypeByPGType(String companyID, PGType pgType);
+	List<EnumConstant> getAllActiveTopPagePartType(String companyID, PGType pgType);
 	
 	/**
 	 * Get all active TopPagePart
@@ -42,14 +42,6 @@ public interface TopPagePartService {
 	 * @param
 	 * @return List active TopPagePart
 	 */
-	List<TopPagePart> getAllActiveTopPagePart(String companyID, List<EnumConstant> usingTopPagePartTypes);
-	
-	/**
-	 * Get active TopPagePart by IDs
-	 * 
-	 * @param
-	 * @return List TopPageParts
-	 */
-	List<TopPagePart> getActiveTopPagePartByID(String companyID, List<EnumConstant> usingTopPagePartTypes, List<String> topPagePartIDs);
+	List<TopPagePart> getAllActiveTopPagePart(String companyID, PGType pgType);
 	
 }

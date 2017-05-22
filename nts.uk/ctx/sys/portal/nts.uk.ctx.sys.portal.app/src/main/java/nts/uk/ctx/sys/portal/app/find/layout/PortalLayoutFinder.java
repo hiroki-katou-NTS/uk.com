@@ -33,9 +33,6 @@ public class PortalLayoutFinder {
 	 * @return Optional Layout
 	 */
 	public LayoutDto findLayout(String layoutID) {
-		if (layoutID.equals(null))
-			return null;
-
 		Optional<Layout> layout = layoutRepository.find(layoutID);
 		if (layout.isPresent()) {
 			List<Placement> placements = placementRepository.findByLayout(layoutID);

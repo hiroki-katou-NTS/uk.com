@@ -20,6 +20,8 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.topPagePartID = :topPagePartID";
 	private final String SELECT_BY_COMPANY = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID";
 	private final String SELECT_BY_TYPE = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID AND c.topPagePartType = :topPagePartType";
+	private final String SELECT_BY_TYPES = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID "
+										+ "AND c.topPagePartType IN :topPagePartTypes";
 	private final String SELECT_BY_TYPE_AND_IDS = "SELECT c FROM CcgmtTopPagePart AS c WHERE c.ccgmtTopPagePartPK.companyID = :companyID "
 												+ "AND c.ccgmtTopPagePartPK.topPagePartID IN :topPagePartIDs "
 												+ "AND c.topPagePartType IN :topPagePartTypes";
@@ -56,8 +58,17 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 				.getSingle(c -> toDomain(c));
 	}
 
+
 	@Override
-	public List<TopPagePart> findByTypeAndIDs(String companyID, List<Integer> topPagePartTypes, List<String> topPagePartIDs) {
+	public List<TopPagePart> findByTypes(String companyID, List<Integer> topPagePartTypes) {
+		 return this.queryProxy().query(SELECT_BY_TYPES, CcgmtTopPagePart.class)
+					.setParameter("companyID", companyID)
+					.setParameter("topPagePartTypes", topPagePartTypes)
+					.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<TopPagePart> findByTypesAndIDs(String companyID, List<Integer> topPagePartTypes, List<String> topPagePartIDs) {
 		 return this.queryProxy().query(SELECT_BY_TYPE_AND_IDS, CcgmtTopPagePart.class)
 					.setParameter("companyID", companyID)
 					.setParameter("topPagePartIDs", topPagePartIDs)

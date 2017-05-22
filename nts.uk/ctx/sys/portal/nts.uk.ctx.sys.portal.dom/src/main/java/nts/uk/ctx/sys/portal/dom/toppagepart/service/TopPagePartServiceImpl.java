@@ -53,63 +53,98 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 	}
 
 	@Override
-	public List<EnumConstant> getTopPagePartTypeByPGType(String companyID, PGType pgType) {
-		List<EnumConstant> listTopPagePartType = EnumAdaptor.convertToValueNameList(TopPagePartType.class);
-		List<Integer> checkingTopPagePartTypeValues = new ArrayList<Integer>();
+	public List<EnumConstant> getAllActiveTopPagePartType(String companyID, PGType pgType) {
 		if (pgType == PGType.TopPage) {
-			checkingTopPagePartTypeValues.add(TopPagePartType.Widget.value);
-			checkingTopPagePartTypeValues.add(TopPagePartType.DashBoard.value);
-			checkingTopPagePartTypeValues.add(TopPagePartType.FlowMenu.value);
-			checkingTopPagePartTypeValues.add(TopPagePartType.ExternalUrl.value);
+			return getTopPagePartType(companyID);
 		}
 		else if (pgType == PGType.TitleMenu) {
-			checkingTopPagePartTypeValues.add(TopPagePartType.FlowMenu.value);
-			checkingTopPagePartTypeValues.add(TopPagePartType.ExternalUrl.value);
+			return getTitleMenuPartType(companyID);
 		}
 		else if (pgType == PGType.MyPage) {
-			Optional<MyPageSetting> checkMyPageSetting = myPageSettingRepository.findByCompanyId(companyID);
-			if (checkMyPageSetting.isPresent()) {
-				MyPageSetting myPageSetting = checkMyPageSetting.get();
-				if (myPageSetting.getUseMyPage() == UseDivision.Use) {
-					if (myPageSetting.getUseWidget() == UseDivision.Use)
-						checkingTopPagePartTypeValues.add(TopPagePartType.Widget.value);
-					if (myPageSetting.getUseDashboard() == UseDivision.Use)
-						checkingTopPagePartTypeValues.add(TopPagePartType.DashBoard.value);
-					if (myPageSetting.getUseFlowMenu() == UseDivision.Use)
-						checkingTopPagePartTypeValues.add(TopPagePartType.FlowMenu.value);
-					if (myPageSetting.getExternalUrlPermission() == PermissionDivision.Allow)
-						checkingTopPagePartTypeValues.add(TopPagePartType.ExternalUrl.value);
-				}
-			}
+			return getMyPagePartType(companyID);
 		}
-		List<EnumConstant> usingTopPagePartType = new ArrayList<EnumConstant>();
-		usingTopPagePartType.addAll(listTopPagePartType.stream().filter(o -> checkingTopPagePartTypeValues.contains(o.getValue())).collect(Collectors.toList()));
-		return usingTopPagePartType;
+		return null;
 	}
 
 	@Override
-	public List<TopPagePart> getAllActiveTopPagePart(String companyID, List<EnumConstant> usingTopPagePartTypes) {
-		List<Integer> usingTopPagePartTypeIDs = usingTopPagePartTypes.stream().map(c -> c.getValue()).collect(Collectors.toList());
-		List<String> usingTopPagePartIDs = new ArrayList<String>(); 
-		List<TopPagePartUseSetting> topPagePartSettings = myPageSettingRepository.findTopPagePartUseSettingByCompanyId(companyID);
-		for (TopPagePartUseSetting topPagePartUseSetting : topPagePartSettings) {
-			if (topPagePartUseSetting.getUseDivision() == UseDivision.Use)
-				usingTopPagePartIDs.add(topPagePartUseSetting.getTopPagePartId());
+	public List<TopPagePart> getAllActiveTopPagePart(String companyID, PGType pgType) {
+		List<EnumConstant> activeTopPagePartTypes = getAllActiveTopPagePartType(companyID, pgType);
+		List<Integer> activeTopPagePartTypeIDs = activeTopPagePartTypes.stream().map(c -> c.getValue()).collect(Collectors.toList());
+		
+		if (pgType == PGType.TopPage) {
+			return topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
 		}
-		return topPagePartRepository.findByTypeAndIDs(companyID, usingTopPagePartTypeIDs, usingTopPagePartIDs);
+		else if (pgType == PGType.TitleMenu) {
+			return topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
+		}
+		else if (pgType == PGType.MyPage) {
+			List<String> activeTopPagePartIDs = getMyPageActivePartIDs(companyID);
+			return topPagePartRepository.findByTypesAndIDs(companyID, activeTopPagePartTypeIDs, activeTopPagePartIDs);
+		}
+		return null;
 	}
 	
-	@Override
-	public List<TopPagePart> getActiveTopPagePartByID(String companyID, List<EnumConstant> usingTopPagePartTypes, List<String> topPagePartIDs) {
-		List<Integer> usingTopPagePartTypeIDs = usingTopPagePartTypes.stream().map(c -> c.getValue()).collect(Collectors.toList());
-		List<String> usingTopPagePartIDs = new ArrayList<String>();
+	/**
+	 * Get all TopPage's active TopPagePartType
+	 * @return List EnumConstant of TopPagePartType
+	 */
+	private List<EnumConstant> getTopPagePartType(String companyID) {
+		return EnumAdaptor.convertToValueNameList(TopPagePartType.class);
+	}
+	
+	/**
+	 * Get all TitleMenu's active TopPagePartType
+	 * @return List EnumConstant of TopPagePartType
+	 */
+	private List<EnumConstant> getTitleMenuPartType(String companyID) {
+		List<EnumConstant> listTopPagePartType = EnumAdaptor.convertToValueNameList(TopPagePartType.class);
+		List<Integer> checkingTopPagePartTypeValues = new ArrayList<Integer>();
+		checkingTopPagePartTypeValues.add(TopPagePartType.FlowMenu.value);
+		checkingTopPagePartTypeValues.add(TopPagePartType.ExternalUrl.value);
+		
+		List<EnumConstant> activeTopPagePartType = new ArrayList<EnumConstant>();
+		activeTopPagePartType.addAll(listTopPagePartType.stream().filter(o -> checkingTopPagePartTypeValues.contains(o.getValue())).collect(Collectors.toList()));
+		return activeTopPagePartType;
+	} 
+
+	/**
+	 * Get all MyPage's active TopPagePartType
+	 * @return List EnumConstant of TopPagePartType
+	 */
+	private List<EnumConstant> getMyPagePartType(String companyID) {
+		List<EnumConstant> listTopPagePartType = EnumAdaptor.convertToValueNameList(TopPagePartType.class);
+		List<Integer> checkingTopPagePartTypeValues = new ArrayList<Integer>();
+		Optional<MyPageSetting> checkMyPageSetting = myPageSettingRepository.findByCompanyId(companyID);
+		if (checkMyPageSetting.isPresent()) {
+			MyPageSetting myPageSetting = checkMyPageSetting.get();
+			if (myPageSetting.getUseMyPage() == UseDivision.Use) {
+				if (myPageSetting.getUseWidget() == UseDivision.Use)
+					checkingTopPagePartTypeValues.add(TopPagePartType.Widget.value);
+				if (myPageSetting.getUseDashboard() == UseDivision.Use)
+					checkingTopPagePartTypeValues.add(TopPagePartType.DashBoard.value);
+				if (myPageSetting.getUseFlowMenu() == UseDivision.Use)
+					checkingTopPagePartTypeValues.add(TopPagePartType.FlowMenu.value);
+				if (myPageSetting.getExternalUrlPermission() == PermissionDivision.Allow)
+					checkingTopPagePartTypeValues.add(TopPagePartType.ExternalUrl.value);
+			}
+		}
+		
+		List<EnumConstant> activeTopPagePartType = new ArrayList<EnumConstant>();
+		activeTopPagePartType.addAll(listTopPagePartType.stream().filter(o -> checkingTopPagePartTypeValues.contains(o.getValue())).collect(Collectors.toList()));
+		return activeTopPagePartType;
+	}
+	
+	/**
+	 * Get all MyPage's active TopPagePart
+	 * @return List EnumConstant of TopPagePartType
+	 */
+	private List<String> getMyPageActivePartIDs(String companyID) {
+		List<String> activeTopPagePartIDs = new ArrayList<String>(); 
 		List<TopPagePartUseSetting> topPagePartSettings = myPageSettingRepository.findTopPagePartUseSettingByCompanyId(companyID);
 		for (TopPagePartUseSetting topPagePartUseSetting : topPagePartSettings) {
 			if (topPagePartUseSetting.getUseDivision() == UseDivision.Use)
-				usingTopPagePartIDs.add(topPagePartUseSetting.getTopPagePartId());
+				activeTopPagePartIDs.add(topPagePartUseSetting.getTopPagePartId());
 		}
-		topPagePartIDs.retainAll(usingTopPagePartIDs);
-		return topPagePartRepository.findByTypeAndIDs(companyID, usingTopPagePartTypeIDs, topPagePartIDs);
+		return activeTopPagePartIDs;
 	}
-
 }
