@@ -33,3 +33,14 @@
 .clear-btn:before {
 	width: 130px !important;
 }
+
+
+#center-bottom {
+	margin-left: 160px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+#center-bottom > button {
+	margin-right: 10px;
+}

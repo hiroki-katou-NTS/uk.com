@@ -4986,6 +4986,7 @@ var nts;
                         this.EVENT_PICK = "pick." + this.NAMESPACE;
                         this.YM_FORMAT = "YYYY/MM";
                         this.YMD_FORMAT = "YYYY/MM/DD";
+                        this.DATE_SPLITTER = "/";
                     }
                     // Use this method to get an instance.
                     DatePickerNormalizer.getInstance = function ($input) {
@@ -5071,7 +5072,9 @@ var nts;
                             this.colorLevel = this.MONTHS;
                         else if (this.options.format === this.YMD_FORMAT)
                             this.colorLevel = this.DAYS;
-                        this.selectedView = this.colorLevel;
+                        // Only set to colorLevel in initialization.
+                        if (this.selectedView === undefined)
+                            this.selectedView = this.colorLevel;
                     };
                     DatePickerNormalizer.prototype.color = function () {
                         if (this.cssRanger === undefined)
@@ -5327,10 +5330,10 @@ var nts;
                         this.defaultMonths = this.options.months;
                         var parsedTime;
                         if (this.options.format === this.YMD_FORMAT)
-                            parsedTime = uk.time.parseYearMonthDate(initValue);
+                            parsedTime = this.parseDate(initValue);
                         else if (this.options.format === this.YM_FORMAT)
-                            parsedTime = uk.time.parseYearMonth(initValue);
-                        if (parsedTime.success) {
+                            parsedTime = this.parseDate(initValue);
+                        if (parsedTime !== undefined) {
                             this.year = parsedTime.year;
                             this.month = parsedTime.month;
                             this.date = parsedTime.date;
@@ -5349,12 +5352,25 @@ var nts;
                         }
                         this.color();
                         // Pick time
-                        if (colorLevel === this.MONTHS && this.allowPickMonth()) {
+                        if (this.selectedView === this.MONTHS && this.allowPickMonth()) {
+                            if (this.viewMonth < this.fiscalMonth && this.viewYear === this.year)
+                                this.clearPicked();
                             this.pickMonth();
                         }
-                        else if (colorLevel === this.DAYS && this.allowPickDate()) {
+                        else if (this.selectedView === this.DAYS && this.allowPickDate()) {
                             this.pickDate();
                         }
+                    };
+                    DatePickerNormalizer.prototype.parseDate = function (date) {
+                        var exp = new RegExp(/\d+\/\d+(\/\d+)?/);
+                        if (exp.test(date) === false)
+                            return;
+                        var dateParts = date.split(this.DATE_SPLITTER);
+                        return {
+                            year: parseInt(dateParts[0]),
+                            month: parseInt(dateParts[1]),
+                            date: dateParts[2] !== undefined ? parseInt(dateParts[2]) : undefined
+                        };
                     };
                     DatePickerNormalizer.prototype.onShow = function () {
                         var self = this;
