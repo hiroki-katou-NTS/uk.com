@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
@@ -15,24 +14,27 @@ import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 @Stateless
 public class PaymentReportGeneratorFactory {
 
-	/** The qualification generator. */
-	@EJB(name = "PaymentReportHorizontalGenerator")
-	private PaymentGenerator paymentReportHorizontalGenerator;
-
 	/**
 	 * Creates a new PaymentReportGenerator object.
 	 *
-	 * @param pageOrientation the page orientation
 	 * @param data the data
 	 * @return the payment generator
 	 */
-	public PaymentGenerator createGenerator(String pageOrientation, PaymentReportData data) {
-		switch (pageOrientation) {
-		case "PORTRAIT":
-			return new PaymentReportVerticalGenerator();
+	public PaymentGenerator createGenerator(PaymentReportData data) {
 
-		case "LANDSCAPE":
-			return paymentReportHorizontalGenerator;
+		switch (data.getSelectPrintTypes()) {
+		case 0:
+			return new PaymentReportVerticalOneGenerator();
+		case 1:
+			return new PaymentReportVerticalTwoGenerator();
+		case 2:
+			return new PaymentReportVerticalThreeGenerator();
+		case 3:
+			return new PaymentReportHorizontalTwoGenerator();
+		case 4:
+			return new PaymentReportZFoldedGenerator();
+		case 5:
+			return new PaymentReportPostCardGenerator();		
 
 		default:
 			break;

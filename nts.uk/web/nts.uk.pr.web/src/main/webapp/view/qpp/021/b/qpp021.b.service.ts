@@ -39,8 +39,6 @@ module nts.uk.pr.view.qpp021.b {
 
                 /** The layout items. */
                 layoutItems: number;
-                
-                pageOrientation: string;
             }
 
         }

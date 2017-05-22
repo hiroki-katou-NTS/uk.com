@@ -6,6 +6,7 @@ package nts.uk.pr.file.infra.paymentdata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
@@ -37,18 +39,18 @@ import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
  */
 @Stateless
 public class JpaPaymentReportRepository extends JpaRepository implements PaymentReportRepository {
-	
+
 	/** The japanese provider. */
 	@Inject
-	private JapaneseErasProvider japaneseProvider; 
-	
+	private JapaneseErasProvider japaneseProvider;
+
 	/** The repository. */
 	@Inject
 	private ContactItemsSettingRepository repository;
-	
+
 	/** The Constant TOTAL_COLUMN_INLINE. */
 	private static final int TOTAL_COLUMN_INLINE = 9;
-	
+
 	/** The Constant FIRST_COLUMN_INLINE. */
 	private static final int FIRST_COLUMN_INLINE = 1;
 
@@ -69,17 +71,17 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 	/** The Constant CATEGORY_ARTICLE. */
 	public static final int CATEGORY_ARTICLE = 3;
-	
+
 	/** The print line position. */
 	int printLinePosition = 0;
-	
+
 	/** The column position. */
 	int columnPosition = 0;
 
-	/** The Constant FIND_DEPARTMENT_BYCODE. */
-	public static final String FIND_DEPARTMENT_BYCODE = "SELECT dep FROM CmnmtDep dep "
-		+ "WHERE dep.cmnmtDepPK.companyCode = :companyCode "
-		+ " AND dep.cmnmtDepPK.departmentCode = :departmentCode";
+	/** The Constant FIND_EMPLOYEE_BYCODE. */
+	public static final String FIND_EMPLOYEE_BYCODE = "SELECT emp FROM CmnmtEmp emp "
+		+ "WHERE emp.cmnmtEmpPk.companyCode = :companyCode "
+		+ " AND emp.cmnmtEmpPk.employmentCode = :employmentCode";
 
 	/** The Constant FIND_PAYMENT_HEADER_LAYOUT. */
 	public static final String FIND_PAYMENT_HEADER_LAYOUT = "SELECT header "
@@ -88,8 +90,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		+ "AND header.qstdtPaymentHeaderPK.processingNo = :processingNo "
 		+ "AND header.qstdtPaymentHeaderPK.payBonusAtr = 0 "
 		+ "AND header.qstdtPaymentHeaderPK.processingYM = :processingYM "
-		+ "AND header.qstdtPaymentHeaderPK.sparePayAtr = 0 " 
-		+ "AND header.layoutAtr = :layoutItem";
+		+ "AND header.qstdtPaymentHeaderPK.sparePayAtr = 0 " + "AND header.layoutAtr = :layoutItem";
 
 	/** The Constant FIND_PAYMENT_HEADER_SPECIFICATION. */
 	public static final String FIND_PAYMENT_HEADER_SPECIFICATION = "SELECT header "
@@ -132,6 +133,18 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			.setParameter("processingNo", query.getProcessingNo())
 			.setParameter("layoutItem", query.getLayoutItems())
 			.setParameter("processingYM", query.getProcessingYM()).getList();
+	}
+
+	/**
+	 * Find employee code.
+	 *
+	 * @param companyCode the company code
+	 * @param employeeCode the employee code
+	 * @return the optional
+	 */
+	Optional<CmnmtEmp> findEmployeeCode(String companyCode, String employeeCode) {
+		return this.queryProxy().query(FIND_EMPLOYEE_BYCODE, CmnmtEmp.class)
+			.setParameter("companyCode", companyCode).setParameter("employmentCode", employeeCode).getSingle();
 	}
 
 	/**
@@ -248,24 +261,24 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		printLinePosition = 1;
 		columnPosition = 0;
 		dataDetailHeader.forEach(detail -> {
-			
+
 			QstdtPaymentDetail paymentDetail = new QstdtPaymentDetail();
-			QcamtItem item = new QcamtItem(); 
+			QcamtItem item = new QcamtItem();
 			if (detail[0] instanceof QstdtPaymentDetail) {
 				paymentDetail = (QstdtPaymentDetail) detail[0];
 			}
 
-			// add all data begin => end 
+			// add all data begin => end
 			salaryItems.addAll(defaultDataBeginEnd(printLinePosition,
 				paymentDetail.printLinePosition, columnPosition, paymentDetail.columnPosition));
-			
+
 			// set up data print
 			printLinePosition = paymentDetail.printLinePosition;
 			columnPosition = paymentDetail.columnPosition;
-			
+
 			// add to data
 			SalaryItemDto dto = new SalaryItemDto();
-			if(detail[1] instanceof QcamtItem){
+			if (detail[1] instanceof QcamtItem) {
 				item = (QcamtItem) detail[1];
 			}
 			dto.setItemName(item.itemName);
@@ -273,7 +286,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			dto.setView(true);
 			salaryItems.add(dto);
 		});
-		
+
 		// add all data begin => end
 		salaryItems.addAll(defaultDataColumn(columnPosition + 1, TOTAL_COLUMN_INLINE));
 
@@ -289,10 +302,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	 * @param endColum the end colum
 	 * @return the list
 	 */
-	
+
 	private List<SalaryItemDto> defaultDataBeginEnd(int startLine, int endLine, int startColum,
 		int endColum) {
-		if(startLine == endLine){
+		if (startLine == endLine) {
 			return defaultDataColumn(startColum + 1, endColum - 1);
 		}
 		List<SalaryItemDto> salaryItems = new ArrayList<>();
@@ -301,7 +314,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		salaryItems.addAll(defaultDataColumn(1, endColum - 1));
 		return salaryItems;
 	}
-	
+
 	/**
 	 * Default data line.
 	 *
@@ -316,8 +329,6 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		}
 		return salaryItems;
 	}
-	
-	
 
 	/**
 	 * Default data column.
@@ -328,7 +339,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	 */
 	private List<SalaryItemDto> defaultDataColumn(int startColum, int endColum) {
 		List<SalaryItemDto> salaryItems = new ArrayList<>();
-		for(int index = startColum; index<= endColum; index++){
+		for (int index = startColum; index <= endColum; index++) {
 			salaryItems.add(SalaryItemDto.defaultData());
 		}
 		return salaryItems;
@@ -352,8 +363,16 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 		// set employee
 		EmployeeDto employeeDto = new EmployeeDto();
-		employeeDto.setEmployeeCode(header.employeeCode);
-		employeeDto.setEmployeeName(header.employeeName);
+		Optional<CmnmtEmp> employee = this.findEmployeeCode(header.qstdtPaymentHeaderPK.companyCode,
+			header.employeeCode);
+		
+		if (employee.isPresent()) {
+			employeeDto.setEmployeeCode(employee.get().cmnmtEmpPk.employmentCode);
+			employeeDto.setEmployeeName(employee.get().employmentName);
+		}else {
+			employeeDto.setEmployeeCode(header.employeeCode);
+			employeeDto.setEmployeeName(header.employeeName);
+		}
 		reportData.setEmployeeInfo(employeeDto);
 
 		// 支給項目 (categoryItem = payment)
@@ -367,31 +386,31 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 		// 記事項目 (categoryItem = article)
 		reportData.setArticleItems(this.detailHeader(header, CATEGORY_ARTICLE));
-		
+
 		// set remark
 		reportData.setRemark(
 			repository.getRemark(new ContactItemsCode(new JpaPaymentContactCodeGetMemento(header)),
 				header.employeeCode));
-		
+
 		// set year month
 		reportData.setJapaneseYearMonth(
 			this.convertYearMonthJP(header.qstdtPaymentHeaderPK.processingYM));
 
 		return reportData;
 	}
-	  
-  	/**
-  	 * Convert year month JP.
-  	 *
-  	 * @param yearMonth the year month
-  	 * @return the string
-  	 */
-  	private String convertYearMonthJP(Integer yearMonth) {
-	        String firstDay = "01";
-	        String tmpDate = yearMonth.toString().concat(firstDay);
-	        String dateFormat = "yyyyMMdd";
-	        GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
-	        JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
-	        return japaneseDate.era() + japaneseDate.year() + "年 " + japaneseDate.month() + "月度"; 
-	    }
+
+	/**
+	 * Convert year month JP.
+	 *
+	 * @param yearMonth the year month
+	 * @return the string
+	 */
+	private String convertYearMonthJP(Integer yearMonth) {
+		String firstDay = "01";
+		String tmpDate = yearMonth.toString().concat(firstDay);
+		String dateFormat = "yyyyMMdd";
+		GeneralDate generalDate = GeneralDate.fromString(tmpDate, dateFormat);
+		JapaneseDate japaneseDate = this.japaneseProvider.toJapaneseDate(generalDate);
+		return japaneseDate.era() + japaneseDate.year() + "年 " + japaneseDate.month() + "月度";
+	}
 }

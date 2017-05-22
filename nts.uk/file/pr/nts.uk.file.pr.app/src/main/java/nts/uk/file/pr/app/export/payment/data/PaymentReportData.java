@@ -23,4 +23,7 @@ public class PaymentReportData {
 	
 	/** The config. */
 	private RefundPaddingDto config;
+	
+	/** The select print types. */ 
+	private int selectPrintTypes;
 }

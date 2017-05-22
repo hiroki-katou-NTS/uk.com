@@ -33,6 +33,9 @@ public class PaymentReportDto {
 	/** 記事項目*/
 	private List<SalaryItemDto> articleItems;
 	
+	/** 他項目*/
+	private List<SalaryItemDto> otherItems;
+	
 	/** The remark. */
 	private String remark;
 	

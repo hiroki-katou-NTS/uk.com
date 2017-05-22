@@ -1,7 +1,3 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
 import java.util.ArrayList;
@@ -12,10 +8,7 @@ import com.aspose.cells.Workbook;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
-/**
- * The Class PaymentReportVerticalGenerator.
- */
-public class PaymentReportVerticalGenerator extends PaymentReportBaseGenerator implements PaymentGenerator {
+public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerator implements PaymentGenerator{
 
 	/** The Constant SHEET_NAME. */
 	public static final String SHEET_NAME = "SHEET 1";

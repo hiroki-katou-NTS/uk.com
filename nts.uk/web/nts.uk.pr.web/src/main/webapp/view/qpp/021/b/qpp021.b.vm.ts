@@ -186,7 +186,6 @@ module nts.uk.pr.view.qpp021.b {
                 queryDto.selectPrintTypes = self.selectPrintTypeCode();
                 queryDto.specificationCodes = self.selectLineItemCodes();
                 queryDto.layoutItems = +self.selectPrintTypeListCode();
-                queryDto.pageOrientation = 'PORTRAIT';
                 return queryDto;
             }
 
