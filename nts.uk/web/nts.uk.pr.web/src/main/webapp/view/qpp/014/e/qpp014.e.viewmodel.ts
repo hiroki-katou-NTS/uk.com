@@ -13,7 +13,7 @@ module qpp014.e {
         numberOfProcessSuccess: KnockoutObservable<number>;
         numberOfProcessFail: KnockoutObservable<number>;
         processingYM: KnockoutObservable<string>;
-  
+
         constructor() {
             var self = this;
             $('#successful').css('display', 'none');
@@ -24,12 +24,12 @@ module qpp014.e {
             self.numberOfProcessSuccess = ko.observable(0);
             self.numberOfProcessFail = ko.observable(0);
             self.timer = new nts.uk.ui.sharedvm.KibanTimer('timer');
-            for (let i = 1; i < 100; i++) {
+            for (let i = 1; i < 10; i++) {
                 self.e_errorList.push(new ItemModel_E_LST_003('00' + i, '基本給', "description " + i));
             }
             self.dataFixed = ko.observableArray([]);
             //fix data to add to db BANK_TRANSFER
-            for (let i = 1; i < 4; i++) {
+            for (let i = 1; i < 8; i++) {
                 self.dataFixed.push(new TestArray("companyNameKana" + i, "99900000-0000-0000-0000-00000000000" + i, "depCode" + i,
                     moment.utc(Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString() + Math.floor(Math.random() * (28 - 1 + 1) + 1).toString(), 'YYYYMMDD').toISOString(),
                     Math.floor(Math.random() * 2), Math.floor(Math.random() * 1001), 1, Math.floor(Math.random() * 2), Math.floor(Math.random() * (2999 - 1900 + 1) + 1900).toString() + Math.floor(Math.random() * (12 - 10 + 1) + 10).toString(),
@@ -51,20 +51,30 @@ module qpp014.e {
                 self.stopProcessing();
             }
             self.timer.start();
-            _.forEach(self.dataFixed(), function(bankTransfer) {
-                $.when(self.addBankTransfer(bankTransfer)).done(function() {
-                    //if add data to DB success, go to dialog "Success"
-                    if (self.numberOfProcessSuccess() == self.numberOfPerson()) {
-                        self.timer.end();
-                        self.processingState('完了');
-                        nts.uk.ui.windows.setShared("closeDialog", false, true);
-                        $('#successful').css('display', '');
-                        $('#stop').css('display', 'none');
-                        $('#error').css('display', 'none');
-                    }
-                }).fail(function(res) {
-                });
-            });
+            
+            var cmd = {
+                processingNoOfScreenE: nts.uk.ui.windows.getShared("processingNo"),
+                payDateOfScreenE: moment.utc(nts.uk.ui.windows.getShared("dateOfPayment")).toISOString(),
+                sparePayAtrOfScreenE: nts.uk.ui.windows.getShared("sparePayAtr"),
+            }
+            $.when(qpp014.e.service.removeBankTransfer(cmd))
+                .done(function() {
+                    _.forEach(self.dataFixed(), function(bankTransfer) {
+                        
+                        self.addBankTransfer(bankTransfer).done(function() {
+                            //if add data to DB success, go to dialog "Success"
+                            if (self.numberOfProcessSuccess() == self.numberOfPerson()) {
+                                self.timer.end();
+                                self.processingState('完了');
+                                nts.uk.ui.windows.setShared("closeDialog", false, true);
+                                $('#successful').css('display', '');
+                                $('#stop').css('display', 'none');
+                                $('#error').css('display', 'none');
+                            }
+                        }).fail(function(res) { });
+                    });
+                }).fail();
+
         }
 
         /**
@@ -90,6 +100,7 @@ module qpp014.e {
                 fromBank: { branchId: bankTransfer.fromBank.branchId, bankNameKana: bankTransfer.fromBank.bankNameKana, branchNameKana: bankTransfer.fromBank.branchNameKana, accountAtr: bankTransfer.fromBank.accountAtr, accountNo: bankTransfer.fromBank.accountNo },
                 toBank: { branchId: bankTransfer.toBank.branchId, bankNameKana: bankTransfer.toBank.bankNameKana, branchNameKana: bankTransfer.toBank.branchNameKana, accountAtr: bankTransfer.toBank.accountAtr, accountNo: bankTransfer.toBank.accountNo, accountNameKana: bankTransfer.toBank.accountNameKana },
             }
+
             qpp014.e.service.addBankTransfer(command)
                 .done(function() {
                     self.numberOfProcessSuccess(self.numberOfProcessSuccess() + 1);

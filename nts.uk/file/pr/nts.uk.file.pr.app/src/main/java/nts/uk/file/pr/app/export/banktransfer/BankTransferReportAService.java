@@ -1,20 +1,25 @@
 package nts.uk.file.pr.app.export.banktransfer;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.core.dom.enums.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.enums.SparePayAtr;
 import nts.uk.file.pr.app.export.banktransfer.data.BankDto;
-import nts.uk.file.pr.app.export.banktransfer.data.BankTransferAReport;
+import nts.uk.file.pr.app.export.banktransfer.data.BankReportData;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferARpData;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferARpHeader;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferParamRpDto;
@@ -36,9 +41,9 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 	protected void handle(ExportServiceContext<BankTransferReportQuery> context) {
 		String companyCode = AppContexts.user().companyCode();
 		BankTransferReportQuery query = context.getQuery();
-		if (query.getSparePayAtr().equals("1")) {
+		if (query.getSparePayAtr() == 1) {
 			process(query, companyCode, context, SparePayAtr.NORMAL.value);
-		} else if (query.getSparePayAtr().equals("2")) {
+		} else if (query.getSparePayAtr() == 2) {
 			process(query, companyCode, context, SparePayAtr.PRELIMINARY.value);
 		} else {
 			process(query, companyCode, context, 0);
@@ -47,98 +52,165 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 
 	private void process(BankTransferReportQuery query, String companyCode,
 			ExportServiceContext<BankTransferReportQuery> context, int sparePayAtr) {
-		List<BankTransferARpData> rpDataList = new ArrayList<BankTransferARpData>();
+		Map<String, String> persons = fixPerson();
+		
+		List<BankTransferARpData> rpBankDataList = new ArrayList<>();
+		
+		// get branch
+		List<BranchDto> branchList = bankTransferReportRepo.findAllBranch(companyCode, query.getFromBranchId());
+		Map<String, BranchDto> branchMap = branchList.stream().collect(Collectors.toMap(BranchDto::getBranchId, x -> x));
+		
 		for (String fromBranchId : query.getFromBranchId()) {
+			BankTransferARpData rpBankData = new BankTransferARpData();
+			
+			// header
+			BranchDto branch = branchMap.get(fromBranchId);
+			// set name kana
+			String bankName = branch.getBankName();
+			String branchName = branch.getBranchName();
+			if (query.getSelectedId_J_SEL_001() == 1) {
+				if (query.getOuputName() != null && query.getOuputName().intValue() == 1) {
+					bankName = branch.getBankNameKana();
+					branchName = branch.getBranchNameKana();
+				}
+			}
+			
+			String title = MessageFormat.format("{0} - {1} {2} {3}　】", branch.getBankCode(), branch.getBranchCode(), bankName, branch.getBranchName(), branchName);
+			BankTransferARpHeader header = getHeader(query, companyCode, title);
+			rpBankData.setHeader(header);
+			
 			BankTransferParamRpDto bankTransferParamRp = new BankTransferParamRpDto(companyCode, fromBranchId,
 					PayBonusAtr.SALARY.value, query.getProcessingNo(), query.getProcessingYm(), query.getPayDate(),
 					sparePayAtr);
+			
 			// BANK_TRANSFER SEL_1
 			List<BankTransferRpDto> bankTransfer = new ArrayList<BankTransferRpDto>();
-			if (query.getSparePayAtr().equals("3")) {
+			if (query.getSparePayAtr()== 3) {
 				bankTransfer = bankTransferReportRepo.findBySEL1_1(bankTransferParamRp);
 			} else {
 				bankTransfer = bankTransferReportRepo.findBySEL1(bankTransferParamRp);
 			}
-
+			
+			List<BankReportData> salaryDataList = new ArrayList<>();
 			for (BankTransferRpDto bankTrans : bankTransfer) {
-				BankTransferARpData rpData = new BankTransferARpData();
+				BankReportData rpData = new BankReportData();
 				// A_DBD_008 (PERSON_COM)
-				rpData.setScd("0000000001");
+				rpData.setScd(persons.get(bankTrans.getPersonId()));
 				// A_DBD_009 (PERSON_BASE)
-				rpData.setName("山");
+				rpData.setName("個人 郎");
 				if (query.getSelectedId_J_SEL_001() == 1) {
 					// PERSON_BASE SEL_1
 				}
 
 				Optional<BranchDto> branchDto = bankTransferReportRepo.findAllBranch(companyCode,
 						bankTrans.getToBranchId());
+				if (!branchDto.isPresent()) {
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));//ER010
+				}
 				Optional<BankDto> bankDto = bankTransferReportRepo.findAllBank(companyCode,
 						branchDto.get().getBankCode());
-				if (!branchDto.isPresent() || !bankDto.isPresent()) {
-					throw new BusinessException("ER010");
-				} else {
-					// A_DBD_002
-					rpData.setBankCode(bankDto.get().getBankCode());
-					// A_DBD_003
-					rpData.setBankName(bankDto.get().getBankName());
-					// A_DBD_004
-					rpData.setBranchCode(branchDto.get().getBranchCode());
-					// A_DBD_005
-					rpData.setBranchName(branchDto.get().getBranchName());
-					// A_DBD_006
-					if (bankTrans.getToAccountAtr() == 0) {
-						rpData.setToAccountAtr("普通");
-					} else {
-						rpData.setToAccountAtr("当座");
-					}
-					// A_DBD_007
-					rpData.setToAccountNo(bankTrans.getToAccountNo());
-					// A_DBD_010
-					rpData.setPaymentMyn(bankTrans.getPaymentMoney());
-					rpData.setUnit("円");
-
-					rpDataList.add(rpData);
+				if (!bankDto.isPresent()) {
+					throw new BusinessException(new RawErrorMessage("対象データがありません。"));//ER010
 				}
+				if (query.getCurrentCode_J_SEL_004() == 0) {
+					// to-do
+				}
+				
+				bankName = bankDto.get().getBankName();
+				branchName = branchDto.get().getBranchName();
+				if (query.getSelectedId_J_SEL_001() == 1) {
+					if (query.getOuputName() != null && query.getOuputName().intValue() == 1) {
+						bankName = bankDto.get().getBankNameKana();
+						branchName = branchDto.get().getBranchNameKana();
+					}
+				}
+				
+				// A_DBD_002
+				rpData.setBankCode(bankDto.get().getBankCode());
+				// A_DBD_003
+				rpData.setBankName(bankName);
+				// A_DBD_004
+				rpData.setBranchCode(branchDto.get().getBranchCode());
+				// A_DBD_005
+				rpData.setBranchName(branchName);
+
+				// A_DBD_006
+				if (bankTrans.getToAccountAtr() == 0) {
+					rpData.setToAccountAtr("普通");
+				} else {
+					rpData.setToAccountAtr("当座");
+				}
+				
+				// A_DBD_007
+				rpData.setToAccountNo(bankTrans.getToAccountNo());
+				// A_DBD_010
+				rpData.setPaymentMyn(bankTrans.getPaymentMoney());
+				rpData.setUnit("円");
+
+				rpData.setSparePayAtr(bankTrans.getSparePayAtr());
+				
+				rpData.setRowTotal(false);
+				
+				salaryDataList.add(rpData);	
 			}
+			
+			// row total
+			this.totalSalary(salaryDataList);
+			rpBankData.setDataSalaryList(salaryDataList);
+			
+			rpBankDataList.add(rpBankData);
+		}		
+
+		this.generator.generator(context.getGeneratorContext(), rpBankDataList);
+	}
+
+	private BankTransferARpHeader getHeader(BankTransferReportQuery query, String companyCode, String fromBank) {
+		// set header
+		BankTransferARpHeader header = new BankTransferARpHeader();
+		header.setCompanyName(bankTransferReportRepo.findCompany(companyCode).getCompanyName());
+		// A_CTR_005
+		header.setCode(fromBank);
+		// A_CTR_006
+		header.setDate(query.getTransferDate() + "　】");
+		// A_DBD_001
+		header.setPerson(bankTransferReportRepo.findAllCalled(companyCode).get());
+		return header;
+	}
+	
+	/**
+	 * Total salary preliminary month
+	 */
+	private void totalSalary(List<BankReportData> salaryPreliminaryMonthList) {
+		if (salaryPreliminaryMonthList == null) {
+			return;
 		}
-		BankTransferARpData rpDataSum = new BankTransferARpData();
+		
+		BankReportData rpDataSum = new BankReportData();
 		rpDataSum.setBankCode("総合計");
 		// A_CTR_002 (totalPaymentMny)
 		BigDecimal sum = BigDecimal.valueOf(0);
-		for (BankTransferARpData bankTransferARpData : rpDataList) {
+		for (BankReportData bankTransferARpData : salaryPreliminaryMonthList) {
 			sum = sum.add(bankTransferARpData.getPaymentMyn());
 		}
 		rpDataSum.setPaymentMyn(sum);
 		rpDataSum.setUnit("円");
 		// A_CTR_001 (totalPerson)
-		rpDataSum.setName(String.valueOf(rpDataList.size()) + "人");
-
-		rpDataList.add(rpDataSum);
-
-		BankTransferARpHeader header = new BankTransferARpHeader();
-		header.setCompanyName("【日通システム株式会社】");
-		header.setCode("0001 - 100 	給与分  	給与予備月 】");
-		header.setDate(query.getTransferDate()+"】");
-		// A_DBD_001
-		header.setPerson(bankTransferReportRepo.findAllCalled(companyCode).get().getPerson());
-
-		if (query.getSparePayAtr().equals("3")) {
-			if (query.getCurrentCode_J_SEL_004() == 2) {
-				// A_CTR_003
-				header.setState("【給与分】");
-				// A_CTR_004
-				// header.setState("【給与予備月】");
-			} else {
-				header.setState("");
-			}
-		} else {
-			header.setState("");
+		rpDataSum.setName(String.valueOf(salaryPreliminaryMonthList.size()) + "人");
+		rpDataSum.setRowTotal(true);
+		
+		salaryPreliminaryMonthList.add(rpDataSum);
+	}
+	
+	/**
+	 * Fix data
+	 * @return
+	 */
+	private Map<String, String> fixPerson() {
+		Map<String, String> result = new HashMap<>();
+		for(int i=0; i< 10; i++) {
+			result.put("99900000-0000-0000-0000-00000000000" + (i+1), "000000000" + (i +1));
 		}
-
-		BankTransferAReport reportA = new BankTransferAReport();
-		reportA.setData(rpDataList);
-		reportA.setHeader(header);
-
-		this.generator.generator(context.getGeneratorContext(), reportA);
+		
+		return result;
 	}
 }

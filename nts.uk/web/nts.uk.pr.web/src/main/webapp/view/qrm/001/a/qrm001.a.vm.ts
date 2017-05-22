@@ -1,4 +1,5 @@
 module qrm001.a.viewmodel {
+
     export class ScreenModel {
         //Employee Process Value
         employeeInfo: KnockoutObservable<EmployeeInfo>;
@@ -22,10 +23,11 @@ module qrm001.a.viewmodel {
         select6List: KnockoutObservableArray<any>;
         select6Code: KnockoutObservableArray<KnockoutObservable<any>>;
         isUpdate: KnockoutObservable<boolean>;
+        dateOfPayment: KnockoutObservable<any>;
         
         constructor() {
             var self = this;
-            
+            debugger;
             //Retirement Payment Process
             self.bankTransferList = ko.observableArray([
                 new PersonBankAccount('bank1', 'branch1', '0001'),
@@ -42,12 +44,12 @@ module qrm001.a.viewmodel {
                     { code: 3, name: '支給3' },
                     { code: 4, name: '支給4' },
                     { code: 5, name: '支給5' }]);
-            
+            self.personCom = ko.observable(new PersonCom('000000000001',"4/25/2000","4/25/2017",0,1,1));
             self.isUpdate = ko.observable(false);
             self.retirementPaymentKeyList = ko.observableArray([new RetirementPaymentKey("A0001","2016-12-28")]);
             self.retirementPaymentList = ko.observableArray([]);
-            self.retirementPaymentCurrent = ko.observable(new RetirementPayment('0','0',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'0','0') );
-            
+            self.retirementPaymentCurrent = ko.observable(new RetirementPayment('0','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'0','0',0) );
+            self.retirementPaymentCurrent().serviceYear(new Date(self.personCom().endDate()).getFullYear() - new Date(self.personCom().startDate()).getFullYear());
             self.select6List = ko.observableArray(self.refreshSelect(self.fullSetSelect, self.retirementPaymentCurrent, 5));
             self.select6Code = ko.observableArray([ko.observable(1),ko.observable(2),ko.observable(3),ko.observable(4),ko.observable(5)]);
             self.select6Code().forEach(function(item,index){
@@ -60,22 +62,21 @@ module qrm001.a.viewmodel {
             
             //Employee Process 
             self.employeeList = ko.observableArray([
-                new EmployeeInfo('99900000-0000-0000-0000-000000000001', "A000000000001",'日通　一郎'),
-                new EmployeeInfo('99900000-0000-0000-0000-000000000002', "A000000000002",'日通　二郎'),
-                new EmployeeInfo('99900000-0000-0000-0000-000000000003', "A000000000003",'日通　三郎'),
-                new EmployeeInfo('99900000-0000-0000-0000-000000000004', "A000000000004",'日通　三郎'),
-                new EmployeeInfo('99900000-0000-0000-0000-000000000005', "A000000000005",'日通　三郎'),
-                new EmployeeInfo('99900000-0000-0000-0000-000000000006', "A000000000006",'日通　三郎'),
-                new EmployeeInfo('99900000-0000-0000-0000-000000000007', "A000000000007",'日通　三郎'),
-                new EmployeeInfo('99900000-0000-0000-0000-000000000008', "A000000000008",'日通　三郎'),
-                new EmployeeInfo('99900000-0000-0000-0000-000000000009', "A000000000009",'日通　三郎'),
-                new EmployeeInfo('99900000-0000-0000-0000-000000000010', "A000000000010",'日通　三郎'),
-                new EmployeeInfo('0', '','日通　三郎')
+                new EmployeeInfo('99900000-0000-0000-0000-000000000001', "000000000001",'日通　一郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000002', "000000000002",'日通　二郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000003', "000000000003",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000004', "000000000004",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000005', "000000000005",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000006', "000000000006",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000007', "000000000007",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000008', "000000000008",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000009', "000000000009",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000010', "000000000010",'日通　三郎'),
+                new EmployeeInfo('99900000-0000-0000-0000-000000000011', "000000000011",'日通　三郎'),
             ]);
             
-            self.personCom = ko.observable(new PersonCom('000000000001',"4/25/2000","4/25/2017",0,1,1));
-            self.retirementPaymentCurrent().serviceYear(new Date(self.personCom().endDate()).getFullYear() - new Date(self.personCom().startDate()).getFullYear());
-            self.date = ko.observable("2016-12-28");
+            self.dateOfPayment = ko.observable('');  
+            self.date = ko.observable("");
             self.currentEmployeeIndex = ko.observable(0);
             self.currentEmployeeIndexOld = ko.observable(0);
             self.currentEmployeeCode = ko.observable('99900000-0000-0000-0000-000000000001');
@@ -83,6 +84,9 @@ module qrm001.a.viewmodel {
             self.previous = ko.observable(false);
             self.next = ko.observable(true);
             
+            self.date.subscribe(function(value){
+                self.dateOfPayment(value);
+              });
             self.currentEmployeeIndex.subscribe(function(value){
                 self.previous((value === 0)?false:true);
                 self.next((value === (self.employeeList().length-1))?false:true);
@@ -139,14 +143,15 @@ module qrm001.a.viewmodel {
             qrm001.a.service.getRetirementPaymentList(personId).done(function(data) {
                 if(!data.length){ 
                     self.isUpdate(false); 
-                    self.rebind(self.retirementPaymentCurrent(), new RetirementPayment('0','0',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'0','0'));
+                    self.rebind(self.retirementPaymentCurrent(), new RetirementPayment(self.currentEmployeeCode(),'0',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,'0','0', 0));
+                    self.retirementPaymentKeyList.removeAll();
                 }
                 else { 
                     self.isUpdate(true);
                     self.retirementPaymentKeyList.removeAll();
                     self.retirementPaymentList.removeAll();
                     data.forEach(function(item) {
-                        self.retirementPaymentList.push(new RetirementPayment(
+                        self.retirementPaymentList.push(new RetirementPayment(          
                             item.personId,
                             item.payDate,
                             item.trialPeriodSet,
@@ -175,7 +180,8 @@ module qrm001.a.viewmodel {
                             item.bankTransferOption5,
                             item.option5Money,
                             item.withholdingMeno,
-                            item.statementMemo));
+                            item.statementMemo,
+                            new Date(self.personCom().endDate()).getFullYear() - new Date(self.personCom().startDate()).getFullYear()));
                         self.retirementPaymentKeyList.push(new RetirementPaymentKey(
                             item.personId,
                             item.payDate));
@@ -185,7 +191,9 @@ module qrm001.a.viewmodel {
                     self.select6Code().forEach(function(item,index){
                         self.select6Code()[index](self.retirementPaymentCurrent()["bankTransferOption"+(index+1)]());        
                     });
-                    self.date(_.first(self.retirementPaymentList()).payDate);
+                    
+                    var datePayment = _.first(self.retirementPaymentList()).payDate();
+                    self.date(datePayment);
                 }
                 dfd.resolve();
             }).fail(function(res) {
@@ -197,12 +205,14 @@ module qrm001.a.viewmodel {
         // save submit Data ( register or update )
         saveData(isUpdate): void{
             var self = this;
-            self.retirementPaymentCurrent().payDate(self.date());
+            self.retirementPaymentCurrent().payDate(self.dateOfPayment());
             let command = ko.mapping.toJS(self.retirementPaymentCurrent());
             if(isUpdate) {
                     qrm001.a.service.updateRetirementPaymentInfo(command);
+                    
             } else {
                     qrm001.a.service.registerRetirementPaymentInfo(command);
+                    self.getRetirementPaymentByPersonId(self.currentEmployeeCode());
             }
         }
         
@@ -218,7 +228,10 @@ module qrm001.a.viewmodel {
                 }).ifNo(function(){});   
             } else {
                 */
+            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 qrm001.a.service.removeRetirementPaymentInfo(command);
+                self.getRetirementPaymentByPersonId(self.currentEmployeeCode());
+            });               
             //}     
         }
         
@@ -230,10 +243,17 @@ module qrm001.a.viewmodel {
         
         
         // Process Calculator Money: auto or manual, change color each calculation
-        static autoCalculate(retirementPayment: RetirementPayment, serviceYear: number, age: number ): void{
+        static autoCalculate(retirementPayment: RetirementPayment, serviceYear: number, exclusionYears: number, payDate: string ): void{
+            
             var self = retirementPayment;
-            let year = serviceYear;
-            let reduction = 0;
+            let year = serviceYear - exclusionYears;
+            var payDateYear;
+            let reduction = 0;   
+            if(payDate){
+                payDateYear = +payDate.substring(0,4);
+            }else {
+                payDateYear = 0;
+            }
             if(year > 20 ) {
                 reduction = 8000000 + 700000*(year - 20);
                 if(reduction < 800000) reduction = 800000;
@@ -275,7 +295,9 @@ module qrm001.a.viewmodel {
                         incomeTax =  totalPaymentMoney*0-0;
                         break;
                 }
-                if((25 <= age) && (age <= 49)) incomeTax *= 102.1/100;
+                if((2013 <= payDateYear) && (payDateYear <= 2037)) {
+                    incomeTax *= 102.1/100;
+                }
             }
             let cityTax = (tax*6/100)*90/100;
             let prefectureTax = (tax*4/100)*90/100;
@@ -311,10 +333,10 @@ module qrm001.a.viewmodel {
             self.totalDeclarationMoney(totalDeclarationMoney);
             self.actualRecieveMoney(totalPaymentMoney - totalDeclarationMoney);         
         }
-        static changeColor(value: any, retirementPayment: RetirementPayment, serviceYear: number, age: number): void{
+        static changeColor(value: any, retirementPayment: RetirementPayment, serviceYear: number, exclusionYears: number, payDate: string): void{
             var self = this;
             if(!value){
-                self.autoCalculate(retirementPayment, serviceYear, age);
+                self.autoCalculate(retirementPayment, serviceYear, exclusionYears, payDate);
                 $(".caculator").css('background-color', '#ffc000');
             } else $(".caculator").css('background-color', '#cee6ff');         
         }
@@ -390,6 +412,7 @@ module qrm001.a.viewmodel {
             oldItem.option1Money(newItem.option5Money());
             oldItem.withholdingMeno(newItem.withholdingMeno());
             oldItem.statementMemo(newItem.statementMemo());
+            oldItem.serviceYear(newItem.serviceYear());
         }
         
         // calculate UI event
@@ -456,7 +479,6 @@ module qrm001.a.viewmodel {
         payDate: KnockoutObservable<string>;
         trialPeriodSet: KnockoutObservable<number>;
         age: KnockoutObservable<number>;
-        serviceYear: KnockoutObservable<number>;
         exclusionYears: KnockoutObservable<number>;
         additionalBoardYears: KnockoutObservable<number>;
         boardYears: KnockoutObservable<number>;
@@ -483,6 +505,7 @@ module qrm001.a.viewmodel {
         option5Money: KnockoutObservable<number>;
         withholdingMeno: KnockoutObservable<string>;
         statementMemo: KnockoutObservable<string>;
+        serviceYear: KnockoutObservable<number>;
         constructor(
             personId: string,
             payDate: string,
@@ -512,7 +535,8 @@ module qrm001.a.viewmodel {
             bankTransferOption5: number,
             option5Money: number,
             withholdingMeno: string,
-            statementMemo: string ){
+            statementMemo: string,
+            serviceYear: number ){
                 var self = this;
                 self.personId = ko.observable(personId);
                 self.payDate = ko.observable(payDate);
@@ -543,17 +567,19 @@ module qrm001.a.viewmodel {
                 self.option5Money = ko.observable(self.bankTransferOption5()?option5Money:null);
                 self.withholdingMeno = ko.observable(withholdingMeno);
                 self.statementMemo = ko.observable(statementMemo);
-                self.serviceYear = ko.observable(20);
-                self.serviceYear.subscribe(function(value){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, value, self.age());});     
-                self.age = ko.observable(30);
-                self.age.subscribe(function(value){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), value);});      
-                qrm001.a.viewmodel.ScreenModel.changeColor(self.taxCalculationMethod(), self, self.serviceYear(), self.age());
-                self.taxCalculationMethod.subscribe(function(value){qrm001.a.viewmodel.ScreenModel.changeColor(value, self, self.serviceYear(), self.age());});
-                self.totalPaymentMoney.subscribe(function(valueinp5){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.age());}});
-                self.deduction1Money.subscribe(function(valueinp6){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.age());}});
-                self.deduction2Money.subscribe(function(valueinp7){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.age());}});
-                self.deduction3Money.subscribe(function(valueinp8){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.age());}});
-                self.retirementPayOption.subscribe(function(valuesel4){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.age());}}); 
+                self.serviceYear = ko.observable(serviceYear);
+//                self.serviceYear.subscribe(function(value){
+//                    qrm001.a.viewmodel.ScreenModel.autoCalculate(self, value, self.exclusionYears(), self.payDate());
+//                });     
+                //self.age = ko.observable(30);
+                //self.age.subscribe(function(value){scmodel.autoCalculate(self, self.serviceYear(), self.exclusionYears(), value);});      
+                qrm001.a.viewmodel.ScreenModel.changeColor(self.taxCalculationMethod(), self, self.serviceYear(), self.exclusionYears(), self.payDate());
+                self.taxCalculationMethod.subscribe(function(value){qrm001.a.viewmodel.ScreenModel.changeColor(value, self, self.serviceYear(), self.exclusionYears(), self.payDate());});
+                self.totalPaymentMoney.subscribe(function(valueinp5){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.exclusionYears(), self.payDate());}});
+                self.deduction1Money.subscribe(function(valueinp6){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.exclusionYears(), self.payDate());}});
+                self.deduction2Money.subscribe(function(valueinp7){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.exclusionYears(), self.payDate());}});
+                self.deduction3Money.subscribe(function(valueinp8){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.exclusionYears(), self.payDate());}});
+                self.retirementPayOption.subscribe(function(valuesel4){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCalculate(self, self.serviceYear(), self.exclusionYears(), self.payDate());}}); 
         }
     }
     

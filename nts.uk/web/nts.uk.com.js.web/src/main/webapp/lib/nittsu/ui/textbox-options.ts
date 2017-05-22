@@ -69,6 +69,7 @@ module nts.uk.ui.option {
         textalign?: string;
         symbolChar?: string;
         symbolPosition?: string;
+        defaultValue?: boolean
     }
 
     export class NumberEditorOption extends EditorOptionBase {
@@ -78,6 +79,7 @@ module nts.uk.ui.option {
         decimallength: number;
         symbolChar: string;
         symbolPosition: string;
+        defaultValue: boolean;
         
         constructor(option?: INumberEditorOption) {
             super();
@@ -91,6 +93,7 @@ module nts.uk.ui.option {
             this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
             this.symbolChar = (option !== undefined && option.symbolChar !== undefined) ? option.symbolChar : "";
             this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
+            this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
         }
     }
 
@@ -111,6 +114,7 @@ module nts.uk.ui.option {
             this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
             this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
             this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
+            this.defaultValue = (option !== undefined && !nts.uk.util.isNullOrEmpty(option.defaultValue)) ? option.defaultValue : "";
         }
     }
     
