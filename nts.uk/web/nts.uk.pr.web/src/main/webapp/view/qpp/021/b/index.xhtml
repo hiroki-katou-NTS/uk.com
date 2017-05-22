@@ -6,7 +6,6 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
@@ -66,7 +65,7 @@
 								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">プリンタの選択</div>
 								<span class="ntsControl"> <label class="ntsRadioBox">
 										<input type="radio" name="textRadioPrintType"
-										data-bind="checkedValue: 0, checked: selectPrinterCategory, enable: true" /> <span
+										data-bind="checkedValue: 0, checked: selectPrinterCategory, enable: false" /> <span
 										class="box"></span><span class="label"
 										data-bind="text: 'レーザープリンタ用帳表（圧着式用も含みます）'"></span>
 								</label>
