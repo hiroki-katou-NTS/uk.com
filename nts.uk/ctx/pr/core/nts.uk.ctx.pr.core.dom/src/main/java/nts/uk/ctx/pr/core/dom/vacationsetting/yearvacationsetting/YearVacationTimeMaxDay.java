@@ -13,9 +13,8 @@ import nts.uk.ctx.pr.core.dom.vacation.setting.ManageDistinct;
 @Getter
 public class YearVacationTimeMaxDay {
     
-    /** The time manage. */
-    // TODO: not find 時間年休上限日数
-    private int timeManage;
+    /** The max time day. */
+    private MaxTimeDay maxTimeDay;
     
     /** The manage type. */
     private ManageDistinct manageType;

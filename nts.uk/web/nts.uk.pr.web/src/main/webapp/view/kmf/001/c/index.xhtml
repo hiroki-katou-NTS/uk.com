@@ -96,7 +96,7 @@
 										
 							<!-- KMF001_132 -->
 							<td><label class="content-label">会社の上限回数</label></td>
-							<td><input data-bind="enable: enableAnnualVacation"/></td>
+							<td><input data-bind="enable: enableMaxNumberCompany"/></td>
 						</tr>
 						<tr>
 							<!-- KMF001_35 -->
@@ -227,7 +227,7 @@
 										value: selectedVacationTimeUnit,
 										optionsText: 'name',
 										editable: false,
-										enable: enableAnnualVacation,
+										enable: enableTimeUnit,
 										columns: [
 											{prop: 'name', length: 10 }
 										]}"></div></td>
@@ -243,7 +243,7 @@
 										optionsValue: 'value',
 										optionsText: 'name',
 										value: selectedManageUpperLimitDayVacation,
-										enable: enableAnnualVacation }"></div></td>
+										enable: enableManageUpperLimit }"></div></td>
 										
 							<td><div></div></td>
 							<td><div></div></td>
@@ -257,20 +257,20 @@
 										value: selectedMaxDayVacation,
 										optionsText: 'name',
 										editable: false,
-										enable: enableAnnualVacation,
+										enable: enableTimeUnit,
 										columns: [
 											{prop: 'name', length: 10 }
 										]}"></div></td>
 										
 							<!-- KMF001_135 -->
 							<td><label class="content-label">会社の上限日数</label></td>
-							<td><input data-bind="enable: enableAnnualVacation"/></td>
+							<td><input data-bind="enable: enableMaxNumberCompany"/></td>
 						</tr>
 						<tr>
 							<!-- KMF001_155 -->
 							<td colspan="4"><div  class="content-label"
 									data-bind="ntsCheckBox: { checked: true,
-									enable: enableAnnualVacation,
+									enable: enableMaxNumberCompany,
 									text: '年次有給休暇の期限が切れた時、一日の時間未満の時間年休を積立年休とする' }"></div></td>
 						</tr>
 						<!-- END時間年休 -->

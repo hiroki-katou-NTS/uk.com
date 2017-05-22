@@ -7,11 +7,13 @@ module nts.uk.pr.view.kmf001.c {
             
             manageDistinctList: KnockoutObservableArray<EnumertionModel>;
             selectedAnnualManage: KnockoutObservable<number>;
+            enableAnnualVacation: KnockoutObservable<boolean>;
             
             selectedAddAttendanceDay: KnockoutObservable<number>;
             selectedMaxManageSemiVacation: KnockoutObservable<number>;
             maxDayReferenceList: KnockoutObservableArray<EnumertionModel>;
             selectedMaxNumberSemiVacation: KnockoutObservable<number>;
+            enableMaxNumberCompany: KnockoutObservable<boolean>;
             
             permissionList: KnockoutObservableArray<EnumertionModel>;
             selectedPermission: KnockoutObservable<number>;
@@ -24,11 +26,11 @@ module nts.uk.pr.view.kmf001.c {
             
             selectedTimeManagement: KnockoutObservable<number>;
             vacationTimeUnitList: KnockoutObservableArray<EnumertionModel>;
+            enableTimeUnit: KnockoutObservable<boolean>;
             selectedVacationTimeUnit: KnockoutObservable<number>;
             selectedManageUpperLimitDayVacation: KnockoutObservable<number>;
+            enableManageUpperLimit: KnockoutObservable<boolean>;
             selectedMaxDayVacation: KnockoutObservable<number>;
-            
-            enableAnnualVacation: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -38,6 +40,9 @@ module nts.uk.pr.view.kmf001.c {
                     {value: 1, name: "管理しない"}
                 ]);
                 self.selectedAnnualManage = ko.observable(0);
+                self.enableAnnualVacation = ko.computed(function () {
+                    return self.selectedAnnualManage() == 0;
+                }, self);
                 
                 // 年次有給休暇の扱い
                 self.selectedAddAttendanceDay = ko.observable(0);
@@ -47,6 +52,9 @@ module nts.uk.pr.view.kmf001.c {
                     {value: 1, name: "年休付与テーブルを参照"}
                 ]);
                 self.selectedMaxNumberSemiVacation = ko.observable(0);
+                self.enableMaxNumberCompany = ko.computed(function() {
+                    return self.selectedMaxNumberSemiVacation() == 0 && self.enableAnnualVacation();
+                }, self);
                 
                 // 年休取得の設定
                 self.permissionList = ko.observableArray([
@@ -70,6 +78,9 @@ module nts.uk.pr.view.kmf001.c {
                 
                 // 時間年休
                 self.selectedTimeManagement = ko.observable(0);
+                self.enableTimeUnit = ko.computed(function() {
+                    return self.selectedTimeManagement() == 0 && self.enableAnnualVacation();
+                }, self);
                 self.vacationTimeUnitList = ko.observableArray([
                     {value: 0, name: "1分"},
                     {value: 1, name: "15分"},
@@ -78,15 +89,12 @@ module nts.uk.pr.view.kmf001.c {
                     {value: 4, name: "2時間"}
                 ]);
                 self.selectedVacationTimeUnit = ko.observable(0);
+                self.enableManageUpperLimit = ko.computed(function() {
+                    return self.enableAnnualVacation() && self.enableMaxNumberCompany()
+                    && self.enableTimeUnit();
+                }, self);
                 self.selectedManageUpperLimitDayVacation = ko.observable(0);
                 self.selectedMaxDayVacation = ko.observable(0);
-                
-                self.enableAnnualVacation = ko.computed(function () {
-                    if (self.selectedAnnualManage() == 0) {
-                        return true;
-                    }
-                    return false;
-                }, self);
             }
             
             public startPage(): JQueryPromise<any> {
