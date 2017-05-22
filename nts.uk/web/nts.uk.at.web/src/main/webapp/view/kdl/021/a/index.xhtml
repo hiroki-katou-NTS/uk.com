@@ -14,14 +14,14 @@
 			<com:scriptfile path="kdl021.a.start.js" />
 			<com:scriptfile path="kdl021.a.service.js" />
 			<com:scriptfile path="kdl021.a.vm.js" />
-			<script>var dialogSize = { width: 420 , height: 620};</script>
+			<script>var dialogSize = { width: 420 , height: 630};</script>
 		</ui:define>
 		<ui:define name="content">
 			<div id="total">
 				<div id="label">
 					<label>#{i18n.getText('KDL021_2')}</label>
 				</div>
-				<div style="float: left; margin-bottom: 15px;">
+				<div style="float: left; margin-bottom: 20px;">
 					<div id="boxSearch">
 						<div style="width: 370px; margin-bottom: 15px;" tabindex="1"
 							data-bind="ntsSearchBox: {
@@ -33,10 +33,6 @@
 									selectedKey: 'code', 
 									fields: ['name', 'code'],
 									mode: 'igGrid'}" />
-						<!-- 						<div> -->
-						<!-- 							<button id="btnSelectedClear" data-bind="click :clearClick" -->
-						<!-- 								value="">検索条件をクリアする</button> -->
-						<!-- 						</div> -->
 					</div>
 					<div>
 						<table id="multi-list" tabindex="2"
@@ -50,19 +46,17 @@
 									}">
 						</table>
 					</div>
+					<hr />
 				</div>
-				<br></br>
+				
+				
 				<div id="process">
-					<div id="center-bottom" class="valign-center control-group">
-						<hr></hr>
-<!-- 						<button id="btnSetting" class="x-large proceed center-e" -->
-<!-- 							data-bind="click: register" tabindex="3">#{i18n.getText('KDL024_5')}</button> -->
-						<button class="x-large proceed center-e"
-							data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
-						<button id="btnCancel" class="large center-e"
-							data-bind="click: close" tabindex="4">#{i18n.getText('KDL024_6')}</button>
-					</div>
+					<button id="btnSetting" class="x-large proceed"
+						data-bind="click: register" tabindex="3">#{i18n.getText('KDL021_5')}</button>
+					<button id="btnCancel" class="large" data-bind="click: close"
+						tabindex="4">#{i18n.getText('KDL021_6')}</button>
 				</div>
+
 			</div>
 		</ui:define>
 	</ui:composition>

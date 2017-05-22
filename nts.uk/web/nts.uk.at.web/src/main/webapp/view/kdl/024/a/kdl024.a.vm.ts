@@ -26,6 +26,8 @@ module kdl024.a.viewmodel {
             self.listBudget = ko.observableArray([]);
             self.selectedBudgetCode = ko.observable('');
             self.selectedBudgetCode.subscribe((newCode) => {
+                if (nts.uk.ui._viewModel !== undefined)
+                    $('.nts-checkvalue').ntsError('clear');
                 self.findBudgetByCode(newCode);
             });
             // Details
@@ -133,24 +135,24 @@ module kdl024.a.viewmodel {
             nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function(){
                 //削除後処理 
                 service.deleteExternalBudget(self.currentItem()).done(function() {
-                   nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'))；
-                    var deletedIndex = _.findIndex(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
-                    var deletedItem = _.find(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
-                    self.listBudget.remove(deletedItem);
-                    if(self.listBudget().length === 0) {
-                        self.selectedBudgetCode(null);
-                        //Enable Code Input
-                        $('.nts-checkvalue').ntsError('clear');
-                        $('#inpCode').focus();
-                    }
-                    else {
-                        self.findItemByIndex(_.min([deletedIndex, self.listBudget().length - 1]));
-                    }
+                   nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16')).then(function(){
+                        var deletedIndex = _.findIndex(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
+                        var deletedItem = _.find(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
+                        self.listBudget.remove(deletedItem);
+                        if(self.listBudget().length === 0) {
+                            self.newMode();
+                        }
+                        else {
+                            self.findItemByIndex(_.min([deletedIndex, self.listBudget().length - 1]));
+                        }
+                   })；
+                   
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                     self.start();
                 });
-            }); 
+            });
+            
         }
         
         /** Create mode */

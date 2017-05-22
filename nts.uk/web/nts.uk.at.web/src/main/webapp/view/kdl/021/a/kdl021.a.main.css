@@ -18,29 +18,15 @@
 }
 
 #process {
-	width: 400px;
-	clear: left;
-	line-height: 60px;
 	text-align: center;
-	clear: left;
+	vertical-align:middle;
 }
 
 #label {
 	line-height: 40px;
 	text-align: left;
 }
-
-.clear-btn:before {
-	width: 130px !important;
-}
-
-
-#center-bottom {
-	margin-left: 160px;
-    margin-top: 10px;
-    margin-bottom: 0px;
-}
-
-#center-bottom > button {
-	margin-right: 10px;
+hr { 
+	margin-top: 15px;
+	width : 400px; 
 }
