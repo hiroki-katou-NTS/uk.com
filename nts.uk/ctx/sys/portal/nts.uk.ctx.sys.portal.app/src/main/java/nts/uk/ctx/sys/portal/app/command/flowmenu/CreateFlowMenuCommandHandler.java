@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.sys.portal.dom.flowmenu.service.FlowMenuService;
+import nts.arc.i18n.custom.IInternationalization;
 
 /**
  * @author hieult
@@ -17,6 +18,9 @@ public class CreateFlowMenuCommandHandler extends CommandHandler<CreateFlowMenuC
 	
 	@Inject
 	private FlowMenuService flowMenuService;
+	
+	@Inject
+	IInternationalization internationalization;
 	
 	@Override
 	protected void handle(CommandHandlerContext<CreateFlowMenuCommand> context) {

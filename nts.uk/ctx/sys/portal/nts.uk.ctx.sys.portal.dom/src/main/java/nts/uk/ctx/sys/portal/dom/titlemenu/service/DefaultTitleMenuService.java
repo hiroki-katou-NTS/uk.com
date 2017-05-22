@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
+import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.portal.dom.layout.service.LayoutService;
 import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenu;
@@ -23,6 +23,9 @@ public class DefaultTitleMenuService implements TitleMenuService  {
 	
 	@Inject
 	LayoutService layoutService;
+	
+	@Inject
+	IInternationalization internationalization;
 	
 	@Override
 	public boolean isExist(String companyID, String titleMenuCD) {

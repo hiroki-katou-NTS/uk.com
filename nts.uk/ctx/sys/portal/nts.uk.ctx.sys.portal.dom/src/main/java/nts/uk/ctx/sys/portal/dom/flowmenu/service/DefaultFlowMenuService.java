@@ -29,6 +29,8 @@ public class DefaultFlowMenuService implements FlowMenuService {
 	@Inject
 	private MyPageSettingRepository	myPageSettingRepository;
 	
+	
+	
 	@Override
 	public boolean isExist(String companyID, String toppagePartID) {
 		Optional<FlowMenu> flowMenu = flowMenuRepository.findByCode(companyID, toppagePartID);

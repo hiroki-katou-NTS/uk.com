@@ -49,7 +49,7 @@ module ccg030.a.viewmodel {
             dfd.done(() => {
                 self.selectFlowMenuByIndex(0);
             });
-            self.initListMessage();
+
             return dfd;
         }
 
@@ -66,7 +66,7 @@ module ccg030.a.viewmodel {
             var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
             if (util.isNullOrEmpty(self.selectedFlowMenu().fileID())
-                $('#file_upload').ntsError('set', 'Chưa chọn file');
+                $('#file_upload').ntsError('set', 'Chﾆｰa ch盻肱 file');
             _.delay(() => {
                 if (!errors.hasError()) {
                     if (self.isCreate() === true) {
@@ -90,11 +90,31 @@ module ccg030.a.viewmodel {
 //                    }).fail(function(err) {
 //                        console.log(err);
 //                    });
+                    
+                    $("#file_upload").ntsFileUpload({stereoType:"any"}).done(function(res) {
+    console.log(res);
+}).fail(function(err) {
+    console.log(err);
+});   
+                    
+//execute function when upload sucessfully for fail
+var option = {
+    stereoType:"flowmenu",//required
+    onSuccess: function(){},//optional
+    onFail: function(){}//optional
+}
+$("#file_upload").ntsFileUpload(option).done(function(res) {
+    console.log(res);
+}).fail(function(err) {
+    console.log(err);
+});   
+                                    
+            
                 }
             }, 100);
         }
 
-        //削除ボタンを押す時
+        //蜑企勁繝懊ち繝ｳ繧呈款縺呎凾
         deleteNewFlowMenu() {
             var self = this;
             if (self.selectedFlowMenuCD() !== null) {
@@ -117,7 +137,7 @@ module ccg030.a.viewmodel {
         /** Upload File */
         uploadFile(): void {
             var self = this;
-            $("#file_upload").ntsFileUpload({stereoType:"any"}).done(function(res) {
+            $("#file_upload").ntsFileUpload({stereoType:"flowmenu"}).done(function(res) {
                 console.log(res);
             }).fail(function(err) {
                 console.log(err);
@@ -134,7 +154,7 @@ module ccg030.a.viewmodel {
         // Open ccg030 B Dialog
         open030B_Dialog() {
             nts.uk.ui.windows.setShared("flowmenu", this.selectedFlowMenu(), false);
-            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: 'プレビュー', dialogClass: "no-close" });
+            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: '繝励Ξ繝薙Η繝ｼ', dialogClass: "no-close" });
         }
 
         /** Find Current FlowMenu by ID */
@@ -152,7 +172,7 @@ module ccg030.a.viewmodel {
             }
         }
 
-        //初期データ取得処理
+        //蛻晄悄繝�繝ｼ繧ｿ蜿門ｾ怜�ｦ逅�
         private reloadData(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -205,12 +225,12 @@ module ccg030.a.viewmodel {
 //        //list  message
 //        private initListMessage(): any {
 //            var self = this;
-//            self.listMessage.push(new ItemMessage("Msg_76", "既定フローメニューは削除できません。"));
-//            self.listMessage.push(new ItemMessage("Msg_3", "入力したコードは、既に登録されています。"));
-//            self.listMessage.push(new ItemMessage("Msg_18", "選択中のデータを削除しますか？"));
-//            self.listMessage.push(new ItemMessage("Msg_15", "登録しました。"));
-//            self.listMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
-//            self.listMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
+//            self.listMessage.push(new ItemMessage("Msg_76", "譌｢螳壹ヵ繝ｭ繝ｼ繝｡繝九Η繝ｼ縺ｯ蜑企勁縺ｧ縺阪∪縺帙ｓ縲�"));
+//            self.listMessage.push(new ItemMessage("Msg_3", "蜈･蜉帙＠縺溘さ繝ｼ繝峨�ｯ縲∵里縺ｫ逋ｻ骭ｲ縺輔ｌ縺ｦ縺�縺ｾ縺吶��"));
+//            self.listMessage.push(new ItemMessage("Msg_18", "驕ｸ謚樔ｸｭ縺ｮ繝�繝ｼ繧ｿ繧貞炎髯､縺励∪縺吶°�ｼ�"));
+//            self.listMessage.push(new ItemMessage("Msg_15", "逋ｻ骭ｲ縺励∪縺励◆縲�"));
+//            self.listMessage.push(new ItemMessage("AL002", "繝�繝ｼ繧ｿ繧貞炎髯､縺励∪縺吶��\r\n繧医ｍ縺励＞縺ｧ縺吶°�ｼ�"));
+//            self.listMessage.push(new ItemMessage("ER026", "譖ｴ譁ｰ蟇ｾ雎｡縺ｮ繝�繝ｼ繧ｿ縺悟ｭ伜惠縺励∪縺帙ｓ縲�"));
 //        }
 
         private messName(messCode: string): string {

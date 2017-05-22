@@ -20,10 +20,11 @@
 		</ui:define>
 
 		<ui:define name="content">
+		<div class="container">
 			<div id="functions-area">
 				<button id ="new" data-bind="click : createButtonClick" >#{i18n.getText('CCG014_2')}</button>
 				<button id ="registration" class="proceed" data-bind="click: registryButtonClick, enable: $root.errors.isEmpty " >#{i18n.getText('CCG014_3')}</button>
-				<button id ="copy" data-bind= "click : openBDialog, enable: !isCreate()" >#{i18n.getText('CCG014_4')}</button>
+				<button id ="copy" data-bind= "click : openBDialog, enable: enableCopy" >#{i18n.getText('CCG014_4')}</button>
 				<button id ="flow_setting" data-bind= "click : open030A_Dialog">#{i18n.getText('CCG014_5')}</button>
 				<button id ="delete"  data-bind="click : removeTitleMenu , enable: !isCreate()" class="danger">#{i18n.getText('CCG014_6')}</button>
 				<div id="link_web" class="hyperlink">
@@ -37,6 +38,7 @@
 					</img> <a href="">#{i18n.getText('CCG014_8')}</a>
 				</div>
 			</div>
+				</div>
 			<div id="contents-area" class="cf">
 				<div class="container">
 					<div id="left-content" class="bg-green caret-right caret-background">

@@ -3,7 +3,8 @@ module ccg014.a.viewmodel {
     import windows = nts.uk.ui.windows;
     import errors = nts.uk.ui.errors;
     import resource = nts.uk.resource;
-    
+    import util = nts.uk.util;
+
     export class ScreenModel {
         // TitleMenu List
         listTitleMenu: KnockoutObservableArray<any>;
@@ -12,6 +13,8 @@ module ccg014.a.viewmodel {
         // TitleMenu Details
         selectedTitleMenu: KnockoutObservable<model.TitleMenu>;
         isCreate: KnockoutObservable<boolean>;
+        // Enable Copy
+        enableCopy: KnockoutComputed<boolean>;
 
         constructor() {
             var self = this;
@@ -31,6 +34,10 @@ module ccg014.a.viewmodel {
             self.isCreate = ko.observable(null);
             self.isCreate.subscribe((value) => {
                 self.changeInitMode(value);
+            });
+            // Enable Copy
+            self.enableCopy = ko.computed(() => {
+                return (!self.isCreate() && !util.isNullOrEmpty(self.selectedTitleMenuCD()));
             });
         }
 
@@ -81,7 +88,7 @@ module ccg014.a.viewmodel {
         removeTitleMenu() {
             var self = this;
             if (self.selectedTitleMenuCD() !== null) {
-                nts.uk.ui.dialog.confirm("Msg_18 Co xoa ko").ifYes(function() {
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
                     service.deleteTitleMenu(self.selectedTitleMenuCD()).done(() => {
                         var index = _.findIndex(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
                         index = _.min([self.listTitleMenu().length - 2, index]);
@@ -89,9 +96,9 @@ module ccg014.a.viewmodel {
                             self.selectTitleMenuByIndex(index);
                         });
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert("Fail!")
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"))
                     });
-                }).then(function() { nts.uk.ui.dialog.alert("Msg_16 Da xoa") });
+                })
             }
         }
 
@@ -99,10 +106,12 @@ module ccg014.a.viewmodel {
         openBDialog() {
             var self = this;
             var selectTitleMenu = _.find(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
-
             windows.setShared("copyData", selectTitleMenu);
-            windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: '他のタイトルメニューのコピー', dialogClass: "no-close" }).onClosed(() => {
-                self.reloadData();
+            windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: '莉悶�ｮ繧ｿ繧､繝医Ν繝｡繝九Η繝ｼ縺ｮ繧ｳ繝斐�ｼ', dialogClass: "no-close" }).onClosed(() => {
+                var copiedTitleMenuCD = windows.getShared("copyTitleMenuCD");
+                self.reloadData().done(() => {
+                    self.selectTitleMenuByIndexByCode(copiedTitleMenuCD);
+                });
             });
         }
 
@@ -115,7 +124,7 @@ module ccg014.a.viewmodel {
                 pgType: 1
             };
             windows.setShared("layout", layoutInfo, false);
-            windows.sub.modal("/view/ccg/031/a/index.xhtml", { title: 'レイアウトの設定', dialogClass: "no-close" }).onClosed(() => {
+            windows.sub.modal("/view/ccg/031/a/index.xhtml", { title: '繝ｬ繧､繧｢繧ｦ繝医�ｮ險ｭ螳�', dialogClass: "no-close" }).onClosed(() => {
                 let returnInfo: commonModel.TransferLayoutInfo = windows.getShared("layout");
                 self.selectedTitleMenu().layoutID(returnInfo.layoutID);
                 _.find(self.listTitleMenu(), ["titleMenuCD", returnInfo.parentCode]).layoutID = returnInfo.layoutID;
@@ -125,7 +134,7 @@ module ccg014.a.viewmodel {
 
         /** Open FlowMenu Setting(030A Dialog) */
         open030A_Dialog() {
-            windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: 'フローメニューの設定', dialogClass: "no-close" });
+            windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: '繝輔Ο繝ｼ繝｡繝九Η繝ｼ縺ｮ險ｭ螳�', dialogClass: "no-close" });
         }
 
         /** Get Selected TitleMenu */
@@ -152,8 +161,7 @@ module ccg014.a.viewmodel {
                 _.defer(() => {
                     errors.clearAll();
                     $(".nts-input").ntsError("clear");
-                });
-            }
+                });      }
         }
         
         clearError(): any {
