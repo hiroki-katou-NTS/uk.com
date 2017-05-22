@@ -23,13 +23,20 @@ public class PaymentReportQuery {
 	/** The processing no. */
 	private int processingNo;
 	
-	/** The select print types. * (1,2)*/ 
+	/** The processing YM. */
+	private int processingYM;
+	
+	/** The select print types. */ 
 	private int selectPrintTypes;
 	
 	/** The specification codes. */
 	private List<String> specificationCodes;
 	
 	/** The layout items. */
-	private List<Integer> layoutItems;
+	private int layoutItems;
+	
+	/** The page orientation. */
+	//LANDSCAPE : A ; PORTRAIT : B
+	private String pageOrientation;
 		
 }

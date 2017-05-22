@@ -23,11 +23,13 @@ import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QcmtCommentMonthCp;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QcmtCommentMonthCpPK;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEmPK;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEmPK_;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm_;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCpInitialCmt;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCpInitialCmtPK;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmt;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmtPK;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmtPK_;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmt_;
 
@@ -65,17 +67,16 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 		if (commentInitCp.isPresent()) {
 			jpa.setCommentInitialCp(commentInitCp.get());
 		}
-		jpa.setCommentMonthEmps(this.findCommentMonthEmp(code, empCds));
+		jpa.setCommentMonthEmps(this.findCommentMonthEmps(code, empCds));
 
-		jpa.setCommentInitialEmps(this.findCommentInitalEmp(code, empCds));
+		jpa.setCommentInitialEmps(this.findCommentInitalEmps(code, empCds));
 		return new ContactItemsSetting(jpa);
 	}
 
 	/**
 	 * Find comment month cp.
 	 *
-	 * @param code
-	 *            the code
+	 * @param code the code
 	 * @return the optional
 	 */
 	private Optional<QcmtCommentMonthCp> findCommentMonthCp(ContactItemsCode code) {
@@ -88,8 +89,7 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 	/**
 	 * Find comment init cp.
 	 *
-	 * @param code
-	 *            the code
+	 * @param code the code
 	 * @return the optional
 	 */
 	private Optional<QctmtCpInitialCmt> findCommentInitCp(ContactItemsCode code) {
@@ -99,15 +99,41 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 	}
 
 	/**
-	 * Find comment inital emp.
+	 * Find comment month emp.
 	 *
-	 * @param code
-	 *            the code
-	 * @param empCds
-	 *            the emp cds
+	 * @param code the code
+	 * @param empId the emp id
+	 * @return the optional
+	 */
+	private Optional<QctmtCommentMonthEm> findCommentMonthEmp(ContactItemsCode code, String empId) {
+		return this.queryProxy()
+			.find(
+				new QctmtCommentMonthEmPK(code.getCompanyCode(), empId, PAY_BONUS_ATR,
+					SPARE_PAY_ATR, code.getProcessingYm().v(), code.getProcessingNo().v()),
+				QctmtCommentMonthEm.class);
+	}
+
+	/**
+	 * Find comment init emp.
+	 *
+	 * @param code the code
+	 * @param empId the emp id
+	 * @return the optional
+	 */
+	private Optional<QctmtEmInitialCmt> findCommentInitEmp(ContactItemsCode code, String empId) {
+		return this.queryProxy().find(
+			new QctmtEmInitialCmtPK(code.getCompanyCode(), empId, PAY_BONUS_ATR, SPARE_PAY_ATR),
+			QctmtEmInitialCmt.class);
+	}
+
+	/**
+	 * Find comment month emps.
+	 *
+	 * @param code the code
+	 * @param empCds the emp cds
 	 * @return the list
 	 */
-	private List<QctmtCommentMonthEm> findCommentMonthEmp(ContactItemsCode code,
+	private List<QctmtCommentMonthEm> findCommentMonthEmps(ContactItemsCode code,
 		List<String> empCds) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -169,13 +195,11 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 	/**
 	 * Find comment inital emp.
 	 *
-	 * @param code
-	 *            the code
-	 * @param empCds
-	 *            the emp cds
+	 * @param code the code
+	 * @param empCds the emp cds
 	 * @return the list
 	 */
-	private List<QctmtEmInitialCmt> findCommentInitalEmp(ContactItemsCode code,
+	private List<QctmtEmInitialCmt> findCommentInitalEmps(ContactItemsCode code,
 		List<String> empCds) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -238,5 +262,43 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 		this.commandProxy().update(jpa.getCommentInitialCp());
 		this.commandProxy().updateAll(jpa.getCommentMonthEmps());
 		this.commandProxy().updateAll(jpa.getCommentInitialEmps());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository#
+	 * getRemark(nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode,
+	 * java.lang.String)
+	 */
+	@Override
+	public String getRemark(ContactItemsCode code, String empCd) {
+		// comment month company
+		Optional<QcmtCommentMonthCp> commentMonthCp = this.findCommentMonthCp(code);
+
+		if (commentMonthCp.isPresent()) {
+			return commentMonthCp.get().getComment();
+		}
+
+		// comment initiative company
+		Optional<QctmtCpInitialCmt> commentInitCp = this.findCommentInitCp(code);
+
+		if (commentInitCp.isPresent()) {
+			return commentInitCp.get().getComment();
+		}
+
+		// comment month employee
+		Optional<QctmtCommentMonthEm> commentMonthEmp = this.findCommentMonthEmp(code, empCd);
+		if (commentMonthEmp.isPresent()) {
+			return commentMonthEmp.get().getComment();
+		}
+
+		// comment initiative employee
+		Optional<QctmtEmInitialCmt> commentInitEmp = this.findCommentInitEmp(code, empCd);
+		if (commentInitEmp.isPresent()) {
+			return commentInitEmp.get().getComment();
+		}
+		return null;
 	}
 }

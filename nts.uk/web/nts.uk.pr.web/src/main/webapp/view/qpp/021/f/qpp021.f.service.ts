@@ -1,9 +1,10 @@
 module nts.uk.pr.view.qpp021.f {
 
     export module service {
-         var paths: any = {
+        var paths: any = {
             findRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/two/find",
-            saveRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/two/save"
+            saveRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/two/save",
+            previewRefundPaddingTwo: "screen/pr/QPP021/preview/refundpadding/two"
         };
 
         //connection service find
@@ -11,7 +12,7 @@ module nts.uk.pr.view.qpp021.f {
             //call service server
             return nts.uk.request.ajax(paths.findRefundPadding);
         }
-        
+
         //connection service save
         export function saveRefundPadding(dto: model.RefundPaddingTwoDto): JQueryPromise<void> {
             //call service server
@@ -19,6 +20,12 @@ module nts.uk.pr.view.qpp021.f {
             return nts.uk.request.ajax(paths.saveRefundPadding, data);
         }
 
+
+        export function previewRefundPaddingTwo(pageLayout: string): JQueryPromise<any> {
+            //call service server
+            var data = { pageLayout: pageLayout };
+            return nts.uk.request.exportFile(paths.previewRefundPaddingTwo, data);
+        }
 
         export module model {
             export class RefundPaddingTwoDto {

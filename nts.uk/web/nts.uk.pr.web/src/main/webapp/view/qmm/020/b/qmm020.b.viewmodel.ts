@@ -1,380 +1,309 @@
-
-
 module qmm020.b.viewmodel {
     export class ScreenModel {
-        //content:  KnockoutObservable<any>;
-        itemList: KnockoutObservableArray<ComHistItem>;
-        currentItem: KnockoutObservable<ComHistItem>;
-        maxItem: KnockoutObservable<service.model.CompanyAllotSettingDto>;
-        companyAllots: Array<service.model.CompanyAllotSettingDto>;
-        isInsert: KnockoutObservable<boolean>;
+        listItems: KnockoutObservableArray<ListModel> = ko.observableArray([]);
+        selectedId: KnockoutObservable<string> = ko.observable(undefined);
+        selectedItem: KnockoutObservable<ListModel> = ko.observable(new ListModel({ historyId: '', startDate: 197001, endDate: 999912 }));
+
+        dirty: IDirty = {
+            selectedId: new nts.uk.ui.DirtyChecker(this.selectedId),
+            selectedItem: new nts.uk.ui.DirtyChecker(this.selectedItem),
+            isDirty: function() {
+                return this.selectedItem.isDirty();
+            },
+            reset: function() {
+                this.selectedId.reset();
+                this.selectedItem.reset();
+            }
+        };
+
         constructor() {
             var self = this;
-            self.isInsert = ko.observable(false);
-            self.itemList = ko.observableArray([]);
-            self.currentItem = ko.observable(new ComHistItem({
-                historyId: '',
-                startYm: '',
-                endYm: '',
-                payCode: '',
-                bonusCode: ''
-            }));
-            self.maxItem = ko.observable(new service.model.CompanyAllotSettingDto());
+
+            // change selectedItem when selectedId is changed
+            self.selectedId.subscribe(function(v) {
+                self.selectedItem(_.find(self.listItems(), function(m) { return m.historyId == v; }));
+            });
+
+            // call init data function
             self.start();
         }
+
         // start function
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            //Get list startDate, endDate of History 
-            //get allot Company
-            service.getAllotCompanyList().done(function(companyAllots: Array<service.model.CompanyAllotSettingDto>) {
-                
-                if (companyAllots.length > 0) {
-                    let _items: Array<ComHistItem> = [];
-                    //push data to listItem of hist List
-                    for (let i in companyAllots) {
-                        let item = companyAllots[i];
-                        if (item) {
-                            _items.push(new ComHistItem({
-                                historyId: (item.historyId || "").toString(),
-                                startYm: (item.startDate || "").toString(),
-                                endYm: (item.endDate || "").toString(),
-                                payCode: (item.paymentDetailCode || "").toString(),
-                                bonusCode: (item.bonusDetailCode || "").toString()
-                            }));
-                        }
+        start() {
+            let self = this, dfd = $.Deferred();
+            // clear all old item
+            self.listItems.removeAll();
+
+            service.getAllotCompanyList()
+                .done(function(resp: Array<IListModel>) {
+                    if (resp.length > 0) {
+                        // order by endDate with desc type and push to list source
+                        _.orderBy(resp, ['endDate'], ['desc']).map((m) => {
+                            self.listItems.push(new ListModel(m));
+                        });
+
+                        // update payment name & bonus name
+                        self.listItems().map((m) => {
+                            service.getAllotLayoutName(m.bonusDetailCode)
+                                .done((stmtName: string) => { m.bonusDetailName = stmtName; });
+
+                            service.getAllotLayoutName(m.paymentDetailCode)
+                                .done((stmtName: string) => { m.paymentDetailName = stmtName; });
+                        });
+
+                        // find item has max date value
+                        service.getAllotCompanyMaxDate().done(function(item: IListModel) {
+                            if (item) {
+                                let maxItem = _.find(self.listItems(), function(m) { return m.historyId == item.historyId; });
+                                if (maxItem) {
+                                    maxItem.isMaxDate = true;
+                                    self.selectedId(maxItem.historyId);
+                                    self.listItems().map((m) => { if (m.historyId != maxItem.historyId) m.isMaxDate = false; });
+                                }
+                                else {
+                                    // select first item
+                                    let firstItem = self.listItems()[0];
+                                    if (firstItem) {
+                                        self.selectedId(firstItem.historyId);
+                                    }
+                                }
+                            } else {
+                                // select first item
+                                let firstItem = self.listItems()[0];
+                                if (firstItem) {
+                                    self.selectedId(firstItem.historyId);
+                                }
+                            }
+                        }).fail(function(res) {
+                            alert(res);
+                        });
+
+                        // reset dirty
+                        self.dirty.reset();
                     }
-                    self.itemList(_items);
-                    self.companyAllots = companyAllots;
-                    //console.log(self.companyAllots);
-                    self.currentItem().setSource(self.companyAllots);
-                    //console.log(self.companyAllots);
-                    self.currentItem().historyId(companyAllots[0].historyId);
-                } else {
-                    //self.allowClick(false);
-                    dfd.resolve();
-                }
-            }).fail(function(res) {
-                // Alert message
-                alert(res);
-            });
-            //get Row with max Date 
-            service.getAllotCompanyMaxDate().done(function(itemMax: service.model.CompanyAllotSettingDto) {
-                self.maxItem(itemMax);
-            }).fail(function(res) {
-                alert(res);
-            });
+                })
+                .fail(function(mes) { alert(mes); });
 
             return dfd.promise();
         }
 
-        //Event of Save Button Clicking
-        //Insert or Update Data
-        register() {
-            var self = this;
-            //debugger;
-            //Insert
-            if (self.isInsert()) {
-                service.insertComAllot(self.currentItem()).done(function() {
-                }).fail(function(res) {
-                    alert(res);
-                });
-                //Update    
-            } else {
-                service.updateComAllot(self.currentItem()).done(function() {
-                }).fail(function(res) {
-                    alert(res);
-                });
-            }
+        // event calling by saveData event in view A
+        saveData() {
+            let self = this, models: Array<ListModel> = ko.toJS(self.listItems);
+
+            service.saveData(models).done(function(data: ListModel) {
+                self.listItems.valueHasMutated();
+            }).fail(function(res) {
+                alert(res);
+            });
         }
 
         //Open dialog Add History
         openJDialog() {
             var self = this;
-            //getMaxDate
-            var historyScreenType = "1";
-            //Get value TabCode + value of selected Name in History List
-            let valueShareJDialog = historyScreenType + "~" + self.currentItem().startYm();
+            // check dirty at here
 
-            nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
+            // update current item to max item has end date
+            self.listItems().map((m) => {
+                if (m.isMaxDate) {
+                    self.selectedId(m.historyId);
+                }
+            });
 
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ霑ｽ蜉�' })
+            let oldItem: any = self.selectedItem() || {};
+
+            // set init data for j dialog
+            nts.uk.ui.windows.setShared("J_DATA", {
+                displayMode: 1,
+                startYm: oldItem.startDate || 197001,
+                endYm: oldItem.endDate || 999912
+            });
+
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" })
                 .onClosed(function() {
-                    let returnJDialog: string = nts.uk.ui.windows.getShared('returnJDialog');
-                    if (returnJDialog != undefined) {
-                        var modeRadio = returnJDialog.split("~")[0];
-                        var returnValue = returnJDialog.split("~")[1];
-                        if (returnValue != '') {
-                            var items = [];
-                            var addItem = new ComHistItem({
-                                historyId: new Date().getTime().toString(),
-                                startYm: returnValue,
-                                endYm: '999912',
-                                payCode: '',
-                                bonusCode: ''
-                            });
-                            // them thang cuoi cung tren man hinh
-                            items.push(addItem);
-                            //them cac thang da co
-                            for (let i in self.itemList()) {
-                                items.push(self.itemList()[i]);
-                            }
-                            //UPDATE ENDATE MAX
-                            var lastValue = _.find(self.companyAllots, function(item) { return item.endDate == 999912; });
-                            if (lastValue != undefined) {
-                                lastValue.endDate = previousYM(returnValue);
-                                var updateValue = _.find(items, function(item) { return item.endYm() == "999912" && item.startYm() != returnValue; });
-                                if (updateValue != undefined) {
-                                    updateValue.endYm(lastValue.endDate.toString());
-                                }
-                            }
-                            // Goi cap nhat vao currentItem
-                            // Trong truong hop them moi NHANH, copy payCode, bonusCode tu Previous Item
-                            if (modeRadio === "1") {
-                                //the new items
-                                //update payCode, bonus Code cua thang vua them
-                                //Update Current item tren man hinh 
-                                self.currentItem().historyId(addItem.historyId());
-                                self.currentItem().startYm(returnValue);
-                                self.currentItem().endYm('999912');
+                    let model: any = nts.uk.ui.windows.getShared("J_RETURN");
+                    if (model) {
+                        let oldItem: ListModel = self.selectedItem(),
+                            startDate = nts.uk.time.parseYearMonth(model.startDate);
 
-                                self.currentItem().payCode(self.maxItem().paymentDetailCode);
-                                self.currentItem().bonusCode(self.maxItem().bonusDetailCode);
-                                //get Payment Name
-                                if (self.currentItem().payCode() != '') {
-                                    service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
-                                        self.currentItem().payName(stmtName);
-                                    }).fail(function(res) {
-                                        self.currentItem().payName('');
-                                    });
-                                } else {
-                                    self.currentItem().payName('');
-                                }
-                                //get Bonus Name
-                                if (self.currentItem().bonusCode() != '') {
-                                    service.getAllotLayoutName(self.currentItem().bonusCode()).done(function(stmtName: string) {
-                                        self.currentItem().bonusName(stmtName);
-                                    }).fail(function(res) {
-                                        self.currentItem().bonusName('');
-                                    });
-                                } else {
-                                    self.currentItem().bonusName('');
-                                }
-                            } else {
-                                self.currentItem().historyId(addItem.historyId());
-                                self.currentItem().startYm(returnValue);
-                                self.currentItem().endYm('999912');
+                        if (startDate.success) {
+                            let id: string = '_NEW_' + self.listItems().length + '_' + model.startDate,
+                                newItem: ListModel = new ListModel({ historyId: id, startDate: model.startDate, endDate: 999912 });
 
-                                self.currentItem().payCode('');
-                                self.currentItem().bonusCode('');
-                                self.currentItem().payName('');
-                                self.currentItem().bonusName('');
+                            // update data
+                            newItem.isMaxDate = true;
+                            if (oldItem) {
+                                oldItem.isMaxDate = false;
+                                oldItem.endDate = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
+                                oldItem.update();
+
+                                if (model.selectedMode == 1) {
+                                    // copy mode
+                                    newItem.bonusDetailCode = oldItem.bonusDetailCode;
+                                    newItem.bonusDetailName = oldItem.bonusDetailName;
+                                    newItem.paymentDetailCode = oldItem.paymentDetailCode;
+                                    newItem.paymentDetailName = oldItem.paymentDetailName;
+                                }
                             }
+
+                            // update data list on view
+                            self.listItems().push(newItem);
+                            self.listItems(_.orderBy(self.listItems(), ['endDate'], ['desc']));
+
+                            // selected new item
+                            self.selectedId(id);
+                            self.selectedItem.valueHasMutated();
                         }
-                        //console.log(self.companyAllots);
-                        self.itemList([]);
-                        self.itemList(items);
-                        self.isInsert = ko.observable(true);
-                        //debugger;
+                        else {
+                            alert(startDate.msg);
+                        }
+
                     }
+                    // clear shared data
+                    nts.uk.ui.windows.setShared("J_DATA", undefined);
+                    nts.uk.ui.windows.setShared("J_RETURN", undefined);
                 });
         }
 
         //Open dialog Edit History
         openKDialog() {
             var self = this;
-            nts.uk.ui.windows.setShared("endYM", self.currentItem().endYm());
-            nts.uk.ui.windows.setShared('scrType', '1');
-            nts.uk.ui.windows.setShared('startYM', self.currentItem().startYm());
-            var current = _.find(self.companyAllots, function(item) { return item.historyId == self.currentItem().historyId(); });
-            var previousItem = _.find(self.companyAllots, function(item) { return item.endDate == parseInt(self.currentItem().startYm()) - 1; });
-            if (current) {
-                nts.uk.ui.windows.setShared('currentItem', current);
-            }
-            if (previousItem) {
-                nts.uk.ui.windows.setShared('previousItem', previousItem);
-            }
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ邱ｨ髮�' }).onClosed(function(): any {
-                self.start();
-            });
+
+            //update current model
+            self.selectedId.valueHasMutated();
+
+            // set shared data for k screen
+            nts.uk.ui.windows.setShared("K_DATA", { displayMode: 1, startYm: self.selectedItem().startDate, endYm: self.selectedItem().endDate });
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { width: 485, height: 550, title: '履歴の編集', dialogClass: "no-close" })
+                .onClosed(() => {
+                    let model: any = nts.uk.ui.windows.getShared("K_RETURN");
+                    if (model) {
+                        // search index of current item
+                        let index = _.findIndex(self.listItems(), function(m) { return m.historyId == self.selectedId(); });
+                        if (model.selectedMode == 1) {
+                            // call service delete item at here
+                            let models = self.listItems.splice(index, 1);
+                            service.deleteData(models).done(function() {
+                                // call start function
+                                self.start();
+                            }).fail((msg) => { alert(msg); });
+                        } else {
+                            // modify
+                            let startDate = nts.uk.time.parseYearMonth(model.startYm);
+                            if (startDate.success) {
+                                let current: ListModel = self.selectedItem(), neighbor = self.listItems()[index + 1];
+                                current.startDate = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 1, 1)).format("YYYYMM"));
+                                current.update();
+                                if (!!neighbor) {
+                                    neighbor.endDate = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
+                                    neighbor.update();
+                                }
+
+                                // update view data
+                                self.listItems.push(self.listItems.pop());
+                                self.selectedId.valueHasMutated();
+                                self.selectedItem.valueHasMutated();
+                            } else {
+                                alert(startDate.msg);
+                            }
+                        }
+                    }
+                    // clear shared data
+                    nts.uk.ui.windows.setShared("K_DATA", undefined);
+                    nts.uk.ui.windows.setShared("K_RETURN", undefined);
+                });
         }
-        //Open L Dialog
-        openLDialog() {
-            alert('2017');
-        }
+
         //Click to button Select Payment
         openPaymentMDialog() {
-            var self = this;
-            var valueShareMDialog = self.currentItem().startYm();
-            //debugger;
-            nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function(): any {
-                //get selected code from M dialog
-                var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
+            let self = this;
+            nts.uk.ui.windows.setShared('M_BASEYM', self.selectedItem().startDate);
 
-                self.currentItem().payCode(stmtCodeSelected);
-                //get Name payment Name
-                service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
-                    self.currentItem().payName(stmtName);
-                }).fail(function(res) {
-                    alert(res);
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
+                .onClosed(() => {
+                    //get selected code from M dialog
+                    let selectedCode: string = nts.uk.ui.windows.getShared('M_RETURN');
+
+                    self.selectedItem().paymentDetailCode = selectedCode;
+
+                    //get payment Name
+                    service.getAllotLayoutName(selectedCode)
+                        .done((stmtName: string) => {
+                            self.selectedItem().paymentDetailName = stmtName;
+                            // update value
+                            self.selectedId.valueHasMutated();
+                        }).fail((res) => { alert(res); });
                 });
-            });
         }
 
         //Click to button Select Bonus
         openBonusMDialog() {
-            var self = this;
-            var valueShareMDialog = self.currentItem().startYm();
-            //debugger;
-            nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ驕ｸ謚�' }).onClosed(function(): any {
-                //get selected code from M dialog
-                var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
-
-                self.currentItem().bonusCode(stmtCodeSelected);
-                //get Name payment Name
-                service.getAllotLayoutName(self.currentItem().bonusCode()).done(function(stmtName: string) {
-                    self.currentItem().bonusName(stmtName);
-                }).fail(function(res) {
-                    alert(res);
-                });
-            });
-        }
-
-    }
-    //Previous Month 
-    function previousYM(sYm: string) {
-        var preYm: number = 0;
-        if (sYm.length == 6) {
-            let sYear: string = sYm.substr(0, 4);
-            let sMonth: string = sYm.substr(4, 2);
-            //Trong truong hop thang 1 thi thang truoc la thang 12
-            if (sMonth == "01") {
-                preYm = parseInt((parseInt(sYear) - 1).toString() + "12");
-                //Truong hop con lai thi tru di 1      
-            } else {
-                preYm = parseInt(sYm) - 1;
-            }
-        }
-        return preYm;
-    }
-
-    interface IComHistItem {
-        historyId: string;
-        startYm: string;
-        endYm: string;
-        payCode: string;
-        bonusCode: string;
-        startEnd?: string;
-        payName?: string;
-        bonusName?: string;
-    }
-
-    class ComHistItem {
-        id: string;
-        historyId: KnockoutObservable<string>;
-        startYm: KnockoutObservable<string>;
-        endYm: KnockoutObservable<string>;
-        payCode: KnockoutObservable<string>;
-        bonusCode: KnockoutObservable<string>;
-        startEnd: string;
-        payName: KnockoutObservable<string>;
-        bonusName: KnockoutObservable<string>;
-        listSource: Array<any>;
-        constructor(param: IComHistItem) {
             let self = this;
-            self.id = param.historyId;
-            self.historyId = ko.observable(param.historyId);
-            self.startYm = ko.observable(param.startYm);
-            self.endYm = ko.observable(param.endYm);
-            self.payCode = ko.observable(param.payCode);
-            self.bonusCode = ko.observable(param.bonusCode);
-            self.startEnd = param.startYm + '~' + param.endYm;
-            self.payName = ko.observable(param.payName || '');
-            self.bonusName = ko.observable(param.bonusName || '');
+            nts.uk.ui.windows.setShared('M_BASEYM', self.selectedItem().startDate);
 
-            self.historyId.subscribe(function(newValue) {
-                if (typeof newValue != 'string') {
-                    return
-                }
-                var current = _.find(self.listSource, function(item) { return item.historyId == newValue; });
-                if (current) {
-                    self.startYm(current.startDate);
-                    self.endYm(current.endDate);
-                    self.payCode(current.paymentDetailCode);
-                    self.bonusCode(current.bonusDetailCode);
-                    self.startEnd = self.startYm() + '~' + self.endYm();
+            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
+                .onClosed(() => {
+                    //get selected code from M dialog
+                    let selectedCode: string = nts.uk.ui.windows.getShared('M_RETURN');
 
-                    if (current.paymentDetailCode != '') {
-                        service.getAllotLayoutName(current.paymentDetailCode).done(function(stmtName: string) {
-                            self.payName(stmtName);
+                    self.selectedItem().bonusDetailCode = selectedCode;
+                    //get payment Name
+                    service.getAllotLayoutName(selectedCode)
+                        .done(function(stmtName: string) {
+                            self.selectedItem().bonusDetailName = stmtName;
+                            // update value
+                            self.selectedId.valueHasMutated();
                         }).fail(function(res) {
-                            self.payName('');
+                            alert(res);
                         });
-                    } else {
-                        self.payName('');
-                    }
-                    if (current.bonusDetailCode != '') {
-                        service.getAllotLayoutName(current.bonusDetailCode).done(function(stmtName: string) {
-                            self.bonusName(stmtName);
-                        }).fail(function(res) {
-                            self.bonusName('');
-                        });
-                    } else {
-                        self.bonusName('');
-                    }
+                });
+        }
+    }
 
-                }
-                else { // Them moi
-                    var newItem: service.model.CompanyAllotSettingDto = {
-                        paymentDetailCode: '',
-                        bonusDetailCode: '',
-                        startDate: 0,
-                        endDate: 0,
-                        historyId: self.historyId()
-                    };
-                    self.listSource.push(newItem);
-                    self.payName('');
-                    self.bonusName('');
-                }
-            });
+    interface IListModel {
+        bonusDetailCode?: string;
+        bonusDetailName?: string;
+        endDate: number;
+        historyId: string;
+        paymentDetailCode?: string;
+        paymentDetailName?: string;
+        startDate: number;
+    }
 
-            self.payCode.subscribe(function(newValue) {
-                //console.log(self.listSource);
-                var current = _.find(self.listSource, function(item) { return item.historyId == self.historyId(); });
-                if (current) {
-                    current.paymentDetailCode = newValue;
-                }
-            });
-            self.bonusCode.subscribe(function(newValue) {
-                var current = _.find(self.listSource, function(item) { return item.historyId == self.historyId(); });
-                if (current) {
-                    current.bonusDetailCode = newValue;
-                }
-            });
+    // list view model
+    class ListModel {
+        bonusDetailCode: string;
+        bonusDetailName: string;
+        endDate: number;
+        historyId: string;
+        paymentDetailCode: string;
+        paymentDetailName: string;
+        startDate: number;
+        text: string;
+        isMaxDate: boolean = false;
 
+        constructor(param: IListModel) {
+            this.historyId = param.historyId;
+            this.endDate = param.endDate;
+            this.startDate = param.startDate;
 
-            self.startYm.subscribe(function(newValue) {
-                self.startEnd = self.startYm() + '~' + self.endYm();
-                var current = _.find(self.listSource, function(item) { return item.historyId == self.historyId(); });
-                if (current) {
-                    current.startDate = newValue;
-                }
-            });
+            this.bonusDetailCode = param.bonusDetailCode || '';
+            this.bonusDetailName = param.bonusDetailName || '';
 
-            self.endYm.subscribe(function(newValue) {
-                self.startEnd = self.startYm() + '~' + self.endYm();
-                var current = _.find(self.listSource, function(item) { return item.historyId == self.historyId(); });
-                if (current) {
-                    current.endDate = newValue;
-                }
-            });
+            this.paymentDetailCode = param.paymentDetailCode || '';
+            this.paymentDetailName = param.paymentDetailName || '';
+            this.update();
         }
 
-        setSource(list: Array<any>) {
-            this.listSource = list || [];
+        update() {
+            this.text = nts.uk.time.formatYearMonth(this.startDate) + " ~ " + nts.uk.time.formatYearMonth(this.endDate);
         }
+    }
+
+    interface IDirty {
+        selectedId: nts.uk.ui.DirtyChecker,
+        selectedItem: nts.uk.ui.DirtyChecker,
+        isDirty: any,
+        reset: any
     }
 }

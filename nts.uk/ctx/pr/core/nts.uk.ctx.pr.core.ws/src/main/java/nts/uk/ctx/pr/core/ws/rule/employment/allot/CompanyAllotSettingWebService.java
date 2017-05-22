@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.allot;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -9,23 +10,23 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.DelAllotCompanyCmd;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.DelAllotCompanyCmdHandler;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.InsertAllotCompanyCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.InsertAllotCompanyCommandHandler;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.UpdateAllotCompanyCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.UpdateAllotCompanyCommandHandler;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.CompanyAllotSettingDto;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.CompanyAllotSettingFinder;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.DelAllotCompanyCmd;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.DelAllotCompanyCmdHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.InsertAllotCompanyCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.InsertAllotCompanyCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.UpdateAllotCompanyCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.company.UpdateAllotCompanyCommandHandler;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.company.CompanyAllotSettingDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.company.CompanyAllotSettingFinder;
 
 @Path("pr/core/allot")
 @Produces("application/json")
-public class CompanyAllotSettingWebService extends WebService{
+public class CompanyAllotSettingWebService extends WebService {
 	@Inject
 	private CompanyAllotSettingFinder find;
 	@Inject
 	private UpdateAllotCompanyCommandHandler update;
-	@Inject 
+	@Inject
 	private InsertAllotCompanyCommandHandler insert;
 	@Inject
 	private DelAllotCompanyCmdHandler delete;
@@ -33,8 +34,7 @@ public class CompanyAllotSettingWebService extends WebService{
 	@POST
 	@Path("findallcompanyallot")
 	public List<CompanyAllotSettingDto> GetAllCompanyAllotSetting() {
-		List<CompanyAllotSettingDto> test = this.find.getAllCompanyAllotSetting();
-		return test;
+		return this.find.getAllCompanyAllotSetting();
 	}
 
 	@POST
@@ -43,28 +43,30 @@ public class CompanyAllotSettingWebService extends WebService{
 	public String GetAllotLayoutName(@PathParam("stmtCode") String stmtCode) {
 		return this.find.getAllotLayoutName(stmtCode);
 	}
-	
-	
+
 	@POST
 	@Path("findcompanyallotmaxdate")
 	public CompanyAllotSettingDto GetAllotMaxDate() {
-		CompanyAllotSettingDto test = this.find.getMaxStartYM().get();
-		return test;
+		Optional<CompanyAllotSettingDto> model = this.find.getMaxStartYM();
+		if (model.isPresent()) {
+			return model.get();
+		} else {
+			return null;
+		}
 	}
-	
 
 	@POST
 	@Path("update")
 	public void update(UpdateAllotCompanyCommand command) {
 		this.update.handle(command);
 	}
-	
+
 	@POST
 	@Path("insert")
 	public void insert(InsertAllotCompanyCommand command) {
 		this.insert.handle(command);
 	}
-	
+
 	@POST
 	@Path("delete")
 	public void delete(DelAllotCompanyCmd command) {

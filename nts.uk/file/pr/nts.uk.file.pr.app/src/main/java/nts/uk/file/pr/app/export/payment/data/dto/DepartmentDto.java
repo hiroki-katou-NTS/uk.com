@@ -16,5 +16,8 @@ public class DepartmentDto {
 	
 	/** The department name. */
 	private String departmentName;	
+	
+	/** The department output. */
+	private String departmentOutput;
 
 }

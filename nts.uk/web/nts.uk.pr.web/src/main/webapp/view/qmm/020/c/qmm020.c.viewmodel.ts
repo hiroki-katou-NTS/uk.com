@@ -1,386 +1,440 @@
 module qmm020.c.viewmodel {
     export class ScreenModel {
-        // listbox
-        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        itemTotalList: KnockoutObservableArray<TotalModel>;
-        itemHeaderList: KnockoutObservableArray<TotalModel>;
-        currentItem: KnockoutObservable<TotalModel>;
-        selectedCode: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
-        maxItem: KnockoutObservable<TotalModel>;
-        //selectedCode: KnockoutObservable<string>;
-        dataSource: any;
-        selectedList: any;
+        gridColumns: Array<any> = [];
+        model: KnockoutObservable<Model> = ko.observable(undefined);
 
         constructor() {
-            var self = this;
-            let dfd = $.Deferred<any>();
-            self.selectedCode = ko.observable();
-            self.selectedList = ko.observableArray([]);
-            self.isEnable = ko.observable(true);
-            self.itemTotalList = ko.observableArray([]);
-            self.itemHeaderList = ko.observableArray([]);
-            self.maxItem = ko.observable(null);
-            self.dataSource = ko.observableArray([]);
-            self.currentItem = ko.observable(new TotalModel({
-                historyId: '',
-                employmentCode: '',
-                paymentDetailCode: '',
-                bonusDetailCode: '',
-                startYm: '',
-                endYm: ''
-            }));
-
-
-            // LST_001
-            this.columns = ko.observableArray([
-                { headerText: '', prop: 'startEnd', width: 200 }
-            ]);
-
-            self.selectedCode.subscribe(function(codeChange) {
-                self.getHist();
-                service.getEmployeeDetail(ko.toJS(codeChange)).done(function(data: Array<IModel>) {
-                    let employeeItems: Array<IModel> = [];
-                    if (data && data.length > 0) {
-                        employeeItems = $("#C_LST_001").igGrid("option", "dataSource");
-                        if (employeeItems.length == 0) {
-                            employeeItems = data;
-                        }
-                        for (let i in employeeItems) {
-                            let item = employeeItems[i];
-                            let itemAllotSetting = _.find(data, function(allot) { return item.employmentCode == allot.employeeCode; });
-                            if (itemAllotSetting) {
-                                item.paymentDetailCode = itemAllotSetting.paymentDetailCode;
-                                item.paymentDetailName = itemAllotSetting.paymentDetailName;
-                                item.bonusDetailCode = itemAllotSetting.bonusDetailCode;
-                                item.bonusDetailName = itemAllotSetting.bonusDetailName;
-                            } else {
-                                item.paymentDetailCode = undefined;
-                                item.paymentDetailName = undefined;
-                                item.bonusDetailCode = undefined;
-                                item.bonusDetailName = undefined;
-                            }
-                        }
-
-                        // Set data to grid
-                        $("#C_LST_001").igGrid("option", "dataSource", employeeItems);
-
-                        dfd.resolve();
-                    }
-
-                    //                    self.itemAllotSetting(employeeItems);
-                    dfd.resolve();
-
-                }).fail(function(res) {
-                    //Alert message
-                    alert(res);
-                });
-                dfd.promise();
-                self.currentItem(self.getHist(codeChange));
-            });
-            // init columns and title for grid
-            self.LoadData([]);
-            // call first method
-            self.start();
-//            $("#C_BTN_001").click(function() {
-//                alert("The paragraph was clicked.");
-//            });
-        }
-
-        LoadData(itemList) {
             let self = this;
-            $("#C_LST_001").igGrid({
-                columns: [
-                    { headerText: "繧ｳ繝ｼ繝�", key: "employmentCode", dataType: "string", width: "100px" },
-                    { headerText: "蜷咲ｧｰ", key: "employmentName", dataType: "string", width: "200px" },
-                    { headerText: "", key: "paymentDetailCode", dataType: "string", hidden: true },
-                    { headerText: "", key: "paymentDetailName", dataType: "string", hidden: true },
-                    { headerText: "", key: "bonusDetailCode", dataType: "string", hidden: true },
-                    { headerText: "", key: "bonusDetailName", dataType: "string", hidden: true },
-                    {
-                        headerText: "邨ｦ荳取�守ｴｰ譖ｸ", key: "paymentDetailCode", dataType: "string", width: "250px", unbound: true,
-                        template: '<button class="c-btn-001" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${paymentDetailCode} ${paymentDetailName}</span>'
-                    },
-                    {
-                        headerText: "雉樔ｸ取�守ｴｰ譖ｸ", key: "bonusDetailCode", dataType: "string", width: "20%", unbound: true,
-                        template: '<button class="c-btn-002" onclick="__viewContext.viewModel.viewmodelC.openMDialog()">選択</button><span>${bonusDetailCode} ${bonusDetailName}</span>'
-                    },
-                ],
-                features: [{
-                    name: 'Selection',
-                    mode: 'row',
-                    multipleSelection: true,
-                    activation: false,
+            self.gridColumns = [
+                { headerText: "コード", key: "employmentCode", dataType: "string", width: "100px", template: '${employmentCode}' },
+                { headerText: "名称", key: "employmentName", dataType: "string", width: "200px", template: '${employmentName}' },
+                {
+                    headerText: "給与明細書", key: "paymentDetailCode", dataType: "string", width: "250px",
+                    template: '<button onclick="__viewContext.viewModel.viewmodelC.openMDialogPay()">選択</button><span>${paymentDetailCode} ${paymentDetailName}</span>'
                 },
-                ],
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                width: "800px",
-                height: "240px",
-                primaryKey: "employmentCode",
-                dataSource: itemList
-
-            });
-        }
-
-        //find histId to subscribe
-        getHist(value: any) {
-            let self = this;
-            let rtHist = _.find(ko.toJS(self.itemHeaderList()), function(item: IModel) {
-                return item.historyId == value;
-            });
-            return rtHist;
-        }
-        //Selected changed
-//        selectionChanged(evt, ui) {
-//            //console.log(evt.type);
-//            var selectedRows = ui.selectedRows;
-//
-//            var arr = [];
-//            for (var i = 0; i < selectedRows.length; i++) {
-//                arr.push("" + selectedRows[i].id);
-//            }
-//            this.selectedList(arr);
-//        };
-
-        // start function
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            //fill employ data to c_LST_001
-            service.getEmployeeName().done(function(data: Array<IModel>) {
-                let employeeItem: Array<TotalModel> = [];
-                if (data && data.length > 0) {
-                    _.forEach(data, function(item) {
-                        employeeItem.push({ historyId: item.historyId, employmentCode: item.employmentCode, employmentName: item.employmentName });
-                    });
-                    dfd.resolve();
+                {
+                    headerText: 'Detail Name', key: 'paymentDetailName', dataType: 'string', hidden: true
+                },
+                {
+                    headerText: "賞与明細書", key: "bonusDetailCode", dataType: "string", width: "20%",
+                    template: '<button onclick="__viewContext.viewModel.viewmodelC.openMDialogBo()">選択</button><span>${bonusDetailCode} ${bonusDetailName}</span>'
+                },
+                {
+                    headerText: 'Detail Name', key: 'bonusDetailName', dataType: 'string', hidden: true
                 }
-                self.itemTotalList(employeeItem);
-                // self.currentItem(employeeItem.employmentName);
-                // Set datafor grid
-                $("#C_LST_001").igGrid("option", "dataSource", employeeItem);
-                dfd.resolve();
+            ];
 
-            }).fail(function(res) {
-                // Alert message
-                alert(res);
-            });
-            dfd.promise();
-            //Get list startDate, endDate of History  
-            let totalItem: Array<TotalModel> = [];
-            service.getEmployeeAllotHeaderList().done(function(data: Array<IModel>) {
+            self.model(new Model({ ListItems: [], GridItems: [] }));
+
+            // call start function
+            self.start();
+        }
+
+        start() {
+            let self = this, model = self.model();
+
+            // clear all data for first load
+            model.ListItems.removeAll();
+            model.GridItems.removeAll();
+
+            // get list history data
+            service.getAllots().done(function(data: Array<IListModel>) {
                 if (data.length > 0) {
-                    _.forEach(data, function(item) {
-                        totalItem.push(new TotalModel({ historyId: item.historyId, startEnd: item.startYm + ' ~ ' + item.endYm, endYm: item.endYm, startYm: item.startYm }));
-                    });
-                    ko.mapping.toJS(self.itemHeaderList(totalItem));
-                    debugger;
-                    //let max = _.maxBy(self.itemList(), (itemMax) => { return itemMax.endYm });
-                    dfd.resolve();
-                } else {
-                    dfd.resolve();
-                }
-            }).fail(function(res) {
-                // Alert message
-                alert(res);
-            });
+                    _.orderBy(data, ['endYm'], ['desc'])
+                        .map((m) => { model.ListItems.push(new ListModel(m)); });
 
-            service.getAllotEmployeeMaxDate().done(function(itemMax: number) {
-                let maxDate: TotalModel = _.find(self.itemHeaderList(), function(obj) { return parseInt(obj.endYm()) == itemMax; });
-                self.maxDate = (maxDate.startYm || "").toString();
-                self.maxItem(maxDate);
-                console.log(self.maxItem());
-                console.log(self.maxDate);
-                dfd.resolve();
-            }).fail(function(res) {
-                alert(res);
-            });
-
-
-            // Return.
-            return dfd.promise();
-        }
-        //click register button
-        /**
-         * 
-         */
-
-
-        //        register() {
-        //            var self = this;
-        //            var current = _.find(self.itemTotalList(), function(item: IModel) { return item.historyId == self.currentItem().historyId(); });
-        //            //            debugger;
-        //            if (current) {
-        //                //                service.insertEmAllot(current).done(function() {
-        //                //                }).fail(function(res) {
-        //                //                    alert(res);
-        //                //                });
-        //            }
-        //        }
-        //Open dialog Add History
-        openJDialog() {
-            var self = this;
-            debugger;
-            var historyScreenType = "1";
-            let valueShareJDialog = historyScreenType + "~" + "201701";
-
-            nts.uk.ui.windows.setShared('valJDialog', valueShareJDialog);
-
-            nts.uk.ui.windows.sub.modal('../j/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ霑ｽ蜉�' })
-                .onClosed(function() {
-                    let returnJDialog: string = nts.uk.ui.windows.getShared('returnJDialog');
-                    if (!nts.uk.util.isNullOrUndefined(returnJDialog)) {
-
-                        var modeRadio = returnJDialog.split("~")[0];
-                        var returnValue = returnJDialog.split("~")[1];
-                        if (returnValue != '') {
-                            //                        let employeeAllotSettings = new Array<EmployeeAllotSettingDto>();
-                            var items = self.itemTotalList();
-                            var addItem;
-                            var copItem;
-                            if (modeRadio === "2") {
-                                addItem = new TotalModel({
-                                    historyId: '',
-                                    employmentCode: '',
-                                    paymentDetailCode: '',
-                                    bonusDetailCode: '',
-                                    startYm: returnValue,
-                                    endYm: '999912',
-                                    startEnd: (returnValue + ' ~ ' + '999912')
-                                });
-                                items.push(addItem);
+                    // get itemMax of ListItem
+                    service.getMaxDate().done((itemMax: number) => {
+                        let maxDate: IListModel = _.find(model.ListItems(), function(obj) { return obj.endYm == itemMax; });
+                        model.ListItems().map((m) => {
+                            if (m.historyId == maxDate.historyId) {
+                                m.isMaxEndYm = true;
+                                model.ListItemSelected(m.historyId);
                             } else {
-                                copItem = new TotalModel({
-                                    historyId: '',
-                                    employmentCode: '',
-                                    employmentName: '',
-                                    paymentDetailCode: '',
-                                    paymentDetailName: '',
-                                    bonusDetailCode: '',
-                                    bonusDetailName: '',
-                                    startYm: returnValue,
-                                    endYm: '999912',
-                                    startEnd: (returnValue + ' ~ ' + '999912')
-                                });
-                                self.currentItem().historyId(copItem.historyId());
-                                self.currentItem().startYm(returnValue);
-                                self.currentItem().endYm('999912');
-                                self.currentItem().employmentCode(self.maxItem().historyId());
-                                //get employmentName, paymentDetailName, paymentDetailCode
-                                let dfd = $.Deferred<any>();
-                                service.getAllEmployeeAllotSetting(ko.toJS(self.maxItem().historyId())).done(function(data) {
-                                    self.itemListDetail([]);
-                                    if (data && data.length > 0) {
-                                        _.map(data, function(item: IModel) {
-                                            self.itemListDetail.push(new copItem(item.historyId, item.employmentCode, item.employmentName, item.paymentDetailCode
-                                                , item.paymentDetailName, item.bonusDetailCode, item.bonusDetailName, item.startYm, item.endYm, item.startEnd));
-                                        });
-                                        self.currentItem().employmentCode(ko.toJS(self.itemListDetail()[0].employmentCode));
-                                        self.currentItem().employmentName(ko.toJS(self.itemListDetail()[0].employmentName));
-                                        self.currentItem().paymentDetailCode(ko.toJS(self.itemListDetail()[0].paymentDetailCode));
-                                        self.currentItem().paymentDetailName(ko.toJS(self.itemListDetail()[0].paymentDetailName));
-                                        self.currentItem().bonusDetailCode(ko.toJS(self.itemListDetail()[0].bonusDetailCode));
-                                        self.currentItem().bonusDetailName(ko.toJS(self.itemListDetail()[0].bonusDetailName));
-                                        dfd.resolve();
-                                    }
+                                m.isMaxEndYm = false;
+                            }
+                        });
 
-                                    $("#C_LST_001").igGrid("option", "dataSource", ko.mapping.toJS(self.itemListDetail));
-                                    dfd.resolve();
+                    }).fail((msg) => { alert(msg); });
+                }
+
+                // load right table data
+                service.getEmployees().done(function(data: Array<IGridModel>) {
+                    if (data && data.length > 0) {
+                        data.map((m) => {
+                            if (m.bonusDetailCode) {
+                                service.getAllotLayoutName(m.bonusDetailCode).done((stmtName: string) => {
+                                    m.bonusDetailName = stmtName;
+                                    model.updateData();
                                 }).fail(function(res) {
-                                    // Alert message
                                     alert(res);
                                 });
-                                dfd.promise();
-
-                                items.push(copItem);
-
                             }
+                            if (m.paymentDetailCode) {
+                                service.getAllotLayoutName(m.paymentDetailCode).done((stmtName: string) => {
+                                    m.paymentDetailName = stmtName;
+                                    model.updateData();
+                                }).fail(function(res) {
+                                    alert(res);
+                                });
+                            }
+                            model.GridItems.push(new GridModel(m));
 
-                            self.itemTotalList([]);
-                            self.itemTotalList(items);
+                        });
+
+                        // selected first item in list box
+                        let first = model.ListItems()[0];
+                        if (first) {
+                            model.ListItemSelected(first.historyId);
                         }
                     }
-                });
+                }).fail((msg) => { alert(msg); });
 
-
+            }).fail((msg) => { alert(msg); });
         }
-        //Open dialog Edit History
+
+        // add new item
+        openJDialog() {
+            let self = this, model = self.model();
+
+            // select to max item
+            model.ListItems().map((m) => {
+                if (m.isMaxEndYm) {
+                    model.ListItemSelected(m.historyId);
+                }
+            });
+
+            // get item has property endDate is max value
+            let maxItem: any = _.find(model.ListItems(), function(m) { return m.isMaxEndYm == true; }) || {};
+            if (maxItem) {
+                nts.uk.ui.windows.setShared("J_DATA", { displayMode: 1, startYm: maxItem.startYm || 197001, endYm: maxItem.endYm || 999912 });
+
+                nts.uk.ui.windows.sub.modal('/view/qmm/020/j/index.xhtml', { width: 485, height: 550, title: '履歴の追加', dialogClass: "no-close" })
+                    .onClosed(function() {
+
+                        let value: any = nts.uk.ui.windows.getShared('J_RETURN');
+                        if (value) {
+                            let oldItem: ListModel = _.find(model.ListItems(), function(m) { return m.isMaxEndYm == true; });
+                            let startDate = nts.uk.time.parseYearMonth(value.startDate);
+                            if (startDate.success) {
+                                let id: string = '_NEW_' + model.ListItems().length + '_' + value.startDate,
+                                    newItem: ListModel = new ListModel({ historyId: id, startYm: value.startDate, endYm: 999912, isMaxEndYm: true });
+
+                                // update old item
+                                if (oldItem) {
+
+                                    oldItem.isMaxEndYm = false;
+                                    oldItem.endYm = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
+                                    oldItem.update();
+                                }
+
+                                // add new item to list
+                                model.ListItems.push(newItem);
+                                model.ListItems(_.orderBy(model.ListItems(), ['endYm'], ['desc']));
+
+                                // store old grid data
+                                let temp = model.GridItems();
+
+                                // selected new id (item)
+                                model.ListItemSelected(id);
+
+                                // copy or new mode
+                                if (value.selectedMode == 1) {
+                                    self.model().GridItems().map((f) => {
+                                        f.bonusDetailCode = '';
+                                        f.bonusDetailName = '';
+                                        f.paymentDetailCode = '';
+                                        f.paymentDetailName = '';
+                                    });
+
+                                    model.GridItems(temp);
+                                    model.updateData();
+                                } else {
+                                    model.GridItems().map((f) => {
+                                        f.bonusDetailCode = '';
+                                        f.bonusDetailName = '';
+                                        f.paymentDetailCode = '';
+                                        f.paymentDetailName = '';
+                                    });
+                                    model.updateData();
+                                }
+                            }
+                        }
+                        // clear shared data
+                        nts.uk.ui.windows.setShared("J_DATA", undefined);
+                        nts.uk.ui.windows.setShared("J_RETURN", undefined);
+                    });
+            }
+        }
+
         openKDialog() {
-            var self = this;
-            //var singleSelectedCode = self.singleSelectedCode().split(';');
-            //nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { title: '譏守ｴｰ譖ｸ縺ｮ邏舌★縺托ｼ槫ｱ･豁ｴ邱ｨ髮�' }).onClosed(function(): any {
-                //self.start(self.singleSelectedCode());
-            });
+            let self = this, model = self.model();
+
+            let currentItem = model.currentItemList();
+            if (currentItem) {
+                // set shared data for k screen
+                nts.uk.ui.windows.setShared("K_DATA", { displayMode: 1, startYm: currentItem.startYm, endYm: currentItem.endYm });
+                nts.uk.ui.windows.sub.modal('/view/qmm/020/k/index.xhtml', { width: 485, height: 550, title: '履歴の編集', dialogClass: "no-close" })
+                    .onClosed(() => {
+                        let value: any = nts.uk.ui.windows.getShared("K_RETURN");
+                        if (value) {
+                            // search index of current item
+                            let index = _.findIndex(model.ListItems(), function(m) { return m.historyId == model.ListItemSelected(); });
+                            if (value.selectedMode == 1) {
+                                // call service delete item at here
+                                let models = model.ListItems.splice(index, 1);
+                                if (models.length == 1) {
+                                    let $m = models[0], data = [
+                                        {
+                                            historyId: $m.historyId,
+                                            startYm: $m.startYm,
+                                            endYm: $m.endYm,
+                                            employees: model.GridItems().map((m) => {
+                                                return {
+                                                    historyId: m.historyId,
+                                                    employmentCode: m.employmentCode,
+                                                    bonusDetailCode: m.bonusDetailCode,
+                                                    paymentDetailCode: m.paymentDetailCode
+                                                };
+                                            })
+                                        }
+                                    ];
+                                    service.deleteData(data).done(function() {
+                                        //call start function
+                                        self.start();
+                                    }).fail((msg) => { alert(msg); });
+                                }
+                            } else {
+                                // modify
+                                let startDate = nts.uk.time.parseYearMonth(value.startYm);
+                                if (startDate.success) {
+                                    let current: ListModel = model.ListItems()[index], neighbor = model.ListItems()[index + 1];
+                                    current.startYm = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 1, 1)).format("YYYYMM"));
+                                    current.update();
+
+                                    if (!!neighbor) {
+                                        neighbor.endYm = parseInt(moment.utc(Date.UTC(startDate.year, startDate.month - 2, 1)).format("YYYYMM"));
+                                        neighbor.update();
+                                    }
+
+                                    // update view data
+                                    model.ListItems.push(model.ListItems.pop());
+                                } else {
+                                    alert(startDate.msg);
+                                }
+                            }
+                        }
+                    });
+            }
         }
 
-        openMDialog() {
-            var self = this;
-            var valueShareMDialog = self.currentItem().startYm;
-            //debugger;
-            nts.uk.ui.windows.setShared('valMDialog', valueShareMDialog);
-            nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { title: '隴丞ｮ茨ｽｴ�ｽｰ隴厄ｽｸ邵ｺ�ｽｮ鬩包ｽｸ隰夲ｿｽ' }).onClosed(function(): any {
-                //get selected code from M dialog
-                var stmtCodeSelected = nts.uk.ui.windows.getShared('stmtCodeSelected');
-                ko.mapping.toJS(self.currentItem().paymentDetailCode(stmtCodeSelected));
-                //get Name payment Name
-                service.getAllotLayoutName(self.currentItem().payCode()).done(function(stmtName: string) {
-                    self.currentItem().payName(stmtName);
-                }).fail(function(res) {
-                    alert(res);
-                });
+        // get paymentDetailName
+        openMDialogPay() {
+            let self = this, model = self.model(), currentItemList = model.currentItemList(), currentItemGrid = model.currentItemGrid();
+            if (!!currentItemList) {
+                nts.uk.ui.windows.setShared('M_BASEYM', { baseYm: currentItemList.startYm, baseCode: currentItemGrid.paymentDetailCode });
 
-            });
+                nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
+                    .onClosed(function() {
+                        let currentItemGrid = model.currentItemGrid();
+                        if (currentItemGrid) {
+                            let stmtCode = nts.uk.ui.windows.getShared('M_RETURN');
+                            currentItemGrid.paymentDetailCode = stmtCode;
+                            if (stmtCode != undefined) {
+                                service.getAllotLayoutName(stmtCode).done((stmtName: string) => {
+                                    currentItemGrid.paymentDetailName = stmtName;
+                                    //update date to igGrid
+                                    model.updateData();
+                                }).fail(function(res) {
+                                    alert(res);
+                                });
+                            }
+                        }
+                    });
+            }
         }
 
+        //get bonusDetailName
+        openMDialogBo() {
+            let self = this, model = self.model(), currentItemList = model.currentItemList(), currentItemGrid = model.currentItemGrid();
+            if (!!currentItemList) {
+                nts.uk.ui.windows.setShared('M_BASEYM', { baseYm: currentItemList.startYm, baseCode: currentItemGrid.bonusDetailCode });
+
+                nts.uk.ui.windows.sub.modal('/view/qmm/020/m/index.xhtml', { width: 485, height: 550, title: '明細書の選択', dialogClass: "no-close" })
+                    .onClosed(function() {
+                        let currentItemGrid = model.currentItemGrid();
+                        if (currentItemGrid) {
+                            let stmtCode = nts.uk.ui.windows.getShared('M_RETURN');
+                            currentItemGrid.bonusDetailCode = stmtCode;
+                            if (stmtCode != undefined) {
+                                service.getAllotLayoutName(stmtCode).done((stmtName: string) => {
+                                    currentItemGrid.bonusDetailName = stmtName;
+
+                                    //update date to igGrid
+                                    model.updateData();
+                                }).fail((msg) => { alert(msg); });
+                            }
+                        }
+                    });
+            }
+        }
+
+        saveData() {
+            let self = this, model = self.model(),
+                item: IListModel = model.currentItemList(),
+                data: Array<any> = [{
+                    historyId: item.historyId,
+                    startYm: item.startYm,
+                    endYm: item.endYm,
+                    employees: model.GridItems().map((m) => {
+                        return {
+                            historyId: m.historyId,
+                            employmentCode: m.employmentCode,
+                            bonusDetailCode: m.bonusDetailCode,
+                            paymentDetailCode: m.paymentDetailCode
+                        };
+                    })
+                }];
+
+            service.saveData(data).done((resp) => {
+                
+            });
+        }
     }
-
 
     interface IModel {
-        companyCode?: string;
-        historyId: string;
-
-        employmentCode?: string;
-        employmentName?: string;
-        paymentDetailCode?: string;
-        paymentDetailName?: string;
-        bonusDetailCode?: string;
-        bonusDetailName?: string;
-        startYm?: string;
-        endYm?: string;
-        startEnd?: string;
+        ListItems: Array<IListModel>;
+        GridItems: Array<IGridModel>;
     }
 
-    class TotalModel {
-        id: string;
-        companyCode: KnockoutObservable<string>;
-        historyId: KnockoutObservable<string>;
+    // main model
+    class Model {
+        ListItems: KnockoutObservableArray<ListModel> = ko.observableArray([]);
+        ListItemSelected: KnockoutObservable<string> = ko.observable(undefined);
+        GridItems: KnockoutObservableArray<GridModel> = ko.observableArray([]);
+        GridItemSelected: KnockoutObservable<string> = ko.observable(undefined);
 
-        employmentCode: KnockoutObservable<string>;
-        employmentName: KnockoutObservable<string>;
-        paymentDetailCode: KnockoutObservable<string>;
-        paymentDetailName: KnockoutObservable<string>;
-        bonusDetailCode: KnockoutObservable<string>;
-        bonusDetailName: KnockoutObservable<string>;
-        startYm: KnockoutObservable<string>;
-        endYm: KnockoutObservable<string>;
-        startEnd: string;
         constructor(param: IModel) {
-            this.companyCode = ko.observable(param.companyCode);
-            this.id = param.historyId;
-            this.historyId = ko.observable(param.historyId);
-            this.startEnd = param.startEnd;
-            this.employmentCode = ko.observable(param.employmentCode);
-            this.employmentName = ko.observable(param.employmentName);
-            this.paymentDetailCode = ko.observable(param.paymentDetailCode);
-            this.paymentDetailName = ko.observable(param.paymentDetailName);
-            this.bonusDetailCode = ko.observable(param.bonusDetailCode);
-            this.bonusDetailName = ko.observable(param.bonusDetailName);
-            this.startYm = ko.observable(param.startYm);
-            this.endYm = ko.observable(param.endYm);
+            let self = this;
+            self.ListItems(param.ListItems.map((m) => { return new ListModel(m); }));
+            self.GridItems(param.GridItems.map((m) => { return new GridModel(m); }));
+
+            self.ListItemSelected.subscribe((v) => {
+                if (v && v.indexOf('NEW') == -1) {
+                    service.getEmployeeDetail(v).done(function(data: Array<any>) {
+                        self.GridItems().map((t) => {
+                            let item = _.find(data, function(m) {
+                                return t.employmentCode == m.employeeCode;
+                            });
+
+                            if (item) {
+                                t.bonusDetailCode = item.bonusDetailCode;
+                                service.getAllotLayoutName(t.bonusDetailCode).done((resp: string) => {
+                                    t.bonusDetailName = resp;
+                                    self.updateData();
+                                });
+
+                                t.paymentDetailCode = item.paymentDetailCode;
+                                service.getAllotLayoutName(t.paymentDetailCode).done((resp: string) => {
+                                    t.paymentDetailName = resp;
+                                    self.updateData();
+                                });
+                            }
+                            else {
+                                t.bonusDetailCode = '';
+                                t.bonusDetailName = '';
+                                t.paymentDetailCode = '';
+                                t.paymentDetailName = '';
+                            }
+                        });
+                        //update date to igGrid
+                        self.updateData();
+                        if (self.GridItems()[0]) {
+                            self.GridItemSelected(self.GridItems()[0].employmentCode);
+                        }
+                    });
+                }
+            });
+        }
+
+        updateData() {
+            let self = this;
+            //update date to igGrid
+            $("#C_LST_001").igGrid("option", "dataSource", ko.toJS(self.GridItems()));
+        };
+
+        currentItemList(): IListModel {
+            let self = this;
+            return _.find(self.ListItems(), function(t: IListModel) { return t.historyId == self.ListItemSelected(); });
+        }
+
+        deleteOrUpdate(): boolean {
+            let self = this, item = self.currentItemList();
+            return item && item.isMaxEndYm;
+        }
+
+        currentItemGrid(): IGridModel {
+            let self = this;
+            return _.find(self.GridItems(), function(t: IGridModel) { return t.employmentCode == self.GridItemSelected(); });
         }
     }
 
+    interface IListModel {
+        historyId: string;
+        endYm: number;
+        startYm: number;
+        isMaxEndYm: boolean;
+    }
+
+    // list view model
+    class ListModel {
+        historyId: string;
+        endYm: number;
+        startYm: number;
+        text: string;
+        isMaxEndYm: boolean = false;
+
+        constructor(param: IListModel) {
+            this.historyId = param.historyId;
+            this.endYm = param.endYm;
+            this.startYm = param.startYm;
+            this.isMaxEndYm = param.isMaxEndYm || false;
+            this.update();
+        }
+
+        update() {
+            this.text = nts.uk.time.formatYearMonth(this.startYm) + " ~ " + nts.uk.time.formatYearMonth(this.endYm);
+        }
+    }
+
+    interface IGridModel {
+        historyId: string;
+        employmentCode: string;
+        employmentName: string;
+        bonusDetailCode?: string;
+        bonusDetailName?: string;
+        paymentDetailCode?: string;
+        paymentDetailName?: string;
+    }
+
+    // grid view model
+    class GridModel {
+        historyId: string;
+        employmentCode: string;
+        employmentName: string;
+        bonusDetailCode: string;
+        bonusDetailName: string;
+        paymentDetailCode: string;
+        paymentDetailName: string;
+        constructor(param: IGridModel) {
+            this.historyId = param.historyId;
+            this.employmentCode = param.employmentCode;
+            this.employmentName = param.employmentName;
+            this.bonusDetailCode = param.bonusDetailCode;
+            this.bonusDetailName = param.bonusDetailName;
+            this.paymentDetailCode = param.paymentDetailCode;
+            this.paymentDetailName = param.paymentDetailName;
+        }
+    }
 }
 
