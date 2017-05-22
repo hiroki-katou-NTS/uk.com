@@ -15,12 +15,23 @@ module qpp021.b.viewmodel {
         selectPrintTypeListCode: KnockoutObservable<number>;
 
         selectLineItemLayout: KnockoutObservableArray<LineItemLayoutModel>;
-        selectLineItemCodes: KnockoutObservableArray<number>;
-
+        selectLineItemCode: KnockoutObservable<number>;
 
         constructor() {
             let self = this;
-            self.selectPrinterCategory = ko.observable(1);
+            self._init();
+
+            self.selectPrintTypeCode.subscribe(function(newValue) {
+                if (!newValue) {
+                    return;
+                }
+                // waiting kiban...............
+            });
+        }
+
+        _init() {
+            let self = this;
+            self.selectPrinterCategory = ko.observable(0);
             self.stepList = [
                 { content: '.A_LBL_002-step' },
                 { content: '.A_LBL_003-step' },
@@ -38,21 +49,18 @@ module qpp021.b.viewmodel {
             self.selectedCbCode = ko.observable('02');
 
             self.selectPrintTypes = ko.observableArray([
-                new RadioBoxModel(1, '印刷タイプから選択する'),
-                new RadioBoxModel(2, '明細レイアウトから選択する'),
+                new RadioBoxModel(0, '印刷タイプから選択する'),
+                new RadioBoxModel(1, '明細レイアウトから選択する'),
             ]);
-            self.selectPrintTypeCode = ko.observable(1);
+            self.selectPrintTypeCode = ko.observable(0);
 
             self.selectPrintTypesList = ko.observableArray([
-                new PrintTypeModel(0, 'レーザー　A4　縦向き　1人'),
-                new PrintTypeModel(1, 'レーザー　A4　縦向き　2人'),
-                new PrintTypeModel(2, 'レーザー　A4　縦向き　3人'),
-                new PrintTypeModel(3, 'レーザー　A4　横向き　2人'),
-                new PrintTypeModel(4, 'レーザー(圧着式)　縦向き　1人'),
-                new PrintTypeModel(5, 'レーザー(圧着式)　横向き　1人'),
-                new PrintTypeModel(6, 'ドットプリンタ　連続用紙　1人'),
-                new PrintTypeModel(7, 'PAYS単票'),
-                new PrintTypeModel(8, 'PAYS連続')
+                new PrintTypeModel(0, 'A4縦1人印刷'),
+                new PrintTypeModel(1, 'A4縦2人印刷'),
+                new PrintTypeModel(2, 'A4縦3人印刷'),
+                new PrintTypeModel(3, 'A4横2人印刷'),
+                new PrintTypeModel(4, '圧着式（Z折り）'),
+                new PrintTypeModel(5, '圧着式（はがき）')
             ]);
             self.selectPrintTypeListCode = ko.observable(0);
 
@@ -67,10 +75,7 @@ module qpp021.b.viewmodel {
                 new LineItemLayoutModel('08', 'Screen H', 7, "PAYS単票"),
                 new LineItemLayoutModel('09', 'Screen D', 8, "PAYS連続"),
             ]);
-            self.selectLineItemCodes = ko.observableArray([]);
-
-
-
+            self.selectLineItemCode = ko.observable(0);
         }
 
         startPage(): JQueryPromise<any> {
@@ -90,26 +95,35 @@ module qpp021.b.viewmodel {
 
         openDialogScreenD() {
             let self = this;
-            let printType: number;
-            let visibleEnable: number;//1 ->  enable and visible = true, 2 -> enable = false and visible = true , 3 -> visible = false
+            let printType: number = 0;
+            let visibleEnable: number;//1 ->   visible = true and enable = true, 2 -> visible = true and enable = false  , 3 -> visible = false
             let isVisible: boolean;
-            if (self.selectPrintTypeCode() == 1) {
-                printType = 1;
-                if (self.selectPrintTypeListCode() == 4 || self.selectPrintTypeListCode() == 5) {
+            if (self.selectPrintTypeCode() == 0) {
+                if (self.selectPrintTypeListCode() == 3 || self.selectPrintTypeListCode() == 5) {
+                    printType = 0;
                     isVisible = true;
                     visibleEnable = 3;
                 } else {
+                    printType = 1;
                     isVisible = false;
                     visibleEnable = 2;
-                    if (self.selectPrinterCategory() == 1) {
+                    if (self.selectPrinterCategory() == 0) {
                         visibleEnable = 1;
                     }
                 }
             } else {
-                printType = 2;
-                isVisible = false;
-                visibleEnable = 1;
-
+                if (self.selectLineItemCode() == 3 || self.selectLineItemCode() == 5) {
+                    printType = 0;
+                    isVisible = true;
+                    visibleEnable = 3;
+                } else {
+                    printType = 1;
+                    isVisible = false;
+                    visibleEnable = 2;
+                    if (self.selectPrinterCategory() == 0) {
+                        visibleEnable = 1;
+                    }
+                }
             }
             nts.uk.ui.windows.setShared('QPP021_print_type', printType, true);
             nts.uk.ui.windows.setShared('QPP021_visible_Enable', visibleEnable, true);
@@ -137,18 +151,18 @@ module qpp021.b.viewmodel {
 
         openDialogRefundPadding(): void {
             nts.uk.ui.windows.sub.modal('/view/qpp/021/e/index.xhtml', { title: '余白設定', dialogClass: 'no-close' });
-//            var printTypeRandom = Math.floor((Math.random() * 3) + 1);
-//            if (printTypeRandom == 1) {
-//                nts.uk.ui.windows.sub.modal('/view/qpp/021/e/index.xhtml', { title: '余白設定', dialogClass: 'no-close' });
-//            }
-//
-//            if (printTypeRandom == 2) {
-//                nts.uk.ui.windows.sub.modal('/view/qpp/021/f/index.xhtml', { title: '余白設定2', dialogClass: 'no-close' });
-//            }
-//
-//            if (printTypeRandom == 3) {
-//                nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
-//            }
+            //            var printTypeRandom = Math.floor((Math.random() * 3) + 1);
+            //            if (printTypeRandom == 1) {
+            //                nts.uk.ui.windows.sub.modal('/view/qpp/021/e/index.xhtml', { title: '余白設定', dialogClass: 'no-close' });
+            //            }
+            //
+            //            if (printTypeRandom == 2) {
+            //                nts.uk.ui.windows.sub.modal('/view/qpp/021/f/index.xhtml', { title: '余白設定2', dialogClass: 'no-close' });
+            //            }
+            //
+            //            if (printTypeRandom == 3) {
+            //                nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
+            //            }
         }
     }
 

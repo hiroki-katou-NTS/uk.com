@@ -6,11 +6,15 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ShowDepartment {
 	/**
-	 * 1.表示する
+	 * 0.部門コードを出力する
 	 */
-	DISPLAY(1),
+	DISPLAY_CODE(0),
 	/**
-	 * 2.表示しない
+	 * 1.部門名称を出力する
+	 */
+	DISPLAY_NAME(1),
+	/**
+	 * 2.出力しない
 	 */
 	NOT_DISPLAY(2);
 

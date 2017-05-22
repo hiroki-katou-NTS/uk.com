@@ -6,13 +6,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum UsingZeroSettingCatalog {
 	/**
-	 * 1.項目名の登録の設定を優先する
+	 * 0.項目名の登録の設定を優先する
 	 */
-	SET_ITEM_NAME(1),
+	SET_ITEM_NAME(0),
 	/**
-	 * 2.個別に設定する
+	 * 1.個別に設定する
 	 */
-	SET_INDIVIDUALLY(2);
+	SET_INDIVIDUALLY(1);
 
 	public final int value;
 }

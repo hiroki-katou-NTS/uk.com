@@ -6,13 +6,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum PrintType {
 	/**
-	 * 1.はがき
+	 * 0.はがき
 	 */
-	POSTCARD(1),
+	POSTCARD(0),
 	/**
-	 * 2.はがき以外
+	 * 1.はがき以外
 	 */
-	NOT_POSTCARD(2);
+	NOT_POSTCARD(1);
 
 	public final int value;
 }

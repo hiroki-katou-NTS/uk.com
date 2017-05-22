@@ -145,9 +145,8 @@
 							</span>
 						</div>
 
-						<div class="valign-center control-group">
-							<div class="right-contents-area-label"
-								data-bind="ntsFormLabel: {}">会社名出力</div>
+						<div class="valign-center control-group" data-bind = "visible: $parent.isVisibleShowCompName">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">会社名出力</div>
 							<span
 								data-bind="ntsSwitchButton: {
 								options: $parent.switchItemList,
@@ -310,7 +309,7 @@
 				<div id="div-button-bottom">
 					<hr />
 					<button class="x-large proceed" data-bind = "click: registration">登録</button>
-					<button class="small">キャンセル</button>
+					<button class="small" data-bind = "click: closeDialogD">キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

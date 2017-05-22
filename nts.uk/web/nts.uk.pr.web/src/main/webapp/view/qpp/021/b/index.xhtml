@@ -66,7 +66,7 @@
 								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">プリンタの選択</div>
 								<span class="ntsControl"> <label class="ntsRadioBox">
 										<input type="radio" name="textRadioPrintType"
-										data-bind="checkedValue: 1, checked: selectPrinterCategory, enable: true" /> <span
+										data-bind="checkedValue: 0, checked: selectPrinterCategory, enable: true" /> <span
 										class="box"></span><span class="label"
 										data-bind="text: 'レーザープリンタ用帳表（圧着式用も含みます）'"></span>
 								</label>
@@ -75,18 +75,18 @@
 									<span class="ntsControl" id="radio-ntsControl"> <label
 										class="ntsRadioBox"> <input type="radio"
 											name="textRadioPrintType"
-											data-bind="checkedValue: 2, checked: selectPrinterCategory, enable: true" />
+											data-bind="checkedValue: 1, checked: selectPrinterCategory, enable: false" />
 											<span class="box"></span><span class="label"
 											data-bind="text: 'ドットプリンタ用帳表'"></span>
 									</label>
 									</span> <span class="swich-button-select-radio"
 										data-bind="ntsSwitchButton: {
-									options: [ { code: '1', name: '四捨五入' },
-            						{ code: '2', name: '切り上げ' },],
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: '1',
-									enable: true }"
+											options: [ { code: '1', name: '四捨五入' },
+		            						{ code: '2', name: '切り上げ' },],
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: '1',
+											enable: false }"
 										style="display: inline-block;"></span>
 								</div>
 							</div>
@@ -118,8 +118,7 @@
 											deleteOptions : {visible : false, deleteField: 'deletable'},
 											multiple: false,
 											value: selectPrintTypeListCode,
-											} "
-											class="cf">
+											} ">
 										</table>
 									</td>
 									<td class="B_LST_002">
@@ -135,10 +134,9 @@
                     							{ headerText: '', key: 'layoutAttributeName', width: 140 },
 											],
 											deleteOptions : {visible : false, deleteField: 'deletable'},
-											multiple: true,
-											value: selectLineItemCodes
-											} "
-											class="cf">
+											multiple: false,
+											value: selectLineItemCode,
+											}">
 										</table>
 									</td>
 									<td style="vertical-align: top;">

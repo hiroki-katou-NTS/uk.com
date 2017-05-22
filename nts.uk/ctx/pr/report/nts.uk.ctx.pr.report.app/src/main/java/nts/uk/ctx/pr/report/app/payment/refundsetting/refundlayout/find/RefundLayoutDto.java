@@ -2,13 +2,9 @@ package nts.uk.ctx.pr.report.app.payment.refundsetting.refundlayout.find;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundlayout.RefundLayout;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class RefundLayoutDto {
 

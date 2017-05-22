@@ -1,8 +1,8 @@
 package nts.uk.ctx.pr.report.app.payment.refundsetting.refundlayout.command;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class InsertUpdateRefundLayoutCommand {
 	
 	private int printType;

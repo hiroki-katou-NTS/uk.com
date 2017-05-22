@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.dom.payment.refundsetting.refundlayout;
+	package nts.uk.ctx.pr.report.dom.payment.refundsetting.refundlayout;
 
 import lombok.AllArgsConstructor;
 
@@ -6,13 +6,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum PaymentCellNameCatalog {
 	/**
-	 * 1.個人情報より取得する
+	 * 0.個人情報より取得する
 	 */
-	FROM_PERSONAL(1),
+	FROM_PERSONAL(0),
 	/**
-	 * 2.項目名より取得する
+	 * 1.項目名より取得する
 	 */
-	FROM_ITEM(2);
+	FROM_ITEM(1);
 
 	public final int value;
 }

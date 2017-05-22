@@ -1,6 +1,6 @@
 module qpp021.d.viewmodel {
     export class ScreenModel {
-
+        isVisibleShowCompName: KnockoutObservable<boolean>;
         isEnableShadedBorder: KnockoutObservable<boolean>;
         isVisibleShadedBorder: KnockoutObservable<boolean>;
         isvisibleItem: KnockoutObservable<boolean>;
@@ -8,11 +8,10 @@ module qpp021.d.viewmodel {
         isEnableShowZeroInAttend: KnockoutObservable<boolean>;
         isEnableShowMnyItemName: KnockoutObservable<boolean>;
         isEnableShowAttendItemName: KnockoutObservable<boolean>;
-        
+
         usingZeroSettingCtg: KnockoutObservable<number>;
         showZeroInMny: KnockoutObservable<number>;
         showZeroInAttend: KnockoutObservable<number>;
-        
         refundLayoutItem: KnockoutObservable<RefundLayoutModel>;
 
         zeroItemSetting: KnockoutObservableArray<ItemModel>;
@@ -21,65 +20,76 @@ module qpp021.d.viewmodel {
         outputNameDesignation: KnockoutObservableArray<ItemModel>;
         outputDepartment: KnockoutObservableArray<ItemModel>;
         borderLineWidth: KnockoutObservableArray<ItemModel>;
+        printType: number;
         constructor() {
             let self = this;
             self._init();
-            self.isEnableShadedBorder = ko.observable(false);
-            self.isVisibleShadedBorder = ko.observable(false);
+            self.printType = nts.uk.ui.windows.getShared('QPP021_print_type');
+            self.isVisibleShowCompName = ko.observable(true);
+            self.isEnableShadedBorder = ko.observable(true);
+            self.isVisibleShadedBorder = ko.observable(true);
             self.isvisibleItem = ko.observable(false);
             self.isEnableShowZeroInMny = ko.observable(false);
             self.isEnableShowZeroInAttend = ko.observable(false);
             self.isEnableShowMnyItemName = ko.observable(false);
             self.isEnableShowAttendItemName = ko.observable(false);
-            
-            self.usingZeroSettingCtg = ko.observable(1);
-            self.showZeroInMny = ko.observable(1);
-            self.showZeroInAttend = ko.observable(1);
-            
-            self.refundLayoutItem = ko.observable(new RefundLayoutModel(null));          
+
+            self.usingZeroSettingCtg = ko.observable(0);
+            self.showZeroInMny = ko.observable(0);
+            self.showZeroInAttend = ko.observable(0);
+
+            self.refundLayoutItem = ko.observable(new RefundLayoutModel(null, self.printType));
             self.usingZeroSettingCtg.subscribe(function(changeValue) {
                 self.refundLayoutItem().usingZeroSettingCtg(changeValue);
-                if (changeValue == 2) {
-                     self.isEnableShowZeroInMny(true);
-                     self.isEnableShowZeroInAttend(true);
+                if (changeValue == 1) {
+                    self.isEnableShowZeroInMny(true);
+                    self.isEnableShowZeroInAttend(true);
+                    self.isEnableShowMnyItemName(false);
+                    self.isEnableShowAttendItemName(false);
+                    if (self.refundLayoutItem().showZeroInMny() == 1) {
+                        self.isEnableShowMnyItemName(true);
+                    }
+                    if (self.refundLayoutItem().showZeroInAttend() == 1) {
+                        self.isEnableShowAttendItemName(true);
+                    }
                 } else {
-                     self.isEnableShowZeroInMny(false);
-                     self.isEnableShowZeroInAttend(false);
-                     self.isEnableShowMnyItemName(false);
-                     self.isEnableShowAttendItemName(false);
-                }
-            });
-            
-            self.showZeroInMny.subscribe(function(changeValue) {
-                self.refundLayoutItem().showZeroInMny(changeValue);
-                if (changeValue && changeValue == 2) {
-                     self.isEnableShowMnyItemName(true);
-                } else {
-                     self.isEnableShowMnyItemName(false);
-                }
-            });
-            
-            self.showZeroInAttend.subscribe(function(changeValue) {
-                self.refundLayoutItem().showZeroInAttend(changeValue);
-                if (changeValue && changeValue == 2) {
-                     self.isEnableShowAttendItemName(true);
-                } else {
-                     self.isEnableShowAttendItemName(false);
+                    self.isEnableShowZeroInMny(false);
+                    self.isEnableShowZeroInAttend(false);
+                    self.isEnableShowMnyItemName(false);
+                    self.isEnableShowAttendItemName(false);
                 }
             });
 
+            self.showZeroInMny.subscribe(function(changeValue) {
+                self.refundLayoutItem().showZeroInMny(changeValue);
+                if (changeValue && changeValue == 1 && self.usingZeroSettingCtg() == 1) {
+                    self.isEnableShowMnyItemName(true);
+                } else {
+                    self.isEnableShowMnyItemName(false);
+                }
+            });
+
+            self.showZeroInAttend.subscribe(function(changeValue) {
+                self.refundLayoutItem().showZeroInAttend(changeValue);
+                if (changeValue && changeValue == 1 && self.usingZeroSettingCtg() == 1) {
+                    self.isEnableShowAttendItemName(true);
+                } else {
+                    self.isEnableShowAttendItemName(false);
+                }
+            });
+            self.getShared();
         }
 
         _init(): void {
             let self = this;
             self.zeroItemSetting = ko.observableArray([
-                new ItemModel(1, "項目名の登録の設定を優先する"),
-                new ItemModel(2, "個別にッ設定する")
+                new ItemModel(0, "項目名の登録の設定を優先する"),
+                new ItemModel(1, "個別にッ設定する")
             ]);
 
             self.switchItemList = ko.observableArray([
-                new ItemModel(1, "する"),
-                new ItemModel(2, "しない")
+                new ItemModel(0, "する"),
+                new ItemModel(1, "しない")
             ]);
 
             self.selectPrintYearMonth = ko.observableArray([
@@ -91,57 +101,65 @@ module qpp021.d.viewmodel {
             ]);
 
             self.outputNameDesignation = ko.observableArray([
-                new ItemModel(1, "個人情報より取得する"),
-                new ItemModel(2, "項目名より取得する"),
+                new ItemModel(0, "個人情報より取得する"),
+                new ItemModel(1, "項目名より取得する"),
             ]);
 
             self.outputDepartment = ko.observableArray([
-                new ItemModel(1, "部門コードを出力する"),
-                new ItemModel(2, "部門名を出力する"),
-                new ItemModel(3, "出力しない"),
+                new ItemModel(0, "部門コードを出力する"),
+                new ItemModel(1, "部門名を出力する"),
+                new ItemModel(2, "出力しない"),
             ]);
 
             self.borderLineWidth = ko.observableArray([
-                new ItemModel(1, "太い"),
-                new ItemModel(2, "標準"),
-                new ItemModel(3, "細い    "),
+                new ItemModel(0, "太い"),
+                new ItemModel(1, "標準"),
+                new ItemModel(2, "細い    "),
             ]);
+        }
+
+        getShared() {
+            let self = this;
+            let visibleEnable = nts.uk.ui.windows.getShared('QPP021_visible_Enable');
+            let isVisible = nts.uk.ui.windows.getShared('QPP021_visible');
+            self.isvisibleItem(isVisible);
+            self.isVisibleShowCompName(!isVisible);
+            if (visibleEnable == 1) {
+                self.isEnableShadedBorder(true);
+                self.isVisibleShadedBorder(true);
+            } else if (visibleEnable == 2) {
+                self.isEnableShadedBorder(false);
+                self.isVisibleShadedBorder(true);
+            } else {
+                self.isVisibleShadedBorder(false);
+            }
         }
 
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            let printTyle = nts.uk.ui.windows.getShared('QPP021_print_type');
-            let visibleEnable = nts.uk.ui.windows.getShared('QPP021_visible_Enable');
-            let isVisible = nts.uk.ui.windows.getShared('QPP021_visible');
-            self.isvisibleItem(true);
-            if (visibleEnable == 1) {
-                self.isEnableShadedBorder(true);
-                self.isVisibleShadedBorder(true);
-            } else if (visibleEnable == 2) {
-                alert(self.isEnableShadedBorder());
-                self.isEnableShadedBorder(false);
-                self.isVisibleShadedBorder(true);
-            }
-            service.getRefundLayout(1).done(function(data: any) {
-                self.refundLayoutItem(new RefundLayoutModel(data));
+            service.getRefundLayout(self.printType).done(function(data: any) {
+                self.refundLayoutItem(new RefundLayoutModel(data, self.printType));
+                self.refundLayoutItem().printType(self.printType);
+                self.usingZeroSettingCtg(self.refundLayoutItem().usingZeroSettingCtg());
+                self.showZeroInMny(self.refundLayoutItem().showZeroInMny());
+                self.showZeroInAttend(self.refundLayoutItem().showZeroInAttend());
                 dfd.resolve();
             }).fail(function(error: any) {
             });
-            self.usingZeroSettingCtg(self.refundLayoutItem().usingZeroSettingCtg());
-            self.showZeroInMny(self.refundLayoutItem().showZeroInMny());
-            self.showZeroInAttend(self.refundLayoutItem().showZeroInAttend());
             return dfd.promise();
         }
 
         registration() {
             let self = this;
             service.insertUpdateData(new RegisRefundLayoutModel(self.refundLayoutItem())).done(function() {
-                alert("registration complete");
                 nts.uk.ui.windows.close();
             }).fail(function(error: any) {
-                alert("registration error");
             });
+        }
+
+        closeDialogD() {
+            nts.uk.ui.windows.close();
         }
     }
 
@@ -177,13 +195,13 @@ module qpp021.d.viewmodel {
         showZeroInMny: KnockoutObservable<number>;
         showProductsPayMny: KnockoutObservable<number>;
         showAttendItemName: KnockoutObservable<boolean>;
-
-        constructor(refundMapping: any) {
+        constructor(refundMapping: any, printType: number) {
             let self = this;
             if (refundMapping) {
                 self.printType = ko.observable(refundMapping.printType);
                 self.usingZeroSettingCtg = ko.observable(refundMapping.usingZeroSettingCtg);
                 self.printYearMonth = ko.observable(refundMapping.printYearMonth);
+                console.log(refundMapping.printYearMonth);
                 self.paymentCellNameCtg = ko.observable(refundMapping.paymentCellNameCtg);
                 self.isShaded = ko.observable(refundMapping.isShaded);
                 self.bordWidth = ko.observable(refundMapping.bordWidth);
@@ -204,27 +222,27 @@ module qpp021.d.viewmodel {
                 self.showProductsPayMny = ko.observable(refundMapping.showProductsPayMny);
                 self.showAttendItemName = ko.observable(refundMapping.showAttendItemName === 1 ? true : false);
             } else {
-                self.printType = ko.observable(1);
-                self.usingZeroSettingCtg = ko.observable(1);
+                self.printType = ko.observable(printType);
+                self.usingZeroSettingCtg = ko.observable(0);
                 self.printYearMonth = ko.observable(3);
-                self.paymentCellNameCtg = ko.observable(1);
-                self.isShaded = ko.observable(1);
+                self.paymentCellNameCtg = ko.observable(0);
+                self.isShaded = ko.observable(0);
                 self.bordWidth = ko.observable(1);
-                self.showCompName = ko.observable(1);
-                self.showCompAddInSurface = ko.observable(1);
-                self.showCompNameInSurface = ko.observable(1);
-                self.showDependencePerNum = ko.observable(1);
-                self.showInsuranceLevel = ko.observable(1);
+                self.showCompName = ko.observable(0);
+                self.showCompAddInSurface = ko.observable(0);
+                self.showCompNameInSurface = ko.observable(0);
+                self.showDependencePerNum = ko.observable(0);
+                self.showInsuranceLevel = ko.observable(0);
                 self.showMnyItemName = ko.observable(false);
-                self.showPerAddInSurface = ko.observable(1);
-                self.showPerNameInSurface = ko.observable(1);
-                self.showRemainAnnualLeave = ko.observable(1);
-                self.showTotalTaxMny = ko.observable(1);
-                self.showZeroInAttend = ko.observable(1);
-                self.showPerTaxCatalog = ko.observable(1);
+                self.showPerAddInSurface = ko.observable(0);
+                self.showPerNameInSurface = ko.observable(0);
+                self.showRemainAnnualLeave = ko.observable(0);
+                self.showTotalTaxMny = ko.observable(0);
+                self.showZeroInAttend = ko.observable(0);
+                self.showPerTaxCatalog = ko.observable(0);
                 self.showDepartment = ko.observable(1);
-                self.showZeroInMny = ko.observable(1);
-                self.showProductsPayMny = ko.observable(1);
+                self.showZeroInMny = ko.observable(0);
+                self.showProductsPayMny = ko.observable(0);
                 self.showAttendItemName = ko.observable(false);
             }
         }
@@ -252,7 +270,6 @@ module qpp021.d.viewmodel {
         showZeroInMny: number;
         showProductsPayMny: number;
         showAttendItemName: number;
-
         constructor(refundLayout: RefundLayoutModel) {
             let self = this;
             self.printType = refundLayout.printType();
@@ -266,7 +283,7 @@ module qpp021.d.viewmodel {
             self.showCompNameInSurface = refundLayout.showCompNameInSurface();
             self.showDependencePerNum = refundLayout.showDependencePerNum();
             self.showInsuranceLevel = refundLayout.showInsuranceLevel();
-            self.showMnyItemName = refundLayout.showMnyItemName() === true ? 1 : 2;
+            self.showMnyItemName = refundLayout.showMnyItemName() === true ? 1 : 0;
             self.showPerAddInSurface = refundLayout.showPerAddInSurface();
             self.showPerNameInSurface = refundLayout.showPerNameInSurface();
             self.showRemainAnnualLeave = refundLayout.showRemainAnnualLeave();
@@ -276,7 +293,7 @@ module qpp021.d.viewmodel {
             self.showDepartment = refundLayout.showDepartment();
             self.showZeroInMny = refundLayout.showZeroInMny();
             self.showProductsPayMny = refundLayout.showProductsPayMny();
-            self.showAttendItemName = refundLayout.showAttendItemName() === true ? 1 : 2;
+            self.showAttendItemName = refundLayout.showAttendItemName() === true ? 1 : 0;
         }
     }
 }

@@ -2,14 +2,10 @@ package nts.uk.ctx.pr.report.dom.payment.refundsetting.refundlayout;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
-@Setter
 public class ShowRefundLayout {
 
 	private ShowCompanyName showCompName;

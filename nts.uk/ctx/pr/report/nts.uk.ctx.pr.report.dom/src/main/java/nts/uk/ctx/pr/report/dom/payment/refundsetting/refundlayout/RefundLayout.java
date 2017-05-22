@@ -2,13 +2,11 @@ package nts.uk.ctx.pr.report.dom.payment.refundsetting.refundlayout;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 @AllArgsConstructor
 @Getter
-@Setter
 public class RefundLayout extends AggregateRoot {
 
 	private CompanyCode companyCode;
