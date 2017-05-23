@@ -13,8 +13,10 @@ import com.aspose.cells.Style;
 import com.aspose.cells.Worksheet;
 
 import lombok.Getter;
+import lombok.Setter;
+import nts.gul.text.StringUtil;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
-import nts.uk.file.pr.app.export.payment.data.dto.SalaryItemDto;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentSalaryItemDto;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -55,8 +57,8 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/** The page header range. */
 	protected Range pageHeaderRange;
 
-	/** The item width. */
-	private int itemWidth;
+	/** The number of column per item. */
+	private int numberOfColumnPerItem;
 
 	/** The first row. */
 	private int firstRow = FIRST_ROW;
@@ -70,22 +72,72 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/** The max columns per item line. */
 	private int maxColumnsPerItemLine;
 
+	/** The max person per page. */
+	private int maxPersonPerPage;
+
+	/** The person count. */
+	private int personCount;
+
 	/**
-	 * Gets the item width.
+	 * Gets the number of column per item.
 	 *
-	 * @return the item width
+	 * @return the number of column per item
 	 */
-	abstract int getItemWidth();
+	abstract int getNumberOfColumnPerItem();
+
+	/**
+	 * Gets the person per page.
+	 *
+	 * @return the person per page
+	 */
+	abstract int getPersonPerPage();
+
+	/**
+	 * Gets the page header start cell.
+	 *
+	 * @return the page header start cell
+	 */
+	abstract String getPageHeaderStartCell();
+
+	/**
+	 * Gets the page header end cell.
+	 *
+	 * @return the page header end cell
+	 */
+	abstract String getPageHeaderEndCell();
+
+	/**
+	 * Gets the category header cell.
+	 *
+	 * @return the category header cell
+	 */
+	abstract String getCategoryHeaderCell();
+
+	/**
+	 * Gets the item name cell.
+	 *
+	 * @return the item name cell
+	 */
+	abstract String getItemNameCell();
+
+	/**
+	 * Gets the item value cell.
+	 *
+	 * @return the item value cell
+	 */
+	abstract String getItemValueCell();
+
+	/**
+	 * Gets the remark cell.
+	 *
+	 * @return the remark cell
+	 */
+	abstract String getRemarkCell();
 
 	/**
 	 * Prints the page content.
 	 */
 	abstract void printPageContent();
-
-	/**
-	 * Sets the page header range.
-	 */
-	abstract void setPageHeaderRange();
 
 	/**
 	 * Gets the header template.
@@ -95,19 +147,32 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	abstract List<CellValue> getHeaderTemplate();
 
 	/**
-	 * Sets the template style.
-	 */
-	abstract void setTemplateStyle();
-
-	/**
 	 * Inits the.
 	 */
 	protected void init() {
+		// Set template style.
 		this.templateStyle = new TemplateStyle();
-		this.setPageHeaderRange();
-		this.setTemplateStyle();
-		this.itemWidth = this.getItemWidth();
-		this.maxColumnsPerItemLine = ITEMS_PER_ROW * this.itemWidth + HEADER_WIDTH;
+		this.templateStyle.setHeaderStyle(getStyle(getCategoryHeaderCell()));
+		this.templateStyle.setNameStyle(getStyle(getItemNameCell()));
+		this.templateStyle.setValueStyle(getStyle(getItemValueCell()));
+		this.templateStyle.setRemarkStyle(getStyle(getRemarkCell()));
+
+		// Set number of columns to merged.
+		this.numberOfColumnPerItem = this.getNumberOfColumnPerItem();
+
+		// Set page header range.
+		String upperLeftCell = getPageHeaderStartCell();
+		String lowerRightCell = getPageHeaderEndCell();
+		if (StringUtil.isNullOrEmpty(upperLeftCell, true) || StringUtil.isNullOrEmpty(lowerRightCell, true)) {
+			throw new RuntimeException("Page header range is not set.");
+		}
+		this.pageHeaderRange = cells.createRange(upperLeftCell, lowerRightCell);
+
+		// Set max columns per item line.
+		this.maxColumnsPerItemLine = ITEMS_PER_ROW * this.numberOfColumnPerItem + HEADER_WIDTH;
+
+		// Set max number of person on each page.
+		this.maxPersonPerPage = this.getPersonPerPage();
 	}
 
 	/**
@@ -141,7 +206,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 *
 	 * @param listItem the list item
 	 */
-	protected void printCategoryContent(List<SalaryItemDto> listItem) {
+	protected void printCategoryContent(List<PaymentSalaryItemDto> listItem) {
 		listItem.forEach(item -> {
 			// Break line if current column = maxColumnsPerItemLine.
 			if (currentColumn == maxColumnsPerItemLine) {
@@ -149,8 +214,8 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 			}
 
 			// Get item cell.
-			Range nameCell = cells.createRange(currentRow, currentColumn, ITEM_HEIGHT, itemWidth);
-			Range valueCell = cells.createRange(currentRow + 1, currentColumn, ITEM_HEIGHT, itemWidth);
+			Range nameCell = cells.createRange(currentRow, currentColumn, ITEM_HEIGHT, numberOfColumnPerItem);
+			Range valueCell = cells.createRange(currentRow + 1, currentColumn, ITEM_HEIGHT, numberOfColumnPerItem);
 
 			// Merge cell.
 			nameCell.merge();
@@ -170,7 +235,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 			}
 
 			// Next item.
-			currentColumn += itemWidth;
+			currentColumn += numberOfColumnPerItem;
 		});
 	}
 
@@ -199,6 +264,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		}
 		firstRow += pageHeaderRowCount;
 		currentRow += pageHeaderRowCount;
+		personCount++;
 	}
 
 	/**
@@ -283,7 +349,9 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		printPageHeader();
 		printPageContent();
 		breakLines(1);
-		breakPage();
+		if (personCount != 0 && personCount % maxPersonPerPage == 0) {
+			breakPage();
+		}
 	}
 
 	/**
@@ -293,6 +361,9 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * @return the style
 	 */
 	protected Style getStyle(String cellName) {
+		if (StringUtil.isNullOrEmpty(cellName, true)) {
+			return new Style();
+		}
 		return cells.get(cellName).getStyle();
 	}
 
@@ -313,7 +384,8 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 */
 	private void printCellValue(List<CellValue> list) {
 		list.forEach(item -> {
-			cells.get(item.getRow(), item.getCol()).setValue(item.getValue());
+			Cell cell = cells.get(item.getRow(), item.getCol());
+			cell.setValue(item.getValue());
 		});
 
 	}
@@ -321,29 +393,48 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/**
 	 * The Class TemplateStyle.
 	 */
-	protected class TemplateStyle {
+
+	/**
+	 * Sets the value style.
+	 *
+	 * @param valueStyle
+	 *            the new value style
+	 */
+
+	/**
+	 * Sets the value style.
+	 *
+	 * @param valueStyle
+	 *            the new value style
+	 */
+
+	/**
+	 * Sets the value style.
+	 *
+	 * @param valueStyle
+	 *            the new value style
+	 */
+	
+	/**
+	 * Sets the value style.
+	 *
+	 * @param valueStyle the new value style
+	 */
+	@Setter
+	private class TemplateStyle {
 
 		/** The remark style. */
-		protected Style remarkStyle;
+		private Style remarkStyle;
 
 		/** The header style. */
-		protected Style headerStyle;
+		private Style headerStyle;
 
 		/** The name style. */
-		protected Style nameStyle;
+		private Style nameStyle;
 
 		/** The value style. */
-		protected Style valueStyle;
+		private Style valueStyle;
 
-		/**
-		 * Instantiates a new template style.
-		 */
-		public TemplateStyle() {
-			this.remarkStyle = new Style();
-			this.headerStyle = new Style();
-			this.nameStyle = new Style();
-			this.valueStyle = new Style();
-		}
 	}
 
 	/**
@@ -377,6 +468,17 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		public CellValue(int row, int col, Object value) {
 			this.row = row + currentRow;
 			this.col = col;
+		}
+
+		/**
+		 * Instantiates a new cell value.
+		 *
+		 * @param cellName the cell name
+		 * @param value the value
+		 */
+		public CellValue(String cellName, Object value) {
+			this.row = cells.get(cellName).getRow() + currentRow;
+			this.col = cells.get(cellName).getColumn();
 			this.value = value;
 		}
 
