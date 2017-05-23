@@ -25,11 +25,11 @@ import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository;
 import nts.uk.file.pr.app.export.payment.PaymentReportQuery;
 import nts.uk.file.pr.app.export.payment.PaymentReportRepository;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
-import nts.uk.file.pr.app.export.payment.data.dto.CompanyDto;
-import nts.uk.file.pr.app.export.payment.data.dto.DepartmentDto;
-import nts.uk.file.pr.app.export.payment.data.dto.EmployeeDto;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentCompanyDto;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentDepartmentDto;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentEmployeeDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
-import nts.uk.file.pr.app.export.payment.data.dto.SalaryItemDto;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentSalaryItemDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.japanese.JapaneseDate;
@@ -248,7 +248,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	 * @param category the category
 	 * @return the list
 	 */
-	private List<SalaryItemDto> detailHeader(QstdtPaymentHeader header, int category) {
+	private List<PaymentSalaryItemDto> detailHeader(QstdtPaymentHeader header, int category) {
 
 		// detail header data and category
 		List<Object[]> dataDetailHeader = this.queryProxy()
@@ -260,7 +260,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			.setParameter("categoryItem", category).getList();
 
 		// to DTO data
-		List<SalaryItemDto> salaryItems = new ArrayList<>();
+		List<PaymentSalaryItemDto> salaryItems = new ArrayList<>();
 		printLinePosition = 1;
 		columnPosition = 0;
 		dataDetailHeader.forEach(detail -> {
@@ -280,7 +280,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			columnPosition = paymentDetail.columnPosition;
 
 			// add to data
-			SalaryItemDto dto = new SalaryItemDto();
+			PaymentSalaryItemDto dto = new PaymentSalaryItemDto();
 			if (detail[1] instanceof QcamtItem) {
 				item = (QcamtItem) detail[1];
 			}
@@ -306,12 +306,12 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	 * @return the list
 	 */
 
-	private List<SalaryItemDto> defaultDataBeginEnd(int startLine, int endLine, int startColum,
+	private List<PaymentSalaryItemDto> defaultDataBeginEnd(int startLine, int endLine, int startColum,
 		int endColum) {
 		if (startLine == endLine) {
 			return defaultDataColumn(startColum + 1, endColum - 1);
 		}
-		List<SalaryItemDto> salaryItems = new ArrayList<>();
+		List<PaymentSalaryItemDto> salaryItems = new ArrayList<>();
 		salaryItems.addAll(defaultDataColumn(startColum + 1, TOTAL_COLUMN_INLINE));
 		salaryItems.addAll(defaultDataLine(startLine + 1, endLine - 1));
 		salaryItems.addAll(defaultDataColumn(1, endColum - 1));
@@ -325,8 +325,8 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	 * @param endLine the end line
 	 * @return the list
 	 */
-	private List<SalaryItemDto> defaultDataLine(int startLine, int endLine) {
-		List<SalaryItemDto> salaryItems = new ArrayList<>();
+	private List<PaymentSalaryItemDto> defaultDataLine(int startLine, int endLine) {
+		List<PaymentSalaryItemDto> salaryItems = new ArrayList<>();
 		for (int index = startLine; index <= endLine; index++) {
 			salaryItems.addAll(defaultDataColumn(FIRST_COLUMN_INLINE, TOTAL_COLUMN_INLINE));
 		}
@@ -340,10 +340,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	 * @param endColum the end colum
 	 * @return the list
 	 */
-	private List<SalaryItemDto> defaultDataColumn(int startColum, int endColum) {
-		List<SalaryItemDto> salaryItems = new ArrayList<>();
+	private List<PaymentSalaryItemDto> defaultDataColumn(int startColum, int endColum) {
+		List<PaymentSalaryItemDto> salaryItems = new ArrayList<>();
 		for (int index = startColum; index <= endColum; index++) {
-			salaryItems.add(SalaryItemDto.defaultData());
+			salaryItems.add(PaymentSalaryItemDto.defaultData());
 		}
 		return salaryItems;
 	}
@@ -358,14 +358,14 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		PaymentReportDto reportData = new PaymentReportDto();
 
 		// set department
-		DepartmentDto departmentDto = new DepartmentDto();
+		PaymentDepartmentDto departmentDto = new PaymentDepartmentDto();
 		departmentDto.setDepartmentCode(header.departmentCode);
 		departmentDto.setDepartmentName(header.departmentName);
 		departmentDto.setDepartmentOutput("xxxyyyzzz");
 		reportData.setDepartmentInfo(departmentDto);
 
 		// set employee
-		EmployeeDto employeeDto = new EmployeeDto();
+		PaymentEmployeeDto employeeDto = new PaymentEmployeeDto();
 		Optional<CmnmtEmp> employee = this.findEmployeeCode(header.qstdtPaymentHeaderPK.companyCode,
 			header.employeeCode);
 		
@@ -397,7 +397,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 		// set year month
 		
-		CompanyDto companyDto = new CompanyDto();
+		PaymentCompanyDto companyDto = new PaymentCompanyDto();
 		companyDto.setJapaneseYearMonth(this.convertYearMonthJP(header.qstdtPaymentHeaderPK.processingYM));
 		reportData.setCompanyInfo(companyDto);
 
