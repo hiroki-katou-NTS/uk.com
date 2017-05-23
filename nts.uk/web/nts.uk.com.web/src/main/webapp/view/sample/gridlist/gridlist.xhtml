@@ -27,6 +27,7 @@
 						<button data-bind="click: deselectAll">Deselect all</button>
 						<button data-bind="click: addItem">Add</button>
 						<button data-bind="click: removeItem">Remove</button>
+						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<hr />
 						Single selecting mode
 						<table id="single-list" data-bind="ntsGridList: {								
@@ -34,6 +35,7 @@
 								dataSource: items,
 								primaryKey: 'code',
 								columns: columns2,
+								enable: enable,
 								deleteOptions : {visible : true, deleteField: 'deletable'},
 								multiple: false,
 								features: [{name: 'Switch', options: switchOptions, optionsValue: 'code', optionsText: 'name'}],
@@ -48,6 +50,7 @@
 								options: items,
 								optionsValue: 'code',
 								columns: columns,
+								enable: enable,
 								multiple: true,
 								value: currentCodeList
 							}"></table>

@@ -22,6 +22,8 @@ module nts.uk.ui.koExtentions {
             var deleteOptions = ko.unwrap(data.deleteOptions);
             var observableColumns = ko.unwrap(data.columns);
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
+            var enable: boolean = ko.unwrap(data.enable);
+            $grid.data("init", true);
             
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
@@ -90,6 +92,13 @@ module nts.uk.ui.koExtentions {
             }
 
             $grid.ntsGridList('setupSelecting');
+            
+            $grid.bind('iggridselectionrowselectionchanging', (evt: Event, uiX: any) => {
+//                console.log(ui);
+                if($grid.data("enable") === false){ 
+                    return false;        
+                }
+            });
 
             $grid.bind('selectionchanged', () => {
                 if (data.multiple) {
@@ -116,9 +125,23 @@ module nts.uk.ui.koExtentions {
 
             var $grid = $(element);
             var data = valueAccessor();
+            var enable: boolean = ko.unwrap(data.enable);
             var optionsValue: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var currentSource = $grid.igGrid('option', 'dataSource');
             var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+            
+            if($grid.data("enable") !== enable){
+                if(!enable){
+                    $grid.ntsGridList('unsetupSelecting');
+                    $grid.addClass("disabled");     
+                } else {
+                    $grid.ntsGridList('setupSelecting');
+                    $grid.removeClass("disabled");    
+                }    
+            }
+            
+            $grid.data("enable", enable);
+            
             if ($grid.attr("filtered") !== true && $grid.attr("filtered") !== "true") {
                 let currentSources = sources.slice();
                 var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
