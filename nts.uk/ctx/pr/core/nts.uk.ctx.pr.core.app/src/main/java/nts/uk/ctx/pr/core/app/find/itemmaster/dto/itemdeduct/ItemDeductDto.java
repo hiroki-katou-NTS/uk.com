@@ -5,13 +5,14 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.DeductAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeduct;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class ItemDeductDto {
-	private int deductAtr;
+	private DeductAtr deductAtr;
 	private int errRangeLowAtr;
 	private BigDecimal errRangeLow;
 	private int errRangeHighAtr;
@@ -23,7 +24,7 @@ public class ItemDeductDto {
 	private String memo;
 
 	public static ItemDeductDto fromDomain(ItemDeduct domain) {
-		return new ItemDeductDto(domain.getDeductAtr().value, domain.getErrRangeLowAtr().value,
+		return new ItemDeductDto(domain.getDeductAtr(), domain.getErrRangeLowAtr().value,
 				domain.getErrRangeLow().v(), domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(),
 				domain.getAlRangeLowAtr().value, domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value,
 				domain.getAlRangeHigh().v(), domain.getMemo().v());

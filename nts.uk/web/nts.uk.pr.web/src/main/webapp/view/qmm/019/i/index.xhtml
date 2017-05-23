@@ -9,14 +9,11 @@
 
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script
-				src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
-			<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
-
+			<com:scriptfile set="IGNITE" />
 			<link rel="stylesheet" type="text/css" href="style.css" />
-			<script src="start.js" />
-			<script src="viewmodel.js" />
-			<script src="service.js" />
+			<script src="qmm019.i.start.js" />
+			<script src="qmm019.i.vm.js" />
+			<!-- 		<script src="service.js" /> -->
 			<script>var dialogSize = { width: 570, height: 300 };</script>
 		</ui:define>
 
@@ -30,11 +27,11 @@
 					<fieldset>
 						<div class="radiobox"
 							data-bind="ntsRadioBoxGroup: {
-								options: itemList,
+								options: itemList ,
 								optionsValue: 'id',
 								optionsText: 'name',
-								value: selectedCode,
-								enable: enable}"></div>
+								value: selectedCode ,
+								enable: enable }"></div>
 					</fieldset>
 				</div>
 			</form>

@@ -59,7 +59,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		LayoutMaster layoutOrigin = layoutRepo.getHistoryBefore(companyCode, command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout")));
 		LayoutHistory layoutHistOrigin = layoutHistRepo
-				.getBy_SEL_4(companyCode, command.getHistoryId(), command.getStmtCode())
+				.getBy_SEL_4(companyCode, command.getStmtCode(), command.getHistoryId())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout hist")));
 
 		// Validate by EA: 12.履歴の編集-登録時チェック処理
@@ -67,88 +67,82 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		// Optional<LayoutMaster> layoutBefore =
 		// layoutRepo.getHistoryBefore(companyCode, command.getStmtCode(),
 		// command.getStartYmOriginal());
-		Optional<LayoutHistory> layoutBefore = layoutHistRepo.getHistoryBefore(companyCode, command.getStmtCode(),
-				command.getStartYmOriginal());
+
 		// validateHistorySpan(command, layoutOrigin, layoutBefore);
 
 		// this.layoutRepo.remove(companyCode, command.getStmtCode(),
 		// command.getStartYmOriginal());
 		// layoutOrigin.setStartYM(new YearMonth(command.getStartYm()));
 		this.layoutRepo.update(layoutOrigin);
+		layoutHistOrigin.setStartYm(new YearMonth(command.getStartYm()));
 		this.layoutHistRepo.update(layoutHistOrigin);
 		// layoutRepo.update(layoutOrigin);
 		// trong truong hop ngay bat dau lon hon ngay ket thuc
 		updateCurrentObject(command, companyCode);
+		Optional<LayoutHistory> layoutBefore = layoutHistRepo.getHistoryByCodeAndEndYear(companyCode,
+				command.getStmtCode(), command.getStartYmOriginal() - 1);
 		if (layoutBefore != null) {
 			LayoutHistory layout = layoutBefore.get();
 			// this.layoutRepo.remove(companyCode, command.getStmtCode(),
 			// layout.getStartYM().v());
 			// layout.setEndYm(new
 			// YearMonth(command.getStartYm()).previousMonth());
+			layout.setEndYm(new YearMonth(command.getStartYm() - 1));
 			layoutHistRepo.update(layout);
 			// update thang dang truoc no
 			updatePreviousObject(command, companyCode, layoutOrigin);
 		}
 	}
-// chu y
+
+	// chu y
 	private void updatePreviousObject(UpdateLayoutHistoryCommand command, String companyCode,
 			LayoutMaster layoutOrigin) {
-//		List<LayoutHistory> historyBefore = layoutHistRepo.getHistoryBefore(companyCode,
-//				command.getStmtCode(), command.getStartYmOriginal() - 1);
+		// List<LayoutHistory> historyBefore =
+		// layoutHistRepo.getHistoryBefore(companyCode,
+		// command.getStmtCode(), command.getStartYmOriginal() - 1);
 		List<LayoutMasterCategory> categoriesBefore = categoryRepo.getCategoriesBefore(companyCode,
-				command.getStmtCode(), command.getStartYmOriginal() - 1);
-		List<LayoutMasterLine> linesBefore = lineRepo.getLinesBefore(companyCode, command.getStmtCode(),
-				command.getStartYmOriginal() - 1);
+				command.getStmtCode(), command.getHistoryId());
+		List<LayoutMasterLine> linesBefore = lineRepo.getLinesBefore(companyCode, command.getHistoryId());
 		List<LayoutMasterDetail> detailsBefore = detailRepo.getDetailsBefore(companyCode, command.getStmtCode(),
-				command.getStartYmOriginal() - 1);
+				command.getHistoryId());
 		List<LayoutMasterCategory> categoriesUpdate = categoriesBefore.stream().map(org -> {
-//			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), org.getStartYM(), org.getStmtCode(),
-//					org.getCtAtr(), new YearMonth(command.getStartYm()).previousMonth(), org.getCtgPos(),
-//					org.getHistoryId());
-			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(),
-					org.getStmtCode(),
-					org.getCtAtr(), org.getCtgPos(),
-					org.getHistoryId());
+			// return
+			// LayoutMasterCategory.createFromDomain(org.getCompanyCode(),
+			// org.getStartYM(), org.getStmtCode(),
+			// org.getCtAtr(), new
+			// YearMonth(command.getStartYm()).previousMonth(), org.getCtgPos(),
+			// org.getHistoryId());
+			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCtAtr(),
+					org.getCtgPos(), org.getHistoryId());
 		}).collect(Collectors.toList());
 
 		List<LayoutMasterLine> linesUpdate = linesBefore.stream().map(org -> {
-//			return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStartYM(), org.getStmtCode(),
-//					new YearMonth(command.getStartYm()).previousMonth(), org.getAutoLineId(), org.getCategoryAtr(),
-//					org.getLineDispayAttribute(), org.getLinePosition(), org.getHistoryId());
-			return LayoutMasterLine.createFromDomain(org.getCompanyCode(),
-					org.getStmtCode(),
-					org.getAutoLineId(), 
-					org.getCategoryAtr(),
-					org.getLineDisplayAttribute(),
-					org.getLinePosition(),
-					org.getHistoryId());
+			// return LayoutMasterLine.createFromDomain(org.getCompanyCode(),
+			// org.getStartYM(), org.getStmtCode(),
+			// new YearMonth(command.getStartYm()).previousMonth(),
+			// org.getAutoLineId(), org.getCategoryAtr(),
+			// org.getLineDispayAttribute(), org.getLinePosition(),
+			// org.getHistoryId());
+			return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getAutoLineId(),
+					org.getCategoryAtr(), org.getLineDisplayAttribute(), org.getLinePosition(), org.getHistoryId());
 		}).collect(Collectors.toList());
 
 		List<LayoutMasterDetail> detailsUpdate = detailsBefore.stream().map(org -> {
-//			return LayoutMasterDetail.createFromDomain(org.getCompanyCode(), org.getLayoutCode(), org.getStartYm(),
-//					new YearMonth(command.getStartYm()).previousMonth(), org.getCategoryAtr(), org.getItemCode(),
-//					org.getAutoLineId(), org.getItemPosColumn(), org.getError(), org.getCalculationMethod(),
-//					org.getDistribute(), org.getDisplayAtr(), org.getAlarm(), org.getSumScopeAtr(),
-//					org.getSetOffItemCode(), org.getCommuteAtr(), org.getPersonalWageCode(), org.getHistoryId());
-			return LayoutMasterDetail.createFromDomain(org.getCompanyCode(),
-					org.getStmtCode(),
-					org.getCategoryAtr(),
-					org.getItemCode(),
-					org.getAutoLineId(), 
-					org.getItemPosColumn(), 
-					org.getError(),
-					org.getCalculationMethod(),
-					org.getDistribute(),
-					org.getDisplayAtr(),
-					org.getAlarm(),
-					org.getSumScopeAtr(),
-					org.getSetOffItemCode(),
-					org.getCommuteAtr(),
-					org.getFormulaCode(),
-					org.getPersonalWageCode(),
-					org.getWageTableCode(),
-					org.getCommonAmount(), 
-					org.getHistoryId());
+			// return LayoutMasterDetail.createFromDomain(org.getCompanyCode(),
+			// org.getLayoutCode(), org.getStartYm(),
+			// new YearMonth(command.getStartYm()).previousMonth(),
+			// org.getCategoryAtr(), org.getItemCode(),
+			// org.getAutoLineId(), org.getItemPosColumn(), org.getError(),
+			// org.getCalculationMethod(),
+			// org.getDistribute(), org.getDisplayAtr(), org.getAlarm(),
+			// org.getSumScopeAtr(),
+			// org.getSetOffItemCode(), org.getCommuteAtr(),
+			// org.getPersonalWageCode(), org.getHistoryId());
+			return LayoutMasterDetail.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCategoryAtr(),
+					org.getItemCode(), org.getAutoLineId(), org.getItemPosColumn(), org.getError(),
+					org.getCalculationMethod(), org.getDistribute(), org.getDisplayAtr(), org.getAlarm(),
+					org.getSumScopeAtr(), org.getSetOffItemCode(), org.getCommuteAtr(), org.getFormulaCode(),
+					org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(), org.getHistoryId());
 		}).collect(Collectors.toList());
 
 		categoryRepo.update(categoriesUpdate);
@@ -158,61 +152,49 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 
 	private void updateCurrentObject(UpdateLayoutHistoryCommand command, String companyCode) {
 
-		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(),
-				command.getStartYmOriginal());
+		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(command.getHistoryId());
 		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(),
-				command.getStartYmOriginal());
-		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(),
-				command.getStartYmOriginal());
+				command.getHistoryId());
+		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetailsBefore(companyCode, command.getStmtCode(),
+				command.getHistoryId());
 
 		List<LayoutMasterCategory> categoriesUpdate = categoriesOrigin.stream().map(org -> {
-//			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), new YearMonth(command.getStartYm()),
-//					org.getStmtCode(), org.getCtAtr(), org.getEndYm(), org.getCtgPos(), org.getHistoryId());
-			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(),
-					org.getStmtCode(),
-					org.getCtAtr(),
-					org.getCtgPos(), 
-					org.getHistoryId());
+			// return
+			// LayoutMasterCategory.createFromDomain(org.getCompanyCode(), new
+			// YearMonth(command.getStartYm()),
+			// org.getStmtCode(), org.getCtAtr(), org.getEndYm(),
+			// org.getCtgPos(), org.getHistoryId());
+			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCtAtr(),
+					org.getCtgPos(), org.getHistoryId());
 		}).collect(Collectors.toList());
 
 		List<LayoutMasterLine> linesUpdate = linesOrigin.stream().map(org -> {
-//			return LayoutMasterLine.createFromDomain(org.getCompanyCode(), new YearMonth(command.getStartYm()),
-//					org.getStmtCode(), org.getEndYM(), org.getAutoLineId(), org.getCategoryAtr(),
-//					org.getLineDispayAttribute(), org.getLinePosition(), org.getHistoryId());
-			return LayoutMasterLine.createFromDomain(org.getCompanyCode(),
-					org.getStmtCode(),
-					org.getAutoLineId(), 
-					org.getCategoryAtr(),
-					org.getLineDisplayAttribute(),
-					org.getLinePosition(),
-					org.getHistoryId());
+			// return LayoutMasterLine.createFromDomain(org.getCompanyCode(),
+			// new YearMonth(command.getStartYm()),
+			// org.getStmtCode(), org.getEndYM(), org.getAutoLineId(),
+			// org.getCategoryAtr(),
+			// org.getLineDispayAttribute(), org.getLinePosition(),
+			// org.getHistoryId());
+			return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getAutoLineId(),
+					org.getCategoryAtr(), org.getLineDisplayAttribute(), org.getLinePosition(), org.getHistoryId());
 		}).collect(Collectors.toList());
 
 		List<LayoutMasterDetail> detailsUpdate = detailsOrigin.stream().map(org -> {
-//			return LayoutMasterDetail.createFromDomain(org.getCompanyCode(), org.getLayoutCode(),
-//					new YearMonth(command.getStartYm()), org.getEndYm(), org.getCategoryAtr(), org.getItemCode(),
-//					org.getAutoLineId(), org.getItemPosColumn(), org.getError(), org.getCalculationMethod(),
-//					org.getDistribute(), org.getDisplayAtr(), org.getAlarm(), org.getSumScopeAtr(),
-//					org.getSetOffItemCode(), org.getCommuteAtr(), org.getPersonalWageCode(), org.getHistoryId());
-			return LayoutMasterDetail.createFromDomain(org.getCompanyCode(),
-					org.getStmtCode(),
-					org.getCategoryAtr(),
-					org.getItemCode(),
-					org.getAutoLineId(), 
-					org.getItemPosColumn(), 
-					org.getError(),
-					org.getCalculationMethod(),
-					org.getDistribute(),
-					org.getDisplayAtr(),
-					org.getAlarm(),
-					org.getSumScopeAtr(),
-					org.getSetOffItemCode(),
-					org.getCommuteAtr(),
-					org.getFormulaCode(),
-					org.getPersonalWageCode(),
-					org.getWageTableCode(),
-					org.getCommonAmount(), 
-					org.getHistoryId());
+			// return LayoutMasterDetail.createFromDomain(org.getCompanyCode(),
+			// org.getLayoutCode(),
+			// new YearMonth(command.getStartYm()), org.getEndYm(),
+			// org.getCategoryAtr(), org.getItemCode(),
+			// org.getAutoLineId(), org.getItemPosColumn(), org.getError(),
+			// org.getCalculationMethod(),
+			// org.getDistribute(), org.getDisplayAtr(), org.getAlarm(),
+			// org.getSumScopeAtr(),
+			// org.getSetOffItemCode(), org.getCommuteAtr(),
+			// org.getPersonalWageCode(), org.getHistoryId());
+			return LayoutMasterDetail.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCategoryAtr(),
+					org.getItemCode(), org.getAutoLineId(), org.getItemPosColumn(), org.getError(),
+					org.getCalculationMethod(), org.getDistribute(), org.getDisplayAtr(), org.getAlarm(),
+					org.getSumScopeAtr(), org.getSetOffItemCode(), org.getCommuteAtr(), org.getFormulaCode(),
+					org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(), org.getHistoryId());
 		}).collect(Collectors.toList());
 
 		categoryRepo.update(categoriesUpdate);
