@@ -24,11 +24,12 @@
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
+					
+					<h1>file uploading</h1>
+					<h2>binding file upload by knockout</h2>
 					<div id="fileupload1"
 						data-bind="ntsFileUpload:{}"></div>
 					<input type="button" id="button1" value="upload1" />
-					<h1>file uploading</h1>
-					<h2>binding file upload by knockout</h2>
 					<pre>
 					<![CDATA[
 					//index.html
@@ -51,7 +52,9 @@
 					
 					]]>
 					</pre>
-					<h2>in html file</h2>
+					<h2>in html file do not use knockout</h2>
+					<input type="file" id="file_upload" name="aaa" /> <input
+						type="button" id="button" value="upload" />
 					<pre>
 					<![CDATA[
 <input type="file" id="file_upload" />
@@ -114,9 +117,6 @@ public class FileStereoFactory {
 }
 						]]>
 					</pre>
-					<input type="file" id="file_upload" name="aaa" /> <input
-						type="button" id="button" value="upload" />
-
 
 					<h1>download file service</h1>
 					nts.uk.request.specials.donwloadFile(fileid); <br></br> <input
