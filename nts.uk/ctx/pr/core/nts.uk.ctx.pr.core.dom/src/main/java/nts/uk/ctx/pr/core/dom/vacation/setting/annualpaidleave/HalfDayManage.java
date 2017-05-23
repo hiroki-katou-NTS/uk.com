@@ -13,8 +13,8 @@ import nts.uk.ctx.pr.core.dom.vacation.setting.ManageDistinct;
 @Getter
 public class HalfDayManage {
     
-    /** The company uniform limit number. */
-    private AnnualNumberDay companyUniformLimitNumber;
+    /** The maximum day. */
+    private Integer maximumDay; // Not mapping UI.
     
     /** The manage type. */
     private ManageDistinct manageType;
@@ -22,6 +22,6 @@ public class HalfDayManage {
     /** The reference. */
     private MaxDayReference reference;
     
-    /** The maximum day. */
-    private Integer maximumDay; // Not mapping UI.
+    /** The max number uniform company. */
+    private AnnualNumberDay maxNumberUniformCompany;
 }
