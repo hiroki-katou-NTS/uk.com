@@ -72,6 +72,9 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 	/** The Constant CATEGORY_ARTICLE. */
 	public static final int CATEGORY_ARTICLE = 3;
+	
+	/** The Constant CATEGORY_OTHER. */
+	public static final int CATEGORY_OTHER = 9;
 
 	/** The print line position. */
 	int printLinePosition = 0;
@@ -389,6 +392,9 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 		// 記事項目 (categoryItem = article)
 		reportData.setArticleItems(this.detailHeader(header, CATEGORY_ARTICLE));
+		
+		// 他項目 (categoryItem = other)
+		reportData.setOtherItems(this.detailHeader(header, CATEGORY_OTHER));
 
 		// set remark
 		reportData.setRemark(
