@@ -5783,7 +5783,9 @@ var nts;
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         var validator = this.getValidator(data);
                         $input.on("keyup", function (e) {
-                            if (!readonly) {
+                            console.log(e);
+                            var code = e.keyCode || e.which;
+                            if (!readonly && code.toString() !== '9') {
                                 var newText = $input.val();
                                 var result = validator.validate(newText);
                                 $input.ntsError('clear');
@@ -5793,6 +5795,7 @@ var nts;
                             }
                         });
                         $input.on("blur", function (e) {
+                            console.log(e);
                             if (!readonly) {
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
