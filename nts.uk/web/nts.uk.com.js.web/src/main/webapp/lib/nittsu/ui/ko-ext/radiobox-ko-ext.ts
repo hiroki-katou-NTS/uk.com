@@ -66,7 +66,7 @@ module nts.uk.ui.koExtentions {
 
             // Checked
             var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
-                return _.isEqual($(item).data("value"), selectedValue());
+                return _.isEqualWith($(item).data("value"), selectedValue(), (objVal, othVal, key) => { return key === "enable" ? true : undefined; });
             });
             if (checkedRadio !== undefined)
                 $(checkedRadio).prop("checked", true);
