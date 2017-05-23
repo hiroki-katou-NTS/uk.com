@@ -2,76 +2,6 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
-        var ntsNumber;
-        (function (ntsNumber) {
-            function isInteger(value, option) {
-                if (option !== undefined && option.groupseperator() !== undefined) {
-                    value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
-                }
-                return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
-            }
-            function isDecimal(value, option) {
-                if (option !== undefined) {
-                    var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
-                    value = isDecimal(value) || seperator === undefined ? value : uk.text.replaceAll(value.toString(), seperator, '');
-                }
-                return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
-            }
-            function isNumber(value, isDecimalValue, option) {
-                if (isDecimalValue) {
-                    return isDecimal(value, option);
-                }
-                else {
-                    return isInteger(value, option);
-                }
-            }
-            ntsNumber.isNumber = isNumber;
-            ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
-            function getDecimal(value, scale) {
-                var scaleX = Math.pow(10, scale);
-                return ntsNumber.trunc(value * scaleX) / scaleX;
-            }
-            ntsNumber.getDecimal = getDecimal;
-            function formatNumber(value, formatOption) {
-                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
-                    return value;
-                }
-                var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
-                var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
-                var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
-                var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
-                var formattedValue = "";
-                var stringValue = uk.text.replaceAll(value.toString(), groupSeperator, '');
-                var isMinus = stringValue.charAt(0) === '-';
-                var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
-                if (groupLength > 0) {
-                    var x = values[0].split('').reverse().join('');
-                    for (var i = 0; i < x.length;) {
-                        formattedValue += x.substr(i, groupLength) + (x.length > i + groupLength ? groupSeperator : "");
-                        i += groupLength;
-                    }
-                    formattedValue = formattedValue.split('').reverse().join('');
-                }
-                else {
-                    formattedValue = values[0];
-                }
-                if (values[1] === undefined || decimalLength > values[1].length) {
-                    values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
-                }
-                else {
-                    values[1] = values[1].substr(0, decimalLength);
-                }
-                values[1] = uk.text.splitOrPadRight(values[1], decimalLength, '0');
-                return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
-            }
-            ntsNumber.formatNumber = formatNumber;
-        })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
         var KeyCodes;
         (function (KeyCodes) {
             KeyCodes.Tab = 9;
@@ -1160,6 +1090,76 @@ var nts;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ntsNumber;
+        (function (ntsNumber) {
+            function isInteger(value, option) {
+                if (option !== undefined && option.groupseperator() !== undefined) {
+                    value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
+                }
+                return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
+            }
+            function isDecimal(value, option) {
+                if (option !== undefined) {
+                    var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
+                    value = isDecimal(value) || seperator === undefined ? value : uk.text.replaceAll(value.toString(), seperator, '');
+                }
+                return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
+            }
+            function isNumber(value, isDecimalValue, option) {
+                if (isDecimalValue) {
+                    return isDecimal(value, option);
+                }
+                else {
+                    return isInteger(value, option);
+                }
+            }
+            ntsNumber.isNumber = isNumber;
+            ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
+            function getDecimal(value, scale) {
+                var scaleX = Math.pow(10, scale);
+                return ntsNumber.trunc(value * scaleX) / scaleX;
+            }
+            ntsNumber.getDecimal = getDecimal;
+            function formatNumber(value, formatOption) {
+                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
+                    return value;
+                }
+                var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
+                var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
+                var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
+                var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
+                var formattedValue = "";
+                var stringValue = uk.text.replaceAll(value.toString(), groupSeperator, '');
+                var isMinus = stringValue.charAt(0) === '-';
+                var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
+                if (groupLength > 0) {
+                    var x = values[0].split('').reverse().join('');
+                    for (var i = 0; i < x.length;) {
+                        formattedValue += x.substr(i, groupLength) + (x.length > i + groupLength ? groupSeperator : "");
+                        i += groupLength;
+                    }
+                    formattedValue = formattedValue.split('').reverse().join('');
+                }
+                else {
+                    formattedValue = values[0];
+                }
+                if (values[1] === undefined || decimalLength > values[1].length) {
+                    values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
+                }
+                else {
+                    values[1] = values[1].substr(0, decimalLength);
+                }
+                values[1] = uk.text.splitOrPadRight(values[1], decimalLength, '0');
+                return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
+            }
+            ntsNumber.formatNumber = formatNumber;
+        })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="reference.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -1893,6 +1893,8 @@ var nts;
                     else {
                         dfd.resolve(res);
                     }
+                }).fail(function (res) {
+                    dfd.reject(res);
                 });
                 return dfd.promise();
             }
@@ -3279,13 +3281,19 @@ var nts;
                 (function (ntsFileUpload) {
                     $.fn.ntsFileUpload = function (option) {
                         var dfd = $.Deferred();
-                        var file = $(this)[0].files;
+                        var file;
+                        if ($(this).find("input[type='file']").length == 0) {
+                            file = $(this)[0].files;
+                        }
+                        else {
+                            file = $(this).find("input[type='file']")[0].files;
+                        }
                         if (file) {
                             var formData = new FormData();
                             formData.append("stereotype", option.stereoType);
                             // HTML file input, chosen by user
-                            formData.append("userfile", $(this)[0].files[0]);
-                            if ($(this)[0].files[0]) {
+                            formData.append("userfile", file[0]);
+                            if (file[0]) {
                                 return nts.uk.request.uploadFile(formData, option);
                             }
                             else {
@@ -6675,7 +6683,7 @@ var nts;
                         }
                         // Checked
                         var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
-                            return _.isEqual($(item).data("value"), selectedValue());
+                            return _.isEqualWith($(item).data("value"), selectedValue(), function (objVal, othVal, key) { return key === "enable" ? true : undefined; });
                         });
                         if (checkedRadio !== undefined)
                             $(checkedRadio).prop("checked", true);
@@ -8697,6 +8705,83 @@ var nts;
                     return NtsLinkButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
+                 * CheckBox binding handler
+                 */
+                var NtsFileUploadBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function NtsFileUploadBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsFileUploadBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var fileName = data.filename;
+                        var suportedExtension = ko.unwrap(data.accept);
+                        var textId = ko.unwrap(data.text);
+                        var control = $(element);
+                        var onchange = data.onchange;
+                        var fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
+                        var fileBrowserButton = $("<INPUT class='browser-button' type='button' />");
+                        var browserButtonText;
+                        if (textId) {
+                            browserButtonText = nts.uk.resource.getText(textId);
+                        }
+                        else {
+                            browserButtonText = "browser";
+                        }
+                        fileBrowserButton.val(browserButtonText);
+                        var fileNameLable = $("<span class='filename'></span> ");
+                        var fileInput = $("<input style ='display:none' type='file' class='fileinput'/>");
+                        if (suportedExtension) {
+                            fileInput.attr("accept", suportedExtension.toString());
+                        }
+                        fileuploadContainer.append(fileBrowserButton);
+                        fileuploadContainer.append(fileNameLable);
+                        fileuploadContainer.append(fileInput);
+                        fileuploadContainer.appendTo(control);
+                        fileInput.change(function () {
+                            if (fileName) {
+                                data.filename($(this).val());
+                            }
+                            if (typeof onchange == 'function') {
+                                onchange($(this).val());
+                            }
+                        });
+                        fileBrowserButton.click(function () {
+                            fileInput.click();
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsFileUploadBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var fileName = ko.unwrap(data.filename);
+                        var control = $(element);
+                        var fileNameLable = control.parent().find(".filename");
+                        fileNameLable.text(fileName);
+                    };
+                    return NtsFileUploadBindingHandler;
+                }());
+                ko.bindingHandlers['ntsFileUpload'] = new NtsFileUploadBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
