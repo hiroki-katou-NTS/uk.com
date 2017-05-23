@@ -431,6 +431,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		public CellValue(int row, int col, Object value) {
 			this.row = row + currentRow;
 			this.col = col;
+			this.value = value;
 		}
 
 		/**
