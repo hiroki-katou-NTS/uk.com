@@ -35,11 +35,11 @@ public class InsertUpdatePaycompConfirmCommandHandler extends CommandHandler<Ins
 				lstInsertUpdatedata.get(0).getProcessingYMLater());
 
 		lstInsertUpdatedata.stream().forEach(c -> {
-			PaycompConfirm newPaycompConfirm = PaycompConfirm.createFromJavaType(companyCode, c.getEmployeeCode(),
+			PaycompConfirm newPaycompConfirm = PaycompConfirm.createFromJavaType(companyCode, c.getPersonID(),
 					c.getItemCode(), c.getProcessingYMEarlier(), c.getProcessingYMLater(), c.getCategoryAtr(),
 					c.getValueDifference(), c.getReasonDifference(), c.getConfirmedStatus());
 			Optional<PaycompConfirm> paycompConfirmFilter = paycompConfirmList.stream().filter(
-					p -> p.getEmployeeCode().v().equals(c.getEmployeeCode()) && p.getCategoryAtr().value == c.getCategoryAtr() && p.getItemCode().v().equals(c.getItemCode()))
+					p -> p.getPersonID().v().equals(c.getPersonID()) && p.getCategoryAtr().value == c.getCategoryAtr() && p.getItemCode().v().equals(c.getItemCode()))
 					.findFirst();
 
 			if (paycompConfirmFilter.isPresent()) {

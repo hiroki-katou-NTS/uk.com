@@ -24,10 +24,19 @@ __viewContext.ready(function () {
             ]);
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
+            this.currentCodeList.subscribe(function (newValue) {
+//                alert(newValue);    
+            });
         }
         
         addItem() {
             this.items.push(new ItemModel('999', '基本給', "description 1", "other1"));
+        }
+        
+        updateItem() {
+//            this.items()[0].name = "tests";
+//            this.items.valueHasMutated();
+            this.currentCodeList([]);
         }
         
         removeItem() {

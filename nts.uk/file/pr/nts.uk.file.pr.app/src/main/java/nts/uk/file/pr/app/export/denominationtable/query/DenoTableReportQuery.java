@@ -8,33 +8,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * The Class DenoTableReportQuery.
- */
-
-/**
- * Instantiates a new salary chart report query.
- */
-
-/**
- * Instantiates a new salary chart report query.
- */
-
-/**
- * Instantiates a new salary chart report query.
- */
-
-/**
- * Instantiates a new salary chart report query.
- */
-
-/**
- * Instantiates a new salary chart report query.
- */
-
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
- */
 
 /**
  * Gets the checks if is break page by accumulated.
@@ -42,12 +15,6 @@ import lombok.Setter;
  * @return the checks if is break page by accumulated
  */
 @Getter
-
-/**
- * Sets the checks if is break page by accumulated.
- *
- * @param isBreakPageByAccumulated the new checks if is break page by accumulated
- */
 
 /**
  * Sets the checks if is break page by accumulated.

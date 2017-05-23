@@ -20,13 +20,13 @@ module qpp008.b.viewmodel {
             /*Switch*/
             //B_SEL_010
             self.roundingRules = ko.observableArray([
-                { code: '0', name: '表示する' },
-                { code: '1', name: '表示しない' },
+                { code: '1', name: '表示する' },
+                { code: '0', name: '表示しない' },
             ]);
             //B_SEL_011
             self.roundingRules1 = ko.observableArray([
-                { code1: '0', name1: '表示する' },
-                { code1: '1', name1: '表示しない' },
+                { code1: '1', name1: '表示する' },
+                { code1: '0', name1: '表示しない' },
             ]);
 
             self.hrchyIndexArray = ko.computed(function() {
@@ -131,7 +131,6 @@ module qpp008.b.viewmodel {
         sumEachDeprtSet: KnockoutObservable<boolean>;
         sumDepHrchyIndexSet: KnockoutObservable<boolean>;
         hrchyIndexSelectId: KnockoutObservableArray<number> = ko.observableArray([]);
-        multiCheckBoxEnable: KnockoutObservable<boolean>;
         constructor(settingMapping: any) {
             let self = this;
             if (settingMapping) {
@@ -148,18 +147,16 @@ module qpp008.b.viewmodel {
                 if (settingMapping.hrchyIndex3 > 2) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex3); }
                 if (settingMapping.hrchyIndex4 > 3) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex4); }
                 if (settingMapping.hrchyIndex5 > 4) { self.hrchyIndexSelectId.push(settingMapping.hrchyIndex5); }
-                self.multiCheckBoxEnable = ko.observable(settingMapping.sumDepHrchyIndexSet === 0 ? false : true);
             } else {
                 self.plushBackColor = ko.observable("#cfe2f3");
                 self.minusBackColor = ko.observable("#f4cccc");
-                self.showItemIfCfWithNull = ko.observable(0);
-                self.showItemIfSameValue = ko.observable(0);
+                self.showItemIfCfWithNull = ko.observable(1);
+                self.showItemIfSameValue = ko.observable(1);
                 self.showPayment = ko.observable(true);
                 self.totalSet = ko.observable(true);
                 self.sumEachDeprtSet = ko.observable(false);
                 self.sumDepHrchyIndexSet = ko.observable(false);
                 self.hrchyIndexSelectId = ko.observableArray([]);
-                self.multiCheckBoxEnable = ko.observable(false);
             }
         }
     }

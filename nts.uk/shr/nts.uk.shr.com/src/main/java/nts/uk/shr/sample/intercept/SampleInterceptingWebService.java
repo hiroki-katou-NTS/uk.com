@@ -18,4 +18,5 @@ public class SampleInterceptingWebService {
 		this.intercepted.hoge();
 		s.toString();
 	}
+	
 }

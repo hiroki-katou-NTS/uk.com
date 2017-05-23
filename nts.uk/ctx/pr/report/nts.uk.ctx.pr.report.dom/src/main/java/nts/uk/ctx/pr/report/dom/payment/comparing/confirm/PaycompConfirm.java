@@ -15,7 +15,7 @@ public class PaycompConfirm extends AggregateRoot {
 
 	private String companyCode;
 
-	private EmployeeCode employeeCode;
+	private PersonID personID;
 
 	private ProcessingYMEarlier processingYMEarlier;
 
@@ -31,10 +31,10 @@ public class PaycompConfirm extends AggregateRoot {
 
 	private ReasonDifference reasonDifference;
 
-	public static PaycompConfirm createFromJavaType(String companyCode, String employeeCode, String itemCode,
+	public static PaycompConfirm createFromJavaType(String companyCode, String personID, String itemCode,
 			int processingYMEarlier, int processingYMLater, int categoryAtr, BigDecimal valueDifference,
 			String reasonDifference, int confirmedStatus) {
-		return new PaycompConfirm(companyCode, new EmployeeCode(employeeCode),
+		return new PaycompConfirm(companyCode, new PersonID(personID),
 				new ProcessingYMEarlier(processingYMEarlier), new ProcessingYMLater(processingYMLater),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class), new ItemCode(itemCode),
 				EnumAdaptor.valueOf(confirmedStatus, ConfirmedStatus.class), new ValueDifference(valueDifference),

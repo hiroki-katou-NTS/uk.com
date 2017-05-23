@@ -16,6 +16,8 @@ public class DetailDifferential extends AggregateRoot {
 
 	private String companyCode;
 
+	private PersonID personID;
+
 	private EmployeeCode employeeCode;
 
 	private EmployeeName employeeName;
@@ -40,14 +42,15 @@ public class DetailDifferential extends AggregateRoot {
 
 	private ConfirmedStatus confirmedStatus;
 
-	public static DetailDifferential createFromJavaType(String companyCode, String employeeCode, String employeeName,
-			String itemCode, String itemName, int categoryAtr, BigDecimal comparisonValue1, BigDecimal comparisonValue2,
-			BigDecimal valueDifference, String reasonDifference, int registrationStatus1, int registrationStatus2,
-			int confirmedStatus) {
-		return new DetailDifferential(companyCode, new EmployeeCode(employeeCode), new EmployeeName(employeeName),
-				new ItemCode(itemCode), new ItemName(itemName), EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-				new ComparisonValue(comparisonValue1), new ComparisonValue(comparisonValue2),
-				new ValueDifference(valueDifference), new ReasonDifference(reasonDifference),
+	public static DetailDifferential createFromJavaType(String companyCode, String personID, String employeeCode,
+			String employeeName, String itemCode, String itemName, int categoryAtr, BigDecimal comparisonValue1,
+			BigDecimal comparisonValue2, BigDecimal valueDifference, String reasonDifference, int registrationStatus1,
+			int registrationStatus2, int confirmedStatus) {
+		return new DetailDifferential(companyCode, new PersonID(personID), new EmployeeCode(employeeCode),
+				new EmployeeName(employeeName), new ItemCode(itemCode), new ItemName(itemName),
+				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class), new ComparisonValue(comparisonValue1),
+				new ComparisonValue(comparisonValue2), new ValueDifference(valueDifference),
+				new ReasonDifference(reasonDifference),
 				EnumAdaptor.valueOf(registrationStatus1, RegistrationStatus.class),
 				EnumAdaptor.valueOf(registrationStatus2, RegistrationStatus.class),
 				EnumAdaptor.valueOf(confirmedStatus, ConfirmedStatus.class));

@@ -10,6 +10,9 @@ __viewContext.ready(function () {
             // TextEditor
             self.texteditor = {
                 value: ko.observable(''),
+                valueKana: ko.observable(''), 
+                valueUan: ko.observable(''),
+                valueHalfInt: ko.observable(''),
                 constraint: 'WLAggregateItemCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",

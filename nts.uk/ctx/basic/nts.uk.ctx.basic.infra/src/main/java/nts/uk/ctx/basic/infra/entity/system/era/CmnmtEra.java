@@ -50,5 +50,10 @@ public class CmnmtEra extends AggregateTableEntity implements Serializable{
 	@Basic(optional = false)
 	@Column(name="FIX_ATR")
 	public int fix_Atr;
+
+	@Override
+	protected Object getKey() {
+		return this.cmnmtEraPk;
+	}
 	
 }

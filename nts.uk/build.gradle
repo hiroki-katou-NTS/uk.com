@@ -99,8 +99,8 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.17'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.23'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.20'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.32.2'
 	}
 }
 
@@ -110,6 +110,10 @@ project (':shr:nts.uk.shr.com') {
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		// Mime Detection Utility
 		compile group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
+		// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-multipart-provider
+		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-multipart-provider', version: '3.1.2.Final'
+		// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs
+		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.2.Final'
 	}
 }
 
@@ -219,7 +223,31 @@ project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp') {
 }
 //========================sys:portal ↑=====================================
 
-
+//=========================at:shared===================================
+project (':ctx:at:shared:nts.uk.ctx.at.shared.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':shr:nts.uk.shr.find')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+	}
+}
+project (':ctx:at:shared:nts.uk.ctx.at.shared.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+project (':ctx:at:shared:nts.uk.ctx.at.shared.infra') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+	}
+}
+project (':ctx:at:shared:nts.uk.ctx.at.shared.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.app')
+	}
+}
 
 //=========================at:schedule↓===================================
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ws') {
@@ -231,6 +259,7 @@ project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ws') {
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app') {
@@ -238,6 +267,7 @@ project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.dom')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:schedule:nts.uk.ctx.at.schedule.infra') {
@@ -277,6 +307,7 @@ project (':ctx:at:record:nts.uk.ctx.at.record.ws') {
 project (':ctx:at:record:nts.uk.ctx.at.record.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:record:nts.uk.ctx.at.record.app') {
@@ -284,6 +315,7 @@ project (':ctx:at:record:nts.uk.ctx.at.record.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':ctx:at:record:nts.uk.ctx.at.record.dom')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
 project (':ctx:at:record:nts.uk.ctx.at.record.infra') {
@@ -618,6 +650,11 @@ project (':web:nts.uk.at.web') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+		
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.app')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.infra')
+		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.ws')
 		
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ac')
 		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app')

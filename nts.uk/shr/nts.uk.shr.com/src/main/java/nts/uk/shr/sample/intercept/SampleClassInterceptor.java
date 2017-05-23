@@ -20,5 +20,4 @@ public class SampleClassInterceptor {
         Object result = context.proceed();
         return result;
     }
-
 }

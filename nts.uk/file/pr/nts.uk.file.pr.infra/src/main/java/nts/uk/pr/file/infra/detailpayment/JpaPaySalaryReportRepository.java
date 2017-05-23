@@ -23,6 +23,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
 import nts.uk.ctx.basic.infra.entity.report.PcpmtPersonCom;
+import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
@@ -78,7 +79,8 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
             + "AND com.pcpmtPersonComPK.pid IN :personIds "
             + "AND header.qstdtPaymentHeaderPK.payBonusAtr = 0 "
             + "AND header.qstdtPaymentHeaderPK.processingYM >= :startYM "
-            + "AND header.qstdtPaymentHeaderPK.processingYM <= :endYM ";
+            + "AND header.qstdtPaymentHeaderPK.processingYM <= :endYM "
+            + "ORDER BY dep.hierarchyId ASC ";
     
     /** The Constant QUERY_PAYMENT_DETAIL. */
     private static final String QUERY_PAYMENT_DETAIL = "SELECT pCom.scd, detail.qstdtPaymentDetailPK.categoryATR,"
@@ -185,24 +187,26 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         if (data.isEmpty()) {
             throw new BusinessException(new RawErrorMessage("対象データがありません。"));
         }
-        return data.stream().map(object -> {
-            PcpmtPersonCom com = (PcpmtPersonCom) object[0];
-            QstdtPaymentHeader header = (QstdtPaymentHeader) object[1];
-            CmnmtDep dep = (CmnmtDep) object[2];
-            
-            EmployeeDto dto = new EmployeeDto();
-            dto.setCode(com.getScd());
-            dto.setName(header.employeeName);
-
-            DepartmentDto departmentDto = new DepartmentDto();
-            departmentDto.setCode(dep.getCmnmtDepPK().getDepartmentCode());
-            departmentDto.setName(dep.getDepName());
-            departmentDto.setDepLevel(dep.getHierarchyId().length() / LENGTH_LEVEL);
-            departmentDto.setDepPath(dep.getHierarchyId());
-            departmentDto.setYearMonth(header.qstdtPaymentHeaderPK.processingYM);
-            dto.setDepartment(departmentDto);
-            return dto;
-        }).collect(Collectors.toList());
+        return data.stream()
+                .map(object -> {
+                    PcpmtPersonCom com = (PcpmtPersonCom) object[0];
+                    QstdtPaymentHeader header = (QstdtPaymentHeader) object[1];
+                    CmnmtDep dep = (CmnmtDep) object[2];
+                    
+                    EmployeeDto dto = new EmployeeDto();
+                    dto.setCode(com.getScd());
+                    dto.setName(header.employeeName);
+        
+                    DepartmentDto departmentDto = new DepartmentDto();
+                    departmentDto.setCode(dep.getCmnmtDepPK().getDepartmentCode());
+                    departmentDto.setName(dep.getDepName());
+                    departmentDto.setDepLevel(dep.getHierarchyId().length() / LENGTH_LEVEL);
+                    departmentDto.setDepPath(dep.getHierarchyId());
+                    departmentDto.setYearMonth(header.qstdtPaymentHeaderPK.processingYM);
+                    dto.setDepartment(departmentDto);
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
     
     /**
@@ -270,10 +274,10 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 key.setEmployeeCode(codeEmp);
                 key.setItemName(categoryItem.itemName);
                 key.setOrderItemName(categoryItem.orderNumber);
-                key.setSalaryCategory(SalaryCategory.valueOf(categoryItem.category.value));
+                key.setSalaryCategory(SalaryCategory.valueOf(categoryItem.valueCategory));
                 
                 List<Object[]> objectFiltereds = objectList.stream()
-                        .filter(ob -> yearMonth == (int) ob[4] && (int) ob[1] == categoryItem.category.value 
+                        .filter(ob -> yearMonth == (int) ob[4] && (int) ob[1] == categoryItem.valueCategory
                                     && subItemCodes.contains((String) ob[2]))
                         .collect(Collectors.toList());
                 
@@ -316,14 +320,21 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
                 CategoryItem categoryItem = new CategoryItem();
                 categoryItem.itemCode = itemCode;
                 categoryItem.orderNumber = item.getOrderNumber();
-                categoryItem.category = category.getCategory();
+                categoryItem.valueCategory = category.getCategory().value;
                 
                 // ========= MASTER ITEM =========
                 if (item.getType() == SalaryItemType.Master) {
                     categoryItem.typeItem = SalaryItemType.Master;
                     categoryItem.itemName = masterItems.stream()
-                            .filter(masterItem -> masterItem.getCategoryAtr().value == categoryItem.category.value
-                                        && masterItem.getItemCode().v().equals(categoryItem.itemCode))
+                            .filter(masterItem -> {
+                                boolean isEqualItemCode = masterItem.getItemCode().v().equals(categoryItem.itemCode);
+                                boolean isEqualArticle = category.getCategory() == SalaryCategory.ArticleOthers
+                                        && (masterItem.getCategoryAtr().value == CategoryAtr.ARTICLES.value
+                                                || masterItem.getCategoryAtr().value == CategoryAtr.OTHER.value);
+                                boolean isEqualOtherCategory = masterItem
+                                        .getCategoryAtr().value == categoryItem.valueCategory;
+                                return isEqualItemCode && (isEqualArticle || isEqualOtherCategory);
+                            })
                             .map(masterItem -> masterItem.getItemName().v())
                             .findFirst()
                             .get();
@@ -380,9 +391,6 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         if (payQuery.getIsPreliminaryMonth()) {
             payAttrs.add(PaymentConstant.ONE);
         }
-        if (payAttrs.isEmpty()) {
-            throw new BusinessException(new RawErrorMessage("通常月と予備月が指定されていません。"));
-        }
         query.setParameter("sparePayAttributes", payAttrs);
         List select = query.getResultList();
         if (select.isEmpty()) {
@@ -405,8 +413,8 @@ public class JpaPaySalaryReportRepository extends JpaRepository implements PaySa
         /** The order number. */
         private int orderNumber;
         
-        /** The category. */
-        private SalaryCategory category;
+        /** The value category. */
+        private int valueCategory;
         
         /** The salary item. */
         private SalaryItemType typeItem;

@@ -5,12 +5,13 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.DetailDifferential;
-import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormDetail;
-import nts.uk.ctx.pr.report.dom.payment.comparing.settingoutputitem.ComparingFormDetail;
+import nts.uk.ctx.pr.report.dom.payment.comparing.confirm.PaycompConfirm;
+import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsdtPaycompConfirm;
 import nts.uk.file.pr.app.export.comparingsalarybonus.ComparingSalaryBonusQueryRepository;
-import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusHeaderReportData;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.DepartmentDto;
+import nts.uk.file.pr.app.export.comparingsalarybonus.data.SalaryBonusDetail;
 
 /**
  * The class JpaComparingSalaryBonusQueryRepository
@@ -21,147 +22,116 @@ import nts.uk.file.pr.app.export.comparingsalarybonus.data.ComparingSalaryBonusH
 @Stateless
 public class JpaComparingSalaryBonusQueryRepository extends JpaRepository
 		implements ComparingSalaryBonusQueryRepository {
-	// EA2
-	private final String SELECT_DETAIL_DIFFERENT_YM = "SELECT d.qstdtPaymentDetailPK.personId, d.qstdtPaymentDetailPK.itemCode, "
-			+ "i.itemAbName, i.qcamtItemPK.ctgAtr, d.value , h.makeMethodFlag, d.qstdtPaymentDetailPK.companyCode "
-			+ " FROM QstdtPaymentDetail d " + "INNER JOIN  QstdtPaymentHeader h "
-			+ " ON h.qstdtPaymentHeaderPK.companyCode = d.qstdtPaymentDetailPK.companyCode AND h.qstdtPaymentHeaderPK.personId = d.qstdtPaymentDetailPK.personId "
-			+ " AND h.qstdtPaymentHeaderPK.processingNo = d.qstdtPaymentDetailPK.processingNo AND h.qstdtPaymentHeaderPK.payBonusAtr = d.qstdtPaymentDetailPK.payBonusAttribute "
-			+ " AND h.qstdtPaymentHeaderPK.sparePayAtr = d.qstdtPaymentDetailPK.sparePayAttribute AND h.qstdtPaymentHeaderPK.processingYM = d.qstdtPaymentDetailPK.processingYM "
-			+ " INNER JOIN QcamtItem_v1 i " + "ON h.qstdtPaymentHeaderPK.companyCode = i.qcamtItemPK.ccd "
-			+ " AND d.qstdtPaymentDetailPK.categoryATR = i.qcamtItemPK.ctgAtr AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd "
-			+ " WHERE d.qstdtPaymentDetailPK.companyCode = :ccd AND d.qstdtPaymentDetailPK.personId IN :personId"
-			+ " AND  d.qstdtPaymentDetailPK.categoryATR =:categoryATR "
-			+ " AND  d.qstdtPaymentDetailPK.payBonusAttribute = :payBonusAttribute"
-			+ " AND  d.qstdtPaymentDetailPK.processingYM =:processingYM"
-			+ " AND  d.qstdtPaymentDetailPK.itemCode = :itemCode";
 
-	private final String SELECT_PAYCOMP_FORM_DETAIL = "SELECT c FROM QlsptPaycompFormDetail as c WHERE "
-			+ "c.paycompFormDetailPK.companyCode = :companyCode AND c.paycompFormDetailPK.formCode =:formCode";
+	private String SELECT_1 = "SELECT DISTINCT i.itemAbName, h.qstdtPaymentHeaderPK.processingYM, h.employeeName, h.specificationCode, h.makeMethodFlag, d.qstdtPaymentDetailPK.personId, "
+			+ " d.qstdtPaymentDetailPK.categoryATR,  d.qstdtPaymentDetailPK.itemCode ,d.value, pb.nameB, pc.scd, dep.depName, dep.cmnmtDepPK.departmentCode, dep.hierarchyId, dep.cmnmtDepPK.historyId "
+			+ "  FROM QlsptPaycompFormDetail c" + " INNER JOIN QcamtItem_v1 i"
+			+ " ON i.qcamtItemPK.ctgAtr = c.paycompFormDetailPK.categoryATR  AND i.qcamtItemPK.itemCd = c.paycompFormDetailPK.itemCode "
+			+ " AND i.qcamtItemPK.ccd  = c.paycompFormDetailPK.companyCode  " + " INNER JOIN  QstdtPaymentHeader h"
+			+ " ON  h.qstdtPaymentHeaderPK.companyCode = c.paycompFormDetailPK.companyCode"
+			+ " INNER JOIN QstdtPaymentDetail d"
+			+ " ON d.qstdtPaymentDetailPK.companyCode = c.paycompFormDetailPK.companyCode AND  d.qstdtPaymentDetailPK.processingNo = h.qstdtPaymentHeaderPK.processingNo"
+			+ " AND d.qstdtPaymentDetailPK.sparePayAttribute = h.qstdtPaymentHeaderPK.sparePayAtr "
+			+ " AND d.qstdtPaymentDetailPK.personId = h.qstdtPaymentHeaderPK.personId"
+			+ " AND d.qstdtPaymentDetailPK.categoryATR = i.qcamtItemPK.ctgAtr "
+			+ " AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd " + " INNER JOIN PbsmtPersonBase pb"
+			+ " ON pb.pid = d.qstdtPaymentDetailPK.personId"
+			+ " INNER JOIN PcpmtPersonCom pc ON pc.pcpmtPersonComPK.pid = d.qstdtPaymentDetailPK.personId AND pc.pcpmtPersonComPK.ccd = d.qstdtPaymentDetailPK.companyCode"
+			+ " INNER JOIN  CmnmtDep dep ON dep.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd AND  h.standardDate > dep.startDate AND  h.standardDate < dep.endDate "
+			+ " AND dep.cmnmtDepPK.departmentCode = h.departmentCode "
+			+ " WHERE c.paycompFormDetailPK.formCode = :formCode AND  h.qstdtPaymentHeaderPK.personId IN :personId"
+			+ " AND h.qstdtPaymentHeaderPK.payBonusAtr = 0" + " AND h.qstdtPaymentHeaderPK.processingYM =:processingYM"
+			+ " AND   c.paycompFormDetailPK.companyCode =:companyCode ORDER BY dep.cmnmtDepPK.departmentCode";
+	private final String SELECT_DEPCODE = "SELECT DISTINCT dep.cmnmtDepPK.departmentCode, dep.cmnmtDepPK.historyId, dep.hierarchyId "
+			+ "  FROM QlsptPaycompFormDetail c" + " INNER JOIN QcamtItem_v1 i"
+			+ " ON i.qcamtItemPK.ctgAtr = c.paycompFormDetailPK.categoryATR  AND i.qcamtItemPK.itemCd = c.paycompFormDetailPK.itemCode "
+			+ " AND i.qcamtItemPK.ccd  = c.paycompFormDetailPK.companyCode  " + " INNER JOIN  QstdtPaymentHeader h"
+			+ " ON  h.qstdtPaymentHeaderPK.companyCode = c.paycompFormDetailPK.companyCode"
+			+ " INNER JOIN QstdtPaymentDetail d"
+			+ " ON d.qstdtPaymentDetailPK.companyCode = c.paycompFormDetailPK.companyCode AND  d.qstdtPaymentDetailPK.processingNo = h.qstdtPaymentHeaderPK.processingNo"
+			+ " AND d.qstdtPaymentDetailPK.sparePayAttribute = h.qstdtPaymentHeaderPK.sparePayAtr "
+			+ " AND d.qstdtPaymentDetailPK.personId = h.qstdtPaymentHeaderPK.personId"
+			+ " AND d.qstdtPaymentDetailPK.categoryATR = i.qcamtItemPK.ctgAtr "
+			+ " AND d.qstdtPaymentDetailPK.itemCode = i.qcamtItemPK.itemCd " + " INNER JOIN PbsmtPersonBase pb"
+			+ " ON pb.pid = d.qstdtPaymentDetailPK.personId"
+			+ " INNER JOIN PcpmtPersonCom pc ON pc.pcpmtPersonComPK.pid = d.qstdtPaymentDetailPK.personId AND pc.pcpmtPersonComPK.ccd = d.qstdtPaymentDetailPK.companyCode"
+			+ " INNER JOIN  CmnmtDep dep ON dep.cmnmtDepPK.companyCode = pc.pcpmtPersonComPK.ccd AND  h.standardDate > dep.startDate AND  h.standardDate < dep.endDate"
+			+ " AND dep.cmnmtDepPK.departmentCode = h.departmentCode "
+			+ " WHERE c.paycompFormDetailPK.formCode = :formCode AND  h.qstdtPaymentHeaderPK.personId IN :personId"
+			+ " AND h.qstdtPaymentHeaderPK.payBonusAtr = 0" + " AND h.qstdtPaymentHeaderPK.processingYM =:processingYM"
+			+ " AND c.paycompFormDetailPK.companyCode =:companyCode "
+			+ " ORDER BY dep.cmnmtDepPK.departmentCode";
+	private final String SELECT_PAYCOMP_COMFIRM = "SELECT c FROM QlsdtPaycompConfirm as c WHERE "
+			+ "c.paycompConfirmPK.companyCode = :companyCode AND c.paycompConfirmPK.personId IN :personId "
+			+ "AND c.paycompConfirmPK.processYMEarly = :processYMEarly AND c.paycompConfirmPK.processYMLater = :processYMLater";
+
+	private final SalaryBonusDetail toDomain(Object[] salaryBonusDetail) {
+		val salary = new SalaryBonusDetail();
+		salary.setItemAbName(salaryBonusDetail[0].toString());
+		salary.setProcessingYM(salaryBonusDetail[1].hashCode());
+		salary.setEmployeeName(salaryBonusDetail[2].toString());
+		salary.setSpecificationCode(salaryBonusDetail[3].toString());
+		salary.setMakeMethodFlag(salaryBonusDetail[4].toString());
+		salary.setPersonId(salaryBonusDetail[5].toString());
+		salary.setCategoryATR(salaryBonusDetail[6].toString());
+		salary.setItemCode(salaryBonusDetail[7].toString());
+		salary.setValue(new BigDecimal(salaryBonusDetail[8].toString()));
+		salary.setNameB(salaryBonusDetail[9].toString());
+		salary.setScd(salaryBonusDetail[10].toString());
+		salary.setDepartmentCode(salaryBonusDetail[12].toString());
+		salary.setDepartmentName(salaryBonusDetail[11].toString());
+		salary.setHierarchyId(salaryBonusDetail[13].toString());
+		salary.setHistoryId(salaryBonusDetail[14].toString());
+		return salary;
+	}
 	
-	private final String SELECT_CALLED_DETAIL = "SELECT c.emp, d.depName, d.hierarchyId, c.jobtitle, a.cName FROM  CmnmtCalled c"
-			+ " INNER JOIN  CmnmtDep  d " + " ON c.ccd = d.cmnmtDepPK.companyCode "
-			+ " INNER JOIN  CmnmtCompany a"
-			+ " ON c.ccd = a.cmnmtCompanyPk.companyCd"
-			+ " INNER JOIN "
-			+ " WHERE c.ccd =:ccd "
-			+ " AND IN :personId";
+	private final DepartmentDto toDomainDepartment(Object[] department) {
+		val department1 = new DepartmentDto();
+		department1.setDepCode(department[0].toString());
+		department1.setHistoryId(department[1].toString());
+		department1.setHyrachi(department[2].toString());
+		return department1;
+	}
 	
-//	private final String SELEC_COMPANY_NAME = "SELECT c.cName FROM CmnmtCompany c WHERE c.cmnmtCompanyPk.companyCd :=ccd ";
+	private static PaycompConfirm convertToDomainPaycompConfirm(QlsdtPaycompConfirm entity) {
 
-	/**
-	 * convert To Domain ComparingFormDetail from entity
-	 * 
-	 * @param entity
-	 * @return ComparingFormDetail
-	 */
-	private static ComparingFormDetail convertToDomainComparingFormDetail(QlsptPaycompFormDetail entity) {
-		return ComparingFormDetail.createFromJavaType(entity.paycompFormDetailPK.companyCode,
-				entity.paycompFormDetailPK.formCode, entity.paycompFormDetailPK.categoryATR,
-				entity.paycompFormDetailPK.itemCode, entity.dispOrder);
-	}
-
-	/**
-	 * convert To Domain DetailDifferential from entity
-	 * 
-	 * @param entity
-	 * @return DetailDifferential
-	 */
-	private static DetailDifferential convertToDomainDetailDifferential(String companyCode, String employeeCode,
-			String employeeName, String itemCode, String itemName, int categoryAtr, BigDecimal comparisonValue1,
-			BigDecimal comparisonValue2, BigDecimal valueDifference, String reasonDifference, int registrationStatus1,
-			int registrationStatus2, int confirmedStatus) {
-
-		return DetailDifferential.createFromJavaType(companyCode, employeeCode, employeeName, itemCode, itemName,
-				categoryAtr, comparisonValue1, comparisonValue2, valueDifference, reasonDifference, registrationStatus1,
-				registrationStatus2, confirmedStatus);
-	}
-
-	/**
-	 * convert To Domain DetailDifferential from entity
-	 * 
-	 * @param entity
-	 * @return DetailDifferential
-	 */
-	private static ComparingSalaryBonusHeaderReportData convertToDomainComparingSalaryBonusHeaderReportData(
-			Object[] headerReport) {
-		String nameCompany = (String) headerReport[0];
-		String titleReport = "";
-		String nameDeparment = (String) headerReport[1];
-		String typeDeparment = (String) headerReport[2];
-		String postion = (String) headerReport[3];
-		String targetYearMonth = "2016/02";
-		String itemName = null;
-		String month1 = null;
-		String month2 = null;
-		String differentSalary= null;
-		String registrationStatus1 = null;
-		String registrationStatus2= null;
-		String reason= null;
-		String confirmed = null;
-
-		return new ComparingSalaryBonusHeaderReportData(nameCompany, titleReport, nameDeparment, typeDeparment, postion,
-				targetYearMonth,itemName,month1,month2,differentSalary, registrationStatus1,registrationStatus2,reason,confirmed);
-	}
-
-	/**
-	 * SEL_1 from QlsptPaycompFormDetail
-	 */
-	@Override
-	public List<ComparingFormDetail> getPayComDetailByFormCode(String companyCode, String formCode) {
-		return this.queryProxy().query(SELECT_PAYCOMP_FORM_DETAIL, QlsptPaycompFormDetail.class)
-				.setParameter("companyCode", companyCode).setParameter("formCode", formCode)
-				.getList(s -> convertToDomainComparingFormDetail(s));
+		return PaycompConfirm.createFromJavaType(entity.paycompConfirmPK.companyCode, entity.paycompConfirmPK.personId,
+				entity.paycompConfirmPK.itemCD, entity.paycompConfirmPK.processYMEarly,
+				entity.paycompConfirmPK.processYMLater, entity.paycompConfirmPK.categoryAtr, entity.diffAmount,
+				entity.diffReason, entity.confirmSTS);
 	}
 
 	@Override
-	public List<DetailDifferential> getDetailDifferentialWithEarlyYM(String companyCode, List<String> personIDs,
-			int processingEarlyYM, int categoryATR, int payBonusAttribute, String itemCode) {
-		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
-				.setParameter("personId", personIDs).setParameter("categoryATR", categoryATR)
-				.setParameter("payBonusAttribute", payBonusAttribute).setParameter("itemCode", itemCode)
-				.setParameter("processingYM", processingEarlyYM).getList(s -> {
-					String employeeCode = s[0].toString();
-					String employeeName = employeeCode.substring(0, 10);
-					String itemName = s[2].toString();
-					int categoryAtr = Integer.valueOf(s[3].toString());
-					BigDecimal comparisonValue1 = BigDecimal.valueOf(Double.valueOf(s[4].toString()));
-					BigDecimal comparisonValue2 = BigDecimal.valueOf(0);
-					int registrationStatus1 = Integer.valueOf(s[5].toString());
-					int registrationStatus2 = 0;
-					String companyCd = s[6].toString();
-					return convertToDomainDetailDifferential(companyCd, employeeCode, employeeName, itemCode, itemName,
-							categoryAtr, comparisonValue1, comparisonValue2, new BigDecimal(0), "", registrationStatus1,
-							registrationStatus2, 0);
-				});
+	public List<SalaryBonusDetail> getContentReportEarlyMonth(String companyCode, List<String> PIDs, int yearMonth1,
+			String formCode) {
+
+		return this.queryProxy().query(SELECT_1, Object[].class).setParameter("formCode", formCode)
+				.setParameter("personId", PIDs).setParameter("processingYM", yearMonth1)
+				.setParameter("companyCode", companyCode).getList(c -> toDomain(c));
 	}
 
 	@Override
-	public List<DetailDifferential> getDetailDifferentialWithLaterYM(String companyCode, List<String> personIDs,
-			int processingLaterYM, int categoryATR, int payBonusAttribute, String itemCode) {
-		return this.queryProxy().query(SELECT_DETAIL_DIFFERENT_YM, Object[].class).setParameter("ccd", companyCode)
-				.setParameter("personId", personIDs).setParameter("categoryATR", categoryATR)
-				.setParameter("payBonusAttribute", payBonusAttribute).setParameter("itemCode", itemCode)
-				.setParameter("processingYM", processingLaterYM).getList(s -> {
-					String employeeCode = s[0].toString();
-					String employeeName = employeeCode.substring(0, 10);
-					String itemName = s[2].toString();
-					int categoryAtr = Integer.valueOf(s[3].toString());
-					BigDecimal comparisonValue1 = BigDecimal.valueOf(Double.valueOf(s[4].toString()));
-					BigDecimal comparisonValue2 = BigDecimal.valueOf(0);
-					int registrationStatus1 = Integer.valueOf(s[5].toString());
-					int registrationStatus2 = 0;
-					String companyCd = s[6].toString();
-					return convertToDomainDetailDifferential(companyCd, employeeCode, employeeName, itemCode, itemName,
-							categoryAtr, comparisonValue1, comparisonValue2, new BigDecimal(0), "", registrationStatus1,
-							registrationStatus2, 0);
-				});
+	public List<SalaryBonusDetail> getContentReportLaterMonth(String companyCode, List<String> PIDs, int yearMonth1,
+			String formCode) {
+		return this.queryProxy().query(SELECT_1, Object[].class).setParameter("formCode", formCode)
+				.setParameter("personId", PIDs).setParameter("processingYM", yearMonth1)
+				.setParameter("companyCode", companyCode).getList(c -> toDomain(c));
 	}
 
 	@Override
-	public List<ComparingSalaryBonusHeaderReportData> getReportHeader(String companyCode) {
-		return this.queryProxy().query(SELECT_CALLED_DETAIL, Object[].class).setParameter("ccd", companyCode)
-				.getList(c -> convertToDomainComparingSalaryBonusHeaderReportData(c));
+	public List<PaycompConfirm> getPayCompComfirm(String companyCode, List<String> personIDs, int processYMEarly,
+			int processYMLater) {
+		return this.queryProxy().query(SELECT_PAYCOMP_COMFIRM, QlsdtPaycompConfirm.class)
+				.setParameter("companyCode", companyCode).setParameter("personId", personIDs)
+				.setParameter("processYMEarly", processYMEarly).setParameter("processYMLater", processYMLater)
+				.getList(s -> convertToDomainPaycompConfirm(s));
+	}
+
+	@Override
+	public List<DepartmentDto> getDepartmentCodeList(String companyCode, List<String> PIDs, int yearMonth1, String formCode) {
+		return this.queryProxy().query(SELECT_DEPCODE, Object[].class).setParameter("formCode", formCode)
+				.setParameter("personId", PIDs).setParameter("processingYM", yearMonth1)
+				.setParameter("companyCode", companyCode).getList(c -> toDomainDepartment(c));
 	}
 
 }

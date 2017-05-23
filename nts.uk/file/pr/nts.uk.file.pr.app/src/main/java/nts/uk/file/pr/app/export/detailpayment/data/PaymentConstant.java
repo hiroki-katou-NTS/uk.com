@@ -21,19 +21,18 @@ public class PaymentConstant {
     /** The Constant SPACES. */
     public static final String SPACES = "  ";
     
-    /** The Constant ROW_HEIGHT_TITLE. */
-    public static final int ROW_HEIGHT_TITLE = 50;
-    
     /** The Constant COLUMN_WITH. */
     public static final int COLUMN_WITH = 18;
     
-    public static final int INDEX_ROW_TITLE = 5;
     
     /** The Constant INDEX_FIRST_COLUMN. */
     public static final int INDEX_FIRST_COLUMN = 0;
     
+    /** The Constant INDEX_ROW_TITLE. */
+    public static final int INDEX_ROW_TITLE = 6;
+    
     /** The Constant INDEX_ROW_CONTENT. */
-    public static final int INDEX_ROW_CONTENT = 6;
+    public static final int INDEX_ROW_CONTENT = 10;
     
     /** The Constant ZERO. */
     public static final int ZERO = 0;
@@ -46,6 +45,9 @@ public class PaymentConstant {
     
     /** The Constant NUMBER_COLUMN_PAGE. */
     public static final int NUMBER_COLUMN_PAGE = 13;
+    
+    /** The Constant NUMBER_ROW_PAGE. */
+    public static final int NUMBER_ROW_PAGE = 54;
     
     /** The Constant LIGHT_BLUE_COLOR. */
     public static final Color LIGHT_BLUE_COLOR = Color.fromArgb(197, 241, 247);

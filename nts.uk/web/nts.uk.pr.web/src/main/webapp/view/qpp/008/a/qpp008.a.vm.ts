@@ -12,7 +12,7 @@ module qpp008.a.viewmodel {
         statusRegisterColumns: KnockoutObservableArray<any>;
         statusRegisterSelectCode: KnockoutObservableArray<string>;
         /*Multiple selecting GridList*/
-        employyerList: KnockoutObservableArray<Employee>;
+        employyerList: KnockoutObservableArray<EmployeerInfo>;
         employyerColumns: KnockoutObservableArray<any>;
         employyerCurrentCodeList: KnockoutObservableArray<any>;
         //combobox1
@@ -67,22 +67,12 @@ module qpp008.a.viewmodel {
             ]);
             self.statusRegisterSelectCode = ko.observableArray([]);
 
-            self.employyerList = ko.observableArray([
-                new Employee("99900000-0000-0000-0000-000000000001", "日通　一郎", ""),
-                new Employee("99900000-0000-0000-0000-000000000002", "日通　二郎", ""),
-                new Employee("99900000-0000-0000-0000-000000000003", "日通　三郎", ""),
-                new Employee("99900000-0000-0000-0000-000000000004", "日通　四郎", ""),
-                new Employee("99900000-0000-0000-0000-000000000005", "日通　五郎", ""),
-                new Employee("99900000-0000-0000-0000-000000000006", "日通　六郎", ""),
-                new Employee("99900000-0000-0000-0000-000000000007", "日通　七郎", ""),
-                new Employee("99900000-0000-0000-0000-000000000008", "日通　八郎", ""),
-                new Employee("99900000-0000-0000-0000-000000000009", "日通　九郎", ""),
-                new Employee("99900000-0000-0000-0000-0000000000010", "日通　十郎", "")
-            ]);
+            self.employyerList = ko.observableArray([]);
             self.employyerColumns = ko.observableArray([
-                { headerText: '社員CD', prop: 'code', width: 200 },
-                { headerText: '氏名', prop: 'name', width: 150 },
-                { headerText: '所属', prop: 'note', width: 150 }
+                { headerText: '社員CD', prop: 'personID', hidden: 'hidden' },
+                { headerText: '社員CD', prop: 'employeeCode', width: 200 },
+                { headerText: '氏名', prop: 'employeeName', width: 150 },
+                { headerText: '所属', prop: 'departmentName', width: 150 }
 
             ]);
             self.employyerCurrentCodeList = ko.observableArray([]);
@@ -117,7 +107,11 @@ module qpp008.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this;
-            return self.loadComparingFormHeader();
+            let dfd = $.Deferred();
+            self.loadPersonInfo();
+            self.loadComparingFormHeader();
+            dfd.resolve();
+            return dfd.promise();
         }
 
         loadComparingFormHeader() {
@@ -131,6 +125,19 @@ module qpp008.a.viewmodel {
                 dfd.resolve();
             }).fail(function(error: any) {
 
+            });
+            return dfd.promise();
+        }
+
+        loadPersonInfo() {
+            let self = this;
+            let dfd = $.Deferred();
+            self.employyerList([]);
+            service.getPersonInfo().done(function(data) {
+                self.employyerList(_.map(data, function(emp: any) {
+                    return new EmployeerInfo(emp.personID, emp.employeeCode, emp.employeeName, "", "Hard code");
+                }));
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -149,6 +156,8 @@ module qpp008.a.viewmodel {
             command.monthJapan2 = nts.uk.time.yearInJapanEmpire(self.processingYMLaterValue().trim().replace("/", "").charAt[0]).toString();
             command.monthJapan2 = command.monthJapan2 + " " + self.processingYMLaterValue().split("/")[1] + "月";
             command.formCode = self.formHeaderSelectCode();
+            command.gradeSelectedCode = self.gradeSelectedCode();
+            command.pagingSelectedCode = self.pagingSelectedCode();
             command.payBonusAttr = 0;
             return command;
         }
@@ -161,9 +170,8 @@ module qpp008.a.viewmodel {
             let command: any;
             command = self.toJSObjet();
             service.saveAsPdf(command).done(function() {
-                console.log(command);
             }).fail(function(res: any) {
-                console.log(res.message);
+              nts.uk.ui.dialog.alert(res.message);
             });
         }
 
@@ -249,14 +257,18 @@ module qpp008.a.viewmodel {
         }
     }
 
-    class Employee {
-        code: string;
-        name: string;
-        note: string;
-        constructor(code: string, name: string, note: string) {
-            this.code = code;
-            this.name = name;
-            this.note = note;
+    class EmployeerInfo {
+        personID: string;
+        employeeCode: string;
+        employeeName: string;
+        departmentCode: string;
+        departmentName: string;
+        constructor(personID: string, employeeCode: string, employeeName: string, departmentCode: string, departmentName: string) {
+            this.personID = personID;
+            this.employeeCode = employeeCode;
+            this.employeeName = employeeName;
+            this.departmentCode = departmentCode;
+            this.departmentName = departmentName;
         }
     }
 

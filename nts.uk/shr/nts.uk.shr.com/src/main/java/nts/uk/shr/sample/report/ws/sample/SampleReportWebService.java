@@ -22,4 +22,5 @@ public class SampleReportWebService {
 		
 		return this.exportService.start(query);
 	}
+	
 }

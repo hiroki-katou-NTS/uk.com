@@ -16,13 +16,13 @@ import nts.arc.layer.dom.AggregateRoot;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class AggregateTableEntity extends TableEntity {
+public abstract class AggregateTableEntity extends UkJpaEntity {
     
     /**
      * version
      */
     //@Version
-	@Transient
+	@Transient 
     protected long version;
     
     /**

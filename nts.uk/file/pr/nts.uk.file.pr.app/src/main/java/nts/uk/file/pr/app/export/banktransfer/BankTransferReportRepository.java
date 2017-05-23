@@ -7,7 +7,8 @@ import nts.uk.file.pr.app.export.banktransfer.data.BankDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferParamRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BranchDto;
-import nts.uk.file.pr.app.export.banktransfer.data.CalledDto;
+import nts.uk.file.pr.app.export.banktransfer.data.PersonBankAccountDto;
+import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
 
 public interface BankTransferReportRepository {
 	/**
@@ -36,6 +37,14 @@ public interface BankTransferReportRepository {
 	 * @return branchDto
 	 */
 	Optional<BranchDto> findAllBranch(String companyCode, String branchId);
+	
+	/**
+	 * Get list branch
+	 * @param companyCode
+	 * @param branchIds
+	 * @return
+	 */
+	List<BranchDto> findAllBranch(String companyCode, List<String> branchIds);
 
 	/**
 	 * 
@@ -50,5 +59,28 @@ public interface BankTransferReportRepository {
 	 * @param companyCode
 	 * @return
 	 */
-	Optional<CalledDto> findAllCalled(String companyCode);
+	Optional<String> findAllCalled(String companyCode);
+
+	/**
+	 * 
+	 * @param companyCode
+	 * @return
+	 */
+	Optional<String> findRegalDocCnameSjis(String companyCode);
+
+	/**
+	 * 
+	 * @param companyCode
+	 * @return
+	 */
+	CompanyDto findCompany(String companyCode);
+
+	/**
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param baseYM
+	 * @return
+	 */
+	Optional<PersonBankAccountDto> findPerBankAccBySEL3(String companyCode, String personId, int baseYM);
 }
