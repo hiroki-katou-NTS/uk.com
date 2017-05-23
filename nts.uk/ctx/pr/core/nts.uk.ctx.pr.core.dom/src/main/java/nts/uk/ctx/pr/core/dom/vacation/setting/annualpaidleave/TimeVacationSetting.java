@@ -5,27 +5,25 @@
 package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.vacation.setting.ManageDistinct;
 
 /**
- * The Class YearVacationSetting.
+ * The Class YearVacationTimeManageSetting.
  */
+@Setter
 @Getter
-public class YearVacationSetting extends DomainObject {
-
-    /** The company id. */
-    private String companyId;
-
-    /** The year manage type. */
-    private ManageDistinct yearManageType;
-
-    /** The manage setting. */
-    private YearVacationManageSetting yearManageSetting;
+public class TimeVacationSetting {
     
     /** The time manage type. */
     private ManageDistinct timeManageType;
     
-    /** The time manage setting. */
-    private YearVacationTimeManageSetting timeManageSetting;
+    /** The time unit. */
+    private YearVacationTimeUnit timeUnit;
+    
+    /** The max day. */
+    private YearVacationTimeMaxDay maxDay;
+    
+    /** The is enough time one day. */
+    private boolean isEnoughTimeOneDay;
 }

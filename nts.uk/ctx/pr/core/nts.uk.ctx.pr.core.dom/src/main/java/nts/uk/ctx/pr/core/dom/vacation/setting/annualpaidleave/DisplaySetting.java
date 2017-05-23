@@ -5,10 +5,12 @@
 package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class DisplaySetting.
  */
+@Setter
 @Getter
 public class DisplaySetting {
     
