@@ -48,5 +48,4 @@ public class KoForeach extends UIComponentBase {
     	
         Helper.writeEnd(context.getResponseWriter());
     }
-
 }

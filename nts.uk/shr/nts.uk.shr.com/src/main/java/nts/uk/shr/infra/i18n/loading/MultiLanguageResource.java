@@ -1,5 +1,6 @@
 package nts.uk.shr.infra.i18n.loading;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -54,14 +55,14 @@ public class MultiLanguageResource implements IInternationalization {
 
 	private void loadSystemResource() {
 		codeNameResource = systemResourceBundle.getResource(currentLanguage.getSessionLocale(), ResourceType.CODE_NAME);
-		if (codeNameResource == null) {
+		if (codeNameResource == null || codeNameResource.isEmpty()) {
 			codeNameResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.CODE_NAME);
 		}
 
 		Map<String, Map<String, String>> tempMessageResource = systemResourceBundle
 				.getResource(currentLanguage.getSessionLocale(), ResourceType.MESSAGE);
-		if (tempMessageResource == null) {
+		if (tempMessageResource == null || tempMessageResource.isEmpty()) {
 			tempMessageResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.MESSAGE);
 		}
@@ -83,7 +84,7 @@ public class MultiLanguageResource implements IInternationalization {
 	}
 
 	@Override
-	public Optional<String> getItemName(String id) {
+	public Optional<String> getItemName(String id, String... params) {
 
 		String text = companyCustomizedResource.get(id);
 		if (text != null)
@@ -91,13 +92,17 @@ public class MultiLanguageResource implements IInternationalization {
 
 		Map<String, String> allSystemCodeName = groupResource(codeNameResource);
 		text = allSystemCodeName.get(id);
-
+		if (text != null) {
+			text = replaceCompanyDenpendItem(text);
+			if (params.length > 0)
+				text = replaceMessageParameter(text, Arrays.asList(params));
+		}
 		return text == null ? Optional.empty() : Optional.of(text);
 	}
 
 	@Override
 	public Optional<String> getMessage(String messageId, String... params) {
-		return getMessage(messageId, Arrays.asList(params));
+		return getMessage(messageId, params.length > 0 ? Arrays.asList(params) : new ArrayList<String>());
 	}
 
 	@Override
@@ -184,7 +189,12 @@ public class MultiLanguageResource implements IInternationalization {
 
 		Map<ResourceType, Map<String, String>> result = new HashMap<>();
 		result.put(ResourceType.MESSAGE, getAllMessage());
-		result.put(ResourceType.CODE_NAME, getCodeNameResourceOfProgram(programId));
+		// result.put(ResourceType.CODE_NAME,
+		// getCodeNameResourceOfProgram(programId));
+		// TODO: temporaty fix for test, get all of company
+		Map<String, String> fixedForTest = new HashMap<>();
+		codeNameResource.entrySet().stream().map(x -> x.getValue()).forEach(x -> fixedForTest.putAll(x));
+		result.put(ResourceType.CODE_NAME, fixedForTest);
 
 		return result;
 	}
@@ -201,5 +211,4 @@ public class MultiLanguageResource implements IInternationalization {
 	public Map<String, String> getCustomizeResource() {
 		return companyCustomizedResource;
 	}
-
 }

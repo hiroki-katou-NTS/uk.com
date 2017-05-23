@@ -8,4 +8,5 @@ import lombok.Value;
 public class SampleReportDataSource {
 
 	List<SampleReportDataItem> items;
+	
 }
