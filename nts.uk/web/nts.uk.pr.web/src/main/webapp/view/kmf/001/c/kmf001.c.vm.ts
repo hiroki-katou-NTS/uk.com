@@ -13,6 +13,10 @@ module nts.uk.pr.view.kmf001.c {
             selectedMaxManageSemiVacation: KnockoutObservable<number>;
             maxDayReferenceList: KnockoutObservableArray<EnumertionModel>;
             selectedMaxNumberSemiVacation: KnockoutObservable<number>;
+            maxNumberCompany: KnockoutObservable<number>;
+            maxGrantDay: KnockoutObservable<number>;
+            maxRemainingDay: KnockoutObservable<number>;
+            numberYearRetain: KnockoutObservable<number>;
             enableMaxNumberCompany: KnockoutObservable<boolean>;
             
             permissionList: KnockoutObservableArray<EnumertionModel>;
@@ -31,6 +35,8 @@ module nts.uk.pr.view.kmf001.c {
             selectedManageUpperLimitDayVacation: KnockoutObservable<number>;
             enableManageUpperLimit: KnockoutObservable<boolean>;
             selectedMaxDayVacation: KnockoutObservable<number>;
+            timeMaxNumberCompany: KnockoutObservable<number>;
+            isEnoughTimeOneDay: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
@@ -52,6 +58,10 @@ module nts.uk.pr.view.kmf001.c {
                     {value: 1, name: "年休付与テーブルを参照"}
                 ]);
                 self.selectedMaxNumberSemiVacation = ko.observable(0);
+                self.maxNumberCompany = ko.observable(null);
+                self.maxGrantDay = ko.observable(null);
+                self.maxRemainingDay = ko.observable(null);
+                self.numberYearRetain = ko.observable(null);
                 self.enableMaxNumberCompany = ko.computed(function() {
                     return self.selectedMaxNumberSemiVacation() == 0 && self.enableAnnualVacation();
                 }, self);
@@ -95,6 +105,8 @@ module nts.uk.pr.view.kmf001.c {
                 }, self);
                 self.selectedManageUpperLimitDayVacation = ko.observable(0);
                 self.selectedMaxDayVacation = ko.observable(0);
+                self.timeMaxNumberCompany = ko.observable(null);
+                self.isEnoughTimeOneDay = ko.observable(true);
             }
             
             public startPage(): JQueryPromise<any> {
@@ -103,10 +115,41 @@ module nts.uk.pr.view.kmf001.c {
                 dfd.resolve();
                 return dfd.promise();
             }
-        }
-        
-        export class AnnualPaidLeaveModel {
             
+            private update(): void {
+                let self = this;
+                let dfd = $.Deferred();
+                let command = self.toJsObject();
+                service.update(command).done(function() {
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                })
+            }
+            
+            private toJsObject(): any {
+                let self = this;
+                let command: any = {};
+                command.annualManage = self.selectedAnnualManage();
+                command.addAttendanceDay = self.selectedAddAttendanceDay();
+                command.maxManageSemiVacation = self.selectedMaxManageSemiVacation();
+                command.maxNumberSemiVacation = self.selectedMaxNumberSemiVacation();
+                command.maxNumberCompany = self.maxNumberCompany();
+                command.maxGrantDay = self.maxGrantDay();
+                command.maxRemainingDay = self.maxRemainingDay();
+                command.numberYearRetain = self.numberYearRetain();
+                command.preemptionAnnualVacation = self.selectedPermission();
+                command.preemptionYearLeave = self.selectedPreemptionPermit();
+                command.remainingNumberDisplay = self.selectedNumberRemainingYearly();
+                command.nextGrantDayDisplay = self.selectedNextAnunalVacation();
+                command.timeManageType = self.selectedTimeManagement();
+                command.timeUnit = self.selectedVacationTimeUnit();
+                command.manageMaxDayVacation = self.selectedManageUpperLimitDayVacation();
+                command.reference = self.selectedMaxDayVacation();
+                command.maxTimeDay = self.timeMaxNumberCompany();
+                command.isEnoughTimeOneDay = self.isEnoughTimeOneDay();
+                return command;
+            }
         }
     }
 }

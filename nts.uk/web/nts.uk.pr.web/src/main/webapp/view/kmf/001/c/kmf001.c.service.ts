@@ -3,16 +3,12 @@ module nts.uk.pr.view.kmf001.c {
         /**
          *  Service paths
          */
-        var paths: any = {
-
+        var servicePath: any = {
+            update: 'ctx/pr/core/vacation/setting/annualpaidleave/update'
         };
 
-        /**
-         * Normal service.
-         */
-        export class Service {
-            constructor() {
-            }
+       export function update(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.update, command);
         }
 
         /**

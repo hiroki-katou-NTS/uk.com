@@ -13,12 +13,12 @@ import nts.uk.ctx.pr.core.dom.vacation.setting.ManageDistinct;
 @Getter
 public class YearVacationTimeMaxDay {
     
-    /** The max time day. */
-    private MaxTimeDay maxTimeDay;
-    
-    /** The manage type. */
-    private ManageDistinct manageType;
+    /** The manage max day vacation. */
+    private ManageDistinct manageMaxDayVacation;
     
     /** The reference. */
     private MaxDayReference reference;
+    
+    /** The max time day. */
+    private MaxTimeDay maxTimeDay;
 }

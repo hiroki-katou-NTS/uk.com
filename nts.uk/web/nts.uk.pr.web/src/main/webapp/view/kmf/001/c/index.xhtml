@@ -21,7 +21,7 @@
 					<!--#{i18n.getText('KMF001_27')}-->
 					<button class="pull-left btn-default">休暇の選択に戻る</button>
 					<!-- #{i18n.getText('KMF001_28')} -->
-					<button class="proceed btn-default">登録</button>
+					<button class="proceed btn-default" data-bind="click: update">登録</button>
 					<!-- #{i18n.getText('KMF001_14')} -->
 					<label class="pull-right btn-default">休暇の設定</label>
 					<!-- #{i18n.getText('KMF001_29')} -->
@@ -96,23 +96,23 @@
 										
 							<!-- KMF001_132 -->
 							<td><label class="content-label">会社の上限回数</label></td>
-							<td><input data-bind="enable: enableMaxNumberCompany"/></td>
+							<td><input data-bind="enable: enableMaxNumberCompany, value: maxNumberCompany"/></td>
 						</tr>
 						<tr>
 							<!-- KMF001_35 -->
 							<td><label class="content-label">上限日数設定</label></td>
 							<!-- KMF001_36 -->
 							<td><label class="content-label" style="padding-left: 0px">付与上限日数</label>
-								<input data-bind="enable: enableAnnualVacation"/>
+								<input data-bind="enable: enableAnnualVacation, value: maxGrantDay"/>
 							</td>
 
 							<td><label class="content-label">残数上限日数</label></td>
-							<td><input data-bind="enable: enableAnnualVacation"/></td>
+							<td><input data-bind="enable: enableAnnualVacation, value: maxRemainingDay"/></td>
 						</tr>
 						<tr>
 							<!-- KMF001_38 -->
 							<td><label class="content-label">保持できる年数</label></td>
-							<td><input data-bind="enable: enableAnnualVacation" /></td>
+							<td><input data-bind="enable: enableAnnualVacation, value: numberYearRetain" /></td>
 										
 							<td><div></div></td>
 							<td><div></div></td>
@@ -264,12 +264,12 @@
 										
 							<!-- KMF001_135 -->
 							<td><label class="content-label">会社の上限日数</label></td>
-							<td><input data-bind="enable: enableMaxNumberCompany"/></td>
+							<td><input data-bind="enable: enableMaxNumberCompany, value: timeMaxNumberCompany"/></td>
 						</tr>
 						<tr>
 							<!-- KMF001_155 -->
 							<td colspan="4"><div  class="content-label"
-									data-bind="ntsCheckBox: { checked: true,
+									data-bind="ntsCheckBox: { checked: isEnoughTimeOneDay,
 									enable: enableMaxNumberCompany,
 									text: '年次有給休暇の期限が切れた時、一日の時間未満の時間年休を積立年休とする' }"></div></td>
 						</tr>

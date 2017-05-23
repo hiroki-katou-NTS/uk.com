@@ -5,11 +5,13 @@
 package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.vacation.setting.ApplyPermission;
 
 /**
  * The Class AcquisitionVacationSetting.
  */
+@Setter
 @Getter
 public class AcquisitionVacationSetting {
 
