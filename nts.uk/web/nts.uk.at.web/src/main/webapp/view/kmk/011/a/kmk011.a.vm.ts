@@ -253,6 +253,9 @@ module kmk011.a.viewmodel {
             if ($('.nts-validate').ntsError("hasError")==true) {
                 $('.nts-validate').ntsError('clear');
             }
+            if($('.nts-editor').ntsError("hasError")==true){
+                $('.nts-input').ntsError('clear');
+            }
         }
         //get all divergence time new
         getAllDivTimeNew() {
