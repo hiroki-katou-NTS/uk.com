@@ -48,7 +48,7 @@ module kml001.shr.vmbase {
         name: string;
         displayNumber: number;
         useAtr: number;
-        attendanceItems: Array<number>;
+        attendanceItems: Array<AttendanceItem>;
     }
     
     export class PremiumSetting {
@@ -62,7 +62,7 @@ module kml001.shr.vmbase {
         useAtr: KnockoutObservable<number>;
         attendanceItems: KnockoutObservableArray<AttendanceItem>;
         constructor(companyID: string, historyID: string, premiumID: number, rate: number, attendanceID: number, 
-            name: string, displayNumber: number, useAtr: number, attendanceItems: Array<number>) {
+            name: string, displayNumber: number, useAtr: number, attendanceItems: Array<AttendanceItem>) {
             var self = this;
             self.companyID = ko.observable(companyID);
             self.historyID = ko.observable(historyID);
@@ -74,7 +74,7 @@ module kml001.shr.vmbase {
             self.useAtr = ko.observable(useAtr);
             let koAttendanceItems = [];
             attendanceItems.forEach(function(item){
-                koAttendanceItems.push(new vmbase.AttendanceItem(item, item.toString()));
+                koAttendanceItems.push(new vmbase.AttendanceItem(item.shortAttendanceID, item.name));
             });
             self.attendanceItems = ko.observableArray(koAttendanceItems);
         }
@@ -82,11 +82,11 @@ module kml001.shr.vmbase {
     }
     
     export class AttendanceItem {
-        iD: number;
+        shortAttendanceID: number;
         name: string;
-        constructor(iD: number, name: string) {
+        constructor(shortAttendanceID: number, name: string) {
             var self = this;
-            self.iD = iD;
+            self.shortAttendanceID = shortAttendanceID;
             self.name = name;    
         }    
     }
@@ -171,7 +171,7 @@ module kml001.shr.vmbase {
                 name: koObject.name(),
                 displayNumber: koObject.displayNumber(),
                 useAtr: koObject.useAtr(),
-                attendanceItems: _.map(koObject.attendanceItems() , function(item){ return item.iD})   
+                attendanceItems: _.map(koObject.attendanceItems() , function(item){ return {shortAttendanceID: item.shortAttendanceID, name: item.name}})   
             };    
         }
         

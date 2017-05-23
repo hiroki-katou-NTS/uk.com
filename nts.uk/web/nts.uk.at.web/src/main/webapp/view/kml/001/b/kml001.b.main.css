@@ -71,3 +71,6 @@ hr { margin-top: 15px; }
 #center-bottom > button {
 	margin-right: 10px;
 }
+#func-notifier-errors{
+    margin-top: -530px;	
+}

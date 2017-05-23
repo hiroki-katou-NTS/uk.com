@@ -40,7 +40,7 @@ module kml001.b.viewmodel {
                     });
                     self.allUse.subscribe(function(value){
                         if(value==0) {
-                            $("#premium-set-tbl").ntsError('set', vmbase.MSG.MSG066);     
+                            $("#premium-set-tbl").ntsError('set', {messageId:"Msg_66"});     
                         } else {
                             $("#premium-set-tbl").ntsError('clear');  
                         }    
@@ -48,6 +48,7 @@ module kml001.b.viewmodel {
                     dfd.resolve();
                 })
                 .fail(function(res) { 
+                    nts.uk.ui.dialog.alert(res.message);
                     dfd.reject(res); 
                 });
             return dfd.promise();
@@ -70,7 +71,7 @@ module kml001.b.viewmodel {
                     nts.uk.ui.windows.setShared('updatePremiumSeting', true);
                     nts.uk.ui.windows.close();
                 }).fail(function(res) {
-                    
+                    nts.uk.ui.dialog.alert(res.message);
                 });
             
         }

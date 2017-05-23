@@ -7,6 +7,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalculationSettingDto;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumSetDto;
+import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.ShortAttendanceItemDto;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
@@ -90,6 +94,6 @@ public class PersonCostCalculationFinder {
 				premiumSetting.getName().v(),
 				premiumSetting.getDisplayNumber(),
 				premiumSetting.getUseAtr().value,
-				premiumSetting.getAttendanceItems());
+				premiumSetting.getAttendanceItems().stream().map(x -> new ShortAttendanceItemDto(x, x.toString())).collect(Collectors.toList()));
 	}
 }

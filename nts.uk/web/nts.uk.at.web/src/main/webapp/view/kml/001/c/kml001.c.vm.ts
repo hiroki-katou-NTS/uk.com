@@ -13,7 +13,7 @@ module kml001.c.viewmodel {
             self.lastestStartDate = ko.observable(nts.uk.ui.windows.getShared('lastestStartDate'));
             self.newStartDate = ko.observable(null);
             self.newStartDate.subscribe(function(value){
-                if(self.errorStartDate()) $("#startDateInput").ntsError('set', vmbase.MSG.MSG102);     
+                if(self.errorStartDate()) $("#startDateInput").ntsError('set', {messageId:"Msg_102"});     
             });
             self.size = ko.observable(nts.uk.ui.windows.getShared('size'));
             self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47',[self.lastestStartDate()]));
@@ -32,7 +32,7 @@ module kml001.c.viewmodel {
          */
         submitAndCloseDialog(): void {
             var self = this;
-            if(self.errorStartDate()) $("#startDateInput").ntsError('set', vmbase.MSG.MSG102); 
+            if(self.errorStartDate()) $("#startDateInput").ntsError('set', {messageId:"Msg_102"}); 
             else {
                 nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
                 nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());

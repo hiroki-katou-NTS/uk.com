@@ -73,7 +73,7 @@
 								<div class="cell valign-center">
 									<div>
 										<input id="startDateInput" data-name="有効開始日" class="data-required" data-bind="ntsTimeEditor: {
-											value: currentPersonCost().startDate,
+											value: newStartDate,
 											option: { width: '90px', inputFormat: 'date' },
 											required: true, 
 											enable: isInsert}" />
@@ -102,7 +102,7 @@
 							</div>
 							<div class="table">
 								<div class="item-valign-top" data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('KML001_11')}</div>
-								<textarea id="inp-2" data-name="備考" data-bind="ntsMultilineEditor: {
+								<textarea id="memo" data-name="備考" data-bind="ntsMultilineEditor: {
 									value: currentPersonCost().memo,
 									constraint: 'Memo'}" />
 							</div>

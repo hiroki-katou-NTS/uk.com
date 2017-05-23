@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.find.budget.premium;
+package nts.uk.ctx.at.schedule.app.find.budget.premium.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

@@ -1,36 +1,17 @@
-package nts.uk.ctx.at.schedule.app.command.budget.premium;
+package nts.uk.ctx.at.schedule.app.find.budget.premium.dto;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-
 /**
  * 
  * @author Doan Duy Hung
  *
  */
-
-@Value
-public class DeletePersonCostCalculationCommand {
-	String companyID;
-
-	String historyID;
-	
-	String startDate;
-
-	String endDate;
-
-	int unitPrice;
-
-	String memo;
-	
-	List<PremiumSetDelete> premiumSets;
-}
-
 @AllArgsConstructor
 @Value
-class PremiumSetDelete {
+public class PremiumSetDto {
 	String companyID;
 	
 	String historyID;
@@ -47,5 +28,5 @@ class PremiumSetDelete {
     
     int useAtr;
     
-    List<Integer> attendanceItems;
+    List<ShortAttendanceItemDto> attendanceItems;
 }

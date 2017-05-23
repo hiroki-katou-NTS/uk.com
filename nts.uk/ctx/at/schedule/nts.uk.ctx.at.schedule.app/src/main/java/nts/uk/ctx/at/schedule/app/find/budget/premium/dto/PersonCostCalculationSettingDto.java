@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.find.budget.premium;
+package nts.uk.ctx.at.schedule.app.find.budget.premium.dto;
 
 import java.util.List;
 
@@ -30,24 +30,5 @@ public class PersonCostCalculationSettingDto {
 	List<PremiumSetDto> premiumSets;
 }
 
-@AllArgsConstructor
-@Value
-class PremiumSetDto {
-	String companyID;
-	
-	String historyID;
-	
-	Integer premiumID;
-	
-	Integer rate;
-    
-	Integer attendanceID;
-    
-    String name;
-    
-    Integer displayNumber;
-    
-    int useAtr;
-    
-    List<Integer> attendanceItems;
-}
+
+

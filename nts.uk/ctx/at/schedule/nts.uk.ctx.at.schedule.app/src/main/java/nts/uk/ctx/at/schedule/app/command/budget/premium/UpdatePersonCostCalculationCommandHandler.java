@@ -10,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PersonCostCalculationCommand;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationDomainService;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
@@ -28,15 +29,15 @@ import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
 @Transactional
-public class UpdatePersonCostCalculationCommandHandler extends CommandHandler<UpdatePersonCostCalculationCommand>{
+public class UpdatePersonCostCalculationCommandHandler extends CommandHandler<PersonCostCalculationCommand>{
 
 	@Inject
 	private PersonCostCalculationDomainService personCostCalculationDomainService;
 	
 	@Override
-	protected void handle(CommandHandlerContext<UpdatePersonCostCalculationCommand> context) {
+	protected void handle(CommandHandlerContext<PersonCostCalculationCommand> context) {
 		String companyID = AppContexts.user().companyId();
-		UpdatePersonCostCalculationCommand command = context.getCommand();
+		PersonCostCalculationCommand command = context.getCommand();
 		this.personCostCalculationDomainService.updatePersonCostCalculation(
 				new PersonCostCalculation(
 						companyID, 
@@ -55,7 +56,7 @@ public class UpdatePersonCostCalculationCommandHandler extends CommandHandler<Up
 									new PremiumName(x.getName()), 
 									x.getDisplayNumber(), 
 									EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class), 
-									x.getAttendanceItems()))
+									x.getAttendanceItems().stream().map(y -> y.getShortAttendanceID()).collect(Collectors.toList())))
 							.collect(Collectors.toList())
 				)
 		);
