@@ -14,6 +14,6 @@ public class PaydayProcessingSelect4Dto {
 
 	public static PaydayProcessingSelect4Dto fromDomain(PaydayProcessing domain) {
 		return new PaydayProcessingSelect4Dto(domain.getProcessingNo().v(), domain.getProcessingName().v(),
-				domain.getBCurrentProcessingYm().v());
+				domain.getCurrentProcessingYm().v());
 	}
 }
