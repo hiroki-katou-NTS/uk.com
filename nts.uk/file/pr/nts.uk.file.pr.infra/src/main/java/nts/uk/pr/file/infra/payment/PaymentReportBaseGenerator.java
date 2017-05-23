@@ -12,8 +12,6 @@ import com.aspose.cells.Range;
 import com.aspose.cells.Style;
 import com.aspose.cells.Worksheet;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.gul.text.StringUtil;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentSalaryItemDto;
@@ -152,10 +150,10 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	protected void init() {
 		// Set template style.
 		this.templateStyle = new TemplateStyle();
-		this.templateStyle.setHeaderStyle(getStyle(getCategoryHeaderCell()));
-		this.templateStyle.setNameStyle(getStyle(getItemNameCell()));
-		this.templateStyle.setValueStyle(getStyle(getItemValueCell()));
-		this.templateStyle.setRemarkStyle(getStyle(getRemarkCell()));
+		this.templateStyle.headerStyle = getStyle(getCategoryHeaderCell());
+		this.templateStyle.nameStyle = getStyle(getItemNameCell());
+		this.templateStyle.valueStyle = getStyle(getItemValueCell());
+		this.templateStyle.remarkStyle = getStyle(getRemarkCell());
 
 		// Set number of columns to merged.
 		this.numberOfColumnPerItem = this.getNumberOfColumnPerItem();
@@ -384,8 +382,8 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 */
 	private void printCellValue(List<CellValue> list) {
 		list.forEach(item -> {
-			Cell cell = cells.get(item.getRow(), item.getCol());
-			cell.setValue(item.getValue());
+			Cell cell = cells.get(item.row, item.col);
+			cell.setValue(item.value);
 		});
 
 	}
@@ -393,34 +391,6 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/**
 	 * The Class TemplateStyle.
 	 */
-
-	/**
-	 * Sets the value style.
-	 *
-	 * @param valueStyle
-	 *            the new value style
-	 */
-
-	/**
-	 * Sets the value style.
-	 *
-	 * @param valueStyle
-	 *            the new value style
-	 */
-
-	/**
-	 * Sets the value style.
-	 *
-	 * @param valueStyle
-	 *            the new value style
-	 */
-	
-	/**
-	 * Sets the value style.
-	 *
-	 * @param valueStyle the new value style
-	 */
-	@Setter
 	private class TemplateStyle {
 
 		/** The remark style. */
@@ -440,13 +410,6 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/**
 	 * The Class CellValue.
 	 */
-	
-	/**
-	 * Gets the value.
-	 *
-	 * @return the value
-	 */
-	@Getter
 	protected class CellValue {
 
 		/** The row. */
