@@ -20,6 +20,7 @@ import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentHeader;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.RefundPaddingFinder;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCode;
 import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository;
 import nts.uk.file.pr.app.export.payment.PaymentReportQuery;
@@ -28,6 +29,7 @@ import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentCompanyDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentDepartmentDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentEmployeeDto;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentRefundPaddingDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentSalaryItemDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,6 +50,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/** The repository. */
 	@Inject
 	private ContactItemsSettingRepository repository;
+
+	/** The refund padding finder. */
+	@Inject
+	private RefundPaddingFinder refundPaddingFinder;
 
 	/** The Constant TOTAL_COLUMN_INLINE. */
 	private static final int TOTAL_COLUMN_INLINE = 9;
@@ -72,7 +78,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 	/** The Constant CATEGORY_ARTICLE. */
 	public static final int CATEGORY_ARTICLE = 3;
-	
+
 	/** The Constant CATEGORY_OTHER. */
 	public static final int CATEGORY_OTHER = 9;
 
@@ -125,8 +131,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/**
 	 * Check payment header layout.
 	 *
-	 * @param companyCode the company code
-	 * @param query the query
+	 * @param companyCode
+	 *            the company code
+	 * @param query
+	 *            the query
 	 * @return the list
 	 */
 	private List<QstdtPaymentHeader> checkPaymentHeaderLayout(String companyCode,
@@ -134,29 +142,33 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 		return this.queryProxy().query(FIND_PAYMENT_HEADER_LAYOUT, QstdtPaymentHeader.class)
 			.setParameter("companyCode", companyCode)
-			.setParameter("processingNo", query.getProcessingNo())
-			.setParameter("layoutItem", 0)
-			//TODO FAKE LAYOUT ITEM
+			.setParameter("processingNo", query.getProcessingNo()).setParameter("layoutItem", 0)
+			// TODO FAKE LAYOUT ITEM
 			.setParameter("processingYM", query.getProcessingYM()).getList();
 	}
 
 	/**
 	 * Find employee code.
 	 *
-	 * @param companyCode the company code
-	 * @param employeeCode the employee code
+	 * @param companyCode
+	 *            the company code
+	 * @param employeeCode
+	 *            the employee code
 	 * @return the optional
 	 */
 	Optional<CmnmtEmp> findEmployeeCode(String companyCode, String employeeCode) {
 		return this.queryProxy().query(FIND_EMPLOYEE_BYCODE, CmnmtEmp.class)
-			.setParameter("companyCode", companyCode).setParameter("employmentCode", employeeCode).getSingle();
+			.setParameter("companyCode", companyCode).setParameter("employmentCode", employeeCode)
+			.getSingle();
 	}
 
 	/**
 	 * Check payment header specification.
 	 *
-	 * @param companyCode the company code
-	 * @param query the query
+	 * @param companyCode
+	 *            the company code
+	 * @param query
+	 *            the query
 	 * @return the list
 	 */
 	private List<QstdtPaymentHeader> checkPaymentHeaderSpecification(String companyCode,
@@ -241,14 +253,60 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		PaymentReportData reportData = new PaymentReportData();
 		reportData.setReportData(reportDatas);
 		reportData.setLayoutItem(query.getLayoutItems());
+
+		// set config data query
+		PaymentRefundPaddingDto config = new PaymentRefundPaddingDto();
+		int printType = 0;
+		switch (query.getSelectPrintTypes()) {
+		case 0:
+			printType = 1;
+			break;
+		case 4:
+			printType = 1;
+			break;
+		case 5:
+			printType = 1;
+			break;
+		case 1:
+			printType = 2;
+			break;
+		case 3:
+			printType = 2;
+			break;
+		case 2:
+			printType = 3;
+			break;
+		default:
+			break;
+		}
+
+		// set config
+		config.setPrintType(printType);
+		switch (printType) {
+		case 1:
+			config.setRefundPaddingOnceDto(this.refundPaddingFinder.findPrintTypeOne());
+			break;
+		case 2:
+			config.setRefundPaddingTwoDto(this.refundPaddingFinder.findPrintTypeTwo());
+			break;
+		case 3:
+			config.setRefundPaddingThreeDto(this.refundPaddingFinder.findPrintTypeThree());
+			break;
+
+		default:
+			break;
+		}
+		reportData.setConfig(config);
 		return reportData;
 	}
 
 	/**
 	 * Detail header.
 	 *
-	 * @param header the header
-	 * @param category the category
+	 * @param header
+	 *            the header
+	 * @param category
+	 *            the category
 	 * @return the list
 	 */
 	private List<PaymentSalaryItemDto> detailHeader(QstdtPaymentHeader header, int category) {
@@ -302,15 +360,19 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/**
 	 * Default data begin end.
 	 *
-	 * @param startLine the start line
-	 * @param endLine the end line
-	 * @param startColum the start colum
-	 * @param endColum the end colum
+	 * @param startLine
+	 *            the start line
+	 * @param endLine
+	 *            the end line
+	 * @param startColum
+	 *            the start colum
+	 * @param endColum
+	 *            the end colum
 	 * @return the list
 	 */
 
-	private List<PaymentSalaryItemDto> defaultDataBeginEnd(int startLine, int endLine, int startColum,
-		int endColum) {
+	private List<PaymentSalaryItemDto> defaultDataBeginEnd(int startLine, int endLine,
+		int startColum, int endColum) {
 		if (startLine == endLine) {
 			return defaultDataColumn(startColum + 1, endColum - 1);
 		}
@@ -371,11 +433,11 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		PaymentEmployeeDto employeeDto = new PaymentEmployeeDto();
 		Optional<CmnmtEmp> employee = this.findEmployeeCode(header.qstdtPaymentHeaderPK.companyCode,
 			header.employeeCode);
-		
+
 		if (employee.isPresent()) {
 			employeeDto.setEmployeeCode(employee.get().cmnmtEmpPk.employmentCode);
 			employeeDto.setEmployeeName(employee.get().employmentName);
-		}else {
+		} else {
 			employeeDto.setEmployeeCode(header.employeeCode);
 			employeeDto.setEmployeeName(header.employeeName);
 		}
@@ -392,7 +454,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 
 		// 記事項目 (categoryItem = article)
 		reportData.setArticleItems(this.detailHeader(header, CATEGORY_ARTICLE));
-		
+
 		// 他項目 (categoryItem = other)
 		reportData.setOtherItems(this.detailHeader(header, CATEGORY_OTHER));
 
@@ -402,11 +464,11 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 				header.employeeCode));
 
 		// set year month
-		
-		PaymentCompanyDto companyDto = new PaymentCompanyDto();
-		companyDto.setJapaneseYearMonth(this.convertYearMonthJP(header.qstdtPaymentHeaderPK.processingYM));
-		reportData.setCompanyInfo(companyDto);
 
+		PaymentCompanyDto companyDto = new PaymentCompanyDto();
+		companyDto.setJapaneseYearMonth(
+			this.convertYearMonthJP(header.qstdtPaymentHeaderPK.processingYM));
+		reportData.setCompanyInfo(companyDto);
 		return reportData;
 	}
 
