@@ -28,9 +28,9 @@ module qpp014.e {
             self.numberOfProcessSuccess = ko.observable(0);
             self.numberOfProcessFail = ko.observable(0);
             self.timer = new nts.uk.ui.sharedvm.KibanTimer('timer');
-            for (let i = 1; i < 10; i++) {
-                self.e_errorList.push(new ItemModel_E_LST_003('00' + i, '基本給', "description " + i));
-            }
+//            for (let i = 1; i < 10; i++) {
+//                self.e_errorList.push(new ItemModel_E_LST_003('00' + i, '基本給', "description " + i));
+//            }
             for (let i = 1; i < 10; i++) {
                 self.e_resultList.push(new ItemModel_E_LST_004('00' + i, "description " + i));
             }
@@ -68,7 +68,12 @@ module qpp014.e {
             $.when(qpp014.e.service.removeBankTransfer(cmd))
                 .done(function() {
                     _.forEach(self.data(), function(bankTransfer) {
-                        self.addBankTransfer(bankTransfer).done(function() {
+                        self.addBankTransfer(bankTransfer).done(function(res) {
+                            // check add error
+                            if (res && res.businessException) {
+                                self.e_errorList.push(new ItemModel_E_LST_003(bankTransfer.scd, bankTransfer.nameB, res.message));
+                            }
+                            
                             //if add data to DB success, go to dialog "Success"
                             if (self.numberOfProcessSuccess() == self.numberOfPerson()) {
                                 self.timer.end();
