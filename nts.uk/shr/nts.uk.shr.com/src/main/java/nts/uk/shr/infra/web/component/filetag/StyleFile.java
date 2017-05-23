@@ -78,7 +78,6 @@ public class StyleFile extends UIComponentBase {
         }
     }
 
-
     private static void writeTagSet(ResponseWriter rw, FacesContext context, String fileSet) {
         
         FILE_SETS.get(fileSet).stream().forEach(

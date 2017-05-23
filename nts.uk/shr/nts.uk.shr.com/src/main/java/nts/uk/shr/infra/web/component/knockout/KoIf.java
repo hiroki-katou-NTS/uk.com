@@ -48,5 +48,4 @@ public class KoIf extends UIComponentBase {
     	
         Helper.writeEnd(context.getResponseWriter());
     }
-
 }

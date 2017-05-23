@@ -1,4 +1,4 @@
-ï»¿/************************
+/************************
   Font
 ************************/
 $basic_font_size: 10px;
@@ -38,10 +38,10 @@ $frame_border_color: #B1B1B1;
 
 $header_height: 50px;
 $functions_area_height: 40px;
+$bottom_functions_area_height: 65px;
 
-
-// å¤‰æ•°å®šç¾© ======================================
-// ãƒ™ãƒ³ãƒ€ãƒ¼ãƒ—ãƒ¬ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã‚’è‡ªå‹•ã§ä»˜ä¸ã™ã‚‹
+// •Ï”’è‹` ======================================
+// ƒxƒ“ƒ_[ƒvƒŒƒtƒBƒbƒNƒX‚ğ©“®‚Å•t—^‚·‚é
 $set_prefix: '' , -moz- , -webkit-, -ms-;
 
 @mixin mix-propertySetPrefix($name, $value) {

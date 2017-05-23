@@ -14,11 +14,11 @@ __viewContext.ready(function () {
                 self.itemList.push(new BoxModel(i, 'box ' + i));
             }
             self.selectedValues = ko.observableArray([
-                new BoxModel(1, 'box 1'),
+                new BoxModel(1, 'box 1'), 
                 new BoxModel(3, 'box 3')
             ]);
             self.selectedIds = ko.observableArray([1,2]);
-            self.enable = ko.observable(false);
+            self.enable = ko.observable(false); 
             self.value = ko.observable(0);
         }
         

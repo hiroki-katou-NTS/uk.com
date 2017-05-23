@@ -47,5 +47,4 @@ public class SessionLocale implements ISessionLocale {
 		// TODO Auto-generated method stub
 		return this.version;
 	}
-
 }

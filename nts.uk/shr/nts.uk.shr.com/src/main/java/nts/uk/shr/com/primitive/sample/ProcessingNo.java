@@ -23,5 +23,4 @@ public class ProcessingNo extends IntegerPrimitiveValue<ProcessingNo> {
 	public ProcessingNo(Integer rawValue) {
 		super(rawValue);
 	}
-
 }

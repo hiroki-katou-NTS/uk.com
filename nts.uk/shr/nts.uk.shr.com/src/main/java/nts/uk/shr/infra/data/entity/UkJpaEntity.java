@@ -13,6 +13,7 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * Base class of JPA entity for UK.
@@ -52,16 +53,17 @@ public abstract class UkJpaEntity extends JpaEntity {
     @PrePersist
     private void setInsertingMetaInfo() {
     	this.insDate = GeneralDateTime.now();
-    	this.insCcd = "001";
-    	this.insScd = "TEST_SCD";
-    	this.insPg = "TEST_PG";
+    	this.insCcd = AppContexts.user().companyCode();
+    	this.insScd = AppContexts.user().employeeCode();
+    	this.insPg = AppContexts.program().getProgramId();
     }
     
     @PreUpdate
     private void setUpdatingMetaInfo() {
     	this.updDate = GeneralDateTime.now();
-    	this.updCcd = "001";
-    	this.updScd = "TEST_SCD";
-    	this.updPg = "TEST_PG";
+    	this.updCcd = AppContexts.user().companyCode();
+    	this.updScd = AppContexts.user().employeeCode();
+    	this.updPg = AppContexts.program().getProgramId();
     }
+    
 }

@@ -26,8 +26,9 @@
 						<h3>for igGrid version (igGrid without binding), view <a href="searchbox-igGrid.xhtml">THIS PAGE</a></h3>				
 						<h2>Overview</h2>						
 						<div class="cf">
-							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid1', items: dataSource, 
+							<div style="float:left">	
+								<h3>Search mode: highlight</h3>																				
+								<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
 										searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
 								<h3>Single Selection TreeGrid</h3>
 								<table id="treegrid1"
@@ -41,9 +42,22 @@
 										optionsText: 'nodeText',
 										multiple: false,
 										enable: true,										
-										showCheckBox: false}"
-									class="cf">
+										showCheckBox: false}">
 								</table>
+								<br/>
+								<h3>Search mode: filter</h3>																				
+								<div style="width: 700px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+									items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
+								<h3>Multi Selection</h3>
+								<table id="multi-list" data-bind="ntsGridList: {
+										height: 320,
+										options: items,
+										optionsValue: 'code',
+										columns: columns,
+										multiple: true,
+										value: currentCodeList
+									}"></table>
+									<br/>
 							</div>
 							<div style="float:left">
 								<br/><br/>
@@ -54,7 +68,7 @@
 						
 						<div class="cf">
 							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
+								<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
 								<h3>Multi Selection TreeGrid</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
@@ -67,8 +81,7 @@
 										optionsText: 'nodeText',
 										multiple: true,
 										enable: true,										
-										showCheckBox: true}"
-									class="cf">
+										showCheckBox: true}">
 								</table>
 							</div>
 							<div style="float:left">
@@ -85,16 +98,11 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<!--SINGLESELECT EXAMPLE-->
+<pre><![CDATA[<!--SINGLESELECT HIGHLIGHT MODE EXAMPLE-->
 <div class="cf">
 	<div style="float:left">																					
-		<div style="width: 700px" data-bind="ntsSearchBox: {
-		comId: 'treegrid1',
-		items: dataSource, 		
-		selected: singleSelectedCode, 
-		selectedKey: 'code', 
-		childField: 'childs', 
-		fields: ['name', 'code']}" />																																														
+		<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
+			searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
 		<h3>Single Selection TreeGrid</h3>
 		<table id="treegrid1"
 			data-bind="ntsTreeGridView:{
@@ -107,8 +115,7 @@
 				optionsText: 'nodeText',
 				multiple: false,
 				enable: true,										
-				showCheckBox: false}"
-			class="cf">
+				showCheckBox: false}">
 		</table>
 	</div>
 	<div style="float:left">
@@ -117,16 +124,22 @@
 		<span data-bind="text: singleSelectedCode"></span>
 	</div>
 </div>
+<!--SINGLESELECT FILTER MODE EXAMPLE-->
+<div style="width: 700px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+	items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />		
+<table id="multi-list" data-bind="ntsGridList: {
+		height: 320,
+		options: items,
+		optionsValue: 'code',
+		columns: columns,
+		multiple: true,
+		value: currentCodeList
+	}"></table>
 <!--MULTISELECT EXAMPLE-->
 <div class="cf">
 	<div style="float:left">																					
-		<div style="width: 700px" data-bind="ntsSearchBox: {
-		comId: 'treegrid2',
-		items: dataSource2, 
-		selected: selectedCodes2, 
-		selectedKey: 'code', 
-		childField: 'childs',		 
-		fields: ['name', 'code']}" />																																														
+		<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid2', 
+		items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
 		<h3>Multi Selection TreeGrid</h3>
 		<table id="treegrid2"
 			data-bind="ntsTreeGridView:{
@@ -139,8 +152,7 @@
 				optionsText: 'nodeText',
 				multiple: true,
 				enable: true,										
-				showCheckBox: true}"
-			class="cf">
+				showCheckBox: true}">
 		</table>
 	</div>
 	<div style="float:left">
@@ -174,6 +186,27 @@
 												<td>
 													<b>Type:</b> array of items, data source of grid<br/>													
 													<i>item:</i> object class that store our data<br/>
+												</td>
+											</tr>									
+											<tr>
+												<td>mode</td>
+												<td>
+													<b>Type:</b> string<br/>													
+													<i>Description:</i> type of target view. Current support igGrid and igTree<br/>
+												</td>
+											</tr>									
+											<tr>
+												<td>targetKey</td>
+												<td>
+													<b>Type:</b> string<br/>													
+													<i>Description:</i> primary key of target view<br/>
+												</td>
+											</tr>									
+											<tr>
+												<td>searchMode</td>
+												<td>
+													<b>Type:</b> string<br/>													
+													<i>Description:</i> search mode. Current there are 'highlight' and 'filter'<br/>
 												</td>
 											</tr>									
 											<tr>
@@ -226,58 +259,93 @@
 								<div id="tabs-viewmodel" class="cf">
 								The data with form "DATA" + "2" is for multi select mode example
 <pre><![CDATA[class ScreenModel {
-    dataSource: any;
-    dataSource2: any;   
-    singleSelectedCode: any;
-    singleSelectedCode2: any;
-    selectedCodes: any;
-    selectedCodes2: any;
-    headers: any;
-    constructor() {
-        var self = this;
-        self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-            new Node('0003', 'Bangkok Thailand', []),
-            new Node('0004', 'Tokyo Japan', []),
-            new Node('0005', 'Jakarta Indonesia', []), 
-            new Node('0002', 'Seoul Korea', []),
-            new Node('0006', 'Paris France', []),
-            new Node('0007', 'United States', [new Node('0008', 'Washington US', []),new Node('0009', 'Newyork US', [])]),                             
-            new Node('0010', 'Beijing China', []),
-            new Node('0011', 'London United Kingdom', []),
-            new Node('0012', '', [])]);
-        self.dataSource2 = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-            new Node('0003', 'Bangkok Thailand', []),
-            new Node('0004', 'Tokyo Japan', []),
-            new Node('0005', 'Jakarta Indonesia', []), 
-            new Node('0002', 'Seoul Korea', []),
-            new Node('0006', 'Paris France', []),
-            new Node('0007', 'United States', [new Node('0008', 'Washington US', []),new Node('0009', 'Newyork US', [])]),                             
-            new Node('0010', 'Beijing China', []),
-            new Node('0011', 'London United Kingdom', []),
-            new Node('0012', '', [])]);       
-        self.singleSelectedCode = ko.observable(null);
-        self.singleSelectedCode2 = ko.observable(null);
-        self.selectedCodes = ko.observableArray([]);
-        self.selectedCodes2 = ko.observableArray([]);            
-        self.headers = ko.observableArray(["Item Value Header","Item Text Header"]);
-    }              
-}
-
-class Node {
-    code: string;
-    name: string;
-    nodeText: string;
-    childs: any;
-    constructor(code: string, name: string, childs: Array<Node>) {
-        var self = this;
-        self.code = code;
-        self.name = name;
-        self.nodeText = self.code + ' ' + self.name;
-        self.childs = childs;         
+        dataSource: any;
+        dataSource2: any;      
+        singleSelectedCode: any;
+        singleSelectedCode2: any;
+        selectedCodes: any;
+        selectedCodes2: any;
+        headers: any;
+        items: KnockoutObservableArray<ItemModel>;
+        columns: KnockoutObservableArray<any>;
+        currentCode: KnockoutObservable<any>;
+        currentCodeList: KnockoutObservableArray<any>;
+        
+        constructor() {
+            var self = this;
+            self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
+                new Node('0003', 'Bangkok Thailand', []),
+                new Node('0004', 'Tokyo Japan', []),
+                new Node('0005', 'Jakarta Indonesia', []), 
+                new Node('0002', 'Seoul Korea', []),
+                new Node('0006', 'Paris France', []),
+                new Node('0007', 'United States', [new Node('0008', 'Washington US', [new Node('0008-1', 'Wasford US', []),new Node('0008-2', 'Newmece US', [])]),new Node('0009', 'Newyork US', [])]),                             
+                new Node('0010', 'Beijing China', []),
+                new Node('0011', 'London United Kingdom', []),
+                new Node('0012', '', [])]);
+            self.dataSource2 = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
+                new Node('0003', 'Bangkok Thailand', []),
+                new Node('0004', 'Tokyo Japan', []),
+                new Node('0005', 'Jakarta Indonesia', []), 
+                new Node('0002', 'Seoul Korea', []),
+                new Node('0006', 'Paris France', []),
+                new Node('0007', 'United States', [new Node('0008', 'Washington US', []),new Node('0009', 'Newyork US', [])]),                             
+                new Node('0010', 'Beijing China', []),
+                new Node('0011', 'London United Kingdom', []),
+                new Node('0012', '', [])]);            
+            self.singleSelectedCode = ko.observable(null);
+            self.singleSelectedCode2 = ko.observable(null);
+            self.selectedCodes = ko.observableArray([]);
+            self.selectedCodes2 = ko.observableArray([]);            
+            self.headers = ko.observableArray(["Item Value Header","Item Text Header"]);
+            
+            this.items = ko.observableArray([]);
+            var str = ['a0', 'b0', 'c0', 'd0'];
+            for(var j = 0; j < 4; j++) {
+                for(var i = 1; i < 51; i++) {    
+                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;         
+                    this.items.push(new ItemModel(code,code,code,code));
+                } 
+            }
+            this.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'code', width: 100 },
+                { headerText: '名称', prop: 'name', width: 230 },
+                { headerText: '説明', prop: 'description', width: 150 },
+                { headerText: '説明1', prop: 'other1', width: 150 },
+                { headerText: '説明2', prop: 'other2', width: 150 }
+            ]);
+            this.currentCode = ko.observable();
+            this.currentCodeList = ko.observableArray([]);
+        }              
     }
-}  
-this.bind(new ScreenModel());  
-});]]></pre>
+    
+    class Node {
+        code: string;
+        name: string;
+        nodeText: string;
+        childs: any;
+        constructor(code: string, name: string, childs: Array<Node>) {
+            var self = this;
+            self.code = code;
+            self.name = name;
+            self.nodeText = self.code + ' ' + self.name;
+            self.childs = childs;         
+        }
+    } 
+    class ItemModel {
+        code: string;
+        name: string;
+        description: string;
+        other1: string;
+        other2: string;
+        constructor(code: string, name: string, description: string, other1?: string, other2?: string) {
+            this.code = code;
+            this.name = name;
+            this.description = description;
+            this.other1 = other1;
+            this.other2 = other2 || other1;         
+        }
+    } ]]></pre>
 								</div>
 							</div>
 						</article>
