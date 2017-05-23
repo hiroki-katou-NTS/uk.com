@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.core.infra.repository.rule.employment.layout;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -13,6 +14,8 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistory;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMaster;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHead;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHistory;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHistoryPK;
 
@@ -53,6 +56,17 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 				entity.endYear, entity.layoutAttr);
 
 		return domain;
+	}
+
+	private final Object[] toObject(QstmtStmtLayoutHistory layoutHistoryEntity, QstmtStmtLayoutHead layoutHeadEntity) {
+		val layoutHistoryDomain = LayoutHistory.createFromJavaType(layoutHistoryEntity.qstmtStmtLayoutHistPK.companyCd,
+				layoutHistoryEntity.qstmtStmtLayoutHistPK.stmtCd, layoutHistoryEntity.qstmtStmtLayoutHistPK.historyId,
+				layoutHistoryEntity.startYear, layoutHistoryEntity.endYear, layoutHistoryEntity.layoutAttr);
+		val layoutHeadDomain = LayoutMaster.createFromJavaType(layoutHeadEntity.qstmtStmtLayoutHeadPK.companyCd,
+				layoutHeadEntity.qstmtStmtLayoutHeadPK.stmtCd, layoutHeadEntity.stmtName);
+
+		Object[] object = new Object[] { layoutHistoryDomain, layoutHeadDomain };
+		return object;
 	}
 
 	private static QstmtStmtLayoutHistory toEntity(LayoutHistory domain) {
@@ -158,7 +172,6 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 		@SuppressWarnings("unchecked")
 		List<Object[]> objects = this.getEntityManager().createQuery(SELECT_HEAD_AND_HIST_BY_YM)
 				.setParameter("companyCd", companyCode).setParameter("baseYm", baseYm).getResultList();
-
-		return objects;
+		return objects.stream().map(x -> toObject((QstmtStmtLayoutHistory) x[0], (QstmtStmtLayoutHead) x[1])).collect(Collectors.toList());
 	}
 }

@@ -389,6 +389,7 @@ module qmm019.f.viewmodel {
                 else {
                     self.listItemDto = ko.observableArray();
                 }
+                dfd.resolve();
             }).fail(function(res) {
 
             });
