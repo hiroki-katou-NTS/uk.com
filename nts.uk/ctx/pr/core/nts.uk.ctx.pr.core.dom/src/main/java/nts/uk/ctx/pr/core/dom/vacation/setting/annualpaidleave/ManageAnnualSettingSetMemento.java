@@ -10,6 +10,13 @@ package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 public interface ManageAnnualSettingSetMemento {
     
     /**
+     * Sets the company id.
+     *
+     * @param companyId the new company id
+     */
+    void setCompanyId(String companyId);
+    
+    /**
      * Sets the remaining number setting.
      *
      * @param remainingNumberSetting the new remaining number setting

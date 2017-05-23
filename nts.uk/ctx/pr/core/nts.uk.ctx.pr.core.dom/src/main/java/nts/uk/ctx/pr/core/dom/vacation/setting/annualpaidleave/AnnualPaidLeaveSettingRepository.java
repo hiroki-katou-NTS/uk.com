@@ -4,23 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
+import java.util.Optional;
+
 /**
- * The Interface YearVacationManageSettingReposity.
+ * The Interface AnnualPaidLeaveSettingRepository.
  */
-public interface ManageAnnualSettingReposity {
+public interface AnnualPaidLeaveSettingRepository {
     
     /**
      * Update.
      *
      * @param setting the setting
      */
-    void update(ManageAnnualSetting setting);
+    void update(AnnualPaidLeaveSetting setting);
     
     /**
      * Find by company id.
      *
      * @param companyId the company id
-     * @return the manage annual setting
+     * @return the annual paid leave setting
      */
-    ManageAnnualSetting findByCompanyId(String companyId);
+    Optional<AnnualPaidLeaveSetting> findByCompanyId(String companyId);
 }

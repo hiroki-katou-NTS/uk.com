@@ -4,20 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
 import nts.uk.ctx.pr.core.dom.vacation.setting.ApplyPermission;
 
 /**
  * The Class AcquisitionVacationSetting.
  */
-@Setter
-@Getter
+@Builder
 public class AcquisitionVacationSetting {
 
 	/** The year vacation priority. */
-	private ApplyPermission yearVacationPriority;
+	public ApplyPermission yearVacationPriority;
 	
 	/** The permit type. */
-	private PreemptionPermit permitType;
+	public PreemptionPermit permitType;
 }
