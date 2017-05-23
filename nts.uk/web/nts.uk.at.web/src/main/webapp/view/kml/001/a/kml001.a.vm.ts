@@ -179,7 +179,7 @@ module kml001.a.viewmodel {
                 }
             } else {
                 // update new data for current personCostCalculation
-                let index = _.findIndex(self.personCostList(), self.currentPersonCost())
+                let index = _.findIndex(self.personCostList(), function(item){return item.historyID() == self.currentPersonCost().historyID()});
                 servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                     .done(function(res: Array<any>) {
                         servicebase.personCostCalculationSelect()

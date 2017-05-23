@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.primitive.Memo;
 /**
@@ -21,6 +22,9 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 	
 	@Inject
 	private PersonCostCalculationRepository personCostCalculationRepository;
+	
+	@Inject
+	IInternationalization internationalization;
 	
 	@Override
 	public PersonCostCalculation createPersonCostCalculationFromJavaType(String companyID, GeneralDate startDate, 
@@ -44,12 +48,12 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 	@Override
 	public void insertPersonCostCalculation(PersonCostCalculation personCostCalculation) {
 		Optional<PersonCostCalculation> currentPersonCostResult = this.personCostCalculationRepository.findItemByDate(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate());
-		if(currentPersonCostResult.isPresent()) throw new BusinessException("ER015");
+		if(currentPersonCostResult.isPresent()) throw new BusinessException("Msg_15");
 		Optional<PersonCostCalculation> beforePersonCostResult = this.personCostCalculationRepository.findItemBefore(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate());
 		Optional<PersonCostCalculation> afterPersonCostResult = this.personCostCalculationRepository.findItemAfter(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate().addDays(-1));
-		if(afterPersonCostResult.isPresent()) throw new BusinessException("ER065");
+		if(afterPersonCostResult.isPresent()) throw new BusinessException("Msg_65");
 		if(beforePersonCostResult.isPresent()){
-			if(beforePersonCostResult.get().getStartDate().after(personCostCalculation.getStartDate())) throw new BusinessException("ER065");
+			if(beforePersonCostResult.get().getStartDate().after(personCostCalculation.getStartDate())) throw new BusinessException("Msg_65");
 			this.personCostCalculationRepository.update(
 					new PersonCostCalculation(
 						beforePersonCostResult.get().getCompanyID(), 
@@ -79,7 +83,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 			if(personCostCalculation.getEndDate().after(afterPersonCostResult.get().getStartDate())) throw new RuntimeException();
 		}
 		if(beforePersonCostResult.isPresent()){
-			if(beforePersonCostResult.get().getStartDate().after(personCostCalculation.getStartDate())) throw new BusinessException("ER066");
+			if(beforePersonCostResult.get().getStartDate().after(personCostCalculation.getStartDate())) throw new BusinessException("Msg_66");
 			this.personCostCalculationRepository.update(
 					new PersonCostCalculation(
 						beforePersonCostResult.get().getCompanyID(), 
@@ -101,7 +105,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 		Optional<PersonCostCalculation> afterPersonCostResult = this.personCostCalculationRepository.findItemAfter(personCostCalculation.getCompanyID(), currentPersonCostResult.get().getStartDate());
 		if(afterPersonCostResult.isPresent()) throw new RuntimeException();
 		if(!beforePersonCostResult.isPresent()){
-			throw new BusinessException("ER128");
+			throw new BusinessException("Msg_128");
 		}
 		this.personCostCalculationRepository.update(
 			new PersonCostCalculation(
