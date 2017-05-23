@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.report.dom.payment.comparing.setting.ComparingPrintSet;
 /**
  * The Class ComparingSalaryBonusReportData
  * @author lanlt
@@ -15,9 +16,13 @@ public class ComparingSalaryBonusReportData {
 	ComparingSalaryBonusHeaderReportData headerData;
 	HeaderTable  headerTable;
 	List<DeparmentInf> deparmentInf;
+	List<DepartmentHyrachi> lstDepartmentHyrachi;
 	List<DataRowComparingSalaryBonusDto> lstDivisionTotal;
+	List<DataRowComparingSalaryBonusDto> lstHyrachiTotal;
 	List<DataRowComparingSalaryBonusDto> lstTotalA;
 	List<DataRowComparingSalaryBonusDto> lstTotalC;
 	DataRowComparingSalaryBonusDto grandTotal;
+	ComparingPrintSet configPrint;
+	PrintMode printMode;
 	
 }

@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 public class DetailEmployee {
 	private String personID;
+	private String SCD;
 	private String personName;
 	List<DataRowComparingSalaryBonus> lstData;
 	List<DataRowComparingSalaryBonusDto> lstDataDto;

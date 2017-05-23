@@ -920,13 +920,34 @@ button {
   padding: 3px 7px;
   margin-bottom: 3px;
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
+  overflow: visible;
 }
-/* line 124, ../sass/components/_button.scss */
+/* line 125, ../sass/components/_button.scss */
+button:focus {
+  border-color: #0096f2;
+  box-shadow: 0 2px 2px 0 #0096f2;
+}
+/* line 128, ../sass/components/_button.scss */
+button:focus.small {
+  /* END: SAME ALL SIZES */
+}
+/* line 132, ../sass/components/_button.scss */
+button:focus.large {
+  box-shadow: 0 4px #0096f2;
+  /* END: SAME ALL SIZES */
+}
+/* line 140, ../sass/components/_button.scss */
+button:focus.x-large {
+  box-shadow: 0 5px #0096f2;
+  /* END: SAME ALL SIZES */
+}
+/* line 149, ../sass/components/_button.scss */
 button:active {
   top: 3px;
+  border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 #999;
 }
-/* line 129, ../sass/components/_button.scss */
+/* line 155, ../sass/components/_button.scss */
 button.small {
   /* START: SAME ALL SIZES */
   font-size: 12px;
@@ -936,12 +957,13 @@ button.small {
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 145, ../sass/components/_button.scss */
+/* line 171, ../sass/components/_button.scss */
 button.small:active {
   top: 3px;
+  border-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 152, ../sass/components/_button.scss */
+/* line 179, ../sass/components/_button.scss */
 button.large {
   /* START: SAME ALL SIZES */
   font-size: 15px;
@@ -951,12 +973,13 @@ button.large {
   box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 168, ../sass/components/_button.scss */
+/* line 195, ../sass/components/_button.scss */
 button.large:active {
   top: 4px;
-  box-shadow: 0 0 rgba(0, 0, 0, 0.4);
+  border-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
 }
-/* line 175, ../sass/components/_button.scss */
+/* line 203, ../sass/components/_button.scss */
 button.x-large {
   /* START: SAME ALL SIZES */
   font-size: 22px;
@@ -966,12 +989,13 @@ button.x-large {
   box-shadow: 0 5px #999;
   /* END: SAME ALL SIZES */
 }
-/* line 191, ../sass/components/_button.scss */
+/* line 219, ../sass/components/_button.scss */
 button.x-large:active {
   top: 5px;
-  box-shadow: 0 0 rgba(0, 0, 0, 0.4);
+  border-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
 }
-/* line 198, ../sass/components/_button.scss */
+/* line 227, ../sass/components/_button.scss */
 button.auto-height {
   height: auto;
 }
@@ -1146,7 +1170,11 @@ button.caret-bottom:after, button.caret-top:after, button.caret-left:after, butt
   position: absolute;
   color: #888888;
 }
-/* line 148, ../sass/components/_caret.scss */
+/* line 154, ../sass/components/_caret.scss */
+button:focus.caret-bottom:after, button:focus.caret-top:after, button:focus.caret-left:after, button:focus.caret-right:after {
+  color: #0096f2;
+}
+/* line 160, ../sass/components/_caret.scss */
 button.caret-bottom:after {
   top: 100%;
   left: 50%;
@@ -1155,7 +1183,7 @@ button.caret-bottom:after {
   border-left-width: 1.5em;
   margin-left: -1.5em;
 }
-/* line 157, ../sass/components/_caret.scss */
+/* line 169, ../sass/components/_caret.scss */
 button.caret-top:after {
   bottom: 100%;
   left: 50%;
@@ -1164,45 +1192,45 @@ button.caret-top:after {
   border-left-width: 1.5em;
   margin-left: -1.5em;
 }
-/* line 166, ../sass/components/_caret.scss */
+/* line 178, ../sass/components/_caret.scss */
 button.caret-left:after {
   right: 100%;
   top: 50%;
   margin-top: -1em;
 }
-/* line 167, ../sass/components/_caret.scss */
+/* line 179, ../sass/components/_caret.scss */
 button.caret-right:after {
   left: 100%;
   top: 50%;
   margin-top: -1em;
 }
 
-/* line 171, ../sass/components/_caret.scss */
+/* line 184, ../sass/components/_caret.scss */
 .caret-background:after {
   position: absolute;
   border-width: 30px 18px;
   color: #E0F59E;
 }
-/* line 176, ../sass/components/_caret.scss */
+/* line 189, ../sass/components/_caret.scss */
 .caret-background.caret-right:after {
   top: 30px;
   left: 100%;
 }
-/* line 177, ../sass/components/_caret.scss */
+/* line 190, ../sass/components/_caret.scss */
 .caret-background.caret-left:after {
   top: 30px;
   right: 100%;
 }
-/* line 178, ../sass/components/_caret.scss */
+/* line 191, ../sass/components/_caret.scss */
 .caret-background.caret-top:after {
   bottom: 100%;
 }
-/* line 179, ../sass/components/_caret.scss */
+/* line 192, ../sass/components/_caret.scss */
 .caret-background.caret-bottom:after {
   top: 100%;
 }
 
-/* line 183, ../sass/components/_caret.scss */
+/* line 196, ../sass/components/_caret.scss */
 .caret-overlay:before {
   content: '';
   position: absolute;
@@ -1210,7 +1238,7 @@ button.caret-right:after {
   color: rgba(0, 0, 0, 0.2);
   font-size: 12px;
 }
-/* line 190, ../sass/components/_caret.scss */
+/* line 203, ../sass/components/_caret.scss */
 .caret-overlay.caret-right:before {
   border-left: 1em solid;
   border-top: 1em solid transparent;
@@ -1219,7 +1247,7 @@ button.caret-right:after {
   left: 100%;
   margin-top: -1em;
 }
-/* line 196, ../sass/components/_caret.scss */
+/* line 209, ../sass/components/_caret.scss */
 .caret-overlay.caret-left:before {
   border-right: 1em solid;
   border-top: 1em solid transparent;
@@ -1228,7 +1256,7 @@ button.caret-right:after {
   right: 100%;
   margin-top: -1em;
 }
-/* line 202, ../sass/components/_caret.scss */
+/* line 215, ../sass/components/_caret.scss */
 .caret-overlay.caret-top:before {
   border-bottom: 1em solid;
   border-right: 1em solid transparent;
@@ -1237,7 +1265,7 @@ button.caret-right:after {
   left: 50%;
   margin-left: -1em;
 }
-/* line 208, ../sass/components/_caret.scss */
+/* line 221, ../sass/components/_caret.scss */
 .caret-overlay.caret-bottom:before {
   border-top: 1em solid;
   border-right: 1em solid transparent;
@@ -1246,60 +1274,60 @@ button.caret-right:after {
   left: 50%;
   margin-left: -1em;
 }
-/* line 215, ../sass/components/_caret.scss */
+/* line 228, ../sass/components/_caret.scss */
 .caret-overlay:after {
   position: absolute;
   border-width: 10px;
   color: #fff;
 }
-/* line 221, ../sass/components/_caret.scss */
+/* line 234, ../sass/components/_caret.scss */
 .caret-overlay.caret-right:after {
   top: 50%;
   left: 100%;
   margin-top: -10px;
 }
-/* line 222, ../sass/components/_caret.scss */
+/* line 235, ../sass/components/_caret.scss */
 .caret-overlay.caret-left:after {
   top: 50%;
   right: 100%;
   margin-top: -10px;
 }
-/* line 223, ../sass/components/_caret.scss */
+/* line 236, ../sass/components/_caret.scss */
 .caret-overlay.caret-top:after {
   bottom: 100%;
   left: 50%;
   margin-left: -10px;
 }
-/* line 224, ../sass/components/_caret.scss */
+/* line 237, ../sass/components/_caret.scss */
 .caret-overlay.caret-bottom:after {
   top: 100%;
   left: 50%;
   margin-left: -10px;
 }
 
-/* line 227, ../sass/components/_caret.scss */
+/* line 240, ../sass/components/_caret.scss */
 .caret-helpbutton {
   position: absolute;
   font-size: 10px;
 }
-/* line 231, ../sass/components/_caret.scss */
+/* line 244, ../sass/components/_caret.scss */
 .caret-helpbutton:before {
   content: '';
   position: absolute;
   border-width: 1.1em;
   color: rgba(0, 0, 0, 0.15);
 }
-/* line 237, ../sass/components/_caret.scss */
+/* line 250, ../sass/components/_caret.scss */
 .caret-helpbutton:after {
   position: absolute;
   border-width: 2em;
   color: #E0F59E;
 }
-/* line 243, ../sass/components/_caret.scss */
+/* line 256, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-right {
   right: 0;
 }
-/* line 245, ../sass/components/_caret.scss */
+/* line 258, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-right:before {
   top: 0.5em;
   border-left: 2.1em solid;
@@ -1308,18 +1336,18 @@ button.caret-right:after {
   margin-right: -0.1em;
   margin-top: -0.1em;
 }
-/* line 253, ../sass/components/_caret.scss */
+/* line 266, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-right:after {
   top: 0.5em;
   border-left: 2em solid;
   border-top: 1em solid transparent;
   border-bottom: 1em solid transparent;
 }
-/* line 260, ../sass/components/_caret.scss */
+/* line 273, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-left {
   left: -2em;
 }
-/* line 262, ../sass/components/_caret.scss */
+/* line 275, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-left:before {
   top: 0.5em;
   border-right: 2.1em solid;
@@ -1328,18 +1356,18 @@ button.caret-right:after {
   margin-left: -0.1em;
   margin-top: -0.1em;
 }
-/* line 270, ../sass/components/_caret.scss */
+/* line 283, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-left:after {
   top: 0.5em;
   border-right: 2em solid;
   border-top: 1em solid transparent;
   border-bottom: 1em solid transparent;
 }
-/* line 277, ../sass/components/_caret.scss */
+/* line 290, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-top {
   top: -2em;
 }
-/* line 279, ../sass/components/_caret.scss */
+/* line 292, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-top:before {
   left: 0.5em;
   border-bottom: 2.1em solid;
@@ -1348,18 +1376,18 @@ button.caret-right:after {
   margin-left: -0.1em;
   margin-top: -0.1em;
 }
-/* line 287, ../sass/components/_caret.scss */
+/* line 300, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-top:after {
   left: 0.5em;
   border-bottom: 2em solid;
   border-right: 1em solid transparent;
   border-left: 1em solid transparent;
 }
-/* line 294, ../sass/components/_caret.scss */
+/* line 307, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-bottom {
   bottom: 0;
 }
-/* line 296, ../sass/components/_caret.scss */
+/* line 309, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-bottom:before {
   left: 0.5em;
   border-top: 2.1em solid;
@@ -1368,7 +1396,7 @@ button.caret-right:after {
   margin-left: -0.1em;
   margin-bottom: -0.1em;
 }
-/* line 304, ../sass/components/_caret.scss */
+/* line 317, ../sass/components/_caret.scss */
 .caret-helpbutton.caret-bottom:after {
   left: 0.5em;
   border-top: 2em solid;
@@ -2020,20 +2048,42 @@ button.nts-switch-button[disabled]:hover {
   border-color: #767171;
   border-radius: 0px;
 }
-/* line 18, ../sass/components/_dialog.scss */
+/* line 17, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-titlebar-icon {
+  max-width: 20px;
+  max-height: 20px;
+  float: left;
+  display: inline-block;
+  margin-right: 5px;
+  margin: .1em 0;
+}
+/* line 25, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-titlebar-container {
+  width: 100%;
+}
+/* line 28, ../sass/components/_dialog.scss */
+.ui-dialog .ui-resizable-se {
+  width: 14px;
+  height: 14px;
+  right: 3px;
+  bottom: 3px;
+  background-position: -80px -224px;
+}
+/* line 35, ../sass/components/_dialog.scss */
 .ui-dialog.no-close .ui-dialog-titlebar-close {
   display: none;
 }
-/* line 22, ../sass/components/_dialog.scss */
+/* line 39, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content {
   padding: 20px;
 }
-/* line 25, ../sass/components/_dialog.scss */
+/* line 42, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog {
   min-width: 250px;
   padding: 0;
+  position: relative;
 }
-/* line 29, ../sass/components/_dialog.scss */
+/* line 47, ../sass/components/_dialog.scss */
 .ui-dialog .ui-dialog-content.notice-dialog > .text {
   display: inline-block;
   margin: 20px;
@@ -2043,60 +2093,75 @@ button.nts-switch-button[disabled]:hover {
   overflow-y: auto;
   line-height: 22px;
 }
-/* line 41, ../sass/components/_dialog.scss */
+/* line 56, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-content.notice-dialog > .control {
+  right: 10px;
+  bottom: 0px;
+  position: absolute;
+  color: gray;
+}
+/* line 65, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane {
   padding: 10px 0;
   margin: 0px;
   border-top: solid 1px #767171;
   text-align: center;
+  position: relative;
 }
-/* line 47, ../sass/components/_dialog.scss */
+/* line 72, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane .ui-dialog-buttonset {
   float: none;
 }
-/* line 51, ../sass/components/_dialog.scss */
+/* line 76, ../sass/components/_dialog.scss */
+.ui-dialog > .ui-dialog-buttonpane > .ui-dialog-buttonpane-resize {
+  right: 0px;
+  bottom: 0px;
+  position: absolute;
+  max-width: 20px;
+  max-height: 20px;
+}
+/* line 84, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane button {
   margin: 0 10px;
   min-width: 80px;
   font-family: "Meiryo UI";
 }
-/* line 58, ../sass/components/_dialog.scss */
+/* line 91, ../sass/components/_dialog.scss */
 .ui-dialog #error-board {
   overflow: hidden;
 }
-/* line 61, ../sass/components/_dialog.scss */
+/* line 94, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table {
   border-collapse: collapse;
   width: 100%;
-  min-width: 510px;
   margin: 0;
 }
-/* line 68, ../sass/components/_dialog.scss */
+/* line 100, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td {
   border: solid 1px #bbb;
-  white-space: nowrap;
   padding: 3px;
   height: 24px;
   font-family: "Meiryo UI";
   font-size: 13px;
   box-sizing: border-box;
 }
-/* line 79, ../sass/components/_dialog.scss */
+/* line 110, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
 .ui-dialog #error-board table td:first-child {
   background-color: #A4EEB0;
 }
-/* line 84, ../sass/components/_dialog.scss */
+/* line 115, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table thead tr {
-  display: block;
   position: relative;
 }
-/* line 89, ../sass/components/_dialog.scss */
+/* line 120, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table tbody {
-  float: left;
-  display: block;
   overflow: auto;
+}
+/* line 124, ../sass/components/_dialog.scss */
+.ui-dialog #error-board table tbody tr td:last-child {
+  color: gray;
 }
 
 /* line 18, ../sass/components/_wizard.scss */
@@ -2510,10 +2575,10 @@ input.ntsSearchBox {
   border-radius: 6px;
   font-size: 14px;
   background-color: white;
-  background-image: url("searchicon.png");
-  background-position: 2px 0px;
+  background-image: url("enter mark.png");
+  background-position: right;
   background-repeat: no-repeat;
-  padding: 6px 20px 6px 40px;
+  padding: 6px 30px 6px 15px;
   -webkit-transition: width 0.4s ease-in-out;
   transition: width 0.4s ease-in-out;
 }
@@ -2895,6 +2960,62 @@ button.search-btn {
   background-size: 100% 100%;
 }
 
+/* line 1, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel {
+  color: blue;
+}
+/* line 3, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel .function-header {
+  background-color: GreenYellow;
+  border-radius: 5px;
+  line-height: 30px;
+  height: 30px;
+}
+/* line 10, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel .function-items {
+  background-color: MistyRose;
+  border-radius: 5px;
+}
+/* line 14, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel .function-items .function-item-container {
+  line-height: 30px;
+  height: 30px;
+}
+/* line 18, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel .function-items .function-item-container a {
+  text-decoration: underline;
+}
+/* line 24, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel .function-item-container {
+  margin-bottom: 3px;
+}
+/* line 28, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel .function-icon {
+  width: 20%;
+  line-height: 30px;
+  height: 30px;
+  float: left;
+}
+/* line 34, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel .function-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  user-select: none;
+}
+/* line 41, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel .function-link {
+  width: 80%;
+  vertical-align: middle;
+  line-height: 30px;
+  height: 30px;
+  float: left;
+}
+/* line 48, ../sass/components/_functionpanel.scss */
+.ntsFunctionPanel .function-link a {
+  cursor: pointer;
+  user-select: none;
+}
+
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;
@@ -2905,6 +3026,19 @@ button.search-btn {
 #functions-area {
   height: 40px;
   border-bottom: solid 1px #B1B1B1;
+  padding-top: 8px;
+  padding-left: 5px;
+}
+
+/* line 8, ../sass/frame/_functions.scss */
+#functions-area-bottom {
+  position: absolute;
+  bottom: 0px;
+  height: 65px;
+  width: 100%;
+  border-top: solid 1px #B1B1B1;
+  text-align: center;
+  padding-top: 8px;
 }
 
 /* line 1, ../sass/frame/_contents.scss */
@@ -3022,12 +3156,12 @@ button.search-btn {
   line-height: 50px;
 }
 
-/* line 35, ../sass/base.scss */
+/* line 36, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 39, ../sass/base.scss */
+/* line 40, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

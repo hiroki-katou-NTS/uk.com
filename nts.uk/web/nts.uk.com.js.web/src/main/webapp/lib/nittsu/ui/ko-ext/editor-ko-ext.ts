@@ -116,7 +116,9 @@ module nts.uk.ui.koExtentions {
 
             let validator = this.getValidator(data);
             $input.on("keyup", (e) => {
-                if (!readonly) {
+                console.log(e);
+                var code = e.keyCode || e.which;
+                if (!readonly && code.toString() !== '9') {
                     var newText = $input.val();
                     var result = validator.validate(newText);
                     $input.ntsError('clear');
@@ -127,6 +129,7 @@ module nts.uk.ui.koExtentions {
             });
 
             $input.on("blur", (e) => {
+                console.log(e);
                 if (!readonly) {
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });
@@ -242,6 +245,10 @@ module nts.uk.ui.koExtentions {
             } else if (this.editorOption.symbolChar !== undefined && this.editorOption.symbolChar !== "" && this.editorOption.symbolPosition !== undefined) {
                 $parent.addClass("symbol").addClass(this.editorOption.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
                 $parent.attr("data-content", this.editorOption.symbolChar);
+            }
+            if(!nts.uk.util.isNullOrEmpty(this.editorOption.defaultValue) 
+                && nts.uk.util.isNullOrEmpty(data.value())){
+                data.value(this.editorOption.defaultValue);        
             }
         }
 

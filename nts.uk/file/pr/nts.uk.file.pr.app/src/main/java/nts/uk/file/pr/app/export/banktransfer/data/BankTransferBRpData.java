@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BankTransferBRpData {
-	// B_DBD_002: chua biet
+	// B_DBD_002
 	private String bankCode;
 	// B_DBD_003
 	private String bankName;
-	// B_DBD_004: chua biet
+	// B_DBD_004
 	private String branchCode;
 	// B_DBD_005
 	private String branchName;

@@ -21,6 +21,7 @@ public class CreateLayoutCommand {
 	private int endYm;
 
 	/**
+	 * 
 	 * Convert to domain object from command values
 	 * 
 	 * @return
@@ -33,9 +34,4 @@ public class CreateLayoutCommand {
 		return LayoutHistory.createFromJavaType(AppContexts.user().companyCode(), this.stmtCode, newHistoryId,
 				this.startYm, this.endYm, this.layoutAtr);
 	}
-	// code cua anh Lam truoc khi thay doi DB
-	// public LayoutMaster toDomain(String newHistoryId) {
-	// return LayoutMaster.createFromJavaType(AppContexts.user().companyCode(),
-	// this.stmtCode, this.stmtName);
-	// }
 }

@@ -39,4 +39,9 @@ public class QstmtStmtAllotHEm extends AggregateTableEntity implements Serializa
 	@Column(name = "END_YM")
 	public int endYm;
 
+	@Override
+	protected Object getKey() {
+		return this.QstmtStmtAllotHEmPK;
+	}
+
 }

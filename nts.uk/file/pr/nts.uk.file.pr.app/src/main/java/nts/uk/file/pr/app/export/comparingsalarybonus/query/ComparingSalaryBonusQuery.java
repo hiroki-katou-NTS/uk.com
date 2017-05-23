@@ -13,5 +13,7 @@ public class ComparingSalaryBonusQuery {
 	private String monthJapan2;
 	private String formCode;
 	private int payBonusAttr = 0;
+	private int gradeSelectedCode;
+	private int pagingSelectedCode;
 	private List<String> employeeCodeList;
 }

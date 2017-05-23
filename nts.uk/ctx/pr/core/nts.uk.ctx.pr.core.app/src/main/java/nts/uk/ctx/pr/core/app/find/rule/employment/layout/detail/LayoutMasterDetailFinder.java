@@ -14,38 +14,34 @@ import nts.uk.shr.com.context.AppContexts;
 public class LayoutMasterDetailFinder {
 	@Inject
 	private LayoutMasterDetailRepository repository;
+
 	/**
 	 * find all layout master details
+	 * 
 	 * @param companyCd
 	 * @param stmtCd
 	 * @param startYm
 	 * @return
 	 */
-	public List<LayoutMasterDetailDto> getDetails(String companyCd,
-			String stmtCd,
-			int startYm){
-		return this.repository.getDetails(companyCd,
-				stmtCd,
-				startYm).stream()
-				.map(item ->LayoutMasterDetailDto.fromDomain(item))
-				.collect(Collectors.toList());
+	public List<LayoutMasterDetailDto> getDetails(String companyCd, String stmtCd, int startYm) {
+		return this.repository.getDetails(companyCd, stmtCd, startYm).stream()
+				.map(item -> LayoutMasterDetailDto.fromDomain(item)).collect(Collectors.toList());
 	}
+
 	/**
 	 * find layout master detail
+	 * 
 	 * @param companyCd
 	 * @param stmtCd
-	 * @param startYm
+	 * @param historyId
 	 * @param categoryAtr
 	 * @param itemCd
 	 * @return
 	 */
-	public Optional<LayoutMasterDetailDto> getDetail(
-			  String stmtCd
-			, int startYm
-			, int categoryAtr
-			, String itemCd){
-		
-		return this.repository.getDetail(AppContexts.user().companyCode(), stmtCd, startYm, categoryAtr, itemCd)
+	public LayoutMasterDetailDto getDetail(String stmtCd, String historyId, int categoryAtr, String itemCd) {
+		Optional<LayoutMasterDetailDto> itemOp = this.repository
+				.getDetail(AppContexts.user().companyCode(), stmtCd, historyId, categoryAtr, itemCd)
 				.map(item -> LayoutMasterDetailDto.fromDomain(item));
+		return !itemOp.isPresent() ? null : itemOp.get();
 	}
 }

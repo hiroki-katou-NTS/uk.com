@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.command.retirement.payment;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -27,7 +27,7 @@ import nts.uk.shr.com.primitive.PersonId;
  * @author Doan Duy Hung
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class RemoveRetirementPaymentCommandHandler extends CommandHandler<RemoveRetirementPaymentCommand>{
 	@Inject
@@ -35,7 +35,7 @@ public class RemoveRetirementPaymentCommandHandler extends CommandHandler<Remove
 	
 	@Override
 	protected void handle(CommandHandlerContext<RemoveRetirementPaymentCommand> context) {
-		// TODO Auto-generated method stub
+
 		RemoveRetirementPaymentCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		Optional<RetirementPayment> reOptional = this.retirementPaymentRepository.findRetirementPaymentInfo(
@@ -45,37 +45,8 @@ public class RemoveRetirementPaymentCommandHandler extends CommandHandler<Remove
 		if(!reOptional.isPresent()) {
 			throw new RuntimeException("Item do not exist");
 		}
-		RetirementPayment retirementPayment = new RetirementPayment(
-				new CompanyCode(companyCode), 
-				new PersonId(command.getPersonId()), 
-				GeneralDate.fromString(command.getPayDate(), "yyyy/MM/dd"),
-				EnumAdaptor.valueOf(command.getTrialPeriodSet(), TrialPeriodSet.class),
-				new PaymentYear(command.getExclusionYears()), 
-				new PaymentYear(command.getAdditionalBoardYears()), 
-				new PaymentYear(command.getBoardYears()), 
-				new PaymentMoney(command.getTotalPaymentMoney()),
-				new PaymentMoney(command.getDeduction1Money()), 
-				new PaymentMoney(command.getDeduction2Money()), 
-				new PaymentMoney(command.getDeduction3Money()), 
-				EnumAdaptor.valueOf(command.getRetirementPayOption(), RetirementPayOption.class), 
-				EnumAdaptor.valueOf(command.getTaxCalculationMethod(), TaxCalculationMethod.class), 
-				new PaymentMoney(command.getIncomeTaxMoney()), 
-				new PaymentMoney(command.getCityTaxMoney()), 
-				new PaymentMoney(command.getPrefectureTaxMoney()), 
-				new PaymentMoney(command.getTotalDeclarationMoney()),  
-				new PaymentMoney(command.getActualRecieveMoney()), 
-				EnumAdaptor.valueOf(command.getBankTransferOption1(), BankTransferOption.class),
-				new PaymentMoney(command.getOption1Money()),
-				EnumAdaptor.valueOf(command.getBankTransferOption2(), BankTransferOption.class),
-				new PaymentMoney(command.getOption2Money()),
-				EnumAdaptor.valueOf(command.getBankTransferOption3(), BankTransferOption.class),
-				new PaymentMoney(command.getOption3Money()),
-				EnumAdaptor.valueOf(command.getBankTransferOption4(), BankTransferOption.class),
-				new PaymentMoney(command.getOption4Money()),
-				EnumAdaptor.valueOf(command.getBankTransferOption5(), BankTransferOption.class),
-				new PaymentMoney(command.getOption5Money()),
-				new Memo(command.getWithholdingMeno()),
-				new Memo(command.getStatementMemo()));
-		retirementPaymentRepository.remove(retirementPayment);
+		GeneralDate payDate = GeneralDate.fromString(command.getPayDate(), "yyyy/MM/dd");
+
+		retirementPaymentRepository.remove(companyCode,command.getPersonId(), payDate);
 	}
 }

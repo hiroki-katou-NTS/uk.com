@@ -161,7 +161,10 @@ module nts.uk.request {
             contentType: options.contentType || 'application/json',
             url: webserviceLocator.serialize(),
             dataType: options.dataType || 'json',
-            data: data
+            data: data,
+            headers: {
+                'PG-Path': location.current.serialize()
+            }
         }).done(function(res) {
             if (res !== undefined && res.businessException) {
                 dfd.reject(res);
@@ -173,7 +176,37 @@ module nts.uk.request {
         return dfd.promise();
     }
 
-
+    export function uploadFile(data: FormData, option?: any): $.Deferred {
+        let dfd = $.Deferred();
+        $.ajax({
+            url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",
+            type: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data, textStatus, jqXHR) {
+                if (option.onSuccess) {
+                    option.onSuccess();
+                }
+                
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if (option.onFail) {
+                    option.onFail();
+                }
+               
+            }
+        }).done(function(res) {
+            if (res !== undefined && res.businessException) {
+                dfd.reject(res);
+            } else {
+                dfd.resolve(res);
+            }
+        });
+        return dfd.promise();
+    }
+    
     export function exportFile(path: string, data?: any, options?: any) {
         let dfd = $.Deferred();
 

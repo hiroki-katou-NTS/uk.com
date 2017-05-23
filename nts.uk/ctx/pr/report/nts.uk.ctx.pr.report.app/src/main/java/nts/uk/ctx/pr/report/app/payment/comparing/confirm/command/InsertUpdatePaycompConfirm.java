@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InsertUpdatePaycompConfirm {
 
-	private String employeeCode;
+	private String personID;
 
 	private int processingYMEarlier;
 

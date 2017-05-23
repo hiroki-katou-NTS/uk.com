@@ -13,7 +13,7 @@ public class JapaneseEraName {
 	@Getter
 	private String name;
 	
-	/** symbol (ex. "H") */
+	/** symbol (ex. "H") */ 
 	@Getter
 	private String symbol;
 	

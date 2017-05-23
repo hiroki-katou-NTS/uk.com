@@ -57,6 +57,7 @@
 											decimallength: 0,
 											width: '60px'
 										},
+										required: true, 
 										enable: true}"></input>
 										
 									<span id="japan-year" data-bind="text: japanYear"></span>
@@ -80,10 +81,10 @@
 												option: {
 													decimallength: 0,
 													currencyformat: 'JPY',
-													currencyposition: 'right',
-													width: '120px'
+													currencyposition: 'right'
 												},
 												constraint: 'LowerLimit',
+												required: true,
 												enable: isLowerLimit()}" />
 										<label>以上 ～</label>
 										<div id="upper-limit-checkbox" data-bind="ntsCheckBox: { checked: isUpperLimit }"></div>
@@ -92,10 +93,10 @@
 												option: {
 													decimallength: 0,
 													currencyformat: 'JPY',
-													currencyposition: 'right',
-													width: '120px'
+													currencyposition: 'right'
 												},
 												constraint: 'UpperLimit',
+												required: true,
 												enable: isUpperLimit()}" />
 										<label>以下</label>
 									</div>

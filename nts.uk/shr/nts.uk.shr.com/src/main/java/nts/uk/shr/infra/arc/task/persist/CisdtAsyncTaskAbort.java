@@ -26,4 +26,5 @@ public class CisdtAsyncTaskAbort implements Serializable {
 	
 	@Column(name = "ERROR_MESSAGE")
 	public String errorMessage;
+	
 }

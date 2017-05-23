@@ -7,16 +7,22 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class DeparmentInf {
+public class DeparmentInf {	
 	private String Depcode;
 	private String Depname;
+	private String hyrachi;
+	private String historyId;
+	private int lengthHyrachi = 0;
 	List<DetailEmployee> lstEmployee;
 	private Double totalMonth1 = 0.0;
 	private Double totalMonth2 = 0.0;
 	private Double totalDifferent = 0.0;
-	public DeparmentInf(String depCode, String depName, List<DetailEmployee> lstEmployee) {
+	public DeparmentInf(String depCode, String depName, String history, String hyrachi,List<DetailEmployee> lstEmployee) {
 	  this.Depcode = depCode;
 	  this.Depname = depName;
+	  this.historyId = history;
+	  this.hyrachi = hyrachi;
+	  this.lengthHyrachi = hyrachi.length() / 3;
 	  this.lstEmployee = lstEmployee;
 	  total(lstEmployee);
 	}
@@ -32,7 +38,5 @@ public class DeparmentInf {
 			});
 		});
 	}
-	
-	
 	
 }

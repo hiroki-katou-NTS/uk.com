@@ -35,4 +35,18 @@ public class CodePrimitiveValueTest {
         Assert.assertThat(sampleCode.equals("ac"), is(false));
     }
     
+    @Test
+    public void padLeft() {
+    	SampleCode sampleCode = new SampleCode("ab");
+    	String padStr = sampleCode.padLeft("0");
+    	Assert.assertThat(padStr, is("00ab"));
+    }
+    
+    @Test
+    public void padRight() {
+    	SampleCode sampleCode = new SampleCode("ab");
+    	String padStr = sampleCode.padRight("0");
+    	Assert.assertThat(padStr, is("ab00"));
+    }
+    
 }

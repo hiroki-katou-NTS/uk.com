@@ -30,7 +30,4 @@ public class SampleReportExportService extends ExportService<SampleReportQuery> 
 		// invoke generator
 		this.generator.generate(context.getGeneratorContext(), dataSource);
 	}
-
-	
-	
 }
