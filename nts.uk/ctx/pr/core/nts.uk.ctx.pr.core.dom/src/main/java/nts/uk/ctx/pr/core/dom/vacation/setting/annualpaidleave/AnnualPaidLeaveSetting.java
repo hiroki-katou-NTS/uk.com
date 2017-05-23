@@ -5,12 +5,15 @@
 package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.vacation.setting.ManageDistinct;
 
 /**
  * The Class AnnualPaidLeaveSetting.
  */
+@Getter
 @EqualsAndHashCode(callSuper = true, of = {"companyId"})
 public class AnnualPaidLeaveSetting extends DomainObject {
     
@@ -18,6 +21,7 @@ public class AnnualPaidLeaveSetting extends DomainObject {
     private String companyId;
     
     /** The year manage type. */
+    @Setter
     private ManageDistinct yearManageType;
     
     /** The year manage setting. */

@@ -4,19 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
 
 /**
  * The Class DisplaySetting.
  */
-@Setter
-@Getter
+@Builder
 public class DisplaySetting {
     
     /** The remaining number display. */
-    private DisplayDivision remainingNumberDisplay;
+    public DisplayDivision remainingNumberDisplay;
     
     /** The next grant day display. */
-    private DisplayDivision nextGrantDayDisplay;
+    public DisplayDivision nextGrantDayDisplay;
 }

@@ -10,6 +10,13 @@ package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 public interface ManageAnnualSettingGetMemento {
     
     /**
+     * Gets the company id.
+     *
+     * @return the company id
+     */
+    String getCompanyId();
+    
+    /**
      * Gets the remaining number setting.
      *
      * @return the remaining number setting

@@ -131,23 +131,26 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 let command: any = {};
                 command.annualManage = self.selectedAnnualManage();
-                command.addAttendanceDay = self.selectedAddAttendanceDay();
-                command.maxManageSemiVacation = self.selectedMaxManageSemiVacation();
-                command.maxNumberSemiVacation = self.selectedMaxNumberSemiVacation();
-                command.maxNumberCompany = self.maxNumberCompany();
-                command.maxGrantDay = self.maxGrantDay();
-                command.maxRemainingDay = self.maxRemainingDay();
-                command.numberYearRetain = self.numberYearRetain();
-                command.preemptionAnnualVacation = self.selectedPermission();
-                command.preemptionYearLeave = self.selectedPreemptionPermit();
-                command.remainingNumberDisplay = self.selectedNumberRemainingYearly();
-                command.nextGrantDayDisplay = self.selectedNextAnunalVacation();
-                command.timeManageType = self.selectedTimeManagement();
-                command.timeUnit = self.selectedVacationTimeUnit();
-                command.manageMaxDayVacation = self.selectedManageUpperLimitDayVacation();
-                command.reference = self.selectedMaxDayVacation();
-                command.maxTimeDay = self.timeMaxNumberCompany();
-                command.isEnoughTimeOneDay = self.isEnoughTimeOneDay();
+                
+                let setting: any = {};
+                setting.addAttendanceDay = self.selectedAddAttendanceDay();
+                setting.maxManageSemiVacation = self.selectedMaxManageSemiVacation();
+                setting.maxNumberSemiVacation = self.selectedMaxNumberSemiVacation();
+                setting.maxNumberCompany = self.maxNumberCompany().toString();
+                setting.maxGrantDay = self.maxGrantDay().toString();
+                setting.maxRemainingDay = self.maxRemainingDay();
+                setting.numberYearRetain = self.numberYearRetain();
+                setting.preemptionAnnualVacation = self.selectedPermission();
+                setting.preemptionYearLeave = self.selectedPreemptionPermit();
+                setting.remainingNumberDisplay = self.selectedNumberRemainingYearly();
+                setting.nextGrantDayDisplay = self.selectedNextAnunalVacation();
+                setting.timeManageType = self.selectedTimeManagement();
+                setting.timeUnit = self.selectedVacationTimeUnit();
+                setting.manageMaxDayVacation = self.selectedManageUpperLimitDayVacation();
+                setting.reference = self.selectedMaxDayVacation();
+                setting.maxTimeDay = self.timeMaxNumberCompany();
+                setting.isEnoughTimeOneDay = self.isEnoughTimeOneDay();
+                command.setting = setting;
                 return command;
             }
         }

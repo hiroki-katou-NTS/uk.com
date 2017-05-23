@@ -4,21 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave;
 
-import lombok.Getter;
+import lombok.Builder;
 import nts.uk.ctx.pr.core.dom.vacation.setting.ManageDistinct;
 
 /**
  * The Class YearVacationTimeMaxDay.
  */
-@Getter
+@Builder
 public class YearVacationTimeMaxDay {
     
     /** The manage max day vacation. */
-    private ManageDistinct manageMaxDayVacation;
+    public ManageDistinct manageMaxDayVacation;
     
     /** The reference. */
-    private MaxDayReference reference;
+    public MaxDayReference reference;
     
     /** The max time day. */
-    private MaxTimeDay maxTimeDay;
+    public MaxTimeDay maxTimeDay;
 }
