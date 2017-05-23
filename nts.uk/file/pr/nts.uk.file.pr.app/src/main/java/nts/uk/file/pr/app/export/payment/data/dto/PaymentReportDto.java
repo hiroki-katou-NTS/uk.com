@@ -20,6 +20,9 @@ public class PaymentReportDto {
 
 	/** The employee info. */
 	private EmployeeDto employeeInfo;
+	
+	/** The company info. */
+	private CompanyDto companyInfo;
 
 	/** 支給項目 */
 	private List<SalaryItemDto> paymentItems;
@@ -39,10 +42,10 @@ public class PaymentReportDto {
 	/** The remark. */
 	private String remark;
 	
-	/** The japanese year month. */
-	private String japaneseYearMonth;
-	
 	/** The menu. */
 	private String menu;
+	
+	/** The name. */
+	private String name;
 	
 }

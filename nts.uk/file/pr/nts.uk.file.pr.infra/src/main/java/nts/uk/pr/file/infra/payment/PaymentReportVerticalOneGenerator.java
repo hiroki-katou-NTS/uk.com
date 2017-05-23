@@ -33,7 +33,6 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 		// Get workSheet.
 		workSheet = workbook.getWorksheets().get(FIRST_SHEET);
 		workSheet.setName(SHEET_NAME);
-
 		// Get cells.
 		cells = workSheet.getCells();
 
@@ -57,19 +56,14 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	@Override
 	void printPageContent() {
 
-		printSectionTitle("支給額");
 		printCategoryHeader("支給");
 		printCategoryContent(employee.getPaymentItems());
 		nextCategory();
-		breakLines(2);
 
-		printSectionTitle("控除");
 		printCategoryHeader("控除");
 		printCategoryContent(employee.getDeductionItems());
 		nextCategory();
-		breakLines(3);
 
-		printSectionTitle("勤怠/記事");
 		printCategoryHeader("勤怠");
 		printCategoryContent(employee.getAttendanceItems());
 		nextCategory();
@@ -77,10 +71,6 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 		printCategoryHeader("記事");
 		printCategoryContent(employee.getArticleItems());
 		nextCategory();
-		breakLines(1);
-
-		// Print remark;
-		printRemark();
 	}
 
 	/*
@@ -93,14 +83,6 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	@Override
 	List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
-		list.add(new CellValue(0, 3, "給与明細書"));
-		list.add(new CellValue(5, 2, "部門コード"));
-		list.add(new CellValue(5, 5, "個人コード"));
-		list.add(new CellValue(5, 7, "氏名"));
-		list.add(new CellValue(2, 3, employee.getJapaneseYearMonth()));
-		list.add(new CellValue(6, 2, employee.getDepartmentInfo().getDepartmentCode()));
-		list.add(new CellValue(6, 5, employee.getEmployeeInfo().getEmployeeCode()));
-		list.add(new CellValue(6, 7, employee.getEmployeeInfo().getEmployeeName()));
 		return list;
 	}
 
@@ -114,10 +96,10 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	@Override
 	void setTemplateStyle() {
 		// Get style from template.
-		templateStyle.headerStyle = getStyle("A10");
-		templateStyle.nameStyle = getStyle("B10");
-		templateStyle.remarkStyle = getStyle("A8");
-		templateStyle.valueStyle = getStyle("B11");
+		templateStyle.headerStyle = getStyle("A5");
+		templateStyle.nameStyle = getStyle("B5");
+		templateStyle.remarkStyle = getStyle("B11");
+		templateStyle.valueStyle = getStyle("B6");
 	}
 
 	/*
@@ -128,7 +110,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 */
 	@Override
 	void setPageHeaderRange() {
-		pageHeaderRange = cells.createRange("A1", "I7");
+		pageHeaderRange = cells.createRange("A1", "J4");
 	}
 
 	/*

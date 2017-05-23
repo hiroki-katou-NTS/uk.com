@@ -4,28 +4,24 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.payment.data.dto;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class EmployeeDto.
+ * The Class CompanyDto.
  */
 @Getter
 @Setter
-public class EmployeeDto {
+public class CompanyDto implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	
-	/** The employee code. */
-	private String employeeCode;
+	/** The japanese year month. */
+	private String japaneseYearMonth;
 	
-	/** The employee name. */
-	private String employeeName;
-	
-	/** The postal code. */
-	private String postalCode;
-	
-	/** The address one. */
-	private String addressOne;
-	
-	/** The address two. */
-	private String addressTwo;
+	/** The name. */
+	private String name;
+
 }

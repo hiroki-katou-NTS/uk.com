@@ -94,7 +94,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	@Override
 	List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
-		list.add(new CellValue(0, 7, employee.getJapaneseYearMonth()));
+		list.add(new CellValue(0, 7, employee.getCompanyInfo().getJapaneseYearMonth()));
 		list.add(new CellValue(1, 0, employee.getDepartmentInfo().getDepartmentCode()));
 		list.add(new CellValue(1, 2, employee.getEmployeeInfo().getEmployeeCode()));
 		list.add(new CellValue(1, 3, employee.getEmployeeInfo().getEmployeeName()));

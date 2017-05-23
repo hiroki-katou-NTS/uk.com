@@ -281,7 +281,6 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 */
 	protected void printData() {
 		printPageHeader();
-		breakLines(2);
 		printPageContent();
 		breakLines(1);
 		breakPage();

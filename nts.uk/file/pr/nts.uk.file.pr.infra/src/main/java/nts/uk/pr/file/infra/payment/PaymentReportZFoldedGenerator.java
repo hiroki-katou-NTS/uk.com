@@ -97,7 +97,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 		list.add(new CellValue(0, 0, "ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ"));
 		//TODO FAKE DATA
 		list.add(new CellValue(3, 0, "給与明細書"));
-		list.add(new CellValue(6, 0, employee.getJapaneseYearMonth()));
+		list.add(new CellValue(6, 0, employee.getCompanyInfo().getJapaneseYearMonth()));
 		list.add(new CellValue(12, 1, "所属"));
 		list.add(new CellValue(12, 5, "個人コード"));
 		list.add(new CellValue(12, 7, "氏名"));

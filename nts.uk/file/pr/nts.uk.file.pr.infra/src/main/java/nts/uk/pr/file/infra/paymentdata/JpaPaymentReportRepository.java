@@ -25,6 +25,7 @@ import nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingRepository;
 import nts.uk.file.pr.app.export.payment.PaymentReportQuery;
 import nts.uk.file.pr.app.export.payment.PaymentReportRepository;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
+import nts.uk.file.pr.app.export.payment.data.dto.CompanyDto;
 import nts.uk.file.pr.app.export.payment.data.dto.DepartmentDto;
 import nts.uk.file.pr.app.export.payment.data.dto.EmployeeDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
@@ -395,8 +396,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 				header.employeeCode));
 
 		// set year month
-		reportData.setJapaneseYearMonth(
-			this.convertYearMonthJP(header.qstdtPaymentHeaderPK.processingYM));
+		
+		CompanyDto companyDto = new CompanyDto();
+		companyDto.setJapaneseYearMonth(this.convertYearMonthJP(header.qstdtPaymentHeaderPK.processingYM));
+		reportData.setCompanyInfo(companyDto);
 
 		return reportData;
 	}
