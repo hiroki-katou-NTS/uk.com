@@ -86,42 +86,54 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 		return list;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.pr.file.infra.payment.BasePaymentReportGenerator#setTemplateStyle(
-	 * )
-	 */
 	@Override
-	void setTemplateStyle() {
-		// Get style from template.
-		templateStyle.headerStyle = getStyle("A5");
-		templateStyle.nameStyle = getStyle("B5");
-		templateStyle.remarkStyle = getStyle("B11");
-		templateStyle.valueStyle = getStyle("B6");
+	int getNumberOfColumnPerItem() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.pr.file.infra.payment.BasePaymentReportGenerator#
-	 * setPageHeaderRange()
-	 */
 	@Override
-	void setPageHeaderRange() {
-		pageHeaderRange = cells.createRange("A1", "J4");
+	int getPersonPerPage() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemWidth()
-	 */
 	@Override
-	int getItemWidth() {
-		return ITEM_WIDTH;
+	String getPageHeaderStartCell() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+	@Override
+	String getPageHeaderEndCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getCategoryHeaderCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getItemNameCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getItemValueCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getRemarkCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 
 }

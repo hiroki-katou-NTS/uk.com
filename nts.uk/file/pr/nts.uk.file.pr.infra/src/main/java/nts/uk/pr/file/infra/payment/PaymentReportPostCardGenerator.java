@@ -14,20 +14,55 @@ public class PaymentReportPostCardGenerator extends PaymentReportBaseGenerator i
 	}
 
 	@Override
-	int getItemWidth() {
+	int getNumberOfColumnPerItem() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-
 	@Override
-	void printPageContent() {
+	int getPersonPerPage() {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 
 	@Override
-	void setPageHeaderRange() {
+	String getPageHeaderStartCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getPageHeaderEndCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getCategoryHeaderCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getItemNameCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getItemValueCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getRemarkCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	void printPageContent() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -38,10 +73,6 @@ public class PaymentReportPostCardGenerator extends PaymentReportBaseGenerator i
 		return null;
 	}
 
-	@Override
-	void setTemplateStyle() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 }

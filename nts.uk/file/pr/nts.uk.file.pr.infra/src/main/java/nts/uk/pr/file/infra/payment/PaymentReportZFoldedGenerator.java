@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
 import java.util.ArrayList;
@@ -14,6 +18,12 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 
 	/** The Constant CATEGORY_START_ROW. */
 	public static final int CATEGORY_START_ROW = 4;
+	
+	/** The Constant PERSON_OF_PAGE. */
+	public static final int PERSON_OF_PAGE = 1;
+	
+	/** The Constant NUMBER_COLUMN_OF_ITEM. */
+	public static final int NUMBER_COLUMN_OF_ITEM =1 ;
 
 	/*
 	 * (non-Javadoc)
@@ -76,17 +86,6 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
-	 * setPageHeaderRange()
-	 */
-	@Override
-	void setPageHeaderRange() {
-		pageHeaderRange = cells.createRange("A1", "J15");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getHeaderTemplate
 	 * ()
@@ -107,32 +106,47 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 		return list;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#setTemplateStyle(
-	 * )
-	 */
 	@Override
-	void setTemplateStyle() {
-		// Get style from template.
-		templateStyle.headerStyle = getStyle("A22");
-		templateStyle.nameStyle = getStyle("B22");
-		templateStyle.valueStyle = getStyle("B23");
-		templateStyle.remarkStyle = getStyle("M11");
+	int getNumberOfColumnPerItem() {
+		return NUMBER_COLUMN_OF_ITEM;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemWidth()
-	 */
 	@Override
-	int getItemWidth() {
-		return ITEM_WIDTH;
+	int getPersonPerPage() {
+		return PERSON_OF_PAGE;
 	}
+
+	@Override
+	String getPageHeaderStartCell() {
+		return "A1";
+	}
+
+	@Override
+	String getPageHeaderEndCell() {
+		return "J21";
+	}
+
+	@Override
+	String getCategoryHeaderCell() {
+		return "A22";
+	}
+
+	@Override
+	String getItemNameCell() {
+		return "A23";
+	}
+
+	@Override
+	String getItemValueCell() {
+		return "B23";
+	}
+
+	@Override
+	String getRemarkCell() {
+		return "M11";
+	}
+
+
 
 
 }
