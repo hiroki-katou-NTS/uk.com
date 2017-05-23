@@ -34,8 +34,8 @@ module nts.uk.pr.view.kmf001.e {
                 ]);
                 self.selectedCode = ko.observable(null);
                 self.managementOption = ko.observableArray<ManagementModel>([
-                    new ManagementModel(0, '管理す'),
-                    new ManagementModel(1, '管理しな')
+                    new ManagementModel(1, '管理す'),
+                    new ManagementModel(0, '管理しな')
                 ]);
                 self.selectedManagement = ko.observable(1);
                 self.hasEmp = ko.computed(function() {
