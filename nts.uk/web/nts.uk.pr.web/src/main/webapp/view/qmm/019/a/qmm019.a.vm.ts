@@ -26,6 +26,7 @@ module qmm019.a {
         totalGrayLineNumber: KnockoutObservable<number> = ko.observable(0);
         allowClick: KnockoutObservable<boolean> = ko.observable(true);
         firstLayoutCode: string = ""; //Dùng cho select item đầu tiên.
+        previousItemPosition: number = 0; //Vị trí của item trước khi bị move giữa các row.
 
         constructor() {
             var self = this;
@@ -36,26 +37,23 @@ module qmm019.a {
             self.layoutsMax = ko.observableArray([]);
             let t = new service.model.LayoutHeadDto();
             t.stmtName = '';
-            t.companyCode='';
-            t.stmtCode='';
+            t.companyCode = '';
+            t.stmtCode = '';
             self.layoutHead = ko.observable(ko.mapping.fromJS(t));
             self.layoutMaster = ko.observable(new service.model.LayoutMasterDto());
             self.categories = ko.observableArray([new service.model.Category([], 0)]);
 
             self.singleSelectedCode.subscribe(function(codeChanged) {
-                console.log(codeChanged);
                 var layoutFind = _.find(self.layouts(), function(layout) {
                     return layout.stmtCode === codeChanged.split(';')[0] && layout.startYm === parseInt(codeChanged.split(';')[1]);
                 });
                 var layoutHead = _.find(self.layoutsMax(), function(layoutHead) {
                     return layoutHead.stmtCode === codeChanged.split(';')[0];
                 });
-                console.log(layoutHead);
                 if (layoutFind !== undefined && layoutHead != undefined) {
+                    layoutFind.stmtName = layoutHead.stmtName;
                     self.layoutMaster(layoutFind);
                     self.layoutHead(ko.mapping.fromJS(layoutHead));
-                    console.log(layoutFind);
-                    self.layoutMaster((layoutFind));
                     self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                     self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
                     service.getCategoryFull(layoutFind.stmtCode, layoutFind.historyId, layoutFind.startYm)
@@ -104,12 +102,15 @@ module qmm019.a {
             self.totalNormalLineNumber(0);
             self.totalGrayLineNumber(0);
             for (let category of self.categories()) {
+                category.totalGrayLine = 0;
                 for (let line of category.lines()) {
                     if (line.isRemoved || category.isRemoved) continue;
-                    if (!line.isDisplayOnPrint)
+                    if (!line.isDisplayOnPrint) {
                         self.totalGrayLineNumber(self.totalGrayLineNumber() + 1);
-                    else
+                        category.totalGrayLine += 1;
+                    } else {
                         self.totalNormalLineNumber(self.totalNormalLineNumber() + 1);
+                    }
                 }
             }
             self.totalNormalLine(self.totalNormalLineNumber() + "行");
@@ -129,9 +130,111 @@ module qmm019.a {
         }
         bindSortable() {
             var self = this;
-            $(".row").sortable({
-                items: "span:not(.ui-state-disabled)"
+            _.forEach(self.categories(), function(category) {
+                _.forEach(category.lines(), function(line) {
+                    $("#" + line.rowId).sortable({
+                        items: "span:not(.ui-state-disabled)",
+                        connectWith: ".categoryAtr" + line.categoryAtr,
+                        receive: function(event, ui) {
+                            if (ui.sender !== null) {
+                                //Trả ra vị trí index của item vừa được move đến trong array span
+                                let getItemIndex = $(this).find(".one-line").find("span").index(ui.item);
+                                //get item ở sau item vừa được move đến (get by index) -> di chuyển nó đến vị trí cũ của item vừa bị move
+                                let itemWillBeMoved = $(this).find(".one-line").find("span")[getItemIndex + 1];
+                                if ($(itemWillBeMoved).hasClass("fixed-button") || itemWillBeMoved === undefined) {
+                                    //nếu item sẽ dùng đề move bù lại thằng vừa kéo đi -> mà là dạng fixed-button
+                                    //hoặc là undefined thì nhảy lên lấy thằng index trước đó
+                                    itemWillBeMoved = $(this).find(".one-line").find("span")[getItemIndex - 1];
+                                }
+                                //thực hiện move item mới vào chỗ của thằng vừa kéo đi
+                                if (screenQmm019().previousItemPosition === 8) {
+                                    //Nếu vị trí để insert vào là số 8 thì dùng cái này ↓
+                                    $(itemWillBeMoved).insertAfter($(ui.sender[0]).find(".one-line").find("span")[7]);
+                                } else {
+                                    $(itemWillBeMoved).insertBefore($(ui.sender[0]).find(".one-line").find("span")[screenQmm019().previousItemPosition]);
+                                }
+
+                                let currentCategoryId = $(this).parent().parent().attr("id");
+                                let thisLineId = $(this).attr("id");
+                                let senderLineId = $(ui.sender).attr("id");
+                                let comeInItem: service.model.ItemDetail, returnItem: service.model.ItemDetail;
+
+                                let categoryFind = _.find(screenQmm019().categories(), function(categoryItem) {
+                                    return categoryItem.categoryAtr === Number(currentCategoryId);
+                                });
+                                if (categoryFind !== undefined) {
+                                    let lineFind = _.find(categoryFind.lines(), function(lineItem) {
+                                        return lineItem.rowId === thisLineId;
+                                    });
+                                    let senderLineFind = _.find(categoryFind.lines(), function(lineItem) {
+                                        return lineItem.rowId === senderLineId;
+                                    });
+
+                                    if (lineFind !== undefined) {
+                                        returnItem = _.find(lineFind.details, function(item) {
+                                            return item.itemCode() === $(itemWillBeMoved).attr("id");
+                                        });
+                                        //Update autolineId mới
+                                        returnItem.autoLineId(senderLineFind.autoLineId);
+
+                                        _.remove(lineFind.details, function(item) {
+                                            return item.itemCode() === $(itemWillBeMoved).attr("id");
+                                        });
+                                    }
+                                    if (senderLineFind !== undefined) {
+                                        comeInItem = _.find(senderLineFind.details, function(item) {
+                                            return item.itemCode() === $(ui.item).attr("id");
+                                        });
+                                        //Update autolineId mới
+                                        comeInItem.autoLineId(lineFind.autoLineId);
+
+                                        _.remove(senderLineFind.details, function(item) {
+                                            return item.itemCode() === $(ui.item).attr("id");
+                                        });
+                                    }
+                                    let comeInItemFound = true, returnItemFound = true;
+                                    //Tạo id mới cho comeInItem và returnItem
+                                    for (let i: number = 1; i <= 9; i++) {
+                                        //Tìm xem nếu id mới chưa có thì set
+                                        if (_.includes(comeInItem.itemCode(), "itemTemp-") && comeInItemFound) {
+                                            let comeInItemFind = _.find(lineFind.details, function(item) {
+                                                return item.itemCode() === "itemTemp-" + i;
+                                            });
+                                            if (comeInItemFind === undefined) {
+                                                comeInItemFound = false;
+                                                comeInItem.itemCode("itemTemp-" + i);
+                                            }
+                                        }
+                                        if (_.includes(returnItem.itemCode(), "itemTemp-") && returnItemFound) {
+                                            let returnItemFind = _.find(senderLineFind.details, function(item) {
+                                                return item.itemCode() === "itemTemp-" + i;
+                                            });
+                                            if (returnItemFind === undefined) {
+                                                returnItemFound = false;
+                                                returnItem.itemCode("itemTemp-" + i);
+                                            }
+                                        }
+                                        if (!comeInItemFound && !returnItemFound) {
+                                            break;
+                                        }
+                                    }
+
+                                    //update datasource
+                                    lineFind.details.push(comeInItem);
+                                    senderLineFind.details.push(returnItem);
+
+                                }
+
+                            }
+                        },
+                        start: function(event, ui) {
+                            self.previousItemPosition = $(this).find(".one-line").find("span").index(ui.item);
+                        }
+                    });
+                })
             });
+
+            //Setting sortable giữa các dòng với nhau
             $(".all-line").sortable({
                 items: ".row"
             });
@@ -149,11 +252,8 @@ module qmm019.a {
 
             service.getAllLayoutHist().done(function(layouts: Array<service.model.LayoutMasterDto>) {
                 if (layouts.length > 0) {
-
                     self.layouts(layouts);
-                    console.log(layouts);
                     service.getAllLayoutHead().done(function(layoutsMax: Array<service.model.LayoutHeadDto>) {
-                        console.log(layoutsMax);
                         self.layoutsMax(layoutsMax);
                         self.buildTreeDataSource();
                         //let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
@@ -200,16 +300,28 @@ module qmm019.a {
 
         registerLayout() {
             var self = this;
-            service.registerLayout(self.layoutMaster(), self.categories()).done(function(res) {
-                service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().historyId, self.layoutMaster().startYm)
-                    .done(function(listResult: Array<service.model.Category>) {
-                        self.categories(listResult);
-                        self.checkKintaiKiji();
-                        self.bindSortable();
-                    });
-            }).fail(function(err) {
-                alert(err);
-            });
+            if (self.validateOnRegister()) {
+                service.registerLayout(self.layoutMaster(), self.categories()).done(function(res) {
+                    service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().historyId, self.layoutMaster().startYm)
+                        .done(function(listResult: Array<service.model.Category>) {
+                            self.categories(listResult);
+                            self.checkKintaiKiji();
+                            self.bindSortable();
+                        });
+                }).fail(function(err) {
+                    alert(err);
+                });
+            }
+        }
+
+        validateOnRegister() {
+            let self = this;
+            if (self.layoutMaster().stmtName.length === 0) {
+                nts.uk.ui.dialog.alert("明細書名が入力されていません。");
+                return false;
+            }
+
+            return true;
         }
 
         addKintaiCategory() {
@@ -228,7 +340,7 @@ module qmm019.a {
             self.bindSortable();
         }
 
-        openADialog() {
+        openDDialog() {
             var self = this;
             if (self.singleSelectedCode() == null)
                 return false;
@@ -236,7 +348,7 @@ module qmm019.a {
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
             //17.03.2017 Lanlt  setShared startYm
             nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { dialogClass: 'no-close', title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
                 self.start(self.singleSelectedCode());
             });
         }
@@ -250,17 +362,19 @@ module qmm019.a {
                 || self.layoutMaster().historyId === undefined)
                 return false;
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-            nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
+            nts.uk.ui.windows.setShared('startYm', self.startYm());
+            nts.uk.ui.windows.setShared('endYm', self.endYm());
             nts.uk.ui.windows.setShared('historyId', self.layoutMaster().historyId);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { dialogClass: 'no-close', title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
                 self.start(self.singleSelectedCode());
             });
         }
         openGDialog() {
             var self = this;
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { height: 630, dialogClass: 'no-close', title: '明細レイアウトの作成＞新規登録' }).onClosed(function(): any {
                 // anh Lam
-                self.start(undefined);
+                let selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                self.start(selectedCode);
             });
         }
     }

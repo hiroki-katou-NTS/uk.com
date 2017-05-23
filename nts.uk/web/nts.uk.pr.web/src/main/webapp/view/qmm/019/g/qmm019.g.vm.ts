@@ -44,7 +44,6 @@ module qmm019.g.viewmodel {
             self.selectStmtCode = ko.observable(null);
             self.selectStmtName = ko.observable(null);
             self.selectStartYm = ko.observable(null);
-            console.log(option);
             self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({
                 inputFormat: "yearmonth"
             }));
@@ -71,31 +70,31 @@ module qmm019.g.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             self.buildItemList();
-            $('#LST_001').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            })
-            $('#LST_001').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            })
+            //            $('#LST_001').on('selectionChanging', function(event) {
+            //                console.log('Selecting value:' + (<any>event.originalEvent).detail);
+            //            })
+            //            $('#LST_001').on('selectionChanged', function(event: any) {
+            //                console.log('Selected value:' + (<any>event.originalEvent).detail)
+            //            })
             //combobox 
             service.getLayoutHeadInfor().done(function(layout: Array<service.model.LayoutHeadDto>) {
                 if (layout.length > 0) {
                     self.layouts(layout);
-//                    service.getAllLayoutHist().done(function(layoutHist:Array<service.model.LayoutHistory> ){
-//                       self.layoutHistory(layoutHist); 
-//                        console.log(layoutHist);
-//                    });
-                    
+                    //                    service.getAllLayoutHist().done(function(layoutHist:Array<service.model.LayoutHistory> ){
+                    //                       self.layoutHistory(layoutHist); 
+                    //                 ayoutHist);
+                    //                    });
+
                 }
                 self.buildCombobox();
             });
             //radio button change
             self.isRadioCheck.subscribe(function(newValue) {
                 if (newValue === 1) {
-                    self.isEnable(true);
+                    //self.isEnable(true);
                     self.isEnableCombox(false);
                 } else {
-                    self.isEnable(false);
+                    // self.isEnable(false);
                     self.isEnableCombox(true);
                 }
 
@@ -138,8 +137,8 @@ module qmm019.g.viewmodel {
             var self = this;
             _.forEach(self.layouts(), function(layout) {
                 if (layout.stmtCode == layoutCd) {
-//                    self.startYmCopy(layout.startYm);
-//                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
+                    //                    self.startYmCopy(layout.startYm);
+                    //                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                     return false;
                 }
             })
@@ -160,8 +159,7 @@ module qmm019.g.viewmodel {
                     self.createlayout().checkCopy = true;
                 }
                 service.createLayout(self.createlayout()).done(function() {
-                    alert(self.createlayout());
-                    //alert('追加しました。');    
+                    nts.uk.ui.windows.setShared('selectedCode', self.createlayout().stmtCode + ';' + self.createlayout().startYm);
                     nts.uk.ui.windows.close();
                 }).fail(function(res) {
                     alert(res);
@@ -235,7 +233,7 @@ module qmm019.g.viewmodel {
                 startYmCopied: +self.startYmCopy,
                 stmtCode: stmtCd,
                 startYm: + $('#INP_003').val().replace('/', ''),
-                layoutAtr: 3,
+                layoutAtr: parseInt(self.selectedCodes()),
                 stmtName: self.layoutName() + "",
                 endYm: 999912
             });

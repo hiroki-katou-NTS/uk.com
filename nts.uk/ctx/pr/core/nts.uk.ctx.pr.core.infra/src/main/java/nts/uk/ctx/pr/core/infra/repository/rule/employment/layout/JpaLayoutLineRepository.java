@@ -34,10 +34,10 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.endYm = :endYm";
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutLinesPk.historyId = :historyId";
 	private final String SELECT_ALL_DETAILS1 = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd";
+			+ " AND c.qstmtStmtLayoutLinesPk.historyId = :historyId";
 
 	private final String SELECT_ALL_DETAILS_BEFORE1 = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
@@ -117,6 +117,9 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	public void add(List<LayoutMasterLine> lines) {
 		for (LayoutMasterLine line : lines) {
 			this.commandProxy().insert(toEntity(line));
+
+			System.out.println(line.getStmtCode());
+			System.out.println(line.getAutoLineId());
 		}
 
 	}
@@ -170,8 +173,9 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 	@Override
 	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, String historyId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE1, QstmtStmtLayoutLines.class)
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
+				.setParameter("historyId", historyId).getList(c -> toDomain(c));
 	}
 
 	@Override
@@ -191,10 +195,9 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	}
 
 	@Override
-	public List<LayoutMasterLine> getLinesBefore(String companyCd, String stmtCd) {
-		
+	public List<LayoutMasterLine> getLinesBefore(String companyCd, String historyId) {
+
 		return this.queryProxy().query(SELECT_ALL_DETAILS1, QstmtStmtLayoutLines.class)
-				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
-				.getList(c -> toDomain(c));
+				.setParameter("companyCd", companyCd).setParameter("historyId", historyId).getList(c -> toDomain(c));
 	}
 }

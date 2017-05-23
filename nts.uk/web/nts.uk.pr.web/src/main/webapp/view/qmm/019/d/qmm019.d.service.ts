@@ -40,6 +40,16 @@ module qmm019.d.service {
         })
         return dfd.promise();
     }
+    //Lanlt
+    export function createLayoutHistory1(layoutMaster: model.LayoutHistoryDto) {
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(paths.createlayouthistory, layoutMaster).done(function(res: Array<any>) {
+            dfd.resolve(res);
+        }).fail(function(res) {
+            dfd.reject(res);
+        })
+        return dfd.promise();
+    }
 
 
     export module model {
