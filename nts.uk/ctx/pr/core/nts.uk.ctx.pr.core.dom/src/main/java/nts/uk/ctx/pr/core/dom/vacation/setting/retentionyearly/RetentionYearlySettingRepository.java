@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.vacation.setting.retentionyearly;
 
+import java.util.Optional;
+
 /**
  * The Interface RetentionYearlySettingRepository.
  */
@@ -24,16 +26,9 @@ public interface RetentionYearlySettingRepository {
 	void update(RetentionYearlySetting setting);
 	
 	/**
-	 * Removes the.
-	 *
-	 * @param setting the setting
-	 */
-	void remove(RetentionYearlySetting setting);
-	
-	/**
 	 * Find by company id.
 	 *
 	 * @return the retention yearly setting
 	 */
-	RetentionYearlySetting findByCompanyId();
+	Optional<RetentionYearlySetting> findByCompanyId(String companyId);
 }
