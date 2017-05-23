@@ -6,7 +6,6 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
@@ -23,6 +22,12 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="functions-area">
+				<div id = "functions-area-content">
+					<button class="proceed" data-bind = "click: registration">登録</button>
+					<button  data-bind = "click: closeDialogD">閉じる</button>
+				</div>
+			</div>
 			<div id="contents-area">
 				<div class="d-label-001">詳細設定を行ってください。 ※この設定は翌月以降の明細書にも反映されます。</div>
 				<div class="contents-area-right-left" data-bind = "with: refundLayoutItem">
@@ -202,12 +207,12 @@
 										{ prop: 'name', length: 10 },
 									]} ">
 							</span>
-							<span><button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true}">?</button></span>
+							<span><button data-bind="" id = "helper-button-sel-014">?</button></span>
 						</div>
-						<!--End right-contents Screen D -->
+						<!--End right-contents Screen D by print type 0 -->
 
 
-						<!--Start right-contents Screen E -->
+						<!--Start right-contents Screen D by print type 1 -->
 						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
 							<div class="right-contents-area-label"
 								data-bind="ntsFormLabel: {}">扶養親族等の数出力</div>
@@ -303,13 +308,8 @@
 								} ">
 							</span>
 						</div>
-						<!--End right-contents Screen E -->
+						<!--End right-contents Screen D by print type 1 -->
 					</div>
-				</div>
-				<div id="div-button-bottom">
-					<hr />
-					<button class="x-large proceed" data-bind = "click: registration">登録</button>
-					<button class="small" data-bind = "click: closeDialogD">キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

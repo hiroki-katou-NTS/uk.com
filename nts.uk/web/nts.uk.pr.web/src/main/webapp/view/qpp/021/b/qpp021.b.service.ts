@@ -3,19 +3,20 @@ module nts.uk.pr.view.qpp021.b {
 
         var paths = {
             printService: "/file/paymentdata/print",
-            paymentReportPrint: "screen/pr/QPP021/saveAsPdf"
+            paymentReportPrint: "screen/pr/QPP021/saveAsPdf",
+            getPaydayProcessing: "/pr/core/paydayprocessing/getbyccdanddisatr1",
+            getLineItemLayout: "pr/proto/layout/findHeadAndHistByYM/{0}",
+            
         };
 
-        export function printB(query: any): JQueryPromise<any> {
-            let dfd = $.Deferred<any>();
-            //nts.uk.request.ajax(paths.getComparingPrintSet).done(function(res: any) {
-            dfd.resolve();
-            //}).fail(function(error: any) {
-            //dfd.reject(error);
-            // })
-            return dfd.promise();
+        export function getPaydayProcessing(): JQueryPromise<any> {
+            return nts.uk.request.ajax("pr", paths.getPaydayProcessing, "0001");
         }
-
+        
+        export function getLineItemLayout(baseYM: number): JQueryPromise<any> {
+            let path_ = nts.uk.text.format(paths.getLineItemLayout, baseYM);
+            return nts.uk.request.ajax("pr", path_);
+        }
 
         //print data query
         export function paymentReportPrint(query: model.PaymentReportQueryDto): JQueryPromise<any> {
@@ -39,7 +40,7 @@ module nts.uk.pr.view.qpp021.b {
 
                 /** The layout items. */
                 layoutItems: number;
-                
+
                 pageOrientation: string;
             }
 

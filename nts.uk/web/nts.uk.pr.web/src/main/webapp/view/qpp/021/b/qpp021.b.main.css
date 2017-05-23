@@ -131,7 +131,7 @@
 /** DIV css */
 #content-step2-left {
 	width: 45%;
-	background-color: gray;
+	background-color: #a0a0a0;
 	height: 535px;
 	float: left;
 }
@@ -144,21 +144,25 @@
 
 #content-step2-right-calendar {
 	display: inline-block;
-	width: calc(98%);
+	width: calc(96%);
 	border: 1px solid #bbb;
 	border-radius: 5px;
 	overflow: hidden;
 	box-sizing: border-box;
 	transition: box-shadow 0.2s;
-	margin-left: 5px;
+		margin-left: 10px;
+	margin-bottom: 5px !important;
+	margin-top: 5px;
 }
 
 .content-step2-right-gridLsit {
 	width: 99%;
-	height: 410px;
-	border: 1px solid #bbb;
+	height: 405px;
 }
 
+#wizard-p-1 {
+	padding: 1px !important;
+}
 .content-step2-right-button{
 	padding: 10px;
 }

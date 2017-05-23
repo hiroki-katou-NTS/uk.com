@@ -26,7 +26,7 @@
 					class="cf">
 					<div class="header">
 						<div class="image"
-							data-icon="../../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
+							data-icon="../../../../../nts.uk.com.js.web/lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
 						<div class="content">明細書印刷</div>
 					</div>
 					<div class="steps">
@@ -49,7 +49,6 @@
 									editable: false,
 									enable: true,
 									columns: [
-										{ prop: 'cbCode', length: 4 },
 										{ prop: 'cbName', length: 10 },
 									]}">
 								</div>
@@ -58,7 +57,7 @@
 								<span class="label with-image" id="B_LBL_002"> <i
 									class="image image-calendar" /> <span>処理する給与明細書の年月</span>
 								</span> <span id="B_LBL_003"
-									data-bind="ntsFormLabel: { required: true }">2017/05</span>
+									data-bind="text: currentProcessingYm"></span>
 							</div>
 							<div class="label" id="B_LBL_004">印刷レイアウトを選択してください。</div>
 							<div class="valign-center control-group">
@@ -112,7 +111,7 @@
 											primaryKey: 'printTypeCode',
 											columns: [
 												{ headerText: 'コード', key: 'printTypeCode', width: 100, hidden: true},
-                    							{ headerText: '印刷タイプリスト', key: 'printTypeName', width: 150 },
+                    							{ headerText: '印刷タイプ', key: 'printTypeName', width: 150 },
 											],
 											deleteOptions : {visible : false, deleteField: 'deletable'},
 											multiple: false,
@@ -125,12 +124,11 @@
 											data-bind="ntsGridList: {								
 											height: 210,
 											dataSource: selectLineItemLayout,
-											primaryKey: 'layoutAttributeId',
+											primaryKey: 'statementCode',
 											columns: [
-												{ headerText: '', key: 'statementCode', width: 100, hidden: true },
+												{ headerText: '', key: 'statementCode', hidden: true},
                     							{ headerText: '明細書レイアウト', key: 'statementName', width: 140 },
-                    							{ headerText: '印刷タイプリスト', key: 'layoutAttributeId', width: 100, hidden: true},
-                    							{ headerText: '', key: 'layoutAttributeName', width: 140 },
+                    							{ headerText: '印刷タイプ', key: 'layoutAttributeName', width: 140 },
 											],
 											deleteOptions : {visible : false, deleteField: 'deletable'},
 											multiple: false,
@@ -167,16 +165,20 @@
 
 						</div>
 						<div class="A_LBL_003-step" style="padding: 0px;">
-							<div id="content-step2-left"></div>
+							<div id="content-step2-left">
+							    <img src="content-step-left.png" width="100%" height="100%"/>
+							</div>
 							<div id="content-step2-right">
 								<div class="valign-center control-group"
 									id="content-step2-right-calendar">
 									<span class="label with-image" id="c_label_001"> <i
 										class="image image-calendar" /> <span>処理する給与明細書の年月</span>
 									</span> <span id="c_label_002"
-										data-bind="ntsFormLabel: { required: true }">2017/05</span>
+											data-bind="text: currentProcessingYm"></span>
 								</div>
-								<div class="content-step2-right-gridLsit"></div>
+								<div class="content-step2-right-gridLsit">
+									<img src="content-step-right.PNG" width="100%" height="100%"/>
+								</div>
 								<div
 									class="content-step2-right-button valign-center control-group">
 									<button id="c-button-001" class="normal" data-bind="click: previous">
