@@ -4,11 +4,11 @@
 	height: 570px;
 	width: 85%;
 }
-#register-button {
+.register-button {
 	width: 70px;
 	margin-left: 20px;
 }
-#register-annual-holiday-table {
+.register-annual-holiday-table {
 	float: right;
 	margin-right: 20px;
 	padding-top: 25px;
@@ -18,7 +18,7 @@
 	color: #7f7f7f;
 }
 
-#ruledLine {
+.ruledLine {
 	height: 1px;
 	background-color: #7f7f7f;
 	width: 100%;
@@ -29,6 +29,13 @@
 	height: 1px;
 	background-color: #7f7f7f;
 	width: 70%;
+}
+#ruledLine2 {
+	margin-top: 2px;
+	margin-left: 22px;
+	height: 1px;
+	background-color: #7f7f7f;
+	width: 100%;
 }
 #whole-company-content-detail {
 	width: 90%;
@@ -49,4 +56,17 @@
 }
 .margin-bottom {
 	margin-bottom: 20px;
+}
+
+#left-content {
+	width: 400px;
+	height: 500px;
+	padding: 25px;
+	padding-top: 100px;
+}
+#right-content {
+	padding-left: 30px; 
+	padding-top: 15px;
+	width: 600px;
+	vertical-align: top;
 }
