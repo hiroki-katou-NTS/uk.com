@@ -1,3 +1,4 @@
+
 module qmm019.f.attendItem.viewmodel {
     export class ScreenModel {
         itemDtoSelected: KnockoutObservable<qmm019.f.viewmodel.ItemDto> = ko.observable(null);

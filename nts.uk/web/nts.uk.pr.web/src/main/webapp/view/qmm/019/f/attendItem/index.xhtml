@@ -15,7 +15,7 @@
 					data-bind="ntsCheckBox: { checked: checkUseHighError, text: 'エラー'}"
 					class="cf clsCheckbox"></div>
 				<input id="INP_006"
-					data-bind="ntsTimeEditor: {
+					data-bind="if:(!itemDtoSelected().taxAtr()),ntsTimeEditor: {
 											value: itemDtoSelected().errRangeHigh , 
 											option: timeEditorOption, required: true, 
 											enable: checkUseHighError(), 

@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.layout;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.layout.UpdateLayoutHistory
 import nts.uk.ctx.pr.core.app.command.rule.employment.layout.UpdateLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.layout.register.RegisterLayoutCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.layout.register.RegisterLayoutCommandHandler;
+import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHeadAndHistDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHeadDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHistoryDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutMasterFinder;
@@ -74,6 +76,12 @@ public class LayoutWebService extends WebService {
 	@Path("findlayout/{stmtCode}/{historyId}")
 	public LayoutHeadDto getLayout(@PathParam("stmtCode") String stmtCode, @PathParam("historyId") String historyId) {
 		return this.find.getLayout(AppContexts.user().companyCode(), stmtCode, historyId).get();
+	}
+
+	@POST
+	@Path("findHeadAndHistByYM/{BaseYm}")
+	public List<LayoutHeadAndHistDto> getLayout(@PathParam("BaseYm") BigDecimal BaseYm) {
+		return this.find.findHeadAndHistByYM(BaseYm);
 	}
 
 	@POST

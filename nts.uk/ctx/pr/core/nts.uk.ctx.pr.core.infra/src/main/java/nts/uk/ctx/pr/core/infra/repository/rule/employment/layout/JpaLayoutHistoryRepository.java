@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.layout;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,6 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistory;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHistory;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHistoryPK;
 
@@ -23,6 +23,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHis
 @Stateless
 public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutHistRepository {
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHistory c";
+	private final String SELECT_NO_WHERE_JOIN = "SELECT c,h FROM QstmtStmtLayoutHistory c";
 	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd"
 			+ " ORDER BY c.startYear DESC";
 	private final String SEL_1 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd "
@@ -40,6 +41,11 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 			+ " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHistPK.stmtCd = :stmtCd"
 			+ " AND  c.endYear = 999912";
 	private final String SELECT_HIST_BY_ENDYEAR = SEL_2 + " AND c.endYear = :endYear ";
+	private final String SELECT_HEAD_AND_HIST_BY_YM = SELECT_NO_WHERE_JOIN + " INNER JOIN QstmtStmtLayoutHead h "
+			+ "ON(c.qstmtStmtLayoutHistPK.companyCd = h.qstmtStmtLayoutHeadPK.companyCd "
+			+ "AND c.qstmtStmtLayoutHistPK.stmtCd = h.qstmtStmtLayoutHeadPK.stmtCd) "
+			+ "WHERE (c.qstmtStmtLayoutHistPK.companyCd=:companyCd " + "AND c.startYear <=:baseYm "
+			+ "AND c.endYear>=:baseYm )";
 
 	private final LayoutHistory toDomain(QstmtStmtLayoutHistory entity) {
 		val domain = LayoutHistory.createFromJavaType(entity.qstmtStmtLayoutHistPK.companyCd,
@@ -145,5 +151,14 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 		return this.queryProxy().query(SELECT_HIST_BY_ENDYEAR, QstmtStmtLayoutHistory.class)
 				.setParameter("companyCd", companyCode).setParameter("stmtCd", stmtCode).setParameter("endYear", endYm)
 				.getSingle().map(x -> toDomain(x));
+	}
+
+	@Override
+	public List<Object[]> getHeadAndHistByYM(String companyCode, BigDecimal baseYm) {
+		@SuppressWarnings("unchecked")
+		List<Object[]> objects = this.getEntityManager().createQuery(SELECT_HEAD_AND_HIST_BY_YM)
+				.setParameter("companyCd", companyCode).setParameter("baseYm", baseYm).getResultList();
+
+		return objects;
 	}
 }
