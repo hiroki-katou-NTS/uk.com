@@ -106,7 +106,7 @@
 									<td class="B_LST_001">
 										<table id="B_LST_001"
 											data-bind="ntsGridList: {								
-											height: 210,
+											height: 180,
 											dataSource: selectPrintTypesList,
 											primaryKey: 'printTypeCode',
 											columns: [
@@ -116,23 +116,25 @@
 											deleteOptions : {visible : false, deleteField: 'deletable'},
 											multiple: false,
 											value: selectPrintTypeListCode,
+											enable: isEnablePrintTypes,
 											} ">
 										</table>
 									</td>
 									<td class="B_LST_002">
 										<table id="B_LST_002"
 											data-bind="ntsGridList: {								
-											height: 210,
+											height: 180,
 											dataSource: selectLineItemLayout,
 											primaryKey: 'statementCode',
 											columns: [
 												{ headerText: '', key: 'statementCode', hidden: true},
-                    							{ headerText: '明細書レイアウト', key: 'statementName', width: 140 },
-                    							{ headerText: '印刷タイプ', key: 'layoutAttributeName', width: 140 },
+                    							{ headerText: '明細書レイアウト', key: 'statementName', width: 150 },
+                    							{ headerText: '印刷タイプ', key: 'layoutAttributeName', width: 190 },
 											],
 											deleteOptions : {visible : false, deleteField: 'deletable'},
 											multiple: false,
 											value: selectLineItemCode,
+											enable: isEnableLineItemLayout,
 											}">
 										</table>
 									</td>

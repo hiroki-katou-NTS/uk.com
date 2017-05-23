@@ -19,6 +19,8 @@ module nts.uk.pr.view.qpp021.b {
             selectLineItemCode: KnockoutObservable<string>;
 
             currentProcessingYm: KnockoutObservable<string>;
+            isEnablePrintTypes: KnockoutObservable<boolean>;
+            isEnableLineItemLayout: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
@@ -26,13 +28,20 @@ module nts.uk.pr.view.qpp021.b {
 
                 self.selectPrintTypeCode.subscribe(function(newValue) {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                    // waiting kiban...............
+                    if (newValue == 1) {
+                        self.isEnablePrintTypes(false);
+                        self.isEnableLineItemLayout(true);
+                    } else {
+                        self.isEnablePrintTypes(true);
+                        self.isEnableLineItemLayout(false);
+                    }
                 });
+
                 self.selectedCbCode.subscribe(function(newValue) {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     let currentProcessDate = _.find(self.processDateComboBox(), function(item) { return item.cbCode == newValue }).currentProcessingYm;
                     self.currentProcessingYm(nts.uk.time.formatYearMonth(currentProcessDate));
-                    //self.getLineItemLayout(currentProcessDate);
+                    self.getLineItemLayout(currentProcessDate);
                 });
             }
 
@@ -65,19 +74,12 @@ module nts.uk.pr.view.qpp021.b {
                 ]);
                 self.selectPrintTypeListCode = ko.observable(0);
 
-                self.selectLineItemLayout = ko.observableArray([
-                    new LineItemLayoutModel('01', 'Screen A', 0, "レーザー　A4　縦向き　1人"),
-                    new LineItemLayoutModel('02', 'Screen B', 1, "レーザー　A4　縦向き　2人"),
-                    new LineItemLayoutModel('03', 'Screen C', 2, "レーザー　A4　縦向き　3人"),
-                    new LineItemLayoutModel('04', 'Screen D', 3, "レーザー　A4　横向き　2人"),
-                    new LineItemLayoutModel('05', 'Screen E', 4, "レーザー(圧着式)　縦向き　1人"),
-                    new LineItemLayoutModel('06', 'Screen F', 5, "レーザー(圧着式)　横向き　1人"),
-                    new LineItemLayoutModel('07', 'Screen G', 6, "ドットプリンタ　連続用紙　1人"),
-                    new LineItemLayoutModel('08', 'Screen H', 7, "PAYS単票"),
-                    new LineItemLayoutModel('09', 'Screen D', 8, "PAYS連続"),
-                ]);
+                self.selectLineItemLayout = ko.observableArray([]);
                 self.selectLineItemCode = ko.observable("01");
+                
                 self.currentProcessingYm = ko.observable("");
+                self.isEnablePrintTypes = ko.observable(true);
+                self.isEnableLineItemLayout = ko.observable(false);
             }
 
             startPage(): JQueryPromise<any> {
@@ -87,14 +89,14 @@ module nts.uk.pr.view.qpp021.b {
                 self.processDateComboBox([]);
                 service.getPaydayProcessing().done(data => {
                     let lstprocessDate = _.map(data, function(item: any) {
-                        return new ComboBoxModel(item.processingNo, item.processingName, 201704);
+                        return new ComboBoxModel(item.processingNo, item.processingName, item.currentProcessingYm);
                     });
                     if (lstprocessDate && lstprocessDate.length > 0) {
                         self.processDateComboBox(lstprocessDate);
                         self.currentProcessingYm(nts.uk.time.formatYearMonth(lstprocessDate[0].currentProcessingYm));
                         baseYM = lstprocessDate[0].currentProcessingYm;
                     }
-                    //self.getLineItemLayout(baseYM);
+                    self.getLineItemLayout(baseYM);
                 }).fail(function(error) {
                     console.log(error.message);
                 });
@@ -109,7 +111,7 @@ module nts.uk.pr.view.qpp021.b {
                 self.selectLineItemLayout([]);
                 service.getLineItemLayout(baseYM).done(data => {
                     let lineItemLayouts = _.map(data, function(item: any) {
-                        return new LineItemLayoutModel(item.statementCode, item.statementName, item.layoutAttributeId, item.layoutAttributeName);
+                        return new LineItemLayoutModel(item.stmtCode, item.stmtName, item.layoutAtr.value, item.layoutAtr.localizedName);
                     });
                     if (lineItemLayouts && lineItemLayouts.length > 0) {
                         self.selectLineItemLayout(lineItemLayouts);
@@ -219,7 +221,6 @@ module nts.uk.pr.view.qpp021.b {
             constructor(rbCode: number, rbName: string) {
                 this.rbCode = rbCode;
                 this.rbName = rbName;
-
             }
         }
 
