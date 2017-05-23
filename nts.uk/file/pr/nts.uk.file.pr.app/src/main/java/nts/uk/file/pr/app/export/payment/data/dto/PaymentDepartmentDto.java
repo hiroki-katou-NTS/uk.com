@@ -7,25 +7,17 @@ package nts.uk.file.pr.app.export.payment.data.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * The Class EmployeeDto.
- */
 @Getter
 @Setter
-public class EmployeeDto {
+public class PaymentDepartmentDto {
 	
-	/** The employee code. */
-	private String employeeCode;
+	/** The department code. */
+	private String departmentCode;
 	
-	/** The employee name. */
-	private String employeeName;
+	/** The department name. */
+	private String departmentName;	
 	
-	/** The postal code. */
-	private String postalCode;
-	
-	/** The address one. */
-	private String addressOne;
-	
-	/** The address two. */
-	private String addressTwo;
+	/** The department output. */
+	private String departmentOutput;
+
 }

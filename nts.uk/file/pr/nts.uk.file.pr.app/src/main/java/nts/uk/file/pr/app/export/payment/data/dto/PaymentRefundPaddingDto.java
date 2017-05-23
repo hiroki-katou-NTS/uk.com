@@ -14,7 +14,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RefundPaddingDto {
+public class PaymentRefundPaddingDto {
 	/** The print type. */
 	private int printType;
 
