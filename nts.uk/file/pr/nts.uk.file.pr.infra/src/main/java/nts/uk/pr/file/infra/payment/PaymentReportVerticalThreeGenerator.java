@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
 import java.util.List;
@@ -14,7 +18,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	}
 
 	@Override
-	int getItemWidth() {
+	int getNumberOfColumnPerItem() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -26,11 +30,6 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 		
 	}
 
-	@Override
-	void setPageHeaderRange() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	List<CellValue> getHeaderTemplate() {
@@ -39,9 +38,45 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	}
 
 	@Override
-	void setTemplateStyle() {
+	int getPersonPerPage() {
 		// TODO Auto-generated method stub
-		
+		return 0;
+	}
+
+	@Override
+	String getPageHeaderStartCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getPageHeaderEndCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getCategoryHeaderCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getItemNameCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getItemValueCell() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	String getRemarkCell() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
