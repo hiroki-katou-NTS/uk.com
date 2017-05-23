@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
@@ -25,7 +26,7 @@ import nts.arc.i18n.custom.ResourceType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.SystemProperties;
 
-@Stateful
+@RequestScoped
 public class MultiLanguageResource implements IInternationalization {
 
 	private String getCompanyCode() {
