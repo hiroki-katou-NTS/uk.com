@@ -3630,8 +3630,12 @@ var nts;
                                 mousePos = null;
                                 dragSelectRange = [];
                                 $(window).unbind('mousemove.NtsGridListDragging');
-                                //                    $grid.triggerHandler('selectionchanged');  
+                                if ($grid.data("selectUpdated") === true) {
+                                    $grid.triggerHandler('selectionchanged');
+                                }
+                                //$grid.triggerHandler('selectionchanged');  
                                 clearInterval(timerAutoScroll);
+                                $grid.data("selectUpdated", false);
                             });
                         });
                         function updateSelections() {
@@ -3661,6 +3665,7 @@ var nts;
                                 }
                             }
                             dragSelectRange = newDragSelectRange;
+                            $grid.data("selectUpdated", true);
                         }
                     }
                     function setupSelectingEvents($grid) {
@@ -4986,6 +4991,7 @@ var nts;
                         this.EVENT_PICK = "pick." + this.NAMESPACE;
                         this.YM_FORMAT = "YYYY/MM";
                         this.YMD_FORMAT = "YYYY/MM/DD";
+                        this.DATE_SPLITTER = "/";
                     }
                     // Use this method to get an instance.
                     DatePickerNormalizer.getInstance = function ($input) {
@@ -5071,7 +5077,9 @@ var nts;
                             this.colorLevel = this.MONTHS;
                         else if (this.options.format === this.YMD_FORMAT)
                             this.colorLevel = this.DAYS;
-                        this.selectedView = this.colorLevel;
+                        // Only set to colorLevel in initialization.
+                        if (this.selectedView === undefined)
+                            this.selectedView = this.colorLevel;
                     };
                     DatePickerNormalizer.prototype.color = function () {
                         if (this.cssRanger === undefined)
@@ -5327,10 +5335,10 @@ var nts;
                         this.defaultMonths = this.options.months;
                         var parsedTime;
                         if (this.options.format === this.YMD_FORMAT)
-                            parsedTime = uk.time.parseYearMonthDate(initValue);
+                            parsedTime = this.parseDate(initValue);
                         else if (this.options.format === this.YM_FORMAT)
-                            parsedTime = uk.time.parseYearMonth(initValue);
-                        if (parsedTime.success) {
+                            parsedTime = this.parseDate(initValue);
+                        if (parsedTime !== undefined) {
                             this.year = parsedTime.year;
                             this.month = parsedTime.month;
                             this.date = parsedTime.date;
@@ -5349,12 +5357,25 @@ var nts;
                         }
                         this.color();
                         // Pick time
-                        if (colorLevel === this.MONTHS && this.allowPickMonth()) {
+                        if (this.selectedView === this.MONTHS && this.allowPickMonth()) {
+                            if (this.viewMonth < this.fiscalMonth && this.viewYear === this.year)
+                                this.clearPicked();
                             this.pickMonth();
                         }
-                        else if (colorLevel === this.DAYS && this.allowPickDate()) {
+                        else if (this.selectedView === this.DAYS && this.allowPickDate()) {
                             this.pickDate();
                         }
+                    };
+                    DatePickerNormalizer.prototype.parseDate = function (date) {
+                        var exp = new RegExp(/\d+\/\d+(\/\d+)?/);
+                        if (exp.test(date) === false)
+                            return;
+                        var dateParts = date.split(this.DATE_SPLITTER);
+                        return {
+                            year: parseInt(dateParts[0]),
+                            month: parseInt(dateParts[1]),
+                            date: dateParts[2] !== undefined ? parseInt(dateParts[2]) : undefined
+                        };
                     };
                     DatePickerNormalizer.prototype.onShow = function () {
                         var self = this;
@@ -6163,6 +6184,8 @@ var nts;
                         var deleteOptions = ko.unwrap(data.deleteOptions);
                         var observableColumns = ko.unwrap(data.columns);
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
+                        var enable = ko.unwrap(data.enable);
+                        $grid.data("init", true);
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
@@ -6225,6 +6248,12 @@ var nts;
                             });
                         }
                         $grid.ntsGridList('setupSelecting');
+                        $grid.bind('iggridselectionrowselectionchanging', function (evt, uiX) {
+                            //                console.log(ui);
+                            if ($grid.data("enable") === false) {
+                                return false;
+                            }
+                        });
                         $grid.bind('selectionchanged', function () {
                             if (data.multiple) {
                                 var selected = $grid.ntsGridList('getSelected');
@@ -6250,9 +6279,21 @@ var nts;
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
                         var data = valueAccessor();
+                        var enable = ko.unwrap(data.enable);
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var currentSource = $grid.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        if ($grid.data("enable") !== enable) {
+                            if (!enable) {
+                                $grid.ntsGridList('unsetupSelecting');
+                                $grid.addClass("disabled");
+                            }
+                            else {
+                                $grid.ntsGridList('setupSelecting');
+                                $grid.removeClass("disabled");
+                            }
+                        }
+                        $grid.data("enable", enable);
                         if ($grid.attr("filtered") !== true && $grid.attr("filtered") !== "true") {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
@@ -6587,7 +6628,7 @@ var nts;
                         var data = valueAccessor();
                         $(element).addClass("ntsControl");
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        $(element).data("enable", _.clone(enable));
+                        $(element).data("enable", null);
                     };
                     /**
                      * Update

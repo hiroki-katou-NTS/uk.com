@@ -16,8 +16,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             $(element).addClass("ntsControl");
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            $(element).data("enable", _.clone(enable));
-
+            $(element).data("enable", null);
         }
         
         /**
