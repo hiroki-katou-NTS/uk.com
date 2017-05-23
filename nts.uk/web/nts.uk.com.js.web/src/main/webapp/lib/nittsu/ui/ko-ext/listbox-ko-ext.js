@@ -4,7 +4,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_1) {
+        (function (ui) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -91,12 +91,12 @@ var nts;
                             features: features
                         });
                         container.ntsGridList('setupSelecting');
-                        container.bind('iggridselectionrowselectionchanging', function (evt, ui) {
+                        container.bind('iggridselectionrowselectionchanging', function (evt, uiX) {
                             //                console.log(ui);
                             if (container.data("enable") === false) {
                                 return false;
                             }
-                            var itemSelected = ui.row.id;
+                            var itemSelected = uiX.row.id;
                             var dataSource = container.igGrid('option', "dataSource");
                             if (container.data("fullValue")) {
                                 itemSelected = _.find(dataSource, function (d) {
@@ -242,7 +242,7 @@ var nts;
                             var currentSelectedItems = container.ntsGridList('getSelected');
                             if (isMultiOld) {
                                 if (currentSelectedItems) {
-                                    currentSelectedItems = _.map(currentSelectedItems, function (s) { return s.id; });
+                                    currentSelectedItems = _.map(currentSelectedItems, function (s) { return s["id"]; });
                                 }
                                 else {
                                     currentSelectedItems = [];
@@ -272,7 +272,7 @@ var nts;
                     return ListBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
-            })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

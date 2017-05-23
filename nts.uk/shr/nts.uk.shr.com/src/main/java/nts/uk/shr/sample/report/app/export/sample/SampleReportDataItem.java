@@ -7,4 +7,5 @@ public class SampleReportDataItem {
 
 	private String code;
 	private String name;
+	
 }

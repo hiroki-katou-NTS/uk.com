@@ -53,10 +53,14 @@ module nts.uk.ui.validation {
             }
             // Check CharType
             if (this.charType !== null && this.charType !== undefined) {
-                if (this.charType.viewName === '半角数字' || this.charType.viewName === '半角英数字') {
+                if (this.charType.viewName === '半角数字') {
                     inputText = text.toOneByteAlphaNumberic(inputText);        
+                } else if (this.charType.viewName === '半角英数字') {
+                    inputText = text.toOneByteAlphaNumberic(text.toUpperCase(inputText));
                 } else if (this.charType.viewName === 'カタカナ') {
                     inputText = text.oneByteKatakanaToTwoByte(inputText);    
+                } else if (this.charType.viewName === 'カナ') {
+                    inputText = text.hiraganaToKatakana(text.oneByteKatakanaToTwoByte(inputText));
                 }
                 if (!this.charType.validate(inputText)) {
                     result.fail('Invalid text');
@@ -97,11 +101,11 @@ module nts.uk.ui.validation {
             var isDecimalNumber = false;
             if (this.option !== undefined) {
                 if(nts.uk.util.isNullOrUndefined(inputText) || inputText.trim().length <= 0){
-                    if(this.option['required'] === true){    
+                    if(this.option['required'] === true && nts.uk.util.isNullOrEmpty(this.option['defaultValue'])){    
                         result.fail('This field is required.');
                         return result;
                     } else {
-                        result.success('');
+                        result.success(this.option['defaultValue']);
                         return result;
                     }    
                 }

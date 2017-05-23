@@ -97,9 +97,8 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         String companyCode = AppContexts.user().companyCode();
         SalaryPrintSetting salary = salaryPrintRepo.find(companyCode);
         if (salary == null) {
-            throw new RuntimeException("Do not configure setting print report.");
+            salary = SalaryPrintSetting.createWithIntial(companyCode);
         }
-        
         dto.setShowPayment(salary.getShowPayment());
         dto.setSumPersonSet(salary.getSumPersonSet());
         dto.setSumMonthPersonSet(salary.getSumMonthPersonSet());
@@ -111,7 +110,7 @@ public class PaymentSalaryReportService extends ExportService<PaymentSalaryQuery
         dto.setSelectedLevels(listHierarchy);
         dto.setTotalSet(salary.getTotalSet());
         dto.setMonthTotalSet(salary.getMonthTotalSet());
-        
+
         // ===== SET OPTION REPORT =====
         dto.setOutputFormatType(query.getOutputFormatType());
         dto.setIsVerticalLine(query.getIsVerticalLine());

@@ -14,7 +14,6 @@ import nts.arc.time.GeneralDate;
 public class JapaneseEras {
 
 	/** names */
-//	@Getter
 	private final List<JapaneseEraName> names;
 	
 	/**

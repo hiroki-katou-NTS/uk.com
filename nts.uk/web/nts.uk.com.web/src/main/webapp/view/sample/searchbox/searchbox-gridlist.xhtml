@@ -30,8 +30,13 @@
 						<h1>SearchBox Sample</h1>						
 						<h2>Overview</h2>
 						<div class="cf">
-							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {comId: 'multi-list', items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code']}" />																																														
+							<div style="float:left">	
+								<div id="functions-area"></div>
+								<button data-bind="click : addItem">add</button>
+								<button data-bind="click : updateItem">update</button>
+								<h3>Search mode: filter mode</h3>																				
+								<div style="width: 700px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+									items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
 								<h3>Multi Selection</h3>
 								<table id="multi-list" data-bind="ntsGridList: {
 										height: 320,
@@ -40,12 +45,11 @@
 										columns: columns,
 										multiple: true,
 										value: currentCodeList
-									}"
-									class="cf"></table>
+									}"></table>
 								<br />
 							</div>
 							<div style="float:left">
-								<br/><br/>
+								<br/><br/><br/><br/>
 								<h4>Your multiple selected code:</h4>
 								<span data-bind="text: currentCodeList"></span>
 							</div>

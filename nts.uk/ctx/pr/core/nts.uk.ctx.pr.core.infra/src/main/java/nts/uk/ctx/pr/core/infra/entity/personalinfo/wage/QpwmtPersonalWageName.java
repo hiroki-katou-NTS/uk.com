@@ -14,4 +14,8 @@ public class QpwmtPersonalWageName extends AggregateTableEntity {
 	public QpwmtPersonalWageNamePK qpwmtPersonalWageNamePK;
 	@Column(name = "P_WAGE_NAME")
 	public String pWageName;
+	@Override
+	protected Object getKey() {
+		return this.qpwmtPersonalWageNamePK;
+	}
 }

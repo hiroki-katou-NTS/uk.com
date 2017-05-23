@@ -66,8 +66,8 @@ public class ProcessingYearMonthWebServices extends WebService {
 
 	@POST
 	@Path("paydayprocessing/getbyccdanddisatr1")
-	public List<PaydayProcessingSelect4Dto> getPaydayProcessing2(String companyCode) {
-		return paydayProcessingFinder.select4(companyCode);
+	public List<PaydayProcessingSelect4Dto> getPaydayProcessing2() {
+		return paydayProcessingFinder.select4();
 	}
 
 	@POST

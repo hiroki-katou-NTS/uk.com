@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemdeduct.ItemDeductDto;
+import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemdeduct.ItemDeductRegistrationInformationDto;
 import nts.uk.ctx.pr.core.app.find.itemmaster.itemdeduct.ItemDeductFinder;
 
 @Path("pr/core/itemdeduct")
@@ -22,4 +23,14 @@ public class ItemDeductWebService extends WebService {
 		return itemDeductFinder.find(itemCode);
 
 	}
+	
+	@POST
+	@Path("findItemDeductRegInfo/{itemCode}")
+	public ItemDeductRegistrationInformationDto findItemDeductRegInfo(@PathParam("itemCode") String itemCode) {
+		return itemDeductFinder.findItemDeductRegInfo(itemCode);
+	}
+	
+	
+	
+	
 }

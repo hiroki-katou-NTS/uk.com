@@ -5,4 +5,5 @@ import javax.interceptor.Interceptors;
 @Interceptors(SampleClassInterceptor.class)
 public class SampleInterceptedBase {
 
+	
 }

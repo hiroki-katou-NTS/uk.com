@@ -55,13 +55,11 @@ public class LayoutMasterCategoryFinder {
 					LayoutMasterDetailDto item = details.stream()
 							.filter(d -> d.getAutoLineId().equals(line.getAutoLineId())
 									&& d.getCategoryAtr() == line.getCategoryAtr() && d.getItemPosColumn() == posColumn)
-							.findFirst().orElse(
-									 new LayoutMasterDetailDto(layoutCd,
-									 category.getCategoryAtr(), "itemTemp-" +String.valueOf(i),
-									 line.getAutoLineId(), i , 0, "+",
-									 0, 0, 0, 0, "", "", "", BigDecimal.ZERO,
-									 0, BigDecimal.ZERO, 0, BigDecimal.ZERO,
-									 0, BigDecimal.ZERO, 0, BigDecimal.ZERO));
+							.findFirst()
+							.orElse(new LayoutMasterDetailDto(layoutCd, category.getCategoryAtr(),
+									"itemTemp-" + String.valueOf(i), line.getAutoLineId(), i, 0, "0000", 0, 0, 0, 0,
+									"000", "00", "000", BigDecimal.valueOf(48), 0, BigDecimal.ZERO, 0, BigDecimal.ZERO,
+									0, BigDecimal.ZERO, 0, BigDecimal.ZERO, "+"));
 					detail9Items.add(item);
 				}
 
@@ -74,8 +72,8 @@ public class LayoutMasterCategoryFinder {
 	}
 
 	private List<LayoutMasterDetailDto> getDetails(String historyId) {
-		return this.detailRepo.getDetails(historyId).stream()
-				.map(c -> LayoutMasterDetailDto.fromDomain(c)).collect(Collectors.toList());
+		return this.detailRepo.getDetails(historyId).stream().map(c -> LayoutMasterDetailDto.fromDomain(c))
+				.collect(Collectors.toList());
 	}
 
 	private List<LayoutMasterLineDto> getLines(String historyId) {
@@ -84,7 +82,7 @@ public class LayoutMasterCategoryFinder {
 	}
 
 	private List<LayoutMasterCategoryDto> getCategories(String historyId) {
-		return this.cateRepo.getCategories(historyId).stream()
-				.map(c -> LayoutMasterCategoryDto.fromDomain(c)).collect(Collectors.toList());
+		return this.cateRepo.getCategories(historyId).stream().map(c -> LayoutMasterCategoryDto.fromDomain(c))
+				.collect(Collectors.toList());
 	}
 }

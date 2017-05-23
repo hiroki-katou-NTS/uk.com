@@ -64,4 +64,5 @@ public class CompanyResourceLoading implements ICompanyResourceBundle {
 
 		resource.put(event.getCompanyCode(), groupedByLanguageCode);
 	}
+	
 }

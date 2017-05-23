@@ -16,4 +16,5 @@ public class SampleInterceptedImpl extends SampleInterceptedBase implements Samp
 		String s = "a";
 		s.toCharArray();
 	}
+	
 }

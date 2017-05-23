@@ -408,7 +408,7 @@ module nts.uk.ui.koExtentions {
         abstract target(param: any): any;
         abstract neighbor(param: any): string;
         abstract dropDone(): void;
-        abstract enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>) => void): void;
+        abstract enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
         abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>): void;
     }
     
@@ -418,7 +418,7 @@ module nts.uk.ui.koExtentions {
         target(param: any): any;
         neighbor(param: any): string;
         dropDone(): void;
-        enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>) => void): void;
+        enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
         move(forward: boolean, value: (param?: Array<any>) => Array<any>): void;
     }
     
@@ -650,7 +650,7 @@ module nts.uk.ui.koExtentions {
             }, 0); 
         }
         
-        enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>) => void) {
+        enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void {
             var self = this;
             for (var idx in parts) {
                 this.swapParts[parts[idx]].$listControl.on("iggridrowsrendered", function(evt, ui) {

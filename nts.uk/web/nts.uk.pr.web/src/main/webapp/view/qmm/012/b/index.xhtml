@@ -57,8 +57,13 @@
 				<button id="B_Btn_OutputButton" class="inputNomalSize"
 					data-bind="click:exportExcelButtonClick">Excel出力</button>
 				<button id="B_Btn_OutputButton">マスタ修正ログ</button>
+				<div style="float: right"
+					data-bind="if: nts.uk.ui.windows.getShared('isDialog')">
+					<button id="B_Btn_CloseDialog" data-bind="click:closeDialog">閉じる</button>
+				</div>
 				<button id="B_Btn_RegistrationButtonOfPrintName"
 					data-bind="click:registerPrintingNameButtonClick">印字名称の登録</button>
+
 			</div>
 
 			<div id="contents-area" class="cf">
@@ -143,7 +148,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="divLine" style="margin-top:20px">
+						<div class="divLine" style="margin-top: 20px">
 							<div class="divLineCol1">
 								<div id="B_Lbl_AbbreviatedName"
 									data-bind="ntsFormLabel: {  required: true ,constraint: 'ItemAbName'}">略名</div>

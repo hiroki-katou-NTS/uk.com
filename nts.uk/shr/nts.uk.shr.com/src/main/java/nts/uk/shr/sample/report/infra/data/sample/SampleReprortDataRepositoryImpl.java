@@ -16,4 +16,5 @@ public class SampleReprortDataRepositoryImpl implements SampleReportDataReposito
 				new SampleReportDataItem("002", "帳票データ"),
 				new SampleReportDataItem("003", "aaaaaaaaaaaaaaaaaaaaaaaaa"));
 	}
+	
 }
