@@ -3630,8 +3630,12 @@ var nts;
                                 mousePos = null;
                                 dragSelectRange = [];
                                 $(window).unbind('mousemove.NtsGridListDragging');
-                                //                    $grid.triggerHandler('selectionchanged');  
+                                if ($grid.data("selectUpdated") === true) {
+                                    $grid.triggerHandler('selectionchanged');
+                                }
+                                //$grid.triggerHandler('selectionchanged');  
                                 clearInterval(timerAutoScroll);
+                                $grid.data("selectUpdated", false);
                             });
                         });
                         function updateSelections() {
@@ -3661,6 +3665,7 @@ var nts;
                                 }
                             }
                             dragSelectRange = newDragSelectRange;
+                            $grid.data("selectUpdated", true);
                         }
                     }
                     function setupSelectingEvents($grid) {
@@ -5778,7 +5783,9 @@ var nts;
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         var validator = this.getValidator(data);
                         $input.on("keyup", function (e) {
-                            if (!readonly) {
+                            console.log(e);
+                            var code = e.keyCode || e.which;
+                            if (!readonly && code.toString() !== '9') {
                                 var newText = $input.val();
                                 var result = validator.validate(newText);
                                 $input.ntsError('clear');
@@ -5788,6 +5795,7 @@ var nts;
                             }
                         });
                         $input.on("blur", function (e) {
+                            console.log(e);
                             if (!readonly) {
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
@@ -6179,6 +6187,8 @@ var nts;
                         var deleteOptions = ko.unwrap(data.deleteOptions);
                         var observableColumns = ko.unwrap(data.columns);
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
+                        var enable = ko.unwrap(data.enable);
+                        $grid.data("init", true);
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
@@ -6241,6 +6251,12 @@ var nts;
                             });
                         }
                         $grid.ntsGridList('setupSelecting');
+                        $grid.bind('iggridselectionrowselectionchanging', function (evt, uiX) {
+                            //                console.log(ui);
+                            if ($grid.data("enable") === false) {
+                                return false;
+                            }
+                        });
                         $grid.bind('selectionchanged', function () {
                             if (data.multiple) {
                                 var selected = $grid.ntsGridList('getSelected');
@@ -6266,9 +6282,21 @@ var nts;
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
                         var data = valueAccessor();
+                        var enable = ko.unwrap(data.enable);
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var currentSource = $grid.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        if ($grid.data("enable") !== enable) {
+                            if (!enable) {
+                                $grid.ntsGridList('unsetupSelecting');
+                                $grid.addClass("disabled");
+                            }
+                            else {
+                                $grid.ntsGridList('setupSelecting');
+                                $grid.removeClass("disabled");
+                            }
+                        }
+                        $grid.data("enable", enable);
                         if ($grid.attr("filtered") !== true && $grid.attr("filtered") !== "true") {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
@@ -6603,7 +6631,7 @@ var nts;
                         var data = valueAccessor();
                         $(element).addClass("ntsControl");
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        $(element).data("enable", _.clone(enable));
+                        $(element).data("enable", null);
                     };
                     /**
                      * Update

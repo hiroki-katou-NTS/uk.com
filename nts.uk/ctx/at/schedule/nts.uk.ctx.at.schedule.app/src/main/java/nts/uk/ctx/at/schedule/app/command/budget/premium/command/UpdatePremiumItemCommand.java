@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.budget.premium;
+package nts.uk.ctx.at.schedule.app.command.budget.premium.command;
 
 import lombok.Value;
 /**

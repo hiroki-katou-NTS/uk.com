@@ -1,36 +1,17 @@
-package nts.uk.ctx.at.schedule.app.command.budget.premium;
+package nts.uk.ctx.at.schedule.app.command.budget.premium.command;
 
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-
 /**
  * 
  * @author Doan Duy Hung
  *
  */
-
-@Value
-public class UpdatePersonCostCalculationCommand {
-	String companyID;
-
-	String historyID;
-	
-	String startDate;
-
-	String endDate;
-
-	int unitPrice;
-
-	String memo;
-	
-	List<PremiumSetUpdate> premiumSets;
-}
-
 @AllArgsConstructor
 @Value
-class PremiumSetUpdate {
+public class PremiumSetCommand {
 	String companyID;
 	
 	String historyID;
@@ -47,5 +28,5 @@ class PremiumSetUpdate {
     
     int useAtr;
     
-    List<Integer> attendanceItems;
+    List<ShortAttendanceItemCommand> attendanceItems;
 }

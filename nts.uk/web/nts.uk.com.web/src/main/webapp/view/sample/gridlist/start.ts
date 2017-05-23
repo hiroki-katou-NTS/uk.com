@@ -9,9 +9,10 @@ module nts.uk.ui.gridlist {
             currentCodeList: KnockoutObservableArray<any>;
             count: number = 100;
             switchOptions: KnockoutObservableArray<any>;
-            
+            enable: KnockoutObservable<boolean>;
             constructor() {
                 
+                this.enable = ko.observable(false);
                 this.items = ko.observableArray([]);
                 
                 for(let i = 1; i < 100; i++) {

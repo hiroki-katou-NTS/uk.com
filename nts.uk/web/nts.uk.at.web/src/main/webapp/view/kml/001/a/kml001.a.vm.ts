@@ -9,28 +9,17 @@ module kml001.a.viewmodel {
         premiumItems: KnockoutObservableArray<vmbase.PremiumItem>;
         lastStartDate: string;
         isInsert: KnockoutObservable<Boolean>;
+        newStartDate: KnockoutObservable<string>;
         constructor() {
             $('#formula-child-1').html(nts.uk.resource.getText('KML001_7'));
             var self = this;
             self.personCostList = ko.observableArray([]);
             self.currentPersonCost = ko.observable(new vmbase.PersonCostCalculation('', '', "", "9999/12/31", 0, '', []));
+            self.newStartDate = ko.observable(null);
             self.gridPersonCostList = ko.observableArray([]);
             self.currentGridPersonCost = ko.observable(null);
             self.premiumItems = ko.observableArray([]);
             self.isInsert = ko.observable(true);
-            self.currentPersonCost().startDate.subscribe(function(value) {
-                if (self.isInsert()) {
-                    if (_.size(self.personCostList()) != 0) {
-                        if ((self.currentPersonCost().startDate() == "") || vmbase.ProcessHandler.validateDateInput(self.currentPersonCost().startDate(), _.last(self.personCostList()).startDate())) {
-                            $("#startDateInput").ntsError('set', vmbase.MSG.MSG065);
-                        } else { $("#startDateInput").ntsError('clear'); }
-                    } else {
-                        if ((self.currentPersonCost().startDate() == "") || vmbase.ProcessHandler.validateDateInput(self.currentPersonCost().startDate(), "1900/01/01")) {
-                            $("#startDateInput").ntsError('set', vmbase.MSG.MSG065);
-                        } else { $("#startDateInput").ntsError('clear'); }
-                    }
-                }
-            });
         }
         
         /**
@@ -58,19 +47,22 @@ module kml001.a.viewmodel {
                 self.premiumItems().forEach(function(item){
                     sum+=item.useAtr();    
                 });
-                if(sum==0){
+                if(sum==0){ // open premiumItem dialog when no premium is used
                     self.premiumDialog();        
                 }
                 // PersonCostCalculationSelect: Done
                 if (dfdPersonCostCalculationSelectData.length) {
                     self.loadData(dfdPersonCostCalculationSelectData, 0);
-                    self.currentGridPersonCost.subscribe(function(value) {
+                    self.currentGridPersonCost.subscribe(function(value) { // change current personCostCalculation when grid is selected
                         self.currentPersonCost(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, ' ', 1)[0]; }));
+                        self.newStartDate(self.currentPersonCost().startDate());
                         $("#startDateInput").ntsError('clear');
+                        $(".premiumInput").ntsError('clear');
+                        nts.uk.ui.errors.clearAll();
                         ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, index) {
                             let iDList = [];
                             self.currentPersonCost().premiumSets()[index].attendanceItems().forEach(function(item) {
-                                iDList.push(item.iD);
+                                iDList.push(item.shortAttendanceID);
                             });
                             self.getItem(iDList, index);
                         });
@@ -79,8 +71,26 @@ module kml001.a.viewmodel {
 
                     self.isInsert(false);
                 }
+                self.newStartDate.subscribe(function(value) {
+                    if (self.isInsert()) { // check startDate input when insert
+                        if (_.size(self.personCostList()) != 0) { // when list personCostCalculation not empty
+                            if ((self.newStartDate() == "") || vmbase.ProcessHandler.validateDateInput(self.newStartDate(), _.last(self.personCostList()).startDate())) {
+                                $("#startDateInput").ntsError('set', {messageId:"Msg_65"});
+                            } else { 
+                                $("#startDateInput").ntsError('clear'); 
+                            }
+                        } else { // when list personCostCalculation empty
+                            if ((self.newStartDate() == "") || vmbase.ProcessHandler.validateDateInput(self.newStartDate(), "1900/01/01")) {
+                                $("#startDateInput").ntsError('set', {messageId:"Msg_65"});
+                            } else { 
+                                $("#startDateInput").ntsError('clear'); 
+                            }
+                        }
+                    }
+                });
                 dfd.resolve();
             }).fail((res1, res2) => {
+                nts.uk.ui.dialog.alert(res1.message+'\n'+res2.message);
                 dfd.reject();
             });
             return dfd.promise();
@@ -91,16 +101,21 @@ module kml001.a.viewmodel {
          */
         private loadData(res: Array<any>, index: number) {
             var self = this;
+            
+            // set data to currrent PersonCostCalculation
             res.forEach(function(personCostCalc) {
                 self.personCostList.push(vmbase.ProcessHandler.fromObjectPerconCost(personCostCalc));
             });
             self.currentPersonCost((_.first(self.personCostList()) == null) ? new vmbase.PersonCostCalculation('', '', "", "9999/12/31", 0, '', []) : self.personCostList()[index]);
+            self.newStartDate(self.currentPersonCost().startDate());
+            
+            // set data to grid list
             self.personCostList().forEach(function(item) { self.gridPersonCostList.push(new vmbase.GridPersonCostCalculation(item.startDate() + " ~ " + item.endDate())) });
             self.currentGridPersonCost(self.currentPersonCost().startDate() + " ~ " + self.currentPersonCost().endDate());
             ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, index) {
                 let iDList = [];
                 self.currentPersonCost().premiumSets()[index].attendanceItems().forEach(function(item) {
-                    iDList.push(item.iD);
+                    iDList.push(item.shortAttendanceID);
                 });
                 self.getItem(iDList, index);
             });
@@ -118,6 +133,7 @@ module kml001.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             if (iDList.length != 0) {
+                self.currentPersonCost().premiumSets()[index].attendanceItems.removeAll();
                 servicebase.getAttendanceItems(iDList)
                     .done(function(res: Array<any>) {
                         let newList = [];
@@ -127,6 +143,7 @@ module kml001.a.viewmodel {
                         self.currentPersonCost().premiumSets()[index].attendanceItems(newList);
                     })
                     .fail(function(res) {
+                        nts.uk.ui.dialog.alert(res.message);
                     });
             }
         }
@@ -138,37 +155,45 @@ module kml001.a.viewmodel {
             var self = this;
             if (self.isInsert()) {
                 let index = _.findLastIndex(self.personCostList()) + 1;
-                if ((self.currentPersonCost().startDate() != "") && !vmbase.ProcessHandler.validateDateInput(self.currentPersonCost().startDate(), self.lastStartDate)) {
+                if ((self.newStartDate() != "") && !vmbase.ProcessHandler.validateDateInput(self.currentPersonCost().startDate(), self.lastStartDate)) {
+                    // insert new data if startDate have no error
+                    self.currentPersonCost().startDate(self.newStartDate());
                     servicebase.personCostCalculationInsert(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                         .done(function(res: Array<any>) {
                             servicebase.personCostCalculationSelect()
                                 .done(function(newData: Array<any>) {
+                                    // refresh data list
                                     self.personCostList.removeAll();
                                     self.gridPersonCostList.removeAll();
                                     self.loadData(newData, index);
+                                    self.isInsert(false);
+                                    nts.uk.ui.dialog.alert(vmbase.MSG.MSG015);
                                 }).fail(function(res) {
-
+                                    nts.uk.ui.dialog.alert(res.message);
                                 });
                         }).fail(function(res) {
-
+                            nts.uk.ui.dialog.alert(res.message);
                         });
                 } else {
-                    $("#startDateInput").ntsError('set', vmbase.MSG.MSG065);
+                    $("#startDateInput").ntsError('set', {messageId:"Msg_65"});
                 }
             } else {
+                // update new data for current personCostCalculation
                 let index = _.findIndex(self.personCostList(), self.currentPersonCost())
                 servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                     .done(function(res: Array<any>) {
                         servicebase.personCostCalculationSelect()
                             .done(function(newData: Array<any>) {
+                                // refresh data list
                                 self.personCostList.removeAll();
                                 self.gridPersonCostList.removeAll();
                                 self.loadData(newData, index);
+                                nts.uk.ui.dialog.alert(vmbase.MSG.MSG015);
                             }).fail(function(res) {
-
+                                nts.uk.ui.dialog.alert(res.message);
                             });
                     }).fail(function(res) {
-
+                        nts.uk.ui.dialog.alert(res.message);
                     });
             }
         }
@@ -182,6 +207,7 @@ module kml001.a.viewmodel {
             nts.uk.ui.windows.setShared('isInsert', self.isInsert());
             nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                 if (nts.uk.ui.windows.getShared('updatePremiumSeting') == true) {
+                    // refresh and set new data if premiumSetting change
                     servicebase.personCostCalculationSelect()
                         .done(function(res: Array<any>) {
                             let processItem;
@@ -191,7 +217,7 @@ module kml001.a.viewmodel {
                             self.personCostList.removeAll();
                             self.gridPersonCostList.removeAll();
                             self.loadData(res, index);
-                            if (self.isInsert()) {
+                            if (self.isInsert()) { // set data when create new data
                                 self.currentPersonCost(processItem);
                                 let lastItem = _.last(self.personCostList());
                                 self.currentPersonCost().premiumSets().forEach(function(item, index) {
@@ -199,9 +225,9 @@ module kml001.a.viewmodel {
                                 });
                             }
                         }).fail(function(res) {
-
+                            nts.uk.ui.dialog.alert(res.message);
                         });
-                    if (_.size(self.personCostList()) == 0) {
+                    if (_.size(self.personCostList()) == 0) { // set data when PersonCostCalculation list empty
                         servicebase.premiumItemSelect()
                             .done(function(res: Array<any>) {
                                 self.premiumItems.removeAll();
@@ -216,7 +242,7 @@ module kml001.a.viewmodel {
                                             item.useAtr));
                                 });
                             }).fail(function(res) {
-
+                                nts.uk.ui.dialog.alert(res.message);
                             });
                     }
                 }
@@ -235,41 +261,54 @@ module kml001.a.viewmodel {
                 let newStartDate: string = nts.uk.ui.windows.getShared('newStartDate');
                 if (newStartDate != null) {
                     let copyDataFlag: boolean = nts.uk.ui.windows.getShared('copyDataFlag');
-                    if (_.size(self.personCostList()) != 0) {
-                        if (copyDataFlag) {
-                            let oldPremiumSets = _.last(self.personCostList()).premiumSets();
-                            self.currentPersonCost().startDate(newStartDate);
-                            self.currentPersonCost().endDate("9999/12/31");
-                            self.currentPersonCost().premiumSets(oldPremiumSets);
-                        } else {
-                            let premiumItemSetting = _.cloneDeep(self.currentPersonCost().premiumSets());
-                            self.currentPersonCost().companyID('');
-                            self.currentPersonCost().historyID('');
-                            self.currentPersonCost().startDate(newStartDate);
-                            self.currentPersonCost().endDate("9999/12/31");
-                            self.currentPersonCost().unitPrice(0);
-                            self.currentPersonCost().memo('');
-                            self.currentPersonCost().premiumSets([]);
+                    if (_.size(self.personCostList()) != 0) { // when PersonCostCalculation list not empty
+                        if (copyDataFlag) { // when new data is copy
+                            let lastItem = self.clonePersonCostCalculation(_.last(self.personCostList()));
+                            self.currentPersonCost(
+                                new vmbase.PersonCostCalculation(
+                                    lastItem.companyID(),
+                                    '',
+                                    newStartDate,
+                                    "9999/12/31",
+                                    lastItem.unitPrice(),
+                                    lastItem.memo(),
+                                    []));
+                            self.currentPersonCost().premiumSets(lastItem.premiumSets());
+                            self.newStartDate(self.currentPersonCost().startDate());
+                        } else { 
+                            self.currentPersonCost(
+                                new vmbase.PersonCostCalculation(
+                                    '',
+                                    '',
+                                    newStartDate,
+                                    "9999/12/31",
+                                    0,
+                                    '',
+                                    []));
                             let newPremiumSets = [];
                             for (let i = 1; i <= 10; i++) {
-                                newPremiumSets.push(new vmbase.PremiumSetting("", "", i, 0, i, "", i, premiumItemSetting[i - 1].useAtr(), []));
+                                newPremiumSets.push(new vmbase.PremiumSetting("", "", i, 0, i, "", i, self.premiumItems()[i - 1].useAtr(), []));
                             }
                             self.currentPersonCost().premiumSets(newPremiumSets);
+                            self.newStartDate(self.currentPersonCost().startDate());
                         }
                         self.isInsert(true);
-                    } else {
-                        self.currentPersonCost().companyID('');
-                        self.currentPersonCost().historyID('');
-                        self.currentPersonCost().startDate(newStartDate);
-                        self.currentPersonCost().endDate("9999/12/31");
-                        self.currentPersonCost().unitPrice(0);
-                        self.currentPersonCost().memo('');
-                        self.currentPersonCost().premiumSets([]);
+                    } else { // when PersonCostCalculation list empty
+                        self.currentPersonCost(
+                            new vmbase.PersonCostCalculation(
+                                '',
+                                '',
+                                newStartDate,
+                                "9999/12/31",
+                                0,
+                                '',
+                                []));
                         let newPremiumSets = [];
                         for (let i = 1; i <= 10; i++) {
                             newPremiumSets.push(new vmbase.PremiumSetting("", "", i, 0, i, "", i, self.premiumItems()[i - 1].useAtr(), []));
                         }
                         self.currentPersonCost().premiumSets(newPremiumSets);
+                        self.newStartDate(self.currentPersonCost().startDate());
                         self.isInsert(true);
                     }
                 }
@@ -286,15 +325,16 @@ module kml001.a.viewmodel {
             nts.uk.ui.windows.setShared('currentPersonCost', self.currentPersonCost());
             nts.uk.ui.windows.sub.modal("/view/kml/001/d/index.xhtml", { title: "履歴の編集", dialogClass: "no-close" }).onClosed(function() {
                 let editedIndex = nts.uk.ui.windows.getShared('isEdited');
-                if (editedIndex != null) {
-                    if (editedIndex == 1) index -= 1;
+                if (editedIndex != null) { // when data is edited
+                    if (editedIndex == 1) index -= 1; // when edit is delete, set index to last item
                     servicebase.personCostCalculationSelect()
                         .done(function(res: Array<any>) {
+                            // refresh data list
                             self.personCostList.removeAll();
                             self.gridPersonCostList.removeAll();
                             self.loadData(res, index);
                         }).fail(function(res) {
-
+                            nts.uk.ui.dialog.alert(res.message);
                         });
                 }
             });;
@@ -307,9 +347,9 @@ module kml001.a.viewmodel {
             var self = this;
             let currentList = [];
             ko.utils.arrayForEach(data.attendanceItems(), function(attendanceItem: vmbase.AttendanceItem) {
-                currentList.push(attendanceItem.iD);
+                currentList.push(attendanceItem.shortAttendanceID);
             });
-            nts.uk.ui.windows.setShared('SelectedAttendanceId', currentList);
+            nts.uk.ui.windows.setShared('SelectedAttendanceId', currentList,true);
             nts.uk.ui.windows.setShared('Multiple', true);
             servicebase.getAttendanceItemByType(0)
                 .done(function(res: Array<any>) {
@@ -319,7 +359,9 @@ module kml001.a.viewmodel {
                         if (newList != null) {
                             if (newList.length != 0) {
                                 if (!_.isEqual(newList, currentList)) {
-                                    self.getItem(newList, index);
+                                    //clone Knockout Object
+                                    self.currentPersonCost(self.clonePersonCostCalculation(self.currentPersonCost()));
+                                    self.getItem(newList,index);
                                 }
                             } else {
                                 self.currentPersonCost().premiumSets()[index].attendanceItems([]);
@@ -327,9 +369,18 @@ module kml001.a.viewmodel {
                         }
                     });
                 }).fail(function(res) {
-
+                    nts.uk.ui.dialog.alert(res.message);         
                 });
 
+        }
+        
+        /**
+         * clone PersonCostCalculation Object
+         */
+        private clonePersonCostCalculation(object: vmbase.PersonCostCalculation): vmbase.PersonCostCalculation {
+            return vmbase.ProcessHandler.fromObjectPerconCost(
+                                            _.cloneDeep(
+                                                vmbase.ProcessHandler.toObjectPersonCost(object)));
         }
     }
 }

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 550, height: 570 };</script>
+			<script>var dialogSize = { width: 550, height: 565 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName
    			</com:ValidatorScript>
@@ -49,9 +49,9 @@
 										enable: true }"></div>	
 							</td>
 							<td>
-								<input class="data-required" data-name="表示名称" data-bind="ntsTextEditor: {
+								<input class="premiumName" data-name="表示名称" data-bind="ntsTextEditor: {
 										value: name,
-										constraint: 'Memo',
+										constraint: 'PremiumName',
 										option: { width: '180px' },
 										required: true, 
 										enable: Boolean(useAtr()==1) }" />

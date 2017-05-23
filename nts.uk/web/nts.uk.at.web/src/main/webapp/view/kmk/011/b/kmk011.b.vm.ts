@@ -60,9 +60,8 @@ module kmk011.b.viewmodel {
             self.divTimeId(nts.uk.ui.windows.getShared("KMK011_divTimeId"));
             service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
                 if (lstDivReason === undefined || lstDivReason.length == 0) {
-                    self.dataSource();
+                    self.dataSource([]);
                     self.enableCode(true);
-                    $("#inpCode").focus();
                 } else {
                     self.dataSource(lstDivReason);
                     let reasonFirst = _.first(lstDivReason);
@@ -90,7 +89,9 @@ module kmk011.b.viewmodel {
             self.enableCode(true);
             self.clearError();
             self.enableDel(false);
+            self.currentCode(null);
             $("#inpCode").focus();
+            
         }
 
         clearError(): void {
@@ -172,8 +173,13 @@ module kmk011.b.viewmodel {
                 let divReason = self.itemDivReason();
                 self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
                 service.deleteDivReason(divReason).done(function() {
-                    self.getDivReasonList_afterDelete();
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16'));
+//                    self.getDivReasonList_afterDelete();
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16')).then(function(){
+//                        $("#inpCode").focus();
+                        self.getDivReasonList_afterDelete();
+                         $("#inpCode").focus();
+//                        self.refreshData();
+                    });
                 });
             }).ifNo(function() {
                 return;

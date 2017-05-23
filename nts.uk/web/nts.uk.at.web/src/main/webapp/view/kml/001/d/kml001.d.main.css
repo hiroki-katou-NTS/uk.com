@@ -61,3 +61,6 @@ hr { margin-top: 20px; }
 	color: #999999;
 	border-color: #999999 !important;
 }
+#func-notifier-errors{
+    margin-top: -255px;	
+}

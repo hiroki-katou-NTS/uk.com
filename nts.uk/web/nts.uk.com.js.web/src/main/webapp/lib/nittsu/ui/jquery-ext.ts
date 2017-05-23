@@ -358,6 +358,7 @@ module nts.uk.ui.jqueryExtentions {
 
 
             $grid.bind('mousedown', function(e) {
+                
                 // グリッド内がマウスダウンされていない場合は処理なしで終了
                 var $container = $grid.closest('.ui-iggrid-scrolldiv');
                 if ($(e.target).closest('.ui-iggrid-table').length === 0) {
@@ -420,8 +421,12 @@ module nts.uk.ui.jqueryExtentions {
                     mousePos = null;
                     dragSelectRange = [];
                     $(window).unbind('mousemove.NtsGridListDragging');
-                    $grid.triggerHandler('selectionchanged');
+                    if($grid.data("selectUpdated") === true){
+                        $grid.triggerHandler('selectionchanged');  
+                    }                    
+                    //$grid.triggerHandler('selectionchanged');  
                     clearInterval(timerAutoScroll);
+                    $grid.data("selectUpdated", false);
                 });
             });
 
@@ -456,6 +461,7 @@ module nts.uk.ui.jqueryExtentions {
                 }
 
                 dragSelectRange = newDragSelectRange;
+                $grid.data("selectUpdated", true);
             }
         }
 
