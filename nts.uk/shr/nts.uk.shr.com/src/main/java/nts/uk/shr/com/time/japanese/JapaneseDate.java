@@ -6,7 +6,7 @@ public class JapaneseDate {
 	
 	private final GeneralDate date;
 	
-	private final JapaneseEraName era;
+	private final JapaneseEraName era; 
 	
 	public JapaneseDate(GeneralDate date, JapaneseEraName era) {
 		this.date = date;

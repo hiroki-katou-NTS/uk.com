@@ -42,5 +42,4 @@ public class KoContainerLessTag extends UIComponentBase {
         
         Helper.writeEnd(context.getResponseWriter());
     }
-
 }
