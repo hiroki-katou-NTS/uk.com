@@ -146,7 +146,4 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 		return "M11";
 	}
 
-
-
-
 }

@@ -360,14 +360,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/**
 	 * Default data begin end.
 	 *
-	 * @param startLine
-	 *            the start line
-	 * @param endLine
-	 *            the end line
-	 * @param startColum
-	 *            the start colum
-	 * @param endColum
-	 *            the end colum
+	 * @param startLine the start line
+	 * @param endLine the end line
+	 * @param startColum the start colum
+	 * @param endColum the end colum
 	 * @return the list
 	 */
 
@@ -469,6 +465,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		companyDto.setJapaneseYearMonth(
 			this.convertYearMonthJP(header.qstdtPaymentHeaderPK.processingYM));
 		reportData.setCompanyInfo(companyDto);
+		
 		return reportData;
 	}
 

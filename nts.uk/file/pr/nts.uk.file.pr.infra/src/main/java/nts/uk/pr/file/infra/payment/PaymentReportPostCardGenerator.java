@@ -27,6 +27,19 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 	/** The cells. */
 	protected Cells cells;
 
+	/** The Constant REMARK_CELLS. */
+	public static final String REMARK_CELLS = "K1";
+	
+	/** The Constant PROCESS_YEARMONTH_CELLS. */
+	public static final String PROCESS_YEARMONTH_CELLS ="D2";
+	
+	
+	/** The Constant DEPARTMENT_CELLS. */
+	public static final String DEPARTMENT_CELLS ="G1";
+	
+	/** The Constant EMPLOYEE_NAME_CELLS. */
+	public static final String EMPLOYEE_NAME_CELLS ="G2";
+
 	/** The Constant START_ROW_CATEGORY_ATTENDANCE. */
 	public static final int START_ROW_CATEGORY_ATTENDANCE = 4;
 
@@ -50,11 +63,10 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 
 	/** The Constant START_COL_CATEGORY_ARTICLE. */
 	public static final int START_COL_CATEGORY_ARTICLE = 13;
-	
-	
+
 	/** The Constant START_ROW_CATEGORY_OTHER. */
 	public static final int START_ROW_CATEGORY_OTHER = 23;
-	
+
 	/** The Constant START_COL_CATEGORY_OTHER. */
 	public static final int START_COL_CATEGORY_OTHER = 13;
 
@@ -99,9 +111,22 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 
 		setDataCategory(START_ROW_CATEGORY_ARTICLE, START_COL_CATEGORY_ARTICLE, 1,
 			dataFirst.getArticleItems());
-		
+
 		setDataCategory(START_ROW_CATEGORY_OTHER, START_COL_CATEGORY_OTHER, 1,
 			dataFirst.getOtherItems());
+
+		// set remark
+		cells.get(REMARK_CELLS).setValue(dataFirst.getRemark());
+		
+		//set process year month
+		cells.get(PROCESS_YEARMONTH_CELLS)
+			.setValue(dataFirst.getCompanyInfo().getJapaneseYearMonth());
+		
+		//set department info
+		cells.get(DEPARTMENT_CELLS).setValue(dataFirst.getDepartmentInfo().getDepartmentName());
+		
+		// set payment title
+		cells.get(EMPLOYEE_NAME_CELLS).setValue(dataFirst.getEmployeeInfo().getEmployeeName());
 
 	}
 

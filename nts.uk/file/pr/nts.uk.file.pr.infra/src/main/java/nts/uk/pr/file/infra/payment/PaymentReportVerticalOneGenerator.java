@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
 import java.util.ArrayList;
@@ -6,18 +10,26 @@ import java.util.List;
 import com.aspose.cells.Workbook;
 
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
+import nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator.CellValue;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
-public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerator implements PaymentGenerator{
-
-	/** The Constant SHEET_NAME. */
-	public static final String SHEET_NAME = "SHEET 1";
+/**
+ * The Class PaymentReportVerticalOneGenerator.
+ */
+public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerator
+	implements PaymentGenerator {
 
 	/** The Constant ITEM_WIDTH. */
 	public static final int ITEM_WIDTH = 1;
 
 	/** The Constant CATEGORY_START_ROW. */
-	public static final int CATEGORY_START_ROW = 9;
+	public static final int CATEGORY_START_ROW = 4;
+	
+	/** The Constant PERSON_OF_PAGE. */
+	public static final int PERSON_OF_PAGE = 1;
+	
+	/** The Constant NUMBER_COLUMN_OF_ITEM. */
+	public static final int NUMBER_COLUMN_OF_ITEM =1 ;
 
 	/*
 	 * (non-Javadoc)
@@ -32,7 +44,6 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 		Workbook workbook = context.getWorkbook();
 		// Get workSheet.
 		workSheet = workbook.getWorksheets().get(FIRST_SHEET);
-		workSheet.setName(SHEET_NAME);
 		// Get cells.
 		cells = workSheet.getCells();
 
@@ -83,57 +94,48 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	@Override
 	List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
+		list.add(new CellValue(0, 0, "ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ"));
 		return list;
 	}
 
 	@Override
 	int getNumberOfColumnPerItem() {
-		// TODO Auto-generated method stub
-		return 0;
+		return ITEMS_PER_ROW;
 	}
 
 	@Override
 	int getPersonPerPage() {
-		// TODO Auto-generated method stub
-		return 0;
+		return PERSON_OF_PAGE;
 	}
 
 	@Override
 	String getPageHeaderStartCell() {
-		// TODO Auto-generated method stub
-		return null;
+		return "A1";
 	}
 
 	@Override
 	String getPageHeaderEndCell() {
-		// TODO Auto-generated method stub
-		return null;
+		return "J3";
 	}
 
 	@Override
 	String getCategoryHeaderCell() {
-		// TODO Auto-generated method stub
-		return null;
+		return "A5";
 	}
 
 	@Override
 	String getItemNameCell() {
-		// TODO Auto-generated method stub
-		return null;
+		return "B5";
 	}
 
 	@Override
 	String getItemValueCell() {
-		// TODO Auto-generated method stub
-		return null;
+		return "B6";
 	}
 
 	@Override
 	String getRemarkCell() {
-		// TODO Auto-generated method stub
-		return null;
+		return "B6";
 	}
-
-	
 
 }
