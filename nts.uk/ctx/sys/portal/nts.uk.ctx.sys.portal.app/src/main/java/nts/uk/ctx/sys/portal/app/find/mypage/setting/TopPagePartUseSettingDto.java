@@ -30,7 +30,7 @@ public class TopPagePartUseSettingDto {
 	private Integer useDivision;
 
 	/** The part type. */
-	private TopPagePartType partType;
+	private Integer partType;
 
 	/**
 	 * From domain.
@@ -44,7 +44,7 @@ public class TopPagePartUseSettingDto {
 		topPagePartSettingItemDto.partItemCode = topPagePartSettingItem.getTopPagePartCode().toString();
 		topPagePartSettingItemDto.partItemName = topPagePartSettingItem.getTopPagePartName().toString();
 		topPagePartSettingItemDto.useDivision = topPagePartSettingItem.getUseDivision().value;
-		topPagePartSettingItemDto.partType = topPagePartSettingItem.getTopPagePartType();
+		topPagePartSettingItemDto.partType = topPagePartSettingItem.getTopPagePartType().value;
 		return topPagePartSettingItemDto;
 	}
 }

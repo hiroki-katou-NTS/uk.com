@@ -87,13 +87,13 @@ module nts.uk.pr.view.ccg015.b {
                 self.myPageSettingModel().topPagePartSettingItems()[3].usePart(data.externalUrlPermission);
 
                 data.topPagePartUseSettingDto.forEach(function(item, index) {
-                    if (item.partType == TopPagePartsType.Widget) {
+                    if (item.partType == TopPagePartsEnum.Widget) {
                         self.myPageSettingModel().topPagePartSettingItems()[0].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
-                    if (item.partType == TopPagePartsType.Dashboard) {
+                    if (item.partType == TopPagePartsEnum.Dashboard) {
                         self.myPageSettingModel().topPagePartSettingItems()[1].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
-                    if (item.partType == TopPagePartsType.FlowMenu) {
+                    if (item.partType == TopPagePartsEnum.FlowMenu) {
                         self.myPageSettingModel().topPagePartSettingItems()[2].settingItems.push(new SettingItemsModel(item.partItemCode, item.partItemName, item.useDivision,item.topPagePartId));
                     }
                 });
@@ -102,13 +102,13 @@ module nts.uk.pr.view.ccg015.b {
             }
             private setData(data: MyPageSettingDto) {
                 data.topPagePartUseSettingDto.forEach(function(item, index) {
-                    if (item.partType == TopPagePartsType.Widget) {
+                    if (item.partType == TopPagePartsEnum.Widget) {
                         $("#widget-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
                     }
-                    if (item.partType == TopPagePartsType.Dashboard) {
+                    if (item.partType == TopPagePartsEnum.Dashboard) {
                         $("#dashboard-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
                     }
-                    if (item.partType == TopPagePartsType.FlowMenu) {
+                    if (item.partType == TopPagePartsEnum.FlowMenu) {
                         $("table#flow-list").ntsGridListFeature('switch', 'setValue', item.partItemCode, 'useItem', item.useDivision);
                     }
                 });
@@ -135,7 +135,7 @@ module nts.uk.pr.view.ccg015.b {
                                 partItemCode: item2.itemCode,
                                 partItemName: item2.itemName,
                                 useDivision: item2.useItem(),
-                                partType: self.convertPartType(item.partType()),
+                                partType: item.partType(),
                                 topPagePartId: item2.topPagePartId
                             }
                         }
@@ -145,11 +145,11 @@ module nts.uk.pr.view.ccg015.b {
                                 partItemCode: item2.itemCode,
                                 partItemName: item2.itemName,
                                 useDivision: item2.useItem,
-                                partType: self.convertPartType(item.partType()),
+                                partType: item.partType(),
                                 topPagePartId: item2.topPagePartId
                             }
                         }
-                        if (settingItem.partType != TopPagePartsType.ExternalUrl) {
+                        if (settingItem.partType != TopPagePartsEnum.ExternalUrl) {
                             items.push(settingItem);
                         }
                     });
@@ -157,15 +157,7 @@ module nts.uk.pr.view.ccg015.b {
                 collectData.topPagePartUseSettingDto = items;
                 return collectData;
             }
-            private convertPartType(partType: number) {
-                switch (partType) {
-                    case 0: return "Widget";
-                    case 1: return "DashBoard";
-                    case 2: return "FlowMenu";
-                    case 3: return "ExternalUrl";
-                    default: return "Widget";
-                }
-            }
+            
             private updateMyPageSetting() {
                 var self = this;
                 service.updateMyPageSetting(self.collectData()).done(function() {
@@ -205,16 +197,12 @@ module nts.uk.pr.view.ccg015.b {
                 this.topPagePartId = topPagePartId;
             }
         }
-        export class TopPagePartsType {
-            static Widget = "Widget";
-            static Dashboard = "DashBoard";
-            static FlowMenu = "FlowMenu";
-            static ExternalUrl = "ExternalUrl";
-        }
+        
         export enum TopPagePartsEnum {
             Widget = 0,
             Dashboard = 1,
-            FlowMenu = 2
+            FlowMenu = 2,
+            ExternalUrl = 3
         }
         export enum UseType {
             Use = 1,
