@@ -65,7 +65,14 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 
 	@Override
 	public List<BankTransferRpDto> findBySEL1(BankTransferParamRpDto param) {
-		return this.queryProxy().query(SEL_1_BANKTRANSFER, BankTransferRpDto.class)
+		String query = SEL_1_BANKTRANSFER;
+		if (param.getOrderBy() != null) {
+			query += param.getOrderBy() == 0 
+							? " ORDER BY b.qbkdtBankTransferPK.toBranchId " 
+							: " ORDER BY b.qbkdtBankTransferPK.pid ";
+		}
+		
+		return this.queryProxy().query(query, BankTransferRpDto.class)
 				.setParameter("companyCode", param.getCompanyCode())
 				.setParameter("fromBranchId", param.getFromBranchId())
 				.setParameter("payBonusAtr", param.getPayBonusAtr()).setParameter("processingNo", param.getProcessNo())
@@ -75,7 +82,14 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 
 	@Override
 	public List<BankTransferRpDto> findBySEL1_1(BankTransferParamRpDto param) {
-		return this.queryProxy().query(SEL_1_1_BANKTRANSFER, BankTransferRpDto.class)
+		String query = SEL_1_1_BANKTRANSFER;
+		if (param.getOrderBy() != null) {
+			query += param.getOrderBy() == 0 
+							? " ORDER BY b.qbkdtBankTransferPK.toBranchId " 
+							: " ORDER BY b.qbkdtBankTransferPK.pid ";
+		}
+		
+		return this.queryProxy().query(query, BankTransferRpDto.class)
 				.setParameter("companyCode", param.getCompanyCode())
 				.setParameter("fromBranchId", param.getFromBranchId())
 				.setParameter("payBonusAtr", param.getPayBonusAtr()).setParameter("processingNo", param.getProcessNo())

@@ -40,28 +40,49 @@ public class BankTransferFinder {
 		Optional<PaydayProcessing> paydayProcessing = paydayProcessingRepo.select2(companyCode, processingNo);
 		Optional<Payday> payday = paydayRepo.select13(companyCode, processingNo, PayBonusAtr.SALARY.value,
 				paydayProcessing.get().getCurrentProcessingYm().v(), SparePayAtr.NORMAL.value);
- 		List<Payment> paymentHeader = paymentDataRepo.findPaymentHeaderSelect5(companyCode, processingNo,
+		List<Payment> paymentHeader = paymentDataRepo.findPaymentHeaderSelect5(companyCode, processingNo,
 				paydayProcessing.get().getCurrentProcessingYm().v(), PayBonusAtr.SALARY.value,
 				SparePayAtr.NORMAL.value);
 		int i = 1;
 		List<ListOfScreenDDto> listOfScreenDDto = new ArrayList<>();
+		List<ListOfScreenDDto> listOfScreenDDto0 = new ArrayList<>();
+		List<ListOfScreenDDto> listOfScreenDDto1 = new ArrayList<>();
 		for (Payment x : paymentHeader) {
 			Optional<BasicPersonBankAccountDto> basicPersonBankAccDto = personBankAccountAdapter.findBasePIdAndBaseYM(
 					companyCode, x.getPersonId().v(), paydayProcessing.get().getCurrentProcessingYm().v());
 			// PERSON_BASE SEL_1
 			String nameB = "高橋" + i;
 			// PERSON_COM SEL_1
-			String scd = "A000000000000" + i;
+			String scd = "A000000000" + i;
 			i += 1;
-			listOfScreenDDto.add(new ListOfScreenDDto(scd, nameB, basicPersonBankAccDto.get().getUseSet1().getPaymentMethod(),
-					basicPersonBankAccDto.get().getUseSet2().getPaymentMethod(),
-					basicPersonBankAccDto.get().getUseSet3().getPaymentMethod(),
-					basicPersonBankAccDto.get().getUseSet4().getPaymentMethod(),
-					basicPersonBankAccDto.get().getUseSet5().getPaymentMethod(),
-					basicPersonBankAccDto.get().getPersonID(),
-					x.getSparePayAtr().value));
+			if (x.getSparePayAtr().value == 0) {
+				listOfScreenDDto0.add(
+						new ListOfScreenDDto(scd, nameB, basicPersonBankAccDto.get().getUseSet1().getPaymentMethod(),
+								basicPersonBankAccDto.get().getUseSet2().getPaymentMethod(),
+								basicPersonBankAccDto.get().getUseSet3().getPaymentMethod(),
+								basicPersonBankAccDto.get().getUseSet4().getPaymentMethod(),
+								basicPersonBankAccDto.get().getUseSet5().getPaymentMethod(),
+								basicPersonBankAccDto.get().getPersonID()));
+			}
+			if (x.getSparePayAtr().value == 1) {
+				listOfScreenDDto0.add(
+						new ListOfScreenDDto(scd, nameB, basicPersonBankAccDto.get().getUseSet1().getPaymentMethod(),
+								basicPersonBankAccDto.get().getUseSet2().getPaymentMethod(),
+								basicPersonBankAccDto.get().getUseSet3().getPaymentMethod(),
+								basicPersonBankAccDto.get().getUseSet4().getPaymentMethod(),
+								basicPersonBankAccDto.get().getUseSet5().getPaymentMethod(),
+								basicPersonBankAccDto.get().getPersonID()));
+			}
+			listOfScreenDDto
+					.add(new ListOfScreenDDto(scd, nameB, basicPersonBankAccDto.get().getUseSet1().getPaymentMethod(),
+							basicPersonBankAccDto.get().getUseSet2().getPaymentMethod(),
+							basicPersonBankAccDto.get().getUseSet3().getPaymentMethod(),
+							basicPersonBankAccDto.get().getUseSet4().getPaymentMethod(),
+							basicPersonBankAccDto.get().getUseSet5().getPaymentMethod(),
+							basicPersonBankAccDto.get().getPersonID()));
 		}
-		BankTransferDto result = new BankTransferDto(listOfScreenDDto, payday.get().getPayDate());
+		BankTransferDto result = new BankTransferDto(listOfScreenDDto, listOfScreenDDto0, listOfScreenDDto1,
+				payday.get().getPayDate());
 		return result;
 	}
 }

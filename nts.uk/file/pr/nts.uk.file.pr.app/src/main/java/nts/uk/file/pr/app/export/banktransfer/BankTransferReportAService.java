@@ -81,7 +81,7 @@ public class BankTransferReportAService extends ExportService<BankTransferReport
 			
 			BankTransferParamRpDto bankTransferParamRp = new BankTransferParamRpDto(companyCode, fromBranchId,
 					PayBonusAtr.SALARY.value, query.getProcessingNo(), query.getProcessingYm(), query.getPayDate(),
-					sparePayAtr);
+					sparePayAtr, query.getOuputName());
 			
 			// BANK_TRANSFER SEL_1
 			List<BankTransferRpDto> bankTransfer = new ArrayList<BankTransferRpDto>();
