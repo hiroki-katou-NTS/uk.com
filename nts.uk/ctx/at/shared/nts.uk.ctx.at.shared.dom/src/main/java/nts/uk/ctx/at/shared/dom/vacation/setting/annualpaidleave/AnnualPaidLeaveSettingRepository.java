@@ -12,6 +12,13 @@ import java.util.Optional;
 public interface AnnualPaidLeaveSettingRepository {
     
     /**
+     * Adds the.
+     *
+     * @param setting the setting
+     */
+    void add(AnnualPaidLeaveSetting setting);
+    
+    /**
      * Update.
      *
      * @param setting the setting
