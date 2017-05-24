@@ -35,7 +35,7 @@
 							<td><p class="pad_left_20"
 									data-bind="text: parentTopPageName"></p></td>
 						</tr>
-						<tr style="padding-top: 15px;">
+						<tr>
 							<td class="pad_top_20">
 								<p>#{i18n.getText('CCG015_36')}</p>
 							</td>
@@ -45,16 +45,14 @@
 									<label>#{i18n.getText('CCG015_13')}</label>
 								</div>
 							</td>
-							<td class="pad_top_20"><input tabindex="2" id="inp-code"
-								style="width: 36px;" class="nts-input save-error"
+							<td class="pad_top_20"><input tabindex="2" id="inp-code" class="nts-input save-error"
 								data-name="コード"
 								data-bind="ntsTextEditor: {
 							value: newTopPageCode,
 							required: true,
 							constraint: 'TopPageCode' 
 							}" /></td>
-							<td class="pad_top_20 pad_left_20"><input tabindex="3" id="inp-name"
-								style="width: 180px !important;" class="nts-input save-error"
+							<td class="pad_top_20 pad_left_20"><input tabindex="3" id="inp-name" class="nts-input save-error"
 								data-name="名称"
 								data-bind="ntsTextEditor: {
 							value: newTopPageName,
@@ -65,11 +63,11 @@
 					</table>
 				</div>
 				<hr />
-				<div class="bg-yellow" style="padding: 10px 5px;margin: 11px 156px; width: 41%;">
+				<div class="bg-yellow">
 				<div data-bind="ntsCheckBox: { checked: check, enable: true}">#{i18n.getText('CCG015_38')}</div>
 				</div>
 				<div id="this-functions-area" class="control-group halign-center">
-					<button data-bind = " click: copyTopPage" class="btn-default proceed x-large" style="margin-left: -45px;margin-right: 19px;">#{i18n.getText('CCG015_37')}</button>
+					<button data-bind = " click: copyTopPage" class="btn-default proceed x-large copy_btn">#{i18n.getText('CCG015_37')}</button>
 					<button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button>
 				</div>
 			</div>
