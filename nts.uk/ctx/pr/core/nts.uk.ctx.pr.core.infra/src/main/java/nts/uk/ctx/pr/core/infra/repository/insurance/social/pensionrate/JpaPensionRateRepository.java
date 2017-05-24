@@ -192,8 +192,12 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		predicateList.add(cb.equal(root.get(QismtPensionRate_.histId), id));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.of(em.createQuery(cq).getResultList().stream()
-				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item)))
+		
+		List<QismtPensionRate> lstQismtPensionRate = em.createQuery(cq).getResultList();
+		if(lstQismtPensionRate.isEmpty()){
+			return Optional.of(null);
+		}
+		return Optional.of(lstQismtPensionRate.stream().map(item -> new PensionRate(new JpaPensionRateGetMemento(item)))
 				.collect(Collectors.toList()).get(0));
 	}
 
