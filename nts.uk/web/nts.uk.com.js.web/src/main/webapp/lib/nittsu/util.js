@@ -522,7 +522,7 @@ var nts;
             function getText(code, params) {
                 var text = names[code];
                 if (text) {
-                    text = formatCompDependParam(text);
+                    text = formatCompCustomizeResource(text);
                     text = formatParams(text, params);
                     return text;
                 }
@@ -535,11 +535,11 @@ var nts;
                     return messageId;
                 }
                 message = formatParams(message, params);
-                message = formatCompDependParam(message);
+                message = formatCompCustomizeResource(message);
                 return message;
             }
             resource.getMessage = getMessage;
-            function formatCompDependParam(message) {
+            function formatCompCustomizeResource(message) {
                 var compDependceParamRegex = /{#(\w*)}/;
                 var matches;
                 while (matches = compDependceParamRegex.exec(message)) {
@@ -557,6 +557,9 @@ var nts;
                 while (matches = paramRegex.exec(message)) {
                     var code = matches[1];
                     var text_2 = args[parseInt(code)];
+                    //                if(text!=undefined && text.indexOf("#")==0){
+                    //                    text = getText(text.substring(1))
+                    //                }
                     message = message.replace(paramRegex, text_2);
                 }
                 return message;

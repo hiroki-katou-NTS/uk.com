@@ -140,7 +140,7 @@ module nts.uk.ui.koExtentions {
                 var self = $(this);
                 return (_.find(selectedValues, (value) => {
                     return _.isEqual(value, self.data("value"))
-                }) !== undefined);
+                }) !== undefined); 
             });
             // Enable
             if((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)){
