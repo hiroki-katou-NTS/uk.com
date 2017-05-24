@@ -1,83 +1,45 @@
 module kml001.shr.servicebase {
     var paths: any = {
-        personCostCalculationSelect: "at/budget/premium/findBycompanyID",
-        personCostCalculationInsert: "at/budget/premium/insert",
-        personCostCalculationUpdate: "at/budget/premium/update",
-        personCostCalculationDelete: "at/budget/premium/delete",
-        extraTimeSelect: "at/budget/premium/extraTime/findBycompanyID",
-        extraTimeUpdate: "at/budget/premium/extraTime/update"
+        personCostCalculationSelect: "at/schedule/budget/premium/findPersonCostCalculationByCompanyID",
+        personCostCalculationInsert: "at/schedule/budget/premium/insertPersonCostCalculation",
+        personCostCalculationUpdate: "at/schedule/budget/premium/updatePersonCostCalculation",
+        personCostCalculationDelete: "at/schedule/budget/premium/deletePersonCostCalculation",
+        premiumItemSelect: "at/schedule/budget/premium/findPremiumItemByCompanyID",
+        premiumItemUpdate: "at/schedule/budget/premium/updatePremiumItem",
+        getAttendanceItems: "at/share/attendanceitem/getPossibleAttendanceItem",
+        getAttendanceItemByType:  "at/share/attendanceType/getByType/",
     }
     
     export function personCostCalculationSelect(): JQueryPromise<any> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.personCostCalculationSelect)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.personCostCalculationSelect);
     }
    
     export function personCostCalculationInsert(command): JQueryPromise<any> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.personCostCalculationInsert, command)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.personCostCalculationInsert, command);
     }
     
     export function personCostCalculationUpdate(command): JQueryPromise<any> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.personCostCalculationUpdate, command)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.personCostCalculationUpdate, command);
     }
     
     export function personCostCalculationDelete(command): JQueryPromise<any> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.personCostCalculationDelete, command)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        return nts.uk.request.ajax(paths.personCostCalculationDelete, command);
     }
     
-    export function extraTimeSelect(): JQueryPromise<any> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.extraTimeSelect)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function premiumItemSelect(): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.premiumItemSelect);
     }
     
-    export function extraTimeUpdate(command): JQueryPromise<any> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.extraTimeUpdate, command)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+    export function premiumItemUpdate(command): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.premiumItemUpdate, command);
+    }
+    
+    export function getAttendanceItems(command): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getAttendanceItems, command);
+    }
+    
+    export function getAttendanceItemByType(command): JQueryPromise<any> {
+        return nts.uk.request.ajax(paths.getAttendanceItemByType + command);
     }
     
 }

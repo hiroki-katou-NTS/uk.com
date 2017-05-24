@@ -5,7 +5,11 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
@@ -16,9 +20,9 @@ public class KmldpPremiumAttendancePK {
 	@Column(name="HIS_ID")
 	public String historyID;
 	
-	@Column(name="ATTENDANCE_CD")
-	public String attendanceCD;
+	@Column(name="PREMIUM_ID")
+	public Integer premiumID;
 	
-	@Column(name="PREMIUM_CD")
-	public String premiumCD;
+	@Column(name="ATTENDANCE_ID")
+	public Integer attendanceID;
 }

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
@@ -25,7 +25,7 @@ import nts.arc.i18n.custom.ResourceType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.SystemProperties;
 
-@Stateful
+@RequestScoped
 public class MultiLanguageResource implements IInternationalization {
 
 	private String getCompanyCode() {
@@ -46,6 +46,7 @@ public class MultiLanguageResource implements IInternationalization {
 
 	private static final Pattern COMPANYDENPENDITEMPATTERN = Pattern.compile("\\{#(\\w*)\\}");
 	private static final Pattern MESSAGEPARAMETERPATTERN = Pattern.compile("\\{([0-9])+(:\\w+)?\\}");
+	private static final String ID_MARK = "#";
 
 	@PostConstruct
 	private void load() {
@@ -93,9 +94,9 @@ public class MultiLanguageResource implements IInternationalization {
 		Map<String, String> allSystemCodeName = groupResource(codeNameResource);
 		text = allSystemCodeName.get(id);
 		if (text != null) {
-			text = replaceCompanyDenpendItem(text);
+			text = replaceCompanyCustomizeResource(text);
 			if (params.length > 0)
-				text = replaceMessageParameter(text, Arrays.asList(params));
+				text = formatWithParameters(text, Arrays.asList(params));
 		}
 		return text == null ? Optional.empty() : Optional.of(text);
 	}
@@ -110,8 +111,8 @@ public class MultiLanguageResource implements IInternationalization {
 		Optional<String> rawMessage = getRawMessage(messageId);
 		if (!rawMessage.isPresent())
 			return Optional.empty();
-		String result = replaceCompanyDenpendItem(rawMessage.get());
-		return Optional.of(replaceMessageParameter(result, params));
+		String result = replaceCompanyCustomizeResource(rawMessage.get());
+		return Optional.of(formatWithParameters(result, params));
 	}
 
 	@Override
@@ -120,7 +121,7 @@ public class MultiLanguageResource implements IInternationalization {
 		return message == null ? Optional.empty() : Optional.of(message);
 	}
 
-	private String replaceCompanyDenpendItem(String message) {
+	private String replaceCompanyCustomizeResource(String message) {
 		Matcher matcher = COMPANYDENPENDITEMPATTERN.matcher(message);
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {
@@ -134,7 +135,7 @@ public class MultiLanguageResource implements IInternationalization {
 		return sb.toString();
 	}
 
-	private String replaceMessageParameter(String message, List<String> params) {
+	private String formatWithParameters(String message, List<String> params) {
 		if (params == null || params.size() == 0)
 			return message;
 
@@ -149,9 +150,10 @@ public class MultiLanguageResource implements IInternationalization {
 			}
 			try {
 				int paramIndex = Integer.parseInt(paramIndexMark);
-				if (paramIndex >= params.size())
+				if (paramIndex >= params.size()) {
 					continue;
-				matcher.appendReplacement(sb, params.get(paramIndex));
+				}
+				matcher.appendReplacement(sb, getArgument(params.get(paramIndex)));
 			} catch (NumberFormatException ex) {
 				Logger.getLogger(this.getClass()).error(ex.getMessage());
 				continue;
@@ -159,6 +161,19 @@ public class MultiLanguageResource implements IInternationalization {
 		}
 		matcher.appendTail(sb);
 		return sb.toString();
+	}
+
+	private String getArgument(String param) {
+		if (param.indexOf(ID_MARK) == 0) {
+			if (param.length() == 1) {
+				return param;
+			}
+			Optional<String> replaceText = getItemName(param.substring(1));
+			if (replaceText.isPresent()) {
+				return replaceText.get();
+			}
+		}
+		return param;
 	}
 
 	@Override
@@ -178,7 +193,7 @@ public class MultiLanguageResource implements IInternationalization {
 		Map<String, String> codeName = new HashMap<>();
 		codeName.putAll(codeNameResource.getOrDefault(SystemProperties.SYSTEM_ID, new HashMap<>()));
 		codeName.putAll(codeNameResource.getOrDefault(programId, new HashMap<>()));
-		// company customized will override system default if conflict
+		// company customized will override system default 
 		codeName.putAll(companyCustomizedResource);
 		return codeName;
 

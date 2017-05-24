@@ -34,8 +34,20 @@ public interface PersonCostCalculationRepository {
 	 */
 	public Optional<PersonCostCalculation> findItemByDate(String companyID, GeneralDate startDate);
 	
+	/**
+	 * get single PersonCostCalculation by company ID and history ID
+	 * @param companyID company ID 
+	 * @param historyID history ID
+	 * @return single PersonCostCalculation by company ID and history ID
+	 */
 	public Optional<PersonCostCalculation> findItemByHistoryID(String companyID, String historyID);
 	
+	/**
+	 * get single PersonCostCalculation before input date by company ID
+	 * @param companyID company ID
+	 * @param date input date
+	 * @return single PersonCostCalculation before input date by company ID
+	 */
 	public Optional<PersonCostCalculation> findItemBefore(String companyID, GeneralDate startDate); 
 	
 	/**

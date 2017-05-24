@@ -1,4 +1,4 @@
-#test {
+#boxSearch {
 	display: flex;
 	vertical-align: middle;
 }
@@ -18,14 +18,15 @@
 }
 
 #process {
-	width: 400px;
-	clear: left;
-	line-height: 60px;
 	text-align: center;
-	clear: left;
+	vertical-align:middle;
 }
 
 #label {
 	line-height: 40px;
 	text-align: left;
+}
+hr { 
+	margin-top: 15px;
+	width : 400px; 
 }

@@ -13,8 +13,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemSet;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergencetime.service.DivergenceReasonService;
 import nts.uk.shr.com.context.AppContexts;
-import service.DivergenceReasonService;
 
 @Stateless
 public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDivergenceTimeCommand>{
@@ -54,11 +54,11 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 					divTimeRepo.updateDivTime(divTime);
 				}
 			}else{
-				throw new BusinessException(new RawErrorMessage("Msg_32"));
+				throw new BusinessException("Msg_32");
 			}
 			
 		}else{
-			throw new BusinessException(new RawErrorMessage("Msg_82"));
+			throw new BusinessException("Msg_82");
 		}
 		
 	}

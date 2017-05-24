@@ -28,17 +28,9 @@
 	width: 123px !important;
 }
 
-#inpCode, #inpName {
-	border-radius: 4px;
-	border: solid 1px #999999;
-	height: 25px;
-}
-
 button.nts-switch-button {
 	padding: 1px 1px;
-	font-size: 15px;
-	height: 35px;
-	width: 86px;
+	width: 100px;	
 }
 
 #tblContent tr td {
