@@ -203,6 +203,8 @@ module nts.uk.request {
             } else {
                 dfd.resolve(res);
             }
+        }).fail(function(res){
+              dfd.reject(res);
         });
         return dfd.promise();
     }

@@ -12,8 +12,6 @@ import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
-import org.apache.logging.log4j.util.Strings;
-
 @FacesComponent(tagName = "stylefile", createTag = true)
 public class StyleFile extends UIComponentBase {
     
@@ -52,15 +50,9 @@ public class StyleFile extends UIComponentBase {
         ResponseWriter rw = context.getResponseWriter();
         
         String filePath = (String) this.getAttributes().get("path");
-        String of = (String) this.getAttributes().get("of");
         
         if (filePath != null) {
-        	if(Strings.isEmpty(of)){
-        		writeTag(rw, FileTagsHelper.buildPath(context, filePath));
-        	}else{
-        		writeTag(rw, FileTagsHelper.buildPathOf(of, filePath));
-        	}
-        	
+        	writeTag(rw, FileTagsHelper.buildPath(context, filePath));
         } else {
             String fileSet = (String) this.getAttributes().get("set");
             writeTagSet(rw, context, fileSet);
