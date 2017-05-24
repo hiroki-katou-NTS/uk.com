@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.vacationsetting.acquisitionrule;
+package nts.uk.ctx.pr.core.dom.vacation.setting.acquisitionrule;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.shr.com.primitive.Memo;
 
 @Getter
-public class VacationAcquisitionRule extends DomainObject {
+public class AcquisitionRule extends DomainObject {
 	
 	
 	/** The company id. */
@@ -25,11 +25,11 @@ public class VacationAcquisitionRule extends DomainObject {
 	
 	/** The setting classification. */
 	@Setter
-	private Settingclassification settingClassification;
+	private Category settingClassification;
 	
 	/** The acquisition order. */
 	@Setter
-	private List<VacationAcquisitionOrder> acquisitionOrder;
+	private List<AcquisitionOrder> acquisitionOrder;
 	
 	
 	/**
@@ -37,7 +37,7 @@ public class VacationAcquisitionRule extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public VacationAcquisitionRule(VaAcRuleGetMemento memento) {
+	public AcquisitionRule(AcquisitionRuleGetMemento memento) {
 		super();
 		this.companyId = memento.getCompanyId();
 		this.settingClassification = memento.getSettingclassification();
@@ -49,7 +49,7 @@ public class VacationAcquisitionRule extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(VaAcRuleSetMemento memento) {
+	public void saveToMemento(AcquisitionRuleSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setSettingclassification(this.settingClassification);
 		memento.setAcquisitionOrder(this.acquisitionOrder);
@@ -78,7 +78,7 @@ public class VacationAcquisitionRule extends DomainObject {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		VacationAcquisitionRule other = (VacationAcquisitionRule) obj;		
+		AcquisitionRule other = (AcquisitionRule) obj;		
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
