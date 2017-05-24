@@ -12,6 +12,7 @@ module ccg030.a.viewmodel {
         selectedFlowMenu: KnockoutObservable<model.FlowMenu>;
         fileInfo: KnockoutObservable<model.FileInfo>;
         isCreate: KnockoutObservable<boolean>;
+        isDelete: KnockoutObservable<boolean>;
         enableDeleteFile: KnockoutObservable<boolean>;
         enableDownload: KnockoutObservable<boolean>;
         // Message
@@ -34,6 +35,7 @@ module ccg030.a.viewmodel {
             self.selectedFlowMenu = ko.observable(new model.FlowMenu());
             self.fileInfo = ko.observable(new model.FileInfo());
             self.isCreate = ko.observable(null);
+            self.isDelete = ko.observable(false);
             self.isCreate.subscribe((value) => {
                 self.changeInitMode(value);
             });
@@ -114,12 +116,14 @@ module ccg030.a.viewmodel {
         /** Upload File */
         uploadFile(): void {
             var self = this;
+            // TODO: Thiếu check xem upload có phải của flowmenu mặc định không--> nếu phải thông báo message Msg_84
             var option = {
                 stereoType: "flowmenu",//required
                 onSuccess: function() { },//optional
                 onFail: function() { }//optional
             }
             $("#file_upload").ntsFileUpload(option).done(function(res) {
+                self.isDelete(true);
                 self.selectedFlowMenu().fileID(res[0].id);
                 self.selectedFlowMenu().fileName(res[0].originalName);
 
@@ -131,11 +135,20 @@ module ccg030.a.viewmodel {
 
         deleteFile(): void {
             var self = this;
+            // TODO: Thiếu check xem có phải đang xóa file của flowmenu mặc định không--> nếu phải thông báo message Msg_83
             service.deleteFile(self.selectedFlowMenu().fileID()).done((data) => {
                 self.selectedFlowMenu().fileID('');
                 self.selectedFlowMenu().fileName('');
                 self.fileInfo = ko.observable(new model.FileInfo());
+                self.isDelete(false);
+            }).fail(function(error) {
+                console.log(error);    
             });
+        }
+        
+        downloadFile(): void {
+            var self = this;
+            nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID()); 
         }
         /** Close Dialog */
         closeDialog(): void {

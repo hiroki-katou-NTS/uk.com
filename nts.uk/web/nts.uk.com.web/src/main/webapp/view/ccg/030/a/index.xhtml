@@ -94,12 +94,12 @@
 <!-- 								<input type="file" id="file_upload" accept=".xls,.xlsx" /> -->
 <!-- 								<label id="fileName" class="hyperlink" data-bind="text: selectedFlowMenu.fileName"></label> -->
 							</td>
-							<td><button class="danger" data-bind="click: deleteFile, enable: !isCreate()">#{i18n.getText('CCG030_5')}</button></td>
+							<td><button class="danger" data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG030_5')}</button></td>
 						</tr>
 						<tr>
 							<td></td>
 							<td><button class="btn-download"
-									data-bind="enable: !isCreate()">#{i18n.getText('CCG030_14')}</button></td>
+									data-bind="click: downloadFile, enable: isDelete()">#{i18n.getText('CCG030_14')}</button></td>
 							<td></td>
 						</tr>
 						<tr data-bind="with: selectedFlowMenu">
