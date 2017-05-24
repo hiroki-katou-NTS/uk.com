@@ -4,24 +4,23 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearly
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 
-public class JpaRySettingSetMemento implements RetentionYearlySettingSetMemento{
+public class JpaRetentionYearlySetMemento implements RetentionYearlySettingSetMemento{
 
 	private KmfmtRetentionYearly typeValue;
 	
-	public JpaRySettingSetMemento(KmfmtRetentionYearly typeValue) {
+	public JpaRetentionYearlySetMemento(KmfmtRetentionYearly typeValue) {
 		this.typeValue = typeValue;
 	}
 	
 	@Override
 	public void setCompanyId(String companyId) {
-		// TODO Auto-generated method stub
-		
+		this.typeValue.setCid(companyId);
 	}
 
 	@Override
 	public void setUpperLimitSetting(UpperLimitSetting upperLimitSetting) {
-		// TODO Auto-generated method stub
-		
+		this.typeValue.setMaxDaysRetention(upperLimitSetting.getMaxDaysCumulation().v().shortValue());
+		this.typeValue.setYearAmount(upperLimitSetting.getRetentionYearsAmount().v().shortValue());
 	}
 
 	@Override
