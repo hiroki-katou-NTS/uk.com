@@ -40,17 +40,17 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 
 	/** The Constant FIRST_ROW. */
 	public static final int FIRST_ROW = 0;
-	
+
 	/** The Constant FIRST_PERSON. */
 	public static final int FIRST_PERSON = 1;
-	
+
 	/** The Constant SECOND_PERSON. */
 	public static final int SECOND_PERSON = 2;
 
 	/** The Constant ITEMS_PER_ROW. */
 	public static final int ITEMS_PER_ROW = 9;
 
-	/** The Constant ITEM_HEIGHT. */
+	/** The Constant NUMBER_OF_ROW_PER_ITEM. */
 	public static final int NUMBER_OF_ROW_PER_ITEM = 1;
 
 	/** The template style. */
@@ -160,6 +160,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/**
 	 * Prints the page content.
 	 */
+	// TODO: need to rename.
 	abstract void printPageContent();
 
 	/**
@@ -196,44 +197,6 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	}
 
 	/**
-	 * Prints the category content.
-	 *
-	 * @param listItem the list item
-	 */
-	protected void printCategoryContent(List<PaymentSalaryItemDto> listItem) {
-		listItem.forEach(item -> {
-			// Break line if current column = maxColumnsPerItemLine.
-			if (currentColumn == maxColumnsPerItemLine) {
-				nextItemLine();
-			}
-
-			// Get item cell.
-			Range nameCell = cells.createRange(currentRow, currentColumn, NUMBER_OF_ROW_PER_ITEM, numberOfColumnPerItem);
-			Range valueCell = cells.createRange(currentRow + NUMBER_OF_ROW_PER_ITEM, currentColumn, NUMBER_OF_ROW_PER_ITEM, numberOfColumnPerItem);
-
-			// Merge cell.
-			nameCell.merge();
-			valueCell.merge();
-
-			// Set style.
-			nameCell.setStyle(templateStyle.nameStyle);
-			valueCell.setStyle(templateStyle.valueStyle);
-
-			// Set value.
-			if (item.isView()) {
-				nameCell.setValue(item.getItemName());
-				valueCell.setValue(item.getItemVal());
-			} else {
-				nameCell.setValue(" ");
-				valueCell.setValue(" ");
-			}
-
-			// Next item.
-			currentColumn += numberOfColumnPerItem;
-		});
-	}
-
-	/**
 	 * Prints the page header.
 	 */
 	protected void printPageHeader() {
@@ -258,6 +221,51 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		}
 		firstRow += pageHeaderRowCount;
 		currentRow += pageHeaderRowCount;
+	}
+
+	/**
+	 * Prints the payment items.
+	 */
+	protected void printPaymentItems() {
+		printCategoryHeader("支給");
+		printCategoryContent(employee.getPaymentItems());
+		nextCategory();
+	}
+
+	/**
+	 * Prints the deduction items.
+	 */
+	protected void printDeductionItems() {
+		printCategoryHeader("控除");
+		printCategoryContent(employee.getDeductionItems());
+		nextCategory();
+	}
+
+	/**
+	 * Prints the attendance items.
+	 */
+	protected void printAttendanceItems() {
+		printCategoryHeader("勤怠");
+		printCategoryContent(employee.getAttendanceItems());
+		nextCategory();
+	}
+
+	/**
+	 * Prints the article items.
+	 */
+	protected void printArticleItems() {
+		printCategoryHeader("記事");
+		printCategoryContent(employee.getArticleItems());
+		nextCategory();
+	}
+
+	/**
+	 * Prints the other items.
+	 */
+	protected void printOtherItems() {
+		printCategoryHeader("他");
+		printCategoryContent(employee.getOtherItems());
+		nextCategory();
 	}
 
 	/**
@@ -529,7 +537,47 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		default:
 			break;
 		}
-	};
+	}
+
+	/**
+	 * Prints the category content.
+	 *
+	 * @param listItem the list item
+	 */
+	private void printCategoryContent(List<PaymentSalaryItemDto> listItem) {
+		listItem.forEach(item -> {
+			// Break line if current column = maxColumnsPerItemLine.
+			if (currentColumn == maxColumnsPerItemLine) {
+				nextItemLine();
+			}
+
+			// Get item cell.
+			Range nameCell = cells.createRange(currentRow, currentColumn, NUMBER_OF_ROW_PER_ITEM,
+					numberOfColumnPerItem);
+			Range valueCell = cells.createRange(currentRow + NUMBER_OF_ROW_PER_ITEM, currentColumn,
+					NUMBER_OF_ROW_PER_ITEM, numberOfColumnPerItem);
+
+			// Merge cell.
+			nameCell.merge();
+			valueCell.merge();
+
+			// Set style.
+			nameCell.setStyle(templateStyle.nameStyle);
+			valueCell.setStyle(templateStyle.valueStyle);
+
+			// Set value.
+			if (item.isView()) {
+				nameCell.setValue(item.getItemName());
+				valueCell.setValue(item.getItemVal());
+			} else {
+				nameCell.setValue(" ");
+				valueCell.setValue(" ");
+			}
+
+			// Next item.
+			currentColumn += numberOfColumnPerItem;
+		});
+	}
 
 	/**
 	 * The Class TemplateStyle.
