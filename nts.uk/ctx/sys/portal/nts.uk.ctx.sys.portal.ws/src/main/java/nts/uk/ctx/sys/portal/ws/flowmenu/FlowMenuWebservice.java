@@ -4,11 +4,14 @@
 package nts.uk.ctx.sys.portal.ws.flowmenu;
 
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+
+import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.CreateFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.flowmenu.CreateFlowMenuCommandHandler;
@@ -38,6 +41,9 @@ public class FlowMenuWebservice extends WebService {
 	@Inject
 	private FlowMenuFinder finder;
 
+	@Inject
+	private StoredFileStreamService storedFileStreamService;
+	
 	@POST
 	@Path("findall")
 	public List<FlowMenuDto> getAllFlowMenu() {
@@ -69,4 +75,10 @@ public class FlowMenuWebservice extends WebService {
 		this.updateFlowMenu.handle(command);
 	}
 
+	@POST
+	@Path("delete/file")
+	public void deleteFile(DeleteFileCommand command) {
+		this.storedFileStreamService.delete(command.getFileId());
+	}
+	
 }
