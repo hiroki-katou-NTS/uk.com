@@ -31,7 +31,8 @@ button.nts-switch-button {
    	margin-bottom: $_border_bottom_width;
   	box-shadow: 0 0 $button-boxshadow-base-color;
    	height: $_height;
-   	
+   	margin-left: 0px;
+   	margin-right: 0px;
    	&:active {
    		top: 0;
    		box-shadow: 0 0 $button-boxshadow-base-color;
