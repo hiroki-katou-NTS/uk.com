@@ -20,7 +20,7 @@
 }
 
 .control-group {
-	margin-bottom: 7px !important;
+	margin-bottom: 5px !important;
 }
 
 /* ====================== div css =============================*/
@@ -51,13 +51,11 @@
 	height: 35px !important;
 }
 
-.select-print-year-month {
-	margin-top: 10px;
-}
-
 /* ====================== radio css =============================*/
 #zero-item-setting-list .ntsRadioBox {
 	width: 99% !important;
+	margin-top: 5px !important;
+	margin-bottom: 5px !important;
 }
 
 /* ====================== checkbox css =============================*/
