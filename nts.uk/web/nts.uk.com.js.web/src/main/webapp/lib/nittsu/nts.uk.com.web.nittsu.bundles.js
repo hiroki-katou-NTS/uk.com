@@ -3295,6 +3295,7 @@ var nts;
                             formData.append("stereotype", option.stereoType);
                             // HTML file input, chosen by user
                             formData.append("userfile", file[0]);
+                            formData.append("filename", file[0].name);
                             if (file[0]) {
                                 return nts.uk.request.uploadFile(formData, option);
                             }
@@ -8725,7 +8726,7 @@ var nts;
                  */
                 var NtsFileUploadBindingHandler = (function () {
                     /**
-                     * Constructor.
+                     * Constructor..
                      */
                     function NtsFileUploadBindingHandler() {
                     }
@@ -8741,15 +8742,15 @@ var nts;
                         var control = $(element);
                         var onchange = data.onchange;
                         var fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
-                        var fileBrowserButton = $("<INPUT class='browser-button' type='button' />");
+                        var fileBrowserButton = $("<button class='browser-button' ></button>");
                         var browserButtonText;
                         if (textId) {
                             browserButtonText = nts.uk.resource.getText(textId);
                         }
                         else {
-                            browserButtonText = "browser";
+                            browserButtonText = "ファイルアップロード";
                         }
-                        fileBrowserButton.val(browserButtonText);
+                        fileBrowserButton.text(browserButtonText);
                         var fileNameLable = $("<span class='filename'></span> ");
                         var fileInput = $("<input style ='display:none' type='file' class='fileinput'/>");
                         if (suportedExtension) {

@@ -15,6 +15,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+
 import nts.uk.shr.com.context.ProgramContext;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
@@ -63,6 +65,7 @@ public class RequestPreProcessor implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		request.setAttribute(InputPart.DEFAULT_CHARSET_PROPERTY,"UTF-8");
 		String requestPagePath = ((HttpServletRequest) request).getHeader(PG_PATH);
 		if (requestPagePath == null) {
 			chain.doFilter(request, response);
