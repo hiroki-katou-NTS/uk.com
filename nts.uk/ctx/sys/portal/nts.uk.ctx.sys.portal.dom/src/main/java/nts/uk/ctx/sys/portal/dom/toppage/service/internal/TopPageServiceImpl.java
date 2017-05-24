@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.ctx.sys.portal.dom.layout.service.LayoutService;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
@@ -25,9 +24,6 @@ public class TopPageServiceImpl implements TopPageService {
 	/** The top page repository. */
 	@Inject
 	private TopPageRepository topPageRepository;
-
-	@Inject
-	private LayoutRepository layoutRepository;
 	
 	@Inject
 	private LayoutService layoutService;
@@ -71,8 +67,7 @@ public class TopPageServiceImpl implements TopPageService {
 		topPageRepository.remove(companyId, topPageCode);
 		if (tp.getLayoutId() != null) {
 			if (!tp.getLayoutId().equals("")) {
-				// TODO change to service of Lam san
-				layoutRepository.remove(companyId, tp.getLayoutId());
+				layoutService.deleteLayout(companyId, tp.getLayoutId());
 			}
 		}
 	}
