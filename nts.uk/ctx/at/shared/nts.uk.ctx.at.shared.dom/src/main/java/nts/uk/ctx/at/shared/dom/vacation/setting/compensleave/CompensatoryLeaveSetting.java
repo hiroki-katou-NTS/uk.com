@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 public class CompensatoryLeaveSetting extends DomainObject {
 
 	/** The manage dist. */
-	private ManageDistinct manageDist;
+	private ManageDistinct isManage;
 
 	/** The expiration date. */
 	private VacationExpiration expirationDate;
@@ -27,17 +27,17 @@ public class CompensatoryLeaveSetting extends DomainObject {
 	/**
 	 * Instantiates a new compensatory leave setting.
 	 *
-	 * @param manageDist
+	 * @param isManage
 	 *            the manage dist
 	 * @param expirationDate
 	 *            the expiration date
 	 * @param allowPrepaidLeave
 	 *            the allow prepaid leave
 	 */
-	public CompensatoryLeaveSetting(ManageDistinct manageDist, VacationExpiration expirationDate,
+	public CompensatoryLeaveSetting(ManageDistinct isManage, VacationExpiration expirationDate,
 			ApplyPermission allowPrepaidLeave) {
 		super();
-		this.manageDist = manageDist;
+		this.isManage = isManage;
 		this.expirationDate = expirationDate;
 		this.allowPrepaidLeave = allowPrepaidLeave;
 	}
