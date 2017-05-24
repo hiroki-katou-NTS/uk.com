@@ -278,7 +278,7 @@ module ccg030.a.viewmodel {
 
             constructor() {
                 this.filename = ko.observable(""); //file name
-                this.accept = ko.observableArray([".txt", '.xlsx']); //supported extension
+                this.accept = ko.observableArray([".html"]); //supported extension
                 this.textId = ko.observable(""); // file browser button text id
             }
         }
