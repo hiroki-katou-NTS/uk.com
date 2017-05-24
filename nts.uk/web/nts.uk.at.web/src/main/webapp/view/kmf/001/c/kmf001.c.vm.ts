@@ -112,7 +112,9 @@ module nts.uk.pr.view.kmf001.c {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                dfd.resolve();
+                $.when(self.loadSetting()).done(function() {
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
             
@@ -124,7 +126,25 @@ module nts.uk.pr.view.kmf001.c {
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
-                })
+                });
+            }
+            
+            private openVacationTypeScreen(): void {
+                nts.uk.request.jump("/view/kmf/001/a/index.xhtml", {});
+            }
+            
+            private loadSetting(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.find().done(function(res: any) {
+                    if (res) {
+                        self.initUI(res);
+                    }
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
             }
             
             private toJsObject(): any {
@@ -152,6 +172,29 @@ module nts.uk.pr.view.kmf001.c {
                 setting.isEnoughTimeOneDay = self.isEnoughTimeOneDay();
                 command.setting = setting;
                 return command;
+            }
+            
+            private initUI(res: any): any {
+                let self = this;
+                self.selectedAnnualManage(res.annualManage);
+                
+                self.selectedAddAttendanceDay(res.setting.addAttendanceDay);
+                self.selectedMaxManageSemiVacation(res.setting.maxManageSemiVacation);
+                self.selectedMaxNumberSemiVacation(res.setting.maxNumberSemiVacation);
+                self.maxNumberCompany(res.setting.maxNumberCompany);
+                self.maxGrantDay(res.setting.maxGrantDay);
+                self.maxRemainingDay(res.setting.maxRemainingDay);
+                self.numberYearRetain(res.setting.numberYearRetain);
+                self.selectedPermission(res.setting.preemptionAnnualVacation);
+                self.selectedPreemptionPermit(res.setting.preemptionYearLeave);
+                self.selectedNumberRemainingYearly(res.setting.remainingNumberDisplay);
+                self.selectedNextAnunalVacation(res.setting.nextGrantDayDisplay);
+                self.selectedTimeManagement(res.setting.timeManageType);
+                self.selectedVacationTimeUnit(res.setting.timeUnit);
+                self.selectedManageUpperLimitDayVacation(res.setting.manageMaxDayVacation);
+                self.selectedMaxDayVacation(res.setting.reference);
+                self.timeMaxNumberCompany(res.setting.maxTimeDay);
+                self.isEnoughTimeOneDay(res.setting.isEnoughTimeOneDay);
             }
         }
     }

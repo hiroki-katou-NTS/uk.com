@@ -27,7 +27,7 @@ public class JpaAcquisitionRuleGetMemento implements AcquisitionRuleGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	private JpaAcquisitionRuleGetMemento(KmfstAcquisitionRule typeValue) {
+	public JpaAcquisitionRuleGetMemento(KmfstAcquisitionRule typeValue) {
 		super();
 		this.typeValue = typeValue;
 
@@ -81,20 +81,20 @@ public class JpaAcquisitionRuleGetMemento implements AcquisitionRuleGetMemento {
 		List<AcquisitionOrder> acOrder = new ArrayList<>();
 
 		// Add AcquisitionOrder AnnualPaidLeave.
-		acOrder.add(new AcquisitionOrder(new JpaAcquisitionOrderGetMemento(this.typeValue,
-				AcquisitionType.AnnualPaidLeave)));
+		acOrder.add(new AcquisitionOrder(
+				new JpaAcquisitionOrderGetMemento(this.typeValue, AcquisitionType.AnnualPaidLeave)));
 
 		// Add AcquisitionOrder CompensatoryDayOff.
-		acOrder.add(new AcquisitionOrder(new JpaAcquisitionOrderGetMemento(this.typeValue,
-				AcquisitionType.CompensatoryDayOff)));
+		acOrder.add(new AcquisitionOrder(
+				new JpaAcquisitionOrderGetMemento(this.typeValue, AcquisitionType.CompensatoryDayOff)));
 
 		// Add AcquisitionOrder SubstituteHoliday.
-		acOrder.add(new AcquisitionOrder(new JpaAcquisitionOrderGetMemento(this.typeValue,
-				AcquisitionType.SubstituteHoliday)));
+		acOrder.add(new AcquisitionOrder(
+				new JpaAcquisitionOrderGetMemento(this.typeValue, AcquisitionType.SubstituteHoliday)));
 
 		// Add AcquisitionOrder FundedPaidHoliday.
-		acOrder.add(new AcquisitionOrder(new JpaAcquisitionOrderGetMemento(this.typeValue,
-				AcquisitionType.FundedPaidHoliday)));
+		acOrder.add(new AcquisitionOrder(
+				new JpaAcquisitionOrderGetMemento(this.typeValue, AcquisitionType.FundedPaidHoliday)));
 
 		// Add AcquisitionOrder ExsessHoliday.
 		acOrder.add(new AcquisitionOrder(

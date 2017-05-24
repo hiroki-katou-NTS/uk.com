@@ -7,7 +7,14 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 /**
  * The Interface YearVacationManageSettingReposity.
  */
-public interface ManageAnnualSettingReposity {
+public interface ManageAnnualSettingRepository {
+    
+    /**
+     * Adds the.
+     *
+     * @param setting the setting
+     */
+    void add(ManageAnnualSetting setting);
     
     /**
      * Update.

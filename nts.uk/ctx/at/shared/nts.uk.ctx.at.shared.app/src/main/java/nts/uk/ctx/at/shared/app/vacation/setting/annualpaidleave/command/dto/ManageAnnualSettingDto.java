@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.command.dto;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionVacationSetting;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTim
  * The Class ManageAnnualSettingDto.
  */
 @Getter
+@Setter
 public class ManageAnnualSettingDto {
 
 	/** The add attendance day. */
@@ -51,7 +53,7 @@ public class ManageAnnualSettingDto {
 	private Integer maxRemainingDay;
 
 	/** The number year retain. */
-	private RetentionYear numberYearRetain;
+	private Integer numberYearRetain;
 
 	/** The preemption annual vacation. */
 	private ApplyPermission preemptionAnnualVacation;
@@ -78,7 +80,7 @@ public class ManageAnnualSettingDto {
 	private MaxDayReference reference;
 
 	/** The max time day. */
-	private MaxTimeDay maxTimeDay;
+	private Integer maxTimeDay;
 
 	/** The is enough time one day. */
 	private Boolean isEnoughTimeOneDay;
@@ -88,8 +90,8 @@ public class ManageAnnualSettingDto {
 	 *
 	 * @return the manage annual setting
 	 */
-	public ManageAnnualSetting toDomain() {
-		return new ManageAnnualSetting(new ManageAnnualSettingGetMementoImpl(this));
+	public ManageAnnualSetting toDomain(String companyId) {
+		return new ManageAnnualSetting(new ManageAnnualSettingGetMementoImpl(companyId, this));
 	}
 
 	/**
@@ -97,6 +99,9 @@ public class ManageAnnualSettingDto {
 	 */
 	public class ManageAnnualSettingGetMementoImpl implements ManageAnnualSettingGetMemento {
 
+	    /** The company id. */
+    	private String companyId;
+	    
 		/** The setting. */
 		private ManageAnnualSettingDto setting;
 
@@ -106,10 +111,19 @@ public class ManageAnnualSettingDto {
 		 * @param setting
 		 *            the setting
 		 */
-		public ManageAnnualSettingGetMementoImpl(ManageAnnualSettingDto setting) {
+		public ManageAnnualSettingGetMementoImpl(String companyId, ManageAnnualSettingDto setting) {
+		    this.companyId = companyId;
 			this.setting = setting;
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingGetMemento#getCompanyId()
+		 */
+		@Override
+        public String getCompanyId() {
+            return this.companyId;
+        }
+		
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -123,11 +137,12 @@ public class ManageAnnualSettingDto {
 			HalfDayManage halfDayManage = HalfDayManage.builder()
 					.manageType(setting.maxManageSemiVacation)
 					.reference(setting.maxNumberSemiVacation)
-					.maxNumberUniformCompany(new AnnualNumberDay(setting.maxNumberCompany)).build();
+					.maxNumberUniformCompany(new AnnualNumberDay(setting.maxNumberCompany))
+					.build();
 			remain.setHalfDayManage(halfDayManage);
 			remain.setMaximumDayVacation(new YearVacationAge(setting.maxGrantDay));
 			remain.setRemainingDayMaxNumber(setting.maxRemainingDay);
-			remain.setRetentionYear(setting.numberYearRetain);
+			remain.setRetentionYear(new RetentionYear(setting.numberYearRetain));
 			return remain;
 		}
 
@@ -168,17 +183,13 @@ public class ManageAnnualSettingDto {
 			time.setTimeManageType(setting.timeManageType);
 			time.setTimeUnit(setting.timeUnit);
 			YearVacationTimeMaxDay timeMaxDay = YearVacationTimeMaxDay.builder()
-					.manageMaxDayVacation(setting.manageMaxDayVacation).reference(setting.reference)
-					.maxTimeDay(setting.maxTimeDay).build();
+					.manageMaxDayVacation(setting.manageMaxDayVacation)
+					.reference(setting.reference)
+					.maxTimeDay(new MaxTimeDay(setting.maxTimeDay))
+					.build();
 			time.setMaxDay(timeMaxDay);
 			time.setEnoughTimeOneDay(setting.isEnoughTimeOneDay);
 			return time;
-		}
-
-		@Override
-		public String getCompanyId() {
-			// TODO Auto-generated method stub
-			return null;
 		}
 	}
 }

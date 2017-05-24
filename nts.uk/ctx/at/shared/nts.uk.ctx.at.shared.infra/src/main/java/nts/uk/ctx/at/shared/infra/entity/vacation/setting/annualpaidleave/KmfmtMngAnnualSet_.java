@@ -4,6 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave;
 
-public class KmfmtMngAnnualSet_ {
+import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.metamodel.StaticMetamodel;
 
+@StaticMetamodel(KmfmtMngAnnualSet.class)
+public class KmfmtMngAnnualSet_ {
+    public static volatile SingularAttribute<KmfmtMngAnnualSet, String> cid;
 }
