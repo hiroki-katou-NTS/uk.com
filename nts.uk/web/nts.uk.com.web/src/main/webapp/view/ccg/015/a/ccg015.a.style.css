@@ -90,10 +90,6 @@
 	padding-bottom: 5px;
 }
 
-.contentsRR {
-	width: 70%;
-}
-
 #tableRight {
 	width: 100%;
 }
@@ -140,4 +136,21 @@ button.nts-switch-button {
 #nodata-iframe{
 	width: 1005px;
 	height: 550px;
+}
+.contentsRL{
+	width: 150px;
+}
+.contentsRR
+{
+	width: 70px;
+}
+.float_right{
+	float: right;
+}
+#box_search {
+	width: 425px;
+	padding-bottom: 20px;
+}
+.pad_left_20{
+	padding-left: 20px;
 }
