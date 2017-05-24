@@ -170,4 +170,10 @@ public class PaymentReportVerticalTwoGenerator extends PaymentReportBaseGenerato
 		return MAX_PERSON_PER_PAGE;
 	}
 
+	@Override
+	int getRemarkTotalRow() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
