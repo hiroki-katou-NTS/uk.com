@@ -19,8 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KmfstA
  * The Class JpaAcquisitionRuleRepository.
  */
 @Stateless
-public class JpaAcquisitionRuleRepository extends JpaRepository
-		implements AcquisitionRuleRepository {
+public class JpaAcquisitionRuleRepository extends JpaRepository implements AcquisitionRuleRepository {
 
 	/**
 	 * Creates the.
@@ -65,8 +64,11 @@ public class JpaAcquisitionRuleRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String companyId) {
-		// TODO Auto-generated method stub
-
+		Optional<KmfstAcquisitionRule> entity = this.queryProxy().find(new KmfstAcquisitionRule(companyId),
+				KmfstAcquisitionRule.class);
+		if (entity.isPresent()) {
+			this.commandProxy().remove(entity.get());
+		}
 	}
 
 	/**
@@ -78,8 +80,13 @@ public class JpaAcquisitionRuleRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<AcquisitionRule> findById(String companyId) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<KmfstAcquisitionRule> entity = this.queryProxy().find(new KmfstAcquisitionRule(companyId),
+				KmfstAcquisitionRule.class);
+		if (entity.isPresent()) {
+			return Optional.ofNullable(new AcquisitionRule(new JpaAcquisitionRuleGetMemento(entity.get())));
+		}
+		return Optional.empty();
+
 	}
 
 	/**

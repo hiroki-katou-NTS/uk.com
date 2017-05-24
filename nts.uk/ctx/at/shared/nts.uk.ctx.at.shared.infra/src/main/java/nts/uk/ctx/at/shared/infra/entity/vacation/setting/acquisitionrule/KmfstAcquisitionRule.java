@@ -66,12 +66,9 @@ public class KmfstAcquisitionRule extends UkJpaEntity implements Serializable {
 	@Column(name = "SETTING_CLASSFICATION")
 	private int settingClassfication;
 
-	/**
-	 * Instantiates a new kmfst acquisition rule.
-	 */
-	public KmfstAcquisitionRule() {
+	public KmfstAcquisitionRule(){
+		super();
 	}
-
 	/**
 	 * Instantiates a new kmfst acquisition rule.
 	 *
