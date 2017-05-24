@@ -95,6 +95,9 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/** The person count. */
 	private int personCount;
 
+	/** The remark total row. */
+	private int remarkTotalRow;
+
 	/** The report data. */
 	private List<PaymentReportDto> reportData;
 
@@ -164,6 +167,13 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	abstract void printPageContent();
 
 	/**
+	 * Gets the remark total row.
+	 *
+	 * @return the remark total row
+	 */
+	abstract int getRemarkTotalRow();
+
+	/**
 	 * Gets the header template.
 	 *
 	 * @return the header template
@@ -191,9 +201,12 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * Prints the remark.
 	 */
 	protected void printRemark() {
-		Cell remark = cells.get(currentRow, FIRST_COLUMN);
-		remark.setValue("備考: " + employee.getRemark());
+		Range remark = cells.createRange(currentRow, FIRST_COLUMN, remarkTotalRow, maxColumnsPerItemLine);
+		remark.merge();
+		remark.setValue(employee.getRemark());
 		remark.setStyle(templateStyle.remarkStyle);
+		firstRow += remarkTotalRow;
+		currentRow += remarkTotalRow;
 	}
 
 	/**
@@ -320,14 +333,16 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * Prints the data.
 	 */
 	protected void printData() {
+		// Prepare for print data.
 		initialize();
 
+		// Print data.
 		reportData.forEach(item -> {
 			employee = item;
 			printPageHeader();
 			printPageContent();
-			setPadding();
 			personCount++;
+			setPadding();
 			breakLines(1);
 
 			if (isPageHasEnoughPerson()) {
@@ -493,6 +508,9 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 
 		// Set page header range.
 		this.setPageHeaderRange();
+
+		// Set total row of remark.
+		this.remarkTotalRow = getRemarkTotalRow();
 
 		// Set max number of person on each page.
 		this.maxPersonPerPage = this.getPersonPerPage();
