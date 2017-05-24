@@ -1,0 +1,62 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.infra.entity.vacation.setting;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * The Class KmfmtRetentionEmpCtrPK.
+ */
+@Embeddable
+@Setter
+@Getter
+public class KmfmtRetentionEmpCtrPK {
+    
+    /** The cid. */
+    @NotNull
+    @Column(name = "CID")
+    private String cid;
+    
+    /** The emp ctr cd. */
+    @NotNull
+    @Column(name = "EMP_CTR_CD")
+    private String empCtrCd;
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (cid != null ? cid.hashCode() : 0);
+        hash += (empCtrCd != null ? empCtrCd.hashCode() : 0);
+        return hash;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof KmfmtRetentionEmpCtrPK)) {
+            return false;
+        }
+        KmfmtRetentionEmpCtrPK other = (KmfmtRetentionEmpCtrPK) object;
+        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+            return false;
+        }
+        if ((this.empCtrCd == null && other.empCtrCd != null) 
+        		|| (this.empCtrCd != null && !this.empCtrCd.equals(other.empCtrCd))) {
+            return false;
+        }
+        return true;
+    }
+}
