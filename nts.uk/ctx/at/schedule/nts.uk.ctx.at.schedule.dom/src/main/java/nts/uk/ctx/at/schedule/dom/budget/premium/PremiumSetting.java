@@ -43,6 +43,7 @@ public class PremiumSetting {
 		this.name = name;
 		this.displayNumber = displayNumber;
 		this.useAtr = useAtr;
+		if(attendanceItems.isEmpty()) throw new RuntimeException();
 		this.attendanceItems = attendanceItems;
 	}
     

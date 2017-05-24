@@ -107,14 +107,15 @@ input, textarea {
 #premium-set-tbl tbody tr td:FIRST-CHILD { 
 	background-color: #EDFAC2;
 }
-#premium-set-tbl th:FIRST-CHILD {
-	width: 180px;
+#premium-set-tbl th:FIRST-CHILD, td:FIRST-CHILD {
+	min-width: 205px;
+	max-width: 205px;
 }
-#premium-set-tbl th:NTH-CHILD(2) {
+#premium-set-tbl th:NTH-CHILD(2), td:NTH-CHILD(2) {
 	width: 80px;
 }
-#premium-set-tbl th:LAST-CHILD {
-	width: 500px;
+#premium-set-tbl th:LAST-CHILD, td:LAST-CHILD {
+	width: 492px;
 }
 .notUse {
 	display: none;
@@ -171,7 +172,7 @@ img {
 	padding-left: 10px;
 }
 #combo-box {
-	width: 112px;
+	width: 132px;
 }
 .percenSymbol {
 	margin-left: -25px;
@@ -181,4 +182,7 @@ img {
 .premiumPercent.nts-editor.nts-input{
 	padding-right: 20px;
 }
-.premiumItems.nts-editor.nts-input { height: 18px; }
+.premiumItems.nts-editor.nts-input { 
+	height: 18px;
+	margin-right: -80px;
+}
