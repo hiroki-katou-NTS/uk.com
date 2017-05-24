@@ -7,7 +7,7 @@ __viewContext.ready(function() {
         });
     });
     $("#button1").click(function() {
-        $("#file_upload1").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
+        $("#fileupload1").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
             alert(res);
         }).fail(function(err) {
            nts.uk.ui.dialog.alertError(err);
@@ -20,6 +20,14 @@ __viewContext.ready(function() {
     
     
     class ScreenModel {
+        filename: KnockoutObservable<string>;
+        textId: KnockoutObservable<string>;
+        accept: KnockoutObservableArray<string>;
+        constructor(){
+            filename=ko.observable("");    
+            accept = ko.observableArray([".txt",'.xlsx']); 
+            textId = ko.observable("KMF004_106"); 
+        }
         
     }
     

@@ -28,8 +28,7 @@ var nts;
                 return -1;
             }
             util.findIndex = findIndex;
-            /**
-             * function add item to array, this function is used in combine with visitDfs function
+            /** function add item to array, this function is used in combine with visitDfs function
              * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
              */
             function addToArray(node, arr) {
@@ -8758,8 +8757,11 @@ var nts;
                         fileuploadContainer.append(fileInput);
                         fileuploadContainer.appendTo(control);
                         fileInput.change(function () {
-                            if (fileName) {
+                            if (fileName != undefined) {
                                 data.filename($(this).val());
+                            }
+                            else {
+                                fileNameLable.text($(this).val());
                             }
                             if (typeof onchange == 'function') {
                                 onchange($(this).val());

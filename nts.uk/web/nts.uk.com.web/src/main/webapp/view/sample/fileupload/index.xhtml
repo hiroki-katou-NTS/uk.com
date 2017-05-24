@@ -28,28 +28,39 @@
 					<h1>file uploading</h1>
 					<h2>binding file upload by knockout</h2>
 					<div id="fileupload1"
-						data-bind="ntsFileUpload:{}"></div>
+						data-bind="ntsFileUpload:{filename: filename,accept: accept,text :textId}"></div>
 					<input type="button" id="button1" value="upload1" />
 					<pre>
 					<![CDATA[
-					//index.html
-					<div id="fileupload1"
-						data-bind="ntsFileUpload:{
-						filename: filename, accept: accept, text: textId,onchange: function(filename){
+//index.html
+<div id="fileupload1" data-bind="ntsFileUpload:{
+						filename: filename, //optional
+						accept: accept, //optional
+						text: textId,//optional
+						onchange: function(filename){
+							//optional
 							//this function will be called when you select other file in file browser dialog
 							//change file name in viewmodel does not trigger this event
 							console.log(filename);
 							
 						}
-						}">
-					</div>
-					//viewmodel.ts
-					 
-					 self.filename = ko.observable(""); //file name
-					 self.accept = ko.observableArray([".txt",'.xlsx']); //supported extension
-					 self.textId = ko.observable(""); // file browser button text id
+					}">
+</div>
 
-					
+//viewmodel.ts
+class ScreenModel {
+	filename: KnockoutObservable<string>;
+	textId: KnockoutObservable<string>;
+	accept: KnockoutObservableArray<string>;
+	
+	constructor(){
+		filename = ko.observable(""); //file name
+		accept = ko.observableArray([".txt",'.xlsx']); //supported extension
+		textId = ko.observable(""); // file browser button text id
+	}
+}
+    
+this.bind(new ScreenModel());
 					]]>
 					</pre>
 					<h2>in html file do not use knockout</h2>

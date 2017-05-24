@@ -23,7 +23,6 @@ module nts.uk.ui.koExtentions {
             let textId: string = ko.unwrap(data.text);
             let control = $(element);
             let onchange = data.onchange;
-
             let fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
             let fileBrowserButton = $("<INPUT class='browser-button' type='button' />");
             let browserButtonText: string;
@@ -43,8 +42,10 @@ module nts.uk.ui.koExtentions {
             fileuploadContainer.append(fileInput);
             fileuploadContainer.appendTo(control);
             fileInput.change(function() {
-                if (fileName) {
+                if (fileName != undefined) {
                     data.filename($(this).val());
+                } else {
+                    fileNameLable.text($(this).val());
                 }
                 if (typeof onchange == 'function') {
                     onchange($(this).val());
