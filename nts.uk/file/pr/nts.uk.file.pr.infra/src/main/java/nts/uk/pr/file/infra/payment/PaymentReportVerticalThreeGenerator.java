@@ -21,6 +21,9 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	/** The Constant MAX_PERSON_PER_PAGE. */
 	public static final int MAX_PERSON_PER_PAGE = 3;
 
+	/** The Constant REMARK_TOTAL_ROW. */
+	public static final int REMARK_TOTAL_ROW = 1;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -57,10 +60,10 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 		printAttendanceItems();
 		printArticleItems();
 		printOtherItems();
-		breakLines(1);
 
 		// Print remark;
-		// printRemark();
+		printRemark();
+		breakLines(1);
 	}
 
 	/*
@@ -168,6 +171,18 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	@Override
 	String getRemarkCell() {
 		return "B8";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkTotalRow
+	 * ()
+	 */
+	@Override
+	int getRemarkTotalRow() {
+		return REMARK_TOTAL_ROW;
 	}
 
 }
