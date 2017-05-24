@@ -13,7 +13,7 @@ public class FileStereoFactory {
 	static {
 		fileStereos = new HashMap<>();
 
-		fileStereos.put("flowmenu", ExampleStereoType.class);
+		fileStereos.put("example", ExampleStereoType.class);
 		
 		fileStereos.put("flowmenu", FlowMenuStereoType.class);
 

@@ -4,6 +4,7 @@ module ccg030.a.service {
         fillAllFlowMenu: "sys/portal/flowmenu/findall",
         updateFlowMenu: "sys/portal/flowmenu/update",
         deleteFlowMenu: "sys/portal/flowmenu/delete",
+        deleteFile: "sys/portal/flowmenu/delete/file",
     }
     //add new flow menu
     export function createFlowMenu(flowMenu: viewmodel.model.FlowMenu){
@@ -26,5 +27,12 @@ module ccg030.a.service {
         return nts.uk.request.ajax("com", paths.deleteFlowMenu, data);
     }
     
+    //delete file
+    export function deleteFile(fileID: string){
+        var data = {
+            fileId: fileID
+        }
+        return nts.uk.request.ajax("com", paths.deleteFile, data);
+    }
  
 }
