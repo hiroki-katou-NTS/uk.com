@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -30,18 +28,12 @@ public class DefaultFileUploadInvoker implements IFileUpload {
 
 			List<StoredFileInfo> uploadedFiles = new ArrayList<>();
 			Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-			List<InputPart> inputParts = uploadForm.get("userfile");
+			File uploadedFile = getUploadedFile(uploadForm);
+			String uploadedFileName = getUploadedFileName(uploadForm);
 			String fileStereoType = getFileStereoType(uploadForm);
-			for (InputPart inputPart : inputParts) {
 
-				MultivaluedMap<String, String> header = inputPart.getHeaders();
-				String fileName = getFileName(header);
-
-				// convert the uploaded file to inputstream
-				File inputFile = inputPart.getBody(File.class, null);
-				UploadedFile uploadedFile = new UploadedFile(fileName, fileStereoType, inputFile);
-				uploadedFiles.add(command.upload(uploadedFile));
-			}
+			UploadedFile uploadedFileInfor = new UploadedFile(uploadedFileName, fileStereoType, uploadedFile);
+			uploadedFiles.add(command.upload(uploadedFileInfor));
 			return uploadedFiles;
 
 		} catch (IOException e) {
@@ -59,20 +51,48 @@ public class DefaultFileUploadInvoker implements IFileUpload {
 
 	}
 
-	private String getFileName(MultivaluedMap<String, String> header) {
+	private File getUploadedFile(Map<String, List<InputPart>> uploadForm) throws IOException {
+		List<InputPart> inputParts = uploadForm.get("userfile");
 
-		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
+		for (InputPart inputPart : inputParts) {
+			File inputFile = inputPart.getBody(File.class, null);
+			return inputFile;
+		}
+		throw new RuntimeException("file not found");
+	}
 
-		for (String filename : contentDisposition) {
-			if ((filename.trim().startsWith("filename"))) {
-
-				String[] name = filename.split("=");
-
-				String finalFileName = name[1].trim().replaceAll("\"", "");
-				return finalFileName;
+	private String getUploadedFileName(Map<String, List<InputPart>> uploadForm) throws IOException {
+		List<InputPart> inputParts = uploadForm.get("filename");
+		for (InputPart inputPart : inputParts) {
+			String fileName = inputPart.getBodyAsString();
+			if (!Strings.isEmpty(fileName)) {
+				return fileName;
 			}
 		}
-		return "unknown";
+		return "unknow";
+
 	}
+
+	/**
+	 * can not get file name from content-disposition ,because of bug:
+	 * https://issues.jboss.org/browse/RESTEASY-1214
+	 * https://issues.jboss.org/browse/RESTEASY-546
+	 * 
+	 * 
+	 * private String getFileName(MultipartFormDataInput input) {
+	 * List<InputPart> inputParts = input.getFormDataMap().get("userfile"); for
+	 * (InputPart header : inputParts) { String[] contentDisposition =
+	 * header.getHeaders().getFirst("Content-Disposition").split(";");
+	 * 
+	 * for (String filename : contentDisposition) { if
+	 * ((filename.trim().startsWith("filename"))) {
+	 * 
+	 * String[] name = filename.split("=");
+	 * 
+	 * String finalFileName = name[1].trim().replaceAll("\"", ""); return
+	 * finalFileName; } } }
+	 * 
+	 * return "unknown"; }
+	 */
 
 }
