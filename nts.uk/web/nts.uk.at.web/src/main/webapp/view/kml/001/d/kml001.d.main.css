@@ -3,11 +3,18 @@ body {
 }
 
 .column1 {
-	width: 120px;
+	width: 140px;
 }
 .ntsControl {
 	margin-top: 10px;
 	display: block !important;
+}
+.form-label:FIRST-CHILD {
+	vertical-align: middle;
+}
+.ntsRadioBox {
+    display: block;
+    margin-bottom: 8px;
 }
 .dateTime-input {
 	display: inline-block;
@@ -22,9 +29,9 @@ body {
 .column1 > div {
 	margin-left: 10px;
 }
-hr { margin-top: 25px; }  
+hr { margin-top: 20px; }  
 #center-bottom {
-	margin-left: 120px;
+	margin-left: 135px;
     margin-top: 10px;
     margin-bottom: 0px;
 }
@@ -45,4 +52,15 @@ hr { margin-top: 25px; }
 }
 .isDelete {
 	color: #999999;
+}
+.form-label-update {
+	color: black;
+	border-color: #97D155 !important;
+}
+.form-label-delete {
+	color: #999999;
+	border-color: #999999 !important;
+}
+#func-notifier-errors{
+    margin-top: -255px;	
 }

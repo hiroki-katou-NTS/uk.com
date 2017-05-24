@@ -8,6 +8,6 @@ public class SystemProperties {
 
 	// TODO: temp fixed for test
 	public static final String companyCode = "0000000001";
-	public static final String programId = "QPP005";
+	public static final String programId = "KDL024";
 	public static final String UNDERSCORE = "_";
 }

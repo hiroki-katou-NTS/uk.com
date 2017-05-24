@@ -6,6 +6,25 @@ body {
 	margin-left: 15px;
 	font-size: large;
 }
+.form-label {
+	display: inline-block !important;
+    box-sizing: border-box !important;
+    height: 37px !important;
+    border-color: #97D155 !important;
+    border-width: 0 0 0 5px !important;
+    border-style: none !important;
+    padding: 0px !important;
+}
+.form-label > i {
+	display: inline-block !important;
+    margin-top: 1px !important;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    color: #777777 !important;
+}
+.form-label.broken label {
+   	line-height: 37px !important;
+}
 #premium-set-tbl {
 	margin-top: 10px;
 	margin-left: 15px;
@@ -27,7 +46,7 @@ body {
 	background-color: #EDFAC2;
 }
 #premium-set-tbl th:FIRST-CHILD {
-	width: 75px;
+	width: 83px;
 }
 #premium-set-tbl th:NTH-CHILD(2) {
 	width: 186px;
@@ -42,7 +61,7 @@ button.nts-switch-button {
 	height: 30px;
 	width: 93px;
 }
-hr { margin-top: 20px; }    
+hr { margin-top: 15px; }    
 #center-bottom {
 	margin-left: 160px;
     margin-top: 10px;
@@ -51,4 +70,7 @@ hr { margin-top: 20px; }
 
 #center-bottom > button {
 	margin-right: 10px;
+}
+#func-notifier-errors{
+    margin-top: -530px;	
 }

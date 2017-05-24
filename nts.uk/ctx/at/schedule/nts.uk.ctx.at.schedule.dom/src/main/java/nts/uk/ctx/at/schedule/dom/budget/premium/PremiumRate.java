@@ -1,18 +1,21 @@
 package nts.uk.ctx.at.schedule.dom.budget.premium;
 
-import java.math.BigDecimal;
-
-import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerRange;
 /**
  * 
  * @author Doan Duy Hung
  *
  */
-@DecimalRange(max="100",min="0")
-public class PremiumRate extends DecimalPrimitiveValue<PremiumRate>{
+@IntegerRange(max=100,min=0)
+public class PremiumRate extends IntegerPrimitiveValue<PremiumRate>{
 
-	public PremiumRate(BigDecimal rawValue) {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4727391399987061483L;
+
+	public PremiumRate(Integer rawValue) {
 		super(rawValue);
 	}
 

@@ -30,7 +30,6 @@ input, textarea {
 	padding-left: 5px;
 	padding-right: 5px;
 }
-textarea { margin-left: 10px;}
 
 .pull-left {
 	width: 330px;
@@ -64,18 +63,13 @@ textarea { margin-left: 10px;}
 	margin-left: 15px;
 }
 
-#inp-2 {
-	width: 440px;
+#memo {
+	width: 390px;
 	height: 100px;
 }
 #dateRange-list_dateRange {
 	display: none;
 }
-/*
-#dateRange-list td {
-	text-align: center;
-}
-*/
 #premium-set-div {
 	outline-style: solid;
 	outline-color: #999999;
@@ -129,6 +123,7 @@ textarea { margin-left: 10px;}
 	width: 600px;
 	height: 140px;
 	background-color: #F2F2F2;
+	border-radius: 5px;
 }
 #formula {
 	width: 515px;
@@ -146,6 +141,7 @@ textarea { margin-left: 10px;}
 }
 #formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(1){
 	width: 300px;
+	vertical-align: top;
 }
 #formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(1) > .label{
 	margin-left: 20px;
@@ -161,9 +157,10 @@ textarea { margin-left: 10px;}
 	width: 40px;
 }
 #formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(3) > .cell{
-	height: 35px;
+	height: 40px;
 }
 img {
+	margin-top: 5px; 
 	position: absolute;
     height: 90px;
 }

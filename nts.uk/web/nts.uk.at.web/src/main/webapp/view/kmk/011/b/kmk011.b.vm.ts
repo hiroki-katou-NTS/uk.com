@@ -1,19 +1,11 @@
 module kmk011.b.viewmodel {
-
     export class ScreenModel {
         //A_label_x
-        label_002: KnockoutObservable<model.Labels>;
-        label_003: KnockoutObservable<model.Labels>;
-        label_004: KnockoutObservable<model.Labels>;
-        label_005: KnockoutObservable<model.Labels>;
-        label_006: KnockoutObservable<model.Labels>;
-        sel_002: KnockoutObservable<string>;
         columns: KnockoutObservableArray<any>;
         dataSource: KnockoutObservableArray<model.Item>;
         currentCode: KnockoutObservable<string>;
         switchUSe3: KnockoutObservableArray<any>;
         requiredAtr: KnockoutObservable<any>;
-        inp_A34: KnockoutObservable<string>;
         divReasonCode: KnockoutObservable<string>;
         divReasonContent: KnockoutObservable<string>;
         enableCode: KnockoutObservable<boolean>;
@@ -21,60 +13,56 @@ module kmk011.b.viewmodel {
         divTimeId: KnockoutObservable<string>;
         index_of_itemDelete: any;
         objectOld: any;
+        enableDel: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-            self.label_002 = ko.observable(new model.Labels());
-            self.label_003 = ko.observable(new model.Labels());
-            self.label_004 = ko.observable(new model.Labels());
-            self.label_005 = ko.observable(new model.Labels());
-            self.label_006 = ko.observable(new model.Labels());
-            self.sel_002 = ko.observable('');
             self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'divReasonCode', width: 100  },
-                { headerText: '理由', key: 'divReasonContent', width: 150 }
+                { headerText: nts.uk.resource.getText('KMK011_37'), key: 'divReasonCode', width: 100 },
+                { headerText: nts.uk.resource.getText('KMK011_38'), key: 'divReasonContent', width: 200 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.switchUSe3 = ko.observableArray([
-                    { code: '1', name: '必須する' },
-                    { code: '0', name: '必須しない' },
-                ]);
-            self.requiredAtr = ko.observable(0);    
-            self.inp_A34 = ko.observable('時間１');    
+                { code: '1', name: nts.uk.resource.getText("Enum_DivergenceReasonInputRequiredAtr_Required") },
+                { code: '0', name: nts.uk.resource.getText("Enum_DivergenceReasonInputRequiredAtr_Optional") },
+            ]);
+            self.requiredAtr = ko.observable(0);
             self.divReasonCode = ko.observable('');
             self.divReasonContent = ko.observable('');
             self.enableCode = ko.observable(false);
             self.itemDivReason = ko.observable(null);
             self.divTimeId = ko.observable(null);
+            self.enableDel = ko.observable(true);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
+                self.clearError();
                 self.itemDivReason(self.findItemDivTime(codeChanged));
-                if(self.itemDivReason()===undefined||self.itemDivReason()==null){
+                if (self.itemDivReason() === undefined || self.itemDivReason() == null) {
                     return;
-                }else{
-                    self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
-                    self.enableCode(false);
-                    self.divReasonCode(self.itemDivReason().divReasonCode);
-                    self.divReasonContent(self.itemDivReason().divReasonContent);
-                    self.requiredAtr(self.itemDivReason().requiredAtr);
                 }
+                self.objectOld = self.itemDivReason().divReasonCode + self.itemDivReason().divReasonContent + self.itemDivReason().requiredAtr;
+                self.enableCode(false);
+                self.divReasonCode(self.itemDivReason().divReasonCode);
+                self.divReasonContent(self.itemDivReason().divReasonContent);
+                self.requiredAtr(self.itemDivReason().requiredAtr);
+                self.enableDel(true);
             });
         }
-        
+
         /**
          * start page
          * get all divergence reason
          */
-        startPage(): JQueryPromise<any>{
+        startPage(): JQueryPromise<any> {
             var self = this;
             self.currentCode('');
             var dfd = $.Deferred();
             self.divTimeId(nts.uk.ui.windows.getShared("KMK011_divTimeId"));
             service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
-                if(lstDivReason=== undefined || lstDivReason.length == 0){
-                    self.dataSource();
+                if (lstDivReason === undefined || lstDivReason.length == 0) {
+                    self.dataSource([]);
                     self.enableCode(true);
-                }else{
+                } else {
                     self.dataSource(lstDivReason);
                     let reasonFirst = _.first(lstDivReason);
                     self.currentCode(reasonFirst.divReasonCode);
@@ -93,56 +81,76 @@ module kmk011.b.viewmodel {
                 return obj.divReasonCode == value;
             })
         }
-        refreshData(){
+        refreshData() {
             var self = this;
             self.divReasonCode(null);
             self.divReasonContent("");
             self.requiredAtr(0);
             self.enableCode(true);
+            self.clearError();
+            self.enableDel(false);
+            self.currentCode(null);
+            $("#inpCode").focus();
+            
         }
-        RegistrationDivReason(){
+
+        clearError(): void {
+            if ($('.nts-editor').ntsError("hasError")) {
+                $('.nts-input').ntsError('clear');
+            }
+        }
+        RegistrationDivReason() {
             var self = this;
-             $('.nts-input').trigger("validate");
+            $('.nts-input').trigger("validate");
             _.defer(() => {
-                if (nts.uk.ui.errors.hasError()===false) {
-                    if(self.enableCode()==false){
-                        let objectNew = self.divReasonCode()+ self.divReasonContent()+self.requiredAtr();
-                        if(self.objectOld==objectNew){
+                if (!$('.nts-editor').ntsError("hasError")) {
+                    if (self.enableCode() == false) {
+                        let objectNew = self.convertCode(self.divReasonCode()) + self.divReasonContent() + self.requiredAtr();
+                        if (self.objectOld == objectNew) {
                             return;
-                        }else{
-                            self.updateDivReason();
                         }
-                    }else
-                    if(self.enableCode()==true){//add divergence
-                        self.addDivReason();
-                    }
+                        self.updateDivReason();
+                    } else
+                        if (self.enableCode() == true) {//add divergence
+                            self.addDivReason();
+                        }
                 }
             });
         }
-        addDivReason(){
+
+        addDivReason() {
             var self = this;
             var dfd = $.Deferred();
-            var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
+            self.convertCode(self.divReasonCode());
+            var divReason = new model.Item(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.addDivReason(divReason).done(function() {
-                nts.uk.ui.dialog.alert('登録しました。');
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                 self.getAllDivReasonNew();
             }).fail(function(error) {
-                $('#inpCode').ntsError('set', error.message);
+                $('#inpCode').ntsError('set', error);
             });
         }
-        updateDivReason(){
+        convertCode(value: string) {
+            var self = this;
+            if (value.length == 1) {
+                let code = '0' + value;
+                self.divReasonCode(code);
+            }
+            else return;
+        }
+        updateDivReason() {
             var self = this;
             var dfd = $.Deferred();
-            var divReason = new model.Item(self.divTimeId(),self.divReasonCode(),self.divReasonContent(),self.requiredAtr());
+            var divReason = new model.Item(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.updateDivReason(divReason).done(function() {
                 self.getAllDivReasonNew();
             }).fail(function(res) {
-                alert(res.message);
+                nts.uk.ui.dialog.alert(res.message);
                 dfd.reject(res);
             });
         }
         //get all divergence reason new
-        getAllDivReasonNew(){
+        getAllDivReasonNew() {
             var self = this;
             var dfd = $.Deferred<any>();
             self.dataSource();
@@ -153,22 +161,27 @@ module kmk011.b.viewmodel {
                 self.currentCode(self.divReasonCode());
                 dfd.resolve();
             }).fail(function(error) {
-                alert(error.message);
+                nts.uk.ui.dialog.alert(error.message);
             })
             dfd.resolve();
             return dfd.promise();
         }
         //delete divergence reason
-        deleteDivReason(){
+        deleteDivReason() {
             var self = this;
-            nts.uk.ui.dialog.confirm('選択中のデータを削除しますか？').ifYes(function(){
+            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function() {
                 let divReason = self.itemDivReason();
                 self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
-                service.deleteDivReason(divReason).done(function(){
-                    self.getDivReasonList_afterDelete();
-                    nts.uk.ui.dialog.alert('削除しました。');
+                service.deleteDivReason(divReason).done(function() {
+//                    self.getDivReasonList_afterDelete();
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16')).then(function(){
+//                        $("#inpCode").focus();
+                        self.getDivReasonList_afterDelete();
+                         $("#inpCode").focus();
+//                        self.refreshData();
+                    });
                 });
-            }).ifCancel(function(){
+            }).ifNo(function() {
                 return;
             })
         }
@@ -193,41 +206,28 @@ module kmk011.b.viewmodel {
 
                 dfd.resolve();
             }).fail(function(error) {
-                alert(error.message);
+                nts.uk.ui.dialog.alert(error.message);
             })
             dfd.resolve();
             return dfd.promise();
 
         }
-        closeDialog(){
-             nts.uk.ui.windows.close();
+        closeDialog() {
+            nts.uk.ui.windows.close();
         }
     }
-    export module model{ 
-        export class Labels {
-            constraint: string = 'LayoutCode';
-            inline: KnockoutObservable<boolean>;
-            required: KnockoutObservable<boolean>;
-            enable: KnockoutObservable<boolean>;
-            constructor() {
-                var self = this;
-                self.inline = ko.observable(true);
-                self.required = ko.observable(true);
-                self.enable = ko.observable(true);
-            }
-        }
-    
-        export class Item{
+    export module model {
+        export class Item {
             divTimeId: number;
             divReasonCode: string;
-            divReasonContent: string;  
+            divReasonContent: string;
             requiredAtr: number;
-            constructor(divTimeId: number,divReasonCode: string,divReasonContent: string,requiredAtr: number){
+            constructor(divTimeId: number, divReasonCode: string, divReasonContent: string, requiredAtr: number) {
                 this.divTimeId = divTimeId;
                 this.divReasonCode = divReasonCode;
-                this.divReasonContent = divReasonContent;    
+                this.divReasonContent = divReasonContent;
                 this.requiredAtr = requiredAtr;
-            }      
+            }
         }
     }
 }

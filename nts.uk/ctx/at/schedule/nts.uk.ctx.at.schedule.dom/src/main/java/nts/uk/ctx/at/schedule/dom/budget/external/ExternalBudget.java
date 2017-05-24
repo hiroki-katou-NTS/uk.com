@@ -4,21 +4,17 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
+@Getter
 public class ExternalBudget extends AggregateRoot {
 
-	@Getter
 	private final String companyId;
 
-	@Getter
 	private final ExternalBudgetCd externalBudgetCd;
 
-	@Getter
 	private final ExternalBudgetName externalBudgetName;
 
-	@Getter
 	private BudgetAtr budgetAtr;
 
-	@Getter
 	private UnitAtr unitAtr;
 
 	public ExternalBudget(String companyId, ExternalBudgetCd externalBudgetCd, ExternalBudgetName externalBudgetName,
@@ -43,8 +39,7 @@ public class ExternalBudget extends AggregateRoot {
 	public static ExternalBudget createFromJavaType(String companyId, String externalBudgetCd,
 			String externalBudgetName, int budgetAtr, int unitAtr) {
 		return new ExternalBudget(companyId, new ExternalBudgetCd(externalBudgetCd),
-				new ExternalBudgetName(externalBudgetName), 
-				EnumAdaptor.valueOf(budgetAtr, BudgetAtr.class),
+				new ExternalBudgetName(externalBudgetName), EnumAdaptor.valueOf(budgetAtr, BudgetAtr.class),
 				EnumAdaptor.valueOf(unitAtr, UnitAtr.class));
 	}
 

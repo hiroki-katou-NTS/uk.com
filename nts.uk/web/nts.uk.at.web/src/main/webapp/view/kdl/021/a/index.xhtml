@@ -19,24 +19,25 @@
 		<ui:define name="content">
 			<div id="total">
 				<div id="label">
-					<label>対象項目を選択してください。</label>
-				</div>				
+					<label>#{i18n.getText('KDL021_2')}</label>
+				</div>
 				<div style="float: left; margin-bottom: 20px;">
-					<div id="test">
-						<div style="width: 250px; margin-bottom: 15px;"
-							data-bind="ntsSearchBox: {comId: 'multi-list', 
+					<div id="boxSearch">
+						<div style="width: 370px; margin-bottom: 15px;" tabindex="1"
+							data-bind="ntsSearchBox: {
+									searchMode: 'filter',
+									targetKey: 'code',
+									comId: 'multi-list', 
 									items: items, 
 									selected: currentCodeList, 
 									selectedKey: 'code', 
-									fields: ['name', 'code']}" />
-						<div>
-							<button id="btnSelectedClear" data-bind="click :clearClick">検索条件をクリアする</button>
-						</div>
+									fields: ['name', 'code'],
+									mode: 'igGrid'}" />
 					</div>
 					<div>
-						<table id="multi-list"
+						<table id="multi-list" tabindex="2"
 							data-bind="ntsGridList: {
-										height: 400,
+										height: 390,
 										options: items,
 										optionsValue: 'code',
 										columns: columns,
@@ -45,14 +46,15 @@
 									}">
 						</table>
 					</div>
+					<hr />
 				</div>
-				<br></br>
+				
+				
 				<div id="process">
-					<div>
-						<hr></hr>
-						<button id="btnSetting" class="x-large proceed" data-bind="click: register">設定</button>
-						<button id="btnCancel" class="large" data-bind="click: close">キャンセル</button>
-					</div>
+					<button id="btnSetting" class="x-large proceed"
+						data-bind="click: register" tabindex="3">#{i18n.getText('KDL021_5')}</button>
+					<button id="btnCancel" class="large" data-bind="click: close"
+						tabindex="4">#{i18n.getText('KDL021_6')}</button>
 				</div>
 
 			</div>

@@ -8,29 +8,19 @@ package nts.uk.ctx.at.schedule.dom.budget.premium;
 
 public enum UnitPrice {
 	
-	/**
-	 * 単価１
-	 */
+	// 単価１
 	Price_1(0),
 	
-	/**
-	 * 単価2
-	 */
+	// 単価2
 	Price_2(1), 
 	
-	/**
-	 * 単価3
-	 */
+	// 単価3
 	Price_3(2),
 	
-	/**
-	 * 基準単価
-	 */
+	// 基準単価
 	Standard(3),
 	
-	/**
-	 * 契約単価
-	 */
+	// 契約単価
 	Contract(4);
 	
 	public final int value;

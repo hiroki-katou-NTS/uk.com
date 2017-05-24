@@ -4,7 +4,11 @@ import java.util.List;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class PremiumSetting {
@@ -13,20 +17,33 @@ public class PremiumSetting {
 	
 	private String historyID;
 	
-	private String attendanceID;
+	private Integer premiumID;
 	
-    private PremiumRate premiumRate;
+    private PremiumRate rate;
     
-    private PremiumName premiumName;
+    private Integer attendanceID;
     
-    private String internalID;
+    private PremiumName name;
     
-    private UseClassification useAtr;
+    private Integer displayNumber;
     
-    private List<String> timeItemIDs;
+    private UseAttribute useAtr;
     
-    public static PremiumSetting createFromJavaType(String companyID, String historyID, String attendanceID, PremiumRate premiumRate, 
-    		PremiumName premiumName, String externalID, UseClassification useAtr, List<String> timeItemIDs) {
-		return new PremiumSetting(companyID, historyID, attendanceID, premiumRate, premiumName, externalID, useAtr, timeItemIDs);
+    private List<Integer> attendanceItems;
+
+	public PremiumSetting(String companyID, String historyID, Integer premiumID, PremiumRate rate,
+			Integer attendanceID, PremiumName name, Integer displayNumber, UseAttribute useAtr,
+			List<Integer> attendanceItems) {
+		super();
+		this.companyID = companyID;
+		this.historyID = historyID;
+		this.premiumID = premiumID;
+		this.rate = rate;
+		this.attendanceID = attendanceID;
+		this.name = name;
+		this.displayNumber = displayNumber;
+		this.useAtr = useAtr;
+		this.attendanceItems = attendanceItems;
 	}
+    
 }

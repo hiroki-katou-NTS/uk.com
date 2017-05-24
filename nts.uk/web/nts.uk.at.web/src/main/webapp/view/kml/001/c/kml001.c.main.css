@@ -3,7 +3,7 @@ body {
 }
 
 .column1 {
-	width: 120px;
+	width: 140px;
 }
 .ntsControl {
 	margin-top: 10px;
@@ -12,7 +12,11 @@ body {
 .ntsRadioBox:FIRST-CHILD {
 	vertical-align: bottom;
 }
+.ntsRadioBox:LAST-CHILD {
+	margin-top: 10px;
+}
 .label:FIRST-CHILD {
+	margin-left: 10px;
 	margin-top: 5px;
 	font-size: large;
 }
@@ -20,7 +24,7 @@ body {
 	margin-top: 10px;
 }
 .column1 > div {
-	margin-left: 10px;
+	margin-left: 20px;
 }
 .dateTime-input {
 	display: inline-block;
@@ -31,11 +35,14 @@ body {
 }
 hr { margin-top: 25px; }    
 #center-bottom {
-	margin-left: 90px;
-    margin-top: 10px;
-    margin-bottom: 0px;
+	margin-left: 130px;
+	margin-top: 10px;
+	margin-bottom: 0px;
 }
 
 #center-bottom > button {
 	margin-right: 10px;
+}
+#func-notifier-errors{
+    margin-top: -260px;	
 }
