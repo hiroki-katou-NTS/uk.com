@@ -399,6 +399,7 @@ module kml001.a.viewmodel {
                                     //clone Knockout Object
                                     let isError = $('.premiumItems').ntsError('hasError');
                                     nts.uk.ui.errors.clearAll();
+                                    self.currentPersonCost().startDate(self.newStartDate());
                                     self.currentPersonCost(self.clonePersonCostCalculation(self.currentPersonCost()));
                                     self.newStartDate(self.currentPersonCost().startDate());
                                     self.getItem(newList,index);
