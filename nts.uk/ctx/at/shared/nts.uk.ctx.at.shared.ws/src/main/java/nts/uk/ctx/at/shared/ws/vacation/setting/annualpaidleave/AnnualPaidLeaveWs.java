@@ -10,8 +10,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.command.AnnualPaidLeaveUpateCommand;
-import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.command.AnnualPaidLeaveUpateCommandHandler;
+import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.command.AnnualPaidLeaveSaveCommand;
+import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.command.AnnualPaidLeaveSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.AnnualPaidLeaveFinder;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 
 /**
  * The Class AnnualPaidLeaveWs.
@@ -20,19 +22,34 @@ import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.command.AnnualP
 @Produces("application/json")
 public class AnnualPaidLeaveWs extends WebService {
 
-	/** The annual paid handler. */
-	@Inject
-	AnnualPaidLeaveUpateCommandHandler annualPaidHandler;
+    /** The annual finder. */
+    @Inject
+    private AnnualPaidLeaveFinder annualFinder;
 
-	/**
-	 * Update.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	@POST
-	@Path("update")
-	public void update(AnnualPaidLeaveUpateCommand command) {
-		this.annualPaidHandler.handle(command);
-	}
+    /** The annual paid handler. */
+    @Inject
+    AnnualPaidLeaveSaveCommandHandler annualPaidHandler;
+
+    /**
+     * Update.
+     *
+     * @param command
+     *            the command
+     */
+    @POST
+    @Path("update")
+    public void update(AnnualPaidLeaveSaveCommand command) {
+        this.annualPaidHandler.handle(command);
+    }
+
+    /**
+     * Find by company id.
+     *
+     * @return the annual paid leave setting
+     */
+    @POST
+    @Path("find")
+    public AnnualPaidLeaveSetting findByCompanyId() {
+        return this.annualFinder.findByCompanyId();
+    }
 }

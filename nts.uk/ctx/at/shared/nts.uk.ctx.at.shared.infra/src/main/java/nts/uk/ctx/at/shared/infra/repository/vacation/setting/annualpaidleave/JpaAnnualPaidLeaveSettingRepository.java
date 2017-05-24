@@ -7,7 +7,6 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,52 +21,71 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtAnnualPaidLeave;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtAnnualPaidLeave_;
 
+/**
+ * The Class JpaAnnualPaidLeaveSettingRepository.
+ */
 @Stateless
-public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository
-		implements AnnualPaidLeaveSettingRepository {
+public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implements AnnualPaidLeaveSettingRepository {
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * AnnualPaidLeaveSettingRepository#add(nts.uk.ctx.at.shared.dom.vacation.
+     * setting.annualpaidleave.AnnualPaidLeaveSetting)
+     */
+    @Override
+    public void add(AnnualPaidLeaveSetting setting) {
+        this.commandProxy().insert(this.toEntity(setting));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
-	 * AnnualPaidLeaveSettingRepository#update(nts.uk.ctx.pr.core.dom.vacation.
-	 * setting.annualpaidleave.AnnualPaidLeaveSetting)
-	 */
-	@Override
-	public void update(AnnualPaidLeaveSetting setting) {
-		KmfmtAnnualPaidLeave entity = new KmfmtAnnualPaidLeave();
-		setting.saveToMemento(new JpaAnnualPaidLeaveSettingSetMemento(entity));
-		this.commandProxy().update(entity);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
+     * AnnualPaidLeaveSettingRepository#update(nts.uk.ctx.pr.core.dom.vacation.
+     * setting.annualpaidleave.AnnualPaidLeaveSetting)
+     */
+    @Override
+    public void update(AnnualPaidLeaveSetting setting) {
+        this.commandProxy().update(this.toEntity(setting));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
-	 * AnnualPaidLeaveSettingRepository#findByCompanyId(java.lang.String)
-	 */
-	@Override
-	public Optional<AnnualPaidLeaveSetting> findByCompanyId(String companyId) {
-		EntityManager em = this.getEntityManager();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
+     * AnnualPaidLeaveSettingRepository#findByCompanyId(java.lang.String)
+     */
+    @Override
+    public Optional<AnnualPaidLeaveSetting> findByCompanyId(String companyId) {
+        EntityManager em = this.getEntityManager();
 
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KmfmtAnnualPaidLeave> cq = builder.createQuery(KmfmtAnnualPaidLeave.class);
-		Root<KmfmtAnnualPaidLeave> root = cq.from(KmfmtAnnualPaidLeave.class);
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KmfmtAnnualPaidLeave> cq = builder.createQuery(KmfmtAnnualPaidLeave.class);
+        Root<KmfmtAnnualPaidLeave> root = cq.from(KmfmtAnnualPaidLeave.class);
 
-		List<Predicate> predicateList = new ArrayList<Predicate>();
+        List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		// TODO: check again predicate
-		predicateList.add(builder.equal(root.get(KmfmtAnnualPaidLeave_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KmfmtAnnualPaidLeave_.cid), companyId));
 
-		cq.where(predicateList.toArray(new Predicate[] {}));
+        cq.where(predicateList.toArray(new Predicate[]{}));
 
-		List<KmfmtAnnualPaidLeave> result = em.createQuery(cq).getResultList();
-		if (result.isEmpty()) {
-			// TODO: throw exception
-		}
-		return Optional.of(result.stream().map(
-				item -> new AnnualPaidLeaveSetting(new JpaAnnualPaidLeaveSettingGetMemento(item)))
-				.collect(Collectors.toList()).get(0));
-	}
-
+        List<KmfmtAnnualPaidLeave> result = em.createQuery(cq).getResultList();
+        return result.stream()
+                .map(item -> new AnnualPaidLeaveSetting(new JpaAnnualPaidLeaveSettingGetMemento(item)))
+                .findFirst();
+    }
+    
+    /**
+     * To entity.
+     *
+     * @param setting the setting
+     * @return the kmfmt annual paid leave
+     */
+    private KmfmtAnnualPaidLeave toEntity(AnnualPaidLeaveSetting setting) {
+        KmfmtAnnualPaidLeave entity = new KmfmtAnnualPaidLeave();
+        setting.saveToMemento(new JpaAnnualPaidLeaveSettingSetMemento(entity));
+        return entity;
+    }
 }

@@ -14,10 +14,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class KclstEmpCompensLeave.
  */
-
+@Getter
+@Setter
 @Entity
 @Table(name = "KCLST_EMP_COMPENS_LEAVE")
 public class KclstEmpCompensLeave implements Serializable {
@@ -69,15 +73,15 @@ public class KclstEmpCompensLeave implements Serializable {
 
 	/** The is manage. */
 	@Column(name = "IS_MANAGE")
-	private short isManage;
+	private int isManage;
 
 	/** The expiration date set. */
 	@Column(name = "EXPIRATION_DATE_SET")
-	private Short expirationDateSet;
+	private int expirationDateSet;
 
 	/** The allow prepaid leave. */
 	@Column(name = "ALLOW_PREPAID_LEAVE")
-	private short allowPrepaidLeave;
+	private int allowPrepaidLeave;
 
 	/**
 	 * Instantiates a new kclst emp compens leave.
