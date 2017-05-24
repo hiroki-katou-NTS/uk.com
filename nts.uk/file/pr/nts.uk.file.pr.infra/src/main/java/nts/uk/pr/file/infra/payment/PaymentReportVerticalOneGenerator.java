@@ -10,7 +10,6 @@ import java.util.List;
 import com.aspose.cells.Workbook;
 
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
-import nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator.CellValue;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
 /**
@@ -19,17 +18,11 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerator
 	implements PaymentGenerator {
 
-	/** The Constant ITEM_WIDTH. */
-	public static final int ITEM_WIDTH = 1;
-
-	/** The Constant CATEGORY_START_ROW. */
-	public static final int CATEGORY_START_ROW = 4;
-	
 	/** The Constant PERSON_OF_PAGE. */
 	public static final int PERSON_OF_PAGE = 1;
-	
+
 	/** The Constant NUMBER_COLUMN_OF_ITEM. */
-	public static final int NUMBER_COLUMN_OF_ITEM =1 ;
+	public static final int NUMBER_COLUMN_OF_ITEM = 1;
 
 	/*
 	 * (non-Javadoc)
@@ -66,19 +59,15 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 */
 	@Override
 	void printPageContent() {
-
 		printCategoryHeader("支給");
 		printCategoryContent(employee.getPaymentItems());
 		nextCategory();
-
 		printCategoryHeader("控除");
 		printCategoryContent(employee.getDeductionItems());
 		nextCategory();
-
 		printCategoryHeader("勤怠");
 		printCategoryContent(employee.getAttendanceItems());
 		nextCategory();
-
 		printCategoryHeader("記事");
 		printCategoryContent(employee.getArticleItems());
 		nextCategory();
@@ -100,7 +89,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 
 	@Override
 	int getNumberOfColumnPerItem() {
-		return ITEMS_PER_ROW;
+		return NUMBER_COLUMN_OF_ITEM;
 	}
 
 	@Override
@@ -115,7 +104,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 
 	@Override
 	String getPageHeaderEndCell() {
-		return "J3";
+		return "I4";
 	}
 
 	@Override
@@ -135,7 +124,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 
 	@Override
 	String getRemarkCell() {
-		return "B6";
+		return "B7";
 	}
 
 }

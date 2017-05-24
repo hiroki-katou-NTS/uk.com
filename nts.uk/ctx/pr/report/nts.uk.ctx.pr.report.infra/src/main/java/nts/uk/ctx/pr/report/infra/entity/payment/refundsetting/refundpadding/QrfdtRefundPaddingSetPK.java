@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.entity.payment.refundsetting.refundpadding;
@@ -40,10 +40,8 @@ public class QrfdtRefundPaddingSetPK implements Serializable {
 	/**
 	 * Instantiates a new qrfdt refund padding set PK.
 	 *
-	 * @param ccd
-	 *            the ccd
-	 * @param printType
-	 *            the print type
+	 * @param ccd the ccd
+	 * @param printType the print type
 	 */
 	public QrfdtRefundPaddingSetPK(String ccd, short printType) {
 		this.ccd = ccd;

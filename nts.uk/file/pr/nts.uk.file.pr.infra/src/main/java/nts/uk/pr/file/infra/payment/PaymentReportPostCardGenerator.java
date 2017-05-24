@@ -33,12 +33,26 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 	/** The Constant PROCESS_YEARMONTH_CELLS. */
 	public static final String PROCESS_YEARMONTH_CELLS ="D2";
 	
-	
 	/** The Constant DEPARTMENT_CELLS. */
 	public static final String DEPARTMENT_CELLS ="G1";
 	
 	/** The Constant EMPLOYEE_NAME_CELLS. */
 	public static final String EMPLOYEE_NAME_CELLS ="G2";
+	
+	/** The Constant EMPLOYEE_INFOR_NAME_CELLS. */
+	public static final String EMPLOYEE_INFOR_NAME_CELLS ="A21";
+	
+	/** The Constant COMPANY_NAME_CELLS. */
+	public static final String COMPANY_NAME_CELLS ="B34";
+	
+	/** The Constant COMPANY_POST_CODE_CELLS. */
+	public static final String COMPANY_POST_CODE_CELLS = "A30";
+	
+	/** The Constant COMPANY_ADDRESS_ONE_CELLS. */
+	public static final String COMPANY_ADDRESS_ONE_CELLS="A31";
+	
+	/** The Constant COMPANY_ADDRESS_TWO_CELLS. */
+	public static final String COMPANY_ADDRESS_TWO_CELLS="A32";
 
 	/** The Constant START_ROW_CATEGORY_ATTENDANCE. */
 	public static final int START_ROW_CATEGORY_ATTENDANCE = 4;
@@ -125,8 +139,19 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 		//set department info
 		cells.get(DEPARTMENT_CELLS).setValue(dataFirst.getDepartmentInfo().getDepartmentName());
 		
-		// set payment title
+		// set employee info
 		cells.get(EMPLOYEE_NAME_CELLS).setValue(dataFirst.getEmployeeInfo().getEmployeeName());
+		cells.get(EMPLOYEE_INFOR_NAME_CELLS)
+			.setValue(dataFirst.getEmployeeInfo().getEmployeeName()+" 様");
+		
+		// set company info
+		cells.get(COMPANY_NAME_CELLS).setValue(dataFirst.getCompanyInfo().getName());
+		cells.get(COMPANY_POST_CODE_CELLS)
+			.setValue("〒　" + dataFirst.getCompanyInfo().getPostalCode());
+		cells.get(COMPANY_ADDRESS_ONE_CELLS)
+			.setValue("　　　　" + dataFirst.getCompanyInfo().getAddressOne());
+		cells.get(COMPANY_ADDRESS_TWO_CELLS)
+			.setValue("　　　　" + dataFirst.getCompanyInfo().getAddressTwo());
 
 	}
 

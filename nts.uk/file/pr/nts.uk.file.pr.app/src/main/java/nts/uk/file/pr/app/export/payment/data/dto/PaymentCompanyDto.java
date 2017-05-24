@@ -23,5 +23,13 @@ public class PaymentCompanyDto implements Serializable{
 	
 	/** The name. */
 	private String name;
+	
+	/** The postal code. */
+	private String postalCode;
 
+	/** The address one. */
+	private String addressOne;
+	
+	/** The address two. */
+	private String addressTwo;
 }

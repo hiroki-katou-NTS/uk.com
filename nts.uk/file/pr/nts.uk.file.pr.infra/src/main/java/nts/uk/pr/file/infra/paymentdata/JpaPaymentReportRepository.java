@@ -16,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.basic.infra.entity.company.CmnmtCompany;
 import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QstdtPaymentDetail;
@@ -88,6 +89,9 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/** The column position. */
 	int columnPosition = 0;
 
+	public static final String FIND_COMPANY_BYCODE ="SELECT com FROM CmnmtCompany com "
+		+"WHERE com.cmnmtCompanyPk.companyCd = :companyCode";
+	
 	/** The Constant FIND_EMPLOYEE_BYCODE. */
 	public static final String FIND_EMPLOYEE_BYCODE = "SELECT emp FROM CmnmtEmp emp "
 		+ "WHERE emp.cmnmtEmpPk.companyCode = :companyCode "
@@ -129,12 +133,21 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		+ "ORDER BY detail.printLinePosition ASC , detail.columnPosition ASC ";
 
 	/**
+	 * Find company code.
+	 *
+	 * @param companyCode the company code
+	 * @return the optional
+	 */
+	private Optional<CmnmtCompany> findCompanyCode(String companyCode) {
+		return this.queryProxy().query(FIND_COMPANY_BYCODE, CmnmtCompany.class)
+			.setParameter("companyCode", companyCode).getSingle();
+	}
+	
+	/**
 	 * Check payment header layout.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param query
-	 *            the query
+	 * @param companyCode the company code
+	 * @param query the query
 	 * @return the list
 	 */
 	private List<QstdtPaymentHeader> checkPaymentHeaderLayout(String companyCode,
@@ -150,10 +163,8 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/**
 	 * Find employee code.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param employeeCode
-	 *            the employee code
+	 * @param companyCode the company code
+	 * @param employeeCode the employee code
 	 * @return the optional
 	 */
 	Optional<CmnmtEmp> findEmployeeCode(String companyCode, String employeeCode) {
@@ -165,10 +176,8 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	/**
 	 * Check payment header specification.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param query
-	 *            the query
+	 * @param companyCode the company code
+	 * @param query the query
 	 * @return the list
 	 */
 	private List<QstdtPaymentHeader> checkPaymentHeaderSpecification(String companyCode,
@@ -195,7 +204,6 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company code
-
 		String companyCode = loginUserContext.companyCode();
 
 		// print type layout ?
@@ -225,7 +233,6 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company code
-
 		String companyCode = loginUserContext.companyCode();
 
 		List<QstdtPaymentHeader> paymentHeaders = new ArrayList<>();
@@ -297,16 +304,15 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			break;
 		}
 		reportData.setConfig(config);
+		
 		return reportData;
 	}
 
 	/**
 	 * Detail header.
 	 *
-	 * @param header
-	 *            the header
-	 * @param category
-	 *            the category
+	 * @param header the header
+	 * @param category the category
 	 * @return the list
 	 */
 	private List<PaymentSalaryItemDto> detailHeader(QstdtPaymentHeader header, int category) {
@@ -345,6 +351,8 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 			if (detail[1] instanceof QcamtItem) {
 				item = (QcamtItem) detail[1];
 			}
+			
+			
 			dto.setItemName(item.itemName);
 			dto.setItemVal(paymentDetail.value);
 			dto.setView(true);
@@ -460,12 +468,18 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 				header.employeeCode));
 
 		// set year month
-
 		PaymentCompanyDto companyDto = new PaymentCompanyDto();
 		companyDto.setJapaneseYearMonth(
 			this.convertYearMonthJP(header.qstdtPaymentHeaderPK.processingYM));
+		companyDto.setName(header.companyName);
+		Optional<CmnmtCompany> company = this
+			.findCompanyCode(header.qstdtPaymentHeaderPK.companyCode);
+		if(company.isPresent()){
+			companyDto.setPostalCode(company.get().postal);
+			companyDto.setAddressOne(company.get().address1);
+			companyDto.setAddressTwo(company.get().address2);
+		}
 		reportData.setCompanyInfo(companyDto);
-		
 		return reportData;
 	}
 
