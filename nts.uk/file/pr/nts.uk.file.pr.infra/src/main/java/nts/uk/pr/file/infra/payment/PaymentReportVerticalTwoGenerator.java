@@ -31,19 +31,12 @@ public class PaymentReportVerticalTwoGenerator extends PaymentReportBaseGenerato
 	 */
 	@Override
 	public void generate(AsposeCellsReportContext context, PaymentReportData data) {
-		// Set worksheet name.
-		workSheet = context.getWorkbook().getWorksheets().get(FIRST_SHEET);
-		workSheet.setName("PaymentService");
+		// Get work sheet.
+		super.workSheet = context.getWorkbook().getWorksheets().get(FIRST_SHEET);
+		super.paymentReportData = data; 
 
-		// Set data.
-		cells = workSheet.getCells();
-
-		super.init();
-
-		data.getReportData().forEach(item -> {
-			employee = item;
-			super.printData();
-		});
+		// Print data
+		super.printData();
 
 	}
 
@@ -84,7 +77,6 @@ public class PaymentReportVerticalTwoGenerator extends PaymentReportBaseGenerato
 		printCategoryHeader("記事");
 		printCategoryContent(employee.getArticleItems());
 		nextCategory();
-		breakLines(1);
 
 		// Print remark;
 		// printRemark();
