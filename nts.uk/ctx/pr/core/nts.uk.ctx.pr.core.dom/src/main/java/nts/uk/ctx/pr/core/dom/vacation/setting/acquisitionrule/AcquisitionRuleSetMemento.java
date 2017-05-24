@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.vacationsetting.acquisitionrule;
+package nts.uk.ctx.pr.core.dom.vacation.setting.acquisitionrule;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * The Interface VaAcRuleSetMemento.
  */
-public interface VaAcRuleSetMemento {
+public interface AcquisitionRuleSetMemento {
 	
 	
 	/**
@@ -27,7 +27,7 @@ public interface VaAcRuleSetMemento {
 	 *
 	 * @param settingclassification the new settingclassification
 	 */
-	void  setSettingclassification(Settingclassification settingclassification );
+	void  setSettingclassification(Category settingclassification );
 	
 	
 	
@@ -36,7 +36,7 @@ public interface VaAcRuleSetMemento {
 	 *
 	 * @param listVacationAcquisitionOrder the new acquisition order
 	 */
-	void  setAcquisitionOrder(List<VacationAcquisitionOrder> listVacationAcquisitionOrder);
+	void  setAcquisitionOrder(List<AcquisitionOrder> listVacationAcquisitionOrder);
 	
 	
 }

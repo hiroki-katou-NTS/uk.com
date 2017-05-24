@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.vacationsetting.acquisitionrule;
+package nts.uk.ctx.pr.core.dom.vacation.setting.acquisitionrule;
 
 import java.util.List;
 
 /**
  * The Interface VaAcRuleGetMemento.
  */
-public interface VaAcRuleGetMemento {
+public interface AcquisitionRuleGetMemento {
 
 	/**
 	 * Gets the company id.
@@ -23,12 +23,12 @@ public interface VaAcRuleGetMemento {
 	 *
 	 * @return the settingclassification
 	 */
-	Settingclassification getSettingclassification();
+	Category getSettingclassification();
 	
 	/**
 	 * Gets the acquisition order.
 	 *
 	 * @return the acquisition order
 	 */
-	List<VacationAcquisitionOrder> getAcquisitionOrder();
+	List<AcquisitionOrder> getAcquisitionOrder();
 }
