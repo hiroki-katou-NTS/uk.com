@@ -25,6 +25,7 @@
 					<h2>Use in java</h2>
 					<pre>
 					//scope annotation
+					//param can be plain text or resource id
 					public class A{
 						@Inject
 						IInternationalization internationalization;
@@ -32,6 +33,7 @@
 						public void greeting(){
 							System.out.println(internationalization.getItemName("code"));
 							System.out.println(internationalization.getItemName("code","param1","param2",......));
+							System.out.println(internationalization.getItemName("code","#resource_id1","#resource_id2",......));
 							System.out.println(internationalization.getItemName("code",new String[]{"a","b"}));
 						}
 					}
@@ -45,6 +47,7 @@
 					                   
 					//get text with params
 					<h:inputText value="# {i18n.getText('QPP015_1',["param1","param2",.....])}"></h:inputText>
+					<h:inputText value="# {i18n.getText('QPP015_1',["#reourceId_1","plain text",.....])}"></h:inputText>
 					<div># {i18n.getText('KMF004_106',['a','b'])}</div>   
 					]]>
 					</pre>
