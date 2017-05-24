@@ -98,8 +98,7 @@ var nts;
                 return -1;
             }
             util.findIndex = findIndex;
-            /**
-             * function add item to array, this function is used in combine with visitDfs function
+            /** function add item to array, this function is used in combine with visitDfs function
              * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
              */
             function addToArray(node, arr) {
@@ -4597,19 +4596,19 @@ var nts;
                         var getOptionValue = function (item) {
                             return (optionValue === undefined) ? item : item[optionValue];
                         };
+                        var selectedValues = JSON.parse(ko.toJSON(data.value));
                         // Render
                         if (!_.isEqual(container.data("options"), options)) {
                             container.empty();
                             _.forEach(options, function (option) {
                                 var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
-                                var checkBox = $('<input type="checkbox">').data("value", getOptionValue(option)).on("change", function () {
-                                    var _this = this;
-                                    var self = this;
-                                    if ($(self).is(":checked"))
-                                        selectedValue.push($(self).data("value"));
+                                var checkBox = $('<input type="checkbox">').data("option", option).data("value", getOptionValue(option)).on("change", function () {
+                                    var self = $(this);
+                                    if (self.is(":checked"))
+                                        selectedValue.push(self.data("value"));
                                     else
                                         selectedValue.remove(_.find(selectedValue(), function (value) {
-                                            return _.isEqual(value, $(_this).data("value"));
+                                            return _.isEqual(JSON.parse(ko.toJSON(value)), self.data("value"));
                                         }));
                                 });
                                 var disableOption = option["enable"];
@@ -4627,23 +4626,25 @@ var nts;
                         }
                         // Checked
                         container.find("input[type='checkbox']").prop("checked", function () {
-                            var _this = this;
-                            return (_.find(selectedValue(), function (value) {
-                                return _.isEqual(value, $(_this).data("value"));
+                            var self = $(this);
+                            return (_.find(selectedValues, function (value) {
+                                return _.isEqual(value, self.data("value"));
                             }) !== undefined);
                         });
                         // Enable
                         if ((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)) {
                             container.data("enable", _.clone(enable));
-                            (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
-                            _.forEach(data.options(), function (option) {
-                                if (typeof option["enable"] === "function") {
-                                    option["enable"](enable);
-                                }
-                                else {
-                                    option["enable"] = (enable);
-                                }
-                            });
+                            if (enable) {
+                                _.forEach(container.find("input[type='checkbox']"), function (checkbox) {
+                                    var dataOpion = $(checkbox).data("option");
+                                    if (dataOpion["enable"] === true) {
+                                        $(checkbox).removeAttr("disabled");
+                                    }
+                                });
+                            }
+                            else {
+                                container.find("input[type='checkbox']").attr("disabled", "disabled");
+                            }
                         }
                     };
                     return NtsMultiCheckBoxBindingHandler;
@@ -6675,7 +6676,7 @@ var nts;
                         }
                         // Checked
                         var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
-                            return _.isEqual($(item).data("value"), selectedValue());
+                            return _.isEqualWith($(item).data("value"), selectedValue(), function (objVal, othVal, key) { return key === "enable" ? true : undefined; });
                         });
                         if (checkedRadio !== undefined)
                             $(checkedRadio).prop("checked", true);

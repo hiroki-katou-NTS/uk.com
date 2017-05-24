@@ -28,8 +28,7 @@ var nts;
                 return -1;
             }
             util.findIndex = findIndex;
-            /**
-             * function add item to array, this function is used in combine with visitDfs function
+            /** function add item to array, this function is used in combine with visitDfs function
              * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
              */
             function addToArray(node, arr) {
@@ -520,18 +519,19 @@ var nts;
         })(deferred = uk.deferred || (uk.deferred = {}));
         var resource;
         (function (resource) {
-            function getText(code) {
+            function getText(code, params) {
                 var text = names[code];
-                return text ? text : code;
+                if (text) {
+                    text = formatCompDependParam(text);
+                    text = formatParams(text, params);
+                    return text;
+                }
+                return code;
             }
             resource.getText = getText;
-            function getMessage(messageId) {
-                var params = [];
-                for (var _i = 1; _i < arguments.length; _i++) {
-                    params[_i - 1] = arguments[_i];
-                }
+            function getMessage(messageId, params) {
                 var message = messages[messageId];
-                if (message == undefined) {
+                if (!message) {
                     return messageId;
                 }
                 message = formatParams(message, params);
@@ -540,7 +540,7 @@ var nts;
             }
             resource.getMessage = getMessage;
             function formatCompDependParam(message) {
-                var compDependceParamRegex = /｛#(\w*)｝/;
+                var compDependceParamRegex = /{#(\w*)}/;
                 var matches;
                 while (matches = compDependceParamRegex.exec(message)) {
                     var code = matches[1];
@@ -550,9 +550,9 @@ var nts;
                 return message;
             }
             function formatParams(message, args) {
-                if (args == undefined)
+                if (args == null || args.length == 0)
                     return message;
-                var paramRegex = /｛([0-9])+(:\\w+)?｝/;
+                var paramRegex = /{([0-9])+(:\\w+)?}/;
                 var matches;
                 while (matches = paramRegex.exec(message)) {
                     var code = matches[1];
