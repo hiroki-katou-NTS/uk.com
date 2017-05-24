@@ -10,9 +10,7 @@ module ccg030.a.viewmodel {
         selectedFlowMenuCD: KnockoutObservable<string>;
         // Details FlowMenu
         selectedFlowMenu: KnockoutObservable<model.FlowMenu>;
-        fileInfo: KnockoutObservable<model.FileInfo>;
         isCreate: KnockoutObservable<boolean>;
-        isDelete: KnockoutObservable<boolean>;
         enableDeleteFile: KnockoutObservable<boolean>;
         enableDownload: KnockoutObservable<boolean>;
         // Message
@@ -32,10 +30,8 @@ module ccg030.a.viewmodel {
                 { headerText: nts.uk.resource.getText("CCG030_10"), key: 'topPageName', width: 260 }
             ]);
             // Details
-            self.selectedFlowMenu = ko.observable(new model.FlowMenu());
-            self.fileInfo = ko.observable(new model.FileInfo());
+            self.selectedFlowMenu = ko.observable(null);
             self.isCreate = ko.observable(null);
-            self.isDelete = ko.observable(false);
             self.isCreate.subscribe((value) => {
                 self.changeInitMode(value);
             });
@@ -62,7 +58,7 @@ module ccg030.a.viewmodel {
             var self = this;
             self.isCreate(true);
         }
-
+        
         /** Click Registry button */
         registryFlowMenu() {
             var self = this;
@@ -70,7 +66,7 @@ module ccg030.a.viewmodel {
             var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
             if (util.isNullOrEmpty(self.selectedFlowMenu().fileID())
-                $('#file_upload').ntsError('set', 'Chﾆｰa ch盻肱 file');
+                $('#file_upload').ntsError('set', 'Chua chon file kia may');
             _.delay(() => {
                 if (!errors.hasError()) {
                     if (self.isCreate() === true) {
@@ -86,9 +82,14 @@ module ccg030.a.viewmodel {
                     else {
                         service.updateFlowMenu(flowMenu).done((data) => {
                             self.reloadData();
-                            nts.uk.ui.dialog.alert("Msg_15");
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                         });
                     }
+//                    $("#file_upload").ntsFileUpload({stereoType:"any"}).done(function(res: Array<string>) {
+//                        console.log(res);
+//                    }).fail(function(err) {
+//                        console.log(err);
+//                    });
                 }
             }, 100);
         }
@@ -99,57 +100,34 @@ module ccg030.a.viewmodel {
             if (self.selectedFlowMenuCD() !== null) {
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
                     service.deleteFlowMenu(self.selectedFlowMenu().toppagePartID())
-                        .done(() => {
-                            var index = _.findIndex(self.listFlowMenu(), ['titleMenuCD', self.selectedFlowMenu().topPageCode()]);
-                            index = _.min([self.listFlowMenu().length - 2, index]);
-                            self.reloadData().done(() => {
-                                self.selectFlowMenuByIndex(index);
-                            });
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"));
-                        }).fail((res) => {
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_76"));
+                    .done(() => {
+                        var index = _.findIndex(self.listFlowMenu(), ['titleMenuCD', self.selectedFlowMenu().topPageCode()]);
+                        index = _.min([self.listFlowMenu().length - 2, index]);
+                        self.reloadData().done(() => {
+                            self.selectFlowMenuByIndex(index);
                         });
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"));
+                    }).fail((res) => {                        
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_76"));
+                    });
                 });
             }
         }
-
+        
         /** Upload File */
         uploadFile(): void {
             var self = this;
-            // TODO: Thiếu check xem upload có phải của flowmenu mặc định không--> nếu phải thông báo message Msg_84
-            var option = {
-                stereoType: "flowmenu",//required
-                onSuccess: function() { },//optional
-                onFail: function() { }//optional
-            }
-            $("#file_upload").ntsFileUpload(option).done(function(res) {
-                self.isDelete(true);
-                self.selectedFlowMenu().fileID(res[0].id);
-                self.selectedFlowMenu().fileName(res[0].originalName);
-
-            }).fail(function(err) {
-                nts.uk.ui.dialog.alert(err);
-            });
-
+            $("#file_upload").ntsFileUpload({stereoType:"flowmenu"}).done(function(res) {
+                console.log(res);
+                self.selectedFlowMenu().fileID(res[0]);
+                self.selectedFlowMenu().fileName(res[0]);
+                $('#file_upload').ntsError('clear');
+            })
+//                .fail(function(err) {
+//                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_76"));
+//            });
         }
 
-        deleteFile(): void {
-            var self = this;
-            // TODO: Thiếu check xem có phải đang xóa file của flowmenu mặc định không--> nếu phải thông báo message Msg_83
-            service.deleteFile(self.selectedFlowMenu().fileID()).done((data) => {
-                self.selectedFlowMenu().fileID('');
-                self.selectedFlowMenu().fileName('');
-                self.fileInfo = ko.observable(new model.FileInfo());
-                self.isDelete(false);
-            }).fail(function(error) {
-                console.log(error);    
-            });
-        }
-        
-        downloadFile(): void {
-            var self = this;
-            nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID()); 
-        }
         /** Close Dialog */
         closeDialog(): void {
             nts.uk.ui.windows.close();
@@ -166,6 +144,7 @@ module ccg030.a.viewmodel {
             var self = this;
             var selectedFlowmenu = _.find(self.listFlowMenu(), ['topPageCode', flowmenuCD]);
             if (selectedFlowmenu !== undefined) {
+                $('#file_upload').val("");
                 self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu.toppagePartID,
                     selectedFlowmenu.topPageCode, selectedFlowmenu.topPageName,
                     selectedFlowmenu.fileID, selectedFlowmenu.fileName, selectedFlowmenu.defClassAtr,
@@ -226,16 +205,16 @@ module ccg030.a.viewmodel {
                 self.selectedFlowMenuCD(null);
         }
 
-        //        //list  message
-        //        private initListMessage(): any {
-        //            var self = this;
-        //            self.listMessage.push(new ItemMessage("Msg_76", "譌｢螳壹ヵ繝ｭ繝ｼ繝｡繝九Η繝ｼ縺ｯ蜑企勁縺ｧ縺阪∪縺帙ｓ縲�"));
-        //            self.listMessage.push(new ItemMessage("Msg_3", "蜈･蜉帙＠縺溘さ繝ｼ繝峨�ｯ縲∵里縺ｫ逋ｻ骭ｲ縺輔ｌ縺ｦ縺�縺ｾ縺吶��"));
-        //            self.listMessage.push(new ItemMessage("Msg_18", "驕ｸ謚樔ｸｭ縺ｮ繝�繝ｼ繧ｿ繧貞炎髯､縺励∪縺吶°�ｼ�"));
-        //            self.listMessage.push(new ItemMessage("Msg_15", "逋ｻ骭ｲ縺励∪縺励◆縲�"));
-        //            self.listMessage.push(new ItemMessage("AL002", "繝�繝ｼ繧ｿ繧貞炎髯､縺励∪縺吶��\r\n繧医ｍ縺励＞縺ｧ縺吶°�ｼ�"));
-        //            self.listMessage.push(new ItemMessage("ER026", "譖ｴ譁ｰ蟇ｾ雎｡縺ｮ繝�繝ｼ繧ｿ縺悟ｭ伜惠縺励∪縺帙ｓ縲�"));
-        //        }
+//        //list  message
+//        private initListMessage(): any {
+//            var self = this;
+//            self.listMessage.push(new ItemMessage("Msg_76", "譌｢螳壹ヵ繝ｭ繝ｼ繝｡繝九Η繝ｼ縺ｯ蜑企勁縺ｧ縺阪∪縺帙ｓ縲�"));
+//            self.listMessage.push(new ItemMessage("Msg_3", "蜈･蜉帙＠縺溘さ繝ｼ繝峨�ｯ縲∵里縺ｫ逋ｻ骭ｲ縺輔ｌ縺ｦ縺�縺ｾ縺吶��"));
+//            self.listMessage.push(new ItemMessage("Msg_18", "驕ｸ謚樔ｸｭ縺ｮ繝�繝ｼ繧ｿ繧貞炎髯､縺励∪縺吶°�ｼ�"));
+//            self.listMessage.push(new ItemMessage("Msg_15", "逋ｻ骭ｲ縺励∪縺励◆縲�"));
+//            self.listMessage.push(new ItemMessage("AL002", "繝�繝ｼ繧ｿ繧貞炎髯､縺励∪縺吶��\r\n繧医ｍ縺励＞縺ｧ縺吶°�ｼ�"));
+//            self.listMessage.push(new ItemMessage("ER026", "譖ｴ譁ｰ蟇ｾ雎｡縺ｮ繝�繝ｼ繧ｿ縺悟ｭ伜惠縺励∪縺帙ｓ縲�"));
+//        }
 
         private messName(messCode: string): string {
             var self = this;
@@ -268,18 +247,6 @@ module ccg030.a.viewmodel {
                 this.widthSize = ko.observable(widthSize);
                 this.heightSize = ko.observable(heightSize);
                 this.type = 2;
-            }
-        }
-
-        export class FileInfo {
-            filename: KnockoutObservable<string>;
-            textId: KnockoutObservable<string>;
-            accept: KnockoutObservableArray<string>;
-
-            constructor() {
-                this.filename = ko.observable(""); //file name
-                this.accept = ko.observableArray([".html"]); //supported extension
-                this.textId = ko.observable(""); // file browser button text id
             }
         }
     }
