@@ -6,9 +6,9 @@ module qpp014.b.viewmodel {
         viewmodelg: qpp014.g.viewmodel.ScreenModel;
         viewmodelh: qpp014.h.viewmodel.ScreenModel;
         data: any;
- 
+
         constructor(data: any) {
-            let self = this; 
+            let self = this;
             self.b_stepList = [
                 { content: '.step-1' },
                 { content: '.step-2' }
@@ -18,7 +18,7 @@ module qpp014.b.viewmodel {
             self.viewmodelg = new qpp014.g.viewmodel.ScreenModel(data);
             self.viewmodelh = new qpp014.h.viewmodel.ScreenModel(data);
             self.data = data;
- 
+
             //sparePayAtr not transfer value in screen d, so tranfer it here
             self.viewmodeld.sparePayAtr.subscribe(function(newValue) {
                 nts.uk.ui.windows.setShared("sparePayAtr", newValue, true);
@@ -59,10 +59,12 @@ module qpp014.b.viewmodel {
         goToScreenJ(): void {
             var self = this;
             nts.uk.ui.windows.setShared("data", self.data, true);
-            nts.uk.ui.windows.setShared("dateOfPayment", self.viewmodeld.dateOfPayment(), true);
-            nts.uk.ui.windows.sub.modal("/view/qpp/014/j/index.xhtml", { title: "振込チェックリスト", dialogClass: "no-close" });
+            if (self.viewmodeld.dateOfPayment() == '') {
+                nts.uk.ui.dialog.alert("振込日が入力されていません。");
+            } else {
+                nts.uk.ui.windows.setShared("dateOfPayment", self.viewmodeld.dateOfPayment(), true);
+                nts.uk.ui.windows.sub.modal("/view/qpp/014/j/index.xhtml", { title: "振込チェックリスト", dialogClass: "no-close" });
+            }
         }
     }
-
-
 };

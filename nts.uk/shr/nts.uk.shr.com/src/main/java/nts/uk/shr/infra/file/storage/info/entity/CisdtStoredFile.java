@@ -38,4 +38,5 @@ public class CisdtStoredFile extends UkJpaEntity {
 	protected Object getKey() {
 		return this.fileId;
 	}
+	
 }

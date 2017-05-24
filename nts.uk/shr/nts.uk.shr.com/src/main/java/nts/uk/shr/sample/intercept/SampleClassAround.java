@@ -14,4 +14,5 @@ import javax.interceptor.InterceptorBinding;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SampleClassAround {
 
-}
+	
+} 

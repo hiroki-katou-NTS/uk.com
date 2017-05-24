@@ -132,7 +132,10 @@ var nts;
                     contentType: options.contentType || 'application/json',
                     url: webserviceLocator.serialize(),
                     dataType: options.dataType || 'json',
-                    data: data
+                    data: data,
+                    headers: {
+                        'PG-Path': location.current.serialize()
+                    }
                 }).done(function (res) {
                     if (res !== undefined && res.businessException) {
                         dfd.reject(res);
@@ -144,6 +147,31 @@ var nts;
                 return dfd.promise();
             }
             request.ajax = ajax;
+            function uploadFile(data, option) {
+                var dfd = $.Deferred();
+                $.ajax({
+                    url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",
+                    type: 'POST',
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data, textStatus, jqXHR) {
+                        if (option.onSuccess) {
+                            option.onSuccess();
+                        }
+                        dfd.resolve(data);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (option.onFail) {
+                            option.onFail();
+                        }
+                        dfd.reject(errorThrown);
+                    }
+                });
+                return dfd.promise();
+            }
+            request.uploadFile = uploadFile;
             function exportFile(path, data, options) {
                 var dfd = $.Deferred();
                 ajax(path, data, options)
@@ -154,8 +182,13 @@ var nts;
                         .pause(1000); });
                 })
                     .done(function (res) {
-                    specials.donwloadFile(res.id);
-                    dfd.resolve(res);
+                    if (res.failed || res.status == "ABORTED") {
+                        dfd.reject(res.error);
+                    }
+                    else {
+                        specials.donwloadFile(res.id);
+                        dfd.resolve(res);
+                    }
                 })
                     .fail(function (res) {
                     dfd.reject(res);

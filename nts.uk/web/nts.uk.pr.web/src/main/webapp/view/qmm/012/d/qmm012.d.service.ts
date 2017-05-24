@@ -17,7 +17,7 @@ module qmm012.d {
         }
         export module model {
             export class ItemDeduct {
-                deductAtr: number;
+                deductAtr: any;
                 errRangeLowAtr: number;
                 errRangeLow: number;
                 errRangeHighAtr: number;

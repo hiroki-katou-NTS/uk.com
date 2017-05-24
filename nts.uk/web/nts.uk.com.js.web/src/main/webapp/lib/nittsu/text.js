@@ -185,6 +185,17 @@ var nts;
             }
             text_1.allKatakana = allKatakana;
             /**
+             * Determines if text is half integer
+             * @param text text to check
+             */
+            function halfInt(text) {
+                var val = parseFloat(text);
+                if (val !== NaN && (val * 2) % 1 === 0)
+                    return true;
+                return false;
+            }
+            text_1.halfInt = halfInt;
+            /**
              * 文字列中のHTML記号をサニタイズする
              * @param text 変換対象の文字列
              */
@@ -216,6 +227,16 @@ var nts;
                 return text.charAt(0).toUpperCase() + text.slice(1);
             }
             text_1.toUpperCaseFirst = toUpperCaseFirst;
+            /**
+             * Convert lower case text to upper case one
+             * @param text text to convert
+             */
+            function toUpperCase(text) {
+                return text.replace(/[a-z]/g, function (c) {
+                    return String.fromCharCode(c.charCodeAt(0) - 0x20);
+                });
+            }
+            text_1.toUpperCase = toUpperCase;
             /**
             * 指定された文字列が、null、undefined、Emptyか判定する
             * @param text 判定対象の文字列
@@ -352,6 +373,8 @@ var nts;
                 Alphabet: new CharType('半角英字', 0.5, nts.uk.text.allHalfAlphabet),
                 Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
                 Any: new CharType('全角', 1, nts.uk.util.alwaysTrue),
+                Kana: new CharType('カナ', 1, nts.uk.text.allFullKatakana),
+                HalfInt: new CharType('半整数', 0.5, nts.uk.text.halfInt)
             };
             function getCharType(primitiveValueName) {
                 var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
@@ -462,7 +485,9 @@ var nts;
                     this.option = option;
                 }
                 NumberFormatter.prototype.format = function (source) {
-                    return source === '' ? source : uk.ntsNumber.formatNumber(source, this.option.option);
+                    return nts.uk.util.isNullOrEmpty(source) ? (!nts.uk.util.isNullOrEmpty(this.option.option.defaultValue)
+                        ? this.option.option.defaultValue : source)
+                        : uk.ntsNumber.formatNumber(source, this.option.option);
                 };
                 return NumberFormatter;
             }());

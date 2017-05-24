@@ -47,11 +47,11 @@
 
 .lstBox {
 	border: 2px solid gray;
-	margin-left: 150px;
+	margin-left: 84px;
 /* 	margin-top: 5px;
 	padding-top: 5px; */
-	width: 650px;
-	height: 205px;
+	width: 705px;
+	height: 196px;
 }
 
 #LST_001 {
@@ -89,5 +89,5 @@
 
 #INP_003 {
 	width: 120px !important;
-	margin-left: 25px;
+	margin-left: 92px;;
 }

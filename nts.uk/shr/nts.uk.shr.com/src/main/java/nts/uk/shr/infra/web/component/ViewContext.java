@@ -56,7 +56,4 @@ public class ViewContext extends UIComponentBase {
 
 		rw.write("rootPath: '" + rootPath + "'");
 	}
-
-	
-
 }

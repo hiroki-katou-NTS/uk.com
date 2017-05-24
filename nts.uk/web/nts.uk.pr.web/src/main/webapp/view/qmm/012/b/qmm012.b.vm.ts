@@ -29,7 +29,7 @@ module qmm012.b.viewmodel {
         enable_B_Inp_Code: KnockoutObservable<boolean> = ko.observable(false);
         screenModel: qmm012.b.ScreenModel;
         B_Btn_DeleteButton_enable: KnockoutObservable<boolean> = ko.observable(true);
-        dirty: nts.uk.ui.DirtyChecker;
+        dirty: nts.uk.ui.DirtyChecker = new nts.uk.ui.DirtyChecker(ko.observable(null));
         dirtyItemMaster: KnockoutObservable<service.model.ItemMaster> = ko.observable(null);
         dirtyOldValue: DirtyValue = new DirtyValue(1, '', false);
         constructor(screenModel: qmm012.b.ScreenModel) {
@@ -461,7 +461,7 @@ module qmm012.b.viewmodel {
         }
         openADialog() {
             let self = this;
-            nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close", title: "項目名の登録＞項目区分の選択" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/012/a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close", title: "項目名の登録＞項目区分の選択" }).onClosed(function(): any {
                 if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
                     //get group from session
                     let groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
@@ -539,7 +539,7 @@ module qmm012.b.viewmodel {
         }
         openJDialog() {
             let self = this;
-            nts.uk.ui.windows.sub.modal('../j/index.xhtml', {
+            nts.uk.ui.windows.sub.modal('/view/qmm/012/j/index.xhtml', {
                 height: 700, width: 970, dialogClass: "no-close", title: "印字名称の登録"
             }).onClosed(function(): any {
                 self.loadGridList(self.GridlistCurrentCode());
@@ -561,6 +561,9 @@ module qmm012.b.viewmodel {
             //           NoFunction();
             //   })
             //   }
+        }
+        closeDialog() {
+            nts.uk.ui.windows.close();
         }
     }
     class DirtyValue {

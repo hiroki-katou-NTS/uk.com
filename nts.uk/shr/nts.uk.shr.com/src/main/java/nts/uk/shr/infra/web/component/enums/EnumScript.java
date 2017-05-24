@@ -68,5 +68,4 @@ public class EnumScript extends UIComponentBase {
 		
 		rw.append("\n\t];");
 	}
-	
 }
