@@ -75,8 +75,8 @@ module nts.uk.pr.view.qpp021.b {
                 self.selectPrintTypeListCode = ko.observable(0);
 
                 self.selectLineItemLayout = ko.observableArray([]);
-                self.selectLineItemCode = ko.observable("01");
-                
+                self.selectLineItemCode = ko.observable("");
+
                 self.currentProcessingYm = ko.observable("");
                 self.isEnablePrintTypes = ko.observable(true);
                 self.isEnableLineItemLayout = ko.observable(false);
@@ -115,13 +115,19 @@ module nts.uk.pr.view.qpp021.b {
                     });
                     if (lineItemLayouts && lineItemLayouts.length > 0) {
                         self.selectLineItemLayout(lineItemLayouts);
-                        self.selectLineItemCode(lineItemLayouts[0].statementCode);
+                         self.selectLineItemCode(lineItemLayouts[0].statementCode);
                     }
                 });
             }
 
             next() {
+                let self = this;
+                if (self.selectPrintTypeCode() == 1 && nts.uk.text.isNullOrEmpty(self.selectLineItemCode())) {
+                    nts.uk.ui.dialog.alert("明細レイアウトが選択されていません。")
+                    return;
+                }
                 $('#wizard').ntsWizard("next");
+
             }
 
             previous() {
@@ -147,6 +153,10 @@ module nts.uk.pr.view.qpp021.b {
                         }
                     }
                 } else {
+                    if (nts.uk.text.isNullOrEmpty(self.selectLineItemCode())) {
+                        nts.uk.ui.dialog.alert("明細レイアウトが選択されていません。")
+                        return;
+                    }
                     let itemLayoutSelect = _.find(self.selectLineItemLayout(), function(item) {
                         return item.statementCode == self.selectLineItemCode();
                     });
