@@ -4,7 +4,10 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
+<head>
+<STYLE type="text/css">
+</STYLE>
+</head>
 <body>
 
 	<ui:composition template="../../../master/base.xhtml">
@@ -21,8 +24,48 @@
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
+					
 					<h1>file uploading</h1>
-					<h2>in html file</h2>
+					<h2>binding file upload by knockout</h2>
+					<div id="fileupload1"
+						data-bind="ntsFileUpload:{filename: filename,accept: accept,text :textId}"></div>
+					<input type="button" id="button1" value="upload1" />
+					<pre>
+					<![CDATA[
+//index.html
+<div id="fileupload1" data-bind="ntsFileUpload:{
+						filename: filename, //optional
+						accept: accept, //optional
+						text: textId,//optional
+						onchange: function(filename){
+							//optional
+							//this function will be called when you select other file in file browser dialog
+							//change file name in viewmodel does not trigger this event
+							console.log(filename);
+							
+						}
+					}">
+</div>
+
+//viewmodel.ts
+class ScreenModel {
+	filename: KnockoutObservable<string>;
+	textId: KnockoutObservable<string>;
+	accept: KnockoutObservableArray<string>;
+	
+	constructor(){
+		filename = ko.observable(""); //file name
+		accept = ko.observableArray([".txt",'.xlsx']); //supported extension
+		textId = ko.observable(""); // file browser button text id
+	}
+}
+    
+this.bind(new ScreenModel());
+					]]>
+					</pre>
+					<h2>in html file do not use knockout</h2>
+					<input type="file" id="file_upload" name="aaa" /> <input
+						type="button" id="button" value="upload" />
 					<pre>
 					<![CDATA[
 <input type="file" id="file_upload" />
@@ -35,7 +78,7 @@
 					<![CDATA[
 //specify file stereo if it has, for example: flowmenu, this name is defined in java code for check authorization
 // and limit file size
-//if upload sucessfully it will return array of file id
+//if upload sucessfully it will return array of file infor object
 $("#file_upload").ntsFileUpload({stereoType:"any"}).done(function(res) {
 	console.log(res);
 }).fail(function(err) {
@@ -58,8 +101,9 @@ $("#file_upload").ntsFileUpload(option).done(function(res) {
 					</pre>
 					<h2>create own file stereo</h2>
 					step1: create class implements
-					nts.arc.layer.infra.file.constraint.FileStereo<br/> step2: add stereo
-					type name into nts.uk.shr.infra.file.constraint.FileStereoFactory
+					nts.arc.layer.infra.file.constraint.FileStereo<br /> step2: add
+					stereo type name into
+					nts.uk.shr.infra.file.constraint.FileStereoFactory
 					<pre>
 					<![CDATA[
 @Getter
@@ -84,16 +128,14 @@ public class FileStereoFactory {
 }
 						]]>
 					</pre>
-					<input type="file" id="file_upload" name="aaa" /> <input
-						type="button" id="button" value="upload" />
-						
-						
-				<h1>download file service</h1>
-				 nts.uk.request.specials.donwloadFile(fileid);
-				<br></br>
-				<input id="fileid" type="text"/> 
-				<input id="download" type="button" value="download"/>
+
+					<h1>download file service</h1>
+					nts.uk.request.specials.donwloadFile(fileid); <br></br> <input
+						id="fileid" type="text" /> <input id="download" type="button"
+						value="download" />
+
 				</div>
+
 			</div>
 		</ui:define>
 	</ui:composition>

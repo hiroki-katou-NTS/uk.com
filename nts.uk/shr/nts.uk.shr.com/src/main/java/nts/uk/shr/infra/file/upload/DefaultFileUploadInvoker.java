@@ -12,6 +12,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.upload.command.FileUploadCommand;
 import nts.arc.layer.infra.file.upload.command.IFileUpload;
 import nts.arc.layer.infra.file.upload.command.UploadedFile;
@@ -24,10 +25,10 @@ public class DefaultFileUploadInvoker implements IFileUpload {
 	}
 
 	@Override
-	public List<String> upload(MultipartFormDataInput input) {
+	public List<StoredFileInfo> upload(MultipartFormDataInput input) {
 		try {
 
-			List<String> filesId = new ArrayList<>();
+			List<StoredFileInfo> uploadedFiles = new ArrayList<>();
 			Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
 			List<InputPart> inputParts = uploadForm.get("userfile");
 			String fileStereoType = getFileStereoType(uploadForm);
@@ -39,9 +40,9 @@ public class DefaultFileUploadInvoker implements IFileUpload {
 				// convert the uploaded file to inputstream
 				File inputFile = inputPart.getBody(File.class, null);
 				UploadedFile uploadedFile = new UploadedFile(fileName, fileStereoType, inputFile);
-				filesId.add(command.upload(uploadedFile).getId());
+				uploadedFiles.add(command.upload(uploadedFile));
 			}
-			return filesId;
+			return uploadedFiles;
 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
