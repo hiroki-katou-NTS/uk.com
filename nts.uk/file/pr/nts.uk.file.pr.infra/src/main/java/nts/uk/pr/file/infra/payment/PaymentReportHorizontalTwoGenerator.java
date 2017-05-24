@@ -59,23 +59,14 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	void printPageContent() {
-		printCategoryHeader("支給");
-		printCategoryContent(employee.getPaymentItems());
-		nextCategory();
+		printPaymentItems();
+		breakLines(1);
+		printDeductionItems();
 		breakLines(1);
 
-		printCategoryHeader("控除");
-		printCategoryContent(employee.getDeductionItems());
-		nextCategory();
-		breakLines(1);
-
-		printCategoryHeader("勤怠");
-		printCategoryContent(employee.getAttendanceItems());
-		nextCategory();
-
-		printCategoryHeader("記事");
-		printCategoryContent(employee.getArticleItems());
-		nextCategory();
+		printAttendanceItems();
+		printArticleItems();
+		printOtherItems();
 		breakLines(1);
 
 		// Print remark;

@@ -10,11 +10,25 @@ import java.util.List;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
+/**
+ * The Class PaymentReportVerticalThreeGenerator.
+ */
 public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenerator implements PaymentGenerator {
 
+	/** The Constant NUMBER_OF_COLUMN_PER_ITEM. */
 	public static final int NUMBER_OF_COLUMN_PER_ITEM = 3;
+
+	/** The Constant MAX_PERSON_PER_PAGE. */
 	public static final int MAX_PERSON_PER_PAGE = 3;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentGenerator#generate(nts.uk.shr.infra.
+	 * file.report.aspose.cells.AsposeCellsReportContext,
+	 * nts.uk.file.pr.app.export.payment.data.PaymentReportData)
+	 */
 	@Override
 	public void generate(AsposeCellsReportContext context, PaymentReportData data) {
 		// Get work sheet.
@@ -25,31 +39,37 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 		super.printData();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#printPageContent(
+	 * )
+	 */
 	@Override
 	void printPageContent() {
-		printCategoryHeader("支給");
-		printCategoryContent(employee.getPaymentItems());
-		nextCategory();
+
+		printPaymentItems();
+		breakLines(1);
+		printDeductionItems();
 		breakLines(1);
 
-		printCategoryHeader("控除");
-		printCategoryContent(employee.getDeductionItems());
-		nextCategory();
-		breakLines(1);
-
-		printCategoryHeader("勤怠");
-		printCategoryContent(employee.getAttendanceItems());
-		nextCategory();
-
-		printCategoryHeader("記事");
-		printCategoryContent(employee.getArticleItems());
-		nextCategory();
+		printAttendanceItems();
+		printArticleItems();
+		printOtherItems();
 		breakLines(1);
 
 		// Print remark;
 		// printRemark();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getHeaderTemplate
+	 * ()
+	 */
 	@Override
 	List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
@@ -71,36 +91,80 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 		return NUMBER_OF_COLUMN_PER_ITEM;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPersonPerPage(
+	 * )
+	 */
 	@Override
 	int getPersonPerPage() {
 		return MAX_PERSON_PER_PAGE;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getPageHeaderStartCell()
+	 */
 	@Override
 	String getPageHeaderStartCell() {
 		return "A1";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getPageHeaderEndCell()
+	 */
 	@Override
 	String getPageHeaderEndCell() {
 		return "AB3";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getCategoryHeaderCell()
+	 */
 	@Override
 	String getCategoryHeaderCell() {
 		return "A4";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemNameCell()
+	 */
 	@Override
 	String getItemNameCell() {
 		return "B4";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemValueCell(
+	 * )
+	 */
 	@Override
 	String getItemValueCell() {
 		return "B5";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkCell()
+	 */
 	@Override
 	String getRemarkCell() {
 		return "B8";
