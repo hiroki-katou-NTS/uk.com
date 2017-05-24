@@ -74,15 +74,15 @@ public class KclstComCompensLeave implements Serializable {
 
 	/** The is manage. */
 	@Column(name = "IS_MANAGE")
-	private short isManage;
+	private int isManage;
 
 	/** The expiration date set. */
 	@Column(name = "EXPIRATION_DATE_SET")
-	private Short expirationDateSet;
+	private int expirationDateSet;
 
 	/** The allow prepaid leave. */
 	@Column(name = "ALLOW_PREPAID_LEAVE")
-	private short allowPrepaidLeave;
+	private int allowPrepaidLeave;
 
 	/**
 	 * Instantiates a new kclst com compens leave.
