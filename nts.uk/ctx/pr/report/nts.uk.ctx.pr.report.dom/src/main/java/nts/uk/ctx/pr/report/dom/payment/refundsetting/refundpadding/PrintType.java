@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 
@@ -31,10 +31,8 @@ public enum PrintType {
 	/**
 	 * Instantiates a new prints the type.
 	 *
-	 * @param value
-	 *            the value
-	 * @param description
-	 *            the description
+	 * @param value the value
+	 * @param description the description
 	 */
 	private PrintType(int value, String description) {
 		this.value = value;
@@ -44,8 +42,7 @@ public enum PrintType {
 	/**
 	 * Value of.
 	 *
-	 * @param value
-	 *            the value
+	 * @param value the value
 	 * @return the prints the type
 	 */
 	public static PrintType valueOf(Integer value) {

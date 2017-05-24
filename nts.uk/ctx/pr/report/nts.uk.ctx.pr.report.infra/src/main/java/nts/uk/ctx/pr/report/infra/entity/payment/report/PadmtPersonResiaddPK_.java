@@ -13,8 +13,8 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(PadmtPersonResiaddPK.class)
 public class PadmtPersonResiaddPK_ {
 
-	/** The ccd. */
-	public static volatile SingularAttribute<PadmtPersonResiaddPK, String> ccd;
+	/** The pid. */
+	public static volatile SingularAttribute<PadmtPersonResiaddPK, String> pid;
 	
 	/** The hist id. */
 	public static volatile SingularAttribute<PadmtPersonResiaddPK, String> histId;
