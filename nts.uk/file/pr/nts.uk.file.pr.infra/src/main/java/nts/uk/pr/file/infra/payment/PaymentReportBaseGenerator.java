@@ -6,11 +6,15 @@ package nts.uk.pr.file.infra.payment;
 
 import java.util.List;
 
+import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
+import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
+import com.aspose.cells.Color;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Range;
 import com.aspose.cells.Style;
+import com.aspose.cells.StyleFlag;
 import com.aspose.cells.Worksheet;
 
 import nts.gul.text.StringUtil;
@@ -185,8 +189,10 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 *
 	 * @param width the new item width
 	 */
-	private void setItemWidth(double width) {
-		Range itemRange = cells.createRange(FIRST_COLUMN + HEADER_WIDTH, maxColumnsPerItemLine, false);
+	// TODO ...
+	protected void setItemWidth(double width) {
+		Range itemRange = cells.createRange(FIRST_ROW, FIRST_COLUMN + HEADER_WIDTH, NUMBER_OF_ROW_PER_ITEM,
+				maxColumnsPerItemLine);
 		itemRange.setColumnWidth(width);
 	}
 
@@ -448,6 +454,13 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		pageSetup.setLeftMargin(setting.getPaddingLeft().doubleValue());
 
 		if (isFirstPersonOnPage()) {
+			if (isFirstPersonOnPage()) {
+				if (hasBreakLine(setting)) {
+					setBreakLine(setting.getBreakLineMargin().doubleValue());
+				}
+				setCurrentRowHeight(setting.getUnderAreaPaddingTop().doubleValue());
+			}
+			// Set person 2 top margin.
 			setCurrentRowHeight(setting.getUnderAreaPaddingTop().doubleValue());
 		}
 	}
@@ -462,14 +475,67 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		pageSetup.setLeftMargin(setting.getPaddingLeft().doubleValue());
 
 		if (isFirstPersonOnPage()) {
+			if (hasBreakLine(setting)) {
+				setBreakLine(setting.getBreakLineMarginTop().doubleValue());
+			}
+			// Set person 2 top margin.
 			setCurrentRowHeight(setting.getMiddleAreaPaddingTop().doubleValue());
 		}
 		if (isSecondPersonOnPage()) {
+			if (hasBreakLine(setting)) {
+				setBreakLine(setting.getBreakLineMarginButtom().doubleValue());
+			}
+			// Set person 3 top margin.
 			setCurrentRowHeight(setting.getUnderAreaPaddingTop().doubleValue());
 		}
-		if (setting.getIsShowBreakLine() == ShowBreakLine.DISPLAY.value) {
+	}
 
-		}
+	/**
+	 * Checks for break line.
+	 *
+	 * @param setting the setting
+	 * @return true, if successful
+	 */
+	private boolean hasBreakLine(RefundPaddingThreeOut setting) {
+		return setting.getIsShowBreakLine() == ShowBreakLine.DISPLAY.value;
+	}
+
+	/**
+	 * Checks for break line.
+	 *
+	 * @param setting the setting
+	 * @return true, if successful
+	 */
+	private boolean hasBreakLine(RefundPaddingTwoOut setting) {
+		return setting.getIsShowBreakLine() == ShowBreakLine.DISPLAY.value;
+	}
+
+	/**
+	 * Sets the break line.
+	 *
+	 * @param marginTop the new break line
+	 */
+	private void setBreakLine(double marginTop) {
+		// Set break line top margin.
+		setCurrentRowHeight(marginTop);
+
+		// Get break line range.
+		Range breakLine = cells.createRange(currentRow, FIRST_COLUMN, 1, maxColumnsPerItemLine);
+		breakLine.merge();
+
+		// Set break line style
+		Style style = new Style();
+		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM_DASHED, Color.getLightGray());
+
+		// Set style flag.
+		StyleFlag styleFlag = new StyleFlag();
+		styleFlag.setBorders(true);
+
+		// Apply style.
+		breakLine.applyStyle(style, styleFlag);
+
+		// next line.
+		breakLines(1);
 	}
 
 	/**
