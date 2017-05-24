@@ -10,11 +10,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KmfmtRetentionYearly.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KMFMT_RETENTION_YEARLY")
 public class KmfmtRetentionYearly extends UkJpaEntity {

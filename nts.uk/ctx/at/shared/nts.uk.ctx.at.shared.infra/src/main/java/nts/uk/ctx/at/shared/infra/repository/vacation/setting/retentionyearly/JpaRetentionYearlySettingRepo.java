@@ -7,13 +7,14 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 
 @Stateless
 public class JpaRetentionYearlySettingRepo extends JpaRepository implements RetentionYearlySettingRepository{
 
 	@Override
 	public void insert(RetentionYearlySetting setting) {
-//		this.commandProxy().insert(this.toEntity(setting));
+		this.commandProxy().insert(this.toEntity(setting));
 	}
 
 	@Override
@@ -28,9 +29,10 @@ public class JpaRetentionYearlySettingRepo extends JpaRepository implements Rete
 		return null;
 	}
 	
-//	private KmfmtRetentionYearly toEntity(RetentionYearlySetting retentionYearlySetting) {
-//		KmfmtRetentionYearly entity = new KmfmtRetentionYearly();
-//		retentionYearlySetting.saveToMemento(new JpaRySettingGetMemento());
-//	}
+	private KmfmtRetentionYearly toEntity(RetentionYearlySetting retentionYearlySetting) {
+		KmfmtRetentionYearly entity = new KmfmtRetentionYearly();
+		retentionYearlySetting.saveToMemento(new JpaRetentionYearlySetMemento(entity));
+		return entity;
+	}
 	
 }
