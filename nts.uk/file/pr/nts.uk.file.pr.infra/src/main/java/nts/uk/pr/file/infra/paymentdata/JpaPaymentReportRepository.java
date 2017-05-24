@@ -521,7 +521,7 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		// set remark
 		reportData.setRemark(
 			repository.getRemark(new ContactItemsCode(new JpaPaymentContactCodeGetMemento(header)),
-				header.employeeCode));
+				header.employeeCode,header.qstdtPaymentHeaderPK.personId));
 
 		// set year month
 		PaymentCompanyDto companyDto = new PaymentCompanyDto();

@@ -26,6 +26,8 @@ import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEmPK;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEmPK_;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthEm_;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthPs;
+import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCommentMonthPsPK;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCpInitialCmt;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtCpInitialCmtPK;
 import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmt;
@@ -124,6 +126,20 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 		return this.queryProxy().find(
 			new QctmtEmInitialCmtPK(code.getCompanyCode(), empId, PAY_BONUS_ATR, SPARE_PAY_ATR),
 			QctmtEmInitialCmt.class);
+	}
+	
+	/**
+	 * Find comment employee month ps.
+	 *
+	 * @param code the code
+	 * @param persionId the persion id
+	 * @return the optional
+	 */
+	private Optional<QctmtCommentMonthPs> findCommentEmployeeMonthPs(ContactItemsCode code, String persionId){
+		return this.queryProxy().find(
+			new QctmtCommentMonthPsPK(code.getCompanyCode(), persionId, code.getProcessingNo().v(),
+				PAY_BONUS_ATR, code.getProcessingYm().v(), SPARE_PAY_ATR),
+			QctmtCommentMonthPs.class);
 	}
 
 	/**
@@ -273,7 +289,21 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 	 * java.lang.String)
 	 */
 	@Override
-	public String getRemark(ContactItemsCode code, String empCd) {
+	public String getRemark(ContactItemsCode code, String empCd, String persionId) {
+		
+		// comment month employee ps
+		Optional<QctmtCommentMonthPs> commentMonthPs = this.findCommentEmployeeMonthPs(code,
+			persionId);
+		if(commentMonthPs.isPresent()){
+			return commentMonthPs.get().getComment();
+		}
+		
+		// comment month employee
+		Optional<QctmtCommentMonthEm> commentMonthEmp = this.findCommentMonthEmp(code, empCd);
+		if (commentMonthEmp.isPresent()) {
+			return commentMonthEmp.get().getComment();
+		}
+		
 		// comment month company
 		Optional<QcmtCommentMonthCp> commentMonthCp = this.findCommentMonthCp(code);
 
@@ -281,6 +311,11 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 			return commentMonthCp.get().getComment();
 		}
 
+		// comment initiative employee
+		Optional<QctmtEmInitialCmt> commentInitEmp = this.findCommentInitEmp(code, empCd);
+		if (commentInitEmp.isPresent()) {
+			return commentInitEmp.get().getComment();
+		}
 		// comment initiative company
 		Optional<QctmtCpInitialCmt> commentInitCp = this.findCommentInitCp(code);
 
@@ -288,17 +323,6 @@ public class JpaContactItemsSettingRepository extends JpaRepository
 			return commentInitCp.get().getComment();
 		}
 
-		// comment month employee
-		Optional<QctmtCommentMonthEm> commentMonthEmp = this.findCommentMonthEmp(code, empCd);
-		if (commentMonthEmp.isPresent()) {
-			return commentMonthEmp.get().getComment();
-		}
-
-		// comment initiative employee
-		Optional<QctmtEmInitialCmt> commentInitEmp = this.findCommentInitEmp(code, empCd);
-		if (commentInitEmp.isPresent()) {
-			return commentInitEmp.get().getComment();
-		}
 		return null;
 	}
 }
