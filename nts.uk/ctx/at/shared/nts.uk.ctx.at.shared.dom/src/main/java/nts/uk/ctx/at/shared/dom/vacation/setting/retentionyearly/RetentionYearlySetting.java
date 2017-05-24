@@ -20,7 +20,7 @@ public class RetentionYearlySetting extends DomainObject{
 	private UpperLimitSetting upperLimitSetting;
 	
 	/** The can add to cumulation yearly as normal work day. 積立年休を出勤日数として加算する*/
-	// TODO: can't find this field in screen.
+	// TODO: wait QA 83374.
 	private Boolean canAddToCumulationYearlyAsNormalWorkDay;
 	
 	/**

@@ -24,6 +24,30 @@ public class EmploymentSetting extends DomainObject{
 	
 	/** The management category. */
 	private ManagementCategory managementCategory;
+	
+	/**
+	 * Instantiates a new employment setting.
+	 *
+	 * @param memento the memento
+	 */
+	public EmploymentSetting(EmploymentSettingGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.employmentCode = memento.getEmploymentCode();
+		this.upperLimitSetting = memento.getUpperLimitSetting();
+		this.managementCategory = memento.getManagementCategory();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(EmploymentSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setEmploymentCode(this.employmentCode);
+		memento.setUpperLimitSetting(this.upperLimitSetting);
+		memento.setManagementCategory(this.managementCategory);
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
