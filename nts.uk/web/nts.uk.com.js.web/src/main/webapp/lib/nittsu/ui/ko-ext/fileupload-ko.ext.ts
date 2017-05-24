@@ -7,7 +7,7 @@ module nts.uk.ui.koExtentions {
      */
     class NtsFileUploadBindingHandler implements KnockoutBindingHandler {
         /**
-         * Constructor.
+         * Constructor..
          */
         constructor() {
         }
@@ -24,14 +24,14 @@ module nts.uk.ui.koExtentions {
             let control = $(element);
             let onchange = data.onchange;
             let fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
-            let fileBrowserButton = $("<INPUT class='browser-button' type='button' />");
+            let fileBrowserButton = $("<button class='browser-button' ></button>");
             let browserButtonText: string;
             if (textId) {
                 browserButtonText = nts.uk.resource.getText(textId);
             } else {
-                browserButtonText = "browser";
+                browserButtonText = "ファイルアップロード";
             }
-            fileBrowserButton.val(browserButtonText);
+            fileBrowserButton.text(browserButtonText);
             let fileNameLable = $("<span class='filename'></span> ");
             let fileInput = $("<input style ='display:none' type='file' class='fileinput'/>");
             if (suportedExtension) {
