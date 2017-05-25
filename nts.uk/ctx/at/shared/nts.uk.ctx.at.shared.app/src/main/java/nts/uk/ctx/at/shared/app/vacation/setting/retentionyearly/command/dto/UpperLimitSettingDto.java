@@ -1,41 +1,54 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.dto;
 
-import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearsAmount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingGetMemento;
 
-@Getter
 @Setter
 public class UpperLimitSettingDto {
+
+	/** The retention years amount. */
 	private Integer retentionYearsAmount;
+
+	/** The max days cumulation. */
 	private Integer maxDaysCumulation;
-	
+
+	/**
+	 * To domain.
+	 *
+	 * @return the upper limit setting
+	 */
 	public UpperLimitSetting toDomain() {
 		return new UpperLimitSetting(new UpperLimitSettingGetMementoImpl(this));
 	}
-	
+
+	/**
+	 * The Class UpperLimitSettingGetMementoImpl.
+	 */
 	public class UpperLimitSettingGetMementoImpl implements UpperLimitSettingGetMemento {
+
+		/** The dto. */
 		private UpperLimitSettingDto dto;
 
-
 		public UpperLimitSettingGetMementoImpl(UpperLimitSettingDto dto) {
-			super();
 			this.dto = dto;
 		}
 
 		@Override
 		public RetentionYearsAmount getRetentionYearsAmount() {
-			return new RetentionYearsAmount(dto.getRetentionYearsAmount());
+			return new RetentionYearsAmount(dto.retentionYearsAmount);
 		}
 
 		@Override
 		public MaxDaysRetention getMaxDaysCumulation() {
-			return new MaxDaysRetention(dto.getMaxDaysCumulation());
+			return new MaxDaysRetention(dto.maxDaysCumulation);
 		}
 
-		
 	}
 }

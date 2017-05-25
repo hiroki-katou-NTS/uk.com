@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetti
 public class RetentionYearlyFindDto implements RetentionYearlySettingSetMemento{
 	
 	private String companyId;
-	private UpperLimitSetting upperLimitSetting;
+	private UpperLimitSettingFindDto upperLimitSetting;
 	
 
 	@Override
@@ -20,7 +20,9 @@ public class RetentionYearlyFindDto implements RetentionYearlySettingSetMemento{
 
 	@Override
 	public void setUpperLimitSetting(UpperLimitSetting upperLimitSetting) {
-		this.upperLimitSetting = upperLimitSetting;
+		this.upperLimitSetting = new UpperLimitSettingFindDto();
+		this.upperLimitSetting.setMaxDaysCumulation(upperLimitSetting.getMaxDaysCumulation().v());
+		this.upperLimitSetting.setRetentionYearsAmount(upperLimitSetting.getRetentionYearsAmount().v());
 	}
 
 	@Override

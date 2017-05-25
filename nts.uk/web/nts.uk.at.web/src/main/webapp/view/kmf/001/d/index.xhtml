@@ -10,11 +10,11 @@
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="kmf001.d.service.js" />
 			<com:scriptfile path="kmf001.d.vm.js" />
 			<com:scriptfile path="kmf001.d.start.js" />
-			<com:scriptfile set="IGNITE" />
 			<script type="text/javascript">
 				// TODO: Code validate.
 				__viewContext.primitiveValueConstraints.NumberOfYear = {
@@ -41,8 +41,8 @@
 			<div id="whole-company-tab" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">の間</span>
-					<button data-bind="click: register">休暇の選択に戻る</button>
-					<button class="proceed register-button" data-bind="click: backToHistorySelection">登録</button>
+					<button  data-bind="click: backToHistorySelection">休暇の選択に戻る</button>
+					<button class="proceed register-button" data-bind="click: register">登録</button>
 					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">年休付与テーブルの登録</a></div>
 				</div>
 				<div class="ruledLine"></div>
@@ -62,13 +62,13 @@
 									</td>
 									<td>
 										<div class="margin-bottom">
-											<!-- <input data-bind="ntsTextEditor: {
+											<input data-bind="ntsTextEditor: {
 												value: retentionYearsAmount,
 												constraint: 'NumberOfYear',
 												option: textEditorOption,
 												required: true,
 												enable: true,
-												readonly: false}" /> -->
+												readonly: false}" /> 
 										</div>
 									</td>
 								</tr>
@@ -80,7 +80,7 @@
 										</div>
 									</td>
 									<td>
-									<!-- 	<div class="margin-bottom">
+										<div class="margin-bottom">
 											<input data-bind="ntsTextEditor: {
 												value: maxDaysCumulation,
 												constraint: 'MaxOfDays',
@@ -88,7 +88,7 @@
 												required: true,
 												enable: true,
 												readonly: false}" />
-										</div> -->
+										</div>
 									</td>
 								</tr>
 							</TBODY>
@@ -176,7 +176,7 @@
 										<td>
 											<div>
 												<input data-bind="ntsTextEditor: {
-													value: maxOfDays,
+													value: maxDaysCumulation,
 													constraint: 'MaxOfDays',
 													option: textEditorOption,
 													required: true,
