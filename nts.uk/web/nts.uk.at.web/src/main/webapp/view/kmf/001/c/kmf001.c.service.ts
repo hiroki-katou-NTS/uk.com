@@ -4,8 +4,8 @@ module nts.uk.pr.view.kmf001.c {
          *  Service paths
          */
         var servicePath: any = {
-            update: 'ctx/pr/core/vacation/setting/annualpaidleave/update',
-            find: 'ctx/pr/core/vacation/setting/annualpaidleave/find'
+            update: 'ctx/at/core/vacation/setting/annualpaidleave/update',
+            find: 'ctx/at/core/vacation/setting/annualpaidleave/find'
         };
 
         export function update(command: any): JQueryPromise<any> {
