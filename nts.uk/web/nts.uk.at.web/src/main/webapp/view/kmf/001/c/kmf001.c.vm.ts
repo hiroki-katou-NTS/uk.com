@@ -152,10 +152,6 @@ module nts.uk.pr.view.kmf001.c {
                 });
             }
             
-            private openVacationTypeScreen(): void {
-                nts.uk.request.jump("/view/kmf/001/a/index.xhtml", {});
-            }
-            
             private loadSetting(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
