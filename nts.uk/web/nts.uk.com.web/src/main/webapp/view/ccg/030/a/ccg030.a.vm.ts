@@ -68,7 +68,7 @@ module ccg030.a.viewmodel {
             var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
             if (util.isNullOrEmpty(self.selectedFlowMenu().fileID())
-         //       $('#file_upload').ntsError('set', '');
+                $('#file_upload').ntsError('set', '選択されていないファイル');
             _.delay(() => {
                 if (!errors.hasError()) {
                     if (self.isCreate() === true) {
