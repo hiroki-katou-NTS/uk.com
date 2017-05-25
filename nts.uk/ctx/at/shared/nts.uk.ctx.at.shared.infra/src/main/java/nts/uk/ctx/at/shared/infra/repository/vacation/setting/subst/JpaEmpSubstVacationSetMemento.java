@@ -2,12 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensleave;
+package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.SubstVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.EmpSubstVacationSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KsvstEmpSubstVacation;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KsvstEmpSubstVacationPK;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacation;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacationPK;
 
 /**
  * The Class JpaEmpSubstVacationSetMemento.
@@ -30,8 +30,8 @@ public class JpaEmpSubstVacationSetMemento implements EmpSubstVacationSetMemento
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComSubstVacationSetMemento#setCompanyId(java.lang.String)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
+	 * EmpSubstVacationSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
@@ -43,7 +43,7 @@ public class JpaEmpSubstVacationSetMemento implements EmpSubstVacationSetMemento
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * EmpSubstVacationSetMemento#setEmpContractTypeCode(java.lang.String)
 	 */
 	@Override
@@ -56,9 +56,9 @@ public class JpaEmpSubstVacationSetMemento implements EmpSubstVacationSetMemento
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComSubstVacationSetMemento#setSetting(nts.uk.ctx.at.shared.dom.vacation.
-	 * setting.compensleave.CompensatoryLeaveSetting)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
+	 * EmpSubstVacationSetMemento#setSetting(nts.uk.ctx.at.shared.dom.vacation.
+	 * setting.subst.SubstVacationSetting)
 	 */
 	@Override
 	public void setSetting(SubstVacationSetting setting) {

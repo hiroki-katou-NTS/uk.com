@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave;
+package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
 
 import java.io.Serializable;
 

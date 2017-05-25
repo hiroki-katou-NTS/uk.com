@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensleave;
+package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,8 +10,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.EmpSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 
 /**
  * The Class JpaEmpSubstVacationRepo.
@@ -22,9 +22,9 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * EmpSubstVacationRepository#add(nts.uk.ctx.at.shared.dom.vacation.setting.
-	 * compensleave.EmpSubstVacation)
+	 * subst.EmpSubstVacation)
 	 */
 	@Override
 	public void add(EmpSubstVacation setting) {
@@ -35,9 +35,9 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * EmpSubstVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.
-	 * setting.compensleave.EmpSubstVacation)
+	 * setting.subst.EmpSubstVacation)
 	 */
 	@Override
 	public void update(EmpSubstVacation setting) {
@@ -48,7 +48,7 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * EmpSubstVacationRepository#remove(java.lang.String)
 	 */
 	@Override
@@ -60,7 +60,7 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * EmpSubstVacationRepository#findAll(java.lang.String)
 	 */
 	@Override
@@ -72,7 +72,7 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * EmpSubstVacationRepository#findById(java.lang.String)
 	 */
 	@Override

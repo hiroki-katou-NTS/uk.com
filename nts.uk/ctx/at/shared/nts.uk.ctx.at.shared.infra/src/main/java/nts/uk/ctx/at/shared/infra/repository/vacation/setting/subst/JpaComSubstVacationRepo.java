@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensleave;
+package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +17,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.ComSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.ComSubstVacationRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KsvstComSubstVacation;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KsvstComSubstVacation_;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation_;
 
 /**
  * The Class JpaComSubstVacationRepo.
@@ -31,9 +31,9 @@ public class JpaComSubstVacationRepo extends JpaRepository implements ComSubstVa
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * ComSubstVacationRepository#add(nts.uk.ctx.at.shared.dom.vacation.setting.
-	 * compensleave.ComSubstVacation)
+	 * subst.ComSubstVacation)
 	 */
 	@Override
 	public void add(ComSubstVacation setting) {
@@ -44,9 +44,9 @@ public class JpaComSubstVacationRepo extends JpaRepository implements ComSubstVa
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * ComSubstVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.
-	 * setting.compensleave.ComSubstVacation)
+	 * setting.subst.ComSubstVacation)
 	 */
 	@Override
 	public void update(ComSubstVacation setting) {
@@ -56,7 +56,7 @@ public class JpaComSubstVacationRepo extends JpaRepository implements ComSubstVa
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * ComSubstVacationRepository#findAll(java.lang.String)
 	 */
 	@Override
@@ -83,7 +83,7 @@ public class JpaComSubstVacationRepo extends JpaRepository implements ComSubstVa
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * ComSubstVacationRepository#findById(java.lang.String)
 	 */
 	@Override

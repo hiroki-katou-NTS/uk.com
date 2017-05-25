@@ -1,10 +1,11 @@
-package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave;
+package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
 
 import java.util.Date;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KsvstEmpSubstVacationPK;
+
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacationPK;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-05-24T11:41:51")
 @StaticMetamodel(KsvstEmpSubstVacation.class)

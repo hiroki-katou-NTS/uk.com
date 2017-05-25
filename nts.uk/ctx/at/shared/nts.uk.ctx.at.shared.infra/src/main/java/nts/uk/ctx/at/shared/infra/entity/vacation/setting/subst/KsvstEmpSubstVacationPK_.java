@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave;
+package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
 
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;

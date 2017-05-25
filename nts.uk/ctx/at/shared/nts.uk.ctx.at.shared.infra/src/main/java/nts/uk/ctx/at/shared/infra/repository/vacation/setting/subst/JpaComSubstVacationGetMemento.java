@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensleave;
+package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.ComSubstVacationGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.SubstVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.VacationExpiration;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KsvstComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.VacationExpiration;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
 
 /**
  * The Class JpaComSubstVacationGetMemento.
@@ -22,7 +22,8 @@ public class JpaComSubstVacationGetMemento implements ComSubstVacationGetMemento
 	/**
 	 * Instantiates a new jpa com subst vacation get memento.
 	 *
-	 * @param typeValue the type value
+	 * @param typeValue
+	 *            the type value
 	 */
 	public JpaComSubstVacationGetMemento(KsvstComSubstVacation typeValue) {
 		this.typeValue = typeValue;
@@ -31,7 +32,7 @@ public class JpaComSubstVacationGetMemento implements ComSubstVacationGetMemento
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * ComSubstVacationGetMemento#getCompanyId()
 	 */
 	@Override
@@ -42,7 +43,7 @@ public class JpaComSubstVacationGetMemento implements ComSubstVacationGetMemento
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * ComSubstVacationGetMemento#getSetting()
 	 */
 	@Override

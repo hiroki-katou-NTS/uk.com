@@ -2,29 +2,36 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.vacation.setting.compensleave;
+package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * The Interface ComSubstVacationRepository.
+ * The Interface EmpSubstVacationRepository.
  */
-public interface ComSubstVacationRepository {
+public interface EmpSubstVacationRepository {
 
 	/**
 	 * Adds the.
 	 *
 	 * @param setting the setting
 	 */
-    void add(ComSubstVacation setting);
+    void add(EmpSubstVacation setting);
 
 	/**
 	 * Update.
 	 *
 	 * @param setting the setting
 	 */
-    void update(ComSubstVacation setting);
+    void update(EmpSubstVacation setting);
+
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 */
+    void remove(String companyId);
 
 	/**
 	 * Find all.
@@ -32,7 +39,7 @@ public interface ComSubstVacationRepository {
 	 * @param companyId the company id
 	 * @return the list
 	 */
-	List<ComSubstVacation> findAll(String companyId);
+	List<EmpSubstVacation> findAll(String companyId);
 
 	/**
 	 * Find by id.
@@ -40,6 +47,6 @@ public interface ComSubstVacationRepository {
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	Optional<ComSubstVacation> findById(String companyId);
+	Optional<EmpSubstVacation> findById(String companyId);
 
 }
