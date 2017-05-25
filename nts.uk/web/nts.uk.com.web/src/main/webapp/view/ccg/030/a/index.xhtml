@@ -38,7 +38,7 @@
 					<i class="icon icon-searchbox"></i>
 					<div class="search">
 						<div style="float: left">
-							<div id="searchBox" style="width: 385px"
+							<div id="searchBox" style="width: 385px; margin-bottom: 30px;"
 								data-bind="ntsSearchBox: {
 								targetKey: 'topPageCode',
 								mode: 'igGrid',
@@ -79,22 +79,14 @@
 						<tr>
 							<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG030_12')}</div></td>
 							<td class="no-wrap">
-								<button id="fileup" class="btn-upload" 
-									data-bind="click: uploadFile">#{i18n.getText('CCG030_13')}</button>
-									<div data-bind="with: fileInfo">
 									<div id="file_upload" data-bind="ntsFileUpload:{
-											filename: filename, 
-											accept: accept, 
-											text: textId,
-											onchange: function(filename){
-											}
-									}">
+											filename: selectedFlowMenu().fileName, 
+											accept: ['.html'], 
+											text: '',
+											onchange: uploadFile.bind($data) }">
 									</div>
-									</div>
-<!-- 								<input type="file" id="file_upload" accept=".xls,.xlsx" /> -->
-<!-- 								<label id="fileName" class="hyperlink" data-bind="text: selectedFlowMenu.fileName"></label> -->
 							</td>
-							<td><button class="danger" data-bind="click: deleteFile, enable: isDelete()">#{i18n.getText('CCG030_5')}</button></td>
+							<td><button class="danger" data-bind="click: deleteButtonClick, enable: isDelete()">#{i18n.getText('CCG030_5')}</button></td>
 						</tr>
 						<tr>
 							<td></td>

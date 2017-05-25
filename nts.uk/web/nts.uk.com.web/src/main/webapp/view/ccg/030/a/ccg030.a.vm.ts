@@ -10,10 +10,9 @@ module ccg030.a.viewmodel {
         selectedFlowMenuCD: KnockoutObservable<string>;
         // Details FlowMenu 
         selectedFlowMenu: KnockoutObservable<model.FlowMenu>;
-        fileInfo: KnockoutObservable<model.FileInfo>;
+        tempFileID: KnockoutObservable<string>;
         isCreate: KnockoutObservable<boolean>;
         isDelete: KnockoutObservable<boolean>;
-        enableDeleteFile: KnockoutObservable<boolean>;
         enableDownload: KnockoutObservable<boolean>;
         // Message
         listMessage: KnockoutObservableArray<ItemMessage>;
@@ -33,14 +32,13 @@ module ccg030.a.viewmodel {
             ]);
             // Details
             self.selectedFlowMenu = ko.observable(new model.FlowMenu());
-            self.fileInfo = ko.observable(new model.FileInfo());
+            self.tempFileID = ko.observable('');
             self.isCreate = ko.observable(null);
             self.isDelete = ko.observable(false);
             self.isCreate.subscribe((value) => {
                 self.changeInitMode(value);
             });
             // Enable
-            self.enableDeleteFile = ko.observable(true);
             self.enableDownload = ko.observable(true);
             // Message
             self.listMessage = ko.observableArray([]);
@@ -70,7 +68,7 @@ module ccg030.a.viewmodel {
             var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
             if (util.isNullOrEmpty(self.selectedFlowMenu().fileID())
-                $('#file_upload').ntsError('set', 'Chﾆｰa ch盻肱 file');
+         //       $('#file_upload').ntsError('set', '');
             _.delay(() => {
                 if (!errors.hasError()) {
                     if (self.isCreate() === true) {
@@ -116,47 +114,65 @@ module ccg030.a.viewmodel {
         /** Upload File */
         uploadFile(): void {
             var self = this;
-            // check xem upload có phải của flowmenu mặc định không--> nếu phải thông báo message Msg_84
-            service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
-                if (res.defClassAtr === 1) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_84"));
-                } else {
-                    var option = {
-                        stereoType: "flowmenu",//required
-                        onSuccess: function() { },//optional
-                        onFail: function() { }//optional
+            if (self.isCreate() === true) {
+                self.uploadFileProcess();
+            }
+            else {
+                service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
+                    if (res.defClassAtr === 1) {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_84"));
                     }
-                    $("#file_upload").ntsFileUpload(option).done(function(res) {
-                        self.isDelete(true);
-                        self.selectedFlowMenu().fileID(res[0].id);
-                        self.selectedFlowMenu().fileName(res[0].originalName);
-
-                    }).fail(function(err) {
-                        nts.uk.ui.dialog.alert(err);
-                    });
-                }
+                    else {
+                        self.uploadFileProcess();
+                    }
+                });
+            }
+        }
+        
+        private uploadFileProcess(): void {
+            var self = this;
+            var option = {
+                stereoType: "flowmenu",
+                onSuccess: function() { },
+                onFail: function() { }
+            }
+            if (!util.isNullOrEmpty(self.selectedFlowMenu().toppagePartID())) {
+                self.deleteFile();
+            }
+            $("#file_upload").ntsFileUpload(option).done(function(res) {
+                self.tempFileID(res[0].id);
+                self.selectedFlowMenu().fileID(res[0].id);
+                self.selectedFlowMenu().fileName(res[0].originalName);
+            }).fail(function(err) {
+                nts.uk.ui.dialog.alert(err);
             });
         }
 
-        deleteFile(): void {
+        deleteButtonClick(): void {
             var self = this;
-            // check xem có phải đang xóa file của flowmenu mặc định không--> nếu phải thông báo message Msg_83
             service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
                 if (res.defClassAtr === 1) {
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_83"));
-                } else {
-                    service.deleteFile(self.selectedFlowMenu().fileID()).done((data) => {
-                        self.selectedFlowMenu().fileID('');
-                        self.selectedFlowMenu().fileName('');
-                        self.fileInfo = ko.observable(new model.FileInfo());
-                        self.isDelete(false);
-                    }).fail(function(error) {
-                        console.log(error);
-                    });
+                }
+                else {
+                    self.tempFileID(self.selectedFlowMenu().fileID());
+                    self.selectedFlowMenu().fileID('');
+                    self.selectedFlowMenu().fileName('');
+                    self.isDelete(false);
                 }
             });
         }
-
+        
+        private deleteFile(): void {
+            var self = this;
+            service.deleteFile(self.tempFileID()).done((data) => {
+                self.selectedFlowMenu().fileID('');
+                self.selectedFlowMenu().fileName('');
+            }).fail(function(error) {
+                console.log(error);
+            });
+        }
+        
         downloadFile(): void {
             var self = this;
             nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID());
@@ -181,9 +197,14 @@ module ccg030.a.viewmodel {
                     selectedFlowmenu.topPageCode, selectedFlowmenu.topPageName,
                     selectedFlowmenu.fileID, selectedFlowmenu.fileName, selectedFlowmenu.defClassAtr,
                     selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
+                if (!util.isNullOrEmpty(selectedFlowmenu.fileID))
+                    self.isDelete(true);
+                else
+                    self.isDelete(false);
             }
             else {
                 self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 1, 1));
+                self.isDelete(false);
             }
         }
 
@@ -237,17 +258,6 @@ module ccg030.a.viewmodel {
                 self.selectedFlowMenuCD(null);
         }
 
-        //        //list  message
-        //        private initListMessage(): any {
-        //            var self = this;
-        //            self.listMessage.push(new ItemMessage("Msg_76", "譌｢螳壹ヵ繝ｭ繝ｼ繝｡繝九Η繝ｼ縺ｯ蜑企勁縺ｧ縺阪∪縺帙ｓ縲�"));
-        //            self.listMessage.push(new ItemMessage("Msg_3", "蜈･蜉帙＠縺溘さ繝ｼ繝峨�ｯ縲∵里縺ｫ逋ｻ骭ｲ縺輔ｌ縺ｦ縺�縺ｾ縺吶��"));
-        //            self.listMessage.push(new ItemMessage("Msg_18", "驕ｸ謚樔ｸｭ縺ｮ繝�繝ｼ繧ｿ繧貞炎髯､縺励∪縺吶°�ｼ�"));
-        //            self.listMessage.push(new ItemMessage("Msg_15", "逋ｻ骭ｲ縺励∪縺励◆縲�"));
-        //            self.listMessage.push(new ItemMessage("AL002", "繝�繝ｼ繧ｿ繧貞炎髯､縺励∪縺吶��\r\n繧医ｍ縺励＞縺ｧ縺吶°�ｼ�"));
-        //            self.listMessage.push(new ItemMessage("ER026", "譖ｴ譁ｰ蟇ｾ雎｡縺ｮ繝�繝ｼ繧ｿ縺悟ｭ伜惠縺励∪縺帙ｓ縲�"));
-        //        }
-
         private messName(messCode: string): string {
             var self = this;
             var Msg = _.find(self.listMessage(), function(mess) {
@@ -278,18 +288,6 @@ module ccg030.a.viewmodel {
                 this.widthSize = ko.observable(widthSize);
                 this.heightSize = ko.observable(heightSize);
                 this.type = 2;
-            }
-        }
-
-        export class FileInfo {
-            filename: KnockoutObservable<string>;
-            textId: KnockoutObservable<string>;
-            accept: KnockoutObservableArray<string>;
-
-            constructor() {
-                this.filename = ko.observable(""); //file name
-                this.accept = ko.observableArray([".html"]); //supported extension
-                this.textId = ko.observable(""); // file browser button text id
             }
         }
     }

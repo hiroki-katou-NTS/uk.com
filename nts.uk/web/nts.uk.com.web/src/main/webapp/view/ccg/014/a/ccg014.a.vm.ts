@@ -131,7 +131,7 @@ module ccg014.a.viewmodel {
                 pgType: 1
             };
             windows.setShared("layout", layoutInfo, false);
-            windows.sub.modal("/view/ccg/031/a/index.xhtml", { title: '繝ｬ繧､繧｢繧ｦ繝医�ｮ險ｭ螳�', dialogClass: "no-close" }).onClosed(() => {
+            windows.sub.modal("/view/ccg/031/a/index.xhtml", { title: 'レイアウト設定', dialogClass: "no-close" }).onClosed(() => {
                 let returnInfo: commonModel.TransferLayoutInfo = windows.getShared("layout");
                 self.selectedTitleMenu().layoutID(returnInfo.layoutID);
                 _.find(self.listTitleMenu(), ["titleMenuCD", returnInfo.parentCode]).layoutID = returnInfo.layoutID;
@@ -141,7 +141,7 @@ module ccg014.a.viewmodel {
 
         /** Open FlowMenu Setting(030A Dialog) */
         open030A_Dialog() {
-            windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: '繝輔Ο繝ｼ繝｡繝九Η繝ｼ縺ｮ險ｭ螳�', dialogClass: "no-close" });
+            windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: 'フローメニューの設定', dialogClass: "no-close" });
         }
 
         /** Get Selected TitleMenu */
