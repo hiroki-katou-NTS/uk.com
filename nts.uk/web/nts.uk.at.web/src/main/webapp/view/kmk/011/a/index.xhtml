@@ -107,12 +107,13 @@
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_12')}</div>
 							</td>
 							<td>
-								<!-- A3_9: Alarm time --> <input tabindex="6"
-								class="nts-validate" id="inpAlarmTime" style="width: 50px"
-								data-bind="ntsTextEditor: {
-                                         value: alarmTime,
-                                         enable: enableUse}"
-								data-name="AlarmTime" />
+								<!-- A3_9: Alarm time --> 
+								<input tabindex="6" class="nts-validate" id="inpAlarmTime" style="width: 50px"
+								data-name="AlarmTime" data-bind="ntsTimeEditor: {
+									value: alarmTime,
+									inputFormat: 'time', 
+									mode: 'time', 
+									enable: enableUse}" />
 							</td>
 						</tr>
 						<tr class="row">
@@ -121,11 +122,13 @@
 								<div class="row" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_13')}</div>
 							</td>
 							<td>
-								<!-- A3_11: Error time --> <input tabindex="7"
-								style="width: 50px"
-								data-bind="ntsTextEditor:{
-                                         value: errTime,
-                                         enable: enableUse}" />
+								<!-- A3_11: Error time --> 
+                                 <input tabindex="7" style="width: 50px"
+                                 data-name="Time Editor" data-bind="ntsTimeEditor: {
+									value: errTime,
+									inputFormat: 'time', 
+									mode: 'time', 
+									enable: enableUse}" />
 							</td>
 						</tr>
 						<tr class="row">
@@ -142,7 +145,8 @@
 									optionsText: 'name',
 									value: selectSel,
 									enable: enableUse }">
-								</div> <!-- A3_14: Open Dialog Divergence Reason -->
+								</div> 
+								<!-- A3_14: Open Dialog Divergence Reason -->
 								<button tabindex="9" class="nts-validate" id="inpDialog"
 									style="margin-left: 30px;"
 									data-bind="click: openBDialog, enable: enableSelect">#{i18n.getText('KMK011_15')}</button>
