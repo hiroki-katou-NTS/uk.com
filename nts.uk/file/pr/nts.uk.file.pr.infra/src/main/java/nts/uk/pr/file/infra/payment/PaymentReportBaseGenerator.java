@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
@@ -19,9 +19,9 @@ import com.aspose.cells.StyleFlag;
 import com.aspose.cells.Worksheet;
 
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingOnceOut;
-import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingThreeOut;
-import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.find.dto.RefundPaddingTwoOut;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingOnceDto;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingThreeDto;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingTwoDto;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.ShowBreakLine;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentRefundPaddingDto;
@@ -484,7 +484,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 *
 	 * @param setting the new padding one out
 	 */
-	private void setPaddingOneOut(RefundPaddingOnceOut setting) {
+	private void setPaddingOneOut(RefundPaddingOnceDto setting) {
 		cells.setRowHeight(FIRST_ROW, toExcelRowUnit(setting.getPaddingTop()));
 		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
 	}
@@ -494,7 +494,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 *
 	 * @param setting the new padding two out
 	 */
-	private void setPaddingTwoOut(RefundPaddingTwoOut setting) {
+	private void setPaddingTwoOut(RefundPaddingTwoDto setting) {
 		cells.setRowHeight(FIRST_ROW, toExcelRowUnit(setting.getUpperAreaPaddingTop()));
 		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
 
@@ -515,7 +515,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 *
 	 * @param setting the new padding three out
 	 */
-	private void setPaddingThreeOut(RefundPaddingThreeOut setting) {
+	private void setPaddingThreeOut(RefundPaddingThreeDto setting) {
 		cells.setRowHeight(FIRST_ROW, toExcelRowUnit(setting.getUpperAreaPaddingTop()));
 		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
 
@@ -541,7 +541,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @param setting the setting
 	 * @return true, if successful
 	 */
-	private boolean hasBreakLine(RefundPaddingThreeOut setting) {
+	private boolean hasBreakLine(RefundPaddingThreeDto setting) {
 		return setting.getIsShowBreakLine() == ShowBreakLine.DISPLAY.value;
 	}
 
@@ -551,7 +551,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @param setting the setting
 	 * @return true, if successful
 	 */
-	private boolean hasBreakLine(RefundPaddingTwoOut setting) {
+	private boolean hasBreakLine(RefundPaddingTwoDto setting) {
 		return setting.getIsShowBreakLine() == ShowBreakLine.DISPLAY.value;
 	}
 

@@ -116,17 +116,6 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
-	 * getPageHeaderStartCell()
-	 */
-	@Override
-	String getPageHeaderStartCell() {
-		return "A1";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
 	 * getPageHeaderEndCell()
 	 */
 	@Override
