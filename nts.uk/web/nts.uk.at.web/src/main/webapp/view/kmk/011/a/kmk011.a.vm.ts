@@ -48,7 +48,7 @@ module kmk011.a.viewmodel {
             self.divTimeId = ko.observable(1);
             self.itemDivTime = ko.observable(null);
             self.selectUse = ko.observable(0);
-            self.alarmTime = ko.observable();
+            self.alarmTime = ko.observable(null);
             self.errTime = ko.observable();
             self.selectSel = ko.observable();
             self.selectInp = ko.observable();
@@ -97,6 +97,7 @@ module kmk011.a.viewmodel {
                 } else {
                     self.checkErrSelect(false);
                 }
+                $("#itemname").focus();
             });
             //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged) {
@@ -226,7 +227,7 @@ module kmk011.a.viewmodel {
                     var Object = new model.ObjectDivergence(divTime, listAdd,self.timeItemName());
                     service.updateDivTime(Object).done(function() {
                         self.getAllDivTimeNew();
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }).fail(function(error) {
                         if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);

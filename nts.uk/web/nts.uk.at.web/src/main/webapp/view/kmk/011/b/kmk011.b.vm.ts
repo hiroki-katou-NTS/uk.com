@@ -133,10 +133,11 @@ module kmk011.b.viewmodel {
             self.convertCode(self.divReasonCode());
             var divReason = new model.Item(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.addDivReason(divReason).done(function() {
-                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getAllDivReasonNew();
+                $("#inpReason").focus();
             }).fail(function(error) {
-                $('#inpCode').ntsError('set', error);
+                $('#inpReason').ntsError('set', error);
             });
         }
         convertCode(value: string) {
@@ -152,7 +153,10 @@ module kmk011.b.viewmodel {
             var dfd = $.Deferred();
             var divReason = new model.Item(self.divTimeId(), self.divReasonCode(), self.divReasonContent(), self.requiredAtr());
             service.updateDivReason(divReason).done(function() {
-                self.getAllDivReasonNew();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                    self.getAllDivReasonNew();
+//                     $("#inpCode").focus();
+                    });;
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
                 dfd.reject(res);
@@ -169,6 +173,7 @@ module kmk011.b.viewmodel {
                 self.enableCode(false);
                 self.currentCode(self.divReasonCode());
                 dfd.resolve();
+                 $("#inpReason").focus();
             }).fail(function(error) {
                 nts.uk.ui.dialog.alert(error.message);
             })
@@ -182,12 +187,9 @@ module kmk011.b.viewmodel {
                 let divReason = self.itemDivReason();
                 self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
                 service.deleteDivReason(divReason).done(function() {
-//                    self.getDivReasonList_afterDelete();
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16')).then(function(){
-//                        $("#inpCode").focus();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
                         self.getDivReasonList_afterDelete();
                          $("#inpCode").focus();
-//                        self.refreshData();
                     });
                 });
             }).ifNo(function() {
@@ -208,18 +210,15 @@ module kmk011.b.viewmodel {
                     } else {
                         self.currentCode(self.dataSource()[self.index_of_itemDelete].divReasonCode)
                     }
-
                 } else {
                     self.refreshData();
                 }
-
                 dfd.resolve();
             }).fail(function(error) {
                 nts.uk.ui.dialog.alert(error.message);
             })
             dfd.resolve();
             return dfd.promise();
-
         }
         closeDialog() {
             nts.uk.ui.windows.close();
