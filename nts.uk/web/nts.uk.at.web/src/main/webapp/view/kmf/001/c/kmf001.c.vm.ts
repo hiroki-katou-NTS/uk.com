@@ -98,10 +98,10 @@ module nts.uk.pr.view.kmf001.c {
                     {code: "Notshow", name: "表示しない"}
                 ]);
                 self.selectedNumberRemainingYearly = ko.observable(DisplayDivision.Indicate);
-                self.selectedNextAnunalVacation = ko.observable(1);
+                self.selectedNextAnunalVacation = ko.observable(DisplayDivision.Indicate);
                 
                 // 時間年休
-                self.selectedTimeManagement = ko.observable(1);
+                self.selectedTimeManagement = ko.observable(ManageDistinct.YES);
                 self.enableTimeUnit = ko.computed(function() {
                     return self.selectedTimeManagement() == ManageDistinct.YES && self.enableAnnualVacation();
                 }, self);

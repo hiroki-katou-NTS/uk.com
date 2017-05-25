@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.dto.Annual
 /**
  * The Class AnnualPaidLeaveWs.
  */
-@Path("ctx/pr/core/vacation/setting/annualpaidleave/")
+@Path("ctx/at/core/vacation/setting/annualpaidleave/")
 @Produces("application/json")
 public class AnnualPaidLeaveWs extends WebService {
 
