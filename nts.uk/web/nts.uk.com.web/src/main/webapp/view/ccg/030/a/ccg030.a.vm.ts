@@ -246,7 +246,6 @@ module ccg030.a.viewmodel {
         }
     }
 
-
     export module model {
         export class FlowMenu {
             toppagePartID: KnockoutObservable<string>;
