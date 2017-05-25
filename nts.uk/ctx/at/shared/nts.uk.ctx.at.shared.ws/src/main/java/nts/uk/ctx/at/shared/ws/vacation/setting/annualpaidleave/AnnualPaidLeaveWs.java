@@ -13,12 +13,12 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.command.AnnualPaidLeaveSaveCommand;
 import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.command.AnnualPaidLeaveSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.AnnualPaidLeaveFinder;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.dto.AnnualPaidLeaveSettingFindDto;
 
 /**
  * The Class AnnualPaidLeaveWs.
  */
-@Path("ctx/pr/core/vacation/setting/annualpaidleave/")
+@Path("ctx/at/core/vacation/setting/annualpaidleave/")
 @Produces("application/json")
 public class AnnualPaidLeaveWs extends WebService {
 
@@ -28,7 +28,7 @@ public class AnnualPaidLeaveWs extends WebService {
 
     /** The annual paid handler. */
     @Inject
-    AnnualPaidLeaveSaveCommandHandler annualPaidHandler;
+    private AnnualPaidLeaveSaveCommandHandler annualPaidHandler;
 
     /**
      * Update.
@@ -49,7 +49,7 @@ public class AnnualPaidLeaveWs extends WebService {
      */
     @POST
     @Path("find")
-    public AnnualPaidLeaveSetting findByCompanyId() {
+    public AnnualPaidLeaveSettingFindDto findByCompanyId() {
         return this.annualFinder.findByCompanyId();
     }
 }

@@ -22,7 +22,7 @@ public class RemainingNumberSetting {
 	private HalfDayManage halfDayManage;
 
 	/** The maximum day vacation. */
-	private YearVacationAge maximumDayVacation;
+	private AnnualLeaveGrantDate maximumDayVacation;
 
 	/** The remaining day max number. */
 	// TODO: Not find Primitive 残数上限日数

@@ -4,8 +4,8 @@ module nts.uk.pr.view.kmf001.c {
          *  Service paths
          */
         var servicePath: any = {
-            update: 'ctx/pr/core/vacation/setting/annualpaidleave/update',
-            find: 'ctx/pr/core/vacation/setting/annualpaidleave/find'
+            update: 'ctx/at/core/vacation/setting/annualpaidleave/update',
+            find: 'ctx/at/core/vacation/setting/annualpaidleave/find'
         };
 
         export function update(command: any): JQueryPromise<any> {
@@ -23,14 +23,47 @@ module nts.uk.pr.view.kmf001.c {
 
             export class EnumerationModel {
 
-                value: number;
+                code: string;
                 name: string;
 
-                constructor(value: number, name: string) {
+                constructor(code: string, name: string) {
                     let self = this;
+                    self.code = code;
                     self.name = name;
-                    self.value = value;
                 }
+            }
+            
+            export class ManageDistinct {
+                public static YES = "YES";
+                public static NO = "NO";
+            }
+            
+            export class MaxDayReference {
+                public static CompanyUniform = "CompanyUniform";
+                public static ReferAnnualGrantTable = "ReferAnnualGrantTable";
+            }
+            
+            export class ApplyPermission {
+                public static ALLOW = "ALLOW";
+                public static NOT_ALLOW = "NOT_ALLOW";
+            }
+            
+            export class PreemptionPermit {
+                public static FIFO = "FIFO";
+                public static LIFO = "LIFO";
+            }
+            
+            export class DisplayDivision {
+                public static Notshow = "Notshow";
+                public static Indicate = "Indicate";
+            }
+            
+            export class TimeUnit {
+                public static OneMinute = "OneMinute";
+                public static FifteenMinute = "FifteenMinute";
+                public static ThirtyMinute = "ThirtyMinute";
+                public static OneHour = "OneHour";
+                public static TwoHour = "TwoHour";
             }
         }
     }

@@ -11,21 +11,21 @@ import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
 import nts.arc.primitive.constraint.DecimalRange;
 
 /**
- * The Class AnnualNumberDay.
+ * The Class YearVacationAge.
  */
-@DecimalRange(max = "366", min = "0")
+@DecimalRange(min = "0", max = "99.5")
 @DecimalMantissaMaxLength(1)
-public class AnnualNumberDay extends DecimalPrimitiveValue<AnnualNumberDay> {
+public class AnnualLeaveGrantDate extends DecimalPrimitiveValue<AnnualLeaveGrantDate> {
     
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = -2655855726224248279L;
+    private static final long serialVersionUID = 3113312047461252275L;
     
     /**
-     * Instantiates a new annual number day.
+     * Instantiates a new year vacation age.
      *
      * @param rawValue the raw value
      */
-    public AnnualNumberDay(BigDecimal rawValue) {
+    public AnnualLeaveGrantDate(BigDecimal rawValue) {
         super(rawValue);
     }
 }
