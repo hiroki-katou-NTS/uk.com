@@ -13,12 +13,13 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class UpdateVaAcRuleCommandHandler.
  */
 @Stateless
-public class UpdateVaAcRuleCommandHandler extends CommandHandler<UpdateVaAcRuleCommand> {
+public class SaveAcquisitionRuleCommandHandler extends CommandHandler<AcquisitionRuleCommand> {
 
 	/** The va repo. */
 	@Inject
@@ -32,21 +33,22 @@ public class UpdateVaAcRuleCommandHandler extends CommandHandler<UpdateVaAcRuleC
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<UpdateVaAcRuleCommand> context) {
-
+	protected void handle(CommandHandlerContext<AcquisitionRuleCommand> context) {
+		
+		String companyId = AppContexts.user().companyId();
 		// Get command.
-		UpdateVaAcRuleCommand command = context.getCommand();
+		AcquisitionRuleCommand command = context.getCommand();
 
+		AcquisitionRule acquisitionRule = command.toDomain(companyId);
 		// Get CompanyId
 
 		// Update VacationAcquisitionRule
-		Optional<AcquisitionRule> optVaAcRule = this.vaRepo.findById(command.getCompanyId());
-		AcquisitionRule vaAcRule = optVaAcRule.get();
-		vaAcRule.setSettingClassification(command.getSettingclassification());
-		vaAcRule.setAcquisitionOrder(command.getAcquisitionOrder());
-
-		// Update to db.
-		this.vaRepo.update(vaAcRule);
+		Optional<AcquisitionRule> optVaAcRule = this.vaRepo.findById(companyId);
+		if (optVaAcRule.isPresent()) {
+			this.vaRepo.update(acquisitionRule);
+		} else {
+			this.vaRepo.create(acquisitionRule);
+		}
 	}
 
 }

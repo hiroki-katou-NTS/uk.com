@@ -23,52 +23,60 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="contents-area">
-				<table style="margin-bottom: 35px;">
-					<tr>
-						<td><label class="content-label">出勤日数として加算</label></td>
-						<td><div style="margin-left: 70px;"
-								data-bind="ntsSwitchButton: {
+				<div class="headSelected"
+					style="display: inline-flex; margin-bottom: 35px; margin-top: 20px;">
+					<label class="content-label" style="padding-top: 9px;">出勤日数として加算</label>
+					<div style="margin-left: 70px;"
+						data-bind="ntsSwitchButton: {
 										options: priority,
 										optionsValue: 'value',
 										optionsText: 'name',
 										value: selectedPriority,
-										enable: enablePriority }"></div></td>
-					</tr>
-				</table>
+										enable: true }"></div>
+				</div>
 				<div>
 					<label style="" class="content-label">優先順位を設定すると、優先順位を反して休暇を取得しようとした場合に</label>
-					<br/> <label class="content-label"> エラーとして判断することが出来ます。 </label>
+					<br /> <label class="content-label"> エラーとして判断することが出来ます。 </label>
 				</div>
-				<table style="margin-top: 30px; border: 1px solid black; border-collapse: collapse; width: 250px; text-align: center;">
+				<table class="table table-bordered" id="priorityTable"
+					style="margin-top: 30px; border: 1px solid black; border-collapse: collapse; width: 250px; text-align: center; margin-left: 45px">
 					<tr>
 						<th>休暇</th>
-						<th>優先順位</th>						
+						<th class="thInput">優先順位</th>
 					</tr>
 					<tr>
 						<td>年次有給休暇</td>
-						<td></td>
+						<td><input class="inputPriority" data-bind="ntsTextEditor: {value: annualPaidLeave , enable: enableInputPriority }" /></td>
 					</tr>
 					<tr>
 						<td>代休</td>
-						<td></td>
+						<td><input class="inputPriority" data-bind="ntsTextEditor: {value: compensatoryDayOff , enable: enableInputPriority }" /></td>
 					</tr>
 					<tr>
 						<td>振休</td>
-						<td></td>
+						<td><input class="inputPriority" data-bind="ntsTextEditor: {value: substituteHoliday, enable: enableInputPriority }" /></td>
 					</tr>
 					<tr>
 						<td>積立年休</td>
-						<td></td>
+						<td><input class="inputPriority" data-bind="ntsTextEditor: {value: fundedPaidHoliday, enable: enableInputPriority }" /></td>
 					</tr>
 					<tr>
 						<td>60H超休</td>
-						<td></td>
+						<td><input class="inputPriority" data-bind="ntsTextEditor: {value: exsessHoliday, enable: enableInputPriority }" /></td>
 					</tr>
 					<tr>
 						<td>特別休暇</td>
-						<td></td>
+						<td><input class="inputPriority" data-bind="ntsTextEditor: {value: specialHoliday, enable: enableInputPriority }" /></td>
 					</tr>
 				</table>
+				<div style="width: 22%;">
+					<hr/>
+				</div>
+				<div style="margin-top: 32px;">
+					<button style="margin-left: 50px" data-bind="click: saveToDb" class=" proceed large"> 登録 </button>
+					<button style="margin-left: 85px;" data-bind="click: 
+" class=" large"> 閉じる </button>
+				</div>
 
 			</div>
 		</ui:define>

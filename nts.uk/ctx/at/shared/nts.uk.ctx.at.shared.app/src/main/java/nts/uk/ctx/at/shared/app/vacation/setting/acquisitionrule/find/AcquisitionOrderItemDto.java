@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule;
+package nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find;
 
 import lombok.Builder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrderSetMemento;
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Priority;
  * The Class VacationAcquisitionOrderItemDto.
  */
 @Builder
-public class VacationAcquisitionOrderItemDto implements AcquisitionOrderSetMemento {
+public class AcquisitionOrderItemDto implements AcquisitionOrderSetMemento {
 
 	/** The vacation type. */
 	public int vacationType;
