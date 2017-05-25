@@ -6,14 +6,12 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
 import javax.inject.Inject;
 
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionVacationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplaySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSetPK;
 
 /**
  * The Class JpaManageAnnualSettingSetMemento.
@@ -42,10 +40,7 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		KmfmtMngAnnualSetPK pk = new KmfmtMngAnnualSetPK();
-		pk.setCid(companyId);
-		pk.setMngId(IdentifierUtil.randomUniqueId());
-		this.manageAnnual.setKmfmtMngAnnualSetPK(pk);
+		this.manageAnnual.setCid(companyId);
 	}
 
 	/*

@@ -8,6 +8,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KmfstAcquisitionRule;
 
@@ -37,8 +38,7 @@ public class JpaAcquisitionRuleSetMemento implements AcquisitionRuleSetMemento {
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setCid(companyId);
 	}
 
 	/*
@@ -50,8 +50,7 @@ public class JpaAcquisitionRuleSetMemento implements AcquisitionRuleSetMemento {
 	 */
 	@Override
 	public void setSettingclassification(Category settingclassification) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setSettingClassfication(settingclassification.value);
 	}
 
 	/*
@@ -62,8 +61,37 @@ public class JpaAcquisitionRuleSetMemento implements AcquisitionRuleSetMemento {
 	 */
 	@Override
 	public void setAcquisitionOrder(List<AcquisitionOrder> listVacationAcquisitionOrder) {
-		// TODO Auto-generated method stub
 
+		for (AcquisitionOrder e : listVacationAcquisitionOrder) {
+			// Annual Paid Leave
+			if (e.getVacationType().equals(AcquisitionType.AnnualPaidLeave)) {
+				this.typeValue.setAnnualPaid(e.getPriority().v());
+			}
+			// Exsess Holiday
+			if (e.getVacationType().equals(AcquisitionType.ExsessHoliday)) {
+				this.typeValue.setExsessHoliday(e.getPriority().v());
+			}
+
+			// Funded Paid Holiday
+			if (e.getVacationType().equals(AcquisitionType.FundedPaidHoliday)) {
+				this.typeValue.setFundedPaidHoliday(e.getPriority().v());
+			}
+
+			// Substitute Holiday
+			if (e.getVacationType().equals(AcquisitionType.SubstituteHoliday)) {
+				this.typeValue.setSabstituteHoliday(e.getPriority().v());
+			}
+
+			// Compensatory Day Off
+			if (e.getVacationType().equals(AcquisitionType.CompensatoryDayOff)) {
+				this.typeValue.setCompensatoryDayOff(e.getPriority().v());
+			}
+
+			// Special Holiday
+			if (e.getVacationType().equals(AcquisitionType.SpecialHoliday)) {
+				this.typeValue.setSpecialHoliday(e.getPriority().v());
+			}
+		}
 	}
 
 }

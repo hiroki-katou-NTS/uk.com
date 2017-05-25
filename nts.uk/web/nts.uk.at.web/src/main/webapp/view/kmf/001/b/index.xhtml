@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1200,
+					height : 600
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="kmf001.b.service.js" />
+			<com:scriptfile path="kmf001.b.vm.js" />
+			<com:scriptfile path="kmf001.b.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="contents-area">
+				<table style="margin-bottom: 35px;">
+					<tr>
+						<td><label class="content-label">出勤日数として加算</label></td>
+						<td><div style="margin-left: 70px;"
+								data-bind="ntsSwitchButton: {
+										options: priority,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: selectedPriority,
+										enable: enablePriority }"></div></td>
+					</tr>
+				</table>
+				<div>
+					<label style="" class="content-label">優先順位を設定すると、優先順位を反して休暇を取得しようとした場合に</label>
+					<br/> <label class="content-label"> エラーとして判断することが出来ます。 </label>
+				</div>
+				<table style="margin-top: 30px; border: 1px solid black; border-collapse: collapse; width: 250px; text-align: center;">
+					<tr>
+						<th>休暇</th>
+						<th>優先順位</th>						
+					</tr>
+					<tr>
+						<td>年次有給休暇</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>代休</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>振休</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>積立年休</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>60H超休</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>特別休暇</td>
+						<td></td>
+					</tr>
+				</table>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

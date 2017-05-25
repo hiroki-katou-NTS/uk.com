@@ -26,7 +26,7 @@
             allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
             allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
             allHiragana: /^[ぁ-ん　ー ]*$/,
-        }; 
+        };
 
         /**
          * 文字列の半角文字数を数える（Unicode用）

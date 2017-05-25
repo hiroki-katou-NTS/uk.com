@@ -10,8 +10,8 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,10 +32,6 @@ public class KmfmtMngAnnualSet implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-
-    /** The kmfmt mng annual set PK. */
-    @EmbeddedId
-    protected KmfmtMngAnnualSetPK kmfmtMngAnnualSetPK;
 
     /** The ins date. */
     @Column(name = "INS_DATE")
@@ -76,6 +72,14 @@ public class KmfmtMngAnnualSet implements Serializable {
     @Size(max = 14)
     @Column(name = "UPD_PG")
     private String updPg;
+    
+    /** The cid. */
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 17)
+    @Column(name = "CID")
+    private String cid;
     
     /** The half day mng atr. */
     @Basic(optional = false)
@@ -185,31 +189,17 @@ public class KmfmtMngAnnualSet implements Serializable {
     public KmfmtMngAnnualSet() {
     }
 
-    /**
-     * Instantiates a new kmfmt mng annual set.
-     *
-     * @param kmfmtMngAnnualSetPK
-     *            the kmfmt mng annual set PK
-     */
-    public KmfmtMngAnnualSet(KmfmtMngAnnualSetPK kmfmtMngAnnualSetPK) {
-        this.kmfmtMngAnnualSetPK = kmfmtMngAnnualSetPK;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kmfmtMngAnnualSetPK != null ? kmfmtMngAnnualSetPK.hashCode() : 0);
+        hash += (cid != null ? cid.hashCode() : 0);
         return hash;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)O
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -218,8 +208,7 @@ public class KmfmtMngAnnualSet implements Serializable {
             return false;
         }
         KmfmtMngAnnualSet other = (KmfmtMngAnnualSet) object;
-        if ((this.kmfmtMngAnnualSetPK == null && other.kmfmtMngAnnualSetPK != null)
-                || (this.kmfmtMngAnnualSetPK != null && !this.kmfmtMngAnnualSetPK.equals(other.kmfmtMngAnnualSetPK))) {
+        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }
         return true;
