@@ -115,7 +115,6 @@ module nts.uk.pr.view.qpp021.b {
                     });
                     if (lineItemLayouts && lineItemLayouts.length > 0) {
                         self.selectLineItemLayout(lineItemLayouts);
-                         self.selectLineItemCode(lineItemLayouts[0].statementCode);
                     }
                 });
             }
