@@ -141,6 +141,9 @@ module kdl024.a.viewmodel {
                         self.listBudget.remove(deletedItem);
                         if(self.listBudget().length === 0) {
                             self.newMode();
+                            if (nts.uk.ui.errors.hasError()){
+                                nts.uk.ui.errors.clearAll();
+                            }
                         }
                         else {
                             self.findItemByIndex(_.min([deletedIndex, self.listBudget().length - 1]));
