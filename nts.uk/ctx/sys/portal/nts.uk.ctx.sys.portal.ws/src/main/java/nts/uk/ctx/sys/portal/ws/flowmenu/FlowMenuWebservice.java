@@ -52,11 +52,10 @@ public class FlowMenuWebservice extends WebService {
 
 	@POST
 	@Path("findbycode")
-	public void getByCode(@PathParam("companyID") String toppagePartID) {
-		this.finder.getFlowMenu(toppagePartID);
-
+	public FlowMenuDto getByCode(String toppagePartID) {
+		return this.finder.getFlowMenu(toppagePartID).orElse(null);
 	}
-
+	
 	@POST
 	@Path("create")
 	public void createFlowMenu(CreateFlowMenuCommand command) {

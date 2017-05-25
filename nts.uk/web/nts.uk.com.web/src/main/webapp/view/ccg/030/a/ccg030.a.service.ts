@@ -22,8 +22,8 @@ module ccg030.a.service {
     }
     
     //fill by toppage part id
-    export function getFlowMenuById(): JQueryPromise<Array<viewmodel.model.FlowMenu>>{
-        return nts.uk.request.ajax("com", paths.getFlowMenuById);
+    export function getFlowMenuById(flowMenuID: string): JQueryPromise<Array<viewmodel.model.FlowMenu>>{
+        return nts.uk.request.ajax("com", paths.getFlowMenuById, flowMenuID);
     }
     
     //delete flow menu

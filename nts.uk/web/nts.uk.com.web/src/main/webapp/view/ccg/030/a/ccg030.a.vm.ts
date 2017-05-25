@@ -117,50 +117,49 @@ module ccg030.a.viewmodel {
         uploadFile(): void {
             var self = this;
             // check xem upload có phải của flowmenu mặc định không--> nếu phải thông báo message Msg_84
-            service.getFlowMenuById(self.selectedFlowmenu().toppagePartID()).done(function(res) {
-                if(res.defClassAtr() === 1) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_84")); 
-                     return;
+            service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
+                if (res.defClassAtr === 1) {
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_84"));
+                } else {
+                    var option = {
+                        stereoType: "flowmenu",//required
+                        onSuccess: function() { },//optional
+                        onFail: function() { }//optional
+                    }
+                    $("#file_upload").ntsFileUpload(option).done(function(res) {
+                        self.isDelete(true);
+                        self.selectedFlowMenu().fileID(res[0].id);
+                        self.selectedFlowMenu().fileName(res[0].originalName);
+
+                    }).fail(function(err) {
+                        nts.uk.ui.dialog.alert(err);
+                    });
                 }
             });
-            var option = {
-                stereoType: "flowmenu",//required
-                onSuccess: function() { },//optional
-                onFail: function() { }//optional
-            }
-            $("#file_upload").ntsFileUpload(option).done(function(res) {
-                self.isDelete(true);
-                self.selectedFlowMenu().fileID(res[0].id);
-                self.selectedFlowMenu().fileName(res[0].originalName);
-
-            }).fail(function(err) {
-                nts.uk.ui.dialog.alert(err);
-            });
-
         }
 
         deleteFile(): void {
             var self = this;
             // check xem có phải đang xóa file của flowmenu mặc định không--> nếu phải thông báo message Msg_83
-            service.getFlowMenuById(self.selectedFlowmenu().toppagePartID()).done(function(res) {
-                if(res.defClassAtr() === 1) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_83")); 
-                     return;
+            service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
+                if (res.defClassAtr === 1) {
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_83"));
+                } else {
+                    service.deleteFile(self.selectedFlowMenu().fileID()).done((data) => {
+                        self.selectedFlowMenu().fileID('');
+                        self.selectedFlowMenu().fileName('');
+                        self.fileInfo = ko.observable(new model.FileInfo());
+                        self.isDelete(false);
+                    }).fail(function(error) {
+                        console.log(error);
+                    });
                 }
             });
-            service.deleteFile(self.selectedFlowMenu().fileID()).done((data) => {
-                self.selectedFlowMenu().fileID('');
-                self.selectedFlowMenu().fileName('');
-                self.fileInfo = ko.observable(new model.FileInfo());
-                self.isDelete(false);
-            }).fail(function(error) {
-                console.log(error);    
-            });
         }
-        
+
         downloadFile(): void {
             var self = this;
-            nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID()); 
+            nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID());
         }
         /** Close Dialog */
         closeDialog(): void {
