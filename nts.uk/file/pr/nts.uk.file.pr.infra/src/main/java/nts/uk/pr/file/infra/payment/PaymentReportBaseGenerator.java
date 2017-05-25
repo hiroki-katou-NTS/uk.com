@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.aspose.cells.BorderType;
@@ -26,36 +27,11 @@ import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentRefundPaddingDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentSalaryItemDto;
-import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
  * The Class PaymentReportBaseGenerator.
  */
-public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenerator {
-
-	/** The Constant FIRST_SHEET. */
-	public static final int FIRST_SHEET = 0;
-
-	/** The Constant HEADER_WIDTH. */
-	public static final int HEADER_WIDTH = 1;
-
-	/** The Constant FIRST_COLUMN. */
-	public static final int FIRST_COLUMN = 0;
-
-	/** The Constant FIRST_ROW. */
-	public static final int FIRST_ROW = 0;
-
-	/** The Constant FIRST_PERSON. */
-	public static final int FIRST_PERSON = 1;
-
-	/** The Constant SECOND_PERSON. */
-	public static final int SECOND_PERSON = 2;
-
-	/** The Constant ITEMS_PER_ROW. */
-	public static final int ITEMS_PER_ROW = 9;
-
-	/** The Constant NUMBER_OF_ROW_PER_ITEM. */
-	public static final int NUMBER_OF_ROW_PER_ITEM = 1;
+public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 
 	/** The template style. */
 	protected TemplateStyle templateStyle;
@@ -81,14 +57,14 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/** The number of column per item. */
 	private int numberOfColumnPerItem;
 
-	/** The first row. */
-	private int firstRow = FIRST_ROW;
+	/** The first category row. */
+	private int firstCategoryRow;
 
 	/** The current row. */
-	private int currentRow = FIRST_ROW;
+	private int currentRow;
 
 	/** The current column. */
-	private int currentColumn = FIRST_COLUMN + HEADER_WIDTH;
+	private int currentColumn;
 
 	/** The max columns per item line. */
 	private int maxColumnsPerItemLine;
@@ -121,13 +97,6 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * @return the person per page
 	 */
 	abstract int getPersonPerPage();
-
-	/**
-	 * Gets the page header start cell.
-	 *
-	 * @return the page header start cell
-	 */
-	abstract String getPageHeaderStartCell();
 
 	/**
 	 * Gets the page header end cell.
@@ -167,7 +136,6 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	/**
 	 * Prints the page content.
 	 */
-	// TODO: need to rename.
 	abstract void printPageContent();
 
 	/**
@@ -185,13 +153,13 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	abstract List<CellValue> getHeaderTemplate();
 
 	/**
-	 * Sets the item width.
+	 * Sets the item range width.
 	 *
-	 * @param width the new item width
+	 * @param width the new item range width
 	 */
-	// TODO ...
-	protected void setItemWidth(double width) {
-		Range itemRange = cells.createRange(FIRST_ROW, FIRST_COLUMN + HEADER_WIDTH, NUMBER_OF_ROW_PER_ITEM,
+	// TODO Has not been used yet...
+	protected void setItemRangeWidth(double width) {
+		Range itemRange = cells.createRange(FIRST_ROW, FIRST_COLUMN + CATEGORY_HEADER_WIDTH, NUMBER_OF_ROW_PER_ITEM,
 				maxColumnsPerItemLine);
 		itemRange.setColumnWidth(width);
 	}
@@ -207,11 +175,11 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * Prints the remark.
 	 */
 	protected void printRemark() {
-		Range remark = cells.createRange(currentRow, FIRST_COLUMN, remarkTotalRow, maxColumnsPerItemLine);
+		Range remark = cells.createRange(currentRow, FIRST_COLUMN + MARGIN_CELL, remarkTotalRow,
+				maxColumnsPerItemLine - MARGIN_CELL);
 		remark.merge();
 		remark.setValue(employee.getRemark());
 		remark.setStyle(templateStyle.remarkStyle);
-		firstRow += remarkTotalRow;
 		currentRow += remarkTotalRow;
 	}
 
@@ -238,8 +206,8 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 			// Set value.
 			printCellValue(getHeaderTemplate());
 		}
-		firstRow += pageHeaderRowCount;
 		currentRow += pageHeaderRowCount;
+		firstCategoryRow = currentRow;
 	}
 
 	/**
@@ -293,8 +261,8 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * @param numberOfLine the number of line
 	 */
 	protected void breakLines(int numberOfLine) {
+		firstCategoryRow += numberOfLine;
 		currentRow += numberOfLine;
-		firstRow += numberOfLine;
 	}
 
 	/**
@@ -302,7 +270,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 */
 	protected void nextItemLine() {
 		// Reset column & enter 2 rows.
-		currentColumn = FIRST_COLUMN + HEADER_WIDTH;
+		currentColumn = FIRST_COLUMN + MARGIN_CELL + CATEGORY_HEADER_WIDTH;
 		currentRow += NUMBER_OF_ROW_PER_ITEM + NUMBER_OF_ROW_PER_ITEM;
 	}
 
@@ -312,7 +280,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	protected void nextCategory() {
 		nextItemLine();
 		mergeHeader();
-		firstRow = currentRow;
+		firstCategoryRow = currentRow;
 	}
 
 	/**
@@ -321,7 +289,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * @param title the title
 	 */
 	protected void printSectionTitle(String title) {
-		Cell sectionTitle = cells.get(firstRow - NUMBER_OF_ROW_PER_ITEM, FIRST_COLUMN);
+		Cell sectionTitle = cells.get(firstCategoryRow - NUMBER_OF_ROW_PER_ITEM, FIRST_COLUMN + MARGIN_CELL);
 		sectionTitle.setValue(title);
 		sectionTitle.setStyle(templateStyle.remarkStyle);
 	}
@@ -332,7 +300,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * @param headerName the header name
 	 */
 	protected void printCategoryHeader(String headerName) {
-		cells.get(firstRow, FIRST_COLUMN).setValue(headerName);
+		cells.get(firstCategoryRow, FIRST_COLUMN + MARGIN_CELL).setValue(headerName);
 	}
 
 	/**
@@ -349,12 +317,66 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 			printPageContent();
 			personCount++;
 			setPadding();
-			breakLines(1);
 
 			if (isPageHasEnoughPerson()) {
 				breakPage();
 			}
 		});
+	}
+
+	/**
+	 * Initialize.
+	 */
+	private void initialize() {
+		// Check on initialization.
+		checkOnInitialization();
+
+		// Get cells.
+		this.cells = workSheet.getCells();
+
+		// Get page setup.
+		this.pageSetup = workSheet.getPageSetup();
+		resetMargin();
+
+		// Set template style.
+		this.setTemplateStyle();
+
+		// Set page header range.
+		this.setPageHeaderRange();
+
+		// Set total row of remark.
+		this.remarkTotalRow = this.getRemarkTotalRow();
+
+		// Set max number of person on each page.
+		this.maxPersonPerPage = this.getPersonPerPage();
+
+		// Set number of columns to merged.
+		this.numberOfColumnPerItem = this.getNumberOfColumnPerItem();
+
+		/** The current row. */
+		this.currentRow = FIRST_ROW;
+
+		/** The current column. */
+		this.currentColumn = FIRST_COLUMN + MARGIN_CELL + CATEGORY_HEADER_WIDTH;
+
+		// Set max columns per item line.
+		this.maxColumnsPerItemLine = ITEMS_PER_ROW * this.numberOfColumnPerItem + CATEGORY_HEADER_WIDTH + MARGIN_CELL;
+
+		// Set report data & config.
+		this.reportData = paymentReportData.getReportData();
+		this.config = paymentReportData.getConfig();
+	}
+
+	/**
+	 * Check on initialization.
+	 */
+	private void checkOnInitialization() {
+		if (workSheet == null) {
+			throw new RuntimeException("WorkSheet is not defined.");
+		}
+		if (paymentReportData == null) {
+			throw new RuntimeException("paymentReportData is not defined.");
+		}
 	}
 
 	/**
@@ -392,8 +414,9 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * Merge header.
 	 */
 	private void mergeHeader() {
-		int headerHeight = currentRow - firstRow;
-		Range header = cells.createRange(firstRow, FIRST_COLUMN, headerHeight, HEADER_WIDTH);
+		int headerHeight = currentRow - firstCategoryRow;
+		Range header = cells.createRange(firstCategoryRow, FIRST_COLUMN + MARGIN_CELL, headerHeight,
+				CATEGORY_HEADER_WIDTH);
 		header.merge();
 		header.setStyle(templateStyle.headerStyle);
 	}
@@ -415,7 +438,7 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * Sets the page header range.
 	 */
 	private void setPageHeaderRange() {
-		String upperLeftCell = getPageHeaderStartCell();
+		String upperLeftCell = FIRST_CELL;
 		String lowerRightCell = getPageHeaderEndCell();
 		if (StringUtil.isNullOrEmpty(upperLeftCell, true) || StringUtil.isNullOrEmpty(lowerRightCell, true)) {
 			throw new RuntimeException("Page header range is not set.");
@@ -432,6 +455,28 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		this.templateStyle.nameStyle = getStyle(getItemNameCell());
 		this.templateStyle.valueStyle = getStyle(getItemValueCell());
 		this.templateStyle.remarkStyle = getStyle(getRemarkCell());
+		// In case remark is too long.
+		this.templateStyle.remarkStyle.setTextWrapped(true);
+	}
+
+	/**
+	 * To excel row unit.
+	 *
+	 * @param value the value
+	 * @return the double
+	 */
+	private double toExcelRowUnit(BigDecimal value) {
+		return value.doubleValue() / EXCEL_ROW_UNIT_IN_MM;
+	}
+
+	/**
+	 * To excel col unit.
+	 *
+	 * @param value the value
+	 * @return the double
+	 */
+	private double toExcelColUnit(BigDecimal value) {
+		return value.doubleValue() / EXCEL_COL_UNIT_IN_MM;
 	}
 
 	/**
@@ -440,8 +485,8 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * @param setting the new padding one out
 	 */
 	private void setPaddingOneOut(RefundPaddingOnceOut setting) {
-		pageSetup.setTopMargin(setting.getPaddingTop().doubleValue());
-		pageSetup.setLeftMargin(setting.getPaddingLeft().doubleValue());
+		cells.setRowHeight(FIRST_ROW, toExcelRowUnit(setting.getPaddingTop()));
+		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
 	}
 
 	/**
@@ -450,18 +495,18 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * @param setting the new padding two out
 	 */
 	private void setPaddingTwoOut(RefundPaddingTwoOut setting) {
-		pageSetup.setTopMargin(setting.getUpperAreaPaddingTop().doubleValue());
-		pageSetup.setLeftMargin(setting.getPaddingLeft().doubleValue());
+		cells.setRowHeight(FIRST_ROW, toExcelRowUnit(setting.getUpperAreaPaddingTop()));
+		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
 
 		if (isFirstPersonOnPage()) {
 			if (isFirstPersonOnPage()) {
 				if (hasBreakLine(setting)) {
-					setBreakLine(setting.getBreakLineMargin().doubleValue());
+					setBreakLine(toExcelRowUnit(setting.getBreakLineMargin()));
 				}
-				setCurrentRowHeight(setting.getUnderAreaPaddingTop().doubleValue());
+				setCurrentRowHeight(toExcelRowUnit(setting.getUnderAreaPaddingTop()));
 			}
 			// Set person 2 top margin.
-			setCurrentRowHeight(setting.getUnderAreaPaddingTop().doubleValue());
+			setCurrentRowHeight(toExcelRowUnit(setting.getUnderAreaPaddingTop()));
 		}
 	}
 
@@ -471,22 +516,22 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	 * @param setting the new padding three out
 	 */
 	private void setPaddingThreeOut(RefundPaddingThreeOut setting) {
-		pageSetup.setTopMargin(setting.getUpperAreaPaddingTop().doubleValue());
-		pageSetup.setLeftMargin(setting.getPaddingLeft().doubleValue());
+		cells.setRowHeight(FIRST_ROW, toExcelRowUnit(setting.getUpperAreaPaddingTop()));
+		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
 
 		if (isFirstPersonOnPage()) {
 			if (hasBreakLine(setting)) {
-				setBreakLine(setting.getBreakLineMarginTop().doubleValue());
+				setBreakLine(toExcelRowUnit(setting.getBreakLineMarginTop()));
 			}
 			// Set person 2 top margin.
-			setCurrentRowHeight(setting.getMiddleAreaPaddingTop().doubleValue());
+			setCurrentRowHeight(toExcelRowUnit(setting.getMiddleAreaPaddingTop()));
 		}
 		if (isSecondPersonOnPage()) {
 			if (hasBreakLine(setting)) {
-				setBreakLine(setting.getBreakLineMarginButtom().doubleValue());
+				setBreakLine(toExcelRowUnit(setting.getBreakLineMarginButtom()));
 			}
 			// Set person 3 top margin.
-			setCurrentRowHeight(setting.getUnderAreaPaddingTop().doubleValue());
+			setCurrentRowHeight(toExcelRowUnit(setting.getUnderAreaPaddingTop()));
 		}
 	}
 
@@ -520,12 +565,13 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		setCurrentRowHeight(marginTop);
 
 		// Get break line range.
-		Range breakLine = cells.createRange(currentRow, FIRST_COLUMN, 1, maxColumnsPerItemLine);
+		Range breakLine = cells.createRange(currentRow, FIRST_COLUMN + MARGIN_CELL, 1,
+				maxColumnsPerItemLine - MARGIN_CELL);
 		breakLine.merge();
 
 		// Set break line style
 		Style style = new Style();
-		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM_DASHED, Color.getLightGray());
+		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.DASHED, Color.getBlack());
 
 		// Set style flag.
 		StyleFlag styleFlag = new StyleFlag();
@@ -557,54 +603,6 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 	}
 
 	/**
-	 * Initialize.
-	 */
-	private void initialize() {
-		// Check on initialization.
-		checkOnInitialization();
-
-		// Get cells.
-		cells = workSheet.getCells();
-
-		// Get page setup.
-		this.pageSetup = workSheet.getPageSetup();
-
-		// Set template style.
-		this.setTemplateStyle();
-
-		// Set page header range.
-		this.setPageHeaderRange();
-
-		// Set total row of remark.
-		this.remarkTotalRow = getRemarkTotalRow();
-
-		// Set max number of person on each page.
-		this.maxPersonPerPage = this.getPersonPerPage();
-
-		// Set number of columns to merged.
-		this.numberOfColumnPerItem = this.getNumberOfColumnPerItem();
-
-		// Set max columns per item line.
-		this.maxColumnsPerItemLine = ITEMS_PER_ROW * this.numberOfColumnPerItem + HEADER_WIDTH;
-
-		// Set report data & config.
-		this.reportData = paymentReportData.getReportData();
-		this.config = paymentReportData.getConfig();
-	}
-
-	/**
-	 * Check on initialization.
-	 */
-	private void checkOnInitialization() {
-		if (workSheet == null) {
-			throw new RuntimeException("WorkSheet is not defined.");
-		}
-		if (paymentReportData == null) {
-			throw new RuntimeException("paymentReportData is not defined.");
-		}
-	}
-
-	/**
 	 * Sets the padding.
 	 */
 	private void setPadding() {
@@ -621,6 +619,14 @@ public abstract class PaymentReportBaseGenerator extends AsposeCellsReportGenera
 		default:
 			break;
 		}
+	}
+
+	/**
+	 * Reset margin.
+	 */
+	private void resetMargin() {
+		pageSetup.setTopMargin(0);
+		pageSetup.setLeftMargin(0);
 	}
 
 	/**
