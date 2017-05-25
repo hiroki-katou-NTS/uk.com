@@ -28,7 +28,7 @@ public class AnnualPaidLeaveWs extends WebService {
 
     /** The annual paid handler. */
     @Inject
-    AnnualPaidLeaveSaveCommandHandler annualPaidHandler;
+    private AnnualPaidLeaveSaveCommandHandler annualPaidHandler;
 
     /**
      * Update.
