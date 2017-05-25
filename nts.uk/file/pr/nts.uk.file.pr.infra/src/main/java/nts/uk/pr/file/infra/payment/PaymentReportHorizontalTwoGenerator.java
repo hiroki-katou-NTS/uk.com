@@ -21,6 +21,9 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	/** The Constant MAX_PERSON_PER_PAGE. */
 	public static final int MAX_PERSON_PER_PAGE = 2;
 
+	/** The Constant REMARK_TOTAL_ROW. */
+	public static final int REMARK_TOTAL_ROW = 1;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -60,17 +63,13 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	@Override
 	void printPageContent() {
 		printPaymentItems();
-		breakLines(1);
 		printDeductionItems();
-		breakLines(1);
-
 		printAttendanceItems();
 		printArticleItems();
 		printOtherItems();
-		breakLines(1);
 
 		// Print remark;
-		// printRemark();
+		printRemark();
 	}
 
 	/*
@@ -83,22 +82,11 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	@Override
 	List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
-		list.add(new CellValue("L2", employee.getCompanyInfo().getJapaneseYearMonth()));
-		list.add(new CellValue("A2", employee.getDepartmentInfo().getDepartmentCode()));
-		list.add(new CellValue("C2", employee.getEmployeeInfo().getEmployeeCode()));
-		list.add(new CellValue("E2", employee.getEmployeeInfo().getEmployeeName()));
+		list.add(new CellValue("M2", employee.getCompanyInfo().getJapaneseYearMonth()));
+		list.add(new CellValue("B3", employee.getDepartmentInfo().getDepartmentCode()));
+		list.add(new CellValue("D3", employee.getEmployeeInfo().getEmployeeCode()));
+		list.add(new CellValue("F3", employee.getEmployeeInfo().getEmployeeName()));
 		return list;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
-	 * getPageHeaderStartCell()
-	 */
-	@Override
-	String getPageHeaderStartCell() {
-		return "A1";
 	}
 
 	/*
@@ -109,7 +97,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	String getPageHeaderEndCell() {
-		return "S4";
+		return "P4";
 	}
 
 	/*
@@ -120,7 +108,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	String getCategoryHeaderCell() {
-		return "A5";
+		return "B5";
 	}
 
 	/*
@@ -131,7 +119,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	String getItemNameCell() {
-		return "B5";
+		return "C5";
 	}
 
 	/*
@@ -143,7 +131,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	String getItemValueCell() {
-		return "B6";
+		return "C6";
 	}
 
 	/*
@@ -169,10 +157,16 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 		return MAX_PERSON_PER_PAGE;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkTotalRow
+	 * ()
+	 */
 	@Override
 	int getRemarkTotalRow() {
-		// TODO Auto-generated method stub
-		return 0;
+		return REMARK_TOTAL_ROW;
 	}
 
 }

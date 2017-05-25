@@ -51,19 +51,14 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	void printPageContent() {
-
 		printPaymentItems();
-		breakLines(1);
 		printDeductionItems();
-		breakLines(1);
-
 		printAttendanceItems();
 		printArticleItems();
 		printOtherItems();
 
 		// Print remark;
 		printRemark();
-		breakLines(1);
 	}
 
 	/*
@@ -76,10 +71,10 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	@Override
 	List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
-		list.add(new CellValue("Q1", employee.getCompanyInfo().getJapaneseYearMonth()));
-		list.add(new CellValue("A2", employee.getDepartmentInfo().getDepartmentCode()));
-		list.add(new CellValue("D2", employee.getEmployeeInfo().getEmployeeCode()));
-		list.add(new CellValue("G2", employee.getEmployeeInfo().getEmployeeName()));
+		list.add(new CellValue("S2", employee.getCompanyInfo().getJapaneseYearMonth()));
+		list.add(new CellValue("B3", employee.getDepartmentInfo().getDepartmentCode()));
+		list.add(new CellValue("E3", employee.getEmployeeInfo().getEmployeeCode()));
+		list.add(new CellValue("H3", employee.getEmployeeInfo().getEmployeeName()));
 		return list;
 	}
 
@@ -110,22 +105,11 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
-	 * getPageHeaderStartCell()
-	 */
-	@Override
-	String getPageHeaderStartCell() {
-		return "A1";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
 	 * getPageHeaderEndCell()
 	 */
 	@Override
 	String getPageHeaderEndCell() {
-		return "AB3";
+		return "AC4";
 	}
 
 	/*
@@ -136,7 +120,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	String getCategoryHeaderCell() {
-		return "A4";
+		return "B5";
 	}
 
 	/*
@@ -147,7 +131,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	String getItemNameCell() {
-		return "B4";
+		return "C5";
 	}
 
 	/*
@@ -159,7 +143,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	String getItemValueCell() {
-		return "B5";
+		return "C6";
 	}
 
 	/*
@@ -170,7 +154,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 */
 	@Override
 	String getRemarkCell() {
-		return "B8";
+		return "B7";
 	}
 
 	/*
