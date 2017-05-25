@@ -6,13 +6,14 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
-		<com:ValidatorScript>
-			nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay
-			nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDate
-			nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear
-			nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay
-		</com:ValidatorScript>
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay
+				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDate
+				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear
+				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay
+			</com:ValidatorScript>
+		
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="kmf001.c.service.js" />
@@ -103,7 +104,7 @@
 										
 							<!-- KMF001_132 -->
 							<td><label class="content-label">会社の上限回数</label></td>
-							<td><input data-bind="ntsTextEditor: {
+							<td><input id="max-number-company" class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxNumberCompany,
 									constraint: 'AnnualNumberDay',
 									required: true,
@@ -115,7 +116,7 @@
 							<td><label class="content-label">上限日数設定</label></td>
 							<!-- KMF001_36 -->
 							<td><label class="content-label" style="padding-left: 0px">付与上限日数</label>
-								<input data-bind="ntsTextEditor: {
+								<input id="max-grant-day" class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxGrantDay,
 									constraint: 'AnnualLeaveGrantDate',
 									required: true,
@@ -124,7 +125,7 @@
 							</td>
 
 							<td><label class="content-label">残数上限日数</label></td>
-							<td><input data-bind="ntsTextEditor: {
+							<td><input id="max-remaining-day" class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxRemainingDay,
 									required: true,
 									option: textEditorOption,
@@ -133,7 +134,7 @@
 						<tr>
 							<!-- KMF001_38 -->
 							<td><label class="content-label">保持できる年数</label></td>
-							<td><input data-bind="ntsTextEditor: {
+							<td><input id="number-year-retain" class="nts-input" data-bind="ntsNumberEditor: {
 									value: numberYearRetain,
 									constraint: 'RetentionYear',
 									required: true,
@@ -290,7 +291,7 @@
 										
 							<!-- KMF001_135 -->
 							<td><label class="content-label">会社の上限日数</label></td>
-							<td><input data-bind="ntsTextEditor: {
+							<td><input id="time-max-day-company" class="nts-input" data-bind="ntsNumberEditor: {
 									value: timeMaxNumberCompany,
 									constraint: 'MaxTimeDay',
 									required: true,

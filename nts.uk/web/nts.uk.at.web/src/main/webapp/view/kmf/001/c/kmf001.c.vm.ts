@@ -18,9 +18,9 @@ module nts.uk.pr.view.kmf001.c {
             enableAnnualVacation: KnockoutObservable<boolean>;
             
             selectedAddAttendanceDay: KnockoutObservable<string>;
-            selectedMaxManageSemiVacation: KnockoutObservable<number>;
+            selectedMaxManageSemiVacation: KnockoutObservable<string>;
             maxDayReferenceList: KnockoutObservableArray<EnumertionModel>;
-            selectedMaxNumberSemiVacation: KnockoutObservable<number>;
+            selectedMaxNumberSemiVacation: KnockoutObservable<string>;
             maxNumberCompany: KnockoutObservable<number>;
             maxGrantDay: KnockoutObservable<number>;
             maxRemainingDay: KnockoutObservable<number>;
@@ -28,21 +28,21 @@ module nts.uk.pr.view.kmf001.c {
             enableMaxNumberCompany: KnockoutObservable<boolean>;
             
             permissionList: KnockoutObservableArray<EnumertionModel>;
-            selectedPermission: KnockoutObservable<number>;
+            selectedPermission: KnockoutObservable<string>;
             preemptionPermitList: KnockoutObservableArray<EnumertionModel>;
-            selectedPreemptionPermit: KnockoutObservable<number>;
+            selectedPreemptionPermit: KnockoutObservable<string>;
             
             displayDivisionList: KnockoutObservableArray<EnumertionModel>;
-            selectedNumberRemainingYearly: KnockoutObservable<number>;
-            selectedNextAnunalVacation: KnockoutObservable<number>;
+            selectedNumberRemainingYearly: KnockoutObservable<string>;
+            selectedNextAnunalVacation: KnockoutObservable<string>;
             
-            selectedTimeManagement: KnockoutObservable<number>;
+            selectedTimeManagement: KnockoutObservable<string>;
             vacationTimeUnitList: KnockoutObservableArray<EnumertionModel>;
             enableTimeUnit: KnockoutObservable<boolean>;
-            selectedVacationTimeUnit: KnockoutObservable<number>;
-            selectedManageUpperLimitDayVacation: KnockoutObservable<number>;
+            selectedVacationTimeUnit: KnockoutObservable<string>;
+            selectedManageUpperLimitDayVacation: KnockoutObservable<string>;
             enableManageUpperLimit: KnockoutObservable<boolean>;
-            selectedMaxDayVacation: KnockoutObservable<number>;
+            selectedMaxDayVacation: KnockoutObservable<string>;
             timeMaxNumberCompany: KnockoutObservable<number>;
             isEnoughTimeOneDay: KnockoutObservable<boolean>;
             
@@ -51,7 +51,6 @@ module nts.uk.pr.view.kmf001.c {
                 
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "50px",
-                    textmode: "text",
                     textalign: "right"
                 }));
                 // 年休の管理
@@ -139,12 +138,14 @@ module nts.uk.pr.view.kmf001.c {
             private update(): void {
                 let self = this;
                 let dfd = $.Deferred();
+                if (!self.validate()) {
+                    return;
+                }
                 let command = self.toJsObject();
                 service.update(command).done(function() {
                     self.loadSetting().done(function(res) {
-                        if (res) {
-                            self.initUI(res);
-                        }
+                        // Msg_15
+                        nts.uk.ui.dialog.alert("年休設定の登録");
                         dfd.resolve();
                     });
                 }).fail(function(res) {
@@ -214,6 +215,18 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedMaxDayVacation(res.setting.reference);
                 self.timeMaxNumberCompany(res.setting.maxTimeDay);
                 self.isEnoughTimeOneDay(res.setting.isEnoughTimeOneDay);
+            }
+            
+            private validate(): boolean {
+                $('#max-number-company').ntsEditor('validate');
+                $('#max-grant-day').ntsEditor('validate');
+                $('#max-remaining-day').ntsEditor('validate');
+                $('#number-year-retain').ntsEditor('validate');
+                $('#time-max-day-company').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
+                    return false;
+                }
+                return true;
             }
         }
     }
