@@ -1,5 +1,5 @@
-module ccg031.a.service {
-    import model = ccg.model;
+module nts.uk.com.view.ccg031.a.service {
+    import model = nts.uk.com.view.ccg.model;
     
     var paths = {
         active: "sys/portal/layout/active",

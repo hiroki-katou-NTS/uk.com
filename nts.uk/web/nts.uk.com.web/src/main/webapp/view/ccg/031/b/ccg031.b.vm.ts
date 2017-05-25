@@ -1,5 +1,5 @@
-module ccg031.b.viewmodel {
-    import model = ccg.model;
+module nts.uk.com.view.ccg031.b.viewmodel {
+    import model = nts.uk.com.view.ccg.model;
     import util = nts.uk.util;
     import windows = nts.uk.ui.windows;
     import errors = nts.uk.ui.errors;

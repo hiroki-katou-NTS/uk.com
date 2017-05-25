@@ -1,4 +1,4 @@
-module ccg031.b.service {
+module nts.uk.com.view.ccg031.b.service {
     var paths = {
         findAll: "sys/portal/topagepart/findAll",
     }

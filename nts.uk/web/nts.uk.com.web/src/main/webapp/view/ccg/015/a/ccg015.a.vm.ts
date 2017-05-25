@@ -173,7 +173,10 @@ module nts.uk.com.view.ccg015.a {
                 var topPageCode = self.topPageModel().topPageCode();
                 var transferData: commonModel.TransferLayoutInfo = {parentCode: topPageCode, layoutID: layoutId, pgType: 0};
                 nts.uk.ui.windows.setShared('layout', transferData);
-                nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml").onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/ccg/031/a/index.xhtml", {
+                    title: "レイアウトの設定",
+                    dialogClass: 'no-close'
+                }).onClosed(() => {
                     let returnInfo: commonModel.TransferLayoutInfo = nts.uk.ui.windows.getShared("layout");
                     self.topPageModel().layoutId(returnInfo.layoutID);
                     self.changePreviewIframe(returnInfo.layoutID);

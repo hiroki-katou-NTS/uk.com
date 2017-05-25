@@ -34,14 +34,13 @@ module ccg014.b.viewmodel {
         /* Copy TitleMenu */
         submitClickButton() {
             var self = this;
-            nts.uk.ui.dialog.confirm("Xac nhan Copy").ifYes(function() {
                 service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.copyName(), self.checkOverwritting()).done(() => {
                     nts.uk.ui.windows.setShared("copyTitleMenuCD", self.copyTitleCD(), false);
                     self.cancel_Dialog();
                 }).fail((res) => {
-                   nts.uk.ui.dialog.alert("Msg_3 Da duoc dang ki");
+                   nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_3"));
                 });
-            });
+            
         }
     }
 }

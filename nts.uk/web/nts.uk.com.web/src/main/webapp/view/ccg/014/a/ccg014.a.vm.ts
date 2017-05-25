@@ -54,6 +54,10 @@ module ccg014.a.viewmodel {
         createButtonClick() {
             var self = this;
             self.isCreate(true);
+            _.defer(() => {
+                errors.clearAll();
+                $(".nts-input").ntsError("clear");
+            });
         }
 
         /** Registry Button Click */
@@ -107,11 +111,14 @@ module ccg014.a.viewmodel {
             var self = this;
             var selectTitleMenu = _.find(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
             windows.setShared("copyData", selectTitleMenu);
-            windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: '莉悶�ｮ繧ｿ繧､繝医Ν繝｡繝九Η繝ｼ縺ｮ繧ｳ繝斐�ｼ', dialogClass: "no-close" }).onClosed(() => {
+            windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: 'タイトルメニューのコピー', dialogClass: "no-close" }).onClosed(() => {
                 var copiedTitleMenuCD = windows.getShared("copyTitleMenuCD");
-                self.reloadData().done(() => {
-                    self.selectTitleMenuByIndexByCode(copiedTitleMenuCD);
-                });
+                if (copiedTitleMenuCD) {
+                    self.reloadData().done(() => {
+                        self.selectTitleMenuByIndexByCode(copiedTitleMenuCD);
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_20"));
+                    });
+                }
             });
         }
 
@@ -161,9 +168,13 @@ module ccg014.a.viewmodel {
                 _.defer(() => {
                     errors.clearAll();
                     $(".nts-input").ntsError("clear");
-                });      }
+                });
+            }
+//            if (isCreate === false){
+//                self.selectedTitleMenuCD(!null);
+//                    errors.clearAll();}
         }
-        
+
         clearError(): any {
             var self = this;
             if (self.selectedTitleMenu().titleMenuCD !== null) { errors.clearAll(); }
@@ -179,6 +190,7 @@ module ccg014.a.viewmodel {
                 self.listTitleMenu(listTitleMenu);
                 if (listTitleMenu.length > 0) {
                     self.isCreate(false);
+                      _.defer(() => { $("#titleMenuName").focus(); });
                 }
                 else {
                     self.findSelectedTitleMenu(null);
@@ -195,6 +207,7 @@ module ccg014.a.viewmodel {
         /** Select TitleMenu by Code: Create & Update case*/
         private selectTitleMenuByIndexByCode(code: string) {
             this.selectedTitleMenuCD(code);
+            
         }
 
         /** Select TitleMenu by Index: Start & Delete case */

@@ -19,13 +19,12 @@ import nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuRepository;
 public class DefaultTitleMenuService implements TitleMenuService  {
 
 	@Inject
-	TitleMenuRepository titleMenuRepository;
+	private TitleMenuRepository titleMenuRepository;
 	
 	@Inject
-	LayoutService layoutService;
+	private LayoutService layoutService;
 	
-	@Inject
-	IInternationalization internationalization;
+
 	
 	@Override
 	public boolean isExist(String companyID, String titleMenuCD) {
@@ -60,6 +59,14 @@ public class DefaultTitleMenuService implements TitleMenuService  {
 				oldTitleMenu.getCompanyID(), targetTitleMenuCD,
 				targetTitleMenuName, newLayoutId);
 		titleMenuRepository.add(newTitleMenu);
+	}
+
+	@Override
+	public void createTitleMenu(TitleMenu titleMenu) {
+		if (!isExist(titleMenu.getCompanyID(), titleMenu.getTitleMenuCD().v()))
+			titleMenuRepository.add(titleMenu);
+		else
+			throw new BusinessException("Msg_3");
 	}
 	
 }

@@ -1,4 +1,4 @@
-module ccg.model {
+module nts.uk.com.view.ccg.model {
     import ntsNumber = nts.uk.ntsNumber;
 
     /** Transfer data from topPage to LayoutSetting */
