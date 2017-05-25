@@ -178,7 +178,7 @@ module nts.uk.at.view.kml001.a {
                                         self.gridPersonCostList.removeAll();
                                         self.loadData(newData, index);
                                         self.isInsert(false);
-                                        nts.uk.ui.dialog.alert(vmbase.MSG.MSG015);
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                     }).fail(function(res) {
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
@@ -200,7 +200,7 @@ module nts.uk.at.view.kml001.a {
                                     self.personCostList.removeAll();
                                     self.gridPersonCostList.removeAll();
                                     self.loadData(newData, index);
-                                    nts.uk.ui.dialog.alert(vmbase.MSG.MSG015);
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                 }).fail(function(res) {
                                     nts.uk.ui.dialog.alert(res.message);
                                 });
@@ -351,6 +351,13 @@ module nts.uk.at.view.kml001.a {
                             self.isInsert(true);
                         }
                         self.currentGridPersonCost(null);
+                        $("#startDateInput").focus(); 
+                    } else {
+                        if(self.isInsert()){
+                            $("#startDateInput").focus();       
+                        } else {
+                            $("#memo").focus(); 
+                        }    
                     }
                 });
             }
@@ -377,6 +384,7 @@ module nts.uk.at.view.kml001.a {
                                 nts.uk.ui.dialog.alert(res.message);
                             });
                     }
+                    $("#memo").focus(); 
                 });;
             }
             
