@@ -26,7 +26,7 @@ module nts.uk.pr.view.qpp021.b {
         export module model {
             export class PaymentReportQueryDto {
 
-                /** The processing no. */
+               /** The processing no. */
                 processingNo: number;
 
                 /** The processing YM. */
@@ -40,8 +40,6 @@ module nts.uk.pr.view.qpp021.b {
 
                 /** The layout items. */
                 layoutItems: number;
-
-                pageOrientation: string;
             }
 
         }

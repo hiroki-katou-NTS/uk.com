@@ -11,8 +11,8 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="qpp021.b.main.css" />
 			<com:scriptfile path="qpp021.b.start.js" />
-			<com:scriptfile path="qpp021.b.vm.js" />
 			<com:scriptfile path="qpp021.b.service.js" />
+			<com:scriptfile path="qpp021.b.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -56,16 +56,15 @@
 							<div class="valign-center control-group" id="B_LBL_002_003">
 								<span class="label with-image" id="B_LBL_002"> <i
 									class="image image-calendar" /> <span>処理する給与明細書の年月</span>
-								</span> <span id="B_LBL_003"
-									data-bind="text: currentProcessingYm"></span>
+								</span> <span id="B_LBL_003" data-bind="text: currentProcessingYm"></span>
 							</div>
 							<div class="label" id="b-lbl-004">印刷レイアウトを選択してください。</div>
 							<div class="valign-center control-group">
 								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">プリンタの選択</div>
 								<span class="ntsControl"> <label class="ntsRadioBox">
 										<input type="radio" name="textRadioPrintType"
-										data-bind="checkedValue: 0, checked: selectPrinterCategory, enable: false" /> <span
-										class="box"></span><span class="label"
+										data-bind="checkedValue: 0, checked: selectPrinterCategory, enable: false" />
+										<span class="box"></span><span class="label"
 										data-bind="text: 'レーザープリンタ用帳表（圧着式用も含みます）'"></span>
 								</label>
 								</span>
@@ -140,15 +139,18 @@
 									</td>
 									<td style="vertical-align: top;">
 										<div class="B_BTN_001_002_003">
-											<button id="B_BTN_001" class="small" data-bind="click: openDialogScreenD">詳細設定</button>
+											<button id="B_BTN_001" class="small"
+												data-bind="click: openDialogScreenD">詳細設定</button>
 										</div>
 
 										<div class="B_BTN_001_002_003">
-											<button id="B_BTN_002" class="small" data-bind="click: openDialogRefundPadding">余白設定</button>
+											<button id="B_BTN_002" class="small"
+												data-bind="click: openDialogRefundPadding">余白設定</button>
 										</div>
 
 										<div class="B_BTN_001_002_003">
-											<button id="B_BTN_003" class="small" data-bind="click: openDialogScreenH">連絡事項の入力</button>
+											<button id="B_BTN_003" class="small"
+												data-bind="click: openDialogScreenH">連絡事項の入力</button>
 										</div>
 
 										<div class="B_BTN_004">
@@ -158,7 +160,8 @@
 										</div>
 
 										<div class="B_BTN_005">
-											<button id="B_BTN_005" class="large proceed" data-bind="">全員印刷</button>
+											<button id="B_BTN_005" class="large proceed"
+												data-bind="click: printPaymentData">全員印刷</button>
 										</div>
 
 									</td>
@@ -168,27 +171,24 @@
 						</div>
 						<div class="A_LBL_003-step" style="padding: 0px;">
 							<div id="content-step2-left">
-							    <img src="content-step-left.png" width="100%" height="100%"/>
+								<img src="content-step-left.png" width="100%" height="100%" />
 							</div>
 							<div id="content-step2-right">
 								<div class="valign-center control-group"
 									id="content-step2-right-calendar">
 									<span class="label with-image" id="c_label_001"> <i
 										class="image image-calendar" /> <span>処理する給与明細書の年月</span>
-									</span> <span id="c_label_002"
-											data-bind="text: currentProcessingYm"></span>
+									</span> <span id="c_label_002" data-bind="text: currentProcessingYm"></span>
 								</div>
 								<div class="content-step2-right-gridLsit">
-									<img src="content-step-right.PNG" width="100%" height="100%"/>
+									<img src="content-step-right.PNG" width="100%" height="100%" />
 								</div>
 								<div
 									class="content-step2-right-button valign-center control-group">
-									<button id="c-button-001" class="normal" data-bind="click: previous">
-										←レイアウト選択へ戻る
-									</button>
-									<button id="c-button-002" class="normal" data-bind="click: openDialogScreenI">
-										選択社員にコメントを登録する
-									</button>
+									<button id="c-button-001" class="normal"
+										data-bind="click: previous">←レイアウト選択へ戻る</button>
+									<button id="c-button-002" class="normal"
+										data-bind="click: openDialogScreenI">選択社員にコメントを登録する</button>
 									<button id="c-button-003" class="large proceed" data-bind="">印刷</button>
 								</div>
 							</div>

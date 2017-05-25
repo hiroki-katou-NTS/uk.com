@@ -1,4 +1,7 @@
 module nts.uk.pr.view.qpp021.b {
+    
+    import PaymentReportQueryDto = service.model.PaymentReportQueryDto;
+    
     export module viewmodel {
         export class ScreenModel {
             stepList: Array<nts.uk.ui.NtsWizardStep>;
@@ -19,6 +22,7 @@ module nts.uk.pr.view.qpp021.b {
             selectLineItemCode: KnockoutObservable<string>;
 
             currentProcessingYm: KnockoutObservable<string>;
+            currentProcessingYmValue: number;
             isEnablePrintTypes: KnockoutObservable<boolean>;
             isEnableLineItemLayout: KnockoutObservable<boolean>;
 
@@ -40,6 +44,7 @@ module nts.uk.pr.view.qpp021.b {
                 self.selectedCbCode.subscribe(function(newValue) {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     let currentProcessDate = _.find(self.processDateComboBox(), function(item) { return item.cbCode == newValue }).currentProcessingYm;
+                    self.currentProcessingYmValue = currentProcessDate;
                     self.currentProcessingYm(nts.uk.time.formatYearMonth(currentProcessDate));
                     self.getLineItemLayout(currentProcessDate);
                 });
@@ -97,6 +102,7 @@ module nts.uk.pr.view.qpp021.b {
                         baseYM = lstprocessDate[0].currentProcessingYm;
                     }
                     self.getLineItemLayout(baseYM);
+                    self.currentProcessingYmValue = baseYM;
                 }).fail(function(error) {
                     console.log(error.message);
                 });
@@ -181,7 +187,7 @@ module nts.uk.pr.view.qpp021.b {
             openDialogScreenH(): void {
                 var self = this;
                 var processingNo: number = +self.selectedCbCode();
-                var processingYm: number = 201705;
+                var processingYm: number = self.currentProcessingYmValue;
                 nts.uk.ui.windows.setShared("processingNo", processingNo);
                 nts.uk.ui.windows.setShared("processingYm", processingYm);
                 nts.uk.ui.windows.sub.modal('/view/qpp/021/h/index.xhtml', { title: '連絡事項の設定', dialogClass: 'no-close' });
@@ -189,27 +195,69 @@ module nts.uk.pr.view.qpp021.b {
 
             openDialogScreenI(): void {
                 let self = this;
-                let processingNo: number = 1;
-                let processingYm: number = 201705;
+                let processingNo: number = +self.selectedCbCode();
+                let processingYm: number = self.currentProcessingYmValue;
                 nts.uk.ui.windows.setShared("processingNo", processingNo);
                 nts.uk.ui.windows.setShared("processingYm", processingYm);
                 nts.uk.ui.windows.sub.modal('/view/qpp/021/i/index.xhtml', { title: 'コメント登録', dialogClass: 'no-close' });
             }
 
             openDialogRefundPadding(): void {
-                nts.uk.ui.windows.sub.modal('/view/qpp/021/e/index.xhtml', { title: '余白設定', dialogClass: 'no-close' });
-                //            var printTypeRandom = Math.floor((Math.random() * 3) + 1);
-                //            if (printTypeRandom == 1) {
-                //                nts.uk.ui.windows.sub.modal('/view/qpp/021/e/index.xhtml', { title: '余白設定', dialogClass: 'no-close' });
-                //            }
-                //
-                //            if (printTypeRandom == 2) {
-                //                nts.uk.ui.windows.sub.modal('/view/qpp/021/f/index.xhtml', { title: '余白設定2', dialogClass: 'no-close' });
-                //            }
-                //
-                //            if (printTypeRandom == 3) {
-                //                nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
-                //            }
+                var self = this;
+                 nts.uk.ui.windows.setShared("printtype", +self.selectPrintTypeListCode());
+                var pageRefundPadding: number;
+                switch (+self.selectPrintTypeListCode()) {
+                    case 0:
+                        pageRefundPadding = 1;
+                        break;
+                    case 1:
+                        pageRefundPadding = 2;
+                        break;
+                    case 2:
+                        pageRefundPadding = 3;
+                        break;
+                    case 3:
+                        pageRefundPadding = 2;
+                        break;
+                    case 4:
+                        pageRefundPadding = 1;
+                        break;
+                    case 5:
+                        pageRefundPadding = 1;
+                        break;
+                    default:
+                        break;
+                }
+                switch (pageRefundPadding) {
+                    case 1:
+                        nts.uk.ui.windows.sub.modal('/view/qpp/021/e/index.xhtml', { title: '余白設定', dialogClass: 'no-close' });
+                        break;
+                    case 2:
+                        nts.uk.ui.windows.sub.modal('/view/qpp/021/f/index.xhtml', { title: '余白設定2', dialogClass: 'no-close' });
+                        break;
+                    case 3:
+                        nts.uk.ui.windows.sub.modal('/view/qpp/021/g/index.xhtml', { title: '余白設定３', dialogClass: 'no-close' });
+                        break;
+                    default: break;
+                }
+
+            }
+            
+            collectDataQuery(): PaymentReportQueryDto {
+                var self = this;
+                var queryDto: PaymentReportQueryDto;
+                queryDto = new PaymentReportQueryDto();
+                queryDto.processingNo = +self.selectedCbCode();
+                queryDto.processingYM = self.currentProcessingYmValue;
+                queryDto.selectPrintTypes = self.selectPrintTypeCode();
+                //queryDto.specificationCodes = self.selectPr;
+                queryDto.layoutItems = +self.selectPrintTypeListCode();
+                return queryDto;
+            }
+
+            printPaymentData(): void {
+                var self = this;
+                service.paymentReportPrint(self.collectDataQuery());
             }
         }
 
