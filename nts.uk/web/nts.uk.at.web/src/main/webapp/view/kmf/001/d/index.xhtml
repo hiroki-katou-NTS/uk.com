@@ -14,6 +14,7 @@
 			<com:scriptfile path="kmf001.d.service.js" />
 			<com:scriptfile path="kmf001.d.vm.js" />
 			<com:scriptfile path="kmf001.d.start.js" />
+			<com:scriptfile set="IGNITE" />
 			<script type="text/javascript">
 				// TODO: Code validate.
 				__viewContext.primitiveValueConstraints.NumberOfYear = {
@@ -61,13 +62,13 @@
 									</td>
 									<td>
 										<div class="margin-bottom">
-											<input data-bind="ntsTextEditor: {
+											<!-- <input data-bind="ntsTextEditor: {
 												value: retentionYearsAmount,
 												constraint: 'NumberOfYear',
 												option: textEditorOption,
 												required: true,
 												enable: true,
-												readonly: false}" />
+												readonly: false}" /> -->
 										</div>
 									</td>
 								</tr>
@@ -79,7 +80,7 @@
 										</div>
 									</td>
 									<td>
-										<div class="margin-bottom">
+									<!-- 	<div class="margin-bottom">
 											<input data-bind="ntsTextEditor: {
 												value: maxDaysCumulation,
 												constraint: 'MaxOfDays',
@@ -87,7 +88,7 @@
 												required: true,
 												enable: true,
 												readonly: false}" />
-										</div>
+										</div> -->
 									</td>
 								</tr>
 							</TBODY>
@@ -157,7 +158,7 @@
 										<td>
 											<div>
 												<input data-bind="ntsTextEditor: {
-													value: numberOfYear,
+													value: retentionYearsAmount,
 													constraint: 'NumberOfYear',
 													option: textEditorOption,
 													required: true,

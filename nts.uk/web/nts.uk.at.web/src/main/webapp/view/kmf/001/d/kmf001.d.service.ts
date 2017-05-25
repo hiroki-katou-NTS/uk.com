@@ -4,17 +4,17 @@ module nts.uk.pr.view.kmf001 {
          *  Service paths
          */
         var paths: any = {
-            findRetentionYearlyByCompany: 'ctx/pr/core/vacation/setting/retentionyearly/find',
+            findRetentionYearlyByCompany: 'ctx/at/core/vacation/setting/retentionyearly/find',
             saveRetentionYearly: 'ctx/pr/core/vacation/setting/retentionyearly/save'
         };
 
         /**
          * Normal service.
          */
-        export class Service {
-            constructor() {
-            }
-        }
+//        export class Service {
+//            constructor() {
+//            }
+//        }
         
         export function findRetentionYearly(): JQueryPromise<model.RetentionYearlyModel> {
             return nts.uk.request.ajax(paths.findRetentionYearlyByCompany);

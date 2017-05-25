@@ -18,8 +18,8 @@ module nts.uk.pr.view.kmf001.d {
 
             constructor() {
                 var self = this;
-                self.retentionYearsAmount = ko.observable(1);
-                self.maxDaysCumulation = ko.observable(40);
+                self.retentionYearsAmount = ko.observable(null);
+                self.maxDaysCumulation = ko.observable(null);
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "50px",
                     textmode: "text",
@@ -35,7 +35,7 @@ module nts.uk.pr.view.kmf001.d {
                     { headerText: '名称', key: 'name', width: 150 },
                     { headerText: '設定済', key: 'alreadySet', width: 150 }
                 ]);
-                self.selectedCode = ko.observable(null);
+                self.selectedCode = ko.observable('');
                 self.managementOption = ko.observableArray<ManagementModel>([
                     new ManagementModel(1, '管理す'),
                     new ManagementModel(0, '管理しな')
@@ -50,8 +50,14 @@ module nts.uk.pr.view.kmf001.d {
                 var dfd = $.Deferred<void>();
                 var self = this;
                 service.findRetentionYearly().done(function(data: service.model.RetentionYearlyModel) {
-                    self.retentionYearsAmount(data.retentionYearsAmount);
-                    self.maxDaysCumulation(data.maxDaysCumulation);
+                    if(data == null) {
+                        self.retentionYearsAmount(1);
+                        self.maxDaysCumulation(40);
+                    }
+                    else {
+                        self.retentionYearsAmount(data.retentionYearsAmount());
+                        self.maxDaysCumulation(data.maxDaysCumulation());
+                    }
                     dfd.resolve();
                 })
                 return dfd.promise();
