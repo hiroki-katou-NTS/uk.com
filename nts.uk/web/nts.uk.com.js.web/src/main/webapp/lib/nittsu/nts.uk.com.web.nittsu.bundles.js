@@ -3295,6 +3295,7 @@ var nts;
                             formData.append("stereotype", option.stereoType);
                             // HTML file input, chosen by user
                             formData.append("userfile", file[0]);
+                            formData.append("filename", file[0].name);
                             if (file[0]) {
                                 return nts.uk.request.uploadFile(formData, option);
                             }
@@ -3503,7 +3504,9 @@ var nts;
                                 $grid.igGrid("commit");
                                 if ($grid.igGrid("hasVerticalScrollbar")) {
                                     var current = $grid.ntsGridList("getSelected");
-                                    $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);
+                                    if (current !== undefined) {
+                                        $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);
+                                    }
                                 }
                             }
                         }
@@ -3761,16 +3764,18 @@ var nts;
                         }
                     };
                     function selectAll($list) {
-                        $list.find('.nts-list-box > li').addClass("ui-selected");
-                        $list.find("li").attr("clicked", "");
-                        $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
+                        var $grid = $list.find(".ntsListBox");
+                        var options = $grid.igGrid("option", "dataSource");
+                        var primaryKey = $grid.igGrid("option", "primaryKey");
+                        _.forEach(options, function (option, idx) {
+                            $grid.igGridSelection("selectRowById", option[primaryKey]);
+                        });
+                        $grid.triggerHandler('selectionchanged');
                     }
                     function deselectAll($list) {
-                        var selectListBoxContainer = $list.find('.nts-list-box');
-                        selectListBoxContainer.data('value', '');
-                        $list.find('.nts-list-box > li').removeClass("ui-selected");
-                        $list.find('.nts-list-box > li > div').removeClass("ui-selected");
-                        $list.trigger("selectionChange");
+                        var $grid = $list.find(".ntsListBox");
+                        $grid.igGridSelection('clearSelection');
+                        $grid.triggerHandler('selectionchanged');
                     }
                 })(ntsListBox || (ntsListBox = {}));
                 var ntsEditor;
@@ -4510,7 +4515,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_3) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -4533,7 +4538,7 @@ var nts;
                         var checkBoxText;
                         // Container
                         var container = $(element);
-                        container.addClass("ntsControl").on("click", function (e) {
+                        container.addClass("ntsControl ntsCheckBox").attr("tabindex", "0").on("click", function (e) {
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
@@ -4544,7 +4549,7 @@ var nts;
                             checkBoxText = container.text();
                             container.text('');
                         }
-                        var $checkBoxLabel = $("<label class='ntsCheckBox'></label>");
+                        var $checkBoxLabel = $("<label class='ntsCheckBox-label'></label>");
                         var $checkBox = $('<input type="checkbox">').on("change", function () {
                             if (typeof setChecked === "function")
                                 setChecked($(this).is(":checked"));
@@ -4553,6 +4558,19 @@ var nts;
                         if (checkBoxText && checkBoxText.length > 0)
                             var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
                         $checkBoxLabel.appendTo(container);
+                        container.keypress(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code === 32) {
+                                var checkbox = container.find("input[type='checkbox']:first");
+                                if (checkbox.is(":checked")) {
+                                    checkbox.prop("checked", false);
+                                }
+                                else {
+                                    checkbox.prop("checked", true);
+                                }
+                                evt.preventDefault();
+                            }
+                        });
                     };
                     /**
                      * Update
@@ -4622,6 +4640,20 @@ var nts;
                                             return _.isEqual(JSON.parse(ko.toJSON(value)), self.data("value"));
                                         }));
                                 });
+                                checkBoxLabel.attr("tabindex", "0");
+                                checkBoxLabel.keypress(function (evt, ui) {
+                                    var code = evt.which || evt.keyCode;
+                                    if (code === 32) {
+                                        var cb = checkBoxLabel.find("input[type='checkbox']:first");
+                                        if (cb.is(":checked")) {
+                                            cb.prop("checked", false);
+                                        }
+                                        else {
+                                            cb.prop("checked", true);
+                                        }
+                                        evt.preventDefault();
+                                    }
+                                });
                                 var disableOption = option["enable"];
                                 if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
                                     checkBox.attr("disabled", "disabled");
@@ -4643,26 +4675,26 @@ var nts;
                             }) !== undefined);
                         });
                         // Enable
-                        if ((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)) {
-                            container.data("enable", _.clone(enable));
-                            if (enable) {
-                                _.forEach(container.find("input[type='checkbox']"), function (checkbox) {
-                                    var dataOpion = $(checkbox).data("option");
-                                    if (dataOpion["enable"] === true) {
-                                        $(checkbox).removeAttr("disabled");
-                                    }
-                                });
-                            }
-                            else {
-                                container.find("input[type='checkbox']").attr("disabled", "disabled");
-                            }
+                        //            if((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)){
+                        container.data("enable", _.clone(enable));
+                        if (enable === true) {
+                            _.forEach(container.find("input[type='checkbox']"), function (checkbox) {
+                                var dataOpion = $(checkbox).data("option");
+                                if (dataOpion["enable"] === true) {
+                                    $(checkbox).removeAttr("disabled");
+                                }
+                            });
                         }
+                        else if (enable === false) {
+                            container.find("input[type='checkbox']").attr("disabled", "disabled");
+                        }
+                        //            }
                     };
                     return NtsMultiCheckBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -4672,7 +4704,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_3) {
+        (function (ui_4) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -4688,6 +4720,14 @@ var nts;
                      * Init.
                      */
                     ComboBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var container = $(element);
+                        container.keypress(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code === 32) {
+                                container.igCombo("openDropDown");
+                                evt.preventDefault();
+                            }
+                        });
                     };
                     /**
                      * Update
@@ -4696,7 +4736,7 @@ var nts;
                         // Get data.
                         var data = valueAccessor();
                         var self = this;
-                        // Get options.
+                        // Get options. 
                         var options = ko.unwrap(data.options);
                         // Get options value.
                         var optionValue = ko.unwrap(data.optionsValue);
@@ -4815,7 +4855,7 @@ var nts;
                     return ComboBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
-            })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
+            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5795,7 +5835,7 @@ var nts;
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         var validator = this.getValidator(data);
                         $input.on("keyup", function (e) {
-                            console.log(e);
+                            //                console.log(e);
                             var code = e.keyCode || e.which;
                             if (!readonly && code.toString() !== '9') {
                                 var newText = $input.val();
@@ -5807,7 +5847,7 @@ var nts;
                             }
                         });
                         $input.on("blur", function (e) {
-                            console.log(e);
+                            //                console.log(e);
                             if (!readonly) {
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
@@ -6177,7 +6217,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_4) {
+        (function (ui_5) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -6339,7 +6379,7 @@ var nts;
                     return NtsGridListBindingHandler;
                 }());
                 ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
-            })(koExtentions = ui_4.koExtentions || (ui_4.koExtentions = {}));
+            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6378,7 +6418,7 @@ var nts;
                         //            var required = ko.unwrap(data.required) || false;
                         var columns = data.columns;
                         // Container
-                        var elementId = $(element).attr("id");
+                        var elementId = $(element).addClass("listbox-wrapper").attr("id");
                         var gridId = elementId;
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             gridId = nts.uk.util.randomId();
@@ -6455,9 +6495,6 @@ var nts;
                             });
                             container.data("chaninged", true);
                             document.getElementById(elementId).dispatchEvent(changingEvent);
-                            if (changingEvent.returnValue !== undefined && changingEvent.returnValue === false) {
-                                return false;
-                            }
                         });
                         container.bind('selectionchanged', function () {
                             //                console.log(ui);
@@ -6563,27 +6600,36 @@ var nts;
                             container.igGrid('option', 'dataSource', currentSources);
                             container.igGrid("dataBind");
                         }
-                        var dataValue = data.value();
                         var isMultiOld = container.igGridSelection('option', 'multipleSelection');
-                        if (container.data("fullValue")) {
-                            if (isMultiOld) {
-                                dataValue = _.map(dataValue, optionValue);
-                            }
-                            else {
-                                dataValue = dataValue[optionValue];
-                            }
-                        }
                         if (isMultiOld !== isMultiSelect) {
                             container.igGridSelection('option', 'multipleSelection', isMultiSelect);
-                            if (isMultiOld && !nts.uk.util.isNullOrUndefined(dataValue) && dataValue.length > 0) {
+                            if (isMultiOld && !nts.uk.util.isNullOrUndefined(data.value()) && data.value().length > 0) {
                                 data.value(data.value()[0]);
                             }
-                            else if (!isMultiOld && !nts.uk.util.isNullOrUndefined(dataValue)) {
+                            else if (!isMultiOld && !nts.uk.util.isNullOrUndefined(data.value())) {
                                 data.value([data.value()]);
+                            }
+                            var dataValue = data.value();
+                            if (container.data("fullValue")) {
+                                if (isMultiOld) {
+                                    dataValue = _.map(dataValue, optionValue);
+                                }
+                                else {
+                                    dataValue = dataValue[optionValue];
+                                }
                             }
                             container.ntsGridList('setSelected', dataValue);
                         }
                         else {
+                            var dataValue = data.value();
+                            if (container.data("fullValue")) {
+                                if (isMultiOld) {
+                                    dataValue = _.map(dataValue, optionValue);
+                                }
+                                else {
+                                    dataValue = dataValue[optionValue];
+                                }
+                            }
                             var currentSelectedItems = container.ntsGridList('getSelected');
                             if (isMultiOld) {
                                 if (currentSelectedItems) {
@@ -6627,7 +6673,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -6641,9 +6687,43 @@ var nts;
                      */
                     NtsRadioBoxGroupBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        $(element).addClass("ntsControl");
+                        var container = $(element);
+                        container.addClass("ntsControl radio-wrapper");
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        $(element).data("enable", null);
+                        container.data("enable", null);
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
+                            container.attr("tabindex", "0");
+                        }
+                        container.keydown(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code === 32) {
+                                evt.preventDefault();
+                            }
+                        });
+                        container.keyup(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code === 32) {
+                                container.find("input[type='radio']:first").prop("checked", true);
+                            }
+                            else if (code === 37 || code === 38) {
+                                var inputList = container.find("input[type='radio']");
+                                var currentSelect = _.findIndex(inputList, function (item) {
+                                    return $(item).is(":checked");
+                                });
+                                $(inputList[currentSelect - 1]).prop("checked", true);
+                            }
+                            else if (code === 39 || code === 40) {
+                                var inputList = container.find("input[type='radio']");
+                                var currentSelect = _.findIndex(inputList, function (item) {
+                                    return $(item).is(":checked");
+                                });
+                                $(inputList[currentSelect + 1]).prop("checked", true);
+                            }
+                            container.focus();
+                        });
+                        //            container.find(".ntsRadioBox").focus(function (evt, ui){
+                        //                console.log(evt);            
+                        //            });
                     };
                     /**
                      * Update
@@ -6667,10 +6747,10 @@ var nts;
                             container.empty();
                             _.forEach(options, function (option) {
                                 var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
-                                var radioBox = $('<input type="radio">').attr("name", radioName).data("value", getOptionValue(option)).on("change", function () {
-                                    var self = this;
-                                    if ($(self).is(":checked"))
-                                        selectedValue($(self).data("value"));
+                                var radioBox = $('<input type="radio">').data("option", option).attr("name", radioName).data("value", getOptionValue(option)).on("change", function () {
+                                    var self = $(this);
+                                    if (self.is(":checked"))
+                                        selectedValue(self.data("value"));
                                 });
                                 var disableOption = option["enable"];
                                 if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
@@ -6692,23 +6772,34 @@ var nts;
                         if (checkedRadio !== undefined)
                             $(checkedRadio).prop("checked", true);
                         // Enable
-                        if (!_.isEqual(container.data("enable"), enable)) {
-                            container.data("enable", _.clone(enable));
-                            (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
-                            _.forEach(data.options(), function (option) {
-                                if (typeof option["enable"] === "function") {
-                                    option["enable"](enable);
-                                }
-                                else {
-                                    option["enable"] = (enable);
+                        //            if(!_.isEqual(container.data("enable"), enable)){
+                        //                container.data("enable",  _.clone(enable));
+                        (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
+                        _.forEach(data.options(), function (option) {
+                            if (typeof option["enable"] === "function") {
+                                option["enable"](enable);
+                            }
+                            else {
+                                option["enable"] = (enable);
+                            }
+                        });
+                        if (enable === true) {
+                            _.forEach(container.find("input[type='radio']"), function (radio) {
+                                var dataOpion = $(radio).data("option");
+                                if (dataOpion["enable"] === true) {
+                                    $(radio).removeAttr("disabled");
                                 }
                             });
                         }
+                        else {
+                            container.find("input[type='radio']").attr("disabled", "disabled");
+                        }
+                        //            }
                     };
                     return NtsRadioBoxGroupBindingHandler;
                 }());
                 ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6718,7 +6809,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_5) {
+        (function (ui_7) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -6976,7 +7067,7 @@ var nts;
                     return NtsSearchBoxBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSearchBox'] = new NtsSearchBoxBindingHandler();
-            })(koExtentions = ui_5.koExtentions || (ui_5.koExtentions = {}));
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6986,7 +7077,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_6) {
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -7699,7 +7790,7 @@ var nts;
                     };
                     return ListItemTransporter;
                 }());
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7709,7 +7800,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_9) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -7725,6 +7816,42 @@ var nts;
                      * Init.
                      */
                     NtsSwitchButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var container = $(element);
+                        container.keydown(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code === 32) {
+                                evt.preventDefault();
+                            }
+                        });
+                        container.keyup(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code === 32) {
+                                var selectedCode = container.find(".nts-switch-button:first").data('swbtn');
+                                data.value(selectedCode);
+                            }
+                            else if (code === 37 || code === 38) {
+                                var inputList = container.find(".nts-switch-button");
+                                var currentSelect = _.findIndex(inputList, function (item) {
+                                    return $(item).data('swbtn') === data.value();
+                                });
+                                var selectedCode = $(inputList[currentSelect - 1]).data('swbtn');
+                                if (!nts.uk.util.isNullOrUndefined(selectedCode)) {
+                                    data.value(selectedCode);
+                                }
+                            }
+                            else if (code === 39 || code === 40) {
+                                var inputList = container.find(".nts-switch-button");
+                                var currentSelect = _.findIndex(inputList, function (item) {
+                                    return $(item).data('swbtn') === data.value();
+                                });
+                                var selectedCode = $(inputList[currentSelect + 1]).data('swbtn');
+                                if (!nts.uk.util.isNullOrUndefined(selectedCode)) {
+                                    data.value(selectedCode);
+                                }
+                            }
+                            container.focus();
+                        });
                     };
                     /**
                      * Update
@@ -7742,6 +7869,7 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         // Container.
                         var container = $(element);
+                        container.addClass("switchButton-wrapper").attr("tabindex", "0");
                         // Remove deleted button.
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);
@@ -7794,11 +7922,14 @@ var nts;
                         });
                         // Enable
                         (enable === true) ? $('button', container).prop("disabled", false) : $('button', container).prop("disabled", true);
+                        container.find(".nts-switch-button").focus(function (evt) {
+                            container.focus();
+                        });
                     };
                     return NtsSwitchButtonBindingHandler;
                 }());
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7808,7 +7939,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_7) {
+        (function (ui_10) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -7888,7 +8019,7 @@ var nts;
                     return TabPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+            })(koExtentions = ui_10.koExtentions || (ui_10.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -7898,7 +8029,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_8) {
+        (function (ui_11) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -8033,7 +8164,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
+            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8043,7 +8174,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_9) {
+        (function (ui_12) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -8294,7 +8425,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-            })(koExtentions = ui_9.koExtentions || (ui_9.koExtentions = {}));
+            })(koExtentions = ui_12.koExtentions || (ui_12.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8436,7 +8567,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_10) {
+        (function (ui_13) {
             var option;
             (function (option_2) {
                 var DialogOption = (function () {
@@ -8569,9 +8700,9 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ui_10.errors.ErrorHeader("tab", "タブ", 90, true),
-                            new ui_10.errors.ErrorHeader("location", "エラー箇所", 115, true),
-                            new ui_10.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                            new ui_13.errors.ErrorHeader("tab", "タブ", 90, true),
+                            new ui_13.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new ui_13.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -8601,7 +8732,7 @@ var nts;
                     return DialogButton;
                 }());
                 option_2.DialogButton = DialogButton;
-            })(option = ui_10.option || (ui_10.option = {}));
+            })(option = ui_13.option || (ui_13.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8723,6 +8854,86 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 /**
+                 * CheckBox binding handler
+                 */
+                var NtsFileUploadBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function NtsFileUploadBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsFileUploadBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var fileName = data.filename;
+                        var suportedExtension = ko.unwrap(data.accept);
+                        var textId = ko.unwrap(data.text);
+                        var control = $(element);
+                        var onchange = data.onchange;
+                        var fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
+                        var fileBrowserButton = $("<INPUT class='browser-button' type='button' />");
+                        var browserButtonText;
+                        if (textId) {
+                            browserButtonText = nts.uk.resource.getText(textId);
+                        }
+                        else {
+                            browserButtonText = "browser";
+                        }
+                        fileBrowserButton.val(browserButtonText);
+                        var fileNameLable = $("<span class='filename'></span> ");
+                        var fileInput = $("<input style ='display:none' type='file' class='fileinput'/>");
+                        if (suportedExtension) {
+                            fileInput.attr("accept", suportedExtension.toString());
+                        }
+                        fileuploadContainer.append(fileBrowserButton);
+                        fileuploadContainer.append(fileNameLable);
+                        fileuploadContainer.append(fileInput);
+                        fileuploadContainer.appendTo(control);
+                        fileInput.change(function () {
+                            if (fileName != undefined) {
+                                data.filename($(this).val());
+                            }
+                            else {
+                                fileNameLable.text($(this).val());
+                            }
+                            if (typeof onchange == 'function') {
+                                onchange($(this).val());
+                            }
+                        });
+                        fileBrowserButton.click(function () {
+                            fileInput.click();
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsFileUploadBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var fileName = ko.unwrap(data.filename);
+                        var control = $(element);
+                        var fileNameLable = control.parent().find(".filename");
+                        fileNameLable.text(fileName);
+                    };
+                    return NtsFileUploadBindingHandler;
+                }());
+                ko.bindingHandlers['ntsFileUpload'] = new NtsFileUploadBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
                  * HelpButton binding handler
                  */
                 var NtsHelpButtonBindingHandler = (function () {
@@ -8808,7 +9019,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_11) {
+        (function (ui_14) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -8898,7 +9109,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_11.koExtentions || (ui_11.koExtentions = {}));
+            })(koExtentions = ui_14.koExtentions || (ui_14.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -8947,86 +9158,6 @@ var nts;
                 }());
                 sharedvm.KibanTimer = KibanTimer;
             })(sharedvm = ui.sharedvm || (ui.sharedvm = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * CheckBox binding handler
-                 */
-                var NtsFileUploadBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
-                    function NtsFileUploadBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsFileUploadBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var fileName = data.filename;
-                        var suportedExtension = ko.unwrap(data.accept);
-                        var textId = ko.unwrap(data.text);
-                        var control = $(element);
-                        var onchange = data.onchange;
-                        var fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
-                        var fileBrowserButton = $("<INPUT class='browser-button' type='button' />");
-                        var browserButtonText;
-                        if (textId) {
-                            browserButtonText = nts.uk.resource.getText(textId);
-                        }
-                        else {
-                            browserButtonText = "browser";
-                        }
-                        fileBrowserButton.val(browserButtonText);
-                        var fileNameLable = $("<span class='filename'></span> ");
-                        var fileInput = $("<input style ='display:none' type='file' class='fileinput'/>");
-                        if (suportedExtension) {
-                            fileInput.attr("accept", suportedExtension.toString());
-                        }
-                        fileuploadContainer.append(fileBrowserButton);
-                        fileuploadContainer.append(fileNameLable);
-                        fileuploadContainer.append(fileInput);
-                        fileuploadContainer.appendTo(control);
-                        fileInput.change(function () {
-                            if (fileName != undefined) {
-                                data.filename($(this).val());
-                            }
-                            else {
-                                fileNameLable.text($(this).val());
-                            }
-                            if (typeof onchange == 'function') {
-                                onchange($(this).val());
-                            }
-                        });
-                        fileBrowserButton.click(function () {
-                            fileInput.click();
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsFileUploadBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var fileName = ko.unwrap(data.filename);
-                        var control = $(element);
-                        var fileNameLable = control.parent().find(".filename");
-                        fileNameLable.text(fileName);
-                    };
-                    return NtsFileUploadBindingHandler;
-                }());
-                ko.bindingHandlers['ntsFileUpload'] = new NtsFileUploadBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

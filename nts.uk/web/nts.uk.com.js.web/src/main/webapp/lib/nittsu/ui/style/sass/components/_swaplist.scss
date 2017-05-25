@@ -28,3 +28,8 @@
 .ntsSearchArea div{
 	display: inline-block;
 }
+.switchButton-wrapper {
+	&:focus {
+	  	outline: 1px solid #0096f2;
+	}
+}

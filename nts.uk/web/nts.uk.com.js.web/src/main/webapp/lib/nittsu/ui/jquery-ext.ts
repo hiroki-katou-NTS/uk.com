@@ -261,7 +261,9 @@ module nts.uk.ui.jqueryExtentions {
                     $grid.igGrid("commit");
                     if ($grid.igGrid("hasVerticalScrollbar")) {
                         let current = $grid.ntsGridList("getSelected");
-                        $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);
+                        if(current !== undefined){
+                            $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);        
+                        }
                     }
                 }
             }
@@ -569,17 +571,19 @@ module nts.uk.ui.jqueryExtentions {
         };
 
         function selectAll($list: JQuery) {
-            $list.find('.nts-list-box > li').addClass("ui-selected");
-            $list.find("li").attr("clicked", "");
-            $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
+            let $grid = $list.find(".ntsListBox");
+            let options = $grid.igGrid("option", "dataSource");
+            let primaryKey = $grid.igGrid("option", "primaryKey");
+            _.forEach(options, function (option, idx){
+                $grid.igGridSelection("selectRowById", option[primaryKey]);        
+            });
+            $grid.triggerHandler('selectionchanged');
         }
 
         function deselectAll($list: JQuery) {
-            var selectListBoxContainer = $list.find('.nts-list-box');
-            selectListBoxContainer.data('value', '');
-            $list.find('.nts-list-box > li').removeClass("ui-selected");
-            $list.find('.nts-list-box > li > div').removeClass("ui-selected");
-            $list.trigger("selectionChange");
+            let $grid = $list.find(".ntsListBox");
+            $grid.igGridSelection('clearSelection');
+            $grid.triggerHandler('selectionchanged');
         }
     }
 

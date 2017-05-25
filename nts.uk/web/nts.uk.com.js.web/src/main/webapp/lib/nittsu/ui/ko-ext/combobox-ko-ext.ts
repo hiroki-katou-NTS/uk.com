@@ -16,10 +16,19 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
+            var container = $(element);
+            
+            container.keypress(function (evt, ui){
+                let code = evt.which || evt.keyCode;
+                if (code === 32) {
+                    container.igCombo("openDropDown");
+                    evt.preventDefault();      
+//                    $('html, body').scrollTop(container.first().offset().top - 200);      
+                } 
+            });
         }
 
-        /**
+        /** 
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -27,7 +36,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var self = this;
 
-            // Get options.
+            // Get options. 
             var options: Array<any> = ko.unwrap(data.options);
 
             // Get options value.
