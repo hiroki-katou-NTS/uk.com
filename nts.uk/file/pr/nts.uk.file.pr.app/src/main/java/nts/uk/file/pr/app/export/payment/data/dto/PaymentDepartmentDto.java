@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DepartmentDto {
+public class PaymentDepartmentDto {
 	
 	/** The department code. */
 	private String departmentCode;

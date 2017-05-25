@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SalaryItemDto {
+public class PaymentSalaryItemDto {
 
 	/** The item name. */
 	private String itemName;
@@ -22,8 +22,8 @@ public class SalaryItemDto {
 	/** The is view. */
 	private boolean isView;
 
-	public static SalaryItemDto defaultData() {
-		SalaryItemDto dto = new SalaryItemDto();
+	public static PaymentSalaryItemDto defaultData() {
+		PaymentSalaryItemDto dto = new PaymentSalaryItemDto();
 		dto.setItemName("");
 		dto.setItemVal(BigDecimal.ZERO);
 		dto.setView(false);

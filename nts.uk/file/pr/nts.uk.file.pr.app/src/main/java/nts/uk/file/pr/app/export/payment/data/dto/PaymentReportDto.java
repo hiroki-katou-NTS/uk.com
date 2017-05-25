@@ -16,30 +16,36 @@ import lombok.Setter;
 @Setter
 public class PaymentReportDto {
 	/** The department info. */
-	private DepartmentDto departmentInfo;
+	private PaymentDepartmentDto departmentInfo;
 
 	/** The employee info. */
-	private EmployeeDto employeeInfo;
+	private PaymentEmployeeDto employeeInfo;
+	
+	/** The company info. */
+	private PaymentCompanyDto companyInfo;
 
 	/** 支給項目 */
-	private List<SalaryItemDto> paymentItems;
+	private List<PaymentSalaryItemDto> paymentItems;
 
 	/** 控除項目 */
-	private List<SalaryItemDto> deductionItems;
+	private List<PaymentSalaryItemDto> deductionItems;
 
 	/** 勤怠項目 */
-	private List<SalaryItemDto> attendanceItems;
+	private List<PaymentSalaryItemDto> attendanceItems;
 
 	/** 記事項目*/
-	private List<SalaryItemDto> articleItems;
+	private List<PaymentSalaryItemDto> articleItems;
+	
+	/** 他項目*/
+	private List<PaymentSalaryItemDto> otherItems;
 	
 	/** The remark. */
 	private String remark;
 	
-	/** The japanese year month. */
-	private String japaneseYearMonth;
-	
 	/** The menu. */
 	private String menu;
+	
+	/** The name. */
+	private String name;
 	
 }

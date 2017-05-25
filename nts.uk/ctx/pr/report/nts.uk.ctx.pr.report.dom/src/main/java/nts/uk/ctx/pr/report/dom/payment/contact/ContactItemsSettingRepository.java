@@ -34,5 +34,5 @@ public interface ContactItemsSettingRepository {
 	 * @param empCd the emp cd
 	 * @return the remark
 	 */
-	String getRemark(ContactItemsCode code, String empCd);
+	String getRemark(ContactItemsCode code, String empCd, String persionId);
 }

@@ -9,7 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
-import nts.uk.file.pr.app.export.payment.data.dto.RefundPaddingDto;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentRefundPaddingDto;
 
 /**
  * The Class PaymentReportData.
@@ -22,5 +22,8 @@ public class PaymentReportData {
 	private List<PaymentReportDto> reportData;
 	
 	/** The config. */
-	private RefundPaddingDto config;
+	private PaymentRefundPaddingDto config;
+	
+	/** The layout item. */ 
+	private int layoutItem;
 }
