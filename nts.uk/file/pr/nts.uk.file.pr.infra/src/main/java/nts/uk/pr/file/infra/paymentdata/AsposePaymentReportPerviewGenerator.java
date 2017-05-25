@@ -4,59 +4,26 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.paymentdata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.payment.PaymentReportPreviewGenerator;
 import nts.uk.file.pr.app.export.payment.PaymentReportPreviewQuery;
+import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
+import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
+import nts.uk.pr.file.infra.payment.PaymentGenerator;
+import nts.uk.pr.file.infra.payment.PaymentReportPreviewData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
-import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
  * The Class AsposePaymentReportPerviewGenerator.
  */
 @Stateless
-public class AsposePaymentReportPerviewGenerator extends AsposeCellsReportGenerator
+public class AsposePaymentReportPerviewGenerator extends AsposePaymentReportBaseGenerator
 	implements PaymentReportPreviewGenerator {
-
-	/** The Constant PAGE_E1. */
-	private static final String PAGE_E1 = "E1";
-
-	/** The Constant PAGE_E2. */
-	private static final String PAGE_E2 = "E2";
-
-	/** The Constant PAGE_E3. */
-	private static final String PAGE_E3 = "E3";
-
-	/** The Constant PAGE_F. */
-	private static final String PAGE_F1 = "F1";
-
-	/** The Constant PAGE_F2. */
-	private static final String PAGE_F2 = "F2";
-
-	/** The Constant PAGE_G. */
-	private static final String PAGE_G = "G";
-
-	/** The Constant TEMPLATE_PATH_PREVIEW_E1. */
-	private static final String TEMPLATE_PATH_PREVIEW_E1 = "report/QPP021_PE1.xlsx";
-	
-	/** The Constant TEMPLATE_PATH_PREVIEW_E2. */
-	private static final String TEMPLATE_PATH_PREVIEW_E2 = "report/QPP021_PE2.xlsx";
-	
-	/** The Constant TEMPLATE_PATH_PREVIEW_E3. */
-	private static final String TEMPLATE_PATH_PREVIEW_E3 = "report/QPP021_PE3.xlsx";
-	
-	/** The Constant TEMPLATE_PATH_PREVIEW_F1. */
-	private static final String TEMPLATE_PATH_PREVIEW_F1 = "report/QPP021_PF1.xlsx";
-	
-	/** The Constant TEMPLATE_PATH_PREVIEW_E3. */
-	private static final String TEMPLATE_PATH_PREVIEW_F2 = "report/QPP021_PF2.xlsx";
-	
-	/** The Constant TEMPLATE_PATH_PREVIEW_G. */
-	private static final String TEMPLATE_PATH_PREVIEW_G = "report/QPP021_PG.xlsx";
-
-	/** The Constant OUTPUT_PDF_NAME. */
-	private static final String OUTPUT_PDF_NAME = "給与明細書.pdf";
 
 	/*
 	 * (non-Javadoc)
@@ -67,37 +34,46 @@ public class AsposePaymentReportPerviewGenerator extends AsposeCellsReportGenera
 	 */
 	@Override
 	public void generate(FileGeneratorContext fileContext, PaymentReportPreviewQuery query) {
-		try {
-			AsposeCellsReportContext ctx = null;
-			switch (query.getPageLayout()) {
-			case PAGE_E1:
-				ctx = this.createContext(TEMPLATE_PATH_PREVIEW_E1);
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-				break;
-			case PAGE_E2:
-				ctx = this.createContext(TEMPLATE_PATH_PREVIEW_E2);
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-				break;
-			case PAGE_E3:
-				ctx = this.createContext(TEMPLATE_PATH_PREVIEW_E3);
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-				break;
-			case PAGE_F1:
-				ctx = this.createContext(TEMPLATE_PATH_PREVIEW_F1);
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-				break;
-			case PAGE_F2:
-				ctx = this.createContext(TEMPLATE_PATH_PREVIEW_F2);
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-				break;
-			case PAGE_G:
-				ctx = this.createContext(TEMPLATE_PATH_PREVIEW_G);
-				ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
-				break;
-				
-			default:
-				break;
-			}
+		List<PaymentReportDto> reportData = new ArrayList<>();
+		
+		String teamplate = TEAMPLATE_ZFOLDED;
+
+		switch (query.getPageLayout()) {
+		case 0:
+			teamplate = TEMPLATE_VERTICAL_ONE_PERSON;
+			reportData =  PaymentReportPreviewData.getVerticalOnePreviewData();
+			break;
+		case 1:
+			teamplate = TEMPLATE_VERTICAL_TWO_PERSON;
+			reportData =  PaymentReportPreviewData.getVerticalTwoPreviewData();
+			break;
+		case 2:
+			teamplate = TEMPLATE_VERTICAL_THREE_PERSON;
+			reportData =  PaymentReportPreviewData.getVerticalThreePreviewData();
+			break;
+		case 3:
+			teamplate = TEMPLATE_HORIZONTAL_TWO_PERSON;
+			reportData =  PaymentReportPreviewData.getHorizontalTwoPreviewData();
+			break;
+		case 4:
+			teamplate = TEAMPLATE_ZFOLDED;
+			reportData =  PaymentReportPreviewData.getZFoldedPreviewData();
+			break;
+		case 5:
+			teamplate = TEMPLATE_POSTCARD;
+			reportData =  PaymentReportPreviewData.getPostCardPreviewData();
+			break;
+		default:
+			break;
+		}
+		try (AsposeCellsReportContext ctx = this.createContext(teamplate)) {
+			PaymentReportData data = new PaymentReportData();
+			data.setLayoutItem(query.getPageLayout());
+			data.setReportData(reportData);
+			data.setConfig(query.toDto());
+			PaymentGenerator generator = this.factory.createGenerator(data);
+			generator.generate(ctx, data);
+			ctx.saveAsPdf(this.createNewFile(fileContext, this.getReportName(OUTPUT_PDF_NAME)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
