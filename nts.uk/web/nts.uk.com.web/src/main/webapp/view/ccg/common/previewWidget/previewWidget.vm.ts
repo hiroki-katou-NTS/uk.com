@@ -1,5 +1,5 @@
-module previewWidget.viewmodel {
-    import model = ccg.model;
+module nts.uk.com.view.ccg.common.previewWidget.viewmodel {
+    import model = nts.uk.com.view.ccg.model;
     import windows = nts.uk.ui.windows;
     import location = nts.uk.request.location;
 

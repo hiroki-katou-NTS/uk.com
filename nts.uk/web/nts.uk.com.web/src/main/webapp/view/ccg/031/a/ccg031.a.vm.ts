@@ -1,5 +1,5 @@
-module ccg031.a.viewmodel {
-    import model = ccg.model;
+module nts.uk.com.view.ccg031.a.viewmodel {
+    import model = nts.uk.com.view.ccg.model;
     import windows = nts.uk.ui.windows;
     import ntsNumber = nts.uk.ntsNumber;
     import dialog = nts.uk.ui.dialog;
@@ -102,7 +102,7 @@ module ccg031.a.viewmodel {
             $(element).addClass("placeholder");
             windows.setShared("pgtype", self.pgType, false);
             windows.setShared("size", { row: row, column: column }, false);
-            windows.sub.modal("/view/ccg/031/b/index.xhtml").onClosed(() => {
+            windows.sub.modal("/view/ccg/031/b/index.xhtml", { title: "" }).onClosed(() => {
                 let placement: model.Placement = windows.getShared("placement");
                 if (placement != undefined) {
                     self.placements.push(placement);
@@ -137,6 +137,7 @@ module ccg031.a.viewmodel {
             self.autoExpandLayout();
             self.markOccupiedAll();
             if (self.placements().length > 0) {
+                var checkingPlacements = self.placements()[0].placementID;
                 var movingPlacementIds = self.layoutGrid().markOccupied(self.placements()[0]);
                 self.reorderPlacements(movingPlacementIds, [self.placements()[0].placementID]);
             }
@@ -193,7 +194,7 @@ module ccg031.a.viewmodel {
          * @param movingPlacementIds list placementID need to move
          * @param checkingPlacementIds list placementID need to check overlap
          */
-        private reorderPlacements(movingPlacementIds: Array<string>, checkingPlacementIds: Array<string>): void {
+        private reorderPlacements(movingPlacementIds: Array<string>, checkingPlacementIds: Array<string>): Array<string> {
             var self = this;
             var movingPlacements = _.filter(self.placements(), (placement) => {
                 return _.includes(movingPlacementIds, placement.placementID);
@@ -216,6 +217,8 @@ module ccg031.a.viewmodel {
             });
             if (listOverlapPlacement.length > 0)
                 self.reorderPlacements.call(self, listOverlapPlacement, checkingPlacementIds);
+            else
+                return checkingPlacementIds;
         }
 
         /** Recursive move overlap part */

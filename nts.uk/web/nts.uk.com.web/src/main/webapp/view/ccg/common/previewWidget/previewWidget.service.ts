@@ -1,5 +1,5 @@
-module previewWidget.service {
-    import model = ccg.model;
+module nts.uk.com.view.ccg.common.previewWidget.service {
+    import model = nts.uk.com.view.ccg.model;
 
     var paths = {
         active: "sys/portal/layout/active",

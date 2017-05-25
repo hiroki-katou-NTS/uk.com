@@ -1,5 +1,5 @@
-module ccg031.c.viewmodel {
-    import model = ccg.model;
+module nts.uk.com.view.ccg031.c.viewmodel {
+    import model = nts.uk.com.view.ccg.model;
     import windows = nts.uk.ui.windows;
 
     export class ScreenModel {

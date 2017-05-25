@@ -1,4 +1,4 @@
-module ccg031.a {
+module nts.uk.com.view.ccg031.a {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
