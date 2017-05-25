@@ -10,6 +10,7 @@
 .btn-register {margin-left: 10px;}
 .btn-close {margin-left: 50px;}
 
+.placement-wraper {width: 1060px; height: 715px; }
 .right-area {float:left;}
 .right-area .btn-addcolumn {position:relative; height: 630px; width: 30px; vertical-align: middle; white-space:normal; z-index:2;}
 .right-area .icon-button-arrow-right {width:25px;margin-left:-5px;vertical-align: middle;;}

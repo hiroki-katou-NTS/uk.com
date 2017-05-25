@@ -49,7 +49,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                             item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
                             item.placementPartDto.topPagePartID, item.placementPartDto.type);
                     });
-                    listPlacement = _.orderBy(listPlacement, ['column', 'row'], ['asc', 'asc']);
+                    listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
                     self.placements(listPlacement);
                 }
                 _.defer(() => { self.initDisplay(); });
@@ -66,9 +66,9 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             service.registry(self.parentCode, self.layoutID, self.pgType, self.placements())
                 .done((data) => {
                     self.layoutID = data;
-                    dialog.alert(resource.getMessage("Msg_15"));
+                    dialog.info({messageId: "Msg_15"});
                 }).fail((res) => {
-                    dialog.alert(resource.getMessage(res.messageId));
+                    dialog.alertError({messageId: res.messageId});
                 });
         }
 
@@ -102,7 +102,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             $(element).addClass("placeholder");
             windows.setShared("pgtype", self.pgType, false);
             windows.setShared("size", { row: row, column: column }, false);
-            windows.sub.modal("/view/ccg/031/b/index.xhtml", { title: "" }).onClosed(() => {
+            windows.sub.modal("/view/ccg/031/b/index.xhtml", { title: "ウィジェットの追加" }).onClosed(() => {
                 let placement: model.Placement = windows.getShared("placement");
                 if (placement != undefined) {
                     self.placements.push(placement);
@@ -112,7 +112,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                     self.autoExpandLayout();
                     self.markOccupiedAll();
                     self.setupDragDrop();
-                }
+                };
                 $(element).removeClass("placeholder");
             });
         }
@@ -120,7 +120,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
         /** Open Preview Dialog */
         openPreviewDialog(): void {
             windows.setShared("placements", this.placements(), false);
-            windows.sub.modal("/view/ccg/031/c/index.xhtml");
+            windows.sub.modal("/view/ccg/031/c/index.xhtml", { title: "プレビュー" });
         }
 
         /** Open Preview Dialog */
@@ -137,14 +137,26 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             self.autoExpandLayout();
             self.markOccupiedAll();
             if (self.placements().length > 0) {
-                var checkingPlacements = self.placements()[0].placementID;
-                var movingPlacementIds = self.layoutGrid().markOccupied(self.placements()[0]);
-                self.reorderPlacements(movingPlacementIds, [self.placements()[0].placementID]);
+                self.initReorderPlacements(_.clone(self.placements()), []);
             }
             self.setupPositionAndSizeAll();
             self.setupDragDrop();
         }
 
+        private initReorderPlacements(clonePlacements: Array<model.Placement>, checkingPlacementIds: Array<string>): void {
+            var self = this;
+            if (clonePlacements.length > 0) {
+                var movingPlacementIds = self.layoutGrid().markOccupied(clonePlacements[0]);
+                checkingPlacementIds.push(clonePlacements[0].placementID);
+                if (movingPlacementIds.length > 0) {
+                    self.reorderPlacements(movingPlacementIds, checkingPlacementIds);
+                }
+                checkingPlacementIds = _.union(checkingPlacementIds);
+                _.pullAt(clonePlacements, [0]);
+                self.initReorderPlacements.call(self, clonePlacements, checkingPlacementIds);
+            }
+        }
+        
         /** Setup Draggable & Droppable */
         private setupDragDrop(): void {
             this.setupDragable();
@@ -188,7 +200,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                 }
             });
         }
-
+        
         /**
          * Re-order list Placements with a list checking Placements
          * @param movingPlacementIds list placementID need to move
@@ -199,14 +211,14 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             var movingPlacements = _.filter(self.placements(), (placement) => {
                 return _.includes(movingPlacementIds, placement.placementID);
             });
-            movingPlacements = _.orderBy(movingPlacements, ['column', 'row'], ['asc', 'asc']);
+            movingPlacements = _.orderBy(movingPlacements, ['row', 'column'], ['asc', 'asc']);
             var listOverlapPlacement: Array<string> = [];
             _.each(movingPlacements, (movingPlacement) => {
                 self.layoutGrid().clearOccupied(movingPlacement);
                 var checkingPlacements = _.filter(self.placements(), (placement) => {
                     return _.includes(checkingPlacementIds, placement.placementID);
                 });
-                movingPlacements = _.orderBy(movingPlacements, ['column', 'row'], ['asc', 'asc']);
+                movingPlacements = _.orderBy(movingPlacements, ['row', 'column'], ['asc', 'asc']);
                 self.shiftOverlapPart(movingPlacement, checkingPlacements);
                 // Add that moving placement to checking so that Placement won't be move anymore
                 checkingPlacementIds.push(movingPlacement.placementID);
