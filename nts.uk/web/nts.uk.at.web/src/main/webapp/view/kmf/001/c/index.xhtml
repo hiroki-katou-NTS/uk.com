@@ -6,6 +6,12 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
+		<com:ValidatorScript>
+			nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay
+			nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDate
+			nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear
+			nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay
+		</com:ValidatorScript>
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
@@ -30,13 +36,13 @@
 			</div>
 
 			<div id="contents-area">
-				<div style="margin-left: 30px;padding-top: 10px;">
+				<div style="margin-left: 35px;padding-top: 10px;">
 					<!-- ＃{i18n.getText('KMF001_32')} -->
 					<div data-bind="ntsFormLabel: {required: true}"
 						style="margin-right: 50px;">年休の管理</div>
 					<span data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedAnnualManage,
 										enable: true }">
@@ -58,7 +64,7 @@
 							<td><div
 								data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedAddAttendanceDay,
 										enable: enableAnnualVacation }"></div></td>
@@ -72,7 +78,7 @@
 							<td><div
 								data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedMaxManageSemiVacation,
 										enable: enableAnnualVacation }"></div></td>
@@ -85,7 +91,7 @@
 							<td><label class="content-label">半休の上限回数</label></td>
 							<td><div id="combo-box" data-bind="ntsComboBox: {
 										options: maxDayReferenceList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										value: selectedMaxNumberSemiVacation,
 										optionsText: 'name',
 										editable: false,
@@ -96,23 +102,42 @@
 										
 							<!-- KMF001_132 -->
 							<td><label class="content-label">会社の上限回数</label></td>
-							<td><input data-bind="enable: enableMaxNumberCompany, value: maxNumberCompany"/></td>
+							<td><input data-bind="ntsTextEditor: {
+									value: maxNumberCompany,
+									constraint: 'AnnualNumberDay',
+									required: true,
+									option: textEditorOption,
+									enable: enableMaxNumberCompany}"/></td>
 						</tr>
 						<tr>
 							<!-- KMF001_35 -->
 							<td><label class="content-label">上限日数設定</label></td>
 							<!-- KMF001_36 -->
 							<td><label class="content-label" style="padding-left: 0px">付与上限日数</label>
-								<input data-bind="enable: enableAnnualVacation, value: maxGrantDay"/>
+								<input data-bind="ntsTextEditor: {
+									value: maxGrantDay,
+									constraint: 'AnnualLeaveGrantDate',
+									required: true,
+									option: textEditorOption,
+									enable: enableAnnualVacation}"/>
 							</td>
 
 							<td><label class="content-label">残数上限日数</label></td>
-							<td><input data-bind="enable: enableAnnualVacation, value: maxRemainingDay"/></td>
+							<td><input data-bind="ntsTextEditor: {
+									value: maxRemainingDay,
+									required: true,
+									option: textEditorOption,
+									enable: enableAnnualVacation}"/></td>
 						</tr>
 						<tr>
 							<!-- KMF001_38 -->
 							<td><label class="content-label">保持できる年数</label></td>
-							<td><input data-bind="enable: enableAnnualVacation, value: numberYearRetain" /></td>
+							<td><input data-bind="ntsTextEditor: {
+									value: numberYearRetain,
+									constraint: 'RetentionYear',
+									required: true,
+									option: textEditorOption,
+									enable: enableAnnualVacation}"/></td>
 										
 							<td><div></div></td>
 							<td><div></div></td>
@@ -133,7 +158,7 @@
 							<td><div
 								data-bind="ntsSwitchButton: {
 										options: permissionList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedPermission,
 										enable: enableAnnualVacation }"></div></td>
@@ -146,7 +171,7 @@
 							<td><label class="content-label">年休の消化優先</label></td>
 							<td><div id="combo-box" data-bind="ntsComboBox: {
 										options: preemptionPermitList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										value: selectedPreemptionPermit,
 										optionsText: 'name',
 										editable: false,
@@ -173,7 +198,7 @@
 							<td><label class="content-label">年休の残数</label></td>
 							<td><div data-bind="ntsSwitchButton: {
 										options: displayDivisionList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedNumberRemainingYearly,
 										enable: enableAnnualVacation }"></div></td>
@@ -186,7 +211,7 @@
 							<td><label class="content-label">年休、時間年休の次回付与日数</label></td>
 							<td><div data-bind="ntsSwitchButton: {
 										options: displayDivisionList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedNextAnunalVacation,
 										enable: enableAnnualVacation }"></div></td>
@@ -210,7 +235,7 @@
 							<td><div
 								data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedTimeManagement,
 										enable: enableAnnualVacation }"></div></td>
@@ -223,7 +248,7 @@
 							<td><label class="content-label">消化単位</label></td>
 							<td><div id="combo-box" data-bind="ntsComboBox: {
 										options: vacationTimeUnitList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										value: selectedVacationTimeUnit,
 										optionsText: 'name',
 										editable: false,
@@ -240,7 +265,7 @@
 							<td><label class="content-label">時間年休の上限日数管理</label></td>
 							<td><div data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedManageUpperLimitDayVacation,
 										enable: enableManageUpperLimit }"></div></td>
@@ -253,7 +278,7 @@
 							<td><label class="content-label">時間年休の上限日数設定</label></td>
 							<td><div id="combo-box" data-bind="ntsComboBox: {
 										options: maxDayReferenceList,
-										optionsValue: 'value',
+										optionsValue: 'code',
 										value: selectedMaxDayVacation,
 										optionsText: 'name',
 										editable: false,
@@ -264,7 +289,12 @@
 										
 							<!-- KMF001_135 -->
 							<td><label class="content-label">会社の上限日数</label></td>
-							<td><input data-bind="enable: enableMaxNumberCompany, value: timeMaxNumberCompany"/></td>
+							<td><input data-bind="ntsTextEditor: {
+									value: timeMaxNumberCompany,
+									constraint: 'MaxTimeDay',
+									required: true,
+									option: textEditorOption,
+									enable: enableMaxNumberCompany}"/></td>
 						</tr>
 						<tr>
 							<!-- KMF001_155 -->

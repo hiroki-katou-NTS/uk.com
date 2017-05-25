@@ -15,7 +15,7 @@ import nts.arc.primitive.constraint.DecimalRange;
  */
 @DecimalRange(min = "0", max = "99.5")
 @DecimalMantissaMaxLength(1)
-public class YearVacationAge extends DecimalPrimitiveValue<YearVacationAge> {
+public class AnnualLeaveGrantDate extends DecimalPrimitiveValue<AnnualLeaveGrantDate> {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 3113312047461252275L;
@@ -25,7 +25,7 @@ public class YearVacationAge extends DecimalPrimitiveValue<YearVacationAge> {
      *
      * @param rawValue the raw value
      */
-    public YearVacationAge(BigDecimal rawValue) {
+    public AnnualLeaveGrantDate(BigDecimal rawValue) {
         super(rawValue);
     }
 }

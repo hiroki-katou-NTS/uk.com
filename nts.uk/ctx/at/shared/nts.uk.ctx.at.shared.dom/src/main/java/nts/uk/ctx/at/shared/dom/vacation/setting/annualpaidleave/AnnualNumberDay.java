@@ -13,7 +13,7 @@ import nts.arc.primitive.constraint.DecimalRange;
 /**
  * The Class AnnualNumberDay.
  */
-@DecimalRange(min = "0", max = "366")
+@DecimalRange(max = "366", min = "0")
 @DecimalMantissaMaxLength(1)
 public class AnnualNumberDay extends DecimalPrimitiveValue<AnnualNumberDay> {
     

@@ -1,5 +1,8 @@
 @CHARSET "UTF-8";
 
+#functions-area {
+	height: auto !important
+}
 .nts-switch-button {
 	min-width: 80px;
 	font-size: 13px !important;
@@ -33,4 +36,7 @@ table#table tr td label.content-label {
 }
 table#table tr td.title {
 	padding-bottom: 35px;
+}
+.ntsControl {
+    display: inline !important;
 }
