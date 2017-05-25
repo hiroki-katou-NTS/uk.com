@@ -44,25 +44,18 @@
 							class="bg-green caret-right caret-background"><i
 							class="icon icon-searchbox"></i>
 							<div id="searchlaborInsuranceOffice">
-								<div id = "box_search"
-									data-bind="ntsSearchBox: {
-										comId: 'treegrid1',
-										items: listTopPage, 		
-										selected: toppageSelectedCode, 
-										selectedKey: 'code', 
-										childField: 'childs', 
-										fields: ['name', 'code']}" />
+								<div id="box_search"
+									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
+									items: listTopPage, selected: toppageSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 								<table id="single-list"
-									data-bind="ntsGridList: {								
-											height: 650,
-											dataSource: listTopPage,
-											primaryKey: 'code',
-											columns: columns,
-											multiple: false,
-											value: toppageSelectedCode,
-											showNumbering: true
-										}"
-									class="cf"></table>
+									data-bind="ntsGridList: {
+										height: 650,
+										options: listTopPage,
+										optionsValue: 'code',
+										columns: columns,
+										multiple: false,
+										value: toppageSelectedCode
+									}"></table>
 							</div></td>
 						<td id="contents-right">
 							<table id="tableRight" data-bind="with: topPageModel ">
