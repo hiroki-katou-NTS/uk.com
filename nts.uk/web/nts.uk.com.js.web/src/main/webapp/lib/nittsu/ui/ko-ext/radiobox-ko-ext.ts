@@ -17,6 +17,8 @@ module nts.uk.ui.koExtentions {
             $(element).addClass("ntsControl");
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             $(element).data("enable", null);
+            // Default value
+            new nts.uk.util.value.DefaultValue().onReset($(element), data.value);
         }
         
         /**
@@ -74,7 +76,12 @@ module nts.uk.ui.koExtentions {
             // Enable
             if(!_.isEqual(container.data("enable"), enable)){
                 container.data("enable",  _.clone(enable));
-                (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
+                if (enable === true) {
+                    container.find("input[type='radio']").removeAttr("disabled");
+                } else {
+                    container.find("input[type='radio']").attr("disabled", "disabled");
+                    new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                }
                 _.forEach(data.options(), (option) => {
                     if (typeof option["enable"] === "function"){
                         option["enable"](enable);

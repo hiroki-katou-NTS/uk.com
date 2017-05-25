@@ -36,6 +36,12 @@
 						<h2>Overview</h2>
 						<div data-bind="with: texteditor">
 							<h3>TextEditor</h3>
+							<br/>
+							<div class="valign-center">
+								<input data-bind="value: defaultValue"></input>
+								<button data-bind="click: setDefault">Reset</button>
+							</div>
+							<br/>
 							<input id="text-1" data-name="text-1" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: true, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
