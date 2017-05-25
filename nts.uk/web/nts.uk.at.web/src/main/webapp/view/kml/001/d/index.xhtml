@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 480, height: 290 };</script>
+				<script>var dialogSize = { width: 500, height: 290 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="../shr/kml001.shr.servicebase.js" />
 				<com:scriptfile path="../shr/kml001.shr.vmbase.js" />
@@ -46,7 +46,7 @@
 									<div>
 										<input id="startDateInput" data-name="期間" data-bind="ntsTimeEditor: {
 											value: newStartDate,
-											option: { width: '90px', inputFormat: 'date' },
+											option: { width: '110px', inputFormat: 'date' },
 											required: true,
 											enable: isUpdate }" />
 									</div>
