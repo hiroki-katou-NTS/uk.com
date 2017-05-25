@@ -1,0 +1,7 @@
+@CHARSET "UTF-8";
+
+.preview {
+	position: relative;
+	height: 580px;
+	overflow: auto;
+}

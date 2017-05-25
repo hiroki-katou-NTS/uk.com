@@ -697,7 +697,7 @@ div.label {
 .ntsControl.symbol:after {
   position: absolute;
   content: attr(data-content);
-  top: 0.4em;
+  top: 6px;
   color: #999;
 }
 /* line 26, ../sass/components/_editor.scss */
@@ -1522,29 +1522,31 @@ button.nts-switch-button {
   margin-bottom: 3px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
   height: 36.6px;
+  margin-left: 0px;
+  margin-right: 0px;
 }
-/* line 35, ../sass/components/_switchbutton.scss */
+/* line 36, ../sass/components/_switchbutton.scss */
 button.nts-switch-button:active {
   top: 0;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 40, ../sass/components/_switchbutton.scss */
+/* line 41, ../sass/components/_switchbutton.scss */
 button.nts-switch-button.selected {
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
   top: 0;
   color: #fff;
   background-color: #00B050;
 }
-/* line 48, ../sass/components/_switchbutton.scss */
+/* line 49, ../sass/components/_switchbutton.scss */
 button.nts-switch-button.selected:hover {
   color: #fff;
   background-color: #00B050;
 }
-/* line 54, ../sass/components/_switchbutton.scss */
+/* line 55, ../sass/components/_switchbutton.scss */
 button.nts-switch-button[disabled] {
   background-color: #d9d9d9;
 }
-/* line 56, ../sass/components/_switchbutton.scss */
+/* line 57, ../sass/components/_switchbutton.scss */
 button.nts-switch-button[disabled]:hover {
   background-color: #d9d9d9;
 }
@@ -2509,7 +2511,7 @@ button.nts-switch-button[disabled]:hover {
 
 /* line 7, ../sass/components/_swaplist.scss */
 .ntsSwapList {
-  overflow: auto;
+  overflow: hidden;
 }
 
 /* line 10, ../sass/components/_swaplist.scss */
@@ -2857,6 +2859,7 @@ button.search-btn {
   position: absolute;
   line-height: 30px;
   right: 10px;
+  top: 1px;
 }
 
 /* line 1, ../sass/components/_contextmenu.scss */
