@@ -2,7 +2,7 @@ module kmk011.a.viewmodel {
     export class ScreenModel {
         //A_label_x
         columns: KnockoutObservableArray<any>;
-        dataSource: KnockoutObservableArray<model.Item>;
+        dataSource: KnockoutObservableArray<model.DivergenceTime>;
         currentCode: KnockoutObservable<any>;
         useSet: KnockoutObservableArray<any>;
         selectUse: KnockoutObservable<any>;
@@ -69,16 +69,23 @@ module kmk011.a.viewmodel {
                 self.selectInp(self.itemDivTime().inputSet.selectUseSet);
                 self.divTimeId(self.itemDivTime().divTimeId);
                 self.divTimeName(self.itemDivTime().divTimeName);
+                self.timeItemName('');
+                self.lstItemSelected();
                 service.getItemSelected(self.divTimeId()).done(function(lstItem: Array<model.TimeItemSet>) {
-                    var listItemId = [];
-                    for (let j = 0; j < lstItem.length; j++) {
-                        listItemId[j] = lstItem[j].attendanceId;
+                    if(lstItem==null || lstItem === undefined||lstItem.length ==0){
+                        self.timeItemName();
+                        self.lstItemSelected([]);
+//                        return;
+                    }else{
+                        var listItemId = [];
+                        for (let j = 0; j < lstItem.length; j++) {
+                            listItemId[j] = lstItem[j].attendanceId;
+                        }
+                        service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>){
+                            self.lstItemSelected(lstName);
+                            self.findTimeName(self.divTimeId()); 
+                        });
                     }
-                    service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>){
-                       self.lstItemSelected(lstName);
-                        self.findTimeName(self.divTimeId()); 
-                    });
-
                 })
                 if (self.itemDivTime().inputSet.cancelErrSelReason == 1) {
                     self.checkErrInput(true);
@@ -191,6 +198,11 @@ module kmk011.a.viewmodel {
                     service.getNameItemSelected(list).done(function(lstName: Array<model.DivergenceItem>) {
                         self.lstItemSelected(lstName);
                         self.findTimeName(self.divTimeId());
+                        if(self.timeItemName()!=''){
+                            if($('.nts-editor').ntsError("hasError")==true){
+                                $('.nts-input').ntsError('clear');
+                            }
+                        }
                     })
                 })
             });
@@ -211,16 +223,19 @@ module kmk011.a.viewmodel {
                             listAdd.push(add);
                         }
                     }
-                    var Object = new model.ObjectDivergence(divTime, listAdd);
+                    var Object = new model.ObjectDivergence(divTime, listAdd,self.timeItemName());
                     service.updateDivTime(Object).done(function() {
                         self.getAllDivTimeNew();
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                     }).fail(function(error) {
                         if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);
-                        } else {
+                        } 
+                         if (error.messageId == 'Msg_82') {
                             $('#inpDialog').ntsError('set', error);
-                        }
+                        }else{
+                             $('#inpName').ntsError(error.message);
+                         }
                     })
                     dfd.resolve();
                     return dfd.promise();
@@ -361,9 +376,11 @@ module kmk011.a.viewmodel {
         export class ObjectDivergence {
             divTime: DivergenceTime;
             timeItem: List<TimeItemSet>;
-            constructor(divTime: DivergenceTime, item: List<TimeItemSet>) {
+            timeItemName: string;
+            constructor(divTime: DivergenceTime, item: List<TimeItemSet>, timeItemName: string) {
                 this.divTime = divTime;
                 this.timeItem = item;
+                this.timeItemName = timeItemName;
             }
         }
     }

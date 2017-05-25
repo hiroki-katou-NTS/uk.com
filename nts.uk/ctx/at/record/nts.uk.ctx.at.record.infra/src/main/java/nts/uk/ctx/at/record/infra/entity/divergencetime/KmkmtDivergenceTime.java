@@ -47,7 +47,7 @@ public class KmkmtDivergenceTime extends UkJpaEntity implements Serializable{
 	
 	@Override
 	protected Object getKey() {
-		return null;
+		return kmkmtDivergenceTimePK;
 	}
 	
 	
