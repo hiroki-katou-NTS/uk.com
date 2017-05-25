@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.PreemptionPermi
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationAge;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeMaxDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeUnit;
 
@@ -140,7 +140,7 @@ public class ManageAnnualSettingDto {
 					.maxNumberUniformCompany(new AnnualNumberDay(setting.maxNumberCompany))
 					.build();
 			remain.setHalfDayManage(halfDayManage);
-			remain.setMaximumDayVacation(new YearVacationAge(setting.maxGrantDay));
+			remain.setMaximumDayVacation(new AnnualLeaveGrantDate(setting.maxGrantDay));
 			remain.setRemainingDayMaxNumber(setting.maxRemainingDay);
 			remain.setRetentionYear(new RetentionYear(setting.numberYearRetain));
 			return remain;

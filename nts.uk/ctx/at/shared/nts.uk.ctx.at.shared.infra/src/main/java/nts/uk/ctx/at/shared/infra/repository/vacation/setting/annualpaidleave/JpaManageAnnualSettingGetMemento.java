@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.PreemptionPermi
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationAge;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeMaxDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeUnit;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet;
@@ -70,10 +70,10 @@ public class JpaManageAnnualSettingGetMemento implements ManageAnnualSettingGetM
                 .reference(MaxDayReference.valueOf(this.manageAnnual.getMngReference()))
                 .maxNumberUniformCompany(new AnnualNumberDay(this.manageAnnual.getCUniformMaxNumber())).build();
         remain.setHalfDayManage(halfDayManage);
-        remain.setMaximumDayVacation(new YearVacationAge(this.manageAnnual.getMaxDayOneYear()));
+        remain.setMaximumDayVacation(new AnnualLeaveGrantDate(this.manageAnnual.getMaxDayOneYear()));
         remain.setRemainingDayMaxNumber(this.manageAnnual.getRemainDayMaxNum());
         remain.setRetentionYear(new RetentionYear(this.manageAnnual.getRetentionYear()));
-        return null;
+        return remain;
     }
 
     /*

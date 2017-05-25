@@ -21,7 +21,6 @@ public class AnnualPaidLeaveSetting extends DomainObject {
     private String companyId;
     
     /** The year manage type. */
-    @Setter
     private ManageDistinct yearManageType;
     
     /** The year manage setting. */

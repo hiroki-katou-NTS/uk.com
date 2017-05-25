@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.dto.AnnualPaidLeaveSettingFindDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
@@ -34,7 +35,7 @@ public class AnnualPaidLeaveFinder {
      *
      * @return the annual paid leave setting
      */
-    public AnnualPaidLeaveSetting findByCompanyId() {
+    public AnnualPaidLeaveSettingFindDto findByCompanyId() {
         String companyId = AppContexts.user().companyId();
         Optional<AnnualPaidLeaveSetting> optional = this.paidLeaveRepo.findByCompanyId(companyId);
         if (!optional.isPresent()) {
@@ -43,6 +44,8 @@ public class AnnualPaidLeaveFinder {
         AnnualPaidLeaveSetting paidLeaveSetting = optional.get();
         ManageAnnualSetting manageSetting = this.manageRepo.findByCompanyId(companyId);
         paidLeaveSetting.setYearManageSetting(manageSetting);
-        return paidLeaveSetting;
+        AnnualPaidLeaveSettingFindDto output = new AnnualPaidLeaveSettingFindDto();
+        paidLeaveSetting.saveToMemento(output);
+        return output;
     }
 }
