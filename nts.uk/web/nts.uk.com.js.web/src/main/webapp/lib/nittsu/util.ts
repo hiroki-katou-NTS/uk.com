@@ -23,8 +23,7 @@
             }
             return -1;
         }
-        /**  
-         * function add item to array, this function is used in combine with visitDfs function
+        /** function add item to array, this function is used in combine with visitDfs function
          * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
          */
         function addToArray(node, arr) {
@@ -596,7 +595,7 @@
         export function getText(code: string, params: string[]): string {
             let text = names[code];
             if (text) {
-                text = formatCompDependParam(text);
+                text = formatCompCustomizeResource(text);
                 text = formatParams(text, params);
                 return text;
             }
@@ -607,10 +606,10 @@
             let message = messages[messageId];
             if (!message) { return messageId; }
             message = formatParams(message, params);
-            message = formatCompDependParam(message);
+            message = formatCompCustomizeResource(message);
             return message;
         }
-        function formatCompDependParam(message: string) {
+        function formatCompCustomizeResource(message: string) {
             let compDependceParamRegex = /{#(\w*)}/;
             let matches: string[];
             while (matches = compDependceParamRegex.exec(message)) {
@@ -627,6 +626,9 @@
             while (matches = paramRegex.exec(message)) {
                 let code = matches[1];
                 let text = args[parseInt(code)];
+//                if(text!=undefined && text.indexOf("#")==0){
+//                    text = getText(text.substring(1))
+//                }
                 message = message.replace(paramRegex, text);
             }
             return message;

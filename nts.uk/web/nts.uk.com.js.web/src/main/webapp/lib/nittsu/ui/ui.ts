@@ -93,7 +93,7 @@ module nts.uk.ui {
                         width: options.width || this.globalContext.dialogSize.width,
                         height: options.height || this.globalContext.dialogSize.height,
                         title: options.title || "dialog",
-                        resizable: true,
+                        resizable: options.resizable,
                         beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
                         }
@@ -178,7 +178,7 @@ module nts.uk.ui {
                 var subWindow = ScreenWindow.createSubWindow(parentwindow);
                 this.windows[subWindow.id] = subWindow;
 
-                options = $.extend(DEFAULT_DIALOG_OPTIONS, options);
+                options = $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
 
                 subWindow.setupAsDialog(path, options);
 

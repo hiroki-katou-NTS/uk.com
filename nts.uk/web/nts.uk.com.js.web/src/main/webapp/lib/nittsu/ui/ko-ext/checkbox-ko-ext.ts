@@ -106,19 +106,20 @@ module nts.uk.ui.koExtentions {
             var getOptionValue = (item) => {
                 return (optionValue === undefined) ? item : item[optionValue];
             };
-
+            
+            let selectedValues = JSON.parse(ko.toJSON(data.value));
             // Render
             if (!_.isEqual(container.data("options"), options)) {
                 container.empty();
                 _.forEach(options, (option) => {
                     var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
-                    var checkBox = $('<input type="checkbox">').data("value", getOptionValue(option)).on("change", function() {
-                        var self = this;
-                        if ($(self).is(":checked"))
-                            selectedValue.push($(self).data("value"));
+                    var checkBox = $('<input type="checkbox">').data("option", option).data("value", getOptionValue(option)).on("change", function() {
+                        var self = $(this);
+                        if (self.is(":checked"))
+                            selectedValue.push(self.data("value"));
                         else
                             selectedValue.remove(_.find(selectedValue(), (value) => {
-                                return _.isEqual(value, $(this).data("value"))
+                                return _.isEqual(JSON.parse(ko.toJSON(value)), self.data("value"))
                             }));
                     });
                     let disableOption = option["enable"];
@@ -144,19 +145,17 @@ module nts.uk.ui.koExtentions {
             // Enable
             if((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)){
                 container.data("enable", _.clone(enable));
-                if (enable === true) {
-                    container.find("input[type='checkbox']").removeAttr("disabled");
+                if (enable) {
+                    _.forEach(container.find("input[type='checkbox']"), function(checkbox){
+                        let dataOpion = $(checkbox).data("option");
+                        if (dataOpion["enable"] === true) {
+                            $(checkbox).removeAttr("disabled");        
+                        }        
+                    }); 
                 } else {
                     container.find("input[type='checkbox']").attr("disabled", "disabled");
                     new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
                 }
-                _.forEach(data.options(), (option) => {
-                    if (typeof option["enable"] === "function"){
-                        option["enable"](enable);
-                    } else {
-                        option["enable"] = (enable);    
-                    }
-                });      
             }
         }
     }

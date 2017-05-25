@@ -18,7 +18,7 @@ $editor-border-color: #999999;
 		&:after {
 			position: absolute;
 			content: attr(data-content);
-			top: 0.4em;
+			top: 6px;
 			color:#999;
 		}
 		
