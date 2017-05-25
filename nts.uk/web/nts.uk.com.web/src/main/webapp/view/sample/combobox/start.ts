@@ -227,15 +227,15 @@ __viewContext.ready(function () {
                 itemCode = '0' + itemCode;
                 codeLength++;
             }
-            self.itemList.push(new ItemModel(itemCode, self.itemName()));
-            self.currentCode(newCode);
+            self.itemListCbb1.push(new ItemModelCbb1(itemCode, self.itemName()));
+            self.selectedCodeCbb1(newCode);
         }
         
         /**
          * Clear options.
          */
         clearOptions() {
-            this.itemList([]);
+            this.itemListCbb1([]);
         }
         
         /**
