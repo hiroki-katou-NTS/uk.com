@@ -15,19 +15,13 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
  */
 public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	implements PaymentGenerator {
-
-	/** The Constant ITEM_WIDTH. */
-	public static final int ITEM_WIDTH = 1;
-
-	/** The Constant CATEGORY_START_ROW. */
-	public static final int CATEGORY_START_ROW = 4;
 	
 	/** The Constant PERSON_OF_PAGE. */
 	public static final int PERSON_OF_PAGE = 1;
-	
+
 	/** The Constant NUMBER_COLUMN_OF_ITEM. */
 	public static final int NUMBER_COLUMN_OF_ITEM = 1;
-	
+
 	/** The Constant REMARK_TOTAL_ROW. */
 	public static final int REMARK_TOTAL_ROW = 3;
 
@@ -82,90 +76,119 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	@Override
 	List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
-		list.add(new CellValue(0, 0, "ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ"));
-		//TODO FAKE DATA
-		list.add(new CellValue(3, 0, "給与明細書"));
-		list.add(new CellValue(6, 0, employee.getCompanyInfo().getJapaneseYearMonth()));
-		list.add(new CellValue(12, 1, "所属"));
-		list.add(new CellValue(12, 5, "個人コード"));
-		list.add(new CellValue(12, 7, "氏名"));
-		list.add(new CellValue(13, 1, employee.getDepartmentInfo().getDepartmentCode()));
-		list.add(new CellValue(13, 5, employee.getEmployeeInfo().getEmployeeCode()));
-		list.add(new CellValue(13, 7, employee.getEmployeeInfo().getEmployeeName()));
+		list.add(new CellValue("B2", "ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ"));
+		// TODO FAKE DATA
+		list.add(new CellValue("B5", "給与明細書"));
+		list.add(new CellValue("B8", employee.getCompanyInfo().getJapaneseYearMonth()));
+		list.add(new CellValue("C14", "所属"));
+		list.add(new CellValue("G14", "個人コード"));
+		list.add(new CellValue("I14", "氏名"));
+		list.add(new CellValue("C15", employee.getDepartmentInfo().getDepartmentCode()));
+		list.add(new CellValue("G15", employee.getEmployeeInfo().getEmployeeCode()));
+		list.add(new CellValue("I15", employee.getEmployeeInfo().getEmployeeName()));
 		return list;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getNumberOfColumnPerItem()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getNumberOfColumnPerItem()
 	 */
 	@Override
 	int getNumberOfColumnPerItem() {
 		return NUMBER_COLUMN_OF_ITEM;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPersonPerPage()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPersonPerPage(
+	 * )
 	 */
 	@Override
 	int getPersonPerPage() {
 		return PERSON_OF_PAGE;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageHeaderStartCell()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getPageHeaderStartCell()
 	 */
 	@Override
 	String getPageHeaderStartCell() {
 		return "A1";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageHeaderEndCell()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getPageHeaderEndCell()
 	 */
 	@Override
 	String getPageHeaderEndCell() {
-		return "J21";
+		return "L22";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getCategoryHeaderCell()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getCategoryHeaderCell()
 	 */
 	@Override
 	String getCategoryHeaderCell() {
-		return "A22";
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemNameCell()
-	 */
-	@Override
-	String getItemNameCell() {
-		return "B22";
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemValueCell()
-	 */
-	@Override
-	String getItemValueCell() {
 		return "B23";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkCell()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemNameCell()
+	 */
+	@Override
+	String getItemNameCell() {
+		return "C23";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemValueCell(
+	 * )
+	 */
+	@Override
+	String getItemValueCell() {
+		return "C24";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkCell()
 	 */
 	@Override
 	String getRemarkCell() {
-		return "B24";
+		return "C25";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkTotalRow()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkTotalRow
+	 * ()
 	 */
 	@Override
 	int getRemarkTotalRow() {
 		return REMARK_TOTAL_ROW;
 	}
-	
 
 }

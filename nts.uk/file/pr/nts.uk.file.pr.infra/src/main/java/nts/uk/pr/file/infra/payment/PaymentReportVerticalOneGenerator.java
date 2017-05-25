@@ -107,7 +107,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 */
 	@Override
 	String getPageHeaderEndCell() {
-		return "I4";
+		return "J5";
 	}
 
 	/* (non-Javadoc)
@@ -115,7 +115,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 */
 	@Override
 	String getCategoryHeaderCell() {
-		return "A5";
+		return "B6";
 	}
 
 	/* (non-Javadoc)
@@ -123,7 +123,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 */
 	@Override
 	String getItemNameCell() {
-		return "B5";
+		return "C6";
 	}
 
 	/* (non-Javadoc)
@@ -131,7 +131,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 */
 	@Override
 	String getItemValueCell() {
-		return "B6";
+		return "C7";
 	}
 
 	/* (non-Javadoc)
@@ -139,7 +139,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 */
 	@Override
 	String getRemarkCell() {
-		return "B7";
+		return "C8";
 	}
 
 	/* (non-Javadoc)
