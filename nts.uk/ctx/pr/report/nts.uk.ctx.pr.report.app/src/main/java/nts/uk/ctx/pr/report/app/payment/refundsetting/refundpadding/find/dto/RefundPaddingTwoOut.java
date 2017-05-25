@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingTwoDto;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.PrintType;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.RefundPaddingSetMemento;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.ShowBreakLine;
@@ -41,6 +42,7 @@ public class RefundPaddingTwoOut implements RefundPaddingSetMemento {
 	/** The is show break line. */
 	private int isShowBreakLine;
 
+	 
 	/**
 	 * Default data.
 	 */
@@ -52,6 +54,20 @@ public class RefundPaddingTwoOut implements RefundPaddingSetMemento {
 		this.isShowBreakLine = 0;
 	}
 
+	/**
+	 * To dto.
+	 *
+	 * @return the refund padding two dto
+	 */
+	public RefundPaddingTwoDto toDto(){
+		RefundPaddingTwoDto dto = new RefundPaddingTwoDto();
+		dto.setUpperAreaPaddingTop(this.upperAreaPaddingTop);
+		dto.setUnderAreaPaddingTop(this.underAreaPaddingTop);
+		dto.setPaddingLeft(this.paddingLeft);
+		dto.setBreakLineMargin(this.breakLineMargin);
+		dto.setIsShowBreakLine(this.isShowBreakLine);
+		return dto;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

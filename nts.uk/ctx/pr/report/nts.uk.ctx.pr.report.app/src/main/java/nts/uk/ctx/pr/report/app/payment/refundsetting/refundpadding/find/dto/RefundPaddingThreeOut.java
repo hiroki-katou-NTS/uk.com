@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingThreeDto;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.PrintType;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.RefundPaddingSetMemento;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.ShowBreakLine;
@@ -41,7 +42,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 	/** The is show break line. */
 	private int isShowBreakLine;
 
-	
+
 	/**
 	 * Default data.
 	 */
@@ -54,9 +55,26 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 		this.breakLineMarginButtom = BigDecimal.ZERO;
 		this.isShowBreakLine = 0;
 	}
+
+	/**
+	 * To dto.
+	 *
+	 * @return the refund padding three dto
+	 */
+	public RefundPaddingThreeDto toDto(){
+		RefundPaddingThreeDto dto = new RefundPaddingThreeDto();
+		dto.setUpperAreaPaddingTop(this.upperAreaPaddingTop);
+		dto.setMiddleAreaPaddingTop(this.middleAreaPaddingTop);
+		dto.setUnderAreaPaddingTop(this.underAreaPaddingTop);
+		dto.setPaddingLeft(this.paddingLeft);
+		dto.setBreakLineMarginTop(this.breakLineMarginTop);
+		dto.setBreakLineMarginButtom(this.breakLineMarginButtom);
+		dto.setIsShowBreakLine(this.isShowBreakLine); 
+		return dto;
+	}
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setCompanyCode(java.lang.String)
 	 */
@@ -67,7 +85,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setPrintType(nts.uk.ctx.pr.report.dom.payment.
 	 * refundsetting.refundpadding.PrintType)
@@ -79,7 +97,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setPaddingTop(nts.uk.ctx.pr.report.dom.payment.
 	 * refundsetting.refundpadding.SizeLimit)
@@ -91,7 +109,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setPaddingLeft(nts.uk.ctx.pr.report.dom.payment.
 	 * refundsetting.refundpadding.SizeLimit)
@@ -103,7 +121,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setUpperAreaPaddingTop(nts.uk.ctx.pr.report.dom.
 	 * payment.refundsetting.refundpadding.SizeLimit)
@@ -116,7 +134,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setUnderAreaPaddingTop(nts.uk.ctx.pr.report.dom.
 	 * payment.refundsetting.refundpadding.SizeLimit)
@@ -128,7 +146,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setIsShowBreakLine(nts.uk.ctx.pr.report.dom.
 	 * payment.refundsetting.refundpadding.ShowBreakLine)
@@ -141,7 +159,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setBreakLineMargin(nts.uk.ctx.pr.report.dom.
 	 * payment.refundsetting.refundpadding.SizeLimit)
@@ -153,7 +171,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setMiddleAreaPaddingTop(nts.uk.ctx.pr.report.dom.
 	 * payment.refundsetting.refundpadding.SizeLimit)
@@ -166,7 +184,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setBreakLineMarginTop(nts.uk.ctx.pr.report.dom.
 	 * payment.refundsetting.refundpadding.SizeLimit)
@@ -179,7 +197,7 @@ public class RefundPaddingThreeOut implements RefundPaddingSetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.
 	 * RefundPaddingSetMemento#setBreakLineMarginButtom(nts.uk.ctx.pr.report.dom
 	 * .payment.refundsetting.refundpadding.SizeLimit)

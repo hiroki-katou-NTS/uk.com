@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingOnceDto;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.PrintType;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.RefundPaddingSetMemento;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.ShowBreakLine;
@@ -35,6 +36,17 @@ public class RefundPaddingOnceOut implements RefundPaddingSetMemento {
 		this.paddingLeft = BigDecimal.ZERO;
 	}
 
+	/**
+	 * To dto.
+	 *
+	 * @return the refund padding once dto
+	 */
+	public RefundPaddingOnceDto toDto(){
+		RefundPaddingOnceDto dto  = new RefundPaddingOnceDto();
+		dto.setPaddingTop(this.paddingTop);
+		dto.setPaddingLeft(this.paddingLeft);
+		return dto;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
