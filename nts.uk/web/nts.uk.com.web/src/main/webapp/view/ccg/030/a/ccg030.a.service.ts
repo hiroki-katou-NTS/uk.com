@@ -5,6 +5,7 @@ module ccg030.a.service {
         updateFlowMenu: "sys/portal/flowmenu/update",
         deleteFlowMenu: "sys/portal/flowmenu/delete",
         deleteFile: "sys/portal/flowmenu/delete/file",
+        getFlowMenuById: "sys/portal/flowmenu/findbycode",
     }
     //add new flow menu
     export function createFlowMenu(flowMenu: viewmodel.model.FlowMenu){
@@ -19,6 +20,12 @@ module ccg030.a.service {
     export function updateFlowMenu(flowMenu: viewmodel.model.FlowMenu){
         return nts.uk.request.ajax("com", paths.updateFlowMenu, flowMenu);
     }
+    
+    //fill by toppage part id
+    export function getFlowMenuById(): JQueryPromise<Array<viewmodel.model.FlowMenu>>{
+        return nts.uk.request.ajax("com", paths.getFlowMenuById);
+    }
+    
     //delete flow menu
     export function deleteFlowMenu(flowMenuID: string){
         var data = {
