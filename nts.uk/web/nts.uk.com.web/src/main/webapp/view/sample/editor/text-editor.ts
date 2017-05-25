@@ -13,6 +13,7 @@ __viewContext.ready(function () {
                 valueKana: ko.observable(''), 
                 valueUan: ko.observable(''),
                 valueHalfInt: ko.observable(''),
+                defaultValue: ko.observable(''),
                 constraint: 'WLAggregateItemCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
@@ -25,6 +26,10 @@ __viewContext.ready(function () {
                 readonly: ko.observable(false),
                 clear: function(){
                     $("#text-1").ntsError("clear");    
+                },
+                setDefault: function() {
+                    var self = this;
+                    nts.uk.util.value.reset($("#text-1"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
                 }
             }; 
             // EmployeeCodeEditor

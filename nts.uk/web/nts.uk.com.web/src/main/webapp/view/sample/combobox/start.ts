@@ -42,6 +42,7 @@ __viewContext.ready(function () {
     class ScreenModel {
         itemList: KnockoutObservableArray<ItemModel>;
         itemName: KnockoutObservable<string>;
+        defaultValue: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
@@ -105,6 +106,7 @@ __viewContext.ready(function () {
                 new ItemModel('0003', '基本給')
             ]);
             self.itemName = ko.observable('');
+            self.defaultValue = ko.observable('');
             self.currentCode = ko.observable(3);
             self.selectedCode = ko.observable('0003')
             self.isEnable = ko.observable(true);
@@ -229,6 +231,11 @@ __viewContext.ready(function () {
             }
             self.itemList.push(new ItemModel(itemCode, self.itemName()));
             self.currentCode(newCode);
+        }
+        
+        setDefault() {
+            var self = this;
+            nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
         }
         
         /**

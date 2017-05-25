@@ -84,7 +84,8 @@ module nts.uk.ui.koExtentions {
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             container.data("enable", _.clone(enable));
             container.data("init", true);
-            
+            // Default value
+            new nts.uk.util.value.DefaultValue().onReset(container, data.value);
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -137,13 +138,18 @@ module nts.uk.ui.koExtentions {
             // Checked
             container.find("input[type='checkbox']").prop("checked", function() {
                 return (_.find(selectedValue(), (value) => {
-                    return _.isEqual(value, $(this).data("value"))
+                    return _.isEqualWith(value, $(this).data("value"), (objVal, othVal, key) => { return key === "enable" ? true : undefined; });
                 }) !== undefined);
             });
             // Enable
             if((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)){
                 container.data("enable", _.clone(enable));
-                (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
+                if (enable === true) {
+                    container.find("input[type='checkbox']").removeAttr("disabled");
+                } else {
+                    container.find("input[type='checkbox']").attr("disabled", "disabled");
+                    new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                }
                 _.forEach(data.options(), (option) => {
                     if (typeof option["enable"] === "function"){
                         option["enable"](enable);
