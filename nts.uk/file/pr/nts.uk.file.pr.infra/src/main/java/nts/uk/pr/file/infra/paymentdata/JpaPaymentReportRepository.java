@@ -105,10 +105,10 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 	private static final int FIRST_COLUMN_INLINE = 1;
 
 	/** The Constant TYPE_PRINT_SPECIFICATION. */
-	public static final int TYPE_PRINT_SPECIFICATION = 2;
+	public static final int TYPE_PRINT_SPECIFICATION = 1;
 
 	/** The Constant TYPE_PRINT_LAYOUT. */
-	public static final int TYPE_PRINT_LAYOUT = 1;
+	public static final int TYPE_PRINT_LAYOUT = 0;
 
 	/** The Constant CATEGORY_PAYMENT. */
 	public static final int CATEGORY_PAYMENT = 0;
@@ -347,13 +347,13 @@ public class JpaPaymentReportRepository extends JpaRepository implements Payment
 		config.setPrintType(printType);
 		switch (printType) {
 		case 1:
-			config.setRefundPaddingOnceDto(this.refundPaddingFinder.findPrintTypeOne());
+			config.setRefundPaddingOnceDto(this.refundPaddingFinder.findPrintTypeOne().toDto());
 			break;
 		case 2:
-			config.setRefundPaddingTwoDto(this.refundPaddingFinder.findPrintTypeTwo());
+			config.setRefundPaddingTwoDto(this.refundPaddingFinder.findPrintTypeTwo().toDto());
 			break;
 		case 3:
-			config.setRefundPaddingThreeDto(this.refundPaddingFinder.findPrintTypeThree());
+			config.setRefundPaddingThreeDto(this.refundPaddingFinder.findPrintTypeThree().toDto());
 			break;
 
 		default:
