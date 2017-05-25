@@ -1,6 +1,6 @@
 module nts.uk.pr.view.qpp021.e {
 
-    
+
     export module service {
 
         var paths: any = {
@@ -23,9 +23,8 @@ module nts.uk.pr.view.qpp021.e {
         }
 
         // connection preview 
-        export function previewRefundPaddingOnce(pageLayout: string): JQueryPromise<any>{
-            var data= {pageLayout : pageLayout};
-            return nts.uk.request.exportFile(paths.previewRefundPaddingOnce, data);
+        export function previewRefundPaddingOnce(dto: model.PaymentReportPreviewQueryDto): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.previewRefundPaddingOnce, dto);
         }
         export module model {
 
@@ -36,7 +35,7 @@ module nts.uk.pr.view.qpp021.e {
                 /** The padding left. */
                 paddingLeft: number;
             }
-            
+
             export class PaymentReportQueryDto {
 
                 /** The processing no. */
@@ -53,9 +52,17 @@ module nts.uk.pr.view.qpp021.e {
 
                 /** The layout items. */
                 layoutItems: number;
-                
+
                 pageOrientation: string;
             }
+            export class PaymentReportPreviewQueryDto {
+                /** The page layout. */
+                layoutItem: number;
+
+                refundPaddingOnceDto: RefundPaddingOnceDto;
+            }
         }
+
+
     }
 }

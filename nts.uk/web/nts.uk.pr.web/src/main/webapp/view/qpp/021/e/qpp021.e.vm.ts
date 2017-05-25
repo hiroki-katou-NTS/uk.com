@@ -2,6 +2,7 @@ module nts.uk.pr.view.qpp021.e {
 
     import RefundPaddingOnceDto = service.model.RefundPaddingOnceDto;
     import PaymentReportQueryDto = service.model.PaymentReportQueryDto;
+    import PaymentReportPreviewQueryDto = service.model.PaymentReportPreviewQueryDto;
 
     export module viewmodel {
         export class ScreenModel {
@@ -33,19 +34,10 @@ module nts.uk.pr.view.qpp021.e {
 
             public previewRefundPaddingOnce() {
                 var self = this;
-                var pageLayout: string = 'E1';
-                switch(self.printtype){
-                    case 0:
-                        pageLayout = 'E1';
-                        break;
-                    case 4:
-                        pageLayout = 'E2';
-                        break;
-                    case 5:
-                        pageLayout = 'E3';
-                        break;
-                }
-                service.previewRefundPaddingOnce(pageLayout);
+                var dto :PaymentReportPreviewQueryDto = new PaymentReportPreviewQueryDto();
+                dto.layoutItem = self.printtype;
+                dto.refundPaddingOnceDto = self.refundPaddingOnceModel.toDto();
+                service.previewRefundPaddingOnce(dto);
             }
 
             public save() {
