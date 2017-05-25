@@ -13,12 +13,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KclstEmpCompensLeavePK.
+ * The Class KclstEmpSubstVacationPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KclstEmpCompensLeavePK implements Serializable {
+public class KsvstEmpSubstVacationPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class KclstEmpCompensLeavePK implements Serializable {
 	/**
 	 * Instantiates a new kclst emp compens leave PK.
 	 */
-	public KclstEmpCompensLeavePK() {
+	public KsvstEmpSubstVacationPK() {
 		super();
 	}
 
@@ -46,7 +46,7 @@ public class KclstEmpCompensLeavePK implements Serializable {
 	 * @param contractTypeCd
 	 *            the contract type cd
 	 */
-	public KclstEmpCompensLeavePK(String cid, String contractTypeCd) {
+	public KsvstEmpSubstVacationPK(String cid, String contractTypeCd) {
 		this.cid = cid;
 		this.contractTypeCd = contractTypeCd;
 	}
@@ -71,10 +71,10 @@ public class KclstEmpCompensLeavePK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KclstEmpCompensLeavePK)) {
+		if (!(object instanceof KsvstEmpSubstVacationPK)) {
 			return false;
 		}
-		KclstEmpCompensLeavePK other = (KclstEmpCompensLeavePK) object;
+		KsvstEmpSubstVacationPK other = (KsvstEmpSubstVacationPK) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;

@@ -11,13 +11,13 @@ import nts.arc.layer.dom.DomainObject;
  * The Class CompanyCompensatoryLeave.
  */
 @Getter
-public class ComCompensLeave extends DomainObject {
+public class ComSubstVacation extends DomainObject {
 
 	/** The company id. */
 	private String companyId;
 
 	/** The setting. */
-	private CompensatoryLeaveSetting setting;
+	private SubstVacationSetting setting;
 
 	/**
 	 * Instantiates a new company compensatory leave.
@@ -27,7 +27,7 @@ public class ComCompensLeave extends DomainObject {
 	 * @param setting
 	 *            the setting
 	 */
-	public ComCompensLeave(String companyId, CompensatoryLeaveSetting setting) {
+	public ComSubstVacation(String companyId, SubstVacationSetting setting) {
 		super();
 		this.companyId = companyId;
 		this.setting = setting;
@@ -40,7 +40,7 @@ public class ComCompensLeave extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public ComCompensLeave(ComCompensLeaveGetMemento memento) {
+	public ComSubstVacation(ComSubstVacationGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.setting = memento.getSetting();
 	}
@@ -51,7 +51,7 @@ public class ComCompensLeave extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(ComCompensLeaveSetMemento memento) {
+	public void saveToMemento(ComSubstVacationSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setSetting(this.setting);
 	}

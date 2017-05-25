@@ -8,30 +8,23 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The Interface ComCompensLeaveRepository.
+ * The Interface ComSubstVacationRepository.
  */
-public interface ComCompensLeaveRepository {
+public interface ComSubstVacationRepository {
 
 	/**
 	 * Adds the.
 	 *
 	 * @param setting the setting
 	 */
-    void add(ComCompensLeave setting);
+    void add(ComSubstVacation setting);
 
 	/**
 	 * Update.
 	 *
 	 * @param setting the setting
 	 */
-    void update(ComCompensLeave setting);
-
-	/**
-	 * Removes the.
-	 *
-	 * @param companyId the company id
-	 */
-    void remove(String companyId);
+    void update(ComSubstVacation setting);
 
 	/**
 	 * Find all.
@@ -39,7 +32,7 @@ public interface ComCompensLeaveRepository {
 	 * @param companyId the company id
 	 * @return the list
 	 */
-	List<ComCompensLeave> findAll(String companyId);
+	List<ComSubstVacation> findAll(String companyId);
 
 	/**
 	 * Find by id.
@@ -47,6 +40,6 @@ public interface ComCompensLeaveRepository {
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	Optional<ComCompensLeave> findById(String companyId);
+	Optional<ComSubstVacation> findById(String companyId);
 
 }

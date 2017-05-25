@@ -10,24 +10,24 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.ComCompensLeave;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.ComCompensLeaveRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.EmpSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.EmpSubstVacationRepository;
 
 /**
- * The Class JpaComCompensLeaveRepo.
+ * The Class JpaEmpSubstVacationRepo.
  */
 @Stateless
-public class JpaComCompensLeaveRepo extends JpaRepository implements ComCompensLeaveRepository {
+public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVacationRepository {
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComCompensLeaveRepository#add(nts.uk.ctx.at.shared.dom.vacation.setting.
-	 * compensleave.ComCompensLeave)
+	 * EmpSubstVacationRepository#add(nts.uk.ctx.at.shared.dom.vacation.setting.
+	 * compensleave.EmpSubstVacation)
 	 */
 	@Override
-	public void add(ComCompensLeave setting) {
+	public void add(EmpSubstVacation setting) {
 		// TODO Auto-generated method stub
 
 	}
@@ -36,11 +36,11 @@ public class JpaComCompensLeaveRepo extends JpaRepository implements ComCompensL
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComCompensLeaveRepository#update(nts.uk.ctx.at.shared.dom.vacation.
-	 * setting.compensleave.ComCompensLeave)
+	 * EmpSubstVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.
+	 * setting.compensleave.EmpSubstVacation)
 	 */
 	@Override
-	public void update(ComCompensLeave setting) {
+	public void update(EmpSubstVacation setting) {
 		// TODO Auto-generated method stub
 
 	}
@@ -49,7 +49,7 @@ public class JpaComCompensLeaveRepo extends JpaRepository implements ComCompensL
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComCompensLeaveRepository#remove(java.lang.String)
+	 * EmpSubstVacationRepository#remove(java.lang.String)
 	 */
 	@Override
 	public void remove(String companyId) {
@@ -61,10 +61,10 @@ public class JpaComCompensLeaveRepo extends JpaRepository implements ComCompensL
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComCompensLeaveRepository#findAll(java.lang.String)
+	 * EmpSubstVacationRepository#findAll(java.lang.String)
 	 */
 	@Override
-	public List<ComCompensLeave> findAll(String companyId) {
+	public List<EmpSubstVacation> findAll(String companyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -73,10 +73,10 @@ public class JpaComCompensLeaveRepo extends JpaRepository implements ComCompensL
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComCompensLeaveRepository#findById(java.lang.String)
+	 * EmpSubstVacationRepository#findById(java.lang.String)
 	 */
 	@Override
-	public Optional<ComCompensLeave> findById(String companyId) {
+	public Optional<EmpSubstVacation> findById(String companyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -18,20 +18,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KclstEmpCompensLeave.
+ * The Class KclstEmpSubstVacation.
  */
 @Getter
 @Setter
 @Entity
 @Table(name = "KCLST_EMP_COMPENS_LEAVE")
-public class KclstEmpCompensLeave implements Serializable {
+public class KsvstEmpSubstVacation implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The kclst emp compens leave PK. */
 	@EmbeddedId
-	protected KclstEmpCompensLeavePK kclstEmpCompensLeavePK;
+	protected KsvstEmpSubstVacationPK kclstEmpSubstVacationPK;
 
 	/** The ins date. */
 	@Column(name = "INS_DATE")
@@ -86,18 +86,18 @@ public class KclstEmpCompensLeave implements Serializable {
 	/**
 	 * Instantiates a new kclst emp compens leave.
 	 */
-	public KclstEmpCompensLeave() {
+	public KsvstEmpSubstVacation() {
 		super();
 	}
 
 	/**
 	 * Instantiates a new kclst emp compens leave.
 	 *
-	 * @param kclstEmpCompensLeavePK
+	 * @param kclstEmpSubstVacationPK
 	 *            the kclst emp compens leave PK
 	 */
-	public KclstEmpCompensLeave(KclstEmpCompensLeavePK kclstEmpCompensLeavePK) {
-		this.kclstEmpCompensLeavePK = kclstEmpCompensLeavePK;
+	public KsvstEmpSubstVacation(KsvstEmpSubstVacationPK kclstEmpSubstVacationPK) {
+		this.kclstEmpSubstVacationPK = kclstEmpSubstVacationPK;
 	}
 
 	/*
@@ -108,7 +108,7 @@ public class KclstEmpCompensLeave implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kclstEmpCompensLeavePK != null ? kclstEmpCompensLeavePK.hashCode() : 0);
+		hash += (kclstEmpSubstVacationPK != null ? kclstEmpSubstVacationPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -119,13 +119,13 @@ public class KclstEmpCompensLeave implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KclstEmpCompensLeave)) {
+		if (!(object instanceof KsvstEmpSubstVacation)) {
 			return false;
 		}
-		KclstEmpCompensLeave other = (KclstEmpCompensLeave) object;
-		if ((this.kclstEmpCompensLeavePK == null && other.kclstEmpCompensLeavePK != null)
-				|| (this.kclstEmpCompensLeavePK != null
-						&& !this.kclstEmpCompensLeavePK.equals(other.kclstEmpCompensLeavePK))) {
+		KsvstEmpSubstVacation other = (KsvstEmpSubstVacation) object;
+		if ((this.kclstEmpSubstVacationPK == null && other.kclstEmpSubstVacationPK != null)
+				|| (this.kclstEmpSubstVacationPK != null
+						&& !this.kclstEmpSubstVacationPK.equals(other.kclstEmpSubstVacationPK))) {
 			return false;
 		}
 		return true;

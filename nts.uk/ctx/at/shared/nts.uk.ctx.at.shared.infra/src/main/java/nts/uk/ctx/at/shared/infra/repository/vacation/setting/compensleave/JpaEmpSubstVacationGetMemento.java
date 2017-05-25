@@ -6,26 +6,26 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensleave;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.CompensatoryLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.EmpCompensLeaveGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.SubstVacationSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.EmpSubstVacationGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.VacationExpiration;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KclstEmpCompensLeave;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KsvstEmpSubstVacation;
 
 /**
- * The Class JpaEmpCompensLeaveGetMemento.
+ * The Class JpaEmpSubstVacationGetMemento.
  */
-public class JpaEmpCompensLeaveGetMemento implements EmpCompensLeaveGetMemento {
+public class JpaEmpSubstVacationGetMemento implements EmpSubstVacationGetMemento {
 
 	/** The type value. */
-	private KclstEmpCompensLeave typeValue;
+	private KsvstEmpSubstVacation typeValue;
 
 	/**
-	 * Instantiates a new jpa emp compens leave get memento.
+	 * Instantiates a new jpa emp subst vacation get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaEmpCompensLeaveGetMemento(KclstEmpCompensLeave typeValue) {
+	public JpaEmpSubstVacationGetMemento(KsvstEmpSubstVacation typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -33,33 +33,33 @@ public class JpaEmpCompensLeaveGetMemento implements EmpCompensLeaveGetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComCompensLeaveGetMemento#getCompanyId()
+	 * EmpSubstVacationGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.typeValue.getKclstEmpCompensLeavePK().getCid();
+		return this.typeValue.getKclstEmpSubstVacationPK().getCid();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * EmpCompensLeaveGetMemento#getEmpContractTypeCode()
+	 * EmpSubstVacationGetMemento#getEmpContractTypeCode()
 	 */
 	@Override
 	public String getEmpContractTypeCode() {
-		return this.typeValue.getKclstEmpCompensLeavePK().getContractTypeCd();
+		return this.typeValue.getKclstEmpSubstVacationPK().getContractTypeCd();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComCompensLeaveGetMemento#getSetting()
+	 * EmpSubstVacationGetMemento#getSetting()
 	 */
 	@Override
-	public CompensatoryLeaveSetting getSetting() {
-		return new CompensatoryLeaveSetting(ManageDistinct.valueOf(this.typeValue.getIsManage()),
+	public SubstVacationSetting getSetting() {
+		return new SubstVacationSetting(ManageDistinct.valueOf(this.typeValue.getIsManage()),
 				VacationExpiration.valueOf(this.typeValue.getExpirationDateSet()),
 				ApplyPermission.valueOf(this.typeValue.getAllowPrepaidLeave()));
 	}

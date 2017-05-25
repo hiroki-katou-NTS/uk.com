@@ -8,10 +8,10 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class EmpCompensLeave.
+ * The Class EmpSubstVacation.
  */
 @Getter
-public class EmpCompensLeave extends DomainObject {
+public class EmpSubstVacation extends DomainObject {
 
 	/** The company id. */
 	private String companyId;
@@ -20,10 +20,10 @@ public class EmpCompensLeave extends DomainObject {
 	private String empContractTypeCode;
 
 	/** The setting. */
-	private CompensatoryLeaveSetting setting;
+	private SubstVacationSetting setting;
 
 	/**
-	 * Instantiates a new emp compens leave.
+	 * Instantiates a new emp subst vacation.
 	 *
 	 * @param companyId
 	 *            the company id
@@ -32,8 +32,8 @@ public class EmpCompensLeave extends DomainObject {
 	 * @param setting
 	 *            the setting
 	 */
-	public EmpCompensLeave(String companyId, String empContractTypeCode,
-			CompensatoryLeaveSetting setting) {
+	public EmpSubstVacation(String companyId, String empContractTypeCode,
+			SubstVacationSetting setting) {
 		super();
 		this.companyId = companyId;
 		this.empContractTypeCode = empContractTypeCode;
@@ -42,12 +42,12 @@ public class EmpCompensLeave extends DomainObject {
 
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new emp compens leave.
+	 * Instantiates a new emp subst vacation.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public EmpCompensLeave(EmpCompensLeaveGetMemento memento) {
+	public EmpSubstVacation(EmpSubstVacationGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.empContractTypeCode = memento.getEmpContractTypeCode();
 		this.setting = memento.getSetting();
@@ -59,7 +59,7 @@ public class EmpCompensLeave extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(EmpCompensLeaveSetMemento memento) {
+	public void saveToMemento(EmpSubstVacationSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setEmpContractTypeCode(this.empContractTypeCode);
 		memento.setSetting(this.setting);

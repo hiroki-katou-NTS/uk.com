@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  * The Class CompensatoryLeaveSetting.
  */
 @Getter
-public class CompensatoryLeaveSetting extends DomainObject {
+public class SubstVacationSetting extends DomainObject {
 
 	/** The manage dist. */
 	private ManageDistinct isManage;
@@ -34,7 +34,7 @@ public class CompensatoryLeaveSetting extends DomainObject {
 	 * @param allowPrepaidLeave
 	 *            the allow prepaid leave
 	 */
-	public CompensatoryLeaveSetting(ManageDistinct isManage, VacationExpiration expirationDate,
+	public SubstVacationSetting(ManageDistinct isManage, VacationExpiration expirationDate,
 			ApplyPermission allowPrepaidLeave) {
 		super();
 		this.isManage = isManage;

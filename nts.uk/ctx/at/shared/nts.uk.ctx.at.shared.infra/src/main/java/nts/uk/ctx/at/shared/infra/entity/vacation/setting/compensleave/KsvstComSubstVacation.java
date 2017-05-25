@@ -18,13 +18,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KclstComCompensLeave.
+ * The Class KsvstComSubstVacation.
  */
 @Getter
 @Setter
 @Entity
 @Table(name = "KCLST_COM_COMPENS_LEAVE")
-public class KclstComCompensLeave implements Serializable {
+public class KsvstComSubstVacation implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -85,19 +85,19 @@ public class KclstComCompensLeave implements Serializable {
 	private int allowPrepaidLeave;
 
 	/**
-	 * Instantiates a new kclst com compens leave.
+	 * Instantiates a new ksvst com subst vacation.
 	 */
-	public KclstComCompensLeave() {
+	public KsvstComSubstVacation() {
 		super();
 	}
 
 	/**
-	 * Instantiates a new kclst com compens leave.
+	 * Instantiates a new ksvst com subst vacation.
 	 *
 	 * @param cid
 	 *            the cid
 	 */
-	public KclstComCompensLeave(String cid) {
+	public KsvstComSubstVacation(String cid) {
 		this.cid = cid;
 	}
 
@@ -120,10 +120,10 @@ public class KclstComCompensLeave implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KclstComCompensLeave)) {
+		if (!(object instanceof KsvstComSubstVacation)) {
 			return false;
 		}
-		KclstComCompensLeave other = (KclstComCompensLeave) object;
+		KsvstComSubstVacation other = (KsvstComSubstVacation) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;

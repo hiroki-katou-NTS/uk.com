@@ -8,23 +8,23 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The Interface EmpCompensLeaveRepository.
+ * The Interface EmpSubstVacationRepository.
  */
-public interface EmpCompensLeaveRepository {
+public interface EmpSubstVacationRepository {
 
 	/**
 	 * Adds the.
 	 *
 	 * @param setting the setting
 	 */
-    void add(EmpCompensLeave setting);
+    void add(EmpSubstVacation setting);
 
 	/**
 	 * Update.
 	 *
 	 * @param setting the setting
 	 */
-    void update(EmpCompensLeave setting);
+    void update(EmpSubstVacation setting);
 
 	/**
 	 * Removes the.
@@ -39,7 +39,7 @@ public interface EmpCompensLeaveRepository {
 	 * @param companyId the company id
 	 * @return the list
 	 */
-	List<EmpCompensLeave> findAll(String companyId);
+	List<EmpSubstVacation> findAll(String companyId);
 
 	/**
 	 * Find by id.
@@ -47,6 +47,6 @@ public interface EmpCompensLeaveRepository {
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	Optional<EmpCompensLeave> findById(String companyId);
+	Optional<EmpSubstVacation> findById(String companyId);
 
 }

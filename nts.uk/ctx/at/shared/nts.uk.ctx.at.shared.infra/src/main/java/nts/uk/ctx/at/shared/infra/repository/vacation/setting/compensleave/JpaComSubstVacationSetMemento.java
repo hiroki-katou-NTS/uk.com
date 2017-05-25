@@ -4,17 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensleave;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.ComCompensLeaveSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.CompensatoryLeaveSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KclstComCompensLeave;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.ComSubstVacationSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.SubstVacationSetting;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensleave.KsvstComSubstVacation;
 
 /**
- * The Class JpaComCompensLeaveSetMemento.
+ * The Class JpaComSubstVacationSetMemento.
  */
-public class JpaComCompensLeaveSetMemento implements ComCompensLeaveSetMemento {
+public class JpaComSubstVacationSetMemento implements ComSubstVacationSetMemento {
 
 	/** The type value. */
-	private KclstComCompensLeave typeValue;
+	private KsvstComSubstVacation typeValue;
 
 	/**
 	 * Instantiates a new jpa com compens leave set memento.
@@ -22,7 +22,7 @@ public class JpaComCompensLeaveSetMemento implements ComCompensLeaveSetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaComCompensLeaveSetMemento(KclstComCompensLeave typeValue) {
+	public JpaComSubstVacationSetMemento(KsvstComSubstVacation typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -30,7 +30,7 @@ public class JpaComCompensLeaveSetMemento implements ComCompensLeaveSetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComCompensLeaveSetMemento#setCompanyId(java.lang.String)
+	 * ComSubstVacationSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
@@ -41,11 +41,11 @@ public class JpaComCompensLeaveSetMemento implements ComCompensLeaveSetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensleave.
-	 * ComCompensLeaveSetMemento#setSetting(nts.uk.ctx.at.shared.dom.vacation.
+	 * ComSubstVacationSetMemento#setSetting(nts.uk.ctx.at.shared.dom.vacation.
 	 * setting.compensleave.CompensatoryLeaveSetting)
 	 */
 	@Override
-	public void setSetting(CompensatoryLeaveSetting setting) {
+	public void setSetting(SubstVacationSetting setting) {
 		this.typeValue.setIsManage(setting.getIsManage().value);
 		this.typeValue.setExpirationDateSet(setting.getExpirationDate().value);
 		this.typeValue.setAllowPrepaidLeave(setting.getAllowPrepaidLeave().value);

@@ -5,22 +5,22 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensleave;
 
 /**
- * The Interface ComCompensLeaveSetMemento.
+ * The Interface ComSubstVacationGetMemento.
  */
-public interface ComCompensLeaveSetMemento {
+public interface ComSubstVacationGetMemento {
 
 	/**
-	 * Sets the company id.
+	 * Gets the company id.
 	 *
-	 * @param companyId the new company id
+	 * @return the company id
 	 */
-	void setCompanyId(String companyId);
+	String getCompanyId();
 
 	/**
-	 * Sets the setting.
+	 * Gets the setting.
 	 *
-	 * @param setting the new setting
+	 * @return the setting
 	 */
-	void setSetting(CompensatoryLeaveSetting setting);
+	SubstVacationSetting getSetting();
 
 }

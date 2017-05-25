@@ -5,9 +5,9 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensleave;
 
 /**
- * The Interface ComCompensLeaveSetMemento.
+ * The Interface ComSubstVacationSetMemento.
  */
-public interface EmpCompensLeaveSetMemento {
+public interface ComSubstVacationSetMemento {
 
 	/**
 	 * Sets the company id.
@@ -17,17 +17,10 @@ public interface EmpCompensLeaveSetMemento {
 	void setCompanyId(String companyId);
 
 	/**
-	 * Sets the emp contract type code.
-	 *
-	 * @param contractTypeCode the new emp contract type code
-	 */
-	void setEmpContractTypeCode(String contractTypeCode);
-
-	/**
 	 * Sets the setting.
 	 *
 	 * @param setting the new setting
 	 */
-	void setSetting(CompensatoryLeaveSetting setting);
+	void setSetting(SubstVacationSetting setting);
 
 }
