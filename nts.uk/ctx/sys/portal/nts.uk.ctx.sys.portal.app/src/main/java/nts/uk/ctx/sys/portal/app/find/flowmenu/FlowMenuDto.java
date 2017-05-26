@@ -23,7 +23,6 @@ public class FlowMenuDto {
 	
 	private String fileID;
 	
-	private String fileName;
 	
 	private int defClassAtr;
 	
@@ -36,7 +35,6 @@ public class FlowMenuDto {
 				 domain.getSize().getWidth().v(),
 				 domain.getSize().getHeight().v(),
 				 domain.getFileID(),
-				 domain.getFileName().v(),
 				 domain.getDefClassAtr().value);
 	}
 }

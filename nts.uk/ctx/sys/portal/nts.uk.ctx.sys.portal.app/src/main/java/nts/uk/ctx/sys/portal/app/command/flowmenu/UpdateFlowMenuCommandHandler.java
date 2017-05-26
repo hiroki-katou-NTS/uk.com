@@ -39,7 +39,6 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 		flowMenu.setName(command.getTopPageName());
 		flowMenu.setSize(command.getWidthSize(), command.getHeightSize());
 		flowMenu.setFileID(command.getFileID());
-		flowMenu.setFileName(command.getFileName());
 		flowMenu.setDefClassAtr(command.getDefClassAtr());
 		repository.update(flowMenu);
 	}

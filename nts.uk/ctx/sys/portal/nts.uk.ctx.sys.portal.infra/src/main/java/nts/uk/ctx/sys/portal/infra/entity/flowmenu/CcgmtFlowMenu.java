@@ -30,9 +30,6 @@ public class CcgmtFlowMenu extends UkJpaEntity implements Serializable {
 	@Column(name = "FILE_ID")
 	public String fileID;
 
-	@Column(name = "FILE_NAME")
-	public String fileName;
-
 	@Column(name = "DEF_CLASS_ATR")
 	public int defClassAtr;
 

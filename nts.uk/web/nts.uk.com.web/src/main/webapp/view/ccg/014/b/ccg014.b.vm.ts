@@ -38,7 +38,7 @@ module ccg014.b.viewmodel {
                     nts.uk.ui.windows.setShared("copyTitleMenuCD", self.copyTitleCD(), false);
                     self.cancel_Dialog();
                 }).fail((res) => {
-                   nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_3"));
+                   nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
                 });
             
         }
