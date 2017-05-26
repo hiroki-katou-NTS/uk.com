@@ -18,5 +18,4 @@ public class DefaultEntityManagerLoader implements EntityManagerLoader {
     public EntityManager getEntityManager() {
         return this.entityManager;
     }
-    
 }

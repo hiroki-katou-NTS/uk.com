@@ -28,6 +28,11 @@
 							<button data-bind="click: addOptions">Add Item</button>
 						</div>
 						<br />
+						<div>
+							<input data-bind="ntsTextEditor: { value: defaultValue }"></input>
+							<button data-bind="click: setDefault">Reset</button>
+						</div>
+						<br />
 						<div class="control-group valign-center">
 							<div id="combo-box" data-bind="ntsComboBox: {options: itemListCbb1,
 												optionsValue: 'codeCbb1',
@@ -127,7 +132,7 @@
 	<com:scriptfile set="IGNITE" />
 </ui:define>]]></pre>
 <pre><![CDATA[<div id="combo-box" data-bind="ntsComboBox: {
-	options: itemList,
+	options: itemListCbb1,
 	optionsValue: 'code',
 	value: selectedCode,
 	optionsText: 'name',

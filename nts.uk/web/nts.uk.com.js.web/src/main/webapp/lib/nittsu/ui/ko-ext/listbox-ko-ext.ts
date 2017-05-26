@@ -30,7 +30,7 @@ module nts.uk.ui.koExtentions {
 //            var required = ko.unwrap(data.required) || false;
             var columns: Array<any> = data.columns;
             // Container
-            let elementId = $(element).attr("id");
+            let elementId = $(element).addClass("listbox-wrapper").attr("id");
             let gridId = elementId;
             if(nts.uk.util.isNullOrUndefined(gridId)){
                 gridId = nts.uk.util.randomId();        
@@ -94,12 +94,12 @@ module nts.uk.ui.koExtentions {
             container.ntsGridList('setupSelecting');
              
             
-            container.bind('iggridselectionrowselectionchanging', (evt, ui) => {
+            container.bind('iggridselectionrowselectionchanging', (evt: Event, uiX: any) => {
 //                console.log(ui);
                 if(container.data("enable") === false){ 
                     return false;        
                 }
-                let itemSelected = ui.row.id;
+                let itemSelected = uiX.row.id;
                 let dataSource = container.igGrid('option', "dataSource");
                 if(container.data("fullValue")){
                     itemSelected = _.find(dataSource, function (d){
@@ -116,10 +116,6 @@ module nts.uk.ui.koExtentions {
                 container.data("chaninged", true);
                 
                 document.getElementById(elementId).dispatchEvent(changingEvent);
-                 
-                if (changingEvent.returnValue !== undefined && changingEvent.returnValue === false) {
-                    return false;    
-                }
             });
 
             container.bind('selectionchanged', () => {
@@ -230,33 +226,41 @@ module nts.uk.ui.koExtentions {
                 container.igGrid("dataBind");
             }
             
-            let dataValue = data.value();
             let isMultiOld = container.igGridSelection('option', 'multipleSelection');
-            if(container.data("fullValue")){
-                if (isMultiOld){
-                    dataValue = _.map(dataValue, optionValue);
-                } else {
-                    dataValue = dataValue[optionValue];    
-                }
-            }
-            
             if(isMultiOld !== isMultiSelect){
                 
                 container.igGridSelection('option', 'multipleSelection', isMultiSelect);   
-                if(isMultiOld && !nts.uk.util.isNullOrUndefined(dataValue) && dataValue.length > 0){
+                if(isMultiOld && !nts.uk.util.isNullOrUndefined(data.value()) && data.value().length > 0){
                     data.value(data.value()[0]);   
-                } else if (!isMultiOld && !nts.uk.util.isNullOrUndefined(dataValue)){
+                } else if (!isMultiOld && !nts.uk.util.isNullOrUndefined(data.value())){
                     data.value([data.value()]);       
+                }
+                let dataValue = data.value();
+                if(container.data("fullValue")){
+                    if (isMultiOld){
+                        dataValue = _.map(dataValue, optionValue);
+                    } else {
+                        dataValue = dataValue[optionValue];    
+                    }
                 }
                 container.ntsGridList('setSelected', dataValue);    
             } else {
+                let dataValue = data.value();
+                if(container.data("fullValue")){
+                    if (isMultiOld){
+                        dataValue = _.map(dataValue, optionValue);
+                    } else {
+                        dataValue = dataValue[optionValue];    
+                    }
+                }
                 var currentSelectedItems = container.ntsGridList('getSelected');
                 if (isMultiOld) {
                     if (currentSelectedItems) {
-                        currentSelectedItems = _.map(currentSelectedItems, s => s.id);
+                        currentSelectedItems = _.map(currentSelectedItems, s => s["id"]);
                     } else {
                         currentSelectedItems = [];
                     }
+                   
                     if(dataValue) {
                         dataValue = _.map(dataValue, s => s.toString());
                     }   

@@ -52,6 +52,7 @@ public class StyleFile extends UIComponentBase {
         ResponseWriter rw = context.getResponseWriter();
         
         String filePath = (String) this.getAttributes().get("path");
+        
         String of = (String) this.getAttributes().get("of");
         
         if (filePath != null) {
@@ -77,7 +78,6 @@ public class StyleFile extends UIComponentBase {
             throw new RuntimeException(e);
         }
     }
-
 
     private static void writeTagSet(ResponseWriter rw, FacesContext context, String fileSet) {
         

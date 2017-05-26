@@ -183,7 +183,7 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 		if (paymentDetailObj.isPresent()) {
 			// NOTE: dang bi loi
 			BankTransfer bankTransfer = BankTransfer.createFromJavaType(companyCode, "companyNameKana",
-					"99900000-0000-0000-0000-000000000001", paymentHeaderObj.get().getDepartmentCode(),
+					addBankTransferCommand.getPersonId(), paymentHeaderObj.get().getDepartmentCode(),
 					addBankTransferCommand.getPayDateOfScreenE(), PayBonusAtr.SALARY.value,
 					paymentDetailObj.get().getValue(), addBankTransferCommand.getProcessingNoOfScreenE(),
 					addBankTransferCommand.getProcessingYMOfScreenE(), sparePayAtr);
@@ -219,7 +219,7 @@ public class AddBankTransferCommandHandler extends CommandHandler<AddBankTransfe
 			// NOTE: dang bi loi
 			for (PaymentDetail x : paymentDetailObj) {
 				BankTransfer bankTransfer = BankTransfer.createFromJavaType(companyCode, "companyNameKana2",
-						"11100000-0000-0000-0000-000000000001", paymentHeaderObj.getDepartmentCode(),
+						addBankTransferCommand.getPersonId(), paymentHeaderObj.getDepartmentCode(),
 						addBankTransferCommand.getPayDateOfScreenE(), PayBonusAtr.SALARY.value, x.getValue(),
 						addBankTransferCommand.getProcessingNoOfScreenE(),
 						addBankTransferCommand.getProcessingYMOfScreenE(), x.getSparePayAtr().value);

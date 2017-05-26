@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="main.024.js" />
+		</ui:define>
+		<ui:define name="content">
+			<button id="btnNew" class="btnMenu" data-bind="click: openKDL024">Open KDL024</button>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -76,4 +76,5 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 		
 		return entity;
 	}
+	
 }

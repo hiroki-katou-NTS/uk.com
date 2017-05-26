@@ -43,12 +43,38 @@ module nts.uk.ui.errors {
             // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
             // 原因がわかるまでひとまずdeferを使っておく
             _.defer(() => {
-                var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.message == error.message);
-                if (duplicate.length == 0)
+                var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.messageText == error.messageText);
+                if (duplicate.length == 0) {
+                    if (typeof error.message === "string") {
+                        error.messageText = error.message;
+                        error.message = "";
+                    } else {
+                        //business exception
+                        if (error.message.message) {
+                            error.messageText = error.message.message;
+                            error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
+                        } else {
+                            if (error.$control.length > 0) {
+                                let controlNameId = error.$control.eq(0).attr("data-name");
+                                if (controlNameId) {
+                                    error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
+                                } else {
+                                    error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
+                                }
+                            } else {
+                                error.messageText = nts.uk.resource.getMessage(error.message.messageId);
+
+                            }
+                            error.message = error.message.messageId;
+                        }
+
+                    }
                     this.errors.push(error);
+                }
+
             });
         }
-        
+
         hasError() {
             return this.occurs();
         }
@@ -70,17 +96,18 @@ module nts.uk.ui.errors {
     export interface ErrorListItem {
         tab?: string;
         location: string;
-        message: string;
+        messageText: string;
+        message: any;
         $control?: JQuery;
     }
 
     export class ErrorHeader {
         name: string;
         text: string;
-        width: number;
+        width: any;
         visible: boolean;
 
-        constructor(name: string, text: string, width: number, visible: boolean) {
+        constructor(name: string, text: string, width: any, visible: boolean) {
             this.name = name;
             this.text = text;
             this.width = width;
@@ -106,7 +133,7 @@ module nts.uk.ui.errors {
     export function add(error: ErrorListItem): void {
         errorsViewModel().addError(error);
     }
-    
+
     export function hasError(): boolean {
         return errorsViewModel().hasError();
     }

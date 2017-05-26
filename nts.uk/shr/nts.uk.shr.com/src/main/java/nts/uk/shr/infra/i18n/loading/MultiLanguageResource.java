@@ -1,5 +1,6 @@
 package nts.uk.shr.infra.i18n.loading;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 
@@ -25,6 +30,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.SystemProperties;
 
 @Stateful
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MultiLanguageResource implements IInternationalization {
 
 	private String getCompanyCode() {
@@ -45,6 +51,7 @@ public class MultiLanguageResource implements IInternationalization {
 
 	private static final Pattern COMPANYDENPENDITEMPATTERN = Pattern.compile("\\{#(\\w*)\\}");
 	private static final Pattern MESSAGEPARAMETERPATTERN = Pattern.compile("\\{([0-9])+(:\\w+)?\\}");
+	private static final String ID_MARK = "#";
 
 	@PostConstruct
 	private void load() {
@@ -54,14 +61,14 @@ public class MultiLanguageResource implements IInternationalization {
 
 	private void loadSystemResource() {
 		codeNameResource = systemResourceBundle.getResource(currentLanguage.getSessionLocale(), ResourceType.CODE_NAME);
-		if (codeNameResource == null) {
+		if (codeNameResource == null || codeNameResource.isEmpty()) {
 			codeNameResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.CODE_NAME);
 		}
 
 		Map<String, Map<String, String>> tempMessageResource = systemResourceBundle
 				.getResource(currentLanguage.getSessionLocale(), ResourceType.MESSAGE);
-		if (tempMessageResource == null) {
+		if (tempMessageResource == null || tempMessageResource.isEmpty()) {
 			tempMessageResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.MESSAGE);
 		}
@@ -83,7 +90,7 @@ public class MultiLanguageResource implements IInternationalization {
 	}
 
 	@Override
-	public Optional<String> getItemName(String id) {
+	public Optional<String> getItemName(String id, String... params) {
 
 		String text = companyCustomizedResource.get(id);
 		if (text != null)
@@ -91,13 +98,17 @@ public class MultiLanguageResource implements IInternationalization {
 
 		Map<String, String> allSystemCodeName = groupResource(codeNameResource);
 		text = allSystemCodeName.get(id);
-
+		if (text != null) {
+			text = replaceCompanyCustomizeResource(text);
+			if (params.length > 0)
+				text = formatWithParameters(text, Arrays.asList(params));
+		}
 		return text == null ? Optional.empty() : Optional.of(text);
 	}
 
 	@Override
 	public Optional<String> getMessage(String messageId, String... params) {
-		return getMessage(messageId, Arrays.asList(params));
+		return getMessage(messageId, params.length > 0 ? Arrays.asList(params) : new ArrayList<String>());
 	}
 
 	@Override
@@ -105,8 +116,8 @@ public class MultiLanguageResource implements IInternationalization {
 		Optional<String> rawMessage = getRawMessage(messageId);
 		if (!rawMessage.isPresent())
 			return Optional.empty();
-		String result = replaceCompanyDenpendItem(rawMessage.get());
-		return Optional.of(replaceMessageParameter(result, params));
+		String result = replaceCompanyCustomizeResource(rawMessage.get());
+		return Optional.of(formatWithParameters(result, params));
 	}
 
 	@Override
@@ -115,7 +126,7 @@ public class MultiLanguageResource implements IInternationalization {
 		return message == null ? Optional.empty() : Optional.of(message);
 	}
 
-	private String replaceCompanyDenpendItem(String message) {
+	private String replaceCompanyCustomizeResource(String message) {
 		Matcher matcher = COMPANYDENPENDITEMPATTERN.matcher(message);
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {
@@ -129,7 +140,7 @@ public class MultiLanguageResource implements IInternationalization {
 		return sb.toString();
 	}
 
-	private String replaceMessageParameter(String message, List<String> params) {
+	private String formatWithParameters(String message, List<String> params) {
 		if (params == null || params.size() == 0)
 			return message;
 
@@ -144,9 +155,10 @@ public class MultiLanguageResource implements IInternationalization {
 			}
 			try {
 				int paramIndex = Integer.parseInt(paramIndexMark);
-				if (paramIndex >= params.size())
+				if (paramIndex >= params.size()) {
 					continue;
-				matcher.appendReplacement(sb, params.get(paramIndex));
+				}
+				matcher.appendReplacement(sb, getArgument(params.get(paramIndex)));
 			} catch (NumberFormatException ex) {
 				Logger.getLogger(this.getClass()).error(ex.getMessage());
 				continue;
@@ -154,6 +166,19 @@ public class MultiLanguageResource implements IInternationalization {
 		}
 		matcher.appendTail(sb);
 		return sb.toString();
+	}
+
+	private String getArgument(String param) {
+		if (param.indexOf(ID_MARK) == 0) {
+			if (param.length() == 1) {
+				return param;
+			}
+			Optional<String> replaceText = getItemName(param.substring(1));
+			if (replaceText.isPresent()) {
+				return replaceText.get();
+			}
+		}
+		return param;
 	}
 
 	@Override
@@ -173,7 +198,7 @@ public class MultiLanguageResource implements IInternationalization {
 		Map<String, String> codeName = new HashMap<>();
 		codeName.putAll(codeNameResource.getOrDefault(SystemProperties.SYSTEM_ID, new HashMap<>()));
 		codeName.putAll(codeNameResource.getOrDefault(programId, new HashMap<>()));
-		// company customized will override system default if conflict
+		// company customized will override system default 
 		codeName.putAll(companyCustomizedResource);
 		return codeName;
 
@@ -184,7 +209,12 @@ public class MultiLanguageResource implements IInternationalization {
 
 		Map<ResourceType, Map<String, String>> result = new HashMap<>();
 		result.put(ResourceType.MESSAGE, getAllMessage());
-		result.put(ResourceType.CODE_NAME, getCodeNameResourceOfProgram(programId));
+		// result.put(ResourceType.CODE_NAME,
+		// getCodeNameResourceOfProgram(programId));
+		// TODO: temporaty fix for test, get all of company
+		Map<String, String> fixedForTest = new HashMap<>();
+		codeNameResource.entrySet().stream().map(x -> x.getValue()).forEach(x -> fixedForTest.putAll(x));
+		result.put(ResourceType.CODE_NAME, fixedForTest);
 
 		return result;
 	}
@@ -201,5 +231,4 @@ public class MultiLanguageResource implements IInternationalization {
 	public Map<String, String> getCustomizeResource() {
 		return companyCustomizedResource;
 	}
-
 }

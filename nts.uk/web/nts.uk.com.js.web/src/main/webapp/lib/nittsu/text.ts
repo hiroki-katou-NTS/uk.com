@@ -26,7 +26,7 @@
             allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
             allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
             allHiragana: /^[ぁ-ん　ー ]*$/,
-        }; 
+        };
 
         /**
          * 文字列の半角文字数を数える（Unicode用）
@@ -188,6 +188,16 @@
         export function allKatakana(text: string) {
             return regexp.allFullKatakanaReg.test(text);
         }
+        
+        /**
+         * Determines if text is half integer
+         * @param text text to check
+         */
+        export function halfInt(text: string) {
+            var val = parseFloat(text);
+            if (val !== NaN && (val * 2) % 1 === 0) return true;
+            return false;
+        }
 
         /**
          * 文字列中のHTML記号をサニタイズする
@@ -217,6 +227,16 @@
          */
         export function toUpperCaseFirst(text: string) {
             return text.charAt(0).toUpperCase() + text.slice(1);
+        }
+        
+        /**
+         * Convert lower case text to upper case one
+         * @param text text to convert
+         */
+        export function toUpperCase(text: string) {
+            return text.replace(/[a-z]/g, function(c) {
+                return String.fromCharCode(c.charCodeAt(0) - 0x20);
+            });
         }
 
         /**
@@ -379,7 +399,14 @@
                 '全角',
                 1,
                 nts.uk.util.alwaysTrue),
-
+            Kana: new CharType(
+                'カナ',
+                1,
+                nts.uk.text.allFullKatakana),
+            HalfInt: new CharType(
+                '半整数',
+                0.5,
+                nts.uk.text.halfInt)
         };
 
         export function getCharType(primitiveValueName: string): CharType {
@@ -400,7 +427,7 @@
          * Format for EmployeeCode
          * @return {String}  EmployeeCode
          */
-        export function formatEmployeeCode(code: string, filldirection: string, fillcharacter: string, length: number): string {
+        export function formatCode(code: string, filldirection: string, fillcharacter: string, length: number): string {
             if (filldirection === "left")
                 return padLeft(code, fillcharacter, length);
             else
@@ -475,12 +502,15 @@
 
             format(source: any): string {
                 var constraintName = this.args.constraintName;
-                if (constraintName === "EmployeeCode") {
-                    var constraint = this.args.constraint;
-                    var filldirection: string = this.args.editorOption.filldirection;
-                    var fillcharacter: string = this.args.editorOption.fillcharacter;
-                    var length: number = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
-                    return formatEmployeeCode(source, filldirection, fillcharacter, length);
+                var autofill: boolean = this.args.editorOption.autofill;
+                if (!util.isNullOrEmpty(source)) {
+                    if (autofill === true || constraintName === "EmployeeCode") {
+                        var constraint = this.args.constraint;
+                        var filldirection: string = this.args.editorOption.filldirection;
+                        var fillcharacter: string = this.args.editorOption.fillcharacter;
+                        var length: number = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
+                        return formatCode(source, filldirection, fillcharacter, length);
+                    }
                 }
                 return source;
             }

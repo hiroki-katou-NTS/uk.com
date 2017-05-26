@@ -185,8 +185,12 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.histId), historyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		return Optional.of(em.createQuery(cq).getResultList().stream()
-				.map(item -> this.toDomain(item)).collect(Collectors.toList()).get(0));
+		List<QismtHealthInsuRate> lstQismtHealthInsuRate = em.createQuery(cq).getResultList();
+		if (lstQismtHealthInsuRate.isEmpty()) {
+			return Optional.of(null);
+		}
+		return Optional.of(
+				lstQismtHealthInsuRate.stream().map(item -> this.toDomain(item)).collect(Collectors.toList()).get(0));
 	}
 
 	/*

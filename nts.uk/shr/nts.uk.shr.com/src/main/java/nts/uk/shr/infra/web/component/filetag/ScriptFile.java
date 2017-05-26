@@ -101,7 +101,6 @@ public class ScriptFile extends UIComponentBase {
         }
     }
 
-
     private static void writeTagSet(
             ResponseWriter rw, FacesContext context, String fileSet, Optional<String> exclude) {
         

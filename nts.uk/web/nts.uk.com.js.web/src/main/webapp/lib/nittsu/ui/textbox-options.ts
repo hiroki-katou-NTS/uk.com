@@ -14,12 +14,14 @@ module nts.uk.ui.option {
         placeholder?: string;
         width?: string;
         textalign?: string;
+        autofill?: boolean;
         filldirection?: FillDirection;
         fillcharacter?: string;
     }
 
     export class TextEditorOption extends EditorOptionBase {
         textmode: TextMode;
+        autofill: boolean;
         filldirection: FillDirection;
         fillcharacter: string;
         
@@ -30,6 +32,7 @@ module nts.uk.ui.option {
             this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
             this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
             this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "";
+            this.autofill = (option !== undefined && option.autofill !== undefined) ? option.autofill : false;
             this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "right";
             this.fillcharacter = (option !== undefined && option.fillcharacter !== undefined) ? option.fillcharacter : "0";
         }
@@ -69,7 +72,7 @@ module nts.uk.ui.option {
         textalign?: string;
         symbolChar?: string;
         symbolPosition?: string;
-        defaultValue?: boolean
+        defaultValue?: string;
     }
 
     export class NumberEditorOption extends EditorOptionBase {
@@ -79,7 +82,7 @@ module nts.uk.ui.option {
         decimallength: number;
         symbolChar: string;
         symbolPosition: string;
-        defaultValue: boolean;
+        defaultValue: string;
         
         constructor(option?: INumberEditorOption) {
             super();

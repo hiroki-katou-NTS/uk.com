@@ -145,6 +145,18 @@ button {
 			color: $button-disabled-base-color;
 		}
 	}
+	
+	&:focus {
+		&.caret-bottom,
+		&.caret-top,
+		&.caret-left,
+		&.caret-right{
+			&:after {
+				color: #0096f2;
+			}
+		}
+	}
+	
 	&.caret-bottom:after {
 		top: 100%;
 		left: 50%;
@@ -165,6 +177,7 @@ button {
 	
 	&.caret-left:after { right: 100%; top: 50%; margin-top: -1em; }
 	&.caret-right:after { left: 100%; top: 50%; margin-top: -1em; }
+	
 }
 
 .caret-background {

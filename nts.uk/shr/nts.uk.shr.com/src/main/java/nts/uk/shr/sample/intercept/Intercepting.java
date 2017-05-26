@@ -8,5 +8,5 @@ public class Intercepting {
 	public String run() {
 		String s = "aa";
 		return s.toString();
-	}
+	}  
 }

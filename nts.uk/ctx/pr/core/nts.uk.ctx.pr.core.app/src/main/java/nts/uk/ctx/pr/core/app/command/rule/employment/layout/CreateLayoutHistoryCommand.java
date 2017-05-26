@@ -29,12 +29,5 @@ public class CreateLayoutHistoryCommand {
 		return LayoutHistory.createFromJavaType(
 				AppContexts.user().companyCode(), this.stmtCode, historyId, startYm, endYm, layoutAtr);
 	}
-//	public LayoutMaster toDomain(int startYm,
-//			int endYm,
-//			int layoutAtr,
-//			String stmtName, String historyId){
-//		return LayoutMaster.createFromJavaType(
-//				AppContexts.user().companyCode(), startYm, this.stmtCode, endYm, layoutAtr, stmtName, historyId);
-//	}
 	
 }
