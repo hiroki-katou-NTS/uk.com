@@ -66,9 +66,9 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             service.registry(self.parentCode, self.layoutID, self.pgType, self.placements())
                 .done((data) => {
                     self.layoutID = data;
-                    dialog.info({messageId: "Msg_15"});
+                    dialog.info({ messageId: "Msg_15" });
                 }).fail((res) => {
-                    dialog.alertError({messageId: res.messageId});
+                    dialog.alertError({ messageId: res.messageId });
                 });
         }
 
@@ -134,29 +134,27 @@ module nts.uk.com.view.ccg031.a.viewmodel {
         /** Init all Widget display & binding */
         private initDisplay(): void {
             var self = this;
+            self.initReorderPlacements(_.clone(self.placements()), []);
             self.autoExpandLayout();
             self.markOccupiedAll();
-            if (self.placements().length > 0) {
-                self.initReorderPlacements(_.clone(self.placements()), []);
-            }
             self.setupPositionAndSizeAll();
             self.setupDragDrop();
         }
 
-        private initReorderPlacements(clonePlacements: Array<model.Placement>, checkingPlacementIds: Array<string>): void {
+        /** Re-order all Placements when init */
+        private initReorderPlacements(listPlacements: Array<model.Placement>, checkingPlacements: Array<model.Placement>): void {
             var self = this;
-            if (clonePlacements.length > 0) {
-                var movingPlacementIds = self.layoutGrid().markOccupied(clonePlacements[0]);
-                checkingPlacementIds.push(clonePlacements[0].placementID);
-                if (movingPlacementIds.length > 0) {
-                    self.reorderPlacements(movingPlacementIds, checkingPlacementIds);
-                }
-                checkingPlacementIds = _.union(checkingPlacementIds);
-                _.pullAt(clonePlacements, [0]);
-                self.initReorderPlacements.call(self, clonePlacements, checkingPlacementIds);
+            if (listPlacements.length > 0) {
+                // Moving Placement
+                var movingPlacement = listPlacements[0];
+                self.shiftOverlapPart(movingPlacement, checkingPlacements);
+
+                checkingPlacements.push(listPlacements[0]);
+                _.pullAt(listPlacements, [0]);
+                self.initReorderPlacements.call(self, listPlacements, checkingPlacements);
             }
         }
-        
+
         /** Setup Draggable & Droppable */
         private setupDragDrop(): void {
             this.setupDragable();
@@ -200,7 +198,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                 }
             });
         }
-        
+
         /**
          * Re-order list Placements with a list checking Placements
          * @param movingPlacementIds list placementID need to move
