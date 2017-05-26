@@ -10,7 +10,7 @@ module kmk011.b.viewmodel {
         divReasonContent: KnockoutObservable<string>;
         enableCode: KnockoutObservable<boolean>;
         itemDivReason: KnockoutObservable<model.Item>;
-        divTimeId: KnockoutObservable<string>;
+        divTimeId: KnockoutObservable<number>;
         index_of_itemDelete: any;
         objectOld: any;
         enableDel: KnockoutObservable<boolean>;
