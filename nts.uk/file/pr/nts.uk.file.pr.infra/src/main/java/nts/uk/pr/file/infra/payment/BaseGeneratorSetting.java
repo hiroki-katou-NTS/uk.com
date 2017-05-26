@@ -42,10 +42,10 @@ public abstract class BaseGeneratorSetting extends AsposeCellsReportGenerator {
 	public static final int NUMBER_OF_ROW_PER_ITEM = 1;
 
 	/** The Constant EXCEL_ROW_UNIT_IN_MM. */
-	public static final double EXCEL_ROW_UNIT_IN_MM = 0.35;
+	public static final double EXCEL_ROW_UNIT_IN_MM = 0.315;
 
 	/** The Constant EXCEL_COL_UNIT_IN_MM. */
-	public static final double EXCEL_COL_UNIT_IN_MM = 3.15;
+	public static final double EXCEL_COL_UNIT_IN_MM = 2.2;
 
 	/** The Constant DEFAULT_MARGIN. */
 	public static final double DEFAULT_MARGIN = 0;
