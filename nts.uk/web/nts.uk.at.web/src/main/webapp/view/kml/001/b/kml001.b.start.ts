@@ -11,6 +11,8 @@ module nts.uk.at.view.kml001.b {
                     }
                 }    
             }
+            $("#premium-set-tbl-b > tbody > tr > td:NTH-CHILD(2) button").each(function (i) { $(this).attr('tabindex', i + 1); });
+            $("#premium-set-tbl-b > tbody > tr > td:NTH-CHILD(3) input").each(function (i) { $(this).attr('tabindex', 3*i); });
         });
     });
 }

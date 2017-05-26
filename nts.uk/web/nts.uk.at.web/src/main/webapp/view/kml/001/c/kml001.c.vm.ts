@@ -14,7 +14,12 @@ module nts.uk.at.view.kml001.c {
                 self.lastestStartDate = ko.observable(nts.uk.ui.windows.getShared('lastestStartDate'));
                 self.newStartDate = ko.observable(null);
                 self.newStartDate.subscribe(function(value){
-                    if(self.errorStartDate()) $("#startDateInput").ntsError('set', {messageId:"Msg_102"});     
+                    if((value != "") && (value != null)) {
+                        if(self.errorStartDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'))) $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});  
+                        else $("#startDateInput-input").ntsError('clear');
+                    } else {
+                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});    
+                    }     
                 });
                 self.size = ko.observable(nts.uk.ui.windows.getShared('size'));
                 self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47',[self.lastestStartDate()]));
@@ -23,9 +28,9 @@ module nts.uk.at.view.kml001.c {
             /**
              * check error on new input date
              */
-            errorStartDate(): boolean {
+            errorStartDate(input: string): boolean {
                 var self = this;
-                return ((self.newStartDate()== null)|| vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.lastestStartDate()));     
+                return ((input == "")|| (input == null) || vmbase.ProcessHandler.validateDateInput(input,self.lastestStartDate()));     
             }
             
             /**
@@ -33,9 +38,10 @@ module nts.uk.at.view.kml001.c {
              */
             submitAndCloseDialog(): void {
                 var self = this;
-                if(self.errorStartDate()) $("#startDateInput").ntsError('set', {messageId:"Msg_102"}); 
+                if((self.newStartDate() == "") || (self.newStartDate() == null)) $("#startDateInput-input").ntsError('set', {messageId:"Msg_102"}); 
+                else if(self.errorStartDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'))) $("#startDateInput-input").ntsError('set', {messageId:"Msg_102"}); 
                 else {
-                    nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
+                    nts.uk.ui.windows.setShared('newStartDate', self.newStartDate().substring(0,10).replace('-','/').replace('-','/'));
                     nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());
                     nts.uk.ui.windows.close(); 
                 }
@@ -45,7 +51,7 @@ module nts.uk.at.view.kml001.c {
              * close dialog and do nothing
              */
             closeDialog(): void {
-                $("#startDateInput").ntsError('clear');
+                $("#startDateInput-input").ntsError('clear');
                 nts.uk.ui.windows.close();   
             }
         }

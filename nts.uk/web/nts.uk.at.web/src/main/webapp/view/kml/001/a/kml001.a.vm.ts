@@ -58,10 +58,10 @@ module nts.uk.at.view.kml001.a {
                         self.loadData(dfdPersonCostCalculationSelectData, 0);
                         self.currentGridPersonCost.subscribe(function(value) { // change current personCostCalculation when grid is selected
                             if(value!=null) {
-                                self.currentPersonCost(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, ' ', 1)[0]; }));
+                                //self.currentPersonCost(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, ' ', 1)[0]; }));
+                                self.currentPersonCost(self.clonePersonCostCalculation(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, ' ', 1)[0]; })));
                                 self.newStartDate(self.currentPersonCost().startDate());
-                                $("#startDateInput").ntsError('clear');
-                                $(".premiumInput").ntsError('clear');
+                                _.defer(() => {$("#startDateInput-input").ntsError('clear');}); 
                                 nts.uk.ui.errors.clearAll();
                                 ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, index) {
                                     let iDList = [];
@@ -73,32 +73,33 @@ module nts.uk.at.view.kml001.a {
                                 self.isInsert(false);
                                 $("#memo").focus(); 
                             } else {
-                                $("#startDateInput").focus();    
+                                $("#startDateInput-input").focus();    
                             }
                         });
     
                         self.isInsert(false);
                     }
                     self.newStartDate.subscribe(function(value) {
+                        let ymd = value.substring(0,10).replace('-','/').replace('-','/');
                         if (self.isInsert()) { // check startDate input when insert
                             if (_.size(self.personCostList()) != 0) { // when list personCostCalculation not empty
-                                if ((self.newStartDate() == "") || vmbase.ProcessHandler.validateDateInput(self.newStartDate(), _.last(self.personCostList()).startDate())) {
-                                    $("#startDateInput").ntsError('set', {messageId:"Msg_65"});
+                                if ((ymd == "") || vmbase.ProcessHandler.validateDateInput(ymd, _.last(self.personCostList()).startDate())) {
+                                    _.defer(() => {$("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});});
                                 } else { 
-                                    $("#startDateInput").ntsError('clear'); 
+                                    _.defer(() => {$("#startDateInput-input").ntsError('clear');}); 
                                 }
                             } else { // when list personCostCalculation empty
-                                if ((self.newStartDate() == "") || vmbase.ProcessHandler.validateDateInput(self.newStartDate(), "1900/01/01")) {
-                                    $("#startDateInput").ntsError('set', {messageId:"Msg_65"});
+                                if ((ymd == "") || vmbase.ProcessHandler.validateDateInput(ymd, "1900/01/01")) {
+                                    _.defer(() => {$("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});});
                                 } else { 
-                                    $("#startDateInput").ntsError('clear'); 
+                                    _.defer(() => {$("#startDateInput-input").ntsError('clear');}); 
                                 }
                             }
                         }
                     });
                     dfd.resolve();
                 }).fail((res1, res2) => {
-                    nts.uk.ui.dialog.alert(res1.message+'\n'+res2.message);
+                    nts.uk.ui.dialog.alertError(res1.message+'\n'+res2.message);
                     dfd.reject();
                 });
                 return dfd.promise();
@@ -114,7 +115,7 @@ module nts.uk.at.view.kml001.a {
                 res.forEach(function(personCostCalc) {
                     self.personCostList.push(vmbase.ProcessHandler.fromObjectPerconCost(personCostCalc));
                 });
-                if(self.personCostList()!=null) self.currentPersonCost(self.personCostList()[index]);
+                if(self.personCostList()!=null) self.currentPersonCost(self.clonePersonCostCalculation(self.personCostList()[index]));
                 
                 self.newStartDate(self.currentPersonCost().startDate());
                 
@@ -154,7 +155,7 @@ module nts.uk.at.view.kml001.a {
                             self.currentPersonCost().premiumSets()[index].attendanceItems(newList);
                         })
                         .fail(function(res) {
-                            nts.uk.ui.dialog.alert(res.message);
+                            nts.uk.ui.dialog.alertError(res.message);
                         });
                 }
             }
@@ -166,9 +167,10 @@ module nts.uk.at.view.kml001.a {
                 var self = this;
                 if (self.isInsert()) {
                     let index = _.findLastIndex(self.personCostList()) + 1;
-                    if ((self.newStartDate() != null) && !vmbase.ProcessHandler.validateDateInput(self.currentPersonCost().startDate(), self.lastStartDate)) {
+                    if ((self.newStartDate() == null) && (self.newStartDate() != "") && !vmbase.ProcessHandler.validateDateInput(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'), self.lastStartDate)) {
                         // insert new data if startDate have no error
-                        self.currentPersonCost().startDate(self.newStartDate());
+                        let ymd = self.newStartDate().substring(0,10).replace('-','/').replace('-','/');
+                        self.currentPersonCost().startDate(ymd);
                         servicebase.personCostCalculationInsert(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                             .done(function(res: Array<any>) {
                                 servicebase.personCostCalculationSelect()
@@ -176,22 +178,23 @@ module nts.uk.at.view.kml001.a {
                                         // refresh data list
                                         self.personCostList.removeAll();
                                         self.gridPersonCostList.removeAll();
-                                        self.loadData(newData, index);
                                         self.isInsert(false);
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                        self.loadData(newData, index);
+                                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                                     }).fail(function(res) {
-                                        nts.uk.ui.dialog.alert(res.message);
+                                        nts.uk.ui.dialog.alertError(res.message);
                                     });
                             }).fail(function(res) {
-                                nts.uk.ui.dialog.alert(res.message);
+                                nts.uk.ui.dialog.alertError(res.message);
                             });
                         
                     } else {
-                        $("#startDateInput").ntsError('set', {messageId:"Msg_65"});
+                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});
                     }
                 } else {
                     // update new data for current personCostCalculation
                     let index = _.findIndex(self.personCostList(), function(item){return item.historyID() == self.currentPersonCost().historyID()});
+                    self.currentPersonCost().startDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'));
                     servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                         .done(function(res: Array<any>) {
                             servicebase.personCostCalculationSelect()
@@ -200,12 +203,12 @@ module nts.uk.at.view.kml001.a {
                                     self.personCostList.removeAll();
                                     self.gridPersonCostList.removeAll();
                                     self.loadData(newData, index);
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                                 }).fail(function(res) {
-                                    nts.uk.ui.dialog.alert(res.message);
+                                    nts.uk.ui.dialog.alertError(res.message);
                                 });
                         }).fail(function(res) {
-                            nts.uk.ui.dialog.alert(res.message);
+                            nts.uk.ui.dialog.alertError(res.message);
                         });
                     
                 }
@@ -244,7 +247,7 @@ module nts.uk.at.view.kml001.a {
                                     self.currentPersonCost().premiumSets.push(
                                         new vmbase.PremiumSetting("", "", item.iD(), 0, item.attendanceID(), item.name(), item.displayNumber(), item.useAtr(), []));
                                 });    
-                                $("#startDateInput").focus(); 
+                                $("#startDateInput-input").focus(); 
                             } else {
                                 if(self.isInsert()){
                                     self.currentPersonCost().premiumSets.removeAll();
@@ -252,7 +255,7 @@ module nts.uk.at.view.kml001.a {
                                         self.currentPersonCost().premiumSets.push(
                                             new vmbase.PremiumSetting("", "", item.iD(), 0, item.attendanceID(), item.name(), item.displayNumber(), item.useAtr(), []));
                                     });    
-                                    $("#startDateInput").focus();
+                                    $("#startDateInput-input").focus();
                                 } else {
                                     self.personCostList.removeAll();
                                     self.gridPersonCostList.removeAll();
@@ -262,7 +265,7 @@ module nts.uk.at.view.kml001.a {
                             }
                             
                         }).fail((res1, res2) => {
-                            nts.uk.ui.dialog.alert(res1.message+'\n'+res2.message);
+                            nts.uk.ui.dialog.alertError(res1.message+'\n'+res2.message);
                         });
                     }
                 });
@@ -279,6 +282,7 @@ module nts.uk.at.view.kml001.a {
                 nts.uk.ui.windows.sub.modal("/view/kml/001/c/index.xhtml", { title: "履歴の追加", dialogClass: "no-close" }).onClosed(function() {
                     let newStartDate: string = nts.uk.ui.windows.getShared('newStartDate');
                     if (newStartDate != null) {
+                        newStartDate = newStartDate.substring(0,10).replace('-','/').replace('-','/');
                         let copyDataFlag: boolean = nts.uk.ui.windows.getShared('copyDataFlag');
                         if (_.size(self.personCostList()) != 0) { // when PersonCostCalculation list not empty
                             if (copyDataFlag) { // when new data is copy
@@ -293,6 +297,13 @@ module nts.uk.at.view.kml001.a {
                                         lastItem.memo(),
                                         []));
                                 self.currentPersonCost().premiumSets(lastItem.premiumSets());
+                                ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, i) {
+                                    let iDList = [];
+                                    self.currentPersonCost().premiumSets()[i].attendanceItems().forEach(function(item) {
+                                        iDList.push(item.shortAttendanceID);
+                                    });
+                                    self.getItem(iDList, i);
+                                });
                                 self.newStartDate(self.currentPersonCost().startDate());
                             } else { 
                                 self.currentPersonCost(
@@ -351,10 +362,10 @@ module nts.uk.at.view.kml001.a {
                             self.isInsert(true);
                         }
                         self.currentGridPersonCost(null);
-                        $("#startDateInput").focus(); 
+                        $("#startDateInput-input").focus(); 
                     } else {
                         if(self.isInsert()){
-                            $("#startDateInput").focus();       
+                            $("#startDateInput-input").focus();       
                         } else {
                             $("#memo").focus(); 
                         }    
@@ -381,7 +392,7 @@ module nts.uk.at.view.kml001.a {
                                 self.gridPersonCostList.removeAll();
                                 self.loadData(res, index);
                             }).fail(function(res) {
-                                nts.uk.ui.dialog.alert(res.message);
+                                nts.uk.ui.dialog.alertError(res.message);
                             });
                     }
                     $("#memo").focus(); 
@@ -419,7 +430,7 @@ module nts.uk.at.view.kml001.a {
                             }
                         });
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alert(res.message);         
+                        nts.uk.ui.dialog.alertError(res.message);         
                     });
     
             }
