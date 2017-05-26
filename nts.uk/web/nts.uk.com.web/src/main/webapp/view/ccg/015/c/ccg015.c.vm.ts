@@ -36,8 +36,8 @@ module nts.uk.pr.view.ccg015.c {
                 else {
                     nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
                     var data: service.TopPageDto = {
-                        topPageCode: self.newTopPageCode(),
-                        topPageName: self.newTopPageName(),
+                        topPageCode: _.escape(self.newTopPageCode()),
+                        topPageName: _.escape(self.newTopPageName()),
                         layoutId: self.parentLayoutId(),
                         languageNumber: 0,
                         isCheckOverwrite: self.check(),

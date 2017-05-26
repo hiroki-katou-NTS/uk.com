@@ -7,7 +7,6 @@
 #texteditor1.ntsControl .nts-input{ border: 1px solid #999999;}
 #new{margin-left: 30px;}
 button{padding-left: 30px; padding-right: 30px;margin-left: 15px;}
-button.search-btn.caret-bottom {padding:0px 20px 0px 20px; float: left;}
 #delete{margin-left: 50px;}
 button.x-large.fixbtn {width: 200px; height: 70px; margin: 70px 0px 0px 0px;}
 #titleMenuCD {margin-left: 60px;}

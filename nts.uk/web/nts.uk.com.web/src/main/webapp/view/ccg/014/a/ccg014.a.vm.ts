@@ -54,10 +54,10 @@ module ccg014.a.viewmodel {
         createButtonClick() {
             var self = this;
             self.isCreate(true);
-            _.defer(() => {
-                errors.clearAll();
-                $(".nts-input").ntsError("clear");
-            });
+            self.selectedTitleMenuCD(null);
+            self.selectedTitleMenu(new model.TitleMenu("", "", ""));
+            errors.clearAll();
+            $(".nts-input").ntsError("clear");
         }
 
         /** Registry Button Click */
@@ -147,15 +147,11 @@ module ccg014.a.viewmodel {
         /** Get Selected TitleMenu */
         private findSelectedTitleMenu(titleMenuCD: string) {
             var self = this;
+            $(".nts-input").ntsError("clear");
             var selectedTitleMenu = _.find(self.listTitleMenu(), ['titleMenuCD', titleMenuCD]);
             if (selectedTitleMenu !== undefined) {
                 self.isCreate(false);
                 self.selectedTitleMenu(new model.TitleMenu(selectedTitleMenu.titleMenuCD, selectedTitleMenu.name, selectedTitleMenu.layoutID));
-            }
-            else {
-                self.selectedTitleMenu(new model.TitleMenu("", "", ""));
-                self.isCreate(true);
-               
             }
         }
 
@@ -164,13 +160,6 @@ module ccg014.a.viewmodel {
             var self = this;
             if (isCreate === true) {
                 self.selectedTitleMenuCD(null);
-                _.defer(() => { $("#titleMenuCD").focus(); });
-            }
-            else {
-                _.defer(() => {
-                    errors.clearAll();
-                    $(".nts-input").ntsError("clear");
-                });
             }
         }
 
@@ -189,7 +178,6 @@ module ccg014.a.viewmodel {
                 self.listTitleMenu(listTitleMenu);
                 if (listTitleMenu.length > 0) {
                     self.isCreate(false);
-                      _.defer(() => { $("#titleMenuName").focus(); });
                 }
                 else {
                     self.findSelectedTitleMenu(null);

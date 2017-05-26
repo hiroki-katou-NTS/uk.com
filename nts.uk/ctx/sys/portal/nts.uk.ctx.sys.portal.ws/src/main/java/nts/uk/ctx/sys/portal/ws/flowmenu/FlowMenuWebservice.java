@@ -49,7 +49,7 @@ public class FlowMenuWebservice extends WebService {
 	@POST
 	@Path("findbycode")
 	public FlowMenuDto getByCode(String toppagePartID) {
-		return this.finder.getFlowMenu(toppagePartID).orElse(null);
+		return this.finder.getFlowMenu(toppagePartID);
 	}
 	
 	@POST
