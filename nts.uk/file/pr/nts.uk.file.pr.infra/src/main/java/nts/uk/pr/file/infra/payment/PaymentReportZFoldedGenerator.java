@@ -59,11 +59,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 		printAttendanceItems();
 		printArticleItems();
 		printOtherItems();
-
-		breakLines(1);
-		// Print remark;
 		printRemark();
-		breakLines(1);
 	}
 
 	/*

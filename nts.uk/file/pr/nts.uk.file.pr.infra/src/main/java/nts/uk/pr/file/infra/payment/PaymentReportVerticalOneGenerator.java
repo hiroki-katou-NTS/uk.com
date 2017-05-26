@@ -57,11 +57,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 		printAttendanceItems();
 		printArticleItems();
 		printOtherItems();
-
-		breakLines(1);
-		// Print remark;
 		printRemark();
-		breakLines(1);
 	}
 
 	/*

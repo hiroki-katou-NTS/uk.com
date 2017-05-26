@@ -238,8 +238,7 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Prints the cell value.
 	 *
-	 * @param dataFirst
-	 *            the data first
+	 * @param dataFirst the data first
 	 */
 	private void printCellValue(PaymentReportDto dataFirst) {
 		setDataCategory(START_ROW_CATEGORY_ATTENDANCE, START_COL_CATEGORY_ATTENDANCE, 1,
@@ -308,8 +307,7 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Gets the cell.
 	 *
-	 * @param cell
-	 *            the cell
+	 * @param cell the cell
 	 * @return the cell
 	 */
 	private Cell getCell(String cell) {
@@ -336,6 +334,11 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 		return value.doubleValue() / EXCEL_COL_UNIT_IN_MM;
 	}
 
+	/**
+	 * Config page by setting.
+	 *
+	 * @param setting the setting
+	 */
 	private void configPageBySetting(RefundPaddingOnceDto setting){
 		cells.setRowHeight(currentCellRow, toExcelRowUnit(setting.getPaddingTop()));
 		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
