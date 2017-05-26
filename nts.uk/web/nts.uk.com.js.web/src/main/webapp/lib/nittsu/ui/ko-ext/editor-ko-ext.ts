@@ -123,7 +123,6 @@ module nts.uk.ui.koExtentions {
 
             let validator = this.getValidator(data);
             $input.on("keyup", (e) => {
-//                console.log(e);
                 var code = e.keyCode || e.which;
                 if (!readonly && code.toString() !== '9') {
                     var newText = $input.val();
@@ -136,7 +135,6 @@ module nts.uk.ui.koExtentions {
             });
 
             $input.on("blur", (e) => {
-//                console.log(e);
                 if (!readonly) {
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });
