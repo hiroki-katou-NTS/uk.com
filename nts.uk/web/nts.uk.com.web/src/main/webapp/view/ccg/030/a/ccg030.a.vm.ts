@@ -194,7 +194,7 @@ module ccg030.a.viewmodel {
         // Open ccg030 B Dialog
         open030B_Dialog() {
             nts.uk.ui.windows.setShared("flowmenu", this.selectedFlowMenu(), false);
-            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: '繝励Ξ繝薙Η繝ｼ', dialogClass: "no-close" });
+            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: 'プレビュー', dialogClass: "no-close" });
         }
 
         /** Find Current FlowMenu by ID */
@@ -230,6 +230,7 @@ module ccg030.a.viewmodel {
                 self.listFlowMenu(listFlowMenu);
                 if (listFlowMenu.length > 0) {
                     self.isCreate(false);
+                    _.defer(() => { $("#inpName").focus(); });
                 }
                 else {
                     self.findFlowMenu(null);

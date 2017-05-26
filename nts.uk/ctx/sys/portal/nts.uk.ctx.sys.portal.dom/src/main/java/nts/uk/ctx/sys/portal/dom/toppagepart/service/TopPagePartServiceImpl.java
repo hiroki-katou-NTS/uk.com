@@ -101,10 +101,7 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		List<Integer> checkingTopPagePartTypeValues = new ArrayList<Integer>();
 		checkingTopPagePartTypeValues.add(TopPagePartType.FlowMenu.value);
 		checkingTopPagePartTypeValues.add(TopPagePartType.ExternalUrl.value);
-		
-		List<EnumConstant> activeTopPagePartType = new ArrayList<EnumConstant>();
-		activeTopPagePartType.addAll(listTopPagePartType.stream().filter(o -> checkingTopPagePartTypeValues.contains(o.getValue())).collect(Collectors.toList()));
-		return activeTopPagePartType;
+		return listTopPagePartType.stream().filter(o -> checkingTopPagePartTypeValues.contains(o.getValue())).collect(Collectors.toList());
 	} 
 
 	/**
@@ -128,10 +125,7 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 					checkingTopPagePartTypeValues.add(TopPagePartType.ExternalUrl.value);
 			}
 		}
-		
-		List<EnumConstant> activeTopPagePartType = new ArrayList<EnumConstant>();
-		activeTopPagePartType.addAll(listTopPagePartType.stream().filter(o -> checkingTopPagePartTypeValues.contains(o.getValue())).collect(Collectors.toList()));
-		return activeTopPagePartType;
+		return (listTopPagePartType.stream().filter(o -> checkingTopPagePartTypeValues.contains(o.getValue())).collect(Collectors.toList()));
 	}
 	
 	/**
