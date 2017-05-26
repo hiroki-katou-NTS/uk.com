@@ -53,7 +53,7 @@ __viewContext.ready(function() {
             { headerText: "Item Text", key: 'nodeText', width: "200px", dataType: "string" }]);
             this.selectedCode = ko.observableArray([]);
             this.currentCodeListSwap = ko.observableArray([]);
-            this.test = ko.observable(null);
+            this.test = ko.observableArray([]);
             this.testSingle = ko.observable(null);
         }
         

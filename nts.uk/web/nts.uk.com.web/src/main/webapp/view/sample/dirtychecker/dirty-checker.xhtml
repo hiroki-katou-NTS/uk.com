@@ -13,7 +13,7 @@
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
-				<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" />
+				<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" of="/nts.uk.com.js.web"/>
             </ui:define>
             
             <ui:define name="content">
@@ -25,7 +25,6 @@
 						<!-- <div data-bind="with: numbereditor"> -->
 						<div>
 							<input id="dirty-input" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
-							<button data-bind="click: changeValue">Change</button>
 							<button data-bind="click: reset">Reset</button>
 							<button data-bind="click: checkDirty">Check dirty</button>
 							<button data-bind="click: reload">Load page</button>

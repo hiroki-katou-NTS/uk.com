@@ -16,6 +16,44 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var data = valueAccessor();
+            
+            var container = $(element);
+            container.keydown(function (evt, ui) {
+                let code = evt.which || evt.keyCode;
+                if (code === 32) {
+                    evt.preventDefault(); 
+                }        
+            });
+            
+            container.keyup(function (evt, ui) {
+                let code = evt.which || evt.keyCode;
+                if (code === 32) {
+                    let selectedCode = container.find(".nts-switch-button:first").data('swbtn');     
+                    data.value(selectedCode);
+                } else if (code === 37 || code === 38) {
+                    let inputList = container.find(".nts-switch-button");
+                    let currentSelect = _.findIndex(inputList, function (item){
+                        return $(item).data('swbtn') === data.value();
+                    });   
+                    let selectedCode = $(inputList[currentSelect - 1]).data('swbtn');
+                    if (!nts.uk.util.isNullOrUndefined(selectedCode)){
+                        data.value(selectedCode);    
+                    }
+                } else if (code === 39 || code === 40) {
+                    let inputList = container.find(".nts-switch-button");
+                    let currentSelect = _.findIndex(inputList, function (item){
+                        return $(item).data('swbtn') === data.value();
+                    });   
+                    let selectedCode = $(inputList[currentSelect + 1]).data('swbtn');
+                    if (!nts.uk.util.isNullOrUndefined(selectedCode)){
+                        data.value(selectedCode);    
+                    }
+                }     
+                container.focus();        
+            });
+            // Default value.
+            var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
         }
 
         /**
@@ -35,9 +73,8 @@ module nts.uk.ui.koExtentions {
             var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             // Container.
             var container = $(element);
-            // Default value.
-            var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-
+ 
+            container.addClass("switchButton-wrapper").attr("tabindex", "0");
             // Remove deleted button.
             $('button', container).each(function(index, btn) {
                 var $btn = $(btn);
@@ -49,8 +86,8 @@ module nts.uk.ui.koExtentions {
 
                 if (!foundFlag) {
                     $btn.remove();
-                    return;
-                }
+                    return; 
+                } 
             })
 
             // Start binding new state.
@@ -81,11 +118,15 @@ module nts.uk.ui.koExtentions {
                 }
             });
             // Enable
+            
+            container.find(".nts-switch-button").focus(function (evt){
+                container.focus();   
+            });
             if (enable === true) {
                 $('button', container).prop("disabled", false);
             } else {
                 $('button', container).prop("disabled", true);
-                defVal.applyReset(container, data.value);
+                new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
             }
         }
         
