@@ -80,7 +80,6 @@ module kdl024.a.viewmodel {
                 self.currentItem().externalBudgetCode(self.padZero(currentCode));
                 //insert process
                 service.insertExternalBudget(self.currentItem()).done(function() {
-                    //nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'))；
                     nts.uk.ui.dialog.info({ messageId: "Msg_15"});
                         // Add new item
                         self.listBudget.push({
@@ -100,7 +99,6 @@ module kdl024.a.viewmodel {
             //Mode UPDATE
             else {
                 service.updateExternalBudget(self.currentItem()).done(function() {
-                    //nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'))；
                     nts.uk.ui.dialog.info({ messageId: "Msg_15"});
                     //update list source
                     let updateItem = _.find(self.listBudget(),['externalBudgetCode',self.selectedBudgetCode()]);
@@ -138,7 +136,6 @@ module kdl024.a.viewmodel {
                 //削除後処理 
                 service.deleteExternalBudget(self.currentItem()).done(function() {
                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16')).then(function(){
-                        //nts.uk.ui.dialog.info({ messageId: "Msg_16"}).then(function(){
                         var deletedIndex = _.findIndex(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
                         var deletedItem = _.find(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
                         self.listBudget.remove(deletedItem);
