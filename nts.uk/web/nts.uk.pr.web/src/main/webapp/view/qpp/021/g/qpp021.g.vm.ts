@@ -2,6 +2,7 @@ module nts.uk.pr.view.qpp021.g {
     import option = nts.uk.ui.option;
 
     import RefundPaddingThreeDto = service.model.RefundPaddingThreeDto;
+    import PaymentReportPreviewQueryDto = service.model.PaymentReportPreviewQueryDto;
 
     export module viewmodel {
 
@@ -9,7 +10,7 @@ module nts.uk.pr.view.qpp021.g {
             refundPaddingThreeModel: RefundPaddingThreeModel;
             sizeLimitOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
             spliteLineOutput: KnockoutObservableArray<any>;
-
+            printtype: number;
             constructor() {
                 var self = this;
                 self.refundPaddingThreeModel = new RefundPaddingThreeModel();
@@ -21,6 +22,7 @@ module nts.uk.pr.view.qpp021.g {
                     { code: 0, name: 'する' },
                     { code: 1, name: 'しない' },
                 ]);
+                 self.printtype = nts.uk.ui.windows.getShared("printtype");
             }
 
             //start page
@@ -55,7 +57,11 @@ module nts.uk.pr.view.qpp021.g {
             }
             
             previewRefundPaddingThree(): void{
-                service.previewRefundPaddingThree();    
+                var self = this;
+                var dto: PaymentReportPreviewQueryDto = new PaymentReportPreviewQueryDto();
+                 dto.pageLayout = self.printtype;
+                dto.refundPaddingThreeDto = self.refundPaddingThreeModel.toDto();
+                service.previewRefundPaddingThree(dto);    
             }
         }
 

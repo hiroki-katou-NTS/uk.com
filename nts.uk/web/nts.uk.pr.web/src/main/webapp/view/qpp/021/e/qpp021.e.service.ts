@@ -55,9 +55,10 @@ module nts.uk.pr.view.qpp021.e {
 
                 pageOrientation: string;
             }
+            
             export class PaymentReportPreviewQueryDto {
                 /** The page layout. */
-                layoutItem: number;
+                pageLayout: number;
 
                 refundPaddingOnceDto: RefundPaddingOnceDto;
             }

@@ -21,10 +21,9 @@ module nts.uk.pr.view.qpp021.g {
 
         
         //connection service preview
-        export function previewRefundPaddingThree(): JQueryPromise<any>{
+        export function previewRefundPaddingThree(dto: model.PaymentReportPreviewQueryDto): JQueryPromise<any>{
             //call service server
-            var data = { pageLayout: 'G' };
-            return nts.uk.request.exportFile(paths.previewRefundPaddingThree, data);
+            return nts.uk.request.exportFile(paths.previewRefundPaddingThree, dto);
         }
 
         export module model {
@@ -51,6 +50,13 @@ module nts.uk.pr.view.qpp021.g {
 
                 /** The is show break line. */
                 isShowBreakLine: number;
+            }
+            
+             export class PaymentReportPreviewQueryDto {
+                /** The page layout. */
+                pageLayout: number;
+
+                refundPaddingThreeDto: RefundPaddingThreeDto;
             }
         }
     }

@@ -35,7 +35,7 @@ module nts.uk.pr.view.qpp021.e {
             public previewRefundPaddingOnce() {
                 var self = this;
                 var dto :PaymentReportPreviewQueryDto = new PaymentReportPreviewQueryDto();
-                dto.layoutItem = self.printtype;
+                dto.pageLayout = self.printtype;
                 dto.refundPaddingOnceDto = self.refundPaddingOnceModel.toDto();
                 service.previewRefundPaddingOnce(dto);
             }
