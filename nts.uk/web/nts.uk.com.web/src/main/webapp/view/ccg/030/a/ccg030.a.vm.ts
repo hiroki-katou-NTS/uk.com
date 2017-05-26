@@ -78,7 +78,7 @@ module ccg030.a.viewmodel {
                                 self.selectFlowMenuByIndexByCode(topPageCode);
                             });
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_3"));
+                            nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_3"));
                         });
                     }
                     else {
@@ -105,7 +105,7 @@ module ccg030.a.viewmodel {
                             });
                             nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"));
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_76"));
+                            nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_76"));
                         });
                 });
             }
@@ -149,6 +149,7 @@ module ccg030.a.viewmodel {
         }
 
         deleteButtonClick(): void {
+            console.time('deleteFile');
             var self = this;
             service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
                 if (res.defClassAtr === 1) {
@@ -169,7 +170,7 @@ module ccg030.a.viewmodel {
                 self.selectedFlowMenu().fileID('');
                 self.selectedFlowMenu().fileName('');
             }).fail(function(error) {
-                console.log(error);
+                nts.uk.ui.dialog.alert(error);
             });
         }
         
