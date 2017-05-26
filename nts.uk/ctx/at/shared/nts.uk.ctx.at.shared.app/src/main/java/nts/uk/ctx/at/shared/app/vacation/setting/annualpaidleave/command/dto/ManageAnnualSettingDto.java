@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionVacationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
@@ -25,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeMaxDay;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeUnit;
 
 /**
  * The Class ManageAnnualSettingDto.
@@ -71,7 +71,7 @@ public class ManageAnnualSettingDto {
 	private ManageDistinct timeManageType;
 
 	/** The time unit. */
-	private YearVacationTimeUnit timeUnit;
+	private TimeVacationDigestiveUnit timeUnit;
 
 	/** The manage max day vacation. */
 	private ManageDistinct manageMaxDayVacation;

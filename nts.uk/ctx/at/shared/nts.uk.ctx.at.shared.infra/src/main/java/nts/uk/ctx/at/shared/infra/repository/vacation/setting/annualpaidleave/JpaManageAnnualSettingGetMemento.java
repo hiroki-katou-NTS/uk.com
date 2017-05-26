@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionVacationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
@@ -22,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeMaxDay;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeUnit;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet;
 
 /**
@@ -112,7 +112,7 @@ public class JpaManageAnnualSettingGetMemento implements ManageAnnualSettingGetM
     public TimeVacationSetting getTimeSetting() {
         TimeVacationSetting time = new TimeVacationSetting();
         time.setTimeManageType(ManageDistinct.valueOf(this.manageAnnual.getTimeMngAtr()));
-        time.setTimeUnit(YearVacationTimeUnit.valueOf(this.manageAnnual.getTimeUnit()));
+        time.setTimeUnit(TimeVacationDigestiveUnit.valueOf(this.manageAnnual.getTimeUnit()));
         YearVacationTimeMaxDay timeMaxDay = YearVacationTimeMaxDay.builder()
                 .manageMaxDayVacation(ManageDistinct.valueOf(this.manageAnnual.getTimeMaxDayMng()))
                 .reference(MaxDayReference.valueOf(this.manageAnnual.getTimeMngReference()))

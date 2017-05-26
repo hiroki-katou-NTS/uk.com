@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionVacationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplaySetting;
@@ -16,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.PreemptionPermit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearVacationTimeUnit;
 
 /**
  * The Class ManageAnnualSettingFindDto.
@@ -60,7 +60,7 @@ public class ManageAnnualSettingFindDto implements ManageAnnualSettingSetMemento
     public ManageDistinct timeManageType;
 
     /** The time unit. */
-    public YearVacationTimeUnit timeUnit;
+    public TimeVacationDigestiveUnit timeUnit;
 
     /** The manage max day vacation. */
     public ManageDistinct manageMaxDayVacation;
