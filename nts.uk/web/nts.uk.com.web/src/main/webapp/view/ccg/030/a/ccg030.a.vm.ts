@@ -2,6 +2,7 @@ module ccg030.a.viewmodel {
     import windows = nts.uk.ui.windows;
     import errors = nts.uk.ui.errors;
     import util = nts.uk.util;
+    import text = nts.uk.text;
 
     export class ScreenModel {
         // list FlowMenu
@@ -67,6 +68,7 @@ module ccg030.a.viewmodel {
         /** Click Registry button */
         registryFlowMenu() {
             var self = this;
+            self.selectedFlowMenu().topPageCode(text.padLeft($("#inpCode").val(), '0', 4));
             var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
             var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
@@ -76,19 +78,19 @@ module ccg030.a.viewmodel {
                 if (!errors.hasError()) {
                     if (self.isCreate() === true) {
                         service.createFlowMenu(flowMenu).done((data) => {
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.reloadData().done(() => {
                                 self.selectFlowMenuByIndexByCode(topPageCode);
                             });
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_3"));
+                            nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage({ messageId: "Msg_3" });
                         });
                     }
                     else {
                         service.updateFlowMenu(flowMenu).done((data) => {
                             self.reloadData();
                              _.defer(() => { $("#inpName").focus(); });
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         });
                     }
                 }
@@ -99,7 +101,7 @@ module ccg030.a.viewmodel {
         deleteNewFlowMenu() {
             var self = this;
             if (self.selectedFlowMenuCD() !== null) {
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     service.deleteFlowMenu(self.selectedFlowMenu().toppagePartID())
                         .done(() => {
                             var index = _.findIndex(self.listFlowMenu(), ['titleMenuCD', self.selectedFlowMenu().topPageCode()]);
@@ -107,10 +109,10 @@ module ccg030.a.viewmodel {
                             self.reloadData().done(() => {
                                 self.selectFlowMenuByIndex(index);
                             });
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16"));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                             errors.clearAll();
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_76"));
+                            nts.uk.ui.dialog.alertError({ messageId: "Msg_76" });
                         });
                 });
             }
@@ -125,7 +127,7 @@ module ccg030.a.viewmodel {
             else {
                 service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
                     if (res.defClassAtr === 1) {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_84"));
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_84" });
                     }
                     else {
                         self.uploadFileProcess();
@@ -159,7 +161,7 @@ module ccg030.a.viewmodel {
             var self = this;
             service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
                 if (res.defClassAtr === 1) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_83"));
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_83" });
                 }
                 else {
                     self.tempFileID(self.selectedFlowMenu().fileID());

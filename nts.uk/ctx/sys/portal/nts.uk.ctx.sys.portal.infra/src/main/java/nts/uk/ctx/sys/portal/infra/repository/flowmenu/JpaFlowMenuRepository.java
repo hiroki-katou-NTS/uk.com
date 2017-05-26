@@ -80,7 +80,6 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 		return new CcgmtFlowMenu(
 				new CcgmtFlowMenuPK(domain.getCompanyID(), domain.getToppagePartID()),
 				domain.getFileID(), 
-				domain.getFileName().v(),
 				domain.getDefClassAtr().value,
 				topPagePart);
 	}
@@ -96,7 +95,6 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 				entity.topPagePart.code, entity.topPagePart.name,
 				entity.topPagePart.topPagePartType, entity.topPagePart.width, entity.topPagePart.height,
 				entity.fileID, 
-				entity.fileName, 
 				entity.defClassAtr);
 	}
 	
@@ -113,7 +111,6 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 				topPagePart.code, topPagePart.name,
 				topPagePart.topPagePartType, topPagePart.width, topPagePart.height,
 				flowMenu.fileID, 
-				flowMenu.fileName, 
 				flowMenu.defClassAtr);
 	}
 }

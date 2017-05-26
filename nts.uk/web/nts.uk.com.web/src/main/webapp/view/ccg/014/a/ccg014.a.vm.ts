@@ -70,18 +70,18 @@ module ccg014.a.viewmodel {
                 if (!$(".nts-input").ntsError("hasError")) {
                     if (self.isCreate() === true) {
                         service.createTitleMenu(titleMenu).done((data) => {
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                             self.reloadData().done(() => {
                                 self.selectTitleMenuByIndexByCode(titleMenuCD);
                             });
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_3"));
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
                         });
                     }
                     else {
                         service.updateTitleMenu(titleMenu).done((data) => {
                             self.reloadData();
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         });
                     }
                 }
@@ -92,7 +92,7 @@ module ccg014.a.viewmodel {
         removeTitleMenu() {
             var self = this;
             if (self.selectedTitleMenuCD() !== null) {
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     service.deleteTitleMenu(self.selectedTitleMenuCD()).done(() => {
                         var index = _.findIndex(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
                         index = _.min([self.listTitleMenu().length - 2, index]);
@@ -100,7 +100,7 @@ module ccg014.a.viewmodel {
                             self.selectTitleMenuByIndex(index);
                         });
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"))
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" })
                     });
                 })
             }
@@ -116,7 +116,7 @@ module ccg014.a.viewmodel {
                 if (copiedTitleMenuCD) {
                     self.reloadData().done(() => {
                         self.selectTitleMenuByIndexByCode(copiedTitleMenuCD);
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_20"));
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_20" });
                     });
                 }
             });
@@ -154,6 +154,8 @@ module ccg014.a.viewmodel {
             }
             else {
                 self.selectedTitleMenu(new model.TitleMenu("", "", ""));
+                self.isCreate(true);
+               
             }
         }
 

@@ -23,8 +23,6 @@ public class CreateFlowMenuCommand {
 	/** File ID */
 	private String fileID;
 	
-	// file name
-	private String fileName;
 	// Def Class attribute	
 	private int defClassAtr;
 	
@@ -32,6 +30,6 @@ public class CreateFlowMenuCommand {
 		return FlowMenu.createFromJavaType(AppContexts.user().companyId(), topPagePartId,
 				topPageCode, topPageName,
 				TopPagePartType.FlowMenu.value, widthSize, heightSize,
-				fileID, fileName, defClassAtr);
+				fileID,defClassAtr);
 	}
 }

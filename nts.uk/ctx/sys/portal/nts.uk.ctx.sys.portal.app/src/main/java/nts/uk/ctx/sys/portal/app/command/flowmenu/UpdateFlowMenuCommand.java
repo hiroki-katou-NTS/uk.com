@@ -20,8 +20,6 @@ public class UpdateFlowMenuCommand {
 	/** File ID */
 	private String fileID;
 	
-	// file name
-	private String fileName;
 	// Def Class Atr
 	private int defClassAtr;
 }
