@@ -25,14 +25,22 @@ module nts.uk.at.view.kml001.d {
                 self.currentEndDate = ko.observable(self.currentPersonCost().endDate());
                 self.newStartDate = ko.observable(self.currentPersonCost().startDate());
                 self.newStartDate.subscribe(function(value){
-                    if(self.errorStartDate()) $("#startDateInput").ntsError('set', {messageId:"Msg_65"});     
+                    if((value != "") && (value != null)) {
+                        if(self.errorStartDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'))) {
+                            $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});  
+                        } else $("#startDateInput-input").ntsError('clear');
+                    } else {
+                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});
+                    }  
                 });
                 self.isUpdate = ko.observable(self.deleteAble()?false:true);
                 self.isUpdate.subscribe(function(value) { 
                     if(value) {
-                        if(self.errorStartDate()) $("#startDateInput").ntsError('set', {messageId:"Msg_65"});
+                        if(self.errorStartDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'))) {
+                            $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});
+                        }
                     } else { 
-                        $("#startDateInput").ntsError('clear');
+                        $("#startDateInput-input").ntsError('clear');
                     }
                 });
             }
@@ -40,11 +48,11 @@ module nts.uk.at.view.kml001.d {
             /**
              * check error on newStartDate
              */
-            errorStartDate(): boolean {
+            errorStartDate(input: string): boolean {
                 var self = this;
                 return (
-                    (self.newStartDate()== null) ||
-                    !vmbase.ProcessHandler.validateDateRange(self.newStartDate(),kml001.shr.vmbase.ProcessHandler.getOneDayAfter(self.beforeStartDate()),self.currentEndDate())
+                    (input == "") || (input == null) || 
+                    !vmbase.ProcessHandler.validateDateRange(input,kml001.shr.vmbase.ProcessHandler.getOneDayAfter(self.beforeStartDate()),self.currentEndDate())
                     );    
             }
             
@@ -54,16 +62,17 @@ module nts.uk.at.view.kml001.d {
             submitAndCloseDialog(): void {
                 var self = this;
                 if(self.isUpdate()) {
-                    if(self.errorStartDate()) $("#startDateInput").ntsError('set', {messageId:"Msg_65"}); 
-                    else {
-                        self.currentPersonCost().startDate(self.newStartDate());
+                    if(self.errorStartDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'))) {
+                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"}); 
+                    } else {
+                        self.currentPersonCost().startDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'));
                         servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                             .done(function(res: Array<any>) {
                                 nts.uk.ui.windows.setShared('isEdited', 0);
                                 nts.uk.ui.windows.close();
                             })
                             .fail(function(res) {
-                                nts.uk.ui.dialog.alert(res.message);       
+                                nts.uk.ui.dialog.alertError(res.message);       
                             });
                     }
                 } else {
@@ -75,11 +84,11 @@ module nts.uk.at.view.kml001.d {
                                 nts.uk.ui.windows.close();
                             })
                             .fail(function(res) {
-                                nts.uk.ui.dialog.alert({ messageId: res.messageId });     
+                                nts.uk.ui.dialog.alertError({ messageId: res.messageId });     
                             });
                         });
                         
-                    } else{ $("#startDateInput").ntsError('set', {messageId:"Msg_128"}); }
+                    } else{ $("#startDateInput-input").ntsError('set', {messageId:"Msg_128"}); }
                 }
             }
             
@@ -87,7 +96,7 @@ module nts.uk.at.view.kml001.d {
              * close dialog and do nothing
              */
             closeDialog(): void {
-                $("#startDateInput").ntsError('clear');
+                $("#startDateInput-input").ntsError('clear');
                 nts.uk.ui.windows.close();   
             }
         }
