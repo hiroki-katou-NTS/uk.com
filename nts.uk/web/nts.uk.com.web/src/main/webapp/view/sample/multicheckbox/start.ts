@@ -2,6 +2,7 @@ __viewContext.ready(function () {
     class ScreenModel {
         itemList: KnockoutObservableArray<any>;
         selectedValues: KnockoutObservableArray<any>;
+        defaultValue: KnockoutObservable<string>;
         selectedIds: KnockoutObservableArray<number>;
         enable: KnockoutObservable<boolean>;
         count: any = 10;
@@ -20,6 +21,7 @@ __viewContext.ready(function () {
             self.selectedIds = ko.observableArray([1,2]);
             self.enable = ko.observable(false); 
             self.value = ko.observable(0);
+            self.defaultValue = ko.observable('');
         }
         
         addBoxes() {
@@ -31,6 +33,11 @@ __viewContext.ready(function () {
         removeBoxes() {
             var self = this;
             self.itemList.pop();
+        }
+        
+        setDefault() {
+            var self = this;
+            nts.uk.util.value.reset($("#check-box"), self.defaultValue() !== '' ? _.map(self.defaultValue().split(","), (a) => parseInt(a)) : undefined);
         }
         
         enableCheckBox() {

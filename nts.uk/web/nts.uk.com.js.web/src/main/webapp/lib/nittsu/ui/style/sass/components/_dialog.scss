@@ -1,3 +1,11 @@
+.nts-fileupload-container{
+	.filename {
+		cursor: pointer;
+		color: blue;
+		text-decoration: underline;
+	}
+}
+	
 .ui-dialog {
 	$_border_color: #767171;
 	padding: 0px;
