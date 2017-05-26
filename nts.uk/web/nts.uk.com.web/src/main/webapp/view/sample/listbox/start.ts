@@ -49,8 +49,7 @@ __viewContext.ready(function () {
         }
         
         selectAll() {
-            var self = this;
-            self.selectedCodes([10]);
+            $('#list-box').ntsListBox('selectAll');
         }
         
         /**
@@ -68,11 +67,11 @@ __viewContext.ready(function () {
             var self = this;
             
             // Remove by code.
-            var selected: ItemModel = self.itemList().filter(item => item.code === self.selectedCode())[0];
+            var selected: ItemModel = self.itemList().filter(item => item.code === self.selectedCode().code)[0];
             self.itemList.remove(selected);
             
             // Remove by codes
-            var selecteds: ItemModel[] = self.itemList().filter(item => self.selectedCodes().indexOf(item.code) != -1);
+            var selecteds: ItemModel[] = self.itemList().filter(item => self.selectedCodes().indexOf(item) != -1);
             self.itemList.removeAll(selecteds);
         }
     }

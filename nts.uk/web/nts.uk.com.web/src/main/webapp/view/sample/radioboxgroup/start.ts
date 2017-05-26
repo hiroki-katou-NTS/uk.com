@@ -4,6 +4,7 @@ __viewContext.ready(function () {
         selectedValue: KnockoutObservable<any>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
+        defaultValue: KnockoutObservable<number>;
         count: any = 10;
         value: KnockoutObservable<number>;
         
@@ -17,6 +18,7 @@ __viewContext.ready(function () {
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
             self.value = ko.observable(0);
+            self.defaultValue = ko.observable();
         }
         
         addBoxes() {
@@ -35,6 +37,11 @@ __viewContext.ready(function () {
             if(self.value() < self.itemList().length - 1){
                 self.itemList()[self.value()].enable(true);
             }
+        }
+        
+        setDefault() {
+            var self = this;
+            nts.uk.util.value.reset($("#second-list"), self.defaultValue() !== undefined ? parseInt(self.defaultValue()) : undefined);
         }
     }
     
