@@ -23,6 +23,7 @@ module nts.uk.ui.koExtentions {
             let textId: string = ko.unwrap(data.text);
             let control = $(element);
             let onchange = data.onchange;
+            let onfilenameclick = data.onfilenameclick;
             let fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
             let fileBrowserButton = $("<button class='browser-button' ></button>");
             let browserButtonText: string;
@@ -54,6 +55,11 @@ module nts.uk.ui.koExtentions {
             fileBrowserButton.click(function() {
                 fileInput.click();
             });
+            if(onfilenameclick){
+                fileNameLable.click(function(){
+                    onfilenameclick($(this).text());    
+                });
+            }
 
         }
 

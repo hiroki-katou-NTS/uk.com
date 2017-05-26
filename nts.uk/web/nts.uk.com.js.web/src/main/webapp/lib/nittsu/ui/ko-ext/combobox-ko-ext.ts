@@ -16,10 +16,19 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
+            var container = $(element);
+            
+            container.keypress(function (evt, ui){
+                let code = evt.which || evt.keyCode;
+                if (code === 32) {
+                    container.igCombo("openDropDown");
+                    evt.preventDefault();      
+//                    $('html, body').scrollTop(container.first().offset().top - 200);      
+                } 
+            });
         }
 
-        /**
+        /** 
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -27,7 +36,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var self = this;
 
-            // Get options.
+            // Get options. 
             var options: Array<any> = ko.unwrap(data.options);
 
             // Get options value.
@@ -46,6 +55,8 @@ module nts.uk.ui.koExtentions {
             var distanceColumns = '     ';
             var fillCharacter = ' '; // Character used fill to the columns.
             var maxWidthCharacter = 15;
+            // Default value
+            var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
 
             // Check selected code.
             if (_.find(options, item => item[optionValue] === selectedValue) === undefined && !editable) {
@@ -126,6 +137,7 @@ module nts.uk.ui.koExtentions {
             } else {
                 container.igCombo("option", "disabled", !enable);
             }
+            if (!enable) defVal.applyReset(container, data.value);
             if (isChangeOptions && !isInitCombo) {
                 container.igCombo("option", "dataSource", options);
                 container.igCombo("dataBind");

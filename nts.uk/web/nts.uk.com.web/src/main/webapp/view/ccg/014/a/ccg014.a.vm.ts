@@ -170,9 +170,6 @@ module ccg014.a.viewmodel {
                     $(".nts-input").ntsError("clear");
                 });
             }
-//            if (isCreate === false){
-//                self.selectedTitleMenuCD(!null);
-//                    errors.clearAll();}
         }
 
         clearError(): any {

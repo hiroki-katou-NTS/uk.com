@@ -227,44 +227,46 @@ module nts.uk.ui.jqueryExtentions {
                     return setupDeleteButton($grid, param);
             }
         };
-        
+
         $.fn.ntsGridListFeature = function(feature: string, action: string, ...params: any[]): any {
 
             var $grid = $(this);
 
             switch (feature) {
                 case 'switch':
-                    switch (action){
+                    switch (action) {
                         case 'setValue':
-                            return setSwitchValue($grid, params);    
+                            return setSwitchValue($grid, params);
                     }
             }
         };
-        
+
         function setSwitchValue($grid: JQuery, ...params: any[]): any {
             let rowId: any = params[0][0];
             let columnKey: string = params[0][1];
-            let selectedValue: any = params[0][2];   
+            let selectedValue: any = params[0][2];
             let $row = $($grid.igGrid("rowById", rowId));
             let $parent = $row.find(".ntsControl");
-            let currentSelect = $parent.attr('data-value');  
-            if(selectedValue !== currentSelect){   
+            let currentSelect = $parent.attr('data-value');
+            if (selectedValue !== currentSelect) {
                 let rowKey = $row.attr("data-id");
-                $parent.find(".nts-switch-button").removeClass("selected");   
-                let element = _.find($parent.find(".nts-switch-button"), function (e){
-                    return selectedValue.toString() === $(e).attr('data-value').toString();    
+                $parent.find(".nts-switch-button").removeClass("selected");
+                let element = _.find($parent.find(".nts-switch-button"), function(e) {
+                    return selectedValue.toString() === $(e).attr('data-value').toString();
                 });
-                if(element !== undefined){
-                    $(element).addClass('selected'); 
+                if (element !== undefined) {
+                    $(element).addClass('selected');
                     $parent.attr('data-value', selectedValue);
-                    $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);  
-                    $grid.igGrid("commit");  
+                    $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
+                    $grid.igGrid("commit");
                     if ($grid.igGrid("hasVerticalScrollbar")) {
                         let current = $grid.ntsGridList("getSelected");
-                        $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);
-                    }    
+                        if(current !== undefined){
+                            $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);        
+                        }
+                    }
                 }
-            }         
+            }
         }
 
         function getSelected($grid: JQuery): any {
@@ -348,7 +350,7 @@ module nts.uk.ui.jqueryExtentions {
 
             return $grid;
         }
-        
+
         function unsetupSelecting($grid: JQuery) {
             unsetupDragging($grid);
             unsetupSelectingEvents($grid);
@@ -478,11 +480,11 @@ module nts.uk.ui.jqueryExtentions {
                 $grid.triggerHandler('selectionchanged');
             });
 
-//            $grid.on('mouseup', () => {
-//                $grid.triggerHandler('selectionchanged');
-//            });
+            //            $grid.on('mouseup', () => {
+            //                $grid.triggerHandler('selectionchanged');
+            //            });
         }
-         
+
         function unsetupDragging($grid: JQuery) {
 
             $grid.unbind('mousedown');
@@ -491,7 +493,7 @@ module nts.uk.ui.jqueryExtentions {
         function unsetupSelectingEvents($grid: JQuery) {
             $grid.unbind('iggridselectionrowselectionchanged');
 
-//            $grid.off('mouseup');
+            //            $grid.off('mouseup');
         }
     }
 
@@ -569,20 +571,22 @@ module nts.uk.ui.jqueryExtentions {
         };
 
         function selectAll($list: JQuery) {
-            $list.find('.nts-list-box > li').addClass("ui-selected");
-            $list.find("li").attr("clicked", "");
-            $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
+            let $grid = $list.find(".ntsListBox");
+            let options = $grid.igGrid("option", "dataSource");
+            let primaryKey = $grid.igGrid("option", "primaryKey");
+            _.forEach(options, function (option, idx){
+                $grid.igGridSelection("selectRowById", option[primaryKey]);        
+            });
+            $grid.triggerHandler('selectionchanged');
         }
 
         function deselectAll($list: JQuery) {
-            var selectListBoxContainer = $list.find('.nts-list-box');
-            selectListBoxContainer.data('value', '');
-            $list.find('.nts-list-box > li').removeClass("ui-selected");
-            $list.find('.nts-list-box > li > div').removeClass("ui-selected");
-            $list.trigger("selectionChange");
+            let $grid = $list.find(".ntsListBox");
+            $grid.igGridSelection('clearSelection');
+            $grid.triggerHandler('selectionchanged');
         }
     }
-    
+
     module ntsEditor {
         $.fn.ntsEditor = function(action: string): any {
 
@@ -598,14 +602,14 @@ module nts.uk.ui.jqueryExtentions {
 
         function validate($editor: JQuery) {
             var validateEvent = new CustomEvent("validate", {
-                
+
             });
             $editor.each(function(index) {
                 var $input = $(this);
                 document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
             });
-//            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
-//            $editor.trigger("validate");
+            //            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+            //            $editor.trigger("validate");
         }
     }
 
@@ -720,7 +724,7 @@ module nts.uk.ui.jqueryExtentions {
             });
 
             // Hiding when click outside
-            $("html").on("mouseup keypress", {controls: controls} , hideBinding);
+            $("html").on("mouseup keypress", { controls: controls }, hideBinding);
 
             return controls;
         }
@@ -729,12 +733,12 @@ module nts.uk.ui.jqueryExtentions {
             controls.each(function() {
                 $(this).remove();
             });
-            
+
             // Unbind Hiding when click outside
             $("html").off("mouseup keypress", hideBinding);
             return controls;
         }
-        
+
         function hideBinding(e): JQuery {
             e.data.controls.each(function() {
                 $(this).hide();
@@ -762,7 +766,7 @@ module nts.uk.ui.jqueryExtentions {
             });
             return controls;
         }
-        
+
 
         function hide(controls: JQuery): JQuery {
             controls.each(function() {
@@ -980,7 +984,7 @@ module nts.uk.ui.jqueryExtentions {
         }
 
     }
-    
+
     export module ntsGrid {
         $.fn.ntsGrid = function(options: any) {
             var self = this;
@@ -992,17 +996,17 @@ module nts.uk.ui.jqueryExtentions {
                 $(this).igGrid(options);
                 return;
             }
-            
+
             var columns = _.map(options.columns, function(column: any) {
                 if (column.ntsControl === undefined) return column;
                 var controlDef = _.find(options.ntsControls, function(ctl: any) {
-                    return ctl.name === column.ntsControl;    
+                    return ctl.name === column.ntsControl;
                 });
-                
+
                 var $self = $(self);
                 column.formatter = function(value, rowObj) {
                     var rowId = rowObj[$self.igGrid("option", "primaryKey")];
-                    var update = (val) => { 
+                    var update = (val) => {
                         if ($self.data("igGrid") !== null) {
                             $self.igGridUpdating("setCellValue", rowId, column.key, column.dataType !== 'string' ? val : val.toString());
                             if (options.autoCommit === undefined || options.autoCommit === false) {
@@ -1015,7 +1019,7 @@ module nts.uk.ui.jqueryExtentions {
                     var deleteRow = () => {
                         if ($self.data("igGrid") !== null) $self.data("igGridUpdating").deleteRow(rowId);
                     };
-                    
+
                     var ntsControl = getControl(controlDef.controlType);
                     var cell = $self.igGrid("cellById", rowId, column.key);
                     var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
@@ -1036,13 +1040,13 @@ module nts.uk.ui.jqueryExtentions {
                         if ($($gridCell.children()[0]).children().length === 0)
                             $("." + controlCls).append(ntsControl.draw(data));
                     }, 0);
-                    
+
                     return $container.html();
-                }; 
+                };
                 return column;
             });
             options.columns = columns;
-            
+
             if (_.find(options.features, function(feature: any) {
                 return feature.name === "Updating";
             }) === undefined) {
@@ -1051,12 +1055,12 @@ module nts.uk.ui.jqueryExtentions {
             options.autoCommit = true;
             $(this).igGrid(options);
         };
-        
+
         function ntsAction($grid: JQuery, method: string, params: Array<any>) {
             switch (method) {
                 case "updateRow":
                     var autoCommit = $grid.data("igGrid") !== null && $grid.igGrid("option", "autoCommit") ? true : false;
-                    updateRow($grid, params[0], params[1], autoCommit); 
+                    updateRow($grid, params[0], params[1], autoCommit);
                     break;
                 case "enableNtsControlAt":
                     enableNtsControlAt($grid, params[0], params[1], params[2]);
@@ -1066,7 +1070,7 @@ module nts.uk.ui.jqueryExtentions {
                     break;
             }
         }
-        
+
         function updateRow($grid: JQuery, rowId: any, object: any, autoCommit: boolean) {
             $grid.data("igGridUpdating").updateRow(rowId, object);
             if (!autoCommit) {
@@ -1075,19 +1079,19 @@ module nts.uk.ui.jqueryExtentions {
                 if (updatedRow !== undefined) $grid.igGrid("virtualScrollTo", $(updatedRow).data("row-idx"));
             }
         }
-        
+
         function disableNtsControlAt($grid: JQuery, rowId: any, columnKey: any, controlType: string) {
             var cellContainer = $grid.igGrid("cellById", rowId, columnKey);
             var control = getControl(controlType);
             control.disable($(cellContainer));
-        } 
-        
+        }
+
         function enableNtsControlAt($grid: JQuery, rowId: any, columnKey: any, controlType: string) {
             var cellContainer = $grid.igGrid("cellById", rowId, columnKey);
             var control = getControl(controlType);
             control.enable($(cellContainer));
         }
-        
+
         function getControl(name: string): NtsControlBase {
             switch (name) {
                 case 'CheckBox':
@@ -1102,7 +1106,7 @@ module nts.uk.ui.jqueryExtentions {
                     return new DeleteButton();
             }
         }
-        
+
         abstract class NtsControlBase {
             readOnly: boolean = false;
             abstract containerClass(): string;
@@ -1110,12 +1114,12 @@ module nts.uk.ui.jqueryExtentions {
             abstract enable($container: JQuery): void;
             abstract disable($container: JQuery): void;
         }
-                
+
         class CheckBox extends NtsControlBase {
             containerClass(): string {
                 return "nts-checkbox-container";
             }
-            
+
             draw(data: any): JQuery {
                 var checkBoxText: string;
                 var setChecked = data.update;
@@ -1124,7 +1128,7 @@ module nts.uk.ui.jqueryExtentions {
                 $wrapper.addClass("ntsControl").on("click", (e) => {
                     if ($wrapper.data("readonly") === true) e.preventDefault();
                 });
-                
+
                 var text = data.controlDef.options[data.controlDef.optionsText];
                 if (text) {
                     checkBoxText = text;
@@ -1134,40 +1138,40 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 var $checkBoxLabel = $("<label class='ntsCheckBox'></label>");
                 var $checkBox = $('<input type="checkbox">').on("change", function() {
-                        setChecked($(this).is(":checked"));
+                    setChecked($(this).is(":checked"));
                 }).appendTo($checkBoxLabel);
                 var $box = $("<span class='box'></span>").appendTo($checkBoxLabel);
-                if(checkBoxText && checkBoxText.length > 0)
+                if (checkBoxText && checkBoxText.length > 0)
                     var label = $("<span class='label'></span>").text(checkBoxText).appendTo($checkBoxLabel);
                 $checkBoxLabel.appendTo($wrapper);
-                
+
                 var checked = initValue !== undefined ? initValue : true;
                 $wrapper.data("readonly", this.readOnly);
                 var $checkBox = $wrapper.find("input[type='checkbox']");
-        
+
                 if (checked === true) $checkBox.attr("checked", "checked");
                 else $checkBox.removeAttr("checked");
                 if (data.enable === true) $checkBox.removeAttr("disabled");
                 else $checkBox.attr("disabled", "disabled");
                 return $wrapper;
             }
-            
+
             disable($container: JQuery): void {
                 var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
                 $wrapper.find("input[type='checkbox']").attr("disabled", "disabled");
             }
-            
+
             enable($container: JQuery): void {
                 var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
                 $wrapper.find("input[type='checkbox']").removeAttr("disabled");
             }
         }
-        
+
         class SwitchButtons extends NtsControlBase {
             containerClass(): string {
                 return "nts-switch-container";
             }
-            
+
             draw(data: any): JQuery {
                 var selectedCssClass = 'selected';
                 var options = data.controlDef.options;
@@ -1179,7 +1183,7 @@ module nts.uk.ui.jqueryExtentions {
                 _.forEach(options, function(opt) {
                     var value = opt[optionsValue];
                     var text = opt[optionsText];
-                    
+
                     var btn = $('<button>').text(text)
                         .addClass('nts-switch-button')
                         .attr('data-swbtn', value)
@@ -1194,33 +1198,33 @@ module nts.uk.ui.jqueryExtentions {
                     }
                     container.append(btn);
                 });
-                (data.enable === true) ? $('button', container).prop("disabled", false) 
-                                        : $('button', container).prop("disabled", true);
+                (data.enable === true) ? $('button', container).prop("disabled", false)
+                    : $('button', container).prop("disabled", true);
                 return container;
             }
-            
+
             enable($container: JQuery): void {
                 var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
                 $('button', $wrapper).prop("disabled", false);
             }
-            
+
             disable($container: JQuery): void {
                 var $wrapper = $container.find("." + this.containerClass()).data("enable", false);
                 $('button', $wrapper).prop("disabled", true);
             }
-            
+
         }
-        
+
         class ComboBox extends NtsControlBase {
             containerClass(): string {
                 return "nts-combo-container";
             }
-            
+
             draw(data: any): JQuery {
                 // Default values.
                 var distanceColumns = '     ';
                 // Character used fill to the columns.
-                var fillCharacter = ' '; 
+                var fillCharacter = ' ';
                 var maxWidthCharacter = 15;
                 var container = $("<div/>").addClass(this.containerClass()).data("enable", data.enable);
                 var columns: Array<any> = data.controlDef.columns;
@@ -1236,7 +1240,7 @@ module nts.uk.ui.jqueryExtentions {
                     });
                     itemTemplate += '</div>';
                 }
-                
+
                 data.controlDef.options = data.controlDef.options.map((option) => {
                     var newOptionText: string = '';
                     if (haveColumn) {
@@ -1277,7 +1281,7 @@ module nts.uk.ui.jqueryExtentions {
                         }
                     }
                 });
-                
+
                 // Set width for multi columns.
                 if (haveColumn) {
                     var totalWidth = 0;
@@ -1294,12 +1298,12 @@ module nts.uk.ui.jqueryExtentions {
                     $dropDownOptions.find('.nts-combo-item').css({ 'min-width': totalWidth });
                     container.css({ 'min-width': totalWidth });
                 }
-    
+
                 container.data("columns", columns);
                 container.data("comboMode", comboMode);
                 return container;
             }
-            
+
             enable($container: JQuery): void {
                 var $wrapper = $container.find("." + this.containerClass());
                 $wrapper.data("enable", true);
@@ -1311,20 +1315,20 @@ module nts.uk.ui.jqueryExtentions {
                 $wrapper.igCombo("option", "disabled", true);
             }
         }
-        
+
         class Button extends NtsControlBase {
             containerClass(): string {
                 return "nts-button-container";
             }
-            
+
             draw(data: any): JQuery {
                 var $container = $("<div/>").addClass(this.containerClass());
                 var $button = $("<button/>").addClass("ntsButton").appendTo($container).text(data.controlDef.text)
-                                            .data("enable", data.enable).on("click", data.controlDef.click);
+                    .data("enable", data.enable).on("click", data.controlDef.click);
                 $button.prop("disabled", !data.enable);
                 return $container;
             }
-            
+
             enable($container: JQuery): void {
                 var $wrapper = $container.find("." + this.containerClass()).data("enable", true);
                 $wrapper.find(".ntsButton").prop("disabled", false);
@@ -1334,7 +1338,7 @@ module nts.uk.ui.jqueryExtentions {
                 $wrapper.find(".ntsButton").prop("disabled", true);
             }
         }
-        
+
         class DeleteButton extends Button {
             draw(data: any): JQuery {
                 var btn = super.draw(data);

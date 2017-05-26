@@ -48,7 +48,8 @@ module nts.uk.pr.view.ccg015.c {
                             nts.uk.ui.windows.close();
                         }); 
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alert(res.message);
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds});
+//                        nts.uk.ui.dialog.alert(res.message);
                     });
                 }
 
