@@ -86,7 +86,8 @@ module nts.uk.ui.koExtentions {
      */
     class NtsMultiCheckBoxBindingHandler implements KnockoutBindingHandler {
 
-        constructor() { }
+        constructor() {
+        }
 
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
             var data = valueAccessor();
@@ -170,19 +171,19 @@ module nts.uk.ui.koExtentions {
             });
             // Enable
 //            if((container.data("init") && enable !== true) || !_.isEqual(container.data("enable"), enable)){
-                container.data("enable", _.clone(enable));
-                if(enable === true) {
-                    _.forEach(container.find("input[type='checkbox']"), function (checkbox){
-                        let dataOpion = $(checkbox).data("option");
-                        if (dataOpion["enable"] === true) {
-                            $(checkbox).removeAttr("disabled");        
-                        }        
-                    }); 
-                } else if (enable === false){
-                    container.find("input[type='checkbox']").attr("disabled", "disabled");
-                    new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
-                }
+            container.data("enable", _.clone(enable));
+            if(enable === true) {
+                _.forEach(container.find("input[type='checkbox']"), function (checkbox){
+                    let dataOpion = $(checkbox).data("option");
+                    if (dataOpion["enable"] === true) {
+                        $(checkbox).removeAttr("disabled");        
+                    }        
+                }); 
+            } else if (enable === false){
+                container.find("input[type='checkbox']").attr("disabled", "disabled");
+                new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
             }
+            
         }
     }
     

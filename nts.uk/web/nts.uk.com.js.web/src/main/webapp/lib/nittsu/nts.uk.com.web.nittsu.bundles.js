@@ -4739,12 +4739,12 @@ var nts;
                     };
                     return NtsMultiCheckBoxBindingHandler;
                 }());
+                ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
+                ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
             })(koExtentions = ui_3.koExtentions || (ui_3.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
-ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
