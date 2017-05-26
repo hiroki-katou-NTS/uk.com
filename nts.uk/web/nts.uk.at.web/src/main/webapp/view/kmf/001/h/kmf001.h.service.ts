@@ -4,71 +4,60 @@ module nts.uk.pr.view.kmf001.h {
          *  Service paths
          */
         var paths: any = {
-            getUnitPriceHistoryDetail: "pr/proto/unitprice/find",
-            createUnitPriceHistory: "pr/proto/unitprice/create",
-            updateUnitPriceHistory: "pr/proto/unitprice/update"
+            getComSetting: "pr/proto/substvacation/com/find",
+            getEmpSetting: "pr/proto/substvacation/emp/find",
+            updateComSetting: "pr/proto/substvacation/com/update",
+            updateEmpSetting: "pr/proto/substvacation/emp/update"
         };
 
         /**
          * Normal service.
          */
-        export class Service extends base.simplehistory.service.BaseService<model.UnitPrice, model.UnitPriceHistory> {
-            constructor(path: base.simplehistory.service.Path) {
-                super(path);
+        export class Service {
+            /**
+             * Find company's setting.
+             */
+            public findComSetting(): JQueryPromise<model.SubstVacationSettingDto> {
+                return nts.uk.request.ajax(paths.getUnitPriceHistoryDetail);
             }
 
             /**
-             * Find history by id.
+             * Find contract type's setting.
              */
-            findHistoryByUuid(id: string): JQueryPromise<model.UnitPriceHistoryDto> {
-                return nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id);
+            public findEmpSetting(contractTypeCode: string): JQueryPromise<model.SubstVacationSettingDto> {
+                return nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + contractTypeCode);
             }
 
             /**
-             * Create unit price and first history.
+             * Update company's setting
              */
-            create(unitPriceDto: model.UnitPriceHistoryDto): JQueryPromise<model.UnitPriceHistory> {
-                return nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceDto);
+            public updateComSetting(setting: model.SubstVacationSettingDto): JQueryPromise<void> {
+                return nts.uk.request.ajax(paths.updateUnitPriceHistory, setting);
             }
 
             /**
-             * Create unit price and first history.
+             * Update contract type's setting
              */
-            update(unitPriceDto: model.UnitPriceHistoryDto): JQueryPromise<void> {
-                return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceDto);
+            public updateEmpSetting(setting: model.EmpSubstVacationDto): JQueryPromise<void> {
+                return nts.uk.request.ajax(paths.updateUnitPriceHistory, setting);
             }
         }
 
-        /**
-         * Service intance.
-         */
-        export var instance = new Service({
-            historyMasterPath: 'pr/proto/unitprice/masterhistory',
-            createHisotyPath: 'pr/proto/unitprice/history/create',
-            deleteHistoryPath: 'pr/proto/unitprice/history/delete',
-            updateHistoryStartPath: 'pr/proto/unitprice/history/update/start'
-        });
 
         /**
         * Model namespace.
         */
         export module model {
-            export interface UnitPrice extends base.simplehistory.model.MasterModel<UnitPriceHistory> {};
-            export interface UnitPriceHistory extends base.simplehistory.model.HistoryModel {}
-            export interface UnitPriceHistoryDto {
-                id: string;
-                unitPriceCode: string;
-                unitPriceName: string;
-                startMonth: number;
-                endMonth: number;
-                budget: number;
-                fixPaySettingType: string;
-                fixPayAtr: string;
-                fixPayAtrMonthly: string;
-                fixPayAtrDayMonth: string;
-                fixPayAtrDaily: string;
-                fixPayAtrHourly: string;
-                memo: string;
+
+            export interface EmpSubstVacationDto {
+                empContractTypeCode: string;
+                setting: SubstVacationSettingDto;
+            }
+
+            export interface SubstVacationSettingDto {
+                isManage: number;
+                expirationDate: number;
+                allowPrepaidLeave: number;
             }
         }
     }

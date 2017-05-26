@@ -2,6 +2,8 @@ module nts.uk.pr.view.kmf001.h {
     export module viewmodel {
         export class ScreenModel {
 
+            settingModel: KnockoutObservable<SubstVacationSettingModel>;
+
             // Switch button data source
             switchApplyDs: KnockoutObservableArray<SwitchButtonDataSource>;
 
@@ -11,6 +13,7 @@ module nts.uk.pr.view.kmf001.h {
             constructor() {
                 var self = this;
 
+                self.settingModel = ko.observable(new SubstVacationSettingModel());
                 self.switchApplyDs = ko.observableArray<SwitchButtonDataSource>([
                     { code: ApplySetting.APPLY, name: '管理する' },
                     { code: ApplySetting.NOTAPPLY, name: '管理しない' }
@@ -39,6 +42,12 @@ module nts.uk.pr.view.kmf001.h {
         export interface SwitchButtonDataSource {
             code: string;
             name: string;
+        }
+
+        export class SubstVacationSettingModel {
+            isManage: KnockoutObservable<number>;
+            expirationDate: KnockoutObservable<number>;
+            allowPrepaidLeave: KnockoutObservable<number>;
         }
     }
 }
