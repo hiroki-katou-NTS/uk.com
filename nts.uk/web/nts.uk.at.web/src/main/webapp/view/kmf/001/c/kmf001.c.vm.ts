@@ -135,14 +135,14 @@ module nts.uk.pr.view.kmf001.c {
                 return dfd.promise();
             }
             
-            private update(): void {
+            private save(): void {
                 let self = this;
                 let dfd = $.Deferred();
                 if (!self.validate()) {
                     return;
                 }
                 let command = self.toJsObject();
-                service.update(command).done(function() {
+                service.save(command).done(function() {
                     self.loadSetting().done(function(res) {
                         // Msg_15
                         nts.uk.ui.dialog.alert("年休設定の登録");

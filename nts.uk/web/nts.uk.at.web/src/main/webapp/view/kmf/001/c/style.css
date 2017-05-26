@@ -1,5 +1,7 @@
 @CHARSET "UTF-8";
-
+#master-content {
+	min-width: 900px;
+}
 #functions-area {
 	height: auto !important
 }
