@@ -10,10 +10,9 @@ import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.Retenti
 import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.RetentionYearlySaveCommandHandler;
 import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.RetentionYearlyFinder;
 import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.dto.RetentionYearlyFindDto;
-import nts.uk.shr.com.context.AppContexts;
 
 
-@Path("ctx/at/core/vacation/setting/retentionyearly/")
+@Path("ctx/at/shared/vacation/setting/retentionyearly/")
 @Produces("application/json")
 public class RetentionYearlyWebService extends WebService {
 
@@ -26,8 +25,8 @@ public class RetentionYearlyWebService extends WebService {
 	@POST
 	@Path("find")
 	public RetentionYearlyFindDto findById() {
-		String companyId = AppContexts.user().companyCode();
-		return this.finder.findById(companyId);
+//		String companyId = AppContexts.user().companyCode();
+		return this.finder.findById();
 	}
 	
 	@POST

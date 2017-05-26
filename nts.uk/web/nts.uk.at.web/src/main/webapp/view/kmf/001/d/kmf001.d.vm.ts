@@ -4,6 +4,8 @@ module nts.uk.pr.view.kmf001.d {
     import RetentionYearlyFindDto = service.model.RetentionYearlyFindDto;
     import RetentionYearlyDto = service.model.RetentionYearlyDto;
     import UpperLimitSettingDto = service.model.UpperLimitSettingDto;
+    import EmploymentSettingDto = service.model.EmploymentSettingDto;
+    import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
     
     export module viewmodel {
         export class ScreenModel {
@@ -11,13 +13,16 @@ module nts.uk.pr.view.kmf001.d {
             retentionYearsAmount: KnockoutObservable<number>;
             maxDaysCumulation: KnockoutObservable<number>;
             textEditorOption: KnockoutObservable<any>;
+            yearsAmountByEmp: KnockoutObservable<number>;
+            maxDaysCumulationByEmp: KnockoutObservable<number>;
+            isManaged: KnockoutObservable<boolean>;
             
-            empList: KnockoutObservableArray<ItemModel>;
+            employmentList: KnockoutObservableArray<ItemModel>;
             columnsSetting: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             selectedCode: KnockoutObservable<string>;
             managementOption: KnockoutObservableArray<ManagementModel>;
             selectedManagement: KnockoutObservable<number>;
-            hasEmp: KnockoutObservable<boolean>;
+            hasEmpoyment: KnockoutObservable<boolean>;
 
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -26,15 +31,17 @@ module nts.uk.pr.view.kmf001.d {
                 var self = this;
                 self.retentionYearsAmount = ko.observable(null);
                 self.maxDaysCumulation = ko.observable(null);
+                self.yearsAmountByEmp = ko.observable(null);
+                self.maxDaysCumulationByEmp = ko.observable(null);
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "50px",
                     textmode: "text",
                     placeholder: "Not Empty",
                     textalign: "left"
                 }));
-                self.empList = ko.observableArray<ItemModel>([]);
-                for (let i = 1; i < 10; i++) {
-                    self.empList.push(new ItemModel('00' + i, '基本給', i % 3 === 0));
+                self.employmentList = ko.observableArray<ItemModel>([]);
+                for (let i = 1; i < 9; i++) {
+                    self.employmentList.push(new ItemModel('0' + i, '基本給', i % 3 === 0));
                 }
                 self.columnsSetting = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100 },
@@ -43,12 +50,28 @@ module nts.uk.pr.view.kmf001.d {
                 ]);
                 self.selectedCode = ko.observable('');
                 self.managementOption = ko.observableArray<ManagementModel>([
-                    new ManagementModel(1, '管理す'),
+                    new ManagementModel(1, '管理する'),
                     new ManagementModel(0, '管理しな')
                 ]);
                 self.selectedManagement = ko.observable(1);
-                self.hasEmp = ko.computed(function() {
-                    return self.empList().length > 0;
+                self.hasEmpoyment = ko.computed(function() {
+                    return self.employmentList().length > 0;
+                }, self);
+                self.isManaged = ko.computed(function() {
+                    return self.selectedManagement() == 1;
+                }, self);
+                
+                self.selectedCode.subscribe(function(data: string){
+                    service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto){
+                    if(data1 == null) {
+                        self.yearsAmountByEmp(0);
+                        self.maxDaysCumulationByEmp(0);
+                        self.selectedManagement(0);
+                    }
+                    else {
+                       self.bindEmploymentSettingData(data1);
+                    }
+                    });
                 });
             }
             
@@ -61,14 +84,21 @@ module nts.uk.pr.view.kmf001.d {
                         self.maxDaysCumulation(40);
                     }
                     else {
-                       self.initializeData(data);
+                       self.initializeWholeCompanyData(data);
                     }
                     dfd.resolve();
                 })
                 return dfd.promise();
             }
             
-            initializeData(data: RetentionYearlyFindDto): void {
+            public bindEmploymentSettingData(data: EmploymentSettingFindDto): void {
+                var self = this;
+                self.yearsAmountByEmp(data.upperLimitSetting.retentionYearsAmount);
+                self.maxDaysCumulationByEmp(data.upperLimitSetting.maxDaysCumulation);
+                self.selectedManagement(data.managementCategory);
+            }
+            
+            initializeWholeCompanyData(data: RetentionYearlyFindDto): void {
                 var self = this;
                 self.retentionYearsAmount(data.upperLimitSetting.retentionYearsAmount);
                 self.maxDaysCumulation(data.upperLimitSetting.maxDaysCumulation);
@@ -78,24 +108,7 @@ module nts.uk.pr.view.kmf001.d {
                 
             }
             
-            public register(): void {
-                var self = this;
-                /*
-                // Validate.
-                $('.nts-input').ntsEditor('validate');
-                if ($('.nts-input').ntsError('hasError')) {
-                    return;
-                }
-                */
-                service.saveRetentionYearly(self.collectData()).done(function() {
-                    nts.uk.ui.dialog.alert('登録しました。');
-                })
-                .fail((res) => {
-                        nts.uk.ui.dialog.alert(res.message);
-                    });
-            }
-            
-            public collectData(): RetentionYearlyDto {
+            public collectWholeCompanyData(): RetentionYearlyDto {
                 var self = this;
                 var dto: RetentionYearlyDto = new RetentionYearlyDto();
                 var upperDto: UpperLimitSettingDto = new  UpperLimitSettingDto();
@@ -104,7 +117,47 @@ module nts.uk.pr.view.kmf001.d {
                 dto.upperLimitSettingDto = upperDto;
                 return dto;
             }
-                
+            
+            public registerWholeCompany(): void {
+                var self = this;
+                /*
+                // Validate.
+                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                }
+                */
+                service.saveRetentionYearly(self.collectWholeCompanyData()).done(function() {
+                    nts.uk.ui.dialog.alert('登録しました。');
+                })
+                    .fail((res) => {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
+            }
+            
+            public collectDataByEmployment(): EmploymentSettingDto {
+                var self = this;
+                var dto: EmploymentSettingDto = new EmploymentSettingDto();
+                var upperLimitDto: UpperLimitSettingDto = new  UpperLimitSettingDto();
+                upperLimitDto.retentionYearsAmount = self.yearsAmountByEmp();
+                upperLimitDto.maxDaysCumulation = self.maxDaysCumulationByEmp();
+                dto.upperLimitSettingDto = upperLimitDto;
+                dto.employmentCode = self.selectedCode();
+                dto.managementCategory = self.selectedManagement();
+                return dto;
+            }
+            
+            
+            public registerByEmployment(): void {
+                var self = this;
+                service.saveByEmployment(self.collectDataByEmployment()).done(function() {
+                    nts.uk.ui.dialog.alert('登録しました。');
+                })
+                    .fail((res) => {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
+            }
+            
         }
         
         class ItemModel {

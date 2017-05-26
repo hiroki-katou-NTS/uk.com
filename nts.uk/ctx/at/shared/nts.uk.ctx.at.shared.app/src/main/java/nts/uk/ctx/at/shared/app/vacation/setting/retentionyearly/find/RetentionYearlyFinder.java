@@ -17,16 +17,16 @@ public class RetentionYearlyFinder {
 	@Inject
 	private RetentionYearlySettingRepository repository;
 	
-	public RetentionYearlyFindDto findById(String companyId) {
+	public RetentionYearlyFindDto findById() {
 		// get login user info
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get companycode by user login
-		String companyCode = loginUserContext.companyCode();
+		String companyId = loginUserContext.companyCode();
 		
 		RetentionYearlyFindDto outputData = new RetentionYearlyFindDto();
 		
-		Optional<RetentionYearlySetting> data = this.repository.findByCompanyId(companyCode);
+		Optional<RetentionYearlySetting> data = this.repository.findByCompanyId(companyId);
 		if(data.isPresent()) {
 			data.get().saveToMemento(outputData);
 			return outputData;

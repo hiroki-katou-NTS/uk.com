@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
+import java.util.Optional;
+
 /**
  * The Interface EmploymentSettingRepository.
  */
@@ -38,5 +40,5 @@ public interface EmploymentSettingRepository {
 	 * @param employmentCode the employment code
 	 * @return the employment setting
 	 */
-	EmploymentSetting find(String companyId, String employmentCode);
+	Optional<EmploymentSetting> find(String companyId, String employmentCode);
 }

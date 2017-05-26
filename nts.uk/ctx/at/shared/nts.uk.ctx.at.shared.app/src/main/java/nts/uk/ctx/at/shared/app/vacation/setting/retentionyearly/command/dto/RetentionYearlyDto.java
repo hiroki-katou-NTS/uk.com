@@ -11,20 +11,19 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetti
 public class RetentionYearlyDto {
 	
 	private UpperLimitSettingDto upperLimitSettingDto;
-//	private Boolean canAddToCumulationYearlyAsNormalWorkDay;
 
 	
 	public RetentionYearlySetting toDomain(String companyId) {
-		return new RetentionYearlySetting(new RetentionYearlyGetMementoImpl(companyId, this));
+		return new RetentionYearlySetting(new GetMementoImpl(companyId, this));
 	}
 	
 	
-	public class RetentionYearlyGetMementoImpl implements RetentionYearlySettingGetMemento {
+	private class GetMementoImpl implements RetentionYearlySettingGetMemento {
 		
 		private RetentionYearlyDto dto;
 		private String companyId;
 		
-		public RetentionYearlyGetMementoImpl(String companyId, RetentionYearlyDto dto) {
+		public GetMementoImpl(String companyId, RetentionYearlyDto dto) {
 			super();
 			this.companyId = companyId;
 			this.dto = dto;

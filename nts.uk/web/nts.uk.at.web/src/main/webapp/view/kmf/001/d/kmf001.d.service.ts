@@ -4,8 +4,10 @@ module nts.uk.pr.view.kmf001.d {
          *  Service paths
          */
         var paths: any = {
-            findRetentionYearlyByCompany: 'ctx/at/core/vacation/setting/retentionyearly/find',
-            saveRetentionYearly: 'ctx/at/core/vacation/setting/retentionyearly/save'
+            findRetentionYearlyByCompany: 'ctx/at/shared/vacation/setting/retentionyearly/find',
+            saveRetentionYearly: 'ctx/at/shared/vacation/setting/retentionyearly/save',
+            findByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/find',
+            saveByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/save'
         };
 
         /**
@@ -23,6 +25,15 @@ module nts.uk.pr.view.kmf001.d {
         export function saveRetentionYearly(retentionYearly: model.RetentionYearlyDto):  JQueryPromise<void> {
             var data = {retentionYearly: retentionYearly};
             return nts.uk.request.ajax(paths.saveRetentionYearly, data);
+        }
+        
+        export function findByEmployment(empCode: string): JQueryPromise<model.EmploymentSettingFindDto> {
+            return nts.uk.request.ajax(paths.findByEmployment + "/" + empCode);
+        }
+        
+        export function saveByEmployment(employmentSetting: model.EmploymentSettingDto):  JQueryPromise<void> {
+            var data = {employmentSetting: employmentSetting};
+            return nts.uk.request.ajax(paths.saveByEmployment, data);
         }
 
         /**
@@ -46,6 +57,18 @@ module nts.uk.pr.view.kmf001.d {
             
             export class RetentionYearlyDto {
                 upperLimitSettingDto: UpperLimitSettingDto;
+            }
+            
+            export class EmploymentSettingDto {
+                upperLimitSetting: UpperLimitSettingDto;
+                employmentCode: string;
+                managementCategory: number;
+            }
+            
+            export class EmploymentSettingFindDto {
+                upperLimitSetting: UpperLimitSettingDto;
+                employmentCode: string;
+                managementCategory: number;
             }
         }
     }

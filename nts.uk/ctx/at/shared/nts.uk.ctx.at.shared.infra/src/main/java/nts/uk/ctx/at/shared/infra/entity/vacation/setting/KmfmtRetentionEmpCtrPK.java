@@ -29,6 +29,15 @@ public class KmfmtRetentionEmpCtrPK {
     @Column(name = "EMP_CTR_CD")
     private String empCtrCd;
     
+    public KmfmtRetentionEmpCtrPK() {
+    	super();
+    }
+    
+    public KmfmtRetentionEmpCtrPK(String cid, String empCtrCd) {
+    	this.cid = cid;
+    	this.empCtrCd = empCtrCd;
+    }
+    
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */

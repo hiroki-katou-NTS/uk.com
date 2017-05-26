@@ -25,18 +25,18 @@ public class UpperLimitSettingDto {
 	 * @return the upper limit setting
 	 */
 	public UpperLimitSetting toDomain() {
-		return new UpperLimitSetting(new UpperLimitSettingGetMementoImpl(this));
+		return new UpperLimitSetting(new GetMementoImpl(this));
 	}
 
 	/**
 	 * The Class UpperLimitSettingGetMementoImpl.
 	 */
-	public class UpperLimitSettingGetMementoImpl implements UpperLimitSettingGetMemento {
+	private class GetMementoImpl implements UpperLimitSettingGetMemento {
 
 		/** The dto. */
 		private UpperLimitSettingDto dto;
 
-		public UpperLimitSettingGetMementoImpl(UpperLimitSettingDto dto) {
+		public GetMementoImpl(UpperLimitSettingDto dto) {
 			this.dto = dto;
 		}
 

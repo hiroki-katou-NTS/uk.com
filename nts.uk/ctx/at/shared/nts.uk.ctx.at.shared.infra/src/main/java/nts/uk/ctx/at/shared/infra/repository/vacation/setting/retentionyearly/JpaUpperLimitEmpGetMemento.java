@@ -3,13 +3,13 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearsAmount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 
-public class JpaUpperLimitSettingGetMemento implements UpperLimitSettingGetMemento{
+public class JpaUpperLimitEmpGetMemento implements UpperLimitSettingGetMemento {
+
+	private KmfmtRetentionEmpCtr typeValue;
 	
-	private KmfmtRetentionYearly typeValue;
-
-	public JpaUpperLimitSettingGetMemento(KmfmtRetentionYearly typeValue) {
+	public JpaUpperLimitEmpGetMemento(KmfmtRetentionEmpCtr typeValue) {
 		this.typeValue = typeValue;
 	}
 	
