@@ -21,7 +21,7 @@ module kdl024.a.viewmodel {
             // Budget list
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KDL024_5'), key: 'externalBudgetCode', width: 40 },
-                { headerText: nts.uk.resource.getText('KDL024_6'), key: 'externalBudgetName', width: 150 }
+                { headerText: nts.uk.resource.getText('KDL024_6'), key: 'externalBudgetName', width: 150, formatter: _.escape }
             ]);
             self.listBudget = ko.observableArray([]);
             self.selectedBudgetCode = ko.observable('');
