@@ -12,7 +12,10 @@ module nts.uk.pr.view.kmf001.f {
             compenTimeManage: KnockoutObservable<number>;
 
             expirationDateList: KnockoutObservableArray<ItemModel>;
+            expirationDateCode: KnockoutObservable<string>;
+
             timeUnitList: KnockoutObservableArray<ItemModel>;
+            timeUnitCode: KnockoutObservable<string>;
 
             checkWorkTime: KnockoutObservable<boolean>;
             checkOverTime: KnockoutObservable<boolean>;
@@ -63,10 +66,13 @@ module nts.uk.pr.view.kmf001.f {
                     new ItemModel('2', '2ヶ月'),
                     new ItemModel('3', '3ヶ月')
                 ]);
+                self.expirationDateCode = ko.observable('');
+
                 self.timeUnitList = ko.observableArray([
                     new ItemModel('1', '1分'),
                     new ItemModel('2', '2分')
                 ]);
+                self.timeUnitCode = ko.observable('');
 
                 self.checkWorkTime = ko.observable(true);
                 self.checkOverTime = ko.observable(false);
@@ -101,27 +107,27 @@ module nts.uk.pr.view.kmf001.f {
 
                 self.enableWorkArea = ko.computed(function() {
                     return self.checkWorkTime() && self.isManageCompen();
-                });
+                }, self);
 
                 self.enableOverArea = ko.computed(function() {
                     return self.checkOverTime() && self.isManageCompen();
-                });
+                }, self);
 
                 self.enableWorkAll = ko.computed(function() {
                     return self.enableWorkArea() && self.selectedOfWorkTime() == 2;
-                });
+                }, self);
 
                 self.enableOverAll = ko.computed(function() {
                     return self.enableOverArea() && self.selectedOfOverTime() == 2;
-                });
+                }, self);
 
                 self.enableDesignWork = ko.computed(function() {
                     return self.enableWorkArea() && self.selectedOfWorkTime() == 1;
-                });
+                }, self);
 
                 self.enableDesignOver = ko.computed(function() {
                     return self.enableOverArea() && self.selectedOfOverTime() == 1;
-                });
+                }, self);
 
                 self.checkWorkTime.subscribe(function(data: boolean) {
                     if (data == true) {
@@ -140,6 +146,60 @@ module nts.uk.pr.view.kmf001.f {
                 let dfd = $.Deferred<any>();
                 dfd.resolve();
                 return dfd.promise();
+            }
+
+            private loadSetting(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.find().done(function(data: any) {
+                    if (data) {
+                        self.loadToScreen(data);
+                    }
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
+            }
+
+            private loadToScreen(data: any) {
+                let self = this;
+                self.compenManage(data.compenManage);
+                self.compenPreApply(data.compenPreApply);
+                self.compenTimeManage(data.compenTimeManage);
+
+                self.expirationDateCode(data.expirationDate);
+                self.timeUnitCode(data.timeUnit);
+
+                //TODO if check f3
+                if (data.checkWork) {
+                    //set check work
+                    self.enableWorkArea(true);
+                    //set data work
+                    self.workOneDay();
+                    self.workHalfDay();
+                    self.workAll();
+                }
+                else {//TODO if check f13
+                    //set check over
+                    self.enableOverArea(true);
+                    //set data over
+                    self.overOneDay();
+                    self.overHalfDay();
+                    self.overAll();
+                }
+            }
+
+            private collectData() {
+                //TODO wait domain
+            }
+
+            private gotoVacationSetting(){
+                  alert();  
+            }
+            
+            private gotoParent() {
+                nts.uk.request.jump("/view/kmf/001/a/index.xhtml");
             }
         }
         class ItemModel {

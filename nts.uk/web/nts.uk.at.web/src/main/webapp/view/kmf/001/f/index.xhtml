@@ -30,8 +30,9 @@
 			<div id="company-tab" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">会社</span>
-					<button>休暇の選択に戻る</button>
+					<button data-bind="click: gotoParent">休暇の選択に戻る</button>
 					<button class="proceed register-button">登録</button>
+					<div class="link_label"><label data-bind="click: gotoVacationSetting">休暇の設定</label></div>
 				</div>
 				<div class="ruledLine"></div>
 
@@ -65,7 +66,7 @@
 									data-bind="ntsComboBox: {
 										options: expirationDateList,
 										optionsValue: 'code',
-										value: selectedCode,
+										value: expirationDateCode,
 										optionsText: 'name',
 										editable: false,
 										enable: isManageCompen,
@@ -101,7 +102,7 @@
 									data-bind="ntsComboBox: {
 										options: timeUnitList,
 										optionsValue: 'code',
-										value: selectedCode,
+										value: timeUnitCode,
 										optionsText: 'name',
 										editable: false,
 										enable: isManageCompen,
@@ -113,6 +114,7 @@
 						<tr>
 							<td colspan="6">
 								<div data-bind="ntsFormLabel: {}">代休発生の設定</div>
+								<div style ="float: right;"><button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button></div>
 								<div class="hr_width">
 									<hr />
 								</div>
