@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.aspose.cells.Cell;
@@ -11,6 +12,7 @@ import com.aspose.cells.Cells;
 import com.aspose.cells.Range;
 import com.aspose.cells.Worksheet;
 
+import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingOnceDto;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentReportDto;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentSalaryItemDto;
@@ -39,97 +41,97 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 	private static final String START_PAGE_CELLS = "A1";
 
 	/** The Constant END_PAGE_CELLS. */
-	private static final String END_PAGE_CELLS = "P34";
+	private static final String END_PAGE_CELLS = "Q35";
 
 	/** The Constant REMARK_CELLS. */
-	public static final String REMARK_CELLS = "K1";
+	public static final String REMARK_CELLS = "L2";
 
 	/** The Constant PROCESS_YEARMONTH_CELLS. */
-	public static final String PROCESS_YEARMONTH_CELLS = "D2";
+	public static final String PROCESS_YEARMONTH_CELLS = "E3";
 
 	/** The Constant DEPARTMENT_CELLS. */
-	public static final String DEPARTMENT_CELLS = "G1";
+	public static final String DEPARTMENT_CELLS = "H2";
 
 	/** The Constant EMPLOYEE_NAME_CELLS. */
-	public static final String EMPLOYEE_NAME_CELLS = "G2";
+	public static final String EMPLOYEE_NAME_CELLS = "H3";
 
 	/** The Constant EMPLOYEE_INFOR_NAME_CELLS. */
-	public static final String EMPLOYEE_INFOR_NAME_CELLS = "A21";
+	public static final String EMPLOYEE_INFOR_NAME_CELLS = "B22";
 
 	/** The Constant EMPLOYEE_POSTAL_CODE. */
-	public static final String EMPLOYEE_POSTAL_CODE_CELLS = "A13";
+	public static final String EMPLOYEE_POSTAL_CODE_CELLS = "B14";
 
 	/** The Constant EMPLOYEE_ADDRESS_ONE_CELLS. */
-	public static final String EMPLOYEE_ADDRESS_ONE_CELLS = "A14";
+	public static final String EMPLOYEE_ADDRESS_ONE_CELLS = "B15";
 
 	/** The Constant EMPLOYEE_ADDRESS_TWO_CELLS. */
-	public static final String EMPLOYEE_ADDRESS_TWO_CELLS = "A16";
+	public static final String EMPLOYEE_ADDRESS_TWO_CELLS = "B17";
 
 	/** The Constant EMPLOYEE_TOTAL_TAX_CELLS. */
-	public static final String EMPLOYEE_TAX_TOTAL_CELLS = "O5";
+	public static final String EMPLOYEE_TAX_TOTAL_CELLS = "P6";
 
 	/** The Constant EMPLOYEE_TAX_EXEMPTION_TOTAL_CELLS. */
-	public static final String EMPLOYEE_TAX_EXEMPTION_TOTAL_CELLS = "O6";
+	public static final String EMPLOYEE_TAX_EXEMPTION_TOTAL_CELLS = "P7";
 
 	/** The Constant EMPLOYEE_TAX_EXEMPTION_TOTAL_CELLS. */
-	public static final String EMPLOYEE_PAYMENT_TOTAL_CELLS = "O7";
+	public static final String EMPLOYEE_PAYMENT_TOTAL_CELLS = "P8";
 
 	/** The Constant EMPLOYEE_SOCIAL_INSURANCE_TOTAL_CELLS. */
-	public static final String EMPLOYEE_SOCIAL_INSURANCE_TOTAL_CELLS = "O8";
+	public static final String EMPLOYEE_SOCIAL_INSURANCE_TOTAL_CELLS = "P9";
 
 	/** The Constant EMPLOYEE_TAXABLE_AMOUNT_CELLS. */
-	public static final String EMPLOYEE_TAXABLE_AMOUNT_CELLS = "O9";
+	public static final String EMPLOYEE_TAXABLE_AMOUNT_CELLS = "P10";
 
 	/** The Constant EMPLOYEE_DEDUCTION_TOTAL_CELLS. */
-	public static final String EMPLOYEE_DEDUCTION_TOTAL_CELLS = "O10";
+	public static final String EMPLOYEE_DEDUCTION_TOTAL_CELLS = "P11";
 
 	/** The Constant EMPLOYEE_SUBSCRIPTION_AMOUNT_CELLS. */
-	public static final String EMPLOYEE_SUBSCRIPTION_AMOUNT_CELLS = "O11";
+	public static final String EMPLOYEE_SUBSCRIPTION_AMOUNT_CELLS = "P12";
 
 	/** The Constant EMPLOYEE_TAXABLE_TOTAL_CELLS. */
-	public static final String EMPLOYEE_TAXABLE_TOTAL_CELLS = "O21";
+	public static final String EMPLOYEE_TAXABLE_TOTAL_CELLS = "P22";
 
 	/** The Constant COMPANY_NAME_CELLS. */
-	public static final String COMPANY_NAME_CELLS = "B34";
+	public static final String COMPANY_NAME_CELLS = "C35";
 
 	/** The Constant COMPANY_POST_CODE_CELLS. */
-	public static final String COMPANY_POST_CODE_CELLS = "A30";
+	public static final String COMPANY_POST_CODE_CELLS = "B31";
 
 	/** The Constant COMPANY_ADDRESS_ONE_CELLS. */
-	public static final String COMPANY_ADDRESS_ONE_CELLS = "A31";
+	public static final String COMPANY_ADDRESS_ONE_CELLS = "B32";
 
 	/** The Constant COMPANY_ADDRESS_TWO_CELLS. */
-	public static final String COMPANY_ADDRESS_TWO_CELLS = "A32";
+	public static final String COMPANY_ADDRESS_TWO_CELLS = "B34";
 
 	/** The Constant START_ROW_CATEGORY_ATTENDANCE. */
-	public static final int START_ROW_CATEGORY_ATTENDANCE = 4;
+	public static final int START_ROW_CATEGORY_ATTENDANCE = 5;
 
 	/** The Constant START_COL_CATEGORY_ATTENDANCE. */
-	public static final int START_COL_CATEGORY_ATTENDANCE = 3;
+	public static final int START_COL_CATEGORY_ATTENDANCE = 4;
 
 	/** The Constant START_ROW_CATEGORY_PAYMENT. */
-	public static final int START_ROW_CATEGORY_PAYMENT = 4;
+	public static final int START_ROW_CATEGORY_PAYMENT = 5;
 
 	/** The Constant START_COL_CATEGORY_PAYMENT. */
-	public static final int START_COL_CATEGORY_PAYMENT = 6;
+	public static final int START_COL_CATEGORY_PAYMENT = 7;
 
 	/** The Constant START_ROW_CATEGORY_DEDUCTION. */
-	public static final int START_ROW_CATEGORY_DEDUCTION = 4;
+	public static final int START_ROW_CATEGORY_DEDUCTION = 5;
 
 	/** The Constant START_COL_CATEGORY_DEDUCTION. */
-	public static final int START_COL_CATEGORY_DEDUCTION = 9;
+	public static final int START_COL_CATEGORY_DEDUCTION = 10;
 
 	/** The Constant START_ROW_CATEGORY_ARTICLE. */
-	public static final int START_ROW_CATEGORY_ARTICLE = 13;
+	public static final int START_ROW_CATEGORY_ARTICLE = 14;
 
 	/** The Constant START_COL_CATEGORY_ARTICLE. */
-	public static final int START_COL_CATEGORY_ARTICLE = 13;
+	public static final int START_COL_CATEGORY_ARTICLE = 14;
 
 	/** The Constant START_ROW_CATEGORY_OTHER. */
-	public static final int START_ROW_CATEGORY_OTHER = 23;
+	public static final int START_ROW_CATEGORY_OTHER = 24;
 
 	/** The Constant START_COL_CATEGORY_OTHER. */
-	public static final int START_COL_CATEGORY_OTHER = 13;
+	public static final int START_COL_CATEGORY_OTHER = 14;
 
 	/** The Constant FIRST_SHEET. */
 	public static final int FIRST_SHEET = 0;
@@ -139,6 +141,12 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 
 	/** The current cell row. */
 	public int currentCellRow = 0;
+	
+	/** The Constant EXCEL_ROW_UNIT_IN_MM. */
+	public static final double EXCEL_ROW_UNIT_IN_MM = 0.35;
+
+	/** The Constant EXCEL_COL_UNIT_IN_MM. */
+	public static final double EXCEL_COL_UNIT_IN_MM = 3.15;
 
 	/*
 	 * (non-Javadoc)
@@ -163,7 +171,7 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 
 		// copy blank data
 		reportData.forEach(employee -> {
-			copyBlankEmployee();
+			copyBlankEmployee(data.getConfig().getRefundPaddingOnceDto());
 		});
 
 		// reset cell row 
@@ -179,14 +187,10 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Sets the data category.
 	 *
-	 * @param startRow
-	 *            the start row
-	 * @param startCol
-	 *            the start col
-	 * @param merge
-	 *            the merge
-	 * @param data
-	 *            the data
+	 * @param startRow the start row
+	 * @param startCol the start col
+	 * @param merge the merge
+	 * @param data the data
 	 */
 	public void setDataCategory(int startRow, int startCol, int merge,
 		List<PaymentSalaryItemDto> data) {
@@ -209,7 +213,6 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 	 *            the data first
 	 */
 	private void printEmployeeInfo(PaymentReportDto dataFirst) {
-
 		int pageRowCount = pageRange.getRowCount();
 		printCellValue(dataFirst);
 		currentCellRow += pageRowCount;
@@ -218,8 +221,9 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 	/**
 	 * Copy blank employee.
 	 */
-	private void copyBlankEmployee() {
+	private void copyBlankEmployee(RefundPaddingOnceDto setting) {
 		int pageRowCount = pageRange.getRowCount();
+		this.configPageBySetting(setting);
 		Range newPageHeaderRange = cells.createRange(currentCellRow, FIRST_COLUMN,
 			pageRange.getRowCount(), pageRange.getColumnCount());
 		try {
@@ -310,5 +314,30 @@ public class PaymentReportPostCardGenerator extends AsposeCellsReportGenerator
 	 */
 	private Cell getCell(String cell) {
 		return cells.get(cells.get(cell).getRow() + currentCellRow, cells.get(cell).getColumn());
+	}
+	
+	/**
+	 * To excel row unit.
+	 *
+	 * @param value the value
+	 * @return the double
+	 */
+	private double toExcelRowUnit(BigDecimal value) {
+		return value.doubleValue() / EXCEL_ROW_UNIT_IN_MM;
+	}
+
+	/**
+	 * To excel col unit.
+	 *
+	 * @param value the value
+	 * @return the double
+	 */
+	private double toExcelColUnit(BigDecimal value) {
+		return value.doubleValue() / EXCEL_COL_UNIT_IN_MM;
+	}
+
+	private void configPageBySetting(RefundPaddingOnceDto setting){
+		cells.setRowHeight(currentCellRow, toExcelRowUnit(setting.getPaddingTop()));
+		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
 	}
 }

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.file.pr.app.export.payment;
@@ -15,6 +15,7 @@ public interface PaymentReportPreviewGenerator {
 	 * Generate.
 	 *
 	 * @param fileContext the file context
+	 * @param query the query
 	 */
     void generate(FileGeneratorContext fileContext, PaymentReportPreviewQuery query);
 
