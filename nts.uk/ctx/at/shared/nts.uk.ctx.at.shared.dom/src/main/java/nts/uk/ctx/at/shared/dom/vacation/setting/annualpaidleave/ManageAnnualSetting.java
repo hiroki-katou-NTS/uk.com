@@ -4,11 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import lombok.EqualsAndHashCode;
 import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class YearVacationManageSetting.
  */
+@EqualsAndHashCode(callSuper = true, of = {"companyId"})
 public class ManageAnnualSetting extends DomainObject {
     
     /** The company id. */

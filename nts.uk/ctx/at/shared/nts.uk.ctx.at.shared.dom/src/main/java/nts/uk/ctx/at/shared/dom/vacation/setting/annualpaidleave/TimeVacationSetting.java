@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 
 /**
  * The Class YearVacationTimeManageSetting.
@@ -19,7 +20,7 @@ public class TimeVacationSetting {
 	private ManageDistinct timeManageType;
 
 	/** The time unit. */
-	private YearVacationTimeUnit timeUnit;
+	private TimeVacationDigestiveUnit timeUnit;
 
 	/** The max day. */
 	private YearVacationTimeMaxDay maxDay;

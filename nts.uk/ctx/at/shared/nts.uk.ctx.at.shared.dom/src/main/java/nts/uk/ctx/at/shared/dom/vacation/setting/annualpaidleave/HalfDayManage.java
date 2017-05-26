@@ -13,15 +13,16 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 @Builder
 public class HalfDayManage {
 
-	/** The maximum day. */
-	public Integer maximumDay; // Not mapping UI.
+    /** The maximum day. */
+    // TODO: Not mapping UI.
+    public Integer maximumDay;
 
-	/** The manage type. */
-	public ManageDistinct manageType;
+    /** The manage type. */
+    public ManageDistinct manageType;
 
-	/** The reference. */
-	public MaxDayReference reference;
+    /** The reference. */
+    public MaxDayReference reference;
 
-	/** The max number uniform company. */
-	public AnnualNumberDay maxNumberUniformCompany;
+    /** The max number uniform company. */
+    public AnnualNumberDay maxNumberUniformCompany;
 }

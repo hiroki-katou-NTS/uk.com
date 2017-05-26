@@ -37,8 +37,8 @@ public class AnnualPaidLeaveWs extends WebService {
      *            the command
      */
     @POST
-    @Path("update")
-    public void update(AnnualPaidLeaveSaveCommand command) {
+    @Path("save")
+    public void save(AnnualPaidLeaveSaveCommand command) {
         this.annualPaidHandler.handle(command);
     }
 

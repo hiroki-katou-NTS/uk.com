@@ -30,8 +30,11 @@
 			<div id="company-tab" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">会社</span>
-					<button>休暇の選択に戻る</button>
+					<button data-bind="click: gotoParent">休暇の選択に戻る</button>
 					<button class="proceed register-button">登録</button>
+					<div class="link_label">
+						<label data-bind="click: gotoVacationSetting">休暇の設定</label>
+					</div>
 				</div>
 				<div class="ruledLine"></div>
 
@@ -60,23 +63,23 @@
 						</tr>
 						<tr>
 							<td class="pad_left_20"><label>使用期限</label></td>
-							<td>
-								<div id="combo-box"
+							<td colspan="2">
+								<div class="combo-box"
 									data-bind="ntsComboBox: {
 										options: expirationDateList,
 										optionsValue: 'code',
-										value: selectedCode,
+										value: expirationDateCode,
 										optionsText: 'name',
 										editable: false,
 										enable: isManageCompen,
 										columns: [
-											{ prop: 'name', length: 4 },
+											{ prop: 'name', length: 1 },
 										]}"></div>
 							</td>
 						</tr>
 						<tr>
 							<td class="pad_left_20"><label>代休の先取り</label></td>
-							<td><span
+							<td colspan="2"><span
 								data-bind="ntsSwitchButton: {
 										options: applyOptions,
 										optionsValue: 'code',
@@ -87,7 +90,7 @@
 						</tr>
 						<tr>
 							<td class="pad_left_20"><label>時間代休の管理</label></td>
-							<td><span
+							<td colspan="2"><span
 								data-bind="ntsSwitchButton: {
 										options: manageDistinctOptions,
 										optionsValue: 'code',
@@ -97,11 +100,11 @@
 							</span></td>
 							<td><label>消化単位</label></td>
 							<td>
-								<div id="combo-box"
+								<div class="combo-box"
 									data-bind="ntsComboBox: {
 										options: timeUnitList,
 										optionsValue: 'code',
-										value: selectedCode,
+										value: timeUnitCode,
 										optionsText: 'name',
 										editable: false,
 										enable: isManageCompen,
@@ -113,6 +116,10 @@
 						<tr>
 							<td colspan="6">
 								<div data-bind="ntsFormLabel: {}">代休発生の設定</div>
+								<div style="float: right;">
+									<button
+										data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
+								</div>
 								<div class="hr_width">
 									<hr />
 								</div>
@@ -132,16 +139,23 @@
 											value: selectedOfWorkTime,
 											enable: enableWorkArea}"></div>
 							</td>
-							<td class="inp_time"><label>一日：</label><input
-								id="workOneDay"
-								data-bind="ntsTextEditor: { value: workOneDay,  option: inputOption, enable: enableDesignWork }" /></td>
-							<td class="inp_time"><label>半日：</label><input
-								id="workHalfDay"
-								data-bind="ntsTextEditor: { value: workHalfDay,  option: inputOption, enable: enableDesignWork }" /></td>
+							<td class="pad_left_70"><label>一日：</label></td>
+							<td class="inp_time"><input id="workOneDay"
+								style="float: right;" data-name="Time Of Days Editor"
+								data-bind="ntsTimeEditor: {value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
+							</td>
+							<td class="pad_left_70"><label>半日：</label></td>
+							<td class="inp_time"><input id="workHalfDay"
+								data-name="Time Of Days Editor"
+								data-bind="ntsTimeEditor: {value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
+							</td>
 						</tr>
 						<tr>
 							<td class="inp_time"><input id="workAll"
-								data-bind="ntsTextEditor: { value: workAll, option: inputOption,enable: enableWorkAll}" /><label>以上</label></td>
+								data-name="Time Of Days Editor"
+								data-bind="ntsTimeEditor: {value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
+							</td>
+							<td><label>以上</label></td>
 						</tr>
 						<tr>
 							<td><div
@@ -157,16 +171,23 @@
 											value: selectedOfOverTime,
 											enable: enableOverArea}"></div>
 							</td>
-							<td class="inp_time"><label>一日：</label><input
-								id="overOneDay"
-								data-bind="ntsTextEditor: { value: overOneDay,  option: inputOption,enable: enableDesignOver  }" /></td>
-							<td class="inp_time"><label>半日：</label><input
-								id="overHalfDay"
-								data-bind="ntsTextEditor: { value: overHalfDay,  option: inputOption,enable: enableDesignOver  }" /></td>
+							<td class="pad_left_70"><label>一日：</label></td>
+							<td class="inp_time"><input id="overOneDay"
+								data-name="Time Of Days Editor"
+								data-bind="ntsTimeEditor: {value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+							</td>
+							<td class="pad_left_70"><label>半日：</label></td>
+							<td class="inp_time"><input id="overHalfDay"
+								data-name="Time Of Days Editor"
+								data-bind="ntsTimeEditor: {value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+							</td>
 						</tr>
 						<tr>
 							<td class="inp_time"><input id="overAll"
-								data-bind="ntsTextEditor: { value: overAll, option: inputOption,enable: enableOverAll }" /><label>以上</label></td>
+								data-name="Time Of Days Editor"
+								data-bind="ntsTimeEditor: {value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
+							</td>
+							<td><label>以上</label></td>
 						</tr>
 					</table>
 				</div>

@@ -2,12 +2,12 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
+package nts.uk.ctx.at.shared.dom.vacation.setting;
 
 /**
  * The Enum YearVacationTimeUnit.
  */
-public enum YearVacationTimeUnit {
+public enum TimeVacationDigestiveUnit {
 
 	/** The One minute. */
 	OneMinute(0, "1分"),
@@ -31,14 +31,14 @@ public enum YearVacationTimeUnit {
 	public String description;
 
 	/** The Constant values. */
-	private final static YearVacationTimeUnit[] values = YearVacationTimeUnit.values();
+	private final static TimeVacationDigestiveUnit[] values = TimeVacationDigestiveUnit.values();
 
 	/**
 	 * Instantiates a new year vacation time unit.
 	 *
 	 * @param value the value
 	 */
-	private YearVacationTimeUnit(int value, String description) {
+	private TimeVacationDigestiveUnit(int value, String description) {
 		this.value = value;
 		this.description = description;
 	}
@@ -49,14 +49,14 @@ public enum YearVacationTimeUnit {
 	 * @param value the value
 	 * @return the year vacation time unit
 	 */
-	public static YearVacationTimeUnit valueOf(Integer value) {
+	public static TimeVacationDigestiveUnit valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (YearVacationTimeUnit val : YearVacationTimeUnit.values) {
+		for (TimeVacationDigestiveUnit val : TimeVacationDigestiveUnit.values) {
 			if (val.value == value) {
 				return val;
 			}
