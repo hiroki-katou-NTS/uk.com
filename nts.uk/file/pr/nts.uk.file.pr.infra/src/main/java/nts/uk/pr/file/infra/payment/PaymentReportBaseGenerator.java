@@ -330,8 +330,6 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 
 		// Print data.
 		this.reportData.forEach(item -> {
-			// Set margin top.
-			this.setCurrentRowHeight(this.toExcelRowUnit(this.getPageTopMargin()));
 			this.employee = item;
 			this.printPageHeader();
 			this.printPageContent();
@@ -341,6 +339,8 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 
 			if (this.isPageHasEnoughPerson()) {
 				this.breakPage();
+				// Set margin top.
+				this.setCurrentRowHeight(this.toExcelRowUnit(this.getPageTopMargin()));
 			}
 		});
 	}
@@ -391,6 +391,8 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 
 		// Set page left margin.
 		this.cells.setColumnWidth(BaseGeneratorSetting.FIRST_COLUMN, this.toExcelColUnit(this.getPageLeftMargin()));
+		// Set first page top margin
+		this.setCurrentRowHeight(this.toExcelRowUnit(this.getPageTopMargin()));
 	}
 
 	/**
