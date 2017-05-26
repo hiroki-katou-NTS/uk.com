@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,5 +176,22 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	int getRemarkTotalRow() {
 		return REMARK_TOTAL_ROW;
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageTopMargin()
+	 */
+	@Override
+	BigDecimal getPageTopMargin() {
+		return config.getRefundPaddingOnceDto().getPaddingTop();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageLeftMargin()
+	 */
+	@Override
+	BigDecimal getPageLeftMargin() {
+		return config.getRefundPaddingOnceDto().getPaddingLeft();
+	}
+	
 
 }

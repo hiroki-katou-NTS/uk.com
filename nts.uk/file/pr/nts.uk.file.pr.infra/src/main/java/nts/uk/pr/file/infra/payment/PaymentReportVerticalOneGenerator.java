@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 
 	/** The Constant NUMBER_COLUMN_OF_ITEM. */
 	public static final int NUMBER_COLUMN_OF_ITEM = 1;
-	
+
 	/** The Constant REMARK_TOTAL_ROW. */
 	public static final int REMARK_TOTAL_ROW = 3;
 
@@ -73,68 +74,111 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 		return list;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getNumberOfColumnPerItem()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getNumberOfColumnPerItem()
 	 */
 	@Override
 	int getNumberOfColumnPerItem() {
 		return NUMBER_COLUMN_OF_ITEM;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPersonPerPage()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPersonPerPage(
+	 * )
 	 */
 	@Override
 	int getPersonPerPage() {
 		return PERSON_OF_PAGE;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageHeaderEndCell()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getPageHeaderEndCell()
 	 */
 	@Override
 	String getPageHeaderEndCell() {
 		return "J5";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getCategoryHeaderCell()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#
+	 * getCategoryHeaderCell()
 	 */
 	@Override
 	String getCategoryHeaderCell() {
 		return "B6";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemNameCell()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemNameCell()
 	 */
 	@Override
 	String getItemNameCell() {
 		return "C6";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemValueCell()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemValueCell(
+	 * )
 	 */
 	@Override
 	String getItemValueCell() {
 		return "C7";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkCell()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkCell()
 	 */
 	@Override
 	String getRemarkCell() {
 		return "C8";
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkTotalRow()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkTotalRow
+	 * ()
 	 */
 	@Override
 	int getRemarkTotalRow() {
-		return REMARK_TOTAL_ROW ;
+		return REMARK_TOTAL_ROW;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageTopMargin()
+	 */
+	@Override
+	BigDecimal getPageTopMargin() {
+		return config.getRefundPaddingOnceDto().getPaddingTop();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageLeftMargin()
+	 */
+	@Override
+	BigDecimal getPageLeftMargin() {
+		return config.getRefundPaddingOnceDto().getPaddingLeft();
 	}
 
 }
