@@ -28,7 +28,7 @@
 					<h1>file uploading</h1>
 					<h2>binding file upload by knockout</h2>
 					<div id="fileupload1"
-						data-bind="ntsFileUpload:{filename: filename,accept: accept,text :textId}"></div>
+						data-bind="ntsFileUpload:{filename: filename,accept: accept,text :textId, onfilenameclick: function(filename){alert(filename);}}"></div>
 					<input type="button" id="button1" value="upload1" />
 					<pre>
 					<![CDATA[
@@ -43,6 +43,10 @@
 							//change file name in viewmodel does not trigger this event
 							console.log(filename);
 							
+						},
+						onfilenameclick: function(filename){
+							//optional
+							//will be called when click on filename
 						}
 					}">
 </div>
