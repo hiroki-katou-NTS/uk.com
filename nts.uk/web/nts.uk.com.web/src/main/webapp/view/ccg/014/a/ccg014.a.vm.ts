@@ -153,6 +153,10 @@ module ccg014.a.viewmodel {
                 self.isCreate(false);
                 self.selectedTitleMenu(new model.TitleMenu(selectedTitleMenu.titleMenuCD, selectedTitleMenu.name, selectedTitleMenu.layoutID));
             }
+            else {
+                self.isCreate(true);
+                self.selectedTitleMenu(new model.TitleMenu("","",""));
+            }
         }
 
         /** Init Mode */
