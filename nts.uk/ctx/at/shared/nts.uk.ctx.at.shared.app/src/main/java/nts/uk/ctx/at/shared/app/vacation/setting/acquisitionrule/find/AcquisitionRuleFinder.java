@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule;
+package nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find;
 
 import java.util.Optional;
 
@@ -11,12 +11,13 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class VacationAcquisitionRuleFinder.
  */
 @Stateless
-public class VacationAcquisitionRuleFinder {
+public class AcquisitionRuleFinder {
 
 	/** The repo. */
 	@Inject
@@ -29,16 +30,18 @@ public class VacationAcquisitionRuleFinder {
 	 *            the company id
 	 * @return the optional
 	 */
-	public Optional<VacationAcquisitionRuleDto> find(String companyId) {
+	public AcquisitionRuleDto find() {
+		String companyId = AppContexts.user().companyId();
 		Optional<AcquisitionRule> vaAcRule = repo.findById(companyId);
-
-		VacationAcquisitionRuleDto dto = VacationAcquisitionRuleDto.builder().build();
-
+		
 		if (vaAcRule.isPresent()) {
+			AcquisitionRuleDto dto = AcquisitionRuleDto.builder().build();
 			vaAcRule.get().saveToMemento(dto);
+			return dto;
+		}else {
+			return null;
 		}
-
-		return Optional.ofNullable(dto);
+		
 	}
 
 }

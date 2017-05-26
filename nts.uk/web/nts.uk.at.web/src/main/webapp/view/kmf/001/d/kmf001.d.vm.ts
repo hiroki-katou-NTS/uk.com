@@ -1,4 +1,10 @@
 module nts.uk.pr.view.kmf001.d {
+    
+    import UpperLimitSettingFindDto = service.model.UpperLimitSettingFindDto;
+    import RetentionYearlyFindDto = service.model.RetentionYearlyFindDto;
+    import RetentionYearlyDto = service.model.RetentionYearlyDto;
+    import UpperLimitSettingDto = service.model.UpperLimitSettingDto;
+    
     export module viewmodel {
         export class ScreenModel {
             
@@ -23,7 +29,7 @@ module nts.uk.pr.view.kmf001.d {
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "50px",
                     textmode: "text",
-                    placeholder: "Type st",
+                    placeholder: "Not Empty",
                     textalign: "left"
                 }));
                 self.empList = ko.observableArray<ItemModel>([]);
@@ -49,44 +55,56 @@ module nts.uk.pr.view.kmf001.d {
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                service.findRetentionYearly().done(function(data: service.model.RetentionYearlyModel) {
+                service.findRetentionYearly().done(function(data: RetentionYearlyFindDto) {
                     if(data == null) {
                         self.retentionYearsAmount(1);
                         self.maxDaysCumulation(40);
                     }
                     else {
-                        self.retentionYearsAmount(data.retentionYearsAmount());
-                        self.maxDaysCumulation(data.maxDaysCumulation());
+                       self.initializeData(data);
                     }
                     dfd.resolve();
                 })
                 return dfd.promise();
             }
             
+            initializeData(data: RetentionYearlyFindDto): void {
+                var self = this;
+                self.retentionYearsAmount(data.upperLimitSetting.retentionYearsAmount);
+                self.maxDaysCumulation(data.upperLimitSetting.maxDaysCumulation);
+            }
+            
             public backToHistorySelection() {
                 
             }
             
-            public register() {
+            public register(): void {
                 var self = this;
-                
+                /*
                 // Validate.
                 $('.nts-input').ntsEditor('validate');
                 if ($('.nts-input').ntsError('hasError')) {
-                    dfd.reject();
-                    return dfd.promise();
+                    return;
                 }
-                
-                var retentionYearly = new service.model.RetentionYearlyModel();
-                retentionYearly.retentionYearsAmount = self.retentionYearsAmount();
-                retentionYearly.maxDaysCumulation = self.maxDaysCumulation();
-                service.saveRetentionYearly(retentionYearly).done(function() {
-                    
+                */
+                service.saveRetentionYearly(self.collectData()).done(function() {
+                    nts.uk.ui.dialog.alert('登録しました。');
                 })
                 .fail((res) => {
                         nts.uk.ui.dialog.alert(res.message);
                     });
             }
+            
+            public collectData(): RetentionYearlyDto {
+                var self = this;
+                var dto: RetentionYearlyDto = new RetentionYearlyDto();
+                var upperDto: UpperLimitSettingDto = new  UpperLimitSettingDto();
+                upperDto.retentionYearsAmount = self.retentionYearsAmount();
+                upperDto.maxDaysCumulation = self.maxDaysCumulation();
+                dto.upperLimitSettingDto = upperDto;
+                return dto;
+            }
+                
         }
         
         class ItemModel {

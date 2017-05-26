@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.dto.Annual
 /**
  * The Class AnnualPaidLeaveWs.
  */
-@Path("ctx/pr/core/vacation/setting/annualpaidleave/")
+@Path("ctx/at/core/vacation/setting/annualpaidleave/")
 @Produces("application/json")
 public class AnnualPaidLeaveWs extends WebService {
 
@@ -28,7 +28,7 @@ public class AnnualPaidLeaveWs extends WebService {
 
     /** The annual paid handler. */
     @Inject
-    AnnualPaidLeaveSaveCommandHandler annualPaidHandler;
+    private AnnualPaidLeaveSaveCommandHandler annualPaidHandler;
 
     /**
      * Update.
@@ -37,8 +37,8 @@ public class AnnualPaidLeaveWs extends WebService {
      *            the command
      */
     @POST
-    @Path("update")
-    public void update(AnnualPaidLeaveSaveCommand command) {
+    @Path("save")
+    public void save(AnnualPaidLeaveSaveCommand command) {
         this.annualPaidHandler.handle(command);
     }
 

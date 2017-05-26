@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule;
+package nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
  * The Class VacationAcquisitionRuleDto.
  */
 @Builder
-public class VacationAcquisitionRuleDto implements AcquisitionRuleSetMemento {
+public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 
 	/** The company id. */
 	private String companyId;
@@ -25,7 +25,7 @@ public class VacationAcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	private Category settingClass;
 
 	/** The va ac orders. */
-	private List<VacationAcquisitionOrderItemDto> vaAcOrders;
+	private List<AcquisitionOrderItemDto> vaAcOrders;
 
 	/*
 	 * (non-Javadoc)
@@ -60,7 +60,7 @@ public class VacationAcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	@Override
 	public void setAcquisitionOrder(List<AcquisitionOrder> listVacationAcquisitionOrder) {
 		this.vaAcOrders = listVacationAcquisitionOrder.stream().map(domain -> {
-			VacationAcquisitionOrderItemDto dto = VacationAcquisitionOrderItemDto.builder().build();
+			AcquisitionOrderItemDto dto = AcquisitionOrderItemDto.builder().build();
 			domain.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -34,13 +32,14 @@ public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionY
 		// validate domain
 		retentionYearlySetting.validate();
 		
-		Optional<RetentionYearlySetting> data = this.repository.findByCompanyId(retentionYearlySetting.getCompanyId());
-		if(data.isPresent()) {
-			this.repository.update(retentionYearlySetting);
-		}
-		else {
-			this.repository.insert(retentionYearlySetting);
-		}
+		this.repository.update(retentionYearlySetting);
+//		Optional<RetentionYearlySetting> data = this.repository.findByCompanyId(retentionYearlySetting.getCompanyId());
+//		if(data.isPresent()) {
+//			this.repository.update(retentionYearlySetting);
+//		}
+//		else {
+//			this.repository.insert(retentionYearlySetting);
+//		}
 		
 	}
 	

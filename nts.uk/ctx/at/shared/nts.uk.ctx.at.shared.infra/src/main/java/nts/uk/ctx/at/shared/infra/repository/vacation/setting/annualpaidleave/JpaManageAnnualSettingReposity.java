@@ -72,11 +72,11 @@ public class JpaManageAnnualSettingReposity extends JpaRepository implements Man
 
         cq.where(predicateList.toArray(new Predicate[]{}));
 
-        List<KmfmtMngAnnualSet> result = em.createQuery(cq).getResultList();
-        if (result.isEmpty()) {
+        KmfmtMngAnnualSet entity = em.createQuery(cq).getSingleResult();
+        if (entity == null) {
             throw new BusinessException(new RawErrorMessage("Not found manage annual setting."));
         }
-        return new ManageAnnualSetting(new JpaManageAnnualSettingGetMemento((KmfmtMngAnnualSet) result.get(0)));
+        return new ManageAnnualSetting(new JpaManageAnnualSettingGetMemento(entity));
     }
     
     /**

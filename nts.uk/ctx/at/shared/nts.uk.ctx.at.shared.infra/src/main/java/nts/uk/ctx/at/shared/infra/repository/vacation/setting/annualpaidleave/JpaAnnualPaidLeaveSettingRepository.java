@@ -71,8 +71,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 
         cq.where(predicateList.toArray(new Predicate[]{}));
 
-        List<KmfmtAnnualPaidLeave> result = em.createQuery(cq).getResultList();
-        return result.stream()
+        return em.createQuery(cq).getResultList().stream()
                 .map(item -> new AnnualPaidLeaveSetting(new JpaAnnualPaidLeaveSettingGetMemento(item)))
                 .findFirst();
     }
