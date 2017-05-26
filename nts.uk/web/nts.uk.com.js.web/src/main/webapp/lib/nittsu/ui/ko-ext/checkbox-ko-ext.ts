@@ -21,7 +21,8 @@ module nts.uk.ui.koExtentions {
             var setChecked = data.checked;
             var textId: string = data.text;
             var checkBoxText: string;
-
+            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            
             // Container
             var container = $(element);
             container.addClass("ntsControl ntsCheckBox").attr("tabindex", "0").on("click", (e) => {
@@ -35,6 +36,7 @@ module nts.uk.ui.koExtentions {
                 container.text('');
             }
 
+            container.data("enable", enable)
             var $checkBoxLabel = $("<label class='ntsCheckBox-label'></label>");
             var $checkBox = $('<input type="checkbox">').on("change", function() {
                 if (typeof setChecked === "function")
@@ -48,14 +50,18 @@ module nts.uk.ui.koExtentions {
             container.keypress(function (evt, ui){
                 let code = evt.which || evt.keyCode;
                 if (code === 32) {
-                    let checkbox = container.find("input[type='checkbox']:first");
-                    if(checkbox.is(":checked")){
-                        checkbox.prop("checked", false);    
-                    } else {
-                        checkbox.prop("checked", true);    
-                    }  
+                    if(container.data("enable") !== false){
+                        let checkbox = container.find("input[type='checkbox']:first");
+                        if(checkbox.is(":checked")){
+                            checkbox.prop("checked", false);   
+                            setChecked(false); 
+                        } else {
+                            checkbox.prop("checked", true);
+                            setChecked(true);    
+                        }       
+                    }       
                     evt.preventDefault();         
-                }        
+                }    
             });
         }
 
@@ -71,6 +77,7 @@ module nts.uk.ui.koExtentions {
 
             // Container
             var container = $(element);
+            container.data("enable", enable)
             container.data("readonly", readonly);
             var $checkBox = $(element).find("input[type='checkbox']");
 
@@ -136,20 +143,29 @@ module nts.uk.ui.koExtentions {
                                 return _.isEqual(JSON.parse(ko.toJSON(value)), self.data("value"))
                             }));
                     });
+                    
+                    let disableOption = option["enable"];
                     checkBoxLabel.attr("tabindex", "0");
                     checkBoxLabel.keypress(function (evt, ui){
                         let code = evt.which || evt.keyCode;
                         if (code === 32) {
-                            let cb = checkBoxLabel.find("input[type='checkbox']:first");
-                            if(cb.is(":checked")){
-                                cb.prop("checked", false);    
-                            } else {
-                                cb.prop("checked", true);    
-                            }           
+                            if(container.data("enable") !== false && disableOption !== false){
+                                let cb = checkBoxLabel.find("input[type='checkbox']:first");
+                                if(cb.is(":checked")){
+                                    cb.prop("checked", false);  
+                                    selectedValue.remove(_.find(selectedValue(), (value) => {
+                                        return _.isEqual(JSON.parse(ko.toJSON(value)), checkBox.data("value"))
+                                    })); 
+                                } else {
+                                    if(!cb.is(":checked")){
+                                        cb.prop("checked", true);   
+                                        selectedValue.push(checkBox.data("value"));     
+                                    } 
+                                }               
+                            }  
                             evt.preventDefault();       
                         }        
                     });
-                    let disableOption = option["enable"];
                     if(!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)){
                         checkBox.attr("disabled", "disabled");    
                     }
@@ -163,10 +179,10 @@ module nts.uk.ui.koExtentions {
                 container.data("options", _.cloneDeep(options));
             }
 
-            // Checked
+            // Checked  
             container.find("input[type='checkbox']").prop("checked", function() {
                 return (_.find(selectedValue(), (value) => {
-                    return _.isEqualWith(value, $(this).data("value"), (objVal, othVal, key) => { return key === "enable" ? true : undefined; });
+                    return _.isEqual(JSON.parse(ko.toJSON(value)), $(this).data("value"));
                 }) !== undefined);
             });
             // Enable
