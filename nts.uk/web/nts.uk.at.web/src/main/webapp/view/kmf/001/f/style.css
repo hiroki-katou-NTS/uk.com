@@ -63,6 +63,9 @@ table#table tr td.title {
 	padding-left: 20px;
 }
 
+.pad_left_70 {
+	padding-left: 70px;
+}
 .inp_time {
 	padding: 10px;
 }
@@ -70,4 +73,7 @@ table#table tr td.title {
 .link_label {
 	float: right;
 	padding: 20px;
+}
+.combo-box{
+	width : 75px;
 }

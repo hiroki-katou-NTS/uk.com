@@ -87,13 +87,13 @@ module nts.uk.pr.view.kmf001.f {
                 self.currentCode = ko.observable(3);
                 self.selectedCode = ko.observable('1');
 
-                self.workOneDay = ko.observable('');
-                self.workHalfDay = ko.observable('');
-                self.workAll = ko.observable('');
+                self.workOneDay = ko.observable('0:00');
+                self.workHalfDay = ko.observable('0:00');
+                self.workAll = ko.observable('0:00');
 
-                self.overOneDay = ko.observable('');
-                self.overHalfDay = ko.observable('');
-                self.overAll = ko.observable('');
+                self.overOneDay = ko.observable('0:00');
+                self.overHalfDay = ko.observable('0:00');
+                self.overAll = ko.observable('0:00');
 
                 self.inputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     filldirection: "right",
