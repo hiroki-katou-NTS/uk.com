@@ -63,10 +63,15 @@ module kmk011.b.viewmodel {
             var self = this;
             self.currentCode('');
             var dfd = $.Deferred();
-            self.divTimeId(nts.uk.ui.windows.getShared("KMK011_divTimeId"));
-            service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
+            var id = nts.uk.ui.windows.getShared("KMK011_divTimeId")
+            if(id==null){
+                self.divTimeId(0);
+            }else{
+                self.divTimeId(id);
+            }
+            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.Item>) {
                 self.currentCode(null);
-                if (lstDivReason === undefined || lstDivReason.length == 0) {
+                if (id==null||lstDivReason === undefined || lstDivReason.length == 0) {
                     self.dataSource([]);
                     self.enableCode(true);
                     self.checkModel(false);
@@ -167,7 +172,7 @@ module kmk011.b.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             self.dataSource();
-            service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
+            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.Item>) {
                 self.currentCode('');
                 self.dataSource(lstDivReason);
                 self.enableCode(false);
@@ -201,7 +206,7 @@ module kmk011.b.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             self.dataSource();
-            service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
+            service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.Item>) {
                 self.dataSource(lstDivReason);
 
                 if (self.dataSource().length > 0) {
