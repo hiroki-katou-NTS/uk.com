@@ -25,12 +25,12 @@ public class PaymentReportPreviewData {
 	 */
 	public static List<PaymentReportDto> getPostCardPreviewData() {
 		PaymentReportDto dto = getCommonData();
-
-		dto.setPaymentItems(getPreviewData(18));
-		dto.setDeductionItems(getPreviewData(18));
-		dto.setAttendanceItems(getPreviewTimeData(18));
-		dto.setArticleItems(getPreviewData(18));
-		dto.setOtherItems(getPreviewData(18));
+		
+		dto.setAttendanceItems(getPreviewTimeData(30));
+		dto.setPaymentItems(getPreviewData(30));
+		dto.setDeductionItems(getPreviewData(30));
+		dto.setArticleItems(getPreviewData(7));
+		dto.setOtherItems(getPreviewData(11));
 
 		List<PaymentReportDto> list = createList(dto, 10);
 		return list;
@@ -47,8 +47,8 @@ public class PaymentReportPreviewData {
 		dto.setPaymentItems(getPreviewData(18));
 		dto.setDeductionItems(getPreviewData(18));
 		dto.setAttendanceItems(getPreviewTimeData(18));
-		dto.setArticleItems(getPreviewData(18));
-		dto.setOtherItems(getPreviewData(18));
+		dto.setArticleItems(getPreviewData(9));
+		dto.setOtherItems(getPreviewData(9));
 
 		List<PaymentReportDto> list = createList(dto, 10);
 		return list;
@@ -62,11 +62,11 @@ public class PaymentReportPreviewData {
 	public static List<PaymentReportDto> getVerticalTwoPreviewData() {
 		PaymentReportDto dto = getCommonData();
 
-		dto.setPaymentItems(getPreviewData(18));
-		dto.setDeductionItems(getPreviewData(18));
-		dto.setAttendanceItems(getPreviewTimeData(18));
-		dto.setArticleItems(getPreviewData(18));
-		dto.setOtherItems(getPreviewData(18));
+		dto.setPaymentItems(getPreviewData(45));
+		dto.setDeductionItems(getPreviewData(45));
+		dto.setAttendanceItems(getPreviewTimeData(45));
+		dto.setArticleItems(getPreviewData(9));
+		dto.setOtherItems(getPreviewData(9));
 
 		List<PaymentReportDto> list = createList(dto, 10);
 		return list;
@@ -83,8 +83,8 @@ public class PaymentReportPreviewData {
 		dto.setPaymentItems(getPreviewData(18));
 		dto.setDeductionItems(getPreviewData(18));
 		dto.setAttendanceItems(getPreviewTimeData(18));
-		dto.setArticleItems(getPreviewData(18));
-		dto.setOtherItems(getPreviewData(18));
+		dto.setArticleItems(getPreviewData(9));
+		dto.setOtherItems(getPreviewData(9));
 
 		List<PaymentReportDto> list = createList(dto, 10);
 		return list;
@@ -97,12 +97,11 @@ public class PaymentReportPreviewData {
 	 */
 	public static List<PaymentReportDto> getVerticalOnePreviewData() {
 		PaymentReportDto dto = getCommonData();
-
-		dto.setPaymentItems(getPreviewData(18));
-		dto.setDeductionItems(getPreviewData(18));
-		dto.setAttendanceItems(getPreviewTimeData(18));
+		dto.setPaymentItems(getPreviewData(81));
+		dto.setDeductionItems(getPreviewData(81));
+		dto.setAttendanceItems(getPreviewTimeData(81));
 		dto.setArticleItems(getPreviewData(18));
-		dto.setOtherItems(getPreviewData(18));
+		dto.setOtherItems(getPreviewData(9));
 
 		List<PaymentReportDto> list = createList(dto, 10);
 		return list;
@@ -116,11 +115,11 @@ public class PaymentReportPreviewData {
 	public static List<PaymentReportDto> getZFoldedPreviewData() {
 		PaymentReportDto dto = getCommonData();
 
-		dto.setPaymentItems(getPreviewData(18));
-		dto.setDeductionItems(getPreviewData(18));
-		dto.setAttendanceItems(getPreviewTimeData(18));
+		dto.setPaymentItems(getPreviewData(45));
+		dto.setDeductionItems(getPreviewData(45));
+		dto.setAttendanceItems(getPreviewTimeData(45));
 		dto.setArticleItems(getPreviewData(18));
-		dto.setOtherItems(getPreviewData(18));
+		dto.setOtherItems(getPreviewData(9));
 
 		List<PaymentReportDto> list = createList(dto, 10);
 		return list;

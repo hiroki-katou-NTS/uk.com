@@ -63,6 +63,17 @@ public class PaymentEmployeeDto {
 	public static PaymentEmployeeDto getPreviewData() {
 		PaymentEmployeeDto dto = new PaymentEmployeeDto();
 		dto.setEmployeeCode("999999999");
+		dto.setPostalCode("999-9999");
+		dto.setAddressOne("ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ");
+		dto.setAddressTwo("ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ");
+		dto.setTaxTotal(BigDecimal.valueOf(999999999));
+		dto.setTaxExemptionTotal(BigDecimal.valueOf(999999999));
+		dto.setPaymentTotal(BigDecimal.valueOf(999999999));
+		dto.setSocialInsuranceTotal(BigDecimal.valueOf(999999999));
+		dto.setTaxableAmount(BigDecimal.valueOf(999999999));
+		dto.setDeductionTotal(BigDecimal.valueOf(999999999));
+		dto.setSubscriptionAmount(BigDecimal.valueOf(999999999));
+		dto.setTaxableTotal(BigDecimal.valueOf(999999999));
 		dto.setEmployeeName("NNNNNNNNNN");
 		return dto;
 	}
