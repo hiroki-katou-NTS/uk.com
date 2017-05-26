@@ -6,8 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
-import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReason;
@@ -18,8 +16,6 @@ public class AddDivergenceReasonCommandHandler extends CommandHandler<AddDiverge
 
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
-	@Inject
-	IInternationalization internationalization;
 	@Override
 	protected void handle(CommandHandlerContext<AddDivergenceReasonCommand> context) {
 		String companyId = AppContexts.user().companyId();

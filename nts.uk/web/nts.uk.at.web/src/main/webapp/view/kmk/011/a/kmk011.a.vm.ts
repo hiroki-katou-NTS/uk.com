@@ -12,7 +12,6 @@ module kmk011.a.viewmodel {
         selectInp: KnockoutObservable<any>;
         divTimeName: KnockoutObservable<string>;
         timeItemName: KnockoutObservable<string>;
-//        alarmTime: KnockoutObservable<string>;
         errTime: KnockoutObservable<number>;
         checkErrInput: KnockoutObservable<boolean>;
         checkErrSelect: KnockoutObservable<boolean>;
@@ -29,9 +28,6 @@ module kmk011.a.viewmodel {
         enableInput: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-            //time
-            self.alarmTime = ko.observable(0);
-            //
             self.list = ko.observableArray([]);
             self.enableUse = ko.observable(null);
             self.enableSelect = ko.observable(null);
@@ -53,7 +49,7 @@ module kmk011.a.viewmodel {
             self.divTimeId = ko.observable(1);
             self.itemDivTime = ko.observable(null);
             self.selectUse = ko.observable(0);
-//            self.alarmTime = ko.observable(null);
+            self.alarmTime = ko.observable(0);
             self.errTime = ko.observable(0);
             self.selectSel = ko.observable();
             self.selectInp = ko.observable();
@@ -176,7 +172,7 @@ module kmk011.a.viewmodel {
         openBDialog() {
             var self = this;
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
-            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', })
+            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', });
         }
         openDialog021() {
             var self = this;
@@ -233,6 +229,7 @@ module kmk011.a.viewmodel {
                     service.updateDivTime(Object).done(function() {
                         self.getAllDivTimeNew();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        $("#itemname").focus();
                     }).fail(function(error) {
                         if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);

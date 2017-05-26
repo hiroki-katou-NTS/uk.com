@@ -137,7 +137,7 @@ module kmk011.b.viewmodel {
                 self.getAllDivReasonNew();
                 $("#inpReason").focus();
             }).fail(function(error) {
-                $('#inpReason').ntsError('set', error);
+                $('#inpCode').ntsError('set', error);
             });
         }
         convertCode(value: string) {
