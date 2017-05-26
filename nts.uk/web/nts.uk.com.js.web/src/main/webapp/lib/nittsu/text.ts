@@ -502,7 +502,8 @@
 
             format(source: any): string {
                 var constraintName = this.args.constraintName;
-                if (constraintName === "EmployeeCode") {
+                var autofill: boolean = this.args.editorOption.autofill;
+                if (autofill === true || constraintName === "EmployeeCode") {
                     var constraint = this.args.constraint;
                     var filldirection: string = this.args.editorOption.filldirection;
                     var fillcharacter: string = this.args.editorOption.fillcharacter;

@@ -14,9 +14,44 @@ module nts.uk.ui.koExtentions {
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
             var data = valueAccessor();
-            $(element).addClass("ntsControl");
+            var container = $(element);
+            container.addClass("ntsControl radio-wrapper");
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            $(element).data("enable", null);
+            container.data("enable", null);
+            if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
+                container.attr("tabindex", "0");    
+            }
+            container.keydown(function (evt, ui) {
+                let code = evt.which || evt.keyCode;
+                if (code === 32) {
+                    evt.preventDefault(); 
+                }        
+            });
+            
+            container.keyup(function (evt, ui) {
+                let code = evt.which || evt.keyCode;
+                if (code === 32) {
+                    container.find("input[type='radio']:first").prop("checked", true);     
+                } else if (code === 37 || code === 38) {
+                    let inputList = container.find("input[type='radio']");
+                    let currentSelect = _.findIndex(inputList, function (item){
+                        return $(item).is(":checked");
+                    });   
+                    $(inputList[currentSelect - 1]).prop("checked", true);
+                } else if (code === 39 || code === 40) {
+                    let inputList = container.find("input[type='radio']");
+                    let currentSelect = _.findIndex(inputList, function (item){
+                        return $(item).is(":checked");
+                    });   
+                    $(inputList[currentSelect + 1]).prop("checked", true);  
+                }     
+                container.focus();        
+            });
+//            container.find(".ntsRadioBox").focus(function (evt, ui){
+//                console.log(evt);            
+//            });
+            // Default value
+            new nts.uk.util.value.DefaultValue().onReset(container, data.value);
         }
         
         /**
@@ -44,10 +79,10 @@ module nts.uk.ui.koExtentions {
                 container.empty();
                 _.forEach(options, (option) => {
                     var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
-                    var radioBox = $('<input type="radio">').attr("name", radioName).data("value", getOptionValue(option)).on("change", function() {
-                        var self = this;
-                        if ($(self).is(":checked"))
-                            selectedValue($(self).data("value"));
+                    var radioBox = $('<input type="radio">').data("option", option).attr("name", radioName).data("value", getOptionValue(option)).on("change", function() {
+                        var self = $(this);
+                        if (self.is(":checked"))
+                            selectedValue(self.data("value"));
                     });
                     let disableOption = option["enable"];
                     if(!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)){
@@ -72,17 +107,18 @@ module nts.uk.ui.koExtentions {
                 $(checkedRadio).prop("checked", true);
 
             // Enable
-            if(!_.isEqual(container.data("enable"), enable)){
-                container.data("enable",  _.clone(enable));
-                (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
-                _.forEach(data.options(), (option) => {
-                    if (typeof option["enable"] === "function"){
-                        option["enable"](enable);
-                    } else {
-                        option["enable"] = (enable);    
-                    }
-                });      
-            }
+            if(enable === true) {
+                _.forEach(container.find("input[type='radio']"), function (radio){
+                    let dataOpion = $(radio).data("option");
+                    if(dataOpion["enable"] === true){
+                        $(radio).removeAttr("disabled");        
+                    }        
+                }); 
+            } else if (enable === false){
+                container.find("input[type='radio']").attr("disabled", "disabled");
+                new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+            }    
+//            }
         }
     }
     

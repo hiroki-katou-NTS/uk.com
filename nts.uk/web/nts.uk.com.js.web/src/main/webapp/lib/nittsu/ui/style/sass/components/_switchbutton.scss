@@ -28,11 +28,12 @@ button.nts-switch-button {
    	
    	font-size: $sbfs * ($_base_font_size_ratio + $_font_size_gap);
    	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
-   	margin-bottom: $_border_bottom_width;
+   	/* margin-bottom: $_border_bottom_width; */
   	box-shadow: 0 0 $button-boxshadow-base-color;
    	height: $_height;
    	margin-left: 0px;
    	margin-right: 0px;
+   	margin-bottom: 0px;
    	&:active {
    		top: 0;
    		box-shadow: 0 0 $button-boxshadow-base-color;
@@ -58,4 +59,9 @@ button.nts-switch-button {
    			background-color: darken($button-normal-base-color, 15%);
    		}
    	}
+}
+
+.switchButton-wrapper{
+	display: inline-block;  
+	padding: 5px 5px 5px 5px;
 }
