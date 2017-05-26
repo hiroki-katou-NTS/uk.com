@@ -28,7 +28,14 @@ public interface CompensatoryTransferGetMenento {
 	 *
 	 * @return the design time
 	 */
-	DesignTime getDesignTime();
+	OneDayTime getOneDayTime();
+	
+	/**
+	 * Gets the half day time.
+	 *
+	 * @return the half day time
+	 */
+	OneDayTime getHalfDayTime();
 	
 	/**
 	 * Gets the transfer division.

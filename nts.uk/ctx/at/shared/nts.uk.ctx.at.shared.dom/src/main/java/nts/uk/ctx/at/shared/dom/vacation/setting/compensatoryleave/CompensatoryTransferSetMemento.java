@@ -24,11 +24,18 @@ public interface CompensatoryTransferSetMemento {
 	void setUseDivision(boolean useDivision);
 	
 	/**
-	 * Sets the design time.
+	 * Sets the one day time.
 	 *
-	 * @param designTime the new design time
+	 * @param oneDayTime the new one day time
 	 */
-	void setDesignTime(DesignTime designTime);
+	void setOneDayTime(OneDayTime oneDayTime);
+	
+	/**
+	 * Sets the half day time.
+	 *
+	 * @param halfDayTime the new half day time
+	 */
+	void setHalfDayTime(OneDayTime halfDayTime);
 	
 	/**
 	 * Sets the transfer division.
