@@ -55,8 +55,7 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
 		this.manageAnnual.setWorkDayCal(remaining.getWorkDayCalculate().value);
 		this.manageAnnual.setHalfDayMngAtr(remaining.getHalfDayManage().manageType.value);
 		this.manageAnnual.setMngReference(remaining.getHalfDayManage().reference.value);
-		this.manageAnnual
-				.setCUniformMaxNumber(remaining.getHalfDayManage().maxNumberUniformCompany.v());
+		this.manageAnnual.setCUniformMaxNumber(remaining.getHalfDayManage().maxNumberUniformCompany.v());
 		this.manageAnnual.setMaxDayOneYear(remaining.getMaximumDayVacation().v());
 		this.manageAnnual.setRemainDayMaxNum(remaining.getRemainingDayMaxNumber().intValue());
 		this.manageAnnual.setRetentionYear(remaining.getRetentionYear().v());

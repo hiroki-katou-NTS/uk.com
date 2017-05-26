@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true, of = {"companyId"})
-public class AnnualPaidLeaveSetting extends DomainObject {
+public class AnnualPaidLeaveSetting extends AggregateRoot {
     
     /** The company id. */
     private String companyId;
