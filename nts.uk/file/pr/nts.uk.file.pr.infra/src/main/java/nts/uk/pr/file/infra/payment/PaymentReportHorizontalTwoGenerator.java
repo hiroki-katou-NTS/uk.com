@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,6 +168,22 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	@Override
 	int getRemarkTotalRow() {
 		return REMARK_TOTAL_ROW;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageTopMargin()
+	 */
+	@Override
+	BigDecimal getPageTopMargin() {
+		return config.getRefundPaddingTwoDto().getUpperAreaPaddingTop();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageLeftMargin()
+	 */
+	@Override
+	BigDecimal getPageLeftMargin() {
+		return config.getRefundPaddingTwoDto().getPaddingLeft();
 	}
 
 }
