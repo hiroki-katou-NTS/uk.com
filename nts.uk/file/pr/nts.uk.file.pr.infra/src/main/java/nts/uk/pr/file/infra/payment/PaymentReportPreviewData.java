@@ -32,7 +32,7 @@ public class PaymentReportPreviewData {
 		dto.setArticleItems(getPreviewData(7));
 		dto.setOtherItems(getPreviewData(11));
 
-		List<PaymentReportDto> list = createList(dto, 10);
+		List<PaymentReportDto> list = createList(dto, 1);
 		return list;
 	}
 
@@ -50,7 +50,7 @@ public class PaymentReportPreviewData {
 		dto.setArticleItems(getPreviewData(9));
 		dto.setOtherItems(getPreviewData(9));
 
-		List<PaymentReportDto> list = createList(dto, 10);
+		List<PaymentReportDto> list = createList(dto, 2);
 		return list;
 	}
 
@@ -68,7 +68,7 @@ public class PaymentReportPreviewData {
 		dto.setArticleItems(getPreviewData(9));
 		dto.setOtherItems(getPreviewData(9));
 
-		List<PaymentReportDto> list = createList(dto, 10);
+		List<PaymentReportDto> list = createList(dto, 2);
 		return list;
 	}
 
@@ -86,7 +86,7 @@ public class PaymentReportPreviewData {
 		dto.setArticleItems(getPreviewData(9));
 		dto.setOtherItems(getPreviewData(9));
 
-		List<PaymentReportDto> list = createList(dto, 10);
+		List<PaymentReportDto> list = createList(dto, 3);
 		return list;
 	}
 
@@ -103,7 +103,7 @@ public class PaymentReportPreviewData {
 		dto.setArticleItems(getPreviewData(18));
 		dto.setOtherItems(getPreviewData(9));
 
-		List<PaymentReportDto> list = createList(dto, 10);
+		List<PaymentReportDto> list = createList(dto, 1);
 		return list;
 	}
 
@@ -121,7 +121,7 @@ public class PaymentReportPreviewData {
 		dto.setArticleItems(getPreviewData(18));
 		dto.setOtherItems(getPreviewData(9));
 
-		List<PaymentReportDto> list = createList(dto, 10);
+		List<PaymentReportDto> list = createList(dto, 1);
 		return list;
 	}
 
