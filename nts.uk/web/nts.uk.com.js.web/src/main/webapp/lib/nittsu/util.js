@@ -405,6 +405,51 @@ var nts;
                 return Range;
             }());
             util.Range = Range;
+            var value;
+            (function (value) {
+                function reset($controls, defaultVal, immediateApply) {
+                    var resetEvent = new CustomEvent(DefaultValue.RESET_EVT, {
+                        detail: {
+                            value: defaultVal,
+                            immediateApply: immediateApply === undefined ? true : immediateApply
+                        }
+                    });
+                    _.forEach($controls, function (control) {
+                        control.dispatchEvent(resetEvent);
+                    });
+                }
+                value.reset = reset;
+                var DefaultValue = (function () {
+                    function DefaultValue() {
+                    }
+                    DefaultValue.prototype.onReset = function ($control, koValue) {
+                        var self = this;
+                        $control.on(DefaultValue.RESET_EVT, function (e) {
+                            var param = e.detail;
+                            self.asDefault($(this), koValue, param.value, param.immediateApply);
+                        });
+                        return this;
+                    };
+                    DefaultValue.prototype.applyReset = function ($control, koValue) {
+                        var defaultVal = _.cloneDeep($control.data("default"));
+                        var isDirty = defaultVal !== koValue();
+                        if ($control.ntsError("hasError"))
+                            $control.ntsError("clear");
+                        if (defaultVal !== undefined && isDirty)
+                            setTimeout(function () { return koValue(defaultVal); }, 0);
+                        return { isDirty: isDirty };
+                    };
+                    DefaultValue.prototype.asDefault = function ($control, koValue, defaultValue, immediateApply) {
+                        var defaultVal = defaultValue !== undefined ? defaultValue : koValue();
+                        $control.data("default", defaultVal);
+                        if (immediateApply)
+                            this.applyReset($control, koValue);
+                    };
+                    DefaultValue.RESET_EVT = "reset";
+                    return DefaultValue;
+                }());
+                value.DefaultValue = DefaultValue;
+            })(value = util.value || (util.value = {}));
         })(util = uk.util || (uk.util = {}));
         var WebStorageWrapper = (function () {
             function WebStorageWrapper(nativeStorage) {

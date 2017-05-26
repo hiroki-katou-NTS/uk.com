@@ -55,6 +55,8 @@ module nts.uk.ui.koExtentions {
             var distanceColumns = '     ';
             var fillCharacter = ' '; // Character used fill to the columns.
             var maxWidthCharacter = 15;
+            // Default value
+            var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
 
             // Check selected code.
             if (_.find(options, item => item[optionValue] === selectedValue) === undefined && !editable) {
@@ -135,6 +137,7 @@ module nts.uk.ui.koExtentions {
             } else {
                 container.igCombo("option", "disabled", !enable);
             }
+            if (!enable) defVal.applyReset(container, data.value);
             if (isChangeOptions && !isInitCombo) {
                 container.igCombo("option", "dataSource", options);
                 container.igCombo("dataBind");

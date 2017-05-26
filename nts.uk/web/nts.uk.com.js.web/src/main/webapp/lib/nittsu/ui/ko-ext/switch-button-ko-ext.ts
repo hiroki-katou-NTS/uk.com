@@ -52,6 +52,8 @@ module nts.uk.ui.koExtentions {
                 }     
                 container.focus();        
             });
+            // Default value.
+            var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
         }
 
         /**
@@ -73,7 +75,6 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
  
             container.addClass("switchButton-wrapper").attr("tabindex", "0");
-            
             // Remove deleted button.
             $('button', container).each(function(index, btn) {
                 var $btn = $(btn);
@@ -85,8 +86,8 @@ module nts.uk.ui.koExtentions {
 
                 if (!foundFlag) {
                     $btn.remove();
-                    return;
-                }
+                    return; 
+                } 
             })
 
             // Start binding new state.
@@ -95,19 +96,7 @@ module nts.uk.ui.koExtentions {
                 var text = opt[optionText];
 
                 // Find button.
-                var targetBtn: JQuery;
-                $('button', container).each(function(index, btn) {
-                    var btnValue = $(btn).data('swbtn');
-                    if (btnValue == value) {
-                        targetBtn = $(btn);
-                    }
-
-                    if (btnValue == selectedValue) {
-                        $(btn).addClass(selectedCssClass);
-                    } else {
-                        $(btn).removeClass(selectedCssClass);
-                    }
-                })
+                var targetBtn: JQuery = NtsSwitchButtonBindingHandler.setSelectedClass(container, selectedCssClass, selectedValue, value);
 
                 if (targetBtn) {
                     // Do nothing.
@@ -129,11 +118,33 @@ module nts.uk.ui.koExtentions {
                 }
             });
             // Enable
-            (enable === true) ? $('button', container).prop("disabled", false) : $('button', container).prop("disabled", true);
             
             container.find(".nts-switch-button").focus(function (evt){
                 container.focus();   
             });
+            if (enable === true) {
+                $('button', container).prop("disabled", false);
+            } else {
+                $('button', container).prop("disabled", true);
+                new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+            }
+        }
+        
+        static setSelectedClass($container: JQuery, selectedCssClass: string, selectedValue: any, optValue?: any): any {
+            var targetBtn;
+            $('button', $container).each(function(index, btn) {
+                var btnValue = $(btn).data('swbtn');
+                if (btnValue == optValue) {
+                    targetBtn = $(btn);
+                }
+
+                if (btnValue == selectedValue) {
+                    $(btn).addClass(selectedCssClass);
+                } else {
+                    $(btn).removeClass(selectedCssClass);
+                }
+            });
+            return targetBtn;
         }
     }
     

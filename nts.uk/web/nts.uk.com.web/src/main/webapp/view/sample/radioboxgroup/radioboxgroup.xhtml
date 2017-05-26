@@ -32,6 +32,11 @@
 						<button data-bind="click: enableCheckBox">Enable CheckBox</button>
 						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
 						<br/><br/>
+						<div>
+							<input data-bind="ntsTextEditor: { value: defaultValue }"></input>
+							<button data-bind="click: setDefault">Reset</button>
+						</div>
+						<br/>
 						<h3>Selected Values as objects</h3>
 						<div id="first-list" data-bind="ntsRadioBoxGroup: {options: itemList,
 											optionsText: 'name',
@@ -41,7 +46,7 @@
 						<div data-bind="text: ko.toJSON(selectedValue)"></div>
 						<br/>
 						<h3>Selected Values as value</h3>
-						<div data-bind="ntsRadioBoxGroup: {options: itemList,
+						<div id="second-list" data-bind="ntsRadioBoxGroup: {options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedId,

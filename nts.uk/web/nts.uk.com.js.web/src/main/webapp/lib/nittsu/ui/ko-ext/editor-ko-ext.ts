@@ -59,10 +59,12 @@ module nts.uk.ui.koExtentions {
                     $input.ntsError('set', result.errorMessage);
                 }
             }));
+               
+            new nts.uk.util.value.DefaultValue().onReset($input, data.value);
         }
 
         update($input: JQuery, data: any) {
-            var value: () => string = data.value;
+            var value: (val: any) => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
@@ -72,7 +74,12 @@ module nts.uk.ui.koExtentions {
             var textalign: string = this.editorOption.textalign;
             var width: string = this.editorOption.width;
             // Properties
-            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+            if (enable !== false) {
+               $input.removeAttr('disabled');
+            } else {
+               $input.attr('disabled', 'disabled');
+               new nts.uk.util.value.DefaultValue().applyReset($input, value);
+            }
             (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
             $input.attr('placeholder', placeholder);
             $input.css('text-align', textalign);
@@ -155,6 +162,8 @@ module nts.uk.ui.koExtentions {
                     $input.ntsError('set', result.errorMessage);
                 }
             }));
+                
+            new nts.uk.util.value.DefaultValue().onReset($input, data.value);
         }
 
         update($input: JQuery, data: any) {

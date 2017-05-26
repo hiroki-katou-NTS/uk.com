@@ -50,6 +50,8 @@ module nts.uk.ui.koExtentions {
 //            container.find(".ntsRadioBox").focus(function (evt, ui){
 //                console.log(evt);            
 //            });
+            // Default value
+            new nts.uk.util.value.DefaultValue().onReset(container, data.value);
         }
         
         /**
@@ -105,16 +107,6 @@ module nts.uk.ui.koExtentions {
                 $(checkedRadio).prop("checked", true);
 
             // Enable
-//            if(!_.isEqual(container.data("enable"), enable)){
-//                container.data("enable",  _.clone(enable));
-                (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
-                _.forEach(data.options(), (option) => {
-                    if (typeof option["enable"] === "function"){
-                        option["enable"](enable);
-                    } else {
-                        option["enable"] = (enable);    
-                    }
-                });   
             if(enable === true) {
                 _.forEach(container.find("input[type='radio']"), function (radio){
                     let dataOpion = $(radio).data("option");
@@ -122,8 +114,9 @@ module nts.uk.ui.koExtentions {
                         $(radio).removeAttr("disabled");        
                     }        
                 }); 
-            } else {
+            } else if (enable === false){
                 container.find("input[type='radio']").attr("disabled", "disabled");
+                new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
             }    
 //            }
         }

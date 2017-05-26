@@ -65,7 +65,7 @@ public class RequestPreProcessor implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		request.setAttribute(InputPart.DEFAULT_CHARSET_PROPERTY,"UTF-8");
+		request.setAttribute(InputPart.DEFAULT_CHARSET_PROPERTY,"ISO-8859-1");
 		String requestPagePath = ((HttpServletRequest) request).getHeader(PG_PATH);
 		if (requestPagePath == null) {
 			chain.doFilter(request, response);
