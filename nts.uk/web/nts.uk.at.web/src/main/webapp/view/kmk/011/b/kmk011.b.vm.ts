@@ -66,6 +66,8 @@ module kmk011.b.viewmodel {
             var id = nts.uk.ui.windows.getShared("KMK011_divTimeId")
             if(id==null){
                 self.divTimeId(0);
+            }else{
+                self.divTimeId(id);
             }
             service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.Item>) {
                 self.currentCode(null);
