@@ -75,7 +75,7 @@ module nts.uk.at.view.kml001.d {
                                 nts.uk.ui.windows.close();
                             })
                             .fail(function(res) {
-                                nts.uk.ui.dialog.alert(res.message);    
+                                nts.uk.ui.dialog.alert({ messageId: res.messageId });     
                             });
                         });
                         
