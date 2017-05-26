@@ -46,4 +46,8 @@ public abstract class BaseGeneratorSetting extends AsposeCellsReportGenerator {
 
 	/** The Constant EXCEL_COL_UNIT_IN_MM. */
 	public static final double EXCEL_COL_UNIT_IN_MM = 3.15;
+
+	/** The Constant DEFAULT_MARGIN. */
+	public static final double DEFAULT_MARGIN = 0;
+
 }

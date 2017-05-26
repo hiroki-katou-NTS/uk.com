@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.pr.file.infra.payment;
@@ -19,7 +19,6 @@ import com.aspose.cells.StyleFlag;
 import com.aspose.cells.Worksheet;
 
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingOnceDto;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingThreeDto;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingTwoDto;
 import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.ShowBreakLine;
@@ -44,6 +43,9 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 
 	/** The page setup. */
 	protected PageSetup pageSetup;
+
+	/** The config. */
+	protected PaymentRefundPaddingDto config;
 
 	/** The employee. */
 	protected PaymentReportDto employee;
@@ -80,9 +82,6 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 
 	/** The report data. */
 	private List<PaymentReportDto> reportData;
-
-	/** The config. */
-	private PaymentRefundPaddingDto config;
 
 	/**
 	 * Gets the number of column per item.
@@ -153,14 +152,29 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	abstract List<CellValue> getHeaderTemplate();
 
 	/**
+	 * Gets the page top margin.
+	 *
+	 * @return the page top margin
+	 */
+	abstract BigDecimal getPageTopMargin();
+
+	/**
+	 * Gets the page left margin.
+	 *
+	 * @return the page left margin
+	 */
+	abstract BigDecimal getPageLeftMargin();
+
+	/**
 	 * Sets the item range width.
 	 *
 	 * @param width the new item range width
 	 */
 	// TODO Has not been used yet...
 	protected void setItemRangeWidth(double width) {
-		Range itemRange = cells.createRange(FIRST_ROW, FIRST_COLUMN + CATEGORY_HEADER_WIDTH, NUMBER_OF_ROW_PER_ITEM,
-				maxColumnsPerItemLine);
+		Range itemRange = this.cells.createRange(BaseGeneratorSetting.FIRST_ROW,
+				BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.CATEGORY_HEADER_WIDTH,
+				BaseGeneratorSetting.NUMBER_OF_ROW_PER_ITEM, this.maxColumnsPerItemLine);
 		itemRange.setColumnWidth(width);
 	}
 
@@ -168,91 +182,92 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * Break page.
 	 */
 	protected void breakPage() {
-		workSheet.getHorizontalPageBreaks().add(currentRow);
+		this.workSheet.getHorizontalPageBreaks().add(this.currentRow);
 	}
 
 	/**
 	 * Prints the remark.
 	 */
 	protected void printRemark() {
-		Range remark = cells.createRange(currentRow, FIRST_COLUMN + MARGIN_CELL, remarkTotalRow,
-				maxColumnsPerItemLine - MARGIN_CELL);
+		Range remark = this.cells.createRange(this.currentRow,
+				BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.MARGIN_CELL, this.remarkTotalRow,
+				this.maxColumnsPerItemLine - BaseGeneratorSetting.MARGIN_CELL);
 		remark.merge();
-		remark.setValue(employee.getRemark());
-		remark.setStyle(templateStyle.remarkStyle);
-		currentRow += remarkTotalRow;
+		remark.setValue(this.employee.getRemark());
+		remark.setStyle(this.templateStyle.remarkStyle);
+		this.currentRow += this.remarkTotalRow;
 	}
 
 	/**
 	 * Prints the page header.
 	 */
 	protected void printPageHeader() {
-		int pageHeaderRowCount = pageHeaderRange.getRowCount();
+		int pageHeaderRowCount = this.pageHeaderRange.getRowCount();
 		// On first page.
-		if (currentRow == FIRST_ROW) {
-			printCellValue(getHeaderTemplate());
+		if (this.currentRow == BaseGeneratorSetting.FIRST_ROW) {
+			this.printCellValue(this.getHeaderTemplate());
 		}
 		// On other pages.
 		else {
 			// Copy style
-			Range newPageHeaderRange = cells.createRange(currentRow, FIRST_COLUMN, pageHeaderRange.getRowCount(),
-					pageHeaderRange.getColumnCount());
+			Range newPageHeaderRange = this.cells.createRange(this.currentRow, BaseGeneratorSetting.FIRST_COLUMN,
+					this.pageHeaderRange.getRowCount(), this.pageHeaderRange.getColumnCount());
 			try {
-				newPageHeaderRange.copy(pageHeaderRange);
+				newPageHeaderRange.copy(this.pageHeaderRange);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			// Set value.
-			printCellValue(getHeaderTemplate());
+			this.printCellValue(this.getHeaderTemplate());
 		}
-		currentRow += pageHeaderRowCount;
-		firstCategoryRow = currentRow;
+		this.currentRow += pageHeaderRowCount;
+		this.firstCategoryRow = this.currentRow;
 	}
 
 	/**
 	 * Prints the payment items.
 	 */
 	protected void printPaymentItems() {
-		printCategoryHeader("支給");
-		printCategoryContent(employee.getPaymentItems());
-		nextCategory();
+		this.printCategoryHeader("支給");
+		this.printCategoryContent(this.employee.getPaymentItems());
+		this.nextCategory();
 	}
 
 	/**
 	 * Prints the deduction items.
 	 */
 	protected void printDeductionItems() {
-		printCategoryHeader("控除");
-		printCategoryContent(employee.getDeductionItems());
-		nextCategory();
+		this.printCategoryHeader("控除");
+		this.printCategoryContent(this.employee.getDeductionItems());
+		this.nextCategory();
 	}
 
 	/**
 	 * Prints the attendance items.
 	 */
 	protected void printAttendanceItems() {
-		printCategoryHeader("勤怠");
-		printCategoryContent(employee.getAttendanceItems());
-		nextCategory();
+		this.printCategoryHeader("勤怠");
+		this.printCategoryContent(this.employee.getAttendanceItems());
+		this.nextCategory();
 	}
 
 	/**
 	 * Prints the article items.
 	 */
 	protected void printArticleItems() {
-		printCategoryHeader("記事");
-		printCategoryContent(employee.getArticleItems());
-		nextCategory();
+		this.printCategoryHeader("記事");
+		this.printCategoryContent(this.employee.getArticleItems());
+		this.nextCategory();
 	}
 
 	/**
 	 * Prints the other items.
 	 */
 	protected void printOtherItems() {
-		printCategoryHeader("他");
-		printCategoryContent(employee.getOtherItems());
-		nextCategory();
+		this.printCategoryHeader("他");
+		this.printCategoryContent(this.employee.getOtherItems());
+		this.nextCategory();
 	}
 
 	/**
@@ -261,8 +276,8 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @param numberOfLine the number of line
 	 */
 	protected void breakLines(int numberOfLine) {
-		firstCategoryRow += numberOfLine;
-		currentRow += numberOfLine;
+		this.firstCategoryRow += numberOfLine;
+		this.currentRow += numberOfLine;
 	}
 
 	/**
@@ -270,17 +285,18 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 */
 	protected void nextItemLine() {
 		// Reset column & enter 2 rows.
-		currentColumn = FIRST_COLUMN + MARGIN_CELL + CATEGORY_HEADER_WIDTH;
-		currentRow += NUMBER_OF_ROW_PER_ITEM + NUMBER_OF_ROW_PER_ITEM;
+		this.currentColumn = BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.MARGIN_CELL
+				+ BaseGeneratorSetting.CATEGORY_HEADER_WIDTH;
+		this.currentRow += BaseGeneratorSetting.NUMBER_OF_ROW_PER_ITEM + BaseGeneratorSetting.NUMBER_OF_ROW_PER_ITEM;
 	}
 
 	/**
 	 * Next category.
 	 */
 	protected void nextCategory() {
-		nextItemLine();
-		mergeHeader();
-		firstCategoryRow = currentRow;
+		this.nextItemLine();
+		this.mergeHeader();
+		this.firstCategoryRow = this.currentRow;
 	}
 
 	/**
@@ -289,9 +305,10 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @param title the title
 	 */
 	protected void printSectionTitle(String title) {
-		Cell sectionTitle = cells.get(firstCategoryRow - NUMBER_OF_ROW_PER_ITEM, FIRST_COLUMN + MARGIN_CELL);
+		Cell sectionTitle = this.cells.get(this.firstCategoryRow - BaseGeneratorSetting.NUMBER_OF_ROW_PER_ITEM,
+				BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.MARGIN_CELL);
 		sectionTitle.setValue(title);
-		sectionTitle.setStyle(templateStyle.remarkStyle);
+		sectionTitle.setStyle(this.templateStyle.remarkStyle);
 	}
 
 	/**
@@ -300,7 +317,8 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @param headerName the header name
 	 */
 	protected void printCategoryHeader(String headerName) {
-		cells.get(firstCategoryRow, FIRST_COLUMN + MARGIN_CELL).setValue(headerName);
+		this.cells.get(this.firstCategoryRow, BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.MARGIN_CELL)
+		.setValue(headerName);
 	}
 
 	/**
@@ -308,18 +326,21 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 */
 	protected void printData() {
 		// Prepare for print data.
-		initialize();
+		this.initialize();
 
 		// Print data.
-		reportData.forEach(item -> {
-			employee = item;
-			printPageHeader();
-			printPageContent();
-			personCount++;
-			setPadding();
+		this.reportData.forEach(item -> {
+			// Set margin top.
+			this.setCurrentRowHeight(this.toExcelRowUnit(this.getPageTopMargin()));
+			this.employee = item;
+			this.printPageHeader();
+			this.printPageContent();
+			this.personCount++;
 
-			if (isPageHasEnoughPerson()) {
-				breakPage();
+			this.createSeparator();
+
+			if (this.isPageHasEnoughPerson()) {
+				this.breakPage();
 			}
 		});
 	}
@@ -329,14 +350,14 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 */
 	private void initialize() {
 		// Check on initialization.
-		checkOnInitialization();
+		this.checkOnInitialization();
 
 		// Get cells.
-		this.cells = workSheet.getCells();
+		this.cells = this.workSheet.getCells();
 
 		// Get page setup.
-		this.pageSetup = workSheet.getPageSetup();
-		resetMargin();
+		this.pageSetup = this.workSheet.getPageSetup();
+		this.resetMargin();
 
 		// Set template style.
 		this.setTemplateStyle();
@@ -354,27 +375,32 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 		this.numberOfColumnPerItem = this.getNumberOfColumnPerItem();
 
 		/** The current row. */
-		this.currentRow = FIRST_ROW;
+		this.currentRow = BaseGeneratorSetting.FIRST_ROW;
 
 		/** The current column. */
-		this.currentColumn = FIRST_COLUMN + MARGIN_CELL + CATEGORY_HEADER_WIDTH;
+		this.currentColumn = BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.MARGIN_CELL
+				+ BaseGeneratorSetting.CATEGORY_HEADER_WIDTH;
 
 		// Set max columns per item line.
-		this.maxColumnsPerItemLine = ITEMS_PER_ROW * this.numberOfColumnPerItem + CATEGORY_HEADER_WIDTH + MARGIN_CELL;
+		this.maxColumnsPerItemLine = BaseGeneratorSetting.ITEMS_PER_ROW * this.numberOfColumnPerItem
+				+ BaseGeneratorSetting.CATEGORY_HEADER_WIDTH + BaseGeneratorSetting.MARGIN_CELL;
 
 		// Set report data & config.
-		this.reportData = paymentReportData.getReportData();
-		this.config = paymentReportData.getConfig();
+		this.reportData = this.paymentReportData.getReportData();
+		this.config = this.paymentReportData.getConfig();
+
+		// Set page left margin.
+		this.cells.setColumnWidth(BaseGeneratorSetting.FIRST_COLUMN, this.toExcelColUnit(this.getPageLeftMargin()));
 	}
 
 	/**
 	 * Check on initialization.
 	 */
 	private void checkOnInitialization() {
-		if (workSheet == null) {
+		if (this.workSheet == null) {
 			throw new RuntimeException("WorkSheet is not defined.");
 		}
-		if (paymentReportData == null) {
+		if (this.paymentReportData == null) {
 			throw new RuntimeException("paymentReportData is not defined.");
 		}
 	}
@@ -385,7 +411,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @return true, if is page has enough person
 	 */
 	private boolean isPageHasEnoughPerson() {
-		return personCount != 0 && personCount % maxPersonPerPage == 0;
+		return this.personCount != 0 && this.personCount % this.maxPersonPerPage == 0;
 	}
 
 	/**
@@ -398,7 +424,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 		if (StringUtil.isNullOrEmpty(cellName, true)) {
 			return new Style();
 		}
-		return cells.get(cellName).getStyle();
+		return this.cells.get(cellName).getStyle();
 	}
 
 	/**
@@ -407,18 +433,19 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @param height the new current row height
 	 */
 	private void setCurrentRowHeight(double height) {
-		cells.setRowHeight(currentRow, height);
+		this.cells.setRowHeight(this.currentRow, height);
 	}
 
 	/**
 	 * Merge header.
 	 */
 	private void mergeHeader() {
-		int headerHeight = currentRow - firstCategoryRow;
-		Range header = cells.createRange(firstCategoryRow, FIRST_COLUMN + MARGIN_CELL, headerHeight,
-				CATEGORY_HEADER_WIDTH);
+		int headerHeight = this.currentRow - this.firstCategoryRow;
+		Range header = this.cells.createRange(this.firstCategoryRow,
+				BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.MARGIN_CELL, headerHeight,
+				BaseGeneratorSetting.CATEGORY_HEADER_WIDTH);
 		header.merge();
-		header.setStyle(templateStyle.headerStyle);
+		header.setStyle(this.templateStyle.headerStyle);
 	}
 
 	/**
@@ -428,7 +455,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 */
 	private void printCellValue(List<CellValue> list) {
 		list.forEach(item -> {
-			Cell cell = cells.get(item.row, item.col);
+			Cell cell = this.cells.get(item.row, item.col);
 			cell.setValue(item.value);
 		});
 
@@ -438,12 +465,12 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * Sets the page header range.
 	 */
 	private void setPageHeaderRange() {
-		String upperLeftCell = FIRST_CELL;
-		String lowerRightCell = getPageHeaderEndCell();
+		String upperLeftCell = BaseGeneratorSetting.FIRST_CELL;
+		String lowerRightCell = this.getPageHeaderEndCell();
 		if (StringUtil.isNullOrEmpty(upperLeftCell, true) || StringUtil.isNullOrEmpty(lowerRightCell, true)) {
 			throw new RuntimeException("Page header range is not set.");
 		}
-		this.pageHeaderRange = cells.createRange(upperLeftCell, lowerRightCell);
+		this.pageHeaderRange = this.cells.createRange(upperLeftCell, lowerRightCell);
 	}
 
 	/**
@@ -451,10 +478,10 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 */
 	private void setTemplateStyle() {
 		this.templateStyle = new TemplateStyle();
-		this.templateStyle.headerStyle = getStyle(getCategoryHeaderCell());
-		this.templateStyle.nameStyle = getStyle(getItemNameCell());
-		this.templateStyle.valueStyle = getStyle(getItemValueCell());
-		this.templateStyle.remarkStyle = getStyle(getRemarkCell());
+		this.templateStyle.headerStyle = this.getStyle(this.getCategoryHeaderCell());
+		this.templateStyle.nameStyle = this.getStyle(this.getItemNameCell());
+		this.templateStyle.valueStyle = this.getStyle(this.getItemValueCell());
+		this.templateStyle.remarkStyle = this.getStyle(this.getRemarkCell());
 		// In case remark is too long.
 		this.templateStyle.remarkStyle.setTextWrapped(true);
 	}
@@ -466,7 +493,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @return the double
 	 */
 	private double toExcelRowUnit(BigDecimal value) {
-		return value.doubleValue() / EXCEL_ROW_UNIT_IN_MM;
+		return value.doubleValue() / BaseGeneratorSetting.EXCEL_ROW_UNIT_IN_MM;
 	}
 
 	/**
@@ -476,17 +503,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @return the double
 	 */
 	private double toExcelColUnit(BigDecimal value) {
-		return value.doubleValue() / EXCEL_COL_UNIT_IN_MM;
-	}
-
-	/**
-	 * Sets the padding one out.
-	 *
-	 * @param setting the new padding one out
-	 */
-	private void setPaddingOneOut(RefundPaddingOnceDto setting) {
-		cells.setRowHeight(FIRST_ROW, toExcelRowUnit(setting.getPaddingTop()));
-		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
+		return value.doubleValue() / BaseGeneratorSetting.EXCEL_COL_UNIT_IN_MM;
 	}
 
 	/**
@@ -495,18 +512,12 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @param setting the new padding two out
 	 */
 	private void setPaddingTwoOut(RefundPaddingTwoDto setting) {
-		cells.setRowHeight(FIRST_ROW, toExcelRowUnit(setting.getUpperAreaPaddingTop()));
-		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
-
-		if (isFirstPersonOnPage()) {
-			if (isFirstPersonOnPage()) {
-				if (hasBreakLine(setting)) {
-					setBreakLine(toExcelRowUnit(setting.getBreakLineMargin()));
-				}
-				setCurrentRowHeight(toExcelRowUnit(setting.getUnderAreaPaddingTop()));
+		if (this.isEndOfPerson(BaseGeneratorSetting.FIRST_PERSON)) {
+			if (this.hasBreakLine(setting)) {
+				this.setBreakLine(this.toExcelRowUnit(setting.getBreakLineMargin()));
 			}
 			// Set person 2 top margin.
-			setCurrentRowHeight(toExcelRowUnit(setting.getUnderAreaPaddingTop()));
+			this.setCurrentRowHeight(this.toExcelRowUnit(setting.getUnderAreaPaddingTop()));
 		}
 	}
 
@@ -516,22 +527,19 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * @param setting the new padding three out
 	 */
 	private void setPaddingThreeOut(RefundPaddingThreeDto setting) {
-		cells.setRowHeight(FIRST_ROW, toExcelRowUnit(setting.getUpperAreaPaddingTop()));
-		cells.setColumnWidth(FIRST_COLUMN, toExcelColUnit(setting.getPaddingLeft()));
-
-		if (isFirstPersonOnPage()) {
-			if (hasBreakLine(setting)) {
-				setBreakLine(toExcelRowUnit(setting.getBreakLineMarginTop()));
+		if (this.isEndOfPerson(BaseGeneratorSetting.FIRST_PERSON)) {
+			if (this.hasBreakLine(setting)) {
+				this.setBreakLine(this.toExcelRowUnit(setting.getBreakLineMarginTop()));
 			}
 			// Set person 2 top margin.
-			setCurrentRowHeight(toExcelRowUnit(setting.getMiddleAreaPaddingTop()));
+			this.setCurrentRowHeight(this.toExcelRowUnit(setting.getMiddleAreaPaddingTop()));
 		}
-		if (isSecondPersonOnPage()) {
-			if (hasBreakLine(setting)) {
-				setBreakLine(toExcelRowUnit(setting.getBreakLineMarginButtom()));
+		if (this.isEndOfPerson(BaseGeneratorSetting.SECOND_PERSON)) {
+			if (this.hasBreakLine(setting)) {
+				this.setBreakLine(this.toExcelRowUnit(setting.getBreakLineMarginButtom()));
 			}
 			// Set person 3 top margin.
-			setCurrentRowHeight(toExcelRowUnit(setting.getUnderAreaPaddingTop()));
+			this.setCurrentRowHeight(this.toExcelRowUnit(setting.getUnderAreaPaddingTop()));
 		}
 	}
 
@@ -562,11 +570,12 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 */
 	private void setBreakLine(double marginTop) {
 		// Set break line top margin.
-		setCurrentRowHeight(marginTop);
+		this.setCurrentRowHeight(marginTop);
 
 		// Get break line range.
-		Range breakLine = cells.createRange(currentRow, FIRST_COLUMN + MARGIN_CELL, 1,
-				maxColumnsPerItemLine - MARGIN_CELL);
+		Range breakLine = this.cells.createRange(this.currentRow,
+				BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.MARGIN_CELL, 1,
+				this.maxColumnsPerItemLine - BaseGeneratorSetting.MARGIN_CELL);
 		breakLine.merge();
 
 		// Set break line style
@@ -581,42 +590,32 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 		breakLine.applyStyle(style, styleFlag);
 
 		// next line.
-		breakLines(1);
+		this.breakLines(1);
 	}
 
 	/**
-	 * Checks if is first person on page.
+	 * Checks if is end of person.
 	 *
-	 * @return true, if is first person on page
+	 * @param x the x
+	 * @return true, if is end of person
 	 */
-	private boolean isFirstPersonOnPage() {
-		return personCount % maxPersonPerPage == FIRST_PERSON;
+	private boolean isEndOfPerson(int x) {
+		return this.personCount % this.maxPersonPerPage == x;
 	}
 
 	/**
-	 * Checks if is second person on page.
-	 *
-	 * @return true, if is second person on page
+	 * Creates the separator.
 	 */
-	private boolean isSecondPersonOnPage() {
-		return personCount % maxPersonPerPage == SECOND_PERSON;
-	}
-
-	/**
-	 * Sets the padding.
-	 */
-	private void setPadding() {
-		switch (config.getPrintType()) {
-		case 1:
-			setPaddingOneOut(config.getRefundPaddingOnceDto());
-			break;
+	private void createSeparator() {
+		switch (this.config.getPrintType()) {
 		case 2:
-			setPaddingTwoOut(config.getRefundPaddingTwoDto());
+			this.setPaddingTwoOut(this.config.getRefundPaddingTwoDto());
 			break;
 		case 3:
-			setPaddingThreeOut(config.getRefundPaddingThreeDto());
+			this.setPaddingThreeOut(this.config.getRefundPaddingThreeDto());
 			break;
 		default:
+			// Do nothing.
 			break;
 		}
 	}
@@ -625,8 +624,8 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 * Reset margin.
 	 */
 	private void resetMargin() {
-		pageSetup.setTopMargin(0);
-		pageSetup.setLeftMargin(0);
+		this.pageSetup.setTopMargin(BaseGeneratorSetting.DEFAULT_MARGIN);
+		this.pageSetup.setLeftMargin(BaseGeneratorSetting.DEFAULT_MARGIN);
 	}
 
 	/**
@@ -637,23 +636,23 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	private void printCategoryContent(List<PaymentSalaryItemDto> listItem) {
 		listItem.forEach(item -> {
 			// Break line if current column = maxColumnsPerItemLine.
-			if (currentColumn == maxColumnsPerItemLine) {
-				nextItemLine();
+			if (this.currentColumn == this.maxColumnsPerItemLine) {
+				this.nextItemLine();
 			}
 
 			// Get item cell.
-			Range nameCell = cells.createRange(currentRow, currentColumn, NUMBER_OF_ROW_PER_ITEM,
-					numberOfColumnPerItem);
-			Range valueCell = cells.createRange(currentRow + NUMBER_OF_ROW_PER_ITEM, currentColumn,
-					NUMBER_OF_ROW_PER_ITEM, numberOfColumnPerItem);
+			Range nameCell = this.cells.createRange(this.currentRow, this.currentColumn,
+					BaseGeneratorSetting.NUMBER_OF_ROW_PER_ITEM, this.numberOfColumnPerItem);
+			Range valueCell = this.cells.createRange(this.currentRow + BaseGeneratorSetting.NUMBER_OF_ROW_PER_ITEM,
+					this.currentColumn, BaseGeneratorSetting.NUMBER_OF_ROW_PER_ITEM, this.numberOfColumnPerItem);
 
 			// Merge cell.
 			nameCell.merge();
 			valueCell.merge();
 
 			// Set style.
-			nameCell.setStyle(templateStyle.nameStyle);
-			valueCell.setStyle(templateStyle.valueStyle);
+			nameCell.setStyle(this.templateStyle.nameStyle);
+			valueCell.setStyle(this.templateStyle.valueStyle);
 
 			// Set value.
 			if (item.isView()) {
@@ -665,7 +664,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 			}
 
 			// Next item.
-			currentColumn += numberOfColumnPerItem;
+			this.currentColumn += this.numberOfColumnPerItem;
 		});
 	}
 
@@ -710,7 +709,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 		 * @param value the value
 		 */
 		public CellValue(int row, int col, Object value) {
-			this.row = row + currentRow;
+			this.row = row + PaymentReportBaseGenerator.this.currentRow;
 			this.col = col;
 			this.value = value;
 		}
@@ -722,8 +721,9 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 		 * @param value the value
 		 */
 		public CellValue(String cellName, Object value) {
-			this.row = cells.get(cellName).getRow() + currentRow;
-			this.col = cells.get(cellName).getColumn();
+			this.row = PaymentReportBaseGenerator.this.cells.get(cellName).getRow()
+					+ PaymentReportBaseGenerator.this.currentRow;
+			this.col = PaymentReportBaseGenerator.this.cells.get(cellName).getColumn();
 			this.value = value;
 		}
 
