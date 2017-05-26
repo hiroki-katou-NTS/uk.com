@@ -4,15 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
-import lombok.Setter;
+import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
-/**
- * Sets the half day time.
- *
- * @param halfDayTime the new half day time
- */
-@Setter
+@Getter
 public class DesignTime extends DomainObject{
 
 	/** The one day time. */
