@@ -19,7 +19,10 @@ __viewContext.ready(function () {
                     textmode: "text",
                     placeholder: "Placeholder for text editor",
                     width: "",
-                    textalign: "left"
+                    textalign: "left",
+                    autofill: true,
+                    filldirection: "left",
+                    fillcharacter: "0"
                 })), 
                 required: ko.observable(false),
                 enable: ko.observable(true),

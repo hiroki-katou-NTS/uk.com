@@ -917,13 +917,13 @@ var nts;
                 return charType;
             }
             text_3.getCharType = getCharType;
-            function formatEmployeeCode(code, filldirection, fillcharacter, length) {
+            function formatCode(code, filldirection, fillcharacter, length) {
                 if (filldirection === "left")
                     return padLeft(code, fillcharacter, length);
                 else
                     return padRight(code, fillcharacter, length);
             }
-            text_3.formatEmployeeCode = formatEmployeeCode;
+            text_3.formatCode = formatCode;
             function splitOrPadRight(originalString, length, char) {
                 if (originalString === undefined || length > originalString.length) {
                     originalString = text.padRight(originalString ? originalString : "", char ? char : " ", length);
@@ -993,12 +993,14 @@ var nts;
                 StringFormatter.prototype.format = function (source) {
                     var constraintName = this.args.constraintName;
                     var autofill = this.args.editorOption.autofill;
-                    if (autofill === true || constraintName === "EmployeeCode") {
-                        var constraint = this.args.constraint;
-                        var filldirection = this.args.editorOption.filldirection;
-                        var fillcharacter = this.args.editorOption.fillcharacter;
-                        var length = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
-                        return formatEmployeeCode(source, filldirection, fillcharacter, length);
+                    if (!uk.util.isNullOrEmpty(source)) {
+                        if (autofill === true || constraintName === "EmployeeCode") {
+                            var constraint = this.args.constraint;
+                            var filldirection = this.args.editorOption.filldirection;
+                            var fillcharacter = this.args.editorOption.fillcharacter;
+                            var length = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
+                            return formatCode(source, filldirection, fillcharacter, length);
+                        }
                     }
                     return source;
                 };
@@ -4209,6 +4211,7 @@ var nts;
                         var setChecked = data.checked;
                         var textId = data.text;
                         var checkBoxText;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
                         container.addClass("ntsControl ntsCheckBox").attr("tabindex", "0").on("click", function (e) {
                             if (container.data("readonly") === true)
@@ -4221,6 +4224,7 @@ var nts;
                             checkBoxText = container.text();
                             container.text('');
                         }
+                        container.data("enable", enable);
                         var $checkBoxLabel = $("<label class='ntsCheckBox-label'></label>");
                         var $checkBox = $('<input type="checkbox">').on("change", function () {
                             if (typeof setChecked === "function")
@@ -4233,12 +4237,16 @@ var nts;
                         container.keypress(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
-                                var checkbox = container.find("input[type='checkbox']:first");
-                                if (checkbox.is(":checked")) {
-                                    checkbox.prop("checked", false);
-                                }
-                                else {
-                                    checkbox.prop("checked", true);
+                                if (container.data("enable") !== false) {
+                                    var checkbox = container.find("input[type='checkbox']:first");
+                                    if (checkbox.is(":checked")) {
+                                        checkbox.prop("checked", false);
+                                        setChecked(false);
+                                    }
+                                    else {
+                                        checkbox.prop("checked", true);
+                                        setChecked(true);
+                                    }
                                 }
                                 evt.preventDefault();
                             }
@@ -4250,6 +4258,7 @@ var nts;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
+                        container.data("enable", enable);
                         container.data("readonly", readonly);
                         var $checkBox = $(element).find("input[type='checkbox']");
                         $checkBox.prop("checked", checked);
@@ -4299,21 +4308,29 @@ var nts;
                                             return _.isEqual(JSON.parse(ko.toJSON(value)), self.data("value"));
                                         }));
                                 });
+                                var disableOption = option["enable"];
                                 checkBoxLabel.attr("tabindex", "0");
                                 checkBoxLabel.keypress(function (evt, ui) {
                                     var code = evt.which || evt.keyCode;
                                     if (code === 32) {
-                                        var cb = checkBoxLabel.find("input[type='checkbox']:first");
-                                        if (cb.is(":checked")) {
-                                            cb.prop("checked", false);
-                                        }
-                                        else {
-                                            cb.prop("checked", true);
+                                        if (container.data("enable") !== false && disableOption !== false) {
+                                            var cb = checkBoxLabel.find("input[type='checkbox']:first");
+                                            if (cb.is(":checked")) {
+                                                cb.prop("checked", false);
+                                                selectedValue.remove(_.find(selectedValue(), function (value) {
+                                                    return _.isEqual(JSON.parse(ko.toJSON(value)), checkBox.data("value"));
+                                                }));
+                                            }
+                                            else {
+                                                if (!cb.is(":checked")) {
+                                                    cb.prop("checked", true);
+                                                    selectedValue.push(checkBox.data("value"));
+                                                }
+                                            }
                                         }
                                         evt.preventDefault();
                                     }
                                 });
-                                var disableOption = option["enable"];
                                 if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
                                     checkBox.attr("disabled", "disabled");
                                 }
@@ -4328,7 +4345,7 @@ var nts;
                         container.find("input[type='checkbox']").prop("checked", function () {
                             var _this = this;
                             return (_.find(selectedValue(), function (value) {
-                                return _.isEqualWith(value, $(_this).data("value"), function (objVal, othVal, key) { return key === "enable" ? true : undefined; });
+                                return _.isEqual(JSON.parse(ko.toJSON(value)), $(_this).data("value"));
                             }) !== undefined);
                         });
                         container.data("enable", _.clone(enable));
@@ -6147,10 +6164,11 @@ var nts;
                     }
                     NtsRadioBoxGroupBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
+                        var optionValue = ko.unwrap(data.optionsValue);
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
                         container.addClass("ntsControl radio-wrapper");
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        container.data("enable", null);
+                        container.data("enable", enable);
                         if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
                             container.attr("tabindex", "0");
                         }
@@ -6161,25 +6179,38 @@ var nts;
                             }
                         });
                         container.keyup(function (evt, ui) {
-                            var code = evt.which || evt.keyCode;
-                            if (code === 32) {
-                                container.find("input[type='radio']:first").prop("checked", true);
+                            if (container.data("enable") !== false) {
+                                var code = evt.which || evt.keyCode;
+                                var checkitem = void 0;
+                                if (code === 32) {
+                                    checkitem = $(_.find(container.find("input[type='radio']"), function (radio, idx) {
+                                        return $(radio).attr("disabled") !== "disabled";
+                                    }));
+                                }
+                                else if (code === 37 || code === 38) {
+                                    var inputList = _.filter(container.find("input[type='radio']"), function (radio, idx) {
+                                        return $(radio).attr("disabled") !== "disabled";
+                                    });
+                                    var currentSelect = _.findIndex(inputList, function (item) {
+                                        return $(item).is(":checked");
+                                    });
+                                    checkitem = $(inputList[currentSelect - 1]);
+                                }
+                                else if (code === 39 || code === 40) {
+                                    var inputList = _.filter(container.find("input[type='radio']"), function (radio, idx) {
+                                        return $(radio).attr("disabled") !== "disabled";
+                                    });
+                                    var currentSelect = _.findIndex(inputList, function (item) {
+                                        return $(item).is(":checked");
+                                    });
+                                    checkitem = $(inputList[currentSelect + 1]);
+                                }
+                                if (checkitem !== undefined && checkitem.length > 0) {
+                                    checkitem.prop("checked", true);
+                                    data.value(optionValue === undefined ? checkitem.data("option") : checkitem.data("option")[optionValue]);
+                                }
+                                container.focus();
                             }
-                            else if (code === 37 || code === 38) {
-                                var inputList = container.find("input[type='radio']");
-                                var currentSelect = _.findIndex(inputList, function (item) {
-                                    return $(item).is(":checked");
-                                });
-                                $(inputList[currentSelect - 1]).prop("checked", true);
-                            }
-                            else if (code === 39 || code === 40) {
-                                var inputList = container.find("input[type='radio']");
-                                var currentSelect = _.findIndex(inputList, function (item) {
-                                    return $(item).is(":checked");
-                                });
-                                $(inputList[currentSelect + 1]).prop("checked", true);
-                            }
-                            container.focus();
                         });
                         new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
@@ -6194,6 +6225,7 @@ var nts;
                         var getOptionValue = function (item) {
                             return (optionValue === undefined) ? item : item[optionValue];
                         };
+                        container.data("enable", enable);
                         if (!_.isEqual(container.data("options"), options)) {
                             var radioName = uk.util.randomId();
                             container.empty();
@@ -7223,32 +7255,34 @@ var nts;
                             }
                         });
                         container.keyup(function (evt, ui) {
-                            var code = evt.which || evt.keyCode;
-                            if (code === 32) {
-                                var selectedCode = container.find(".nts-switch-button:first").data('swbtn');
-                                data.value(selectedCode);
-                            }
-                            else if (code === 37 || code === 38) {
-                                var inputList = container.find(".nts-switch-button");
-                                var currentSelect = _.findIndex(inputList, function (item) {
-                                    return $(item).data('swbtn') === data.value();
-                                });
-                                var selectedCode = $(inputList[currentSelect - 1]).data('swbtn');
-                                if (!nts.uk.util.isNullOrUndefined(selectedCode)) {
+                            if (container.data("enable") !== false) {
+                                var code = evt.which || evt.keyCode;
+                                if (code === 32) {
+                                    var selectedCode = container.find(".nts-switch-button:first").data('swbtn');
                                     data.value(selectedCode);
                                 }
-                            }
-                            else if (code === 39 || code === 40) {
-                                var inputList = container.find(".nts-switch-button");
-                                var currentSelect = _.findIndex(inputList, function (item) {
-                                    return $(item).data('swbtn') === data.value();
-                                });
-                                var selectedCode = $(inputList[currentSelect + 1]).data('swbtn');
-                                if (!nts.uk.util.isNullOrUndefined(selectedCode)) {
-                                    data.value(selectedCode);
+                                else if (code === 37 || code === 38) {
+                                    var inputList = container.find(".nts-switch-button");
+                                    var currentSelect = _.findIndex(inputList, function (item) {
+                                        return $(item).data('swbtn') === data.value();
+                                    });
+                                    var selectedCode = $(inputList[currentSelect - 1]).data('swbtn');
+                                    if (!nts.uk.util.isNullOrUndefined(selectedCode)) {
+                                        data.value(selectedCode);
+                                    }
                                 }
+                                else if (code === 39 || code === 40) {
+                                    var inputList = container.find(".nts-switch-button");
+                                    var currentSelect = _.findIndex(inputList, function (item) {
+                                        return $(item).data('swbtn') === data.value();
+                                    });
+                                    var selectedCode = $(inputList[currentSelect + 1]).data('swbtn');
+                                    if (!nts.uk.util.isNullOrUndefined(selectedCode)) {
+                                        data.value(selectedCode);
+                                    }
+                                }
+                                container.focus();
                             }
-                            container.focus();
                         });
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
@@ -7261,6 +7295,7 @@ var nts;
                         var selectedValue = ko.unwrap(data.value);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
+                        container.data("enable", enable);
                         container.addClass("switchButton-wrapper").attr("tabindex", "0");
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);

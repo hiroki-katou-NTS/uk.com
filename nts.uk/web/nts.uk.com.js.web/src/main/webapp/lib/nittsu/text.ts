@@ -427,7 +427,7 @@
          * Format for EmployeeCode
          * @return {String}  EmployeeCode
          */
-        export function formatEmployeeCode(code: string, filldirection: string, fillcharacter: string, length: number): string {
+        export function formatCode(code: string, filldirection: string, fillcharacter: string, length: number): string {
             if (filldirection === "left")
                 return padLeft(code, fillcharacter, length);
             else
@@ -503,12 +503,14 @@
             format(source: any): string {
                 var constraintName = this.args.constraintName;
                 var autofill: boolean = this.args.editorOption.autofill;
-                if (autofill === true || constraintName === "EmployeeCode") {
-                    var constraint = this.args.constraint;
-                    var filldirection: string = this.args.editorOption.filldirection;
-                    var fillcharacter: string = this.args.editorOption.fillcharacter;
-                    var length: number = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
-                    return formatEmployeeCode(source, filldirection, fillcharacter, length);
+                if (!util.isNullOrEmpty(source)) {
+                    if (autofill === true || constraintName === "EmployeeCode") {
+                        var constraint = this.args.constraint;
+                        var filldirection: string = this.args.editorOption.filldirection;
+                        var fillcharacter: string = this.args.editorOption.fillcharacter;
+                        var length: number = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
+                        return formatCode(source, filldirection, fillcharacter, length);
+                    }
                 }
                 return source;
             }
