@@ -12,7 +12,6 @@ module kmk011.a.viewmodel {
         selectInp: KnockoutObservable<any>;
         divTimeName: KnockoutObservable<string>;
         timeItemName: KnockoutObservable<string>;
-//        alarmTime: KnockoutObservable<string>;
         errTime: KnockoutObservable<number>;
         checkErrInput: KnockoutObservable<boolean>;
         checkErrSelect: KnockoutObservable<boolean>;
@@ -29,13 +28,10 @@ module kmk011.a.viewmodel {
         enableInput: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-            //time
-            self.alarmTime = ko.observable(0);
-            //
             self.list = ko.observableArray([]);
-            self.enableUse = ko.observable(null);
-            self.enableSelect = ko.observable(null);
-            self.enableInput = ko.observable(null);
+            self.enableUse = ko.observable(false);
+            self.enableSelect = ko.observable(false);
+            self.enableInput = ko.observable(false);
             self.currentCode = ko.observable(1);
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divTimeId', width: 100 },
@@ -50,13 +46,13 @@ module kmk011.a.viewmodel {
             self.timeItemName = ko.observable('');
             self.checkErrSelect = ko.observable(true);
             self.enable = ko.observable(true);
-            self.divTimeId = ko.observable(1);
+            self.divTimeId = ko.observable(null);
             self.itemDivTime = ko.observable(null);
             self.selectUse = ko.observable(0);
-//            self.alarmTime = ko.observable(null);
+            self.alarmTime = ko.observable(0);
             self.errTime = ko.observable(0);
-            self.selectSel = ko.observable();
-            self.selectInp = ko.observable();
+            self.selectSel = ko.observable(0);
+            self.selectInp = ko.observable(0);
             self.checkErrInput = ko.observable(false);
             self.checkErrSelect = ko.observable(false);
             self.listDivItem = ko.observableArray([]);
@@ -80,7 +76,6 @@ module kmk011.a.viewmodel {
                     if(lstItem==null || lstItem === undefined||lstItem.length ==0){
                         self.timeItemName();
                         self.lstItemSelected([]);
-//                        return;
                     }else{
                         var listItemId = [];
                         for (let j = 0; j < lstItem.length; j++) {
@@ -176,7 +171,7 @@ module kmk011.a.viewmodel {
         openBDialog() {
             var self = this;
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
-            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', })
+            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', });
         }
         openDialog021() {
             var self = this;
@@ -219,6 +214,9 @@ module kmk011.a.viewmodel {
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
                     var dfd = $.Deferred();
+                    if(self.divTimeId()==null){
+                        return;
+                    }
                     var select = new model.SelectSet(self.selectSel(), self.convert(self.checkErrSelect()));
                     var input = new model.SelectSet(self.selectInp(), self.convert(self.checkErrInput()));
                     var divTime = new model.DivergenceTime(self.divTimeId(), self.divTimeName(), self.selectUse(), self.alarmTime(), self.errTime(), select, input);
@@ -233,6 +231,7 @@ module kmk011.a.viewmodel {
                     service.updateDivTime(Object).done(function() {
                         self.getAllDivTimeNew();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        $("#itemname").focus();
                     }).fail(function(error) {
                         if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);
