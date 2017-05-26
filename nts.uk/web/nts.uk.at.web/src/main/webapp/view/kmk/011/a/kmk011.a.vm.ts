@@ -35,7 +35,7 @@ module kmk011.a.viewmodel {
             self.currentCode = ko.observable(1);
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divTimeId', width: 100 },
-                { headerText: nts.uk.resource.getText('KMK011_5'), key: 'divTimeName', width: 200 }
+                { headerText: nts.uk.resource.getText('KMK011_5'), key: 'divTimeName',formatter: _.escape, width: 200 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.useSet = ko.observableArray([
