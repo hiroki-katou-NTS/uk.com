@@ -36,7 +36,7 @@ module ccg030.a.viewmodel {
             self.isCreate = ko.observable(null);
             self.isDelete = ko.observable(false);
             self.isCreate.subscribe((value) => {
-                self.changeInitMode(value);
+                self.changeMode(value);
             });
             // Enable
             self.enableDownload = ko.observable(true);
@@ -58,7 +58,10 @@ module ccg030.a.viewmodel {
         /** Creat new FlowMenu */
         createNewFlowMenu() {
             var self = this;
+            $(".nts-input").ntsError("clear");
             self.isCreate(true);
+            self.selectedFlowMenuCD(null);
+            self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 1, 1));
         }
 
         /** Click Registry button */
@@ -73,7 +76,7 @@ module ccg030.a.viewmodel {
                 if (!errors.hasError()) {
                     if (self.isCreate() === true) {
                         service.createFlowMenu(flowMenu).done((data) => {
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                             self.reloadData().done(() => {
                                 self.selectFlowMenuByIndexByCode(topPageCode);
                             });
@@ -84,7 +87,8 @@ module ccg030.a.viewmodel {
                     else {
                         service.updateFlowMenu(flowMenu).done((data) => {
                             self.reloadData();
-                            nts.uk.ui.dialog.alert("Msg_15");
+                             _.defer(() => { $("#inpName").focus(); });
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                         });
                     }
                 }
@@ -103,7 +107,8 @@ module ccg030.a.viewmodel {
                             self.reloadData().done(() => {
                                 self.selectFlowMenuByIndex(index);
                             });
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_16"));
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16"));
+                            errors.clearAll();
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage("Msg_76"));
                         });
@@ -143,6 +148,7 @@ module ccg030.a.viewmodel {
                 self.tempFileID(res[0].id);
                 self.selectedFlowMenu().fileID(res[0].id);
                 self.selectedFlowMenu().fileName(res[0].originalName);
+                errors.clearAll();
             }).fail(function(err) {
                 nts.uk.ui.dialog.alert(err);
             });
@@ -192,12 +198,14 @@ module ccg030.a.viewmodel {
         /** Find Current FlowMenu by ID */
         private findFlowMenu(flowmenuCD: string): void {
             var self = this;
+            $(".nts-input").ntsError("clear");
             var selectedFlowmenu = _.find(self.listFlowMenu(), ['topPageCode', flowmenuCD]);
             if (selectedFlowmenu !== undefined) {
                 self.selectedFlowMenu(new model.FlowMenu(selectedFlowmenu.toppagePartID,
                     selectedFlowmenu.topPageCode, selectedFlowmenu.topPageName,
                     selectedFlowmenu.fileID, selectedFlowmenu.fileName, selectedFlowmenu.defClassAtr,
                     selectedFlowmenu.widthSize, selectedFlowmenu.heightSize));
+                self.isCreate(false);
                 if (!util.isNullOrEmpty(selectedFlowmenu.fileID))
                     self.isDelete(true);
                 else
@@ -205,6 +213,7 @@ module ccg030.a.viewmodel {
             }
             else {
                 self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 1, 1));
+                self.isCreate(true);
                 self.isDelete(false);
             }
         }
@@ -233,14 +242,13 @@ module ccg030.a.viewmodel {
         }
 
         /** Init Mode */
-        private changeInitMode(isCreate: boolean) {
+        private changeMode(isCreate: boolean) {
             var self = this;
+            $(".nts-input").ntsError("clear");
             if (isCreate === true) {
                 self.selectedFlowMenuCD(null);
+                self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 1, 1));
                 _.defer(() => { $("#inpCode").focus(); });
-            }
-            else {
-                _.defer(() => { errors.clearAll(); });
             }
         }
 
