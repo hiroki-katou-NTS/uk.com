@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.entity.payment.contact;
@@ -45,10 +45,9 @@ public class QctmtCommentMonthEm extends UkJpaEntity implements Serializable {
 	}
 
 	/**
-	 * Instantiates a new qismt labor insu office.
+	 * Instantiates a new qctmt comment month em.
 	 *
-	 * @param qismtLaborInsuOfficePK
-	 *            the qismt labor insu office PK
+	 * @param qctmtCommentMonthEmPK the qctmt comment month em PK
 	 */
 	public QctmtCommentMonthEm(QctmtCommentMonthEmPK qctmtCommentMonthEmPK) {
 		this.qctmtCommentMonthEmPK = qctmtCommentMonthEmPK;

@@ -15,6 +15,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PaymentEmployeeDto {
+	
+	/** The Constant MAX_TOTAL. */
+	public static final String MAX_TOTAL = "999999999";
 
 	/** The employee code. */
 	private String employeeCode;
@@ -66,14 +69,14 @@ public class PaymentEmployeeDto {
 		dto.setPostalCode("999-9999");
 		dto.setAddressOne("ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ");
 		dto.setAddressTwo("ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ");
-		dto.setTaxTotal(BigDecimal.valueOf(999999999));
-		dto.setTaxExemptionTotal(BigDecimal.valueOf(999999999));
-		dto.setPaymentTotal(BigDecimal.valueOf(999999999));
-		dto.setSocialInsuranceTotal(BigDecimal.valueOf(999999999));
-		dto.setTaxableAmount(BigDecimal.valueOf(999999999));
-		dto.setDeductionTotal(BigDecimal.valueOf(999999999));
-		dto.setSubscriptionAmount(BigDecimal.valueOf(999999999));
-		dto.setTaxableTotal(BigDecimal.valueOf(999999999));
+		dto.setTaxTotal(new BigDecimal(MAX_TOTAL));
+		dto.setTaxExemptionTotal(new BigDecimal(MAX_TOTAL));
+		dto.setPaymentTotal(new BigDecimal(MAX_TOTAL));
+		dto.setSocialInsuranceTotal(new BigDecimal(MAX_TOTAL));
+		dto.setTaxableAmount(new BigDecimal(MAX_TOTAL));
+		dto.setDeductionTotal(new BigDecimal(MAX_TOTAL));
+		dto.setSubscriptionAmount(new BigDecimal(MAX_TOTAL));
+		dto.setTaxableTotal(new BigDecimal(MAX_TOTAL));
 		dto.setEmployeeName("NNNNNNNNNN");
 		return dto;
 	}

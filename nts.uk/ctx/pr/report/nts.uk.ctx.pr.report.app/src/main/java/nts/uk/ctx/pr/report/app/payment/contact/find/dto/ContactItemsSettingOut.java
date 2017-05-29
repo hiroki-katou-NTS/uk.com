@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.payment.contact.find.dto;
@@ -88,19 +88,21 @@ public class ContactItemsSettingOut implements ContactItemsSettingSetMemento {
 	@Override
 	public void setMonthEmComments(Set<EmpComment> monthEmComments) {
 		this.empCommentDtos = monthEmComments.stream().map(comment -> {
+			// to dto
 			EmpCommentDto dto = new EmpCommentDto();
 			dto.setEmpCd(comment.getEmpCd());
 			dto.setEmployeeName(comment.getEmployeeName());
-			if (comment.getInitialComment() != null) {
-				dto.setInitialComment(comment.getInitialComment().v());
-			} else {
+			
+			// set name
+			if (comment.getInitialComment() == null) {
 				dto.setInitialComment(null);
-			}
-			if (comment.getMonthlyComment() != null) {
-				dto.setMonthlyComment(comment.getMonthlyComment().v());
-
 			} else {
+				dto.setInitialComment(comment.getInitialComment().v());
+			}
+			if (comment.getMonthlyComment() == null) {
 				dto.setMonthlyComment(null);
+			} else {
+				dto.setMonthlyComment(comment.getMonthlyComment().v());
 			}
 			return dto;
 		}).collect(Collectors.toList());
@@ -109,8 +111,7 @@ public class ContactItemsSettingOut implements ContactItemsSettingSetMemento {
 	/**
 	 * Merge data.
 	 *
-	 * @param dto
-	 *            the dto
+	 * @param dto the dto
 	 */
 	public void mergeData(List<EmpCommentFindDto> dto) {
 		if (CollectionUtil.isEmpty(this.empCommentDtos)) {
