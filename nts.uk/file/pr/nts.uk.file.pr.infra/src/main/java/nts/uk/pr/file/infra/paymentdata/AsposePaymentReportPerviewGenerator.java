@@ -10,6 +10,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.LayoutItem;
 import nts.uk.file.pr.app.export.payment.PaymentReportPreviewGenerator;
 import nts.uk.file.pr.app.export.payment.PaymentReportPreviewQuery;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
@@ -39,29 +40,29 @@ public class AsposePaymentReportPerviewGenerator extends AsposePaymentReportBase
 		String teamplate = TEAMPLATE_ZFOLDED;
 
 		switch (query.getPageLayout()) {
-		case 0:
+		case LayoutItem.VERTICAL_ONE_PERSON:
 			teamplate = TEMPLATE_VERTICAL_ONE_PERSON;
-			reportData =  PaymentReportPreviewData.getVerticalOnePreviewData();
+			reportData = PaymentReportPreviewData.getVerticalOnePreviewData();
 			break;
-		case 1:
+		case LayoutItem.VERTICAL_TWO_PERSON:
 			teamplate = TEMPLATE_VERTICAL_TWO_PERSON;
-			reportData =  PaymentReportPreviewData.getVerticalTwoPreviewData();
+			reportData = PaymentReportPreviewData.getVerticalTwoPreviewData();
 			break;
-		case 2:
+		case LayoutItem.VERTICAL_THREE_PERSON:
 			teamplate = TEMPLATE_VERTICAL_THREE_PERSON;
-			reportData =  PaymentReportPreviewData.getVerticalThreePreviewData();
+			reportData = PaymentReportPreviewData.getVerticalThreePreviewData();
 			break;
-		case 3:
+		case LayoutItem.HORIZONTAL_TWO_PERSON:
 			teamplate = TEMPLATE_HORIZONTAL_TWO_PERSON;
-			reportData =  PaymentReportPreviewData.getHorizontalTwoPreviewData();
+			reportData = PaymentReportPreviewData.getHorizontalTwoPreviewData();
 			break;
-		case 4:
+		case LayoutItem.ZFOLDED:
 			teamplate = TEAMPLATE_ZFOLDED;
-			reportData =  PaymentReportPreviewData.getZFoldedPreviewData();
+			reportData = PaymentReportPreviewData.getZFoldedPreviewData();
 			break;
-		case 5:
+		case LayoutItem.POSTCARD:
 			teamplate = TEMPLATE_POSTCARD;
-			reportData =  PaymentReportPreviewData.getPostCardPreviewData();
+			reportData = PaymentReportPreviewData.getPostCardPreviewData();
 			break;
 		default:
 			break;

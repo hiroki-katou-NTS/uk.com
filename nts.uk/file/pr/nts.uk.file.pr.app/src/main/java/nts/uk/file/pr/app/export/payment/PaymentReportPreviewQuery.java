@@ -12,6 +12,7 @@ import lombok.Setter;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingOnceDto;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingThreeDto;
 import nts.uk.ctx.pr.report.app.payment.refundsetting.refundpadding.command.dto.RefundPaddingTwoDto;
+import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.LayoutItem;
 import nts.uk.file.pr.app.export.payment.data.dto.PaymentRefundPaddingDto;
 
 /**
@@ -44,22 +45,22 @@ public class PaymentReportPreviewQuery {
 		PaymentRefundPaddingDto dto = new PaymentRefundPaddingDto();
 		int printType = 0;
 		switch (this.getPageLayout()) {
-		case 0:
+		case LayoutItem.VERTICAL_ONE_PERSON:
 			printType = 1;
 			break;
-		case 4:
+		case LayoutItem.ZFOLDED:
 			printType = 1;
 			break;
-		case 5:
+		case LayoutItem.POSTCARD:
 			printType = 1;
 			break;
-		case 1:
+		case LayoutItem.VERTICAL_TWO_PERSON:
 			printType = 2;
 			break;
-		case 3:
+		case LayoutItem.HORIZONTAL_TWO_PERSON:
 			printType = 2;
 			break;
-		case 2:
+		case LayoutItem.VERTICAL_THREE_PERSON:
 			printType = 3;
 			break;
 		default:
