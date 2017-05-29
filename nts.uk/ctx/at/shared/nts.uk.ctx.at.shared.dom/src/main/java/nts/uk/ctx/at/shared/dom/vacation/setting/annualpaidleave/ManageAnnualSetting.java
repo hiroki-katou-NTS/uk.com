@@ -4,17 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
-import lombok.EqualsAndHashCode;
 import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class YearVacationManageSetting.
  */
-@EqualsAndHashCode(callSuper = true, of = {"companyId"})
 public class ManageAnnualSetting extends DomainObject {
-    
-    /** The company id. */
-    private String companyId;
     
     /** The remaining number setting. */
     private RemainingNumberSetting remainingNumberSetting;
@@ -35,7 +30,6 @@ public class ManageAnnualSetting extends DomainObject {
      */
     public ManageAnnualSetting(ManageAnnualSettingGetMemento memento) {
         super();
-        this.companyId = memento.getCompanyId();
         this.remainingNumberSetting = memento.getRemainingNumberSetting();
         this.acquisitionSetting = memento.getAcquisitionSetting();
         this.displaySetting = memento.getDisplaySetting();
@@ -48,7 +42,6 @@ public class ManageAnnualSetting extends DomainObject {
      * @param memento the memento
      */
     public void saveToMemento(ManageAnnualSettingSetMemento memento) {
-        memento.setCompanyId(this.companyId);
         memento.setRemainingNumberSetting(this.remainingNumberSetting);
         memento.setAcquisitionSetting(this.acquisitionSetting);
         memento.setDisplaySetting(this.displaySetting);

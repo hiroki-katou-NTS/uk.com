@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
@@ -24,7 +23,6 @@ public class AnnualPaidLeaveSetting extends AggregateRoot {
     private ManageDistinct yearManageType;
     
     /** The year manage setting. */
-    @Setter
     private ManageAnnualSetting yearManageSetting;
     
     /**

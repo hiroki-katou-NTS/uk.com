@@ -1,12 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,6 +19,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtAnnualPaidLeave;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtAnnualPaidLeave_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet_;
 
 /**
  * The Class JpaAnnualPaidLeaveSettingRepository.
@@ -58,7 +59,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
      * AnnualPaidLeaveSettingRepository#findByCompanyId(java.lang.String)
      */
     @Override
-    public Optional<AnnualPaidLeaveSetting> findByCompanyId(String companyId) {
+    public AnnualPaidLeaveSetting findByCompanyId(String companyId) {
         EntityManager em = this.getEntityManager();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -70,10 +71,15 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
         predicateList.add(builder.equal(root.get(KmfmtAnnualPaidLeave_.cid), companyId));
 
         cq.where(predicateList.toArray(new Predicate[]{}));
+        
+        List<KmfmtAnnualPaidLeave> result = em.createQuery(cq).getResultList();
+        if (result.isEmpty()) {
+            return null;
+        }
+        KmfmtAnnualPaidLeave entity = result.get(0);
+        KmfmtMngAnnualSet entityManage = findManageByCompanyId(companyId);
 
-        return em.createQuery(cq).getResultList().stream()
-                .map(item -> new AnnualPaidLeaveSetting(new JpaAnnualPaidLeaveSettingGetMemento(item)))
-                .findFirst();
+        return new AnnualPaidLeaveSetting(new JpaAnnualPaidLeaveSettingGetMemento(entity, entityManage));
     }
     
     /**
@@ -86,5 +92,27 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
         KmfmtAnnualPaidLeave entity = new KmfmtAnnualPaidLeave();
         setting.saveToMemento(new JpaAnnualPaidLeaveSettingSetMemento(entity));
         return entity;
+    }
+    
+    /**
+     * Find manage by company id.
+     *
+     * @param companyId the company id
+     * @return the kmfmt mng annual set
+     */
+    private KmfmtMngAnnualSet findManageByCompanyId(String companyId) {
+        EntityManager em = this.getEntityManager();
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KmfmtMngAnnualSet> cq = builder.createQuery(KmfmtMngAnnualSet.class);
+        Root<KmfmtMngAnnualSet> root = cq.from(KmfmtMngAnnualSet.class);
+
+        List<Predicate> predicateList = new ArrayList<Predicate>();
+
+        predicateList.add(builder.equal(root.get(KmfmtMngAnnualSet_.cid), companyId));
+
+        cq.where(predicateList.toArray(new Predicate[]{}));
+
+        return em.createQuery(cq).getSingleResult();
     }
 }

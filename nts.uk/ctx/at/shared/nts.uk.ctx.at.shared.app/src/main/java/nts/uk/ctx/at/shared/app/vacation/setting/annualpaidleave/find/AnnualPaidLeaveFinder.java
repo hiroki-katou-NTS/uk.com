@@ -4,16 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.dto.AnnualPaidLeaveSettingFindDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,10 +22,6 @@ public class AnnualPaidLeaveFinder {
     @Inject
     private AnnualPaidLeaveSettingRepository paidLeaveRepo;
     
-    /** The manage repo. */
-    @Inject
-    private ManageAnnualSettingRepository manageRepo;
-    
     /**
      * Find by company id.
      *
@@ -37,13 +29,10 @@ public class AnnualPaidLeaveFinder {
      */
     public AnnualPaidLeaveSettingFindDto findByCompanyId() {
         String companyId = AppContexts.user().companyId();
-        Optional<AnnualPaidLeaveSetting> optional = this.paidLeaveRepo.findByCompanyId(companyId);
-        if (!optional.isPresent()) {
+        AnnualPaidLeaveSetting paidLeaveSetting = this.paidLeaveRepo.findByCompanyId(companyId);
+        if (paidLeaveSetting == null) {
             return null;
         }
-        AnnualPaidLeaveSetting paidLeaveSetting = optional.get();
-        ManageAnnualSetting manageSetting = this.manageRepo.findByCompanyId(companyId);
-        paidLeaveSetting.setYearManageSetting(manageSetting);
         AnnualPaidLeaveSettingFindDto output = new AnnualPaidLeaveSettingFindDto();
         paidLeaveSetting.saveToMemento(output);
         return output;

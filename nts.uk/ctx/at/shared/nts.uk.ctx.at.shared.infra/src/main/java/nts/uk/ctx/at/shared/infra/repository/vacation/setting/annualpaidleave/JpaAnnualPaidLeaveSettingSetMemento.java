@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
@@ -10,24 +10,24 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtAnnualPaidLeave;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet;
 
 /**
  * The Class JpaAnnualPaidLeaveSettingSetMemento.
  */
 public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSettingSetMemento {
 
-	/** The annual paid leave. */
+	/** The entity. */
 	@Inject
-	private KmfmtAnnualPaidLeave annualPaidLeave;
-
+	private KmfmtAnnualPaidLeave entity;
+	
 	/**
 	 * Instantiates a new jpa annual paid leave setting set memento.
 	 *
-	 * @param annualPaidLeave
-	 *            the annual paid leave
+	 * @param entity the entity
 	 */
-	public JpaAnnualPaidLeaveSettingSetMemento(KmfmtAnnualPaidLeave annualPaidLeave) {
-		this.annualPaidLeave = annualPaidLeave;
+	public JpaAnnualPaidLeaveSettingSetMemento(KmfmtAnnualPaidLeave entity) {
+		this.entity = entity;
 	}
 
 	/*
@@ -38,7 +38,7 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.annualPaidLeave.setCid(companyId);
+		this.entity.setCid(companyId);
 	}
 
 	/*
@@ -50,7 +50,7 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
 	 */
 	@Override
 	public void setYearManageType(ManageDistinct yearManageType) {
-		this.annualPaidLeave.setManageAtr(yearManageType.value);
+		this.entity.setManageAtr(yearManageType.value);
 	}
 
 	/*
@@ -62,6 +62,11 @@ public class JpaAnnualPaidLeaveSettingSetMemento implements AnnualPaidLeaveSetti
 	 */
 	@Override
 	public void setYearManageSetting(ManageAnnualSetting yearManageSetting) {
+	    KmfmtMngAnnualSet entityMange = new KmfmtMngAnnualSet();
+	    JpaManageAnnualSettingSetMemento memento = new JpaManageAnnualSettingSetMemento(entityMange);
+	    yearManageSetting.saveToMemento(memento);
+	    entityMange.setCid(this.entity.getCid());
+	    this.entity.setEntityManage(entityMange);
 	}
 
 }

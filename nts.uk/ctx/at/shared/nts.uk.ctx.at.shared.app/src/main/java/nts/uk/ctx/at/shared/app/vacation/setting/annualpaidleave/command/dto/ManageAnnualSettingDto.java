@@ -99,8 +99,7 @@ public class ManageAnnualSettingDto {
 	 */
 	public class ManageAnnualSettingGetMementoImpl implements ManageAnnualSettingGetMemento {
 
-	    /** The company id. */
-    	private String companyId;
+	    private String companyId;
 	    
 		/** The setting. */
 		private ManageAnnualSettingDto setting;
@@ -115,11 +114,14 @@ public class ManageAnnualSettingDto {
 		    this.companyId = companyId;
 			this.setting = setting;
 		}
-
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingGetMemento#getCompanyId()
-		 */
-		@Override
+		
+		/*
+         * (non-Javadoc)
+         * 
+         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+         * ManageAnnualSettingGetMemento#getCompanyId()
+         */
+        @Override
         public String getCompanyId() {
             return this.companyId;
         }

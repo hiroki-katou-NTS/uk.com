@@ -87,7 +87,7 @@ public class AnnualPaidLeaveSaveCommand {
          */
         @Override
         public ManageAnnualSetting getYearManageSetting() {
-            return null;
+            return command.getSetting().toDomain(companyId);
         }
     }
 }

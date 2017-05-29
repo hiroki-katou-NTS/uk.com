@@ -100,7 +100,7 @@ public class KmfmtMngAnnualSet extends UkJpaEntity implements Serializable {
 	/** The enough one day. */
 	@Column(name = "ENOUGH_ONE_DAY")
 	private Integer enoughOneDay;
-
+	
 	/**
 	 * Instantiates a new kmfmt mng annual set.
 	 */

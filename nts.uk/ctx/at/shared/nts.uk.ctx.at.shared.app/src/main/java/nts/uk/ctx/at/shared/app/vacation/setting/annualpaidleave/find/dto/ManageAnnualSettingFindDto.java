@@ -73,7 +73,7 @@ public class ManageAnnualSettingFindDto implements ManageAnnualSettingSetMemento
 
     /** The is enough time one day. */
     public Boolean isEnoughTimeOneDay;
-
+    
     /*
      * (non-Javadoc)
      * 

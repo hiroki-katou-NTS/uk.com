@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.command;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -13,8 +11,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,10 +22,6 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
     /** The annual repo. */
     @Inject
     private AnnualPaidLeaveSettingRepository annualRepo;
-
-    /** The manage annual repo. */
-    @Inject
-    private ManageAnnualSettingRepository manageAnnualRepo;
 
     /*
      * (non-Javadoc)
@@ -44,15 +36,12 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
 
         String companyId = AppContexts.user().companyId();
         AnnualPaidLeaveSetting setting = command.toDomain(companyId);
-        ManageAnnualSetting manageSetting = command.getSetting().toDomain(companyId);
 
-        Optional<AnnualPaidLeaveSetting> optional = this.annualRepo.findByCompanyId(companyId);
-        if (optional.isPresent()) {
+        AnnualPaidLeaveSetting domain = this.annualRepo.findByCompanyId(companyId);
+        if (domain != null) {
             this.annualRepo.update(setting);
-            this.manageAnnualRepo.update(manageSetting);
         } else {
             this.annualRepo.add(setting);
-            this.manageAnnualRepo.add(manageSetting);
         }
     }
 }

@@ -6,9 +6,12 @@ package nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -35,6 +38,11 @@ public class KmfmtAnnualPaidLeave extends UkJpaEntity implements Serializable {
 	/** The manage atr. */
 	@Column(name = "MANAGE_ATR")
 	private int manageAtr;
+	
+	/** The entity manage. */
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private KmfmtMngAnnualSet entityManage;
 
 	/**
 	 * Instantiates a new kmfmt annual paid leave.
