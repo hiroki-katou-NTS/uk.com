@@ -14,9 +14,8 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 /**
  * The Class PaymentReportZFoldedGenerator.
  */
-public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
-	implements PaymentGenerator {
-	
+public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator implements PaymentGenerator {
+
 	/** The Constant PERSON_OF_PAGE. */
 	public static final int PERSON_OF_PAGE = 1;
 
@@ -52,7 +51,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * )
 	 */
 	@Override
-	void printPageContent() {
+	protected void printPageContent() {
 		printPaymentItems();
 		breakLines(1);
 		printDeductionItems();
@@ -71,7 +70,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * ()
 	 */
 	@Override
-	List<CellValue> getHeaderTemplate() {
+	protected List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
 		list.add(new CellValue("B2", "ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ"));
 		// TODO FAKE DATA
@@ -93,7 +92,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * getNumberOfColumnPerItem()
 	 */
 	@Override
-	int getNumberOfColumnPerItem() {
+	protected int getNumberOfColumnPerItem() {
 		return NUMBER_COLUMN_OF_ITEM;
 	}
 
@@ -105,7 +104,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * )
 	 */
 	@Override
-	int getPersonPerPage() {
+	protected int getPersonPerPage() {
 		return PERSON_OF_PAGE;
 	}
 
@@ -116,7 +115,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * getPageHeaderEndCell()
 	 */
 	@Override
-	String getPageHeaderEndCell() {
+	protected String getPageHeaderEndCell() {
 		return "L22";
 	}
 
@@ -127,7 +126,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * getCategoryHeaderCell()
 	 */
 	@Override
-	String getCategoryHeaderCell() {
+	protected String getCategoryHeaderCell() {
 		return "B23";
 	}
 
@@ -138,7 +137,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemNameCell()
 	 */
 	@Override
-	String getItemNameCell() {
+	protected String getItemNameCell() {
 		return "C23";
 	}
 
@@ -150,7 +149,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * )
 	 */
 	@Override
-	String getItemValueCell() {
+	protected String getItemValueCell() {
 		return "C24";
 	}
 
@@ -161,7 +160,7 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkCell()
 	 */
 	@Override
-	String getRemarkCell() {
+	protected String getRemarkCell() {
 		return "C25";
 	}
 
@@ -173,25 +172,32 @@ public class PaymentReportZFoldedGenerator extends PaymentReportBaseGenerator
 	 * ()
 	 */
 	@Override
-	int getRemarkTotalRow() {
+	protected int getRemarkTotalRow() {
 		return REMARK_TOTAL_ROW;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageTopMargin()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageTopMargin(
+	 * )
 	 */
 	@Override
-	BigDecimal getPageTopMargin() {
+	protected BigDecimal getPageTopMargin() {
 		return config.getRefundPaddingOnceDto().getPaddingTop();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageLeftMargin()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageLeftMargin
+	 * ()
 	 */
 	@Override
-	BigDecimal getPageLeftMargin() {
+	protected BigDecimal getPageLeftMargin() {
 		return config.getRefundPaddingOnceDto().getPaddingLeft();
 	}
-	
 
 }

@@ -35,10 +35,9 @@ public class ContactPersonalSettingFinder {
 	public List<ContactPersonalSettingDto> findAll(int processingYm, int processingNo) {
 		String companyCode = AppContexts.user().companyCode();
 		List<ContactPersonalSetting> listSetting = repository.findAll(companyCode, processingYm, processingNo);
-		List<ContactPersonalSettingDto> listDto = listSetting.stream().map(setting -> {
+		return listSetting.stream().map(setting -> {
 			return ContactPersonalSettingDto.builder().employeeId(setting.getEmployeeCode())
 					.comment(setting.getComment().v()).build();
 		}).collect(Collectors.toList());
-		return listDto;
 	}
 }

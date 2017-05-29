@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.payment.conctact;
@@ -128,8 +128,7 @@ public class JpaContactPersonalSettingRepository extends JpaRepository
 	private ContactPersonalSetting toDomain(QctmtCommentMonthPs entity) {
 		JpaContactPersonalSettingGetMemento memento = new JpaContactPersonalSettingGetMemento(
 			entity);
-		ContactPersonalSetting domain = new ContactPersonalSetting(memento);
-		return domain;
+		return new ContactPersonalSetting(memento);
 	}
 
 	/**

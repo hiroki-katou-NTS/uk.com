@@ -16,6 +16,8 @@ import nts.uk.ctx.pr.report.app.payment.contact.command.dto.ContactPersonalSetti
 @Setter
 @Getter
 public class ContactPersonalSettingSaveCommand {
-	List<ContactPersonalSettingSaveDto> listContactPersonalSetting;
+
+	/** The list contact personal setting. */
+	private List<ContactPersonalSettingSaveDto> listContactPersonalSetting;
 
 }

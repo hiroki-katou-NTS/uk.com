@@ -50,7 +50,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemWidth()
 	 */
 	@Override
-	int getNumberOfColumnPerItem() {
+	protected int getNumberOfColumnPerItem() {
 		return NUMBER_OF_COLUMN_PER_ITEM;
 	}
 
@@ -62,7 +62,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * )
 	 */
 	@Override
-	void printPageContent() {
+	protected void printPageContent() {
 		printPaymentItems();
 		printDeductionItems();
 		printAttendanceItems();
@@ -81,7 +81,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * ()
 	 */
 	@Override
-	List<CellValue> getHeaderTemplate() {
+	protected List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
 		list.add(new CellValue("M2", employee.getCompanyInfo().getJapaneseYearMonth()));
 		list.add(new CellValue("B3", employee.getDepartmentInfo().getDepartmentCode()));
@@ -97,7 +97,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * getPageHeaderEndCell()
 	 */
 	@Override
-	String getPageHeaderEndCell() {
+	protected String getPageHeaderEndCell() {
 		return "P4";
 	}
 
@@ -108,7 +108,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * getCategoryHeaderCell()
 	 */
 	@Override
-	String getCategoryHeaderCell() {
+	protected String getCategoryHeaderCell() {
 		return "B5";
 	}
 
@@ -119,7 +119,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemNameCell()
 	 */
 	@Override
-	String getItemNameCell() {
+	protected String getItemNameCell() {
 		return "C5";
 	}
 
@@ -131,7 +131,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * )
 	 */
 	@Override
-	String getItemValueCell() {
+	protected String getItemValueCell() {
 		return "C6";
 	}
 
@@ -142,7 +142,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkCell()
 	 */
 	@Override
-	String getRemarkCell() {
+	protected String getRemarkCell() {
 		return "B7";
 	}
 
@@ -154,7 +154,7 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * )
 	 */
 	@Override
-	int getPersonPerPage() {
+	protected int getPersonPerPage() {
 		return MAX_PERSON_PER_PAGE;
 	}
 
@@ -166,23 +166,31 @@ public class PaymentReportHorizontalTwoGenerator extends PaymentReportBaseGenera
 	 * ()
 	 */
 	@Override
-	int getRemarkTotalRow() {
+	protected int getRemarkTotalRow() {
 		return REMARK_TOTAL_ROW;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageTopMargin()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageTopMargin(
+	 * )
 	 */
 	@Override
-	BigDecimal getPageTopMargin() {
+	protected BigDecimal getPageTopMargin() {
 		return config.getRefundPaddingTwoDto().getUpperAreaPaddingTop();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageLeftMargin()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageLeftMargin
+	 * ()
 	 */
 	@Override
-	BigDecimal getPageLeftMargin() {
+	protected BigDecimal getPageLeftMargin() {
 		return config.getRefundPaddingTwoDto().getPaddingLeft();
 	}
 

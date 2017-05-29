@@ -17,7 +17,40 @@ import nts.uk.file.pr.app.export.payment.data.dto.PaymentSalaryItemDto;
  * The Class PaymentReportPreviewData.
  */
 public class PaymentReportPreviewData {
+
+	/** The Constant _30_ITEM. */
+	public static final int _30_ITEM = 30;
 	
+	/** The Constant _7_ITEM. */
+	public static final int _7_ITEM = 7;
+	
+	/** The Constant _11_ITEM. */
+	public static final int _11_ITEM = 11;
+	
+	/** The Constant _45_ITEM. */
+	public static final int _45_ITEM = 45;
+	
+	/** The Constant _18_ITEM. */
+	public static final int _18_ITEM = 18;
+	
+	/** The Constant _9_ITEM. */
+	public static final int _9_ITEM = 9;
+	
+	/** The Constant _81_ITEM. */
+	public static final int _81_ITEM = 81;
+	
+	/** The Constant _1_PERSON. */
+	public static final int _1_PERSON = 1;
+	
+	/** The Constant _2_PERSON. */
+	public static final int _2_PERSON = 2;
+	
+	/** The Constant _3_PERSON. */
+	public static final int _3_PERSON = 3;
+	
+	/** The Constant REMARK. */
+	public static final String REMARK = "ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ";
+
 	/**
 	 * Gets the post card preview data.
 	 *
@@ -25,15 +58,14 @@ public class PaymentReportPreviewData {
 	 */
 	public static List<PaymentReportDto> getPostCardPreviewData() {
 		PaymentReportDto dto = getCommonData();
-		
-		dto.setAttendanceItems(getPreviewTimeData(30));
-		dto.setPaymentItems(getPreviewData(30));
-		dto.setDeductionItems(getPreviewData(30));
-		dto.setArticleItems(getPreviewData(7));
-		dto.setOtherItems(getPreviewData(11));
 
-		List<PaymentReportDto> list = createList(dto, 1);
-		return list;
+		dto.setAttendanceItems(getPreviewTimeData(_30_ITEM));
+		dto.setPaymentItems(getPreviewData(_30_ITEM));
+		dto.setDeductionItems(getPreviewData(_30_ITEM));
+		dto.setArticleItems(getPreviewData(_7_ITEM));
+		dto.setOtherItems(getPreviewData(_11_ITEM));
+
+		return createList(dto, _1_PERSON);
 	}
 
 	/**
@@ -44,14 +76,13 @@ public class PaymentReportPreviewData {
 	public static List<PaymentReportDto> getHorizontalTwoPreviewData() {
 		PaymentReportDto dto = getCommonData();
 
-		dto.setPaymentItems(getPreviewData(18));
-		dto.setDeductionItems(getPreviewData(18));
-		dto.setAttendanceItems(getPreviewTimeData(18));
-		dto.setArticleItems(getPreviewData(9));
-		dto.setOtherItems(getPreviewData(9));
+		dto.setPaymentItems(getPreviewData(_18_ITEM));
+		dto.setDeductionItems(getPreviewData(_18_ITEM));
+		dto.setAttendanceItems(getPreviewTimeData(_18_ITEM));
+		dto.setArticleItems(getPreviewData(_9_ITEM));
+		dto.setOtherItems(getPreviewData(_9_ITEM));
 
-		List<PaymentReportDto> list = createList(dto, 2);
-		return list;
+		return createList(dto, _2_PERSON);
 	}
 
 	/**
@@ -62,14 +93,13 @@ public class PaymentReportPreviewData {
 	public static List<PaymentReportDto> getVerticalTwoPreviewData() {
 		PaymentReportDto dto = getCommonData();
 
-		dto.setPaymentItems(getPreviewData(45));
-		dto.setDeductionItems(getPreviewData(45));
-		dto.setAttendanceItems(getPreviewTimeData(45));
-		dto.setArticleItems(getPreviewData(9));
-		dto.setOtherItems(getPreviewData(9));
+		dto.setPaymentItems(getPreviewData(_45_ITEM));
+		dto.setDeductionItems(getPreviewData(_45_ITEM));
+		dto.setAttendanceItems(getPreviewTimeData(_45_ITEM));
+		dto.setArticleItems(getPreviewData(_9_ITEM));
+		dto.setOtherItems(getPreviewData(_9_ITEM));
 
-		List<PaymentReportDto> list = createList(dto, 2);
-		return list;
+		return createList(dto, _2_PERSON);
 	}
 
 	/**
@@ -80,14 +110,13 @@ public class PaymentReportPreviewData {
 	public static List<PaymentReportDto> getVerticalThreePreviewData() {
 		PaymentReportDto dto = getCommonData();
 
-		dto.setPaymentItems(getPreviewData(18));
-		dto.setDeductionItems(getPreviewData(18));
-		dto.setAttendanceItems(getPreviewTimeData(18));
-		dto.setArticleItems(getPreviewData(9));
-		dto.setOtherItems(getPreviewData(9));
+		dto.setPaymentItems(getPreviewData(_18_ITEM));
+		dto.setDeductionItems(getPreviewData(_18_ITEM));
+		dto.setAttendanceItems(getPreviewTimeData(_18_ITEM));
+		dto.setArticleItems(getPreviewData(_9_ITEM));
+		dto.setOtherItems(getPreviewData(_9_ITEM));
 
-		List<PaymentReportDto> list = createList(dto, 3);
-		return list;
+		return createList(dto, _3_PERSON);
 	}
 
 	/**
@@ -97,14 +126,13 @@ public class PaymentReportPreviewData {
 	 */
 	public static List<PaymentReportDto> getVerticalOnePreviewData() {
 		PaymentReportDto dto = getCommonData();
-		dto.setPaymentItems(getPreviewData(81));
-		dto.setDeductionItems(getPreviewData(81));
-		dto.setAttendanceItems(getPreviewTimeData(81));
-		dto.setArticleItems(getPreviewData(9));
-		dto.setOtherItems(getPreviewData(9));
+		dto.setPaymentItems(getPreviewData(_81_ITEM));
+		dto.setDeductionItems(getPreviewData(_81_ITEM));
+		dto.setAttendanceItems(getPreviewTimeData(_81_ITEM));
+		dto.setArticleItems(getPreviewData(_9_ITEM));
+		dto.setOtherItems(getPreviewData(_9_ITEM));
 
-		List<PaymentReportDto> list = createList(dto, 1);
-		return list;
+		return createList(dto, _1_PERSON);
 	}
 
 	/**
@@ -115,14 +143,13 @@ public class PaymentReportPreviewData {
 	public static List<PaymentReportDto> getZFoldedPreviewData() {
 		PaymentReportDto dto = getCommonData();
 
-		dto.setPaymentItems(getPreviewData(45));
-		dto.setDeductionItems(getPreviewData(45));
-		dto.setAttendanceItems(getPreviewTimeData(45));
-		dto.setArticleItems(getPreviewData(18));
-		dto.setOtherItems(getPreviewData(9));
+		dto.setPaymentItems(getPreviewData(_45_ITEM));
+		dto.setDeductionItems(getPreviewData(_45_ITEM));
+		dto.setAttendanceItems(getPreviewTimeData(_45_ITEM));
+		dto.setArticleItems(getPreviewData(_18_ITEM));
+		dto.setOtherItems(getPreviewData(_9_ITEM));
 
-		List<PaymentReportDto> list = createList(dto, 1);
-		return list;
+		return createList(dto, _1_PERSON);
 	}
 
 	/**
@@ -135,7 +162,7 @@ public class PaymentReportPreviewData {
 		dto.setDepartmentInfo(PaymentDepartmentDto.getPreviewData());
 		dto.setCompanyInfo(PaymentCompanyDto.getPreviewData());
 		dto.setEmployeeInfo(PaymentEmployeeDto.getPreviewData());
-		dto.setRemark("ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ");
+		dto.setRemark(REMARK);
 		return dto;
 	}
 

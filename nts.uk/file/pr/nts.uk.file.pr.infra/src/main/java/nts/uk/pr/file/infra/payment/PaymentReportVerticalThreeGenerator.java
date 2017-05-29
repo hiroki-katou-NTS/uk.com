@@ -51,7 +51,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * )
 	 */
 	@Override
-	void printPageContent() {
+	protected void printPageContent() {
 		printPaymentItems();
 		printDeductionItems();
 		printAttendanceItems();
@@ -71,7 +71,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * ()
 	 */
 	@Override
-	List<CellValue> getHeaderTemplate() {
+	protected List<CellValue> getHeaderTemplate() {
 		List<CellValue> list = new ArrayList<>();
 		list.add(new CellValue("S2", employee.getCompanyInfo().getJapaneseYearMonth()));
 		list.add(new CellValue("B3", employee.getDepartmentInfo().getDepartmentCode()));
@@ -87,7 +87,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemWidth()
 	 */
 	@Override
-	int getNumberOfColumnPerItem() {
+	protected int getNumberOfColumnPerItem() {
 		return NUMBER_OF_COLUMN_PER_ITEM;
 	}
 
@@ -99,7 +99,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * )
 	 */
 	@Override
-	int getPersonPerPage() {
+	protected int getPersonPerPage() {
 		return MAX_PERSON_PER_PAGE;
 	}
 
@@ -110,7 +110,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * getPageHeaderEndCell()
 	 */
 	@Override
-	String getPageHeaderEndCell() {
+	protected String getPageHeaderEndCell() {
 		return "AC4";
 	}
 
@@ -121,7 +121,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * getCategoryHeaderCell()
 	 */
 	@Override
-	String getCategoryHeaderCell() {
+	protected String getCategoryHeaderCell() {
 		return "B5";
 	}
 
@@ -132,7 +132,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemNameCell()
 	 */
 	@Override
-	String getItemNameCell() {
+	protected String getItemNameCell() {
 		return "C5";
 	}
 
@@ -144,7 +144,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * )
 	 */
 	@Override
-	String getItemValueCell() {
+	protected String getItemValueCell() {
 		return "C6";
 	}
 
@@ -155,7 +155,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkCell()
 	 */
 	@Override
-	String getRemarkCell() {
+	protected String getRemarkCell() {
 		return "B7";
 	}
 
@@ -167,7 +167,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * ()
 	 */
 	@Override
-	int getRemarkTotalRow() {
+	protected int getRemarkTotalRow() {
 		return REMARK_TOTAL_ROW;
 	}
 
@@ -179,7 +179,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * )
 	 */
 	@Override
-	BigDecimal getPageTopMargin() {
+	protected BigDecimal getPageTopMargin() {
 		return config.getRefundPaddingThreeDto().getUpperAreaPaddingTop();
 	}
 
@@ -191,7 +191,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 	 * ()
 	 */
 	@Override
-	BigDecimal getPageLeftMargin() {
+	protected BigDecimal getPageLeftMargin() {
 		return config.getRefundPaddingThreeDto().getPaddingLeft();
 	}
 

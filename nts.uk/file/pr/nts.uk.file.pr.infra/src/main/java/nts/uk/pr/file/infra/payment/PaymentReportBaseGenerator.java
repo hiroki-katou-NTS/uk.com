@@ -32,17 +32,8 @@ import nts.uk.file.pr.app.export.payment.data.dto.PaymentSalaryItemDto;
  */
 public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 
-	/** The template style. */
-	protected TemplateStyle templateStyle;
-
 	/** The work sheet. */
 	protected Worksheet workSheet;
-
-	/** The cells. */
-	protected Cells cells;
-
-	/** The page setup. */
-	protected PageSetup pageSetup;
 
 	/** The config. */
 	protected PaymentRefundPaddingDto config;
@@ -50,11 +41,20 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	/** The employee. */
 	protected PaymentReportDto employee;
 
-	/** The page header range. */
-	protected Range pageHeaderRange;
-
 	/** The payment report data. */
 	protected PaymentReportData paymentReportData;
+
+	/** The page header range. */
+	private Range pageHeaderRange;
+
+	/** The cells. */
+	private Cells cells;
+
+	/** The page setup. */
+	private PageSetup pageSetup;
+
+	/** The template style. */
+	private TemplateStyle templateStyle;
 
 	/** The number of column per item. */
 	private int numberOfColumnPerItem;
@@ -88,82 +88,82 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 *
 	 * @return the number of column per item
 	 */
-	abstract int getNumberOfColumnPerItem();
+	protected abstract int getNumberOfColumnPerItem();
 
 	/**
 	 * Gets the person per page.
 	 *
 	 * @return the person per page
 	 */
-	abstract int getPersonPerPage();
+	protected abstract int getPersonPerPage();
 
 	/**
 	 * Gets the page header end cell.
 	 *
 	 * @return the page header end cell
 	 */
-	abstract String getPageHeaderEndCell();
+	protected abstract String getPageHeaderEndCell();
 
 	/**
 	 * Gets the category header cell.
 	 *
 	 * @return the category header cell
 	 */
-	abstract String getCategoryHeaderCell();
+	protected abstract String getCategoryHeaderCell();
 
 	/**
 	 * Gets the item name cell.
 	 *
 	 * @return the item name cell
 	 */
-	abstract String getItemNameCell();
+	protected abstract String getItemNameCell();
 
 	/**
 	 * Gets the item value cell.
 	 *
 	 * @return the item value cell
 	 */
-	abstract String getItemValueCell();
+	protected abstract String getItemValueCell();
 
 	/**
 	 * Gets the remark cell.
 	 *
 	 * @return the remark cell
 	 */
-	abstract String getRemarkCell();
+	protected abstract String getRemarkCell();
 
 	/**
 	 * Prints the page content.
 	 */
-	abstract void printPageContent();
+	protected abstract void printPageContent();
 
 	/**
 	 * Gets the remark total row.
 	 *
 	 * @return the remark total row
 	 */
-	abstract int getRemarkTotalRow();
+	protected abstract int getRemarkTotalRow();
 
 	/**
 	 * Gets the header template.
 	 *
 	 * @return the header template
 	 */
-	abstract List<CellValue> getHeaderTemplate();
+	protected abstract List<CellValue> getHeaderTemplate();
 
 	/**
 	 * Gets the page top margin.
 	 *
 	 * @return the page top margin
 	 */
-	abstract BigDecimal getPageTopMargin();
+	protected abstract BigDecimal getPageTopMargin();
 
 	/**
 	 * Gets the page left margin.
 	 *
 	 * @return the page left margin
 	 */
-	abstract BigDecimal getPageLeftMargin();
+	protected abstract BigDecimal getPageLeftMargin();
 
 	/**
 	 * Break page.

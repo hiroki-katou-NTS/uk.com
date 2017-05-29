@@ -15,11 +15,11 @@ import nts.uk.shr.com.primitive.sample.ProcessingNo;
 @Getter
 public class ContactPersonalSetting extends AggregateRoot {
 
-	/** The pay bonus atr. */
-	public static int PAY_BONUS_ATR = 0;
+	/** The Constant PAY_BONUS_ATR. */
+	public static final int PAY_BONUS_ATR = 0;
 
-	/** The spare pay atr. */
-	public static int SPARE_PAY_ATR = 0;
+	/** The Constant SPARE_PAY_ATR. */
+	public static final int SPARE_PAY_ATR = 0;
 
 	/** The company code. */
 	private String companyCode;

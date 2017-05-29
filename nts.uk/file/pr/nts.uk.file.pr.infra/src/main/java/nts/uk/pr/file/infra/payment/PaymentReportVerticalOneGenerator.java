@@ -14,8 +14,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 /**
  * The Class PaymentReportVerticalOneGenerator.
  */
-public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerator
-	implements PaymentGenerator {
+public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerator implements PaymentGenerator {
 
 	/** The Constant PERSON_OF_PAGE. */
 	public static final int PERSON_OF_PAGE = 1;
@@ -51,7 +50,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * )
 	 */
 	@Override
-	void printPageContent() {
+	protected void printPageContent() {
 		printPaymentItems();
 		printDeductionItems();
 
@@ -69,9 +68,8 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * ()
 	 */
 	@Override
-	List<CellValue> getHeaderTemplate() {
-		List<CellValue> list = new ArrayList<>();
-		return list;
+	protected List<CellValue> getHeaderTemplate() {
+		return new ArrayList<CellValue>();
 	}
 
 	/*
@@ -81,7 +79,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * getNumberOfColumnPerItem()
 	 */
 	@Override
-	int getNumberOfColumnPerItem() {
+	protected int getNumberOfColumnPerItem() {
 		return NUMBER_COLUMN_OF_ITEM;
 	}
 
@@ -93,7 +91,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * )
 	 */
 	@Override
-	int getPersonPerPage() {
+	protected int getPersonPerPage() {
 		return PERSON_OF_PAGE;
 	}
 
@@ -104,7 +102,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * getPageHeaderEndCell()
 	 */
 	@Override
-	String getPageHeaderEndCell() {
+	protected String getPageHeaderEndCell() {
 		return "J5";
 	}
 
@@ -115,7 +113,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * getCategoryHeaderCell()
 	 */
 	@Override
-	String getCategoryHeaderCell() {
+	protected String getCategoryHeaderCell() {
 		return "B6";
 	}
 
@@ -126,7 +124,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getItemNameCell()
 	 */
 	@Override
-	String getItemNameCell() {
+	protected String getItemNameCell() {
 		return "C6";
 	}
 
@@ -138,7 +136,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * )
 	 */
 	@Override
-	String getItemValueCell() {
+	protected String getItemValueCell() {
 		return "C7";
 	}
 
@@ -149,7 +147,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getRemarkCell()
 	 */
 	@Override
-	String getRemarkCell() {
+	protected String getRemarkCell() {
 		return "C8";
 	}
 
@@ -161,23 +159,31 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	 * ()
 	 */
 	@Override
-	int getRemarkTotalRow() {
+	protected int getRemarkTotalRow() {
 		return REMARK_TOTAL_ROW;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageTopMargin()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageTopMargin(
+	 * )
 	 */
 	@Override
-	BigDecimal getPageTopMargin() {
+	protected BigDecimal getPageTopMargin() {
 		return config.getRefundPaddingOnceDto().getPaddingTop();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageLeftMargin()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.pr.file.infra.payment.PaymentReportBaseGenerator#getPageLeftMargin
+	 * ()
 	 */
 	@Override
-	BigDecimal getPageLeftMargin() {
+	protected BigDecimal getPageLeftMargin() {
 		return config.getRefundPaddingOnceDto().getPaddingLeft();
 	}
 
