@@ -28,6 +28,7 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 		String companyId = AppContexts.user().companyId();
 		DivergenceTime divTime = DivergenceTime.createSimpleFromJavaType(companyId,
 									context.getCommand().getDivTime().getDivTimeId(),
+									context.getCommand().getDivTime().getAttendanceId(),
 									context.getCommand().getDivTime().getDivTimeName(),
 									context.getCommand().getDivTime().getDivTimeUseSet(),
 									context.getCommand().getDivTime().getAlarmTime(),

@@ -10,6 +10,8 @@ public class DivergenceTime {
 	private String companyId;
 	/*乖離時間ID*/
 	private int divTimeId;
+	/*勤怠項目ID*/
+	private int attendanceId;
 	/*乖離時間名称*/
 	private String divTimeName;
 	/*乖離時間使用設定*/
