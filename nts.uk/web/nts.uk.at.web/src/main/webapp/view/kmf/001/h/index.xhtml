@@ -53,9 +53,10 @@
 								<!-- ＃KMF001_93 enum  管理区分 -->
 								<div class="btn-switch"
 									data-bind="ntsSwitchButton: {
-									options: switchApplyDs,
-									optionsValue: 'code',
-									optionsText: 'name'}"></div>
+									options: manageDistinctEnums,
+									optionsValue: 'fieldName',
+									optionsText: 'localizedName',
+									value: settingModel().isManage}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -80,13 +81,14 @@
 													<td>
 														<div id="combo-box"
 															data-bind="ntsComboBox: {
-																		options: expirationDateList,
-																		optionsValue: 'code',
-																		value: selectedCode,
-																		optionsText: 'name',
+																		options: vacationExpirationEnums,
+																		optionsValue: 'fieldName',
+																		optionsText: 'localizedName',
+																		value: settingModel().expirationDate,
 																		editable: false,
+																		enable: true,
 																		columns: [
-																			{ prop: 'name', length: 4 },
+																			{ prop: 'localizedName', length: 40 }
 																		]}">
 														</div>
 													</td>
@@ -97,9 +99,10 @@
 													</td>
 													<td><div
 															data-bind="ntsSwitchButton: {
-															options: switchApplyDs,
-															optionsValue: 'code',
-															optionsText: 'name'}">
+															options: applyPermissionEnums,
+															optionsValue: 'fieldName',
+															optionsText: 'localizedName',
+															value: settingModel().allowPrepaidLeave}">
 														</div></td>
 												</tr>
 											</table>
@@ -116,7 +119,7 @@
 					<span class="title">雇用</span>
 					<button>
 						<!-- ＃KMF001_27 -->
-						←休暇の選択に戻る
+						休暇の選択に戻る
 					</button>
 
 					<button class="proceed">
