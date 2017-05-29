@@ -11,6 +11,7 @@
 			<com:scriptfile path="kmf001.h.service.js" />
 			<com:scriptfile path="kmf001.h.vm.js" />
 			<com:scriptfile path="kmf001.h.start.js" />
+			<com:scriptfile set="IGNITE" />
 		</ui:define>
 
 		<ui:define name="sidebar">
@@ -79,18 +80,18 @@
 														<!-- ＃KMF001_94 --> 使用期限
 													</td>
 													<td>
-														<div id="combo-box"
+														<div
 															data-bind="ntsComboBox: {
-																		options: vacationExpirationEnums,
-																		optionsValue: 'fieldName',
-																		optionsText: 'localizedName',
-																		value: settingModel().expirationDate,
-																		editable: false,
-																		enable: true,
-																		columns: [
-																			{ prop: 'localizedName', length: 40 }
-																		]}">
-														</div>
+																			options: vacationExpirationEnums,
+																			optionsValue: 'fieldName',
+																			value: settingModel().expirationDate,
+																			optionsText: 'localizedName',
+																			editable: false,
+																			enable: true,
+																			columns: [
+																				{ prop: 'fieldName', length: 4 },
+																				{ prop: 'localizedName', length: 10 },
+																			]}"></div>
 													</td>
 												</tr>
 												<tr>
