@@ -24,9 +24,11 @@ public class JpaCompensatoryLeaveComGetMemento implements CompensatoryLeaveComGe
     private KmfmtCompensLeaveCom entity;
 
     /** The entity normal. */
+    @Inject
     private KmfmtNormalVacationSet entityNormal;
     
     /** The entity occur. */
+    @Inject
     private KmfmtOccurVacationSet entityOccur;
 
     /**
