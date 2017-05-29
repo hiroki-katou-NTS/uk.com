@@ -76,7 +76,9 @@ module nts.uk.com.view.ccg015.a {
                         }
                     }
                     else {
-                        self.newTopPage();
+                        self.topPageModel(new TopPageModel());
+                        self.isNewMode(true);
+                        $("#inp_code").focus();
                     }
                     dfd.resolve();
                 });
