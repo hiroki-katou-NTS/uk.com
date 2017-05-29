@@ -10,10 +10,10 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 public enum Category {
 
 	/** The Setting. */
-	Setting(1, "設定する"),
+	Setting(0, "設定する"),
 
 	/** The No setting. */
-	NoSetting(0, "設定しない");
+	NoSetting(1, "設定しない");
 
 	/** The value. */
 	public int value;

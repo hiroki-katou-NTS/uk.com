@@ -57,8 +57,8 @@ public class KmfstAcquisitionRule extends UkJpaEntity implements Serializable {
 	private int specialHoliday;
 
 	/** The setting classfication. */
-	@Column(name = "SETTING_CLASSFICATION")
-	private int settingClassfication;
+	@Column(name = "CATEGORY")
+	private int category;
 
 	public KmfstAcquisitionRule() {
 		super();

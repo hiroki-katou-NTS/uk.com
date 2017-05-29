@@ -19,13 +19,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
 public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 
 	/** The company id. */
-	private String companyId;
+	public String companyId;
 
 	/** The setting class. */
-	private Category settingClass;
+	public Category settingClass;
 
 	/** The va ac orders. */
-	private List<AcquisitionOrderItemDto> vaAcOrders;
+	public List<AcquisitionOrderItemDto> vaAcOrders;
 
 	/*
 	 * (non-Javadoc)

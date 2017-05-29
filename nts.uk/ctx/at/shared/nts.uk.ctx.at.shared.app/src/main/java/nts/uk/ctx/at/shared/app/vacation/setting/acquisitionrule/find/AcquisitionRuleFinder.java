@@ -32,8 +32,7 @@ public class AcquisitionRuleFinder {
 	 */
 	public AcquisitionRuleDto find() {
 		String companyId = AppContexts.user().companyId();
-		Optional<AcquisitionRule> vaAcRule = repo.findById(companyId);
-		
+		Optional<AcquisitionRule> vaAcRule = repo.findById(companyId);		
 		if (vaAcRule.isPresent()) {
 			AcquisitionRuleDto dto = AcquisitionRuleDto.builder().build();
 			vaAcRule.get().saveToMemento(dto);

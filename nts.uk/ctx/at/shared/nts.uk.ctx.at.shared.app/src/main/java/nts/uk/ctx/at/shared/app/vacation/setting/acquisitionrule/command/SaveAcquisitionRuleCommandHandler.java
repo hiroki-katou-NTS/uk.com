@@ -44,6 +44,7 @@ public class SaveAcquisitionRuleCommandHandler extends CommandHandler<Acquisitio
 
 		// Update VacationAcquisitionRule
 		Optional<AcquisitionRule> optVaAcRule = this.vaRepo.findById(companyId);
+		
 		if (optVaAcRule.isPresent()) {
 			this.vaRepo.update(acquisitionRule);
 		} else {

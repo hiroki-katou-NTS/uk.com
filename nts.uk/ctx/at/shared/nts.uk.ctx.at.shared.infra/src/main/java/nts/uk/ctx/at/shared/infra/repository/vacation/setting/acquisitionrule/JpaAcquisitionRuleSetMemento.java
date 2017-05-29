@@ -50,7 +50,7 @@ public class JpaAcquisitionRuleSetMemento implements AcquisitionRuleSetMemento {
 	 */
 	@Override
 	public void setSettingclassification(Category settingclassification) {
-		this.typeValue.setSettingClassfication(settingclassification.value);
+		this.typeValue.setCategory(settingclassification.value);
 	}
 
 	/*

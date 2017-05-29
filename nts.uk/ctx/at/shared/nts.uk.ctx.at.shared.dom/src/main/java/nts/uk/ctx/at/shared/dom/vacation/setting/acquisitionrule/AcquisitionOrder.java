@@ -5,11 +5,13 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class AcquisitionOrder.
  */
 @Getter
+@NoArgsConstructor
 public class AcquisitionOrder {
 
 	/** The vacation type. */
@@ -24,6 +26,12 @@ public class AcquisitionOrder {
 	 * @param memento
 	 *            the memento
 	 */
+	
+	public AcquisitionOrder(AcquisitionType vacationType, Priority priority) {
+		this.vacationType = vacationType;
+		this.priority = priority;
+	}
+	
 	public AcquisitionOrder(AcquisitionOrderGetMemento memento) {
 		super();
 		this.vacationType = memento.getVacationType();

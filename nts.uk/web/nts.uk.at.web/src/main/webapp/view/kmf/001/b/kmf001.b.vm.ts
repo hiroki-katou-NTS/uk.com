@@ -1,11 +1,14 @@
 module nts.uk.pr.view.kmf001.b {
     export module viewmodel {
+
         import EnumertionModel = service.model.EnumerationModel;
+
         export class ScreenModel {
-            listAcquisitionDto: KnockoutObservableArray<ListAcquisitionModel>;
+
             priority: KnockoutObservableArray<EnumertionModel>;
             selectedPriority: KnockoutObservable<number>;
             enableInputPriority: KnockoutObservable<boolean>;
+
             annualPaidLeave: KnockoutObservable<number>;
             compensatoryDayOff: KnockoutObservable<number>;
             substituteHoliday: KnockoutObservable<number>;
@@ -13,24 +16,40 @@ module nts.uk.pr.view.kmf001.b {
             exsessHoliday: KnockoutObservable<number>;
             specialHoliday: KnockoutObservable<number>;
 
+            enableHelpButton: KnockoutObservable<boolean>;
+
             constructor() {
+
                 let self = this;
                 self.priority = ko.observableArray([
                     { value: 0, name: "設定する" },
                     { value: 1, name: "設定しない" }
                 ]);
+
                 self.selectedPriority = ko.observable(0);
                 self.enableInputPriority = ko.computed(function() {
                     return self.selectedPriority() == 0;
                 }, self);
+
                 self.annualPaidLeave = ko.observable(null);
                 self.compensatoryDayOff = ko.observable(null);
                 self.substituteHoliday = ko.observable(null);
                 self.fundedPaidHoliday = ko.observable(null);
                 self.exsessHoliday = ko.observable(null);
                 self.specialHoliday = ko.observable(null);
+
+                self.enableHelpButton = ko.observable(true);
+
+                // SUBSCRIBE
+                self.selectedPriority.subscribe(function() {
+                    self.clearError();
+                });
+                self.closeDialog = function() {
+                    nts.uk.ui.windows.close();
+                };
             }
             public startPage(): JQueryPromise<any> {
+
                 var self = this;
                 var dfd = $.Deferred<void>();
                 $.when(self.loadAcquisitionRule()).done(function(res) {
@@ -41,34 +60,13 @@ module nts.uk.pr.view.kmf001.b {
                 });
                 return dfd.promise();
             }
-            private setList(): void {
-                let self = this;
-                let command: any = {}; 
-                command.settingClassification =  self.selectedPriority();             
-                let acquisitionOrderList: Array<any>;
-                let acquisition: any = {};
-                acquisition.vacationType = 1;
-                acquisition.priority = self.annualPaidLeave();
-                acquisitionOrderList.push(acquisition);
-                acquisition.vacationType = 2;
-                acquisition.priority = self.compensatoryDayOff();
-                acquisitionOrderList.push(acquisition);
-                acquisition.vacationType = 3;
-                acquisition.priority = self.substituteHoliday();
-                acquisitionOrderList.push(acquisition);
-                acquisition.vacationType = 4;
-                acquisition.priority = self.annualPaidLeave();
-                acquisitionOrderList.push(acquisition);
-                acquisition.vacationType = 5;
-                acquisition.priority = self.exsessHoliday();
-                acquisitionOrderList.push(acquisition);
-                acquisition.vacationType = 6;
-                acquisition.priority = self.specialHoliday();
-                acquisitionOrderList.push(acquisition);
-                
-                command.vaAcRule = acquisitionOrderList;
-                return command;
+
+            //CLOSE DIALOG
+            public closeDialog(): void {
+                nts.uk.ui.windows.close();
             }
+
+            //LOAD ACQUISITION RULE
             private loadAcquisitionRule(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -82,37 +80,15 @@ module nts.uk.pr.view.kmf001.b {
                 });
                 return dfd.promise();
             }
-            private closeCheck(): void {
-                var self = this;
-                self.closeDialog();
-            }
-            private update(): void {
-                let self = this;
-                let dfd = $.Deferred();
-                if (!self.validate()) {
-                    return;
-                }
-                let command = self.setList();
-                service.updateAcquisitionRule(command).done(function() {
-                    self.loadAcquisitionRule().done(function(res) {
-                        // Msg_15
-                        nts.uk.ui.dialog.alert("年休設定の登録");
-                        dfd.resolve();
-                    });
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
-                });
-            }
- 
-            /**
-             * Close dialog.
-             */
-            private closeDialog(): void {
-                nts.uk.ui.windows.close();
-            }
+
+            //GET PRIORITY
             private initUI(res: any): any {
                 let self = this;
-                self.selectedPriority(res.settingClass);
+                if (res.settingClass == "Setting") {
+                    self.selectedPriority(0);
+                } else {
+                    self.selectedPriority(1);
+                }
                 res.vaAcOrders.forEach(item => {
                     if (item.vacationType == 1) {
                         self.annualPaidLeave(item.priority);
@@ -134,6 +110,102 @@ module nts.uk.pr.view.kmf001.b {
                     }
                 });
             }
+
+            //CLICK SAVE TO DB
+            public saveToDb(): void {
+                let self = this;
+                let dfd = $.Deferred();
+                if (!self.validate()) {
+                    return;
+                } else {
+                    let command = self.setList();
+                    service.updateAcquisitionRule(command).done(function() {
+                        self.loadAcquisitionRule().done(function(res) {
+                            // Msg_15
+                            nts.uk.ui.dialog.alert("登録しました。").then(function() {
+                                self.closeDialog();
+                            });
+                            dfd.resolve();
+                        });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
+
+                }
+            }
+
+            //SET DATA
+            private setList(): void {
+                let self = this;
+                let command: any = {};
+                if (self.selectedPriority() == 0) {
+                    command.settingClassification = "Setting";
+                } else {
+                    command.settingClassification = "NoSetting";
+                }
+                let acquisitionOrderList = new Array();
+
+                let acquisitionAnnualPaidLeave: any = {};
+                acquisitionAnnualPaidLeave.vacationType = "AnnualPaidLeave";
+                acquisitionAnnualPaidLeave.priority = +self.annualPaidLeave();
+                acquisitionOrderList.push(acquisitionAnnualPaidLeave);
+
+                let acquisitionCompensatoryDayOff: any = {};
+                acquisitionCompensatoryDayOff.vacationType = "CompensatoryDayOff";
+                acquisitionCompensatoryDayOff.priority = +self.compensatoryDayOff();
+                acquisitionOrderList.push(acquisitionCompensatoryDayOff);
+
+                let acquisitionSubstituteHoliday: any = {};
+                acquisitionSubstituteHoliday.vacationType = "SubstituteHoliday";
+                acquisitionSubstituteHoliday.priority = +self.substituteHoliday();
+                acquisitionOrderList.push(acquisitionSubstituteHoliday);
+
+                let acquisitionFundedPaidHoliday: any = {};
+                acquisitionFundedPaidHoliday.vacationType = "FundedPaidHoliday";
+                acquisitionFundedPaidHoliday.priority = +self.fundedPaidHoliday();
+                acquisitionOrderList.push(acquisitionFundedPaidHoliday);
+
+                let acquisitionExsessHoliday: any = {};
+                acquisitionExsessHoliday.vacationType = "ExsessHoliday";
+                acquisitionExsessHoliday.priority = +self.exsessHoliday();
+                acquisitionOrderList.push(acquisitionExsessHoliday);
+
+                let acquisitionSpecialHoliday: any = {};
+                acquisitionSpecialHoliday.vacationType = "SpecialHoliday";
+                acquisitionSpecialHoliday.priority = +self.specialHoliday();
+                acquisitionOrderList.push(acquisitionSpecialHoliday);
+
+                command.vaAcRule = acquisitionOrderList;
+                return command;
+            }
+
+            private validate(): boolean {
+                let self = this;
+                if ($('.nts-input').ntsError('hasError')) {
+                    return false;
+                }
+                if (self.enableInputPriority()) {
+                    $('#annual-paid-leave').ntsEditor('validate');
+                    $('#compensatory-day-off').ntsEditor('validate');
+                    $('#substitute-holiday').ntsEditor('validate');
+                    $('#funded-paid-holiday').ntsEditor('validate');
+                    $('#exsess-holiday').ntsEditor('validate');
+                    $('#special-holiday').ntsEditor('validate');
+                }
+                return true;
+            }
+            private clearError(): void {
+                if (!$('.nts-input').ntsError('hasError')) {
+                    return;
+                }
+                $('#annual-paid-leave').ntsError('clear');
+                $('#compensatory-day-off').ntsError('clear');
+                $('#substitute-holiday').ntsError('clear');
+                $('#funded-paid-holiday').ntsError('clear');
+                $('#exsess-holiday').ntsError('clear');
+                $('#special-holiday').ntsError('clear');
+            }
+
         }
         export class AcquisitionOrder {
             vacationType: number;
