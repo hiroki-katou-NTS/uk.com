@@ -21,7 +21,7 @@ public class EmploymentSettingFinder {
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get companycode by user login
-		String companyId = loginUserContext.companyCode();
+		String companyId = loginUserContext.companyId();
 		
 		EmploymentSettingFindDto outputData = new EmploymentSettingFindDto();
 		

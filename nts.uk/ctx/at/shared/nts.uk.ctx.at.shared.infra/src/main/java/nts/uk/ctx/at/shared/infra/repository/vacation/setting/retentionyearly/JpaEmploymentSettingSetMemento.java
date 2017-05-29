@@ -12,20 +12,26 @@ public class JpaEmploymentSettingSetMemento implements EmploymentSettingSetMemen
 
 	public JpaEmploymentSettingSetMemento(KmfmtRetentionEmpCtr typeValue) {
 		this.typeValue = typeValue;
+		if(this.typeValue.getKmfmtRetentionEmpCtrPK() == null) {
+			this.typeValue.setKmfmtRetentionEmpCtrPK(new KmfmtRetentionEmpCtrPK());
+		}
+		
 	}
 	
 	@Override
 	public void setCompanyId(String companyId) {
-		KmfmtRetentionEmpCtrPK retentionEmpPK = new KmfmtRetentionEmpCtrPK();
-		retentionEmpPK.setCid(companyId);
-		this.typeValue.setKmfmtRetentionEmpCtrPK(retentionEmpPK);
+//		KmfmtRetentionEmpCtrPK retentionEmpPK = new KmfmtRetentionEmpCtrPK();
+//		retentionEmpPK.setCid(companyId);
+//		this.typeValue.setKmfmtRetentionEmpCtrPK(retentionEmpPK);
+		this.typeValue.getKmfmtRetentionEmpCtrPK().setCid(companyId);
 	}
 
 	@Override
 	public void setEmploymentCode(String employmentCode) {
-		KmfmtRetentionEmpCtrPK retentionEmpPK = new KmfmtRetentionEmpCtrPK();
-		retentionEmpPK.setEmpCtrCd(employmentCode);
-		this.typeValue.setKmfmtRetentionEmpCtrPK(retentionEmpPK);
+//		KmfmtRetentionEmpCtrPK retentionEmpPK = new KmfmtRetentionEmpCtrPK();
+//		retentionEmpPK.setEmpCtrCd(employmentCode);
+//		this.typeValue.setKmfmtRetentionEmpCtrPK(retentionEmpPK);
+		this.typeValue.getKmfmtRetentionEmpCtrPK().setEmpCtrCd(employmentCode);
 	}
 
 	@Override

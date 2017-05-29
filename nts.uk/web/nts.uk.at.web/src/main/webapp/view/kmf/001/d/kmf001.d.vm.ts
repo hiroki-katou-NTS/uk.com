@@ -73,6 +73,10 @@ module nts.uk.pr.view.kmf001.d {
                     }
                     });
                 });
+                
+//                self.isManaged = ko.computed(function() {
+//                    
+//                });
             }
             
             public startPage(): JQueryPromise<void> {
@@ -91,7 +95,25 @@ module nts.uk.pr.view.kmf001.d {
                 return dfd.promise();
             }
             
-            public bindEmploymentSettingData(data: EmploymentSettingFindDto): void {
+            private findIsManaged(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findIsManaged().done(function(res: any) {
+                    if (res) {
+                        self.initUI(res);
+                    }
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
+            }
+            
+            private backToHistorySelection() {
+                nts.uk.request.jump("/view/kmf/001/a/index.xhtml");
+            }
+            
+            private bindEmploymentSettingData(data: EmploymentSettingFindDto): void {
                 var self = this;
                 self.yearsAmountByEmp(data.upperLimitSetting.retentionYearsAmount);
                 self.maxDaysCumulationByEmp(data.upperLimitSetting.maxDaysCumulation);
@@ -104,11 +126,8 @@ module nts.uk.pr.view.kmf001.d {
                 self.maxDaysCumulation(data.upperLimitSetting.maxDaysCumulation);
             }
             
-            public backToHistorySelection() {
-                
-            }
             
-            public collectWholeCompanyData(): RetentionYearlyDto {
+            private collectWholeCompanyData(): RetentionYearlyDto {
                 var self = this;
                 var dto: RetentionYearlyDto = new RetentionYearlyDto();
                 var upperDto: UpperLimitSettingDto = new  UpperLimitSettingDto();
@@ -118,15 +137,20 @@ module nts.uk.pr.view.kmf001.d {
                 return dto;
             }
             
-            public registerWholeCompany(): void {
+            private registerWholeCompany(): void {
                 var self = this;
-                /*
-                // Validate.
-                $('.nts-input').ntsEditor('validate');
+                // Clear errors
+                $('#year-amount-company').ntsError('clear');
+                $('#max-days-company').ntsError('clear');
+                
+                // Validate. 
+                $('#year-amount-company').ntsEditor('validate');
+                $('#max-days-company').ntsEditor('validate');
+//                $('.nts-input').ntsEditor('validate');
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
-                */
+                
                 service.saveRetentionYearly(self.collectWholeCompanyData()).done(function() {
                     nts.uk.ui.dialog.alert('登録しました。');
                 })
@@ -135,7 +159,7 @@ module nts.uk.pr.view.kmf001.d {
                     });
             }
             
-            public collectDataByEmployment(): EmploymentSettingDto {
+            private collectDataByEmployment(): EmploymentSettingDto {
                 var self = this;
                 var dto: EmploymentSettingDto = new EmploymentSettingDto();
                 var upperLimitDto: UpperLimitSettingDto = new  UpperLimitSettingDto();
@@ -148,8 +172,20 @@ module nts.uk.pr.view.kmf001.d {
             }
             
             
-            public registerByEmployment(): void {
+            private registerByEmployment(): void {
                 var self = this;
+                // Clear errors
+                $('#year-amount-emp').ntsError('clear');
+                $('#max-days-emp').ntsError('clear');
+                
+                // Validate. 
+                $('#year-amount-emp').ntsEditor('validate');
+                $('#max-days-emp').ntsEditor('validate');
+//                $('.nts-input').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                }
+                
                 service.saveByEmployment(self.collectDataByEmployment()).done(function() {
                     nts.uk.ui.dialog.alert('登録しました。');
                 })
