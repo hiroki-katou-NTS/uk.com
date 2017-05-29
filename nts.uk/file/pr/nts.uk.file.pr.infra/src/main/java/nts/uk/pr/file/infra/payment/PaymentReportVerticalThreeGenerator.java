@@ -57,6 +57,7 @@ public class PaymentReportVerticalThreeGenerator extends PaymentReportBaseGenera
 		printAttendanceItems();
 		printArticleItems();
 		printOtherItems();
+		printSumary();
 
 		// Print remark;
 		printRemark();

@@ -24,7 +24,7 @@ public class PaymentReportVerticalOneGenerator extends PaymentReportBaseGenerato
 	public static final int NUMBER_COLUMN_OF_ITEM = 1;
 
 	/** The Constant REMARK_TOTAL_ROW. */
-	public static final int REMARK_TOTAL_ROW = 3;
+	public static final int REMARK_TOTAL_ROW = 1;
 
 	/*
 	 * (non-Javadoc)

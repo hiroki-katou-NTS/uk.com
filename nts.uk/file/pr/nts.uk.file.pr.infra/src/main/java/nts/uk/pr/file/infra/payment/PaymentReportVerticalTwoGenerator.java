@@ -23,7 +23,7 @@ public class PaymentReportVerticalTwoGenerator extends PaymentReportBaseGenerato
 	public static final int MAX_PERSON_PER_PAGE = 2;
 
 	/** The Constant REMARK_TOTAL_ROW. */
-	public static final int REMARK_TOTAL_ROW = 3;
+	public static final int REMARK_TOTAL_ROW = 1;
 
 	/*
 	 * (non-Javadoc)
@@ -71,8 +71,7 @@ public class PaymentReportVerticalTwoGenerator extends PaymentReportBaseGenerato
 
 		printAttendanceItems();
 		printArticleItems();
-		printOtherItems();
-		breakLines(1);
+		printSumary();
 
 		// Print remark;
 		printRemark();

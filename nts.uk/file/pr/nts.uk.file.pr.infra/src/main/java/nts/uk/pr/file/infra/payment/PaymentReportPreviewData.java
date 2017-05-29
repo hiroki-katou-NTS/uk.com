@@ -100,7 +100,7 @@ public class PaymentReportPreviewData {
 		dto.setPaymentItems(getPreviewData(81));
 		dto.setDeductionItems(getPreviewData(81));
 		dto.setAttendanceItems(getPreviewTimeData(81));
-		dto.setArticleItems(getPreviewData(18));
+		dto.setArticleItems(getPreviewData(9));
 		dto.setOtherItems(getPreviewData(9));
 
 		List<PaymentReportDto> list = createList(dto, 1);
