@@ -27,8 +27,8 @@ public class PaymentDepartmentDto {
 	 */
 	public static PaymentDepartmentDto getPreviewData() {
 		PaymentDepartmentDto dto = new PaymentDepartmentDto();
-		dto.setDepartmentCode("999999999999");
-		dto.setDepartmentName("NNNNNNNNNN");
+		dto.setDepartmentCode(PreviewData.DEPARTMENT_CODE);
+		dto.setDepartmentName(PreviewData.DEPARTMENT_NAME);
 		return dto;
 	}
 }

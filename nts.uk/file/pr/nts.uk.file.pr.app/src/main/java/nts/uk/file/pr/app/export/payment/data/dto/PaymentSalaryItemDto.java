@@ -45,8 +45,8 @@ public class PaymentSalaryItemDto {
 	 */
 	public static PaymentSalaryItemDto getPreviewData() {
 		PaymentSalaryItemDto dto = new PaymentSalaryItemDto();
-		dto.setItemName("NNNNNN");
-		dto.setItemVal(BigDecimal.valueOf(999999999));
+		dto.setItemName(PreviewData.ITEM_NAME);
+		dto.setItemVal(PreviewData.ITEM_VALUE);
 		dto.setView(true);
 		return dto;
 	}
@@ -58,8 +58,8 @@ public class PaymentSalaryItemDto {
 	 */
 	public static PaymentSalaryItemDto getPreviewTimeData() {
 		PaymentSalaryItemDto dto = new PaymentSalaryItemDto();
-		dto.setItemName("NNNNNN");
-		dto.setItemVal(BigDecimal.valueOf(99959));
+		dto.setItemName(PreviewData.ITEM_NAME);
+		dto.setItemVal(PreviewData.ITEM_VALUE);
 		dto.setView(true);
 		return dto;
 	}

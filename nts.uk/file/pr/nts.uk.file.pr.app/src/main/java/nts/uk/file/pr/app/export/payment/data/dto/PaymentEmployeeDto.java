@@ -15,9 +15,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PaymentEmployeeDto {
-	
-	/** The Constant MAX_TOTAL. */
-	public static final String MAX_TOTAL = "999999999";
 
 	/** The employee code. */
 	private String employeeCode;
@@ -65,19 +62,19 @@ public class PaymentEmployeeDto {
 	 */
 	public static PaymentEmployeeDto getPreviewData() {
 		PaymentEmployeeDto dto = new PaymentEmployeeDto();
-		dto.setEmployeeCode("999999999");
-		dto.setPostalCode("999-9999");
-		dto.setAddressOne("ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ");
-		dto.setAddressTwo("ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ");
-		dto.setTaxTotal(new BigDecimal(MAX_TOTAL));
-		dto.setTaxExemptionTotal(new BigDecimal(MAX_TOTAL));
-		dto.setPaymentTotal(new BigDecimal(MAX_TOTAL));
-		dto.setSocialInsuranceTotal(new BigDecimal(MAX_TOTAL));
-		dto.setTaxableAmount(new BigDecimal(MAX_TOTAL));
-		dto.setDeductionTotal(new BigDecimal(MAX_TOTAL));
-		dto.setSubscriptionAmount(new BigDecimal(MAX_TOTAL));
-		dto.setTaxableTotal(new BigDecimal(MAX_TOTAL));
-		dto.setEmployeeName("NNNNNNNNNN");
+		dto.setEmployeeCode(PreviewData.EMPLOYEE_CODE);
+		dto.setEmployeeName(PreviewData.EMPLOYEE_CODE);
+		dto.setPostalCode(PreviewData.POSTAL_CODE);
+		dto.setAddressOne(PreviewData.ADDRESS);
+		dto.setAddressTwo(PreviewData.ADDRESS);
+		dto.setTaxTotal(PreviewData.ITEM_VALUE);
+		dto.setTaxExemptionTotal(PreviewData.ITEM_VALUE);
+		dto.setPaymentTotal(PreviewData.ITEM_VALUE);
+		dto.setSocialInsuranceTotal(PreviewData.ITEM_VALUE);
+		dto.setTaxableAmount(PreviewData.ITEM_VALUE);
+		dto.setDeductionTotal(PreviewData.ITEM_VALUE);
+		dto.setSubscriptionAmount(PreviewData.ITEM_VALUE);
+		dto.setTaxableTotal(PreviewData.ITEM_VALUE);
 		return dto;
 	}
 }

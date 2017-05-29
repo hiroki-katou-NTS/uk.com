@@ -40,11 +40,11 @@ public class PaymentCompanyDto implements Serializable {
 	 */
 	public static PaymentCompanyDto getPreviewData() {
 		PaymentCompanyDto dto = new PaymentCompanyDto();
-		dto.setJapaneseYearMonth("9999年99月給与");
-		dto.setPostalCode("999-9999");
-		dto.setAddressOne("ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ");
-		dto.setAddressTwo("ＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮＮ");
-		dto.setName("NNNNNNNNNNN");
+		dto.setJapaneseYearMonth(PreviewData.JAPANESE_YEAR_MONTH);
+		dto.setPostalCode(PreviewData.POSTAL_CODE);
+		dto.setAddressOne(PreviewData.ADDRESS);
+		dto.setAddressTwo(PreviewData.ADDRESS);
+		dto.setName(PreviewData.COMPANY_NAME);
 		return dto;
 	}
 }
