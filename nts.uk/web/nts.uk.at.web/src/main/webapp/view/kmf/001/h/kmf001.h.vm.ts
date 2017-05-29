@@ -32,6 +32,8 @@ module nts.uk.pr.view.kmf001.h {
 
                 return dfd.promise();
             }
+
+
         }
 
         export class ApplySetting {

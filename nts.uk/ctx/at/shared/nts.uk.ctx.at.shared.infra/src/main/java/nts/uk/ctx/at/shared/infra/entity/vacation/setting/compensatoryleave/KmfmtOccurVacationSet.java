@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
+package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave;
 
 import java.io.Serializable;
 
@@ -13,15 +13,16 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KsvstComSubstVacation.
+ * The Class KmfmtOccurVacationSet.
  */
-@Getter
 @Setter
+@Getter
 @Entity
-@Table(name = "KSVST_COM_SUBST_VACATION")
-public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements Serializable {
+@Table(name = "KMFMT_OCCUR_VACATION_SET")
+public class KmfmtOccurVacationSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,21 +32,31 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	@Column(name = "CID")
 	private String cid;
 
-	/**
-	 * Instantiates a new ksvst com subst vacation.
-	 */
-	public KsvstComSubstVacation() {
-		super();
-	}
+	/** The occurr division. */
+	@Column(name = "OCCURR_DIVISION")
+	private Integer occurrDivision;
+
+	/** The transf division. */
+	@Column(name = "TRANSF_DIVISION")
+	private Integer transfDivision;
+
+	/** The one day time. */
+	@Column(name = "ONE_DAY_TIME")
+	private String oneDayTime;
+
+	/** The half day time. */
+	@Column(name = "HALF_DAY_TIME")
+	private String halfDayTime;
+
+	/** The certain time. */
+	@Column(name = "CERTAIN_TIME")
+	private String certainTime;
 
 	/**
-	 * Instantiates a new ksvst com subst vacation.
-	 *
-	 * @param cid
-	 *            the cid
+	 * Instantiates a new kmfmt occur vacation set.
 	 */
-	public KsvstComSubstVacation(String cid) {
-		this.cid = cid;
+	public KmfmtOccurVacationSet() {
+		super();
 	}
 
 	/*
@@ -67,10 +78,10 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KsvstComSubstVacation)) {
+		if (!(object instanceof KmfmtOccurVacationSet)) {
 			return false;
 		}
-		KsvstComSubstVacation other = (KsvstComSubstVacation) object;
+		KmfmtOccurVacationSet other = (KmfmtOccurVacationSet) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
@@ -87,5 +98,4 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	protected Object getKey() {
 		return this.cid;
 	}
-
 }

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
+package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave;
 
 import java.io.Serializable;
 
@@ -13,15 +13,17 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KsvstComSubstVacation.
+ * The KmfmtCompensLeaveCom.
  */
-@Getter
+
 @Setter
+@Getter
 @Entity
-@Table(name = "KSVST_COM_SUBST_VACATION")
-public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements Serializable {
+@Table(name = "KMFMT_COMPENS_LEAVE_COM")
+public class KmfmtCompensLeaveCom extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,21 +33,14 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	@Column(name = "CID")
 	private String cid;
 
-	/**
-	 * Instantiates a new ksvst com subst vacation.
-	 */
-	public KsvstComSubstVacation() {
-		super();
-	}
+	/** The manage atr. */
+	@Column(name = "MANAGE_ATR")
+	private int manageAtr;
 
 	/**
-	 * Instantiates a new ksvst com subst vacation.
-	 *
-	 * @param cid
-	 *            the cid
+	 * Instantiates a new kmfmt compens leave com.
 	 */
-	public KsvstComSubstVacation(String cid) {
-		this.cid = cid;
+	public KmfmtCompensLeaveCom() {
 	}
 
 	/*
@@ -67,10 +62,10 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KsvstComSubstVacation)) {
+		if (!(object instanceof KmfmtCompensLeaveCom)) {
 			return false;
 		}
-		KsvstComSubstVacation other = (KsvstComSubstVacation) object;
+		KmfmtCompensLeaveCom other = (KmfmtCompensLeaveCom) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
@@ -87,5 +82,4 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	protected Object getKey() {
 		return this.cid;
 	}
-
 }

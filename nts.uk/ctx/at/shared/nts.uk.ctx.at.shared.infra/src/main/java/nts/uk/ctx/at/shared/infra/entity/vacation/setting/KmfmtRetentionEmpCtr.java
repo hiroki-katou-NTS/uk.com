@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting;
@@ -23,41 +23,45 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Table(name = "KMFMT_RETENTION_EMP_CTR")
 public class KmfmtRetentionEmpCtr extends UkJpaEntity {
-    
-    /** The kmfmt retention emp ctr PK. */
-    @EmbeddedId
-    protected KmfmtRetentionEmpCtrPK kmfmtRetentionEmpCtrPK;
-    
-    /** The year amount. */
-    @Column(name = "YEAR_AMOUNT")
-    private short yearAmount;
-    
-    /** The max days retention. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "MAX_DAYS_RETENTION")
-    private short maxDaysRetention;
-    
-    /** The management ctr atr. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "MANAGEMENT_CTR_ATR")
-    private short managementCtrAtr;
 
-    /* (non-Javadoc)
-     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (kmfmtRetentionEmpCtrPK != null ? kmfmtRetentionEmpCtrPK.hashCode() : 0);
-        return hash;
-    }
+	/** The kmfmt retention emp ctr PK. */
+	@EmbeddedId
+	protected KmfmtRetentionEmpCtrPK kmfmtRetentionEmpCtrPK;
 
-    /* (non-Javadoc)
-     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
-     */
-    @Override
+	/** The year amount. */
+	@Column(name = "YEAR_AMOUNT")
+	private short yearAmount;
+
+	/** The max days retention. */
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "MAX_DAYS_RETENTION")
+	private short maxDaysRetention;
+
+	/** The management ctr atr. */
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "MANAGEMENT_CTR_ATR")
+	private short managementCtrAtr;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (kmfmtRetentionEmpCtrPK != null ? kmfmtRetentionEmpCtrPK.hashCode() : 0);
+		return hash;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
+	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof KmfmtRetentionEmpCtr)) {
 			return false;
@@ -71,12 +75,14 @@ public class KmfmtRetentionEmpCtr extends UkJpaEntity {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
 		return this.kmfmtRetentionEmpCtrPK;
 	}
-    
+
 }

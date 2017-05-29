@@ -5,14 +5,10 @@
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,65 +19,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "KCLST_EMP_COMPENS_LEAVE")
-public class KsvstEmpSubstVacation implements Serializable {
-
+@Table(name = "KSVST_EMP_SUBST_VACATION")
+public class KsvstEmpSubstVacation extends KsvstSubstVacationSetting implements Serializable {
+	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The kclst emp compens leave PK. */
 	@EmbeddedId
 	protected KsvstEmpSubstVacationPK kclstEmpSubstVacationPK;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
-
-	/** The is manage. */
-	@Column(name = "IS_MANAGE")
-	private int isManage;
-
-	/** The expiration date set. */
-	@Column(name = "EXPIRATION_DATE_SET")
-	private int expirationDateSet;
-
-	/** The allow prepaid leave. */
-	@Column(name = "ALLOW_PREPAID_LEAVE")
-	private int allowPrepaidLeave;
 
 	/**
 	 * Instantiates a new kclst emp compens leave.
@@ -129,6 +75,16 @@ public class KsvstEmpSubstVacation implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.kclstEmpSubstVacationPK;
 	}
 
 }

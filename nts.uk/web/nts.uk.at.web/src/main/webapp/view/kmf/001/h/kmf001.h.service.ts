@@ -4,10 +4,13 @@ module nts.uk.pr.view.kmf001.h {
          *  Service paths
          */
         var paths: any = {
-            getComSetting: "pr/proto/substvacation/com/find",
-            getEmpSetting: "pr/proto/substvacation/emp/find",
-            updateComSetting: "pr/proto/substvacation/com/update",
-            updateEmpSetting: "pr/proto/substvacation/emp/update"
+            getComSetting: "at/proto/substvacation/com/find",
+            getEmpSetting: "at/proto/substvacation/emp/find",
+            saveComSetting: "at/proto/substvacation/com/save",
+            saveEmpSetting: "at/proto/substvacation/emp/save",
+            vacationExpirationEnum: "at/proto/substvacation/enum/vacationexpiration",
+            applyPermissionEnum: "at/proto/substvacation/enum/applypermission",
+            manageDistinctEnum: "at/proto/substvacation/enum/managedistinct"
         };
 
         /**
@@ -31,16 +34,38 @@ module nts.uk.pr.view.kmf001.h {
             /**
              * Update company's setting
              */
-            public updateComSetting(setting: model.SubstVacationSettingDto): JQueryPromise<void> {
+            public saveComSetting(setting: model.SubstVacationSettingDto): JQueryPromise<void> {
                 return nts.uk.request.ajax(paths.updateUnitPriceHistory, setting);
             }
 
             /**
              * Update contract type's setting
              */
-            public updateEmpSetting(setting: model.EmpSubstVacationDto): JQueryPromise<void> {
+            public saveEmpSetting(setting: model.EmpSubstVacationDto): JQueryPromise<void> {
                 return nts.uk.request.ajax(paths.updateUnitPriceHistory, setting);
             }
+
+            /**
+             * Get VacationExpiration Enum.
+             */
+            public getVacationExpirationEnum(): JQueryPromise<model.Enum> {
+                return nts.uk.request.ajax(paths.getVacationExpirationEnum);
+            }
+
+            /**
+             * Get ApplyPermission Enum.
+             */
+            public getApplyPermissionEnum(): JQueryPromise<model.Enum> {
+                return nts.uk.request.ajax(paths.getApplyPermissionEnum);
+            }
+
+            /**
+             * Get ManageDistinct Enum.
+             */
+            public getManageDistinctEnum(): JQueryPromise<model.Enum> {
+                return nts.uk.request.ajax(paths.getManageDistinctEnum);
+            }
+
         }
 
 
@@ -50,7 +75,7 @@ module nts.uk.pr.view.kmf001.h {
         export module model {
 
             export interface EmpSubstVacationDto {
-                empContractTypeCode: string;
+                contractTypeCode: string;
                 setting: SubstVacationSettingDto;
             }
 
@@ -58,6 +83,12 @@ module nts.uk.pr.view.kmf001.h {
                 isManage: number;
                 expirationDate: number;
                 allowPrepaidLeave: number;
+            }
+
+            export interface Enum {
+                value: number;
+                ecName: string;
+                name: string;
             }
         }
     }

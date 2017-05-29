@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
+package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave;
 
 import java.io.Serializable;
 
@@ -13,15 +13,16 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KsvstComSubstVacation.
+ * The Class KmfmtNormalVacationSet.
  */
-@Getter
 @Setter
+@Getter
 @Entity
-@Table(name = "KSVST_COM_SUBST_VACATION")
-public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements Serializable {
+@Table(name = "KMFMT_NORMAL_VACATION_SET")
+public class KmfmtNormalVacationSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,33 +32,27 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	@Column(name = "CID")
 	private String cid;
 
+	/** The expire time. */
+	@Column(name = "EXPIRE_TIME")
+	private Integer expireTime;
+
+	/** The preemp permit. */
+	@Column(name = "PREEMP_PERMIT")
+	private Integer preempPermit;
+
+	/** The is mng time. */
+	@Column(name = "IS_MNG_TIME")
+	private Integer isMngTime;
+
+	/** The digestive unit. */
+	@Column(name = "DIGESTIVE_UNIT")
+	private Integer digestiveUnit;
+
 	/**
-	 * Instantiates a new ksvst com subst vacation.
+	 * Instantiates a new kmfmt normal vacation set.
 	 */
-	public KsvstComSubstVacation() {
+	public KmfmtNormalVacationSet() {
 		super();
-	}
-
-	/**
-	 * Instantiates a new ksvst com subst vacation.
-	 *
-	 * @param cid
-	 *            the cid
-	 */
-	public KsvstComSubstVacation(String cid) {
-		this.cid = cid;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		return hash;
 	}
 
 	/*
@@ -67,10 +62,10 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KsvstComSubstVacation)) {
+		if (!(object instanceof KmfmtNormalVacationSet)) {
 			return false;
 		}
-		KsvstComSubstVacation other = (KsvstComSubstVacation) object;
+		KmfmtNormalVacationSet other = (KmfmtNormalVacationSet) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
@@ -87,5 +82,4 @@ public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements 
 	protected Object getKey() {
 		return this.cid;
 	}
-
 }

@@ -55,10 +55,18 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
 		this.manageAnnual.setWorkDayCal(remaining.getWorkDayCalculate().value);
 		this.manageAnnual.setHalfDayMngAtr(remaining.getHalfDayManage().manageType.value);
 		this.manageAnnual.setMngReference(remaining.getHalfDayManage().reference.value);
-		this.manageAnnual.setCUniformMaxNumber(remaining.getHalfDayManage().maxNumberUniformCompany.v());
-		this.manageAnnual.setMaxDayOneYear(remaining.getMaximumDayVacation().v());
-		this.manageAnnual.setRemainDayMaxNum(remaining.getRemainingDayMaxNumber().intValue());
-		this.manageAnnual.setRetentionYear(remaining.getRetentionYear().v());
+		if (remaining.getHalfDayManage().maxNumberUniformCompany != null) {
+		    this.manageAnnual.setCUniformMaxNumber(remaining.getHalfDayManage().maxNumberUniformCompany.v());
+		}
+		if (remaining.getMaximumDayVacation() != null) {
+		    this.manageAnnual.setMaxDayOneYear(remaining.getMaximumDayVacation().v());
+		}
+		if (remaining.getRemainingDayMaxNumber() != null) {
+		    this.manageAnnual.setRemainDayMaxNum(remaining.getRemainingDayMaxNumber());
+		}
+		if (remaining.getRetentionYear() != null) {
+		    this.manageAnnual.setRetentionYear(remaining.getRetentionYear().v());
+		}
 	}
 
 	/*
@@ -100,7 +108,9 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
 		this.manageAnnual.setTimeUnit(timeSetting.getTimeUnit().value);
 		this.manageAnnual.setTimeMaxDayMng(timeSetting.getMaxDay().manageMaxDayVacation.value);
 		this.manageAnnual.setTimeMngReference(timeSetting.getMaxDay().reference.value);
-		this.manageAnnual.setTimeMngMaxDay(timeSetting.getMaxDay().maxTimeDay.v());
+		if (timeSetting.getMaxDay().maxTimeDay != null) {
+		    this.manageAnnual.setTimeMngMaxDay(timeSetting.getMaxDay().maxTimeDay.v());
+		}
 		this.manageAnnual.setEnoughOneDay(timeSetting.isEnoughTimeOneDay() == true ? 1 : 0);
 	}
 }
