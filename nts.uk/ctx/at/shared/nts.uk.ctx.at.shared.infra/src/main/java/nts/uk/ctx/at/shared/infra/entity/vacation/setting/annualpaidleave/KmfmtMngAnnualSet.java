@@ -83,105 +83,88 @@ public class KmfmtMngAnnualSet implements Serializable {
     
     /** The half day mng atr. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "WORK_DAY_CAL")
-    private int workDayCal;
+    private Integer workDayCal;
     
     /** The half day mng atr. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "HALF_DAY_MNG_ATR")
-    private int halfDayMngAtr;
+    private Integer halfDayMngAtr;
 
     /** The mng reference. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "MNG_REFERENCE")
-    private int mngReference;
+    private Integer mngReference;
 
     /** The c uniform max number. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "C_UNIFORM_MAX_NUMBER")
     private BigDecimal cUniformMaxNumber;
 
     /** The max day one year. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "MAX_DAY_ONE_YEAR")
     private BigDecimal maxDayOneYear;
 
     /** The remain day max num. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "REMAIN_DAY_MAX_NUM")
-    private int remainDayMaxNum;
+    private Integer remainDayMaxNum;
 
     /** The retention year. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "RETENTION_YEAR")
-    private int retentionYear;
+    private Integer retentionYear;
 
     /** The year vaca priority. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "YEAR_VACA_PRIORITY")
-    private int yearVacaPriority;
+    private Integer yearVacaPriority;
 
     /** The permit type. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "PERMIT_TYPE")
-    private int permitType;
+    private Integer permitType;
 
     /** The remain num display. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "REMAIN_NUM_DISPLAY")
-    private int remainNumDisplay;
+    private Integer remainNumDisplay;
 
     /** The next grant day display. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "NEXT_GRANT_DAY_DISPLAY")
-    private int nextGrantDayDisplay;
+    private Integer nextGrantDayDisplay;
 
     /** The time mng atr. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TIME_MNG_ATR")
-    private int timeMngAtr;
+    private Integer timeMngAtr;
 
     /** The time unit. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TIME_UNIT")
-    private int timeUnit;
+    private Integer timeUnit;
 
     /** The time max day mng. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TIME_MAX_DAY_MNG")
-    private int timeMaxDayMng;
+    private Integer timeMaxDayMng;
 
     /** The time mng reference. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TIME_MNG_REFERENCE")
-    private int timeMngReference;
+    private Integer timeMngReference;
 
     /** The time mng max day. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TIME_MNG_MAX_DAY")
-    private int timeMngMaxDay;
+    private Integer timeMngMaxDay;
 
     /** The enough one day. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "ENOUGH_ONE_DAY")
-    private int enoughOneDay;
+    private Integer enoughOneDay;
 
     /**
      * Instantiates a new kmfmt mng annual set.

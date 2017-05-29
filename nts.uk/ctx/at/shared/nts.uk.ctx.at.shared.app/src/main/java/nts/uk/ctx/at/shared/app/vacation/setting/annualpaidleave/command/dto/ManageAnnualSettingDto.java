@@ -137,12 +137,17 @@ public class ManageAnnualSettingDto {
 			HalfDayManage halfDayManage = HalfDayManage.builder()
 					.manageType(setting.maxManageSemiVacation)
 					.reference(setting.maxNumberSemiVacation)
-					.maxNumberUniformCompany(new AnnualNumberDay(setting.maxNumberCompany))
+					.maxNumberUniformCompany(setting.maxNumberCompany == null ? null : new AnnualNumberDay(
+					        setting.maxNumberCompany))
 					.build();
 			remain.setHalfDayManage(halfDayManage);
-			remain.setMaximumDayVacation(new AnnualLeaveGrantDate(setting.maxGrantDay));
+			if (setting.maxGrantDay != null) {
+			    remain.setMaximumDayVacation(new AnnualLeaveGrantDate(setting.maxGrantDay));
+			}
 			remain.setRemainingDayMaxNumber(setting.maxRemainingDay);
-			remain.setRetentionYear(new RetentionYear(setting.numberYearRetain));
+			if (setting.numberYearRetain != null) {
+			    remain.setRetentionYear(new RetentionYear(setting.numberYearRetain));
+			}
 			return remain;
 		}
 
@@ -156,7 +161,8 @@ public class ManageAnnualSettingDto {
 		public AcquisitionVacationSetting getAcquisitionSetting() {
 			return AcquisitionVacationSetting.builder()
 					.yearVacationPriority(setting.preemptionAnnualVacation)
-					.permitType(setting.preemptionYearLeave).build();
+					.permitType(setting.preemptionYearLeave)
+					.build();
 		}
 
 		/*
@@ -167,8 +173,10 @@ public class ManageAnnualSettingDto {
 		 */
 		@Override
 		public DisplaySetting getDisplaySetting() {
-			return DisplaySetting.builder().remainingNumberDisplay(setting.remainingNumberDisplay)
-					.nextGrantDayDisplay(setting.nextGrantDayDisplay).build();
+			return DisplaySetting.builder()
+			        .remainingNumberDisplay(setting.remainingNumberDisplay)
+					.nextGrantDayDisplay(setting.nextGrantDayDisplay)
+					.build();
 		}
 
 		/*
@@ -185,7 +193,7 @@ public class ManageAnnualSettingDto {
 			YearVacationTimeMaxDay timeMaxDay = YearVacationTimeMaxDay.builder()
 					.manageMaxDayVacation(setting.manageMaxDayVacation)
 					.reference(setting.reference)
-					.maxTimeDay(new MaxTimeDay(setting.maxTimeDay))
+					.maxTimeDay(setting.maxTimeDay == null ? null : new MaxTimeDay(setting.maxTimeDay))
 					.build();
 			time.setMaxDay(timeMaxDay);
 			time.setEnoughTimeOneDay(setting.isEnoughTimeOneDay);

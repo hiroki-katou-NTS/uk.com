@@ -76,7 +76,7 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 	 * EmpSubstVacationRepository#findById(java.lang.String)
 	 */
 	@Override
-	public Optional<EmpSubstVacation> findById(String companyId) {
+	public Optional<EmpSubstVacation> findById(String companyId, String contractTypeCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}

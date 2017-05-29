@@ -47,6 +47,6 @@ public interface EmpSubstVacationRepository {
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	Optional<EmpSubstVacation> findById(String companyId);
+	Optional<EmpSubstVacation> findById(String companyId, String contractTypeCode);
 
 }
