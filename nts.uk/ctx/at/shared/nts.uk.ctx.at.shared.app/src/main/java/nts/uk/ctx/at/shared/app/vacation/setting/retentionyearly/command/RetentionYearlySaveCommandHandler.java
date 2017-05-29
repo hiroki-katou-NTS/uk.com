@@ -22,12 +22,12 @@ public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionY
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company code user login
-		String companyCode = loginUserContext.companyCode();
+		String companyId = loginUserContext.companyId();
 
 		// Get Command
 		RetentionYearlySaveCommand command = context.getCommand();
 
-		RetentionYearlySetting retentionYearlySetting = command.toDomain(companyCode);
+		RetentionYearlySetting retentionYearlySetting = command.toDomain(companyId);
 		
 		// validate domain
 		retentionYearlySetting.validate();

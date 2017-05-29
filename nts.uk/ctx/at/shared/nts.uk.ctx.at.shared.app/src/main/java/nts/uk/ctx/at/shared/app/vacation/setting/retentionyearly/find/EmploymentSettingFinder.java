@@ -13,23 +13,21 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class EmploymentSettingFinder {
-
+	
 	@Inject
 	private EmploymentSettingRepository repository;
-
 	public EmploymentSettingFindDto find(String employmentCode) {
 		// get login user info
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get companycode by user login
-		String companyId = loginUserContext.companyCode();
-
+		String companyId = loginUserContext.companyId();
+		
 		EmploymentSettingFindDto outputData = new EmploymentSettingFindDto();
-
-		Optional<EmploymentSetting> employmentSetting = this.repository.find(companyId,
-				employmentCode);
-
-		if (employmentSetting.isPresent()) {
+		
+		Optional<EmploymentSetting> employmentSetting = this.repository.find(companyId, employmentCode);
+		
+		if(employmentSetting.isPresent()) {
 			employmentSetting.get().saveToMemento(outputData);
 			return outputData;
 		}

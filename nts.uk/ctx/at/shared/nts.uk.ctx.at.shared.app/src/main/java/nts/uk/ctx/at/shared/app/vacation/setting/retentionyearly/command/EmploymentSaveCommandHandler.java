@@ -22,12 +22,12 @@ public class EmploymentSaveCommandHandler extends CommandHandler<EmploymentSaveC
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company code user login
-		String companyCode = loginUserContext.companyCode();
+		String companyId = loginUserContext.companyId();
 
 		// Get Command
 		EmploymentSaveCommand command = context.getCommand();
 		
-		EmploymentSetting employmentSetting = command.toDomain(companyCode);
+		EmploymentSetting employmentSetting = command.toDomain(companyId);
 		
 		// Validate
 		employmentSetting.validate();
