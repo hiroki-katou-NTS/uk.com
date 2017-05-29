@@ -4,20 +4,22 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.vacation.setting.subst;
 
-import java.time.DayOfWeek;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
-import nts.arc.session.SessionContextProvider;
+import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.ComSubstVacationSaveCommand;
+import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.ComSubstVacationSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.EmpSubstVacationSaveCommand;
+import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.EmpSubstVacationSaveCommandHandler;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.VacationExpiration;
 
 /**
  * The Class SubstVacationWebService.
@@ -25,6 +27,14 @@ import nts.arc.session.SessionContextProvider;
 @Path("at/proto/substvacation/")
 @Produces(MediaType.APPLICATION_JSON)
 public class SubstVacationWebService extends WebService {
+
+	/** The com subst vacation save command handler. */
+	@Inject
+	private ComSubstVacationSaveCommandHandler comSubstVacationSaveCommandHandler;
+
+	/** The emp subst vacation save command handler. */
+	@Inject
+	private EmpSubstVacationSaveCommandHandler empSubstVacationSaveCommandHandler;
 
 	/**
 	 * Adds the.
@@ -35,8 +45,14 @@ public class SubstVacationWebService extends WebService {
 	 */
 	@POST
 	@Path("com/save")
-	public void save(TaskRegisterCommand command) {
+	public void save(ComSubstVacationSaveCommand command) {
+		this.comSubstVacationSaveCommandHandler.handle(command);
+	}
 
+	@POST
+	@Path("emp/save")
+	public void save(EmpSubstVacationSaveCommand command) {
+		this.empSubstVacationSaveCommandHandler.handle(command);
 	}
 
 	/**
@@ -46,11 +62,11 @@ public class SubstVacationWebService extends WebService {
 	 *            the id
 	 * @return the task detail dto
 	 */
-	@POST
-	@Path("find/{id}")
-	public TaskDetailDto findTaskByCode(@PathParam("id") String id) {
-		return taskFinder.findById(id);
-	}
+	// @POST
+	// @Path("find/{id}")
+	// public TaskDetailDto findTaskByCode(@PathParam("id") String id) {
+	//
+	// }
 
 	/**
 	 * Gets the specification date.
@@ -58,19 +74,9 @@ public class SubstVacationWebService extends WebService {
 	 * @return the specification date
 	 */
 	@POST
-	@Path("find/specificationdate")
+	@Path("find/vacationexpiration")
 	public List<EnumConstant> getSpecificationDate() {
-		return EnumAdaptor.convertToValueNameList(SpecificationDate.class);
+		return EnumAdaptor.convertToValueNameList(VacationExpiration.class);
 	}
 
-	/**
-	 * Gets the day of week.
-	 *
-	 * @return the day of week
-	 */
-	@POST
-	@Path("find/dayofweek")
-	public List<EnumConstant> getDayOfWeek() {
-		return EnumAdaptor.convertToValueNameList(DayOfWeek.class);
-	}
 }

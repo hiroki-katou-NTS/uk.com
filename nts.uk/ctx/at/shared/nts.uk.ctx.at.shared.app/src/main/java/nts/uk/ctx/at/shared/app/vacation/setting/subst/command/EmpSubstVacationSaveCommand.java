@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.dto.EmpSubstVacat
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 
 /**
- * The Class ComSubstVacationSaveCommand.
+ * The Class EmpSubstVacationSaveCommand.
  */
 @Getter
 @Setter
@@ -23,10 +23,10 @@ public class EmpSubstVacationSaveCommand {
 	 * To domain.
 	 *
 	 * @param companyId
-	 *            the company code
-	 * @return the com subst vacation
+	 *            the company id
+	 * @return the emp subst vacation
 	 */
-	public EmpSubstVacation toDomain(String companyId, String contractTypeCode) {
-		return this.substVacationDto.toDomain(companyId, contractTypeCode);
+	public EmpSubstVacation toDomain(String companyId) {
+		return this.substVacationDto.toEmpSubstDomain(companyId);
 	}
 }

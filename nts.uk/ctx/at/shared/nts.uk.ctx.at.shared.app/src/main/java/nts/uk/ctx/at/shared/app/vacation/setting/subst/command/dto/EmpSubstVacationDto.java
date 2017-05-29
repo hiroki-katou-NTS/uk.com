@@ -30,8 +30,8 @@ public class EmpSubstVacationDto extends SubstVacationDto {
 	 *            the company id
 	 * @return the com subst vacation
 	 */
-	public EmpSubstVacation toDomain(String companyId, String contractTypeCode) {
-		return new EmpSubstVacation(new EmpSvGetMementoImpl(companyId, contractTypeCode, this));
+	public EmpSubstVacation toEmpSubstDomain(String companyId) {
+		return new EmpSubstVacation(new EmpSvGetMementoImpl(companyId, this));
 	}
 
 	/**
@@ -42,9 +42,6 @@ public class EmpSubstVacationDto extends SubstVacationDto {
 		/** The company id. */
 		private String companyId;
 
-		/** The contract type code. */
-		private String contractTypeCode;
-
 		/** The dto. */
 		private EmpSubstVacationDto dto;
 
@@ -54,10 +51,8 @@ public class EmpSubstVacationDto extends SubstVacationDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public EmpSvGetMementoImpl(String companyId, String contractTypeCode,
-				EmpSubstVacationDto dto) {
+		public EmpSvGetMementoImpl(String companyId, EmpSubstVacationDto dto) {
 			this.companyId = companyId;
-			this.contractTypeCode = contractTypeCode;
 			this.dto = dto;
 		}
 
@@ -80,7 +75,7 @@ public class EmpSubstVacationDto extends SubstVacationDto {
 		 */
 		@Override
 		public String getEmpContractTypeCode() {
-			return this.contractTypeCode;
+			return this.dto.contractTypeCode;
 		}
 
 		/*

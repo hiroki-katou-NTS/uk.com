@@ -9,8 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -19,11 +19,11 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class EmpSubstVacationSaveCommandHandler
-		extends CommandHandler<ComSubstVacationSaveCommand> {
+		extends CommandHandler<EmpSubstVacationSaveCommand> {
 
 	/** The repository. */
 	@Inject
-	private ComSubstVacationRepository repository;
+	private EmpSubstVacationRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -33,7 +33,7 @@ public class EmpSubstVacationSaveCommandHandler
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<ComSubstVacationSaveCommand> context) {
+	protected void handle(CommandHandlerContext<EmpSubstVacationSaveCommand> context) {
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -41,9 +41,9 @@ public class EmpSubstVacationSaveCommandHandler
 		String companyId = loginUserContext.companyId();
 
 		// Get Command
-		ComSubstVacationSaveCommand command = context.getCommand();
+		EmpSubstVacationSaveCommand command = context.getCommand();
 
-		ComSubstVacation comSubstVacation = command.toDomain(companyId);
+		EmpSubstVacation comSubstVacation = command.toDomain(companyId);
 
 		// Update into db
 		this.repository.update(comSubstVacation);
