@@ -67,6 +67,9 @@ public class ResourceLoading {
 				i18n.getResourceForProgram(SystemProperties.programId).get(ResourceType.MESSAGE));
 		String codeNameObject = createJsObject(
 				i18n.getResourceForProgram(SystemProperties.programId).get(ResourceType.CODE_NAME));
+		builder.append("var systemLanguage='");
+		builder.append(currentLanguage.getSessionLocale().getLanguage());
+		builder.append("';");
 		builder.append("var names=");
 		builder.append(codeNameObject);
 		builder.append(";");
