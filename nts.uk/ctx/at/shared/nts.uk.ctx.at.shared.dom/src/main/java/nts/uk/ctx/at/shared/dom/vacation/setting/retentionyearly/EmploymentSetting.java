@@ -5,13 +5,13 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class EmploymentSetting.
  */
 @Getter
-public class EmploymentSetting extends DomainObject{
+public class EmploymentSetting extends AggregateRoot{
 	
 	/** The company id. */
 	private String companyId;
