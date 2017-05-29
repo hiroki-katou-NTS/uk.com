@@ -166,19 +166,6 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	abstract BigDecimal getPageLeftMargin();
 
 	/**
-	 * Sets the item range width.
-	 *
-	 * @param width the new item range width
-	 */
-	// TODO Has not been used yet...
-	protected void setItemRangeWidth(double width) {
-		Range itemRange = this.cells.createRange(BaseGeneratorSetting.FIRST_ROW,
-				BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.CATEGORY_HEADER_WIDTH,
-				BaseGeneratorSetting.NUMBER_OF_ROW_PER_ITEM, this.maxColumnsPerItemLine);
-		itemRange.setColumnWidth(width);
-	}
-
-	/**
 	 * Break page.
 	 */
 	protected void breakPage() {
@@ -195,7 +182,7 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 		remark.merge();
 		remark.setValue(this.employee.getRemark());
 		remark.setStyle(this.templateStyle.remarkStyle);
-		this.currentRow += this.remarkTotalRow;
+		this.breakLines(this.remarkTotalRow);
 	}
 
 	/**
@@ -318,7 +305,25 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 */
 	protected void printCategoryHeader(String headerName) {
 		this.cells.get(this.firstCategoryRow, BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.MARGIN_CELL)
-		.setValue(headerName);
+				.setValue(headerName);
+	}
+
+	/**
+	 * Prints the sumary.
+	 */
+	protected void printSumary() {
+		Style style = this.templateStyle.remarkStyle;
+		style.setTextWrapped(false);
+		Cell insurance = this.cells.get(this.currentRow, BaseGeneratorSetting.FIRST_COLUMN
+				+ BaseGeneratorSetting.MARGIN_CELL + BaseGeneratorSetting.CATEGORY_HEADER_WIDTH);
+		Cell sumary = this.cells.get(this.currentRow,
+				BaseGeneratorSetting.FIRST_COLUMN + BaseGeneratorSetting.MARGIN_CELL
+						+ BaseGeneratorSetting.CATEGORY_HEADER_WIDTH + this.numberOfColumnPerItem);
+		insurance.setStyle(style);
+		sumary.setStyle(style);
+		insurance.setValue("介護保険");
+		sumary.setValue("9,999,999,999円");
+		this.breakLines(1);
 	}
 
 	/**
@@ -330,19 +335,20 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 
 		// Print data.
 		this.reportData.forEach(item -> {
+			if (this.isPageHasEnoughPerson()) {
+				this.breakPage();
+				// Set margin top.
+				this.setCurrentRowHeight(this.toExcelRowUnit(this.getPageTopMargin()));
+			}
+
 			this.employee = item;
 			this.printPageHeader();
 			this.printPageContent();
 			this.personCount++;
 
 			this.createSeparator();
-
-			if (this.isPageHasEnoughPerson()) {
-				this.breakPage();
-				// Set margin top.
-				this.setCurrentRowHeight(this.toExcelRowUnit(this.getPageTopMargin()));
-			}
 		});
+		this.setPrintArea();
 	}
 
 	/**
@@ -405,6 +411,14 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 		if (this.paymentReportData == null) {
 			throw new RuntimeException("paymentReportData is not defined.");
 		}
+	}
+
+	/**
+	 * Sets the print area.
+	 */
+	private void setPrintArea() {
+		Cell lastCell = this.cells.get(this.currentRow, this.maxColumnsPerItemLine);
+		this.pageSetup.setPrintArea(FIRST_CELL + lastCell.getName());
 	}
 
 	/**
@@ -572,7 +586,11 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	 */
 	private void setBreakLine(double marginTop) {
 		// Set break line top margin.
-		this.setCurrentRowHeight(marginTop);
+		if (marginTop == 0) {
+			this.setCurrentRowHeight(0.1);
+		} else {
+			this.setCurrentRowHeight(marginTop);
+		}
 
 		// Get break line range.
 		Range breakLine = this.cells.createRange(this.currentRow,
@@ -628,6 +646,8 @@ public abstract class PaymentReportBaseGenerator extends BaseGeneratorSetting {
 	private void resetMargin() {
 		this.pageSetup.setTopMargin(BaseGeneratorSetting.DEFAULT_MARGIN);
 		this.pageSetup.setLeftMargin(BaseGeneratorSetting.DEFAULT_MARGIN);
+		this.pageSetup.setRightMargin(BaseGeneratorSetting.DEFAULT_MARGIN);
+		this.pageSetup.setBottomMargin(BaseGeneratorSetting.DEFAULT_MARGIN);
 	}
 
 	/**
