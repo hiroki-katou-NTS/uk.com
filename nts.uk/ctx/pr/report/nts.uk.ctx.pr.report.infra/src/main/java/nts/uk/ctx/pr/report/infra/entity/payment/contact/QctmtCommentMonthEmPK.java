@@ -45,22 +45,22 @@ public class QctmtCommentMonthEmPK implements Serializable {
 	/** The pay bonus atr. */
 	@Basic(optional = false)
 	@Column(name = "PAY_BONUS_ATR")
-	public int payBonusAtr;
+	private int payBonusAtr;
 
 	/** The spare pay atr. */
 	@Basic(optional = false)
 	@Column(name = "SPARE_PAY_ATR")
-	public int sparePayAtr;
+	private int sparePayAtr;
 
 	/** The processing ym. */
 	@Basic(optional = false)
 	@Column(name = "PROCESSING_YM")
-	public int processingYm;
+	private int processingYm;
 
 	/** The processing no. */
 	@Basic(optional = false)
 	@Column(name = "PROCESSING_NO")
-	public int processingNo;
+	private int processingNo;
 
 	/**
 	 * Instantiates a new qctmt comment month em PK.

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.pr.file.infra.paymentdata;
 
 import javax.inject.Inject;
@@ -6,6 +10,9 @@ import nts.uk.file.pr.app.export.payment.PaymentReportRepository;
 import nts.uk.pr.file.infra.payment.PaymentReportGeneratorFactory;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+/**
+ * The Class AsposePaymentReportBaseGenerator.
+ */
 public abstract class AsposePaymentReportBaseGenerator extends AsposeCellsReportGenerator{
 	
 

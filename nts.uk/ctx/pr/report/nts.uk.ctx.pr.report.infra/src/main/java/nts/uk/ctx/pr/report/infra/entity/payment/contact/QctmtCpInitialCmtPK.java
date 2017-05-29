@@ -36,12 +36,12 @@ public class QctmtCpInitialCmtPK implements Serializable {
 	/** The pay bonus atr. */
 	@Basic(optional = false)
 	@Column(name = "PAY_BONUS_ATR")
-	public int payBonusAtr;
+	private int payBonusAtr;
 
 	/** The spare pay atr. */
 	@Basic(optional = false)
 	@Column(name = "SPARE_PAY_ATR")
-	public int sparePayAtr;
+	private int sparePayAtr;
 
 	/**
 	 * Instantiates a new qcmt comment month cp PK.
