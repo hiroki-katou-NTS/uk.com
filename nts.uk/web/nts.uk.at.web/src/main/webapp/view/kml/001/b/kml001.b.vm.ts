@@ -53,7 +53,7 @@ module nts.uk.at.view.kml001.b {
                         dfd.resolve();
                     })
                     .fail(function(res) { 
-                        nts.uk.ui.dialog.alert(res.message);
+                        nts.uk.ui.dialog.alertError(res.message);
                         dfd.reject(res); 
                     });
                 return dfd.promise();
@@ -76,7 +76,7 @@ module nts.uk.at.view.kml001.b {
                         nts.uk.ui.windows.setShared('updatePremiumSeting', true);
                         nts.uk.ui.windows.close();
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alert(res.message);
+                        nts.uk.ui.dialog.alertError(res.message);
                     });
             }
             

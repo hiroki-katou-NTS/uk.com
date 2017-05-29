@@ -21,19 +21,19 @@
 			
 			<ui:define name="content">
 				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button" data-bind="click: saveData,  enable: $root.errors.isEmpty">#{i18n.getText('KML001_2')}</button>
-					<button data-bind="click: premiumDialog">#{i18n.getText('KML001_3')}</button>
+					<button tabindex="1" class="proceed short-button" data-bind="click: saveData,  enable: $root.errors.isEmpty">#{i18n.getText('KML001_2')}</button>
+					<button tabindex="2" data-bind="click: premiumDialog">#{i18n.getText('KML001_3')}</button>
 				</div>
 				<div id="contents-area">
 						<div class="pull-left">
 							<div class="caret-right caret-background bg-green">
 								<div>
-									<button class="dateControlBtn" data-bind="click: createDialog">#{i18n.getText('KML001_41')}</button>
-									<button class="dateControlBtn" data-bind="click: editDialog, enable: !isInsert()">#{i18n.getText('KML001_42')}</button>
+									<button tabindex="3" class="dateControlBtn" data-bind="click: createDialog">#{i18n.getText('KML001_41')}</button>
+									<button tabindex="4" class="dateControlBtn" data-bind="click: editDialog, enable: !isInsert()">#{i18n.getText('KML001_42')}</button>
 								</div>
 								<div id="dateRange-list-container">
 									<table id="dateRange-list" data-bind="ntsGridList: {
-										width: 220, height: 290,
+										width: 240, height: 290,
 										options: gridPersonCostList,
 										optionsValue: 'dateRange',
 										columns: ko.observableArray([
@@ -72,11 +72,10 @@
 								</div>
 								<div class="cell valign-center">
 									<div>
-										<input id="startDateInput" data-name="有効開始日" class="data-required" data-bind="ntsTimeEditor: {
+										<div tabindex="5" id="startDateInput" data-name="有効開始日" data-bind="ntsDatePicker: {
 											value: newStartDate,
-											option: { width: '110px', inputFormat: 'date' },
-											required: true, 
-											enable: isInsert}" />
+											dateFormat: 'YYYY/MM/DD',
+											enable: isInsert }" />
 									</div>
 								</div>
 							</div>
@@ -85,7 +84,7 @@
 									<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_2')}</div>
 								</div>
 								<div class="cell valign-center" data-bind="with: currentPersonCost">
-									<div id="combo-box" data-name="単価" data-bind="ntsComboBox: {
+									<div tabindex="6" id="combo-box" data-name="単価" data-bind="ntsComboBox: {
 															options: ko.observableArray([
 												                { code: 0, name: '#{i18n.getText('KML001_22')}' },
 												                { code: 1, name: '#{i18n.getText('KML001_23')}' },
@@ -103,7 +102,7 @@
 							<div class="table">
 								<div class="item-valign-top" data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('KML001_11')}</div>
 								<a data-bind="with: currentPersonCost">
-									<textarea id="memo" data-name="備考" data-bind="ntsMultilineEditor: {
+									<textarea tabindex="7" id="memo" data-name="備考" data-bind="ntsMultilineEditor: {
 										value: memo,
 										constraint: 'Memo'}" />
 								</a>
