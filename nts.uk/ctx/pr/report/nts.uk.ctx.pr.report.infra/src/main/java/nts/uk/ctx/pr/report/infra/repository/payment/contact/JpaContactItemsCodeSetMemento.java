@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.payment.contact;
@@ -11,21 +11,21 @@ import nts.uk.ctx.pr.report.infra.entity.payment.contact.QcmtCommentMonthCpPK;
 import nts.uk.shr.com.primitive.sample.ProcessingNo;
 
 /**
- * The Class JpaContactItemsCodeGetMemento.
+ * The Class JpaContactItemsCodeSetMemento.
  */
 public class JpaContactItemsCodeSetMemento implements ContactItemsCodeSetMemento {
 
-	/** The pay bonus atr. */
-	public static int PAY_BONUS_ATR = 0;
+	/** The Constant PAY_BONUS_ATR. */
+	public static final int PAY_BONUS_ATR = 0;
 
-	/** The spare pay atr. */
-	public static int SPARE_PAY_ATR = 0;
+	/** The Constant SPARE_PAY_ATR. */
+	public static final int SPARE_PAY_ATR = 0;
 
 	/** The comment month cp. */
 	private QcmtCommentMonthCp commentMonthCp;
 
 	/**
-	 * Instantiates a new jpa contact items code get memento.
+	 * Instantiates a new jpa contact items code set memento.
 	 *
 	 * @param commentMonthCp
 	 *            the comment month cp
@@ -34,6 +34,12 @@ public class JpaContactItemsCodeSetMemento implements ContactItemsCodeSetMemento
 		this.commentMonthCp = commentMonthCp;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCodeSetMemento#
+	 * setCompanyCode(java.lang.String)
+	 */
 	@Override
 	public void setCompanyCode(String companyCode) {
 		QcmtCommentMonthCpPK pk = new QcmtCommentMonthCpPK();
@@ -41,6 +47,12 @@ public class JpaContactItemsCodeSetMemento implements ContactItemsCodeSetMemento
 		this.commentMonthCp.setQcmtCommentMonthCpPK(pk);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCodeSetMemento#
+	 * setProcessingNo(nts.uk.shr.com.primitive.sample.ProcessingNo)
+	 */
 	@Override
 	public void setProcessingNo(ProcessingNo processingNo) {
 		QcmtCommentMonthCpPK pk = this.commentMonthCp.getQcmtCommentMonthCpPK();
@@ -48,6 +60,12 @@ public class JpaContactItemsCodeSetMemento implements ContactItemsCodeSetMemento
 		this.commentMonthCp.setQcmtCommentMonthCpPK(pk);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsCodeSetMemento#
+	 * setProcessingYm(nts.arc.time.YearMonth)
+	 */
 	@Override
 	public void setProcessingYm(YearMonth yearMonth) {
 		QcmtCommentMonthCpPK pk = this.commentMonthCp.getQcmtCommentMonthCpPK();

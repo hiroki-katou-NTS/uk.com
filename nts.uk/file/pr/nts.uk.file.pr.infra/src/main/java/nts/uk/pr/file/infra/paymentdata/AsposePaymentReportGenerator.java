@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.LayoutItem;
 import nts.uk.file.pr.app.export.payment.PaymentReportGenerator;
 import nts.uk.file.pr.app.export.payment.PaymentReportQuery;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
@@ -36,22 +37,22 @@ public class AsposePaymentReportGenerator extends AsposePaymentReportBaseGenerat
 		String teamplate = TEAMPLATE_ZFOLDED;
 
 		switch (query.getLayoutItems()) {
-		case 0:
+		case LayoutItem.VERTICAL_ONE_PERSON:
 			teamplate = TEMPLATE_VERTICAL_ONE_PERSON;
 			break;
-		case 1:
+		case LayoutItem.VERTICAL_TWO_PERSON:
 			teamplate = TEMPLATE_VERTICAL_TWO_PERSON;
 			break;
-		case 2:
+		case LayoutItem.VERTICAL_THREE_PERSON:
 			teamplate = TEMPLATE_VERTICAL_THREE_PERSON;
 			break;
-		case 3:
+		case LayoutItem.HORIZONTAL_TWO_PERSON:
 			teamplate = TEMPLATE_HORIZONTAL_TWO_PERSON;
 			break;
-		case 4:
+		case LayoutItem.ZFOLDED:
 			teamplate = TEAMPLATE_ZFOLDED;
 			break;
-		case 5:
+		case LayoutItem.POSTCARD:
 			teamplate = TEMPLATE_POSTCARD;
 			break;
 		default:

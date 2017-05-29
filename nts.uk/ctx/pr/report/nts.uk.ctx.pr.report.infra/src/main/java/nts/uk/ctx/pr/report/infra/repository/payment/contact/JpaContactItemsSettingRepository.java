@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.payment.contact;
@@ -42,11 +42,11 @@ import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmt_;
 public class JpaContactItemsSettingRepository extends JpaRepository
 	implements ContactItemsSettingRepository {
 
-	/** The pay bonus atr. */
-	public static int PAY_BONUS_ATR = 0;
+	/** The Constant PAY_BONUS_ATR. */
+	public static final int PAY_BONUS_ATR = 0;
 
-	/** The spare pay atr. */
-	public static int SPARE_PAY_ATR = 0;
+	/** The Constant SPARE_PAY_ATR. */
+	public static final int SPARE_PAY_ATR = 0;
 
 	/*
 	 * (non-Javadoc)

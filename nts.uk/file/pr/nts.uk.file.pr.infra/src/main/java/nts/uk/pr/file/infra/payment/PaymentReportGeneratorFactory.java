@@ -6,6 +6,7 @@ package nts.uk.pr.file.infra.payment;
 
 import javax.ejb.Stateless;
 
+import nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.LayoutItem;
 import nts.uk.file.pr.app.export.payment.data.PaymentReportData;
 
 /**
@@ -23,18 +24,18 @@ public class PaymentReportGeneratorFactory {
 	public PaymentGenerator createGenerator(PaymentReportData data) {
 
 		switch (data.getLayoutItem()) {
-		case 0:
+		case LayoutItem.VERTICAL_ONE_PERSON:
 			return new PaymentReportVerticalOneGenerator();
-		case 1:
+		case LayoutItem.VERTICAL_TWO_PERSON:
 			return new PaymentReportVerticalTwoGenerator();
-		case 2:
+		case LayoutItem.VERTICAL_THREE_PERSON:
 			return new PaymentReportVerticalThreeGenerator();
-		case 3:
+		case LayoutItem.HORIZONTAL_TWO_PERSON:
 			return new PaymentReportHorizontalTwoGenerator();
-		case 4:
+		case LayoutItem.ZFOLDED:
 			return new PaymentReportZFoldedGenerator();
-		case 5:
-			return new PaymentReportPostCardGenerator();		
+		case LayoutItem.POSTCARD:
+			return new PaymentReportPostCardGenerator();
 
 		default:
 			break;

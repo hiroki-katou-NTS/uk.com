@@ -1,10 +1,9 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.payment.contact;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +29,12 @@ import nts.uk.ctx.pr.report.infra.entity.payment.contact.QctmtEmInitialCmt;
 @Stateless
 public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetMemento {
 
+	
 	/** The comment month cp. */
 	@Setter
 	private QcmtCommentMonthCp commentMonthCp;
 
+	
 	/** The comment initial cp. */
 	@Setter
 	private QctmtCpInitialCmt commentInitialCp;
@@ -48,28 +49,29 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 
 	/**
 	 * Instantiates a new jpa contact items setting get memento.
-	 *
-	 * @param commentMonthCp
-	 *            the comment month cp
 	 */
 	public JpaContactItemsSettingGetMemento() {
 		super();
 	}
 
-	/**
-	 * Gets the contact items code.
-	 *
-	 * @return the contact items code
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingGetMemento#
+	 * getContactItemsCode()
 	 */
 	@Override
 	public ContactItemsCode getContactItemsCode() {
 		return new ContactItemsCode(new JpaContactItemsCodeGetMemento(this.commentMonthCp));
 	}
 
-	/**
-	 * Gets the initial cp comment.
-	 *
-	 * @return the initial cp comment
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingGetMemento#
+	 * getInitialCpComment()
 	 */
 	@Override
 	public ReportComment getInitialCpComment() {
@@ -79,10 +81,12 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 		return new ReportComment("");
 	}
 
-	/**
-	 * Gets the month cp comment.
-	 *
-	 * @return the month cp comment
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingGetMemento#
+	 * getMonthCpComment()
 	 */
 	@Override
 	public ReportComment getMonthCpComment() {
@@ -92,10 +96,12 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 		return new ReportComment("");
 	}
 
-	/**
-	 * Gets the month em comments.
-	 *
-	 * @return the month em comments
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.report.dom.payment.contact.ContactItemsSettingGetMemento#
+	 * getMonthEmComments()
 	 */
 	@Override
 	public Set<EmpComment> getMonthEmComments() {
@@ -104,12 +110,15 @@ public class JpaContactItemsSettingGetMemento implements ContactItemsSettingGetM
 			return new HashSet<>();
 		}
 
+		// to map data
 		Map<String, EmpComment> mapEmpComment = this.commentMonthEmps.stream().map(comment -> {
 			EmpComment empComment = new EmpComment();
 			empComment.setEmpCd(comment.getQctmtCommentMonthEmPK().getEmpCd());
 			empComment.setMonthlyComment(new ReportComment(comment.getComment()));
 			return empComment;
 		}).collect(Collectors.toMap(empComment -> empComment.getEmpCd(), empComment -> empComment));
+		
+		
 		if (!CollectionUtil.isEmpty(this.commentInitialEmps)) {
 			this.commentInitialEmps.stream().forEach(comment -> {
 				EmpComment empComment = mapEmpComment

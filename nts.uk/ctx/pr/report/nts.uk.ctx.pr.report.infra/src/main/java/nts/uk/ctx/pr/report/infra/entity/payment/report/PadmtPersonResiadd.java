@@ -33,7 +33,7 @@ public class PadmtPersonResiadd implements Serializable {
     
     /** The padmt person resiadd PK. */
     @EmbeddedId
-    protected PadmtPersonResiaddPK padmtPersonResiaddPK;
+    private PadmtPersonResiaddPK padmtPersonResiaddPK;
     
     /** The ins date. */
     @Column(name = "INS_DATE")
@@ -634,7 +634,6 @@ public class PadmtPersonResiadd implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof PadmtPersonResiadd)) {
             return false;
         }
