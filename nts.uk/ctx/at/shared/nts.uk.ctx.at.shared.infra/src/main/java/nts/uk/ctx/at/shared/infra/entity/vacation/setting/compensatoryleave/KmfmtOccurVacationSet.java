@@ -42,15 +42,15 @@ public class KmfmtOccurVacationSet extends UkJpaEntity implements Serializable {
 
 	/** The one day time. */
 	@Column(name = "ONE_DAY_TIME")
-	private String oneDayTime;
+	private Long oneDayTime;
 
 	/** The half day time. */
 	@Column(name = "HALF_DAY_TIME")
-	private String halfDayTime;
+	private Long halfDayTime;
 
 	/** The certain time. */
 	@Column(name = "CERTAIN_TIME")
-	private String certainTime;
+	private Long certainTime;
 
 	/**
 	 * Instantiates a new kmfmt occur vacation set.

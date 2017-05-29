@@ -26,16 +26,14 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 	/** The occurrence vacation setting. */
 	private OccurrenceVacationSetting occurrenceVacationSetting;
 	
-	public CompensatoryLeaveComSetting(CompensatoryLeaveComGetMemento memento)
-	{
+	public CompensatoryLeaveComSetting(CompensatoryLeaveComGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.isManaged = memento.getIsManaged();
 		this.normalVacationSetting = memento.getNormalVacationSetting();
 		this.occurrenceVacationSetting = memento.getOccurrenceVacationSetting();
 	}
 	
-	public void saveToMemento(CompensatoryLeaveComSetMemento memento)
-	{
+	public void saveToMemento(CompensatoryLeaveComSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setIsManaged(this.isManaged);
 		memento.setNormalVacationSetting(this.normalVacationSetting);

@@ -6,9 +6,12 @@ package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -36,6 +39,14 @@ public class KmfmtCompensLeaveCom extends UkJpaEntity implements Serializable {
 	/** The manage atr. */
 	@Column(name = "MANAGE_ATR")
 	private int manageAtr;
+	
+	@OneToOne(optional = true, cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    public KmfmtNormalVacationSet normal;
+	
+	@OneToOne(optional = true, cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    public KmfmtOccurVacationSet occur;
 
 	/**
 	 * Instantiates a new kmfmt compens leave com.
