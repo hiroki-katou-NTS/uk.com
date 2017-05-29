@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.shared.ws.vacation.setting.subst;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -16,19 +15,17 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.ComSubstVacationSaveCommand;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.ComSubstVacationSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.EmpSubstVacationSaveCommand;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.EmpSubstVacationSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.SubstVacationFinder;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.EmpSubstVacationDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.SubstVacationSettingDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.VacationExpiration;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -47,13 +44,9 @@ public class SubstVacationWebService extends WebService {
 	@Inject
 	private EmpSubstVacationSaveCommandHandler empSubstVacationSaveCommandHandler;
 
-	/** The com sv repository. */
+	/** The subst vacation finder. */
 	@Inject
-	private ComSubstVacationRepository comSvRepository;
-
-	/** The emp sv repository. */
-	@Inject
-	private EmpSubstVacationRepository empSvRepository;
+	private SubstVacationFinder substVacationFinder;
 
 	/**
 	 * Save.
@@ -93,21 +86,12 @@ public class SubstVacationWebService extends WebService {
 		// get company code user login
 		String companyId = loginUserContext.companyId();
 
-		Optional<ComSubstVacation> optComSubVacation = this.comSvRepository.findById(companyId);
-
-		if (!optComSubVacation.isPresent()) {
-			throw new BusinessException("");
-		}
-
-		SubstVacationSettingDto dto = new SubstVacationSettingDto();
-
-		optComSubVacation.get().saveToMemento(dto);
-
-		return dto;
+		// Return
+		return this.substVacationFinder.findComSetting(companyId);
 	}
 
 	/**
-	 * Find setting by contract type code.
+	 * Find emp setting.
 	 *
 	 * @param contractTypeCode
 	 *            the contract type code
@@ -115,8 +99,7 @@ public class SubstVacationWebService extends WebService {
 	 */
 	@POST
 	@Path("emp/find/{typeCode}")
-	public EmpSubstVacationDto findSettingByContractTypeCode(
-			@PathParam("typeCode") String contractTypeCode) {
+	public EmpSubstVacationDto findEmpSetting(@PathParam("typeCode") String contractTypeCode) {
 
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -124,32 +107,40 @@ public class SubstVacationWebService extends WebService {
 		// get company code user login
 		String companyId = loginUserContext.companyId();
 
-		// Find setting
-		Optional<EmpSubstVacation> optEmpSubVacation = this.empSvRepository.findById(companyId,
-				contractTypeCode);
-
-		// Check exist
-		if (!optEmpSubVacation.isPresent()) {
-			// TODO: find msg id
-			throw new BusinessException("");
-		}
-
-		EmpSubstVacationDto dto = new EmpSubstVacationDto();
-
-		optEmpSubVacation.get().saveToMemento(dto);
-
-		return dto;
+		// Return
+		return this.substVacationFinder.findEmpSetting(companyId, contractTypeCode);
 	}
 
 	/**
-	 * Gets the specification date.
+	 * Gets the vacation expiration enum.
 	 *
-	 * @return the specification date
+	 * @return the vacation expiration enum
 	 */
 	@POST
-	@Path("find/vacationexpiration")
-	public List<EnumConstant> getSpecificationDate() {
-		return EnumAdaptor.convertToValueNameList(VacationExpiration.class);
+	@Path("enum/vacationexpiration")
+	public List<EnumConstant> getVacationExpirationEnum() {
+		return EnumAdaptor.convertToValueNameList(ExpirationTime.class);
 	}
 
+	/**
+	 * Gets the apply permission enum.
+	 *
+	 * @return the apply permission enum
+	 */
+	@POST
+	@Path("enum/applypermission")
+	public List<EnumConstant> getApplyPermissionEnum() {
+		return EnumAdaptor.convertToValueNameList(ApplyPermission.class);
+	}
+
+	/**
+	 * Gets the manage distinct enum.
+	 *
+	 * @return the manage distinct enum
+	 */
+	@POST
+	@Path("enum/managedistinct")
+	public List<EnumConstant> getManageDistinctEnum() {
+		return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
+	}
 }

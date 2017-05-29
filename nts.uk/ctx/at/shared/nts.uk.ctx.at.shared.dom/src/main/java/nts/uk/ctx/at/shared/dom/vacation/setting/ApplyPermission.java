@@ -10,13 +10,16 @@ package nts.uk.ctx.at.shared.dom.vacation.setting;
 public enum ApplyPermission {
 
 	// 許可する
-	ALLOW(1, "許可する"),
+	ALLOW(1, "許可する", "許可する"),
 
 	// 許可しない
-	NOT_ALLOW(0, "許可しない");
+	NOT_ALLOW(0, "許可しない", "許可しない");
 
 	/** The value. */
 	public int value;
+
+	/** The name id. */
+	public String nameId;
 
 	/** The description. */
 	public String description;
@@ -32,8 +35,9 @@ public enum ApplyPermission {
 	 * @param description
 	 *            the description
 	 */
-	private ApplyPermission(int value, String description) {
+	private ApplyPermission(int value, String nameId, String description) {
 		this.value = value;
+		this.nameId = nameId;
 		this.description = description;
 	}
 

@@ -5,12 +5,13 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class UpperLimitSetting. 上限設定
  */
 @Getter
-public class UpperLimitSetting {
+public class UpperLimitSetting extends DomainObject {
 	
 	/** The retention years amount. */
 	private RetentionYearsAmount retentionYearsAmount;

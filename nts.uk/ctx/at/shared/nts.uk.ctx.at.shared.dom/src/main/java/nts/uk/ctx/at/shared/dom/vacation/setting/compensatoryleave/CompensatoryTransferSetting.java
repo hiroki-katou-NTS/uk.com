@@ -34,7 +34,7 @@ public class CompensatoryTransferSetting extends DomainObject {
 	 *
 	 * @param menento the menento
 	 */
-	public CompensatoryTransferSetting(CompensatoryTransferGetMenento menento) {
+	public CompensatoryTransferSetting(CompensatoryTransferGetMemento menento) {
 		this.certainTime = menento.getCertainTime();
 		this.useDivision = menento.getUseDivision();
 		this.transferDivision = menento.getTransferDivision();

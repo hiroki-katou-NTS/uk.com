@@ -2,30 +2,32 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto;
+package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSettingSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstSubstVacationSetting;
 
 /**
- * The Class SubstVacationSettingDto.
+ * The Class JpaSubstVacationSettingSetMemento.
  */
-@Getter
-@Setter
-public class SubstVacationSettingDto implements SubstVacationSettingSetMemento {
+public class JpaSubstVacationSettingSetMemento<T extends KsvstSubstVacationSetting>
+		implements SubstVacationSettingSetMemento {
 
-	/** The is manage. */
-	private Integer isManage;
+	/** The type value. */
+	private T typeValue;
 
-	/** The expiration date. */
-	private Integer expirationDate;
-
-	/** The allow prepaid leave. */
-	private Integer allowPrepaidLeave;
+	/**
+	 * Instantiates a new jpa subst vacation setting set memento.
+	 *
+	 * @param typeValue
+	 *            the type value
+	 */
+	public JpaSubstVacationSettingSetMemento(T typeValue) {
+		this.typeValue = typeValue;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -36,7 +38,7 @@ public class SubstVacationSettingDto implements SubstVacationSettingSetMemento {
 	 */
 	@Override
 	public void setIsManage(ManageDistinct isManage) {
-		this.isManage = isManage.value;
+		this.typeValue.setIsManage(isManage.value);
 	}
 
 	/*
@@ -48,7 +50,7 @@ public class SubstVacationSettingDto implements SubstVacationSettingSetMemento {
 	 */
 	@Override
 	public void setExpirationDate(ExpirationTime expirationDate) {
-		this.expirationDate = expirationDate.value;
+		this.typeValue.setExpirationDateSet(expirationDate.value);
 	}
 
 	/*
@@ -60,7 +62,7 @@ public class SubstVacationSettingDto implements SubstVacationSettingSetMemento {
 	 */
 	@Override
 	public void setAllowPrepaidLeave(ApplyPermission allowPrepaidLeave) {
-		this.allowPrepaidLeave = allowPrepaidLeave.value;
+		this.typeValue.setAllowPrepaidLeave(allowPrepaidLeave.value);
 	}
 
 }

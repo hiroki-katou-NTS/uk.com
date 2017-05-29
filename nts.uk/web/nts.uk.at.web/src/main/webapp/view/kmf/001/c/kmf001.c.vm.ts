@@ -73,7 +73,11 @@ module nts.uk.pr.view.kmf001.c {
                 self.maxGrantDay = ko.observable("");
                 self.maxRemainingDay = ko.observable("");
                 self.numberYearRetain = ko.observable("");
-                self.enableMaxNumberCompany = ko.observable(true);
+                self.enableMaxNumberCompany = ko.computed(function() {
+                    return self.selectedMaxNumberSemiVacation() == MaxDayReference.CompanyUniform
+                        && self.enableAnnualVacation();
+                }, self);
+
                 
                 // 年休取得の設定
                 self.permissionList = ko.observableArray([
@@ -121,20 +125,13 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedAnnualManage.subscribe(function(value) {
                     self.enableAnnualVacation(value == ManageDistinct.YES);
                     self.clearError();
-                    self.initInput();
                 });
                 
                 self.selectedMaxNumberSemiVacation.subscribe(function(value) {
-                    self.enableMaxNumberCompany(value == MaxDayReference.CompanyUniform
-                        && self.enableAnnualVacation());
-                    if (value != MaxDayReference.CompanyUniform) {
-                        $('#max-number-company').ntsError('clear');
-                        self.maxNumberCompany("");
-                        
-                        $('#time-max-day-company').ntsError('clear');
-                        self.timeMaxNumberCompany("");
-                    }
+                    $('#max-number-company').ntsError('clear');
+                    $('#time-max-day-company').ntsError('clear');
                 });
+
             }
             
             public startPage(): JQueryPromise<any> {
@@ -159,7 +156,7 @@ module nts.uk.pr.view.kmf001.c {
                 service.save(command).done(function() {
                     self.loadSetting().done(function(res) {
                         // Msg_15
-                        nts.uk.ui.dialog.alert("年休設定の登録");
+                        nts.uk.ui.dialog.alert("登録しました。");
 //                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                         dfd.resolve();
                     });
@@ -236,25 +233,22 @@ module nts.uk.pr.view.kmf001.c {
                 self.isEnoughTimeOneDay(res.setting.isEnoughTimeOneDay);
             }
             
-            private initInput(): void {
-                let self = this;
-                self.maxNumberCompany("");
-                self.maxGrantDay("");
-                self.maxRemainingDay("");
-                self.numberYearRetain("");
-                self.timeMaxNumberCompany("");
-            }
-            
             private validate(): boolean {
                 let self = this;
-                if (self.enableAnnualVacation()) {
-                    if (self.enableMaxNumberCompany()) {
-                        $('#max-number-company').ntsEditor('validate');
-                    }
+                if (self.maxNumberCompany() !== '') {
+                    $('#max-number-company').ntsEditor('validate');
+                }
+                if (self.maxGrantDay() !== '') {
                     $('#max-grant-day').ntsEditor('validate');
+                }
+                if (self.maxRemainingDay() !== '') {
                     $('#max-remaining-day').ntsEditor('validate');
+                }
+                if (self.numberYearRetain() !== '') {
                     $('#number-year-retain').ntsEditor('validate');
-                    $('#time-max-day-company').ntsEditor('validate');
+                }
+                if (self.timeMaxNumberCompany() !== '') {
+                    $('time-max-day-company').ntsEditor('validate');
                 }
                 if ($('.nts-input').ntsError('hasError')) {
                     return false;

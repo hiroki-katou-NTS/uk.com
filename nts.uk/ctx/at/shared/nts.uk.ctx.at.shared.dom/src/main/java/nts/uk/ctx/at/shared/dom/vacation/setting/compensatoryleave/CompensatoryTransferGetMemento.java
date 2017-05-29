@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 /**
  * The Interface CompensatoryTransferGetMenento.
  */
-public interface CompensatoryTransferGetMenento {
+public interface CompensatoryTransferGetMemento {
 	
 	/**
 	 * Gets the certain time.

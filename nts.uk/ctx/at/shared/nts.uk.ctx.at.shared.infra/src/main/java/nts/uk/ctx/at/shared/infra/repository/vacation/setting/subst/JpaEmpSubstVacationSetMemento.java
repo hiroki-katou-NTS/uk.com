@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationSetMement
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacationPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstSubstVacationSetting;
 
 /**
  * The Class JpaEmpSubstVacationSetMemento.
@@ -62,9 +63,8 @@ public class JpaEmpSubstVacationSetMemento implements EmpSubstVacationSetMemento
 	 */
 	@Override
 	public void setSetting(SubstVacationSetting setting) {
-		this.typeValue.setIsManage(setting.getIsManage().value);
-		this.typeValue.setExpirationDateSet(setting.getExpirationDate().value);
-		this.typeValue.setAllowPrepaidLeave(setting.getAllowPrepaidLeave().value);
+		setting.saveToMemento(
+				new JpaSubstVacationSettingSetMemento<KsvstSubstVacationSetting>(this.typeValue));
 	}
 
 }
