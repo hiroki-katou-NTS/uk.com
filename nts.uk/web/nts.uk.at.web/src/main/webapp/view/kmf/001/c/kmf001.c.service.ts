@@ -4,8 +4,8 @@ module nts.uk.pr.view.kmf001.c {
          *  Service paths
          */
         var servicePath: any = {
-            save: 'ctx/at/core/vacation/setting/annualpaidleave/save',
-            find: 'ctx/at/core/vacation/setting/annualpaidleave/find'
+            save: 'ctx/at/share/vacation/setting/annualpaidleave/save',
+            find: 'ctx/at/share/vacation/setting/annualpaidleave/find'
         };
 
         export function save(command: any): JQueryPromise<any> {

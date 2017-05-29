@@ -107,7 +107,7 @@
 							<td><input id="max-number-company" class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxNumberCompany,
 									constraint: 'AnnualNumberDay',
-									required: true,
+									required: enableAnnualVacation,
 									option: textEditorOption,
 									enable: enableMaxNumberCompany}"/></td>
 						</tr>
@@ -119,7 +119,7 @@
 								<input id="max-grant-day" class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxGrantDay,
 									constraint: 'AnnualLeaveGrantDate',
-									required: true,
+									required: enableAnnualVacation,
 									option: textEditorOption,
 									enable: enableAnnualVacation}"/>
 							</td>
@@ -127,7 +127,7 @@
 							<td><label class="content-label">残数上限日数</label></td>
 							<td><input id="max-remaining-day" class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxRemainingDay,
-									required: true,
+									required: enableAnnualVacation,
 									option: textEditorOption,
 									enable: enableAnnualVacation}"/></td>
 						</tr>
@@ -137,7 +137,7 @@
 							<td><input id="number-year-retain" class="nts-input" data-bind="ntsNumberEditor: {
 									value: numberYearRetain,
 									constraint: 'RetentionYear',
-									required: true,
+									required: enableAnnualVacation,
 									option: textEditorOption,
 									enable: enableAnnualVacation}"/></td>
 										
@@ -294,7 +294,7 @@
 							<td><input id="time-max-day-company" class="nts-input" data-bind="ntsNumberEditor: {
 									value: timeMaxNumberCompany,
 									constraint: 'MaxTimeDay',
-									required: true,
+									required: enableAnnualVacation,
 									option: textEditorOption,
 									enable: enableMaxNumberCompany}"/></td>
 						</tr>
