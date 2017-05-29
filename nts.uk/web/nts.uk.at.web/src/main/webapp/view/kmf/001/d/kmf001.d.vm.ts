@@ -141,7 +141,7 @@ module nts.uk.pr.view.kmf001.d {
                 var upperLimitDto: UpperLimitSettingDto = new  UpperLimitSettingDto();
                 upperLimitDto.retentionYearsAmount = self.yearsAmountByEmp();
                 upperLimitDto.maxDaysCumulation = self.maxDaysCumulationByEmp();
-                dto.upperLimitSettingDto = upperLimitDto;
+                dto.upperLimitSetting = upperLimitDto;
                 dto.employmentCode = self.selectedCode();
                 dto.managementCategory = self.selectedManagement();
                 return dto;

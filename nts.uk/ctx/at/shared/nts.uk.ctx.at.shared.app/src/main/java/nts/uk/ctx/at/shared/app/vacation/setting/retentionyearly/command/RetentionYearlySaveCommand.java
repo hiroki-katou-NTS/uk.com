@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearly
 public class RetentionYearlySaveCommand {
 
 	private RetentionYearlyDto retentionYearly;
-	public RetentionYearlySetting toDomain(String companyCode) {
-		return this.retentionYearly.toDomain(companyCode);
+	public RetentionYearlySetting toDomain(String companyId) {
+		return this.retentionYearly.toDomain(companyId);
 	}
 }
