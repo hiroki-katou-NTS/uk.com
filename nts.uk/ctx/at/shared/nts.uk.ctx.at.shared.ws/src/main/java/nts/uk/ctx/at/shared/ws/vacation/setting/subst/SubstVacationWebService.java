@@ -23,6 +23,8 @@ import nts.uk.ctx.at.shared.app.vacation.setting.subst.command.EmpSubstVacationS
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.SubstVacationFinder;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.EmpSubstVacationDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.SubstVacationSettingDto;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.VacationExpiration;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -42,7 +44,7 @@ public class SubstVacationWebService extends WebService {
 	@Inject
 	private EmpSubstVacationSaveCommandHandler empSubstVacationSaveCommandHandler;
 
-	/** The com sv repository. */
+	/** The subst vacation finder. */
 	@Inject
 	private SubstVacationFinder substVacationFinder;
 
@@ -89,7 +91,7 @@ public class SubstVacationWebService extends WebService {
 	}
 
 	/**
-	 * Find setting by contract type code.
+	 * Find emp setting.
 	 *
 	 * @param contractTypeCode
 	 *            the contract type code
@@ -110,14 +112,35 @@ public class SubstVacationWebService extends WebService {
 	}
 
 	/**
-	 * Gets the specification date.
+	 * Gets the vacation expiration enum.
 	 *
-	 * @return the specification date
+	 * @return the vacation expiration enum
 	 */
 	@POST
-	@Path("find/vacationexpiration")
-	public List<EnumConstant> getSpecificationDate() {
+	@Path("enum/vacationexpiration")
+	public List<EnumConstant> getVacationExpirationEnum() {
 		return EnumAdaptor.convertToValueNameList(VacationExpiration.class);
 	}
 
+	/**
+	 * Gets the apply permission enum.
+	 *
+	 * @return the apply permission enum
+	 */
+	@POST
+	@Path("enum/applypermission")
+	public List<EnumConstant> getApplyPermissionEnum() {
+		return EnumAdaptor.convertToValueNameList(ApplyPermission.class);
+	}
+
+	/**
+	 * Gets the manage distinct enum.
+	 *
+	 * @return the manage distinct enum
+	 */
+	@POST
+	@Path("enum/managedistinct")
+	public List<EnumConstant> getManageDistinctEnum() {
+		return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
+	}
 }

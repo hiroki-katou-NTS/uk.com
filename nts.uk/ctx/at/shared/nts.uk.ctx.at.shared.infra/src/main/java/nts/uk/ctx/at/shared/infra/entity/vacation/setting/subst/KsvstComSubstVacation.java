@@ -13,7 +13,6 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KsvstComSubstVacation.
@@ -21,8 +20,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KCLST_COM_COMPENS_LEAVE")
-public class KsvstComSubstVacation extends UkJpaEntity implements Serializable {
+@Table(name = "KSVST_COM_SUBST_VACATION")
+public class KsvstComSubstVacation extends KsvstSubstVacationSetting implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,18 +30,6 @@ public class KsvstComSubstVacation extends UkJpaEntity implements Serializable {
 	@Id
 	@Column(name = "CID")
 	private String cid;
-
-	/** The is manage. */
-	@Column(name = "IS_MANAGE")
-	private int isManage;
-
-	/** The expiration date set. */
-	@Column(name = "EXPIRATION_DATE_SET")
-	private int expirationDateSet;
-
-	/** The allow prepaid leave. */
-	@Column(name = "ALLOW_PREPAID_LEAVE")
-	private int allowPrepaidLeave;
 
 	/**
 	 * Instantiates a new ksvst com subst vacation.

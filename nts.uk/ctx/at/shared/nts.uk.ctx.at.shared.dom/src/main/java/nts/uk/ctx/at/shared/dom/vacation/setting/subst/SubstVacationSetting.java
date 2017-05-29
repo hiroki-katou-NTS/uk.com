@@ -10,12 +10,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
- * The Class CompensatoryLeaveSetting.
+ * The Class SubstVacationSetting.
  */
 @Getter
 public class SubstVacationSetting extends DomainObject {
 
-	/** The manage dist. */
+	/** The is manage. */
 	private ManageDistinct isManage;
 
 	/** The expiration date. */
@@ -25,10 +25,10 @@ public class SubstVacationSetting extends DomainObject {
 	private ApplyPermission allowPrepaidLeave;
 
 	/**
-	 * Instantiates a new compensatory leave setting.
+	 * Instantiates a new subst vacation setting.
 	 *
 	 * @param isManage
-	 *            the manage dist
+	 *            the is manage
 	 * @param expirationDate
 	 *            the expiration date
 	 * @param allowPrepaidLeave
@@ -40,6 +40,31 @@ public class SubstVacationSetting extends DomainObject {
 		this.isManage = isManage;
 		this.expirationDate = expirationDate;
 		this.allowPrepaidLeave = allowPrepaidLeave;
+	}
+
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new subst vacation setting.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public SubstVacationSetting(SubstVacationSettingGetMemento memento) {
+		this.isManage = memento.getIsManage();
+		this.expirationDate = memento.getExpirationDate();
+		this.allowPrepaidLeave = memento.getAllowPrepaidLeave();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(SubstVacationSettingSetMemento memento) {
+		memento.setIsManage(this.isManage);
+		memento.setExpirationDate(this.expirationDate);
+		memento.setAllowPrepaidLeave(this.allowPrepaidLeave);
 	}
 
 }

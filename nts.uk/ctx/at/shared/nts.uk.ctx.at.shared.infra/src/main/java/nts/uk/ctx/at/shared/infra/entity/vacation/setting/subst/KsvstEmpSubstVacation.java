@@ -6,14 +6,12 @@ package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KclstEmpSubstVacation.
@@ -21,27 +19,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KCLST_EMP_COMPENS_LEAVE")
-public class KsvstEmpSubstVacation extends UkJpaEntity implements Serializable {
-
+@Table(name = "KSVST_EMP_SUBST_VACATION")
+public class KsvstEmpSubstVacation extends KsvstSubstVacationSetting implements Serializable {
+	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The kclst emp compens leave PK. */
 	@EmbeddedId
 	protected KsvstEmpSubstVacationPK kclstEmpSubstVacationPK;
-
-	/** The is manage. */
-	@Column(name = "IS_MANAGE")
-	private int isManage;
-
-	/** The expiration date set. */
-	@Column(name = "EXPIRATION_DATE_SET")
-	private int expirationDateSet;
-
-	/** The allow prepaid leave. */
-	@Column(name = "ALLOW_PREPAID_LEAVE")
-	private int allowPrepaidLeave;
 
 	/**
 	 * Instantiates a new kclst emp compens leave.
