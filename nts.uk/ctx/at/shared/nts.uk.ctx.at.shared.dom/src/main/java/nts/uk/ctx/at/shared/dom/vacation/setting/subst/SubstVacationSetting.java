@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
@@ -19,7 +20,7 @@ public class SubstVacationSetting extends DomainObject {
 	private ManageDistinct isManage;
 
 	/** The expiration date. */
-	private VacationExpiration expirationDate;
+	private ExpirationTime expirationDate;
 
 	/** The allow prepaid leave. */
 	private ApplyPermission allowPrepaidLeave;
@@ -34,7 +35,7 @@ public class SubstVacationSetting extends DomainObject {
 	 * @param allowPrepaidLeave
 	 *            the allow prepaid leave
 	 */
-	public SubstVacationSetting(ManageDistinct isManage, VacationExpiration expirationDate,
+	public SubstVacationSetting(ManageDistinct isManage, ExpirationTime expirationDate,
 			ApplyPermission allowPrepaidLeave) {
 		super();
 		this.isManage = isManage;

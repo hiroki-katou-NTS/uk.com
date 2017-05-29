@@ -6,9 +6,9 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacationSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtNormalVacationSet;
 

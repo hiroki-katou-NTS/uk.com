@@ -5,9 +5,9 @@
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.VacationExpiration;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstSubstVacationSetting;
 
 /**
@@ -45,8 +45,8 @@ public class JpaSubstVacationSettingGetMemento<T extends KsvstSubstVacationSetti
 	 * @return the expiration date
 	 */
 	@Override
-	public VacationExpiration getExpirationDate() {
-		return VacationExpiration.valueOf(this.typeValue.getExpirationDateSet());
+	public ExpirationTime getExpirationDate() {
+		return ExpirationTime.valueOf(this.typeValue.getExpirationDateSet());
 	}
 
 	/**

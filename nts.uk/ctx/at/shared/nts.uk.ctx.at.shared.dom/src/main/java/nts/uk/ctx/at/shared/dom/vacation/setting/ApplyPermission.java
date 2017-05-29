@@ -10,10 +10,10 @@ package nts.uk.ctx.at.shared.dom.vacation.setting;
 public enum ApplyPermission {
 
 	// 許可する
-	ALLOW(1, "Com_Allow", "許可する"),
+	ALLOW(1, "許可する", "許可する"),
 
 	// 許可しない
-	NOT_ALLOW(0, "Com_Not_Allow", "許可しない");
+	NOT_ALLOW(0, "許可しない", "許可しない");
 
 	/** The value. */
 	public int value;

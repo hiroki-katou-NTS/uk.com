@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.SubstVacationFinder;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.EmpSubstVacationDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.SubstVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.VacationExpiration;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -119,7 +119,7 @@ public class SubstVacationWebService extends WebService {
 	@POST
 	@Path("enum/vacationexpiration")
 	public List<EnumConstant> getVacationExpirationEnum() {
-		return EnumAdaptor.convertToValueNameList(VacationExpiration.class);
+		return EnumAdaptor.convertToValueNameList(ExpirationTime.class);
 	}
 
 	/**
