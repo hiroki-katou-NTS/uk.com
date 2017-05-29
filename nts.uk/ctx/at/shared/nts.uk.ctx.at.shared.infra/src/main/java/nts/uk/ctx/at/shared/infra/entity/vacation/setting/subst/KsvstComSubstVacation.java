@@ -5,17 +5,15 @@
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KsvstComSubstVacation.
@@ -24,48 +22,10 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "KCLST_COM_COMPENS_LEAVE")
-public class KsvstComSubstVacation implements Serializable {
+public class KsvstComSubstVacation extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
-	/** The ins date. */
-	@Column(name = "INS_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date insDate;
-
-	/** The ins ccd. */
-	@Column(name = "INS_CCD")
-	private String insCcd;
-
-	/** The ins scd. */
-	@Column(name = "INS_SCD")
-	private String insScd;
-
-	/** The ins pg. */
-	@Column(name = "INS_PG")
-	private String insPg;
-
-	/** The upd date. */
-	@Column(name = "UPD_DATE")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updDate;
-
-	/** The upd ccd. */
-	@Column(name = "UPD_CCD")
-	private String updCcd;
-
-	/** The upd scd. */
-	@Column(name = "UPD_SCD")
-	private String updScd;
-
-	/** The upd pg. */
-	@Column(name = "UPD_PG")
-	private String updPg;
-
-	/** The exclus ver. */
-	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
 
 	/** The cid. */
 	@Id
@@ -129,6 +89,16 @@ public class KsvstComSubstVacation implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.cid;
 	}
 
 }
