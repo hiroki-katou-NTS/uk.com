@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
@@ -24,7 +25,7 @@ public interface SubstVacationSettingSetMemento {
 	 *
 	 * @return the expiration date
 	 */
-	void setExpirationDate(VacationExpiration expirationDate);
+	void setExpirationDate(ExpirationTime expirationDate);
 
 	/**
 	 * Gets the allow prepaid leave.

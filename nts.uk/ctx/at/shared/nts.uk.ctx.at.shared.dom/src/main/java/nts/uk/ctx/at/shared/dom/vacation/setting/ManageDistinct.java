@@ -4,19 +4,22 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting;
 
-	/**
+/**
  * The Enum ManageDistinct.
  */
 public enum ManageDistinct {
 
 	/** The yes. */
-	YES(1, "管理する"),
+	YES(1, "管理する", "管理する"),
 
 	/** The no. */
-	NO(0, "管理しない");
+	NO(0, "管理しない", "管理しない");
 
 	/** The value. */
 	public int value;
+
+	/** The name id. */
+	public String nameId;
 
 	/** The description. */
 	public String description;
@@ -32,8 +35,9 @@ public enum ManageDistinct {
 	 * @param description
 	 *            the description
 	 */
-	private ManageDistinct(int value, String description) {
+	private ManageDistinct(int value, String nameId, String description) {
 		this.value = value;
+		this.nameId = nameId;
 		this.description = description;
 	}
 

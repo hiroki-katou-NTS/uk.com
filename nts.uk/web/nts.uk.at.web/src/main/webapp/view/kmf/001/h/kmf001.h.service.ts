@@ -10,64 +10,73 @@ module nts.uk.pr.view.kmf001.h {
             saveEmpSetting: "at/proto/substvacation/emp/save",
             vacationExpirationEnum: "at/proto/substvacation/enum/vacationexpiration",
             applyPermissionEnum: "at/proto/substvacation/enum/applypermission",
-            manageDistinctEnum: "at/proto/substvacation/enum/managedistinct"
+            manageDistinctEnum: "at/proto/substvacation/enum/managedistinct",
         };
 
         /**
          * Normal service.
          */
         export class Service {
+
+            constructor() {
+
+            }
+
             /**
              * Find company's setting.
              */
             public findComSetting(): JQueryPromise<model.SubstVacationSettingDto> {
-                return nts.uk.request.ajax(paths.getUnitPriceHistoryDetail);
+                return nts.uk.request.ajax(paths.getComSetting);
             }
 
             /**
              * Find contract type's setting.
              */
-            public findEmpSetting(contractTypeCode: string): JQueryPromise<model.SubstVacationSettingDto> {
-                return nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + contractTypeCode);
+            public findEmpSetting(contractTypeCode: string): JQueryPromise<model.EmpSubstVacationDto> {
+                return nts.uk.request.ajax(paths.getEmpSetting + "/" + contractTypeCode);
             }
 
             /**
              * Update company's setting
              */
             public saveComSetting(setting: model.SubstVacationSettingDto): JQueryPromise<void> {
-                return nts.uk.request.ajax(paths.updateUnitPriceHistory, setting);
+                return nts.uk.request.ajax(paths.saveComSetting, setting);
             }
 
             /**
              * Update contract type's setting
              */
             public saveEmpSetting(setting: model.EmpSubstVacationDto): JQueryPromise<void> {
-                return nts.uk.request.ajax(paths.updateUnitPriceHistory, setting);
+                return nts.uk.request.ajax(paths.saveEmpSetting, setting);
             }
 
             /**
              * Get VacationExpiration Enum.
              */
-            public getVacationExpirationEnum(): JQueryPromise<model.Enum> {
-                return nts.uk.request.ajax(paths.getVacationExpirationEnum);
+            public getVacationExpirationEnum(): JQueryPromise<Array<model.Enum>> {
+                return nts.uk.request.ajax(paths.vacationExpirationEnum);
             }
 
             /**
              * Get ApplyPermission Enum.
              */
-            public getApplyPermissionEnum(): JQueryPromise<model.Enum> {
-                return nts.uk.request.ajax(paths.getApplyPermissionEnum);
+            public getApplyPermissionEnum(): JQueryPromise<Array<model.Enum>> {
+                return nts.uk.request.ajax(paths.applyPermissionEnum);
             }
 
             /**
              * Get ManageDistinct Enum.
              */
-            public getManageDistinctEnum(): JQueryPromise<model.Enum> {
-                return nts.uk.request.ajax(paths.getManageDistinctEnum);
+            public getManageDistinctEnum(): JQueryPromise<Array<model.Enum>> {
+                return nts.uk.request.ajax(paths.manageDistinctEnum);
             }
 
         }
 
+        /**
+         * Service intance.
+         */
+        export var instance = new Service();
 
         /**
         * Model namespace.
@@ -80,15 +89,21 @@ module nts.uk.pr.view.kmf001.h {
             }
 
             export interface SubstVacationSettingDto {
-                isManage: number;
-                expirationDate: number;
-                allowPrepaidLeave: number;
+                isManage: string;
+                expirationDate: string;
+                allowPrepaidLeave: string;
             }
 
-            export interface Enum {
+            export class Enum {
                 value: number;
-                ecName: string;
-                name: string;
+                fieldName: string;
+                localizedName: string;
+
+                constructor(value: number, fieldName: string, localizedName: string) {
+                    this.value = value;
+                    this.fieldName = fieldName;
+                    this.localizedName = localizedName;
+                }
             }
         }
     }

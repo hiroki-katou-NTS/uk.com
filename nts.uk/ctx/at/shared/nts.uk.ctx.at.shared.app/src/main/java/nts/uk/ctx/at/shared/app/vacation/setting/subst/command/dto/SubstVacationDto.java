@@ -7,11 +7,11 @@ package nts.uk.ctx.at.shared.app.vacation.setting.subst.command.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.VacationExpiration;
 
 /**
  * The Class SubstVacationDto.
@@ -82,7 +82,7 @@ public class SubstVacationDto {
 		@Override
 		public SubstVacationSetting getSetting() {
 			return new SubstVacationSetting(ManageDistinct.valueOf(this.dto.getIsManage()),
-					VacationExpiration.valueOf(this.dto.getExpirationDate()),
+					ExpirationTime.valueOf(this.dto.getExpirationDate()),
 					ApplyPermission.valueOf(this.dto.getAllowPrepaidLeave()));
 		}
 	}
