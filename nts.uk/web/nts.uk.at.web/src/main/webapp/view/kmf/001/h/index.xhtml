@@ -29,12 +29,12 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">会社</span>
-					<button>
+					<button data-bind="click: back">
 						<!-- ＃KMF001_27 -->
-						←休暇の選択に戻る
+						休暇の選択に戻る
 					</button>
 
-					<button class="proceed">
+					<button class="proceed" data-bind="click: saveComSetting">
 						<!-- ＃KMF001_28 -->
 						登録
 					</button>
@@ -55,14 +55,15 @@
 								<div class="btn-switch"
 									data-bind="ntsSwitchButton: {
 									options: manageDistinctEnums,
-									optionsValue: 'fieldName',
+									optionsValue: 'value',
 									optionsText: 'localizedName',
 									value: settingModel().isManage}"></div>
 							</td>
+							<td style="width: 30px;"></td>
 						</tr>
 						<tr>
 							<td></td>
-							<td>
+							<td colspan="2">
 								<table class="form-default">
 									<tr class="row_head">
 										<td><div data-bind="ntsFormLabel: { required: true }">
@@ -83,14 +84,13 @@
 														<div
 															data-bind="ntsComboBox: {
 																			options: vacationExpirationEnums,
-																			optionsValue: 'fieldName',
+																			optionsValue: 'value',
 																			value: settingModel().expirationDate,
 																			optionsText: 'localizedName',
 																			editable: false,
 																			enable: true,
 																			columns: [
-																				{ prop: 'fieldName', length: 4 },
-																				{ prop: 'localizedName', length: 10 },
+																				{ prop: 'localizedName', length: 20 }
 																			]}"></div>
 													</td>
 												</tr>
@@ -101,7 +101,7 @@
 													<td><div
 															data-bind="ntsSwitchButton: {
 															options: applyPermissionEnums,
-															optionsValue: 'fieldName',
+															optionsValue: 'value',
 															optionsText: 'localizedName',
 															value: settingModel().allowPrepaidLeave}">
 														</div></td>
@@ -118,12 +118,12 @@
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">雇用</span>
-					<button>
+					<button data-bind="click: back">
 						<!-- ＃KMF001_27 -->
 						休暇の選択に戻る
 					</button>
 
-					<button class="proceed">
+					<button class="proceed" data-bind="click: saveComSetting">
 						<!-- ＃KMF001_28 -->
 						登録
 					</button>

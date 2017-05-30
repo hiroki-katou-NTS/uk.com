@@ -407,6 +407,47 @@
                 }
             }
         }
+        
+        export module value {
+        
+            export function reset($controls: JQuery, defaultVal?: any, immediateApply?: boolean) {
+                var resetEvent = new CustomEvent(DefaultValue.RESET_EVT, {
+                    detail: { 
+                                value: defaultVal,
+                                immediateApply: immediateApply === undefined ? true : immediateApply
+                            }
+                });
+                _.forEach($controls, function(control) {
+                    control.dispatchEvent(resetEvent);
+                });
+            }
+            
+            export class DefaultValue {
+                static RESET_EVT: string = "reset";
+                onReset($control: JQuery, koValue: (data?: any) => any) {
+                    var self = this;
+                    $control.on(DefaultValue.RESET_EVT, function(e: any) {
+                        var param = e.detail;
+                        self.asDefault($(this), koValue, param.value, param.immediateApply);
+                    });
+                    return this;
+                }
+                
+                applyReset($control: JQuery, koValue: (data?: any) => any): any {
+                    var defaultVal = _.cloneDeep($control.data("default")); 
+                    var isDirty = defaultVal !== koValue();
+                    if ($control.ntsError("hasError")) $control.ntsError("clear");
+                    if (defaultVal !== undefined && isDirty) setTimeout(() => koValue(defaultVal), 0);
+                    return { isDirty: isDirty }; 
+                }
+            
+                asDefault($control: JQuery, koValue: (data?: any) => any, defaultValue: any, immediateApply: boolean) {
+                    var defaultVal = defaultValue !== undefined ? defaultValue : koValue();
+                    $control.data("default", defaultVal);
+                    if (immediateApply) this.applyReset($control, koValue);
+                }
+            }
+        }
     }
 
     export class WebStorageWrapper {
@@ -580,18 +621,24 @@
         }
         function formatParams(message: string, args: string[]) {
             if (args==null||args.length==0) return message;
-            let paramRegex = /{([0-9])+(:\\w+)?}/;
+            let paramRegex = /{([0-9])+(:\w+)?}/;
             let matches: string[];
+            let formatter = time.getFormatter();
             while (matches = paramRegex.exec(message)) {
                 let code = matches[1];
                 let text = args[parseInt(code)];
 //                if(text!=undefined && text.indexOf("#")==0){
 //                    text = getText(text.substring(1))
 //                }
+                let param = matches[2];
+                if (param !== undefined && formatter !== undefined) {
+                    text = time.applyFormat(param.substring(1), text, formatter);
+                }
                 message = message.replace(paramRegex, text);
             }
             return message;
         }
+        
     }
     export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
 

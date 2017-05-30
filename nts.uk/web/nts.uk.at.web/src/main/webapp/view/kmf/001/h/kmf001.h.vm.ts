@@ -16,7 +16,7 @@ module nts.uk.pr.view.kmf001.h {
 
             // Model
             settingModel: KnockoutObservable<SubstVacationSettingModel>;
-            empSettingModel: KnockoutObservable<SubstVacationSettingModel>;
+            empSettingModel: KnockoutObservable<EmpSubstVacationModel>;
 
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -46,17 +46,17 @@ module nts.uk.pr.view.kmf001.h {
                     //                    self.loadEmpSettingDetails("");
                     self.settingModel = ko.observable(
                         new SubstVacationSettingModel({
-                            isManage: self.manageDistinctEnums()[0].fieldName,
-                            expirationDate: self.vacationExpirationEnums()[0].fieldName,
-                            allowPrepaidLeave: self.applyPermissionEnums()[0].fieldName
+                            isManage: self.manageDistinctEnums()[0].value,
+                            expirationDate: self.vacationExpirationEnums()[0].value,
+                            allowPrepaidLeave: self.applyPermissionEnums()[0].value
                         }));
                     self.empSettingModel = ko.observable(
                         new EmpSubstVacationModel({
                             contractTypeCode: "",
                             setting: {
-                                isManage: self.manageDistinctEnums()[0].fieldName,
-                                expirationDate: self.vacationExpirationEnums()[0].fieldName,
-                                allowPrepaidLeave: self.applyPermissionEnums()[0].fieldName
+                                isManage: self.manageDistinctEnums()[0].value,
+                                expirationDate: self.vacationExpirationEnums()[0].value,
+                                allowPrepaidLeave: self.applyPermissionEnums()[0].value
                             }
                         }));
                     dfd.resolve();
@@ -140,18 +140,102 @@ module nts.uk.pr.view.kmf001.h {
                 return dfd.promise();
             }
 
+            public back(): void {
+                nts.uk.request.jump("/view/kmf/001/a/index.xhtml", {});
+            }
+
+            public saveComSetting(): void {
+                let self = this;
+                let dfd = $.Deferred();
+
+                if (!self.validateComSetting()) {
+                    return;
+                }
+
+                this.service.saveComSetting(self.settingModel().toSubstVacationSettingDto()).done(function() {
+                    // Msg_15
+                    nts.uk.ui.dialog.alert("登録しました。");
+                    // nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+            }
+
+            public saveEmpSetting(): void {
+                let self = this;
+                let dfd = $.Deferred();
+
+                if (!self.validateEmpSetting()) {
+                    return;
+                }
+
+                this.service.saveEmpSetting(self.empSettingModel().toEmpSubstVacationDto()).done(function() {
+                    // Msg_15
+                    nts.uk.ui.dialog.alert("登録しました。");
+                    // nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+            }
+
+            private validateComSetting(): boolean {
+                let self = this;
+//
+//                $('input').ntsEditor('validate');
+//
+//                if ($('.nts-input').ntsError('hasError')) {
+//                    return false;
+//                }
+
+                return true;
+            }
+
+            private clearErrorComSetting(): void {
+                if (!$('.nts-input').ntsError('hasError')) {
+                    return;
+                }
+
+                $('input').ntsError('clear');
+            }
+
+            private validateEmpSetting(): boolean {
+                let self = this;
+
+//                $('input').ntsEditor('validate');
+//
+//                if ($('.nts-input').ntsError('hasError')) {
+//                    return false;
+//                }
+
+                return true;
+            }
+
+            private clearErrorEmpSetting(): void {
+                if (!$('.nts-input').ntsError('hasError')) {
+                    return;
+                }
+
+                $('input').ntsError('clear');
+            }
+
         }
 
         // Model class
         export class SubstVacationSettingModel {
-            isManage: KnockoutObservable<string>;
-            expirationDate: KnockoutObservable<string>;
-            allowPrepaidLeave: KnockoutObservable<string>;
+            isManage: KnockoutObservable<number>;
+            expirationDate: KnockoutObservable<number>;
+            allowPrepaidLeave: KnockoutObservable<number>;
 
             constructor(dto: SubstVacationSettingDto) {
                 this.isManage = ko.observable(dto.isManage);
                 this.expirationDate = ko.observable(dto.expirationDate);
                 this.allowPrepaidLeave = ko.observable(dto.allowPrepaidLeave);
+            }
+
+            public toSubstVacationSettingDto(): SubstVacationSettingDto {
+                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave());
             }
         }
 
@@ -161,6 +245,11 @@ module nts.uk.pr.view.kmf001.h {
             constructor(dto: EmpSubstVacationDto) {
                 super(dto.setting);
                 this.contractTypeCode = ko.observable(dto.contractTypeCode);
+            }
+
+            public toEmpSubstVacationDto(): EmpSubstVacationDto {
+                return new EmpSubstVacationDto(this.contractTypeCode(),
+                    new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave()));
             }
         }
     }

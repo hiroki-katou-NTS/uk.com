@@ -24,17 +24,18 @@ module nts.uk.ui.jqueryExtentions {
 
         $.fn.ntsFileUpload = function(option: FileUploadOption) {
             let dfd = $.Deferred();
-            let file:JQuery;
-            if($(this).find("input[type='file']").length==0){
-                  file = $(this)[0].files;
-            }else{
-                  file = $(this).find("input[type='file']")[0].files;
+            let file: JQuery;
+            if ($(this).find("input[type='file']").length == 0) {
+                file = $(this)[0].files;
+            } else {
+                file = $(this).find("input[type='file']")[0].files;
             }
             if (file) {
                 var formData = new FormData();
                 formData.append("stereotype", option.stereoType);
                 // HTML file input, chosen by user
                 formData.append("userfile", file[0]);
+                formData.append("filename", file[0].name);
                 if (file[0]) {
                     return nts.uk.request.uploadFile(formData, option);
                 } else {
@@ -47,7 +48,7 @@ module nts.uk.ui.jqueryExtentions {
             return dfd.promise();
         }
     }
-	
+
     module ntsError {
         var DATA_HAS_ERROR = 'hasError';
 
@@ -260,7 +261,9 @@ module nts.uk.ui.jqueryExtentions {
                     $grid.igGrid("commit");
                     if ($grid.igGrid("hasVerticalScrollbar")) {
                         let current = $grid.ntsGridList("getSelected");
-                        $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);
+                        if(current !== undefined){
+                            $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);        
+                        }
                     }
                 }
             }
@@ -363,7 +366,7 @@ module nts.uk.ui.jqueryExtentions {
 
 
             $grid.bind('mousedown', function(e) {
-                
+
                 // グリッド内がマウスダウンされていない場合は処理なしで終了
                 var $container = $grid.closest('.ui-iggrid-scrolldiv');
                 if ($(e.target).closest('.ui-iggrid-table').length === 0) {
@@ -426,9 +429,9 @@ module nts.uk.ui.jqueryExtentions {
                     mousePos = null;
                     dragSelectRange = [];
                     $(window).unbind('mousemove.NtsGridListDragging');
-                    if($grid.data("selectUpdated") === true){
-                        $grid.triggerHandler('selectionchanged');  
-                    }                    
+                    if ($grid.data("selectUpdated") === true) {
+                        $grid.triggerHandler('selectionchanged');
+                    }
                     //$grid.triggerHandler('selectionchanged');  
                     clearInterval(timerAutoScroll);
                     $grid.data("selectUpdated", false);
@@ -493,7 +496,7 @@ module nts.uk.ui.jqueryExtentions {
             //            $grid.off('mouseup');
         }
     }
-    
+
     module ntsTreeView {
 
         let OUTSIDE_AUTO_SCROLL_SPEED = {
@@ -568,17 +571,19 @@ module nts.uk.ui.jqueryExtentions {
         };
 
         function selectAll($list: JQuery) {
-            $list.find('.nts-list-box > li').addClass("ui-selected");
-            $list.find("li").attr("clicked", "");
-            $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
+            let $grid = $list.find(".ntsListBox");
+            let options = $grid.igGrid("option", "dataSource");
+            let primaryKey = $grid.igGrid("option", "primaryKey");
+            _.forEach(options, function (option, idx){
+                $grid.igGridSelection("selectRowById", option[primaryKey]);        
+            });
+            $grid.triggerHandler('selectionchanged');
         }
 
         function deselectAll($list: JQuery) {
-            var selectListBoxContainer = $list.find('.nts-list-box');
-            selectListBoxContainer.data('value', '');
-            $list.find('.nts-list-box > li').removeClass("ui-selected");
-            $list.find('.nts-list-box > li > div').removeClass("ui-selected");
-            $list.trigger("selectionChange");
+            let $grid = $list.find(".ntsListBox");
+            $grid.igGridSelection('clearSelection');
+            $grid.triggerHandler('selectionchanged');
         }
     }
 

@@ -3,6 +3,7 @@ module kmk011.a {
         var screenModel = new kmk011.a.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $("#itemname").focus();
         }); 
     });
 }
