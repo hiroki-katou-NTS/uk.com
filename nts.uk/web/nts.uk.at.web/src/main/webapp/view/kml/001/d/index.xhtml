@@ -27,13 +27,13 @@
 						</div>
 						<div class="cell">
 							<div data-name="編集方法">
-								<span class="ntsControl">
+								<span tabindex="1" class="ntsControl">
 									<label class="ntsRadioBox">
 										<input type="radio" name="textRadio" data-bind="checkedValue: false, checked: isUpdate, enable: deleteAble" />
 										<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KML001_52')}'"></span>
 									</label>
 								</span>		
-								<span class="ntsControl">
+								<span tabindex="1" class="ntsControl">
 									<label class="ntsRadioBox">
 										<input type="radio" name="textRadio" data-bind="checkedValue: true, checked: isUpdate, enable: true" />
 										<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KML001_53')}'"></span>
@@ -44,10 +44,9 @@
 								<div data-bind="ntsFormLabel: {}, css: { 'form-label-delete': !isUpdate(), 'form-label-update': isUpdate }">#{i18n.getText('KML001_44')}</div>
 								<div class="dateTime-input">
 									<div>
-										<input id="startDateInput" data-name="期間" data-bind="ntsTimeEditor: {
+										<div tabindex="2" id="startDateInput" data-name="期間" data-bind="ntsDatePicker: {
 											value: newStartDate,
-											option: { width: '110px', inputFormat: 'date' },
-											required: true,
+											dateFormat: 'YYYY/MM/DD',
 											enable: isUpdate }" />
 									</div>
 								</div>
@@ -58,8 +57,8 @@
 					</div>
 					<hr />
 					<div id="center-bottom" class="valign-center control-group">
-						<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
-						<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>
+						<button tabindex="3" class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
+						<button tabindex="4" class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>
 					</div>
 				</div>
 			</ui:define>

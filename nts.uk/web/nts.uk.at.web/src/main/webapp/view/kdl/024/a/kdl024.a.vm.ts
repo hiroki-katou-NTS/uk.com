@@ -21,7 +21,7 @@ module kdl024.a.viewmodel {
             // Budget list
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KDL024_5'), key: 'externalBudgetCode', width: 40 },
-                { headerText: nts.uk.resource.getText('KDL024_6'), key: 'externalBudgetName', width: 150 }
+                { headerText: nts.uk.resource.getText('KDL024_6'), key: 'externalBudgetName', width: 150, formatter: _.escape }
             ]);
             self.listBudget = ko.observableArray([]);
             self.selectedBudgetCode = ko.observable('');
@@ -64,7 +64,7 @@ module kdl024.a.viewmodel {
                 }
                 dfd.resolve();
             }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
+                nts.uk.ui.dialog.alertError(res.message);
                 dfd.reject();
             });
             return dfd.promise();
@@ -80,7 +80,7 @@ module kdl024.a.viewmodel {
                 self.currentItem().externalBudgetCode(self.padZero(currentCode));
                 //insert process
                 service.insertExternalBudget(self.currentItem()).done(function() {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'))；
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15"});
                         // Add new item
                         self.listBudget.push({
                             externalBudgetCode: self.currentItem().externalBudgetCode(),
@@ -99,7 +99,7 @@ module kdl024.a.viewmodel {
             //Mode UPDATE
             else {
                 service.updateExternalBudget(self.currentItem()).done(function() {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'))；
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15"});
                     //update list source
                     let updateItem = _.find(self.listBudget(),['externalBudgetCode',self.selectedBudgetCode()]);
                     if(updateItem !== undefined){
@@ -111,7 +111,7 @@ module kdl024.a.viewmodel {
                     }
                     self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                     self.start();
                 });
             }
@@ -135,12 +135,15 @@ module kdl024.a.viewmodel {
             nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function(){
                 //削除後処理 
                 service.deleteExternalBudget(self.currentItem()).done(function() {
-                   nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_16')).then(function(){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
                         var deletedIndex = _.findIndex(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
                         var deletedItem = _.find(self.listBudget(), ['externalBudgetCode',self.selectedBudgetCode()]);
                         self.listBudget.remove(deletedItem);
                         if(self.listBudget().length === 0) {
                             self.newMode();
+                            if (nts.uk.ui.errors.hasError()){
+                                nts.uk.ui.errors.clearAll();
+                            }
                         }
                         else {
                             self.findItemByIndex(_.min([deletedIndex, self.listBudget().length - 1]));
@@ -148,7 +151,7 @@ module kdl024.a.viewmodel {
                    })；
                    
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                     self.start();
                 });
             });

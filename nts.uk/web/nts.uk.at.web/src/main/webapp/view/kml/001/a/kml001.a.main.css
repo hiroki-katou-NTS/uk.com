@@ -74,7 +74,7 @@ input, textarea {
 	outline-style: solid;
 	outline-color: #999999;
 	outline-width: 1px;
-	width: 792px;
+	width: 807px;
 	height: 360px;
 }
 #premium-set-tbl {
@@ -108,8 +108,8 @@ input, textarea {
 	background-color: #EDFAC2;
 }
 #premium-set-tbl th:FIRST-CHILD, td:FIRST-CHILD {
-	min-width: 205px;
-	max-width: 205px;
+	min-width: 220px;
+	max-width: 220px;
 }
 #premium-set-tbl th:NTH-CHILD(2), td:NTH-CHILD(2) {
 	width: 80px;
@@ -160,7 +160,7 @@ input, textarea {
 #formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(3) > .cell{
 	height: 40px;
 }
-img {
+.symbol-img {
 	margin-top: 5px; 
 	position: absolute;
     height: 90px;

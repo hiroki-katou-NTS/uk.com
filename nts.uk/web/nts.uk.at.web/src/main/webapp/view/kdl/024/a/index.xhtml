@@ -7,13 +7,14 @@
 <head>
 </head>
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdl024.a.main.css" />
 			<com:scriptfile path="kdl024.a.start.js" />
 			<com:scriptfile path="kdl024.a.service.js" />
 			<com:scriptfile path="kdl024.a.vm.js" />
+			<script>var dialogSize = { width: 785 , height: 430};</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd
 				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetName
@@ -56,6 +57,7 @@
 									value: externalBudgetCode,
 									constraint: 'ExternalBudgetCd',
 									required: true,
+									option: {autofill: true, filldirection: 'left'},
 									enable: $parent.isNew}" 
 									data-name="BudgetCode"
 									tabindex="5"/>

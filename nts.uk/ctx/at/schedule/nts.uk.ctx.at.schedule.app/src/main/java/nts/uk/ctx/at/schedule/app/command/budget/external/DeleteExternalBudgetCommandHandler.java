@@ -25,7 +25,7 @@ public class DeleteExternalBudgetCommandHandler extends CommandHandler<DeleteExt
 		DeleteExternalBudgetCommand command = context.getCommand();
 		
 		if(!this.budgetRepo.find(companyId, command.getExternalBudgetCode()).isPresent()){
-			throw new BusinessException(new RawErrorMessage("項目が存在しません、削除されしたようです。"));
+			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
 		// delete process
 		budgetRepo.delete(companyId, command.getExternalBudgetCode());
