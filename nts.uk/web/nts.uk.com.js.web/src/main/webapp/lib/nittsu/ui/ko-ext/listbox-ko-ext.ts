@@ -110,7 +110,7 @@ module nts.uk.ui.koExtentions {
                 var changingEvent = new CustomEvent("selectionChanging", {
                     detail: itemSelected,  
                     bubbles: true,
-                    cancelable: true,
+                    cancelable: false,
                 });
                 
                 container.data("chaninged", true);
@@ -155,16 +155,10 @@ module nts.uk.ui.koExtentions {
                     var changingEvent = new CustomEvent("selectionChanging", {
                         detail: itemSelected,  
                         bubbles: true,
-                        cancelable: true,
+                        cancelable: false,
                     });
                     
                     document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                    
-                    if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
-                        let oldSelected = container.data("selected");
-                        container.ntsGridList("setSelected", oldSelected);
-                        return false;    
-                    } 
                 }
                 container.data("chaninged", false);
                 if(!_.isEqual(itemSelected, data.value())){
