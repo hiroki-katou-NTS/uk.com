@@ -2,36 +2,27 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.infra.repository.company.organization.catetory;
+package nts.uk.ctx.basic.app.find.company.organization.category.dto;
 
-import javax.ejb.Stateless;
-
+import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.basic.dom.company.organization.category.CompanyId;
 import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryCode;
 import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryName;
 import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategorySetMemento;
-import nts.uk.ctx.basic.infra.entity.company.organization.catetory.CclmtManagementCategory;
-import nts.uk.ctx.basic.infra.entity.company.organization.catetory.CclmtManagementCategoryPK;
 
 /**
- * The Class JpaManagementCategorySetMemento.
+ * The Class ManagementCategoryFindDto.
  */
-@Stateless
-public class JpaManagementCategorySetMemento implements ManagementCategorySetMemento{
+@Getter
+@Setter
+public class ManagementCategoryFindDto implements ManagementCategorySetMemento{
 	
-	/** The cclmt management category. */
-	@Setter
-	private CclmtManagementCategory cclmtManagementCategory;
+	/** The code. */
+	private String code;
 	
-	/**
-	 * Instantiates a new jpa management category set memento.
-	 *
-	 * @param cclmtManagementCategory the cclmt management category
-	 */
-	public JpaManagementCategorySetMemento(CclmtManagementCategory cclmtManagementCategory) {
-		this.cclmtManagementCategory = cclmtManagementCategory;
-	}
+	/** The name. */
+	private String name;
 
 	/*
 	 * (non-Javadoc)
@@ -41,9 +32,8 @@ public class JpaManagementCategorySetMemento implements ManagementCategorySetMem
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		CclmtManagementCategoryPK pk = new CclmtManagementCategoryPK();
-		pk.setCcid(companyId.v());
-		this.cclmtManagementCategory.setCclmtManagementCategoryPK(pk);
+		// No thing code
+		
 	}
 
 	/*
@@ -55,9 +45,8 @@ public class JpaManagementCategorySetMemento implements ManagementCategorySetMem
 	 */
 	@Override
 	public void setManagementCategoryCode(ManagementCategoryCode managementCategoryCode) {
-		CclmtManagementCategoryPK pk = this.cclmtManagementCategory.getCclmtManagementCategoryPK();
-		pk.setCode(managementCategoryCode.v());
-		this.cclmtManagementCategory.setCclmtManagementCategoryPK(pk);
+		this.code = managementCategoryCode.v();
+		
 	}
 
 	/*
@@ -69,7 +58,8 @@ public class JpaManagementCategorySetMemento implements ManagementCategorySetMem
 	 */
 	@Override
 	public void setManagementCategoryName(ManagementCategoryName managementCategoryName) {
-		this.cclmtManagementCategory.setName(managementCategoryName.v());
+		this.name = managementCategoryName.v();
+		
 	}
 
 }

@@ -14,7 +14,7 @@ import nts.arc.layer.dom.DomainObject;
 public class ManagementCategory extends DomainObject{
 
 	/** The company id. */
-	private String companyId;
+	private CompanyId companyId;
 	
 	/** The classification code. */
 	private ManagementCategoryCode managementCategoryCode;

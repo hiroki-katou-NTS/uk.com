@@ -11,7 +11,7 @@ public interface ManagementCategoryGetMemento {
 	 *
 	 * @return the company id
 	 */
-	String getCompanyId();
+	CompanyId getCompanyId();
 	
 	
 	/**

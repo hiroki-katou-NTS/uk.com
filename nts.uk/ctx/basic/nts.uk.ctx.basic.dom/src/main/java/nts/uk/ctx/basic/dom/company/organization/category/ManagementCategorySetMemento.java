@@ -14,7 +14,7 @@ public interface ManagementCategorySetMemento {
 	 *
 	 * @param companyId the new company id
 	 */
-	void setCompanyId(String companyId);
+	void setCompanyId(CompanyId companyId);
 	
 	
 	/**

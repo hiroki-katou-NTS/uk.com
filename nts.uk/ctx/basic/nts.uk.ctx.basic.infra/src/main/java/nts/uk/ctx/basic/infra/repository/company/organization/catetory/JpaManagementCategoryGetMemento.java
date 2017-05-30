@@ -5,6 +5,7 @@
 package nts.uk.ctx.basic.infra.repository.company.organization.catetory;
 
 import lombok.Setter;
+import nts.uk.ctx.basic.dom.company.organization.category.CompanyId;
 import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryCode;
 import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryGetMemento;
 import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryName;
@@ -30,8 +31,8 @@ public class JpaManagementCategoryGetMemento implements ManagementCategoryGetMem
 	 * ManagementCategoryGetMemento#getCompanyId()
 	 */
 	@Override
-	public String getCompanyId() {
-		return this.cclmtManagementCategory.getCclmtManagementCategoryPK().getCcid();
+	public CompanyId getCompanyId() {
+		return new CompanyId(this.cclmtManagementCategory.getCclmtManagementCategoryPK().getCcid());
 	}
 
 	/*
