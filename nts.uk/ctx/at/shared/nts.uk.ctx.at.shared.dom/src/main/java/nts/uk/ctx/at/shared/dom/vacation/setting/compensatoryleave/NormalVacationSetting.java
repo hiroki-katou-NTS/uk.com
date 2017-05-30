@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
@@ -26,7 +27,7 @@ public class NormalVacationSetting extends DomainObject{
 	private ExpirationTime expirationTime;
 	
 	/** The preemption permit. */
-	private Boolean preemptionPermit;
+	private ApplyPermission preemptionPermit;
 	
 	/** The is manage by time. */
 	private ManageDistinct isManageByTime;

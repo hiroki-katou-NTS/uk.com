@@ -65,6 +65,7 @@ public class JpaCompensatoryLeaveComSetMemento implements CompensatoryLeaveComSe
     public void setNormalVacationSetting(NormalVacationSetting setting) {
         KmfmtNormalVacationSet entityNormal = new KmfmtNormalVacationSet();
         setting.saveToMemento(new JpaNormalVacationSetMemento(entityNormal));
+        entityNormal.setCid(this.entity.getCid());
         this.entity.setNormal(entityNormal);
     }
 
@@ -79,6 +80,7 @@ public class JpaCompensatoryLeaveComSetMemento implements CompensatoryLeaveComSe
     public void setOccurrenceVacationSetting(OccurrenceVacationSetting setting) {
         KmfmtOccurVacationSet entityOccur = new KmfmtOccurVacationSet();
         setting.saveToMemento(new JpaOccurrenceVacationSetMemento(entityOccur));
+        entityOccur.setCid(this.entity.getCid());
         this.entity.setOccur(entityOccur);
     }
 
