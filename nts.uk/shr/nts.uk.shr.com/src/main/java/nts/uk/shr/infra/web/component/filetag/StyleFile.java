@@ -52,6 +52,7 @@ public class StyleFile extends UIComponentBase {
         ResponseWriter rw = context.getResponseWriter();
         
         String filePath = (String) this.getAttributes().get("path");
+        
         String of = (String) this.getAttributes().get("of");
         
         if (filePath != null) {

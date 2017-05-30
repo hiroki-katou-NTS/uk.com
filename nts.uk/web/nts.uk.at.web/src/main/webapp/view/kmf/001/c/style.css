@@ -1,0 +1,44 @@
+@CHARSET "UTF-8";
+#master-content {
+	min-width: 900px;
+}
+#functions-area {
+	height: auto !important
+}
+.nts-switch-button {
+	min-width: 80px;
+	font-size: 13px !important;
+	height: 30px !important;
+	padding: 3px 7px !important;
+	margin-bottom: 3px !important;
+}
+.btn-default {
+	margin-left: 20px;
+	min-width: 80px;
+}
+#contents-area {
+	height: 800px;
+	overflow-y: scroll;
+}
+#table {
+	margin-top: 30px;
+	margin-left: 50px;
+	margin-bottom: 50px;
+}
+table#table tr td {
+	padding-top: 15px;
+	margin-left: 10px;
+}
+table#table tr td label.content-label {
+	padding-left: 50px;
+	padding-right: 20px;
+}
+.hr_width {
+	width: 760px;
+}
+table#table tr td.title {
+	padding-bottom: 35px;
+}
+.ntsControl {
+    display: inline !important;
+}

@@ -15,7 +15,7 @@
         if (month)
             return year + "年 " + month + " 月";
         return year;
-    } 
+    }
 
     export class JapanYearMonth {
         empire: string;
@@ -577,6 +577,195 @@
             seconds = (util.isNullOrUndefined(seconds)) ? 1 : seconds;
             milliseconds = (util.isNullOrUndefined(milliseconds)) ? 0 : milliseconds;
             return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
+        }
+    }
+     
+    export class DateTimeFormatter {
+        shortYmdPattern = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
+        shortYmdwPattern =/^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
+        shortYmPattern = /^\d{4}\/\d{1,2}$/;
+        shortMdPattern = /^\d{1,2}\/\d{1,2}$/;
+        longYmdPattern = /^\d{4}年\d{1,2}月\d{1,2}日$/;
+        longYmdwPattern = /^\d{4}年\d{1,2}月\d{1,2}日\(\w+\)$/;
+        longFPattern = /^\d{4}年度$/;
+        longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}月\d{1,2}日$/;
+        longJmPattern = /^\w{2}\d{1,3}年\d{1,2}月$/;
+        fullDateTimeShortPattern = /^\d{4}\/\d{1,2}\/\d{1,2} \d+:\d{2}:\d{2}$/;
+        timeShortHmsPattern = /^\d+:\d{2}:\d{2}$/;
+        timeShortHmPattern = /^\d+:\d{2}$/;
+        days = ['日', '月', '火', '水', '木', '金', '土'];
+        
+        shortYmd(date: string) {
+            let d = this.dateOf(date);
+            if (this.shortYmdPattern.test(d)) return this.format(d);
+        }
+        
+        shortYmdw(date: string) {
+            let d = this.dateOf(date);
+            if (this.shortYmdwPattern.test(d)) return d;
+            if (this.shortYmdPattern.test(d)) {
+                let dayStr = this.days[new Date(d).getDay()];
+                return this.format(d) + '(' + dayStr + ')';
+            }
+        }
+        
+        shortYm(date: string) {
+            let d = this.format(this.dateOf(date));
+            if (this.shortYmPattern.test(d)) return d;
+            if (this.shortYmdPattern.test(d)) {
+                let end = d.lastIndexOf("/");
+                if (end !== -1) return d.substring(0, end);
+            }
+        }
+        
+        shortMd(date: string) {
+            let d = this.format(this.dateOf(date));
+            if (this.shortMdPattern.test(d)) return d;
+            if (this.shortYmdPattern.test(d)) {
+                let start = d.indexOf("/");
+                if (start !== -1) return d.substring(start + 1);
+            }
+        }
+        
+        longYmd(date: string) {
+            let d = this.dateOf(date);
+            if (this.longYmdPattern.test(d)) return d;
+            if (this.shortYmdPattern.test(d)) {
+                let mDate = new Date(d);
+                return this.toLongJpDate(mDate);
+            }
+        }
+        
+        longYmdw(date: string) {
+            let d = this.dateOf(date);
+            if (this.longYmdwPattern.test(d)) return d;
+            if (this.shortYmdPattern.test(d)) {
+                let mDate = new Date(d);
+                return this.toLongJpDate(mDate) + '(' + this.days[mDate.getDay()] + ')';
+            }
+        }
+            
+        toLongJpDate(d: Date) {
+            return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+        }
+        
+        longF(date: string) {
+            let d = this.dateOf(date);
+            if (this.longFPattern.test(d)) return d;
+            if (this.shortYmdPattern.test(d)) {
+                let mDate = new Date(d);
+                return this.fiscalYearOf(mDate) + '年度';
+            }
+        }
+            
+        longJmd(date: string) {
+            let d = this.dateOf(date);
+            if (this.longJmdPattern.test(d)) return d;
+            return this.fullJapaneseDateOf(d);
+        }
+            
+        longJm(date: string) {
+            let d = this.dateOf(date);
+            if (this.longJmPattern.test(d)) return d;
+            let jpDate = this.fullJapaneseDateOf(d);
+            let start = jpDate.indexOf("月"); 
+            if (start !== -1) {
+                return jpDate.substring(0, start + 1);
+            }
+        }
+            
+        fullJapaneseDateOf(date: string) {
+            if (this.shortYmdPattern.test(date)) {
+                let d = new Date(date);
+                return d.toLocaleDateString("ja-JP-u-ca-japanese", { era: 'short' });
+            }
+            return date;
+        }
+        
+        fiscalYearOf(date: Date) {
+            if (date < new Date(date.getFullYear(), 3, 1))
+                return date.getFullYear() - 1;
+            return date.getFullYear();
+        }
+        
+        dateOf(dateTime: string) {
+            if (this.fullDateTimeShortPattern.test(dateTime)) {
+                return dateTime.split(" ")[0];
+            }
+            return dateTime;
+        }
+        
+        timeOf(dateTime: string) {
+            if (this.fullDateTimeShortPattern.test(dateTime)) {
+                return dateTime.split(" ")[1];
+            }
+            return dateTime;
+        }
+    
+        timeShortHm(time: string) {
+            let t = this.timeOf(time);
+            if (this.timeShortHmPattern.test(t)) return t;
+            if (this.timeShortHmsPattern.test(t)) {
+                return t.substring(0, t.lastIndexOf(":"));
+            }
+        }
+    
+        timeShortHms(time: string) {
+            let t = this.timeOf(time);
+            if (this.timeShortHmsPattern.test(t)) return t;
+        }
+    
+        clockShortHm(time: string) {
+            return this.timeShortHm(time);
+        }
+    
+        fullDateTimeShort(dateTime: string) {
+            if (this.fullDateTimeShortPattern.test(dateTime)) return dateTime;
+        }
+        
+        format(date: string) {
+            return new Date(date).toLocaleDateString("ja-JP");
+        }
+    }
+     
+    export function getFormatter() {
+        switch(systemLanguage) {
+            case 'ja':
+                return new DateTimeFormatter();
+            case 'en':
+                return null;   
+        }
+    }
+    
+    export function applyFormat(format: string, dateTime: string, formatter: DateTimeFormatter) {
+        if (formatter === undefined) formatter = getFormatter();
+        switch(format) {
+            case 'Short_YMD':
+                return formatter.shortYmd(dateTime);
+            case 'Short_YMDW':
+                return formatter.shortYmdw(dateTime);
+            case 'Short_YM':
+                return formatter.shortYm(dateTime);
+            case 'Short_MD':
+                return formatter.shortMd(dateTime);
+            case 'Long_YMD':
+                return formatter.longYmd(dateTime);
+            case 'Long_YMDW':
+                return formatter.longYmdw(dateTime);
+            case 'Long_F':
+                return formatter.longF(dateTime);
+            case 'Long_JMD':
+                return formatter.longJmd(dateTime);
+            case 'Long_JM':
+                return formatter.longJm(dateTime);
+            case 'Time_Short_HM':
+                return formatter.timeShortHm(dateTime);
+            case 'Time_Short_HMS':
+                return formatter.timeShortHms(dateTime);
+            case 'Clock_Short_HM':
+                return formatter.clockShortHm(dateTime);
+            case 'DateTime_Short_YMDHMS':
+                return formatter.fullDateTimeShort(dateTime);
         }
     }
 }

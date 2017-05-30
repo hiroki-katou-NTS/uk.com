@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  *
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
  */
 @Entity
 @Table(name = "QPDPT_PAYDAY")
-public class QpdptPayday extends TableEntity implements Serializable {
+public class QpdptPayday extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -73,5 +73,10 @@ public class QpdptPayday extends TableEntity implements Serializable {
     public String toString() {
         return "entity.QpdptPayday[ qpdptPaydayPK=" + qpdptPaydayPK + " ]";
     }
+
+	@Override
+	protected Object getKey() {
+		return this.qpdptPaydayPK;
+	}
     
 }

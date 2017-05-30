@@ -5,7 +5,7 @@
 	display: inline-block;
 }
 .ntsSwapList{
-	overflow: auto;
+	overflow: hidden;
 }
 .ntsSearchButton{
 	margin-left: 10px;
@@ -27,4 +27,9 @@
 }
 .ntsSearchArea div{
 	display: inline-block;
+}
+.switchButton-wrapper {
+	&:focus {
+	  	outline: 1px solid #0096f2;
+	}
 }
