@@ -55,7 +55,7 @@ public abstract class UkJpaEntity extends JpaEntity {
     	this.insDate = GeneralDateTime.now();
     	this.insCcd = AppContexts.user().companyCode();
     	this.insScd = AppContexts.user().employeeCode();
-    	this.insPg = AppContexts.program().getProgramId();
+    	this.insPg = AppContexts.programId();
     }
     
     @PreUpdate
@@ -63,7 +63,7 @@ public abstract class UkJpaEntity extends JpaEntity {
     	this.updDate = GeneralDateTime.now();
     	this.updCcd = AppContexts.user().companyCode();
     	this.updScd = AppContexts.user().employeeCode();
-    	this.updPg = AppContexts.program().getProgramId();
+    	this.updPg = AppContexts.programId();
     }
     
 }

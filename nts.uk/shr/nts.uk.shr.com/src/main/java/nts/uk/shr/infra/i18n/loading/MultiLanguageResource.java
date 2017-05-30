@@ -14,9 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 
@@ -28,6 +26,8 @@ import nts.arc.i18n.custom.ResourceItem;
 import nts.arc.i18n.custom.ResourceType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.SystemProperties;
+import nts.uk.shr.infra.i18n.format.DateTimeFormatProvider;
+import nts.uk.shr.infra.i18n.format.DateTimeTranscoder;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -150,15 +150,19 @@ public class MultiLanguageResource implements IInternationalization {
 			String paramIndexMark = matcher.group(1);
 			String format = matcher.group(2);
 
-			if (format != null) {
-				// TODO: format param
-			}
 			try {
 				int paramIndex = Integer.parseInt(paramIndexMark);
 				if (paramIndex >= params.size()) {
 					continue;
 				}
-				matcher.appendReplacement(sb, getArgument(params.get(paramIndex)));
+				String param;
+				if (format != null) {
+					DateTimeTranscoder transcoder = DateTimeFormatProvider.LocaleTranscoderMap.get(currentLanguage.getSessionLocale());
+					param = transcoder.create().get(format.substring(1)).apply(params.get(paramIndex));
+				} else {
+					param = getArgument(params.get(paramIndex));
+				}
+				matcher.appendReplacement(sb, param);
 			} catch (NumberFormatException ex) {
 				Logger.getLogger(this.getClass()).error(ex.getMessage());
 				continue;

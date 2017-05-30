@@ -1,7 +1,8 @@
 ﻿@CHARSET "UTF-8";
 .ntsCheckBox {
 	display: inline-block;
-	label{display: inline-block;}
+	label{display: inline-block;};
+	padding: 5px 5px 5px 5px;
 	
 	span.box,
 	span.label {
@@ -67,6 +68,10 @@
 				&:after { border-color: #AAA; }
 			}
 		}
+	}
+	
+	&:focus {
+	  	outline: 1px solid #0096f2;
 	}
 }
 
