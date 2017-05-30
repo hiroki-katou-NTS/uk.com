@@ -4,15 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.basic.dom.company.organization.jobtitle;
 
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
  * The Class CompanyId.
  */
-@StringCharType(CharType.NUMERIC)
 @StringMaxLength(17)
 public class CompanyId extends CodePrimitiveValue<CompanyId> {
 

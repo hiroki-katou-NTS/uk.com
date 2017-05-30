@@ -4,15 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.basic.dom.company.organization.jobtitle;
 
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
  * The Class SequenceCode.
  */
-@StringCharType(CharType.NUMERIC)
 @StringMaxLength(5)
 public class SequenceCode extends CodePrimitiveValue<SequenceCode> {
 
