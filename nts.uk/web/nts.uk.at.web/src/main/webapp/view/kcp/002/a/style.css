@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 
-.contents-area {
+#contents-area {
 	margin-top: 20px;
 	margin-left: 50px;
 	min-width: 560px;
@@ -11,13 +11,12 @@
 	padding: 0 135px;
 }
 
-.form-default {
+.open-page {
+	width: 250px;
+	margin: 30px;
 }
 
-.form-default td {
-	padding-top: 10px;
-}
-
-.row_head {
-	border-bottom: 1px solid #7F7F7F;
+.open-dialog:after {
+	border-width: 16px;
+	color: #97D155 !important;
 }
