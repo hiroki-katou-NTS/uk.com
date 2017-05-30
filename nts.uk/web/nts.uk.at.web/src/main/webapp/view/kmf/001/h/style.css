@@ -12,6 +12,7 @@
 }
 
 .form-default {
+	width: 100%;
 }
 
 .form-default td {
@@ -20,4 +21,18 @@
 
 .row_head {
 	border-bottom: 1px solid #7F7F7F;
+}
+
+#left-content {
+	width: 300px;
+    min-height: 200px;
+    padding: 25px;
+    padding-top: 100px
+}
+
+#right-content {
+	padding-left: 30px;
+	padding-top: 15px;
+	width: 600px;
+	vertical-align: top;
 }

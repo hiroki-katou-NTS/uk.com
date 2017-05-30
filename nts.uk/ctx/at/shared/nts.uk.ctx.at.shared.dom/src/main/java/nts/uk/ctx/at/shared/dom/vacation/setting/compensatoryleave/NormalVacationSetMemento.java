@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
@@ -25,7 +26,7 @@ public interface NormalVacationSetMemento {
 	 *
 	 * @param preemptionPermit the new preemption permit
 	 */
-	void setPreemptionPermit(Boolean preemptionPermit);
+	void setPreemptionPermit(ApplyPermission preemptionPermit);
 	
 	/**
 	 * Sets the checks if is manage by time.

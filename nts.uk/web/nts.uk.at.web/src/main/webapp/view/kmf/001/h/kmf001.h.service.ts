@@ -83,16 +83,6 @@ module nts.uk.pr.view.kmf001.h {
         */
         export module model {
 
-            export class EmpSubstVacationDto {
-                contractTypeCode: string;
-                setting: SubstVacationSettingDto;
-
-                constructor(contractTypeCode: string, setting: SubstVacationSettingDto) {
-                    this.contractTypeCode = contractTypeCode;
-                    this.setting = setting;
-                }
-            }
-
             export class SubstVacationSettingDto {
                 isManage: number;
                 expirationDate: number;
@@ -102,6 +92,15 @@ module nts.uk.pr.view.kmf001.h {
                     this.isManage = isManage;
                     this.expirationDate = expirationDate;
                     this.allowPrepaidLeave = allowPrepaidLeave;
+                }
+            }
+
+            export class EmpSubstVacationDto extends SubstVacationSettingDto {
+                contractTypeCode: string;
+
+                constructor(contractTypeCode: string, setting: SubstVacationSettingDto) {
+                    super(setting.isManage, setting.expirationDate, setting.allowPrepaidLeave);
+                    this.contractTypeCode = contractTypeCode;
                 }
             }
 

@@ -12,45 +12,48 @@ import nts.arc.layer.dom.DomainObject;
 
 @Getter
 public class AcquisitionRule extends DomainObject {
-	
-	
+
 	/** The company id. */
 	private String companyId;
-	
+
 	/** The setting classification. */
 	@Setter
-	private Category settingClassification;
-	
+	private Category category;
+
 	/** The acquisition order. */
 	@Setter
 	private List<AcquisitionOrder> acquisitionOrder;
-	
-	
+
 	/**
 	 * Instantiates a new vacation acquisition rule.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public AcquisitionRule(AcquisitionRuleGetMemento memento) {
 		super();
 		this.companyId = memento.getCompanyId();
-		this.settingClassification = memento.getSettingclassification();
+		this.category = memento.getCategory();
 		this.acquisitionOrder = memento.getAcquisitionOrder();
+
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(AcquisitionRuleSetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setSettingclassification(this.settingClassification);
+		memento.setCategory(this.category);
 		memento.setAcquisitionOrder(this.acquisitionOrder);
-		
+
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -60,8 +63,10 @@ public class AcquisitionRule extends DomainObject {
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
 		return result;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -72,7 +77,7 @@ public class AcquisitionRule extends DomainObject {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AcquisitionRule other = (AcquisitionRule) obj;		
+		AcquisitionRule other = (AcquisitionRule) obj;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
@@ -80,6 +85,5 @@ public class AcquisitionRule extends DomainObject {
 			return false;
 		return true;
 	}
-
 
 }
