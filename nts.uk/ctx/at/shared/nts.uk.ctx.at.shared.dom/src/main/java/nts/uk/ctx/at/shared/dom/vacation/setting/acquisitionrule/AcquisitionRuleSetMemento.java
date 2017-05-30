@@ -27,7 +27,7 @@ public interface AcquisitionRuleSetMemento {
 	 *
 	 * @param settingclassification the new settingclassification
 	 */
-	void  setSettingclassification(Category settingclassification );
+	void  setCategory(Category category);
 	
 	
 	

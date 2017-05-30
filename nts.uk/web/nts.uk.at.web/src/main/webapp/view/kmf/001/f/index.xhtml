@@ -31,7 +31,7 @@
 				<div class="sidebar-content-header">
 					<span class="title">会社</span>
 					<button data-bind="click: gotoParent">休暇の選択に戻る</button>
-					<button class="proceed register-button">登録</button>
+					<button data-bind="click: saveData" class="proceed register-button">登録</button>
 					<div class="link_label">
 						<label data-bind="click: gotoVacationSetting">休暇の設定</label>
 					</div>
@@ -43,9 +43,9 @@
 						style="margin-right: 50px;">代休の管理</div>
 					<span
 						data-bind="ntsSwitchButton: {
-										options: manageDistinctOptions,
-										optionsValue: 'code',
-										optionsText: 'name',
+										options: manageDistinctEnums,
+										optionsValue: 'fieldName',
+										optionsText: 'localizedName',
 										value: compenManage,
 										enable: true }">
 					</span>
@@ -66,14 +66,14 @@
 							<td colspan="2">
 								<div class="combo-box"
 									data-bind="ntsComboBox: {
-										options: expirationDateList,
-										optionsValue: 'code',
+										options: expirationTimeEnums,
+										optionsValue: 'fieldName',
 										value: expirationDateCode,
-										optionsText: 'name',
+										optionsText: 'localizedName',
 										editable: false,
 										enable: isManageCompen,
 										columns: [
-											{ prop: 'name', length: 1 },
+											{ prop: 'localizedName', length: 4 },
 										]}"></div>
 							</td>
 						</tr>
@@ -81,9 +81,9 @@
 							<td class="pad_left_20"><label>代休の先取り</label></td>
 							<td colspan="2"><span
 								data-bind="ntsSwitchButton: {
-										options: applyOptions,
-										optionsValue: 'code',
-										optionsText: 'name',
+										options: applyPermissionEnums,
+										optionsValue: 'fieldName',
+										optionsText: 'localizedName',
 										value: compenPreApply,
 										enable: isManageCompen }">
 							</span></td>
@@ -92,9 +92,9 @@
 							<td class="pad_left_20"><label>時間代休の管理</label></td>
 							<td colspan="2"><span
 								data-bind="ntsSwitchButton: {
-										options: manageDistinctOptions,
-										optionsValue: 'code',
-										optionsText: 'name',
+										options: manageDistinctEnums,
+										optionsValue: 'fieldName',
+										optionsText: 'localizedName',
 										value: compenTimeManage,
 										enable: isManageCompen }">
 							</span></td>
@@ -102,14 +102,14 @@
 							<td>
 								<div class="combo-box"
 									data-bind="ntsComboBox: {
-										options: timeUnitList,
-										optionsValue: 'code',
+										options: timeVacationDigestiveUnitEnums,
+										optionsValue: 'fieldName',
 										value: timeUnitCode,
-										optionsText: 'name',
+										optionsText: 'localizedName',
 										editable: false,
 										enable: isManageCompen,
 										columns: [
-											{ prop: 'name', length: 4 },
+											{ prop: 'localizedName', length: 4 },
 										]}"></div>
 							</td>
 						</tr>
@@ -133,9 +133,9 @@
 							<td rowspan="2">
 								<div id="first-list"
 									data-bind="ntsRadioBoxGroup: {
-											options: copenWorkTimeOptions,
-											optionsValue: 'id',
-											optionsText: 'name',
+											options: transferSettingDivisionEnums,
+											optionsValue: 'fieldName',
+											optionsText: 'localizedName',
 											value: selectedOfWorkTime,
 											enable: enableWorkArea}"></div>
 							</td>
@@ -165,9 +165,9 @@
 							<td rowspan="2">
 								<div id="first-list"
 									data-bind="ntsRadioBoxGroup: {
-											options: copenWorkTimeOptions,
-											optionsValue: 'id',
-											optionsText: 'name',
+											options: transferSettingDivisionEnums,
+											optionsValue: 'fieldName',
+											optionsText: 'localizedName',
 											value: selectedOfOverTime,
 											enable: enableOverArea}"></div>
 							</td>

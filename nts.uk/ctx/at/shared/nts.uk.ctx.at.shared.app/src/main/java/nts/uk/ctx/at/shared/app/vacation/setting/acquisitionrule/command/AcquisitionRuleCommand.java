@@ -20,34 +20,36 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
 @Setter
 public class AcquisitionRuleCommand {
 
-	/** The setting classification. */
-	public Category settingClassification;
+	
+	/** The category. */
+	public Category category;
 
 	/** The va ac rule. */
 	public List<AcquisitionOrder> vaAcRule;
 	
-	public AcquisitionRule toDomain(String companyId) {
-		return new AcquisitionRule(new AcquisitionRuleGetMementoImpl(companyId, this));
+	public AcquisitionRule toDomain(String companyId, List<AcquisitionOrder> oldAcquisitionOrders) {
+		return new AcquisitionRule(new AcquisitionRuleGetMementoImpl(companyId, this, oldAcquisitionOrders));
 	}
 
 	public class AcquisitionRuleGetMementoImpl implements AcquisitionRuleGetMemento {
 
 		private String companyId;
 		private AcquisitionRuleCommand command;
+		private List<AcquisitionOrder> oldAcquisitionOrders;
 		
-		public AcquisitionRuleGetMementoImpl(String companyId, AcquisitionRuleCommand command) {
+		public AcquisitionRuleGetMementoImpl(String companyId, AcquisitionRuleCommand command,
+				List<AcquisitionOrder> oldAcquisitionOrders) {
 			this.companyId = companyId;
 			this.command = command;
+			this.oldAcquisitionOrders = oldAcquisitionOrders;
 		}
-
-		/**
-		 * Gets the settingclassification.
-		 *
-		 * @return the settingclassification
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento#getCategory()
 		 */
 		@Override
-		public Category getSettingclassification() {
-			return this.command.settingClassification;
+		public Category getCategory() {
+			return this.command.category;
 		}
 
 		/**
@@ -57,7 +59,10 @@ public class AcquisitionRuleCommand {
 		 */
 		@Override
 		public List<AcquisitionOrder> getAcquisitionOrder() {
-			return this.command.vaAcRule;
+			if (this.command.category == Category.Setting){
+				return this.command.vaAcRule;
+			}
+			return this.oldAcquisitionOrders;
 		}
 
 		/**
@@ -69,5 +74,7 @@ public class AcquisitionRuleCommand {
 		public String getCompanyId() {
 			return this.companyId;
 		}
+
+		
 	}
 }

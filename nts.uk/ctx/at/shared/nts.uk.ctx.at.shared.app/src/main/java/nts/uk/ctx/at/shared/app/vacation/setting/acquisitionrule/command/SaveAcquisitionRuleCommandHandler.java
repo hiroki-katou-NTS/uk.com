@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -34,17 +35,15 @@ public class SaveAcquisitionRuleCommandHandler extends CommandHandler<Acquisitio
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AcquisitionRuleCommand> context) {
-		
+
 		String companyId = AppContexts.user().companyId();
 		// Get command.
 		AcquisitionRuleCommand command = context.getCommand();
 
-		AcquisitionRule acquisitionRule = command.toDomain(companyId);
-		// Get CompanyId
-
 		// Update VacationAcquisitionRule
 		Optional<AcquisitionRule> optVaAcRule = this.vaRepo.findById(companyId);
-		
+		AcquisitionRule acquisitionRule = command.toDomain(companyId, optVaAcRule.get().getAcquisitionOrder());
+
 		if (optVaAcRule.isPresent()) {
 			this.vaRepo.update(acquisitionRule);
 		} else {
