@@ -17,7 +17,7 @@ module nts.uk.pr.view.kmf001.d {
             yearsAmountByEmp: KnockoutObservable<number>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
             isManaged: KnockoutObservable<boolean>;
-            annualManage: KnockoutObservable<string>;
+            annualManage: KnockoutObservable<number>;
             
             employmentList: KnockoutObservableArray<ItemModel>;
             columnsSetting: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -67,10 +67,10 @@ module nts.uk.pr.view.kmf001.d {
                     });
                 });
                 
-                self.annualManage = ko.observable(ManageDistinct.YES);
+                self.annualManage = ko.observable(1);
                 
                 self.isManaged = ko.computed(function() {
-                    return self.annualManage() == ManageDistinct.YES;
+                    return self.annualManage() == 1;
                 }, self);
             }
             
@@ -100,7 +100,7 @@ module nts.uk.pr.view.kmf001.d {
                 let dfd = $.Deferred();
                 service.findIsManaged().done(function(data: any) {
                     if (data) {
-                        self.annualManage(data.annualManage);
+                        self.annualManage(data.annualManage.value);
                     }
                     dfd.resolve();
                 }).fail(function(res) {

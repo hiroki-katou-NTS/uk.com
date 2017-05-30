@@ -29,18 +29,18 @@
 					};
 			</script>
 		</ui:define>
-
+<!-- #{i18n.getText('Com_FundedPaidHoliday')} -->
 		<ui:define name="sidebar" id="left-sidebar">
 			<ul class="navigator">
-				<li><a href="#whole-company-tab" role="tab-navigator" class="active">全社</a></li>
-				<li><a href="#by-employment-tab" role="tab-navigator" >雇用</a></li>
+				<li><a href="#whole-company-tab" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#by-employment-tab" role="tab-navigator" >#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
 		</ui:define>
 
 		<ui:define name="sidebar-content">
 			<div id="whole-company-tab" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">全社</span>
+					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button  data-bind="click: backToHistorySelection">休暇の選択に戻る</button>
 					<button class="proceed register-button" data-bind="click: registerWholeCompany, enable: isManaged">登録</button>
 					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">年休付与テーブルの登録</a></div>
@@ -49,8 +49,9 @@
 				
 				<div id="whole-company-content">
 					<div id="whole-company-content-detail">
-						<div class="label warning" id="label-warning" data-bind="style: {display: isManaged()? 'inlineBlock': 'none'}">"積立年休の設定をする場合は年休の管理を管理するにしてください。</div>
-						<div id="form-lbl" data-bind="ntsFormLabel: {}">積立年休の扱い</div>
+						<div class="label warning" id="label-warning"
+							data-bind="style: {display: isManaged()? 'inlineBlock': 'none'}">#{i18n.getText('Com_FundedPaidHoliday')}の設定をする場合は、#{i18n.getText('Com_PaidHoliday')}の管理を「管理する」に設定してください。</div>
+						<div id="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_FundedPaidHoliday')}の扱い</div>
 						<div id="ruledLine1"></div>
 						<table id="whole-company-tbl">
 							<TBODY>
@@ -102,9 +103,9 @@
 			
 			<div id="by-employment-tab" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">雇用</span>
+					<span class="title">#{i18n.getText('Com_Employment')}</span>
 					<button data-bind="click: backToHistorySelection">休暇の選択に戻る</button>
-					<button class="proceed register-button" data-bind="click: registerByEmployment">登録</button>
+					<button class="proceed register-button" data-bind="click: registerByEmployment, enable: isManaged">登録</button>
 					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">年休付与テーブルの登録</a></div>
 					
 				</div>
@@ -117,7 +118,7 @@
 								<i class="icon icon-searchbox"></i>
 								
 						 		<table id="single-list" data-bind="ntsGridList: {
-									height: 650,
+									height: 500,
 									width: '90%',
 									options: employmentList,
 									optionsValue: 'code',
@@ -152,10 +153,10 @@
 									<tr>
 										<td style="width: 200px; height: 60px; padding-left: 40px;">
 											<div>
-												<span>保持年数</span>
+												<span>#{i18n.getText('Com_CompensationHoliday')}の管理</span>
 											</div>
 										</td>
-										<td>
+										<td style="padding-left: 5px">
 											<div>
 												<input id='year-amount-emp' data-bind="ntsNumberEditor: {
 													value: yearsAmountByEmp,
@@ -173,7 +174,7 @@
 												<span>使用期限</span>
 											</div>
 										</td>
-										<td>
+										<td style="padding-left: 5px">
 											<div>
 												<input id='max-days-emp' data-bind="ntsNumberEditor: {
 													value: maxDaysCumulationByEmp,
