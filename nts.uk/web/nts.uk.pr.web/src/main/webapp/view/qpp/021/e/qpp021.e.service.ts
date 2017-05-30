@@ -1,16 +1,69 @@
-module qpp021.e.service {
+module nts.uk.pr.view.qpp021.e {
 
-    var paths = {
-        printService: "/file/paymentdata/print",
-    };
 
-    export function printE(query: any): JQueryPromise<any> {
-        let dfd = $.Deferred<any>();
-        //nts.uk.request.ajax(paths.getComparingPrintSet).done(function(res: any) {
-            dfd.resolve();
-        //}).fail(function(error: any) {
-            //dfd.reject(error);
-       // })
-        return dfd.promise();
+    export module service {
+
+        var paths: any = {
+            findRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/once/find",
+            previewRefundPaddingOnce: "screen/pr/QPP021/preview/refundpadding/once",
+            saveRefundPadding: "ctx/pr/report/payment/refundsetting/refundpadding/printtype/once/save"
+        };
+
+        //connection service find
+        export function findRefundPadding(): JQueryPromise<model.RefundPaddingOnceDto> {
+            //call service server
+            return nts.uk.request.ajax(paths.findRefundPadding);
+        }
+
+        //connection service save
+        export function saveRefundPadding(dto: model.RefundPaddingOnceDto): JQueryPromise<void> {
+            //call service server
+            var data = { dto: dto };
+            return nts.uk.request.ajax(paths.saveRefundPadding, data);
+        }
+
+        // connection preview 
+        export function previewRefundPaddingOnce(dto: model.PaymentReportPreviewQueryDto): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.previewRefundPaddingOnce, dto);
+        }
+        export module model {
+
+            export class RefundPaddingOnceDto {
+                /** The padding top. */
+                paddingTop: number;
+
+                /** The padding left. */
+                paddingLeft: number;
+            }
+
+            export class PaymentReportQueryDto {
+
+                /** The processing no. */
+                processingNo: number;
+
+                /** The processing YM. */
+                processingYM: number;
+
+                /** The select prit types. */
+                selectPrintTypes: number;
+
+                /** The specification codes. */
+                specificationCodes: number[];
+
+                /** The layout items. */
+                layoutItems: number;
+
+                pageOrientation: string;
+            }
+            
+            export class PaymentReportPreviewQueryDto {
+                /** The page layout. */
+                pageLayout: number;
+
+                refundPaddingOnceDto: RefundPaddingOnceDto;
+            }
+        }
+
+
     }
 }

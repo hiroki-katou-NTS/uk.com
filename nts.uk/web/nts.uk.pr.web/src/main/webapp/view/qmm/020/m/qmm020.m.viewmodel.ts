@@ -9,7 +9,18 @@ module qmm020.m.viewmodel {
         ]);
 
         constructor() {
-            let self = this, currentBaseYM = parseInt(nts.uk.ui.windows.getShared('M_BASEYM')) || 190701;
+            // set width and height of dialog
+            nts.uk.ui.windows.getSelf().setWidth(485);
+            nts.uk.ui.windows.getSelf().setHeight(550);
+
+            let self = this, share: any = nts.uk.ui.windows.getShared('M_BASEYM'), currentBaseYM: number = 197001;
+            if (typeof share == 'object') {
+                currentBaseYM = share.baseYm;
+                self.listItemSelected(share.baseCode);
+            } else {
+                currentBaseYM = parseInt(share);
+            }
+            
             if (!!currentBaseYM) {
                 service.getData(currentBaseYM)
                     .done((resp: Array<any>) => {

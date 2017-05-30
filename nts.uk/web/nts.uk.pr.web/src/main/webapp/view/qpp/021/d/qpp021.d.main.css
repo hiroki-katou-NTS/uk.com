@@ -1,48 +1,92 @@
-.separate-1 {
-	margin-top: 5px;
+/* ====================== main css =============================*/
+#functions-area button {
+	padding: 0px 22px;
 	margin-right: 10px;
-	margin-bottom: 5px;
 }
 
-#btn-001 {
-	width: 200px;
-	margin-left: 75px;
+#functions-area-content {
+	padding-top: 5px;
+	margin-left: 10px;
+	width: 800px;
 }
 
-#left-content {
-	margin-left: 65px;
-	padding: 10px;
-	float: left;
-	border: 1px solid #a79c9c;
-	border-radius: 4px;
-	min-height: 600px;
+#functions-area {
+	height: 45px !important;
 }
 
-#lbl-001 {
-	float: right;
-	margin-right: 30px;
+#contents-area {
+	width: 825px !important;
+	padding: 5px 0px 0px 10px !important;
 }
 
-#lbl-002 {
-	margin-bottom: 20px;
+.control-group {
+	margin-bottom: 5px !important;
+}
+
+/* ====================== div css =============================*/
+.contents-area-right-left {
+	width: 825px;
 	display: inline-block;
 }
 
-.ntsRadioBox {
-	width: 100%;
-}
-
-#sel-001 {
-	float:left;
-	margin: 8px 0px 0px 35px;
-}
-
-#right-content {
-	margin-left: 20px;
-	padding: 10px;
+#left-contents-area {
+	width: 370px;
 	float: left;
-	border: 1px solid #a79c9c;
-	border-radius: 4px;
-	min-height: 600px;
-	width: 38%;
+	padding: 15px;
+	margin-right: 25px;
+}
+
+#right-contents-area {
+	width: 370px;
+	float: left;
+	padding: 15px;
+}
+
+.d-div-label {
+	margin-right: 30px;
+}
+
+.right-contents-area-label {
+	width: 150px !important;
+	height: 35px !important;
+}
+
+/* ====================== radio css =============================*/
+#zero-item-setting-list .ntsRadioBox {
+	width: 99% !important;
+	margin-top: 5px !important;
+	margin-bottom: 5px !important;
+}
+
+/* ====================== checkbox css =============================*/
+.zero-output-checkbox {
+	margin-left: 137px;
+}
+/* ====================== label css =============================*/
+.d-label-005 {
+	margin-top: 70px !important;
+}
+
+/* ====================== Switch css =============================*/
+.div-zero-setting {
+	padding-left: 40px;
+	padding-top: 10px;
+}
+
+button.nts-switch-button {
+	width: 90px !important;
+	height: 27px !important;
+}
+
+.right-contents-area-switch {
+	margin: 10px 0px 0px 20px !important;
+}
+
+/* ====================== listbox css =============================*/
+#combo-box-select-print-YM {
+	margin: 10px 0px 0px 20px !important;
+}
+
+.right-contents-area-comobox {
+	width: 180px !important;
 }

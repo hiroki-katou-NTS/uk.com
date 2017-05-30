@@ -71,7 +71,8 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call QISMT_LABOR_INSU_OFFICE (QismtLaborInsuOffice SQL)
-		CriteriaQuery<QismtLaborInsuOffice> cq = criteriaBuilder.createQuery(QismtLaborInsuOffice.class);
+		CriteriaQuery<QismtLaborInsuOffice> cq = criteriaBuilder
+			.createQuery(QismtLaborInsuOffice.class);
 
 		// root data
 		Root<QismtLaborInsuOffice> root = cq.from(QismtLaborInsuOffice.class);
@@ -94,7 +95,8 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository
 		TypedQuery<QismtLaborInsuOffice> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
+		return query.getResultList().stream().map(item -> this.toDomain(item))
+			.collect(Collectors.toList());
 	}
 
 	/*

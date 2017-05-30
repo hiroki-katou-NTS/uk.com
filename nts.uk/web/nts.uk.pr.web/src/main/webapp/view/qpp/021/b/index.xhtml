@@ -6,61 +6,197 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
-			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
-
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="qpp021.b.main.css" />
 			<com:scriptfile path="qpp021.b.start.js" />
-			<com:scriptfile path="qpp021.b.vm.js" />
 			<com:scriptfile path="qpp021.b.service.js" />
-			<com:scriptfile path="/lib/nittsu/ui/file.js" />
+			<com:scriptfile path="qpp021.b.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
-
 			<div id="functions-area">
-				<button id="btn-001" data-bind="click: print, enable: listBox.isEmpty()" class="separate-1 proceed">選択した社員を印刷</button>
-				<button id="btn-002" class="separate-1">印刷の設定</button>
-				<a id="lbl-001" class="separate-1">給与明細書</a>
+				<button id="A_BTN_001" class="separate-1" data-bind="">印刷実行ログ</button>
 			</div>
 
-			<div id="contents-area"  class="cf">
-				<div id="left-content">
-					<div data-bind="with: listBox">
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
-											   optionsText: 'name',
-											   multiple: true,
-											   value: selectedCodes,
-											   enable: true,
-											   rows: 21,
-											   columns: [
-													{ prop: 'code', length: 12 },
-													{ prop: 'name', length: 12 }
-											   ]}"
-							class="cf"></div>
+			<div id="contents-area" class="cf">
+				<div id="wizard"
+					data-bind="ntsWizard: {steps: stepList, theme: 'yellow'}"
+					class="cf">
+					<div class="header">
+						<div class="image"
+							data-icon="../../../../../nts.uk.com.js.web/lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
+						<div class="content">明細書印刷</div>
 					</div>
-				</div>
-				<div id="right-content">
-					<span id="lbl-002">処理の詳細設定</span> <br />
-					<div id="lbl-003" style="float: left;" data-bind="ntsFormLabel: {required: true }">
-						帳票の選択
+					<div class="steps">
+						<div class="A_LBL_002-step">
+							<span>印刷レイアウトを選ぶ</span><br /> └詳細設定をする
+						</div>
+						<div class="A_LBL_003-step">対象社員を選ぶ</div>
+						<div class="end A_LBL_004-step">実 行</div>
 					</div>
-					<div id="sel-001" data-bind="with: radioBox">
-						<div data-bind="ntsRadioBoxGroup: {
-									options: items,
-									optionsValue: 'value',
-									optionsText: 'text',
-									value: selectedValue}"></div>
+					<div class="contents" id="content-step">
+						<div class="A_LBL_002-step">
+							<div class="valign-center control-group">
+								<div id="B_LBL_001" data-bind="ntsFormLabel: { required: true }">対象となる処理区分を選択</div>
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
+									options: processDateComboBox,
+									optionsValue: 'cbCode',
+									value: selectedCbCode,
+									optionsText: 'cbName',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'cbName', length: 10 },
+									]}">
+								</div>
+							</div>
+							<div class="valign-center control-group" id="B_LBL_002_003">
+								<span class="label with-image" id="B_LBL_002"> <i
+									class="image image-calendar" /> <span>処理する給与明細書の年月</span>
+								</span> <span id="B_LBL_003" data-bind="text: currentProcessingYm"></span>
+							</div>
+							<div class="label" id="b-lbl-004">印刷レイアウトを選択してください。</div>
+							<div class="valign-center control-group">
+								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">プリンタの選択</div>
+								<span class="ntsControl"> <label class="ntsRadioBox">
+										<input type="radio" name="textRadioPrintType"
+										data-bind="checkedValue: 0, checked: selectPrinterCategory, enable: false" />
+										<span class="box"></span><span class="label"
+										data-bind="text: 'レーザープリンタ用帳表（圧着式用も含みます）'"></span>
+								</label>
+								</span>
+								<div>
+									<span class="ntsControl" id="radio-ntsControl"> <label
+										class="ntsRadioBox"> <input type="radio"
+											name="textRadioPrintType"
+											data-bind="checkedValue: 1, checked: selectPrinterCategory, enable: false" />
+											<span class="box"></span><span class="label"
+											data-bind="text: 'ドットプリンタ用帳表'"></span>
+									</label>
+									</span> <span class="swich-button-select-radio"
+										data-bind="ntsSwitchButton: {
+											options: [ { code: '1', name: '四捨五入' },
+		            						{ code: '2', name: '切り上げ' },],
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: '1',
+											enable: false }"
+										style="display: inline-block;"></span>
+								</div>
+							</div>
+							<div>
+								<div id="B_LBL_005" data-bind="ntsFormLabel: { required: true }">帳表レイアウトの選択</div>
+								<br />
+								<div id="B_SEL_004"
+									data-bind="ntsRadioBoxGroup: {
+									options: selectPrintTypes,
+									optionsValue: 'rbCode',
+									optionsText: 'rbName',
+									value: selectPrintTypeCode,
+									enable: true 
+									}">
+								</div>
+							</div>
+							<table class="table-list-bottom">
+								<tr>
+									<td class="B_LST_001">
+										<table id="B_LST_001"
+											data-bind="ntsGridList: {								
+											height: 180,
+											dataSource: selectPrintTypesList,
+											primaryKey: 'printTypeCode',
+											columns: [
+												{ headerText: 'コード', key: 'printTypeCode', width: 100, hidden: true},
+                    							{ headerText: '印刷タイプ', key: 'printTypeName', width: 150 },
+											],
+											deleteOptions : {visible : false, deleteField: 'deletable'},
+											multiple: false,
+											value: selectPrintTypeListCode,
+											enable: isEnablePrintTypes,
+											} ">
+										</table>
+									</td>
+									<td class="B_LST_002">
+										<table id="B_LST_002"
+											data-bind="ntsGridList: {								
+											height: 180,
+											dataSource: selectLineItemLayout,
+											primaryKey: 'statementCode',
+											columns: [
+												{ headerText: '', key: 'statementCode', hidden: true},
+                    							{ headerText: '明細書レイアウト', key: 'statementName', width: 150 },
+                    							{ headerText: '印刷タイプ', key: 'layoutAttributeName', width: 190 },
+											],
+											deleteOptions : {visible : false, deleteField: 'deletable'},
+											multiple: false,
+											value: selectLineItemCode,
+											enable: isEnableLineItemLayout,
+											}">
+										</table>
+									</td>
+									<td style="vertical-align: top;">
+										<div class="B_BTN_001_002_003">
+											<button id="B_BTN_001" class="small"
+												data-bind="click: openDialogScreenD">詳細設定</button>
+										</div>
+
+										<div class="B_BTN_001_002_003">
+											<button id="B_BTN_002" class="small"
+												data-bind="click: openDialogRefundPadding">余白設定</button>
+										</div>
+
+										<div class="B_BTN_001_002_003">
+											<button id="B_BTN_003" class="small"
+												data-bind="click: openDialogScreenH">連絡事項の入力</button>
+										</div>
+
+										<div class="B_BTN_004">
+											<button id="B_BTN_004" class="normal" data-bind="click: next">
+												<span>社員指定印刷</span> <span id="span-B_BTN_004">→</span>
+											</button>
+										</div>
+
+										<div class="B_BTN_005">
+											<button id="B_BTN_005" class="large proceed"
+												data-bind="click: printPaymentData">全員印刷</button>
+										</div>
+
+									</td>
+								</tr>
+							</table>
+
+						</div>
+						<div class="A_LBL_003-step" style="padding: 0px;">
+							<div id="content-step2-left">
+								<img src="content-step-left.png" width="100%" height="100%" />
+							</div>
+							<div id="content-step2-right">
+								<div class="valign-center control-group"
+									id="content-step2-right-calendar">
+									<span class="label with-image" id="c_label_001"> <i
+										class="image image-calendar" /> <span>処理する給与明細書の年月</span>
+									</span> <span id="c_label_002" data-bind="text: currentProcessingYm"></span>
+								</div>
+								<div class="content-step2-right-gridLsit">
+									<img src="content-step-right.PNG" width="100%" height="100%" />
+								</div>
+								<div
+									class="content-step2-right-button valign-center control-group">
+									<button id="c-button-001" class="normal"
+										data-bind="click: previous">←レイアウト選択へ戻る</button>
+									<button id="c-button-002" class="normal"
+										data-bind="click: openDialogScreenI">選択社員にコメントを登録する</button>
+									<button id="c-button-003" class="large proceed" data-bind="">印刷</button>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="A_LBL_004-step">contents step3</div> -->
 					</div>
 				</div>
 			</div>
-
 		</ui:define>
 	</ui:composition>
 </body>

@@ -6,61 +6,312 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
-			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
-
+			<script>
+				var dialogSize = {
+					width : 860,
+					height : 600
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="qpp021.d.main.css" />
 			<com:scriptfile path="qpp021.d.start.js" />
 			<com:scriptfile path="qpp021.d.vm.js" />
 			<com:scriptfile path="qpp021.d.service.js" />
-			<com:scriptfile path="/lib/nittsu/ui/file.js" />
 		</ui:define>
 
 		<ui:define name="content">
-
 			<div id="functions-area">
-				<button id="btn-001" data-bind="click: print, enable: listBox.isEmpty()" class="separate-1 proceed">選択した社員を印刷</button>
-				<button id="btn-002" class="separate-1">印刷の設定</button>
-				<a id="lbl-001" class="separate-1">給与明細書</a>
-			</div>
-
-			<div id="contents-area"  class="cf">
-				<div id="left-content">
-					<div data-bind="with: listBox">
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
-											   optionsText: 'name',
-											   multiple: true,
-											   value: selectedCodes,
-											   enable: true,
-											   rows: 21,
-											   columns: [
-													{ prop: 'code', length: 12 },
-													{ prop: 'name', length: 12 }
-											   ]}"
-							class="cf"></div>
-					</div>
-				</div>
-				<div id="right-content">
-					<span id="lbl-002">処理の詳細設定</span> <br />
-					<div id="lbl-003" style="float: left;" data-bind="ntsFormLabel: {required: true }">
-						帳票の選択
-					</div>
-					<div id="sel-001" data-bind="with: radioBox">
-						<div data-bind="ntsRadioBoxGroup: {
-									options: items,
-									optionsValue: 'value',
-									optionsText: 'text',
-									value: selectedValue}"></div>
-					</div>
+				<div id = "functions-area-content">
+					<button class="proceed" data-bind = "click: registration">登録</button>
+					<button  data-bind = "click: closeDialogD">閉じる</button>
 				</div>
 			</div>
+			<div id="contents-area">
+				<div class="d-label-001">詳細設定を行ってください。 ※この設定は翌月以降の明細書にも反映されます。</div>
+				<div class="contents-area-right-left" data-bind = "with: refundLayoutItem">
+					<div id="left-contents-area">
+						<div class="d-label-001">値がゼロの項目の印刷方法</div>
+						<hr />
+						<div id="zero-item-setting-list"
+							data-bind="ntsRadioBoxGroup: {
+							options: $parent.zeroItemSetting,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: $parent.usingZeroSettingCtg,
+							enable: true 
+							}">
+						</div>
+						<div class="valign-center control-group div-zero-setting">
+							<div class="d-div-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: $parent.showZeroInMny,
+								enable: $parent.isEnableShowZeroInMny }">
+							</span>
+							<div class="zero-output-checkbox"
+								data-bind="ntsCheckBox: { checked: showMnyItemName, enable: $parent.isEnableShowMnyItemName, text: '項目名も表示しない' }"></div>
+						</div>
+						<div class="valign-center control-group div-zero-setting">
+							<div class="d-div-label" data-bind="ntsFormLabel: {}">金額ゼロ出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: $parent.showZeroInAttend,
+								enable: $parent.isEnableShowZeroInAttend }">
+							</span>
+							<div class="zero-output-checkbox"
+								data-bind="ntsCheckBox: { checked: showAttendItemName, enable: $parent.isEnableShowAttendItemName, text: '項目名も表示しない' }"></div>
+						</div>
 
+						<div class="d-label-005">明細書に出力する年月</div>
+						<hr />
+						<div>
+							<div class="d-div-label select-print-year-month"
+								data-bind="ntsFormLabel: {}">印字する年月を選択してください。</div>
+							<div id="combo-box-select-print-YM"
+								data-bind="ntsComboBox: {
+									options: $parent.selectPrintYearMonth,
+									optionsValue: 'code',
+									value: printYearMonth,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 13 },
+									]}">
+							</div>
+						</div>
+					</div>
+
+					<div id="right-contents-area">
+						<div class="d-label-007">任意出力項目の指定</div>
+						<hr />
+						<!-- Start right-contents Screen D -->
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">課税対象累計出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showTotalTaxMny,
+								enable: true
+								},visible: true ">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">年休残数出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showRemainAnnualLeave,
+								enable: true 
+								}">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">現物支給額出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showProductsPayMny,
+								enable: true 
+								}">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">支払枠出力名称指定</div>
+							<span class="right-contents-area-comobox"
+								data-bind="ntsComboBox: {
+									options: $parent.outputNameDesignation,
+									optionsValue: 'code',
+									value: paymentCellNameCtg,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}">
+							</span>
+						</div>
+
+						<div class="valign-center control-group" data-bind = "visible: $parent.isVisibleShowCompName">
+							<div class="right-contents-area-label" data-bind="ntsFormLabel: {}">会社名出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showCompName,
+								enable: true 
+								}">
+							</span>
+						</div>
+						<div class="valign-center control-group">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">部門出力</div>
+							<span class="right-contents-area-comobox"
+								data-bind="ntsComboBox: {
+									options: $parent.outputDepartment,
+									optionsValue: 'code',
+									value: showDepartment,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]}">
+							</span>
+						</div>
+
+						<div class="valign-center control-group" data-bind = "visible: $parent.isVisibleShadedBorder ">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">網掛け</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: isShaded,
+								enable: $parent.isEnableShadedBorder
+								} ">
+							</span>
+						</div>
+						<div class="valign-center control-group" data-bind = "visible: $parent.isVisibleShadedBorder ">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">枠線幅</div>
+							<span class="right-contents-area-comobox"
+								data-bind="ntsComboBox: {
+									options: $parent.borderLineWidth,
+									optionsValue: 'code',
+									value: bordWidth,
+									optionsText: 'name',
+									editable: false,
+									enable: $parent.isEnableShadedBorder,
+									columns: [
+										{ prop: 'name', length: 10 },
+									]} ">
+							</span>
+							<span><button data-bind="" id = "helper-button-sel-014">?</button></span>
+						</div>
+						<!--End right-contents Screen D by print type 0 -->
+
+
+						<!--Start right-contents Screen D by print type 1 -->
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {}">扶養親族等の数出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showDependencePerNum,
+								enable: true 
+								} ">
+							</span>
+						</div>
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {} ">所得税区分出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showPerTaxCatalog,
+								enable: true 
+								} ">
+							</span>
+						</div>
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {} ">保険踏襲出力</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showInsuranceLevel,
+								enable: true 
+								} ">
+							</span>
+						</div>
+						<div data-bind="visible: $parent.isvisibleItem ">
+							<div class="d-label-019">表面出力項目の指定</div>
+							<hr/>
+						</div>
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {} ">個人住所</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showPerAddInSurface,
+								enable: true 
+								} ">
+							</span>
+						</div>
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {} ">個人氏名</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showPerNameInSurface,
+								enable: true 
+								} ">
+							</span>
+						</div>
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {} ">会社住所</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showCompAddInSurface,
+								enable: true 
+								} ">
+							</span>
+						</div>
+						<div class="valign-center control-group" data-bind = "visible: $parent.isvisibleItem">
+							<div class="right-contents-area-label"
+								data-bind="ntsFormLabel: {} ">会社名</div>
+							<span
+								data-bind="ntsSwitchButton: {
+								options: $parent.switchItemList,
+								optionsValue: 'code',
+								optionsText: 'name',
+							    value: showCompNameInSurface,
+								enable: true 
+								} ">
+							</span>
+						</div>
+						<!--End right-contents Screen D by print type 1 -->
+					</div>
+				</div>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

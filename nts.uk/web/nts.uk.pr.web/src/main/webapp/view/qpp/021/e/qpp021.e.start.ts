@@ -1,10 +1,8 @@
-module qpp021.e {
+module nts.uk.pr.view.qpp021.e {
     __viewContext.ready(function() {
-        let screenModel = new viewmodel.ScreenModel();
-        screenModel.startPage().done(function() {
-           //nts.uk.ui.confirmSave(screenModel.currentItemDirty);
-           // nts.uk.ui.confirmSave(screenModel.items2Dirty);
-            __viewContext.bind(screenModel);
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.startPage().done(function(res: viewmodel.ScreenModel) {
+            __viewContext.bind(res);
         });
     });
 }

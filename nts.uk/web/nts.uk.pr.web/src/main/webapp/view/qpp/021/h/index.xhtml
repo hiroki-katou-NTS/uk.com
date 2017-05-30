@@ -4,63 +4,95 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
 <body>
-
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
+			<script>
+				var dialogSize = {
+					width : 1260,
+					height : 900
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
 			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
-
-			<com:stylefile path="qpp021.h.main.css" />
+				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
+				of="/nts.uk.com.js.web" />
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
+				of="/nts.uk.com.js.web" />
+			<com:scriptfile path="../../../qmm/016/a/grid.editor.js" />
+			<com:stylefile path="qpp021.h.style.css" />
 			<com:scriptfile path="qpp021.h.start.js" />
-			<com:scriptfile path="qpp021.h.vm.js" />
 			<com:scriptfile path="qpp021.h.service.js" />
-			<com:scriptfile path="/lib/nittsu/ui/file.js" />
+			<com:scriptfile path="qpp021.h.vm.js" />
+			<com:ValidatorScript>
+			    nts.uk.ctx.pr.report.dom.payment.contact.ReportComment
+			</com:ValidatorScript>
+
 		</ui:define>
-
 		<ui:define name="content">
+			<div id="contents-area">
+				<button id="btn_saveContactItemsSetting"
+					class="proceed btnStyle large buttonaction"
+					data-bind="click: saveContactItemsSetting">登録</button>
+				<button id="btn_closeContactItemsSetting" class="large buttonaction"
+					data-bind="click: closeContactItemsSetting">閉じる</button>
+				<hr />
+				<div id="content">
+					<div id="lable_yearmonth">
+						<span class="label with-image"> <i
+							class="image image-calendar" /> <span>処理する給与明細書の年月</span>
+						</span> <span
+							data-bind="ntsFormLabel: { required: true } , text: lbl_processingYm" />
+					</div>
+					<br />
+					<div
+						data-bind="ntsFormLabel: {constraint: 'ReportComment', required: false}"
+						id="label_notification">
+						<label>全社員向けの連絡事項</label>
+					</div>
 
-			<div id="functions-area">
-				<button id="btn-001" data-bind="click: print, enable: listBox.isEmpty()" class="separate-1 proceed">選択した社員を印刷</button>
-				<button id="btn-002" class="separate-1">印刷の設定</button>
-				<a id="lbl-001" class="separate-1">給与明細書</a>
-			</div>
+					<div id="comment_notification">
+						<table>
+							<tr class="bg-green ui-iggrid-header ui-widget-header">
+								<td class="lbl_monthlyComment">今月の給与明細書に印刷する連絡事項</td>
+								<td class="lbl_monthlyComment">毎月の給与明細書に印刷する連絡事項</td>
+							</tr>
+							<tr>
+								<td><input data-name="今月の給与明細書に印刷する連絡事項 "
+									id="inp_monthCpComment" class="comment-data"
+									data-bind="ntsTextEditor: {value: monthCpComment,
+									constraint: 'ReportComment', 
+									option: textEditorOption,
+									enable: true,
+									immediate: false,
+									required:false} , hasFocus: true"></input>
+								</td>
+								<td><input class="comment-data"
+									data-name="毎月の給与明細書に印刷する連絡事項" id="inp_initialCpComment"
+									data-bind="ntsTextEditor: {value: initialCpComment,
+									constraint: 'ReportComment', 
+									option: textEditorOption,
+									enable: true,
+									immediate: false,
+									required:false}"></input>
+								</td>
+							</tr>
+						</table>
+					</div>
 
-			<div id="contents-area"  class="cf">
-				<div id="left-content">
-					<div data-bind="with: listBox">
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
-											   optionsText: 'name',
-											   multiple: true,
-											   value: selectedCodes,
-											   enable: true,
-											   rows: 21,
-											   columns: [
-													{ prop: 'code', length: 12 },
-													{ prop: 'name', length: 12 }
-											   ]}"
-							class="cf"></div>
+					<br />
+					<div
+						data-bind="ntsFormLabel: {constraint: 'ReportComment', required: false}"
+						id="label_notification_emp">
+						<label>雇用ごとの連絡事項</label>
+					</div>
+
+					<div id="comment_person">
+						<table data-bind="igGrid: igGrid" id="comment_person_table"></table>
 					</div>
 				</div>
-				<div id="right-content">
-					<span id="lbl-002">処理の詳細設定</span> <br />
-					<div id="lbl-003" style="float: left;" data-bind="ntsFormLabel: {required: true }">
-						帳票の選択
-					</div>
-					<div id="sel-001" data-bind="with: radioBox">
-						<div data-bind="ntsRadioBoxGroup: {
-									options: items,
-									optionsValue: 'value',
-									optionsText: 'text',
-									value: selectedValue}"></div>
-					</div>
-				</div>
 			</div>
-
 		</ui:define>
 	</ui:composition>
 </body>

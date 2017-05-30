@@ -7,60 +7,115 @@
 
 <body>
 
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
-			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
+			<com:scriptfile set="IGNITE" />
+			<script>
+				var dialogSize = {
+					width : 760,
+					height : 600
+				};
+			</script>
 			<com:scriptfile
-				path="/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
-
+				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
+				of="/nts.uk.com.js.web" />
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
+				of="/nts.uk.com.js.web" />
 			<com:stylefile path="qpp021.g.main.css" />
 			<com:scriptfile path="qpp021.g.start.js" />
-			<com:scriptfile path="qpp021.g.vm.js" />
 			<com:scriptfile path="qpp021.g.service.js" />
-			<com:scriptfile path="/lib/nittsu/ui/file.js" />
+			<com:scriptfile path="qpp021.g.vm.js" />
+			<com:ValidatorScript>
+			    nts.uk.ctx.pr.report.dom.payment.refundsetting.refundpadding.SizeLimit
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="content">
+				<span class="lbl_printingPosition">印字位置の調整を行ってください。</span> <br /> <span
+					class="lbl_printingPosition">※この設定は翌月以降の明細書にも反映されます。</span> <br />
+				<br /> <span class="lbl_settingMarginDivision">余白・区切線の設定 単位
+					1mm</span>
+				<button id="btn_helpSettingMarginDivision">?</button>
+				<br />
+				<hr />
+				<div data-bind="ntsFormLabel: {required: false}"
+					id="lbl_settingMargin" class="settingMargin">
+					<label>余白補正</label>
+					<div id="content_settingMargin">
+						<label>上段 上</label> <input data-name="余白上段上" class="setting-data"
+							id="inp_upperAreaPaddingTop"
+							data-bind="ntsNumberEditor: {value: refundPaddingThreeModel.upperAreaPaddingTop,
+							constraint: 'SizeLimit', 
+							option: sizeLimitOption}, hasFocus: true"></input>
+						<label>中段 上</label> <input data-name="余白中段上" id="inp_middleAreaPaddingTop"
+							class="setting-data"
+							data-bind="ntsNumberEditor: {value: refundPaddingThreeModel.middleAreaPaddingTop,
+							constraint: 'SizeLimit', 
+							option: sizeLimitOption} "></input>
+						<label>下段 上</label> <input data-name="余白下段上" class="setting-data"
+							id="inp_underAreaPaddingTop"
+							data-bind="ntsNumberEditor: {value: refundPaddingThreeModel.underAreaPaddingTop,
+							constraint: 'SizeLimit', 
+							option: sizeLimitOption}"></input>
 
-			<div id="functions-area">
-				<button id="btn-001" data-bind="click: print, enable: listBox.isEmpty()" class="separate-1 proceed">選択した社員を印刷</button>
-				<button id="btn-002" class="separate-1">印刷の設定</button>
-				<a id="lbl-001" class="separate-1">給与明細書</a>
-			</div>
-
-			<div id="contents-area"  class="cf">
-				<div id="left-content">
-					<div data-bind="with: listBox">
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
-											   optionsText: 'name',
-											   multiple: true,
-											   value: selectedCodes,
-											   enable: true,
-											   rows: 21,
-											   columns: [
-													{ prop: 'code', length: 12 },
-													{ prop: 'name', length: 12 }
-											   ]}"
-							class="cf"></div>
 					</div>
+					<br />
+					<label class="lbl_printingPositionBig">※数値が大きいほど印字位置が下がります。</label>
+					<div class="lbl_printingPositionBig">
+						<div class="content_printingPositionBig">
+							<label>左</label>
+							<input class="setting-data" data-name="余白左" id="inp_paddingLeft"
+								data-bind="ntsNumberEditor: {value: refundPaddingThreeModel.paddingLeft,
+								constraint: 'SizeLimit',option: sizeLimitOption}"></input>
+						</div>
+					</div>
+					<label class="lbl_printingPositionBig">※数値が大きいほど印字位置が右に移動します。</label>
 				</div>
-				<div id="right-content">
-					<span id="lbl-002">処理の詳細設定</span> <br />
-					<div id="lbl-003" style="float: left;" data-bind="ntsFormLabel: {required: true }">
-						帳票の選択
+				<br /> <br />
+				<div data-bind="ntsFormLabel: {required: false}"
+					id="lbl_spliteLineOutput" class="settingMargin">
+					<label>区切線の出力</label>
+					<div class="content_settingOutput" id="selectSpliteLineOutput"
+						data-bind="ntsSwitchButton: {
+						options: spliteLineOutput,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: refundPaddingThreeModel.isShowBreakLine,
+						enable: true }"></div>
+				</div>
+				<br /> <br />
+				<div data-bind="ntsFormLabel: {required: false}"
+					id="lbl_settingLineOutput" class="settingMargin">
+					<label>区切線の補正</label>
+					<div id="content_settingLineOutput">
+						<label>上</label> <input class="setting-data" data-name="区切線補正上"
+							id="inp_breakLineMarginTop"
+							data-bind="ntsNumberEditor: {value: refundPaddingThreeModel.breakLineMarginTop,
+							option: sizeLimitOption}">
+						</input> <label>下</label> <input class="setting-data" data-name="区切線補正下"
+							id="inp_breakLineMarginButtom"
+							data-bind="ntsNumberEditor: {value: refundPaddingThreeModel.breakLineMarginButtom,
+							option: sizeLimitOption}">
+						</input>
 					</div>
-					<div id="sel-001" data-bind="with: radioBox">
-						<div data-bind="ntsRadioBoxGroup: {
-									options: items,
-									optionsValue: 'value',
-									optionsText: 'text',
-									value: selectedValue}"></div>
-					</div>
+
+					<br /> <label class="lbl_printingPositionBig">※数値が大きいほど区切線の位置が下がります。</label>
+				</div>
+				<br /> <br />
+
+				<div id="this-functions-area" class="control-group halign-center">
+					<button class="btn-default" data-bind= "click: previewRefundPaddingThree">テスト印字</button>
+					<br /> <br />
+					<hr />
+					<br />
+					<button class="btn-default proceed x-large"
+						id="btn_saveRefundPaddingThree"
+						data-bind="click: saveRefundPaddingThree">登録</button>
+					<button class="btn-default" data-bind="click: closeRefundPaddingThree">キャンセル</button>
 				</div>
 			</div>
-
 		</ui:define>
 	</ui:composition>
 </body>
