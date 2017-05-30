@@ -30,7 +30,7 @@
 			</script>
 		</ui:define>
 
-		<ui:define name="sidebar">
+		<ui:define name="sidebar" id="left-sidebar">
 			<ul class="navigator">
 				<li><a href="#whole-company-tab" role="tab-navigator" class="active">全社</a></li>
 				<li><a href="#by-employment-tab" role="tab-navigator" >雇用</a></li>
@@ -42,14 +42,14 @@
 				<div class="sidebar-content-header">
 					<span class="title">全社</span>
 					<button  data-bind="click: backToHistorySelection">休暇の選択に戻る</button>
-					<button class="proceed register-button" data-bind="click: registerWholeCompany">登録</button>
+					<button class="proceed register-button" data-bind="click: registerWholeCompany, enable: isManaged">登録</button>
 					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table">年休付与テーブルの登録</a></div>
 				</div>
 				<div class="ruledLine"></div>
 				
 				<div id="whole-company-content">
 					<div id="whole-company-content-detail">
-						<div class="label warning" id="label-warning">"積立年休の設定をする場合は年休の管理を管理するにしてください。</div>
+						<div class="label warning" id="label-warning" data-bind="style: {display: isManaged()? 'inlineBlock': 'none'}">"積立年休の設定をする場合は年休の管理を管理するにしてください。</div>
 						<div id="form-lbl" data-bind="ntsFormLabel: {}">積立年休の扱い</div>
 						<div id="ruledLine1"></div>
 						<table id="whole-company-tbl">
@@ -62,7 +62,7 @@
 									</td>
 									<td>
 										<div class="margin-bottom">
-											<input id="year-amount-company" data-bind="ntsTextEditor: {
+											<input id="year-amount-company" data-bind="ntsNumberEditor: {
 												value: retentionYearsAmount,
 												constraint: 'NumberOfYear',
 												option: textEditorOption,
@@ -81,7 +81,7 @@
 									</td>
 									<td>
 										<div class="margin-bottom">
-											<input id="max-days-company" data-bind="ntsTextEditor: {
+											<input id="max-days-company" data-bind="ntsNumberEditor: {
 												value: maxDaysCumulation,
 												constraint: 'MaxOfDays',
 												option: textEditorOption,
@@ -157,7 +157,7 @@
 										</td>
 										<td>
 											<div>
-												<input id='year-amount-emp' data-bind="ntsTextEditor: {
+												<input id='year-amount-emp' data-bind="ntsNumberEditor: {
 													value: yearsAmountByEmp,
 													constraint: 'NumberOfYear',
 													option: textEditorOption,
@@ -175,7 +175,7 @@
 										</td>
 										<td>
 											<div>
-												<input id='max-days-emp' data-bind="ntsTextEditor: {
+												<input id='max-days-emp' data-bind="ntsNumberEditor: {
 													value: maxDaysCumulationByEmp,
 													constraint: 'MaxOfDays',
 													option: textEditorOption,

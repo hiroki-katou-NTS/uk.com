@@ -22,11 +22,11 @@ public class EmploymentSettingWebService extends WebService {
 	@Inject
 	private EmploymentSettingFinder finder;
 	
+	
 	@POST
 	@Path("find/{empCode}")
 	public EmploymentSettingFindDto find(@PathParam("empCode") String empCode) {
 		return this.finder.find(empCode);
-		
 	}
 	
 	@POST
@@ -34,5 +34,4 @@ public class EmploymentSettingWebService extends WebService {
 	public void save(EmploymentSaveCommand command) {
 		this.save.handle(command);
 	}
-
 }

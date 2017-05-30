@@ -11,13 +11,6 @@ module nts.uk.pr.view.kmf001.d {
             findIsManaged: 'ctx/at/share/vacation/setting/annualpaidleave/find'
         };
 
-        /**
-         * Normal service.
-         */
-//        export class Service {
-//            constructor() {
-//            }
-//        }
         
         export function findRetentionYearly(): JQueryPromise<model.RetentionYearlyFindDto> {
             return nts.uk.request.ajax(paths.findRetentionYearlyByCompany);
@@ -75,6 +68,14 @@ module nts.uk.pr.view.kmf001.d {
                 upperLimitSetting: UpperLimitSettingDto;
                 employmentCode: string;
                 managementCategory: number;
+            }
+            
+            export class AnnualPaidLeaveSettingFindDto {
+                annualManage: number;
+            }
+            export class ManageDistinct {
+                public static YES = "YES";
+                public static NO = "NO";
             }
         }
     }
