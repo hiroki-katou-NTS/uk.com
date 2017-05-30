@@ -40,43 +40,39 @@ module nts.uk.ui.errors {
         }
 
         addError(error: ErrorListItem) {
-            // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
-            // 原因がわかるまでひとまずdeferを使っておく
-            _.defer(() => {
-                var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.messageText == error.messageText);
-                if (duplicate.length == 0) {
-                    if (typeof error.message === "string") {
-                        error.messageText = error.message;
-                        error.message = "";
+            var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.messageText == error.messageText);
+            
+            if (duplicate.length == 0) {
+                if (typeof error.message === "string") {
+                    error.messageText = error.message;
+                    error.message = "";
+                } else {
+                    //business exception
+                    if (error.message.message) {
+                        error.messageText = error.message.message;
+                        error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                     } else {
-                        //business exception
-                        if (error.message.message) {
-                            error.messageText = error.message.message;
-                            error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
-                        } else {
-                            if (error.$control.length > 0) {
-                                let controlNameId = error.$control.eq(0).attr("data-name");
-                                if (controlNameId) {
-                                    error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
-                                } else {
-                                    error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
-                                }
+                        if (error.$control.length > 0) {
+                            let controlNameId = error.$control.eq(0).attr("data-name");
+                            if (controlNameId) {
+                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
                             } else {
-                                error.messageText = nts.uk.resource.getMessage(error.message.messageId);
-
+                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
                             }
-                            error.message = error.message.messageId;
+                        } else {
+                            error.messageText = nts.uk.resource.getMessage(error.message.messageId);
+
                         }
-
+                        error.message = error.message.messageId;
                     }
-                    this.errors.push(error);
-                }
 
-            });
+                }
+                this.errors.push(error);
+            }
         }
 
         hasError() {
-            return this.occurs();
+            return this.errors().length > 0;
         }
 
         clearError() {
@@ -85,10 +81,8 @@ module nts.uk.ui.errors {
         }
 
         removeErrorByElement($element: JQuery) {
-            // addErrorと同じ対応
-            _.defer(() => {
-                var removeds = _.filter(this.errors(), e => e.$control.is($element));
-                this.errors.removeAll(removeds);
+            this.errors.remove((error) => {
+                return error.$control.is($element);
             });
         }
     }
