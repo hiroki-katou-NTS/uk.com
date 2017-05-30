@@ -25,24 +25,19 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div style="margin: 10px 20px;">
-					<!--#{i18n.getText('KMF001_27')}-->
-					<button class="pull-left btn-default" data-bind="click: backSetupVacation">休暇の選択に戻る</button>
-					<!-- #{i18n.getText('KMF001_28')} -->
-					<button class="proceed btn-default" data-bind="click: save">登録</button>
-					<!-- #{i18n.getText('KMF001_14')} -->
-					<label class="pull-right btn-default">休暇の設定</label>
-					<!-- #{i18n.getText('KMF001_29')} -->
+					<button class="pull-left btn-default" data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
+					<button class="proceed btn-default" data-bind="click: save" tabindex="2">#{i18n.getText('KMF001_28')}</button>
+					<label class="pull-right btn-default">#{i18n.getText('KMF001_14')}</label>
 					<a class="pull-right" data-bind="ntsLinkButton: {
-								jump: '/view/kmf/001/c/index.xhtml' }">年休付与テーブルの登録</a>
+								jump: '/view/kmf/001/c/index.xhtml' }" tabindex="3">#{i18n.getText('KMF001_29')}</a>
 				</div>
 			</div>
 
 			<div id="contents-area">
 				<div style="margin-left: 35px;padding-top: 10px;">
-					<!-- ＃{i18n.getText('KMF001_32')} -->
 					<div data-bind="ntsFormLabel: {required: true}"
-						style="margin-right: 50px;">年休の管理</div>
-					<span data-bind="ntsSwitchButton: {
+						style="margin-right: 50px;">#{i18n.getText('KMF001_32')}</div>
+					<span tabindex="4" data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -55,15 +50,14 @@
 					<table id="table" >
 						<!-- BEGIN 年次有給休暇の扱い -->
 						<tr>
-							<td colspan="4"><div data-bind="ntsFormLabel: {}">年次有給休暇の扱い</div><!-- KMF001_31 -->
+							<td colspan="4"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_31')}</div>
 								<div class="hr_width">
 									<hr />
 								</div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_33 -->
-							<td><label class="content-label">出勤日数として加算</label></td>
-							<td><div
+							<td><label class="content-label">#{i18n.getText('KMF001_33')}</label></td>
+							<td tabindex="5"><div
 								data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'code',
@@ -75,9 +69,8 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_34 -->
-							<td><label class="content-label">半休の上限管理</label></td>
-							<td><div
+							<td><label class="content-label">#{i18n.getText('KMF001_34')}</label></td>
+							<td tabindex="6"><div
 								data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'code',
@@ -89,9 +82,8 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_133 -->
-							<td><label class="content-label">半休の上限回数</label></td>
-							<td><div id="combo-box" data-bind="ntsComboBox: {
+							<td><label class="content-label">#{i18n.getText('KMF001_133')}</label></td>
+							<td tabindex="11"><div id="combo-box" data-bind="ntsComboBox: {
 										options: maxDayReferenceList,
 										optionsValue: 'code',
 										value: selectedMaxNumberSemiVacation,
@@ -102,20 +94,17 @@
 											{prop: 'name', length: 10 }
 										]}"></div></td>
 										
-							<!-- KMF001_132 -->
-							<td><label class="content-label">会社の上限回数</label></td>
-							<td><input id="max-number-company" class="nts-input" data-bind="ntsNumberEditor: {
+							<td><label class="content-label">#{i18n.getText('KMF001_132')}</label></td>
+							<td tabindex="10"><input id="max-number-company" class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxNumberCompany,
 									constraint: 'AnnualNumberDay',
-									required: enableAnnualVacation,
+									required: requiredMaxNumberCompany,
 									option: textEditorOption,
 									enable: enableMaxNumberCompany}"/></td>
 						</tr>
 						<tr>
-							<!-- KMF001_35 -->
-							<td><label class="content-label">上限日数設定</label></td>
-							<!-- KMF001_36 -->
-							<td><label class="content-label" style="padding-left: 0px">付与上限日数</label>
+							<td><label class="content-label">#{i18n.getText('KMF001_35')}</label></td>
+							<td tabindex="7"><label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_36')}</label>
 								<input id="max-grant-day" class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxGrantDay,
 									constraint: 'AnnualLeaveGrantDate',
@@ -124,17 +113,16 @@
 									enable: enableAnnualVacation}"/>
 							</td>
 
-							<td><label class="content-label">残数上限日数</label></td>
-							<td><input id="max-remaining-day" class="nts-input" data-bind="ntsNumberEditor: {
+							<td><label class="content-label">#{i18n.getText('KMF001_37')}</label></td>
+							<td tabindex="8"><input id="max-remaining-day" class="nts-input" data-bind="ntsNumberEditor: {
 									value: maxRemainingDay,
 									required: enableAnnualVacation,
 									option: textEditorOption,
 									enable: enableAnnualVacation}"/></td>
 						</tr>
 						<tr>
-							<!-- KMF001_38 -->
-							<td><label class="content-label">保持できる年数</label></td>
-							<td><input id="number-year-retain" class="nts-input" data-bind="ntsNumberEditor: {
+							<td><label class="content-label">#{i18n.getText('KMF001_38')}</label></td>
+							<td tabindex="9"><input id="number-year-retain" class="nts-input" data-bind="ntsNumberEditor: {
 									value: numberYearRetain,
 									constraint: 'RetentionYear',
 									required: enableAnnualVacation,
@@ -148,16 +136,14 @@
 						
 						<!-- BEGIN 年休取得の設定 -->
 						<tr>
-							<!-- ＃KMF001_39 -->
-							<td colspan="4"><div data-bind="ntsFormLabel: {}">年休取得の設定</div>
+							<td colspan="4"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_39')}</div>
 								<div class="hr_width">
 									<hr />
 								</div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_40 -->
-							<td><label class="content-label">年休の先取り</label></td>
-							<td><div
+							<td><label class="content-label">#{i18n.getText('KMF001_40')}</label></td>
+							<td><div tabindex="12"
 								data-bind="ntsSwitchButton: {
 										options: permissionList,
 										optionsValue: 'code',
@@ -169,9 +155,8 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_41 -->
-							<td><label class="content-label">年休の消化優先</label></td>
-							<td><div id="combo-box" data-bind="ntsComboBox: {
+							<td><label class="content-label">#{i18n.getText('KMF001_41')}</label></td>
+							<td tabindex="13"><div id="combo-box" data-bind="ntsComboBox: {
 										options: preemptionPermitList,
 										optionsValue: 'code',
 										value: selectedPreemptionPermit,
@@ -189,16 +174,14 @@
 						
 						<!-- BEGIN 表示設定 -->
 						<tr>
-							<!-- ＃KMF001_128 -->
-							<td colspan="4"><div data-bind="ntsFormLabel: {}">表示設定</div>
+							<td colspan="4"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_128')}</div>
 								<div class="hr_width">
 									<hr />
 								</div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_129 -->
-							<td><label class="content-label">年休の残数</label></td>
-							<td><div data-bind="ntsSwitchButton: {
+							<td><label class="content-label">#{i18n.getText('KMF001_129')}</label></td>
+							<td><div tabindex="20" data-bind="ntsSwitchButton: {
 										options: displayDivisionList,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -209,9 +192,8 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_130 -->
-							<td><label class="content-label">年休、時間年休の次回付与日数</label></td>
-							<td><div data-bind="ntsSwitchButton: {
+							<td><label class="content-label">#{i18n.getText('KMF001_130')}</label></td>
+							<td><div tabindex="21" data-bind="ntsSwitchButton: {
 										options: displayDivisionList,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -225,16 +207,14 @@
 						
 						<!-- BEGIN 時間年休 -->
 						<tr>
-							<!-- ＃KMF001_51 -->
-							<td colspan="4"><div data-bind="ntsFormLabel: {}">時間年休</div>
+							<td colspan="4"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_51')}</div>
 								<div class="hr_width">
 									<hr />
 								</div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_52 -->
-							<td><label class="content-label">時間管理</label></td>
-							<td><div
+							<td><label class="content-label">#{i18n.getText('KMF001_52')}</label></td>
+							<td><div tabindex="22"
 								data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'code',
@@ -246,9 +226,8 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_53 -->
-							<td><label class="content-label">消化単位</label></td>
-							<td><div id="combo-box" data-bind="ntsComboBox: {
+							<td><label class="content-label">#{i18n.getText('KMF001_53')}</label></td>
+							<td tabindex="23"><div id="combo-box" data-bind="ntsComboBox: {
 										options: vacationTimeUnitList,
 										optionsValue: 'code',
 										value: selectedVacationTimeUnit,
@@ -263,9 +242,8 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_54 -->
-							<td><label class="content-label">時間年休の上限日数管理</label></td>
-							<td><div data-bind="ntsSwitchButton: {
+							<td><label class="content-label">#{i18n.getText('KMF001_54')}</label></td>
+							<td><div tabindex="24" data-bind="ntsSwitchButton: {
 										options: manageDistinctList,
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -276,9 +254,8 @@
 							<td><div></div></td>
 						</tr>
 						<tr>
-							<!-- KMF001_134 -->
-							<td><label class="content-label">時間年休の上限日数設定</label></td>
-							<td><div id="combo-box" data-bind="ntsComboBox: {
+							<td><label class="content-label">#{i18n.getText('KMF001_134')}</label></td>
+							<td tabindex="25"><div id="combo-box" data-bind="ntsComboBox: {
 										options: maxDayReferenceList,
 										optionsValue: 'code',
 										value: selectedMaxDayVacation,
@@ -289,9 +266,8 @@
 											{prop: 'name', length: 10 }
 										]}"></div></td>
 										
-							<!-- KMF001_135 -->
-							<td><label class="content-label">会社の上限日数</label></td>
-							<td><input id="time-max-day-company" class="nts-input" data-bind="ntsNumberEditor: {
+							<td><label class="content-label">#{i18n.getText('KMF001_135')}</label></td>
+							<td tabindex="26"><input id="time-max-day-company" class="nts-input" data-bind="ntsNumberEditor: {
 									value: timeMaxNumberCompany,
 									constraint: 'MaxTimeDay',
 									required: enableAnnualVacation,
@@ -299,11 +275,10 @@
 									enable: enableMaxNumberCompany}"/></td>
 						</tr>
 						<tr>
-							<!-- KMF001_155 -->
 							<td colspan="4"><div  class="content-label"
 									data-bind="ntsCheckBox: { checked: isEnoughTimeOneDay,
 									enable: enableMaxNumberCompany,
-									text: '年次有給休暇の期限が切れた時、一日の時間未満の時間年休を積立年休とする' }"></div></td>
+									text: '#{i18n.getText('KMF001_55')}' }"></div></td>
 						</tr>
 						<!-- END時間年休 -->
 					</table>
