@@ -14,13 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "QTXMT_RESIDENTIAL_TAXSLIP")
 @Entity
-public class QtxmtResidentTialTaxSlip extends TableEntity {
+public class QtxmtResidentTialTaxSlip extends UkJpaEntity {
 	@EmbeddedId
 	public QtxmtResidentTialTaxSlipPk qtxmtResimentTialTaxSlipPk;
 	
@@ -55,4 +55,9 @@ public class QtxmtResidentTialTaxSlip extends TableEntity {
 	
 	@Column(name = "PREFECTURE_TAX_MNY")
 	public BigDecimal prefectureTaxMoney;
+
+	@Override
+	protected Object getKey() {
+		return qtxmtResimentTialTaxSlipPk;
+	}
 }
