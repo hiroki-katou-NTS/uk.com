@@ -83,15 +83,25 @@ module nts.uk.pr.view.kmf001.h {
         */
         export module model {
 
-            export interface EmpSubstVacationDto {
-                contractTypeCode: string;
-                setting: SubstVacationSettingDto;
+            export class SubstVacationSettingDto {
+                isManage: number;
+                expirationDate: number;
+                allowPrepaidLeave: number;
+
+                constructor(isManage: number, expirationDate: number, allowPrepaidLeave: number) {
+                    this.isManage = isManage;
+                    this.expirationDate = expirationDate;
+                    this.allowPrepaidLeave = allowPrepaidLeave;
+                }
             }
 
-            export interface SubstVacationSettingDto {
-                isManage: string;
-                expirationDate: string;
-                allowPrepaidLeave: string;
+            export class EmpSubstVacationDto extends SubstVacationSettingDto {
+                contractTypeCode: string;
+
+                constructor(contractTypeCode: string, setting: SubstVacationSettingDto) {
+                    super(setting.isManage, setting.expirationDate, setting.allowPrepaidLeave);
+                    this.contractTypeCode = contractTypeCode;
+                }
             }
 
             export class Enum {

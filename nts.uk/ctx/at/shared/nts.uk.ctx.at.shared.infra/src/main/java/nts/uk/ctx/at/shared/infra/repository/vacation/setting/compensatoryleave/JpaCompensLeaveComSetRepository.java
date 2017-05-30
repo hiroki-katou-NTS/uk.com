@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kmfm
 /**
  * The Class JpaCompensLeaveComSetRepository.
  */
+@Stateless
 public class JpaCompensLeaveComSetRepository extends JpaRepository implements CompensLeaveComSetRepository {
 
     /*

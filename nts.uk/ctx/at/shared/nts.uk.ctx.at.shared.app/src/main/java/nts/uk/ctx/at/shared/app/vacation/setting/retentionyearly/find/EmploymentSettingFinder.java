@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find;
 
 import java.util.Optional;
@@ -11,16 +15,27 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetti
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * The Class EmploymentSettingFinder.
+ */
 @Stateless
 public class EmploymentSettingFinder {
 	
+	/** The repository. */
 	@Inject
 	private EmploymentSettingRepository repository;
+	
+	/**
+	 * Find.
+	 *
+	 * @param employmentCode the employment code
+	 * @return the employment setting find dto
+	 */
 	public EmploymentSettingFindDto find(String employmentCode) {
 		// get login user info
 		LoginUserContext loginUserContext = AppContexts.user();
 
-		// get companycode by user login
+		// get companyId by user login
 		String companyId = loginUserContext.companyId();
 		
 		EmploymentSettingFindDto outputData = new EmploymentSettingFindDto();

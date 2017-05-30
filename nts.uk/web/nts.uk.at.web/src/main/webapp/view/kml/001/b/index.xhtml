@@ -24,7 +24,7 @@
 				<div>
 					<div class="label">#{i18n.getText('KML001_16')}</div>
 				</div>
-				<table id="premium-set-tbl">
+				<table id="premium-set-tbl-b">
 					<thead>
 						<tr>
 							<th>#{i18n.getText('KML001_21')}</th>
@@ -49,7 +49,7 @@
 										enable: true }"></div>	
 							</td>
 							<td>
-								<input class="premiumName" data-name="表示名称" data-bind="ntsTextEditor: {
+								<input  class="premiumName" data-name="表示名称" data-bind="ntsTextEditor: {
 										value: name,
 										constraint: 'PremiumName',
 										option: { width: '220px' },
@@ -61,8 +61,8 @@
 				</table>
 				<hr />
 				<div id="center-bottom" class="valign-center control-group">
-					<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
-					<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>
+					<button tabindex="300" class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
+					<button tabindex="400" class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>
 				</div>
 			</div>
 		</ui:define>

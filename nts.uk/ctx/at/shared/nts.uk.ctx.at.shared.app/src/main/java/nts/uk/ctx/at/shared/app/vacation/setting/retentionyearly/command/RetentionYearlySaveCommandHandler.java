@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command;
 
 import javax.ejb.Stateless;
@@ -10,12 +14,19 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearly
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * The Class RetentionYearlySaveCommandHandler.
+ */
 @Stateless
 public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionYearlySaveCommand>{
 
+	/** The repository. */
 	@Inject
 	private RetentionYearlySettingRepository repository;
 	
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<RetentionYearlySaveCommand> context) {
 		// get user login

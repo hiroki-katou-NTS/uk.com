@@ -10,28 +10,43 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 public enum CompensatoryOccurrenceDivision {
 	
 	/** The From over time. */
-	FromOverTime(0),
+	FromOverTime(0,"代休の発生に必要な残業時間","代休の発生に必要な残業時間"),
 	
 	/** The Work day off time. */
-	WorkDayOffTime(1);
+	WorkDayOffTime(1,"代休の発生に必要な休日出勤時間","代休の発生に必要な休日出勤時間");
 	
 	/** The value. */
 	public int value;
-	
+
+	/** The name id. */
+	public String nameId;
+
+	/** The description. */
+	public String description;
+
+	/** The Constant values. */
+	private final static CompensatoryOccurrenceDivision[] values = CompensatoryOccurrenceDivision.values();
+
 	/**
-	 * Instantiates a new compensatory occurrence division.
+	 * Instantiates a new manage distinct.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
+	 * @param description
+	 *            the description
 	 */
-	private CompensatoryOccurrenceDivision(int value) {
+	private CompensatoryOccurrenceDivision(int value, String nameId, String description) {
 		this.value = value;
+		this.nameId = nameId;
+		this.description = description;
 	}
-	
+
 	/**
 	 * Value of.
 	 *
-	 * @param value the value
-	 * @return the compensatory occurrence division
+	 * @param value
+	 *            the value
+	 * @return the manage distinct
 	 */
 	public static CompensatoryOccurrenceDivision valueOf(Integer value) {
 		// Invalid object.
@@ -40,7 +55,7 @@ public enum CompensatoryOccurrenceDivision {
 		}
 
 		// Find value.
-		for (CompensatoryOccurrenceDivision val : CompensatoryOccurrenceDivision.values()) {
+		for (CompensatoryOccurrenceDivision val : CompensatoryOccurrenceDivision.values) {
 			if (val.value == value) {
 				return val;
 			}

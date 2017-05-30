@@ -6,6 +6,7 @@ module nts.uk.pr.view.kmf001.d {
     import UpperLimitSettingDto = service.model.UpperLimitSettingDto;
     import EmploymentSettingDto = service.model.EmploymentSettingDto;
     import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
+    import ManageDistinct = service.model.ManageDistinct;
     
     export module viewmodel {
         export class ScreenModel {
@@ -16,6 +17,7 @@ module nts.uk.pr.view.kmf001.d {
             yearsAmountByEmp: KnockoutObservable<number>;
             maxDaysCumulationByEmp: KnockoutObservable<number>;
             isManaged: KnockoutObservable<boolean>;
+            annualManage: KnockoutObservable<string>;
             
             employmentList: KnockoutObservableArray<ItemModel>;
             columnsSetting: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -36,22 +38,20 @@ module nts.uk.pr.view.kmf001.d {
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "50px",
                     textmode: "text",
-                    placeholder: "Not Empty",
                     textalign: "left"
                 }));
                 self.employmentList = ko.observableArray<ItemModel>([]);
-                for (let i = 1; i < 9; i++) {
-                    self.employmentList.push(new ItemModel('0' + i, '基本給', i % 3 === 0));
+                for (let i = 1; i < 4; i++) {
+                    self.employmentList.push(new ItemModel('0' + i, '基本給'));
                 }
                 self.columnsSetting = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100 },
-                    { headerText: '名称', key: 'name', width: 150 },
-                    { headerText: '設定済', key: 'alreadySet', width: 150 }
+                    { headerText: '名称', key: 'name', width: 300 }
                 ]);
                 self.selectedCode = ko.observable('');
                 self.managementOption = ko.observableArray<ManagementModel>([
                     new ManagementModel(1, '管理する'),
-                    new ManagementModel(0, '管理しな')
+                    new ManagementModel(0, '管理しない')
                 ]);
                 self.selectedManagement = ko.observable(1);
                 self.hasEmpoyment = ko.computed(function() {
@@ -63,44 +63,44 @@ module nts.uk.pr.view.kmf001.d {
                 
                 self.selectedCode.subscribe(function(data: string){
                     service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto){
-                    if(data1 == null) {
-                        self.yearsAmountByEmp(0);
-                        self.maxDaysCumulationByEmp(0);
-                        self.selectedManagement(0);
-                    }
-                    else {
                        self.bindEmploymentSettingData(data1);
-                    }
                     });
                 });
                 
-//                self.isManaged = ko.computed(function() {
-//                    
-//                });
+                self.annualManage = ko.observable(ManageDistinct.YES);
+                
+                self.isManaged = ko.computed(function() {
+                    return self.annualManage() == ManageDistinct.YES;
+                }, self);
             }
             
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                service.findRetentionYearly().done(function(data: RetentionYearlyFindDto) {
-                    if(data == null) {
-                        self.retentionYearsAmount(1);
-                        self.maxDaysCumulation(40);
-                    }
-                    else {
-                       self.initializeWholeCompanyData(data);
-                    }
-                    dfd.resolve();
+                self.findIsManaged().done(function() {
+                    service.findRetentionYearly().done(function(data: RetentionYearlyFindDto) {
+                        if (data == null) {
+                            self.retentionYearsAmount(1);
+                            self.maxDaysCumulation(40);
+                        }
+                        else {
+                            self.initializeWholeCompanyData(data);
+                        }
+                        dfd.resolve();
+                    });
                 })
+                .fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
                 return dfd.promise();
             }
             
             private findIsManaged(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.findIsManaged().done(function(res: any) {
-                    if (res) {
-                        self.initUI(res);
+                service.findIsManaged().done(function(data: any) {
+                    if (data) {
+                        self.annualManage(data.annualManage);
                     }
                     dfd.resolve();
                 }).fail(function(res) {
@@ -200,11 +200,9 @@ module nts.uk.pr.view.kmf001.d {
 
             code: string;
             name: string;
-            alreadySet: boolean;
-            constructor(code: string, name: string, alreadySet: boolean) {
+            constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
-                this.alreadySet = alreadySet;
             }
         }
         

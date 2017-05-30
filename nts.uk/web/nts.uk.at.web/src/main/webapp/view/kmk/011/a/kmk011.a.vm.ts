@@ -1,8 +1,10 @@
 module kmk011.a.viewmodel {
     export class ScreenModel {
+        //time
+        alarmTime: KnockoutObservable<number>;
         //A_label_x
         columns: KnockoutObservableArray<any>;
-        dataSource: KnockoutObservableArray<model.Item>;
+        dataSource: KnockoutObservableArray<model.DivergenceTime>;
         currentCode: KnockoutObservable<any>;
         useSet: KnockoutObservableArray<any>;
         selectUse: KnockoutObservable<any>;
@@ -10,8 +12,7 @@ module kmk011.a.viewmodel {
         selectInp: KnockoutObservable<any>;
         divTimeName: KnockoutObservable<string>;
         timeItemName: KnockoutObservable<string>;
-        alarmTime: KnockoutObservable<string>;
-        errTime: KnockoutObservable<string>;
+        errTime: KnockoutObservable<number>;
         checkErrInput: KnockoutObservable<boolean>;
         checkErrSelect: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
@@ -19,7 +20,7 @@ module kmk011.a.viewmodel {
         itemDivTime: KnockoutObservable<model.DivergenceTime>;
         listDivItem: KnockoutObservableArray<model.DivergenceItem>;
         lstItemSelected: KnockoutObservableArray<model.DivergenceItem>;
-        list: KnockoutObservable<string>;
+        list: KnockoutObservableArray<number>;
         use: KnockoutObservable<string>;
         notUse: KnockoutObservable<string>;
         enableUse: KnockoutObservable<boolean>;
@@ -27,14 +28,14 @@ module kmk011.a.viewmodel {
         enableInput: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-            self.list = ko.observable();
-            self.enableUse = ko.observable();
-            self.enableSelect = ko.observable();
-            self.enableInput = ko.observable();
+            self.list = ko.observableArray([]);
+            self.enableUse = ko.observable(false);
+            self.enableSelect = ko.observable(false);
+            self.enableInput = ko.observable(false);
             self.currentCode = ko.observable(1);
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMK011_4'), key: 'divTimeId', width: 100 },
-                { headerText: nts.uk.resource.getText('KMK011_5'), key: 'divTimeName', width: 200 }
+                { headerText: nts.uk.resource.getText('KMK011_5'), key: 'divTimeName',formatter: _.escape, width: 200 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.useSet = ko.observableArray([
@@ -45,13 +46,13 @@ module kmk011.a.viewmodel {
             self.timeItemName = ko.observable('');
             self.checkErrSelect = ko.observable(true);
             self.enable = ko.observable(true);
-            self.divTimeId = ko.observable(1);
+            self.divTimeId = ko.observable(null);
             self.itemDivTime = ko.observable(null);
             self.selectUse = ko.observable(0);
-            self.alarmTime = ko.observable();
-            self.errTime = ko.observable();
-            self.selectSel = ko.observable();
-            self.selectInp = ko.observable();
+            self.alarmTime = ko.observable(0);
+            self.errTime = ko.observable(0);
+            self.selectSel = ko.observable(0);
+            self.selectInp = ko.observable(0);
             self.checkErrInput = ko.observable(false);
             self.checkErrSelect = ko.observable(false);
             self.listDivItem = ko.observableArray([]);
@@ -62,23 +63,29 @@ module kmk011.a.viewmodel {
                 if (codeChanged == 0) { return; }
                 self.selectUse(null);
                 self.itemDivTime(self.findDivTime(codeChanged));
-                self.alarmTime(self.convertTime(self.itemDivTime().alarmTime));
-                self.errTime(self.convertTime(self.itemDivTime().errTime));
+                self.alarmTime(self.itemDivTime().alarmTime);
+                self.errTime(self.itemDivTime().errTime);
                 self.selectUse(self.itemDivTime().divTimeUseSet);
                 self.selectSel(self.itemDivTime().selectSet.selectUseSet);
                 self.selectInp(self.itemDivTime().inputSet.selectUseSet);
                 self.divTimeId(self.itemDivTime().divTimeId);
                 self.divTimeName(self.itemDivTime().divTimeName);
+                self.timeItemName('');
+                self.lstItemSelected();
                 service.getItemSelected(self.divTimeId()).done(function(lstItem: Array<model.TimeItemSet>) {
-                    var listItemId = [];
-                    for (let j = 0; j < lstItem.length; j++) {
-                        listItemId[j] = lstItem[j].attendanceId;
+                    if(lstItem==null || lstItem === undefined||lstItem.length ==0){
+                        self.timeItemName();
+                        self.lstItemSelected([]);
+                    }else{
+                        var listItemId = [];
+                        for (let j = 0; j < lstItem.length; j++) {
+                            listItemId[j] = lstItem[j].attendanceId;
+                        }
+                        service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>){
+                            self.lstItemSelected(lstName);
+                            self.findTimeName(self.divTimeId()); 
+                        });
                     }
-                    service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>){
-                       self.lstItemSelected(lstName);
-                        self.findTimeName(self.divTimeId()); 
-                    });
-
                 })
                 if (self.itemDivTime().inputSet.cancelErrSelReason == 1) {
                     self.checkErrInput(true);
@@ -90,6 +97,7 @@ module kmk011.a.viewmodel {
                 } else {
                     self.checkErrSelect(false);
                 }
+                $("#itemname").focus();
             });
             //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged) {
@@ -163,7 +171,7 @@ module kmk011.a.viewmodel {
         openBDialog() {
             var self = this;
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
-            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', })
+            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', });
         }
         openDialog021() {
             var self = this;
@@ -191,6 +199,11 @@ module kmk011.a.viewmodel {
                     service.getNameItemSelected(list).done(function(lstName: Array<model.DivergenceItem>) {
                         self.lstItemSelected(lstName);
                         self.findTimeName(self.divTimeId());
+                        if(self.timeItemName()!=''){
+                            if($('.nts-editor').ntsError("hasError")==true){
+                                $('.nts-input').ntsError('clear');
+                            }
+                        }
                     })
                 })
             });
@@ -201,9 +214,12 @@ module kmk011.a.viewmodel {
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
                     var dfd = $.Deferred();
+                    if(self.divTimeId()==null){
+                        return;
+                    }
                     var select = new model.SelectSet(self.selectSel(), self.convert(self.checkErrSelect()));
                     var input = new model.SelectSet(self.selectInp(), self.convert(self.checkErrInput()));
-                    var divTime = new model.DivergenceTime(self.divTimeId(), self.divTimeName(), self.selectUse(), self.convertInt(self.alarmTime()), self.convertInt(self.errTime()), select, input);
+                    var divTime = new model.DivergenceTime(self.divTimeId(), self.divTimeName(), self.selectUse(), self.alarmTime(), self.errTime(), select, input);
                     var listAdd = new Array<model.TimeItemSet>();
                     if (self.list() != null) {
                         for (let k = 0; k < self.list().length; k++) {
@@ -211,43 +227,25 @@ module kmk011.a.viewmodel {
                             listAdd.push(add);
                         }
                     }
-                    var Object = new model.ObjectDivergence(divTime, listAdd);
+                    var Object = new model.ObjectDivergence(divTime, listAdd,self.timeItemName());
                     service.updateDivTime(Object).done(function() {
                         self.getAllDivTimeNew();
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        $("#itemname").focus();
                     }).fail(function(error) {
                         if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);
-                        } else {
+                        } 
+                         if (error.messageId == 'Msg_32') {
                             $('#inpDialog').ntsError('set', error);
-                        }
+                        }else{
+                             $('#inpName').ntsError(error.message);
+                         }
                     })
                     dfd.resolve();
                     return dfd.promise();
                 }
             })
-        }
-        convert(value: boolean): number {
-            if (value == true) {
-                return 1;
-            } else
-                if (value == false) {
-                    return 0;
-                }
-        }
-        convertTime(value: number): string {
-            var hours = Math.floor(value / 60);
-            var minutes = value % 60;
-            return (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes);
-        }
-        convertInt(value: string): number {
-            if (value == '' || value == null || value === undefined) {
-                return 0;
-            } else {
-                var hours = value.substring(0, 2);
-                var minutes = value.substring(3, 5);
-                return (parseFloat(hours) * 60 + parseFloat(minutes));
-            }
         }
         clearError(): void {
             if ($('.nts-validate').ntsError("hasError")==true) {
@@ -256,6 +254,14 @@ module kmk011.a.viewmodel {
             if($('.nts-editor').ntsError("hasError")==true){
                 $('.nts-input').ntsError('clear');
             }
+        }
+       convert(value: boolean): number {
+            if (value == true) {
+                return 1;
+            } else
+                if (value == false) {
+                    return 0;
+                }
         }
         //get all divergence time new
         getAllDivTimeNew() {
@@ -361,9 +367,11 @@ module kmk011.a.viewmodel {
         export class ObjectDivergence {
             divTime: DivergenceTime;
             timeItem: List<TimeItemSet>;
-            constructor(divTime: DivergenceTime, item: List<TimeItemSet>) {
+            timeItemName: string;
+            constructor(divTime: DivergenceTime, item: List<TimeItemSet>, timeItemName: string) {
                 this.divTime = divTime;
                 this.timeItem = item;
+                this.timeItemName = timeItemName;
             }
         }
     }

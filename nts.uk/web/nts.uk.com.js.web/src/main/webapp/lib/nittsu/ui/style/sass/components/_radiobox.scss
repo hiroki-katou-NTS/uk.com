@@ -1,4 +1,11 @@
 ﻿@CHARSET "UTF-8";
+
+.radio-wrapper {
+	
+	&:focus {
+	  	outline: 1px solid #0096f2;
+	}
+}
 .ntsRadioBox {
 	display: inline-block;
 	label{display: inline-block;}

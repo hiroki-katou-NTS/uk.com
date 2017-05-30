@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
@@ -59,8 +60,8 @@ public class JpaNormalVacationSetMemento implements NormalVacationSetMemento {
      * NormalVacationSetMemento#setPreemptionPermit(java.lang.Boolean)
      */
     @Override
-    public void setPreemptionPermit(Boolean preemptionPermit) {
-        this.entity.setPreempPermit(preemptionPermit == true ? 1 : 0);
+    public void setPreemptionPermit(ApplyPermission preemptionPermit) {
+        this.entity.setPreempPermit(preemptionPermit.value);
     }
 
     /**

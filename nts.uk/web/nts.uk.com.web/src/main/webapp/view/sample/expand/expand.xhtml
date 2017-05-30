@@ -13,7 +13,7 @@
 
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:stylefile path="expand.css" />
-   				<com:scriptfile path="../../../lib/generic/jquery/datepicker.js" />
+   				<com:scriptfile path="/lib/generic/jquery/datepicker.js" of="/nts.uk.com.js.web"/>
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
             </ui:define>
@@ -50,13 +50,13 @@
 									<tr>
 										<td class="bg-green"><span data-bind="text: $data.index"></span></td>
 										<td class="bg-green"><span data-bind="text: $data.index + '月の設定'"></span></td>
-										<td><div data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'YYYY/MM/DD dddd'}"></div></td>
-										<td><div data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'YYYY/MM/DD ddd'}"></div></td>
-										<td><div data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'YYYY/MM/DD ddd'}"></div></td>
+										<td><div data-bind="ntsDatePicker: {button: true, value: $data.date, dateFormat: 'YYYY/MM/DD dddd'}"></div></td>
+										<td><div data-bind="ntsDatePicker: {value: $data.date, dateFormat: 'YYYY/MM/DD ddd'}"></div></td>
+										<td><div data-bind="ntsDatePicker: {value: $data.date, dateFormat: 'YYYY/MM/DD ddd'}"></div></td>
 										<td><div data-bind="ntsCheckBox: { checked: true }"></div></td>
-										<td data-bind="css: { hidden: !$parent.show() }"><div data-bind="ntsDatePicker: {value: $parent.date}"></div></td>
-										<td data-bind="css: { hidden: !$parent.show() }"><div data-bind="ntsDatePicker: {value: $parent.date}"></div></td>
-										<td data-bind="css: { hidden: !$parent.show() }"><div data-bind="ntsDatePicker: {value: $parent.date}"></div></td>
+										<td data-bind="css: { hidden: !$parent.show() }"><div data-bind="ntsDatePicker: {value: $data.date}"></div></td>
+										<td data-bind="css: { hidden: !$parent.show() }"><div data-bind="ntsDatePicker: {value: $data.date}"></div></td>
+										<td data-bind="css: { hidden: !$parent.show() }"><div data-bind="ntsDatePicker: {value: $data.date}"></div></td>
 									</tr>
 								</com:ko-foreach>
 							</tbody>

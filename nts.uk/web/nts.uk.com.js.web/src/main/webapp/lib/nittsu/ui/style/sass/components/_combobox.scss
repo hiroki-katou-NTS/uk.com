@@ -12,4 +12,15 @@
 	height: 20px;
 	overflow: hidden; 
 	margin-right: 5px;
+	
 }
+
+.ui-state-active{
+	border-color: #0096f2;
+		
+	&:focus {
+	  	border-color: #0096f2;
+	}
+}
+
+		
