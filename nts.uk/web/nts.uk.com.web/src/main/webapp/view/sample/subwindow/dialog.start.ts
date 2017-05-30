@@ -12,6 +12,14 @@ __viewContext.ready(function () {
         clearError() {
              $("#text").ntsError("clear"); 
         }
+        
+        closeDialog() {
+             nts.uk.ui.windows.close();   
+        }
+        
+        positionHis() {
+             nts.uk.ui.windows.close();   
+        }
     }
     
     this.bind(new ScreenModel());

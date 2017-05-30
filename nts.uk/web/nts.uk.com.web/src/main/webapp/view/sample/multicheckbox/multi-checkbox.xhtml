@@ -37,7 +37,12 @@
 								<span class="label" data-bind="ntsCheckBox: { checked: enable }">Enable</span>
 							</div>
 						</div>
-						<br/><br/>
+						<br/>
+						<div class="valign-center">
+							<input data-bind="ntsTextEditor: { value: defaultValue }"></input>
+							<button data-bind="click: setDefault">Reset</button>
+						</div>
+						<br/>
 						<h3>Selected Values as objects</h3>
 						<div class="col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsText: 'name',
@@ -47,7 +52,7 @@
 						<div data-bind="text: ko.toJSON(selectedValues)"></div>
 						<br/>
 						<h3>Selected Values as value</h3>
-						<div class="col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
+						<div id="check-box" class="col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIds,

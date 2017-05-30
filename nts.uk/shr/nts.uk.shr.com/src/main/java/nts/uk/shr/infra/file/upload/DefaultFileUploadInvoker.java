@@ -66,7 +66,8 @@ public class DefaultFileUploadInvoker implements IFileUpload {
 		for (InputPart inputPart : inputParts) {
 			String fileName = inputPart.getBodyAsString();
 			if (!Strings.isEmpty(fileName)) {
-				return fileName;
+				String unicodeFileName = new String(fileName.getBytes("ISO-8859-1"),"UTF-8");
+				return unicodeFileName;
 			}
 		}
 		return "unknow";
