@@ -23,7 +23,7 @@ public interface AcquisitionRuleGetMemento {
 	 *
 	 * @return the settingclassification
 	 */
-	Category getSettingclassification();
+	Category getCategory();
 	
 	/**
 	 * Gets the acquisition order.

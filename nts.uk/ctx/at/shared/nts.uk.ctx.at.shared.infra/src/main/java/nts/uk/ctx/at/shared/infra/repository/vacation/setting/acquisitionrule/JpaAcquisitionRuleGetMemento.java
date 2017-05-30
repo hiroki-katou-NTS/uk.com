@@ -61,7 +61,7 @@ public class JpaAcquisitionRuleGetMemento implements AcquisitionRuleGetMemento {
 	 * VaAcRuleGetMemento#getSettingclassification()
 	 */
 	@Override
-	public Category getSettingclassification() {
+	public Category getCategory() {
 		return Category.valueOf(this.typeValue.getCategory());
 	}
 
