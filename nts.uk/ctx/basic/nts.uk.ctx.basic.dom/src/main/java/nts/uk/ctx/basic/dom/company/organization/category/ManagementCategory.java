@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.classification;
+package nts.uk.ctx.basic.dom.company.organization.category;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -11,26 +11,26 @@ import nts.arc.layer.dom.DomainObject;
  * The Class Classification.
  */
 @Getter
-public class Classification extends DomainObject{
+public class ManagementCategory extends DomainObject{
 
 	/** The company id. */
 	private String companyId;
 	
 	/** The classification code. */
-	private ClassificationCode classificationCode;
+	private ManagementCategoryCode managementCategoryCode;
 	
 	/** The classification name. */
-	private ClassificationName classificationName;
+	private ManagementCategoryName managementCategoryName;
 	
 	/**
 	 * Instantiates a new classification.
 	 *
 	 * @param memento the memento
 	 */
-	public Classification(ClassificationGetMemento memento) {
+	public ManagementCategory(ManagementCategoryGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.classificationCode = memento.getClassificationCode();
-		this.classificationName = memento.getClassificationName();
+		this.managementCategoryCode = memento.getManagementCategoryCode();
+		this.managementCategoryName = memento.getManagementCategoryName();
 	}
 
 	/**
@@ -38,10 +38,10 @@ public class Classification extends DomainObject{
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(ClassificationSetMemento memento) {
+	public void saveToMemento(ManagementCategorySetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setClassificationCode(this.classificationCode);
-		memento.setClassificationName(this.classificationName);
+		memento.setManagementCategoryCode(this.managementCategoryCode);
+		memento.setManagementCategoryName(this.managementCategoryName);
 	}
 	
 }

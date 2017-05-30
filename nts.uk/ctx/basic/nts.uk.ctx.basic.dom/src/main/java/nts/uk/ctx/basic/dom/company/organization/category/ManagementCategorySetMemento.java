@@ -2,12 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.classification;
+package nts.uk.ctx.basic.dom.company.organization.category;
 
 /**
  * The Interface ClassificationSetMemento.
  */
-public interface ClassificationSetMemento {
+public interface ManagementCategorySetMemento {
 
 	/**
 	 * Sets the company id.
@@ -18,17 +18,17 @@ public interface ClassificationSetMemento {
 	
 	
 	/**
-	 * Sets the classification code.
+	 * Sets the management category code.
 	 *
-	 * @param classificationCode the new classification code
+	 * @param managementCategoryCode the new management category code
 	 */
-	void setClassificationCode(ClassificationCode classificationCode);
+	void setManagementCategoryCode(ManagementCategoryCode managementCategoryCode);
 	
 	
 	/**
-	 * Sets the classification name.
+	 * Sets the management category name.
 	 *
-	 * @param classificationName the new classification name
+	 * @param managementCategoryName the new management category name
 	 */
-	void setClassificationName(ClassificationName classificationName);
+	void setManagementCategoryName(ManagementCategoryName managementCategoryName);
 }

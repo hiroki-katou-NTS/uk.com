@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.classification;
+package nts.uk.ctx.basic.dom.company.organization.category;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -15,7 +15,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(10)
-public class ClassificationCode extends CodePrimitiveValue<ClassificationCode> {
+public class ManagementCategoryCode extends CodePrimitiveValue<ManagementCategoryCode> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -25,7 +25,7 @@ public class ClassificationCode extends CodePrimitiveValue<ClassificationCode> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public ClassificationCode(String rawValue) {
+	public ManagementCategoryCode(String rawValue) {
 		super(rawValue);
 	}
 
