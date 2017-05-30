@@ -21,8 +21,9 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	/** The company id. */
 	public String companyId;
 
-	/** The setting class. */
-	public Category settingClass;
+	
+	/** The category. */
+	public Category category;
 
 	/** The va ac orders. */
 	public List<AcquisitionOrderItemDto> vaAcOrders;
@@ -47,8 +48,8 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	 * Settingclassification)
 	 */
 	@Override
-	public void setSettingclassification(Category settingclassification) {
-		this.settingClass = settingclassification;
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	/*
