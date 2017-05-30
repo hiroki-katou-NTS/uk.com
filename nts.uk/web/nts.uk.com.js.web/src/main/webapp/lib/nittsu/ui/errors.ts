@@ -76,6 +76,10 @@ module nts.uk.ui.errors {
         }
 
         clearError() {
+            $(".error").children().each((index, element) => {
+                if ($(element).data("hasError"))
+                    $(element).data("hasError", false);
+            });
             $(".error").removeClass('error');
             this.errors.removeAll();
         }

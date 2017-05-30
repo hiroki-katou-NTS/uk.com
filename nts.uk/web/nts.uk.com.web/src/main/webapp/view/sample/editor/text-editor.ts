@@ -20,7 +20,7 @@ __viewContext.ready(function () {
                     placeholder: "Placeholder for text editor",
                     width: "",
                     textalign: "left",
-                    autofill: true,
+                    autofill: false,
                     filldirection: "left",
                     fillcharacter: "0"
                 })), 

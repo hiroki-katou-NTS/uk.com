@@ -41,7 +41,7 @@ module nts.uk.ui.koExtentions {
 
             // Format on blur
             $input.blur(() => {
-                if (!readonly) {
+                if (!$input.attr('readonly')) {
                     var formatter = this.getFormatter(data);
                     var newText = $input.val();
                     var result = validator.validate(newText);
@@ -135,7 +135,7 @@ module nts.uk.ui.koExtentions {
             });
 
             $input.on("blur", (e) => {
-                if (!readonly) {
+                if (!$input.attr('readonly')) {
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });
                     $input.ntsError('clear');
