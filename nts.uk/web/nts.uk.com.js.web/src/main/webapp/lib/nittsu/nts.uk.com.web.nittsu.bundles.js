@@ -6653,8 +6653,7 @@ var nts;
                             }
                         }
                         container.data("enable", enable);
-                        var currentSource = container.igGrid('option', 'dataSource');
-                        if (!_.isEqual(currentSource, options)) {
+                        if (container.attr("filtered") !== true && container.attr("filtered") !== "true") {
                             var currentSources = options.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -6923,20 +6922,22 @@ var nts;
                     };
                     SearchBox.prototype.cloneDeep = function (source) {
                         var self = this;
-                        var result = self.cloneDeepX(source);
-                        return result;
+                        return self.cloneDeepX(source);
                     };
                     SearchBox.prototype.cloneDeepX = function (source) {
                         var self = this;
-                        var result = [];
-                        _.forEach(source, function (item) {
-                            var cloned = _.cloneDeep(item);
-                            if (!nts.uk.util.isNullOrUndefined(self.childField)) {
-                                cloned[self.childField] = self.cloneDeepX(cloned[self.childField]).slice();
-                            }
-                            result.push(cloned);
-                        });
-                        return result;
+                        //            let result = [];
+                        //            
+                        //            _.forEach(source, function (item: any){
+                        //                let cloned = _.cloneDeep(item);
+                        //                
+                        //                if(!nts.uk.util.isNullOrUndefined(self.childField)){
+                        //                    cloned[self.childField] = self.cloneDeepX(cloned[self.childField]).slice();        
+                        //                }
+                        //                
+                        //                result.push(cloned);                
+                        //            });   
+                        return _.cloneDeep(source);
                     };
                     return SearchBox;
                 }());
@@ -6963,7 +6964,8 @@ var nts;
                                 result.options = this.seachBox.getDataSource();
                                 var index = 0;
                                 if (!nts.uk.util.isNullOrEmpty(selectedItems)) {
-                                    var firstItemValue_1 = $.isArray(selectedItems) ? selectedItems[0]["id"].toString() : selectedItems["id"].toString();
+                                    var firstItemValue_1 = $.isArray(selectedItems)
+                                        ? selectedItems[0]["id"].toString() : selectedItems["id"].toString();
                                     index = _.findIndex(filted, function (item) {
                                         return item[key_1].toString() === firstItemValue_1;
                                     });
@@ -7020,7 +7022,15 @@ var nts;
                         if (data.childField) {
                             childField = ko.unwrap(data.childField);
                         }
-                        var component = $("#" + ko.unwrap(data.comId));
+                        var component;
+                        var targetMode = data.mode;
+                        if (targetMode === "listbox") {
+                            component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
+                            targetMode = "igGrid";
+                        }
+                        else {
+                            component = $("#" + ko.unwrap(data.comId));
+                        }
                         var $container = $(element);
                         $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor' type='text' /></span>");
                         $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
@@ -7032,6 +7042,9 @@ var nts;
                             var $clearButton = $container.find("button.clear-btn");
                             buttonWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
+                                if (component.length === 0) {
+                                    component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
+                                }
                                 var srh = $container.data("searchObject");
                                 component.igGrid("option", "dataSource", srh.seachBox.getDataSource());
                                 component.igGrid("dataBind");
@@ -7046,12 +7059,15 @@ var nts;
                         var searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
                         $container.data("searchObject", searchObject);
                         var search = function (searchKey) {
-                            if (data.mode) {
+                            if (targetMode) {
                                 var selectedItems = void 0;
-                                if (data.mode == 'igGrid') {
+                                if (targetMode == 'igGrid') {
+                                    if (component.length === 0) {
+                                        component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
+                                    }
                                     selectedItems = component.ntsGridList("getSelected");
                                 }
-                                else if (data.mode == 'igTree') {
+                                else if (targetMode == 'igTree') {
                                     selectedItems = component.ntsTreeView("getSelected");
                                 }
                                 var srh = $container.data("searchObject");
@@ -7060,7 +7076,7 @@ var nts;
                                     $input.ntsError("set", "#FND_E_SEARCH_NOHIT");
                                     return;
                                 }
-                                var isMulti = data.mode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
+                                var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
                                     : component.igTreeGridSelection('option', 'multipleSelection');
                                 var selectedProperties = _.map(result.selectItems, primaryKey);
                                 var selectedValue = void 0;
@@ -7072,7 +7088,7 @@ var nts;
                                     selectedValue = isMulti ? [result.selectItems] :
                                         result.selectItems.length > 0 ? result.selectItems[0] : undefined;
                                 }
-                                if (data.mode === 'igGrid') {
+                                if (targetMode === 'igGrid') {
                                     if (searchMode === "filter") {
                                         //                            component.igGrid("option", "dataSource", result.options);  
                                         //                            component.igGrid("dataBind");
@@ -7085,11 +7101,13 @@ var nts;
                                     }
                                     component.ntsGridList("setSelected", selectedProperties);
                                 }
-                                else if (data.mode == 'igTree') {
+                                else if (targetMode == 'igTree') {
                                     component.ntsTreeView("setSelected", selectedProperties);
                                     data.selected(selectedValue);
                                 }
-                                component.trigger("selectChange");
+                                _.defer(function () {
+                                    component.trigger("selectChange");
+                                });
                                 $container.data("searchKey", searchKey);
                             }
                         };
@@ -7122,7 +7140,15 @@ var nts;
                         var searchMode = ko.unwrap(data.searchMode);
                         var primaryKey = ko.unwrap(data.targetKey);
                         var selectedValue = ko.unwrap(data.selected);
-                        var component = $("#" + ko.unwrap(data.comId));
+                        var targetMode = data.mode;
+                        var component;
+                        if (targetMode === "listbox") {
+                            component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
+                            targetMode = "igGrid";
+                        }
+                        else {
+                            component = $("#" + ko.unwrap(data.comId));
+                        }
                         var srhX = $searchBox.data("searchObject");
                         if (searchMode === "filter") {
                             var filteds_1 = $searchBox.data("filteredSrouce");
