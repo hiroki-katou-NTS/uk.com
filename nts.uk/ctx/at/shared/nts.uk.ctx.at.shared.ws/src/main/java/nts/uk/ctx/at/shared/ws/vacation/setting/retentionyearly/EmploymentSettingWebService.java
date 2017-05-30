@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.ws.vacation.setting.retentionyearly;
 
 import javax.inject.Inject;
@@ -12,23 +16,38 @@ import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.Employm
 import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.EmploymentSettingFinder;
 import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.dto.EmploymentSettingFindDto;
 
+/**
+ * The Class EmploymentSettingWebService.
+ */
 @Path("ctx/at/shared/vacation/setting/employmentsetting/")
 @Produces("application/json")
 public class EmploymentSettingWebService extends WebService {
 	
+	/** The save. */
 	@Inject
 	private EmploymentSaveCommandHandler save;
 	
+	/** The finder. */
 	@Inject
 	private EmploymentSettingFinder finder;
 	
-	
+	/**
+	 * Find.
+	 *
+	 * @param empCode the emp code
+	 * @return the employment setting find dto
+	 */
 	@POST
 	@Path("find/{empCode}")
 	public EmploymentSettingFindDto find(@PathParam("empCode") String empCode) {
 		return this.finder.find(empCode);
 	}
 	
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("save")
 	public void save(EmploymentSaveCommand command) {

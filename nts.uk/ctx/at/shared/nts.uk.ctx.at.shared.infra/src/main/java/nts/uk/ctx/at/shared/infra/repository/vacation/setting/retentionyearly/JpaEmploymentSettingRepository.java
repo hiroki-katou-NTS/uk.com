@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 
 import java.util.Optional;
@@ -10,9 +14,15 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetti
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
 
+/**
+ * The Class JpaEmploymentSettingRepository.
+ */
 @Stateless
 public class JpaEmploymentSettingRepository extends JpaRepository implements EmploymentSettingRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository#insert(nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting)
+	 */
 	@Override
 	public void insert(EmploymentSetting employmentSetting) {
 		KmfmtRetentionEmpCtr entity = new KmfmtRetentionEmpCtr();
@@ -21,6 +31,9 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository#update(nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting)
+	 */
 	@Override
 	public void update(EmploymentSetting employmentSetting) {
 		KmfmtRetentionEmpCtr entity = new KmfmtRetentionEmpCtr();
@@ -28,12 +41,18 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		this.commandProxy().update(entity);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository#remove(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void remove(String companyId, String employmentCode) {
 		this.commandProxy()
 		.remove(KmfmtRetentionEmpCtr.class, new KmfmtRetentionEmpCtrPK(companyId, employmentCode));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository#find(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Optional<EmploymentSetting> find(String companyId, String employmentCode) {
 		return this.queryProxy()
@@ -41,6 +60,12 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 				.map(c -> this.toDomain(c));
 	}
 	
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the employment setting
+	 */
 	private EmploymentSetting toDomain(KmfmtRetentionEmpCtr entity) {
 		return new EmploymentSetting(new JpaEmploymentSettingGetMemento(entity));
 		
