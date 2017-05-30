@@ -78,7 +78,7 @@
 																			value: expirationDate,
 																			optionsText: 'localizedName',
 																			editable: false,
-																			enable: true,
+																			enable: $parent.isComManaged,
 																			columns: [
 																				{ prop: 'localizedName', length: 10 }
 																			]}"></div>
@@ -91,6 +91,7 @@
 															options: $parent.applyPermissionEnums,
 															optionsValue: 'value',
 															optionsText: 'localizedName',
+															enable: $parent.isComManaged,
 															value: allowPrepaidLeave}">
 														</div></td>
 												</tr>
@@ -153,6 +154,7 @@
 																options: $parent.manageDistinctEnums,
 																optionsValue: 'value',
 																optionsText: 'localizedName',
+																enable: $parent.hasEmp,
 																value: isManage}"></div>
 										</td>
 									</tr>
@@ -167,7 +169,7 @@
 																			value: expirationDate,
 																			optionsText: 'localizedName',
 																			editable: false,
-																			enable: true,
+																			enable: $parent.isEmpManaged,
 																			columns: [
 																				{ prop: 'localizedName', length: 10 }
 																			]}"></div>
@@ -181,6 +183,7 @@
 															options: $parent.applyPermissionEnums,
 															optionsValue: 'value',
 															optionsText: 'localizedName',
+															enable: $parent.isEmpManaged,
 															value: allowPrepaidLeave}">
 											</div></td>
 									</tr>
