@@ -28,6 +28,11 @@ public class ManagementCategoryWs  extends WebService{
 	private ManagementCategoryFinder finder;
 	
 	
+	/**
+	 * Inits the.
+	 *
+	 * @return the list
+	 */
 	@Path("findAll")
 	@POST
 	public List<ManagementCategoryFindDto> init() {
