@@ -14,13 +14,18 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
  */
 @Getter
 @Setter
-public class EmpSubstVacationDto implements EmpSubstVacationSetMemento {
+public class EmpSubstVacationDto extends SubstVacationSettingDto
+		implements EmpSubstVacationSetMemento {
 
 	/** The contract type code. */
 	private String contractTypeCode;
 
-	/** The setting. */
-	private SubstVacationSettingDto setting;
+	/**
+	 * Instantiates a new emp subst vacation dto.
+	 */
+	public EmpSubstVacationDto() {
+		super();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -53,7 +58,9 @@ public class EmpSubstVacationDto implements EmpSubstVacationSetMemento {
 	 */
 	@Override
 	public void setSetting(SubstVacationSetting setting) {
-		setting.saveToMemento(this.setting);
+		this.setIsManage(setting.getIsManage());
+		this.setAllowPrepaidLeave(setting.getAllowPrepaidLeave());
+		this.setExpirationDate(setting.getExpirationDate());
 	}
 
 }
