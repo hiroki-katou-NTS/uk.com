@@ -2,7 +2,7 @@
 
 #priorityTable  th, td {
 	border: 1px solid #555555;
-	padding-left: 6px;
+	padding-left: 4px;
 	font-size: 20px;
 }
 
@@ -11,21 +11,11 @@
 }
 
 #priorityTable  th {
-	background-color: #E0F59E;
+	background-color: #CCFF99;
 }
 
 .inputPriority {
-	width: 106%;
-	margin-left: -6px;
+	padding-left: 0px !important;
 }
 
-.thInput {
-	width: 50%;
-}
-.nts-switch-button {
-	min-width: 80px;
-	font-size: 13px !important;
-	height: 30px !important;
-	padding: 3px 7px !important;
-	margin-bottom: 3px !important;
-}
+

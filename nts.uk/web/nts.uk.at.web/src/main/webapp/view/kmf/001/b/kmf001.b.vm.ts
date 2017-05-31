@@ -4,7 +4,7 @@ module nts.uk.pr.view.kmf001.b {
         import EnumertionModel = service.model.EnumerationModel;
 
         export class ScreenModel {
-
+            textEditorOption: KnockoutObservable<any>;
             priority: KnockoutObservableArray<EnumertionModel>;
             selectedPriority: KnockoutObservable<number>;
             enableInputPriority: KnockoutObservable<boolean>;
@@ -21,6 +21,12 @@ module nts.uk.pr.view.kmf001.b {
             constructor() {
 
                 let self = this;
+                
+                self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    width: "111px",
+                    textalign: "right"
+                }));
+                
                 self.priority = ko.observableArray([
                     { value: 0, name: "設定する" },
                     { value: 1, name: "設定しない" }
@@ -40,7 +46,7 @@ module nts.uk.pr.view.kmf001.b {
 
                 self.enableHelpButton = ko.observable(true);
             }
-            
+
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<void>();
@@ -179,7 +185,7 @@ module nts.uk.pr.view.kmf001.b {
                 acquisitionSubstituteHoliday.vacationType = "SubstituteHoliday";
                 acquisitionSubstituteHoliday.priority = +self.substituteHoliday();
                 acquisitionOrderList.push(acquisitionSubstituteHoliday);
-    
+
                 //Set data Acquisition Funded Paid Holiday
                 let acquisitionFundedPaidHoliday: any = {};
                 acquisitionFundedPaidHoliday.vacationType = "FundedPaidHoliday";
