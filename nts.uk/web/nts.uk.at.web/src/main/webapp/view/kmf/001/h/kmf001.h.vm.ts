@@ -22,6 +22,11 @@ module nts.uk.pr.view.kmf001.h {
             settingModel: KnockoutObservable<SubstVacationSettingModel>;
             empSettingModel: KnockoutObservable<EmpSubstVacationModel>;
 
+            // 
+            isComManaged: KnockoutObservable<boolean>;
+            hasEmp: KnockoutObservable<boolean>;
+            isEmpManaged: KnockoutObservable<boolean>;
+
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
 
@@ -48,6 +53,19 @@ module nts.uk.pr.view.kmf001.h {
                         expirationDate: 0,
                         allowPrepaidLeave: 0
                     }));
+
+                self.isComManaged = ko.computed(function() {
+                    return self.settingModel().isManage() == 1;
+                }, self);
+
+                self.hasEmp = ko.computed(function() {
+                    // TODO: count emp
+                    return true;
+                }, self);
+
+                self.isEmpManaged = ko.computed(function() {
+                    return self.hasEmp && self.empSettingModel().isManage() == 1;
+                }, self);
 
                 self.selectedContractTypeCode = ko.observable('');
                 self.selectedContractTypeCode.subscribe(function(data: string) {

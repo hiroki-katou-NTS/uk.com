@@ -35,7 +35,7 @@ public class RetentionYearlyFinder {
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get companycode by user login
-		String companyId = loginUserContext.companyCode();
+		String companyId = loginUserContext.companyId();
 		
 		RetentionYearlyFindDto outputData = new RetentionYearlyFindDto();
 		

@@ -69,14 +69,6 @@ module nts.uk.pr.view.kmf001.d {
                 employmentCode: string;
                 managementCategory: number;
             }
-            
-            export class AnnualPaidLeaveSettingFindDto {
-                annualManage: number;
-            }
-            export class ManageDistinct {
-                public static YES = "YES";
-                public static NO = "NO";
-            }
         }
     }
 }
