@@ -18,7 +18,7 @@ module nts.uk.at.view.kml001.d {
                 self.personCostList = ko.observableArray(<Array<vmbase.PersonCostCalculation>>nts.uk.ui.windows.getShared('personCostList'));
                 self.currentPersonCost = ko.observable(<vmbase.PersonCostCalculation>nts.uk.ui.windows.getShared('currentPersonCost'));
                 self.size = _.size(self.personCostList());
-                self.isLast = ko.observable((_.findIndex(self.personCostList(), self.currentPersonCost())==(self.size-1))?true:false);
+                self.isLast = ko.observable((_.findIndex(self.personCostList(), function(o){return self.currentPersonCost().startDate() == o.startDate(); })==(self.size-1))?true:false);
                 self.deleteAble = ko.observable((self.isLast()&&(self.size>1))); // can delete when item is last and list have more than one item
                 self.beforeIndex = _.findIndex(self.personCostList(), function(o) { return o.startDate() == self.currentPersonCost().startDate(); })-1;
                 self.beforeStartDate = ko.observable((self.beforeIndex>=0)?self.personCostList()[self.beforeIndex].startDate():"1900/1/1");
