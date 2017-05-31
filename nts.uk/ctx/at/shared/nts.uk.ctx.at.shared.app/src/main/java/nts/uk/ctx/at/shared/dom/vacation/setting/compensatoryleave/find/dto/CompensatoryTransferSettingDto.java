@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.find.dto;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
@@ -24,6 +25,9 @@ public class CompensatoryTransferSettingDto implements CompensatoryTransferSetMe
 
 	/** The transfer division. */
 	public TransferSettingDivision transferDivision;
+	
+	/** The compensatory occurrence division. */
+	public CompensatoryOccurrenceDivision compensatoryOccurrenceDivision;
 
 	@Override
 	public void setCertainTime(OneDayTime certainTime) {
@@ -48,6 +52,11 @@ public class CompensatoryTransferSettingDto implements CompensatoryTransferSetMe
 	@Override
 	public void setTransferDivision(TransferSettingDivision transferDivision) {
 		this.transferDivision = transferDivision;
+	}
+
+	@Override
+	public void setCompensatoryOccurrenceDivision(CompensatoryOccurrenceDivision compensatoryOccurrenceDivision) {
+		this.compensatoryOccurrenceDivision = compensatoryOccurrenceDivision;
 	}
 
 }

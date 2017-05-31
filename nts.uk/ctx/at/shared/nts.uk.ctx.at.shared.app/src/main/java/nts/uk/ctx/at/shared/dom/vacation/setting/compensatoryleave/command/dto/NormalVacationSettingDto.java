@@ -21,16 +21,16 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacatio
 public class NormalVacationSettingDto {
 
 	/** The expiration time. */
-	private ExpirationTime expirationTime;
+	private Integer expirationTime;
 
 	/** The preemption permit. */
-	private ApplyPermission preemptionPermit;
+	private Integer preemptionPermit;
 
 	/** The is manage by time. */
-	private ManageDistinct isManageByTime;
+	private Integer isManageByTime;
 
 	/** The digestive unit. */
-	private TimeVacationDigestiveUnit digestiveUnit;
+	private Integer digestiveUnit;
 
 	public NormalVacationSetting toDomain() {
 		return new NormalVacationSetting(new NormalVacationSettingGetMementoImpl(this));
@@ -53,22 +53,22 @@ public class NormalVacationSettingDto {
 
 		@Override
 		public ExpirationTime getExpirationTime() {
-			return ExpirationTime.valueOf(this.normalVacationSettingDto.expirationTime.value);
+			return ExpirationTime.valueOf(this.normalVacationSettingDto.expirationTime);
 		}
 
 		@Override
 		public ApplyPermission getPreemptionPermit() {
-			return ApplyPermission.valueOf(this.normalVacationSettingDto.preemptionPermit.value);
+			return ApplyPermission.valueOf(this.normalVacationSettingDto.preemptionPermit);
 		}
 
 		@Override
 		public ManageDistinct getIsManageByTime() {
-			return ManageDistinct.valueOf(this.normalVacationSettingDto.isManageByTime.value);
+			return ManageDistinct.valueOf(this.normalVacationSettingDto.isManageByTime);
 		}
 
 		@Override
 		public TimeVacationDigestiveUnit getdigestiveUnit() {
-			return TimeVacationDigestiveUnit.valueOf(this.normalVacationSettingDto.digestiveUnit.value);
+			return TimeVacationDigestiveUnit.valueOf(this.normalVacationSettingDto.digestiveUnit);
 		}
 
 	}

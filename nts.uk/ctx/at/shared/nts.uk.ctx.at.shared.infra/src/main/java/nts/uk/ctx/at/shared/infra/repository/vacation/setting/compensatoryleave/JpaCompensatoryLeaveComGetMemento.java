@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
-import javax.inject.Inject;
+import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
@@ -20,16 +20,13 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kmfm
 public class JpaCompensatoryLeaveComGetMemento implements CompensatoryLeaveComGetMemento {
 
     /** The entity. */
-    @Inject
     private KmfmtCompensLeaveCom entity;
 
     /** The entity normal. */
-    @Inject
     private KmfmtNormalVacationSet entityNormal;
     
     /** The entity occur. */
-    @Inject
-    private KmfmtOccurVacationSet entityOccur;
+    private List<KmfmtOccurVacationSet> lstEntityOccur;
 
     /**
      * Instantiates a new jpa compensatory leave com get memento.
@@ -39,10 +36,10 @@ public class JpaCompensatoryLeaveComGetMemento implements CompensatoryLeaveComGe
      * @param entityOccur the entity occur
      */
     public JpaCompensatoryLeaveComGetMemento(KmfmtCompensLeaveCom entity, KmfmtNormalVacationSet entityNormal,
-            KmfmtOccurVacationSet entityOccur) {
+    		List<KmfmtOccurVacationSet> lstEntityOccur) {
         this.entity = entity;
         this.entityNormal = entityNormal;
-        this.entityOccur = entityOccur;
+        this.lstEntityOccur = lstEntityOccur;
     }
 
     /**
@@ -106,6 +103,6 @@ public class JpaCompensatoryLeaveComGetMemento implements CompensatoryLeaveComGe
      */
     @Override
     public OccurrenceVacationSetting getOccurrenceVacationSetting() {
-        return new OccurrenceVacationSetting(new JpaOccurrenceVacationGetMemento(this.entityOccur));
+        return new OccurrenceVacationSetting(new JpaOccurrenceVacationGetMemento(this.lstEntityOccur));
     }
 }

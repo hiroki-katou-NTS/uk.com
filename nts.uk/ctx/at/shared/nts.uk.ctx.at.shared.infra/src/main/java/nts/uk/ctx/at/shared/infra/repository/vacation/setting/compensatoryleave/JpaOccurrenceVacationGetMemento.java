@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
-import javax.inject.Inject;
+import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferSetting;
@@ -17,16 +17,15 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kmfm
 public class JpaOccurrenceVacationGetMemento implements OccurrenceVacationGetMemento {
     
     /** The entity. */
-    @Inject
-    private KmfmtOccurVacationSet entity;
+    private List<KmfmtOccurVacationSet> lstEntityOccur;
     
     /**
      * Instantiates a new jpa occurrence vacation get memento.
      *
      * @param entity the entity
      */
-    public JpaOccurrenceVacationGetMemento(KmfmtOccurVacationSet entity) {
-        this.entity = entity;
+    public JpaOccurrenceVacationGetMemento(List<KmfmtOccurVacationSet> lstEntityOccur) {
+        this.lstEntityOccur = lstEntityOccur;
     }
     
     /**
@@ -34,25 +33,22 @@ public class JpaOccurrenceVacationGetMemento implements OccurrenceVacationGetMem
      *
      * @return the transfer setting
      */
-    /* (non-Javadoc)
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationGetMemento#getTransferSetting()
-     */
+
+	@Override
+	public CompensatoryTransferSetting getTransferSettingDayOffTime() {
+		return new CompensatoryTransferSetting(new JpaCompensatoryTransferGetMemento(findByType(CompensatoryOccurrenceDivision.WorkDayOffTime)));
+	}
+    
     @Override
-    public CompensatoryTransferSetting getTransferSetting() {
-        return new CompensatoryTransferSetting(new JpaCompensatoryTransferGetMemento(this.entity));
+    public CompensatoryTransferSetting getTransferSettingOverTime() {
+        return new CompensatoryTransferSetting(new JpaCompensatoryTransferGetMemento(findByType(CompensatoryOccurrenceDivision.FromOverTime)));
     }
 
-    /**
-     * Gets the occurrence division.
-     *
-     * @return the occurrence division
-     */
-    /* (non-Javadoc)
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationGetMemento#getOccurrenceDivision()
-     */
-    @Override
-    public CompensatoryOccurrenceDivision getOccurrenceDivision() {
-        return CompensatoryOccurrenceDivision.valueOf(this.entity.getOccurrDivision());
+    private KmfmtOccurVacationSet findByType(CompensatoryOccurrenceDivision type) {
+    	return lstEntityOccur.stream()
+    			.filter(entity -> entity.getKmfmtOccurVacationSetPK().getOccurrDivision() == type.value)
+    			.findFirst()
+    			.get();
     }
-
+    
 }
