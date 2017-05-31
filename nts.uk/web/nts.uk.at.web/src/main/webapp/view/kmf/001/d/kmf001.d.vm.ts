@@ -44,6 +44,7 @@ module nts.uk.pr.view.kmf001.d {
                 for (let i = 1; i < 4; i++) {
                     self.employmentList.push(new ItemModel('0' + i, '基本給'));
                 }
+                
                 self.columnsSetting = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100 },
                     { headerText: '名称', key: 'name', width: 300 }
@@ -64,6 +65,7 @@ module nts.uk.pr.view.kmf001.d {
                 self.selectedCode.subscribe(function(data: string){
                     service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto){
                        self.bindEmploymentSettingData(data1);
+                         $('#switch-btn').focus();
                     });
                 });
                 
@@ -87,6 +89,7 @@ module nts.uk.pr.view.kmf001.d {
                             self.initializeWholeCompanyData(data);
                         }
                         dfd.resolve();
+                         $('#year-amount-company').focus();
                     });
                 })
                 .fail(function(res) {
