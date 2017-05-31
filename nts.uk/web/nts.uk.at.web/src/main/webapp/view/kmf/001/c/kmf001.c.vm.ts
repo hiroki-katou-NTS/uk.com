@@ -202,25 +202,31 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 self.clearError();
                 if (self.enableAnnualVacation()) {
-                    $('#max-number-company').ntsEditor('validate');
+                    if (self.requiredMaxNumberCompany()
+                        || (self.requiredMaxNumberCompany() == false && self.maxNumberCompany())) {
+                        $('#max-number-company').ntsEditor('validate');
+                    }
                     $('#max-grant-day').ntsEditor('validate');
                     $('#max-remaining-day').ntsEditor('validate');
                     $('#number-year-retain').ntsEditor('validate');
-                    $('#time-max-day-company').ntsEditor('validate');
+                    if (self.requiredTimeMaxNumberCompany()
+                        || (!self.requiredTimeMaxNumberCompany() && self.timeMaxNumberCompany())) {
+                        $('#time-max-day-company').ntsEditor('validate');
+                    }
                 } else {
-                    if (self.maxNumberCompany() != '') {
+                    if (self.maxNumberCompany()) {
                         $('#max-number-company').ntsEditor('validate');
                     }
-                    if (self.maxGrantDay() != '') {
+                    if (self.maxGrantDay()) {
                         $('#max-grant-day').ntsEditor('validate');
                     }
-                    if (self.maxRemainingDay() != '') {
+                    if (self.maxRemainingDay()) {
                         $('#max-remaining-day').ntsEditor('validate');
                     }
-                    if (self.numberYearRetain() != '') {
+                    if (self.numberYearRetain()) {
                         $('#number-year-retain').ntsEditor('validate');
                     }
-                    if (self.timeMaxNumberCompany() != '') {
+                    if (self.timeMaxNumberCompany()) {
                         $('#time-max-day-company').ntsEditor('validate');
                     }
                 }
