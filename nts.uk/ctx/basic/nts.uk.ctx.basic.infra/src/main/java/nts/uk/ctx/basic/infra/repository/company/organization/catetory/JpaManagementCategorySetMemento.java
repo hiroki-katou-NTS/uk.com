@@ -17,7 +17,6 @@ import nts.uk.ctx.basic.infra.entity.company.organization.catetory.CclmtManageme
 /**
  * The Class JpaManagementCategorySetMemento.
  */
-@Stateless
 public class JpaManagementCategorySetMemento implements ManagementCategorySetMemento{
 	
 	/** The cclmt management category. */

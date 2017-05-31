@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -25,6 +26,7 @@ import nts.uk.ctx.basic.infra.entity.company.organization.catetory.CclmtManageme
 /**
  * The Class JpaManagementCategoryRepository.
  */
+@Stateless
 public class JpaManagementCategoryRepository extends JpaRepository
 	implements ManagementCategoryRepository {
 
