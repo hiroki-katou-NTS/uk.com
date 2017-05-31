@@ -84,6 +84,20 @@ module nts.uk.pr.view.kmf001.f {
                     this.localizedName = localizedName;
                 }
             }
+            
+            export class RadioEnum {
+                value: number;
+                fieldName: string;
+                localizedName: string;
+                enable: boolean;
+                constructor(value: number, fieldName: string, localizedName: string) {
+                    this.value = value;
+                    this.fieldName = fieldName;
+                    this.localizedName = localizedName;
+                    this.enable = true;
+                }
+            }
+            
         }
     }
 }

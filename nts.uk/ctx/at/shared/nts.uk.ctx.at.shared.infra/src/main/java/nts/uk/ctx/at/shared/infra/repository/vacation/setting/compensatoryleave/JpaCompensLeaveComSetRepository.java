@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kmfm
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtNormalVacationSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtNormalVacationSet_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet_;
 
 /**
@@ -80,10 +81,10 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
         }
         KmfmtCompensLeaveCom entity = result.get(0);
         KmfmtNormalVacationSet entityNormal = findNormal(companyId);
-        KmfmtOccurVacationSet entityOccur = findOccurVacation(companyId);
+        List<KmfmtOccurVacationSet> lstEntityOccur = findOccurVacation(companyId);
         
         return new CompensatoryLeaveComSetting(
-                new JpaCompensatoryLeaveComGetMemento(entity, entityNormal, entityOccur));
+                new JpaCompensatoryLeaveComGetMemento(entity, entityNormal, lstEntityOccur));
     }
     
     /**
@@ -122,9 +123,9 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
      * Find occur vacation.
      *
      * @param companyId the company id
-     * @return the kmfmt occur vacation set
+     * @return the list
      */
-    private KmfmtOccurVacationSet findOccurVacation(String companyId) {
+    private List<KmfmtOccurVacationSet> findOccurVacation(String companyId) {
         EntityManager em = this.getEntityManager();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -133,8 +134,8 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
 
         List<Predicate> predicateList = new ArrayList<Predicate>();
 
-        predicateList.add(builder.equal(root.get(KmfmtOccurVacationSet_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KmfmtOccurVacationSet_.kmfmtOccurVacationSetPK).get(KmfmtOccurVacationSetPK_.cid), companyId));
 
-        return em.createQuery(query).getSingleResult();
+        return em.createQuery(query).getResultList();
     }
 }

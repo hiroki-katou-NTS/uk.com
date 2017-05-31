@@ -3,18 +3,20 @@ module nts.uk.pr.view.kmf001.f {
 
         import EnumertionModel = service.model.EnumerationModel;
         import Enum = service.model.Enum;
+        import RadioEnum = service.model.RadioEnum;
+
         export class ScreenModel {
 
             applyOptions: KnockoutObservableArray<EnumertionModel>;
-            compenManage: KnockoutObservable<string>;
+            compenManage: KnockoutObservable<number>;
             compenPreApply: KnockoutObservable<number>;
             compenTimeManage: KnockoutObservable<number>;
 
             expirationDateList: KnockoutObservableArray<ItemModel>;
-            expirationDateCode: KnockoutObservable<string>;
+            expirationDateCode: KnockoutObservable<number>;
 
             timeUnitList: KnockoutObservableArray<ItemModel>;
-            timeUnitCode: KnockoutObservable<string>;
+            timeUnitCode: KnockoutObservable<number>;
 
             checkWorkTime: KnockoutObservable<boolean>;
             checkOverTime: KnockoutObservable<boolean>;
@@ -51,17 +53,17 @@ module nts.uk.pr.view.kmf001.f {
             expirationTimeEnums: KnockoutObservableArray<Enum>;
             timeVacationDigestiveUnitEnums: KnockoutObservableArray<Enum>;
             compensatoryOccurrenceDivisionEnums: KnockoutObservableArray<Enum>;
-            transferSettingDivisionEnums: KnockoutObservableArray<Enum>;
+            transferSettingDivisionEnums: KnockoutObservableArray<RadioEnum>;
 
             constructor() {
                 let self = this;
-                self.compenManage = ko.observable('');
+                self.compenManage = ko.observable(0);
                 self.compenPreApply = ko.observable(0);
                 self.compenTimeManage = ko.observable(0);
-                self.expirationDateCode = ko.observable('');
-                self.timeUnitCode = ko.observable('');
+                self.expirationDateCode = ko.observable(0);
+                self.timeUnitCode = ko.observable(0);
                 self.checkWorkTime = ko.observable(true);
-                self.checkOverTime = ko.observable(false);
+                self.checkOverTime = ko.observable(true);
                 self.copenWorkTimeOptions = ko.observableArray([
                     new BoxModel(1, '指定した時間を代休とする'),
                     new BoxModel(2, '一定時間を超えたら代休とする')]);
@@ -94,42 +96,31 @@ module nts.uk.pr.view.kmf001.f {
                 self.transferSettingDivisionEnums = ko.observableArray([]);
 
                 self.isManageCompen = ko.computed(function() {
-                    return self.compenManage() == "YES";
-                }, self);
+                    return self.compenManage() == 1;
+                });
 
                 self.enableWorkArea = ko.computed(function() {
                     return self.checkWorkTime() && self.isManageCompen();
-                }, self);
+                });
 
                 self.enableOverArea = ko.computed(function() {
                     return self.checkOverTime() && self.isManageCompen();
-                }, self);
+                });
 
                 self.enableWorkAll = ko.computed(function() {
-                    return self.enableWorkArea() && self.selectedOfWorkTime() == 2;
-                }, self);
+                    return self.enableWorkArea() && self.selectedOfWorkTime() == 0;
+                });
 
                 self.enableOverAll = ko.computed(function() {
-                    return self.enableOverArea() && self.selectedOfOverTime() == 2;
-                }, self);
+                    return self.enableOverArea() && self.selectedOfOverTime() == 0;
+                });
 
                 self.enableDesignWork = ko.computed(function() {
                     return self.enableWorkArea() && self.selectedOfWorkTime() == 1;
-                }, self);
+                });
 
                 self.enableDesignOver = ko.computed(function() {
                     return self.enableOverArea() && self.selectedOfOverTime() == 1;
-                }, self);
-
-                self.checkWorkTime.subscribe(function(data: boolean) {
-                    if (data == true) {
-                        self.checkOverTime(false);
-                    }
-                });
-                self.checkOverTime.subscribe(function(data: boolean) {
-                    if (data == true) {
-                        self.checkWorkTime(false);
-                    }
                 });
             }
 
@@ -205,10 +196,13 @@ module nts.uk.pr.view.kmf001.f {
                 return dfd.promise();
             }
 
-            private loadTransferSettingDivisionEnums(): JQueryPromise<Array<Enum>> {
+            private loadTransferSettingDivisionEnums(): JQueryPromise<Array<RadioEnum>> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.getEnumTransferSettingDivision().done(function(res: Array<Enum>) {
+                service.getEnumTransferSettingDivision().done(function(res: Array<RadioEnum>) {
+                    res.forEach(function(item, index) {
+                        item.enable = true;
+                    });
                     self.transferSettingDivisionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
@@ -233,28 +227,41 @@ module nts.uk.pr.view.kmf001.f {
 
             private loadToScreen(data: any) {
                 let self = this;
-                self.compenManage(data.isManaged);
+                self.compenManage(data.isManaged.value);
 
-                self.expirationDateCode(data.normalVacationSetting.expirationTime);
+                self.expirationDateCode(data.normalVacationSetting.expirationTime.value);
 
-                self.compenPreApply(data.normalVacationSetting.preemptionPermit);
-                self.compenTimeManage(data.normalVacationSetting.isManageByTime);
-                self.timeUnitCode(data.normalVacationSetting.digestiveUnit);
+                self.compenPreApply(data.normalVacationSetting.preemptionPermit.value);
+                self.compenTimeManage(data.normalVacationSetting.isManageByTime.value);
+                self.timeUnitCode(data.normalVacationSetting.digestiveUnit.value);
 
                 //TODO if check f3
-                if (data.occurrenceVacationSetting.occurrenceDivision == self.compensatoryOccurrenceDivisionEnums()[1].fieldName) {
-                    //set data work
-                    self.selectedOfWorkTime(data.occurrenceVacationSetting.transferDivision);
-                    self.workOneDay(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSetting.oneDayTime).format());
-                    self.workHalfDay(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSetting.halfDayTime).format());
-                    self.workAll(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSetting.certainTime).format());
+                if (data.occurrenceVacationSetting.transferSettingDayOffTime.useDivision == true) {
+                    //set check box
+                    self.checkWorkTime(true);
+                    //set data
+
+                }
+                else {
+                    self.checkWorkTime(false);
+                }
+                self.selectedOfWorkTime(data.occurrenceVacationSetting.transferSettingDayOffTime.transferDivision.value);
+                self.workOneDay(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSettingDayOffTime.oneDayTime).format());
+                self.workHalfDay(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSettingDayOffTime.halfDayTime).format());
+                self.workAll(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSettingDayOffTime.certainTime).format());
+                if (data.occurrenceVacationSetting.transferSettingOverTime.useDivision == true) {
+                    //set check box
+                    self.checkOverTime(true);
+                    //set data
+
                 }
                 else {//TODO if check f13
-                    self.selectedOfOverTime(data.occurrenceVacationSetting.transferDivision);
-                    self.overOneDay(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSetting.oneDayTime).format());
-                    self.overHalfDay(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSetting.halfDayTime).format());
-                    self.overAll(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSetting.certainTime).format());
+                    self.checkWorkTime(false);
                 }
+                self.selectedOfOverTime(data.occurrenceVacationSetting.transferSettingOverTime.transferDivision.value);
+                self.overOneDay(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSettingOverTime.oneDayTime).format());
+                self.overHalfDay(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSettingOverTime.halfDayTime).format());
+                self.overAll(nts.uk.time.parseTime(data.occurrenceVacationSetting.transferSettingOverTime.certainTime).format());
             }
 
             private saveData() {
@@ -265,29 +272,39 @@ module nts.uk.pr.view.kmf001.f {
                 });
             }
             private collectData() {
-                //TODO wait domain
+                var self = this;
                 return {
-                    companyId: "cpnID",
-                    isManaged: 0,
+                    companyId: "",
+                    isManaged: self.compenManage(),
                     normalVacationSetting: {
-                        expirationTime: 0,
-                        preemptionPermit: 0,
-                        isManageByTime: 0,
-                        digestiveUnit: 0
+                        expirationTime: self.expirationDateCode(),
+                        preemptionPermit: self.compenPreApply(),
+                        isManageByTime: self.compenTimeManage(),
+                        digestiveUnit: self.timeUnitCode()
                     },
                     occurrenceVacationSetting: {
-                        transferSetting: {
-                            certainTime: 1200,
-                            useDivision: true,
-                            oneDayTime: 1200,
-                            halfDayTime: 1300,
-                            transferDivision: 0
+                        transferSettingOverTime: {
+                            certainTime: self.convertTime(self.overAll()),
+                            useDivision: self.checkOverTime(),
+                            oneDayTime: self.convertTime(self.overOneDay()),
+                            halfDayTime: self.convertTime(self.overHalfDay()),
+                            transferDivision: self.selectedOfOverTime(),
+                            compensatoryOccurrenceDivision: 0
                         },
-                        occurrenceDivision: 1
+                        transferSettingDayOffTime: {
+                            certainTime: self.convertTime(self.workAll()),
+                            useDivision: self.checkWorkTime(),
+                            oneDayTime: self.convertTime(self.workOneDay()),
+                            halfDayTime: self.convertTime(self.workHalfDay()),
+                            transferDivision: self.selectedOfWorkTime(),
+                            compensatoryOccurrenceDivision: 1
+                        }
                     }
                 };
             }
-
+            private convertTime(time: string) {
+                return nts.uk.time.parseTime(time).hours * 100 + nts.uk.time.parseTime(time).minutes;
+            }
             private gotoVacationSetting() {
                 alert();
             }

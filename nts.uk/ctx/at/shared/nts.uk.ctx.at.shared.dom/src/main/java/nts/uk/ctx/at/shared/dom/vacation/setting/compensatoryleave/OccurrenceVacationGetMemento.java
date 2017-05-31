@@ -10,16 +10,16 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 public interface OccurrenceVacationGetMemento {
 	
 	/**
-	 * Gets the transfer setting.
+	 * Gets the transfer setting over time.
 	 *
-	 * @return the transfer setting
+	 * @return the transfer setting over time
 	 */
-	CompensatoryTransferSetting getTransferSetting();
-
+	CompensatoryTransferSetting getTransferSettingOverTime();
+	
 	/**
-	 * Gets the occurrence division.
+	 * Gets the transfer setting day off time.
 	 *
-	 * @return the occurrence division
+	 * @return the transfer setting day off time
 	 */
-	CompensatoryOccurrenceDivision getOccurrenceDivision();
+	CompensatoryTransferSetting getTransferSettingDayOffTime();
 }

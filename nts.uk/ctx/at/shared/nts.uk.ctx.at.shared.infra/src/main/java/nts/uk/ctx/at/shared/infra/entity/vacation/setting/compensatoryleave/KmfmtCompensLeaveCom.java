@@ -5,11 +5,15 @@
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -44,9 +48,9 @@ public class KmfmtCompensLeaveCom extends UkJpaEntity implements Serializable {
     @PrimaryKeyJoinColumn
     public KmfmtNormalVacationSet normal;
 	
-	@OneToOne(optional = true, cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    public KmfmtOccurVacationSet occur;
+	@JoinColumns(@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = false))
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<KmfmtOccurVacationSet> listOccur;
 
 	/**
 	 * Instantiates a new kmfmt compens leave com.

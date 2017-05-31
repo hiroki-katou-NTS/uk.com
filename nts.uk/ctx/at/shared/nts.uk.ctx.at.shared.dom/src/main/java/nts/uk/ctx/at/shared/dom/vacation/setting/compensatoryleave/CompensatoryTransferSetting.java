@@ -27,19 +27,23 @@ public class CompensatoryTransferSetting extends DomainObject {
 	private OneDayTime halfDayTime;
 	
 	/** The transfer division. */
-	private TransferSettingDivision transferDivision; 
+	private TransferSettingDivision transferDivision;
+	
+	/** The compensatory occurrence division. */
+	private CompensatoryOccurrenceDivision compensatoryOccurrenceDivision;
 	
 	/**
 	 * Instantiates a new compensatory transfer setting.
 	 *
 	 * @param menento the menento
 	 */
-	public CompensatoryTransferSetting(CompensatoryTransferGetMemento menento) {
-		this.certainTime = menento.getCertainTime();
-		this.useDivision = menento.getUseDivision();
-		this.transferDivision = menento.getTransferDivision();
-		this.oneDayTime = menento.getOneDayTime();
-		this.halfDayTime = menento.getHalfDayTime();
+	public CompensatoryTransferSetting(CompensatoryTransferGetMemento memento) {
+		this.certainTime = memento.getCertainTime();
+		this.useDivision = memento.getUseDivision();
+		this.transferDivision = memento.getTransferDivision();
+		this.oneDayTime = memento.getOneDayTime();
+		this.halfDayTime = memento.getHalfDayTime();
+		this.compensatoryOccurrenceDivision = memento.getCompensatoryOccurrenceDivision();
 	}
 	
 	/**
@@ -53,5 +57,6 @@ public class CompensatoryTransferSetting extends DomainObject {
 		memento.setHalfDayTime(this.halfDayTime);
 		memento.setTransferDivision(this.transferDivision);
 		memento.setUseDivision(this.useDivision);
+		memento.setCompensatoryOccurrenceDivision(this.compensatoryOccurrenceDivision);
 	}
 }
