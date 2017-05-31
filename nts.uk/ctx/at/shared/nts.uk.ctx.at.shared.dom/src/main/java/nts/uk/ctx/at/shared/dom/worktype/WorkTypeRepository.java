@@ -1,4 +1,4 @@
-package nts.ctx.at.shared.dom.worktype;
+package nts.uk.ctx.at.shared.dom.worktype;
 
 import java.util.List;
 

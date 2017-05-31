@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.worktype;
 
 import lombok.Value;
-import nts.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Value
 public class WorkTypeDto {
 	/*会社ID*/

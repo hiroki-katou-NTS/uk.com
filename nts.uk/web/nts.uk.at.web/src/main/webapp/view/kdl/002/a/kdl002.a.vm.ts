@@ -11,7 +11,6 @@ module kdl002.a.viewmodel {
         constructor() {
             var self = this;
             self.isMulti = true;
-//            self.isMulti = nts.uk.ui.windows.getShared('Multiple');
             self.items = ko.observableArray([]);
             //header
             self.columns = ko.observableArray([
@@ -26,19 +25,19 @@ module kdl002.a.viewmodel {
         //load data
         start() {
             var self = this;
-            var list = ['001','002','003','005','008'];
-            var list2 = ['001','003','005']; 
-            self.posibleItems = ['001','002','003','005','008'];
-//            self.posibleItems = [];
-            self.currentCodeList(list2)
+//            self.posibleItems = ['001','002','003','005','008'];
+            self.isMulti = nts.uk.ui.windows.getShared('ModeMultiple');
             //all possible items
-//            self.posibleItems = nts.uk.ui.windows.getShared('AllItemObj');
+            self.posibleItems = nts.uk.ui.windows.getShared('AllItemObj');
             //selected items
-//            self.currentCodeList(nts.uk.ui.windows.getShared('SelectedItemId'));
+            self.currentCodeList(nts.uk.ui.windows.getShared('SelectedItemId'));
             //set source
             if (self.posibleItems.length > 0) {
                 service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.ItemModel>) {
-                    self.items(lstItem);
+                    let lstItemMapping =  _.map(lstItem , item => {
+                        return new model.ItemModel(item.workTypeCode, item.name, item.memo);
+                    });
+                    self.items(lstItemMapping);
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });
@@ -52,16 +51,31 @@ module kdl002.a.viewmodel {
                 if (self.currentCodeList().length == 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_10"});
                     return;
-                } 
+                }
             }
-            console.log(self.currentCodeList());
-//            nts.uk.ui.windows.setShared('selectedNewItem', self.currentCodeList());
+            var lstObj = [];
+            for (let i =0, length = self.currentCodeList().length; i< length ;i++) {
+                let objectNew = self.findItem(self.currentCodeList()[i]);
+                lstObj.push({"code": objectNew.workTypeCode, "name":objectNew.name});
+            }
+            console.log(lstObj);
+            nts.uk.ui.windows.setShared('SelectedNewItem', lstObj);
             nts.uk.ui.windows.close();
         }
 
         //Close Dialog
         close() {
             nts.uk.ui.windows.close();
+        }
+        /**
+         * find item is selected
+         */
+        findItem(value: string): model.ItemModel {
+            let self = this;
+            var itemModel = null;
+            return _.find(self.items(), function(obj: model.ItemModel) {
+                return obj.workTypeCode == value;
+            })
         }
     }
     export module model {
