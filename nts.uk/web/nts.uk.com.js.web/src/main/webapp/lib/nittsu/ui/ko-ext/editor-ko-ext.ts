@@ -26,9 +26,9 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
-            let validator = this.getValidator(data);
             $input.on(valueUpdate, (e) => {
                 var newText = $input.val();
+                let validator = this.getValidator(data);
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
@@ -44,15 +44,22 @@ module nts.uk.ui.koExtentions {
                 if (!$input.attr('readonly')) {
                     var formatter = this.getFormatter(data);
                     var newText = $input.val();
+                    let validator = this.getValidator(data);
                     var result = validator.validate(newText);
+                    $input.ntsError('clear');
                     if (result.isValid) {
                         $input.val(formatter.format(result.parsedValue));
+                    }
+                    else {
+                        $input.ntsError('set', result.errorMessage);
+                        value(newText);
                     }
                 }
             });
 
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
+                let validator = this.getValidator(data);
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (!result.isValid) {
