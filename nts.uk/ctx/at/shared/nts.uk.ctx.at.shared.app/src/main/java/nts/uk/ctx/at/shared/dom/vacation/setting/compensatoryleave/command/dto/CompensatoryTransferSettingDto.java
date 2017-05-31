@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.command.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
@@ -28,7 +29,10 @@ public class CompensatoryTransferSettingDto {
 	private Integer halfDayTime;
 
 	/** The transfer division. */
-	private TransferSettingDivision transferDivision;
+	private Integer transferDivision;
+
+	/** The compensatory occurrence division. */
+	private Integer compensatoryOccurrenceDivision;
 
 	public CompensatoryTransferSetting toDomain() {
 		return new CompensatoryTransferSetting(new CompensatoryTransferGetMementoImpl(this));
@@ -68,7 +72,13 @@ public class CompensatoryTransferSettingDto {
 
 		@Override
 		public TransferSettingDivision getTransferDivision() {
-			return TransferSettingDivision.valueOf(this.compensatoryTransferSettingDto.transferDivision.value);
+			return TransferSettingDivision.valueOf(this.compensatoryTransferSettingDto.transferDivision);
+		}
+
+		@Override
+		public CompensatoryOccurrenceDivision getCompensatoryOccurrenceDivision() {
+			return CompensatoryOccurrenceDivision
+					.valueOf(this.compensatoryTransferSettingDto.compensatoryOccurrenceDivision);
 		}
 
 	}

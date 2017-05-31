@@ -4,28 +4,29 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.find.dto;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetMemento;
 
 public class OccurrenceVacationSettingDto implements OccurrenceVacationSetMemento {
 
 	/** The transfer setting. */
-	public CompensatoryTransferSettingDto transferSetting;
-
-	/** The occurrence division. */
-	public CompensatoryOccurrenceDivision occurrenceDivision;
+	public CompensatoryTransferSettingDto transferSettingDayOffTime;
 	
+	/** The transfer setting. */
+	public CompensatoryTransferSettingDto transferSettingOverTime;
+
 	@Override
-	public void setTransferSetting(CompensatoryTransferSetting transferSetting) {
+	public void setTransferSettingOverTime(CompensatoryTransferSetting transferSettingOverTime) {
 		CompensatoryTransferSettingDto ctsd = new CompensatoryTransferSettingDto();
-		transferSetting.saveToMemento(ctsd);
-		this.transferSetting = ctsd;
+		transferSettingOverTime.saveToMemento(ctsd);
+		this.transferSettingOverTime = ctsd;
 	}
 
 	@Override
-	public void setOccurrenceDivision(CompensatoryOccurrenceDivision occurrenceDivision) {
-		this.occurrenceDivision = occurrenceDivision;
+	public void setTransferSettingDayOffTime(CompensatoryTransferSetting transferSettingDayOffTime) {
+		CompensatoryTransferSettingDto ctsd = new CompensatoryTransferSettingDto();
+		transferSettingDayOffTime.saveToMemento(ctsd);
+		this.transferSettingDayOffTime = ctsd;
 	}
 
 }

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
@@ -15,6 +16,8 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kmfm
  * The Class JpaCompensatoryTransferGetMemento.
  */
 public class JpaCompensatoryTransferGetMemento implements CompensatoryTransferGetMemento {
+	
+	private static final Integer useValue = 1;
     
     /** The entity. */
     @Inject
@@ -47,8 +50,8 @@ public class JpaCompensatoryTransferGetMemento implements CompensatoryTransferGe
      * CompensatoryTransferGetMemento#getUseDivision()
      */
     @Override
-    public boolean getUseDivision() {
-        return false;
+	public boolean getUseDivision() {
+		return this.entity.getUseDivision() == useValue ? true : false;
     }
 
     /*
@@ -83,4 +86,9 @@ public class JpaCompensatoryTransferGetMemento implements CompensatoryTransferGe
     public TransferSettingDivision getTransferDivision() {
         return TransferSettingDivision.valueOf(this.entity.getTransfDivision());
     }
+
+	@Override
+	public CompensatoryOccurrenceDivision getCompensatoryOccurrenceDivision() {
+		return CompensatoryOccurrenceDivision.valueOf(this.entity.getKmfmtOccurVacationSetPK().getOccurrDivision());
+	}
 }

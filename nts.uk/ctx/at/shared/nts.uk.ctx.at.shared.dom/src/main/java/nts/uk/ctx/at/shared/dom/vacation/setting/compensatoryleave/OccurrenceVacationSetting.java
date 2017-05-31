@@ -13,11 +13,11 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class OccurrenceVacationSetting extends DomainObject {
 
-	/** The transfer setting. */
-	private CompensatoryTransferSetting transferSetting;
-
-	/** The occurrence division. */
-	private CompensatoryOccurrenceDivision occurrenceDivision;
+	/** The transfer setting over time. */
+	private CompensatoryTransferSetting transferSettingOverTime;
+	
+	/** The transfer setting day off time. */
+	private CompensatoryTransferSetting transferSettingDayOffTime;
 	
 	/**
 	 * Instantiates a new occurrence vacation setting.
@@ -25,8 +25,8 @@ public class OccurrenceVacationSetting extends DomainObject {
 	 * @param memento the memento
 	 */
 	public OccurrenceVacationSetting(OccurrenceVacationGetMemento memento) {
-		this.occurrenceDivision = memento.getOccurrenceDivision();
-		this.transferSetting = memento.getTransferSetting();
+		this.transferSettingOverTime = memento.getTransferSettingOverTime();
+		this.transferSettingDayOffTime = memento.getTransferSettingDayOffTime();
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class OccurrenceVacationSetting extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(OccurrenceVacationSetMemento memento) {
-		memento.setOccurrenceDivision(this.occurrenceDivision);
-		memento.setTransferSetting(this.transferSetting);
+		memento.setTransferSettingOverTime(this.transferSettingOverTime);
+		memento.setTransferSettingDayOffTime(this.transferSettingDayOffTime);
 	}
 }
