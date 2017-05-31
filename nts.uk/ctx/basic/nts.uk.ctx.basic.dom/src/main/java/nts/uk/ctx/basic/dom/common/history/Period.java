@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.basic.dom.common.history;
 
-import java.util.Date;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class Period.
@@ -12,10 +12,10 @@ import java.util.Date;
 public class Period {
 
 	/** The start date. */
-	private Date startDate;
+	private GeneralDate startDate;
 
 	/** The end date. */
-	private Date endDate;
+	private GeneralDate endDate;
 
 	/**
 	 * Instantiates a new period.
@@ -29,7 +29,7 @@ public class Period {
 	 * @param startDate the start date
 	 * @param endDate the end date
 	 */
-	public Period(Date startDate, Date endDate) {
+	public Period(GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
