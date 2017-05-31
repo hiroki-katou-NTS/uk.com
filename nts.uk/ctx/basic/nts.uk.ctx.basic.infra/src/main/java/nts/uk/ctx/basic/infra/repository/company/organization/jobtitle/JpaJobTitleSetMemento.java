@@ -41,9 +41,9 @@ public class JpaJobTitleSetMemento implements JobTitleSetMemento {
 	 */
 	@Override
 	public void setPositionId(PositionId positionId) {
-		CjtmtJobTitlePK pk = this.typeValue.getCjmtJobTitlePK();
+		CjtmtJobTitlePK pk = this.typeValue.getCjtmtJobTitlePK();
 		pk.setJobId(positionId.v());
-		this.typeValue.setCjmtJobTitlePK(pk);
+		this.typeValue.setCjtmtJobTitlePK(pk);
 	}
 
 	/*
@@ -58,7 +58,7 @@ public class JpaJobTitleSetMemento implements JobTitleSetMemento {
 	public void setCompanyId(CompanyId companyId) {
 		CjtmtJobTitlePK pk = new CjtmtJobTitlePK();
 		pk.setCompanyId(companyId.v());
-		this.typeValue.setCjmtJobTitlePK(pk);
+		this.typeValue.setCjtmtJobTitlePK(pk);
 	}
 
 	/*
@@ -97,9 +97,9 @@ public class JpaJobTitleSetMemento implements JobTitleSetMemento {
 	 */
 	@Override
 	public void setPositionCode(PositionCode positionCode) {
-		CjtmtJobTitlePK pk = this.typeValue.getCjmtJobTitlePK();
+		CjtmtJobTitlePK pk = this.typeValue.getCjtmtJobTitlePK();
 		pk.setJobCode(positionCode.v());
-		this.typeValue.setCjmtJobTitlePK(pk);
+		this.typeValue.setCjtmtJobTitlePK(pk);
 	}
 
 	/*

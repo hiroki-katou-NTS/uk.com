@@ -35,7 +35,7 @@ public class JpaJobTitleGetMemento implements JobTitleGetMemento {
 	 */
 	@Override
 	public PositionId getPositionId() {
-		return new PositionId(this.typeValue.getCjmtJobTitlePK().getJobId());
+		return new PositionId(this.typeValue.getCjtmtJobTitlePK().getJobId());
 	}
 
 	/* (non-Javadoc)
@@ -43,7 +43,7 @@ public class JpaJobTitleGetMemento implements JobTitleGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.getCjmtJobTitlePK().getCompanyId());
+		return new CompanyId(this.typeValue.getCjtmtJobTitlePK().getCompanyId());
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +67,7 @@ public class JpaJobTitleGetMemento implements JobTitleGetMemento {
 	 */
 	@Override
 	public PositionCode getPositionCode() {
-		return new PositionCode(this.typeValue.getCjmtJobTitlePK().getJobCode());
+		return new PositionCode(this.typeValue.getCjtmtJobTitlePK().getJobCode());
 	}
 
 	/* (non-Javadoc)

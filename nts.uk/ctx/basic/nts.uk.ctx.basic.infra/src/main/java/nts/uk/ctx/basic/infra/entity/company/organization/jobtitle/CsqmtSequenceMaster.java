@@ -33,7 +33,7 @@ public class CsqmtSequenceMaster extends UkJpaEntity implements Serializable {
 	protected CsqmtSequenceMasterPK csqmtSequenceMasterPK;
 
 	/** The order. */
-	@Column(name = "ORDER")
+	@Column(name = "ORDER_BY")
 	private Integer order;
 
 	/** The sequence name. */

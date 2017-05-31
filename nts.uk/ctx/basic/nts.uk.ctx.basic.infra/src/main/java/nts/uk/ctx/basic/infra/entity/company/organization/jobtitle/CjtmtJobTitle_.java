@@ -29,4 +29,7 @@ public class CjtmtJobTitle_ {
 
 	/** The start date. */
 	public static volatile SingularAttribute<CjtmtJobTitle, GeneralDate> startDate;
+
+	/** The csqmt sequence master. */
+	public static volatile SingularAttribute<CjtmtJobTitle, CsqmtSequenceMaster> csqmtSequenceMaster;
 }

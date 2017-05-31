@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -22,6 +23,7 @@ import nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleRepository;
 import nts.uk.ctx.basic.infra.entity.company.organization.jobtitle.CjtmtJobTitle;
 import nts.uk.ctx.basic.infra.entity.company.organization.jobtitle.CjtmtJobTitlePK_;
 import nts.uk.ctx.basic.infra.entity.company.organization.jobtitle.CjtmtJobTitle_;
+import nts.uk.ctx.basic.infra.entity.company.organization.jobtitle.CsqmtSequenceMaster_;
 
 /**
  * The Class JpaJobTitleRepository.
@@ -52,7 +54,14 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 		predicateList.add(cb.lessThanOrEqualTo(root.get(CjtmtJobTitle_.endDate), referenceDate));
 		predicateList.add(cb.greaterThanOrEqualTo(root.get(CjtmtJobTitle_.endDate), referenceDate));
 
+		List<Order> orderList = new ArrayList<Order>();
+		// Sort by sequence master.
+		orderList.add(cb.asc(root.get(CjtmtJobTitle_.csqmtSequenceMaster).get(CsqmtSequenceMaster_.order)));
+		// Sort by job code.
+		orderList.add(cb.asc(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobCode)));
+
 		cq.where(predicateList.toArray(new Predicate[] {}));
+		cq.orderBy(orderList);
 
 		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
 				.collect(Collectors.toList());

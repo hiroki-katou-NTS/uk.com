@@ -10,6 +10,9 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -30,9 +33,9 @@ public class CjtmtJobTitle extends UkJpaEntity implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The cjmt job title PK. */
+	/** The cjtmt job title PK. */
 	@EmbeddedId
-	protected CjtmtJobTitlePK cjmtJobTitlePK;
+	protected CjtmtJobTitlePK cjtmtJobTitlePK;
 
 	/** The job name. */
 	@Column(name = "POS_NAME")
@@ -52,6 +55,13 @@ public class CjtmtJobTitle extends UkJpaEntity implements Serializable {
 	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endDate;
 
+	/** The csqmt sequence master. */
+	@JoinColumns({
+			@JoinColumn(name = "SEQ_CODE", referencedColumnName = "SEQ_CODE", insertable = false, updatable = false),
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false), })
+	@ManyToOne(optional = false)
+	private CsqmtSequenceMaster csqmtSequenceMaster;
+
 	/**
 	 * Instantiates a new cjtmt job title.
 	 */
@@ -62,11 +72,11 @@ public class CjtmtJobTitle extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new cjtmt job title.
 	 *
-	 * @param cjmtJobTitlePK the cjmt job title PK
+	 * @param cjtmtJobTitlePK the cjtmt job title PK
 	 */
-	public CjtmtJobTitle(CjtmtJobTitlePK cjmtJobTitlePK) {
+	public CjtmtJobTitle(CjtmtJobTitlePK cjtmtJobTitlePK) {
 		super();
-		this.cjmtJobTitlePK = cjmtJobTitlePK;
+		this.cjtmtJobTitlePK = cjtmtJobTitlePK;
 	}
 
 	/**
@@ -78,7 +88,7 @@ public class CjtmtJobTitle extends UkJpaEntity implements Serializable {
 	 */
 	public CjtmtJobTitle(String companyId, String jobId, String jobCode) {
 		super();
-		this.cjmtJobTitlePK = new CjtmtJobTitlePK(companyId, jobId, jobCode);
+		this.cjtmtJobTitlePK = new CjtmtJobTitlePK(companyId, jobId, jobCode);
 	}
 
 	/*
@@ -88,7 +98,7 @@ public class CjtmtJobTitle extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.cjmtJobTitlePK;
+		return this.cjtmtJobTitlePK;
 	}
 
 	/*
@@ -100,7 +110,7 @@ public class CjtmtJobTitle extends UkJpaEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((cjmtJobTitlePK == null) ? 0 : cjmtJobTitlePK.hashCode());
+		result = prime * result + ((cjtmtJobTitlePK == null) ? 0 : cjtmtJobTitlePK.hashCode());
 		return result;
 	}
 
@@ -118,10 +128,10 @@ public class CjtmtJobTitle extends UkJpaEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		CjtmtJobTitle other = (CjtmtJobTitle) obj;
-		if (cjmtJobTitlePK == null) {
-			if (other.cjmtJobTitlePK != null)
+		if (cjtmtJobTitlePK == null) {
+			if (other.cjtmtJobTitlePK != null)
 				return false;
-		} else if (!cjmtJobTitlePK.equals(other.cjmtJobTitlePK))
+		} else if (!cjtmtJobTitlePK.equals(other.cjtmtJobTitlePK))
 			return false;
 		return true;
 	}
