@@ -100,7 +100,7 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.20'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.33'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.2'
 	}
 }
 
@@ -114,6 +114,9 @@ project (':shr:nts.uk.shr.com') {
 		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-multipart-provider', version: '3.1.2.Final'
 		// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs
 		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.2.Final'
+		
+		// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+		testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.4.0'
 	}
 }
 

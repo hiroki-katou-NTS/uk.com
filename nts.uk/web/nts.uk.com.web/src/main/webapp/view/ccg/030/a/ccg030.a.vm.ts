@@ -152,7 +152,7 @@ module ccg030.a.viewmodel {
                 self.selectedFlowMenu().fileName(res[0].originalName);
                 errors.clearAll();
             }).fail(function(err) {
-                nts.uk.ui.dialog.alert(err);
+                nts.uk.ui.dialog.alertError({messageId: err.messageId});
             });
         }
 
@@ -178,7 +178,7 @@ module ccg030.a.viewmodel {
                 self.selectedFlowMenu().fileID('');
                 self.selectedFlowMenu().fileName('');
             }).fail(function(error) {
-                nts.uk.ui.dialog.alert(error);
+                nts.uk.ui.dialog.alertError({messageId: error.messageId});
             });
         }
         

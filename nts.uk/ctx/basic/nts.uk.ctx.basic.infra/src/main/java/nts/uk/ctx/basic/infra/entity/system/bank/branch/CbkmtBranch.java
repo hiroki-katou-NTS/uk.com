@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
  * @author sonnh
@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="CBKMT_BRANCH")
-public class CbkmtBranch extends TableEntity {
+public class CbkmtBranch extends UkJpaEntity {
    @EmbeddedId
    public CbkmtBranchPK ckbmtBranchPK;
    
@@ -35,4 +35,9 @@ public class CbkmtBranch extends TableEntity {
    
    @Column(name="MEMO")
    public String memo;
+
+	@Override
+	protected Object getKey() {
+		return ckbmtBranchPK;
+	}
 }

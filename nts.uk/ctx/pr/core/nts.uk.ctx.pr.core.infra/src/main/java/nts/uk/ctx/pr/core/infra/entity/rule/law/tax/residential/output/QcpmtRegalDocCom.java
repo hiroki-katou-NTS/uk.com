@@ -14,7 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  *
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "QCPMT_REGAL_DOC_COM")
-public class QcpmtRegalDocCom extends TableEntity implements Serializable {
+public class QcpmtRegalDocCom extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -135,5 +135,10 @@ public class QcpmtRegalDocCom extends TableEntity implements Serializable {
     public String toString() {
         return "entity.QcpmtRegalDocCom[ qcpmtRegalDocComPK=" + qcpmtRegalDocComPK + " ]";
     }
+
+	@Override
+	protected Object getKey() {
+		return qcpmtRegalDocComPK;
+	}
     
 }

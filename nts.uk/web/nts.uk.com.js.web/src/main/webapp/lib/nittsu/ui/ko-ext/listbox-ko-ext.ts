@@ -110,7 +110,7 @@ module nts.uk.ui.koExtentions {
                 var changingEvent = new CustomEvent("selectionChanging", {
                     detail: itemSelected,  
                     bubbles: true,
-                    cancelable: true,
+                    cancelable: false,
                 });
                 
                 container.data("chaninged", true);
@@ -155,16 +155,10 @@ module nts.uk.ui.koExtentions {
                     var changingEvent = new CustomEvent("selectionChanging", {
                         detail: itemSelected,  
                         bubbles: true,
-                        cancelable: true,
+                        cancelable: false,
                     });
                     
                     document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                    
-                    if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
-                        let oldSelected = container.data("selected");
-                        container.ntsGridList("setSelected", oldSelected);
-                        return false;    
-                    } 
                 }
                 container.data("chaninged", false);
                 if(!_.isEqual(itemSelected, data.value())){
@@ -209,8 +203,7 @@ module nts.uk.ui.koExtentions {
             
             container.data("enable", enable);
             
-            var currentSource = container.igGrid('option', 'dataSource');
-            if (!_.isEqual(currentSource, options)) {
+            if (container.attr("filtered") !== true && container.attr("filtered") !== "true") {
                 let currentSources = options.slice();
                 var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -223,7 +216,7 @@ module nts.uk.ui.koExtentions {
                     });        
                 }); 
                 container.igGrid('option', 'dataSource', currentSources);
-                container.igGrid("dataBind");
+                container.igGrid("dataBind");        
             }
             
             let isMultiOld = container.igGridSelection('option', 'multipleSelection');

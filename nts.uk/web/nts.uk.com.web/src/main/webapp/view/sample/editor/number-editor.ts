@@ -28,7 +28,7 @@ __viewContext.ready(function () {
                     decimallength: 2,
                     symbolChar: '$',
                     symbolPosition: 'right'}),
-                required: ko.observable(false),
+                required: ko.observable(true),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
