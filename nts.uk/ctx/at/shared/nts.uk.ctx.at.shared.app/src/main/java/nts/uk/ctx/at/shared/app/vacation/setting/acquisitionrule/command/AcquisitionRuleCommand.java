@@ -22,7 +22,7 @@ public class AcquisitionRuleCommand {
 
 	
 	/** The category. */
-	public Category category;
+	public int category;
 
 	/** The va ac rule. */
 	public List<AcquisitionOrder> vaAcRule;
@@ -48,7 +48,7 @@ public class AcquisitionRuleCommand {
 		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento#getCategory()
 		 */
 		@Override
-		public Category getCategory() {
+		public int getCategory() {
 			return this.command.category;
 		}
 
@@ -59,7 +59,7 @@ public class AcquisitionRuleCommand {
 		 */
 		@Override
 		public List<AcquisitionOrder> getAcquisitionOrder() {
-			if (this.command.category == Category.Setting){
+			if (this.command.category == Category.Setting.value){
 				return this.command.vaAcRule;
 			}
 			return this.oldAcquisitionOrders;

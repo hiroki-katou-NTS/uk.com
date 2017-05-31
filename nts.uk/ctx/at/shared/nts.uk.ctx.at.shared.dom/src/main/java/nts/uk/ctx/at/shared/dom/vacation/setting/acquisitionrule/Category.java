@@ -10,14 +10,17 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 public enum Category {
 
 	/** The Setting. */
-	Setting(0, "設定する"),
+	Setting(0, "設定する", "設定する"),
 
 	/** The No setting. */
-	NoSetting(1, "設定しない");
+	NoSetting(1, "設定しない", "設定しない");
 
 	/** The value. */
 	public int value;
 
+	/** The name id. */
+	public String nameId;
+	
 	/** The description. */
 	public String description;
 
@@ -32,8 +35,9 @@ public enum Category {
 	 * @param description
 	 *            the description
 	 */
-	private Category(int value, String description) {
+	private Category(int value, String nameId, String description) {
 		this.value = value;
+		this.nameId = nameId;
 		this.description = description;
 	}
 
@@ -51,7 +55,7 @@ public enum Category {
 		}
 
 		// Find value.
-		for (Category val : Category.values()) {
+		for (Category val : Category.values) {
 			if (val.value == value) {
 				return val;
 			}

@@ -50,8 +50,8 @@ public class JpaAcquisitionRuleSetMemento implements AcquisitionRuleSetMemento {
 	 * vacation.setting.acquisitionrule.Settingclassification)
 	 */
 	@Override
-	public void setCategory(Category category) {
-		this.typeValue.setCategory(category.value);
+	public void setCategory(int category) {
+		this.typeValue.setCategory(category);
 	}
 
 	/*

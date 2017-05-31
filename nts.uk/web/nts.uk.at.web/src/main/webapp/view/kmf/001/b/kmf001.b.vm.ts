@@ -1,11 +1,13 @@
 module nts.uk.pr.view.kmf001.b {
     export module viewmodel {
 
-        import EnumertionModel = service.model.EnumerationModel;
+        import Enum = service.model.Enum;
 
         export class ScreenModel {
+          
+            
             textEditorOption: KnockoutObservable<any>;
-            priority: KnockoutObservableArray<EnumertionModel>;
+            categoryEnums: KnockoutObservableArray<Enum>;
             selectedPriority: KnockoutObservable<number>;
             enableInputPriority: KnockoutObservable<boolean>;
 
@@ -27,10 +29,7 @@ module nts.uk.pr.view.kmf001.b {
                     textalign: "right"
                 }));
                 
-                self.priority = ko.observableArray([
-                    { value: 0, name: "設定する" },
-                    { value: 1, name: "設定しない" }
-                ]);
+                self.categoryEnums = ko.observableArray([]);
 
                 self.selectedPriority = ko.observable(0);
                 self.enableInputPriority = ko.computed(function() {
@@ -50,12 +49,23 @@ module nts.uk.pr.view.kmf001.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(self.loadAcquisitionRule()).done(function(res) {
-                    if (res) {
-                        self.initUI(res);
-                    }
+                $.when(self.loadCategoryEnums()).done(function(res) {
+                    self.loadAcquisitionRule();
                     dfd.resolve();
                 });
+                return dfd.promise();
+            }
+            private loadCategoryEnums(): JQueryPromise<Array<Enum>> {
+                let self = this;
+
+                let dfd = $.Deferred();
+                service.categoryEnum().done(function(res: Array<Enum>) {
+                    self.categoryEnums(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+
                 return dfd.promise();
             }
             //CLOSE DIALOG
@@ -78,17 +88,12 @@ module nts.uk.pr.view.kmf001.b {
             }
 
             //get data to dialog
-            private initUI(res: any): any {
+            private initUI(res: any): void {
                 let self = this;
                 //if find data exist
                 if (res) {
                     //if use Priority
-                    if (res.category == "Setting") {
-                        self.selectedPriority(0);
-                    } else {
-                        //if not use Priority
-                        self.selectedPriority(1);
-                    }
+                    self.selectedPriority(res.category);
                     //set list priority
                     res.vaAcOrders.forEach(item => {
                         if (item.vacationType == 1) {
@@ -161,9 +166,9 @@ module nts.uk.pr.view.kmf001.b {
                 let self = this;
                 let command: any = {};
                 if (self.selectedPriority() == 0) {
-                    command.category = "Setting";
+                    command.category = 0;
                 } else {
-                    command.category = "NoSetting";
+                    command.category = 1;
                 }
                 //Create Acquisition List
                 let acquisitionOrderList = new Array();
