@@ -10,6 +10,7 @@ module nts.uk.ui.koExtentions {
         editorOption: any;
 
         init($input: JQuery, data: any) {
+            var self = this;
             var value: (newText: string) => {} = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
@@ -42,9 +43,9 @@ module nts.uk.ui.koExtentions {
             // Format on blur
             $input.blur(() => {
                 if (!$input.attr('readonly')) {
-                    var formatter = this.getFormatter(data);
+                    var formatter = self.getFormatter(data);
                     var newText = $input.val();
-                    let validator = this.getValidator(data);
+                    let validator = self.getValidator(data);
                     var result = validator.validate(newText);
                     $input.ntsError('clear');
                     if (result.isValid) {
@@ -59,7 +60,7 @@ module nts.uk.ui.koExtentions {
 
             $input.on('validate', (function(e: Event) {
                 var newText = $input.val();
-                let validator = this.getValidator(data);
+                let validator = self.getValidator(data);
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (!result.isValid) {

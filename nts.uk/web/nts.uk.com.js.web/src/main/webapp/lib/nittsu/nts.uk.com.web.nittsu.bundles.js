@@ -577,7 +577,7 @@ var nts;
             function getText(code, params) {
                 var text = names[code];
                 if (text) {
-                    text = formatCompDependParam(text);
+                    text = formatCompCustomizeResource(text);
                     text = formatParams(text, params);
                     return text;
                 }
@@ -590,11 +590,11 @@ var nts;
                     return messageId;
                 }
                 message = formatParams(message, params);
-                message = formatCompDependParam(message);
+                message = formatCompCustomizeResource(message);
                 return message;
             }
             resource.getMessage = getMessage;
-            function formatCompDependParam(message) {
+            function formatCompCustomizeResource(message) {
                 var compDependceParamRegex = /{#(\w*)}/;
                 var matches;
                 while (matches = compDependceParamRegex.exec(message)) {
@@ -1941,6 +1941,8 @@ var nts;
                     else {
                         dfd.resolve(res);
                     }
+                }).fail(function (res) {
+                    dfd.reject(res);
                 });
                 return dfd.promise();
             }
@@ -3201,7 +3203,13 @@ var nts;
                 (function (ntsFileUpload) {
                     $.fn.ntsFileUpload = function (option) {
                         var dfd = $.Deferred();
-                        var file = $(this)[0].files;
+                        var file;
+                        if ($(this).find("input[type='file']").length == 0) {
+                            file = $(this)[0].files;
+                        }
+                        else {
+                            file = $(this).find("input[type='file']")[0].files;
+                        }
                         if (file) {
                             var formData = new FormData();
                             formData.append("stereotype", option.stereoType);
@@ -5508,6 +5516,7 @@ var nts;
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
+                        var self = this;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
@@ -5538,9 +5547,9 @@ var nts;
                         });
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
-                                var formatter = _this.getFormatter(data);
+                                var formatter = self.getFormatter(data);
                                 var newText = $input.val();
-                                var validator = _this.getValidator(data);
+                                var validator = self.getValidator(data);
                                 var result = validator.validate(newText);
                                 $input.ntsError('clear');
                                 if (result.isValid) {
@@ -5554,7 +5563,7 @@ var nts;
                         });
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
-                            var validator = this.getValidator(data);
+                            var validator = self.getValidator(data);
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (!result.isValid) {
@@ -6442,7 +6451,7 @@ var nts;
                             container.data("options", _.cloneDeep(options));
                         }
                         var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
-                            return _.isEqual($(item).data("value"), selectedValue());
+                            return _.isEqualWith($(item).data("value"), selectedValue(), function (objVal, othVal, key) { return key === "enable" ? true : undefined; });
                         });
                         if (checkedRadio !== undefined)
                             $(checkedRadio).prop("checked", true);
