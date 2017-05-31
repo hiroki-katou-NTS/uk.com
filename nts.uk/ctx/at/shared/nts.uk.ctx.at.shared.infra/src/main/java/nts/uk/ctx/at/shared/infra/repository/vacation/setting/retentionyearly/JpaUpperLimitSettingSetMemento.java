@@ -26,16 +26,22 @@ public class JpaUpperLimitSettingSetMemento implements UpperLimitSettingSetMemen
 		this.typeValue = typeValue;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingSetMemento#setRetentionYearsAmount(nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearsAmount)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * UpperLimitSettingSetMemento#setRetentionYearsAmount(nts.uk.ctx.at.shared.
+	 * dom.vacation.setting.retentionyearly.RetentionYearsAmount)
 	 */
 	@Override
 	public void setRetentionYearsAmount(RetentionYearsAmount retentionYearsAmount) {
 		this.typeValue.setMaxDaysRetention(retentionYearsAmount.v().shortValue());		
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingSetMemento#setMaxDaysRetention(nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * UpperLimitSettingSetMemento#setMaxDaysRetention(nts.uk.ctx.at.shared.dom.
+	 * vacation.setting.retentionyearly.MaxDaysRetention)
 	 */
 	@Override
 	public void setMaxDaysRetention(MaxDaysRetention maxDaysCumulation) {

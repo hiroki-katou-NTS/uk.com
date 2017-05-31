@@ -26,16 +26,20 @@ public class JpaUpperLimitEmpGetMemento implements UpperLimitSettingGetMemento {
 		this.typeValue = typeValue;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingGetMemento#getRetentionYearsAmount()
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * UpperLimitSettingGetMemento#getRetentionYearsAmount()
 	 */
 	@Override
 	public RetentionYearsAmount getRetentionYearsAmount() {
 		return new RetentionYearsAmount((int) this.typeValue.getYearAmount());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingGetMemento#getMaxDaysCumulation()
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * UpperLimitSettingGetMemento#getMaxDaysCumulation()
 	 */
 	@Override
 	public MaxDaysRetention getMaxDaysCumulation() {

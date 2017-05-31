@@ -18,14 +18,17 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class RetentionYearlySaveCommandHandler.
  */
 @Stateless
-public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionYearlySaveCommand>{
+public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionYearlySaveCommand> {
 
 	/** The repository. */
 	@Inject
 	private RetentionYearlySettingRepository repository;
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<RetentionYearlySaveCommand> context) {
@@ -39,20 +42,10 @@ public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionY
 		RetentionYearlySaveCommand command = context.getCommand();
 
 		RetentionYearlySetting retentionYearlySetting = command.toDomain(companyId);
-		
+
 		// validate domain
 		retentionYearlySetting.validate();
-		
+
 		this.repository.update(retentionYearlySetting);
-//		Optional<RetentionYearlySetting> data = this.repository.findByCompanyId(retentionYearlySetting.getCompanyId());
-//		if(data.isPresent()) {
-//			this.repository.update(retentionYearlySetting);
-//		}
-//		else {
-//			this.repository.insert(retentionYearlySetting);
-//		}
-		
 	}
-	
-	
 }

@@ -26,32 +26,40 @@ public class JpaEmploymentSettingGetMemento implements EmploymentSettingGetMemen
 		this.typeValue = typeValue;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento#getCompanyId()
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * EmploymentSettingGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
 		return this.typeValue.getKmfmtRetentionEmpCtrPK().getCid();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento#getEmploymentCode()
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * EmploymentSettingGetMemento#getEmploymentCode()
 	 */
 	@Override
 	public String getEmploymentCode() {
 		return this.typeValue.getKmfmtRetentionEmpCtrPK().getEmpCtrCd();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento#getUpperLimitSetting()
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * EmploymentSettingGetMemento#getUpperLimitSetting()
 	 */
 	@Override
 	public UpperLimitSetting getUpperLimitSetting() {
 		return new UpperLimitSetting(new JpaUpperLimitEmpGetMemento(this.typeValue));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento#getManagementCategory()
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * EmploymentSettingGetMemento#getManagementCategory()
 	 */
 	@Override
 	public ManagementCategory getManagementCategory() {

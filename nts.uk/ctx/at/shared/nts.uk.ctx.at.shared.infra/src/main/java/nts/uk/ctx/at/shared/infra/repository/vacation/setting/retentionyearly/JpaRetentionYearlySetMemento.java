@@ -25,16 +25,21 @@ public class JpaRetentionYearlySetMemento implements RetentionYearlySettingSetMe
 		this.typeValue = typeValue;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingSetMemento#setCompanyId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingSetMemento#setCompanyId(java.lang.String)
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
 		this.typeValue.setCid(companyId);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingSetMemento#setUpperLimitSetting(nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingSetMemento#setUpperLimitSetting(nts.uk.ctx.at.
+	 * shared.dom.vacation.setting.retentionyearly.UpperLimitSetting)
 	 */
 	@Override
 	public void setUpperLimitSetting(UpperLimitSetting upperLimitSetting) {
@@ -42,8 +47,11 @@ public class JpaRetentionYearlySetMemento implements RetentionYearlySettingSetMe
 		this.typeValue.setYearAmount(upperLimitSetting.getRetentionYearsAmount().v().shortValue());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingSetMemento#setcanAddToCumulationYearlyAsNormalWorkDay(java.lang.Boolean)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingSetMemento#
+	 * setcanAddToCumulationYearlyAsNormalWorkDay(java.lang.Boolean)
 	 */
 	@Override
 	public void setcanAddToCumulationYearlyAsNormalWorkDay(Boolean canAddToCumulationYearlyAsNormalWorkDay) {

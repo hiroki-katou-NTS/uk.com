@@ -26,7 +26,7 @@ import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
  * The Class AccPaymentReportService.
  */
 @Stateless
-public class AccPaymentReportService extends ExportService<AccPaymentReportQuery>{
+public class AccPaymentReportService extends ExportService<AccPaymentReportQuery> {
 
 	/** The generator. */
 	@Inject

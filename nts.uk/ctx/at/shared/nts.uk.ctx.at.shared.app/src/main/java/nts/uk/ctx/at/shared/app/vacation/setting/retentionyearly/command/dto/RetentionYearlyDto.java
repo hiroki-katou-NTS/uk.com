@@ -61,24 +61,31 @@ public class RetentionYearlyDto {
 			this.dto = dto;
 		}
 		
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingGetMemento#getCompanyId()
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * RetentionYearlySettingGetMemento#getCompanyId()
 		 */
 		@Override
 		public String getCompanyId() {
 			return this.companyId;
 		}
 		
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingGetMemento#getUpperLimitSetting()
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * RetentionYearlySettingGetMemento#getUpperLimitSetting()
 		 */
 		@Override
 		public UpperLimitSetting getUpperLimitSetting() {
 			return dto.upperLimitSettingDto.toDomain();
 		}
 		
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingGetMemento#getCanAddToCumulationYearlyAsNormalWorkDay()
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * RetentionYearlySettingGetMemento#
+		 * getCanAddToCumulationYearlyAsNormalWorkDay()
 		 */
 		@Override
 		public Boolean getCanAddToCumulationYearlyAsNormalWorkDay() {

@@ -6,7 +6,6 @@ module nts.uk.pr.view.kmf001.d {
     import UpperLimitSettingDto = service.model.UpperLimitSettingDto;
     import EmploymentSettingDto = service.model.EmploymentSettingDto;
     import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
-    import ManageDistinct = service.model.ManageDistinct;
     
     export module viewmodel {
         export class ScreenModel {
@@ -103,7 +102,7 @@ module nts.uk.pr.view.kmf001.d {
                 let dfd = $.Deferred();
                 service.findIsManaged().done(function(data: any) {
                     if (data) {
-                        self.annualManage(data.annualManage.value);
+                        self.annualManage(data.annualManage);
                     }
                     dfd.resolve();
                 }).fail(function(res) {

@@ -19,8 +19,11 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 @Stateless
 public class JpaRetentionYearlySettingRepo extends JpaRepository implements RetentionYearlySettingRepository{
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository#insert(nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingRepository#insert(nts.uk.ctx.at.shared.dom.vacation
+	 * .setting.retentionyearly.RetentionYearlySetting)
 	 */
 	@Override
 	public void insert(RetentionYearlySetting setting) {
@@ -29,8 +32,11 @@ public class JpaRetentionYearlySettingRepo extends JpaRepository implements Rete
 		this.commandProxy().insert(entity);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository#update(nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingRepository#update(nts.uk.ctx.at.shared.dom.vacation
+	 * .setting.retentionyearly.RetentionYearlySetting)
 	 */
 	@Override
 	public void update(RetentionYearlySetting setting) {
@@ -39,8 +45,10 @@ public class JpaRetentionYearlySettingRepo extends JpaRepository implements Rete
 		this.commandProxy().update(entity);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository#findByCompanyId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingRepository#findByCompanyId(java.lang.String)
 	 */
 	@Override
 	public Optional<RetentionYearlySetting> findByCompanyId(String companyId) {

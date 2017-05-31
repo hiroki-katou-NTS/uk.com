@@ -123,33 +123,6 @@ public class JpaAccPaymentReportRepository extends JpaRepository implements AccP
 	private static final int ONE_THOUSAND = 1000;
 
 	/** The Constant CHECK_AT_PRINTING_QUERY. */
-	private static final String CHECK_AT_PRINTING_QUERY1 = "SELECT pdt.qstdtPaymentDetailPK.personId, "
-			+ "sum(pdt.value) "
-			+ "FROM QstdtPaymentDetail pdt," 
-			+ "CmnmtEmp e, " 
-			+ "QpdmtPayday pd, " 
-			+ "PclmtPersonEmpContract ec " 
-			+ "WHERE ec.pclmtPersonEmpContractPK.pId in :PIDs " 
-			+ "AND ec.pclmtPersonEmpContractPK.ccd = :CCD "
-			+ "AND ec.pclmtPersonEmpContractPK.strD <= :BASE_YMD " 
-			+ "AND ec.endD >= :BASE_YMD "
-			+ "AND e.cmnmtEmpPk.companyCode = ec.pclmtPersonEmpContractPK.ccd "
-			+ "AND e.cmnmtEmpPk.employmentCode = ec.empCd " 
-			+ "AND pd.qpdmtPaydayPK.ccd = e.cmnmtEmpPk.companyCode "
-			+ "AND pd.qpdmtPaydayPK.payBonusAtr = :PAY_BONUS_ATR "
-			+ "AND pd.qpdmtPaydayPK.processingNo = e.processingNo " 
-			+ "AND pd.payDate >= :STR_YMD "
-			+ "AND pd.payDate <= :END_YMD " 
-			+ "AND pdt.qstdtPaymentDetailPK.companyCode = pd.qpdmtPaydayPK.ccd "
-			+ "AND pdt.qstdtPaymentDetailPK.personId = ec.pclmtPersonEmpContractPK.pId "
-			+ "AND pdt.qstdtPaymentDetailPK.processingNo = pd.qpdmtPaydayPK.processingNo "
-			+ "AND pdt.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR "
-			+ "AND pdt.qstdtPaymentDetailPK.processingYM = pd.qpdmtPaydayPK.processingYm "
-			+ "AND pdt.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR "
-			+ "AND pdt.qstdtPaymentDetailPK.categoryATR = :CTG_ATR_0 "
-			+ "AND pdt.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F001 "
-			+ "GROUP BY pdt.qstdtPaymentDetailPK.personId ";
-	
 	private static final String CHECK_AT_PRINTING_QUERY = "SELECT pdt.qstdtPaymentDetailPK.personId, "
 			+ "sum(pdt.value) "
 			+ "FROM PclmtPersonEmpContract ec "

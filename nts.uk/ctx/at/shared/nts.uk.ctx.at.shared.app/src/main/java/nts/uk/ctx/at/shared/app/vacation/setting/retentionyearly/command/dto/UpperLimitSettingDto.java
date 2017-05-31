@@ -50,16 +50,20 @@ public class UpperLimitSettingDto {
 			this.dto = dto;
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingGetMemento#getRetentionYearsAmount()
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * UpperLimitSettingGetMemento#getRetentionYearsAmount()
 		 */
 		@Override
 		public RetentionYearsAmount getRetentionYearsAmount() {
 			return new RetentionYearsAmount(dto.retentionYearsAmount);
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingGetMemento#getMaxDaysCumulation()
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * UpperLimitSettingGetMemento#getMaxDaysCumulation()
 		 */
 		@Override
 		public MaxDaysRetention getMaxDaysCumulation() {
