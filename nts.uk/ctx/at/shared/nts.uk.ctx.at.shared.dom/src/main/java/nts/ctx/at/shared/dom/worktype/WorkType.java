@@ -43,7 +43,7 @@ public class WorkType {
 										String symbolicName,
 										String name,
 										String abbreviationName,
-										String Memo,
+										String memo,
 										int useAtr){
 		return new WorkType(companyId, 
 				new WorkTypeCode(workTypeCode),
@@ -51,7 +51,7 @@ public class WorkType {
 				new WorkTypeSymbolicName(symbolicName),
 				new WorkTypeName(name),
 				new WorkTypeAbbreviationName(abbreviationName),
-				new WorkTypeMemo(Memo),
+				new WorkTypeMemo(memo),
 				EnumAdaptor.valueOf(useAtr, UseSetting.class));
 	}
 }
