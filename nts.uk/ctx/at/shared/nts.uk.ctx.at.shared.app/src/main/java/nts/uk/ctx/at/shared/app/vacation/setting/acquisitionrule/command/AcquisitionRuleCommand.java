@@ -11,7 +11,6 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
 
 /**
  * The Class VacationAcquisitionRuleBaseCommand.
@@ -27,21 +26,18 @@ public class AcquisitionRuleCommand {
 	/** The va ac rule. */
 	public List<AcquisitionOrder> vaAcRule;
 	
-	public AcquisitionRule toDomain(String companyId, List<AcquisitionOrder> oldAcquisitionOrders) {
-		return new AcquisitionRule(new AcquisitionRuleGetMementoImpl(companyId, this, oldAcquisitionOrders));
+	public AcquisitionRule toDomain(String companyId) {
+		return new AcquisitionRule(new AcquisitionRuleGetMementoImpl(companyId, this));
 	}
 
 	public class AcquisitionRuleGetMementoImpl implements AcquisitionRuleGetMemento {
 
 		private String companyId;
 		private AcquisitionRuleCommand command;
-		private List<AcquisitionOrder> oldAcquisitionOrders;
 		
-		public AcquisitionRuleGetMementoImpl(String companyId, AcquisitionRuleCommand command,
-				List<AcquisitionOrder> oldAcquisitionOrders) {
+		public AcquisitionRuleGetMementoImpl(String companyId, AcquisitionRuleCommand command) {
 			this.companyId = companyId;
 			this.command = command;
-			this.oldAcquisitionOrders = oldAcquisitionOrders;
 		}
 		
 		/* (non-Javadoc)
@@ -59,10 +55,7 @@ public class AcquisitionRuleCommand {
 		 */
 		@Override
 		public List<AcquisitionOrder> getAcquisitionOrder() {
-			if (this.command.category == Category.Setting.value){
-				return this.command.vaAcRule;
-			}
-			return this.oldAcquisitionOrders;
+			return this.command.vaAcRule;
 		}
 
 		/**

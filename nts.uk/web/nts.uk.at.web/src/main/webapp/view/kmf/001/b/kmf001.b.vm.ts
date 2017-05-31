@@ -31,9 +31,9 @@ module nts.uk.pr.view.kmf001.b {
                 
                 self.categoryEnums = ko.observableArray([]);
 
-                self.selectedPriority = ko.observable(0);
+                self.selectedPriority = ko.observable(1);
                 self.enableInputPriority = ko.computed(function() {
-                    return self.selectedPriority() == 0;
+                    return self.selectedPriority() == 1;
                 }, self);
 
                 self.annualPaidLeave = ko.observable(null);
@@ -118,7 +118,7 @@ module nts.uk.pr.view.kmf001.b {
                 } else {
                     //if find data null
                     //Selected default button is "No Setting"
-                    self.selectedPriority(1);
+                    self.selectedPriority(0);
 
                     //List priority default all value = 1.
                     self.annualPaidLeave(1);
@@ -132,7 +132,7 @@ module nts.uk.pr.view.kmf001.b {
                 //when change button Select
                 self.selectedPriority.subscribe(function(value) {
                     //if click button "No Setting"
-                    if (value == 1) {
+                    if (value == 0) {
                         nts.uk.ui.errors.clearAll();
                     }
                 });
