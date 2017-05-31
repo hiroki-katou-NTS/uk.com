@@ -9,9 +9,9 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
+			<com:scriptfile path="kcp002.a.start.js" />
 			<com:scriptfile path="kcp002.a.service.js" />
 			<com:scriptfile path="kcp002.a.vm.js" />
-			<com:scriptfile path="kcp002.a.start.js" />
 		</ui:define>
 
 		<!-- PAGE CONTENT -->
@@ -20,7 +20,7 @@
 				<table id="multi-list"
 					data-bind="ntsGridList: {
 					height: 350,
-					options: items,
+					options: managementCategoryModel,
 					optionsValue: 'code',
 					columns: columns,
 					multiple: true,

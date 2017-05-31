@@ -1,4 +1,4 @@
-module nts.uk.at.view.qcp002.a {
+module nts.uk.at.view.kcp002.a {
 
     export module service {
         var paths: any = {
