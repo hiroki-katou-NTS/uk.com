@@ -1,8 +1,8 @@
 @CHARSET "UTF-8";
 
 #priorityTable  th, td {
-	border: 1px solid black;
-	padding-left: 6px;
+	border: 1px solid #555555;
+	padding-left: 4px;
 	font-size: 20px;
 }
 
@@ -11,18 +11,11 @@
 }
 
 #priorityTable  th {
-	background-color: #E0F59E;
+	background-color: #CCFF99;
 }
 
 .inputPriority {
-	width: 106%;
-	margin-left: -6px;
+	padding-left: 0px !important;
 }
 
-.thInput {
-	width: 50%;
-}
 
-button.nts-switch-button {
-	font-size: 1rem !important;
-}
