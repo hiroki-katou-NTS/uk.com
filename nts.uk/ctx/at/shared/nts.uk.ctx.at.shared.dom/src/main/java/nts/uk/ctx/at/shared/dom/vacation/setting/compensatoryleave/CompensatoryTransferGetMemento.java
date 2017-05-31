@@ -43,4 +43,11 @@ public interface CompensatoryTransferGetMemento {
 	 * @return the transfer division
 	 */
 	TransferSettingDivision getTransferDivision(); 
+	
+	/**
+	 * Gets the compensatory occurrence division.
+	 *
+	 * @return the compensatory occurrence division
+	 */
+	CompensatoryOccurrenceDivision getCompensatoryOccurrenceDivision();
 }

@@ -22,7 +22,7 @@ public class SaveCompensatoryLeaveCommand {
 	private String companyId;
 
 	/** The is managed. */
-	private ManageDistinct isManaged;
+	private Integer isManaged;
 
 	/** The normal vacation setting. */
 	private NormalVacationSettingDto normalVacationSetting;
@@ -58,7 +58,7 @@ public class SaveCompensatoryLeaveCommand {
 
 		@Override
 		public ManageDistinct getIsManaged() {
-			return ManageDistinct.valueOf(this.command.isManaged.value);
+			return ManageDistinct.valueOf(this.command.isManaged);
 		}
 
 		@Override

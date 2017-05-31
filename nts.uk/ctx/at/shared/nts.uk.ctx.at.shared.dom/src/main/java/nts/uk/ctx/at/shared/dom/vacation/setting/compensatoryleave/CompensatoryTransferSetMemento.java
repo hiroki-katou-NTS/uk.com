@@ -43,4 +43,11 @@ public interface CompensatoryTransferSetMemento {
 	 * @param transferDivision the new transfer division
 	 */
 	void setTransferDivision(TransferSettingDivision transferDivision); 
+	
+	/**
+	 * Sets the compensatory occurrence division.
+	 *
+	 * @param compensatoryOccurrenceDivision the new compensatory occurrence division
+	 */
+	void setCompensatoryOccurrenceDivision(CompensatoryOccurrenceDivision compensatoryOccurrenceDivision);
 }

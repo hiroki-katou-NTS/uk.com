@@ -39,15 +39,22 @@ public class SaveAcquisitionRuleCommandHandler extends CommandHandler<Acquisitio
 		String companyId = AppContexts.user().companyId();
 		// Get command.
 		AcquisitionRuleCommand command = context.getCommand();
-
+		AcquisitionRule acquisitionRuleCommand = command.toDomain(companyId);
+		
 		// Update VacationAcquisitionRule
 		Optional<AcquisitionRule> optVaAcRule = this.vaRepo.findById(companyId);
-		AcquisitionRule acquisitionRule = command.toDomain(companyId, optVaAcRule.get().getAcquisitionOrder());
-
+		
 		if (optVaAcRule.isPresent()) {
-			this.vaRepo.update(acquisitionRule);
+			if(acquisitionRuleCommand.getCategory() == Category.NoSetting.value){
+				AcquisitionRule acquisitionRuleDB = optVaAcRule.get();
+				acquisitionRuleDB.setCategory(acquisitionRuleCommand.getCategory());
+				this.vaRepo.update(acquisitionRuleDB);
+			}else{
+				this.vaRepo.update(acquisitionRuleCommand);
+			}
+			
 		} else {
-			this.vaRepo.create(acquisitionRule);
+			this.vaRepo.create(acquisitionRuleCommand);
 		}
 	}
 

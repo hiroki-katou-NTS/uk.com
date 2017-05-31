@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.command.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetting;
@@ -15,11 +14,11 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVac
 @Setter
 public class OccurrenceVacationSettingDto {
 
-	/** The transfer setting. */
-	private CompensatoryTransferSettingDto transferSetting;
+	/** The transfer setting over time. */
+	private CompensatoryTransferSettingDto transferSettingOverTime;
 
-	/** The occurrence division. */
-	private CompensatoryOccurrenceDivision occurrenceDivision;
+	/** The transfer setting day of time. */
+	private CompensatoryTransferSettingDto transferSettingDayOffTime;
 
 	public OccurrenceVacationSetting toDomain() {
 		return new OccurrenceVacationSetting(
@@ -40,15 +39,15 @@ public class OccurrenceVacationSettingDto {
 		public OccurrenceVacationSettingGetMementoImpl(OccurrenceVacationSettingDto occurrenceVacationSettingDto) {
 			this.occurrenceVacationSettingDto = occurrenceVacationSettingDto;
 		}
-
+		
 		@Override
-		public CompensatoryTransferSetting getTransferSetting() {
-			return this.occurrenceVacationSettingDto.transferSetting.toDomain();
+		public CompensatoryTransferSetting getTransferSettingOverTime() {
+			return this.occurrenceVacationSettingDto.transferSettingOverTime.toDomain();
 		}
 
 		@Override
-		public CompensatoryOccurrenceDivision getOccurrenceDivision() {
-			return CompensatoryOccurrenceDivision.valueOf(this.occurrenceVacationSettingDto.occurrenceDivision.value);
+		public CompensatoryTransferSetting getTransferSettingDayOffTime() {
+			return this.occurrenceVacationSettingDto.transferSettingDayOffTime.toDomain();
 		}
 
 	}

@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -13,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVac
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtNormalVacationSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSetPK;
 
 /**
  * The Class JpaCompensatoryLeaveComSetMemento.
@@ -78,10 +82,15 @@ public class JpaCompensatoryLeaveComSetMemento implements CompensatoryLeaveComSe
      */
     @Override
     public void setOccurrenceVacationSetting(OccurrenceVacationSetting setting) {
-        KmfmtOccurVacationSet entityOccur = new KmfmtOccurVacationSet();
-        setting.saveToMemento(new JpaOccurrenceVacationSetMemento(entityOccur));
-        entityOccur.setCid(this.entity.getCid());
-        this.entity.setOccur(entityOccur);
+    	KmfmtOccurVacationSet overTimeOccurr = new KmfmtOccurVacationSet();
+    	KmfmtOccurVacationSet dayOffTimeTimeOccurr = new KmfmtOccurVacationSet();
+        setting.saveToMemento(new JpaOccurrenceVacationSetMemento(overTimeOccurr,dayOffTimeTimeOccurr));
+        overTimeOccurr.setKmfmtOccurVacationSetPK(new KmfmtOccurVacationSetPK(this.entity.getCid(),setting.getTransferSettingOverTime().getCompensatoryOccurrenceDivision().value));
+        dayOffTimeTimeOccurr.setKmfmtOccurVacationSetPK(new KmfmtOccurVacationSetPK(this.entity.getCid(),setting.getTransferSettingDayOffTime().getCompensatoryOccurrenceDivision().value));
+        List<KmfmtOccurVacationSet> lstOccurr = new ArrayList<>();
+        lstOccurr.add(overTimeOccurr);
+        lstOccurr.add(dayOffTimeTimeOccurr);
+        this.entity.setListOccur(lstOccurr);
     }
 
 }

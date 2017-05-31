@@ -18,7 +18,7 @@ public class AcquisitionRule extends DomainObject {
 
 	/** The setting classification. */
 	@Setter
-	private Category category;
+	private int category;
 
 	/** The acquisition order. */
 	@Setter

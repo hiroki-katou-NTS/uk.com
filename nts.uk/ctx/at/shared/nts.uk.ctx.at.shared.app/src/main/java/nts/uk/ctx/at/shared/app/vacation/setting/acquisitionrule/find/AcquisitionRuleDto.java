@@ -23,7 +23,7 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 
 	
 	/** The category. */
-	public Category category;
+	public int category;
 
 	/** The va ac orders. */
 	public List<AcquisitionOrderItemDto> vaAcOrders;
@@ -48,7 +48,7 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	 * Settingclassification)
 	 */
 	@Override
-	public void setCategory(Category category) {
+	public void setCategory(int category) {
 		this.category = category;
 	}
 
