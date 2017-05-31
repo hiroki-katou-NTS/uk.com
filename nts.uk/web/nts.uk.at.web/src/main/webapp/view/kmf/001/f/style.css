@@ -56,16 +56,21 @@ table#table tr td.title {
 }
 
 #setting_tbl {
-	margin-left: 30px;
+	margin-left: 50px;
 }
 
-.pad_left_20 {
-	padding-left: 20px;
+.pad_left_30 {	
+	padding-left: 30px;
+}
+.pad_left_60 {	
+	padding-left: 60px;
 }
 
 .pad_left_70 {
 	padding-left: 70px;
+	text-align: right;
 }
+
 .inp_time {
 	padding: 10px;
 }
@@ -74,6 +79,11 @@ table#table tr td.title {
 	float: right;
 	padding: 20px;
 }
-.combo-box{
-	width : 75px;
+
+.combo-box {
+	width: 100px;
+}
+
+.float_right {
+	float: right;
 }

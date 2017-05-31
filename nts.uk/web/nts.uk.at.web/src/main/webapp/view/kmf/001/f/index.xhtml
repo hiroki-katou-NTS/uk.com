@@ -62,7 +62,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_20"><label>使用期限</label></td>
+							<td class="pad_left_30"><label>使用期限</label></td>
 							<td colspan="2">
 								<div class="combo-box"
 									data-bind="ntsComboBox: {
@@ -78,7 +78,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_20"><label>代休の先取り</label></td>
+							<td class="pad_left_30"><label>代休の先取り</label></td>
 							<td colspan="2"><span
 								data-bind="ntsSwitchButton: {
 										options: applyPermissionEnums,
@@ -89,7 +89,7 @@
 							</span></td>
 						</tr>
 						<tr>
-							<td class="pad_left_20"><label>時間代休の管理</label></td>
+							<td class="pad_left_30"><label>時間代休の管理</label></td>
 							<td colspan="2"><span
 								data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
@@ -126,11 +126,11 @@
 							</td>
 						</tr>
 						<tr>
-							<td><div
+							<td class ="pad_left_30"><div
 									data-bind="ntsCheckBox: { checked: checkWorkTime, enable: isManageCompen}">代休の発生に必要な休日出勤時間</div></td>
 						</tr>
 						<tr>
-							<td rowspan="2">
+							<td class ="pad_left_60" rowspan="2">
 								<div id="first-list"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
@@ -151,18 +151,20 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="inp_time"><input id="workAll"
-								data-name="Time Of Days Editor"
-								data-bind="ntsTimeEditor: {value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
+							<td class="inp_time">
+							<div class="float_right">
+									<input id="workAll" data-name="Time Of Days Editor"
+										data-bind="ntsTimeEditor: {value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
+								</div>
 							</td>
 							<td><label>以上</label></td>
 						</tr>
 						<tr>
-							<td><div
+							<td class ="pad_left_30"><div
 									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">代休の発生に必要な残業時間</div></td>
 						</tr>
 						<tr>
-							<td rowspan="2">
+							<td class ="pad_left_60" rowspan="2">
 								<div id="first-list"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
@@ -183,9 +185,11 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="inp_time"><input id="overAll"
-								data-name="Time Of Days Editor"
-								data-bind="ntsTimeEditor: {value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
+							<td class="inp_time">
+							<div class="float_right">
+									<input id="overAll" data-name="Time Of Days Editor"
+										data-bind="ntsTimeEditor: {value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
+								</div>
 							</td>
 							<td><label>以上</label></td>
 						</tr>
