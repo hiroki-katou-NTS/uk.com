@@ -219,7 +219,7 @@ module kmk011.a.viewmodel {
                     }
                     var select = new model.SelectSet(self.selectSel(), self.convert(self.checkErrSelect()));
                     var input = new model.SelectSet(self.selectInp(), self.convert(self.checkErrInput()));
-                    var divTime = new model.DivergenceTime(self.divTimeId(), self.divTimeName(), self.selectUse(), self.alarmTime(), self.errTime(), select, input);
+                    var divTime = new model.DivergenceTime(self.divTimeId(),0, self.divTimeName(), self.selectUse(), self.alarmTime(), self.errTime(), select, input);
                     var listAdd = new Array<model.TimeItemSet>();
                     if (self.list() != null) {
                         for (let k = 0; k < self.list().length; k++) {
@@ -301,13 +301,16 @@ module kmk011.a.viewmodel {
     export module model {
         export class DivergenceTime {
             divTimeId: number;
+            attendanceId: number;
             divTimeUseSet: number;
             divTimeName: string;
             alarmTime: number;
             errTime: number;
             selectSet: SelectSet;
             inputSet: SelectSet;
-            constructor(divTimeId: number, divTimeName: string,
+            constructor(divTimeId: number,
+                attendanceId: number,
+                divTimeName: string,
                 divTimeUseSet: number,
                 alarmTime: number, errTime: number,
                 selectSet: SelectSet,
