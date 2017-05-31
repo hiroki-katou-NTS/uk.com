@@ -18,14 +18,17 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class EmploymentSaveCommandHandler.
  */
 @Stateless
-public class EmploymentSaveCommandHandler extends CommandHandler<EmploymentSaveCommand>{
+public class EmploymentSaveCommandHandler extends CommandHandler<EmploymentSaveCommand> {
 
 	/** The repository. */
 	@Inject
 	private EmploymentSettingRepository repository;
-	
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<EmploymentSaveCommand> context) {
@@ -37,15 +40,14 @@ public class EmploymentSaveCommandHandler extends CommandHandler<EmploymentSaveC
 
 		// Get Command
 		EmploymentSaveCommand command = context.getCommand();
-		
+
 		EmploymentSetting employmentSetting = command.toDomain(companyId);
-		
+
 		// Validate
 		employmentSetting.validate();
-		
+
 		// Update
 		this.repository.update(employmentSetting);
 	}
-	
-	
+
 }

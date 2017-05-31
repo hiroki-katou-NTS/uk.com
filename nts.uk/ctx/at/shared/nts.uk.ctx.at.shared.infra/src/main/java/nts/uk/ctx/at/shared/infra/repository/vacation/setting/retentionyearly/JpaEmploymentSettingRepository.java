@@ -20,8 +20,11 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK
 @Stateless
 public class JpaEmploymentSettingRepository extends JpaRepository implements EmploymentSettingRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository#insert(nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * EmploymentSettingRepository#insert(nts.uk.ctx.at.shared.dom.vacation.
+	 * setting.retentionyearly.EmploymentSetting)
 	 */
 	@Override
 	public void insert(EmploymentSetting employmentSetting) {
@@ -31,8 +34,11 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository#update(nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * EmploymentSettingRepository#update(nts.uk.ctx.at.shared.dom.vacation.
+	 * setting.retentionyearly.EmploymentSetting)
 	 */
 	@Override
 	public void update(EmploymentSetting employmentSetting) {
@@ -41,8 +47,10 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		this.commandProxy().update(entity);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository#remove(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * EmploymentSettingRepository#remove(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void remove(String companyId, String employmentCode) {
@@ -50,8 +58,10 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 		.remove(KmfmtRetentionEmpCtr.class, new KmfmtRetentionEmpCtrPK(companyId, employmentCode));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository#find(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * EmploymentSettingRepository#find(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Optional<EmploymentSetting> find(String companyId, String employmentCode) {

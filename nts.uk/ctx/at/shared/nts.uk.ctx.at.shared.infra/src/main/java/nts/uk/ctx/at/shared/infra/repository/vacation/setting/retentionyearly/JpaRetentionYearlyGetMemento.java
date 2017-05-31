@@ -25,24 +25,31 @@ public class JpaRetentionYearlyGetMemento implements RetentionYearlySettingGetMe
 		this.typeValue = typeValue;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingGetMemento#getCompanyId()
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingGetMemento#getCompanyId()
 	 */
 	@Override
 	public String getCompanyId() {
 		return this.typeValue.getCid();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingGetMemento#getUpperLimitSetting()
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingGetMemento#getUpperLimitSetting()
 	 */
 	@Override
 	public UpperLimitSetting getUpperLimitSetting() {
 		return new UpperLimitSetting(new JpaUpperLimitSettingGetMemento(this.typeValue));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingGetMemento#getCanAddToCumulationYearlyAsNormalWorkDay()
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * RetentionYearlySettingGetMemento#
+	 * getCanAddToCumulationYearlyAsNormalWorkDay()
 	 */
 	@Override
 	public Boolean getCanAddToCumulationYearlyAsNormalWorkDay() {

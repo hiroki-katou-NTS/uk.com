@@ -2,145 +2,112 @@ module nts.uk.pr.view.kmf001.c {
     export module viewmodel {
         
         import EnumertionModel = service.model.EnumerationModel;
-        import ManageDistinct = service.model.ManageDistinct;
-        import MaxDayReference = service.model.MaxDayReference;
-        import ApplyPermission = service.model.ApplyPermission;
-        import PreemptionPermit = service.model.PreemptionPermit;
-        import DisplayDivision = service.model.DisplayDivision;
-        import TimeUnit = service.model.TimeUnit;
         
         export class ScreenModel {
-            
             textEditorOption: KnockoutObservable<any>;
             
             manageDistinctList: KnockoutObservableArray<EnumertionModel>;
-            selectedAnnualManage: KnockoutObservable<string>;
+            selectedAnnualManage: KnockoutObservable<number>;
             enableAnnualVacation: KnockoutObservable<boolean>;
             
-            selectedAddAttendanceDay: KnockoutObservable<string>;
-            selectedMaxManageSemiVacation: KnockoutObservable<string>;
+            selectedAddAttendanceDay: KnockoutObservable<number>;
+            selectedMaxManageSemiVacation: KnockoutObservable<number>;
             maxDayReferenceList: KnockoutObservableArray<EnumertionModel>;
-            selectedMaxNumberSemiVacation: KnockoutObservable<string>;
+            selectedMaxNumberSemiVacation: KnockoutObservable<number>;
             maxNumberCompany: KnockoutObservable<string>;
+            requiredMaxNumberCompany: KnockoutObservable<boolean>;
             maxGrantDay: KnockoutObservable<string>;
             maxRemainingDay: KnockoutObservable<string>;
             numberYearRetain: KnockoutObservable<string>;
             enableMaxNumberCompany: KnockoutObservable<boolean>;
             
             permissionList: KnockoutObservableArray<EnumertionModel>;
-            selectedPermission: KnockoutObservable<string>;
+            selectedPermission: KnockoutObservable<number>;
             preemptionPermitList: KnockoutObservableArray<EnumertionModel>;
-            selectedPreemptionPermit: KnockoutObservable<string>;
+            selectedPreemptionPermit: KnockoutObservable<number>;
             
             displayDivisionList: KnockoutObservableArray<EnumertionModel>;
-            selectedNumberRemainingYearly: KnockoutObservable<string>;
-            selectedNextAnunalVacation: KnockoutObservable<string>;
+            selectedNumberRemainingYearly: KnockoutObservable<number>;
+            selectedNextAnunalVacation: KnockoutObservable<number>;
             
-            selectedTimeManagement: KnockoutObservable<string>;
+            selectedTimeManagement: KnockoutObservable<number>;
             vacationTimeUnitList: KnockoutObservableArray<EnumertionModel>;
             enableTimeUnit: KnockoutObservable<boolean>;
-            selectedVacationTimeUnit: KnockoutObservable<string>;
-            selectedManageUpperLimitDayVacation: KnockoutObservable<string>;
+            selectedVacationTimeUnit: KnockoutObservable<number>;
+            selectedManageUpperLimitDayVacation: KnockoutObservable<number>;
             enableManageUpperLimit: KnockoutObservable<boolean>;
-            selectedMaxDayVacation: KnockoutObservable<string>;
+            selectedMaxDayVacation: KnockoutObservable<number>;
             timeMaxNumberCompany: KnockoutObservable<string>;
+            requiredTimeMaxNumberCompany: KnockoutObservable<boolean>;
             isEnoughTimeOneDay: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this;
-                
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "50px",
                     textalign: "right"
                 }));
                 // 年休の管理
-                self.manageDistinctList = ko.observableArray([
-                    {code: "YES", name: "管理する"},
-                    {code: "NO", name: "管理しない"}
-                ]);
-                self.selectedAnnualManage = ko.observable(ManageDistinct.YES);
-                self.enableAnnualVacation = ko.observable(true);
+                self.manageDistinctList = ko.observableArray([]);
+                self.selectedAnnualManage = ko.observable(1);
+                self.enableAnnualVacation = ko.computed(function() {
+                    return self.selectedAnnualManage() == 1;
+                }, self);
                 
                 // 年次有給休暇の扱い
-                self.selectedAddAttendanceDay = ko.observable(ManageDistinct.YES);
-                self.selectedMaxManageSemiVacation = ko.observable(ManageDistinct.YES);
-                self.maxDayReferenceList = ko.observableArray([
-                    {code: "CompanyUniform", name: "会社一律"},
-                    {code: "ReferAnnualGrantTable", name: "年休付与テーブルを参照"}
-                ]);
-                self.selectedMaxNumberSemiVacation = ko.observable(MaxDayReference.CompanyUniform);
+                self.selectedAddAttendanceDay = ko.observable(1);
+                self.selectedMaxManageSemiVacation = ko.observable(1);
+                self.maxDayReferenceList = ko.observableArray([]);
+                self.selectedMaxNumberSemiVacation = ko.observable(0);
                 self.maxNumberCompany = ko.observable("");
+                self.requiredMaxNumberCompany = ko.computed(function() {
+                    return self.enableAnnualVacation() && self.selectedMaxManageSemiVacation() == 1;
+                });
                 self.maxGrantDay = ko.observable("");
                 self.maxRemainingDay = ko.observable("");
                 self.numberYearRetain = ko.observable("");
                 self.enableMaxNumberCompany = ko.computed(function() {
-                    return self.selectedMaxNumberSemiVacation() == MaxDayReference.CompanyUniform
-                        && self.enableAnnualVacation();
+                    return self.selectedMaxNumberSemiVacation() == 0 && self.enableAnnualVacation();
                 }, self);
 
                 
                 // 年休取得の設定
-                self.permissionList = ko.observableArray([
-                    {code: "ALLOW", name: "許可する"},
-                    {code: "NOT_ALLOW", name: "許可しない"}
-                ]);
-                self.selectedPermission = ko.observable(ApplyPermission.ALLOW);
-                self.preemptionPermitList = ko.observableArray([
-                    {code: "FIFO", name: "先入れ先出し"},
-                    {code: "LIFO", name: "後入れ先出し"}
-                ]);
-                self.selectedPreemptionPermit = ko.observable(PreemptionPermit.FIFO);
+                self.permissionList = ko.observableArray([]);
+                self.selectedPermission = ko.observable(1);
+                self.preemptionPermitList = ko.observableArray([]);
+                self.selectedPreemptionPermit = ko.observable(1);
                 
                 // 表示設定
-                self.displayDivisionList = ko.observableArray([
-                    {code: "Indicate", name: "表示する"},
-                    {code: "Notshow", name: "表示しない"}
-                ]);
-                self.selectedNumberRemainingYearly = ko.observable(DisplayDivision.Indicate);
-                self.selectedNextAnunalVacation = ko.observable(DisplayDivision.Indicate);
+                self.displayDivisionList = ko.observableArray([]);
+                self.selectedNumberRemainingYearly = ko.observable(1);
+                self.selectedNextAnunalVacation = ko.observable(1);
                 
                 // 時間年休
-                self.selectedTimeManagement = ko.observable(ManageDistinct.YES);
+                self.selectedTimeManagement = ko.observable(1);
+                self.vacationTimeUnitList = ko.observableArray([]);
                 self.enableTimeUnit = ko.computed(function() {
-                    return self.selectedTimeManagement() == ManageDistinct.YES && self.enableAnnualVacation();
+                    return self.selectedTimeManagement() == 1 && self.enableAnnualVacation();
                 }, self);
-                self.vacationTimeUnitList = ko.observableArray([
-                    {code: "OneMinute", name: "1分"},
-                    {code: "FifteenMinute", name: "15分"},
-                    {code: "ThirtyMinute", name: "30分"},
-                    {code: "OneHour", name: "1時間"},
-                    {code: "TwoHour", name: "2時間"}
-                ]);
-                self.selectedVacationTimeUnit = ko.observable(TimeUnit.OneMinute);
+                self.selectedVacationTimeUnit = ko.observable(1);
                 self.enableManageUpperLimit = ko.computed(function() {
                     return self.enableAnnualVacation() && self.enableMaxNumberCompany()
                     && self.enableTimeUnit();
                 }, self);
-                self.selectedManageUpperLimitDayVacation = ko.observable(ManageDistinct.YES);
-                self.selectedMaxDayVacation = ko.observable(TimeUnit.OneMinute);
+                self.selectedMaxDayVacation = ko.observable(1);
+                self.selectedManageUpperLimitDayVacation = ko.observable(1);
                 self.timeMaxNumberCompany = ko.observable("");
+                self.requiredTimeMaxNumberCompany = ko.computed(function() {
+                    return self.enableAnnualVacation() && self.selectedManageUpperLimitDayVacation() == 1;
+                });
                 self.isEnoughTimeOneDay = ko.observable(true);
-                
-                // SUBSCRIBE
-                self.selectedAnnualManage.subscribe(function(value) {
-                    self.enableAnnualVacation(value == ManageDistinct.YES);
-                    self.clearError();
-                });
-                
-                self.selectedMaxNumberSemiVacation.subscribe(function(value) {
-                    $('#max-number-company').ntsError('clear');
-                    $('#time-max-day-company').ntsError('clear');
-                });
-
             }
             
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                $.when(self.loadSetting()).done(function(res) {
-                    if (res) {
-                        self.initUI(res);
-                    }
+                $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadPreemptionPermitEnums(),
+                        self.loadDisplayDivisionEnums(), self.loadTimeUnitEnums(), self.loadMaxDayReferenceEnums()).done(function() {
+                    self.loadSetting();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -154,10 +121,8 @@ module nts.uk.pr.view.kmf001.c {
                 }
                 let command = self.toJsObject();
                 service.save(command).done(function() {
-                    self.loadSetting().done(function(res) {
-                        // Msg_15
-                        nts.uk.ui.dialog.alert("登録しました。");
-//                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                    self.loadSetting().done(function() {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                         dfd.resolve();
                     });
                 }).fail(function(res) {
@@ -168,7 +133,7 @@ module nts.uk.pr.view.kmf001.c {
             private loadSetting(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                service.find().done(function(res: any) {
+                service.findSetting().done(function(res: any) {
                     if (res) {
                         self.initUI(res);
                     }
@@ -235,20 +200,29 @@ module nts.uk.pr.view.kmf001.c {
             
             private validate(): boolean {
                 let self = this;
-                if (self.maxNumberCompany() !== '') {
+                self.clearError();
+                if (self.enableAnnualVacation()) {
                     $('#max-number-company').ntsEditor('validate');
-                }
-                if (self.maxGrantDay() !== '') {
                     $('#max-grant-day').ntsEditor('validate');
-                }
-                if (self.maxRemainingDay() !== '') {
                     $('#max-remaining-day').ntsEditor('validate');
-                }
-                if (self.numberYearRetain() !== '') {
                     $('#number-year-retain').ntsEditor('validate');
-                }
-                if (self.timeMaxNumberCompany() !== '') {
-                    $('time-max-day-company').ntsEditor('validate');
+                    $('#time-max-day-company').ntsEditor('validate');
+                } else {
+                    if (self.maxNumberCompany() != '') {
+                        $('#max-number-company').ntsEditor('validate');
+                    }
+                    if (self.maxGrantDay() != '') {
+                        $('#max-grant-day').ntsEditor('validate');
+                    }
+                    if (self.maxRemainingDay() != '') {
+                        $('#max-remaining-day').ntsEditor('validate');
+                    }
+                    if (self.numberYearRetain() != '') {
+                        $('#number-year-retain').ntsEditor('validate');
+                    }
+                    if (self.timeMaxNumberCompany() != '') {
+                        $('#time-max-day-company').ntsEditor('validate');
+                    }
                 }
                 if ($('.nts-input').ntsError('hasError')) {
                     return false;
@@ -257,14 +231,89 @@ module nts.uk.pr.view.kmf001.c {
             }
             
             private clearError(): void {
-                if (!$('.nts-input').ntsError('hasError')) {
-                    return;
-                }
                 $('#max-number-company').ntsError('clear');
                 $('#max-grant-day').ntsError('clear');
                 $('#max-remaining-day').ntsError('clear');
                 $('#number-year-retain').ntsError('clear');
                 $('#time-max-day-company').ntsError('clear');
+            }
+            
+            // find enumeration ManageDistinct
+            private loadManageDistinctEnums(): JQueryPromise<Array<EnumertionModel>> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findManageDistinct().done(function(res: Array<EnumertionModel>) {
+                    self.manageDistinctList(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
+            }
+            
+            // find enumeration ApplyPermission
+            private loadApplyPermissionEnums(): JQueryPromise<Array<EnumertionModel>> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findApplyPermission().done(function(res: Array<EnumertionModel>) {
+                    self.permissionList(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
+            }
+            
+            // find enumeration PreemptionPermit
+            private loadPreemptionPermitEnums(): JQueryPromise<Array<EnumertionModel>> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findPreemptionPermit().done(function(res: Array<EnumertionModel>) {
+                    self.preemptionPermitList(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
+            }
+            
+            // find enumeration DisplayDivision
+            private loadDisplayDivisionEnums(): JQueryPromise<Array<EnumertionModel>> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findDisplayDivision().done(function(res: Array<EnumertionModel>) {
+                    self.displayDivisionList(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
+            }
+            
+            // find enumeration TimeUnit
+            private loadTimeUnitEnums(): JQueryPromise<Array<EnumertionModel>> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findTimeUnit().done(function(res: Array<EnumertionModel>) {
+                    self.vacationTimeUnitList(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
+            }
+            
+            // find enumeration MaxDayReference
+            private loadMaxDayReferenceEnums(): JQueryPromise<Array<EnumertionModel>> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findMaxDayReference().done(function(res: Array<EnumertionModel>) {
+                    self.maxDayReferenceList(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
             }
         }
     }

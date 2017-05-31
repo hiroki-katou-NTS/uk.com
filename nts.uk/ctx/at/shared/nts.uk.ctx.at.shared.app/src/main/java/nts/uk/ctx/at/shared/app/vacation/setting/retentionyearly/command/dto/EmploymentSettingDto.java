@@ -82,35 +82,42 @@ public class EmploymentSettingDto{
 			super();
 			this.companyId = companyId;
 			this.dto = dto;
-			System.out.println("test");
 		}
 		
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento#getCompanyId()
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * EmploymentSettingGetMemento#getCompanyId()
 		 */
 		@Override
 		public String getCompanyId() {
 			return this.companyId;
 		}
 		
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento#getEmploymentCode()
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * EmploymentSettingGetMemento#getEmploymentCode()
 		 */
 		@Override
 		public String getEmploymentCode() {
 			return dto.employmentCode;
 		}
-		
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento#getUpperLimitSetting()
+
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * EmploymentSettingGetMemento#getUpperLimitSetting()
 		 */
 		@Override
 		public UpperLimitSetting getUpperLimitSetting() {
 			return dto.upperLimitSetting.toDomain();
 		}
 		
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingGetMemento#getManagementCategory()
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+		 * EmploymentSettingGetMemento#getManagementCategory()
 		 */
 		@Override
 		public ManagementCategory getManagementCategory() {

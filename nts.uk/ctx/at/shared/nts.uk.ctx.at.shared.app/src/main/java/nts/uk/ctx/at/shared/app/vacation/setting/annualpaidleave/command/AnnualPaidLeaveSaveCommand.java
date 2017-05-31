@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSet
 public class AnnualPaidLeaveSaveCommand {
 
     /** The annual manage. */
-    private ManageDistinct annualManage;
+    private Integer annualManage;
 
     /** The manage setting. */
     private ManageAnnualSettingDto setting;
@@ -76,7 +76,7 @@ public class AnnualPaidLeaveSaveCommand {
          */
         @Override
         public ManageDistinct getYearManageType() {
-            return command.getAnnualManage();
+            return ManageDistinct.valueOf(command.getAnnualManage());
         }
 
         /*
