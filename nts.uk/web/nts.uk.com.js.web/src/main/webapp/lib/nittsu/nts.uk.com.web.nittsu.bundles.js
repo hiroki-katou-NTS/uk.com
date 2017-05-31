@@ -5516,6 +5516,7 @@ var nts;
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
+                        var self = this;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
@@ -5546,9 +5547,9 @@ var nts;
                         });
                         $input.blur(function () {
                             if (!$input.attr('readonly')) {
-                                var formatter = _this.getFormatter(data);
+                                var formatter = self.getFormatter(data);
                                 var newText = $input.val();
-                                var validator = _this.getValidator(data);
+                                var validator = self.getValidator(data);
                                 var result = validator.validate(newText);
                                 $input.ntsError('clear');
                                 if (result.isValid) {
@@ -5562,7 +5563,7 @@ var nts;
                         });
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
-                            var validator = this.getValidator(data);
+                            var validator = self.getValidator(data);
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (!result.isValid) {
