@@ -1,4 +1,4 @@
-package workplace;
+package worklocation;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,19 +7,19 @@ import java.util.Optional;
  * @author hieult
  *
  */
-public interface WorkPlaceRepository {
+public interface WorkLocationRepository {
 	
 	/**
 	 * Find All
 	 * @param companyID
 	 * @return List Work Place
 	 */
-	List<WorkPlace> findAll (String companyID);
+	List<WorkLocation> findAll (String companyID);
 	/**
 	 * 
 	 * @param companyID
 	 * @param workLocationCD
 	 * @return Optional Work Place
 	 */
-	Optional<WorkPlace> findByCode (String companyID, String workLocationCD); 
+	Optional<WorkLocation> findByCode (String companyID, String workLocationCD); 
 }

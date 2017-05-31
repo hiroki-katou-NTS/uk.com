@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.workplace;
+package nts.uk.ctx.at.record.infra.repository.worklocation;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,10 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.workplace.KwlmtWorkLocation;
-import nts.uk.ctx.at.record.infra.entity.workplace.KwlmtWorkLocationPK;
-import workplace.WorkPlace;
-import workplace.WorkPlaceRepository;
+import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
+import worklocation.WorkLocation;
+import worklocation.WorkLocationRepository;
 
 @Stateless
 /**
@@ -17,7 +16,7 @@ import workplace.WorkPlaceRepository;
  * @author hieult
  *
  */
-public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRepository {
+public class JpaWorkLocationRepository extends JpaRepository implements WorkLocationRepository {
 
 	private final String SELECT= "SELECT c FROM KwlmtWorkLocation c";
 	private final String SELECT_SINGLE = "SELECT c FROM KwlmtWorkLocation c WHERE c.kwlmtWorkLocationPK.companyID = :companyID AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD";
@@ -25,7 +24,7 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	
 	
 	@Override
-	public List<WorkPlace> findAll(String companyID) {
+	public List<WorkLocation> findAll(String companyID) {
 		return this.queryProxy()
 				.query(SELECT_ALL_BY_COMPANY, KwlmtWorkLocation.class)
 				.setParameter("companyID", companyID)
@@ -33,7 +32,7 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 	}
 
 	@Override
-	public Optional<WorkPlace> findByCode(String companyID, String workPlaceCD) {
+	public Optional<WorkLocation> findByCode(String companyID, String workPlaceCD) {
 		return this.queryProxy()
 				.query(SELECT_SINGLE, KwlmtWorkLocation.class)
 				.setParameter("companyID", companyID)
@@ -41,8 +40,8 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 				.getSingle(c -> toDomain(c));
 	}
 
-	private WorkPlace toDomain(KwlmtWorkLocation entity) {
-		return WorkPlace.createFromJavaType(
+	private WorkLocation toDomain(KwlmtWorkLocation entity) {
+		return WorkLocation.createFromJavaType(
 				entity.kwlmtWorkLocationPK.companyID,
 				entity.kwlmtWorkLocationPK.workLocationCD,
 				entity.workLocationName,
@@ -52,7 +51,7 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 				entity.longitude);
 	}
 	
-	/*private KwlmtWorkLocation toEntity (WorkPlace domain){
+	/*private KwlmtWorkLocation toEntity (WorkLocation domain){
 		return new KwlmtWorkLocation(
 				new KwlmtWorkLocationPK(domain.getCompanyID(), domain.getWorkLocationCD()),
 				domain.getWorkLocationName(),

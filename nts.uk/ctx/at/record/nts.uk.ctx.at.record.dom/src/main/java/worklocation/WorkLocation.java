@@ -1,4 +1,4 @@
-package workplace;
+package worklocation;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -11,16 +11,16 @@ import nts.arc.layer.dom.AggregateRoot;
  * @author hieult
  *
  */
-public class WorkPlace extends AggregateRoot {
+public class WorkLocation extends AggregateRoot {
 	
 	/** Company ID */
 	private final String companyID;
 	
 	/** Work Location CD */
-	private String workLocationCD;    
+	private WorkLocationCD workLocationCD;    
 
 	/** Work Location Name */
-	private String workLocationName; 
+	private WorkLocationName workLocationName; 
 	
 	/** Horizontal distance */
 	private String horiDistance;
@@ -34,10 +34,10 @@ public class WorkPlace extends AggregateRoot {
 		/**Longitude */
 	private Longitude  longitude;
 	
-	public static WorkPlace createFromJavaType (String companyID, String workLocationCD, String workLocationName, String horiDistance, String vertiDistance, String latitude, String longitude){
-		return new WorkPlace(companyID,
-				workLocationCD,
-				workLocationName,
+	public static WorkLocation createFromJavaType (String companyID, String workLocationCD, String workLocationName, String horiDistance, String vertiDistance, String latitude, String longitude){
+		return new WorkLocation(companyID,
+				new WorkLocationCD(workLocationCD),
+				new WorkLocationName(workLocationName),
 				horiDistance,
 				vertiDistance,
 				new Latitude(latitude), new Longitude(longitude));

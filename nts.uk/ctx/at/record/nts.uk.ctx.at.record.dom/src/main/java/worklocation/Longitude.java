@@ -1,4 +1,4 @@
-package workplace;
+package worklocation;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

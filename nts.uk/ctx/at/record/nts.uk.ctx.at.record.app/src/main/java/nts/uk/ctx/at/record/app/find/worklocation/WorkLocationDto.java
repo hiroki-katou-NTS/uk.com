@@ -1,7 +1,7 @@
-package nts.uk.ctx.at.record.app.find.workplace;
+package nts.uk.ctx.at.record.app.find.worklocation;
 
 import lombok.Value;
-import workplace.WorkPlace;
+import worklocation.WorkLocation;
 
 @Value
 /**
@@ -9,7 +9,7 @@ import workplace.WorkPlace;
  * @author hieult
  *
  */
-public class WorkPlaceDto {
+public class WorkLocationDto {
 	
 	private String companyID;
 		
@@ -25,11 +25,11 @@ public class WorkPlaceDto {
 	
 	private String longitude;
 	
-	public static WorkPlaceDto fromDomain (WorkPlace domain) {
-		return new WorkPlaceDto (
+	public static WorkLocationDto fromDomain (WorkLocation domain) {
+		return new WorkLocationDto (
 				domain.getCompanyID(),
-				domain.getWorkLocationCD(),
-				domain.getWorkLocationName(),
+				domain.getWorkLocationCD().v(),
+				domain.getWorkLocationName().v(),
 				domain.getHoriDistance(),
 				domain.getVertiDistance(),
 				domain.getLatitude().v(),

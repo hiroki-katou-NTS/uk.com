@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.workplace;
+package nts.uk.ctx.at.record.infra.entity.worklocation;
 
 import java.io.Serializable;
 

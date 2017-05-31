@@ -7,19 +7,20 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import nts.uk.ctx.at.record.app.find.workplace.WorkPlaceDto;
-import nts.uk.ctx.at.record.app.find.workplace.WorkPlaceFinder;
 
-@Path("at/record/workplace")
+import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationDto;
+import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationFinder;
+
+@Path("at/record/worklocation")
 @Produces("application/json")
 public class WorkPlaceWebservice {
 	
 	@Inject
-	private WorkPlaceFinder workPlaceFinder;
+	private WorkLocationFinder workPlaceFinder;
 	
 	@POST
 	@Path("findall")
-	public List<WorkPlaceDto> getAllWorkPlace() {
+	public List<WorkLocationDto> getAllWorkPlace() {
 		return this.workPlaceFinder.getAllWorkPlace();
 	}
 
