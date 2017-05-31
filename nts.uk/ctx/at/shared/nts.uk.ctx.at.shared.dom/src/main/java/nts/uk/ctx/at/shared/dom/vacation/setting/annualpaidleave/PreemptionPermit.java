@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
@@ -10,13 +10,16 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 public enum PreemptionPermit {
 
 	/** The fifo. */
-	FIFO(0, "先入れ先出し"),
+	FIFO(0, "先入れ先出し", "先入れ先出し"),
 
 	/** The lifo. */
-	LIFO(1, "後入れ先出し");
+	LIFO(1, "後入れ先出し", "後入れ先出し");
 
 	/** The value. */
 	public int value;
+	
+	/** The name id. */
+	public String nameId;
 	
 	/** The description. */
 	public String description;
@@ -28,10 +31,12 @@ public enum PreemptionPermit {
 	 * Instantiates a new preemption permit.
 	 *
 	 * @param value the value
+	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private PreemptionPermit(int value, String description) {
+	private PreemptionPermit(int value, String nameId, String description) {
 		this.value = value;
+		this.nameId = nameId;
 		this.description = description;
 	}
 

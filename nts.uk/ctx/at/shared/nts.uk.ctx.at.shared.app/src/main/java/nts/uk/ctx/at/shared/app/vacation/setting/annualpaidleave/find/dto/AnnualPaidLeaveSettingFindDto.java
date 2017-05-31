@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSet
 public class AnnualPaidLeaveSettingFindDto implements AnnualPaidLeaveSettingSetMemento {
 
     /** The annual manage. */
-    public ManageDistinct annualManage;
+    public Integer annualManage;
 
     /** The manage setting. */
     public ManageAnnualSettingFindDto setting;
@@ -38,7 +38,7 @@ public class AnnualPaidLeaveSettingFindDto implements AnnualPaidLeaveSettingSetM
      */
     @Override
     public void setYearManageType(ManageDistinct yearManageType) {
-        this.annualManage = yearManageType;
+        this.annualManage = yearManageType.value;
     }
 
     /*

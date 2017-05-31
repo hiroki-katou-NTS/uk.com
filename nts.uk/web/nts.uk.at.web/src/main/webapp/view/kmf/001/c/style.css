@@ -10,7 +10,7 @@
     z-index: 999;
 }
 #functions-area {
-    overflow: hidden;
+        overflow: hidden;
     position: fixed; /* Set the navbar to fixed position */
     top: 42px; /* Position the navbar at the top of the page */
     width: 100%;
@@ -22,16 +22,28 @@
 	margin-top: 90px;
 	z-index: 5;
 }
-.nts-switch-button {
+/* .nts-switch-button {
 	min-width: 80px;
 	font-size: 13px !important;
 	height: 30px !important;
 	padding: 3px 7px !important;
 	margin-bottom: 3px !important;
+} */
+/* 
+#functions-area {
+	margin-top: 5px;
+	padding: 0;
 }
+
+#contents-area {
+	margin-top: 10px;
+	margin-left: 50px;
+	min-width: 560px;
+} */
+
 .btn-default {
 	margin-left: 20px;
-	min-width: 80px;
+	/* min-width: 80px; */
 }
 #table {
 	margin-top: 30px;
@@ -44,7 +56,7 @@ table#table tr td {
 }
 table#table tr td label.content-label {
 	padding-left: 50px;
-	padding-right: 20px;
+	padding-right: 10px;
 }
 .hr_width {
 	width: 760px;
@@ -54,4 +66,15 @@ table#table tr td.title {
 }
 .ntsControl {
     display: inline !important;
+}
+.td-combo-box {
+	padding-left: 4px;
+}
+#combo-box-time-unit {
+	width: 83px;
+	min-width: 0px !important
+}
+#combo-box-preem-permit {
+	width: 170px;
+	min-width: 0px !important
 }

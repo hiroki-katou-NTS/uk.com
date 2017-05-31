@@ -1,6 +1,7 @@
-/*
- * 
- */
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 /**
@@ -9,13 +10,16 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 public enum DisplayDivision {
     
 	/** The Notshow. */
-	Notshow(0, "表示しない"),
+	Notshow(0, "表示しない", "表示しない"),
     
     /** The Indicate. */
-    Indicate(1, "表示する");
+    Indicate(1, "表示する", "表示する");
 
 	/** The value. */
 	public int value;
+	
+	/** The name id. */
+	public String nameId;
 	
 	/** The description. */
 	public String description;
@@ -24,13 +28,15 @@ public enum DisplayDivision {
 	private final static DisplayDivision[] values = DisplayDivision.values();
 
 	/**
-	 * Instantiates a new DisplayDivision.
+	 * Instantiates a new display division.
 	 *
 	 * @param value the value
+	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private DisplayDivision(int value, String description) {
+	private DisplayDivision(int value, String nameId, String description) {
 		this.value = value;
+		this.nameId = nameId;
 		this.description = description;
 	}
 
@@ -38,7 +44,7 @@ public enum DisplayDivision {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the DisplayDivision
+	 * @return the display division
 	 */
 	public static DisplayDivision valueOf(Integer value) {
 		// Invalid object.

@@ -4,16 +4,47 @@ module nts.uk.pr.view.kmf001.c {
          *  Service paths
          */
         var servicePath: any = {
+            findManageDistinct: 'ctx/at/share/vacation/setting/annualpaidleave/find/managedistinct',
+            findApplyPermission: 'ctx/at/share/vacation/setting/annualpaidleave/find/applypermission',
+            findPreemptionPermit: 'ctx/at/share/vacation/setting/annualpaidleave/find/preemptionpermit',
+            findDisplayDivision: 'ctx/at/share/vacation/setting/annualpaidleave/find/displaydivision',
+            findTimeUnit: 'ctx/at/share/vacation/setting/annualpaidleave/find/timeunit',
+            findMaxDayReference: 'ctx/at/share/vacation/setting/annualpaidleave/find/maxdayreference',
+            
             save: 'ctx/at/share/vacation/setting/annualpaidleave/save',
-            find: 'ctx/at/share/vacation/setting/annualpaidleave/find'
+            findSetting: 'ctx/at/share/vacation/setting/annualpaidleave/find/setting'
         };
+        
+        export function findManageDistinct(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findManageDistinct);
+        }
+        
+        export function findApplyPermission(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findApplyPermission);
+        }
+        
+        export function findPreemptionPermit(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findPreemptionPermit);
+        }
+        
+        export function findDisplayDivision(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findDisplayDivision);
+        }
+        
+        export function findTimeUnit(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findTimeUnit);
+        }
+        
+        export function findMaxDayReference(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findMaxDayReference);
+        }
 
         export function save(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.save, command);
         }
         
-        export function find(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.find);
+        export function findSetting(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findSetting);
         }
         
         /**
@@ -23,47 +54,16 @@ module nts.uk.pr.view.kmf001.c {
 
             export class EnumerationModel {
 
-                code: string;
-                name: string;
+                value: number;
+                fieldName: string;
+                localizedName: string;
 
-                constructor(code: string, name: string) {
+                constructor(value: number, fieldName: string, localizedName: string) {
                     let self = this;
-                    self.code = code;
-                    self.name = name;
+                    self.value = value;
+                    self.fieldName = fieldName;
+                    self.localizedName = localizedName;
                 }
-            }
-            
-            export class ManageDistinct {
-                public static YES = "YES";
-                public static NO = "NO";
-            }
-            
-            export class MaxDayReference {
-                public static CompanyUniform = "CompanyUniform";
-                public static ReferAnnualGrantTable = "ReferAnnualGrantTable";
-            }
-            
-            export class ApplyPermission {
-                public static ALLOW = "ALLOW";
-                public static NOT_ALLOW = "NOT_ALLOW";
-            }
-            
-            export class PreemptionPermit {
-                public static FIFO = "FIFO";
-                public static LIFO = "LIFO";
-            }
-            
-            export class DisplayDivision {
-                public static Notshow = "Notshow";
-                public static Indicate = "Indicate";
-            }
-            
-            export class TimeUnit {
-                public static OneMinute = "OneMinute";
-                public static FifteenMinute = "FifteenMinute";
-                public static ThirtyMinute = "ThirtyMinute";
-                public static OneHour = "OneHour";
-                public static TwoHour = "TwoHour";
             }
         }
     }

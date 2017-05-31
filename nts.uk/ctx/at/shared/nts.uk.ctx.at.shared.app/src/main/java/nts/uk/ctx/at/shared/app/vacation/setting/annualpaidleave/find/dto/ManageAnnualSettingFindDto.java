@@ -6,15 +6,9 @@ package nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.dto;
 
 import java.math.BigDecimal;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplaySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.PreemptionPermit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
 
@@ -24,13 +18,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSet
 public class ManageAnnualSettingFindDto implements ManageAnnualSettingSetMemento {
 
     /** The add attendance day. */
-    public ManageDistinct addAttendanceDay;
+    public Integer addAttendanceDay;
 
     /** The max manage semi vacation. */
-    public ManageDistinct maxManageSemiVacation;
+    public Integer maxManageSemiVacation;
 
     /** The max number semi vacation. */
-    public MaxDayReference maxNumberSemiVacation;
+    public Integer maxNumberSemiVacation;
 
     /** The max number company. */
     public BigDecimal maxNumberCompany;
@@ -45,28 +39,28 @@ public class ManageAnnualSettingFindDto implements ManageAnnualSettingSetMemento
     public Integer numberYearRetain;
 
     /** The preemption annual vacation. */
-    public ApplyPermission preemptionAnnualVacation;
+    public Integer preemptionAnnualVacation;
 
     /** The preemption year leave. */
-    public PreemptionPermit preemptionYearLeave;
+    public Integer preemptionYearLeave;
 
     /** The remaining number display. */
-    public DisplayDivision remainingNumberDisplay;
+    public Integer remainingNumberDisplay;
 
     /** The next grant day display. */
-    public DisplayDivision nextGrantDayDisplay;
+    public Integer nextGrantDayDisplay;
 
     /** The time manage type. */
-    public ManageDistinct timeManageType;
+    public Integer timeManageType;
 
     /** The time unit. */
-    public TimeVacationDigestiveUnit timeUnit;
+    public Integer timeUnit;
 
     /** The manage max day vacation. */
-    public ManageDistinct manageMaxDayVacation;
+    public Integer manageMaxDayVacation;
 
     /** The reference. */
-    public MaxDayReference reference;
+    public Integer reference;
 
     /** The max time day. */
     public Integer maxTimeDay;
@@ -93,9 +87,9 @@ public class ManageAnnualSettingFindDto implements ManageAnnualSettingSetMemento
      */
     @Override
     public void setRemainingNumberSetting(RemainingNumberSetting setting) {
-        this.addAttendanceDay = setting.getWorkDayCalculate();
-        this.maxManageSemiVacation = setting.getHalfDayManage().manageType;
-        this.maxNumberSemiVacation = setting.getHalfDayManage().reference;
+        this.addAttendanceDay = setting.getWorkDayCalculate().value;
+        this.maxManageSemiVacation = setting.getHalfDayManage().manageType.value;
+        this.maxNumberSemiVacation = setting.getHalfDayManage().reference.value;
         this.maxNumberCompany = setting.getHalfDayManage().maxNumberUniformCompany.v();
         this.maxGrantDay = setting.getMaximumDayVacation().v();
         this.maxRemainingDay = setting.getRemainingDayMaxNumber();
@@ -111,8 +105,8 @@ public class ManageAnnualSettingFindDto implements ManageAnnualSettingSetMemento
      */
     @Override
     public void setAcquisitionSetting(AcquisitionVacationSetting acquisition) {
-        this.preemptionAnnualVacation = acquisition.yearVacationPriority;
-        this.preemptionYearLeave = acquisition.permitType;
+        this.preemptionAnnualVacation = acquisition.yearVacationPriority.value;
+        this.preemptionYearLeave = acquisition.permitType.value;
     }
 
     /*
@@ -124,8 +118,8 @@ public class ManageAnnualSettingFindDto implements ManageAnnualSettingSetMemento
      */
     @Override
     public void setDisplaySetting(DisplaySetting displaySetting) {
-        this.remainingNumberDisplay = displaySetting.remainingNumberDisplay;
-        this.nextGrantDayDisplay = displaySetting.nextGrantDayDisplay;
+        this.remainingNumberDisplay = displaySetting.remainingNumberDisplay.value;
+        this.nextGrantDayDisplay = displaySetting.nextGrantDayDisplay.value;
     }
 
     /*
@@ -137,10 +131,10 @@ public class ManageAnnualSettingFindDto implements ManageAnnualSettingSetMemento
      */
     @Override
     public void setTimeSetting(TimeVacationSetting timeSetting) {
-        this.timeManageType = timeSetting.getTimeManageType();
-        this.timeUnit = timeSetting.getTimeUnit();
-        this.manageMaxDayVacation = timeSetting.getMaxDay().manageMaxDayVacation;
-        this.reference = timeSetting.getMaxDay().reference;
+        this.timeManageType = timeSetting.getTimeManageType().value;
+        this.timeUnit = timeSetting.getTimeUnit().value;
+        this.manageMaxDayVacation = timeSetting.getMaxDay().manageMaxDayVacation.value;
+        this.reference = timeSetting.getMaxDay().reference.value;
         this.maxTimeDay = timeSetting.getMaxDay().maxTimeDay.v();
         this.isEnoughTimeOneDay = timeSetting.isEnoughTimeOneDay();
     }
