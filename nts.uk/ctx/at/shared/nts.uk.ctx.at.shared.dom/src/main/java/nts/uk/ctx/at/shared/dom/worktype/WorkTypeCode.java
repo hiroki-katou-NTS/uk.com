@@ -1,4 +1,4 @@
-package nts.ctx.at.shared.dom.worktype;
+package nts.uk.ctx.at.shared.dom.worktype;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;

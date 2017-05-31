@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.ctx.at.shared.dom.worktype.WorkType;
-import nts.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KmnmtWorkType;
 @Stateless
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository{
