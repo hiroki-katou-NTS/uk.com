@@ -36,3 +36,10 @@
 	width: 600px;
 	vertical-align: top;
 }
+.nts-switch-button {
+	min-width: 80px;
+	font-size: 13px !important;
+	height: 30px !important;
+	padding: 3px 7px !important;
+	margin-bottom: 3px !important;
+}
