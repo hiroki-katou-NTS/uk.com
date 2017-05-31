@@ -23,7 +23,7 @@ public class KmnmtWorkType extends UkJpaEntity implements Serializable{
 	
 	/*ソート順*/
 	@Column(name = "SORT_ORDER")
-	public String sortOrder;
+	public int sortOrder;
 	/*勤務種類記号名*/
 	@Column(name = "SYMBOLIC_NAME")
 	public String symbolicName;

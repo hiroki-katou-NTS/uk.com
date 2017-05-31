@@ -11,5 +11,5 @@ public interface WorkTypeRepository {
 	 * @param lstPossible
 	 * @return
 	 */
-	List<WorkType> getPossibleWorkType(String companyId, List<Integer> lstPossible);
+	List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible);
 }

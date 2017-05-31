@@ -8,23 +8,23 @@ public class WorkTypeDto {
 	private String companyId;
 	/*勤務種類コード*/
 	private String workTypeCode;
-	/*勤務種類コード*/
-	private String sortOrder;
-	/*勤務種類コード*/
+	/*ソート順*/
+	private int sortOrder;
+	/*勤務種類記号名*/
 	private String symbolicName;
-	/*勤務種類コード*/
+	/*勤務種類名称*/
 	private String name;
-	/*勤務種類コード*/
+	/*勤務種類略名*/
 	private String abbreviationName;
-	/*勤務種類コード*/
+	/*勤務種類備考*/
 	private String memo;
-	/*勤務種類コード*/
+	/*使用区分*/
 	private int useAtr;
 	
 	public static WorkTypeDto fromDomain(WorkType domain){
 		return new WorkTypeDto(domain.getCompanyId(),
 					domain.getWorkTypeCode().v(),
-					domain.getSortOrder().v(),
+					domain.getSortOrder(),
 					domain.getSymbolicName().v(),
 					domain.getName().v(),
 					domain.getAbbreviationName().v(),

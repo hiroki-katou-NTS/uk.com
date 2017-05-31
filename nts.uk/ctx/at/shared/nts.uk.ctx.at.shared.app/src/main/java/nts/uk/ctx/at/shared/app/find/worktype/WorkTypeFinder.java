@@ -18,7 +18,7 @@ public class WorkTypeFinder {
 	//user contexts
 	String companyId = AppContexts.user().companyId();
 	
-	public List<WorkTypeDto> getPossibleWorkType(List<Integer> lstPossible) {
+	public List<WorkTypeDto> getPossibleWorkType(List<String> lstPossible) {
 		List<WorkTypeDto> lst = this.workTypeRepo.getPossibleWorkType(companyId, lstPossible)
 				.stream()
 				.map(c -> WorkTypeDto.fromDomain(c)).collect(Collectors.toList());

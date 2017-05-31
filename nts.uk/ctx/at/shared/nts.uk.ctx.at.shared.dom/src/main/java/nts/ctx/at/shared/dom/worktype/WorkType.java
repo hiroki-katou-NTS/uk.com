@@ -10,20 +10,20 @@ public class WorkType {
 	private String companyId;
 	/*勤務種類コード*/
 	private WorkTypeCode workTypeCode;
-	/*勤務種類コード*/
-	private WorkTypeCode sortOrder;
-	/*勤務種類コード*/
+	/*ソート順*/
+	private int sortOrder;
+	/*勤務種類記号名*/
 	private WorkTypeSymbolicName symbolicName;
-	/*勤務種類コード*/
+	/*勤務種類名称*/
 	private WorkTypeName name;
-	/*勤務種類コード*/
+	/*勤務種類略名*/
 	private WorkTypeAbbreviationName abbreviationName;
-	/*勤務種類コード*/
+	/*勤務種類備考*/
 	private WorkTypeMemo memo;
-	/*勤務種類コード*/
+	/*使用区分*/
 	private UseSetting useAtr;
 	
-	public WorkType(String companyId, WorkTypeCode workTypeCode, WorkTypeCode sortOrder,
+	public WorkType(String companyId, WorkTypeCode workTypeCode, int sortOrder,
 			WorkTypeSymbolicName symbolicName, WorkTypeName name, WorkTypeAbbreviationName abbreviationName,
 			WorkTypeMemo memo, UseSetting useAtr) {
 		super();
@@ -39,7 +39,7 @@ public class WorkType {
 	
 	public static WorkType createSimpleFromJavaType(String companyId,
 										String workTypeCode,
-										String sortOrder,
+										int sortOrder,
 										String symbolicName,
 										String name,
 										String abbreviationName,
@@ -47,7 +47,7 @@ public class WorkType {
 										int useAtr){
 		return new WorkType(companyId, 
 				new WorkTypeCode(workTypeCode),
-				new WorkTypeCode(sortOrder),
+				sortOrder,
 				new WorkTypeSymbolicName(symbolicName),
 				new WorkTypeName(name),
 				new WorkTypeAbbreviationName(abbreviationName),

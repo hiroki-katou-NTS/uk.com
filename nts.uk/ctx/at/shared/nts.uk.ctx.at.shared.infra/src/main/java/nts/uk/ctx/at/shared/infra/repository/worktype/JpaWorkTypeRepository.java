@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktype.KmnmtWorkType;
 @Stateless
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository{
 
-	private final String SELECT_FROM_WORKTYPE = "SELCET c FROM KmnmtWorkType c";
+	private final String SELECT_FROM_WORKTYPE = "SELECT c FROM KmnmtWorkType c";
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE 
 			+ " WHERE c.kmnmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kmnmtWorkTypePK.workTypeCode IN :lstPossible";
@@ -29,7 +29,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		return domain;
 	}
 	@Override
-	public List<WorkType> getPossibleWorkType(String companyId, List<Integer> lstPossible) {
+	public List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible) {
 		return this.queryProxy().query(SELECT_WORKTYPE, KmnmtWorkType.class)
 				.setParameter("companyId", companyId)
 				.setParameter("lstPossible", lstPossible)
