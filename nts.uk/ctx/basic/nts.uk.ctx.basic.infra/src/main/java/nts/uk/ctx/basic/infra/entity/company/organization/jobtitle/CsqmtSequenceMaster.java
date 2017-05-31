@@ -19,9 +19,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The Class CsqmtSequenceMaster.
  */
 
-@Getter
 @Setter
 @Entity
+@Getter
 @Table(name = "CSQMT_SEQUENCE_MASTER")
 public class CsqmtSequenceMaster extends UkJpaEntity implements Serializable {
 
@@ -48,6 +48,13 @@ public class CsqmtSequenceMaster extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.csqmtSequenceMasterPK;
+	}
+
+	/**
+	 * Instantiates a new csqmt sequence master.
+	 */
+	public CsqmtSequenceMaster() {
+		super();
 	}
 
 	/**

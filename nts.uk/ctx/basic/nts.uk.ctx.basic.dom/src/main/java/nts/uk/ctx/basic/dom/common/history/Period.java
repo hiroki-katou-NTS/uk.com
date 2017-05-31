@@ -4,11 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.basic.dom.common.history;
 
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
  * The Class Period.
  */
+@Data
 public class Period {
 
 	/** The start date. */
@@ -21,6 +23,7 @@ public class Period {
 	 * Instantiates a new period.
 	 */
 	public Period() {
+		super();
 	}
 
 	/**
