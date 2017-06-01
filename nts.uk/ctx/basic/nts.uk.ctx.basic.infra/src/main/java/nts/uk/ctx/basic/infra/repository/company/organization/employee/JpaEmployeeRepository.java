@@ -111,7 +111,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 */
 	private CemptEmployee toEntity(Employee domain){
 		CemptEmployee entity = new CemptEmployee();
-		domain.saveMemento(new JpaEmployeeSetMemento(entity));
+		domain.saveToMemento(new JpaEmployeeSetMemento(entity));
 		return entity;
 	}
 
