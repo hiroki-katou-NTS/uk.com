@@ -20,14 +20,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public abstract class KshstSixtyHourVacationSetting extends UkJpaEntity {
 	/** The manage distinct. */
 	@Column(name = "MANAGE_DISTINCT")
-	private short manageDistinct;
+	private int manageDistinct;
 
 	/** The sixty hour extra. */
 	@Column(name = "SIXTY_HOUR_EXTRA")
-	private Short sixtyHourExtra;
+	private int sixtyHourExtra;
 
 	/** The time digest tive. */
 	@Column(name = "TIME_DIGEST_TIVE")
-	private Short timeDigestTive;
+	private int timeDigestTive;
 
 }

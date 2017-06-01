@@ -8,11 +8,14 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSettingGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstSixtyHourVacationSetting;
 
 /**
  * The Class JpaSubstVacationSettingGetMemento.
+ *
+ * @param <T> the generic type
  */
-public class Jpa60HourVacationSettingGetMemento<T extends Object>
+public class Jpa60HourVacationSettingGetMemento<T extends KshstSixtyHourVacationSetting>
 		implements SixtyHourVacationSettingGetMemento {
 
 	/** The type value. */
@@ -28,22 +31,28 @@ public class Jpa60HourVacationSettingGetMemento<T extends Object>
 		this.typeValue = typeValue;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSettingGetMemento#getIsManage()
+	 */
 	@Override
 	public ManageDistinct getIsManage() {
-		// TODO Auto-generated method stub
-		return null;
+		return ManageDistinct.valueOf(this.typeValue.getManageDistinct());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSettingGetMemento#getSixtyHourExtra()
+	 */
 	@Override
 	public SixtyHourExtra getSixtyHourExtra() {
-		// TODO Auto-generated method stub
-		return null;
+		return SixtyHourExtra.valueOf(this.typeValue.getSixtyHourExtra());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSettingGetMemento#getDigestiveUnit()
+	 */
 	@Override
 	public TimeDigestiveUnit getDigestiveUnit() {
-		// TODO Auto-generated method stub
-		return null;
+		return TimeDigestiveUnit.valueOf(this.typeValue.getTimeDigestTive());
 	}
 
 }
