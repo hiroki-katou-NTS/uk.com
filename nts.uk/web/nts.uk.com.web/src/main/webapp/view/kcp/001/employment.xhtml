@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<div id="nts-employment-list">
+		<div data-bind="ntsSearchBox: {searchMode: 'filter',
+				targetKey: 'code',
+				comId: 'employment-table',
+				items: employments,
+				selected: currentCodeList,
+				selectedKey: 'code',
+				fields: ['name', 'code'],
+				mode: 'igGrid'}">
+		</div>
+		<table id="employment-table"
+			data-bind="ntsGridList: {								
+				height: 350,
+				dataSource: employments,
+				primaryKey: 'code',
+				columns: employmentColumns,
+				multiple: isMultiple,
+				value: selectedCode}">
+		</table>
+	</div>
+</ui:composition>
