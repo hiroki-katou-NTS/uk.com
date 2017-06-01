@@ -17,11 +17,10 @@
 		<ui:define name="sidebar">
 			<ul class="navigator"  >
 				<li><a tabindex="1"  href="#tabpanel-1" role="tab-navigator" class="active">
-						<!-- #Com_Company --> 会社
-				</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator"> <!-- ＃Com_Employment -->
-						雇用
-				</a></li>
+						#{i18n.getText('Com_Company')} </a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator"
+					data-bind="click: checkComManaged">
+						#{i18n.getText('Com_Employment')} </a></li>
 			</ul>
 		</ui:define>
 
