@@ -13,11 +13,6 @@ import nts.uk.ctx.basic.dom.company.organization.CompanyId;
  * The Class Employee.
  */
 
-/**
- * Gets the retirement date.
- *
- * @return the retirement date
- */
 @Getter
 public class Employee extends AggregateRoot{
 	
@@ -41,5 +36,37 @@ public class Employee extends AggregateRoot{
 	
 	/** The retirement date. */
 	private GeneralDate retirementDate;
+	
+	
+	/**
+	 * Instantiates a new employee.
+	 *
+	 * @param memento the memento
+	 */
+	public Employee(EmployeeGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.personId = memento.getPersonId();
+		this.joinDate = memento.getJoinDate();
+		this.employeeId = memento.getEmployeeId();
+		this.employeeCode = memento.getEmployeeCode();
+		this.employeeMailAddress = memento.getEmployeeMailAddress();
+		this.retirementDate = memento.getRetirementDate();
+	}
+	
+	
+	/**
+	 * Save memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(EmployeeSetMemento memento){
+		memento.setCompanyId(this.companyId);
+		memento.setPersonId(this.personId);
+		memento.setJoinDate(this.joinDate);
+		memento.setEmployeeId(this.employeeId);
+		memento.setEmployeeCode(this.employeeCode);
+		memento.setEmployeeMailAddress(this.employeeMailAddress);
+		memento.setRetirementDate(this.retirementDate);
+	}
 	
 }
