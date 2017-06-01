@@ -15,8 +15,8 @@
 		</ui:define>
 
 		<ui:define name="sidebar">
-			<ul class="navigator" tabindex="1">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active">
+			<ul class="navigator"  >
+				<li><a tabindex="1"  href="#tabpanel-1" role="tab-navigator" class="active">
 						#{i18n.getText('Com_Company')} </a></li>
 				<li><a href="#tabpanel-2" role="tab-navigator"
 					data-bind="click: checkComManaged">
@@ -58,10 +58,13 @@
 						<tr>
 							<td colspan="3" style="padding-left: 50px;">
 								<table class="form-default">
-									<tr class="row_head">
-										<td><div data-bind="ntsFormLabel: { required: true }">
+									<tr class="">
+										<td><div data-bind="ntsFormLabel: {}">
 												#{i18n.getText('KMF001_92')}</div></td>
-										<td></td>
+										<td>
+											<!--罫線 -->
+											<div class="set-row"><hr /></div>
+										</td>
 									</tr>
 									<tr>
 										<td></td>
