@@ -5,7 +5,7 @@
 package nts.uk.ctx.basic.infra.repository.company.organization.catetory;
 
 import lombok.Setter;
-import nts.uk.ctx.basic.dom.company.organization.category.CompanyId;
+import nts.uk.ctx.basic.dom.company.organization.CompanyId;
 import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryCode;
 import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryGetMemento;
 import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryName;

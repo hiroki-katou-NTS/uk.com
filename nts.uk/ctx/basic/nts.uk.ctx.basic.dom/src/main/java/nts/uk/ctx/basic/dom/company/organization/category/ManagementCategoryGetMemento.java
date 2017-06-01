@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.basic.dom.company.organization.category;
 
+import nts.uk.ctx.basic.dom.company.organization.CompanyId;
+
 public interface ManagementCategoryGetMemento {
 
 	/**

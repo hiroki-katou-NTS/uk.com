@@ -6,6 +6,7 @@ package nts.uk.ctx.basic.dom.company.organization.category;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.basic.dom.company.organization.CompanyId;
 
 /**
  * The Class Classification.
