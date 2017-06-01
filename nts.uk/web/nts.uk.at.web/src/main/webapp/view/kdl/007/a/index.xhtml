@@ -14,16 +14,16 @@
 			<com:scriptfile path="kdl007.a.start.js" />
 			<com:scriptfile path="kdl007.a.service.js" />
 			<com:scriptfile path="kdl007.a.vm.js" />
-			<script>var dialogSize = { width: 360 , height: 580};</script>
+			<script>var dialogSize = { width: 320 , height: 580};</script>
 		</ui:define>
 		<ui:define name="content">
 			<div id="total">
 				<!-- A1_1 -->
 				<div id="label">
-					<label>#{i18n.getText('KDL007_1')}</label>
+					<label style= "margin-left: 25px">#{i18n.getText('KDL007_1')}</label>
 				</div>
-				<div style="float: left; margin-bottom: 20px;">
-					<div>
+				<div style="margin-bottom: 20px">
+					<div style="margin-left: 25px">
 						<!-- A1_2 -->
 						<table id="multi-list" tabindex="2"
 							data-bind="ntsGridList: {
@@ -37,6 +37,7 @@
 					</div>
 					<hr />
 				</div>
+				
 				<div id="process">
 					<!-- A1_8 -->
 					<button id="btnSetting" class="x-large proceed"

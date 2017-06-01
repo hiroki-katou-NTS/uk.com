@@ -32,6 +32,10 @@ module kdl002.a.viewmodel {
             //selected items
             self.currentCodeList(nts.uk.ui.windows.getShared('SelectedItemId'));
             //set source
+            if(self.posibleItems == null || self.posibleItems === undefined){
+                self.items();
+                return;
+            }
             if (self.posibleItems.length > 0) {
                 service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.ItemModel>) {
                     let lstItemMapping =  _.map(lstItem , item => {
@@ -47,35 +51,36 @@ module kdl002.a.viewmodel {
         //event When click to 決定 ボタン
         register() {
             var self = this;
+            var lstObj = [];
+            for (let i =0, length = self.currentCodeList().length; i< length ;i++) {
+                let objectNew = self.findItem(self.currentCodeList()[i]);
+                if(objectNew != undefined && objectNew != null){
+                    lstObj.push({"code": objectNew.workTypeCode, "name":objectNew.name});
+                }
+            }
             if(self.isMulti == true){
-                if (self.currentCodeList().length == 0) {
+                if (lstObj.length == 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_10"});
                     return;
                 }
             }
-            var lstObj = [];
-            for (let i =0, length = self.currentCodeList().length; i< length ;i++) {
-                let objectNew = self.findItem(self.currentCodeList()[i]);
-                lstObj.push({"code": objectNew.workTypeCode, "name":objectNew.name});
-            }
             console.log(lstObj);
-            nts.uk.ui.windows.setShared('SelectedNewItem', lstObj);
-            nts.uk.ui.windows.close();
-        }
-
-        //Close Dialog
-        close() {
+            nts.uk.ui.windows.setShared('SelectedNewItem', lstObj,true);
             nts.uk.ui.windows.close();
         }
         /**
          * find item is selected
          */
         findItem(value: string): model.ItemModel {
-            let self = this;
+            var self = this;
             var itemModel = null;
             return _.find(self.items(), function(obj: model.ItemModel) {
                 return obj.workTypeCode == value;
             })
+        }
+        //Close Dialog
+        close() {
+            nts.uk.ui.windows.close();
         }
     }
     export module model {

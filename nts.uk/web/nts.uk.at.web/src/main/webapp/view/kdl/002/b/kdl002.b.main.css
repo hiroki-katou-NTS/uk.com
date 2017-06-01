@@ -1,7 +1,6 @@
 #boxSearch {
 	display: flex;
 	vertical-align: middle;
-	margin-left: 20px;
 }
 
 .btnMenu {
@@ -14,11 +13,11 @@
 }
 
 #total {
-	width: 620px;
+	margin-left: 10px;
+	width: 400px;
 }
 
 #process {
-	width: 620px;
 	text-align: center;
 	vertical-align:middle;
 }
@@ -26,4 +25,8 @@
 #label {
 	line-height: 40px;
 	text-align: left;
+}
+hr { 
+	margin-top: 15px;
+	width : 400px; 
 }
