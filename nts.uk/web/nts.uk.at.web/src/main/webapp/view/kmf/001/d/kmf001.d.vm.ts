@@ -101,8 +101,14 @@ module nts.uk.pr.view.kmf001.d {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findIsManaged().done(function(data: any) {
+                    
                     if (data) {
-                        self.annualManage(data.annualManage);
+                        if (data == undefined) {
+                            self.annualManage(0);
+                        }
+                        else {
+                            self.annualManage(data.annualManage);
+                        }
                     }
                     dfd.resolve();
                 }).fail(function(res) {
