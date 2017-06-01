@@ -59,7 +59,7 @@ public class Employee extends AggregateRoot{
 	 *
 	 * @param memento the memento
 	 */
-	public void saveMemento(EmployeeSetMemento memento){
+	public void saveToMemento(EmployeeSetMemento memento){
 		memento.setCompanyId(this.companyId);
 		memento.setPersonId(this.personId);
 		memento.setJoinDate(this.joinDate);
