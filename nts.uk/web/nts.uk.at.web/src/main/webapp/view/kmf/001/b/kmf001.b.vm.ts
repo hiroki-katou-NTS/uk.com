@@ -4,8 +4,8 @@ module nts.uk.pr.view.kmf001.b {
         import Enum = service.model.Enum;
 
         export class ScreenModel {
-          
-            
+
+
             textEditorOption: KnockoutObservable<any>;
             categoryEnums: KnockoutObservableArray<Enum>;
             selectedPriority: KnockoutObservable<number>;
@@ -23,12 +23,12 @@ module nts.uk.pr.view.kmf001.b {
             constructor() {
 
                 let self = this;
-                
+
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     width: "111px",
                     textalign: "right"
                 }));
-                
+
                 self.categoryEnums = ko.observableArray([]);
 
                 self.selectedPriority = ko.observable(1);
@@ -143,8 +143,24 @@ module nts.uk.pr.view.kmf001.b {
                 let self = this;
                 let dfd = $.Deferred();
                 //validate input priority
-                if (self.validate()) {
-                    return;
+                if (self.selectedPriority() == 1) {
+                    if (self.validate()) {
+                        return;
+                    } else {
+                        let command = self.setList();
+                        service.updateAcquisitionRule(command).done(function() {
+                            self.loadAcquisitionRule().done(function(res) {
+                                // Msg_15
+                                nts.uk.ui.dialog.alert("登録しました。").then(function() {
+                                    self.closeDialog();
+                                });
+                                dfd.resolve();
+                            });
+                        }).fail(function(res) {
+                            nts.uk.ui.dialog.alert(res.message);
+                        });
+
+                    }
                 } else {
                     let command = self.setList();
                     service.updateAcquisitionRule(command).done(function() {
