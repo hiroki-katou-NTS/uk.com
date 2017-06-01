@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KwpmtWorkPlace.
@@ -27,7 +28,7 @@ import nts.arc.time.GeneralDate;
 @Entity
 @Table(name = "KWPMT_WORK_PLACE")
 @XmlRootElement
-public class KwpmtWorkPlace implements Serializable {
+public class KwpmtWorkPlace extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -112,5 +113,10 @@ public class KwpmtWorkPlace implements Serializable {
     public String toString() {
         return "entity.KwpmtWorkPlace[ kwpmtWorkPlacePK=" + kwpmtWorkPlacePK + " ]";
     }
+
+	@Override
+	protected Object getKey() {
+		return this.getKwpmtWorkPlacePK();
+	}
     
 }

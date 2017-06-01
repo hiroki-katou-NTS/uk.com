@@ -10,7 +10,7 @@ import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.CompanyId;
 
 /**
- * The Class Workplace.
+ * The Class Work place.
  */
 @Getter
 public class Workplace extends AggregateRoot{
