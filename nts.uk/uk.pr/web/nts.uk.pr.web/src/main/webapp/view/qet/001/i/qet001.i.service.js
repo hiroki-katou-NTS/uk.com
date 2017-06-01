@@ -1,0 +1,76 @@
+var qet001;
+(function (qet001) {
+    var i;
+    (function (i) {
+        var service;
+        (function (service) {
+            // Service paths.
+            var servicePath = {
+                findAggregateItemsByCategory: 'ctx/pr/report/wageledger/aggregateitem/findByCate',
+                findAggregateItemDetail: 'ctx/pr/report/wageledger/aggregateitem/findBySubject',
+                findMasterItems: 'ctx/pr/report/masteritem/findAll',
+                saveAggregateItem: 'ctx/pr/report/wageledger/aggregateitem/save',
+                removeAggegateItem: 'ctx/pr/report/wageledger/aggregateitem/remove'
+            };
+            /**
+             * Find master items.
+             */
+            function findMasterItems() {
+                return nts.uk.request.ajax(servicePath.findMasterItems);
+            }
+            service.findMasterItems = findMasterItems;
+            /**
+             * Find Aggregate item by category and payment type.
+             */
+            function findAggregateItemsByCategory(category, paymentType) {
+                return nts.uk.request.ajax(servicePath.findAggregateItemsByCategory + '/' + category + '/' + paymentType);
+            }
+            service.findAggregateItemsByCategory = findAggregateItemsByCategory;
+            /**
+             * Find aggregate item detail.
+             */
+            function findAggregateItemDetail(category, paymentType, code) {
+                var subject = {
+                    code: code,
+                    category: category,
+                    paymentType: paymentType
+                };
+                return nts.uk.request.ajax(servicePath.findAggregateItemDetail, subject);
+            }
+            service.findAggregateItemDetail = findAggregateItemDetail;
+            /**
+             * Save aggregate item.
+             */
+            function save(data) {
+                // Convert to json data.
+                var dataJson = {
+                    subject: {
+                        category: data.category,
+                        paymentType: data.paymentType,
+                        code: data.code(),
+                    },
+                    name: data.name(),
+                    showNameZeroValue: data.showNameZeroValue(),
+                    showValueZeroValue: data.showValueZeroValue(),
+                    createMode: data.createMode(),
+                    subItems: data.subItems().map(function (item) { return item.code; })
+                };
+                return nts.uk.request.ajax(servicePath.saveAggregateItem, dataJson);
+            }
+            service.save = save;
+            /**
+             * Remove aggregate item.
+             */
+            function remove(category, paymentType, code) {
+                var subject = {
+                    code: code,
+                    category: category,
+                    paymentType: paymentType
+                };
+                return nts.uk.request.ajax(servicePath.removeAggegateItem, { subject: subject });
+            }
+            service.remove = remove;
+        })(service = i.service || (i.service = {}));
+    })(i = qet001.i || (qet001.i = {}));
+})(qet001 || (qet001 = {}));
+//# sourceMappingURL=qet001.i.service.js.map

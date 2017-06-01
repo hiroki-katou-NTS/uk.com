@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="2.0">
+	<wb-module deploy-name="nts.uk.ctx.sys.portal.pubimp">
+		<dependent-module deploy-path="../" handle="module:/resource/nts.uk.ctx.sys.portal.pub/nts.uk.ctx.sys.portal.pub">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="../" handle="module:/resource/nts.uk.ctx.sys.portal.dom/nts.uk.ctx.sys.portal.dom">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="../" handle="module:/resource/nts.uk.ctx.sys.portal.infra/nts.uk.ctx.sys.portal.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+	</wb-module>
+</project-modules>

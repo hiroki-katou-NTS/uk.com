@@ -1,0 +1,4 @@
+include 'ctx:workflow:nts.uk.ctx.workflow.app'
+include 'ctx:workflow:nts.uk.ctx.workflow.dom'
+include 'ctx:workflow:nts.uk.ctx.workflow.infra'
+include 'ctx:workflow:nts.uk.ctx.workflow.ws'

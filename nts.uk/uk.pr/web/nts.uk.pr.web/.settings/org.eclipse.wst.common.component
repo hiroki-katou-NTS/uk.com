@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="2.0">
+	<wb-module deploy-name="nts.uk.pr.web">
+		<property name="context-root" value="nts.uk.pr.web"/>
+		<wb-resource deploy-path="/" source-path="src/main/webapp"/>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.core.ac/nts.uk.ctx.pr.core.ac">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.core.dom/nts.uk.ctx.pr.core.dom">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.core.app/nts.uk.ctx.pr.core.app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.core.infra/nts.uk.ctx.pr.core.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.core.pub/nts.uk.ctx.pr.core.pub">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.core.pubimp/nts.uk.ctx.pr.core.pubimp">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.core.ws/nts.uk.ctx.pr.core.ws">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.report.ac/nts.uk.ctx.pr.report.ac">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.report.dom/nts.uk.ctx.pr.report.dom">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.report.app/nts.uk.ctx.pr.report.app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.report.infra/nts.uk.ctx.pr.report.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.report.pub/nts.uk.ctx.pr.report.pub">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.report.pubimp/nts.uk.ctx.pr.report.pubimp">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.report.ws/nts.uk.ctx.pr.report.ws">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.formula.ac/nts.uk.ctx.pr.formula.ac">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.formula.app/nts.uk.ctx.pr.formula.app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.formula.dom/nts.uk.ctx.pr.formula.dom">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.formula.infra/nts.uk.ctx.pr.formula.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.formula.pub/nts.uk.ctx.pr.formula.pub">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.formula.pubimp/nts.uk.ctx.pr.formula.pubimp">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.pr.formula.ws/nts.uk.ctx.pr.formula.ws">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.screen.pr.ws/nts.uk.screen.pr.ws">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.screen.pr.app/nts.uk.screen.pr.app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.file.pr.app/nts.uk.file.pr.app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.screen.pr.infra/nts.uk.screen.pr.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.file.pr.infra/nts.uk.file.pr.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+	</wb-module>
+</project-modules>

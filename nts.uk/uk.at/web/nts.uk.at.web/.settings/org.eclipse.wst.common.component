@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="2.0">
+	<wb-module deploy-name="nts.uk.at.web">
+		<property name="context-root" value="nts.uk.at.web"/>
+		<wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/resources"/>
+		<wb-resource deploy-path="/" source-path="src/main/webapp"/>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.shared.app/nts.uk.ctx.at.shared.app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.shared.dom/nts.uk.ctx.at.shared.dom">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.shared.infra/nts.uk.ctx.at.shared.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.shared.ws/nts.uk.ctx.at.shared.ws">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.schedule.ac/nts.uk.ctx.at.schedule.ac">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.schedule.dom/nts.uk.ctx.at.schedule.dom">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.schedule.app/nts.uk.ctx.at.schedule.app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.schedule.infra/nts.uk.ctx.at.schedule.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.schedule.pub/nts.uk.ctx.at.schedule.pub">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.schedule.pubimp/nts.uk.ctx.at.schedule.pubimp">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.schedule.ws/nts.uk.ctx.at.schedule.ws">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.record.ac/nts.uk.ctx.at.record.ac">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.record.dom/nts.uk.ctx.at.record.dom">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.record.app/nts.uk.ctx.at.record.app">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.record.infra/nts.uk.ctx.at.record.infra">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.record.pub/nts.uk.ctx.at.record.pub">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.record.pubimp/nts.uk.ctx.at.record.pubimp">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/nts.uk.ctx.at.record.ws/nts.uk.ctx.at.record.ws">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+	</wb-module>
+</project-modules>

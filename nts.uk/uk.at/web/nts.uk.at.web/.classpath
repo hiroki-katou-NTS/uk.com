@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="/nts.uk.shr.com"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.shared.app"/>
+	<classpathentry kind="src" path="/nts.uk.shr.find"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.shared.dom"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.shared.infra"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.shared.ws"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.schedule.ac"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.schedule.dom"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.schedule.app"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.schedule.infra"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.schedule.pub"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.schedule.pubimp"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.schedule.ws"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.record.ac"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.record.dom"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.record.app"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.record.infra"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.record.pub"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.record.pubimp"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.at.record.ws"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.basic.infra"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.basic.dom"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

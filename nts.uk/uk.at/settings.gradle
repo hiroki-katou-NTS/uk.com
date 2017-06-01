@@ -1,0 +1,22 @@
+include 'web:nts.uk.at.web'
+
+include 'ctx:at:shared:nts.uk.ctx.at.shared.app'
+include 'ctx:at:shared:nts.uk.ctx.at.shared.dom'
+include 'ctx:at:shared:nts.uk.ctx.at.shared.infra'
+include 'ctx:at:shared:nts.uk.ctx.at.shared.ws'
+
+include 'ctx:at:schedule:nts.uk.ctx.at.schedule.ac'
+include 'ctx:at:schedule:nts.uk.ctx.at.schedule.app'
+include 'ctx:at:schedule:nts.uk.ctx.at.schedule.dom'
+include 'ctx:at:schedule:nts.uk.ctx.at.schedule.infra'
+include 'ctx:at:schedule:nts.uk.ctx.at.schedule.pub'
+include 'ctx:at:schedule:nts.uk.ctx.at.schedule.pubimp'
+include 'ctx:at:schedule:nts.uk.ctx.at.schedule.ws'
+
+include 'ctx:at:record:nts.uk.ctx.at.record.ac'
+include 'ctx:at:record:nts.uk.ctx.at.record.app'
+include 'ctx:at:record:nts.uk.ctx.at.record.dom'
+include 'ctx:at:record:nts.uk.ctx.at.record.infra'
+include 'ctx:at:record:nts.uk.ctx.at.record.pub'
+include 'ctx:at:record:nts.uk.ctx.at.record.pubimp'
+include 'ctx:at:record:nts.uk.ctx.at.record.ws'

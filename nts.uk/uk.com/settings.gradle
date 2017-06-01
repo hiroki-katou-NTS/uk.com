@@ -1,0 +1,17 @@
+include 'web:nts.uk.com.web'
+
+include 'ctx:basic:nts.uk.ctx.basic.ac'
+include 'ctx:basic:nts.uk.ctx.basic.app'
+include 'ctx:basic:nts.uk.ctx.basic.dom'
+include 'ctx:basic:nts.uk.ctx.basic.infra'
+include 'ctx:basic:nts.uk.ctx.basic.pub'
+include 'ctx:basic:nts.uk.ctx.basic.pubimp'
+include 'ctx:basic:nts.uk.ctx.basic.ws'
+
+include 'ctx:sys:portal:nts.uk.ctx.sys.portal.ac'
+include 'ctx:sys:portal:nts.uk.ctx.sys.portal.app'
+include 'ctx:sys:portal:nts.uk.ctx.sys.portal.dom'
+include 'ctx:sys:portal:nts.uk.ctx.sys.portal.infra'
+include 'ctx:sys:portal:nts.uk.ctx.sys.portal.pub'
+include 'ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp'
+include 'ctx:sys:portal:nts.uk.ctx.sys.portal.ws'
