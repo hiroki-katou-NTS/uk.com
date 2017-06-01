@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStampPK;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.KscstExternalBudget;
 
 @Stateless
 public class JpaStampRepository extends JpaRepository implements StampRepository {
@@ -53,12 +52,9 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 
 	@Override
 	public List<StampItem> findByEmployeeCode(String companyId, String cardNumber, String startDate, String endDate) {
-		return this.queryProxy().query(SELECT_BY_EMPPLOYEE_CODE, KwkdtStamp.class)
-				.setParameter("companyId", companyId)
-				.setParameter("cardNumber", cardNumber)
-				.setParameter("startDate", startDate)
-				.setParameter("endDate", endDate)
-				.getList(c -> toDomain(c));
+		return this.queryProxy().query(SELECT_BY_EMPPLOYEE_CODE, KwkdtStamp.class).setParameter("companyId", companyId)
+				.setParameter("cardNumber", cardNumber).setParameter("startDate", startDate)
+				.setParameter("endDate", endDate).getList(c -> toDomain(c));
 	}
 
 	@Override
