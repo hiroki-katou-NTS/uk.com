@@ -17,7 +17,6 @@ module nts.uk.pr.view.kmf001.h {
             // Temp
             employmentList: KnockoutObservableArray<ItemModel>;
             selectedContractTypeCode: KnockoutObservable<string>;
-            selectedTab: KnockoutObservable<number>;
 
             // Model
             settingModel: KnockoutObservable<SubstVacationSettingModel>;
@@ -41,7 +40,6 @@ module nts.uk.pr.view.kmf001.h {
 
                 self.settingModel = ko.observable(null);
                 self.empSettingModel = ko.observable(null);
-                self.selectedTab = ko.observable(0);
                 self.settingModel = ko.observable(
                     new SubstVacationSettingModel({
                         isManage: 0,
@@ -73,26 +71,6 @@ module nts.uk.pr.view.kmf001.h {
                 self.selectedContractTypeCode.subscribe(function(data: string) {
                     self.empSettingModel().contractTypeCode(data);
                     self.loadEmpSettingDetails(data);
-                });
-
-                $("#sidebar-area > div > ul > li").on('click', function() {
-                    var index = $("#sidebar-area > div > ul > li").index(this);
-                    $("#sidebar").ntsSideBar("active", index);
-                    self.selectedTab(index);
-                });
-
-                self.selectedTab.subscribe(val => {
-                    if (!val) {
-                        return;
-                    }
-                    // reload tab.
-                    if (!self.isComManaged() && val == 1) {
-                        // Show msg #Msg_146
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_146')).then(function() {
-                            $("#sidebar").ntsSideBar("active", 0);
-                            self.selectedTab(0);
-                        });
-                    }
                 });
             }
 
@@ -215,13 +193,23 @@ module nts.uk.pr.view.kmf001.h {
                 return dfd.promise();
             }
 
+            public checkComManaged(): void {
+                let self = this;
+
+                if (!self.isComManaged()) {
+                    // Show msg #Msg_146
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_146')).then(function() {
+                        $("#sidebar").ntsSideBar("active", 0);
+                    });
+                }
+            }
+
             public back(): void {
                 nts.uk.request.jump("/view/kmf/001/a/index.xhtml", {});
             }
 
             public saveComSetting(): void {
                 let self = this;
-                let dfd = $.Deferred();
 
                 if (!self.validateComSetting()) {
                     return;
@@ -229,9 +217,7 @@ module nts.uk.pr.view.kmf001.h {
 
                 this.service.saveComSetting(self.settingModel().toSubstVacationSettingDto()).done(function() {
                     // Msg_15
-                    nts.uk.ui.dialog.alert("登録しました。");
-                    // nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
-                    dfd.resolve();
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                 });

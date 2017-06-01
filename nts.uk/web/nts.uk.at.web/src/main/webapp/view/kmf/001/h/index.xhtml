@@ -17,11 +17,10 @@
 		<ui:define name="sidebar">
 			<ul class="navigator" tabindex="1">
 				<li><a href="#tabpanel-1" role="tab-navigator" class="active">
-						<!-- #Com_Company --> 会社
-				</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator"> <!-- ＃Com_Employment -->
-						雇用
-				</a></li>
+						#{i18n.getText('Com_Company')} </a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator"
+					data-bind="click: checkComManaged">
+						#{i18n.getText('Com_Employment')} </a></li>
 			</ul>
 		</ui:define>
 
@@ -141,8 +140,7 @@
 							<td id="right-content">
 								<table class="form-default" data-bind="with: empSettingModel">
 									<tr class="row_head">
-										<td colspan="3"><div
-												data-bind="ntsFormLabel: {}">
+										<td colspan="3"><div data-bind="ntsFormLabel: {}">
 												#{i18n.getText('KMF001_96')}</div></td>
 									</tr>
 									<tr>
