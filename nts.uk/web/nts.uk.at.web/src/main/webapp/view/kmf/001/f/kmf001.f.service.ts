@@ -28,7 +28,7 @@ module nts.uk.pr.view.kmf001.f {
         export function getEnumManageDistinct(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(servicePath.enumManageDistinct);
         }
-        
+
         export function getEnumApplyPermission(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(servicePath.enumApplyPermission);
         }
@@ -60,19 +60,6 @@ module nts.uk.pr.view.kmf001.f {
         * Model namespace.
         */
         export module model {
-
-            export class EnumerationModel {
-
-                code: string;
-                name: string;
-
-                constructor(code: string, name: string) {
-                    let self = this;
-                    self.name = name;
-                    self.code = code;
-                }
-            }
-
             export class Enum {
                 value: number;
                 fieldName: string;
@@ -84,7 +71,7 @@ module nts.uk.pr.view.kmf001.f {
                     this.localizedName = localizedName;
                 }
             }
-            
+
             export class RadioEnum {
                 value: number;
                 fieldName: string;
@@ -97,7 +84,7 @@ module nts.uk.pr.view.kmf001.f {
                     this.enable = true;
                 }
             }
-            
+
         }
     }
 }
