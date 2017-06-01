@@ -20,7 +20,6 @@ public class WorkHistory extends AggregateRoot{
 	//履歴ID
 	private HistoryId historyId;
 	
-	
 	/** The period. */
 	//期間
 	private Period period;
