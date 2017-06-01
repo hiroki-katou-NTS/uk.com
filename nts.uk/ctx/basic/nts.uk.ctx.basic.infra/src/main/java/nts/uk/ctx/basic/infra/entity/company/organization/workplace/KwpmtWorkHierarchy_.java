@@ -2,21 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.infra.entity.company.organization.catetory;
+package nts.uk.ctx.basic.infra.entity.company.organization.workplace;
 
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class CclmtManagementCategory_.
+ * The Class KwpmtWorkHierarchy_.
  */
-@StaticMetamodel(CclmtManagementCategory.class)
-public class CclmtManagementCategory_ {
+@StaticMetamodel(KwpmtWorkHierarchy.class)
+public class KwpmtWorkHierarchy_ {
 
 	/** The cclmt management category PK. */
-	public static volatile SingularAttribute<CclmtManagementCategory, CclmtManagementCategoryPK> cclmtManagementCategoryPK;
-
-	/** The name. */
-	public static volatile SingularAttribute<CclmtManagementCategory, String> name;
+	public static volatile SingularAttribute<KwpmtWorkHierarchy, KwpmtWorkHierarchyPK> kwpmtWorkHierarchyPK;
 
 }
