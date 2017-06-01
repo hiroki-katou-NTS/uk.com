@@ -36,7 +36,11 @@ public class KwpmtWorkPlacePK implements Serializable {
 	@NotNull
 	@Column(name = "WKPID")
 	private String wkpid;
-
+	 
+ 	/** The wkpcd. */
+ 	@NotNull
+	@Column(name = "WKPCD")
+	private String wkpcd;
 	/**
 	 * Instantiates a new kwpmt work place PK.
 	 */

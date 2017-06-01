@@ -50,6 +50,10 @@ public class KwpmtWorkPlace extends UkJpaEntity implements Serializable {
     /** The wkpcd. */
     @Column(name = "WKPCD")
     private String wkpcd;
+    
+    /** The wkpname. */
+    @Column(name = "WKPNAME")
+    private String wkpname;
 
     /**
      * Instantiates a new kwpmt work place.
