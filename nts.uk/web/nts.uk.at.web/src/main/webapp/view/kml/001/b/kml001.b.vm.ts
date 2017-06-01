@@ -43,14 +43,14 @@ module nts.uk.at.view.kml001.b {
                             });        
                             return x;
                         });
-                        self.allUse.subscribe(function(value){
-                            if(value==0) {
-                                $("#premium-set-tbl").ntsError('set', {messageId:"Msg_66"});     
-                            } else {
-                                $("#premium-set-tbl").ntsError('clear');  
-                            }    
-                        });
-                        dfd.resolve();
+//                        self.allUse.subscribe(function(value){
+//                            if(value==0) {
+//                                $("#premium-set-tbl-b").ntsError('set', {messageId:"Msg_66"});     
+//                            } else {
+//                                $("#premium-set-tbl-b").ntsError('clear');  
+//                            }    
+//                        });
+                        dfd.resolve(); 
                     })
                     .fail(function(res) { 
                         nts.uk.ui.dialog.alertError(res.message);
