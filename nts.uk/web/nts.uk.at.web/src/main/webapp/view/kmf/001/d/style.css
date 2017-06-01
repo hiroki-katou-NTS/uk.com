@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
 #whole-company-content {
-	height: 570px;
+	height: 500px;;
 	width: 85%;
 }
 .register-button {
@@ -61,7 +61,7 @@
 
 #left-content {
 	width: 400px;
-	height: 500px;
+	height: 450px;
 	padding: 25px;
 	padding-top: 100px;
 }

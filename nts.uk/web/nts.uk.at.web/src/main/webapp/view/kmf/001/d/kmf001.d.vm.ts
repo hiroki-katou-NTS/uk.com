@@ -23,7 +23,7 @@ module nts.uk.pr.view.kmf001.d {
             selectedCode: KnockoutObservable<string>;
             managementOption: KnockoutObservableArray<ManagementModel>;
             selectedManagement: KnockoutObservable<number>;
-            hasEmpoyment: KnockoutObservable<boolean>;
+            hasSelectedEmp: KnockoutObservable<boolean>;
 
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -54,22 +54,21 @@ module nts.uk.pr.view.kmf001.d {
                     new ManagementModel(0, '管理しない')
                 ]);
                 self.selectedManagement = ko.observable(1);
-                self.hasEmpoyment = ko.computed(function() {
-                    return self.employmentList().length > 0;
-                }, self);
+                self.hasSelectedEmp = ko.observable(false);
                 self.isManaged = ko.computed(function() {
                     return self.selectedManagement() == 1;
                 }, self);
                 
-                self.selectedCode.subscribe(function(data: string){
-                    service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto){
-                       self.bindEmploymentSettingData(data1);
-                         $('#switch-btn').focus();
+                self.selectedCode.subscribe(function(data: string) {
+                    service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
+                        self.hasSelectedEmp(true);
+                        self.bindEmploymentSettingData(data1);
+                        $('#switch-btn').focus();
                     });
+                    
                 });
                 
                 self.annualManage = ko.observable(1);
-                
                 self.isManaged = ko.computed(function() {
                     return self.annualManage() == 1;
                 }, self);
@@ -107,7 +106,7 @@ module nts.uk.pr.view.kmf001.d {
                             self.annualManage(0);
                         }
                         else {
-                            self.annualManage(data.annualManage);
+                            self.annualManage(1);
                         }
                     }
                     dfd.resolve();

@@ -19,29 +19,29 @@
 			</script>
 		</ui:define>
 
-		<ui:define name="sidebar">
+		<ui:define tabindex="1" name="sidebar">
 			<ul class="navigator">
-				<li><a href="#company-tab" role="tab-navigator" class="active">全社</a></li>
-				<li><a href="#by-employment-tab" role="tab-navigator">雇用</a></li>
+				<li><a href="#company-tab" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#by-employment-tab" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
 		</ui:define>
 
 		<ui:define name="sidebar-content">
 			<div id="company-tab" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">会社</span>
-					<button data-bind="click: gotoParent">休暇の選択に戻る</button>
-					<button data-bind="click: saveData" class="proceed register-button">登録</button>
+					<span class="title">#{i18n.getText('Com_Company')}</span>
+					<button tabindex="2" data-bind="click: gotoParent">#{i18n.getText('KMF001_27')}</button>
+					<button tabindex="3" data-bind="click: saveData" class="proceed register-button">#{i18n.getText('KMF001_28')}</button>
 					<div class="link_label">
-						<label data-bind="click: gotoVacationSetting">休暇の設定</label>
+						<label tabindex="4" data-bind="click: gotoVacationSetting">#{i18n.getText('KMF001_29')}</label>
 					</div>
 				</div>
 				<div class="ruledLine"></div>
 
 				<div id="company-content">
 					<div data-bind="ntsFormLabel: {required: true}"
-						style="margin-right: 50px;">代休の管理</div>
-					<span
+						style="margin-right: 50px;">#{i18n.getText('KMF001_75')}</div>
+					<span tabindex="5"
 						data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
 										optionsValue: 'value',
@@ -55,16 +55,16 @@
 					<table id="setting_tbl">
 						<tr>
 							<td colspan="6">
-								<div data-bind="ntsFormLabel: {}">代休の設定</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_88')}</div>
 								<div class="hr_width">
 									<hr />
 								</div>
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><label>使用期限</label></td>
+							<td class="pad_left_30"><label>#{i18n.getText('KMF001_76')}</label></td>
 							<td colspan="2">
-								<div class="combo-box"
+								<div tabindex="6" class="combo-box"
 									data-bind="ntsComboBox: {
 										options: expirationTimeEnums,
 										optionsValue: 'value',
@@ -78,8 +78,8 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><label>代休の先取り</label></td>
-							<td colspan="2"><span
+							<td class="pad_left_30"><label>#{i18n.getText('KMF001_77')}</label></td>
+							<td colspan="2"><span tabindex="7"
 								data-bind="ntsSwitchButton: {
 										options: applyPermissionEnums,
 										optionsValue: 'value',
@@ -89,8 +89,8 @@
 							</span></td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><label>時間代休の管理</label></td>
-							<td colspan="2"><span
+							<td class="pad_left_30"><label>#{i18n.getText('KMF001_78')}</label></td>
+							<td colspan="2"><span tabindex="8"
 								data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
 										optionsValue: 'value',
@@ -98,16 +98,16 @@
 										value: compenTimeManage,
 										enable: isManageCompen }">
 							</span></td>
-							<td><label>消化単位</label></td>
+							<td><label>#{i18n.getText('KMF001_102')}</label></td>
 							<td>
-								<div class="combo-box"
+								<div class="combo-box" tabindex="9"
 									data-bind="ntsComboBox: {
 										options: timeVacationDigestiveUnitEnums,
 										optionsValue: 'value',
 										value: timeUnitCode,
 										optionsText: 'localizedName',
 										editable: false,
-										enable: isManageCompen,
+										enable: isManageTime,
 										columns: [
 											{ prop: 'localizedName', length: 4 },
 										]}"></div>
@@ -115,9 +115,9 @@
 						</tr>
 						<tr>
 							<td colspan="6">
-								<div data-bind="ntsFormLabel: {}">代休発生の設定</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_79')}</div>
 								<div style="float: right;">
-									<button
+									<button tabindex="6"
 										data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
 								</div>
 								<div class="hr_width">
@@ -126,12 +126,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td class ="pad_left_30"><div
-									data-bind="ntsCheckBox: { checked: checkWorkTime, enable: isManageCompen}">代休の発生に必要な休日出勤時間</div></td>
+							<td class ="pad_left_30"><div tabindex="7"
+									data-bind="ntsCheckBox: { checked: checkWorkTime, enable: isManageCompen}">#{i18n.getText('KMF001_80')}</div></td>
 						</tr>
 						<tr>
 							<td class ="pad_left_60" rowspan="2">
-								<div id="first-list"
+								<div id="first-list" tabindex="8"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
 											optionsValue: 'value',
@@ -139,13 +139,13 @@
 											value: selectedOfWorkTime,
 											enable: enableWorkArea}"></div>
 							</td>
-							<td class="pad_left_70"><label>一日：</label></td>
-							<td class="inp_time"><input id="workOneDay"
+							<td class="pad_left_70"><label>#{i18n.getText('KMF001_81')}</label></td>
+							<td class="inp_time"><input id="workOneDay" class ="check_error" tabindex="9"
 								style="float: right;" data-name="Time Of Days Editor"
 								data-bind="ntsTimeEditor: {value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
 							</td>
-							<td class="pad_left_70"><label>半日：</label></td>
-							<td class="inp_time"><input id="workHalfDay"
+							<td class="pad_left_70"><label>#{i18n.getText('KMF001_82')}</label></td>
+							<td class="inp_time"><input id="workHalfDay" class ="check_error" tabindex="10"
 								data-name="Time Of Days Editor"
 								data-bind="ntsTimeEditor: {value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
 							</td>
@@ -153,19 +153,19 @@
 						<tr>
 							<td class="inp_time">
 							<div class="float_right">
-									<input id="workAll" data-name="Time Of Days Editor"
+									<input id="workAll" class ="check_error" data-name="Time Of Days Editor" tabindex="11"
 										data-bind="ntsTimeEditor: {value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
 								</div>
 							</td>
-							<td><label>以上</label></td>
+							<td><label>#{i18n.getText('KMF001_83')}</label></td>
 						</tr>
 						<tr>
-							<td class ="pad_left_30"><div
-									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">代休の発生に必要な残業時間</div></td>
+							<td class ="pad_left_30"><div tabindex="12"
+									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div></td>
 						</tr>
 						<tr>
 							<td class ="pad_left_60" rowspan="2">
-								<div id="first-list"
+								<div id="first-list" tabindex="13"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
 											optionsValue: 'value',
@@ -173,13 +173,13 @@
 											value: selectedOfOverTime,
 											enable: enableOverArea}"></div>
 							</td>
-							<td class="pad_left_70"><label>一日：</label></td>
-							<td class="inp_time"><input id="overOneDay"
+							<td class="pad_left_70"><label>#{i18n.getText('KMF001_81')}</label></td>
+							<td class="inp_time"><input id="overOneDay" class ="check_error" tabindex="14"
 								data-name="Time Of Days Editor"
 								data-bind="ntsTimeEditor: {value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 							</td>
-							<td class="pad_left_70"><label>半日：</label></td>
-							<td class="inp_time"><input id="overHalfDay"
+							<td class="pad_left_70"><label>#{i18n.getText('KMF001_82')}</label></td>
+							<td class="inp_time"><input id="overHalfDay" class ="check_error" tabindex="15"
 								data-name="Time Of Days Editor"
 								data-bind="ntsTimeEditor: {value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 							</td>
@@ -187,11 +187,11 @@
 						<tr>
 							<td class="inp_time">
 							<div class="float_right">
-									<input id="overAll" data-name="Time Of Days Editor"
+									<input id="overAll" class ="check_error" data-name="Time Of Days Editor" tabindex="16"
 										data-bind="ntsTimeEditor: {value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
 								</div>
 							</td>
-							<td><label>以上</label></td>
+							<td><label>#{i18n.getText('KMF001_83')}</label></td>
 						</tr>
 					</table>
 				</div>
@@ -202,11 +202,11 @@
 
 			<div id="by-employment-tab" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">雇用</span>
-					<button>休暇の選択に戻る</button>
-					<button class="proceed register-button">登録</button>
+					<span class="title">#{i18n.getText('Com_Employment')}</span>
+					<button>#{i18n.getText('KMF001_27')}</button>
+					<button class="proceed register-button">#{i18n.getText('KMF001_28')}</button>
 					<div class="register-annual-holiday-table">
-						<a href="#register-annual-holiday-table">年休付与テーブルの登録</a>
+						<a href="#register-annual-holiday-table">#{i18n.getText('KMF001_29')}</a>
 					</div>
 
 				</div>

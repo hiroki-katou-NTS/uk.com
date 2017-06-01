@@ -1,4 +1,4 @@
-module nts.uk.pr.view.kmf001.h {
+module nts.uk.pr.view.kmf001.j {
     export module viewmodel {
         import Enum = service.model.Enum;
         import SubstVacationSettingDto = service.model.SubstVacationSettingDto;
