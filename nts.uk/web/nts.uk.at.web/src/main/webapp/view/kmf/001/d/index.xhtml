@@ -105,7 +105,7 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 					<button data-bind="click: backToHistorySelection" tabindex="2">休暇の選択に戻る</button>
-					<button class="proceed register-button" data-bind="click: registerByEmployment, enable: isManaged" tabindex="3">登録</button>
+					<button class="proceed register-button" data-bind="click: registerByEmployment, enable: hasSelectedEmp" tabindex="3">登録</button>
 					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table" tabindex="4">年休付与テーブルの登録</a></div>
 					
 				</div>
@@ -118,7 +118,7 @@
 								<i class="icon icon-searchbox"></i>
 								
 						 		<table id="single-list" data-bind="ntsGridList: {
-									height: 500,
+									height: 450,
 									width: '98%',
 									options: employmentList,
 									optionsValue: 'code',
@@ -146,7 +146,7 @@
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: selectedManagement,
-												enable: hasEmpoyment}" tabindex="2"></div>
+												enable: hasSelectedEmp}" tabindex="2"></div>
 										</td>
 									</tr>
 									
@@ -164,7 +164,7 @@
 													constraint: 'NumberOfYear',
 													option: textEditorOption,
 													required: true,
-													enable: hasEmpoyment,
+													enable: hasSelectedEmp,
 													readonly: false}" tabindex="3"/>
 											</div>
 										</td>
@@ -182,7 +182,7 @@
 													constraint: 'MaxOfDays',
 													option: textEditorOption,
 													required: true,
-													enable: hasEmpoyment,
+													enable: hasSelectedEmp,
 													readonly: false}" tabindex="4"/>
 											</div>
 										</td>
