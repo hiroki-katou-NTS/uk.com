@@ -34,7 +34,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KwtstWorkTimeSet;
 public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepository{
 
 	private final String findByList = "SELECT a FROM KwtmtWorkTime a "
-			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID"
+			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID "
 			+ "AND a.kwtmpWorkTimePK.workTimeCD IN :workTimeCDs";
 	
 	@Override
@@ -64,8 +64,9 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 				new WorkTimeSymbol(kwtmtWorkTime.symbol), 
 				kwtmtWorkTime.remarks, 
 				EnumAdaptor.valueOf(kwtmtWorkTime.displayAtr, UseSetting.class), 
-				EnumAdaptor.valueOf(kwtmtWorkTime.methodAtr, WorkMethodSetting.class), 
-				convertToDomainWorkTimeSet(kwtmtWorkTime.kwtstWorkTimeSet) 
+				EnumAdaptor.valueOf(kwtmtWorkTime.methodAtr, WorkMethodSetting.class),
+				//convertToDomainWorkTimeSet(kwtmtWorkTime.kwtstWorkTimeSet) 
+				null
 		);
 	}
 	
@@ -84,7 +85,8 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 				EnumAdaptor.valueOf(kwtstWorkTimeSet.nightShiftAtr, WorkTimeNightShift.class), 
 				kwtstWorkTimeSet.startDateTime, 
 				EnumAdaptor.valueOf(kwtstWorkTimeSet.startDateAtr, TimeDayAtr.class), 
-				convertToDomainWorkTimeDay(kwtstWorkTimeSet.kwtdtWorkTimeDay)
+				null
+				//convertToDomainWorkTimeDay(kwtstWorkTimeSet.kwtdtWorkTimeDay)
 		);
 	}
 	

@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -42,13 +43,13 @@ public class KwtstWorkTimeSet extends UkJpaEntity{
 	@Column(name="START_DATE_ATR")
 	public int startDateAtr;
 
-	@OneToMany
+	/*@OneToMany(targetEntity=KwtstWorkTimeSet.class)
 	@JoinTable(name="KWTDT_WORK_TIME_DAY")
-	@JoinColumns(value = {
-		@JoinColumn(name="CID",referencedColumnName="CID"),
-		@JoinColumn(name="WORK_TIME_SET_CD",referencedColumnName="WORK_TIME_SET_CD")
+	@PrimaryKeyJoinColumns(value = {
+		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
+		@PrimaryKeyJoinColumn(name="WORK_TIME_SET_CD",referencedColumnName="WORK_TIME_SET_CD")
 	})
-	public KwtdtWorkTimeDay kwtdtWorkTimeDay;
+	public KwtdtWorkTimeDay kwtdtWorkTimeDay;*/
 	
 	@Override
 	protected Object getKey() {

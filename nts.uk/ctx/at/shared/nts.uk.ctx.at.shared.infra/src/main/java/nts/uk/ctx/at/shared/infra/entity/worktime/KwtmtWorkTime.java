@@ -49,13 +49,13 @@ public class KwtmtWorkTime extends UkJpaEntity{
 	@Column(name="METHOD_ATR")
 	public int methodAtr;
 
-	@OneToOne
+	/*@OneToOne(targetEntity=KwtmtWorkTime.class)
 	@JoinTable(name="KWTST_WORK_TIME_SET")
 	@JoinColumns(value = {
 		@JoinColumn(name="CID",referencedColumnName="CID"),
 		@JoinColumn(name="WORK_TIME_CD",referencedColumnName="WORK_TIME_CD")
 	})
-	public KwtstWorkTimeSet kwtstWorkTimeSet;
+	public KwtstWorkTimeSet kwtstWorkTimeSet;*/
 	
 	@Override
 	protected Object getKey() {
