@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.infra.repository.stamp;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.stamp.StampItem;
 import nts.uk.ctx.at.record.dom.stamp.StampRepository;
 import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
@@ -15,10 +17,10 @@ import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStampPK;
 public class JpaStampRepository extends JpaRepository implements StampRepository {
 	private final String SELECT_NO_WHERE = "SELECT c FROM KwkdtStamp c";
 	private final String SELECT_BY_EMPPLOYEE_CODE = SELECT_NO_WHERE 
-			+ " WHERE c.KwkdtStampPK.companyId = :companyId"
-			+ " AND c.KwkdtStampPK.cardNumber = :cardNumber" 
-			+ " AND c.KwkdtStampPK.date >= :startDate"
-			+ " AND c.KwkdtStampPK.date <= :endDate";
+			+ " WHERE c.kwkdtStampPK.companyId = :companyId"
+			+ " AND c.kwkdtStampPK.cardNumber = :cardNumber" 
+			+ " AND c.kwkdtStampPK.date > :startDate"
+			+ " AND c.kwkdtStampPK.date < :endDate";
 
 	private static StampItem toDomain(KwkdtStamp entity) {
 		StampItem domain = StampItem.createFromJavaType(entity.kwkdtStampPK.companyId, 
@@ -52,9 +54,12 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 
 	@Override
 	public List<StampItem> findByEmployeeCode(String companyId, String cardNumber, String startDate, String endDate) {
-		return this.queryProxy().query(SELECT_BY_EMPPLOYEE_CODE, KwkdtStamp.class).setParameter("companyId", companyId)
-				.setParameter("cardNumber", cardNumber).setParameter("startDate", startDate)
-				.setParameter("endDate", endDate).getList(c -> toDomain(c));
+		return this.queryProxy().query(SELECT_BY_EMPPLOYEE_CODE, KwkdtStamp.class)
+				.setParameter("companyId", companyId)
+				.setParameter("cardNumber", cardNumber)
+				.setParameter("startDate", GeneralDate.fromString(startDate, "yyyyMMdd"))
+				.setParameter("endDate", GeneralDate.fromString(endDate, "yyyyMMdd"))
+				.getList(c -> toDomain(c));	
 	}
 
 	@Override

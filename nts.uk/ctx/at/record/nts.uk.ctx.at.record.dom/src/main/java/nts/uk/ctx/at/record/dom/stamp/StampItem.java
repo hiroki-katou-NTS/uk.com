@@ -23,9 +23,14 @@ public class StampItem extends AggregateRoot {
 	public static StampItem createFromJavaType(String companyID, String cardNumber, int attendanceTime,
 			int stampCombinationAtr, String workTimeCd, int stampMethod, int stampAtr, String workLocationCd,
 			int stampReason, GeneralDate date) {
-		return new StampItem(companyID, new CardNumber(cardNumber), new AttendanceTime(attendanceTime),
-				EnumAdaptor.valueOf(stampCombinationAtr, StampCombinationAtr.class), new WorkTimeCd(workTimeCd),
-				EnumAdaptor.valueOf(stampMethod, StampMethod.class), EnumAdaptor.valueOf(stampAtr, StampAtr.class),
-				new WorkLocationCd(workLocationCd), EnumAdaptor.valueOf(stampReason, StampReason.class), date);
+		return new StampItem(companyID, new CardNumber(cardNumber), 
+				new AttendanceTime(attendanceTime),
+				EnumAdaptor.valueOf(stampCombinationAtr, StampCombinationAtr.class), 
+				new WorkTimeCd(workTimeCd),
+				EnumAdaptor.valueOf(stampMethod, StampMethod.class), 
+				EnumAdaptor.valueOf(stampAtr, StampAtr.class),
+				new WorkLocationCd(workLocationCd), 
+				EnumAdaptor.valueOf(stampReason, StampReason.class), 
+				date);
 	}
 }
