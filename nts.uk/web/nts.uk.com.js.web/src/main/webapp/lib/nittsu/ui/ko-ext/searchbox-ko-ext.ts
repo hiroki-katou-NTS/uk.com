@@ -48,26 +48,24 @@ module nts.uk.ui.koExtentions {
         
         private cloneDeep(source: Array<any>): Array<any>{
             let self = this;
-            let result = self.cloneDeepX(source);  
-            
-            return result; 
+            return self.cloneDeepX(source); 
         }
         
         private cloneDeepX(source: Array<any>): Array<any>{
             let self = this;
-            let result = [];
+//            let result = [];
+//            
+//            _.forEach(source, function (item: any){
+//                let cloned = _.cloneDeep(item);
+//                
+//                if(!nts.uk.util.isNullOrUndefined(self.childField)){
+//                    cloned[self.childField] = self.cloneDeepX(cloned[self.childField]).slice();        
+//                }
+//                
+//                result.push(cloned);                
+//            });   
             
-            _.forEach(source, function (item: any){
-                let cloned = _.cloneDeep(item);
-                
-                if(!nts.uk.util.isNullOrUndefined(self.childField)){
-                    cloned[self.childField] = self.cloneDeepX(cloned[self.childField]).slice();        
-                }
-                
-                result.push(cloned);                
-            });   
-            
-            return result; 
+            return _.cloneDeep(source); 
         }
     }
     
@@ -103,7 +101,8 @@ module nts.uk.ui.koExtentions {
                     result.options = this.seachBox.getDataSource();
                     let index = 0;
                     if (!nts.uk.util.isNullOrEmpty(selectedItems)) {
-                        let firstItemValue = $.isArray(selectedItems) ? selectedItems[0]["id"].toString(): selectedItems["id"].toString();
+                        let firstItemValue = $.isArray(selectedItems) 
+                            ? selectedItems[0]["id"].toString(): selectedItems["id"].toString();
                         index = _.findIndex(filted, function(item: any){
                             return item[key].toString() === firstItemValue;           
                         });   
@@ -160,8 +159,15 @@ module nts.uk.ui.koExtentions {
             if (data.childField) {
                 childField = ko.unwrap(data.childField);
             }
+            var component;
+            let targetMode = data.mode;
+            if (targetMode === "listbox") {
+                component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
+                targetMode = "igGrid";    
+            } else {
+                component = $("#" + ko.unwrap(data.comId));    
+            }
             
-            var component = $("#" + ko.unwrap(data.comId));
             var $container = $(element);
             
             $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor' type='text' /></span>");  
@@ -175,6 +181,9 @@ module nts.uk.ui.koExtentions {
                 let $clearButton = $container.find("button.clear-btn");  
                 buttonWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
+                    if(component.length === 0){
+                        component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
+                    }
                     let srh: SearchPub= $container.data("searchObject");
                     component.igGrid("option", "dataSource", srh.seachBox.getDataSource());  
                     component.igGrid("dataBind"); 
@@ -193,11 +202,14 @@ module nts.uk.ui.koExtentions {
             $container.data("searchObject", searchObject);
             
             let search = function (searchKey: string){
-                if (data.mode) {
+                if (targetMode) {
                     let selectedItems;
-                    if (data.mode == 'igGrid') {
+                    if (targetMode == 'igGrid') {
+                        if(component.length === 0){
+                            component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
+                        }
                         selectedItems = component.ntsGridList("getSelected");
-                    } else if (data.mode == 'igTree') {
+                    } else if (targetMode == 'igTree') {
                         selectedItems = component.ntsTreeView("getSelected");
                     }
                     
@@ -207,7 +219,7 @@ module nts.uk.ui.koExtentions {
                         $input.ntsError("set", "#FND_E_SEARCH_NOHIT");
                         return;        
                     }
-                    let isMulti = data.mode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection') 
+                    let isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection') 
                         : component.igTreeGridSelection('option', 'multipleSelection')
                     let selectedProperties = _.map(result.selectItems, primaryKey);
                     let selectedValue;
@@ -219,7 +231,7 @@ module nts.uk.ui.koExtentions {
                             result.selectItems.length > 0 ? result.selectItems[0] : undefined;    
                     }
                     
-                    if (data.mode === 'igGrid') {  
+                    if (targetMode === 'igGrid') {  
                         if(searchMode === "filter"){
 //                            component.igGrid("option", "dataSource", result.options);  
 //                            component.igGrid("dataBind");
@@ -230,11 +242,13 @@ module nts.uk.ui.koExtentions {
                             selected(selectedValue);    
                         }
                         component.ntsGridList("setSelected", selectedProperties);
-                    } else if (data.mode == 'igTree') {
+                    } else if (targetMode == 'igTree') {
                         component.ntsTreeView("setSelected", selectedProperties);
                         data.selected(selectedValue);
                     }
-                    component.trigger("selectChange");
+                    _.defer(function() {
+                        component.trigger("selectChange");    
+                    });
                     
                     $container.data("searchKey", searchKey);  
                 }    
@@ -271,7 +285,14 @@ module nts.uk.ui.koExtentions {
             var searchMode = ko.unwrap(data.searchMode);
             let primaryKey = ko.unwrap(data.targetKey);
             let selectedValue = ko.unwrap(data.selected);
-            var component = $("#" + ko.unwrap(data.comId));
+            let targetMode = data.mode;
+            let component;
+            if (targetMode === "listbox") {
+                component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
+                targetMode = "igGrid";    
+            } else {
+                component = $("#" + ko.unwrap(data.comId));    
+            }
             let srhX: SearchPub= $searchBox.data("searchObject");
             
             if(searchMode === "filter"){

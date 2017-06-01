@@ -14,11 +14,13 @@ public class AsposeSampleReportGenerator extends AsposeCellsReportGenerator impl
 	private static final String TEMPLATE_FILE = "report/SampleReport.xlsx";
 	
 	private static final String REPORT_FILE_NAME = "サンプル帳票.pdf";
+	
+	private static final String REPORT_ID = "ReportSample";
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, SampleReportDataSource dataSource) {
 		
-		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
+		try (val reportContext = this.createContext(TEMPLATE_FILE, REPORT_ID)) {
 			
 			// set data source named "item"
 			reportContext.setDataSource("item", dataSource.getItems());
