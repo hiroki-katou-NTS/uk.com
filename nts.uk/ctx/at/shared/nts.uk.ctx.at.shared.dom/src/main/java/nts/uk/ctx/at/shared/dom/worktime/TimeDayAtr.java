@@ -1,5 +1,11 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
+/**
+ * 日区分
+ * @author Doan Duy Hung
+ *
+ */
+
 public enum TimeDayAtr {
 	
 	// 前日
