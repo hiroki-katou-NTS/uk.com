@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceFindDto;
+import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceInDto;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -33,7 +34,7 @@ public class WorkplaceFinder {
 	 * @param format the format
 	 * @return the list
 	 */
-	public List<WorkplaceFindDto> findAll(String date, String format){
+	public List<WorkplaceFindDto> findAll(WorkplaceInDto inDto){
 
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -42,11 +43,12 @@ public class WorkplaceFinder {
 		String companyId = loginUserContext.companyId();
 		
 		// to domain
-		return this.repository.findAll(companyId, date, format).stream().map(domain->{
-			WorkplaceFindDto dto = new WorkplaceFindDto();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		return this.repository.findAll(companyId, inDto.getDate(), inDto.getFormat()).stream()
+			.map(domain -> {
+				WorkplaceFindDto dto = new WorkplaceFindDto();
+				domain.saveToMemento(dto);
+				return dto;
+			}).collect(Collectors.toList());
 	}
 
 }
