@@ -38,6 +38,7 @@ module nts.uk.pr.view.kmf001.f {
             enableDesignWork: KnockoutObservable<boolean>;
             enableDesignOver: KnockoutObservable<boolean>;
 
+            backUpData: KnockoutObservable<any>;
             //enums
             manageDistinctEnums: KnockoutObservableArray<Enum>;
             applyPermissionEnums: KnockoutObservableArray<Enum>;
@@ -82,7 +83,8 @@ module nts.uk.pr.view.kmf001.f {
                     fillcharacter: "0",
                     width: "50"
                 }));
-
+                
+                self.backUpData = ko.observable();
                 self.manageDistinctEnums = ko.observableArray([]);
                 self.applyPermissionEnums = ko.observableArray([]);
                 self.expirationTimeEnums = ko.observableArray([]);
@@ -235,6 +237,7 @@ module nts.uk.pr.view.kmf001.f {
                 service.find().done(function(data: any) {
                     if (data) {
                         self.loadToScreen(data);
+                        self.backUpData(data);
                     }
                     dfd.resolve();
                 }).fail(function(res) {
@@ -285,6 +288,7 @@ module nts.uk.pr.view.kmf001.f {
                     if (!$('.check_error').ntsError('hasError'))
                         service.update(self.collectData()).done(function() {
                             nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                            self.loadSetting();
                         });
                 });
             }
@@ -295,7 +299,7 @@ module nts.uk.pr.view.kmf001.f {
                     $('#workOneDay').ntsEditor('validate');
                     $('#workHalfDay').ntsEditor('validate');
                 }
-                else {
+                if (self.enableWorkAll()) {
                     $('#workAll').ntsEditor('validate');
                 }
 
@@ -303,7 +307,7 @@ module nts.uk.pr.view.kmf001.f {
                     $('#overOneDay').ntsEditor('validate');
                     $('#overHalfDay').ntsEditor('validate');
                 }
-                else {
+                if (self.enableOverAll()) {
                     $('#overAll').ntsEditor('validate');
                 }
                 dfd.resolve();
@@ -311,30 +315,31 @@ module nts.uk.pr.view.kmf001.f {
             }
             private collectData() {
                 var self = this;
+                var data = self.backUpData();
                 return {
                     companyId: "",
                     isManaged: self.compenManage(),
                     normalVacationSetting: {
-                        expirationTime: self.expirationDateCode(),
-                        preemptionPermit: self.compenPreApply(),
-                        isManageByTime: self.compenTimeManage(),
-                        digestiveUnit: self.timeUnitCode()
+                        expirationTime: self.isManageCompen()?self.expirationDateCode():data.normalVacationSetting.expirationTime.value,
+                        preemptionPermit: self.isManageCompen()?self.compenPreApply():data.normalVacationSetting.preemptionPermit.value,
+                        isManageByTime: self.isManageCompen()?self.compenTimeManage():data.normalVacationSetting.isManageByTime.value,
+                        digestiveUnit: self.isManageTime()?self.timeUnitCode():data.normalVacationSetting.digestiveUnit.value
                     },
                     occurrenceVacationSetting: {
                         transferSettingOverTime: {
-                            certainTime: self.convertTime(self.overAll()),
-                            useDivision: self.checkOverTime(),
-                            oneDayTime: self.convertTime(self.overOneDay()),
-                            halfDayTime: self.convertTime(self.overHalfDay()),
-                            transferDivision: self.selectedOfOverTime(),
+                            certainTime: self.enableOverAll()?self.convertTime(self.overAll()):data.occurrenceVacationSetting.transferSettingOverTime.certainTime,
+                            useDivision: self.isManageCompen()?self.checkOverTime():data.occurrenceVacationSetting.transferSettingOverTime.useDivision,
+                            oneDayTime: self.enableDesignOver()?self.convertTime(self.overOneDay()):data.occurrenceVacationSetting.transferSettingOverTime.oneDayTime,
+                            halfDayTime: self.enableDesignOver()?self.convertTime(self.overHalfDay()):data.occurrenceVacationSetting.transferSettingOverTime.halfDayTime,
+                            transferDivision: self.enableOverArea()?self.selectedOfOverTime():data.occurrenceVacationSetting.transferSettingOverTime.transferDivision.value,
                             compensatoryOccurrenceDivision: OccurrenceDivision.OverTime
                         },
                         transferSettingDayOffTime: {
-                            certainTime: self.convertTime(self.workAll()),
-                            useDivision: self.checkWorkTime(),
-                            oneDayTime: self.convertTime(self.workOneDay()),
-                            halfDayTime: self.convertTime(self.workHalfDay()),
-                            transferDivision: self.selectedOfWorkTime(),
+                            certainTime: self.enableWorkAll()?self.convertTime(self.workAll()):data.occurrenceVacationSetting.transferSettingDayOffTime.certainTime,
+                            useDivision: self.isManageCompen()?self.checkWorkTime():data.occurrenceVacationSetting.transferSettingDayOffTime.useDivision,
+                            oneDayTime: self.enableDesignWork()?self.convertTime(self.workOneDay()):data.occurrenceVacationSetting.transferSettingDayOffTime.oneDayTime,
+                            halfDayTime: self.enableDesignWork()?self.convertTime(self.workHalfDay()):data.occurrenceVacationSetting.transferSettingDayOffTime.halfDayTime,
+                            transferDivision: self.enableWorkArea()?self.selectedOfWorkTime():data.occurrenceVacationSetting.transferSettingDayOffTime.transferDivision.value,
                             compensatoryOccurrenceDivision: OccurrenceDivision.DayOffTime
                         }
                     }
