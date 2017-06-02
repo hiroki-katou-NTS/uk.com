@@ -107,85 +107,85 @@ subprojects {
 }
 
 
-project (':ctx:basic:nts.uk.ctx.basic.ws') {
+project (':com.ctx:basic:nts.uk.ctx.basic.ws') {
 	dependencies {
-		compile project(':ctx:basic:nts.uk.ctx.basic.app')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.app')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.dom') {
+project (':com.ctx:basic:nts.uk.ctx.basic.dom') {
 	dependencies {
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.app') {
+project (':com.ctx:basic:nts.uk.ctx.basic.app') {
 	dependencies {
 		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1'
-		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.infra') {
+project (':com.ctx:basic:nts.uk.ctx.basic.infra') {
 	dependencies {
-		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.ac') {
+project (':com.ctx:basic:nts.uk.ctx.basic.ac') {
 	dependencies {
-		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.pub') {
+project (':com.ctx:basic:nts.uk.ctx.basic.pub') {
 	dependencies {
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.pubimp') {
+project (':com.ctx:basic:nts.uk.ctx.basic.pubimp') {
 	dependencies {
-		compile project(':ctx:basic:nts.uk.ctx.basic.pub')
-		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
-		compile project(':ctx:basic:nts.uk.ctx.basic.infra')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.pub')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
 
 //========================sys:portal　↓=====================================
 
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.ws') {
+project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws') {
 	dependencies {
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.app')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.dom') {
+project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom') {
 	dependencies {
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.app') {
+project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app') {
 	dependencies {
 		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1'
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.infra') {
+project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra') {
 	dependencies {
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.ac') {
+project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ac') {
 	dependencies {
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pub') {
+project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub') {
 	dependencies {
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp') {
+project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp') {
 	dependencies {
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
 	}
 }
 //========================sys:portal ↑=====================================
 
 //=====================nts.uk.com.web↓============================
-project (':web:nts.uk.com.web') {
+project (':com.web:nts.uk.com.web') {
 	apply plugin: 'war'
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
@@ -227,21 +227,21 @@ project (':web:nts.uk.com.web') {
 		compile group: 'base', name: 'nts.uk.shr.ws', version: '0.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 
-		runtime project (':ctx:basic:nts.uk.ctx.basic.ac')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.app')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.dom')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.pub')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.pubimp')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.ws')
+		runtime project (':com.ctx:basic:nts.uk.ctx.basic.ac')
+		runtime project (':com.ctx:basic:nts.uk.ctx.basic.app')
+		runtime project (':com.ctx:basic:nts.uk.ctx.basic.dom')
+		runtime project (':com.ctx:basic:nts.uk.ctx.basic.infra')
+		runtime project (':com.ctx:basic:nts.uk.ctx.basic.pub')
+		runtime project (':com.ctx:basic:nts.uk.ctx.basic.pubimp')
+		runtime project (':com.ctx:basic:nts.uk.ctx.basic.ws')
 		
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.ac')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.app')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.ws')
+		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ac')
+		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app')
+		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
+		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
+		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp')
+		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws')
 		
 		// shr find implement
 		compile group: 'pr', name: 'nts.uk.ctx.pr.core.app', version: '0.1'

@@ -1,4 +1,4 @@
-include 'web:nts.uk.com.js.web'
+include 'base.web:nts.uk.com.js.web'
 
 include 'shr:nts.uk.shr.com'
 include 'shr:nts.uk.shr.ws'

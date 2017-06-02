@@ -106,25 +106,25 @@ subprojects {
 	}
 }
 
-project (':ctx:workflow:nts.uk.ctx.workflow.ws') {
+project (':wk.ctx:nts.uk.ctx.workflow.ws') {
 	dependencies {
-		compile project(':ctx:workflow:nts.uk.ctx.workflow.app')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.app')
 	}
 }
-project (':ctx:workflow:nts.uk.ctx.workflow.dom') {
+project (':wk.ctx:nts.uk.ctx.workflow.dom') {
 	dependencies {
 	}
 }
-project (':ctx:workflow:nts.uk.ctx.workflow.app') {
+project (':wk.ctx:nts.uk.ctx.workflow.app') {
 	dependencies {
 		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1'
 		
-		compile project(':ctx:workflow:nts.uk.ctx.workflow.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
 	}
 }
-project (':ctx:workflow:nts.uk.ctx.workflow.infra') {
+project (':wk.ctx:nts.uk.ctx.workflow.infra') {
 	dependencies {
-		compile project(':ctx:workflow:nts.uk.ctx.workflow.dom')
+		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
 	}
 }
 

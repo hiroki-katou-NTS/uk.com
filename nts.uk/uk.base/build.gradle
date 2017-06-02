@@ -133,7 +133,7 @@ project (':shr:nts.uk.shr.find') {
 }
 
 //=====================nts.uk.com.js.web↓============================
-project (':web:nts.uk.com.js.web') {
+project (':base.web:nts.uk.com.js.web') {
 	apply plugin: 'war'
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
@@ -174,7 +174,8 @@ project (':web:nts.uk.com.js.web') {
 		compile project(':shr:nts.uk.shr.com')
 		
 		// implement eraAdapter
-		compile group: 'basic', name: 'nts.uk.ctx.basic.infra', version: '0.1'
+		compile group: 'com', name: 'nts.uk.ctx.basic.infra', version: '0.1'
+		compile group: 'com', name: 'nts.uk.ctx.basic.dom', version: '0.1'
 	}
 }
 //=====================nts.uk.com.js.web↑============================
