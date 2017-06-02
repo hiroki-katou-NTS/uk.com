@@ -35,4 +35,29 @@ public class Workplace extends AggregateRoot{
 	//職場名称
 	private WorkplaceName workplaceName;
 	
+	/**
+	 * Instantiates a new workplace.
+	 *
+	 * @param memento the memento
+	 */
+	public Workplace(WorkplaceGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.period = memento.getPeriod();
+		this.workplaceId = memento.getWorkplaceId();
+		this.workplaceCode = memento.getWorkplaceCode();
+		this.workplaceName = memento.getWorkplaceName();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WorkplaceSetMemento memento){
+		memento.setCompanyId(this.companyId);
+		memento.setPeriod(this.period);
+		memento.setWorkplaceId(this.workplaceId);
+		memento.setWorkplaceCode(this.workplaceCode);
+		memento.setWorkplaceName(this.workplaceName);
+	}
 }
