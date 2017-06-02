@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.find;
+package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto.CompensatoryLeaveComSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.find.dto.CompensatoryLeaveComSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

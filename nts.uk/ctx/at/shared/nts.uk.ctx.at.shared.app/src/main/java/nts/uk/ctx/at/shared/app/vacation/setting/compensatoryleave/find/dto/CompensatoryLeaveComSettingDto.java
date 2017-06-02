@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.find.dto;
+package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto;
 
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto.NormalVacationSettingDto;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto.OccurrenceVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.find.dto.NormalVacationSettingDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.find.dto.OccurrenceVacationSettingDto;
 
 public class CompensatoryLeaveComSettingDto implements CompensatoryLeaveComSetMemento {
 	/** The company id. */

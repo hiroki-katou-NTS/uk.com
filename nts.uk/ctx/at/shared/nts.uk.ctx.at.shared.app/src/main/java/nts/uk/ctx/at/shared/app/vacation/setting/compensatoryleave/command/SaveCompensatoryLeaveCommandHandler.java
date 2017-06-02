@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.command;
+package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

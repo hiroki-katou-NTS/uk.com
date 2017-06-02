@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.command.dto;
+package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -2,17 +2,17 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.command;
+package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto.NormalVacationSettingDto;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto.OccurrenceVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacationSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.command.dto.NormalVacationSettingDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.command.dto.OccurrenceVacationSettingDto;
 
 @Getter
 @Setter
