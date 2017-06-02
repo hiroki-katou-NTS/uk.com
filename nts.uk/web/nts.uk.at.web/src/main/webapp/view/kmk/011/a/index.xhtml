@@ -21,7 +21,7 @@
 				<!-- A1_1: Button Registration -->
 				<button id="btn_001"
 					class="button proceed separate-button fix-button"
-					data-bind="click: Registration" tabindex="1">#{i18n.getText('KMK011_3')}</button>
+					data-bind="click: Registration,enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KMK011_3')}</button>
 				<hr />
 			</div>
 
