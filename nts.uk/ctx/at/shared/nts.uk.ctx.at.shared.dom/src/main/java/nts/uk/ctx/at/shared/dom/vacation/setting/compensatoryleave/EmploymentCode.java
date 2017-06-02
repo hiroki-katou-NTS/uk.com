@@ -9,6 +9,9 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
+/**
+ * The Class EmploymentCode.
+ */
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(2)
 public class EmploymentCode extends CodePrimitiveValue<EmploymentCode>{

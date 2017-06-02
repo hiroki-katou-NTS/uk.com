@@ -73,33 +73,92 @@ public class CompensatoryLeaveWs extends WebService {
 		return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
 	}
 	
+	/**
+	 * Gets the apply permission enum.
+	 *
+	 * @return the apply permission enum
+	 */
 	@POST
 	@Path("enum/applypermission")
 	public List<EnumConstant> getApplyPermissionEnum() {
 		return EnumAdaptor.convertToValueNameList(ApplyPermission.class);
 	}
 	
+	/**
+	 * Gets the expiration time enum.
+	 *
+	 * @return the expiration time enum
+	 */
 	@POST
 	@Path("enum/expirationtime")
 	public List<EnumConstant> getExpirationTimeEnum() {
 		return EnumAdaptor.convertToValueNameList(ExpirationTime.class);
 	}
 
+	/**
+	 * Gets the time vacation digestive unit enum.
+	 *
+	 * @return the time vacation digestive unit enum
+	 */
 	@POST
 	@Path("enum/timevacationdigestiveunit")
 	public List<EnumConstant> getTimeVacationDigestiveUnitEnum() {
 		return EnumAdaptor.convertToValueNameList(TimeVacationDigestiveUnit.class);
 	}
 
+	/**
+	 * Gets the compensatory occurrence division enum.
+	 *
+	 * @return the compensatory occurrence division enum
+	 */
 	@POST
 	@Path("enum/compensatoryoccurrencedivision")
 	public List<EnumConstant> getCompensatoryOccurrenceDivisionEnum() {
 		return EnumAdaptor.convertToValueNameList(CompensatoryOccurrenceDivision.class);
 	}
 
+	/**
+	 * Gets the transfer setting division enum.
+	 *
+	 * @return the transfer setting division enum
+	 */
 	@POST
 	@Path("enum/transfersettingdivision")
 	public List<EnumConstant> getTransferSettingDivisionEnum() {
 		return EnumAdaptor.convertToValueNameList(TransferSettingDivision.class);
+	}
+	
+	/**
+	 * Gets the all employment.
+	 *
+	 * @return the all employment
+	 */
+	@POST
+	@Path("employment/findall")
+	public List<EnumConstant> getAllEmployment() {
+		//TODO mock data list employment
+		return null;
+	}
+	
+	/**
+	 * Save employment setting.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("employment/save")
+	public List<EnumConstant> saveEmploymentSetting() {
+		return null;
+	}
+	
+	/**
+	 * Gets the employment setting.
+	 *
+	 * @return the employment setting
+	 */
+	@POST
+	@Path("employment/findsetting")
+	public List<EnumConstant> getEmploymentSetting() {
+		return null;
 	}
 }
