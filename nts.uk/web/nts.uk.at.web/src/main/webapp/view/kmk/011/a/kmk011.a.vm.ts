@@ -27,8 +27,10 @@ module kmk011.a.viewmodel {
         enableSelect: KnockoutObservable<boolean>;
         enableInput: KnockoutObservable<boolean>;
         objectOld: any;
+        check: boolean;
         constructor() {
             var self = this;
+            self.check = false;
             self.list = ko.observableArray([]);
             self.enableUse = ko.observable(false);
             self.enableSelect = ko.observable(false);
@@ -101,6 +103,7 @@ module kmk011.a.viewmodel {
                 self.objectOld = self.itemDivTime().divTimeName + self.itemDivTime().divTimeUseSet + self.itemDivTime().alarmTime
                                     + self.itemDivTime().errTime + self.itemDivTime().selectSet.selectUseSet + self.itemDivTime().selectSet.cancelErrSelReason
                                     + self.itemDivTime().inputSet.selectUseSet + self.itemDivTime().inputSet.cancelErrSelReason;
+                self.check = false;
                 $("#itemname").focus();
             });
             //subscribe selectUse
@@ -236,15 +239,19 @@ module kmk011.a.viewmodel {
                     }
                     let objectNew =self.divTimeName() + self.selectUse()+ self.alarmTime()+ self.errTime()+ self.selectSel()+ self.convert(self.checkErrSelect())+ self.selectInp()+ self.convert(self.checkErrInput());
                     if (self.objectOld == objectNew) {
-                        if(self.list().length == 0) return;
+                        if(self.list().length == 0){
+                            if(self.check == false)return;
+                        } 
                         }
                     var Object = new model.ObjectDivergence(divTime, listAdd,self.timeItemName());
                     service.updateDivTime(Object).done(function() {
                         self.getAllDivTimeNew();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         self.list([]);
+                        self.check = false;
                         $("#itemname").focus();
                     }).fail(function(error) {
+                        self.check = true;
                         if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);
                         } 
