@@ -9,9 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
+@Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-@Embeddable
 public class KwkdtStampPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 会社ID */
@@ -31,5 +31,5 @@ public class KwkdtStampPK implements Serializable {
 	/* 年月日 */
 	@Column(name = "DATE")
 	public GeneralDate date;
-
+	
 }

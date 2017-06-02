@@ -12,7 +12,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.stamp.StampDto;
 import nts.uk.ctx.at.record.app.find.stamp.StampFinder;
 
-@Path("at/record/stampreference")
+@Path("at/record/stamp")
 @Produces("application/json")
 public class StampReferenceWebService extends WebService {
 	@Inject
@@ -24,8 +24,8 @@ public class StampReferenceWebService extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getstampbyemployeecode/{cardNumber}/{startDate}/{endDate}")
-	public List<StampDto> getAllDivTime(@PathParam("cardNumber") String cardNumber,
+	@Path("getstampbyempcode/{cardNumber}/{startDate}/{endDate}")
+	public List<StampDto> getStampReference(@PathParam("cardNumber") String cardNumber,
 			@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
 		return this.getStamp.findByEmployeeCode(cardNumber, startDate, endDate);
 	}
