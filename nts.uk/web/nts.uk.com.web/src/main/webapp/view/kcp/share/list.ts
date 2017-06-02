@@ -1,20 +1,18 @@
-module kcp001.a.employment {
-    export interface Employment {
+module kcp.share.list {
+    export interface UnitModel {
         code: string;
         name?: string;
         isAlreadySet?: boolean;
     }
     
-    export interface EmploymentComponentOption {
+    export interface ComponentOption {
         isShowAlreadySet: boolean;
         isMultiSelect: boolean;
     }
     
     export class EmploymentComponentScreenModel {
-        option: EmploymentComponentOption;
-        employmentList: KnockoutObservableArray<Employment>;
         
-        public init($input: JQuery, data: EmploymentComponentOption) {
+        public init($input: JQuery, data: ComponentOption) {
             // Fake data.
             //data.employmentList()
             
