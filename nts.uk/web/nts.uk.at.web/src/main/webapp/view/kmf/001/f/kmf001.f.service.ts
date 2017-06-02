@@ -11,7 +11,12 @@ module nts.uk.pr.view.kmf001.f {
             enumExpirationTime: 'ctx/at/shared/vacation/setting/compensatoryleave/enum/expirationtime',
             enumTimeVacationDigestiveUnit: 'ctx/at/shared/vacation/setting/compensatoryleave/enum/timevacationdigestiveunit',
             enumCompensatoryOccurrenceDivision: 'ctx/at/shared/vacation/setting/compensatoryleave/enum/compensatoryoccurrencedivision',
-            enumTransferSettingDivision: 'ctx/at/shared/vacation/setting/compensatoryleave/enum/transfersettingdivision'
+            enumTransferSettingDivision: 'ctx/at/shared/vacation/setting/compensatoryleave/enum/transfersettingdivision',
+            
+            //employment
+            getListEmployment: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/findall',
+            updateEmploySetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/save',
+            findEmploymentSetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/findsetting'
         };
 
         export function update(command: any): JQueryPromise<any> {
@@ -56,6 +61,20 @@ module nts.uk.pr.view.kmf001.f {
         export function getEnumTransferSettingDivision(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(servicePath.enumTransferSettingDivision);
         }
+        
+        //EMPLOYMENT
+        export function getListEmployment(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getListEmployment);
+        }
+ 
+        export function updateEmploymentSetting(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.updateEmploySetting,command);
+        }
+
+        export function findEmploymentSetting(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findEmploymentSetting);
+        }
+ 
         /**
         * Model namespace.
         */

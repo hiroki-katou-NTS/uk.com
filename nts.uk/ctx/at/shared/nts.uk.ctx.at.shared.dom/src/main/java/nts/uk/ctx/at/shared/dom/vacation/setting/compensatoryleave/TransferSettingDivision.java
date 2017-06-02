@@ -9,11 +9,11 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
  */
 public enum TransferSettingDivision {
 	
-	/** The Certain time. */
-	CertainTime(1,"一定時間を超えたら代休とする","一定時間を超えたら代休とする"),
-	
 	/** The Design time. */
-	DesignTime(0,"指定した時間を代休とする","指定した時間を代休とする");
+	DesignTime(0,"指定した時間を代休とする","指定した時間を代休とする"),
+	
+	/** The Certain time. */
+	CertainTime(1,"一定時間を超えたら代休とする","一定時間を超えたら代休とする");
 	
 	/** The value. */
 	public int value;

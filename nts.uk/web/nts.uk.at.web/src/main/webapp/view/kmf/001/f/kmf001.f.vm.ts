@@ -46,6 +46,17 @@ module nts.uk.pr.view.kmf001.f {
             compensatoryOccurrenceDivisionEnums: KnockoutObservableArray<Enum>;
             transferSettingDivisionEnums: KnockoutObservableArray<RadioEnum>;
 
+            //Employment
+            employmentList: KnockoutObservableArray<ItemModel>;
+            columnsSetting: KnockoutObservable<nts.uk.ui.NtsGridListColumn>;
+            emSelectedCode: KnockoutObservable<string>;
+            
+            emCompenManage: KnockoutObservable<number>;
+            emExpirationTime: KnockoutObservable<number>;
+            emPreApply: KnockoutObservable<number>;
+            emTimeManage: KnockoutObservable<number>;
+            emTimeUnit: KnockoutObservable<number>;
+
             constructor() {
                 let self = this;
                 self.compenManage = ko.observable(0);
@@ -84,7 +95,7 @@ module nts.uk.pr.view.kmf001.f {
                 });
 
                 self.isManageTime = ko.computed(function() {
-                    return self.compenTimeManage() == UseDivision.Use;
+                    return self.isManageCompen() && self.compenTimeManage() == UseDivision.Use;
                 });
 
                 self.enableWorkArea = ko.computed(function() {
@@ -96,20 +107,39 @@ module nts.uk.pr.view.kmf001.f {
                 });
 
                 self.enableWorkAll = ko.computed(function() {
-                    return self.enableWorkArea() && self.selectedOfWorkTime() == UseDivision.NotUse;
-                });
-
-                self.enableOverAll = ko.computed(function() {
-                    return self.enableOverArea() && self.selectedOfOverTime() == UseDivision.NotUse;
-                });
-
-                self.enableDesignWork = ko.computed(function() {
                     return self.enableWorkArea() && self.selectedOfWorkTime() == UseDivision.Use;
                 });
 
-                self.enableDesignOver = ko.computed(function() {
+                self.enableOverAll = ko.computed(function() {
                     return self.enableOverArea() && self.selectedOfOverTime() == UseDivision.Use;
                 });
+
+                self.enableDesignWork = ko.computed(function() {
+                    return self.enableWorkArea() && self.selectedOfWorkTime() == UseDivision.NotUse;
+                });
+
+                self.enableDesignOver = ko.computed(function() {
+                    return self.enableOverArea() && self.selectedOfOverTime() == UseDivision.NotUse;
+                });
+
+                //employment
+                self.employmentList = ko.observableArray<ItemModel>([]);
+                for (let i = 1; i < 4; i++) {
+                    self.employmentList.push(new ItemModel('0' + i, '基本給'));
+                }
+                
+                self.columnsSetting = ko.observableArray([
+                {headerText: '設定済', key: 'setting', width: 50 },
+                    { headerText: 'コード', key: 'code', width: 50 },
+                    { headerText: '名称', key: 'name', width: 200 }
+                ]);
+                self.emSelectedCode = ko.observable('01');
+                
+                self.emCompenManage = ko.observable(0);
+                self.emExpirationTime = ko.observable(0);
+                self.emPreApply = ko.observable(0);
+                self.emTimeManage = ko.observable(0);
+                self.emTimeUnit = ko.observable(0);
             }
 
             public startPage(): JQueryPromise<any> {
@@ -328,6 +358,16 @@ module nts.uk.pr.view.kmf001.f {
                 nts.uk.request.jump("/view/kmf/001/a/index.xhtml");
             }
         }
+
+        class ItemModel {
+            code: string;
+            name: string;
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;
+            }
+        }
+
         export enum OccurrenceDivision {
             OverTime = 0,
             DayOffTime = 1
