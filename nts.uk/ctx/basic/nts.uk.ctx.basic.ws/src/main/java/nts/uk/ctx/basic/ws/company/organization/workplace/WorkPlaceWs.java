@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.basic.app.find.company.organization.workplace.WorkplaceFinder;
 import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceFindDto;
+import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceInDto;
 
 /**
  * The Class WorkPlaceWs.
@@ -29,11 +30,12 @@ public class WorkPlaceWs {
 	/**
 	 * Find all.
 	 *
+	 * @param inDto the in dto
 	 * @return the list
 	 */
 	@Path("findall")
 	@POST
-	public List<WorkplaceFindDto> findAll() {
-		return this.finder.findAll(date, format);
+	public List<WorkplaceFindDto> findAll(WorkplaceInDto inDto) {
+		return this.finder.findAll(inDto);
 	}
 }
