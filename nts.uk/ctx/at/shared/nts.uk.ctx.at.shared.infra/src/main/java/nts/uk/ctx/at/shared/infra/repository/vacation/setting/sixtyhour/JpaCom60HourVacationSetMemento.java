@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.sixtyhour;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstSixtyHourVacationSetting;
 
 /**
  * The Class JpaComSubstVacationSetMemento.
@@ -13,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSet
 public class JpaCom60HourVacationSetMemento implements Com60HourVacationSetMemento {
 
 	/** The type value. */
-	private Object typeValue;
+	private KshstCom60hVacation typeValue;
 
 	/**
 	 * Instantiates a new jpa com subst vacation set memento.
@@ -21,20 +23,24 @@ public class JpaCom60HourVacationSetMemento implements Com60HourVacationSetMemen
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCom60HourVacationSetMemento(Object typeValue) {
+	public JpaCom60HourVacationSetMemento(KshstCom60hVacation typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationSetMemento#setCompanyId(java.lang.String)
+	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setCid(companyId);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationSetMemento#setSetting(nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting)
+	 */
 	@Override
 	public void setSetting(SixtyHourVacationSetting setting) {
-		// TODO Auto-generated method stub
-
+		setting.saveToMemento(new Jpa60HourVacationSettingSetMemento<KshstSixtyHourVacationSetting>(this.typeValue));
 	}
 
 }

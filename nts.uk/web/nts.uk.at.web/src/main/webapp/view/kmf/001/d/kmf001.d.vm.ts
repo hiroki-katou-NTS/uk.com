@@ -62,8 +62,9 @@ module nts.uk.pr.view.kmf001.d {
                 self.selectedCode.subscribe(function(data: string) {
                     service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
                         self.hasSelectedEmp(true);
-                        self.bindEmploymentSettingData(data1);
                         $('#switch-btn').focus();
+                        self.bindEmploymentSettingData(data1);
+                        
                     });
                     
                 });
@@ -106,7 +107,7 @@ module nts.uk.pr.view.kmf001.d {
                             self.annualManage(0);
                         }
                         else {
-                            self.annualManage(1);
+                            self.annualManage(data.annualManage);
                         }
                     }
                     dfd.resolve();
@@ -122,6 +123,11 @@ module nts.uk.pr.view.kmf001.d {
             
             private bindEmploymentSettingData(data: EmploymentSettingFindDto): void {
                 var self = this;
+                if(data == undefined) {
+                    self.yearsAmountByEmp();
+                    self.maxDaysCumulationByEmp();
+                    self.selectedManagement(0);
+                }
                 self.yearsAmountByEmp(data.upperLimitSetting.retentionYearsAmount);
                 self.maxDaysCumulationByEmp(data.upperLimitSetting.maxDaysCumulation);
                 self.selectedManagement(data.managementCategory);

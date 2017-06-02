@@ -240,7 +240,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.checkOverTime(true);
                 }
                 else {//if check f13
-                    self.checkWorkTime(false);
+                    self.checkOverTime(false);
                 }
                 //set data
                 self.selectedOfOverTime(data.occurrenceVacationSetting.transferSettingOverTime.transferDivision.value);

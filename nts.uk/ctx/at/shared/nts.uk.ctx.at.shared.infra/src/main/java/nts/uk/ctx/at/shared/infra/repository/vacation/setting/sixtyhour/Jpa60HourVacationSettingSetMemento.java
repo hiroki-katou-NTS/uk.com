@@ -8,11 +8,12 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSettingSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstSixtyHourVacationSetting;
 
 /**
  * The Class JpaSubstVacationSettingSetMemento.
  */
-public class Jpa60HourVacationSettingSetMemento<T extends Object>
+public class Jpa60HourVacationSettingSetMemento<T extends KshstSixtyHourVacationSetting>
 		implements SixtyHourVacationSettingSetMemento {
 
 	/** The type value. */
@@ -30,20 +31,17 @@ public class Jpa60HourVacationSettingSetMemento<T extends Object>
 
 	@Override
 	public void setIsManage(ManageDistinct isManage) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setManageDistinct(isManage.value);
 	}
 
 	@Override
 	public void setSixtyHourExtra(SixtyHourExtra sixtyHourExtra) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setSixtyHourExtra(sixtyHourExtra.value);
 	}
 
 	@Override
 	public void setDigestiveUnit(TimeDigestiveUnit digestiveUnit) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setTimeDigestTive(digestiveUnit.value);
 	}
 
 }
