@@ -3,9 +3,12 @@ package nts.uk.ctx.at.record.infra.entity.stamp;
 import java.io.Serializable;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,8 +27,11 @@ public class KwkdtStamp extends UkJpaEntity implements Serializable {
 	/* 主キー */
 	@EmbeddedId
 	public KwkdtStampPK kwkdtStampPK;
+
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "WORK_LOCATION_CD", referencedColumnName = "WORK_LOCATION_CD", insertable = false, updatable = false) })
 	
-	@OneToOne
+	@OneToOne(optional = false, cascade = CascadeType.DETACH)
 	public KwlmtWorkLocation kwlmtWorkLocation;
 
 	@Basic(optional = false)
