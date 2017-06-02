@@ -30,8 +30,8 @@ public class KwkdtStamp extends UkJpaEntity implements Serializable {
 
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "WORK_LOCATION_CD", referencedColumnName = "WORK_LOCATION_CD", insertable = false, updatable = false) })
-	
 	@OneToOne(optional = false, cascade = CascadeType.DETACH)
+	
 	public KwlmtWorkLocation kwlmtWorkLocation;
 
 	@Basic(optional = false)

@@ -9,12 +9,12 @@ module kdl014.a.viewmodel {
             self.items = ko.observableArray([]);
             self.columns = ko.observableArray([
                 { headerText: '日付', key: 'date', width: 120 },
-                { headerText: '打刻時間', key: 'time', width: 80 },
-                { headerText: '打刻理由', key: 'reason', width: 80 },
-                { headerText: '打刻区分', key: 'attribute', width: 80 },
-                { headerText: '打刻方法', key: 'method', width: 100 },
-                { headerText: '打刻場所', key: 'location', width: 80 },
-                { headerText: '組み合わせ区分', key: 'combination', width: 100 }
+                { headerText: '打刻時間', key: 'attendanceTime', width: 80 },
+                { headerText: '打刻理由', key: 'stampReasonName', width: 80 },
+                { headerText: '打刻区分', key: 'stampAtrName', width: 80 },
+                { headerText: '打刻方法', key: 'stampMethodName', width: 100 },
+                { headerText: '打刻場所', key: 'workLocationName', width: 80 },
+                { headerText: '組み合わせ区分', key: 'stampCombinationName', width: 100 }
             ]);
             self.currentCode = ko.observable();
         }
@@ -33,8 +33,8 @@ module kdl014.a.viewmodel {
                 //TODO
                 if (lstStamp.length > 0) {
                     _.forEach(lstStamp, function(item) {
-                        self.items.push(new StampModel(item.date, item.time, item.reason, item.attribute, item.method, item.method, item.location, item.combination);
-                    });
+                        self.items.push(new StampModel(item.date, item.attendanceTime, item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+                    }); 
                 }
                 dfd.resolve();
             }).fail(function(res) {
@@ -53,21 +53,21 @@ module kdl014.a.viewmodel {
 
     class StampModel {
         date: string;
-        time: string;
-        reason: string;
-        attribute: string;
-        method: string;
-        location: string;
-        combination: string;
-        constructor(date: string, time: string, reason: string, attribute: string, method: string, location: string, combination: string) {
+        attendanceTime: string;
+        stampReasonName: string;
+        stampAtrName: string;
+        stampMethodName: string;
+        workLocationName: string;
+        stampCombinationName: string;
+        constructor(date: string, attendanceTime: string, stampReasonName: string, stampAtrName: string, stampMethodName: string, workLocationName: string, stampCombinationName: string) {
             var self = this;
             self.date = date;
-            self.time = time;
-            self.reason = reason;
-            self.attribute = attribute;
-            self.method = method;
-            self.location = location;
-            self.combination = combination;
+            self.attendanceTime = attendanceTime;
+            self.stampReasonName = stampReasonName;
+            self.stampAtrName = stampAtrName;
+            self.stampMethodName = stampMethodName;
+            self.workLocationName = workLocationName;
+            self.stampCombinationName = stampCombinationName;
         }
     }
 }
