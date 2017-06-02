@@ -30,10 +30,11 @@ module kdl014.a.viewmodel {
             service.getStampByCode(cardNumber, startDate, endDate).done(function(lstStamp: any) {
 
                 console.log(lstStamp);
+                //console.log(_.padStart(nts.uk.time.parseTime(480, true).format(),5,'0'));
                 //TODO
                 if (lstStamp.length > 0) {
                     _.forEach(lstStamp, function(item) {
-                        self.items.push(new StampModel(item.date, item.attendanceTime, item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+                        self.items.push(new StampModel(item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime,true).format(),5,'0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
                     }); 
                 }
                 dfd.resolve();
