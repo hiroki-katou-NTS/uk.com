@@ -47,10 +47,6 @@ public class KwpmtWorkPlace extends UkJpaEntity implements Serializable {
 	@Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endD;
     
-    /** The wkpcd. */
-    @Column(name = "WKPCD")
-    private String wkpcd;
-    
     /** The wkpname. */
     @Column(name = "WKPNAME")
     private String wkpname;
@@ -96,7 +92,6 @@ public class KwpmtWorkPlace extends UkJpaEntity implements Serializable {
      */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
 		if (!(object instanceof KwpmtWorkPlace)) {
 			return false;
