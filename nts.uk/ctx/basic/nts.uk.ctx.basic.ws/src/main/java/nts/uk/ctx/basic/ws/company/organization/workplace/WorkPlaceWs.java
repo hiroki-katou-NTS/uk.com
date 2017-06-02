@@ -36,6 +36,9 @@ public class WorkPlaceWs {
 	@Path("findall")
 	@POST
 	public List<WorkplaceFindDto> findAll(WorkplaceInDto inDto) {
+		inDto = new WorkplaceInDto();
+		inDto.setDate("2017/06/02");
+		inDto.setFormat("yyyy/MM/dd");
 		return this.finder.findAll(inDto);
 	}
 }

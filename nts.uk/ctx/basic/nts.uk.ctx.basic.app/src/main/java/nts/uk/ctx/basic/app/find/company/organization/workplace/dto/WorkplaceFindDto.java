@@ -17,18 +17,7 @@ import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceSetMemento;
  * The Class WorkplaceFindDto.
  */
 
-/**
- * Gets the name.
- *
- * @return the name
- */
 @Getter
-
-/**
- * Sets the name.
- *
- * @param name the new name
- */
 @Setter
 public class WorkplaceFindDto implements WorkplaceSetMemento{
 	
