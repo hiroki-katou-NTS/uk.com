@@ -76,7 +76,7 @@ module nts.uk.at.view.kml001.b {
                         nts.uk.ui.windows.setShared('updatePremiumSeting', true);
                         nts.uk.ui.windows.close();
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                     });
             }
             
