@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
@@ -24,9 +24,9 @@ public interface RetentionYearlySettingGetMemento {
 	UpperLimitSetting getUpperLimitSetting();
 	
 	/**
-	 * Gets the can add to cumulation yearly as normal work day.
+	 * Gets the leave as work days.
 	 *
-	 * @return the can add to cumulation yearly as normal work day
+	 * @return the leave as work days
 	 */
-	Boolean getCanAddToCumulationYearlyAsNormalWorkDay();
+	Boolean getLeaveAsWorkDays();
 }

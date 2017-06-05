@@ -23,6 +23,9 @@ public class RetentionYearlyFindDto implements RetentionYearlySettingSetMemento{
 	
 	/** The upper limit setting. */
 	private UpperLimitSettingFindDto upperLimitSetting;
+	
+	/** The leave as work days. */
+	private Boolean leaveAsWorkDays;
 
 	/*
 	 * (non-Javadoc)
@@ -54,9 +57,8 @@ public class RetentionYearlyFindDto implements RetentionYearlySettingSetMemento{
 	 * setcanAddToCumulationYearlyAsNormalWorkDay(java.lang.Boolean)
 	 */
 	@Override
-	public void setcanAddToCumulationYearlyAsNormalWorkDay(Boolean canAddToCumulationYearlyAsNormalWorkDay) {
-		// TODO Auto-generated method stub
-		
+	public void setLeaveAsWorkDays(Boolean leaveAsWorkDays) {
+		this.leaveAsWorkDays = leaveAsWorkDays;
 	}
 
 }

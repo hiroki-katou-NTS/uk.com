@@ -92,6 +92,24 @@
 										</div>
 									</td>
 								</tr>
+
+								<tr>
+									<td style="width: 200px; height: 60px; padding-left: 40px;">
+										<div>
+											<span>出勤日数として加算</span>
+										</div>
+									</td>
+									<td>
+										<div id="switch-btn" class="cf"
+											data-bind="ntsSwitchButton: {
+												options: leaveAsWorkDaysOpt,
+												optionsValue: 'value',
+												optionsText: 'name',
+												value: leaveAsWorkDays,
+												enable: isManaged}"
+											tabindex="2"></div>
+									</td>
+								</tr>
 							</TBODY>
 						</table>
 					</div>
