@@ -1,0 +1,44 @@
+<html>
+<head></head>
+<body>
+	<!-- 内訳区分 -->
+	<div data-bind="if:itemDtoSelected()">
+		<div class="leftContent"></div>
+		<div class="rightContent">
+			<div id="itemRegistrationInformation">
+				<div id="itemRegTitle" data-bind="click:expandContent">
+					項目名の登録 の登録情報
+					<div style="float: right; display: inline-block;"
+						data-bind="html:genExpandSymbol()">&#8897;</div>
+				</div>
+				<div data-bind="if:(itemRegInfo()!=null)">
+					<div id="content" style="display: none;"
+						data-bind="with:itemRegInfo">
+						<table id="PaymentItemInformation">
+							<tr>
+								<td class="tbHeader" style="width: 35%">略名</td>
+								<td style="width: 65%" data-bind="text:itemMaster().itemCode()"></td>
+
+							</tr>
+							<tr>
+								<td class="tbHeader">カテゴリ区分</td>
+								<td>記事項目</td>
+							</tr>
+							<tr>
+								<td class="tbHeader">統合コード</td>
+								<td data-bind="text:itemMaster().uniteCode()"></td>
+
+							</tr>
+							<tr>
+								<td class="tbHeader">ゼロ表示区分</td>
+								<td data-bind="text:itemMaster().zeroDisplaySet().text"></td>
+
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -5,14 +5,15 @@ import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.paydayprocess
 
 @Value
 public class PaydayProcessingSelect4Dto {
-	String companyCode;
 
-	int processingNo;
+	private int processingNo;
 
-	String processingName;
+	private String processingName;
+
+	private int currentProcessingYm;
 
 	public static PaydayProcessingSelect4Dto fromDomain(PaydayProcessing domain) {
-		return new PaydayProcessingSelect4Dto(domain.getCompanyCode().v(), domain.getProcessingNo().v(),
-				domain.getProcessingName().v());
+		return new PaydayProcessingSelect4Dto(domain.getProcessingNo().v(), domain.getProcessingName().v(),
+				domain.getCurrentProcessingYm().v());
 	}
 }

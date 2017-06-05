@@ -47,6 +47,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 
 	@Override
 	public void insertPersonCostCalculation(PersonCostCalculation personCostCalculation) {
+		personCostCalculation.getPremiumSettings().forEach(item -> {
+			if(item.getUseAtr()==UseAttribute.Use)
+				if(item.getAttendanceItems().isEmpty()) throw new RuntimeException();
+		});
 		Optional<PersonCostCalculation> currentPersonCostResult = this.personCostCalculationRepository.findItemByDate(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate());
 		if(currentPersonCostResult.isPresent()) throw new BusinessException("Msg_15");
 		Optional<PersonCostCalculation> beforePersonCostResult = this.personCostCalculationRepository.findItemBefore(personCostCalculation.getCompanyID(), personCostCalculation.getStartDate());
@@ -75,6 +79,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 
 	@Override
 	public void updatePersonCostCalculation(PersonCostCalculation personCostCalculation) {
+		personCostCalculation.getPremiumSettings().forEach(item -> {
+			if(item.getUseAtr()==UseAttribute.Use)
+				if(item.getAttendanceItems().isEmpty()) throw new RuntimeException();
+		});
 		Optional<PersonCostCalculation> currentPersonCostResult = this.personCostCalculationRepository.findItemByHistoryID(personCostCalculation.getCompanyID(), personCostCalculation.getHistoryID());
 		if(!currentPersonCostResult.isPresent()) throw new RuntimeException();
 		Optional<PersonCostCalculation> beforePersonCostResult = this.personCostCalculationRepository.findItemBefore(personCostCalculation.getCompanyID(), currentPersonCostResult.get().getStartDate());

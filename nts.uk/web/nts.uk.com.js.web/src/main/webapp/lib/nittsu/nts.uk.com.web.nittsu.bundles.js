@@ -1900,10 +1900,7 @@ var nts;
                     contentType: options.contentType || 'application/json',
                     url: webserviceLocator.serialize(),
                     dataType: options.dataType || 'json',
-                    data: data,
-                    headers: {
-                        'PG-Path': location.current.serialize()
-                    }
+                    data: data
                 }).done(function (res) {
                     if (res !== undefined && res.businessException) {
                         dfd.reject(res);

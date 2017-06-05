@@ -47,7 +47,8 @@ public class RetirementPaymentWebService extends WebService{
 	@Path("findByCompanyCodeandPersonId/{personId}")
 	@POST
 	public List<RetirementPaymentDto> findByCompanyCodeandPersonId(@PathParam("personId") String personId){
-		return this.retirementPaymentFinder.findByCompanyCodeAndPersonId(personId);
+		List<RetirementPaymentDto> result = this.retirementPaymentFinder.findByCompanyCodeAndPersonId(personId);
+		return result;
 	}
 	
 	@Path("findRetirementPaymentInfo")

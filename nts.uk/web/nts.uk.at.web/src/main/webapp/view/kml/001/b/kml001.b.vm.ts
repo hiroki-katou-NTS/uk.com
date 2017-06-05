@@ -12,6 +12,10 @@ module kml001.b.viewmodel {
             self.textKML001_18 = nts.uk.resource.getText("KML001_18",[__viewContext.primitiveValueConstraints.PremiumName.maxLength/2]);
         }
         
+        getText(index): string {
+            return nts.uk.resource.getText("KML001_"+(30+index));    
+        }
+        
         /**
          * get data on start page
          */

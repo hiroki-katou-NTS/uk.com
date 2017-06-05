@@ -79,9 +79,6 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 			if (layoutRepo.isExist(companyCode, command.getStmtCode())) {
 				throw new BusinessException(new RawErrorMessage("入力した明細書コードは既に存在しています。\r\n明細書コードを確認してください。"));
 			}
-
-			// LayoutMaster layout =
-			// command.toDomain(IdentifierUtil.randomUniqueId());
 			LayoutMaster layoutHead = command.toDomain();
 			LayoutHistory layoutHistory = command.toDomain(IdentifierUtil.randomUniqueId());
 			layoutHead.validate();
@@ -169,7 +166,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 		LayoutMasterDetail detailData = new LayoutMasterDetail(new CompanyCode(companyCode), layout.getStmtCode(),
 				layoutHistory.getHistoryId(), cateAtr, new ItemCode(itemCode), new AutoLineId(autoLineId),
 				new ItemPosColumn(itemPosColumn), alarm, calMethod, distribute, DisplayAtr.DISPLAY, error, sumAtr,
-				new FormulaCode("00"), new PersonalWageCode("00"), new WtCode("00"),
+				new FormulaCode("00"), new PersonalWageCode("00"), new WtCode("000"),
 				new CommonAmount(new BigDecimal("0")), new ItemCode("0000"), CommuteAtr.TRANSPORTATION_EQUIPMENT);
 
 		this.detailRepo.add(detailData);
@@ -185,60 +182,52 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 
 	private void copyNewData(CreateLayoutCommand command, String companyCode, LayoutMaster layout,
 			LayoutHistory layoutHistory) {
-		// List<LayoutMasterCategory> categoriesOrigin =
-		// categoryRepo.getCategories(companyCode, command.getStmtCodeCopied(),
-		// command.getStartYmCopied());
 		// [明細書マスタカテゴリ]の明細書コード = G_SEL_002で選択している項目の明細書コード AND [明細書マスタカテゴリ]の終了年月
 		// = 999912
-		// List<LayoutMasterCategory> categoriesOrigin =
-		// categoryRepo.getCategoriesBefore(companyCode,
-		// command.getStmtCodeCopied(), layoutHistory.getHistoryId());
-		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategoriesBefore(companyCode,
+		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getLastestLayoutMasterCategory(companyCode,
 				command.getStmtCodeCopied());
+		String lastestHistoryID = "";
 		if (!categoriesOrigin.isEmpty()) {
+			lastestHistoryID = categoriesOrigin.get(0).getHistoryId();
 			List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(org -> {
 				return LayoutMasterCategory.createFromDomain(org.getCompanyCode(),
 						new LayoutCode(command.getStmtCode()), org.getCtAtr(), org.getCtgPos(),
 						layoutHistory.getHistoryId());
 			}).collect(Collectors.toList());
 			categoryRepo.add(categoriesNew);
+
+			// [明細書マスタ行]の明細書コード = G_SEL_002で選択している項目の明細書コード AND [明細書マスタ行]の終了年月 =
+			// 999912
+			// Lanlt 16.3.2017
+			List<LayoutMasterLine> linesOrigin = lineRepo.getLinesBefore(companyCode, lastestHistoryID);
+			if (!linesOrigin.isEmpty()) {
+				List<LayoutMasterLine> linesNew = linesOrigin.stream().map(org -> {
+					return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStmtCode(),
+							org.getAutoLineId(), org.getCategoryAtr(), org.getLineDisplayAttribute(),
+							org.getLinePosition(), layoutHistory.getHistoryId());
+				}).collect(Collectors.toList());
+				lineRepo.add(linesNew);
+			}
+
+			// [明細書マスタ明細]の明細書コード = G_SEL_002で選択している項目の明細書コードAND [明細書マスタ明細]の終了年月
+			// = 999912
+			List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetailsBefore(companyCode, lastestHistoryID);
+			if (!detailsOrigin.isEmpty()) {
+				List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(org -> {
+					return LayoutMasterDetail.createFromDomain(org.getCompanyCode(),
+							new LayoutCode(command.getStmtCode()), org.getCategoryAtr(), org.getItemCode(),
+							org.getAutoLineId(), org.getItemPosColumn(), org.getError(), org.getCalculationMethod(),
+							org.getDistribute(), org.getDisplayAtr(), org.getAlarm(), org.getSumScopeAtr(),
+							org.getSetOffItemCode(), org.getCommuteAtr(), org.getFormulaCode(),
+							org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(),
+							layoutHistory.getHistoryId());
+				}).collect(Collectors.toList());
+
+				detailRepo.add(detailsNew);
+				System.out.println(detailsNew.get(0));
+			}
 		}
 
-		// [明細書マスタ行]の明細書コード = G_SEL_002で選択している項目の明細書コード AND [明細書マスタ行]の終了年月 =
-		// 999912
-		// anh lam truoc khi thay doi DB
-		//List<LayoutMasterLine> linesOrigin = lineRepo.getLinesBefore(companyCode, command.getStmtCodeCopied(),layoutHistory.getHistoryId());
-		// Lanlt 16.3.2017
-		List<LayoutMasterLine> linesOrigin = lineRepo.getLinesBefore(companyCode, command.getStmtCodeCopied());
-		if (!linesOrigin.isEmpty()) {
-			List<LayoutMasterLine> linesNew = linesOrigin.stream().map(org -> {
-				return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getAutoLineId(),
-						org.getCategoryAtr(), org.getLineDisplayAttribute(), org.getLinePosition(),
-						layoutHistory.getHistoryId());
-			}).collect(Collectors.toList());
-			lineRepo.add(linesNew);
-		}
-
-		// [明細書マスタ明細]の明細書コード = G_SEL_002で選択している項目の明細書コードAND [明細書マスタ明細]の終了年月 =
-		// 999912
-		// anh Lam 16.3
-		// List<LayoutMasterDetail> detailsOrigin =
-		// detailRepo.getDetailsBefore(companyCode, command.getStmtCodeCopied(),
-		// layoutHistory.getHistoryId());
-		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetailsBefore(companyCode, command.getStmtCodeCopied());
-		if (!detailsOrigin.isEmpty()) {
-			List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(org -> {
-				return LayoutMasterDetail.createFromDomain(org.getCompanyCode(), new LayoutCode(command.getStmtCode()),
-						org.getCategoryAtr(), org.getItemCode(), org.getAutoLineId(), org.getItemPosColumn(),
-						org.getError(), org.getCalculationMethod(), org.getDistribute(), org.getDisplayAtr(),
-						org.getAlarm(), org.getSumScopeAtr(), org.getSetOffItemCode(), org.getCommuteAtr(),
-						org.getFormulaCode(), org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(),
-						layoutHistory.getHistoryId());
-			}).collect(Collectors.toList());
-
-			detailRepo.add(detailsNew);
-			System.out.println(detailsNew.get(0));
-		}
 	}
 
 }
