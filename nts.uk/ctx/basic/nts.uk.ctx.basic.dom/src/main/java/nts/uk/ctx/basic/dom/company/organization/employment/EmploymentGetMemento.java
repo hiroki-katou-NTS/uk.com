@@ -33,16 +33,16 @@ public interface EmploymentGetMemento {
 	EmploymentName getEmploymentName();
 	
 	/**
-	 * Gets the work days per month.
+	 * Gets the work closure id.
 	 *
-	 * @return the work days per month
+	 * @return the work closure id
 	 */
-	Integer getWorkDaysPerMonth();
+	Integer getWorkClosureId();
 	
 	/**
-	 * Gets the payment day.
+	 * Gets the salary closure id.
 	 *
-	 * @return the payment day
+	 * @return the salary closure id
 	 */
-	Integer getPaymentDay();
+	Integer getSalaryClosureId();
 }

@@ -59,7 +59,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
             }).fail((res: any) => {
                 dfd.fail();
             }).always(() => {
-                block.clear(); 
+                block.clear();
             });
             return dfd.promise();
         }
@@ -106,10 +106,12 @@ module nts.uk.com.view.ccg031.a.viewmodel {
         /** Open Add TopPage-Part Dialog */
         openAddDialog(row: number, column: number, element: HTMLElement): void {
             var self = this;
+            block.invisible();
             $(element).addClass("placeholder");
             windows.setShared("pgtype", self.pgType, false);
             windows.setShared("size", { row: row, column: column }, false);
             windows.sub.modal("/view/ccg/031/b/index.xhtml", { title: "ウィジェットの追加" }).onClosed(() => {
+                block.clear();
                 let placement: model.Placement = windows.getShared("placement");
                 if (placement != undefined) {
                     self.placements.push(placement);
@@ -126,8 +128,11 @@ module nts.uk.com.view.ccg031.a.viewmodel {
 
         /** Open Preview Dialog */
         openPreviewDialog(): void {
+            block.invisible();
             windows.setShared("placements", this.placements(), false);
-            windows.sub.modal("/view/ccg/031/c/index.xhtml", { title: "プレビュー" });
+            windows.sub.modal("/view/ccg/031/c/index.xhtml", { title: "プレビュー" }).onClosed(() => {
+                block.clear();
+            });
         }
 
         /** Open Preview Dialog */
