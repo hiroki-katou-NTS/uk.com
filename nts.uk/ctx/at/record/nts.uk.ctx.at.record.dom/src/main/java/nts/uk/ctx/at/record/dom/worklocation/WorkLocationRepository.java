@@ -1,4 +1,4 @@
-package worklocation;
+package nts.uk.ctx.at.record.dom.worklocation;
 
 import java.util.List;
 import java.util.Optional;

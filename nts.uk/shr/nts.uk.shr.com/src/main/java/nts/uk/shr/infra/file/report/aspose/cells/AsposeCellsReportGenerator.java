@@ -11,7 +11,11 @@ public class AsposeCellsReportGenerator extends FileGenerator {
 
 		return new AsposeCellsReportContext(this.getResourceAsStream(templateFileInResource));
 	}
+	
+	public AsposeCellsReportContext createContext(String templateFileInResource, String reportId) {
 
+		return new AsposeCellsReportContext(this.getResourceAsStream(templateFileInResource), reportId);
+	}
 
 	/**
 	 * Gets the report name.

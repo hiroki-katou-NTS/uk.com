@@ -15,7 +15,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

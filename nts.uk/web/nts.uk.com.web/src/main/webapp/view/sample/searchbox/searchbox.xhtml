@@ -58,6 +58,23 @@
 										value: currentCodeList
 									}"></table>
 									<br/>
+									
+								<div style="width: 700px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list2', 
+								items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'listbox'}" />																																														
+								<h3>List Box Multi Selection</h3>
+								<table id="multi-list2" data-bind="ntsListBox: {
+										options: items,
+										optionsValue: 'code',
+										multiple: true,
+										value: currentCodeList,
+										rows: 10,
+										columns: [
+											{ key: 'code', length: 4 },
+											{ key: 'name', length: 10 },
+											{ key: 'description', length: 10 }
+										]
+									}"></table>
+									<br/>
 							</div>
 							<div style="float:left">
 								<br/><br/>
@@ -102,8 +119,8 @@
 <div class="cf">
 	<div style="float:left">																					
 		<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid1', items: dataSource, 
-			searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
-		<h3>Single Selection TreeGrid</h3>
+			searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />
+			<h3>Single Selection TreeGrid</h3>
 		<table id="treegrid1"
 			data-bind="ntsTreeGridView:{
 				width: 700,
@@ -139,7 +156,7 @@
 <div class="cf">
 	<div style="float:left">																					
 		<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid2', 
-		items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
+		items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />
 		<h3>Multi Selection TreeGrid</h3>
 		<table id="treegrid2"
 			data-bind="ntsTreeGridView:{
@@ -192,7 +209,7 @@
 												<td>mode</td>
 												<td>
 													<b>Type:</b> string<br/>													
-													<i>Description:</i> type of target view. Current support igGrid and igTree<br/>
+													<i>Description:</i> type of target view. Current support igGrid and igTree, ListBox<br/>
 												</td>
 											</tr>									
 											<tr>

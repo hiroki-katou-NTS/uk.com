@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "QPDMT_STANDARD_DAY")
-public class QpdmtStandardDay extends TableEntity implements Serializable {
+public class QpdmtStandardDay extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -53,5 +53,10 @@ public class QpdmtStandardDay extends TableEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "INCOMETAX_STD_DAY")
 	public int incometaxStdDay;
+
+	@Override
+	protected Object getKey() {
+		return qpdmtStandardDayPk;
+	}
 	
 }

@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "QSTMT_STMT_ALLOT_CP")
 @AllArgsConstructor
 @NoArgsConstructor
-public class QstmtStmtAllotCp extends TableEntity implements Serializable {
+public class QstmtStmtAllotCp extends UkJpaEntity implements Serializable {
 	
 	public static final long serialVersionUID = 1L;
 	
@@ -37,4 +37,9 @@ public class QstmtStmtAllotCp extends TableEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "BONUS_STMT_CD")
 	public String bonusDetailCode;
+
+	@Override
+	protected Object getKey() {
+		return this.qstmtStmtAllotCpPK;
+	}
 }

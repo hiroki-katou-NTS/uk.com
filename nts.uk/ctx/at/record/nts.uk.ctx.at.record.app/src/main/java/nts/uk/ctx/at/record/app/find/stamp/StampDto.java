@@ -20,6 +20,7 @@ public class StampDto {
 	private int stampAtr;
 	private String stampAtrName;
 	private String workLocationCd;
+	private String workLocationName;
 	private int stampReason;
 	private String stampReasonName;
 	private GeneralDate date;
@@ -35,6 +36,7 @@ public class StampDto {
 				domain.getStampAtr().value,
 				domain.getStampAtr().name,
 				domain.getWorkLocationCd().v(), 
+				domain.getWorkLocationName().v(),
 				domain.getStampReason().value,
 				domain.getStampReason().name,
 				domain.getDate());
