@@ -10,6 +10,7 @@ module kcp.share.list {
         isShowAlreadySet: boolean;
         isMultiSelect: boolean;
         listType: ListType;
+        selectedCode: KnockoutObservable<any>;
         alreadySettingList?: KnockoutObservableArray<UnitModel>;
     }
     
@@ -27,7 +28,6 @@ module kcp.share.list {
         
         constructor() {
             this.itemList = ko.observableArray([]);
-            this.selectedCode = ko.observable(null);
             this.listComponentColumn = [];
             this.multiple = false;
             
@@ -39,8 +39,10 @@ module kcp.share.list {
          * Init component.
          */
         public init($input: JQuery, data: ComponentOption) {
+            ko.cleanNode($input[0]);
             var self = this;
             self.multiple = data.isMultiSelect;
+            self.selectedCode = data.selectedCode;
             
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE) {
@@ -158,5 +160,5 @@ module kcp.share.list {
         }
     }
     
-    ko.bindingHandlers['ntsTextEditor'] = new ListComponentBindingHandler();
+    ko.bindingHandlers['ntsListComponent'] = new ListComponentBindingHandler();
 }
