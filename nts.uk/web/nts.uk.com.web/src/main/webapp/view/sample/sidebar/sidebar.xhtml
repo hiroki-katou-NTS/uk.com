@@ -39,7 +39,7 @@
 						<div class="tabs">
 							<ol>
 								<li><a href="#tabs-html">HTML Setup</a></li>
-								<li><a href="#tabs-methods">Methods</a></li>
+								<li><a href="#tabs-methods">API</a></li>
 							</ol>
 							<div id="tabs-html" class="cf">
 								<h2>HTML</h2>
@@ -134,8 +134,7 @@
 			Content 2
    		</div>
   	</div>
-</ui:define>]]>
-									</pre>
+</ui:define>]]></pre>
 								</article>
 							</div>
 							<div id="tabs-methods" class="cf">
@@ -145,49 +144,78 @@
 									/lib/nittsu/ui/jquery-ext.ts<br />
 								</article>
 								<article>
-									<h2>Methods</h2>
-									<table>
+									<h2>Jquery Extensions</h2>
+									<table class="table">
 										<colgroup>
 											<col width="400px" />
 										</colgroup>
 										<thead>
 											<tr>
-												<th><h4>Methods</h4></th>
+												<th><h4>Name</h4></th>
 												<th><h4>Description</h4></th>
 											</tr>
 										</thead>
 										<tbody>
 											<tr>
-												<td>$.fn.ntsSideBar()<br />$.fn.ntsSideBar("init")
+												<td>$("#sidebar").ntsSideBar()<br/>
+												$("#sidebar").ntsSideBar("init")
 												</td>
-												<td>Init SideBar. Auto call in sidebar master page</td>
+												<td>
+													<b>Return:</b> <i>void</i><br/>
+													Init SideBar. Auto call in sidebar master page
+												</td>
 											</tr>
 											<tr>
-												<td>$.fn.ntsSideBar("active", index: number)</td>
-												<td>Active sidebar tab with given index (zero base
-													count)</td>
+												<td>$("#sidebar").ntsSideBar("active", index)</td>
+												<td>
+													<b>Agruments:</b><br/>
+													<i>index: number</i> index of sidebar (zero base count)<br/>
+													<b>Return:</b> <i>void</i><br/>
+													Active sidebar tab with given index
+												</td>
 											</tr>
 											<tr>
-												<td>$.fn.ntsSideBar("enable", index: number)</td>
-												<td>Enable sidebar tab with given index</td>
+												<td>$("#sidebar").ntsSideBar("enable", index)</td>
+												<td>
+													<b>Agruments:</b><br/>
+													<i>index: number</i> index of sidebar (zero base count)<br/>
+													<b>Return:</b> <i>void</i><br/>
+													Enable sidebar tab with given index
+												</td>
 											</tr>
 											<tr>
-												<td>$.fn.ntsSideBar("disable", index: number)</td>
-												<td>Disable sidebar tab with given index</td>
+												<td>$("#sidebar").ntsSideBar("disable", index)</td>
+												<td>
+													<b>Agruments:</b><br/>
+													<i>index: number</i> index of sidebar (zero base count)<br/>
+													<b>Return:</b> <i>void</i><br/>
+													Disable sidebar tab with given index
+												</td>
 											</tr>
 											<tr>
-												<td>$.fn.ntsSideBar("show", index: number)</td>
-												<td>Show sidebar tab with given index</td>
+												<td>$("#sidebar").ntsSideBar("show", index)</td>
+												<td>
+													<b>Agruments:</b><br/>
+													<i>index: number</i> index of sidebar (zero base count)<br/>
+													<b>Return:</b> <i>void</i><br/>
+													Show sidebar tab with given index
+												</td>
 											</tr>
 											<tr>
-												<td>$.fn.ntsSideBar("hide", index: number)</td>
-												<td>Hide sidebar tab with given index. If hidden
-													current tab will auto active first tab item</td>
+												<td>$("#sidebar").ntsSideBar("hide", index: number)</td>
+												<td>
+													<b>Agruments:</b><br/>
+													<i>index: number</i> index of sidebar (zero base count)<br/>
+													<b>Return:</b> <i>void</i><br/>
+													Hide sidebar tab with given index. If hidden current tab will auto active first tab item
+												</td>
 											</tr>
 											<tr>
-												<td>$.fn.ntsSideBar("getCurrent")</td>
-												<td><b>return:</b> <i>number</i> Index of current
-													active tab<br /> Get current active tab</td>
+												<td>$("#sidebar").ntsSideBar("getCurrent")</td>
+												<td>
+													<b>Return:</b> <i>number</i> Index of current active tab<br />
+													Get current active tab
+												</td>
 											</tr>
 										</tbody>
 									</table>

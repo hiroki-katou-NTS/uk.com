@@ -52,6 +52,7 @@ public class MultiLanguageResource implements IInternationalization {
 	private static final Pattern COMPANYDENPENDITEMPATTERN = Pattern.compile("\\{#(\\w*)\\}");
 	private static final Pattern MESSAGEPARAMETERPATTERN = Pattern.compile("\\{([0-9])+(:\\w+)?\\}");
 	private static final String ID_MARK = "#";
+	private static final String SEPARATOR = "_";
 
 	@PostConstruct
 	private void load() {
@@ -234,5 +235,19 @@ public class MultiLanguageResource implements IInternationalization {
 	@Override
 	public Map<String, String> getCustomizeResource() {
 		return companyCustomizedResource;
+	}
+	
+	@Override
+	public Map<String, Object> getReportItems(String reportId) {
+		Map<String, Object> items = new HashMap<>();
+		codeNameResource.getOrDefault(reportId, new HashMap<>()).entrySet().stream().forEach(e -> {
+			items.put(getKey(e.getKey()), e.getValue());
+		});
+		return items;
+	}
+	
+	private String getKey(String key) {
+		if (key.indexOf(SEPARATOR) == -1) return key;
+		return key.split(SEPARATOR)[1];
 	}
 }
