@@ -164,6 +164,8 @@ module kdl024.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
+            }).ifNo(function(){
+                nts.uk.ui.block.clear();
             });
             
         }
