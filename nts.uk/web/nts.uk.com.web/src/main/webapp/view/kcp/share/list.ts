@@ -30,6 +30,7 @@ module kcp.share.list {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
             this.multiple = false;
+            this.selectedCode = ko.observable(null);
             
             // Setup list column.
             this.listComponentColumn.push({headerText: 'コード', prop: 'code', width: 50});
@@ -42,7 +43,7 @@ module kcp.share.list {
             ko.cleanNode($input[0]);
             var self = this;
             self.multiple = data.isMultiSelect;
-            self.selectedCode = data.selectedCode;
+            self.selectedCode(data.selectedCode());
             
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE) {
