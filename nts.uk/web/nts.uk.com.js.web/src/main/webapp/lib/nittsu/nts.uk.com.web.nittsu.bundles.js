@@ -2100,7 +2100,7 @@ var nts;
                         'PG-Path': location.current.serialize()
                     }
                 }).done(function (res) {
-                    if (res !== undefined && res.isBusinessException) {
+                    if (res !== undefined && res.businessException) {
                         dfd.reject(res);
                     }
                     else {
