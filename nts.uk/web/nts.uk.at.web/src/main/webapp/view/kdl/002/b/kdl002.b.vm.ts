@@ -48,11 +48,11 @@ module kdl002.b.viewmodel {
 //        }
         OpenDialog007(){
             var self = this;
-            nts.uk.ui.windows.setShared('ModeMultiple',false,true);
+            nts.uk.ui.windows.setShared('KDL007_Multiple',false,true);
             //all possible items
-            nts.uk.ui.windows.setShared('AllItemObj',['001','002','003','005','008'],true);
+            nts.uk.ui.windows.setShared('KDL007_AllItemObj',['001','002','003','005','008'],true);
             //selected items
-            nts.uk.ui.windows.setShared('SelectedItemId','003',true);
+            nts.uk.ui.windows.setShared('KDL007_SelectedItemId','004',true);
             nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                 self.items([]);
                 var lst = nts.uk.ui.windows.getShared('SelectedNewItem');

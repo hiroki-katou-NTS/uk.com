@@ -26,11 +26,14 @@ module kdl007.a.viewmodel {
         //load data
         start() {
             var self = this;
-            self.isMulti = nts.uk.ui.windows.getShared('ModeMultiple');
+            self.isMulti = nts.uk.ui.windows.getShared('KDL007_Multiple');
             //all possible attendance items
-            self.posibleItems = nts.uk.ui.windows.getShared('AllItemObj');
+            self.posibleItems = nts.uk.ui.windows.getShared('KDL007_AllItemObj');
             //selected items
-            var selectCode = nts.uk.ui.windows.getShared('SelectedItemId');
+            var selectCode = nts.uk.ui.windows.getShared('KDL007_SelectedItemId');
+            if(selectCode==null || selectCode === undefined){
+                selectCode = "";
+            }
             if(self.isMulti == false){
                 self.currentCodeList.push(selectCode);
             }else{
@@ -47,8 +50,9 @@ module kdl007.a.viewmodel {
 //                    });
 //                }
 //            });
+            self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
             if(self.posibleItems == null || self.posibleItems === undefined){
-                self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
+//                self.dataSoure.push(new model.ItemModel("", nts.uk.resource.getText("KDL007_6")));
             }else{
                 self.dataSoure.push(new model.ItemModel("001", "勤怠項目1"));
                 self.dataSoure.push(new model.ItemModel("002", "勤怠項目2"));
@@ -58,6 +62,14 @@ module kdl007.a.viewmodel {
             //勤怠項目の指定が0件の場合
             //set source
             self.items(self.dataSoure);
+            var selectItem = [];
+                for (let i =0, length = self.currentCodeList().length; i< length ;i++) {
+                    let objectNew = self.findItem(self.currentCodeList()[i]);
+                    if(objectNew != undefined && objectNew != null){
+                        selectItem.push(objectNew.code);
+                    }
+                }
+            if(selectItem.length == 0) self.currentCodeList(['']);
         }
         //event When click to 設定 ボタン
         register() {

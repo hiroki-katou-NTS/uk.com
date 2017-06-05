@@ -179,17 +179,14 @@ module kmk011.a.viewmodel {
         openBDialog() {
             nts.uk.ui.block.grayout();
             var self = this;
-            self.enableSelect(false);
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
             nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', }).onClosed(function():any {
                 nts.uk.ui.block.clear();
-                self.enableSelect(true);    
             });
         }
         openDialog021() {
             var self = this;
             nts.uk.ui.block.grayout();
-            self.enableUse(false);
             service.getAllAttItem(1).done(function(lstAllItem: Array<model.AttendanceType>) {
                 var listAllId = [];
                 for (let j = 0; j < lstAllItem.length; j++) {
@@ -204,7 +201,6 @@ module kmk011.a.viewmodel {
                 nts.uk.ui.windows.setShared('Multiple', true, true);
                 nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
-                    self.enableUse(true);
                     var list = nts.uk.ui.windows.getShared('selectedChildAttendace');
                     if(list == null || list === undefined) return;
                     self.list(list);
