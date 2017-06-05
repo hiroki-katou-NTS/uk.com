@@ -9,7 +9,7 @@
 	min-width: 75px;
 }
 
-#btn_001 {
+#btnSave{
 	margin-bottom: 20px;
 	margin-left: 30px;
 }
@@ -25,7 +25,6 @@
 #right-content {
 	margin-left: 40px;
 	float: left;
-	min-height: 550px;
 	margin-top: 20px;
 }
 
@@ -69,7 +68,6 @@
 }
 
 .row {
-	padding: 5px;
 	height: 50px;
 }
 
@@ -82,4 +80,11 @@
 #func-notifier-errors.shown {
     display: inline-block;
     margin-left: -1100px;
+}
+#content-area{
+	width: 1260px;
+}
+#inpDialog{
+	margin-left: 30px;
+	margin-top: 8px;
 }

@@ -167,7 +167,7 @@ module nts.uk.at.view.kml001.a {
                 var self = this;
                 if (self.isInsert()) {
                     let index = _.findLastIndex(self.personCostList()) + 1;
-                    if ((self.newStartDate() == null) && (self.newStartDate() != "") && !vmbase.ProcessHandler.validateDateInput(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'), self.lastStartDate)) {
+                    if ((self.newStartDate() != null) && (self.newStartDate() != "") && !vmbase.ProcessHandler.validateDateInput(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'), self.lastStartDate)) {
                         // insert new data if startDate have no error
                         let ymd = self.newStartDate().substring(0,10).replace('-','/').replace('-','/');
                         self.currentPersonCost().startDate(ymd);
@@ -180,7 +180,7 @@ module nts.uk.at.view.kml001.a {
                                         self.gridPersonCostList.removeAll();
                                         self.isInsert(false);
                                         self.loadData(newData, index);
-                                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                     }).fail(function(res) {
                                         nts.uk.ui.dialog.alertError(res.message);
                                     });
@@ -203,7 +203,7 @@ module nts.uk.at.view.kml001.a {
                                     self.personCostList.removeAll();
                                     self.gridPersonCostList.removeAll();
                                     self.loadData(newData, index);
-                                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                 }).fail(function(res) {
                                     nts.uk.ui.dialog.alertError(res.message);
                                 });
@@ -378,7 +378,7 @@ module nts.uk.at.view.kml001.a {
              */
             editDialog(): void {
                 var self = this;
-                let index = _.findIndex(self.personCostList(), self.currentPersonCost())
+                let index = _.findIndex(self.personCostList(), function(o){ return self.currentPersonCost().startDate() == o.startDate();});
                 nts.uk.ui.windows.setShared('personCostList', self.personCostList());
                 nts.uk.ui.windows.setShared('currentPersonCost', self.currentPersonCost());
                 nts.uk.ui.windows.sub.modal("/view/kml/001/d/index.xhtml", { title: "履歴の編集", dialogClass: "no-close" }).onClosed(function() {
