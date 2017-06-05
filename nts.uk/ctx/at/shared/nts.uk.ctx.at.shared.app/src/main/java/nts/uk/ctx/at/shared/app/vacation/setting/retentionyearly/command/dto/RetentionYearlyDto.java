@@ -11,9 +11,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearly
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 
 /**
- * Gets the upper limit setting dto.
+ * The Class RetentionYearlyDto.
+ */
+
+/**
+ * Gets the leave as work days.
  *
- * @return the upper limit setting dto
+ * @return the leave as work days
  */
 @Getter
 
@@ -22,11 +26,20 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetti
  *
  * @param upperLimitSettingDto the new upper limit setting dto
  */
+
+/**
+ * Sets the leave as work days.
+ *
+ * @param leaveAsWorkDays the new leave as work days
+ */
 @Setter
 public class RetentionYearlyDto {
 	
 	/** The upper limit setting dto. */
 	private UpperLimitSettingDto upperLimitSettingDto;
+	
+	/** The leave as work days. */
+	private Boolean leaveAsWorkDays;
 	
 	/**
 	 * To domain.
@@ -88,9 +101,8 @@ public class RetentionYearlyDto {
 		 * getCanAddToCumulationYearlyAsNormalWorkDay()
 		 */
 		@Override
-		public Boolean getCanAddToCumulationYearlyAsNormalWorkDay() {
-//			return dto.canAddToCumulationYearlyAsNormalWorkDay;
-			return null;
+		public Boolean getLeaveAsWorkDays() {
+			return dto.leaveAsWorkDays;
 		}
 		
 	}
