@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="cmm044.b.main.css" />
+			<com:scriptfile path="cmm044.b.start.js" />
+			<com:scriptfile path="cmm044.b.vm.js" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+		<ui:define name="content">
+
+			<div id="functions-area">
+				<button class="proceed" id="D_BTN_001">登録</button>
+				<button id="D_BTN_002" data-bind="click: closeDialog">閉じる</button>
+			</div>
+
+			<div id="contents-area">
+				<div id="label-d1-003" data-bind="ntsFormLabel: {  }"
+					class="form-label">
+					<label>期間</label>
+				</div>
+				<div id="date1"
+					data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+				<span>~</span>
+				<div id="date2"
+					data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+				<button class="caret-bottom">削除</button>
+				<div>
+					<table class="table1">
+						<tr>
+							
+							<th colspan="2">Mars</th>
+							<th colspan="1">Venus</th>
+							<th colspan="1">Mars1</th>
+							<th colspan="1">Venus1</th>
+							<th colspan="1">Mars</th>
+							<th colspan="1">Venus</th>
+							<th colspan="1">Mars1</th>
+							<th colspan="2">Venus1</th>
+						</tr>
+
+						<tr>
+							<th>Teddy Bears</th>
+							<td>50,000</td>
+							<td>30,000</td>
+							<td>100,000</td>
+							<td>50,000</td>
+							<td>30,000</td>
+							<td>100,000</td>
+							<td>50,000</td>
+							<td>30,000</td>
+							<td>100,000</td>
+							
+						</tr>
+						<tr>
+							<th>Board Games</th>
+							<td>10,000</td>
+							<td>5,000</td>
+							<td>12,000</td>
+							<td>50,000</td>
+							<td>30,000</td>
+							<td>100,000</td>
+							<td>50,000</td>
+							<td>30,000</td>
+							<td>100,000</td>
+							
+						</tr>
+					</table>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -22,32 +22,34 @@ module kcp.share.list {
     
     export class ListComponentScreenModel {
         itemList: KnockoutObservableArray<UnitModel>;
-        selectedCode: KnockoutObservable<any>;
+        selectedCodes: KnockoutObservable<any>;
         listComponentColumn: Array<any>;
-        multiple: boolean;
+        isMultiple: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
-            this.multiple = false;
-            this.selectedCode = ko.observable(null);
+            this.isMultiple = false;
+            this.selectedCodes = ko.observable(null);
             
             // Setup list column.
             this.listComponentColumn.push({headerText: 'コード', prop: 'code', width: 50});
-            this.listComponentColumn.push({headerText: '名称', prop: 'name', width: 100});
+            this.listComponentColumn.push({headerText: '名称', prop: 'name', width: 170});
         }
         /**
          * Init component.
          */
         public init($input: JQuery, data: ComponentOption) {
-            ko.cleanNode($input[0]);
             var self = this;
-            self.multiple = data.isMultiSelect;
-            self.selectedCode(data.selectedCode());
+            self.isMultiple = data.isMultiSelect;
+            self.selectedCodes(data.selectedCode());
+            self.selectedCodes.subscribe((newVal: any) => {
+                data.selectedCode(newVal);
+            })
             
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE) {
-                self.listComponentColumn.push({headerText: '所属', prop: 'companyName', width: 100});
+                self.listComponentColumn.push({headerText: '所属', prop: 'companyName', width: 50});
             }
             
             // If show Already setting.
@@ -57,7 +59,7 @@ module kcp.share.list {
                     headerText: '設定済', prop: 'isAlreadySetting', width: 30,
                     formatter: function(isAlreadySet: string) {
                         if (isAlreadySet == 'true') {
-                            return '<div class="center"><i class="icon icon-dot"></i></div>';
+                            return '<div style="text-align: center;"><i class="icon icon-dot"></i></div>';
                         }
                         return '';
                     }
@@ -71,7 +73,7 @@ module kcp.share.list {
                 if (data.isShowAlreadySet) {
                     var alreadyListCode = data.alreadySettingList().filter(item => item.isAlreadySetting).map(item => item.code);
                     dataList.forEach((item => {
-                        item.isAlreadySetting = alreadyListCode.indexOf(item.code) > 0;
+                        item.isAlreadySetting = alreadyListCode.indexOf(item.code) > -1;
                     }))
                 }
                 
@@ -79,7 +81,8 @@ module kcp.share.list {
                 self.itemList(dataList);
                 $input.appendTo($('body'))
                     .load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/list.xhtml', function() {
-                        ko.applyBindings(self, this);
+                        ko.cleanNode($input[0]);
+                        ko.applyBindings(self, $input[0]);
                     })
             });
         }
@@ -140,26 +143,23 @@ module kcp.share.list {
         }
         
     }
-    
-    /**
-     * Base Editor
-     */
-    class ListComponentBindingHandler implements KnockoutBindingHandler {
-
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new ListComponentScreenModel().init($(element), valueAccessor());
-        }
-
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new ListComponentScreenModel().update($(element), valueAccessor());
-        }
-    }
-    
-    ko.bindingHandlers['ntsListComponent'] = new ListComponentBindingHandler();
 }
+
+interface JQuery {
+
+    /**
+     * Nts file upload.
+     */
+    ntsListComponent(option: kcp.share.list.ComponentOption);
+}
+
+(function($: any) {
+    $.fn.ntsListComponent = function(option: kcp.share.list.ComponentOption): any {
+
+        // Init nts file upload. 
+        var widget = new kcp.share.list.ListComponentScreenModel().init(this, option);
+
+        // Return.
+        return widget;
+    }
+} (jQuery));
