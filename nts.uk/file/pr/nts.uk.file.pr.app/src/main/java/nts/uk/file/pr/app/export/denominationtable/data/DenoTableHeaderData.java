@@ -12,11 +12,39 @@ import lombok.Setter;
 /**
  * The Class DenoTableHeaderData.
  */
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
 
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
 @Builder
 
+/**
+ * Gets the emp type.
+ *
+ * @return the emp type
+ */
+
+/**
+ * Gets the category info.
+ *
+ * @return the category info
+ */
 @Getter
 
+/**
+ * Sets the emp type.
+ *
+ * @param empType the new emp type
+ */
+
+/**
+ * Sets the category info.
+ *
+ * @param categoryInfo the new category info
+ */
 @Setter
 public class DenoTableHeaderData {
 	

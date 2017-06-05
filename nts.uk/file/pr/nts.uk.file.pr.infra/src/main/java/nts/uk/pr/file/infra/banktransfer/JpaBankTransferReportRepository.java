@@ -6,15 +6,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.basic.infra.entity.company.CmnmtCompany;
-import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
 import nts.uk.file.pr.app.export.banktransfer.BankTransferReportRepository;
 import nts.uk.file.pr.app.export.banktransfer.data.BankDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferParamRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BankTransferRpDto;
 import nts.uk.file.pr.app.export.banktransfer.data.BranchDto;
-import nts.uk.file.pr.app.export.banktransfer.data.PersonBankAccountDto;
-import nts.uk.file.pr.app.export.residentialtax.data.CompanyDto;
+import nts.uk.file.pr.app.export.banktransfer.data.CalledDto;
 
 @Stateless
 public class JpaBankTransferReportRepository extends JpaRepository implements BankTransferReportRepository {
@@ -40,39 +37,18 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 			+ "AND b.qbkdtBankTransferPK.payDate = :payDate ";
 
 	private String SEL_2_BRANCH = "SELECT NEW " + BranchDto.class.getName() + ""
-			+ "(c.ckbmtBranchPK.branchId, c.branchName, c.branchKnName, c.branchCode, c.bankCode, b.bankName, b.bankKnName) "
-			+ "FROM CbkmtBranch c "
-			+ "LEFT JOIN CbkmtBank b ON c.bankCode = b.cbkmtBankPK.bankCode "
-			+ "WHERE c.ckbmtBranchPK.companyCode = :companyCode AND c.ckbmtBranchPK.branchId = :branchId";
-	
-	private String SEL_2_1_BRANCH = "SELECT NEW " + BranchDto.class.getName() + ""
-			+ "(c.ckbmtBranchPK.branchId, c.branchName, c.branchKnName, c.branchCode, c.bankCode, b.bankName, b.bankKnName) "
-			+ "FROM CbkmtBranch c "
-			+ "LEFT JOIN CbkmtBank b ON c.bankCode = b.cbkmtBankPK.bankCode "
-			+ "WHERE c.ckbmtBranchPK.companyCode = :companyCode AND c.ckbmtBranchPK.branchId IN :branchId";
+			+ "(c.branchName, c.branchCode, c.bankCode)"
+			+ "FROM CbkmtBranch c WHERE c.ckbmtBranchPK.companyCode = :companyCode AND c.ckbmtBranchPK.branchId = :branchId";
 
-	private String SEL_2_BANK = "SELECT NEW " + BankDto.class.getName() + "" + "(d.bankName, d.cbkmtBankPK.bankCode, d.bankKnName)"
+	private String SEL_2_BANK = "SELECT NEW " + BankDto.class.getName() + "" + "(d.bankName, d.cbkmtBankPK.bankCode)"
 			+ "FROM CbkmtBank d WHERE d.cbkmtBankPK.companyCode = :companyCode AND d.cbkmtBankPK.bankCode = :bankCode";
 
-	private String SEL_CALLED = "SELECT e.person FROM CmnmtCalled e WHERE e.ccd = :companyCode";
-
-	private String QCPMT_REGAL_DOC_COM = "SELECT f.regalDocCnameSjis FROM QcpmtRegalDocCom f WHERE f.qcpmtRegalDocComPK.ccd = :companyCode ";
-
-	private String PERSON_BANK_ACCOUNT_SEL_3 = "SELECT NEW " + PersonBankAccountDto.class.getName() + ""
-			+ "(g.accountHolderName1, g.accountHolderName2, g.accountHolderName3, g.accountHolderName4, g.accountHolderName5)"
-			+ "FROM PbamtPersonBankAccount g WHERE g.pbamtPersonBankAccountPK.companyCode = :companyCode AND g.pbamtPersonBankAccountPK.personId = :personId "
-			+ "AND g.startYearMonth < :baseYM AND g.endYearMonth > :baseYM";
+	private String SEL_CALLED = "SELECT NEW " + CalledDto.class.getName() + "" + "(e.person)"
+			+ "FROM CmnmtCalled e WHERE e.ccd = :companyCode";
 
 	@Override
 	public List<BankTransferRpDto> findBySEL1(BankTransferParamRpDto param) {
-		String query = SEL_1_BANKTRANSFER;
-		if (param.getOrderBy() != null) {
-			query += param.getOrderBy() == 0 
-							? " ORDER BY b.qbkdtBankTransferPK.toBranchId " 
-							: " ORDER BY b.qbkdtBankTransferPK.pid ";
-		}
-		
-		return this.queryProxy().query(query, BankTransferRpDto.class)
+		return this.queryProxy().query(SEL_1_BANKTRANSFER, BankTransferRpDto.class)
 				.setParameter("companyCode", param.getCompanyCode())
 				.setParameter("fromBranchId", param.getFromBranchId())
 				.setParameter("payBonusAtr", param.getPayBonusAtr()).setParameter("processingNo", param.getProcessNo())
@@ -82,26 +58,11 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 
 	@Override
 	public List<BankTransferRpDto> findBySEL1_1(BankTransferParamRpDto param) {
-		String query = SEL_1_1_BANKTRANSFER;
-		if (param.getOrderBy() != null) {
-			query += param.getOrderBy() == 0 
-							? " ORDER BY b.qbkdtBankTransferPK.toBranchId " 
-							: " ORDER BY b.qbkdtBankTransferPK.pid ";
-		}
-		
-		return this.queryProxy().query(query, BankTransferRpDto.class)
+		return this.queryProxy().query(SEL_1_1_BANKTRANSFER, BankTransferRpDto.class)
 				.setParameter("companyCode", param.getCompanyCode())
 				.setParameter("fromBranchId", param.getFromBranchId())
 				.setParameter("payBonusAtr", param.getPayBonusAtr()).setParameter("processingNo", param.getProcessNo())
 				.setParameter("processingYm", param.getProcessingYM()).setParameter("payDate", param.getPayDate())
-				.getList();
-	}
-	
-	@Override
-	public List<BranchDto> findAllBranch(String companyCode, List<String> branchIds) {
-		return this.queryProxy().query(SEL_2_1_BRANCH, BranchDto.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("branchId", branchIds)
 				.getList();
 	}
 
@@ -118,26 +79,8 @@ public class JpaBankTransferReportRepository extends JpaRepository implements Ba
 	}
 
 	@Override
-	public Optional<String> findAllCalled(String companyCode) {
-		return this.queryProxy().query(SEL_CALLED, String.class).setParameter("companyCode", companyCode).getSingle();
+	public Optional<CalledDto> findAllCalled(String companyCode) {
+		return this.queryProxy().query(SEL_CALLED, CalledDto.class).setParameter("companyCode", companyCode).getSingle();
 	}
 
-	@Override
-	public Optional<String> findRegalDocCnameSjis(String companyCode) {
-		return this.queryProxy().query(QCPMT_REGAL_DOC_COM, String.class).setParameter("companyCode", companyCode)
-				.getSingle();
-	}
-
-	@Override
-	public CompanyDto findCompany(String companyCode) {
-		CmnmtCompanyPK key = new CmnmtCompanyPK(companyCode);
-		return this.queryProxy().find(key, CmnmtCompany.class)
-				.map(x -> new CompanyDto(x.cmnmtCompanyPk.companyCd, x.cName, x.postal, x.address1, x.address2)).get();
-	}
-
-	@Override
-	public Optional<PersonBankAccountDto> findPerBankAccBySEL3(String companyCode, String personId, int baseYM) {
-		return this.queryProxy().query(PERSON_BANK_ACCOUNT_SEL_3, PersonBankAccountDto.class).setParameter("companyCode", companyCode)
-				.setParameter("personId", personId).setParameter("baseYM", baseYM).getSingle();
-	}
 }

@@ -19,8 +19,8 @@ module kmk011.b.viewmodel {
             var self = this;
             self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KMK011_37'), key: 'divReasonCode',formatter: _.escape, width: 100 },
-                { headerText: nts.uk.resource.getText('KMK011_38'), key: 'divReasonContent',formatter: _.escape, width: 200 }
+                { headerText: nts.uk.resource.getText('KMK011_22'), key: 'divReasonCode',formatter: _.escape, width: 100 },
+                { headerText: nts.uk.resource.getText('KMK011_23'), key: 'divReasonContent',formatter: _.escape, width: 200 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.switchUSe3 = ko.observableArray([

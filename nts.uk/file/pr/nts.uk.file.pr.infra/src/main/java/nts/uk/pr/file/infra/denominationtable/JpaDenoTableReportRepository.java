@@ -149,20 +149,18 @@ public class JpaDenoTableReportRepository extends JpaRepository implements DenoT
 			+ "AND pd.qstdtPaymentDetailPK.processingYM = :ProcessingYM "
 			+ "AND pd.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR "//0
 			+ "AND pd.qstdtPaymentDetailPK.categoryATR = :CTR_ATR "
-			+ "AND ((ba.useSet1 = :ONE AND ba.paymentMethod1 = :ONE "
-			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F304) "
-			+ "OR (ba.useSet2 = :ONE AND ba.paymentMethod2 = :ONE "
-			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F305) "
-			+ "OR (ba.useSet3 = :ONE AND ba.paymentMethod3 = :ONE "
-			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F306) "
-			+ "OR (ba.useSet4 = :ONE AND ba.paymentMethod4 = :ONE "
-			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F307) "
-			+ "OR (ba.useSet5 = :ONE AND ba.paymentMethod5 = :ONE "
-			+ "AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F308)) "
+			+ "AND ((ba.useSet1 = :ONE AND ba.paymentMethod1 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F304) "
+			+ "OR (ba.useSet2 = :ONE AND ba.paymentMethod2 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F305) "
+			+ "OR (ba.useSet3 = :ONE AND ba.paymentMethod3 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F306) "
+			+ "OR (ba.useSet4 = :ONE AND ba.paymentMethod4 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F307) "
+			+ "OR (ba.useSet5 = :ONE AND ba.paymentMethod5 = :ONE AND pd.qstdtPaymentDetailPK.itemCode = :ITEM_CD_F308)) "
 			+ "GROUP BY pb.pid, pc.scd, pb.nameB, pdr.depcd, d.depName, d.hierarchyId "
 			+ "ORDER BY d.hierarchyId ";
 			
 	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.screen.app.report.qpp009.SalarychartRepository#getItems(java.lang.String, nts.uk.ctx.pr.screen.app.report.qpp009.query.SalaryChartReportQuery)
+	 */
 	@Override
 	public List<EmployeeData> getItems(String companyCode, DenoTableReportQuery query) {
 		List<Object[]> paymentHeaderResult = this.getPaymentHeaderResult(companyCode, query);

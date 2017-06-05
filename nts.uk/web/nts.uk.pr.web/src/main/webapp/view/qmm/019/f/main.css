@@ -1,120 +1,48 @@
-@import url("salaryItem/main.css");
-
-@import url("attendItem/main.css");
-
 body * {
 	vertical-align: middle;
 }
-
-.form-label input {
-	width: 120px !important;
+.form-label input{
+	width:120px !important;
 }
 
-.form-label a {
-	margin-left: 50px;
+.form-label a{
+	margin-left:50px;
 }
 
-.left-content {
+.left-content{
 	float: left;
-	width: 290px;
+	width: 360px;
 }
 
-.right-content {
+.right-content{
 	float: right;
-	width: 800px;
+	width: 748px;
 	padding-top: 10px;
 }
-
-.clsLbl_010 {
+.clsLbl_010{
 	width: 100px;
 }
-
-.clsSel {
+.clsSel{
 	width: 17%;
 }
-
-.clsInp {
+.clsInp{
 	width: 100%;
 	display: inline;
 }
-
-.clsDivRange {
+.clsDivRange{
 	display: flex;
 	width: 100%;
 }
-
-.clsCheckbox {
+.clsCheckbox{
 	width: 75px;
 }
-
-.clsDivRangeSlow {
+.clsDivRangeSlow{
 	float: left;
 	margin-left: 100px;
 }
-
-button.nts-switch-button {
-	min-width: 100px;
-	height: 28px;
-	font-size: inherit;
+button.nts-switch-button{
+	min-width: 120px;
 }
-
 span.nts-editor-wrapped {
 	display: inline-flex;
-}
-
-#F_Sch_SearchButton {
-	width: 190px;
-	float: left;
-}
-
-#F_Lbl_ScodeName {
-	margin-top: 5px;
-	float: left;
-}
-
-#F_Lst_ItemNameList_container {
-	margin-top: 10px !important;
-}
-
-#F_Lbl_SelectionItemClassification {
-	margin-left: 10px;
-}
-
-#F_Btn_ItemNameRegistration {
-	width: 268px;
-	margin-top: 10px;
-}
-
-#F_Btn_Setting {
-	width: 135px;
-	margin-left: 50px;
-}
-
-#F_Btn_Cancel {
-	margin-left: 30px;
-}
-
-#INP_002, #INP_003, #INP_004, #INP_005, #INP_006, #INP_007, #INP_008,
-	#INP_009 {
-	width: 110px;
-}
-
-#checkBoxAlRangeHigh {
-	margin-left: 100px;
-}
-
-#checkBoxErrRangeHigh {
-	margin-left: 13px;
-}
-
-#checkBoxErrRangeLowAtr {
-	margin-left: 1px;
-}
-
-#checkBoxAlRangeHigh {
-	margin-left: 100px;
-}
-
-#SEL_004, #SEL_002, #SEL_001 {
-	width: 230px;
 }

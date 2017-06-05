@@ -98,34 +98,6 @@ module qpp014.h.viewmodel {
          * Print file PDF
          */
         saveAsPdf(): void {
-            var self = this;
-            if (self.h_INP_001() == "" || self.h_INP_001() == null) {
-                nts.uk.ui.dialog.alert("振込指定日が入力されていません。");//ER001
-            } else if (self.h_LST_001_itemsSelected() == undefined || self.h_LST_001_itemsSelected().length < 1) {
-                nts.uk.ui.dialog.alert("振込元銀行が選択されていません。");//ER007
-            } else {
-                var branchIdList = [];
-                for (let i = 0; i < self.h_LST_001_itemsSelected().length; i++) {
-                    branchIdList.push(
-                        _.find(self.h_LST_001_items(), function(x) {
-                            return x.label === self.h_LST_001_itemsSelected()[i];
-                        }).branchId);
-                }
-                var command = {
-                    fromBranchId: branchIdList,
-                    processingNo: nts.uk.ui.windows.getShared("processingNo"),
-                    processingYm: nts.uk.ui.windows.getShared("processingYMNotConvert"),
-                    payDate: moment.utc(nts.uk.ui.windows.getShared("dateOfPayment"), "YYYY/MM/DD").toISOString(),
-                    sparePayAtr: nts.uk.ui.windows.getShared("sparePayAtr"),
-                    transferDate: nts.uk.time.yearmonthInJapanEmpire(moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("YYYY/MM")).toString() + " "
-                    + moment(nts.uk.ui.windows.getShared("dateOfPayment")).format("DD") + " 日"
-                };
-                qpp014.h.service.saveAsPdfC(command)
-                    .done(function() { })
-                    .fail(function(error) {
-                        nts.uk.ui.dialog.alert(error.message);
-                    });
-            }
         }
     }
     export class ItemModel_H_LST_001 {

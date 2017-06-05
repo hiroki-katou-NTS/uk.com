@@ -1,14 +1,9 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
 
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
-import nts.uk.ctx.pr.core.dom.itemmaster.event.ItemAttendEvent;
-import nts.uk.ctx.pr.core.dom.itemmaster.event.ItemSalaryEvent;
 
 /**
  * 平均賃金計算設定マスタ
@@ -56,25 +51,5 @@ public class AveragePay extends AggregateRoot {
 	 */
 	public boolean isAttenDayStatementItem() {
 		 return AttendDayGettingSet.SELECT_FROM_STATEMENT_ITEM.equals(this.attendDayGettingSet);
-	}
-	
-	/**
-	 * Update item salary
-	 * @param itemSelectedSalarys
-	 * @param avePayAtr
-	 */
-	public void updateItemSalary(List<String> itemSelectedSalarys, AvePayAtr avePayAtr) {		
-		ItemSalaryEvent event = new ItemSalaryEvent(this.companyCode, itemSelectedSalarys, avePayAtr);
-		event.toBePublished();
-	}
-	
-	/**
-	 * Update item attend
-	 * @param itemSelectedSalarys
-	 * @param avePayAtr
-	 */
-	public void updateItemAttend(List<String> itemSelectedSalarys, AvePayAtr avePayAtr) {		
-		ItemAttendEvent event = new ItemAttendEvent(this.companyCode, itemSelectedSalarys, avePayAtr);
-		event.toBePublished();
 	}
 }

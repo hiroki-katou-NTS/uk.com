@@ -153,6 +153,8 @@ module kmk011.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getAllDivTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
+                //dudt test
+//                nts.uk.ui.block.clear();
                 if (lstDivTime === undefined || lstDivTime.length == 0) {
                     self.dataSource();
                 } else {
@@ -222,7 +224,10 @@ module kmk011.a.viewmodel {
         }
         Registration() {
             var self = this;
-            $("#btnSave").attr("disabled","disabled");
+            //dudt test
+//            nts.uk.ui.block.invisible();
+            
+//            $("#btnSave").attr("disabled","disabled");
             $('.nts-input').trigger("validate");
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
@@ -253,6 +258,9 @@ module kmk011.a.viewmodel {
                         self.list([]);
                         self.check = false;
                         $("#itemname").focus();
+                        //dudt
+//                        nts.uk.ui.block.clear();
+                        
                     }).fail(function(error) {
                         self.check = true;
                         if (error.messageId == 'Msg_82') {
@@ -263,9 +271,7 @@ module kmk011.a.viewmodel {
                         }else{
                              $('#inpName').ntsError(error.message);
                          }
-                    }).always(function(){
-                        $("#btnSave").removeAttr("disabled");
-                    }); 
+                    })
                     dfd.resolve();
                     return dfd.promise();
                 }

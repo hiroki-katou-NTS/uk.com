@@ -47,5 +47,5 @@ public interface RetirementPaymentRepository {
 	 * delete exist Retirement Payment
 	 * @param retirementPayment Retirement Payment
 	 */
-	void remove(String companyCode, String personId, GeneralDate payDate);
+	void remove(RetirementPayment retirementPayment);
 }

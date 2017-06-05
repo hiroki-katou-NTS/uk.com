@@ -35,6 +35,22 @@ public class QET002WebService extends WebService {
 	@POST
 	@Path("generate")
 	public ExportServiceResult generate(AccPaymentReportQuery query) {
+	// TODO: validate print dto.\	
+		// Validate
+//				if (query.getTargetYear() == 0) {
+//					throw new RuntimeException("Target Year is Empty");
+//				}
+//				if ((query.isLowerLimit() == true) && (query.getLowerLimitValue() == 0)) {			
+//					throw new RuntimeException("Lower Limit Value is Not Entered.");			
+//				}
+//				if ((query.isUpperLimit() == true) && (query.getUpperLimitValue() == 0)) {			
+//					throw new RuntimeException("Upper Limit Value is Not Entered.");			
+//				}
+//				if ((query.isLowerLimit() == true) && (query.isUpperLimit() == true)) {
+//					if (query.getLowerLimitValue() > query.getUpperLimitValue()) {
+//						throw new RuntimeException("Lower Limit Value is greater than Upper Limit Value.");
+//					}
+//				}
 		return this.exportService.start(query);
 	}
 }

@@ -9,10 +9,10 @@ module qpp014.j {
         //combobox
         //J_SEL_002
         itemList_J_SEL_002: KnockoutObservableArray<ItemModel_J_SEL_002>;
-        selectedCode_J_SEL_002: KnockoutObservable<number>;
+        selectedCode_J_SEL_002: KnockoutObservable<ItemModel_J_SEL_002>;
         //J_SEL_003
         itemList_J_SEL_003: KnockoutObservableArray<ItemModel_J_SEL_002>;
-        selectedCode_J_SEL_003: KnockoutObservable<number>;
+        selectedCode_J_SEL_003: KnockoutObservable<ItemModel_J_SEL_002>;
         //gridview
         items_J_LST_001: KnockoutObservableArray<ItemModel_J_LST_001>;
         currentCode_J_LST_001: KnockoutObservable<any>;
@@ -36,17 +36,17 @@ module qpp014.j {
             self.selectedId_J_SEL_001 = ko.observable(0);
 
             self.itemList_J_SEL_002 = ko.observableArray([
-                new ItemModel_J_SEL_002(0 , '振込先順 '),
-                new ItemModel_J_SEL_002(1 , '個人　コード順'),
+                new ItemModel_J_SEL_002('振込先順 '),
+                new ItemModel_J_SEL_002('個人　コード順'),
             ]);
 
-            self.selectedCode_J_SEL_002 = ko.observable(0);
+            self.selectedCode_J_SEL_002 = ko.observable(self.itemList_J_SEL_002()[0]);
 
             self.itemList_J_SEL_003 = ko.observableArray([
-                new ItemModel_J_SEL_002(0 , '漢字出力'),
-                new ItemModel_J_SEL_002(1 , 'カナ出力'),
+                new ItemModel_J_SEL_002('漢字出力'),
+                new ItemModel_J_SEL_002('カナ出力'),
             ]);
-            self.selectedCode_J_SEL_003 = ko.observable(0);
+            self.selectedCode_J_SEL_003 = ko.observable(self.itemList_J_SEL_003()[0]);
             self.isEnable = ko.observable(false);
             self.items_J_LST_001 = ko.observableArray([]);
             self.currentCode_J_LST_001 = ko.observable();
@@ -153,8 +153,6 @@ module qpp014.j {
                         }).branchId);
                 }
                 var command = {
-                    outputOrder : self.selectedId_J_SEL_001() == 1 ? self.selectedCode_J_SEL_002() : null,
-                    ouputName : self.selectedId_J_SEL_001() == 1 ? self.selectedCode_J_SEL_003() : null,
                     fromBranchId: branchIdList,
                     processingNo: nts.uk.ui.windows.getShared("processingNo"),
                     processingYm: nts.uk.ui.windows.getShared("data").currentProcessingYm,
@@ -169,13 +167,17 @@ module qpp014.j {
                     qpp014.j.service.saveAsPdfA(command)
                         .done(function() { })
                         .fail(function(error) {
-                            nts.uk.ui.dialog.alert(error.message);
+                            if (error.messageId == 'ER010') {
+                                nts.uk.ui.dialog.alert("対象データがありません。");
+                            }
                         });
                 } else {
                     qpp014.j.service.saveAsPdfB(command)
                         .done(function() { })
                         .fail(function(error) {
-                            nts.uk.ui.dialog.alert(error.message);
+                            if (error.messageId == 'ER010') {
+                                nts.uk.ui.dialog.alert("対象データがありません。");
+                            }
                         });
                 }
             }
@@ -192,11 +194,9 @@ module qpp014.j {
     }
 
     export class ItemModel_J_SEL_002 {
-        code: number;
         name: string;
 
-        constructor(code: number, name: string) {
-            this.code = code;
+        constructor(name: string) {
             this.name = name;
         }
     }

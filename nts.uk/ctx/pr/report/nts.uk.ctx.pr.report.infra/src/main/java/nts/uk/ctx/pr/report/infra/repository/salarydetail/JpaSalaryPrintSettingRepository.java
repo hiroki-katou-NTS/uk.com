@@ -55,7 +55,7 @@ public class JpaSalaryPrintSettingRepository extends JpaRepository implements Sa
 
 		// Return default setting if result is empty.
 		if (CollectionUtil.isEmpty(result)) {
-			return null;
+			return SalaryPrintSetting.createWithIntial(companyCode);
 		}
 
 		return this.toDomain(result.get(0));
