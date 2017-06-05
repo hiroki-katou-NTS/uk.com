@@ -10,11 +10,11 @@ package nts.uk.ctx.sys.portal.dom.layout;
  */
 public enum PGType {
 	/** Top Page トップページ */
-	TopPage(0),
+	TOPPAGE(0),
 	/** Title Menu タイトルメニュー */
-	TitleMenu(1),
+	TITLEMENU(1),
 	/** My Page マイページ */
-	MyPage(2);
+	MYPAGE(2);
 	
 	public final int value;
 	
