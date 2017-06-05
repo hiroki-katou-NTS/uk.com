@@ -4,5 +4,5 @@ import java.util.Optional;
 
 public interface StampCardRepository {
 	// Get List Card by Person ID
-	Optional<StampCardItem> findByPersonID(String PID);
+	Optional<StampCardItem> findByPersonID(String companyId,String PID);
 }
