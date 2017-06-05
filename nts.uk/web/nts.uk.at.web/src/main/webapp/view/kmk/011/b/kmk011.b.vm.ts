@@ -60,6 +60,7 @@ module kmk011.b.viewmodel {
          * get all divergence reason
          */
         startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             var self = this;
             self.currentCode('');
             var dfd = $.Deferred();
@@ -70,6 +71,7 @@ module kmk011.b.viewmodel {
                 self.divTimeId(id);
             }
             service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.Item>) {
+                nts.uk.ui.block.clear();
                 self.currentCode(null);
                 if (id==null||lstDivReason === undefined || lstDivReason.length == 0) {
                     self.dataSource([]);
@@ -114,6 +116,7 @@ module kmk011.b.viewmodel {
             }
         }
         RegistrationDivReason() {
+            nts.uk.ui.block.invisible();
             var self = this;
             $('.nts-input').trigger("validate");
             _.defer(() => {
@@ -138,7 +141,9 @@ module kmk011.b.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getAllDivReasonNew();
                 $("#inpReason").focus();
+                nts.uk.ui.block.clear();
             }).fail(function(error) {
+                nts.uk.ui.block.clear();
                 $('#inpCode').ntsError('set', error);
             });
         }
@@ -158,10 +163,12 @@ module kmk011.b.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                     self.getAllDivReasonNew();
 //                     $("#inpCode").focus();
+                    nts.uk.ui.block.clear();
                     });;
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
                 dfd.reject(res);
+                nts.uk.ui.block.clear();
             });
         }
         //get all divergence reason new
@@ -184,17 +191,20 @@ module kmk011.b.viewmodel {
         }
         //delete divergence reason
         deleteDivReason() {
+            nts.uk.ui.block.invisible();
             var self = this;
             nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function() {
                 let divReason = self.itemDivReason();
                 self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
                 service.deleteDivReason(divReason).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
+                        nts.uk.ui.block.clear();
                         self.getDivReasonList_afterDelete();
                          $("#inpCode").focus();
                     });
                 });
             }).ifNo(function() {
+                nts.uk.ui.block.clear();
                 return;
             })
         }
