@@ -50,17 +50,38 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 	@Override
 	protected void handle(CommandHandlerContext<CreateLayoutHistoryCommand> context) {
 		CreateLayoutHistoryCommand command = context.getCommand();
+
 		String companyCode = AppContexts.user().companyCode();
-		LayoutHistory layoutHistOrigin = layoutHisRepo.getAllHistMax(companyCode, command.getStmtCode())
+
+		// LayoutMaster layoutOrigin = layoutRepo.getHistoryBefore(companyCode,
+		// command.getStmtCode(), command.getStartYm())
+		// .orElseThrow(() -> new BusinessException(new RawErrorMessage("Not
+		// found layout")));
+		LayoutHistory layoutHistOrigin = layoutHisRepo
+				.getHistoryBefore(companyCode, command.getStmtCode(), command.getStartYm())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout history")));
 		LayoutMaster layoutOrgin = layoutRepo.getHistoryBefore(companyCode, command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout head")));
-		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategoriesBefore(companyCode,
-				command.getStmtCode(), layoutHistOrigin.getHistoryId());
+		// List<LayoutMasterCategory> categoriesOrigin =
+		// categoryRepo.getCategories(companyCode, command.getStmtCode(),
+		// command.getStartPrevious());
+		// List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode,
+		// command.getStmtCode(), command.getStartPrevious());
+		// List<LayoutMasterDetail> detailsOrigin =
+		// detailRepo.getDetails(companyCode, command.getStmtCode(),
+		// command.getStartPrevious());
+		//CHUY
+		String historyId = null;
+		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(),
+				historyId);
 		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(),
-				layoutHistOrigin.getHistoryId());
-		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetailsBefore(companyCode, command.getStmtCode(),
-				layoutHistOrigin.getHistoryId());
+				command.getStartPrevious());
+		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(),
+				command.getStartPrevious());
+
+		// LayoutMaster layoutNew = command.toDomain(command.getStartYm(),
+		// 999912, command.getLayoutAtr(),
+		// layoutOrgin.getStmtName().v(), IdentifierUtil.randomUniqueId());
 		LayoutMaster layoutNew = command.toDomain(layoutOrgin.getStmtName().v());
 		LayoutHistory layoutHistNew = command.toDomain(command.getStartYm(), 999912, command.getLayoutAtr(),
 				IdentifierUtil.randomUniqueId());
@@ -72,33 +93,33 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		}
 
 		// データベース登録[明細書マスタ.INS-1]を実施する
-		layoutHistNew.validate();
+		layoutNew.validate();
+		layoutRepo.add(layoutNew);
 		layoutHisRepo.add(layoutHistNew);
 		// 「最新の履歴から引き継ぐ」を選択した場合
 		if (command.isCheckContinue()) {
-			// Lanlt 17.03.2017
-			copyFromPreviousHistory(command, companyCode, categoriesOrigin, linesOrigin, detailsOrigin,
-					layoutHistNew.getHistoryId());
+			copyFromPreviousHistory(command, companyCode, categoriesOrigin, linesOrigin, detailsOrigin);
 		} else {
 			layoutCommandHandler.createNewData(layoutNew, layoutHistNew, companyCode);
 		}
-		// Lanlt 17.03.2017
-		updateData(command, companyCode, layoutOrgin, layoutNew, layoutHistOrigin, layoutHistNew, categoriesOrigin,
-				linesOrigin, detailsOrigin);
+		// 「初めから作成する。」を選択した場合
+		// and 「最新の履歴から引き継ぐ」を選択した場合 更新データ
+		updateData(command, companyCode, layoutOrgin, layoutNew, layoutHistOrigin, layoutHistNew, categoriesOrigin, linesOrigin, detailsOrigin);
 	}
 
 	private void copyFromPreviousHistory(CreateLayoutHistoryCommand command, String companyCode,
 			List<LayoutMasterCategory> categoriesOrigin, List<LayoutMasterLine> linesOrigin,
-			List<LayoutMasterDetail> detailsOrigin, String NewhistoryId) {
+			List<LayoutMasterDetail> detailsOrigin) {
 		List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(org -> {
 			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCtAtr(),
-					org.getCtgPos(), NewhistoryId);
+					org.getCtgPos(), IdentifierUtil.randomUniqueId());
 		}).collect(Collectors.toList());
 		categoryRepo.add(categoriesNew);
 
 		List<LayoutMasterLine> linesNew = linesOrigin.stream().map(org -> {
 			return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getAutoLineId(),
-					org.getCategoryAtr(), org.getLineDisplayAttribute(), org.getLinePosition(), NewhistoryId);
+					org.getCategoryAtr(), org.getLineDisplayAttribute(), org.getLinePosition(),
+					IdentifierUtil.randomUniqueId());
 		}).collect(Collectors.toList());
 		lineRepo.add(linesNew);
 
@@ -107,70 +128,84 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 					org.getItemCode(), org.getAutoLineId(), org.getItemPosColumn(), org.getError(),
 					org.getCalculationMethod(), org.getDistribute(), org.getDisplayAtr(), org.getAlarm(),
 					org.getSumScopeAtr(), org.getSetOffItemCode(), org.getCommuteAtr(), org.getFormulaCode(),
-					org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(), NewhistoryId);
+					org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(),
+					IdentifierUtil.randomUniqueId());
 		}).collect(Collectors.toList());
 		detailRepo.add(detailsNew);
 	}
 
-	// UPDATE 20.3.2017 Lanlt fix historyID in category, line, detail
 	private void updateData(CreateLayoutHistoryCommand command, String companyCode, LayoutMaster layoutOrigin,
 			LayoutMaster layoutNew, LayoutHistory layoutHistOrigin, LayoutHistory layoutHistNew,
 			List<LayoutMasterCategory> categoriesOrigin, List<LayoutMasterLine> linesOrigin,
 			List<LayoutMasterDetail> detailsOrigin) {
-		YearMonth endYm = new YearMonth(command.getEndYm() - 1);
+		YearMonth endYm = new YearMonth(command.getEndYm()).previousMonth();
 		// データベース更新[明細書マスタ.UPD-2] を実施する
+		// code anh Lam chua sua db
+		// layoutOrigin.setEndYm(endYm);
+		// this.layoutRepo.update(layoutOrigin);
 		// データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
+		// List<LayoutMasterCategory> lstCategory =
+		// this.categoryRepo.getCategories(companyCode, command.getStmtCode(),
+		// command.getStartPrevious());
+		// List<LayoutMasterCategory> categoriesNew =
+		// categoriesOrigin.stream().map(org -> {
+		// return LayoutMasterCategory.createFromDomain(org.getCompanyCode(),
+		// org.getStartYM(), org.getStmtCode(),
+		// org.getCtAtr(), endYm, org.getCtgPos(), org.getHistoryId());
+		// }).collect(Collectors.toList());
 
 		layoutHistOrigin.setEndYm(endYm);
 		this.layoutHisRepo.update(layoutHistOrigin);
 		// データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
+		// List<LayoutMasterCategory> lstCategory =
+		// this.categoryRepo.getCategories(companyCode, command.getStmtCode(),
+		// command.getStartPrevious());
 		// データベース更新[明細書マスタ行.UPD-2] を実施する
-		if (command.isCheckContinue()) {
-			List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(org -> {
-				return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCtAtr(),
-						org.getCtgPos(), layoutHistNew.getHistoryId());
-			}).collect(Collectors.toList());
-			this.categoryRepo.update(categoriesNew);
-			// データベース更新[明細書マスタ行.UPD-2] を実施する
-			List<LayoutMasterLine> linesNew = linesOrigin.stream().map(org -> {
-				return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getAutoLineId(),
-						org.getCategoryAtr(), org.getLineDisplayAttribute(), org.getLinePosition(),
-						layoutHistNew.getHistoryId());
-			}).collect(Collectors.toList());
-			this.lineRepo.update(linesNew);
-			// データベース更新[明細書マスタ明細.UPD-2] を実施する
-			List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(org -> {
-				return LayoutMasterDetail.createFromDomain(org.getCompanyCode(), org.getStmtCode(),
-						org.getCategoryAtr(), org.getItemCode(), org.getAutoLineId(), org.getItemPosColumn(),
-						org.getError(), org.getCalculationMethod(), org.getDistribute(), org.getDisplayAtr(),
-						org.getAlarm(), org.getSumScopeAtr(), org.getSetOffItemCode(), org.getCommuteAtr(),
-						org.getFormulaCode(), org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(),
-						layoutHistNew.getHistoryId());
-			}).collect(Collectors.toList());
-			this.detailRepo.update(detailsNew);
-		} else {
-			List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(org -> {
-				return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCtAtr(),
-						org.getCtgPos(), org.getHistoryId());
-			}).collect(Collectors.toList());
-			this.categoryRepo.update(categoriesNew);
-			// データベース更新[明細書マスタ行.UPD-2] を実施する
-			List<LayoutMasterLine> linesNew = linesOrigin.stream().map(org -> {
-				return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getAutoLineId(),
-						org.getCategoryAtr(), org.getLineDisplayAttribute(), org.getLinePosition(), org.getHistoryId());
-			}).collect(Collectors.toList());
-			this.lineRepo.update(linesNew);
-			// データベース更新[明細書マスタ明細.UPD-2] を実施する
-			List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(org -> {
-				return LayoutMasterDetail.createFromDomain(org.getCompanyCode(), org.getStmtCode(),
-						org.getCategoryAtr(), org.getItemCode(), org.getAutoLineId(), org.getItemPosColumn(),
-						org.getError(), org.getCalculationMethod(), org.getDistribute(), org.getDisplayAtr(),
-						org.getAlarm(), org.getSumScopeAtr(), org.getSetOffItemCode(), org.getCommuteAtr(),
-						org.getFormulaCode(), org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(),
-						org.getHistoryId());
-			}).collect(Collectors.toList());
-			this.detailRepo.update(detailsNew);
-		}
-
+		// List<LayoutMasterLine> lstLine = this.lineRepo.getLines(companyCode,
+		// command.getStmtCode(), command.getStartPrevious());
+		// List<LayoutMasterLine> linesNew = linesOrigin.stream().map(org -> {
+		// return LayoutMasterLine.createFromDomain(org.getCompanyCode(),
+		// org.getStartYM(), org.getStmtCode(), endYm,
+		// org.getAutoLineId(), org.getCategoryAtr(),
+		// org.getLineDispayAttribute(), org.getLinePosition(),
+		// org.getHistoryId());
+		// }).collect(Collectors.toList());
+		List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(org -> {
+			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCtAtr(),
+					org.getCtgPos(), org.getHistoryId());
+		}).collect(Collectors.toList());
+		this.categoryRepo.update(categoriesNew);
+		// データベース更新[明細書マスタ行.UPD-2] を実施する
+		// List<LayoutMasterLine> lstLine = this.lineRepo.getLines(companyCode,
+		// command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterLine> linesNew = linesOrigin.stream().map(org -> {
+			return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getAutoLineId(),
+					org.getCategoryAtr(), org.getLineDisplayAttribute(), org.getLinePosition(), org.getHistoryId());
+		}).collect(Collectors.toList());
+		this.lineRepo.update(linesNew);
+		// データベース更新[明細書マスタ明細.UPD-2] を実施する
+		// List<LayoutMasterDetail> lstDetail =
+		// this.detailRepo.getDetailsBefore(companyCode, command.getStmtCode(),
+		// 999912);
+		// List<LayoutMasterDetail> lstDetail =
+		// this.detailRepo.getDetails(companyCode, command.getStmtCode(),
+		// command.getStartPrevious());
+		List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(org -> {
+			// return LayoutMasterDetail.createFromDomain(org.getCompanyCode(),
+			// org.getLayoutCode(), org.getStartYm(),
+			// endYm, org.getCategoryAtr(), org.getItemCode(),
+			// org.getAutoLineId(), org.getItemPosColumn(),
+			// org.getError(), org.getCalculationMethod(), org.getDistribute(),
+			// org.getDisplayAtr(),
+			// org.getAlarm(), org.getSumScopeAtr(), org.getSetOffItemCode(),
+			// org.getCommuteAtr(),
+			// org.getPersonalWageCode(), org.getHistoryId());
+			return LayoutMasterDetail.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCategoryAtr(),
+					org.getItemCode(), org.getAutoLineId(), org.getItemPosColumn(), org.getError(),
+					org.getCalculationMethod(), org.getDistribute(), org.getDisplayAtr(), org.getAlarm(),
+					org.getSumScopeAtr(), org.getSetOffItemCode(), org.getCommuteAtr(), org.getFormulaCode(),
+					org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(), org.getHistoryId());
+		}).collect(Collectors.toList());
+		this.detailRepo.update(detailsNew);
 	}
 }

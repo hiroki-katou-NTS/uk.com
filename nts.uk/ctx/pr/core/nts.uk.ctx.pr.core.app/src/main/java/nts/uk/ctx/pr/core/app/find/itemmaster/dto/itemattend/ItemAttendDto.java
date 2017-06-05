@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 
 @NoArgsConstructor
@@ -13,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 @Data
 public class ItemAttendDto {
 	private int avePayAtr;
-	private ItemAtr itemAtr;
+	private int itemAtr;
 	private int errRangeLowAtr;
 	private BigDecimal errRangeLow;
 	private int errRangeHighAtr;
@@ -27,7 +26,7 @@ public class ItemAttendDto {
 
 	public static ItemAttendDto fromDomain(ItemAttend domain) {
 		
-		return new ItemAttendDto(domain.getAvePayAtr().value, domain.getItemAtr(),
+		return new ItemAttendDto(domain.getAvePayAtr().value, domain.getItemAtr().value,
 				domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(), domain.getAlRangeHighAtr().value,
 				domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value, domain.getAlRangeLow().v(),
 				domain.getAlRangeHighAtr().value, domain.getAlRangeHigh().v(), domain.getWorkDaysScopeAtr().value,

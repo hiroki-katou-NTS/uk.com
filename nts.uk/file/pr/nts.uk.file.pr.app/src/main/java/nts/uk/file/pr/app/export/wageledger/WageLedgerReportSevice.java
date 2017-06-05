@@ -46,11 +46,6 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		WageLedgerReportQuery query = context.getQuery();
 		String companyCode = AppContexts.user().companyCode();
 		
-		// Validate target year.
-		if (query.targetYear < 1900 || query.targetYear > 9999) {
-			throw new RuntimeException("Target Year is invalid!");
-		}
-		
 		// TODO: Validate query employee ids and base date.
 		query.baseDate = GeneralDate.today();
 		query.employeeIds = Arrays.asList("99900000-0000-0000-0000-000000000002",

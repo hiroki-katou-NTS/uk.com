@@ -18,7 +18,7 @@ module qmm012.e {
         export module model {
             export class ItemAttend {
                 avePayAtr: number;
-                itemAtr: any;
+                itemAtr: number;
                 errRangeLowAtr: number;
                 errRangeLow: number;
                 errRangeHighAtr: number;
@@ -31,7 +31,7 @@ module qmm012.e {
                 memo: string;
                 constructor(
                     avePayAtr: number,
-                    itemAtr: any,
+                    itemAtr: number,
                     errRangeLowAtr: number,
                     errRangeLow: number,
                     errRangeHighAtr: number,

@@ -1,10 +1,18 @@
 module qpp014.i.service {
     var paths: any = {
-        saveAsPdfI: "screen/pr/QPP014/saveAsPdfI",
+        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
     }
-
-    export function saveAsPdfI(command: any): JQueryPromise<any> {
-        return nts.uk.request.exportFile(paths.saveAsPdfI, command);
+    
+    export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
     }
 }
 

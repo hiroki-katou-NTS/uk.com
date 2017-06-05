@@ -3,11 +3,10 @@ package nts.uk.ctx.pr.core.dom.rule.employment.layout;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
-public class LayoutHistory   extends AggregateRoot {
+public class LayoutHistory {
 
 	/** code */
 	@Getter

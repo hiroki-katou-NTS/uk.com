@@ -76,7 +76,7 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 				.map(x -> x.getItemCode().v())
 				.collect(Collectors.toList());
 		if(!itemSelectedSalarys.isEmpty()){
-			averagePay.updateItemSalary(itemSelectedSalarys, AvePayAtr.Object);
+			this.itemSalaryRespository.updateItems(companyCode, itemSelectedSalarys, AvePayAtr.Object);
 		}
 		
 		// QCAMT_ITEM_SALARY.UPD_2: item salary unselected
@@ -85,7 +85,7 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 				.map(x -> x.getItemCode().v())
 				.collect(Collectors.toList());
 		if(!itemUnselectedSalarys.isEmpty()) {
-			averagePay.updateItemSalary(itemUnselectedSalarys, AvePayAtr.NotApplicable);
+			this.itemSalaryRespository.updateItems(companyCode, itemUnselectedSalarys, AvePayAtr.NotApplicable);
 		}
 		
 		// if 明細書項目から選択 is selected
@@ -104,7 +104,7 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 					.map(x -> x.getItemCode().v())
 					.collect(Collectors.toList());
 			if(!itemSelectedAttends.isEmpty()) {
-				averagePay.updateItemAttend(itemSelectedAttends, AvePayAtr.Object);
+				this.itemAttendRespository.updateItems(companyCode, itemSelectedAttends, AvePayAtr.Object);
 			}
 			
 			// QCAMT_ITEM_ATTEND.UPD_2: item attend unselected
@@ -113,7 +113,7 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 					.map(x -> x.getItemCode().v())
 					.collect(Collectors.toList());
 			if(!itemUnselectedAttends.isEmpty()) {
-				averagePay.updateItemAttend(itemUnselectedAttends, AvePayAtr.NotApplicable);
+				this.itemAttendRespository.updateItems(companyCode, itemUnselectedAttends, AvePayAtr.NotApplicable);
 			}
 		}
 	}

@@ -9,11 +9,14 @@
 
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
+			<script
+				src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
+			<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
+
 			<link rel="stylesheet" type="text/css" href="style.css" />
-			<script src="qmm019.j.start.js" />
-			<script src="qmm019.j.vm.js" />
-			<!-- <script src="service.js" /> -->
+			<script src="start.js" />
+			<script src="viewmodel.js" />
+			<script src="service.js" />
 			<script>var dialogSize = { width: 570, height: 300 };</script>
 		</ui:define>
 
@@ -25,15 +28,15 @@
 			<form>
 				<div>
 					<fieldset>
-						<div class="radiobox"
+					<div class="radiobox"
 							data-bind="ntsRadioBoxGroup: {
 								options: itemList,
 								optionsValue: 'id',
 								optionsText: 'name',
 								value: selectedCode,
 								enable: enable}"></div>
-
-						<!-- <label><input checked="checked" class="radio-1" type="radio" value="1" name="selection" data-bind="checked: selectedBox"/>明細書に印字する行</label><br /> 
+						
+					 	<!-- <label><input checked="checked" class="radio-1" type="radio" value="1" name="selection" data-bind="checked: selectedBox"/>明細書に印字する行</label><br /> 
 						<label><input class="radio-1" type="radio" value="2" name="selection" data-bind="checked: selectedBox"/>明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）</label><br /> 
 						<label><input class="radio-1" type="radio" value="3" name="selection" data-bind="checked: selectedBox"/>レイアウトから行を削除（登録処理を行うまでは元に戻せます）</label><br /> -->
 					</fieldset>

@@ -10,10 +10,4 @@ import lombok.NoArgsConstructor;
 public class BankDto {
 	private String bankName;
 	private String bankCode;
-	private String bankNameKana;
-	
-	public BankDto(String bankName, String bankCode) {
-		this.bankName = bankName;
-		this.bankCode = bankCode;
-	}
 }

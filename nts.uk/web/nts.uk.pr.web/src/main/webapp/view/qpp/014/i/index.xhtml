@@ -10,10 +10,10 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 650, height: 345 };</script>
 			<com:scriptfile path="qpp014.i.start.js" />
-			<com:scriptfile path="qpp014.i.service.js" />
 			<com:scriptfile path="qpp014.i.viewmodel.js" />
 			<com:stylefile path="qpp014.i.main.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/lib/nittsu/ui/sharedvm/timer.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -74,7 +74,7 @@
 
 				<div id="successful">
 					<hr id="I_division" />
-					<button class="large" id="I_BTN_002" data-bind="click: saveAsPdf">ファイルダウンロード</button>
+					<button class="large" id="I_BTN_002">ファイルダウンロード</button>
 					<button id="I_BTN_003" data-bind="click: closeDialog">閉じる</button>
 				</div>
 
@@ -102,7 +102,7 @@
 						</div>
 					</div>
 					<hr id="I_division" />
-					<button class="large" id="I_BTN_002" data-bind="click: saveAsPdf">ファイルダウンロード</button>
+					<button class="large" id="I_BTN_002">ファイルダウンロード</button>
 					<button id="I_BTN_003" data-bind="click: closeDialog">閉じる</button>
 				</div>
 			</div>

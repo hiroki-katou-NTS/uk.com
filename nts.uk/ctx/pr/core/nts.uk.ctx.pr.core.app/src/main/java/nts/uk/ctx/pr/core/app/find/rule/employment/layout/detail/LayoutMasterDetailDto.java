@@ -54,8 +54,6 @@ public class LayoutMasterDetailDto {
 	private int isUseLowAlam;
 	/**アラーム範囲下限	 */
 	private BigDecimal alamRangeLow;
-	/** name */
-	private String itemAbName;
 	
 	public static LayoutMasterDetailDto fromDomain(LayoutMasterDetail domain)
 	{
@@ -82,9 +80,7 @@ public class LayoutMasterDetailDto {
 				domain.getAlarm().getIsUseHigh().value,
 				domain.getAlarm().getRange().max(),
 				domain.getAlarm().getIsUseLow().value,
-				domain.getAlarm().getRange().min(),
-				domain.getItemAbName().v()
-				);		
+				domain.getAlarm().getRange().min());		
 	}
 	
 }

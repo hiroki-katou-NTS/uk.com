@@ -56,22 +56,14 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			+ " AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
 			+ " AND c.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM";
 
-	private final String SELECT_5 = " SELECT b FROM QstdtPaymentHeader b "
-			+ " WHERE b.qstdtPaymentHeaderPK.companyCode = :CCD"
-			+ " AND b.qstdtPaymentHeaderPK.processingNo = :PROCESSING_NO"
-			+ " AND b.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
-			+ " AND b.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM"
-			+ " AND b.qstdtPaymentHeaderPK.sparePayAtr = :SPARE_PAY_ATR";
-
 	@Override
 	public Optional<PaymentDetail> findItemWith9Property(String companyCode, String personId, int processingNo,
 			int processingYm, int payBonusAtr, int sparePayAtr, int categoryAtr, String itemCode, BigDecimal value) {
-		return this.queryProxy().query(SEL_11, QstdtPaymentDetail.class).setParameter("CCD", companyCode)
+		return this.queryProxy().query(SEL_11, PaymentDetail.class).setParameter("CCD", companyCode)
 				.setParameter("PID", personId).setParameter("PROCESSING_NO", processingNo)
 				.setParameter("PROCESSING_YM", processingYm).setParameter("PAY_BONUS_ATR", payBonusAtr)
 				.setParameter("SPARE_PAY_ATR", sparePayAtr).setParameter("CTG_ATR", categoryAtr)
-				.setParameter("ITEM_CD", itemCode).setParameter("VAL", value)
-				.getSingle().map(c -> paymentDetailToDomain(c));
+				.setParameter("ITEM_CD", itemCode).setParameter("VAL", value).getSingle();
 	}
 
 	@Override
@@ -90,15 +82,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		return this.queryProxy().query(SELECT_3_1, QstdtPaymentHeader.class).setParameter("CCD", companyCode)
 				.setParameter("PID", personId).setParameter("PROCESSING_NO", processingNo)
 				.setParameter("PAY_BONUS_ATR", payBonusAttribute).setParameter("PROCESSING_YM", processingYM)
-				.getList(c -> toDomain(c));
-	}
-
-	@Override
-	public List<Payment> findPaymentHeaderSelect5(String companyCode, int processingNo, int processingYm,
-			int payBonusAtr, int sparePayAtr) {
-		return this.queryProxy().query(SELECT_5, QstdtPaymentHeader.class).setParameter("CCD", companyCode)
-				.setParameter("SPARE_PAY_ATR", sparePayAtr).setParameter("PROCESSING_NO", processingNo)
-				.setParameter("PAY_BONUS_ATR", payBonusAtr).setParameter("PROCESSING_YM", processingYm)
 				.getList(c -> toDomain(c));
 	}
 

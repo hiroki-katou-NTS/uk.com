@@ -45,5 +45,4 @@ public interface ItemSalaryRespository {
 	 * @param avePayAtr
 	 */
 	void updateItems(String companyCode, List<String> itemCodeList, AvePayAtr avePayAtr);
-
 }
