@@ -166,7 +166,7 @@ module nts.uk.request {
                 'PG-Path': location.current.serialize()
             }
         }).done(function(res) {
-            if (res !== undefined && res.businessException) {
+            if (res !== undefined && res.isBusinessException) {
                 dfd.reject(res);
             } else {
                 dfd.resolve(res);
