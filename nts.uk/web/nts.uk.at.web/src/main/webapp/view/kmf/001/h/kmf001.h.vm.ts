@@ -229,6 +229,8 @@ module nts.uk.pr.view.kmf001.h {
 
                 if (!self.validateEmpSetting()) {
                     return;
+                    
+                    
                 }
 
                 this.service.saveEmpSetting(self.empSettingModel().toEmpSubstVacationDto()).done(function() {

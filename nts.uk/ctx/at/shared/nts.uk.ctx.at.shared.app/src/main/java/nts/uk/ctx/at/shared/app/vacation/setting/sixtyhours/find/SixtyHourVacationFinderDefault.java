@@ -10,12 +10,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find.dto.Emp60HourVacationDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find.dto.SixtyHourVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class 60HourVacationFinderDefault.
@@ -38,13 +40,14 @@ public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
 	 * nts.uk.ctx.at.shared.app.vacation.setting.subst.find.60HourVacationFinder#
 	 * findComSetting(java.lang.String)
 	 */
-	public SixtyHourVacationSettingDto findComSetting(String companyId) {
-
+	public SixtyHourVacationSettingDto findComSetting() {
+		String companyId = AppContexts.user().companyId();
 		Optional<Com60HourVacation> optCom60HVacation = this.comSvRepository.findById(companyId);
 
 		if (!optCom60HVacation.isPresent()) {
+			return null;
 			// TODO: find msg id
-			throw new BusinessException("");
+//			throw new BusinessException(new RawErrorMessage(""));
 		}
 
 		SixtyHourVacationSettingDto dto = new SixtyHourVacationSettingDto();
@@ -68,8 +71,7 @@ public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
 
 		// Check exist
 		if (!optEmpSubVacation.isPresent()) {
-			// TODO: find msg id
-			throw new BusinessException("");
+			return null;
 		}
 
 		Emp60HourVacationDto dto = new Emp60HourVacationDto();

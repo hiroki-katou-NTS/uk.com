@@ -43,10 +43,10 @@
 						<tr>
 							<td class="row_head"><div
 									data-bind="ntsFormLabel: { required: true }">
-									#{i18n.getText('KMF001_93')}</div></td>
+									#{i18n.getText('KMF001_96')}</div></td>
 							<td class="row_head">
 								<!-- ＃KMF001_93 enum  管理区分 -->
-								<div tabindex="5" class="btn-switch"
+								<div tabindex="" class="btn-switch"
 									data-bind="ntsSwitchButton: {
 									options: $parent.manageDistinctEnums,
 									optionsValue: 'value',
@@ -58,23 +58,28 @@
 						<tr>
 							<td colspan="3" style="padding-left: 50px;">
 								<table class="form-default">
-									<tr class="row_head">
-										<td><div data-bind="ntsFormLabel: { required: true }">
-												#{i18n.getText('KMF001_92')}</div></td>
-										<td></td>
+									<tr class="">
+										<td><div data-bind="ntsFormLabel: {}">
+												#{i18n.getText('KMF001_97')}</div></td>
+										<td>
+											<!--罫線 -->
+											<div class="set-row">
+												<hr />
+											</div>
+										</td>
 									</tr>
 									<tr>
 										<td></td>
 										<td>
 											<table class="form-default">
 												<tr>
-													<td>#{i18n.getText('KMF001_94')}</td>
+													<td>#{i18n.getText('KMF001_102')}</td>
 													<td>
-														<div tabindex="6"
+														<div tabindex=""
 															data-bind="ntsComboBox: {
-																			options: $parent.vacationExpirationEnums,
+																			options: $parent.timeDigestiveUnitEnums,
 																			optionsValue: 'value',
-																			value: expirationDate,
+																			value: digestiveUnit,
 																			optionsText: 'localizedName',
 																			editable: false,
 																			enable: $parent.isComManaged,
@@ -84,15 +89,20 @@
 													</td>
 												</tr>
 												<tr>
-													<td>#{i18n.getText('KMF001_95')}</td>
-													<td><div tabindex="7"
-															data-bind="ntsSwitchButton: {
-															options: $parent.applyPermissionEnums,
-															optionsValue: 'value',
-															optionsText: 'localizedName',
-															enable: $parent.isComManaged,
-															value: allowPrepaidLeave}">
-														</div></td>
+													<td>#{i18n.getText('KMF001_98')}</td>
+													<td>
+														<div tabindex=""
+															data-bind="ntsComboBox: {
+																			options: $parent.sixtyHourExtraEnums,
+																			optionsValue: 'value',
+																			value: sixtyHourExtra,
+																			optionsText: 'localizedName',
+																			editable: false,
+																			enable: $parent.isComManaged,
+																			columns: [
+																				{ prop: 'localizedName', length: 10 }
+																			]}"></div>
+													</td>
 												</tr>
 											</table>
 										</td>
@@ -157,33 +167,36 @@
 										</td>
 									</tr>
 									<tr>
-										<td></td>
-										<td>#{i18n.getText('KMF001_98')}</td>
+										<td>#{i18n.getText('KMF001_102')}</td>
 										<td>
-											<div tabindex="3"
+											<div tabindex=""
 												data-bind="ntsComboBox: {
-																			options: $parent.vacationExpirationEnums,
+																			options: $parent.timeDigestiveUnitEnums,
 																			optionsValue: 'value',
-																			value: expirationDate,
+																			value: digestiveUnit,
 																			optionsText: 'localizedName',
 																			editable: false,
-																			enable: $parent.isEmpManaged,
+																			enable: $parent.isComManaged,
 																			columns: [
 																				{ prop: 'localizedName', length: 10 }
 																			]}"></div>
 										</td>
 									</tr>
 									<tr>
-										<td></td>
-										<td>#{i18n.getText('KMF001_99')}</td>
-										<td><div tabindex="4"
-												data-bind="ntsSwitchButton: {
-															options: $parent.applyPermissionEnums,
-															optionsValue: 'value',
-															optionsText: 'localizedName',
-															enable: $parent.isEmpManaged,
-															value: allowPrepaidLeave}">
-											</div></td>
+										<td>#{i18n.getText('KMF001_98')}</td>
+										<td>
+											<div tabindex=""
+												data-bind="ntsComboBox: {
+																			options: $parent.sixtyHourExtraEnums,
+																			optionsValue: 'value',
+																			value: sixtyHourExtra,
+																			optionsText: 'localizedName',
+																			editable: false,
+																			enable: $parent.isComManaged,
+																			columns: [
+																				{ prop: 'localizedName', length: 10 }
+																			]}"></div>
+										</td>
 									</tr>
 								</table>
 							</td>

@@ -4,13 +4,13 @@ module nts.uk.pr.view.kmf001.j {
          *  Service paths
          */
         var paths: any = {
-            getComSetting: "at/proto/substvacation/com/find",
-            getEmpSetting: "at/proto/substvacation/emp/find",
-            saveComSetting: "at/proto/substvacation/com/save",
-            saveEmpSetting: "at/proto/substvacation/emp/save",
-            vacationExpirationEnum: "at/proto/substvacation/enum/vacationexpiration",
-            applyPermissionEnum: "at/proto/substvacation/enum/applypermission",
-            manageDistinctEnum: "at/proto/substvacation/enum/managedistinct",
+            getComSetting: "at/proto/sixtyhourvacation/com/find",
+            getEmpSetting: "at/proto/sixtyhourvacation/emp/find",
+            saveComSetting: "at/proto/sixtyhourvacation/com/save",
+            saveEmpSetting: "at/proto/sixtyhourvacation/emp/save",
+            manageDistinctEnum: "at/proto/sixtyhourvacation/enum/managedistinct",
+            sixtyHourExtraEnum: "at/proto/sixtyhourvacation/enum/sixtyhourextra",
+            timeDigestiveUnitEnum: "at/proto/sixtyhourvacation/enum/timedigestiveunit",
         };
 
         /**
@@ -25,43 +25,43 @@ module nts.uk.pr.view.kmf001.j {
             /**
              * Find company's setting.
              */
-            public findComSetting(): JQueryPromise<model.SubstVacationSettingDto> {
+            public findComSetting(): JQueryPromise<model.Emp60HourVacationDto> {
                 return nts.uk.request.ajax(paths.getComSetting);
             }
 
             /**
              * Find contract type's setting.
              */
-            public findEmpSetting(contractTypeCode: string): JQueryPromise<model.EmpSubstVacationDto> {
+            public findEmpSetting(contractTypeCode: string): JQueryPromise<model.Emp60HourVacationDto> {
                 return nts.uk.request.ajax(paths.getEmpSetting + "/" + contractTypeCode);
             }
 
             /**
              * Update company's setting
              */
-            public saveComSetting(setting: model.SubstVacationSettingDto): JQueryPromise<void> {
+            public saveComSetting(setting: model.SixtyHourVacationSettingDto): JQueryPromise<void> {
                 return nts.uk.request.ajax(paths.saveComSetting, setting);
             }
 
             /**
              * Update contract type's setting
              */
-            public saveEmpSetting(setting: model.EmpSubstVacationDto): JQueryPromise<void> {
+            public saveEmpSetting(setting: model.SixtyHourVacationSettingDto): JQueryPromise<void> {
                 return nts.uk.request.ajax(paths.saveEmpSetting, setting);
             }
 
             /**
              * Get VacationExpiration Enum.
              */
-            public getVacationExpirationEnum(): JQueryPromise<Array<model.Enum>> {
-                return nts.uk.request.ajax(paths.vacationExpirationEnum);
+            public getTimeDigestiveUnitEnum(): JQueryPromise<Array<model.Enum>> {
+                return nts.uk.request.ajax(paths.timeDigestiveUnitEnum);
             }
 
             /**
              * Get ApplyPermission Enum.
              */
-            public getApplyPermissionEnum(): JQueryPromise<Array<model.Enum>> {
-                return nts.uk.request.ajax(paths.applyPermissionEnum);
+            public getSixtyHourExtraEnum(): JQueryPromise<Array<model.Enum>> {
+                return nts.uk.request.ajax(paths.sixtyHourExtraEnum);
             }
 
             /**
@@ -83,23 +83,24 @@ module nts.uk.pr.view.kmf001.j {
         */
         export module model {
 
-            export class SubstVacationSettingDto {
+            export class SixtyHourVacationSettingDto {
                 isManage: number;
-                expirationDate: number;
-                allowPrepaidLeave: number;
+                digestiveUnit: number;
+                sixtyHourExtra: number;
 
-                constructor(isManage: number, expirationDate: number, allowPrepaidLeave: number) {
+                constructor(isManage: number, digestiveUnit: number, sixtyHourExtra: number) {
                     this.isManage = isManage;
-                    this.expirationDate = expirationDate;
-                    this.allowPrepaidLeave = allowPrepaidLeave;
+                    this.digestiveUnit = digestiveUnit;
+                    this.sixtyHourExtra = sixtyHourExtra;
                 }
+              
             }
 
-            export class EmpSubstVacationDto extends SubstVacationSettingDto {
+            export class Emp60HourVacationDto extends SixtyHourVacationSettingDto {
                 contractTypeCode: string;
 
-                constructor(contractTypeCode: string, setting: SubstVacationSettingDto) {
-                    super(setting.isManage, setting.expirationDate, setting.allowPrepaidLeave);
+                constructor(contractTypeCode: string, setting: SixtyHourVacationSettingDto) {
+                    super(setting.isManage, setting.digestiveUnit, setting.sixtyHourExtra);
                     this.contractTypeCode = contractTypeCode;
                 }
             }

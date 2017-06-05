@@ -14,16 +14,16 @@ public enum TimeDigestiveUnit {
 	ONE_MINUTE(0, "1分", "1分"),
 
 	// 15分
-	FIFTEEN_MINUTE(0, "15分", "15分"),
+	FIFTEEN_MINUTE(1, "15分", "15分"),
 
 	// 30分
-	THIRTY_MINUTE(0, "30分", "30分"),
+	THIRTY_MINUTE(2, "30分", "30分"),
 
 	// 1時間
-	ONE_HOUR(0, "1時間", "1時間"),
+	ONE_HOUR(3, "1時間", "1時間"),
 
 	// 2時間
-	TWO_HOUR(0, "2時間", "2時間");
+	TWO_HOUR(4, "2時間", "2時間");
 
 	/** The value. */
 	public int value;

@@ -1,8 +1,8 @@
 module nts.uk.pr.view.kmf001.j {
     export module viewmodel {
         import Enum = service.model.Enum;
-        import SubstVacationSettingDto = service.model.SubstVacationSettingDto;
-        import EmpSubstVacationDto = service.model.EmpSubstVacationDto;
+        import SixtyHourVacationSettingDto = service.model.SixtyHourVacationSettingDto;
+        import Emp60HourVacationDto = service.model.Emp60HourVacationDto;
 
         export class ScreenModel {
 
@@ -10,8 +10,8 @@ module nts.uk.pr.view.kmf001.j {
             service: service.Service;
 
             // Switch button data source
-            vacationExpirationEnums: KnockoutObservableArray<Enum>;
-            applyPermissionEnums: KnockoutObservableArray<Enum>;
+            timeDigestiveUnitEnums: KnockoutObservableArray<Enum>;
+            sixtyHourExtraEnums: KnockoutObservableArray<Enum>;
             manageDistinctEnums: KnockoutObservableArray<Enum>;
 
             // Temp
@@ -19,8 +19,8 @@ module nts.uk.pr.view.kmf001.j {
             selectedContractTypeCode: KnockoutObservable<string>;
 
             // Model
-            settingModel: KnockoutObservable<SubstVacationSettingModel>;
-            empSettingModel: KnockoutObservable<EmpSubstVacationModel>;
+            settingModel: KnockoutObservable<SixtyHourVacationSettingModel>;
+            empSettingModel: KnockoutObservable<Emp60HVacationModel>;
 
             // 
             isComManaged: KnockoutObservable<boolean>;
@@ -34,24 +34,24 @@ module nts.uk.pr.view.kmf001.j {
                 var self = this;
                 self.service = service.instance;
 
-                self.vacationExpirationEnums = ko.observableArray([]);
-                self.applyPermissionEnums = ko.observableArray([]);
+                self.timeDigestiveUnitEnums = ko.observableArray([]);
+                self.sixtyHourExtraEnums = ko.observableArray([]);
                 self.manageDistinctEnums = ko.observableArray([]);
 
                 self.settingModel = ko.observable(null);
                 self.empSettingModel = ko.observable(null);
                 self.settingModel = ko.observable(
-                    new SubstVacationSettingModel({
+                    new SixtyHourVacationSettingModel({
                         isManage: 0,
-                        expirationDate: 0,
-                        allowPrepaidLeave: 0
+                        digestiveUnit: 0,
+                        sixtyHourExtra: 0
                     }));
                 self.empSettingModel = ko.observable(
-                    new EmpSubstVacationModel({
+                    new Emp60HVacationModel({
                         contractTypeCode: "",
                         isManage: 0,
-                        expirationDate: 0,
-                        allowPrepaidLeave: 0
+                        digestiveUnit: 0,
+                        sixtyHourExtra: 0
                     }));
 
                 self.isComManaged = ko.computed(function() {
@@ -87,7 +87,7 @@ module nts.uk.pr.view.kmf001.j {
                 }
 
                 // Load enums
-                $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums()).done(function() {
+                $.when(self.loadTimeDigestiveUnitEnums(), self.loadSixtyHourExtraEnums(), self.loadManageDistinctEnums()).done(function() {
                     self.loadComSettingDetails();
                     self.selectedContractTypeCode(self.employmentList()[0].code);
                     dfd.resolve();
@@ -96,13 +96,13 @@ module nts.uk.pr.view.kmf001.j {
                 return dfd.promise();
             }
 
-            private loadVacationExpirationEnums(): JQueryPromise<Array<Enum>> {
+            private loadTimeDigestiveUnitEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
 
                 let dfd = $.Deferred();
 
-                this.service.getVacationExpirationEnum().done(function(res: Array<Enum>) {
-                    self.vacationExpirationEnums(res);
+                this.service.getTimeDigestiveUnitEnum().done(function(res: Array<Enum>) {
+                    self.timeDigestiveUnitEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -111,13 +111,13 @@ module nts.uk.pr.view.kmf001.j {
                 return dfd.promise();
             }
 
-            private loadApplyPermissionEnums(): JQueryPromise<Array<Enum>> {
+            private loadSixtyHourExtraEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
 
                 let dfd = $.Deferred();
 
-                this.service.getApplyPermissionEnum().done(function(res: Array<Enum>) {
-                    self.applyPermissionEnums(res);
+                this.service.getSixtyHourExtraEnum().done(function(res: Array<Enum>) {
+                    self.sixtyHourExtraEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -148,15 +148,15 @@ module nts.uk.pr.view.kmf001.j {
 
                 self.clearErrorComSetting();
 
-                this.service.findComSetting().done(function(res: SubstVacationSettingDto) {
+                this.service.findComSetting().done(function(res: SixtyHourVacationSettingDto) {
                     if (res) {
                         self.settingModel().isManage(res.isManage);
-                        self.settingModel().expirationDate(res.expirationDate);
-                        self.settingModel().allowPrepaidLeave(res.allowPrepaidLeave);
+                        self.settingModel().digestiveUnit(res.digestiveUnit);
+                        self.settingModel().sixtyHourExtra(res.sixtyHourExtra);
                     } else {
                         self.settingModel().isManage(self.manageDistinctEnums()[0].value);
-                        self.settingModel().expirationDate(self.vacationExpirationEnums()[0].value);
-                        self.settingModel().allowPrepaidLeave(self.applyPermissionEnums()[0].value);
+                        self.settingModel().digestiveUnit(self.timeDigestiveUnitEnums()[0].value);
+                        self.settingModel().sixtyHourExtra(self.sixtyHourExtraEnums()[0].value);
                     }
                     dfd.resolve();
                 }).fail(function(res) {
@@ -174,16 +174,16 @@ module nts.uk.pr.view.kmf001.j {
 
                 self.clearErrorEmpSetting();
 
-                this.service.findEmpSetting(contractTypeCode).done(function(res: EmpSubstVacationDto) {
+                this.service.findEmpSetting(contractTypeCode).done(function(res: Emp60HourVacationDto) {
                     if (res) {
                         self.empSettingModel().contractTypeCode(res.contractTypeCode);
                         self.empSettingModel().isManage(res.isManage);
-                        self.empSettingModel().expirationDate(res.expirationDate);
-                        self.empSettingModel().allowPrepaidLeave(res.allowPrepaidLeave);
+                        self.empSettingModel().digestiveUnit(res.digestiveUnit);
+                        self.empSettingModel().sixtyHourExtra(res.sixtyHourExtra);
                     } else {
                         self.empSettingModel().isManage(self.manageDistinctEnums()[0].value);
-                        self.empSettingModel().expirationDate(self.vacationExpirationEnums()[0].value);
-                        self.empSettingModel().allowPrepaidLeave(self.applyPermissionEnums()[0].value);
+                        self.empSettingModel().digestiveUnit(self.timeDigestiveUnitEnums()[0].value);
+                        self.empSettingModel().sixtyHourExtra(self.sixtyHourExtraEnums()[0].value);
                     }
                     dfd.resolve();
                 }).fail(function(res) {
@@ -215,7 +215,7 @@ module nts.uk.pr.view.kmf001.j {
                     return;
                 }
 
-                this.service.saveComSetting(self.settingModel().toSubstVacationSettingDto()).done(function() {
+                this.service.saveComSetting(self.settingModel().toSixtyHourVacationSettingDto()).done(function() {
                     // Msg_15
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                 }).fail(function(res) {
@@ -231,7 +231,7 @@ module nts.uk.pr.view.kmf001.j {
                     return;
                 }
 
-                this.service.saveEmpSetting(self.empSettingModel().toEmpSubstVacationDto()).done(function() {
+                this.service.saveEmpSetting(self.empSettingModel().toEmp60HourVacationDto()).done(function() {
                     // Msg_15
                     nts.uk.ui.dialog.alert("登録しました。");
                     // nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
@@ -286,33 +286,33 @@ module nts.uk.pr.view.kmf001.j {
         }
 
         // Model class
-        export class SubstVacationSettingModel {
+        export class SixtyHourVacationSettingModel {
             isManage: KnockoutObservable<number>;
-            expirationDate: KnockoutObservable<number>;
-            allowPrepaidLeave: KnockoutObservable<number>;
+            digestiveUnit: KnockoutObservable<number>;
+            sixtyHourExtra: KnockoutObservable<number>;
 
-            constructor(dto: SubstVacationSettingDto) {
+            constructor(dto: SixtyHourVacationSettingDto) {
                 this.isManage = ko.observable(dto.isManage);
-                this.expirationDate = ko.observable(dto.expirationDate);
-                this.allowPrepaidLeave = ko.observable(dto.allowPrepaidLeave);
+                this.digestiveUnit = ko.observable(dto.digestiveUnit);
+                this.sixtyHourExtra = ko.observable(dto.sixtyHourExtra);
             }
 
-            public toSubstVacationSettingDto(): SubstVacationSettingDto {
-                return new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave());
+            public toSixtyHourVacationSettingDto(): SixtyHourVacationSettingDto {
+                return new SixtyHourVacationSettingDto(this.isManage(), this.digestiveUnit(), this.sixtyHourExtra());
             }
         }
 
-        export class EmpSubstVacationModel extends SubstVacationSettingModel {
+        export class Emp60HVacationModel extends SixtyHourVacationSettingModel {
             contractTypeCode: KnockoutObservable<string>;
 
-            constructor(dto: EmpSubstVacationDto) {
-                super(new SubstVacationSettingDto(dto.isManage, dto.expirationDate, dto.allowPrepaidLeave));
+            constructor(dto: Emp60HourVacationDto) {
+                super(new SixtyHourVacationSettingDto(dto.isManage, dto.digestiveUnit, dto.sixtyHourExtra));
                 this.contractTypeCode = ko.observable(dto.contractTypeCode);
             }
 
-            public toEmpSubstVacationDto(): EmpSubstVacationDto {
-                return new EmpSubstVacationDto(this.contractTypeCode(),
-                    new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave()));
+            public toEmp60HourVacationDto(): Emp60HourVacationDto {
+                return new Emp60HourVacationDto(this.contractTypeCode(),
+                    new SixtyHourVacationSettingDto(this.isManage(), this.digestiveUnit(), this.sixtyHourExtra()));
             }
         }
 

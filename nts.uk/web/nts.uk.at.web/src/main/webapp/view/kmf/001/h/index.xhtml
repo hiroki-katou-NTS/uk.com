@@ -15,9 +15,9 @@
 		</ui:define>
 
 		<ui:define name="sidebar">
-			<ul class="navigator"  >
-				<li><a tabindex="1"  href="#tabpanel-1" role="tab-navigator" class="active">
-						#{i18n.getText('Com_Company')} </a></li>
+			<ul class="navigator">
+				<li><a tabindex="1" href="#tabpanel-1" role="tab-navigator"
+					class="active"> #{i18n.getText('Com_Company')} </a></li>
 				<li><a href="#tabpanel-2" role="tab-navigator"
 					data-bind="click: checkComManaged">
 						#{i18n.getText('Com_Employment')} </a></li>
@@ -63,7 +63,9 @@
 												#{i18n.getText('KMF001_92')}</div></td>
 										<td>
 											<!--罫線 -->
-											<div class="set-row"><hr /></div>
+											<div class="set-row">
+												<hr />
+											</div>
 										</td>
 									</tr>
 									<tr>
@@ -161,10 +163,13 @@
 									</tr>
 									<tr>
 										<td></td>
-										<td>#{i18n.getText('KMF001_98')}</td>
 										<td>
-											<div tabindex="3"
-												data-bind="ntsComboBox: {
+											<table class="form-default">
+												<tr>
+													<td>#{i18n.getText('KMF001_98')}</td>
+													<td>
+														<div tabindex="3"
+															data-bind="ntsComboBox: {
 																			options: $parent.vacationExpirationEnums,
 																			optionsValue: 'value',
 																			value: expirationDate,
@@ -174,19 +179,23 @@
 																			columns: [
 																				{ prop: 'localizedName', length: 10 }
 																			]}"></div>
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td>#{i18n.getText('KMF001_99')}</td>
-										<td><div tabindex="4"
-												data-bind="ntsSwitchButton: {
+													</td>
+												</tr>
+												<tr>
+													<td>#{i18n.getText('KMF001_99')}</td>
+													<td><div tabindex="4"
+															data-bind="ntsSwitchButton: {
 															options: $parent.applyPermissionEnums,
 															optionsValue: 'value',
 															optionsText: 'localizedName',
 															enable: $parent.isEmpManaged,
 															value: allowPrepaidLeave}">
-											</div></td>
+														</div></td>
+												</tr>
+											</table>
+
+										</td>
+
 									</tr>
 								</table>
 							</td>

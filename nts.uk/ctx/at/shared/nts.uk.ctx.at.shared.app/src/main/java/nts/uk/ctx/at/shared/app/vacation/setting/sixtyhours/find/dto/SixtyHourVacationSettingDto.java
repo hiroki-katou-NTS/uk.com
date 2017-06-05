@@ -10,8 +10,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSettingSetMemento;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class SubstVacationSettingDto.
+ */
+
+/**
+ * Instantiates a new sixty hour vacation setting dto.
  */
 @Data
 public class SixtyHourVacationSettingDto implements SixtyHourVacationSettingSetMemento {
@@ -20,27 +25,33 @@ public class SixtyHourVacationSettingDto implements SixtyHourVacationSettingSetM
 	private Integer isManage;
 
 	/** The expiration date. */
-	private Integer expirationDate;
+	private Integer sixtyHourExtra;
 
 	/** The allow prepaid leave. */
-	private Integer allowPrepaidLeave;
+	private Integer digestiveUnit;
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSettingSetMemento#setIsManage(nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct)
+	 */
 	@Override
 	public void setIsManage(ManageDistinct isManage) {
-		// TODO Auto-generated method stub
-
+		this.isManage = isManage.value;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSettingSetMemento#setSixtyHourExtra(nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra)
+	 */
 	@Override
 	public void setSixtyHourExtra(SixtyHourExtra sixtyHourExtra) {
-		// TODO Auto-generated method stub
-
+		this.sixtyHourExtra = sixtyHourExtra.value;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSettingSetMemento#setDigestiveUnit(nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit)
+	 */
 	@Override
 	public void setDigestiveUnit(TimeDigestiveUnit digestiveUnit) {
-		// TODO Auto-generated method stub
-
+		this.digestiveUnit = digestiveUnit.value;
 	}
 
 }

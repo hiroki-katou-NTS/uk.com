@@ -25,9 +25,9 @@
 
 #left-content {
 	width: 300px;
-    min-height: 200px;
-    padding: 25px;
-    padding-top: 100px
+	min-height: 200px;
+	padding: 25px;
+	padding-top: 100px
 }
 
 #right-content {
@@ -37,8 +37,8 @@
 	vertical-align: top;
 }
 
-.set-row{
-	margin-left: -121px;
-    margin-top: 43px;
-    width: 143%;
+.set-row {
+	margin-left: -134px;
+	margin-top: 43px;
+	width: 143%;
 }

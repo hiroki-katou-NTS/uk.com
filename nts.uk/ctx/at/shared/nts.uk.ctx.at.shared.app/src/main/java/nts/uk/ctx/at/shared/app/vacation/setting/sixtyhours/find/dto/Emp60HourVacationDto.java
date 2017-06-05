@@ -40,14 +40,14 @@ public class Emp60HourVacationDto extends SixtyHourVacationSettingDto
 
 	@Override
 	public void setEmpContractTypeCode(String contractTypeCode) {
-		// TODO Auto-generated method stub
-
+		this.contractTypeCode = contractTypeCode;
 	}
 
 	@Override
 	public void setSetting(SixtyHourVacationSetting setting) {
-		// TODO Auto-generated method stub
-
+		this.setIsManage(setting.getIsManage());
+		this.setSixtyHourExtra(setting.getSixtyHourExtra());
+		this.setDigestiveUnit(setting.getDigestiveUnit());
 	}
 
 }

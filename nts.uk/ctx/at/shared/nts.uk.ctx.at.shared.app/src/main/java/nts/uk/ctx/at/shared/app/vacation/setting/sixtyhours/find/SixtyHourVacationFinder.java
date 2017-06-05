@@ -15,10 +15,9 @@ public interface SixtyHourVacationFinder {
 	/**
 	 * Find com setting.
 	 *
-	 * @param companyId the company id
 	 * @return the subst vacation setting dto
 	 */
-	SixtyHourVacationSettingDto findComSetting(String companyId);
+	SixtyHourVacationSettingDto findComSetting();
 
 	/**
 	 * Find emp setting.
