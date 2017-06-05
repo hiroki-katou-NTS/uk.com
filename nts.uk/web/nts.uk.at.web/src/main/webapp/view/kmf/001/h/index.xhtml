@@ -162,14 +162,11 @@
 										</td>
 									</tr>
 									<tr>
-										<td></td>
+										<td style="width: 50px;"></td>
+										<td style="width: 250px;">#{i18n.getText('KMF001_98')}</td>
 										<td>
-											<table class="form-default">
-												<tr>
-													<td>#{i18n.getText('KMF001_98')}</td>
-													<td>
-														<div tabindex="3"
-															data-bind="ntsComboBox: {
+											<div tabindex="3"
+												data-bind="ntsComboBox: {
 																			options: $parent.vacationExpirationEnums,
 																			optionsValue: 'value',
 																			value: expirationDate,
@@ -179,23 +176,19 @@
 																			columns: [
 																				{ prop: 'localizedName', length: 10 }
 																			]}"></div>
-													</td>
-												</tr>
-												<tr>
-													<td>#{i18n.getText('KMF001_99')}</td>
-													<td><div tabindex="4"
-															data-bind="ntsSwitchButton: {
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 50px;"></td>
+										<td style="width: 250px;">#{i18n.getText('KMF001_99')}</td>
+										<td><div tabindex="4"
+												data-bind="ntsSwitchButton: {
 															options: $parent.applyPermissionEnums,
 															optionsValue: 'value',
 															optionsText: 'localizedName',
 															enable: $parent.isEmpManaged,
 															value: allowPrepaidLeave}">
-														</div></td>
-												</tr>
-											</table>
-
-										</td>
-
+											</div></td>
 									</tr>
 								</table>
 							</td>
