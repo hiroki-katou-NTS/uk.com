@@ -26,11 +26,17 @@ module kdl007.a.viewmodel {
         //load data
         start() {
             var self = this;
-            
+            self.isMulti = nts.uk.ui.windows.getShared('ModeMultiple');
             //all possible attendance items
             self.posibleItems = nts.uk.ui.windows.getShared('AllItemObj');
             //selected items
-            self.currentCodeList(nts.uk.ui.windows.getShared('SelectedItemId'));
+            var selectCode = nts.uk.ui.windows.getShared('SelectedItemId');
+            if(self.isMulti == false){
+                self.currentCodeList.push(selectCode);
+            }else{
+                self.currentCodeList(selectCode);
+            }
+            
             //get all item 
 //            service.getAllItem().done(function(lstItem: Array<model.ItemModel>){
 //                if(lstItem==null || lstItem === undefined || lstItem.length ==0){
@@ -58,20 +64,23 @@ module kdl007.a.viewmodel {
             var self = this;
 
             var lstObj = [];
-            for (let i =0, length = self.currentCodeList().length; i< length ;i++) {
-                let objectNew = self.findItem(self.currentCodeList()[i]);
-                if(objectNew != undefined && objectNew != null){
-                    lstObj.push(objectNew.code);
-                }
-                
-            }
+
             if(self.isMulti == true){
+                for (let i =0, length = self.currentCodeList().length; i< length ;i++) {
+                    let objectNew = self.findItem(self.currentCodeList()[i]);
+                    if(objectNew != undefined && objectNew != null){
+                        lstObj.push(objectNew.code);
+                    }
+                }
                 if (lstObj.length == 0) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_30"});
                     return;
                 } 
+
+                nts.uk.ui.windows.setShared('SelectedNewItem', lstObj,true);
+            }else{
+                nts.uk.ui.windows.setShared('SelectedNewItem', self.currentCodeList(),true);
             }
-            nts.uk.ui.windows.setShared('SelectedNewItem', lstObj,true);
             nts.uk.ui.windows.close();
         }
         /**

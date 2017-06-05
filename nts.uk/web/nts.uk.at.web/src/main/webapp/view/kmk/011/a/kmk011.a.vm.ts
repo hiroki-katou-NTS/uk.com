@@ -26,8 +26,11 @@ module kmk011.a.viewmodel {
         enableUse: KnockoutObservable<boolean>;
         enableSelect: KnockoutObservable<boolean>;
         enableInput: KnockoutObservable<boolean>;
+        objectOld: any;
+        check: boolean;
         constructor() {
             var self = this;
+            self.check = false;
             self.list = ko.observableArray([]);
             self.enableUse = ko.observable(false);
             self.enableSelect = ko.observable(false);
@@ -97,6 +100,10 @@ module kmk011.a.viewmodel {
                 } else {
                     self.checkErrSelect(false);
                 }
+                self.objectOld = self.itemDivTime().divTimeName + self.itemDivTime().divTimeUseSet + self.itemDivTime().alarmTime
+                                    + self.itemDivTime().errTime + self.itemDivTime().selectSet.selectUseSet + self.itemDivTime().selectSet.cancelErrSelReason
+                                    + self.itemDivTime().inputSet.selectUseSet + self.itemDivTime().inputSet.cancelErrSelReason;
+                self.check = false;
                 $("#itemname").focus();
             });
             //subscribe selectUse
@@ -170,8 +177,11 @@ module kmk011.a.viewmodel {
         }
         openBDialog() {
             var self = this;
+            self.enableSelect(false);
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
-            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', });
+            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', }).onClosed(function():any {
+                self.enableSelect(true);    
+            });
         }
         openDialog021() {
             var self = this;
@@ -227,12 +237,21 @@ module kmk011.a.viewmodel {
                             listAdd.push(add);
                         }
                     }
+                    let objectNew =self.divTimeName() + self.selectUse()+ self.alarmTime()+ self.errTime()+ self.selectSel()+ self.convert(self.checkErrSelect())+ self.selectInp()+ self.convert(self.checkErrInput());
+                    if (self.objectOld == objectNew) {
+                        if(self.list().length == 0){
+                            if(self.check == false)return;
+                        } 
+                        }
                     var Object = new model.ObjectDivergence(divTime, listAdd,self.timeItemName());
                     service.updateDivTime(Object).done(function() {
                         self.getAllDivTimeNew();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.list([]);
+                        self.check = false;
                         $("#itemname").focus();
                     }).fail(function(error) {
+                        self.check = true;
                         if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);
                         } 

@@ -1,4 +1,4 @@
-package worklocation;
+package nts.uk.ctx.at.record.dom.worklocation;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

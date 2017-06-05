@@ -180,7 +180,7 @@ module nts.uk.at.view.kml001.a {
                                         self.gridPersonCostList.removeAll();
                                         self.isInsert(false);
                                         self.loadData(newData, index);
-                                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                     }).fail(function(res) {
                                         nts.uk.ui.dialog.alertError(res.message);
                                     });
@@ -203,7 +203,7 @@ module nts.uk.at.view.kml001.a {
                                     self.personCostList.removeAll();
                                     self.gridPersonCostList.removeAll();
                                     self.loadData(newData, index);
-                                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                 }).fail(function(res) {
                                     nts.uk.ui.dialog.alertError(res.message);
                                 });

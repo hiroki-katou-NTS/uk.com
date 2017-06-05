@@ -27,7 +27,7 @@
 				<!-- B1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
-					data-bind="click: RegistrationDivReason">#{i18n.getText('KMK011_3')}</button>
+					data-bind="click: RegistrationDivReason,enable: $root.errors.isEmpty">#{i18n.getText('KMK011_3')}</button>
 				<!-- B1_3: Button Delete -->
 				<button tabindex="3" id="btn_005"
 					class="button danger separate-button fix-button"
