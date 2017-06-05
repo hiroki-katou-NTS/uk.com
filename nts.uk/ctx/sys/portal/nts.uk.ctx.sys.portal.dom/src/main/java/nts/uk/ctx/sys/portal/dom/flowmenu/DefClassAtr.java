@@ -2,10 +2,10 @@ package nts.uk.ctx.sys.portal.dom.flowmenu;
 
 public enum DefClassAtr {
 	/**0: New	 */
-	New(0),
+	NEW(0),
 
 	/**1: Default 	 */
-	Default(1);
+	DEFAULT(1);
 
 	public int value;
 

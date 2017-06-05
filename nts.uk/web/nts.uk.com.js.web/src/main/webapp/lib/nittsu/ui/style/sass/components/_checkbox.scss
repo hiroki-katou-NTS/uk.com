@@ -75,7 +75,7 @@
 	}
 }
 
-.outline .ntsCheckBox {
+.outline .ntsCheckBox-label {
 	color:#fff;
 	
 	input[type="checkbox"] {
@@ -95,7 +95,7 @@
 	}
 }
 
-.minimalist .ntsCheckBox {
+.minimalist .ntsCheckBox-label {
 	$checkbox_minimalist_color: #444;
 	
 	color: $checkbox_minimalist_color;

@@ -14,13 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "QPDMT_PAYDAY")
-public class QpdmtPayday extends TableEntity implements Serializable {
+public class QpdmtPayday extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -67,4 +67,9 @@ public class QpdmtPayday extends TableEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "ACCOUNTING_CLOSING")
 	public GeneralDate accountingClosing;
+
+	@Override
+	protected Object getKey() {
+		return qpdmtPaydayPK;
+	}
 }

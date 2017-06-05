@@ -89,7 +89,7 @@ module ccg030.a.viewmodel {
                     else {
                         service.updateFlowMenu(flowMenu).done((data) => {
                             self.reloadData();
-                             _.defer(() => { $("#inpName").focus(); });
+                            _.defer(() => { $("#inpName").focus(); });
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         });
                     }
@@ -135,7 +135,7 @@ module ccg030.a.viewmodel {
                 });
             }
         }
-        
+
         private uploadFileProcess(): void {
             var self = this;
             var option = {
@@ -150,38 +150,47 @@ module ccg030.a.viewmodel {
                 self.tempFileID(res[0].id);
                 self.selectedFlowMenu().fileID(res[0].id);
                 self.selectedFlowMenu().fileName(res[0].originalName);
+                self.isDelete(true);
                 errors.clearAll();
             }).fail(function(err) {
-                nts.uk.ui.dialog.alert(err);
+                nts.uk.ui.dialog.alertError({ messageId: err.messageId });
             });
         }
 
         deleteButtonClick(): void {
             console.time('deleteFile');
             var self = this;
-            service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
-                if (res.defClassAtr === 1) {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_83" });
-                }
-                else {
-                    self.tempFileID(self.selectedFlowMenu().fileID());
-                    self.selectedFlowMenu().fileID('');
-                    self.selectedFlowMenu().fileName('');
-                    self.isDelete(false);
-                }
-            });
+            var toppagePartID = self.selectedFlowMenu().toppagePartID();
+            if (toppagePartID) {
+                service.getFlowMenuById(self.selectedFlowMenu().toppagePartID()).done(function(res) {
+                    if (res.defClassAtr === 1) {
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_83" });
+                    }
+                    else {
+                        self.tempFileID(self.selectedFlowMenu().fileID());
+                        self.selectedFlowMenu().fileID('');
+                        self.selectedFlowMenu().fileName('');
+                        self.isDelete(false);
+                    }
+                });
+            } else {
+                self.tempFileID(self.selectedFlowMenu().fileID());
+                self.selectedFlowMenu().fileID('');
+                self.selectedFlowMenu().fileName('');
+                self.isDelete(false);
+            }
         }
-        
+
         private deleteFile(): void {
             var self = this;
             service.deleteFile(self.tempFileID()).done((data) => {
                 self.selectedFlowMenu().fileID('');
                 self.selectedFlowMenu().fileName('');
             }).fail(function(error) {
-                nts.uk.ui.dialog.alert(error);
+                nts.uk.ui.dialog.alertError({ messageId: error.messageId });
             });
         }
-        
+
         downloadFile(): void {
             var self = this;
             nts.uk.request.specials.donwloadFile(self.selectedFlowMenu().fileID());

@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name="QSTMT_STMT_LAYOUT_HEAD")
 @AllArgsConstructor
 @NoArgsConstructor
-public class QstmtStmtLayoutHead extends TableEntity implements Serializable {
+public class QstmtStmtLayoutHead extends UkJpaEntity implements Serializable {
 	
 	public static final long serialVersionUID = 1L;
 
@@ -38,6 +38,11 @@ public class QstmtStmtLayoutHead extends TableEntity implements Serializable {
 //	@Basic(optional = false)
 //	@Column(name ="LAYOUT_ATR")
 //	public int layoutAtr;
+
+	@Override
+	protected Object getKey() {
+		return qstmtStmtLayoutHeadPK;
+	}
 	
 //	@OneToMany(cascade=CascadeType.ALL, mappedBy="layoutHead")
 //	public List<QstmtStmtLayoutCtg> layoutCategories;

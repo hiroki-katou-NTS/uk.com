@@ -43,17 +43,17 @@ public class DefaultLayoutService implements LayoutService {
 
 	@Override
 	public void createLayout(String companyID, String parentCode, int pgType, Layout layout) {
-		if (pgType == PGType.TopPage.value) {
+		if (pgType == PGType.TOPPAGE.value) {
 			TopPage topPage = topPageRepository.findByCode(companyID, parentCode).get();
 			TopPage updatedTopPage = new TopPage(companyID, topPage.getTopPageCode(), layout.getLayoutID(), topPage.getTopPageName(), topPage.getLanguageNumber());
 			topPageRepository.update(updatedTopPage);
 		}
-		else if (pgType == PGType.TitleMenu.value) {
+		else if (pgType == PGType.TITLEMENU.value) {
 			TitleMenu titleMenu = titleMenuRepository.findByCode(companyID, parentCode).get();
 			TitleMenu updatedTitleMenu = new TitleMenu(companyID, titleMenu.getTitleMenuCD(), titleMenu.getName(), layout.getLayoutID());
 			titleMenuRepository.update(updatedTitleMenu);
 		}
-		else if (pgType == PGType.MyPage.value) {
+		else if (pgType == PGType.MYPAGE.value) {
 			
 		}
 		layoutRepository.add(layout);
