@@ -122,16 +122,16 @@ module nts.uk.ui.validation {
 
             if (this.constraint !== null) {
                 if (this.constraint.max !== undefined && value > this.constraint.max) {
-                    result.fail('invalid number');
+                    result.fail('max value is: ' + this.constraint.max);
                     return result;
                 }
                 if (this.constraint.min !== undefined && value < this.constraint.min) {
-                    result.fail('invalid number');
+                    result.fail('min value is: ' + this.constraint.min);
                     return result;
                 }
             }
             result.success(inputText === "0" ? inputText : text.removeFromStart(inputText, "0"));
-            return result;
+            return result; 
         }
     }
 

@@ -621,18 +621,24 @@
         }
         function formatParams(message: string, args: string[]) {
             if (args==null||args.length==0) return message;
-            let paramRegex = /{([0-9])+(:\\w+)?}/;
+            let paramRegex = /{([0-9])+(:\w+)?}/;
             let matches: string[];
+            let formatter = time.getFormatter();
             while (matches = paramRegex.exec(message)) {
                 let code = matches[1];
                 let text = args[parseInt(code)];
 //                if(text!=undefined && text.indexOf("#")==0){
 //                    text = getText(text.substring(1))
 //                }
+                let param = matches[2];
+                if (param !== undefined && formatter !== undefined) {
+                    text = time.applyFormat(param.substring(1), text, formatter);
+                }
                 message = message.replace(paramRegex, text);
             }
             return message;
         }
+        
     }
     export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
 

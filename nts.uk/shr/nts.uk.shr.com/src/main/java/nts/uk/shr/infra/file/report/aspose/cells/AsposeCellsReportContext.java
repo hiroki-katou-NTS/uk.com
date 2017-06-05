@@ -2,6 +2,9 @@ package nts.uk.shr.infra.file.report.aspose.cells;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
+
+import javax.enterprise.inject.spi.CDI;
 
 import com.aspose.cells.ICellsDataTable;
 import com.aspose.cells.SaveFormat;
@@ -9,6 +12,7 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 
 import lombok.Getter;
+import nts.arc.i18n.custom.IInternationalization;
 
 public class AsposeCellsReportContext implements AutoCloseable {
 	
@@ -32,6 +36,21 @@ public class AsposeCellsReportContext implements AutoCloseable {
 		}
 		
 		// TODO: set localized texts
+	}
+	
+	public AsposeCellsReportContext(InputStream templateFile, String reportId) {
+		
+		try {
+			this.templateFile = templateFile;
+			this.workbook = new Workbook(this.templateFile);
+			this.designer = new WorkbookDesigner(this.workbook);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		
+		IInternationalization i18n = CDI.current().select(IInternationalization.class).get();
+		Map<String, Object> items = i18n.getReportItems(reportId);
+		if (!items.isEmpty()) this.setDataSource("I18N", new SingleMapDataSource(items));
 	}
 	
 	public void setDataSource(String nameOfVariable, ICellsDataTable dataTable) {
