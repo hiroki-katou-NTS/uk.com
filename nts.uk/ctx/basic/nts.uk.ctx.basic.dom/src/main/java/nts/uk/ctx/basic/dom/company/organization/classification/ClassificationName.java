@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.category;
+package nts.uk.ctx.basic.dom.company.organization.classification;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class ClassificationName.
  */
 @StringMaxLength(20)
-public class ManagementCategoryName extends StringPrimitiveValue<ManagementCategoryName> {
+public class ClassificationName extends StringPrimitiveValue<ClassificationName> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -8807988305434200565L;
@@ -21,7 +21,7 @@ public class ManagementCategoryName extends StringPrimitiveValue<ManagementCateg
 	 *
 	 * @param rawValue the raw value
 	 */
-	public ManagementCategoryName(String rawValue) {
+	public ClassificationName(String rawValue) {
 		super(rawValue);
 	}
 

@@ -1,15 +1,15 @@
 module nts.uk.at.view.kcp002.a {
 
-    import ManagementCategoryFindDto = service.model.ManagementCategoryFindDto;
+    import ClassificationFindDto = service.model.ClassificationFindDto;
     export module viewmodel {
 
         export class ScreenModel {
-            managementCategoryModel: KnockoutObservableArray<ManagementCategoryModel>;
+            ClassificationModel: KnockoutObservableArray<ClassificationModel>;
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeList: KnockoutObservableArray<string>;
             constructor() {
                 var self = this;
-                self.managementCategoryModel = ko.observableArray<ManagementCategoryModel>([]);
+                self.ClassificationModel = ko.observableArray<ClassificationModel>([]);
 
                 self.columns = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100  },
@@ -22,9 +22,9 @@ module nts.uk.at.view.kcp002.a {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<this>();
-                service.findAllManagementCategory().done(data => {
+                service.findAllClassification().done(data => {
                     console.log(data);
-                    self.managementCategoryModel(data);
+                    self.ClassificationModel(data);
                     dfd.resolve(self);
                 }).fail(function(error) {
                     console.log(error);
@@ -33,7 +33,7 @@ module nts.uk.at.view.kcp002.a {
             }
         }
 
-        export class ManagementCategoryModel {
+        export class ClassificationModel {
             code: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
 
@@ -42,7 +42,7 @@ module nts.uk.at.view.kcp002.a {
                 this.name = ko.observable('');
             }
 
-            updateDataDto(dto: ManagementCategoryFindDto) {
+            updateDataDto(dto: ClassificationFindDto) {
                 this.code(dto.code);
                 this.name(dto.code);
             }

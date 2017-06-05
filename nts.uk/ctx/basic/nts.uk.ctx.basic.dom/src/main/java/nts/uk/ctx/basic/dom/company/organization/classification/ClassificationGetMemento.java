@@ -2,11 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.category;
+package nts.uk.ctx.basic.dom.company.organization.classification;
 
 import nts.uk.ctx.basic.dom.company.organization.CompanyId;
 
-public interface ManagementCategoryGetMemento {
+public interface ClassificationGetMemento {
 
 	/**
 	 * Gets the company id.
@@ -21,7 +21,7 @@ public interface ManagementCategoryGetMemento {
 	 *
 	 * @return the management category code
 	 */
-	ManagementCategoryCode getManagementCategoryCode();
+	ClassificationCode getClassificationCode();
 	
 	
 	/**
@@ -29,5 +29,5 @@ public interface ManagementCategoryGetMemento {
 	 *
 	 * @return the management category name
 	 */
-	ManagementCategoryName getManagementCategoryName();
+	ClassificationName getClassificationName();
 }

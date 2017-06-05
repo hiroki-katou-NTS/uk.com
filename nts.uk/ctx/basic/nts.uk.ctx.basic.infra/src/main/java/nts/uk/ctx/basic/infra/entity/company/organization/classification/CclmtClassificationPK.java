@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.infra.entity.company.organization.catetory;
+package nts.uk.ctx.basic.infra.entity.company.organization.classification;
 
 import java.io.Serializable;
 
@@ -15,14 +15,15 @@ import lombok.Getter;
 import lombok.Setter;	
 
 /**
- * The Class CclmtManagementCategoryPK.
+ * The Class CclmtClassificationPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class CclmtManagementCategoryPK implements Serializable {
+public class CclmtClassificationPK implements Serializable {
 
 	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The ccid. */
@@ -38,18 +39,18 @@ public class CclmtManagementCategoryPK implements Serializable {
 	private String code;
 
 	/**
-	 * Instantiates a new cclmt management category PK.
+	 * Instantiates a new cclmt classification PK.
 	 */
-	public CclmtManagementCategoryPK() {
+	public CclmtClassificationPK() {
 	}
 
 	/**
-	 * Instantiates a new cclmt management category PK.
+	 * Instantiates a new cclmt classification PK.
 	 *
 	 * @param ccid the ccid
 	 * @param code the code
 	 */
-	public CclmtManagementCategoryPK(String ccid, String code) {
+	public CclmtClassificationPK(String ccid, String code) {
 		this.ccid = ccid;
 		this.code = code;
 	}
@@ -66,8 +67,7 @@ public class CclmtManagementCategoryPK implements Serializable {
 	/**
 	 * Sets the ccid.
 	 *
-	 * @param ccid
-	 *            the new ccid
+	 * @param ccid the new ccid
 	 */
 	public void setCcid(String ccid) {
 		this.ccid = ccid;
@@ -112,10 +112,10 @@ public class CclmtManagementCategoryPK implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// not set
-		if (!(object instanceof CclmtManagementCategoryPK)) {
+		if (!(object instanceof CclmtClassificationPK)) {
 			return false;
 		}
-		CclmtManagementCategoryPK other = (CclmtManagementCategoryPK) object;
+		CclmtClassificationPK other = (CclmtClassificationPK) object;
 		if ((this.ccid == null && other.ccid != null)
 			|| (this.ccid != null && !this.ccid.equals(other.ccid))) {
 			return false;

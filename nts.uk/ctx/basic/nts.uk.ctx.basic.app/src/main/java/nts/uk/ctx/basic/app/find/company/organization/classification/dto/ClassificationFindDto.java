@@ -2,21 +2,21 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.app.find.company.organization.category.dto;
+package nts.uk.ctx.basic.app.find.company.organization.classification.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.basic.dom.company.organization.CompanyId;
-import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryCode;
-import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategoryName;
-import nts.uk.ctx.basic.dom.company.organization.category.ManagementCategorySetMemento;
+import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationCode;
+import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationName;
+import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationSetMemento;
 
 /**
- * The Class ManagementCategoryFindDto.
+ * The Class ClassificationFindDto.
  */
 @Getter
 @Setter
-public class ManagementCategoryFindDto implements ManagementCategorySetMemento{
+public class ClassificationFindDto implements ClassificationSetMemento{
 	
 	/** The code. */
 	private String code;
@@ -44,7 +44,7 @@ public class ManagementCategoryFindDto implements ManagementCategorySetMemento{
 	 * dom.company.organization.category.ManagementCategoryCode)
 	 */
 	@Override
-	public void setManagementCategoryCode(ManagementCategoryCode managementCategoryCode) {
+	public void setManagementCategoryCode(ClassificationCode managementCategoryCode) {
 		this.code = managementCategoryCode.v();
 		
 	}
@@ -57,7 +57,7 @@ public class ManagementCategoryFindDto implements ManagementCategorySetMemento{
 	 * dom.company.organization.category.ManagementCategoryName)
 	 */
 	@Override
-	public void setManagementCategoryName(ManagementCategoryName managementCategoryName) {
+	public void setManagementCategoryName(ClassificationName managementCategoryName) {
 		this.name = managementCategoryName.v();
 		
 	}
