@@ -226,6 +226,7 @@ project (':com.web:nts.uk.com.web') {
 		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1'
 		compile group: 'base', name: 'nts.uk.shr.ws', version: '0.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.ac')
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.app')
@@ -244,20 +245,29 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws')
 		
 		// shr find implement
-		compile group: 'pr', name: 'nts.uk.ctx.pr.core.app', version: '0.1'
-		compile group: 'pr', name: 'nts.uk.ctx.pr.core.infra', version: '0.1'
-		compile group: 'pr', name: 'nts.uk.ctx.pr.core.pubimp', version: '0.1'
-		compile group: 'pr', name: 'nts.uk.ctx.pr.core.ac', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: '0.1'
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: '0.1'
 		
-		compile group: 'pr', name: 'nts.uk.ctx.pr.report.app', version: '0.1'
-		compile group: 'pr', name: 'nts.uk.ctx.pr.report.infra', version: '0.1'
-		compile group: 'pr', name: 'nts.uk.ctx.pr.report.pubimp', version: '0.1'
-		compile group: 'pr', name: 'nts.uk.ctx.pr.report.ac', version: '0.1'
+		runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.ws', version: '0.1'
+		runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.app', version: '0.1'
+		runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.dom', version: '0.1'
+		runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.infra', version: '0.1'
+		runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.pub', version: '0.1'
+		runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.pubimp', version: '0.1'
+		runtime group: 'pr.report', name: 'nts.uk.ctx.pr.report.ac', version: '0.1'
 		
-		compile group: 'pr', name: 'nts.uk.ctx.pr.formula.app', version: '0.1'
-		compile group: 'pr', name: 'nts.uk.ctx.pr.formula.infra', version: '0.1'
-		compile group: 'pr', name: 'nts.uk.ctx.pr.formula.pubimp', version: '0.1'
-		compile group: 'pr', name: 'nts.uk.ctx.pr.formula.ac', version: '0.1'
+		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.ws', version: '0.1'
+		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.app', version: '0.1'
+		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.dom', version: '0.1'
+		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.infra', version: '0.1'
+		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.pub', version: '0.1'
+		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.pubimp', version: '0.1'
+		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.ac', version: '0.1'
 	}
 }
 //========================nts.uk.com.web↑=====================================
