@@ -8,26 +8,26 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.basic.dom.common.history.Period;
 
 /**
- * The Class JobTitle.
+ * 職位.
  */
 public class JobTitle extends AggregateRoot {
 
-	/** The position id. */
+	/** 職位ID. */
 	private PositionId positionId;
 
-	/** The company id. */
+	/** 会社ID. */
 	private CompanyId companyId;
 
-	/** The sequence code. */
+	/** 序列コード. */
 	private SequenceCode sequenceCode;
 
-	/** The period. */
+	/** 期間. */
 	private Period period;
 
-	/** The position code. */
+	/** 職位コード. */
 	private PositionCode positionCode;
 
-	/** The position name. */
+	/** 職位名称. */
 	private PositionName positionName;
 
 	/**

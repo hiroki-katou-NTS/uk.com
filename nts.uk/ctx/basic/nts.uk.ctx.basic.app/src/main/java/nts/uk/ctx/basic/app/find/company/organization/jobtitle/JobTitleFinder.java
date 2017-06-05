@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.basic.app.find.company.organization.jobtitle;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class JobTitleFinder.
  */
 @Stateless
-public class PositionTitleFinder {
+public class JobTitleFinder {
 
 	/** The repository. */
 	@Inject
