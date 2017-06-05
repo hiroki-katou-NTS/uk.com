@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.toppage.setting;
+package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
 public interface TopPagePersonSettingRepository {
 

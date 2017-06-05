@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.infra.entity.toppage.setting;
+package nts.uk.ctx.sys.portal.infra.entity.toppagesetting;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -11,15 +11,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGPT_PERSON_HOMEPAGE_SET")
-public class CcgptPersonHomePageSet extends UkJpaEntity {
+@Table(name = "CCGPT_TOPPAGE_PERSON_SET")
+public class CcgptTopPagePersonSet extends UkJpaEntity {
 	
 	@EmbeddedId
-	public CcgptPersonHomePageSetPK ccgptPersonHomePageSetPK;	
+	public CcgptTopPagePersonSetPK ccgptTopPagePersonSetPK;		
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return ccgptPersonHomePageSetPK;
+		return ccgptTopPagePersonSetPK;
 	}
 }

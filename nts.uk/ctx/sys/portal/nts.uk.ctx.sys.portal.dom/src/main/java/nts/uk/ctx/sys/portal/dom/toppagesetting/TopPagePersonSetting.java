@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.dom.toppage.setting;
+package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
 import nts.arc.layer.dom.AggregateRoot;
 

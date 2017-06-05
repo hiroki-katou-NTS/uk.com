@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.infra.entity.toppage.setting;
+package nts.uk.ctx.sys.portal.infra.entity.toppagesetting;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -10,18 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class CcgptPersonHomePageSetPK {
-
-	/** The company id. */
+public class CcgptTopPageSetPK {
+	/** The companyId. */
 	@Id
 	@Column(name = "CID")
 	public String companyId;
 	
-	/** The employee Id. */
-	@Column(name = "SID")
-	public String employeeId;
-	
-	/** The code. */
-	@Column(name = "CODE")
-	public String code;
+	/** The category setting. */
+	@Column(name = "CTG_SET")
+	public int ctgSet;
 }
