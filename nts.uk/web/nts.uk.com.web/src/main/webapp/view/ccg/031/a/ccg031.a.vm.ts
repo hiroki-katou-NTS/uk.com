@@ -4,6 +4,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
     import ntsNumber = nts.uk.ntsNumber;
     import dialog = nts.uk.ui.dialog;
     import resource = nts.uk.resource;
+    import block = nts.uk.ui.block;
     const MINROW: number = 4;
     const MINCOLUMN: number = 6;
     const ANIMATION_EASETYPE: string = "easeOutQuint";
@@ -35,6 +36,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            block.invisible();
             var layoutInfo: model.TransferLayoutInfo = windows.getShared("layout");
             if (layoutInfo !== undefined) {
                 self.parentCode = layoutInfo.parentCode;
@@ -56,6 +58,8 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                 dfd.resolve();
             }).fail((res: any) => {
                 dfd.fail();
+            }).always(() => {
+                block.clear(); 
             });
             return dfd.promise();
         }
@@ -63,12 +67,15 @@ module nts.uk.com.view.ccg031.a.viewmodel {
         /** Registry Layout */
         registryLayout(): void {
             var self = this;
+            block.invisible();
             service.registry(self.parentCode, self.layoutID, self.pgType, self.placements())
                 .done((data) => {
                     self.layoutID = data;
                     dialog.info({ messageId: "Msg_15" });
                 }).fail((res) => {
                     dialog.alertError({ messageId: res.messageId });
+                }).always(() => {
+                    block.clear();
                 });
         }
 
@@ -216,19 +223,17 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                 var checkingPlacements = _.filter(self.placements(), (placement) => {
                     return _.includes(checkingPlacementIds, placement.placementID);
                 });
-                movingPlacements = _.orderBy(movingPlacements, ['row', 'column'], ['asc', 'asc']);
                 self.shiftOverlapPart(movingPlacement, checkingPlacements);
                 // Add that moving placement to checking so that Placement won't be move anymore
                 checkingPlacementIds.push(movingPlacement.placementID);
                 checkingPlacementIds = _.union(checkingPlacementIds);
-                _.merge(listOverlapPlacement, self.layoutGrid().markOccupied(movingPlacement));
+                // List Placement need to moving because their parents were moved
+                listOverlapPlacement = _.concat(listOverlapPlacement, self.layoutGrid().markOccupied(movingPlacement));
                 self.autoExpandLayout();
                 self.setupPositionAndSize(movingPlacement, ANIMATION_DURATION);
             });
             if (listOverlapPlacement.length > 0)
                 self.reorderPlacements.call(self, listOverlapPlacement, checkingPlacementIds);
-            else
-                return checkingPlacementIds;
         }
 
         /** Recursive move overlap part */
