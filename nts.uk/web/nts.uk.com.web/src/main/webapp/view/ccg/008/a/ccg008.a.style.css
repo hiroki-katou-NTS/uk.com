@@ -1,0 +1,12 @@
+.setting-button{
+	float: right;
+    margin-top: -35px;
+}
+
+.setting-img{
+	width: 34px;
+    float: right;
+    margin-top: -42px;
+    margin-right: 10px;
+    cursor: pointer;
+}
