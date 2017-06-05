@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.shr.com.context.AppContexts;
-import worklocation.WorkLocationRepository;
 @Stateless
 /**
  * 

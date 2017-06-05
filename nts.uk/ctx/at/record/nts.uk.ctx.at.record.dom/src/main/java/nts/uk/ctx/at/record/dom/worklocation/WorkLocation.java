@@ -1,4 +1,4 @@
-package worklocation;
+package nts.uk.ctx.at.record.dom.worklocation;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
