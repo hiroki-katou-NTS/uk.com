@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class CcgptMyPagePK {
 	
 	/** The companyId. */
-	@Id
 	@Column(name = "CID")
 	public String companyId;
 	

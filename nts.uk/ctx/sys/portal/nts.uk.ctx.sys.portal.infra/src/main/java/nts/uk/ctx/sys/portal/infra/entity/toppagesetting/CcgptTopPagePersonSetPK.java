@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class CcgptTopPagePersonSetPK {
 	/** The companyId. */
-	@Id
 	@Column(name = "CID")
 	public String companyId;
 	
