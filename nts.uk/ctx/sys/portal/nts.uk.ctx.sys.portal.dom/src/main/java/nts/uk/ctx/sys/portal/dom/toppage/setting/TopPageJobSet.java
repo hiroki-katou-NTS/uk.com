@@ -8,7 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 public class TopPageJobSet extends AggregateRoot {
 	
 	/** The company id. */
-	private String cId;
+	private String companyId;
 	
 	/** The top menu no. */
 	private String topMenuNo;
@@ -25,14 +25,14 @@ public class TopPageJobSet extends AggregateRoot {
 	/**
 	 * Instantiates a new top page title set.
 	 *
-	 * @param cId the company id
+	 * @param companyId the company id
 	 * @param topMenuNo the top menu no
 	 * @param loginMenuNo the login menu no
 	 * @param jobId the user id
 	 * @param personPermissionSet the layout id
 	 */
-	public TopPageJobSet(String cId, String topMenuNo, String loginMenuNo, String jobId, int personPermissionSet) {
-		this.cId = cId;
+	public TopPageJobSet(String companyId, String topMenuNo, String loginMenuNo, String jobId, int personPermissionSet) {
+		this.companyId = companyId;
 		this.topMenuNo = topMenuNo;
 		this.loginMenuNo = loginMenuNo;
 		this.jobId = jobId;
@@ -42,13 +42,13 @@ public class TopPageJobSet extends AggregateRoot {
 	/**
 	 * Creates the from java type.
 	 *
-	 * @param cId the company id
+	 * @param companyId the company id
 	 * @param topMenuNo the top menu no
 	 * @param loginMenuNo the login menu no
 	 * @param jobId the user id
 	 * @param personPermissionSet the layout id
 	 */
-	public static TopPageJobSet createFromJavaType(String cId, String topMenuNo, String loginMenuNo, String jobId, int personPermissionSet) {
-		return new TopPageJobSet(cId, topMenuNo, loginMenuNo, jobId, personPermissionSet);
+	public static TopPageJobSet createFromJavaType(String companyId, String topMenuNo, String loginMenuNo, String jobId, int personPermissionSet) {
+		return new TopPageJobSet(companyId, topMenuNo, loginMenuNo, jobId, personPermissionSet);
 	}
 }

@@ -8,10 +8,10 @@ import nts.arc.layer.dom.AggregateRoot;
 public class MyPage extends AggregateRoot {
 
 	/** The company id. */
-	private String cId;
+	private String companyId;
 	
 	/** The employee id. */
-	private String sId;
+	private String employeeId;
 	
 	/** The layout id. */
 	private String layoutId;
@@ -19,24 +19,24 @@ public class MyPage extends AggregateRoot {
 	/**
 	 * Instantiates a new my page.
 	 *
-	 * @param cId the company id
-	 * @param sId the employee id
+	 * @param companyId the company id
+	 * @param employeeId the employee id
 	 * @param layoutId the layout id
 	 */
-	public MyPage(String cId, String sId, String layoutId) {		
-		this.cId = cId;
-		this.sId = sId;
+	public MyPage(String companyId, String employeeId, String layoutId) {		
+		this.companyId = companyId;
+		this.employeeId = employeeId;
 		this.layoutId = layoutId;
 	}	
 	
 	/**
 	 * Creates the from java type.
 	 *
-	 * @param cId the company id
-	 * @param sId the employee id
+	 * @param companyId the company id
+	 * @param employeeId the employee id
 	 * @param layoutId the layout id
 	 */
-	public static MyPage createFromJavaType(String cId, String sId, String LayoutId) {
-		return new MyPage(cId, sId, LayoutId);
+	public static MyPage createFromJavaType(String companyId, String employeeId, String LayoutId) {
+		return new MyPage(companyId, employeeId, LayoutId);
 	}
 }

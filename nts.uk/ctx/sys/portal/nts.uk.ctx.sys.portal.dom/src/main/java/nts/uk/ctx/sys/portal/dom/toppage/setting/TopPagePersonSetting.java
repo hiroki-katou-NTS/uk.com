@@ -8,7 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 public class TopPagePersonSetting extends AggregateRoot {
 
 	/** The company id. */
-	private String cId;
+	private String companyId;
 	
 	/** The top menu no. */
 	private String topMenuNo;
@@ -17,32 +17,32 @@ public class TopPagePersonSetting extends AggregateRoot {
 	private String loginMenuNo;
 	
 	/** The employee id. */
-	private String sId;
+	private String employeeId;
 
 	/**
 	 * Instantiates a new top page title set.
 	 *
-	 * @param cId the company id
+	 * @param companyId the company id
 	 * @param topMenuNo the top menu no
 	 * @param loginMenuNo the login menu no
-	 * @param sId the employee id
+	 * @param employeeId the employee id
 	 */
-	public TopPagePersonSetting(String cId, String topMenuNo, String loginMenuNo, String sId) {
-		this.cId = cId;
+	public TopPagePersonSetting(String companyId, String topMenuNo, String loginMenuNo, String employeeId) {
+		this.companyId = companyId;
 		this.topMenuNo = topMenuNo;
 		this.loginMenuNo = loginMenuNo;
-		this.sId = sId;
+		this.employeeId = employeeId;
 	} 
 	
 	/**
 	 * Creates the from java type.
 	 *
-	 * @param cId the company id
+	 * @param companyId the company id
 	 * @param topMenuNo the top menu no
 	 * @param loginMenuNo the login menu no
-	 * @param sId the employee id
+	 * @param employeeId the employee id
 	 */
-	public static TopPagePersonSetting createFromJavaType(String cId, String topMenuNo, String loginMenuNo, String sId) {
-		return new TopPagePersonSetting(cId, topMenuNo, loginMenuNo, sId);
+	public static TopPagePersonSetting createFromJavaType(String companyId, String topMenuNo, String loginMenuNo, String employeeId) {
+		return new TopPagePersonSetting(companyId, topMenuNo, loginMenuNo, employeeId);
 	}
 }

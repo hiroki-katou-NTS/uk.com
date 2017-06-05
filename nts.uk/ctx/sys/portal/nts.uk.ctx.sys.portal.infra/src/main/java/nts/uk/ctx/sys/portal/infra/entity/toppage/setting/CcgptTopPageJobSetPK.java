@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class CcgptTopPageJobSetPK {
-	/** The cid. */
+	/** The companyId. */
 	@Id
 	@Column(name = "CID")
-	public String cId;
+	public String companyId;
 	
 	/** The top menu no. */
 	@Column(name = "TOP_MENU_NO")

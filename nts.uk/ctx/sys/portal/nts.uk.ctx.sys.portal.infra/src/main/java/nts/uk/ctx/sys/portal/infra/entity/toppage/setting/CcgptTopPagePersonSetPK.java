@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class CcgptTopPagePersonSetPK {
-	/** The cid. */
+	/** The companyId. */
 	@Id
 	@Column(name = "CID")
-	public String cId;
+	public String companyId;
 	
 	/** The top menu no. */
 	@Column(name = "TOP_MENU_NO")
@@ -26,5 +26,5 @@ public class CcgptTopPagePersonSetPK {
 	
 	/** The employee id. */
 	@Column(name = "SID")
-	public String sId;
+	public String employeeId;
 }

@@ -8,7 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 public class TopPageSetting extends AggregateRoot {
 	
 	/** The company id. */
-	private String cId;
+	private String companyId;
 	
 	/** The category setting. */
 	private String ctgSet;
@@ -16,21 +16,21 @@ public class TopPageSetting extends AggregateRoot {
 	/**
 	 * Instantiates a new top page setting.
 	 *
-	 * @param cId the company id
+	 * @param companyId the company id
 	 * @param ctgSet the category setting
 	 */
-	public TopPageSetting(String cId, String ctgSet) {
-		this.cId = cId;
+	public TopPageSetting(String companyId, String ctgSet) {
+		this.companyId = companyId;
 		this.ctgSet = ctgSet;
 	}
 	
 	/**
 	 * Creates the from java type.
 	 *
-	 * @param cId the company id
+	 * @param companyId the company id
 	 * @param ctgSet the category setting
 	 */
-	public static TopPageSetting createFromJavaType(String cId, String ctgSet) {
-		return new TopPageSetting(cId, ctgSet);
+	public static TopPageSetting createFromJavaType(String companyId, String ctgSet) {
+		return new TopPageSetting(companyId, ctgSet);
 	}
 }

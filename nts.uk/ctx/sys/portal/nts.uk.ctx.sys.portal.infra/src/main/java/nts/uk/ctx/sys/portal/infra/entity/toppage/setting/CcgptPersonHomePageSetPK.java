@@ -12,14 +12,14 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class CcgptPersonHomePageSetPK {
 
-	/** The cid. */
+	/** The company id. */
 	@Id
 	@Column(name = "CID")
-	public String cId;
+	public String companyId;
 	
-	/** The sid. */
+	/** The employee Id. */
 	@Column(name = "SID")
-	public String sId;
+	public String employeeId;
 	
 	/** The code. */
 	@Column(name = "CODE")

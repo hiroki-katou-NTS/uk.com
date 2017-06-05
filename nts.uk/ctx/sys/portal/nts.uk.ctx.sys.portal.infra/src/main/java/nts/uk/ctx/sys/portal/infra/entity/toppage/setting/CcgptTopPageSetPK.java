@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class CcgptTopPageSetPK {
-	/** The cid. */
+	/** The companyId. */
 	@Id
 	@Column(name = "CID")
-	public String cId;
+	public String companyId;
 	
 	/** The category setting. */
 	@Column(name = "CTG_SET")

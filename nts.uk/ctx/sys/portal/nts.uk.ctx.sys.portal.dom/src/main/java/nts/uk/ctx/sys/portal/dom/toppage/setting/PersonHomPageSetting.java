@@ -7,10 +7,10 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 public class PersonHomPageSetting extends AggregateRoot {
 	/** The company id. */
-	private String cId;
-
+	private String companyId;
+	
 	/** The employee id. */
-	private String sId;
+	private String employeeId;
 	
 	/** The top page code. */
 	private String code;
@@ -18,24 +18,24 @@ public class PersonHomPageSetting extends AggregateRoot {
 	/**
 	 * Instantiates a new person home page setting.
 	 *
-	 * @param cId the company id
-	 * @param sId the employee id
+	 * @param companyId the company id
+	 * @param employeeId the employee id
 	 * @param code the top page code
 	 */
-	public PersonHomPageSetting(String cId, String sId, String code) {
-		this.cId = cId;
-		this.sId = sId;
+	public PersonHomPageSetting(String companyId, String employeeId, String code) {
+		this.companyId = companyId;
+		this.employeeId = employeeId;
 		this.code = code;
 	}
 	
 	/**
 	 * Creates the from java type.
 	 *
-	 * @param cId the company id
-	 * @param sId the employee id
+	 * @param companyId the company id
+	 * @param employeeId the employee id
 	 * @param code the top page code
 	 */
-	public static PersonHomPageSetting createFromJavaType(String cId, String sId, String code) {
-		return new PersonHomPageSetting(cId, sId, code);
+	public static PersonHomPageSetting createFromJavaType(String companyId, String employeeId, String code) {
+		return new PersonHomPageSetting(companyId, employeeId, code);
 	}
 }
