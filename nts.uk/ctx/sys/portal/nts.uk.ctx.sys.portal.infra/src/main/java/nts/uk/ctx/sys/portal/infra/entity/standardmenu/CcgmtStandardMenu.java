@@ -1,11 +1,11 @@
 package nts.uk.ctx.sys.portal.infra.entity.standardmenu;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.portal.infra.entity.mypage.CcgptMyPagePK;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -13,6 +13,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "CCGMT_MY_PAGE_SET")
 public class CcgmtStandardMenu extends UkJpaEntity {
+	@EmbeddedId
+	private CcgmtStandardMenuPK ccgmtStandardMenuPK;
+	
 	/** The Url. */
 	public String url;
 	
