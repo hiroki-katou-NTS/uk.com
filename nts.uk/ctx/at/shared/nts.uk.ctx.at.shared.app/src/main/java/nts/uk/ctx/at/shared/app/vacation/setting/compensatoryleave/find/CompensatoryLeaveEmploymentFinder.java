@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto.CompensatoryLeaveEmSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
@@ -26,11 +27,11 @@ public class CompensatoryLeaveEmploymentFinder {
 	 *
 	 * @return the compensatory leave em setting dto
 	 */
-	public CompensatoryLeaveEmSettingDto findByCompanyId() {
+	public CompensatoryLeaveEmSettingDto findByEmploymentCode(String employmentCode) {
 		String companyId = AppContexts.user().companyId();
-		CompensatoryLeaveEmSetting findItem = compensLeaveEmSetRepository.find(companyId);
+		CompensatoryLeaveEmSetting findItem = compensLeaveEmSetRepository.find(companyId,employmentCode);
 		if (findItem == null) {
-			return null;
+			throw new BusinessException("Msg_146");
 		}
 		CompensatoryLeaveEmSettingDto compensatoryLeaveEmSettingDto = new CompensatoryLeaveEmSettingDto();
 		findItem.saveToMemento(compensatoryLeaveEmSettingDto);

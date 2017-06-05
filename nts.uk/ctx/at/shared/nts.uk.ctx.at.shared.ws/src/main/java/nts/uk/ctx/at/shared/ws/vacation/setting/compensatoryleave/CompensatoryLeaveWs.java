@@ -9,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
@@ -16,8 +17,12 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.SaveCompensatoryLeaveCommand;
 import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.SaveCompensatoryLeaveCommandHandler;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.SaveEmploymentCompensatoryCommand;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.SaveEmploymentCompensatoryCommandHandler;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.CompensatoryLeaveEmploymentFinder;
 import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.CompensatoryLeaveFinder;
 import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto.CompensatoryLeaveComSettingDto;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto.CompensatoryLeaveEmSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -38,6 +43,12 @@ public class CompensatoryLeaveWs extends WebService {
 
 	@Inject
 	private SaveCompensatoryLeaveCommandHandler saveCompensatoryLeaveCommandHandler;
+	
+	@Inject
+	private SaveEmploymentCompensatoryCommandHandler saveEmploymentCompensatoryCommandHandler;
+	
+	@Inject
+	private CompensatoryLeaveEmploymentFinder compensatoryLeaveEmploymentFinder;
 
 	/**
 	 * Update.
@@ -147,8 +158,8 @@ public class CompensatoryLeaveWs extends WebService {
 	 */
 	@POST
 	@Path("employment/save")
-	public List<EnumConstant> saveEmploymentSetting() {
-		return null;
+	public void saveEmploymentSetting(SaveEmploymentCompensatoryCommand command) {
+		saveEmploymentCompensatoryCommandHandler.handle(command);
 	}
 	
 	/**
@@ -157,8 +168,8 @@ public class CompensatoryLeaveWs extends WebService {
 	 * @return the employment setting
 	 */
 	@POST
-	@Path("employment/findsetting")
-	public List<EnumConstant> getEmploymentSetting() {
-		return null;
+	@Path("employment/findsetting/{employmentCode}")
+	public CompensatoryLeaveEmSettingDto getEmploymentSetting(@PathParam("employmentCode") String employmentCode) {
+		return compensatoryLeaveEmploymentFinder.findByEmploymentCode(employmentCode);
 	}
 }
