@@ -212,8 +212,11 @@ module ccg030.a.viewmodel {
 
         // Open ccg030 B Dialog
         open030B_Dialog() {
+            nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared("flowmenu", this.selectedFlowMenu(), false);
-            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: nts.uk.resource.getText("CCG030_4"), dialogClass: "no-close" });
+            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: nts.uk.resource.getText("CCG030_4"), dialogClass: "no-close" }).onClosed(() => {
+                nts.uk.ui.block.clear();    
+            });
         }
 
         /** Find Current FlowMenu by ID */
