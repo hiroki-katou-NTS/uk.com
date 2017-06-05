@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.stamp;
+package nts.uk.ctx.at.record.infra.entity.stamp.stampcard;
 
 import java.io.Serializable;
 
