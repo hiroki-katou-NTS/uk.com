@@ -11,6 +11,7 @@ module nts.uk.at.view.kml001.d {
             currentPersonCost: KnockoutObservable<vmbase.PersonCostCalculation>;
             isLast: KnockoutObservable<boolean>;
             beforeStartDate: KnockoutObservable<string>;
+            onedayAfterBeforeStartDate: KnockoutObservable<string>;
             currentEndDate: KnockoutObservable<string>;
             newStartDate: KnockoutObservable<string>;
             constructor() {
@@ -21,58 +22,33 @@ module nts.uk.at.view.kml001.d {
                 self.isLast = ko.observable((_.findIndex(self.personCostList(), function(o){return self.currentPersonCost().startDate() == o.startDate(); })==(self.size-1))?true:false);
                 self.deleteAble = ko.observable((self.isLast()&&(self.size>1))); // can delete when item is last and list have more than one item
                 self.beforeIndex = _.findIndex(self.personCostList(), function(o) { return o.startDate() == self.currentPersonCost().startDate(); })-1;
-                self.beforeStartDate = ko.observable((self.beforeIndex>=0)?self.personCostList()[self.beforeIndex].startDate():"1900/1/1");
+                self.beforeStartDate = ko.observable((self.beforeIndex>=0)?self.personCostList()[self.beforeIndex].startDate():"1900/01/01");
+                self.onedayAfterBeforeStartDate = ko.observable(moment(self.beforeStartDate()).add(1,'days').format('YYYY/MM/DD'));
                 self.currentEndDate = ko.observable(self.currentPersonCost().endDate());
                 self.newStartDate = ko.observable(self.currentPersonCost().startDate());
-                self.newStartDate.subscribe(function(value){
-                    if((value != "") && (value != null)) {
-                        if(self.errorStartDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'))) {
-                            $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});  
-                        } else $("#startDateInput-input").ntsError('clear');
-                    } else {
-                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});
-                    }  
-                });
                 self.isUpdate = ko.observable(self.deleteAble()?false:true);
-                self.isUpdate.subscribe(function(value) { 
-                    if(value) {
-                        if(self.errorStartDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'))) {
-                            $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});
-                        }
-                    } else { 
-                        $("#startDateInput-input").ntsError('clear');
-                    }
-                });
-            }
-            
-            /**
-             * check error on newStartDate
-             */
-            errorStartDate(input: string): boolean {
-                var self = this;
-                return (
-                    (input == "") || (input == null) || 
-                    !vmbase.ProcessHandler.validateDateRange(input,kml001.shr.vmbase.ProcessHandler.getOneDayAfter(self.beforeStartDate()),self.currentEndDate())
-                    );    
             }
             
             /**
              * update/delete data when no error and close dialog
              */
             submitAndCloseDialog(): void {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 if(self.isUpdate()) {
-                    if(self.errorStartDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'))) {
+                    if(!vmbase.ProcessHandler.validateDateRange(self.newStartDate(),vmbase.ProcessHandler.getOneDayAfter(self.beforeStartDate()),self.currentEndDate())) {
                         $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"}); 
+                        nts.uk.ui.block.clear();
                     } else {
-                        self.currentPersonCost().startDate(self.newStartDate().substring(0,10).replace('-','/').replace('-','/'));
+                        self.currentPersonCost().startDate(self.newStartDate());
                         servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                             .done(function(res: Array<any>) {
                                 nts.uk.ui.windows.setShared('isEdited', 0);
+                                nts.uk.ui.block.clear();
                                 nts.uk.ui.windows.close();
                             })
                             .fail(function(res) {
-                                nts.uk.ui.dialog.alertError(res.message);       
+                                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});       
                             });
                     }
                 } else {
@@ -81,14 +57,17 @@ module nts.uk.at.view.kml001.d {
                             servicebase.personCostCalculationDelete(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                             .done(function(res: Array<any>) {
                                 nts.uk.ui.windows.setShared('isEdited', 1);
+                                nts.uk.ui.block.clear();
                                 nts.uk.ui.windows.close();
                             })
                             .fail(function(res) {
-                                nts.uk.ui.dialog.alertError({ messageId: res.messageId });     
+                                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});     
                             });
                         });
-                        
-                    } else{ $("#startDateInput-input").ntsError('set', {messageId:"Msg_128"}); }
+                    } else{ 
+                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_128"});
+                        nts.uk.ui.block.clear();
+                    }
                 }
             }
             

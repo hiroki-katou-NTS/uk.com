@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
+import java.util.List;
+
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
@@ -29,10 +31,10 @@ public class WorkTimeSet {
 	
 	private TimeDayAtr startDateAtr;
 	
-	private WorkTimeDay workTimeDay;
+	private List<WorkTimeDay> workTimeDay;
 	
 	public WorkTimeSet(String companyID, String workTimeSetCD, String workTimeCD, int rangeTimeDay,
-			String additionSetCD, WorkTimeNightShift nightShiftAtr, int startDateTime, TimeDayAtr startDateAtr, WorkTimeDay workTimeDay) {
+			String additionSetCD, WorkTimeNightShift nightShiftAtr, int startDateTime, TimeDayAtr startDateAtr, List<WorkTimeDay> workTimeDay) {
 		super();
 		this.companyID = companyID;
 		this.workTimeSetCD = workTimeSetCD;

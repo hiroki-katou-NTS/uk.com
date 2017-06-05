@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.shared.infra.entity.worktime;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
@@ -28,6 +31,9 @@ public class KwtstWorkTimeSet extends UkJpaEntity{
 	@EmbeddedId
 	public KwtspWorkTimeSetPK kwtspWorkTimeSetPK;
 	
+	@Column(name="WORK_TIME_CD")
+	public String workTimeCD;
+	
 	@Column(name="RANGE_TIME_DAY")
 	public int rangeTimeDay;
 	
@@ -43,13 +49,13 @@ public class KwtstWorkTimeSet extends UkJpaEntity{
 	@Column(name="START_DATE_ATR")
 	public int startDateAtr;
 
-	/*@OneToMany(targetEntity=KwtstWorkTimeSet.class)
+	@OneToMany(targetEntity=KwtdtWorkTimeDay.class)
 	@JoinTable(name="KWTDT_WORK_TIME_DAY")
-	@PrimaryKeyJoinColumns(value = {
-		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
-		@PrimaryKeyJoinColumn(name="WORK_TIME_SET_CD",referencedColumnName="WORK_TIME_SET_CD")
-	})
-	public KwtdtWorkTimeDay kwtdtWorkTimeDay;*/
+	/*@JoinColumns(value = {
+		@JoinColumn(name="CID",referencedColumnName="CID"),
+		@JoinColumn(name="WORK_TIME_SET_CD",referencedColumnName="WORK_TIME_SET_CD")
+	})*/
+	public List<KwtdtWorkTimeDay> kwtdtWorkTimeDay;
 	
 	@Override
 	protected Object getKey() {

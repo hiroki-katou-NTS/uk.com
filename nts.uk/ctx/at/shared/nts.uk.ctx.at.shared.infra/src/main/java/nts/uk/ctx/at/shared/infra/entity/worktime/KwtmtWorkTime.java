@@ -7,6 +7,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumns;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -49,13 +51,9 @@ public class KwtmtWorkTime extends UkJpaEntity{
 	@Column(name="METHOD_ATR")
 	public int methodAtr;
 
-	/*@OneToOne(targetEntity=KwtmtWorkTime.class)
+	@OneToOne(targetEntity=KwtstWorkTimeSet.class)
 	@JoinTable(name="KWTST_WORK_TIME_SET")
-	@JoinColumns(value = {
-		@JoinColumn(name="CID",referencedColumnName="CID"),
-		@JoinColumn(name="WORK_TIME_CD",referencedColumnName="WORK_TIME_CD")
-	})
-	public KwtstWorkTimeSet kwtstWorkTimeSet;*/
+	public KwtstWorkTimeSet kwtstWorkTimeSet;
 	
 	@Override
 	protected Object getKey() {
