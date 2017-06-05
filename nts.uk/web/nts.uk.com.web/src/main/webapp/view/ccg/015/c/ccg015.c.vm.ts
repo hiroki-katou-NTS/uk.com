@@ -44,7 +44,7 @@ module nts.uk.pr.view.ccg015.c {
                         copyCode: self.parentTopPageCode()
                     };
                     service.copyTopPage(data).done(function() {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_20")).then(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
                             nts.uk.ui.windows.close();
                         }); 
                     }).fail(function(res) {

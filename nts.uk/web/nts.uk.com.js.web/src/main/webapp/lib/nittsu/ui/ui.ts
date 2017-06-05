@@ -756,6 +756,50 @@ module nts.uk.ui {
     export function confirmSaveDisable() {
         $(window).unbind('beforeunload');
     };
+    
+    export module block {
+        
+        export function invisible() {
+            let rect = calcRect();
+            
+            (<any>$).blockUI({
+                message: null,
+                overlayCSS: { opacity: 0 },
+                css: {
+                    width: rect.width,
+                    left: rect.left
+                }
+            });
+        }
+        
+        export function grayout() {
+            let rect = calcRect();
+            
+            (<any>$).blockUI({
+                message: '<div class="block-ui-message">お待ちください</div>',
+                fadeIn: 200,
+                css: {
+                    width: rect.width,
+                    left: rect.left
+                }
+            });
+        }
+        
+        export function clear() {
+            (<any>$).unblockUI({
+                fadeOut: 200
+            });
+        }
+        
+        function calcRect() {
+            let width = 220;
+            let left = ($(window).width() - width) / 2;
+            return {
+                width: width,
+                left: left
+            };
+        }
+    }
 
     export class DirtyChecker {
 

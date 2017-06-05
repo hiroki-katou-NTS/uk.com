@@ -9,11 +9,11 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "QTXMT_COMMU_NOTAX_LIMIT")
-public class QtxmtCommuNotaxLimit extends TableEntity implements Serializable{
+public class QtxmtCommuNotaxLimit extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -33,4 +33,9 @@ public class QtxmtCommuNotaxLimit extends TableEntity implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
 	public int exclusVer;
+
+	@Override
+	protected Object getKey() {
+		return qtxmtCommuNotaxLimitPK;
+	}
 }

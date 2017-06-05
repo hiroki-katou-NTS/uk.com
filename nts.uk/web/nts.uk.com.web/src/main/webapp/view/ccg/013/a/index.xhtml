@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg013.a.style.css" />
+			<com:scriptfile path="ccg013.a.start.js" />
+			<com:scriptfile path="ccg013.a.vm.js" />
+			<com:scriptfile path="ccg013.a.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="A_BTN_001">新規</button>
+				<button id="A_BTN_002" class="proceed">登録</button>
+				<button id="A_BTN_005">コピー</button>
+				<button id="A_BTN_009">職位紐付け設定</button>
+				<button id="A_BTN_006">個人紐付け設定</button>
+				<button id="A_BTN_008">表示名所の変更</button>
+				<button id="A_BTN_003" class="danger">削除</button>
+			</div>
+			<div id="contents-area">
+				<div class="left-content">
+					<div id="LST_001" style="margin-left: 10px;">
+						<table id="single-list"
+							data-bind="ntsGridList: {								
+							height: 350,
+							dataSource: items,
+							primaryKey: 'code',
+							columns: columns2,
+							multiple: false,
+							value: currentCode
+						}"></table>
+					</div>
+				</div>
+				<ul id="sortable" data-bind="foreach: itemMenu">
+					<li data-bind="text: Name,css: code"></li>
+				</ul>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

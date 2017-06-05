@@ -478,7 +478,6 @@ declare namespace JQueryUI {
 
     interface DroppableOptions extends DroppableEvents {
         accept?: any;
-        classes?: any,
         activeClass?: string;
         addClasses?: boolean;
         disabled?: boolean;

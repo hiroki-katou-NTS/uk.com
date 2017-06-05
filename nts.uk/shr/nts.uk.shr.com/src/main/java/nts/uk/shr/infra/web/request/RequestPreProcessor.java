@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -17,14 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 
-import nts.uk.shr.com.context.ProgramContext;
+import nts.uk.shr.com.context.AppContextsConfig;
 import nts.uk.shr.com.program.ProgramsManager;
 import nts.uk.shr.com.program.WebAppId;
 
 /**
- * @author manhnd
- *
  * RequestPreProcessor
+ * 
  */
 public class RequestPreProcessor implements Filter {
 	
@@ -44,12 +42,6 @@ public class RequestPreProcessor implements Filter {
 			put(WebAppId.AT, "nts.uk.at.web");
 		}
 	};
-	
-	/**
-	 * Program context.
-	 */
-	@Inject
-	private ProgramContext programContext;
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
@@ -86,7 +78,7 @@ public class RequestPreProcessor implements Filter {
 				 break;
 			}
 		}
-		ProgramsManager.idOf(appId, partialPath).ifPresent(id -> programContext.jumpTo(id));
+		ProgramsManager.idOf(appId, partialPath).ifPresent(id -> AppContextsConfig.setProgramId(id));
 		chain.doFilter(request, response);
 	}
 
