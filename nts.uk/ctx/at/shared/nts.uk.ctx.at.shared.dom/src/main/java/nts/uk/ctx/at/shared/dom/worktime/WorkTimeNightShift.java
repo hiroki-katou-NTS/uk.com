@@ -9,10 +9,10 @@ package nts.uk.ctx.at.shared.dom.worktime;
 public enum WorkTimeNightShift {
 	
 	// 日勤
-	DayShift(0),
+	Day_Shift(0),
 	
 	// 夜勤
-	NightShift(1);
+	Night_Shift(1);
 	
 	public final int value;
 	

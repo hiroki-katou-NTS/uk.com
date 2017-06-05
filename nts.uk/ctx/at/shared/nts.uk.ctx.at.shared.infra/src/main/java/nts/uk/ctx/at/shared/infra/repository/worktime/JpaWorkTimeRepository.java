@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -65,8 +66,7 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 				kwtmtWorkTime.remarks, 
 				EnumAdaptor.valueOf(kwtmtWorkTime.displayAtr, UseSetting.class), 
 				EnumAdaptor.valueOf(kwtmtWorkTime.methodAtr, WorkMethodSetting.class),
-				//convertToDomainWorkTimeSet(kwtmtWorkTime.kwtstWorkTimeSet) 
-				null
+				convertToDomainWorkTimeSet(kwtmtWorkTime.kwtstWorkTimeSet) 
 		);
 	}
 	
@@ -79,14 +79,13 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 		return new WorkTimeSet(
 				kwtstWorkTimeSet.kwtspWorkTimeSetPK.companyID, 
 				kwtstWorkTimeSet.kwtspWorkTimeSetPK.workTimeSetCD, 
-				kwtstWorkTimeSet.kwtspWorkTimeSetPK.workTimeCD, 
+				kwtstWorkTimeSet.workTimeCD, 
 				kwtstWorkTimeSet.rangeTimeDay, 
 				kwtstWorkTimeSet.additionSetCD, 
 				EnumAdaptor.valueOf(kwtstWorkTimeSet.nightShiftAtr, WorkTimeNightShift.class), 
 				kwtstWorkTimeSet.startDateTime, 
 				EnumAdaptor.valueOf(kwtstWorkTimeSet.startDateAtr, TimeDayAtr.class), 
-				null
-				//convertToDomainWorkTimeDay(kwtstWorkTimeSet.kwtdtWorkTimeDay)
+				kwtstWorkTimeSet.kwtdtWorkTimeDay.stream().map(x -> convertToDomainWorkTimeDay(x)).collect(Collectors.toList())
 		);
 	}
 	
