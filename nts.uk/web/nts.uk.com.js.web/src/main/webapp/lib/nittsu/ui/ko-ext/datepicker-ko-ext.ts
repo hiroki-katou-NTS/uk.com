@@ -107,7 +107,7 @@ module nts.uk.ui.koExtentions {
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
-                if (result.isValid) {
+                if (!result.isValid) {
                     $input.ntsError('set', "Invalid format");
                 }
             }));

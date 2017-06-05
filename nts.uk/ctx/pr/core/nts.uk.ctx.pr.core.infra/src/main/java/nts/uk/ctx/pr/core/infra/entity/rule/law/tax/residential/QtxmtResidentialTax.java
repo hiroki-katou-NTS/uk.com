@@ -10,12 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "QTXMT_RESIDENTIAL_TAX")
-public class QtxmtResidentialTax extends TableEntity implements Serializable{
+public class QtxmtResidentialTax extends UkJpaEntity implements Serializable{
 	/**
 	 * serialVersionUID
 	 */
@@ -67,6 +68,11 @@ public class QtxmtResidentialTax extends TableEntity implements Serializable{
 	@Basic(optional = true)
 	@Column(name ="MEMO")
 	public String memo;
+
+	@Override
+	protected Object getKey() {
+		return qtxmtResidentialTaxPk;
+	}
 	
 
 }
