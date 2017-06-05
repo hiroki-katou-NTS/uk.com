@@ -5,8 +5,9 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import worklocation.WorkLocationCD;
-import worklocation.WorkLocationName;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationName;
+
 
 @AllArgsConstructor
 @Getter

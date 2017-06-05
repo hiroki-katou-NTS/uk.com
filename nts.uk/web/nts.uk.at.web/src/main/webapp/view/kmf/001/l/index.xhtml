@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay
+				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDate
+				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear
+				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay
+			</com:ValidatorScript>
+		
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="kmf001.l.service.js" />
+			<com:scriptfile path="kmf001.l.vm.js" />
+			<com:scriptfile path="kmf001.l.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="functions-area">
+				<div style="margin: 7px 20px;">
+					<button class="pull-left btn-default" data-bind="click: backSetupVacation" tabindex="1">#{i18n.getText('KMF001_27')}</button>
+					<button class="proceed btn-default" data-bind="click: save" tabindex="2">#{i18n.getText('KMF001_28')}</button>
+					<label class="pull-right btn-default">#{i18n.getText('KMF001_29')}</label>
+				</div>
+			</div>
+
+			<div id="contents-area">
+				<div style="margin-left: 35px;padding-top: 10px;">
+				
+					<!-- BEGIN 子の看護休暇の設定-->
+					<table id="table" >
+						<thead>
+							<div data-bind="ntsFormLabel: {required: true}"
+								style="margin-right: 50px;">#{i18n.getText('KMF001_108')}</div>
+							<span tabindex="4" data-bind="ntsSwitchButton: {
+												options: manageDistinctList,
+												optionsValue: 'value',
+												optionsText: 'localizedName',
+												value: selectedAnnualManage,
+												enable: true }">
+							</span>
+							<div class="hr_width">
+								<hr />
+							</div>
+						</thead>
+						
+						<tr>
+							<th colspan="3"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_107')}</div>
+								<div class="hr_width">
+									<hr />
+								</div></th>
+						</tr>
+						<tr>
+							<td><label class="content-label">#{i18n.getText('KMF001_109')}</label></td>
+							<td><div tabindex="5">
+								<span data-bind="ntsNumberEditor: {
+									value: maxNumberCompany,
+									constraint: '',
+									required: true,
+									option: textEditorOption,
+									enable: true}"></span>
+								<span>月</span>
+								<span style="margin-left: 10px;" data-bind="ntsNumberEditor: {
+									value: maxNumberCompany,
+									constraint: '',
+									required: true,
+									option: textEditorOption,
+									enable: true}"></span>
+								<span>日</span>
+							</div></td>
+							<td><div></div></td>
+						</tr>
+						
+						<tr>
+							<td><label class="content-label">#{i18n.getText('KMF001_110')}</label></td>
+							<td style="padding-left: 4px;">
+								<div>
+									<label class="content-label">#{i18n.getText('KMF001_111')}</label>
+									<input style="float: right;" tabindex="6" id="max-grant-day" class="nts-input"
+										data-bind="ntsNumberEditor: {
+											value: maxGrantDay,
+											constraint: 'AnnualLeaveGrantDate',
+											required: enableAnnualVacation,
+											option: textEditorOption,
+											enable: enableAnnualVacation}" />
+								</div>
+							</td>
+							<td></td>
+						</tr>
+						
+						<tr>
+							<td><label class="content-label"></label></td>
+							<td style="padding-left: 4px;">
+								<div>
+									<label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_112')}</label>
+									<input style="float: right;" tabindex="7" id="max-grant-day" class="nts-input"
+										data-bind="ntsNumberEditor: {
+											value: maxGrantDay,
+											constraint: 'AnnualLeaveGrantDate',
+											required: enableAnnualVacation,
+											option: textEditorOption,
+											enable: enableAnnualVacation}" />
+								</div>
+							</td>
+							<td><label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_113')}</label></td>
+						</tr>
+						
+						<tr>
+							<td><label class="content-label">#{i18n.getText('KMF001_114')}</label></td>
+							<td style="padding-left: 4px;">
+								<div>
+									<input tabindex="7" id="max-grant-day" class="nts-input"
+										data-bind="ntsTextEditor: {
+											value: maxGrantDay,
+											constraint: 'AnnualLeaveGrantDate',
+											required: enableAnnualVacation,
+											option: {
+												width: '92.5%',
+												textalign: 'left'
+											},
+											enable: enableAnnualVacation}" />
+								</div>
+							</td>
+							<td><button class="content-label" tabindex="8">#{i18n.getText('KMF001_127')}</button></td>
+						</tr>
+					</table><!-- END 子の看護休暇の設定-->
+					
+					<!-- BEGIN 介護休暇の管理-->
+					<table id="table" >
+						<thead>
+							<div data-bind="ntsFormLabel: {required: true}"
+								style="margin-right: 50px;">#{i18n.getText('KMF001_116')}</div>
+							<span tabindex="9" data-bind="ntsSwitchButton: {
+												options: manageDistinctList,
+												optionsValue: 'value',
+												optionsText: 'localizedName',
+												value: selectedAnnualManage,
+												enable: true }">
+							</span>
+							<div class="hr_width">
+								<hr />
+							</div>
+						</thead>
+						
+						<tr>
+							<th colspan="3"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_115')}</div>
+								<div class="hr_width">
+									<hr />
+								</div></th>
+						</tr>
+						<tr>
+							<td><label class="content-label">#{i18n.getText('KMF001_117')}</label></td>
+							<td><div tabindex="10">
+								<span data-bind="ntsNumberEditor: {
+									value: maxNumberCompany,
+									constraint: '',
+									required: true,
+									option: textEditorOption,
+									enable: true}"></span>
+								<span>月</span>
+								<span style="margin-left: 10px;" data-bind="ntsNumberEditor: {
+									value: maxNumberCompany,
+									constraint: '',
+									required: true,
+									option: textEditorOption,
+									enable: true}"></span>
+								<span>日</span>
+							</div></td>
+							<td><div></div></td>
+						</tr>
+						
+						<tr>
+							<td><label class="content-label">#{i18n.getText('KMF001_118')}</label></td>
+							<td style="padding-left: 4px;">
+								<div>
+									<label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_119')}</label>
+									<input tabindex="11" id="max-grant-day" class="nts-input"
+										data-bind="ntsNumberEditor: {
+											value: maxGrantDay,
+											constraint: 'AnnualLeaveGrantDate',
+											required: enableAnnualVacation,
+											option: textEditorOption,
+											enable: enableAnnualVacation}" />
+								</div>
+							</td>
+							<td></td>
+						</tr>
+						
+						<tr>
+							<td><label class="content-label"></label></td>
+							<td style="padding-left: 4px;">
+								<div>
+									<label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_120')}</label>
+									<input tabindex="12" id="max-grant-day" class="nts-input"
+										data-bind="ntsNumberEditor: {
+											value: maxGrantDay,
+											constraint: 'AnnualLeaveGrantDate',
+											required: enableAnnualVacation,
+											option: textEditorOption,
+											enable: enableAnnualVacation}" />
+								</div>
+							</td>
+							<td></td>
+						</tr>
+						
+						<tr>
+							<td><label class="content-label">#{i18n.getText('KMF001_121')}</label></td>
+							<td style="padding-left: 4px;">
+								<div>
+									<input id="max-grant-day" class="nts-input"
+										data-bind="ntsTextEditor: {
+											value: maxGrantDay,
+											constraint: 'AnnualLeaveGrantDate',
+											required: enableAnnualVacation,
+											option: textEditorOption,
+											enable: enableAnnualVacation}" />
+								</div>
+							</td>
+							<td><button class="content-label">#{i18n.getText('KMF001_127')}</button></td>
+						</tr>
+					</table><!-- END 介護休暇の管理-->
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
