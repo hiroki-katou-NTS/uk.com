@@ -5,7 +5,24 @@
 package nts.uk.ctx.basic.dom.company.organization.employment;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.basic.dom.company.organization.CompanyId;
+
+/**
+ * The Class Employment.
+ */
+
+/**
+ * Gets the employment name.
+ *
+ * @return the employment name
+ */
+
+/**
+ * Gets the employment name.
+ *
+ * @return the employment name
+ */
 
 /**
  * Gets the employment name.
@@ -13,16 +30,16 @@ import nts.uk.ctx.basic.dom.company.organization.CompanyId;
  * @return the employment name
  */
 @Getter
-public class Employment {
+public class Employment extends AggregateRoot{
 	
 	/** The company id. */
 	private CompanyId companyId;
 	
-	/** The work days per month. */
-	private Integer workDaysPerMonth;
+	/** The work closure id. */
+	private Integer workClosureId;
 	
-	/** The payment date. */
-	private Integer paymentDate;
+	/** The salary closure id. */
+	private Integer salaryClosureId;
 	
 	/** The employment code. */
 	private EmploymentCode employmentCode;
@@ -33,20 +50,14 @@ public class Employment {
 	/**
 	 * Instantiates a new employment.
 	 *
-	 * @param companyId the company id
-	 * @param workDaysPerMonth the work days per month
-	 * @param paymentDate the payment date
-	 * @param employmentCode the employment code
-	 * @param employmentName the employment name
+	 * @param memento the memento
 	 */
-	public Employment(CompanyId companyId, Integer workDaysPerMonth, Integer paymentDate, EmploymentCode employmentCode,
-			EmploymentName employmentName) {
-		super();
-		this.companyId = companyId;
-		this.workDaysPerMonth = workDaysPerMonth;
-		this.paymentDate = paymentDate;
-		this.employmentCode = employmentCode;
-		this.employmentName = employmentName;
+	public Employment(EmploymentGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.employmentCode = memento.getEmploymentCode();
+		this.employmentName = memento.getEmploymentName();
+		this.workClosureId = memento.getWorkClosureId();
+		this.salaryClosureId = memento.getSalaryClosureId();
 	}
 	
 	/**
@@ -58,8 +69,8 @@ public class Employment {
 		memento.setCompanyId(this.companyId);
 		memento.setEmploymentCode(this.employmentCode);
 		memento.setEmploymentName(this.employmentName);
-		memento.setWorkDaysPerMonth(this.workDaysPerMonth);
-		memento.setPaymentDay(this.paymentDate);
+		memento.setWorkClosureId(this.workClosureId);
+		memento.setSalaryClosureId(this.salaryClosureId);
 	}
 	
 }

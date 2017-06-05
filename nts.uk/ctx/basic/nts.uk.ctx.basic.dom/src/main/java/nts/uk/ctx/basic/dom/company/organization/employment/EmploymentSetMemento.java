@@ -19,18 +19,18 @@ public interface EmploymentSetMemento {
 	void setCompanyId(CompanyId companyId);
 	
 	/**
-	 * Sets the work days per month.
+	 * Sets the work closure id.
 	 *
-	 * @param workDaysPerMonth the new work days per month
+	 * @param workClosureId the new work closure id
 	 */
-	void setWorkDaysPerMonth(Integer workDaysPerMonth);
+	void setWorkClosureId(Integer workClosureId);
 	
 	/**
-	 * Sets the payment day.
+	 * Sets the salary closure id.
 	 *
-	 * @param paymentDay the new payment day
+	 * @param salaryClosureId the new salary closure id
 	 */
-	void setPaymentDay(Integer paymentDay);
+	void setSalaryClosureId(Integer salaryClosureId);
 	
 	/**
 	 * Sets the employment code.
