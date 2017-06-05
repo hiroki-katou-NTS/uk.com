@@ -1,13 +1,10 @@
 package nts.uk.ctx.sys.portal.dom.mypage;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class MyPage.
  */
-@EqualsAndHashCode(callSuper = false)
 public class MyPage extends AggregateRoot {
 
 	/** The company id. */

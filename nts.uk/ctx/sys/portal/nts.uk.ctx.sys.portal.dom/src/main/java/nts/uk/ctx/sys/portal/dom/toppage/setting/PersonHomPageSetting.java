@@ -1,13 +1,10 @@
 package nts.uk.ctx.sys.portal.dom.toppage.setting;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class PersonHomPageSetting.
  */
-@EqualsAndHashCode(callSuper = false)
 public class PersonHomPageSetting extends AggregateRoot {
 	/** The company id. */
 	private String cId;

@@ -1,13 +1,10 @@
 package nts.uk.ctx.sys.portal.dom.toppage.setting;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class TopPageTitleSet.
  */
-@EqualsAndHashCode(callSuper = false)
 public class TopPageJobSet extends AggregateRoot {
 	
 	/** The company id. */
