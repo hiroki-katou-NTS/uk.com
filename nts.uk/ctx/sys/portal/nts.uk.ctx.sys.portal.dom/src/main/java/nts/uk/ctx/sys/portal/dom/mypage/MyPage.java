@@ -7,7 +7,6 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class MyPage.
  */
-@Value
 @EqualsAndHashCode(callSuper = false)
 public class MyPage extends AggregateRoot {
 

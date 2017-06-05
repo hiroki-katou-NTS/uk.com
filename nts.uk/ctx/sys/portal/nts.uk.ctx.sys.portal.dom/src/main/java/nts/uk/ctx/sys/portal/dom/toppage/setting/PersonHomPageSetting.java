@@ -7,7 +7,6 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class PersonHomPageSetting.
  */
-@Value
 @EqualsAndHashCode(callSuper = false)
 public class PersonHomPageSetting extends AggregateRoot {
 	/** The company id. */

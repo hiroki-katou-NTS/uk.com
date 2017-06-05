@@ -10,7 +10,10 @@ __viewContext.ready(function () {
         positionHis() {
              nts.uk.ui.windows.close();   
         }
-        openDialog(): void{
+        openTopPageSet(): void{
+            nts.uk.ui.windows.sub.modeless("/view/ccg/008/c/index.xhtml");
+        }
+        openMyPageSet(): void{
             nts.uk.ui.windows.sub.modeless("/view/ccg/031/a/index.xhtml");
         }
     }

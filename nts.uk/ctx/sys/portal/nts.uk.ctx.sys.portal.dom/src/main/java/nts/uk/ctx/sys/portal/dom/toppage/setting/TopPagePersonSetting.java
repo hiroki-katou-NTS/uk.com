@@ -7,7 +7,6 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class TopPagePersonSetting.
  */
-@Value
 @EqualsAndHashCode(callSuper = false)
 public class TopPagePersonSetting extends AggregateRoot {
 

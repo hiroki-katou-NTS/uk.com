@@ -7,7 +7,6 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class TopPageTitleSet.
  */
-@Value
 @EqualsAndHashCode(callSuper = false)
 public class TopPageJobSet extends AggregateRoot {
 	
