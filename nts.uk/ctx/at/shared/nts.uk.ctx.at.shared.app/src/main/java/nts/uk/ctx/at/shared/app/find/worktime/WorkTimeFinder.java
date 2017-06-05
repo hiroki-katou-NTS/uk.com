@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.shared.app.find.worktime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.TimeDayAtr;
@@ -23,6 +28,9 @@ import nts.uk.shr.com.context.AppContexts;
 public class WorkTimeFinder {
 	
 	@Inject
+	IInternationalization internationalization;
+	
+	@Inject
 	private WorkTimeRepository workTimeRepository;
 	
 	/**
@@ -32,27 +40,31 @@ public class WorkTimeFinder {
 	 */
 	public List<WorkTimeDto> findByCodeList(List<String> codeList){
 		String companyID = AppContexts.user().companyId();
-		this.workTimeRepository.findByCodeList(companyID, codeList).stream()
+		return this.workTimeRepository.findByCodeList(companyID, codeList).stream()
 			.map(x -> new WorkTimeDto(
 					x.getWorkTimeCD().v(), 
 					x.getName().v(), 
-					createWorkTimeField(
-						x.getWorkTimeSet().getWorkTimeDay().getA_m_UseAtr(),
-						x.getWorkTimeSet().getWorkTimeDay().getA_m_StartTime(),
-						x.getWorkTimeSet().getWorkTimeDay().getA_m_StartAtr(),
-						x.getWorkTimeSet().getWorkTimeDay().getA_m_EndTime(),
-						x.getWorkTimeSet().getWorkTimeDay().getA_m_EndAtr()
-					), 
-					createWorkTimeField(
-						x.getWorkTimeSet().getWorkTimeDay().getP_m_UseAtr(),
-						x.getWorkTimeSet().getWorkTimeDay().getP_m_StartTime(),
-						x.getWorkTimeSet().getWorkTimeDay().getP_m_StartAtr(),
-						x.getWorkTimeSet().getWorkTimeDay().getP_m_EndTime(),
-						x.getWorkTimeSet().getWorkTimeDay().getP_m_EndAtr()
-					), 
-					x.getMethodAtr().name(), 
-					x.getRemarks()));
-		return null;
+					(x.getWorkTimeSet().getWorkTimeDay().size()==1)
+						?createWorkTimeField(
+							x.getWorkTimeSet().getWorkTimeDay().get(0).getA_m_UseAtr(),
+							x.getWorkTimeSet().getWorkTimeDay().get(0).getA_m_StartTime(),
+							x.getWorkTimeSet().getWorkTimeDay().get(0).getA_m_StartAtr(),
+							x.getWorkTimeSet().getWorkTimeDay().get(0).getP_m_EndTime(),
+							x.getWorkTimeSet().getWorkTimeDay().get(0).getP_m_EndAtr()
+						):null
+					, 
+					(x.getWorkTimeSet().getWorkTimeDay().size()==2)
+						?createWorkTimeField(
+							x.getWorkTimeSet().getWorkTimeDay().get(1).getP_m_UseAtr(),
+							x.getWorkTimeSet().getWorkTimeDay().get(1).getP_m_StartTime(),
+							x.getWorkTimeSet().getWorkTimeDay().get(1).getP_m_StartAtr(),
+							x.getWorkTimeSet().getWorkTimeDay().get(1).getP_m_EndTime(),
+							x.getWorkTimeSet().getWorkTimeDay().get(1).getP_m_EndAtr()
+						):null
+					, 
+					internationalization.getItemName(x.getMethodAtr().name()).get(), 
+					x.getRemarks()))
+			.collect(Collectors.toList());
 	}
 	
 	/**
@@ -63,11 +75,30 @@ public class WorkTimeFinder {
 	 * @param end time day end time
 	 * @param endAtr time day end atr
 	 * @return result string
+	 * @throws ParseException 
 	 */
-	private String createWorkTimeField(UseSetting useAtr, int start, TimeDayAtr startAtr, int end, TimeDayAtr endAtr){
+	private String createWorkTimeField(UseSetting useAtr, int start, TimeDayAtr startAtr, int end, TimeDayAtr endAtr) {
 		if(useAtr.equals(UseSetting.UseAtr_Use)){
-			return startAtr.name()+" "+(start/60)+":"+(start%60)+" ~ "+endAtr.name()+" "+(end/60)+":"+(end%60);
+			return internationalization.getItemName(startAtr.name()).get()+formatTime(start)+" ~ "+internationalization.getItemName(endAtr.name()).get()+formatTime(end);
 		} else return null;
+	}
+	
+	/**
+	 * format int Time to string HH:mm format
+	 * @param time int Time
+	 * @return string HH:mm format
+	 */
+	private String formatTime(int time) {
+		String inputTime = (time/60)+":"+(time%60);
+        SimpleDateFormat curFormater = new SimpleDateFormat("H:m"); 
+        Date timeObj = null;
+		try {
+			timeObj = curFormater.parse(inputTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} 
+        SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm"); 
+        return postFormater.format(timeObj); 
 	}
 	
 }

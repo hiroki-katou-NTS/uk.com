@@ -1,16 +1,11 @@
 module nts.uk.at.view.kdl001.a {
     export module service {
         var paths: any = {
-            retirePayItemSelect: "pr/core/retirement/payitem/findBycompanyCode",
-            retirePayItemUpdate: "pr/core/retirement/payitem/update" 
+            findByCodeList: "at/shared/worktime/findByCodeList"
         }
         
-        export function retirePayItemSelect(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.retirePayItemSelect);
-        }
-        
-        export function retirePayItemUpdate(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.retirePayItemUpdate, command);
+        export function findByCodeList(command): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findByCodeList, command);
         }
     }
 }
