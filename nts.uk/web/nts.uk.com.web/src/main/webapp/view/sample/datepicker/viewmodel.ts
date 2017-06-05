@@ -2,7 +2,7 @@ module sample.datepicker.viewmodel {
     export class ScreenModel {
         dateString: KnockoutObservable<string>;
         date: KnockoutObservable<Date>;
-        yearMonth: KnockoutObservable<number>;
+        yearMonth: KnockoutObservable<string>;
         constructor() {
             var self = this;
             self.dateString = ko.observable('20000101');

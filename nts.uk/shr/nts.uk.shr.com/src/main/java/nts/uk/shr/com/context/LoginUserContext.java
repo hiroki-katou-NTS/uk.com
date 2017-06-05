@@ -1,7 +1,7 @@
 package nts.uk.shr.com.context;
 
 public class LoginUserContext {
-
+	
 	public String companyCode() {
 		return "0001";
 	}
