@@ -74,6 +74,7 @@ module kdl024.a.viewmodel {
         register() {
             var self = this;
             //Mode INSERT
+            $("#btnSave").attr("disabled","disabled");
             if (self.isNew()) {
                 //Format Code to Formular "000" 
                 let currentCode: string = self.currentItem().externalBudgetCode();
@@ -94,6 +95,8 @@ module kdl024.a.viewmodel {
                         self.isNew(false);
                     }).fail(function(res) {
                         $('#inpCode').ntsError('set',res);
+                    }).always(function(){
+                        $("#btnSave").removeAttr("disabled");
                     }); 
             }
             //Mode UPDATE
@@ -113,6 +116,8 @@ module kdl024.a.viewmodel {
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                     self.start();
+                }).always(function(){
+                    $("#btnSave").removeAttr("disabled");
                 });
             }
         }

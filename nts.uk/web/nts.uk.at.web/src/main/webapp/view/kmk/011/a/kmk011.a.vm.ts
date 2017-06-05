@@ -26,8 +26,11 @@ module kmk011.a.viewmodel {
         enableUse: KnockoutObservable<boolean>;
         enableSelect: KnockoutObservable<boolean>;
         enableInput: KnockoutObservable<boolean>;
+        objectOld: any;
+        check: boolean;
         constructor() {
             var self = this;
+            self.check = false;
             self.list = ko.observableArray([]);
             self.enableUse = ko.observable(false);
             self.enableSelect = ko.observable(false);
@@ -97,6 +100,10 @@ module kmk011.a.viewmodel {
                 } else {
                     self.checkErrSelect(false);
                 }
+//                self.objectOld = self.itemDivTime().divTimeName + self.itemDivTime().divTimeUseSet + self.itemDivTime().alarmTime
+//                                    + self.itemDivTime().errTime + self.itemDivTime().selectSet.selectUseSet + self.itemDivTime().selectSet.cancelErrSelReason
+//                                    + self.itemDivTime().inputSet.selectUseSet + self.itemDivTime().inputSet.cancelErrSelReason;
+                self.check = false;
                 $("#itemname").focus();
             });
             //subscribe selectUse
@@ -170,11 +177,15 @@ module kmk011.a.viewmodel {
         }
         openBDialog() {
             var self = this;
+            self.enableSelect(false);
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
-            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', });
+            nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', }).onClosed(function():any {
+                self.enableSelect(true);    
+            });
         }
         openDialog021() {
             var self = this;
+            self.enableUse(false);
             service.getAllAttItem(1).done(function(lstAllItem: Array<model.AttendanceType>) {
                 var listAllId = [];
                 for (let j = 0; j < lstAllItem.length; j++) {
@@ -188,6 +199,7 @@ module kmk011.a.viewmodel {
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', listIdSelect, true);
                 nts.uk.ui.windows.setShared('Multiple', true, true);
                 nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
+                    self.enableUse(true);
                     var list = nts.uk.ui.windows.getShared('selectedChildAttendace');
                     if(list == null || list === undefined) return;
                     self.list(list);
@@ -210,6 +222,7 @@ module kmk011.a.viewmodel {
         }
         Registration() {
             var self = this;
+            $("#btnSave").attr("disabled","disabled");
             $('.nts-input').trigger("validate");
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
@@ -219,7 +232,7 @@ module kmk011.a.viewmodel {
                     }
                     var select = new model.SelectSet(self.selectSel(), self.convert(self.checkErrSelect()));
                     var input = new model.SelectSet(self.selectInp(), self.convert(self.checkErrInput()));
-                    var divTime = new model.DivergenceTime(self.divTimeId(), self.divTimeName(), self.selectUse(), self.alarmTime(), self.errTime(), select, input);
+                    var divTime = new model.DivergenceTime(self.divTimeId(),0, self.divTimeName(), self.selectUse(), self.alarmTime(), self.errTime(), select, input);
                     var listAdd = new Array<model.TimeItemSet>();
                     if (self.list() != null) {
                         for (let k = 0; k < self.list().length; k++) {
@@ -227,12 +240,21 @@ module kmk011.a.viewmodel {
                             listAdd.push(add);
                         }
                     }
+//                    let objectNew =self.divTimeName() + self.selectUse()+ self.alarmTime()+ self.errTime()+ self.selectSel()+ self.convert(self.checkErrSelect())+ self.selectInp()+ self.convert(self.checkErrInput());
+//                    if (self.objectOld == objectNew) {
+//                        if(self.list().length == 0){
+//                            if(self.check == false)return;
+//                        } 
+//                        }
                     var Object = new model.ObjectDivergence(divTime, listAdd,self.timeItemName());
                     service.updateDivTime(Object).done(function() {
                         self.getAllDivTimeNew();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.list([]);
+                        self.check = false;
                         $("#itemname").focus();
                     }).fail(function(error) {
+                        self.check = true;
                         if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);
                         } 
@@ -241,7 +263,9 @@ module kmk011.a.viewmodel {
                         }else{
                              $('#inpName').ntsError(error.message);
                          }
-                    })
+                    }).always(function(){
+                        $("#btnSave").removeAttr("disabled");
+                    }); 
                     dfd.resolve();
                     return dfd.promise();
                 }
@@ -301,13 +325,16 @@ module kmk011.a.viewmodel {
     export module model {
         export class DivergenceTime {
             divTimeId: number;
+            attendanceId: number;
             divTimeUseSet: number;
             divTimeName: string;
             alarmTime: number;
             errTime: number;
             selectSet: SelectSet;
             inputSet: SelectSet;
-            constructor(divTimeId: number, divTimeName: string,
+            constructor(divTimeId: number,
+                attendanceId: number,
+                divTimeName: string,
                 divTimeUseSet: number,
                 alarmTime: number, errTime: number,
                 selectSet: SelectSet,

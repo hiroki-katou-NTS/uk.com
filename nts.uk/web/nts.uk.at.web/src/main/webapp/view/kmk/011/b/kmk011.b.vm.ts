@@ -119,10 +119,7 @@ module kmk011.b.viewmodel {
             _.defer(() => {
                 if (!$('.nts-editor').ntsError("hasError")) {
                     if (self.enableCode() == false) {
-                        let objectNew = self.convertCode(self.divReasonCode()) + self.divReasonContent() + self.requiredAtr();
-                        if (self.objectOld == objectNew) {
-                            return;
-                        }
+                        self.convertCode(self.divReasonCode());
                         self.updateDivReason();
                     } else
                         if (self.enableCode() == true) {//add divergence
@@ -151,7 +148,7 @@ module kmk011.b.viewmodel {
                 let code = '0' + value;
                 self.divReasonCode(code);
             }
-            else return;
+            else self.divReasonCode(value);
         }
         updateDivReason() {
             var self = this;

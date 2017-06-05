@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 1000, height: 755 };</script>
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kdl001.a.start.js" />
+				<com:scriptfile path="kdl001.a.vm.js" />
+				<com:scriptfile path="kdl001.a.service.js" />
+				<com:stylefile path="kdl001.a.main.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<div class="label">#{i18n.getText('KDL001_2')}</div>
+					<div class="control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+						<span data-bind="ntsSwitchButton: {
+								options: ko.observableArray([
+					                { code: 0, name: '#{i18n.getText('KDL001_4')}' },
+					                { code: 1, name: '#{i18n.getText('KDL001_5')}' }
+					            ]),
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: searchOption,
+								enable: true }"></span>
+					</div>	
+					<div id="search-div" class="control-group valign-center">
+						<span data-bind="ntsComboBox: {
+								options: ko.observableArray([
+					                { code: 0, name: '前日' },
+					                { code: 1, name: '当日' },
+					                { code: 2, name: '翌々日' },
+					                { code: 3, name: '翌日' }
+					            ]),
+								optionsValue: 'code',
+								value: startTimeOption,
+								optionsText: 'name',
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 3 },
+								]}"></span>	
+						<input data-bind="ntsTimeEditor: {value: startTime, inputFormat: 'time', option: { width: '50px' }}" />
+						<span class="label"><!-- #{i18n.getText('KML001_20')} -->~</span>
+						<span data-bind="ntsComboBox: {
+								options: ko.observableArray([
+					                { code: 0, name: '前日' },
+					                { code: 1, name: '当日' },
+					                { code: 2, name: '翌日' },
+					                { code: 3, name: '翌々日'}
+					            ]),
+								optionsValue: 'code',
+								value: endTimeOption,
+								optionsText: 'name',
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 3 },
+								]}"></span>	
+						<input data-bind="ntsTimeEditor: {value: endTime, inputFormat: 'time', option: { width: '50px' }}" />
+						<button class="caret-bottom" data-bind="click: search">#{i18n.getText('KDL001_10')}</button>
+						<button data-bind="click: returnData">#{i18n.getText('KDL001_11')}</button>	
+					</div>		
+					<div id="day-list-div">
+						<table id="day-list-tbl" data-bind="ntsGridList: {
+									width: 955,
+									height: 505,
+									options: selectAbleCodeList,
+									optionsValue: 'code',
+									columns: ko.observableArray([
+						                { headerText: '#{i18n.getText('KDL001_12')}', prop: 'code', width: 70 },
+						                { headerText: '#{i18n.getText('KDL001_13')}', prop: 'name', width: 100 },
+						                { headerText: '#{i18n.getText('KDL001_14')}', prop: 'workTime1', width: 160 },
+						                { headerText: '#{i18n.getText('KDL001_15')}', prop: 'workTime2', width: 160 },
+						                { headerText: '#{i18n.getText('KDL001_16')}', prop: 'workAtr', width: 120 },
+						                { headerText: '#{i18n.getText('KDL001_17')}', prop: 'remark'}
+						            ]),
+									multiple: multiSelectMode,
+									value: selectedCodeList
+								}"></table>
+					</div>
+					<hr align="left"/>
+					<div id="center-bottom">
+						<button class="x-large proceed" data-bind="click: submitAndCloseDialog">#{i18n.getText('KDL001_18')}</button>
+						<button data-bind="click: closeDialog">#{i18n.getText('KDL001_19')}</button>	
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
