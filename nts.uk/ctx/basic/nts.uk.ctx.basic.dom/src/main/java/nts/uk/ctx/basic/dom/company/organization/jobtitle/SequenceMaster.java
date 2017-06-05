@@ -7,20 +7,20 @@ package nts.uk.ctx.basic.dom.company.organization.jobtitle;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * The Class SequenceMaster.
+ * 序列マスタ.
  */
 public class SequenceMaster extends AggregateRoot {
 
-	/** The order. */
+	/** 並び順. */
 	private int order;
 
-	/** The company id. */
+	/** 会社ID. */
 	private CompanyId companyId;
 
-	/** The sequence code. */
+	/** 序列コード. */
 	private SequenceCode sequenceCode;
 
-	/** The sequence name. */
+	/** 序列名称. */
 	private SequenceName sequenceName;
 
 	/**
