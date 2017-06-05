@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
@@ -8,7 +8,13 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * The Class RetentionYearlySetting. 積立年休設定
+ * The Class RetentionYearlySetting.
+ */
+
+/**
+ * Gets the leave as work days.
+ *
+ * @return the leave as work days
  */
 @Getter
 public class RetentionYearlySetting extends AggregateRoot {
@@ -19,9 +25,9 @@ public class RetentionYearlySetting extends AggregateRoot {
 	/** The upper limit setting. */
 	private UpperLimitSetting upperLimitSetting;
 	
-	/** The can add to cumulation yearly as normal work day. 積立年休を出勤日数として加算する*/
+	/** The leave as work days. */
 	// TODO: wait QA 83374.
-	private Boolean canAddToCumulationYearlyAsNormalWorkDay;
+	private Boolean leaveAsWorkDays;
 	
 	/**
 	 * Instantiates a new retention yearly setting.
@@ -31,8 +37,8 @@ public class RetentionYearlySetting extends AggregateRoot {
 	public RetentionYearlySetting(RetentionYearlySettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.upperLimitSetting = memento.getUpperLimitSetting();
-		this.canAddToCumulationYearlyAsNormalWorkDay = memento
-				.getCanAddToCumulationYearlyAsNormalWorkDay();
+		this.leaveAsWorkDays = memento
+				.getLeaveAsWorkDays();
 	}
 	
 	/**
@@ -41,7 +47,7 @@ public class RetentionYearlySetting extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(RetentionYearlySettingSetMemento memento){
-		memento.setcanAddToCumulationYearlyAsNormalWorkDay(this.canAddToCumulationYearlyAsNormalWorkDay);
+		memento.setLeaveAsWorkDays(this.leaveAsWorkDays);
 		memento.setCompanyId(this.companyId);
 		memento.setUpperLimitSetting(this.upperLimitSetting);
 	}

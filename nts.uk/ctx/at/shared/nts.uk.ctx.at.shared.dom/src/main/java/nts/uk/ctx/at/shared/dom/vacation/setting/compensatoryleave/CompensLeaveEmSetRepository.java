@@ -27,7 +27,8 @@ public interface CompensLeaveEmSetRepository {
 	 * Find.
 	 *
 	 * @param companyId the company id
+	 * @param employmentCode the employment code
 	 * @return the compensatory leave em setting
 	 */
-	CompensatoryLeaveEmSetting find(String companyId);
+	CompensatoryLeaveEmSetting find(String companyId,String employmentCode);
 }

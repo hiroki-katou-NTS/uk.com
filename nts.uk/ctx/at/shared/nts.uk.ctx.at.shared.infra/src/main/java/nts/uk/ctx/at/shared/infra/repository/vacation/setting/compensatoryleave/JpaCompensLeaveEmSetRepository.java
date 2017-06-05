@@ -4,16 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveEmp;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveEmpPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveEmp_;
 
 @Stateless
 public class JpaCompensLeaveEmSetRepository extends JpaRepository implements CompensLeaveEmSetRepository {
@@ -37,28 +44,33 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
 	}
 
 	@Override
-	public CompensatoryLeaveEmSetting find(String companyId) {
-		EntityManager em = this.getEntityManager();
+	public CompensatoryLeaveEmSetting find(String companyId, String employmentCode) {
 		
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfmtCompensLeaveEmp> query = builder.createQuery(KmfmtCompensLeaveEmp.class);
-        Root<KmfmtCompensLeaveEmp> root = query.from(KmfmtCompensLeaveEmp.class);
+		Optional<KmfmtCompensLeaveEmp> findItem = this.queryProxy().find(new KmfmtCompensLeaveEmpPK(companyId, employmentCode), KmfmtCompensLeaveEmp.class);
+		/*EntityManager em = this.getEntityManager();
 
-//        List<Predicate> predicateList = new ArrayList<Predicate>();
-//
-//        predicateList.add(builder.equal(root.get(KmfmtCompensLeaveEmp_.kmfmtCompensLeaveEmpPK.), companyId));
-//
-//        List<KmfmtCompensLeaveEmp> result = em.createQuery(query).getResultList();
-//        if (result.isEmpty()) {
-//            return null;
-//        }
-//        KmfmtCompensLeaveEmp entity = result.get(0);
-//        KmfmtNormalVacationSet entityNormal = findNormal(companyId);
-//        List<KmfmtOccurVacationSet> lstEntityOccur = findOccurVacation(companyId);
-//        
-//        return new CompensatoryLeaveComSetting(
-//                new JpaCompensatoryLeaveComGetMemento(entity, entityNormal, lstEntityOccur));
-        return null;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<KmfmtCompensLeaveEmp> query = builder.createQuery(KmfmtCompensLeaveEmp.class);
+		Root<KmfmtCompensLeaveEmp> root = query.from(KmfmtCompensLeaveEmp.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		predicateList.add(builder.equal(root.get(KmfmtCompensLeaveEmp_.kmfmtCompensLeaveEmpPK),
+				));
+		em.createQuery(query).getResultList();
+
+		KmfmtCompensLeaveEmp result = em.createQuery(query).getSingleResult();
+		if (result == null) {
+			return null;
+		} else {
+			return new CompensatoryLeaveEmSetting(new JpaCompensatoryLeaveEmSettingGetMemento(result));
+		}
+		*/
+		if (findItem.isPresent()) {
+			return new CompensatoryLeaveEmSetting(new JpaCompensatoryLeaveEmSettingGetMemento(findItem.get()));
+		} else {
+			return null;
+		}
 	}
 
 }

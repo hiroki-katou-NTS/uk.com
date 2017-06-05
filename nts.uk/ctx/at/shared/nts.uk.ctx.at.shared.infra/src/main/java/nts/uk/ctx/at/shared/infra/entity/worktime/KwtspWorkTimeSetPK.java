@@ -23,6 +23,4 @@ public class KwtspWorkTimeSetPK {
 	@Column(name="WORK_TIME_SET_CD")
 	public String workTimeSetCD;
 	
-	@Column(name="WORK_TIME_CD")
-	public String workTimeCD;
 }

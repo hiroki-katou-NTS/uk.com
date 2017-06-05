@@ -45,16 +45,20 @@ public class JpaRetentionYearlyGetMemento implements RetentionYearlySettingGetMe
 		return new UpperLimitSetting(new JpaUpperLimitSettingGetMemento(this.typeValue));
 	}
 
+	
 	/*
 	 * (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * RetentionYearlySettingGetMemento#
-	 * getCanAddToCumulationYearlyAsNormalWorkDay()
+	 * RetentionYearlySettingGetMemento#getLeaveAsWorkDays()
 	 */
 	@Override
-	public Boolean getCanAddToCumulationYearlyAsNormalWorkDay() {
-		// TODO Auto-generated method stub
-		return null;
+	public Boolean getLeaveAsWorkDays() {
+		if(this.typeValue.getLeaveAsWorkDays() == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 
 }

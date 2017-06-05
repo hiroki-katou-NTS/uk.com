@@ -24,6 +24,8 @@ module nts.uk.pr.view.kmf001.d {
             managementOption: KnockoutObservableArray<ManagementModel>;
             selectedManagement: KnockoutObservable<number>;
             hasSelectedEmp: KnockoutObservable<boolean>;
+            leaveAsWorkDays: KnockoutObservable<boolean>;
+            leaveAsWorkDaysOpt: KnockoutObservableArray<LeaveAsWorkDaysModel>;
 
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -73,6 +75,11 @@ module nts.uk.pr.view.kmf001.d {
                 self.isManaged = ko.computed(function() {
                     return self.annualManage() == 1;
                 }, self);
+                self.leaveAsWorkDaysOpt = ko.observableArray<LeaveAsWorkDaysModel>([
+                    new LeaveAsWorkDaysModel(true, '管理する'),
+                    new LeaveAsWorkDaysModel(false, '管理しない')
+                ]);
+                self.leaveAsWorkDays = ko.observable(null);
             }
             
             public startPage(): JQueryPromise<void> {
@@ -83,6 +90,7 @@ module nts.uk.pr.view.kmf001.d {
                         if (data == null) {
                             self.retentionYearsAmount(1);
                             self.maxDaysCumulation(40);
+                            self.leaveAsWorkDays(false);
                         }
                         else {
                             self.initializeWholeCompanyData(data);
@@ -137,6 +145,7 @@ module nts.uk.pr.view.kmf001.d {
                 var self = this;
                 self.retentionYearsAmount(data.upperLimitSetting.retentionYearsAmount);
                 self.maxDaysCumulation(data.upperLimitSetting.maxDaysCumulation);
+                self.leaveAsWorkDays(data.leaveAsWorkDays);
             }
             
             
@@ -147,6 +156,7 @@ module nts.uk.pr.view.kmf001.d {
                 upperDto.retentionYearsAmount = self.retentionYearsAmount();
                 upperDto.maxDaysCumulation = self.maxDaysCumulation();
                 dto.upperLimitSettingDto = upperDto;
+                dto.leaveAsWorkDays = self.leaveAsWorkDays();
                 return dto;
             }
             
@@ -224,6 +234,15 @@ module nts.uk.pr.view.kmf001.d {
             name: string;
             constructor(code: number, name: string) {
                 this.code = code;
+                this.name = name;
+            }
+        }
+        
+        class LeaveAsWorkDaysModel {
+            value: boolean;
+            name: string;
+            constructor(value: boolean, name: string) {
+                this.value = value;
                 this.name = name;
             }
         }

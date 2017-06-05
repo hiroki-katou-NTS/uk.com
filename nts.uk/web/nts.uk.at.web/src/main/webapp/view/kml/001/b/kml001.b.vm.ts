@@ -21,6 +21,7 @@ module nts.uk.at.view.kml001.b {
              * get data on start page
              */
             startPage(): JQueryPromise<any> {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 var dfd = $.Deferred();
                 servicebase.premiumItemSelect()
@@ -50,10 +51,11 @@ module nts.uk.at.view.kml001.b {
 //                                $("#premium-set-tbl-b").ntsError('clear');  
 //                            }    
 //                        });
+                        nts.uk.ui.block.clear();
                         dfd.resolve(); 
                     })
                     .fail(function(res) { 
-                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                         dfd.reject(res); 
                     });
                 return dfd.promise();
@@ -63,6 +65,7 @@ module nts.uk.at.view.kml001.b {
              * save data and close dialog
              */
             submitAndCloseDialog(): void {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let premiumItemListCommand = [];
                 ko.utils.arrayForEach(self.premiumItemList(), function(item) { 
@@ -74,9 +77,10 @@ module nts.uk.at.view.kml001.b {
                             nts.uk.ui.windows.setShared('premiumSets', ko.mapping.toJS(premiumItemListCommand));    
                         }
                         nts.uk.ui.windows.setShared('updatePremiumSeting', true);
+                        nts.uk.ui.block.clear();
                         nts.uk.ui.windows.close();
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});
                     });
             }
             

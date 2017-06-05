@@ -48,6 +48,7 @@ module nts.uk.pr.view.kmf001.f {
             transferSettingDivisionEnums: KnockoutObservableArray<RadioEnum>;
 
             //Employment
+            employmentBackUpData: KnockoutObservable<any>;
             employmentList: KnockoutObservableArray<ItemModel>;
             columnsSetting: KnockoutObservable<nts.uk.ui.NtsGridListColumn>;
             emSelectedCode: KnockoutObservable<string>;
@@ -125,6 +126,7 @@ module nts.uk.pr.view.kmf001.f {
                 });
 
                 //employment
+                self.employmentBackUpData = ko.observable();
                 self.employmentList = ko.observableArray<ItemModel>([]);
                 for (let i = 1; i < 4; i++) {
                     self.employmentList.push(new ItemModel('0' + i, '基本給'));
@@ -135,13 +137,17 @@ module nts.uk.pr.view.kmf001.f {
                     { headerText: 'コード', key: 'code', width: 50 },
                     { headerText: '名称', key: 'name', width: 200 }
                 ]);
-                self.emSelectedCode = ko.observable('01');
+                self.emSelectedCode = ko.observable('');
                 
                 self.emCompenManage = ko.observable(0);
                 self.emExpirationTime = ko.observable(0);
                 self.emPreApply = ko.observable(0);
                 self.emTimeManage = ko.observable(0);
                 self.emTimeUnit = ko.observable(0);
+                
+                self.emSelectedCode.subscribe(function(employmentCode: string){
+                        self.loadEmploymentSetting(employmentCode);
+                });
             }
 
             public startPage(): JQueryPromise<any> {
@@ -152,6 +158,12 @@ module nts.uk.pr.view.kmf001.f {
                         self.loadSetting().done(function() {
                             dfd.resolve();
                         });
+                        if (self.employmentList().length > 0) {
+                            self.emSelectedCode(self.employmentList()[0].code);
+                        }
+                        else {
+                            dfd.resolve();
+                        }
                     });
                 return dfd.promise();
             }
@@ -244,6 +256,30 @@ module nts.uk.pr.view.kmf001.f {
                     nts.uk.ui.dialog.alert(res.message);
                 });
                 return dfd.promise();
+            }
+            
+            private loadEmploymentSetting(employmentCode: string): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findEmploymentSetting(employmentCode).done(function(data: any) {
+                    if (data) {
+                        self.loadEmploymentToScreen(data);
+                        self.employmentBackUpData(data);
+                    }
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                });
+                return dfd.promise();
+            }
+            
+            private loadEmploymentToScreen(data: any){
+                var self =this;
+                self.emCompenManage(data.employmentManageSetting.isManaged);
+                self.emExpirationTime(data.employmentManageSetting.expirationTime);
+                self.emPreApply(data.employmentManageSetting.preemptionPermit);
+                self.emTimeManage(data.employmentTimeManageSetting.isManaged);
+                self.emTimeUnit(data.employmentTimeManageSetting.digestiveUnit);
             }
 
             private loadToScreen(data: any) {
@@ -354,6 +390,31 @@ module nts.uk.pr.view.kmf001.f {
                     timeString = "0" + timeString;
                 }
                 return timeString;
+            }
+            
+            //Employment
+            
+            private saveEmployment(){
+                var self = this;
+                service.updateEmploymentSetting(self.collectEmploymentData()).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                });
+            }
+            private collectEmploymentData(){
+                var self = this;
+                return {
+                    companyId: '',
+                    employmentCode: self.emSelectedCode(),
+                    employmentManageSetting: {
+                        isManaged: self.emCompenManage(),
+                        expirationTime: self.emExpirationTime(),
+                        preemptionPermit: self.emPreApply()
+                    },
+                    employmentTimeManageSetting: {
+                        isManaged: self.emTimeManage(),
+                        digestiveUnit: self.emTimeUnit()
+                    }
+                };    
             }
             private gotoVacationSetting() {
                 alert();
