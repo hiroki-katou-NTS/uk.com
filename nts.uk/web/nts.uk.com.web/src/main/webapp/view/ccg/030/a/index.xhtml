@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1370, height: 720 };</script>
+			<script>var dialogSize = { width: 1200, height: 580 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode
 					nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName
@@ -31,13 +31,13 @@
 				<button class="btnSetting" id="btn004"
 					data-bind="click : closeDialog" tabindex="4">#{i18n.getText('CCG030_6')}</button>
 			</div>
+			
 			<div id="contents-area" class="cf">
-			<div class="container">
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<i class="icon icon-searchbox"></i>
 					<div class="search">
 						<div style="float: left">
-							<div id="searchBox" style="width: 385px; margin-bottom: 30px;"
+							<div id="searchBox" style="width: 370px; margin-bottom: 30px;"
 								data-bind="ntsSearchBox: {
 								targetKey: 'topPageCode',
 								mode: 'igGrid',
@@ -51,7 +51,7 @@
 					<div class="gridlist" style="margin-bottom: 20px;">
 						<table id="flow-menu-list"
 							data-bind="ntsGridList: {
-								height: 460,
+								height: 320,
 								options: listFlowMenu,
 								optionsValue: 'topPageCode',
 								columns: columns,
@@ -64,16 +64,15 @@
 					<table class="right-layout">
 						<colgroup>
 							<col width="220px" />
-							<col width="450px" />
+							<col width="350px" />
 							<col width="*" />
 						</colgroup>
 						<tr data-bind="with: selectedFlowMenu">
 							<td><div data-bind="ntsFormLabel: { constraint: 'TopPagePartCode',constraint: ['TopPagePartCode','TopPagePartName'], required: true }">#{i18n.getText('CCG030_11')}</div></td>
-							<td>
+							<td colspan="2">
 								<input id="inpCode" data-bind="ntsTextEditor: { value: topPageCode, constraint: 'TopPagePartCode', required: true, enable: $parent.isCreate}" tabindex="5" />
 								<input id="inpName" data-bind="ntsTextEditor: { value: topPageName, constraint: 'TopPagePartName', required: true}" tabindex="6" />
 							</td>
-							<td></td>
 						</tr>
 						<tr>
 							<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG030_12')}</div></td>
@@ -114,8 +113,8 @@
 						</tr>
 					</table>
 				</div>
-				</div>
 			</div>
+		
 		</ui:define>
 	</ui:composition>
 </body>
