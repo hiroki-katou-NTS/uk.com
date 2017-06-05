@@ -120,10 +120,6 @@ module kmk011.b.viewmodel {
                 if (!$('.nts-editor').ntsError("hasError")) {
                     if (self.enableCode() == false) {
                         self.convertCode(self.divReasonCode());
-                        let objectNew = self.divReasonCode() + self.divReasonContent() + self.requiredAtr();
-                        if (self.objectOld == objectNew) {
-                            return;
-                        }
                         self.updateDivReason();
                     } else
                         if (self.enableCode() == true) {//add divergence

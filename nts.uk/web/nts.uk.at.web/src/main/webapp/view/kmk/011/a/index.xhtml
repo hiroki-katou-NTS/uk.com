@@ -19,7 +19,7 @@
 		<ui:define name="content">
 			<div id="function_area">
 				<!-- A1_1: Button Registration -->
-				<button id="btn_001"
+				<button id="btnSave"
 					class="button proceed separate-button fix-button"
 					data-bind="click: Registration,enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KMK011_3')}</button>
 				<hr />
@@ -88,7 +88,7 @@
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_10')}</div>
 							</td>
 							<td style = "padding-left: 5px">
-								<!-- A3_6 -->
+								<!-- A3_6 Open dialog 021-->
 								<button tabindex="5"
 									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
 								<!-- A3_7: Time item name --> 
