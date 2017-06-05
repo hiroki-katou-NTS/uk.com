@@ -1,21 +1,19 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.allot;
 
+import java.io.StringReader;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.DeleteClassificationAllotSettingHeaderCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.DeleteClassificationAllotSettingHeaderHandler;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.InsertClassificationAllotSettingHeaderCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.InsertClassificationAllotSettingHeaderHandler;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.UpdateClassificationAllotSettingHeaderCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employment.allot.classification.UpdateClassificationAllotSettingHeaderHandler;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.classification.ClassificationAllotSettingHeaderDto;
-import nts.uk.ctx.pr.core.app.find.rule.employment.allot.classification.ClassificationAllotSettingHeaderFinder;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.UpdateClassificationAllotSettingHeaderCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.allot.UpdateClassificationAllotSettingHeaderHandler;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.ClassificationAllotSettingHeaderDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.allot.ClassificationAllotSettingHeaderFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/allot")
@@ -24,40 +22,23 @@ public class ClassificationAllotSettingHeaderWebService {
 
 	@Inject
 	private ClassificationAllotSettingHeaderFinder find;
-
+	
 	@Inject
 	private UpdateClassificationAllotSettingHeaderHandler updateClassificationAllotSetting;
 	
-	@Inject
-	private InsertClassificationAllotSettingHeaderHandler insertClassificationAllotSetting;
-	
-	@Inject
-	private DeleteClassificationAllotSettingHeaderHandler deleteClassificationSetting;
-
-	@POST
+	@POST 
 	@Path("getallclassificationallotsettingheader")
 	public List<ClassificationAllotSettingHeaderDto> getAllClassificationAllotSettingHeader(String data) {
-		String companyCode = AppContexts.user().companyCode();
-		return this.find.getAllClassificationAllotSettingHeader(companyCode);
+		JsonObject json = Json.createReader(new StringReader(data)).readObject();
+		String ccd = AppContexts.user().companyCode();
+		String companyCode = json.getString("companyCode");			
+		return this.find.getAllClassificationAllotSettingHeader(ccd );
 	}
 	
-	@POST
-	@Path("insertclassificationallotsettingheader")
-	public void insert(InsertClassificationAllotSettingHeaderCommand command){
-		this.insertClassificationAllotSetting.handle(command);
-	}
-
 	@POST
 	@Path("updateclassificationallotsettingheader")
-	public void update(UpdateClassificationAllotSettingHeaderCommand command) {
-		this.updateClassificationAllotSetting.handle(command);
+	public void update(UpdateClassificationAllotSettingHeaderCommand command){
+	   this.updateClassificationAllotSetting.handle(command);
 	}
-	@POST
-	@Path("deleteclassifaicationallotsettingheader")
-	public void delete(DeleteClassificationAllotSettingHeaderCommand command){
-		this.deleteClassificationSetting.handle(command);
-		
-	}
-	
-	
 }
+

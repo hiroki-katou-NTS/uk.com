@@ -74,7 +74,7 @@
 									<div>
 										<input id="startDateInput" data-name="有効開始日" class="data-required" data-bind="ntsTimeEditor: {
 											value: newStartDate,
-											option: { width: '110px', inputFormat: 'date' },
+											option: { width: '90px', inputFormat: 'date' },
 											required: true, 
 											enable: isInsert}" />
 									</div>
@@ -84,7 +84,7 @@
 								<div class="cell column1">
 									<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_2')}</div>
 								</div>
-								<div class="cell valign-center" data-bind="with: currentPersonCost">
+								<div class="cell valign-center">
 									<div id="combo-box" data-name="単価" data-bind="ntsComboBox: {
 															options: ko.observableArray([
 												                { code: 0, name: '#{i18n.getText('KML001_22')}' },
@@ -94,7 +94,7 @@
 												                { code: 4, name: '#{i18n.getText('KML001_26')}' }
 												            ]),
 															optionsValue: 'code',
-															value: unitPrice,
+															value: currentPersonCost().unitPrice,
 															optionsText: 'name',
 															enable: true }">
 									</div>
@@ -102,11 +102,9 @@
 							</div>
 							<div class="table">
 								<div class="item-valign-top" data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('KML001_11')}</div>
-								<a data-bind="with: currentPersonCost">
-									<textarea id="memo" data-name="備考" data-bind="ntsMultilineEditor: {
-										value: memo,
-										constraint: 'Memo'}" />
-								</a>
+								<textarea id="memo" data-name="備考" data-bind="ntsMultilineEditor: {
+									value: currentPersonCost().memo,
+									constraint: 'Memo'}" />
 							</div>
 							<div class="table" id="premium-set-div">
 								<table id="premium-set-tbl">
@@ -143,7 +141,7 @@
 														return s;
 													}),
 													constraint: 'Memo',
-													option: { width: '400px' },
+													option: { width: '450px' },
 													required: true, 
 													enable: true,
 													readonly: true }" />	

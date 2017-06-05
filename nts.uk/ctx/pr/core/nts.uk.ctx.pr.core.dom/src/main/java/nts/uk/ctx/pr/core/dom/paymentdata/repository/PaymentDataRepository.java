@@ -68,19 +68,6 @@ public interface PaymentDataRepository {
 			int processingYM);
 
 	/**
-	 * Added by sonnh1
-	 * 
-	 * @param companyCode
-	 * @param processingNo
-	 * @param processingYm
-	 * @param payBonusAtr
-	 * @param sparePayAtr
-	 * @return
-	 */
-	List<Payment> findPaymentHeaderSelect5(String companyCode, int processingNo, int processingYm, int payBonusAtr,
-			int sparePayAtr);
-
-	/**
 	 * 
 	 * @param companyCode
 	 * @param personId

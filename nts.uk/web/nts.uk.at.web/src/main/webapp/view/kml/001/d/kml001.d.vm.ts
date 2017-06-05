@@ -26,7 +26,7 @@ module kml001.d.viewmodel {
             self.newStartDate.subscribe(function(value){
                 if(self.errorStartDate()) $("#startDateInput").ntsError('set', {messageId:"Msg_65"});     
             });
-            self.isUpdate = ko.observable(self.deleteAble()?false:true);
+            self.isUpdate = ko.observable(false);
             self.isUpdate.subscribe(function(value) { 
                 if(value) {
                     if(self.errorStartDate()) $("#startDateInput").ntsError('set', {messageId:"Msg_65"});
@@ -66,7 +66,7 @@ module kml001.d.viewmodel {
                         });
                 }
             } else {
-                if(self.deleteAble()) { 
+                if(1==1) { 
                     nts.uk.ui.dialog.confirm(vmbase.MSG.MSG018).ifYes(function(){
                         servicebase.personCostCalculationDelete(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                         .done(function(res: Array<any>) {

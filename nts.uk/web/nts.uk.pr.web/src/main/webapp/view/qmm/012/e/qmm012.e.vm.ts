@@ -96,7 +96,7 @@ module qmm012.e.viewmodel {
             };
             self.CurrentItemAttend.subscribe(function(ItemAttend: service.model.ItemAttend) {
                 self.CurrentAvePayAtr(ItemAttend ? ItemAttend.avePayAtr : 0);
-                self.CurrentItemAtr(ItemAttend ? ItemAttend.itemAtr.value : 0);
+                self.CurrentItemAtr(ItemAttend ? ItemAttend.itemAtr : 0);
                 self.CurrentErrRangeLow(ItemAttend ? ItemAttend.errRangeLow : 0);
                 self.CurrentErrRangeHigh(ItemAttend ? ItemAttend.errRangeHigh : 0);
                 self.CurrentAlRangeLow(ItemAttend ? ItemAttend.alRangeLow : 0);

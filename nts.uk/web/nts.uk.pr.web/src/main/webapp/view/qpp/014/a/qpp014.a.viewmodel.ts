@@ -17,7 +17,7 @@ module qpp014.a.viewmodel {
                 dfd.resolve();
             });
             return dfd.promise();
-        } 
+        }
    
         /**
          * get data from table PAYDAY_PROCESSING

@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.processing.yearmonth;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -25,9 +24,6 @@ public class JpaPaydayProcessingRepository extends JpaRepository implements Payd
 
 	private final String SELECT_ALL_BY_DISP_SET = SELECT_ALL_BY_CCD + " AND c.dispSet = 1";
 
-	private final String SELECT_2 = SELECT_ALL + " WHERE c.qpdmtPaydayProcessingPK.ccd = :companyCode"
-			+ " AND c.qpdmtPaydayProcessingPK.processingNo = :processingNo" + " AND c.dispSet = 1";
-
 	@Override
 	public PaydayProcessing selectOne(String companyCode, int processingNo) {
 		return this.queryProxy().query(SELECT_ONE_BY_KEY, QpdmtPaydayProcessing.class)
@@ -39,12 +35,6 @@ public class JpaPaydayProcessingRepository extends JpaRepository implements Payd
 	public List<PaydayProcessing> select1(String companyCode) {
 		return this.queryProxy().query(SELECT_ALL_BY_DISP_SET, QpdmtPaydayProcessing.class)
 				.setParameter("companyCode", companyCode).getList(c -> toDomain(c));
-	}
-
-	@Override
-	public Optional<PaydayProcessing> select2(String companyCode, int processingNo) {
-		return this.queryProxy().query(SELECT_2, QpdmtPaydayProcessing.class).setParameter("companyCode", companyCode)
-				.setParameter("processingNo", processingNo).getSingle(c -> toDomain(c));
 	}
 
 	@Override

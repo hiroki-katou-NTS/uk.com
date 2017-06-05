@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 600, height: 565 };</script>
+			<script>var dialogSize = { width: 550, height: 565 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName
    			</com:ValidatorScript>
@@ -36,7 +36,7 @@
 					</thead>
 					<tbody data-bind="foreach: premiumItemList">
 						<tr>
-							<td data-bind="text: $parent.getText($index())"></td>
+							<td data-bind="text: '#{i18n.getText('KML001_30')}'+($index()+1)"></td>
 							<td>
 								<div class="cf" data-bind="ntsSwitchButton: {
 										options: ko.observableArray([
@@ -52,7 +52,7 @@
 								<input class="premiumName" data-name="表示名称" data-bind="ntsTextEditor: {
 										value: name,
 										constraint: 'PremiumName',
-										option: { width: '220px' },
+										option: { width: '180px' },
 										required: true, 
 										enable: Boolean(useAtr()==1) }" />
 							</td>

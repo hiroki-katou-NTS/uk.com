@@ -9,11 +9,14 @@
 
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
+			<script
+				src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
+			<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
+
 			<link rel="stylesheet" type="text/css" href="style.css" />
-			<script src="qmm019.k.start.js" />
-			<script src="qmm019.k.vm.js" />
-			<!-- <script src="service.js" /> -->
+			<script src="start.js" />
+			<script src="viewmodel.js" />
+			<script src="service.js" />
 			<script>var dialogSize = { width: 650, height: 300 };</script>
 		</ui:define>
 
@@ -25,7 +28,7 @@
 			<form>
 				<div>
 					<fieldset>
-						<div class="radiobox"
+					<div class="radiobox"
 							data-bind="ntsRadioBoxGroup: {
 								
 								options: itemList,
@@ -33,7 +36,7 @@
 								optionsText: 'name',
 								value: selectedCode,
 								enable: enable}"></div>
-						<!-- <label><input class="radio-1" type="radio" value="1" name="selection" data-bind="checked: selectedBox"/>明細書に印字するカテゴリ</label><br /> 
+					 	<!-- <label><input class="radio-1" type="radio" value="1" name="selection" data-bind="checked: selectedBox"/>明細書に印字するカテゴリ</label><br /> 
 						<label><input class="radio-1" type="radio" value="2" name="selection" data-bind="checked: selectedBox"/>明細書に印字しないカテゴリ（このカテゴリは印刷はされませんが、値の参照・修正が可能です）</label><br /> 
 						<label><input class="radio-1" type="radio" value="3" name="selection" data-bind="checked: selectedBox"/>レイアウトからカテゴリを削除（登録処理をカテゴリうまでは元に戻せます）</label><br /> -->
 					</fieldset>

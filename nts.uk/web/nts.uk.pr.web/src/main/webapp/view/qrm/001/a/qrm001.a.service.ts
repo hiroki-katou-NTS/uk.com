@@ -6,7 +6,6 @@ module qrm001.a.service {
         remove: "pr/core/retirement/payment/remove"
     }
     
-    
     export function getRetirementPaymentList(personId) {
         return nts.uk.request.ajax(nts.uk.text.format(paths.getRetirementPaymentList, personId));
     }

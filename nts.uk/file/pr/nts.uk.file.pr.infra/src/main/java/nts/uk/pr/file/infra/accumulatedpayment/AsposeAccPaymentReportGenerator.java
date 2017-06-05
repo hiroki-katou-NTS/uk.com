@@ -9,8 +9,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
@@ -40,7 +38,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator implements AccPaymentReportGenerator {
 
 	/** The Constant REPORT_FILE_NAME. */
-	private static final String REPORT_FILE_NAME = "累計支給額チェックリスト.xlsx";
+	private static final String REPORT_FILE_NAME = "QET002.xlsx";
 
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/QET002.xlsx";
@@ -68,12 +66,6 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	
 	/** The Constant ROW_HEIGHT. */
 	private static final int ROW_HEIGHT = 28;
-	
-	/** The Constant LIGHT_BLUE_COLOR. */
-	private static final Color LIGHT_BLUE_COLOR = Color.fromArgb(197, 241, 247);
-	
-	/** The Constant LIGHT_GREEN_COLOR. */
-	private static final Color LIGHT_GREEN_COLOR = Color.fromArgb(199, 243, 145);
 
 	/*
 	 * (non-Javadoc)
@@ -102,22 +94,22 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			// Item Data List
 			int amountEmployee = accumulatedPaymentList.size();
 			int startIndex = 0;
-			MutableInt firstRowIndex = new MutableInt(FIRST_ROW_INDEX);
+			int firstRowIndex = FIRST_ROW_INDEX;
 			int numberOfPage = 0;
 			int rangeRows = AMOUNT_PER_PAGE;
 			while(amountEmployee > 0){
 				int endIndex = startIndex + AMOUNT_PER_PAGE;
 				List<AccPaymentItemData> subList = 
-						this.subAccList(accumulatedPaymentList, startIndex, endIndex);
+						subAccList(accumulatedPaymentList, startIndex, endIndex);				
 				
 				// Create ranges 
 				if(amountEmployee < AMOUNT_PER_PAGE){
 					rangeRows= Math.min(amountEmployee, AMOUNT_PER_PAGE);
 				}
-				createRange(cells, firstRowIndex.getValue(), rangeRows);
+				createRange(cells, firstRowIndex, rangeRows);
 				
 				// Print Title 
-				printTitleRow(worksheets, firstRowIndex.decrementAndGet());	
+				printTitleRow(worksheets, firstRowIndex-1);	
 				
 				// Print content
 				createContent(cells, firstRowIndex, subList);
@@ -126,7 +118,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 				amountEmployee -= AMOUNT_PER_PAGE;
 				startIndex += AMOUNT_PER_PAGE;
 				numberOfPage++;
-				firstRowIndex.addAndGet(AMOUNT_ROWS_IN_PAGE);
+				firstRowIndex += AMOUNT_ROWS_IN_PAGE;
 				
 				// Set Print Area				
 				PageSetup pageSetup = worksheet.getPageSetup();
@@ -195,51 +187,51 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 * @param firstRowIndex the first row index
 	 * @param accumulatedPaymentList the accumulated payment list
 	 */
-	private void createContent(Cells cells, MutableInt firstRowIndex,
+	private void createContent(Cells cells, int firstRowIndex,
 			List<AccPaymentItemData> accumulatedPaymentList){
 		for(int i = 0; i < accumulatedPaymentList.size(); i++){
 			// Set Row height
-			cells.setRowHeightPixel(firstRowIndex.getValue(), ROW_HEIGHT);
+			cells.setRowHeightPixel(firstRowIndex, ROW_HEIGHT);
 			
 			AccPaymentItemData accPayment = accumulatedPaymentList.get(i);			
 			// Print Employee Code and Name
-			Cell empCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[0]);		
+			Cell empCell = cells.get(firstRowIndex, COLUMN_INDEX[0]);		
 			empCell.setValue(accPayment.getEmpCode() + SPACES + accPayment.getEmpName());
 			
 			// Print Tax Amount
-			Cell taxAmountCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[1]);
+			Cell taxAmountCell = cells.get(firstRowIndex, COLUMN_INDEX[1]);
 			taxAmountCell.setValue(accPayment.getTaxAmount());
 			
 			// Print Social Insurance 
-			Cell socialInsCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[2]);
+			Cell socialInsCell = cells.get(firstRowIndex, COLUMN_INDEX[2]);
 			socialInsCell.setValue(accPayment.getSocialInsuranceAmount());	
 			
 			// Print Amount after tax deduction
 			double deductedTaxValue = taxAmountCell.getDoubleValue() - socialInsCell.getDoubleValue();
 			
-			Cell afterTaxDeductionCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[3]);
+			Cell afterTaxDeductionCell = cells.get(firstRowIndex, COLUMN_INDEX[3]);
 			afterTaxDeductionCell.setValue(deductedTaxValue);
 			
 			// Print Witholding Tax Amount
-			Cell widthHoldingTaxAmCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[4]);
+			Cell widthHoldingTaxAmCell = cells.get(firstRowIndex, COLUMN_INDEX[4]);
 			widthHoldingTaxAmCell.setValue(accPayment.getWidthHoldingTaxAmount());
 			
 			// Print Enrolment Status
-			Cell enrolmentCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[5]);
+			Cell enrolmentCell = cells.get(firstRowIndex, COLUMN_INDEX[5]);
 			enrolmentCell.setValue(accPayment.getEnrollmentStatus());
 			
 			// Print Direction Status
-			Cell directionCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[6]);
+			Cell directionCell = cells.get(firstRowIndex, COLUMN_INDEX[6]);
 			directionCell.setValue(accPayment.getDirectionalStatus());
 			
 			// Set Background Color for odd rows
 			if ((i % 2) == 1) {
 				for(int c: COLUMN_INDEX){
-					Cell oddCell = cells.get(firstRowIndex.getValue(), COLUMN_INDEX[c]);
+					Cell oddCell = cells.get(firstRowIndex, COLUMN_INDEX[c]);
 					setBackgroundcolor(oddCell);
 				}
 			}
-			firstRowIndex.increment();
+			firstRowIndex ++;
 		}
 	}
 
@@ -285,7 +277,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void setTitleStyle(Cell cell){
 		Style style = cell.getStyle();
-		style.setForegroundColor(LIGHT_BLUE_COLOR);
+		style.setForegroundColor(Color.fromArgb(197, 241, 247));
 		style.setPattern(BackgroundType.SOLID);
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
@@ -300,7 +292,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	private void setBackgroundcolor(Cell cell){
 		Style style = cell.getStyle();
-		style.setForegroundColor(LIGHT_GREEN_COLOR);
+		style.setForegroundColor(Color.fromArgb(199, 243, 145));
 		style.setPattern(BackgroundType.SOLID);
 		cell.setStyle(style);
 	}

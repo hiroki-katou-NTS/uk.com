@@ -14,7 +14,6 @@ module kmk011.b.viewmodel {
         index_of_itemDelete: any;
         objectOld: any;
         enableDel: KnockoutObservable<boolean>;
-        checkModel: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.currentCode = ko.observable('');
@@ -34,10 +33,8 @@ module kmk011.b.viewmodel {
             self.itemDivReason = ko.observable(null);
             self.divTimeId = ko.observable(null);
             self.enableDel = ko.observable(true);
-            self.checkModel = ko.observable(true);
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
-//                var t0 = performance.now();   
                 self.clearError();
                 self.itemDivReason(self.findItemDivTime(codeChanged));
                 if (self.itemDivReason() === undefined || self.itemDivReason() == null) {
@@ -49,9 +46,6 @@ module kmk011.b.viewmodel {
                 self.divReasonContent(self.itemDivReason().divReasonContent);
                 self.requiredAtr(self.itemDivReason().requiredAtr);
                 self.enableDel(true);
-                $("#inpReason").focus();
-//                var t1 = performance.now();
-//                console.log("Selection process " + (t1 - t0) + " milliseconds.");
             });
         }
 
@@ -65,16 +59,13 @@ module kmk011.b.viewmodel {
             var dfd = $.Deferred();
             self.divTimeId(nts.uk.ui.windows.getShared("KMK011_divTimeId"));
             service.getAllDivReason(self.divTimeId()).done(function(lstDivReason: Array<model.Item>) {
-                self.currentCode(null);
                 if (lstDivReason === undefined || lstDivReason.length == 0) {
                     self.dataSource([]);
                     self.enableCode(true);
-                    self.checkModel(false);
                 } else {
                     self.dataSource(lstDivReason);
                     let reasonFirst = _.first(lstDivReason);
                     self.currentCode(reasonFirst.divReasonCode);
-                    self.checkModel(true);
                 }
                 dfd.resolve();
             })

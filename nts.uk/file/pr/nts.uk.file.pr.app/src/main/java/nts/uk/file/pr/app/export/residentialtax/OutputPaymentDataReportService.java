@@ -1,7 +1,6 @@
-/******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
+/**
+ * 
+ */
 package nts.uk.file.pr.app.export.residentialtax;
 
 import java.util.ArrayList;
@@ -34,7 +33,10 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.japanese.JapaneseErasProvider;
 
 /**
- * The Class OutputPaymentDataReportService.
+ * Outputting Payment Data (納付データの出力)
+ * 
+ * @author sonnh
+ *
  */
 @Stateless
 public class OutputPaymentDataReportService extends ExportService<ResidentialTaxQuery> {

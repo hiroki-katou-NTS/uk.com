@@ -46,13 +46,13 @@ body {
 	background-color: #EDFAC2;
 }
 #premium-set-tbl th:FIRST-CHILD {
-	width: 80px;
+	width: 83px;
 }
 #premium-set-tbl th:NTH-CHILD(2) {
 	width: 186px;
 }
 #premium-set-tbl th:LAST-CHILD {
-	width: 250px;
+	width: 200px;
 }
 #premium-set-tbl tbody tr td:NTH-CHILD(2) {
 	padding-bottom: 0px;
@@ -63,7 +63,7 @@ button.nts-switch-button {
 }
 hr { margin-top: 15px; }    
 #center-bottom {
-	margin-left: 195px;
+	margin-left: 160px;
     margin-top: 10px;
     margin-bottom: 0px;
 }

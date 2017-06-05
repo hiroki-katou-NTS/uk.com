@@ -88,10 +88,9 @@ public class LayoutMasterDetail extends AggregateRoot {
 	@Getter
 	/** 通勤区分 */
 	private CommuteAtr commuteAtr;
-
 	@Getter
 	private ItemName itemAbName;
-
+   
 	public static LayoutMasterDetail createFromJavaType(String companyCode, String stmtCode, int categoryAtr,
 			String itemCode, String autoLineId, int displayAtr, int sumScopeAtr, int calculationMethod,
 			int distributeWay, int distributeSet, String formulaCode, String personalWageCode, String wageTableCode,
@@ -113,8 +112,9 @@ public class LayoutMasterDetail extends AggregateRoot {
 				new RangeChecker(EnumAdaptor.valueOf(isErrorUseHigh, UseOrNot.class),
 						EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class), error),
 				EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class), new FormulaCode(formulaCode),
-				new PersonalWageCode(personalWageCode), new WtCode(wageTableCode), new CommonAmount(commonAmount),
-				new ItemCode(setOffItemCode), EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class));
+				new PersonalWageCode(personalWageCode), new WtCode(wageTableCode),
+				new CommonAmount(commonAmount), new ItemCode(setOffItemCode),
+				EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class));
 	}
 
 	/**
@@ -164,8 +164,8 @@ public class LayoutMasterDetail extends AggregateRoot {
 			CategoryAtr categoryAtr, ItemCode itemCode, AutoLineId autoLineId, ItemPosColumn itemPosColumn,
 			RangeChecker rangeError, CalculationMethod calculationMethod, Distribute distribute, DisplayAtr displayAtr,
 			RangeChecker rangeAlarm, SumScopeAtr sumScopeAtr, ItemCode setOffItemCode, CommuteAtr commuteAtr,
-			FormulaCode formulaCode, PersonalWageCode personalWageCode, WtCode wageTableCode, CommonAmount commonAmount,
-			String historyId) {
+			FormulaCode formulaCode, PersonalWageCode personalWageCode, WtCode wageTableCode,
+			CommonAmount commonAmount, String historyId) {
 
 		return new LayoutMasterDetail(companyCode, stmtCode, historyId, categoryAtr, itemCode, autoLineId,
 				itemPosColumn, rangeAlarm, calculationMethod, distribute, displayAtr, rangeError, sumScopeAtr,
@@ -173,7 +173,7 @@ public class LayoutMasterDetail extends AggregateRoot {
 	}
 
 	public void setItemAbName(String itemAbName) {
-		this.itemAbName = new ItemName(itemAbName);
+		 this.itemAbName = new ItemName(itemAbName);
 	}
 
 	/**
@@ -280,8 +280,8 @@ public class LayoutMasterDetail extends AggregateRoot {
 	public LayoutMasterDetail(CompanyCode companyCode, LayoutCode stmtCode, String historyId, CategoryAtr categoryAtr,
 			ItemCode itemCode, AutoLineId autoLineId, ItemPosColumn itemPosColumn, RangeChecker alarm,
 			CalculationMethod calculationMethod, Distribute distribute, DisplayAtr displayAtr, RangeChecker error,
-			SumScopeAtr sumScopeAtr, FormulaCode formulaCode, PersonalWageCode personalWageCode, WtCode wageTableCode,
-			CommonAmount commonAmount, ItemCode setOffItemCode, CommuteAtr commuteAtr) {
+			SumScopeAtr sumScopeAtr, FormulaCode formulaCode, PersonalWageCode personalWageCode,
+			WtCode wageTableCode, CommonAmount commonAmount, ItemCode setOffItemCode, CommuteAtr commuteAtr) {
 		super();
 		this.companyCode = companyCode;
 		this.stmtCode = stmtCode;

@@ -6,7 +6,8 @@ import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
@@ -173,7 +174,4 @@ public class QstdtPaymentHeader {
 	
 	@Column(name = "MEMO")
 	public String comment;
-	
-	@Column(name="LAYOUT_ATR")
-	public int layoutAtr;
 }

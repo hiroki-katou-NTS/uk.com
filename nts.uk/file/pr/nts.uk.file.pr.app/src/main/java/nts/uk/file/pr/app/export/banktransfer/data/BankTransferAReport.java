@@ -7,7 +7,5 @@ import lombok.Data;
 @Data
 public class BankTransferAReport {
 	private BankTransferARpHeader header;
-	private List<BankTransferARpData> salaryPreliminaryMonthList;
-	private List<BankTransferARpData> salaryPortionList;
-	private int sparePayAtr;
+	private List<BankTransferARpData> data;
 }
