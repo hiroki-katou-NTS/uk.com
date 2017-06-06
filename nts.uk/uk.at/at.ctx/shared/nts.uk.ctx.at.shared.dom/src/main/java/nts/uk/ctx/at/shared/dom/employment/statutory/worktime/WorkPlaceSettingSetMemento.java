@@ -5,10 +5,10 @@
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Year;
 
 /**
  * The Interface CompanySettingSetMemento.
@@ -49,4 +49,11 @@ public interface WorkPlaceSettingSetMemento {
 	 * @param normalSetting the new normal setting
 	 */
 	void setNormalSetting(NormalSetting normalSetting);
+
+	/**
+	 * Sets the work place id.
+	 *
+	 * @param workPlaceId the new work place id
+	 */
+	void setWorkPlaceId(String workPlaceId);
 }
