@@ -26,7 +26,7 @@
 							<div data-bind="ntsFormLabel: { required: isUpdate }">#{i18n.getText('KML001_51')}</div>
 						</div>
 						<div class="cell">
-							<div data-name="text: '#{i18n.getText('KML001_54')}'">
+							<div data-name="KML001_54">
 								<span tabindex="1" class="ntsControl">
 									<label class="ntsRadioBox">
 										<input type="radio" name="textRadio" data-bind="checkedValue: false, checked: isUpdate, enable: deleteAble" />
@@ -44,7 +44,7 @@
 								<div data-bind="ntsFormLabel: {}, css: { 'form-label-delete': !isUpdate(), 'form-label-update': isUpdate }">#{i18n.getText('KML001_44')}</div>
 								<div class="dateTime-input">
 									<div>
-										<div tabindex="2" id="startDateInput" data-name="text: '#{i18n.getText('KML001_44')}'" data-bind="ntsDatePicker: {
+										<div tabindex="2" id="startDateInput" data-name="KML001_44" data-bind="ntsDatePicker: {
 											value: newStartDate,
 											dateFormat: 'YYYY/MM/DD',
 											valueFormat: 'YYYY/MM/DD',
