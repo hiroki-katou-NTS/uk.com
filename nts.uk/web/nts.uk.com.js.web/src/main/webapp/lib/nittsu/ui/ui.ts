@@ -88,6 +88,8 @@ module nts.uk.ui {
 
                 this.$iframe.bind('load', () => {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
+                    
+                    options.title = '※ダイアログタイトルは基盤で自動化予定';
 
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,

@@ -2492,6 +2492,7 @@ var nts;
                         this.build$dialog(options);
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
+                            options.title = '※ダイアログタイトルは基盤で自動化予定';
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
