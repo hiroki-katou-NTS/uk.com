@@ -125,7 +125,9 @@ module nts.uk.com.view.ccg015.a {
                                 self.toppageSelectedCode(self.collectData().topPageCode);
                             });
                         }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds});
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds}).then(function() {
+                                self.isProcess(false);
+                            });
 //                            nts.uk.ui.dialog.alert(res.message);
                         });
                     }
@@ -208,7 +210,7 @@ module nts.uk.com.view.ccg015.a {
 
             private removeTopPage() {
                 var self = this;
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18")).ifYes(function() {
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     var removeCode = self.toppageSelectedCode();
                     var removeIndex = self.getIndexOfRemoveItem(removeCode);
                     var listLength = self.listTopPage().length;
