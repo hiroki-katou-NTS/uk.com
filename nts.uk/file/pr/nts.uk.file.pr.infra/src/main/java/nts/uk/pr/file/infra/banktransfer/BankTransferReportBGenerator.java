@@ -21,7 +21,7 @@ public class BankTransferReportBGenerator extends AsposeCellsReportGenerator imp
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/qpp014b.xlsx";
 	/** The Constant REPORT_FILE_NAME. */
-	protected static final String REPORT_FILE_NAME = "テストQPP014B_{0}.pdf";
+	protected static final String REPORT_FILE_NAME = "テストQPP014B.pdf";
 
 	@Override
 	public void generator(FileGeneratorContext fileGeneratorContext, BankTransferBReport report) {
@@ -40,17 +40,15 @@ public class BankTransferReportBGenerator extends AsposeCellsReportGenerator imp
 			// process data binginds in template
 			reportContext.getWorkbook().calculateFormula(true);
 			reportContext.getDesigner().process(false);
-			
-			// set color for row
-			BankTranferReportUtil.rowColor(reportContext.getWorkbook(), rpData.size(), 0);
-						
+
 			// save as PDF file
 			PdfSaveOptions option = new PdfSaveOptions(SaveFormat.PDF);
 			option.setAllColumnsInOnePagePerSheet(true);
 
-			reportContext.getWorkbook().save(this.createNewFile(fileGeneratorContext, BankTranferReportUtil.getFileName(REPORT_FILE_NAME)), option);
+			reportContext.getWorkbook().save(this.createNewFile(fileGeneratorContext, REPORT_FILE_NAME), option);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
+
 }

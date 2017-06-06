@@ -42,7 +42,7 @@ public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuC
 		if(!getFlowMenu.isPresent()){
 			throw new BusinessException("ER026");
 		}
-		if(getFlowMenu.get().getDefClassAtr() == DefClassAtr.Default){
+		if(getFlowMenu.get().getDefClassAtr() == DefClassAtr.DEFAULT){
 			throw new BusinessException(new RawErrorMessage("Msg_76"));
 		}
 		

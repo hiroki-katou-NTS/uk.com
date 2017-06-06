@@ -35,11 +35,10 @@ public interface BankTransferRepository {
 	/**
 	 * 
 	 * @param companyCode
-	 * @param payBonusAtr
 	 * @param processingNo
 	 * @param payDate
 	 */
-	void removeAll(String companyCode, int payBonusAtr, int processingNo, GeneralDate payDate);
+	void removeAll(String companyCode, int processingNo, GeneralDate payDate);
 
 	/**
 	 * Find list bank transfer (SEL_1)

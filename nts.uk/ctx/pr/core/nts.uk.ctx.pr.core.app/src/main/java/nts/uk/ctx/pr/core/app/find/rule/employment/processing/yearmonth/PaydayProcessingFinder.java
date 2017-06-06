@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayProcessingRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class PaydayProcessingFinder {
@@ -20,8 +19,8 @@ public class PaydayProcessingFinder {
 				.collect(Collectors.toList());
 	}
 
-	public List<PaydayProcessingSelect4Dto> select4() {
-		return repository.select4(AppContexts.user().companyCode()).stream().map(m -> PaydayProcessingSelect4Dto.fromDomain(m))
+	public List<PaydayProcessingSelect4Dto> select4(String companyCode) {
+		return repository.select4(companyCode).stream().map(m -> PaydayProcessingSelect4Dto.fromDomain(m))
 				.collect(Collectors.toList());
 	}
 	

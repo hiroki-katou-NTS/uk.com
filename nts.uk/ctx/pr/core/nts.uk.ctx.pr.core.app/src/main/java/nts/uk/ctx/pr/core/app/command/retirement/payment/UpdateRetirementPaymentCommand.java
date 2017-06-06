@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.app.command.retirement.payment;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -14,7 +13,7 @@ import nts.arc.time.GeneralDate;
 public class UpdateRetirementPaymentCommand {
 	private String companyCode;
 	private String personId;
-	private GeneralDate payDate;
+	private String payDate;
 	private int trialPeriodSet;
 	private int exclusionYears;
 	private int additionalBoardYears;

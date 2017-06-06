@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.layout;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,7 +19,6 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.layout.UpdateLayoutHistory
 import nts.uk.ctx.pr.core.app.command.rule.employment.layout.UpdateLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.layout.register.RegisterLayoutCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.layout.register.RegisterLayoutCommandHandler;
-import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHeadAndHistDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHeadDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHistoryDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutMasterFinder;
@@ -46,8 +44,8 @@ public class LayoutWebService extends WebService {
 	private RegisterLayoutCommandHandler registerLayoutHandler;
 	@Inject
 	private LayoutMasterFinder find;
-	// @Inject
-	// private LayoutHisFinder find1;
+//	@Inject
+//	private LayoutHisFinder find1;
 	@Inject
 	private LayoutMasterCategoryFinder categoryFinder;
 	@Inject
@@ -58,13 +56,12 @@ public class LayoutWebService extends WebService {
 	public List<LayoutHeadDto> getAllLayoutHead() {
 		return this.find.getAllLayoutHead(AppContexts.user().companyCode());
 	}
-
-	@POST
-	@Path("findallMaxHistory")
-	public List<LayoutHistoryDto> getAllHistoryMaxStart(int startYm) {
-		startYm = 0;
-		return this.find.getHistoryWithMaxStartYm(AppContexts.user().companyCode(), startYm);
-	}
+	
+//	@POST
+//	@Path("findallMaxHistory")
+//	public List<LayoutHistoryDto> getAllHistoryMaxStart() {
+//		return this.find.getHistoryWithMaxStartYm(AppContexts.user().companyCode());
+//	}
 
 	@POST
 	@Path("findalllayoutHist")
@@ -79,17 +76,17 @@ public class LayoutWebService extends WebService {
 	}
 
 	@POST
-	@Path("findHeadAndHistByYM/{BaseYm}")
-	public List<LayoutHeadAndHistDto> getLayout(@PathParam("BaseYm") BigDecimal BaseYm) {
-		return this.find.findHeadAndHistByYM(BaseYm);
-	}
-
-	@POST
-	@Path("findlayoutdetail/{stmtCode}/{historyId}/{categoryAtr}/{itemCd}")
-	public LayoutMasterDetailDto getDetail(@PathParam("stmtCode") String stmtCode,
-			@PathParam("historyId") String historyId, @PathParam("categoryAtr") int categoryAtr,
-			@PathParam("itemCd") String itemCd) {
-		return this.detailFinder.getDetail(stmtCode, historyId, categoryAtr, itemCd);
+	@Path("findlayoutdetail/{stmtCode}/{startYm}/{categoryAtr}/{itemCd}")
+	public LayoutMasterDetailDto getDetail(@PathParam("stmtCode") String stmtCode, @PathParam("startYm") int startYm,
+			@PathParam("categoryAtr") int categoryAtr, @PathParam("itemCd") String itemCd) {
+		try {
+			if (this.detailFinder.getDetail(stmtCode, startYm, categoryAtr, itemCd).isPresent()) {
+				return this.detailFinder.getDetail(stmtCode, startYm, categoryAtr, itemCd).get();
+			}
+			return null;
+		} catch (Exception ex) {
+			throw ex;
+		}
 	}
 
 	@POST
@@ -112,6 +109,12 @@ public class LayoutWebService extends WebService {
 	}
 
 	@POST
+	@Path("createlayouthistory")
+	public void createLayoutHistory(CreateLayoutHistoryCommand command) {
+		this.createHistoryData.handle(command);
+	}
+
+	@POST
 	@Path("updatedata")
 	public void updateData(UpdateLayoutHistoryCommand command) {
 		this.updateData.handle(command);
@@ -129,9 +132,4 @@ public class LayoutWebService extends WebService {
 		this.registerLayoutHandler.handle(command);
 	}
 
-	@POST
-	@Path("createlayouthistory")
-	public void createLayoutHistory(CreateLayoutHistoryCommand command) {
-		this.createHistoryData.handle(command);
-	}
 }

@@ -96,7 +96,7 @@ public interface LayoutMasterDetailRepository {
 	Optional<LayoutMasterDetail> getDetail(
 			String companyCd, 
 			String stmtCd, 
-			String historyId, 
+			int startYm, 
 			int categoryAtr,
 			String itemCd);
 	

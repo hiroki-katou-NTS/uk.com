@@ -4,6 +4,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
     import windows = nts.uk.ui.windows;
     import errors = nts.uk.ui.errors;
     import resource = nts.uk.resource;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel {
         // PGType
@@ -37,7 +38,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             // TopPage Part
             self.listPartType = ko.observableArray([]);
             self.selectedPartType = ko.observable(null);
-            self.selectedPartType.subscribe((value) => { 
+            self.selectedPartType.subscribe((value) => {
                 self.filterPartType(value);
             });
             self.allPart = ko.observableArray([]);
@@ -52,8 +53,8 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             ];
             // External Url
             self.isExternalUrl = ko.observable(false);
-            self.urlWidth = ko.observable(null);
-            self.urlHeight = ko.observable(null);
+            self.urlWidth = ko.observable(1);
+            self.urlHeight = ko.observable(1);
             self.url = ko.observable(null);
             // UI Binding
             self.instructionText = ko.observable('');
@@ -63,6 +64,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            block.invisible();
             // Shared
             self.pgType = windows.getShared("pgtype");
             self.positionRow(windows.getShared("size").row);
@@ -70,6 +72,9 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             // Get Type and Part
             service.findAll(self.pgType).done((data: any) => {
                 // Binding TopPage Part Type
+                _.each(data.listTopPagePartType, (partType) => {
+                    partType.localizedName = resource.getText(partType.localizedName);
+                });
                 self.listPartType(data.listTopPagePartType);
                 // Binding TopPage Part
                 self.allPart(data.listTopPagePart);
@@ -79,6 +84,8 @@ module nts.uk.com.view.ccg031.b.viewmodel {
                 dfd.resolve();
             }).fail((res) => {
                 dfd.fail();
+            }).always(() => {
+                block.clear(); 
             });
             return dfd.promise();
         }
@@ -87,14 +94,12 @@ module nts.uk.com.view.ccg031.b.viewmodel {
         submitDialog(): void {
             var self = this;
             if (self.isExternalUrl() === true)
-                $(".nts-validate").trigger("validate");
-            _.defer(() => {
-                if (!$(".nts-validate").ntsError("hasError")) {
-                    var placement: model.Placement = self.buildReturnPlacement();
-                    windows.setShared("placement", placement, false);
-                    windows.close();
-                }
-            });
+            $(".nts-validate").trigger("validate");
+            if (!$(".nts-validate").ntsError("hasError")) {
+                var placement: model.Placement = self.buildReturnPlacement();
+                windows.setShared("placement", placement, false);
+                windows.close();
+            }
         }
 
         /** Close Dialog */
@@ -148,7 +153,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
 
             // In case is TopPagePart
             if (self.selectedPartType() !== 3) {
-                if (self.selectedPart() !== undefined) {
+                if (!util.isNullOrUndefined(self.selectedPart())) {
                     name = self.selectedPart().name;
                     width = self.selectedPart().width;
                     height = self.selectedPart().height;

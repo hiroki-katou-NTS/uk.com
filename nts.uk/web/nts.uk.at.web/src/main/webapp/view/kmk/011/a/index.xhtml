@@ -8,6 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -69,7 +70,7 @@
 						<tr class="row">
 							<td>
 								<!--A3_3 -->
-								<div data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName'  }">#{i18n.getText('KMK011_9')}</div>
+								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_9')}</div>
 							</td>
 							<td>
 								<!-- A3_4: Divergence Time Name -->

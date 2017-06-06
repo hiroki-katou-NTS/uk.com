@@ -47,7 +47,7 @@ public class KmlstPremiumSet extends UkJpaEntity{
     })
 	public KmnmtPremiumItem kmnmtPremiumItem;
 	
-	@OneToMany(targetEntity = KmldtPremiumAttendance.class, cascade = CascadeType.ALL, mappedBy = "kmlstPremiumSet", orphanRemoval=true)
+	@OneToMany(targetEntity = KmldtPremiumAttendance.class, cascade = CascadeType.ALL, mappedBy = "kmlstPremiumSet")
 	@JoinTable(name = "KMLDT_PREMIUM_ATTENDANCE")
 	public List<KmldtPremiumAttendance> kmldtPremiumAttendances;
 	

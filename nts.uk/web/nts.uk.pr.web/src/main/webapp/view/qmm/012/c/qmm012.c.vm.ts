@@ -198,16 +198,16 @@ module qmm012.c.viewmodel {
                 self.CurrentAlRangeLow(NewValue ? NewValue.alRangeLow : 0);
                 self.CurrentMemo(NewValue ? NewValue.memo : "");
                 self.CurrentTaxAtr(NewValue ? NewValue.taxAtr : 0);
-                self.CurrentSocialInsAtr(NewValue ? NewValue.socialInsAtr.value : 0);
-                self.CurrentLaborInsAtr(NewValue ? NewValue.laborInsAtr.value : 0);
-                self.CurrentFixPayAtr(NewValue ? NewValue.fixPayAtr.value : 1);
+                self.CurrentSocialInsAtr(NewValue ? NewValue.socialInsAtr : 0);
+                self.CurrentLaborInsAtr(NewValue ? NewValue.laborInsAtr : 0);
+                self.CurrentFixPayAtr(NewValue ? NewValue.fixPayAtr : 1);
                 self.CurrentApplyForAllEmpFlg(NewValue ? NewValue.applyForAllEmpFlg : 0);
                 self.CurrentApplyForMonthlyPayEmp(NewValue ? NewValue.applyForMonthlyPayEmp : 0);
                 self.CurrentApplyForDaymonthlyPayEmp(NewValue ? NewValue.applyForDaymonthlyPayEmp : 0);
                 self.CurrentApplyForDaylyPayEmp(NewValue ? NewValue.applyForDaylyPayEmp : 0);
                 self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : 0);
-                self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr.value : 0);
-                self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr.value : 0);
+                self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : 0);
+                self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : 0);
                 self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCode : "");
                 self.C_Sel_ErrorUpper_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                 self.C_Sel_AlarmHigh_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
@@ -388,7 +388,7 @@ module qmm012.c.viewmodel {
             let self = this;
             //set selected code to session
             nts.uk.ui.windows.setShared('commuNoTaxLimitCode', self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '');
-            nts.uk.ui.windows.sub.modal('/view/qmm/012/k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close", title: "非課税限度額の設定" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close", title: "非課税限度額の設定" }).onClosed(function(): any {
                 if (nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'))
                     self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
             });
@@ -398,7 +398,7 @@ module qmm012.c.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
-            nts.uk.ui.windows.sub.modal('/view/qmm/012/h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
                 self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
             });
         }
@@ -407,7 +407,7 @@ module qmm012.c.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
-            nts.uk.ui.windows.sub.modal('/view/qmm/012/i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close", title: "項目名の登録" }).onClosed(function(): any {
                 self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
             });
         }

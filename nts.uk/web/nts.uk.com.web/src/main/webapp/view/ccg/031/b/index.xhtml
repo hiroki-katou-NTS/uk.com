@@ -34,10 +34,9 @@
 					<div id="combo-box" class="animated-background" data-bind="ntsComboBox: {
 						options: listPartType,
 						optionsValue: 'value',
-						optionsText: 'fieldName',
 						value: selectedPartType,
 						enable: true,
-						columns: [{ prop: 'fieldName', length: 6 }]}"></div>
+						columns: [{ prop: 'localizedName' }]}"></div>
 					<div class="part-container">
 						<!-- TopPage Part -->
 						<div class="top-page-part" data-bind="visible: !isExternalUrl()">
@@ -88,12 +87,12 @@
 								<div class="panel-content">
 									<div class="valign-center control-group">
 										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG031_20')}</div>
-										<label class="label-width"><span>#{i18n.getText('CCG031_21')}</span> <input class="nts-validate input-width" data-bind="ntsNumberEditor: {value: urlWidth, constraint: 'Width', required: true}" /> <span>#{i18n.getText('CCG031_23')}</span></label>
-										<label class="label-height"><span>#{i18n.getText('CCG031_22')}</span> <input class="nts-validate input-height" data-bind="ntsNumberEditor: {value: urlHeight, constraint: 'Height', required: true}" /> <span>#{i18n.getText('CCG031_23')}</span></label>
+										<label class="label-width"><span>#{i18n.getText('CCG031_21')}</span> <input class="nts-validate input-width" data-name="#{i18n.getText('CCG031_30')}" data-bind="ntsNumberEditor: {value: urlWidth, constraint: 'Width', required: true}" /> <span>#{i18n.getText('CCG031_23')}</span></label>
+										<label class="label-height"><span>#{i18n.getText('CCG031_22')}</span> <input class="nts-validate input-height" data-name="#{i18n.getText('CCG031_31')}" data-bind="ntsNumberEditor: {value: urlHeight, constraint: 'Height', required: true}" /> <span>#{i18n.getText('CCG031_23')}</span></label>
 									</div>
 									<div class="valign-center control-group">
 										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG031_29')}</div>
-										<input class="nts-validate input-url" data-bind="ntsTextEditor: {value: url, constraint: 'Url', required: true}" />
+										<input class="nts-validate input-url" data-name="#{i18n.getText('CCG031_14')}" data-bind="ntsTextEditor: {value: url, constraint: 'Url', required: true}" />
 									</div>
 								</div>
 							</div>

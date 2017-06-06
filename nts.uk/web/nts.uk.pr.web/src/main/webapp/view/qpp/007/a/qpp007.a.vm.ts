@@ -128,7 +128,8 @@ module nts.uk.pr.view.qpp007.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 // Validate
-                if (self.validate()) {
+                self.validate();
+                if ($('.nts-input').ntsError('hasError')) {
                     return;
                 }
                 let command = self.toJsObject();
@@ -180,32 +181,15 @@ module nts.uk.pr.view.qpp007.a {
                 if (nts.uk.ui._viewModel) {
                     $('#start-ym').ntsError('clear');
                     $('#end-ym').ntsError('clear');
-                    $('#output-setting-box').ntsError('clear');
-                    $('#usually-month').ntsError('clear');
                 }
             }
 
             /**
             * Validate all inputs.
             */
-            private validate(): boolean {
-                this.clearErrors();
+            private validate(): void {
                 $('#start-ym').ntsEditor('validate');
                 $('#end-ym').ntsEditor('validate');
-                var hasError = false;
-                var self = this;
-                // Validate output setting selected.
-                if(!self.selectedOutputSetting() || self.selectedOutputSetting() == '' ) {
-                    $('#output-setting-box').ntsError('set','出力項目設定が選択されていません。');
-                    hasError = true;
-                }
-                // TODO: validate employee.
-                // Validate month type.
-                if (!self.isUsuallyAMonth() && !self.isPreliminaryMonth()) {
-                    $('#usually-month').ntsError('set','通常月と予備月が指定されていません');
-                    hasError = true;
-                }
-                return $('.nts-input').ntsError('hasError') || hasError;
             }
 
         }

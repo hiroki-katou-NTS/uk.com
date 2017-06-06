@@ -76,5 +76,4 @@ public interface LayoutMasterCategoryRepository {
 	 * @return
 	 */
 	Optional<LayoutMasterCategory> find(String companyCode, String stmtCode, String historyId, int categoryAtr);
-	List<LayoutMasterCategory> getLastestLayoutMasterCategory(String companyCode, String stmtCode);
 }

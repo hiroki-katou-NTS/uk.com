@@ -49,7 +49,7 @@ input, textarea {
 .dateControlBtn:LAST-CHILD{ margin-left: 50px; }
 
 #dateRange-list-container { 
-	margin-left: 5px;
+	margin-left: 10px;
 	margin-top: 10px;
 }
 
@@ -74,7 +74,7 @@ input, textarea {
 	outline-style: solid;
 	outline-color: #999999;
 	outline-width: 1px;
-	width: 807px;
+	width: 792px;
 	height: 360px;
 }
 #premium-set-tbl {
@@ -107,15 +107,14 @@ input, textarea {
 #premium-set-tbl tbody tr td:FIRST-CHILD { 
 	background-color: #EDFAC2;
 }
-#premium-set-tbl th:FIRST-CHILD, td:FIRST-CHILD {
-	min-width: 220px;
-	max-width: 220px;
+#premium-set-tbl th:FIRST-CHILD {
+	width: 180px;
 }
-#premium-set-tbl th:NTH-CHILD(2), td:NTH-CHILD(2) {
+#premium-set-tbl th:NTH-CHILD(2) {
 	width: 80px;
 }
-#premium-set-tbl th:LAST-CHILD, td:LAST-CHILD {
-	width: 492px;
+#premium-set-tbl th:LAST-CHILD {
+	width: 500px;
 }
 .notUse {
 	display: none;
@@ -160,7 +159,7 @@ input, textarea {
 #formula > .table:NTH-CHILD(3) > .cell:NTH-CHILD(3) > .cell{
 	height: 40px;
 }
-.symbol-img {
+img {
 	margin-top: 5px; 
 	position: absolute;
     height: 90px;
@@ -172,7 +171,7 @@ input, textarea {
 	padding-left: 10px;
 }
 #combo-box {
-	width: 107px;
+	width: 112px;
 }
 .percenSymbol {
 	margin-left: -25px;
@@ -182,7 +181,4 @@ input, textarea {
 .premiumPercent.nts-editor.nts-input{
 	padding-right: 20px;
 }
-.premiumItems.nts-editor.nts-input { 
-	height: 18px;
-	margin-right: -80px;
-}
+.premiumItems.nts-editor.nts-input { height: 18px; }
