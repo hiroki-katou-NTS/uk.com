@@ -87,13 +87,6 @@ module kcp.share.list {
             });
         }
         
-        /**
-         * Update component.
-         */
-        public update($input: JQuery, data: ComponentOption) {
-            
-        }
-        
         public findDataList(listType: ListType):JQueryPromise<Array<UnitModel>> {
             switch(listType) {
                 case ListType.EMPLOYMENT:
@@ -107,27 +100,24 @@ module kcp.share.list {
         
     }
     
+    /**
+     * Service,
+     */
     export module service {
         
         // Service paths.
         var servicePath = {
-            findEmployments: '???',
+            findEmployments: "basic/company/organization/employment/findAll/",
             findJobTitles: '???',
             findEmployees: '???'
         }
         
+        /**
+         * Find Employment list.
+         */
         export function findEmployments(): JQueryPromise<Array<UnitModel>> {
             var dfd = $.Deferred<any>();
-            var data: Array<UnitModel> = [
-                    {code: 'EMC1', name: 'Employment 1'},
-                    {code: 'EMC2', name: 'Employment 2'},
-                    {code: 'EMC3', name: 'Employment 3'},
-                    {code: 'EMC4', name: 'Employment 4'},
-                    {code: 'EMC5', name: 'Employment 5'},
-                    {code: 'EMC6', name: 'Employment 6'},
-                ]
-            dfd.resolve(data);
-            return dfd.promise();
+            return nts.uk.request.ajax(servicePath.findEmployments);
         }
         
         export function findJobTitles(): JQueryPromise<Array<UnitModel>> {
@@ -145,10 +135,13 @@ module kcp.share.list {
     }
 }
 
+/**
+ * Defined Jquery interface.
+ */
 interface JQuery {
 
     /**
-     * Nts file upload.
+     * Nts list component.
      */
     ntsListComponent(option: kcp.share.list.ComponentOption);
 }

@@ -10,12 +10,19 @@
 	width: 90px;
 }
 #label-d1-003{
-	margin-left: 30px;
+	margin-top: 20px;
+	margin-left: 35px;
 }
 
 .table1 td,
 .table1 th {border: 1px solid #ccc;} 
 
 .table1 {
-	margin-top: 40px;
+	margin-top: 20px;
+	margin-left: 35px;
+	width: 950px;
+}
+.table1 tr:FIRST-CHILD th {
+	text-align: center;
+	
 }
