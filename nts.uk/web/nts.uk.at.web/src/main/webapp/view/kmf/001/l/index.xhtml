@@ -7,12 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay
-				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDate
-				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear
-				nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay
-			</com:ValidatorScript>
+		
+			<!-- <com:ValidatorScript>
+			</com:ValidatorScript> -->
 		
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
@@ -35,15 +32,15 @@
 				<div style="margin-left: 35px;padding-top: 10px;">
 				
 					<!-- BEGIN 子の看護休暇の設定-->
-					<table id="table" >
+					<div data-bind="with: nursingSetting"><table id="table">
 						<thead>
 							<div data-bind="ntsFormLabel: {required: true}"
 								style="margin-right: 50px;">#{i18n.getText('KMF001_108')}</div>
 							<span tabindex="4" data-bind="ntsSwitchButton: {
-												options: manageDistinctList,
+												options: $parent.manageDistinctList,
 												optionsValue: 'value',
 												optionsText: 'localizedName',
-												value: selectedAnnualManage,
+												value: selectedManageNursing,
 												enable: true }">
 							</span>
 							<div class="hr_width">
@@ -58,90 +55,97 @@
 								</div></th>
 						</tr>
 						<tr>
-							<td><label class="content-label">#{i18n.getText('KMF001_109')}</label></td>
+							<td><label>#{i18n.getText('KMF001_109')}</label></td>
 							<td><div tabindex="5">
-								<span data-bind="ntsNumberEditor: {
-									value: maxNumberCompany,
+								<input id="nursing-month" data-bind="ntsNumberEditor: {
+									value: nursingMonth,
 									constraint: '',
-									required: true,
-									option: textEditorOption,
-									enable: true}"></span>
+									required: enableNursing,
+									option: {
+										width: '40px',
+										textalign: 'center'
+									},
+									enable: enableNursing}"/>
 								<span>月</span>
-								<span style="margin-left: 10px;" data-bind="ntsNumberEditor: {
-									value: maxNumberCompany,
+								<input id="nursing-day" style="margin-left: 10px;" data-bind="ntsNumberEditor: {
+									value: nursingDay,
 									constraint: '',
-									required: true,
-									option: textEditorOption,
-									enable: true}"></span>
+									required: enableNursing,
+									option: {
+										width: '40px',
+										textalign: 'center'
+									},
+									enable: enableNursing}"/>
 								<span>日</span>
 							</div></td>
 							<td><div></div></td>
 						</tr>
 						
 						<tr>
-							<td><label class="content-label">#{i18n.getText('KMF001_110')}</label></td>
-							<td style="padding-left: 4px;">
+							<td><label>#{i18n.getText('KMF001_110')}</label></td>
+							<td class="target-child">
 								<div>
-									<label class="content-label">#{i18n.getText('KMF001_111')}</label>
-									<input style="float: right;" tabindex="6" id="max-grant-day" class="nts-input"
+									<label>#{i18n.getText('KMF001_111')}</label>
+									<input id="nursing-number-leave-day" style="float: right;" tabindex="6" class="nts-input"
 										data-bind="ntsNumberEditor: {
-											value: maxGrantDay,
-											constraint: 'AnnualLeaveGrantDate',
-											required: enableAnnualVacation,
-											option: textEditorOption,
-											enable: enableAnnualVacation}" />
+											value: nursingNumberLeaveDay,
+											constraint: '',
+											required: enableNursing,
+											option: $parent.textEditorOption,
+											enable: enableNursing}" />
 								</div>
 							</td>
 							<td></td>
 						</tr>
 						
 						<tr>
-							<td><label class="content-label"></label></td>
-							<td style="padding-left: 4px;">
+							<td><label></label></td>
+							<td>
 								<div>
-									<label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_112')}</label>
-									<input style="float: right;" tabindex="7" id="max-grant-day" class="nts-input"
+									<label>#{i18n.getText('KMF001_112')}</label>
+									<input id="nursing-number-person" style="float: right;" tabindex="7" class="nts-input"
 										data-bind="ntsNumberEditor: {
-											value: maxGrantDay,
-											constraint: 'AnnualLeaveGrantDate',
-											required: enableAnnualVacation,
-											option: textEditorOption,
-											enable: enableAnnualVacation}" />
+											value: nursingNumberPerson,
+											constraint: '',
+											required: enableNursing,
+											option: $parent.textEditorOption,
+											enable: enableNursing}" />
 								</div>
 							</td>
-							<td><label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_113')}</label></td>
+							<td><label>#{i18n.getText('KMF001_113')}</label></td>
 						</tr>
 						
 						<tr>
-							<td><label class="content-label">#{i18n.getText('KMF001_114')}</label></td>
-							<td style="padding-left: 4px;">
+							<td><label>#{i18n.getText('KMF001_114')}</label></td>
+							<td>
 								<div>
-									<input tabindex="7" id="max-grant-day" class="nts-input"
+									<input tabindex="7" class="nts-input"
 										data-bind="ntsTextEditor: {
-											value: maxGrantDay,
-											constraint: 'AnnualLeaveGrantDate',
-											required: enableAnnualVacation,
+											value: typeCode,
+											constraint: '',
+											required: enableNursing,
 											option: {
 												width: '92.5%',
 												textalign: 'left'
 											},
-											enable: enableAnnualVacation}" />
+											readonly: true,
+											enable: enableNursing}" />
 								</div>
 							</td>
-							<td><button class="content-label" tabindex="8">#{i18n.getText('KMF001_127')}</button></td>
+							<td><button tabindex="8" data-bind="enable: enableNursing">#{i18n.getText('KMF001_127')}</button></td>
 						</tr>
-					</table><!-- END 子の看護休暇の設定-->
+					</table></div><!-- END 子の看護休暇の設定-->
 					
 					<!-- BEGIN 介護休暇の管理-->
-					<table id="table" >
+					<div data-bind="with: childNursingSetting"><table id="table">
 						<thead>
 							<div data-bind="ntsFormLabel: {required: true}"
 								style="margin-right: 50px;">#{i18n.getText('KMF001_116')}</div>
 							<span tabindex="9" data-bind="ntsSwitchButton: {
-												options: manageDistinctList,
+												options: $parent.manageDistinctList,
 												optionsValue: 'value',
 												optionsText: 'localizedName',
-												value: selectedAnnualManage,
+												value: selectedManageNursing,
 												enable: true }">
 							</span>
 							<div class="hr_width">
@@ -156,76 +160,86 @@
 								</div></th>
 						</tr>
 						<tr>
-							<td><label class="content-label">#{i18n.getText('KMF001_117')}</label></td>
+							<td><label>#{i18n.getText('KMF001_117')}</label></td>
 							<td><div tabindex="10">
-								<span data-bind="ntsNumberEditor: {
-									value: maxNumberCompany,
+								<input id="child-nursing-month" data-bind="ntsNumberEditor: {
+									value: nursingMonth,
 									constraint: '',
-									required: true,
-									option: textEditorOption,
-									enable: true}"></span>
+									required: enableNursing,
+									option: {
+										width: '40px',
+										textalign: 'center'
+									},
+									enable: enableNursing}"/>
 								<span>月</span>
-								<span style="margin-left: 10px;" data-bind="ntsNumberEditor: {
-									value: maxNumberCompany,
+								<input id="child-nursing-day" style="margin-left: 10px;" data-bind="ntsNumberEditor: {
+									value: nursingDay,
 									constraint: '',
-									required: true,
-									option: textEditorOption,
-									enable: true}"></span>
+									required: enableNursing,
+									option: {
+										width: '40px',
+										textalign: 'center'
+									},
+									enable: enableNursing}"/>
 								<span>日</span>
 							</div></td>
 							<td><div></div></td>
 						</tr>
 						
 						<tr>
-							<td><label class="content-label">#{i18n.getText('KMF001_118')}</label></td>
-							<td style="padding-left: 4px;">
+							<td><label>#{i18n.getText('KMF001_118')}</label></td>
+							<td class="target-child">
 								<div>
-									<label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_119')}</label>
-									<input tabindex="11" id="max-grant-day" class="nts-input"
+									<label style="padding-left: 0px">#{i18n.getText('KMF001_119')}</label>
+									<input id="child-nursing-number-leave-day" style="float: right;" tabindex="11" class="nts-input"
 										data-bind="ntsNumberEditor: {
-											value: maxGrantDay,
-											constraint: 'AnnualLeaveGrantDate',
-											required: enableAnnualVacation,
-											option: textEditorOption,
-											enable: enableAnnualVacation}" />
+											value: nursingNumberLeaveDay,
+											constraint: '',
+											required: enableNursing,
+											option: $parent.textEditorOption,
+											enable: enableNursing}" />
 								</div>
 							</td>
 							<td></td>
 						</tr>
 						
 						<tr>
-							<td><label class="content-label"></label></td>
-							<td style="padding-left: 4px;">
+							<td><label></label></td>
+							<td>
 								<div>
-									<label class="content-label" style="padding-left: 0px">#{i18n.getText('KMF001_120')}</label>
-									<input tabindex="12" id="max-grant-day" class="nts-input"
+									<label>#{i18n.getText('KMF001_120')}</label>
+									<input id="child-nursing-number-person" style="float: right;" tabindex="12" class="nts-input"
 										data-bind="ntsNumberEditor: {
-											value: maxGrantDay,
-											constraint: 'AnnualLeaveGrantDate',
-											required: enableAnnualVacation,
-											option: textEditorOption,
-											enable: enableAnnualVacation}" />
+											value: nursingNumberPerson,
+											constraint: '',
+											required: enableNursing,
+											option: $parent.textEditorOption,
+											enable: enableNursing}" />
 								</div>
 							</td>
 							<td></td>
 						</tr>
 						
 						<tr>
-							<td><label class="content-label">#{i18n.getText('KMF001_121')}</label></td>
-							<td style="padding-left: 4px;">
+							<td><label>#{i18n.getText('KMF001_121')}</label></td>
+							<td>
 								<div>
-									<input id="max-grant-day" class="nts-input"
+									<input class="nts-input"
 										data-bind="ntsTextEditor: {
-											value: maxGrantDay,
-											constraint: 'AnnualLeaveGrantDate',
-											required: enableAnnualVacation,
-											option: textEditorOption,
-											enable: enableAnnualVacation}" />
+											value: typeCode,
+											constraint: '',
+											required: enableNursing,
+											option: {
+												width: '92.5%',
+												textalign: 'left'
+											},
+											readonly: true,
+											enable: enableNursing}" />
 								</div>
 							</td>
-							<td><button class="content-label">#{i18n.getText('KMF001_127')}</button></td>
+							<td><button tabindex="13" data-bind="enable: enableNursing">#{i18n.getText('KMF001_127')}</button></td>
 						</tr>
-					</table><!-- END 介護休暇の管理-->
+					</table></div><!-- END 介護休暇の管理-->
 				</div>
 			</div>
 		</ui:define>
