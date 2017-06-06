@@ -2,16 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
+package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
 
 /**
- * The Class Weekly.
+ * 変形労働労働時間設定.
  */
-public class Weekly extends DomainObject {
+public class DeformationLaborSetting extends DomainObject {
 
-	/** The time. */
-	private AttendanceTime time;
+	/** 法定労働時間設定. */
+	private WorkingTimeSetting statutorySetting;
+
+	/** 週開始. */
+	private WeekStart weekStart;
 }

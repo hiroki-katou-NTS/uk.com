@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
@@ -12,25 +11,42 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetti
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Year;
 
 /**
- * 職場労働時間設定.
+ * The Interface CompanySettingGetMemento.
  */
-public class WorkPlaceSetting extends AggregateRoot {
+public interface WorkPlaceSettingGetMemento {
 
-	/** フレックス勤務労働時間設定. */
-	private FlexSetting flexSetting;
+	/**
+	 * Gets the flex setting.
+	 *
+	 * @return the flex setting
+	 */
+	FlexSetting getFlexSetting();
 
-	/** 変形労働労働時間設定. */
-	private DeformationLaborSetting deformationLaborSetting;
+	/**
+	 * Gets the deformation labor setting.
+	 *
+	 * @return the deformation labor setting
+	 */
+	DeformationLaborSetting getDeformationLaborSetting();
 
-	/** 年. */
-	private Year year;
+	/**
+	 * Gets the year.
+	 *
+	 * @return the year
+	 */
+	Year getYear();
 
-	/** 会社ID. */
-	private CompanyId companyId;
+	/**
+	 * Gets the company id.
+	 *
+	 * @return the company id
+	 */
+	CompanyId getCompanyId();
 
-	/** 職場ID. */
-	private String workPlaceId;
-
-	/** 通常勤務労働時間設定. */
-	private NormalSetting normalSetting;
+	/**
+	 * Gets the normal setting.
+	 *
+	 * @return the normal setting
+	 */
+	NormalSetting getNormalSetting();
 }

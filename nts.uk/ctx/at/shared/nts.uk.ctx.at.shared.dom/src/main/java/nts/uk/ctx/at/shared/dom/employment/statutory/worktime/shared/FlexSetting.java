@@ -2,18 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
+package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * 通常勤務労働時間設定.
+ * フレックス勤務労働時間設定.
  */
-public class NormalSetting extends DomainObject {
-	
+public class FlexSetting extends DomainObject {
+
+	/** 所定労働時間設定. */
+	private WorkingTimeSetting specifiedSetting;
+
 	/** 法定労働時間設定. */
 	private WorkingTimeSetting statutorySetting;
-
-	/** 週開始. */
-	private WeekStart weekStart;
 }

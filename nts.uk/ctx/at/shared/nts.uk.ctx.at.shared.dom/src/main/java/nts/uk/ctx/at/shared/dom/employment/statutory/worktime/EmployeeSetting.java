@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
 
 /**
  * 社員労働時間設定.

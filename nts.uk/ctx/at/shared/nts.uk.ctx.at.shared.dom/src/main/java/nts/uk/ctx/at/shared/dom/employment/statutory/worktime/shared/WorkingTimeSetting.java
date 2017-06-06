@@ -2,20 +2,21 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
+package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
 
 /**
- * The Class Monthly.
+ * 労働時間設定.
  */
-public class Monthly extends DomainObject {
+public class WorkingTimeSetting extends DomainObject {
 
-	/** The time. */
-	private AttendanceTime time;
+	/** 日単位. */
+	private Daily daily;
 
-	/** The monthly. */
-	//TODO ????
+	/** 月単位. */
 	private Monthly monthly;
+
+	/** 週単位. */
+	private Weekly weekly;
 }

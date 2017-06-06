@@ -6,6 +6,10 @@ package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Year;
 
 /**
  * 会社労働時間設定.
@@ -26,4 +30,30 @@ public class CompanySetting extends AggregateRoot {
 
 	/** 通常勤務労働時間設定. */
 	private NormalSetting normalSetting;
+
+	/**
+	 * Instantiates a new company setting.
+	 *
+	 * @param memento the memento
+	 */
+	public CompanySetting(CompanySettingGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.flexSetting = memento.getFlexSetting();
+		this.deformationLaborSetting = memento.getDeformationLaborSetting();
+		this.normalSetting = memento.getNormalSetting();
+		this.year = memento.getYear();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(CompanySettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setYear(this.year);
+		memento.setDeformationLaborSetting(this.deformationLaborSetting);
+		memento.setFlexSetting(this.flexSetting);
+		memento.setNormalSetting(this.normalSetting);
+	}
 }

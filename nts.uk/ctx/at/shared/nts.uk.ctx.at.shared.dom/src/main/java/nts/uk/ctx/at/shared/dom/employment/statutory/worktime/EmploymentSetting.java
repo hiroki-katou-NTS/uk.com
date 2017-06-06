@@ -6,6 +6,10 @@ package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Year;
 
 /**
  * 雇用労働時間設定.
