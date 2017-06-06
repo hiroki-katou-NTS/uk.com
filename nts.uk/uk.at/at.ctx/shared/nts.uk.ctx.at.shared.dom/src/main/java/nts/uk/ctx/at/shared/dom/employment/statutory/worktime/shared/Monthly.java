@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.Month;
 
 /**
  * The Class Monthly.
@@ -15,6 +16,6 @@ public class Monthly extends DomainObject {
 	/** The time. */
 	private AttendanceTime time;
 
-	/** The monthly. */
-	private Integer monthly;
+	/** The month. */
+	private Month month;
 }

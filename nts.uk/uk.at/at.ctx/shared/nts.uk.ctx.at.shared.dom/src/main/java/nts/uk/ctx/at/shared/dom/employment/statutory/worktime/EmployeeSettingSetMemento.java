@@ -4,37 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Year;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
 
 /**
- * The Interface CompanySettingSetMemento.
+ * The Interface EmployeeSettingSetMemento.
  */
 public interface EmployeeSettingSetMemento {
-
-	/**
-	 * Sets the flex setting.
-	 *
-	 * @param flexSetting the new flex setting
-	 */
-	void setFlexSetting(FlexSetting flexSetting);
-
-	/**
-	 * Sets the deformation labor setting.
-	 *
-	 * @param deformationLaborSetting the new deformation labor setting
-	 */
-	void setDeformationLaborSetting(DeformationLaborSetting deformationLaborSetting);
-
-	/**
-	 * Sets the year.
-	 *
-	 * @param year the new year
-	 */
-	void setYear(Year year);
 
 	/**
 	 * Sets the company id.
@@ -44,9 +21,24 @@ public interface EmployeeSettingSetMemento {
 	void setCompanyId(CompanyId companyId);
 
 	/**
-	 * Sets the normal setting.
+	 * Sets the working time setting.
 	 *
-	 * @param normalSetting the new normal setting
+	 * @param workingTimeSetting the new working time setting
 	 */
-	void setNormalSetting(NormalSetting normalSetting);
+	void setWorkingTimeSetting(WorkingTimeSetting workingTimeSetting);
+
+	/**
+	 * Sets the year month.
+	 *
+	 * @param YearMonth the new year month
+	 */
+	void setYearMonth(YearMonth YearMonth);
+
+	/**
+	 * Sets the employee id.
+	 *
+	 * @param EmployeeId the new employee id
+	 */
+	void setEmployeeId(String EmployeeId);
+
 }

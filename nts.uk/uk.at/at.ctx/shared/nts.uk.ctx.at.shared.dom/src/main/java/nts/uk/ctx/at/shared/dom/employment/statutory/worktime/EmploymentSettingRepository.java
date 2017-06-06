@@ -14,14 +14,14 @@ public interface EmploymentSettingRepository {
 	 *
 	 * @param setting the setting
 	 */
-	void create(CompanySetting setting);
+	void create(EmploymentSetting setting);
 
 	/**
 	 * Update.
 	 *
 	 * @param setting the setting
 	 */
-	void update(CompanySetting setting);
+	void update(EmploymentSetting setting);
 
 	/**
 	 * Removes the.
@@ -34,7 +34,7 @@ public interface EmploymentSettingRepository {
 	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @return the company setting
+	 * @return the employment setting
 	 */
-	CompanySetting find(String companyId);
+	EmploymentSetting find(String companyId);
 }

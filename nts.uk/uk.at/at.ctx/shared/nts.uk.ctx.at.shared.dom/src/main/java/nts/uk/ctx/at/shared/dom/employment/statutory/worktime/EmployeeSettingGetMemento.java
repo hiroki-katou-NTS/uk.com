@@ -4,37 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Year;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
 
 /**
- * The Interface CompanySettingGetMemento.
+ * The Interface EmployeeSettingGetMemento.
  */
 public interface EmployeeSettingGetMemento {
-
-	/**
-	 * Gets the flex setting.
-	 *
-	 * @return the flex setting
-	 */
-	FlexSetting getFlexSetting();
-
-	/**
-	 * Gets the deformation labor setting.
-	 *
-	 * @return the deformation labor setting
-	 */
-	DeformationLaborSetting getDeformationLaborSetting();
-
-	/**
-	 * Gets the year.
-	 *
-	 * @return the year
-	 */
-	Year getYear();
 
 	/**
 	 * Gets the company id.
@@ -44,9 +21,24 @@ public interface EmployeeSettingGetMemento {
 	CompanyId getCompanyId();
 
 	/**
-	 * Gets the normal setting.
+	 * Gets the working time setting.
 	 *
-	 * @return the normal setting
+	 * @return the working time setting
 	 */
-	NormalSetting getNormalSetting();
+	WorkingTimeSetting getWorkingTimeSetting();
+
+	/**
+	 * Gets the year month.
+	 *
+	 * @return the year month
+	 */
+	YearMonth getYearMonth();
+
+	/**
+	 * Gets the employee id.
+	 *
+	 * @return the employee id
+	 */
+	String getEmployeeId();
+
 }

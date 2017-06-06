@@ -26,4 +26,27 @@ public class EmployeeSetting extends AggregateRoot {
 	/** 社員ID. */
 	private String employeeId;
 
+	/**
+	 * Instantiates a new employee setting.
+	 *
+	 * @param memento the memento
+	 */
+	public EmployeeSetting(EmployeeSettingGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.workingTimeSetting = memento.getWorkingTimeSetting();
+		this.yearMonth = memento.getYearMonth();
+		this.employeeId = memento.getEmployeeId();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(EmployeeSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setEmployeeId(this.employeeId);
+		memento.setWorkingTimeSetting(this.workingTimeSetting);
+		memento.setYearMonth(this.yearMonth);
+	}
 }
