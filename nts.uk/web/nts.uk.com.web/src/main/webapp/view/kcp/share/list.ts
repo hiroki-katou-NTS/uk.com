@@ -87,13 +87,6 @@ module kcp.share.list {
             });
         }
         
-        /**
-         * Update component.
-         */
-        public update($input: JQuery, data: ComponentOption) {
-            
-        }
-        
         public findDataList(listType: ListType):JQueryPromise<Array<UnitModel>> {
             switch(listType) {
                 case ListType.EMPLOYMENT:
@@ -107,6 +100,9 @@ module kcp.share.list {
         
     }
     
+    /**
+     * Service,
+     */
     export module service {
         
         // Service paths.
@@ -116,6 +112,9 @@ module kcp.share.list {
             findEmployees: '???'
         }
         
+        /**
+         * Find Employment list.
+         */
         export function findEmployments(): JQueryPromise<Array<UnitModel>> {
             var dfd = $.Deferred<any>();
             var data: Array<UnitModel> = [
@@ -145,10 +144,13 @@ module kcp.share.list {
     }
 }
 
+/**
+ * Defined Jquery interface.
+ */
 interface JQuery {
 
     /**
-     * Nts file upload.
+     * Nts list component.
      */
     ntsListComponent(option: kcp.share.list.ComponentOption);
 }
