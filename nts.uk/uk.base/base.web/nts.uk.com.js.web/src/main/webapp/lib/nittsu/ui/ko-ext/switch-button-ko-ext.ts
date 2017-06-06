@@ -27,11 +27,12 @@ module nts.uk.ui.koExtentions {
             });
             
             container.keyup(function (evt, ui) {
+                let code = evt.which || evt.keyCode;
                 if(container.data("enable") !== false){
-                    let code = evt.which || evt.keyCode;
                     if (code === 32) {
                         let selectedCode = container.find(".nts-switch-button:first").data('swbtn');     
                         data.value(selectedCode);
+//                        container.focus();   
                     } else if (code === 37 || code === 38) {
                         let inputList = container.find(".nts-switch-button");
                         let currentSelect = _.findIndex(inputList, function (item){
@@ -41,6 +42,7 @@ module nts.uk.ui.koExtentions {
                         if (!nts.uk.util.isNullOrUndefined(selectedCode)){
                             data.value(selectedCode);    
                         }
+//                        container.focus();   
                     } else if (code === 39 || code === 40) {
                         let inputList = container.find(".nts-switch-button");
                         let currentSelect = _.findIndex(inputList, function (item){
@@ -50,9 +52,9 @@ module nts.uk.ui.koExtentions {
                         if (!nts.uk.util.isNullOrUndefined(selectedCode)){
                             data.value(selectedCode);    
                         }
-                    }     
-                    container.focus();           
-                }     
+//                        container.focus();   
+                    }             
+                }  
             });
             // Default value.
             var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
@@ -77,7 +79,7 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             
             container.data("enable", enable);
-            container.addClass("switchButton-wrapper").attr("tabindex", "0");
+            container.addClass("ntsControl switchButton-wrapper").attr("tabindex", "0");
             // Remove deleted button.
             $('button', container).each(function(index, btn) {
                 var $btn = $(btn);
@@ -108,11 +110,13 @@ module nts.uk.ui.koExtentions {
                     var btn = $('<button>').text(text)
                         .addClass('nts-switch-button')
                         .data('swbtn', value)
+                        .attr('tabindex', "-1")
                         .on('click', function() {
                             var selectedValue = $(this).data('swbtn');
-                            data.value(selectedValue);
-                            $('button', container).removeClass(selectedCssClass);
+                            data.value(selectedValue); 
+                            $('button', container).removeClass(selectedCssClass); 
                             $(this).addClass(selectedCssClass);
+//                            container.focus();
                         })
                     if (selectedValue == value) {
                         btn.addClass(selectedCssClass);
@@ -120,11 +124,7 @@ module nts.uk.ui.koExtentions {
                     container.append(btn);
                 }
             });
-            // Enable
             
-            container.find(".nts-switch-button").focus(function (evt){
-                container.focus();   
-            });
             if (enable === true) {
                 $('button', container).prop("disabled", false);
             } else {

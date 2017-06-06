@@ -88,6 +88,8 @@ module nts.uk.ui {
 
                 this.$iframe.bind('load', () => {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
+                    
+                    options.title = '※ダイアログタイトルは基盤で自動化予定';
 
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
@@ -256,6 +258,10 @@ module nts.uk.ui {
         return textId;
     }
 
+    /**
+     * Dialog Module
+     * Using for display info or confirm dialog
+     */
     export module dialog {
         export class DialogHeader {
             icon?: string;
@@ -290,7 +296,7 @@ module nts.uk.ui {
                 .append($control)
                 .appendTo('body')
                 .dialog({
-                    dialogClass: "no-close",
+                    dialogClass: "no-close-btn",
                     width: 'auto',
                     modal: true,
                     minWidth: 300,
@@ -757,6 +763,10 @@ module nts.uk.ui {
         $(window).unbind('beforeunload');
     };
     
+    /**
+     * Block UI Module
+     * Using for blocking UI when action in progress
+     */
     export module block {
         
         export function invisible() {

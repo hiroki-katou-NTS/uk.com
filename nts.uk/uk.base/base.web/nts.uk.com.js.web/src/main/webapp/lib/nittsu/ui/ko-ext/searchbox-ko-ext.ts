@@ -149,7 +149,7 @@ module nts.uk.ui.koExtentions {
             var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
             var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・"; 
             var selected = data.selected;
-            var searchMode = ko.unwrap(data.searchMode);
+            var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
             var selectedKey = null;
             if (data.selectedKey) {
                 selectedKey = ko.unwrap(data.selectedKey);
@@ -216,7 +216,7 @@ module nts.uk.ui.koExtentions {
                     let srh: SearchPub= $container.data("searchObject");
                     let result = srh.search(searchKey, selectedItems);
                     if(nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight"){
-                        $input.ntsError("set", "#FND_E_SEARCH_NOHIT");
+                        nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOHIT");
                         return;        
                     }
                     let isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection') 
@@ -238,6 +238,7 @@ module nts.uk.ui.koExtentions {
                             $container.data("filteredSrouce", result.options); 
                             component.attr("filtered", true);   
                             selected(selectedValue);
+//                            selected.valueHasMutated();
                         } else {
                             selected(selectedValue);    
                         }
@@ -255,18 +256,14 @@ module nts.uk.ui.koExtentions {
             }
             
             var nextSearch = function() {
-                $input.ntsError("clear");
                 let searchKey = $input.val();
                 if(nts.uk.util.isNullOrEmpty(searchKey)) {
-                    $input.ntsError("set", "#FND_E_SEARCH_NOWORD");
+                    nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOWORD");
                     return;        
                 }
                 search(searchKey);    
             }
             $input.keydown(function(event) {
-                if($input.ntsError("hasError")){
-                    $input.ntsError("clear");        
-                }
                 if (event.which == 13) {
                     event.preventDefault();
                     nextSearch();
