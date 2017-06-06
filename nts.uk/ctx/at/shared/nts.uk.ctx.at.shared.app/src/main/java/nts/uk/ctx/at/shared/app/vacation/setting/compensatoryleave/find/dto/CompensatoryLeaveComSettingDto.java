@@ -16,7 +16,7 @@ public class CompensatoryLeaveComSettingDto implements CompensatoryLeaveComSetMe
 	public String companyId;
 
 	/** The is managed. */
-	public ManageDistinct isManaged;
+	public Integer isManaged;
 
 	/** The normal vacation setting. */
 	public NormalVacationSettingDto normalVacationSetting;
@@ -30,7 +30,7 @@ public class CompensatoryLeaveComSettingDto implements CompensatoryLeaveComSetMe
 
 	@Override
 	public void setIsManaged(ManageDistinct isManaged) {
-		this.isManaged = isManaged;
+		this.isManaged = isManaged.value;
 	}
 
 	@Override

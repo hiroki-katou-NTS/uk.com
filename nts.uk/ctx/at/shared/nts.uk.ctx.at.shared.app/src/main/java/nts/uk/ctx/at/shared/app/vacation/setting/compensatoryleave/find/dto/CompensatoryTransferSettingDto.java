@@ -24,10 +24,10 @@ public class CompensatoryTransferSettingDto implements CompensatoryTransferSetMe
 	public long halfDayTime;
 
 	/** The transfer division. */
-	public TransferSettingDivision transferDivision;
+	public Integer transferDivision;
 	
 	/** The compensatory occurrence division. */
-	public CompensatoryOccurrenceDivision compensatoryOccurrenceDivision;
+	public Integer compensatoryOccurrenceDivision;
 
 	@Override
 	public void setCertainTime(OneDayTime certainTime) {
@@ -51,12 +51,12 @@ public class CompensatoryTransferSettingDto implements CompensatoryTransferSetMe
 
 	@Override
 	public void setTransferDivision(TransferSettingDivision transferDivision) {
-		this.transferDivision = transferDivision;
+		this.transferDivision = transferDivision.value;
 	}
 
 	@Override
 	public void setCompensatoryOccurrenceDivision(CompensatoryOccurrenceDivision compensatoryOccurrenceDivision) {
-		this.compensatoryOccurrenceDivision = compensatoryOccurrenceDivision;
+		this.compensatoryOccurrenceDivision = compensatoryOccurrenceDivision.value;
 	}
 
 }

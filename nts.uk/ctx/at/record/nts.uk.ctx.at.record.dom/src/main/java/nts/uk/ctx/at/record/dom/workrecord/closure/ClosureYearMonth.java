@@ -4,30 +4,26 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.closure;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.DomainObject;
+
 
 /**
- * The Class ClosureHistorry.
+ * The Class ClosureYear.
  */
 @Getter
 @Setter
-public class ClosureHistorry extends DomainObject{
+public class ClosureYearMonth implements Serializable{
 	
-	/** The close name. */
-	private CloseName closeName;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 	
-	/** The closure id. */
-	private ClosureId closureId;
+	/** The year. */
+	private Integer year;
 	
-	/** The closure year. */
-	private ClosureYear endDate;
+	/** The month. */
+	private Integer month;
 	
-	/** The closure date. */
-	private ClosureDate closureDate;
-	
-	/** The start date. */
-	private ClosureDate startDate;
-
 }

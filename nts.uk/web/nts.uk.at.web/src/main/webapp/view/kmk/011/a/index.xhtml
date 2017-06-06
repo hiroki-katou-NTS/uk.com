@@ -10,6 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeName
+				nts.uk.ctx.at.record.dom.divergencetime.Time
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk011.a.main.css" />
@@ -114,6 +115,7 @@
 									value: alarmTime,
 									inputFormat: 'time', 
 									mode: 'time', 
+									constraint: 'Time',
 									enable: enableUse}" />
 							</td>
 						</tr>
@@ -129,6 +131,7 @@
 									value: errTime,
 									inputFormat: 'time', 
 									mode: 'time', 
+									constraint: 'Time',
 									enable: enableUse}" />
 							</td>
 						</tr>
