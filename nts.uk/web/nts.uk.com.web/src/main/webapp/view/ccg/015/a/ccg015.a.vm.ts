@@ -125,7 +125,9 @@ module nts.uk.com.view.ccg015.a {
                                 self.toppageSelectedCode(self.collectData().topPageCode);
                             });
                         }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds});
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds}).then(function() {
+                                self.isProcess(false);
+                            });
 //                            nts.uk.ui.dialog.alert(res.message);
                         });
                     }
