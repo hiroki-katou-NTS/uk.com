@@ -12,7 +12,6 @@ __viewContext.ready(function () {
                 value: ko.observable(''),
                 valueKana: ko.observable(''), 
                 valueUan: ko.observable(''),
-                valueHalfInt: ko.observable(''),
                 defaultValue: ko.observable(''),
                 constraint: 'WLAggregateItemCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({

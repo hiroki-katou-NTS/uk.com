@@ -15,6 +15,7 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
             var value = data.value;
+            var name = data.name !== undefined ? ko.unwrap(data.name) : "";
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
             var ISOFormat = text.getISOFormat(dateFormat);
@@ -73,7 +74,7 @@ module nts.uk.ui.koExtentions {
                                 .fiscalMonthsMode(data.fiscalMonthsMode)
                                 .setDefaultCss(data.defaultClass || "");
 
-            var validator = new validation.TimeValidator(constraintName, {required: required, outputFormat: valueFormat, valueType: valueType});
+            var validator = new validation.TimeValidator(name, constraintName, {required: required, outputFormat: valueFormat, valueType: valueType});
             $input.on("change", (e) => {
                 var newText = $input.val();
                 var result = validator.validate(newText);

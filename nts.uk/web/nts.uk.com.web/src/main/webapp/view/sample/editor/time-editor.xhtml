@@ -17,6 +17,8 @@
 					nts.uk.shr.com.primitive.sample.PersonalWageCode
 					nts.uk.shr.com.primitive.sample.CommonAmount
 					nts.arc.time.YearMonth
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+					nts.uk.shr.com.primitive.sample.SampleTimeClock
    				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="../catalog/catalog.js" />
@@ -34,11 +36,11 @@
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						<h3>Date (YYYY/MM/DD)</h3>
-						<input data-name="Date Editor" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date', enable: enable, readonly: readonly, required: false}" />
+						<input data-name="Date Editor" data-bind="ntsTimeEditor: { name: 'dateEditor', value: date, inputFormat: 'date', enable: enable, readonly: readonly, required: true }" />
 						<h3>Time Of Day(HH:mm)</h3>
-						<input data-name="Time Of Days Editor" data-bind="ntsTimeEditor: {value: timeOfDay, inputFormat: 'time', enable: enable, readonly: readonly, required: true}" />
+						<input data-name="Time Of Days Editor" data-bind="ntsTimeEditor: {name: 'Clock', constraint:'SampleTimeClock', value: timeOfDay, inputFormat: 'time', enable: enable, readonly: readonly, required: true}" />
 						<h3>Time (HH:mm)</h3>
-						<input data-name="Time Editor" data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', mode: 'time', enable: enable, readonly: readonly, required: true}" />
+						<input data-name="Time Editor" data-bind="ntsTimeEditor: {name: 'Duration', constraint: 'SampleTimeDuration', value: time, inputFormat: 'time', mode: 'time', enable: enable, readonly: readonly, required: true}" />
 						<hr/>
 						<!-- Binding with Object -->
 						<div data-bind="with: yearmontheditor">

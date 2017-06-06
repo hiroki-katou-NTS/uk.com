@@ -5,10 +5,13 @@ __viewContext.ready(function () {
         numbereditor2: any;
         currencyeditor: any;
         currencyeditor2: any;
+        valueHalfInt: KnockoutObservable<number>;
         
         constructor() {
             var self = this;
             self.value = ko.observable(123);
+            self.valueHalfInt = ko.observable();
+            
             // NumberEditor
             self.numbereditor = {
                 value: ko.observable(),
