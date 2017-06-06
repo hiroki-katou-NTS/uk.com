@@ -2178,7 +2178,7 @@ button.nts-switch-button[disabled]:hover {
   background-position: -80px -224px;
 }
 /* line 43, ../sass/components/_dialog.scss */
-.ui-dialog.no-close .ui-dialog-titlebar-close {
+.ui-dialog.no-close-btn .ui-dialog-titlebar-close {
   display: none;
 }
 /* line 47, ../sass/components/_dialog.scss */
