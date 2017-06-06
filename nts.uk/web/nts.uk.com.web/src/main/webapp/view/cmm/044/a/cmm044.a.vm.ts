@@ -93,14 +93,14 @@ module cmm044.a.viewmodel {
                 if (i < 10) {
                     self.empItems.push(new PersonModel({
                         personId: 'A0000000000000000000000000000000000' + i,
-                        code: 'A00000000000' + i,
+                        code: 'A00000000' + i,
                         name: '日通　社員' + i,
                         baseDate: 20170105
                     }));
                 } else {
                     self.empItems.push(new PersonModel({
                         personId: 'A0000000000000000000000000000000000' + i,
-                        code: 'A0000000000' + i,
+                        code: 'A0000000' + i,
                         name: '日通　社員' + i,
                         baseDate: 20170105
                     }));
@@ -114,7 +114,7 @@ module cmm044.a.viewmodel {
         }
         openDDialog() {
             let self = this;
-            nts.uk.ui.windows.sub.modal('/view/qrm/001/b/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/cmm/044/b/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
 
