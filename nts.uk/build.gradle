@@ -105,7 +105,7 @@ subprojects {
 	}
 }
 
-project (':shr:nts.uk.shr.com') {
+project (':uk.base:shr:nts.uk.shr.com') {
 	dependencies {
 		compile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
@@ -125,59 +125,59 @@ project (':shr:nts.uk.shr.com') {
 	}
 }
 
-project (':shr:nts.uk.shr.ws') {
+project (':uk.base:shr:nts.uk.shr.ws') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.find')
 	}
 }
 
-project (':shr:nts.uk.shr.find') {
+project (':uk.base:shr:nts.uk.shr.find') {
 	dependencies {
 	}
 }
 
-project (':ctx:basic:nts.uk.ctx.basic.ws') {
+project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.ws') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:basic:nts.uk.ctx.basic.app')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.com:com.ctx:basic:nts.uk.ctx.basic.app')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.dom') {
+project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.dom') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.app') {
+project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.app') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
-		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.find')
+		compile project(':uk.com:com.ctx:basic:nts.uk.ctx.basic.dom')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.infra') {
+project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.infra') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.com:com.ctx:basic:nts.uk.ctx.basic.dom')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.ac') {
+project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.ac') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.com:com.ctx:basic:nts.uk.ctx.basic.dom')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.pub') {
+project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.pub') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:basic:nts.uk.ctx.basic.pubimp') {
+project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.pubimp') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:basic:nts.uk.ctx.basic.pub')
-		compile project(':ctx:basic:nts.uk.ctx.basic.dom')
-		compile project(':ctx:basic:nts.uk.ctx.basic.infra')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.com:com.ctx:basic:nts.uk.ctx.basic.pub')
+		compile project(':uk.com:com.ctx:basic:nts.uk.ctx.basic.dom')
+		compile project(':uk.com:com.ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
 
@@ -186,169 +186,169 @@ project (':ctx:basic:nts.uk.ctx.basic.pubimp') {
 
 //========================sys:portal　↓=====================================
 
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.ws') {
+project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.app')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.app')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.dom') {
+project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.app') {
+project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.app') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.find')
+		compile project(':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.infra') {
+project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.ac') {
+project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.ac') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pub') {
+project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp') {
+project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
-		compile project(':ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
+		compile project(':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		compile project(':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
 	}
 }
 //========================sys:portal ↑=====================================
 
 //=========================at:shared===================================
-project (':ctx:at:shared:nts.uk.ctx.at.shared.app') {
+project (':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.app') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.find')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
-project (':ctx:at:shared:nts.uk.ctx.at.shared.dom') {
+project (':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.dom') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:at:shared:nts.uk.ctx.at.shared.infra') {
+project (':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.infra') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
-project (':ctx:at:shared:nts.uk.ctx.at.shared.ws') {
+project (':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.ws') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.app')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.app')
 	}
 }
 
 //=========================at:schedule↓===================================
-project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ws') {
+project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.ws') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.app')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.app')
 	}
 }
-project (':ctx:at:schedule:nts.uk.ctx.at.schedule.dom') {
+project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.dom') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
-project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app') {
+project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.app') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
-		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.dom')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.find')
+		compile project(':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
-project (':ctx:at:schedule:nts.uk.ctx.at.schedule.infra') {
+project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.infra') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	}
 }
-project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ac') {
+project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.ac') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	}
 }
-project (':ctx:at:schedule:nts.uk.ctx.at.schedule.pub') {
+project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.pub') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:at:schedule:nts.uk.ctx.at.schedule.pubimp') {
+project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.pubimp') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.pub')
-		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.dom')
-		compile project(':ctx:at:schedule:nts.uk.ctx.at.schedule.infra')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.pub')
+		compile project(':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
+		compile project(':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
 	}
 }
 //=========================at:schedule↑=====================================
 
 //=========================at:record↓===================================
-project (':ctx:at:record:nts.uk.ctx.at.record.ws') {
+project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.ws') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:record:nts.uk.ctx.at.record.app')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:record:nts.uk.ctx.at.record.app')
 	}
 }
-project (':ctx:at:record:nts.uk.ctx.at.record.dom') {
+project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.dom') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
-project (':ctx:at:record:nts.uk.ctx.at.record.app') {
+project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.app') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
-		compile project(':ctx:at:record:nts.uk.ctx.at.record.dom')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.find')
+		compile project(':uk.at:at.ctx:record:nts.uk.ctx.at.record.dom')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
-project (':ctx:at:record:nts.uk.ctx.at.record.infra') {
+project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.infra') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:record:nts.uk.ctx.at.record.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:record:nts.uk.ctx.at.record.dom')
 	}
 }
-project (':ctx:at:record:nts.uk.ctx.at.record.ac') {
+project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.ac') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:record:nts.uk.ctx.at.record.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:record:nts.uk.ctx.at.record.dom')
 	}
 }
-project (':ctx:at:record:nts.uk.ctx.at.record.pub') {
+project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.pub') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:at:record:nts.uk.ctx.at.record.pubimp') {
+project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.pubimp') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:at:record:nts.uk.ctx.at.record.pub')
-		compile project(':ctx:at:record:nts.uk.ctx.at.record.dom')
-		compile project(':ctx:at:record:nts.uk.ctx.at.record.infra')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.at:at.ctx:record:nts.uk.ctx.at.record.pub')
+		compile project(':uk.at:at.ctx:record:nts.uk.ctx.at.record.dom')
+		compile project(':uk.at:at.ctx:record:nts.uk.ctx.at.record.infra')
 	}
 }
 //=========================at:record↑=====================================
@@ -356,148 +356,148 @@ project (':ctx:at:record:nts.uk.ctx.at.record.pubimp') {
 
 
 
-project (':ctx:pr:core:nts.uk.ctx.pr.core.ws') {
+project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.ws') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.app')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app')
 	}
 }
-project (':ctx:pr:core:nts.uk.ctx.pr.core.dom') {
+project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.dom') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:pr:core:nts.uk.ctx.pr.core.app') {
+project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
-		//compile project(':ctx:pr:core:nts.uk.ctx.pr.core.ac')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.find')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.dom')
+		//compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.ac')
 	}
 }
-project (':ctx:pr:core:nts.uk.ctx.pr.core.infra') {
+project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.app')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.dom')
 	}
 }
-project (':ctx:pr:core:nts.uk.ctx.pr.core.ac') {
+project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.ac') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
-		compile project(':ctx:basic:nts.uk.ctx.basic.pub')
-		//compile project(':ctx:basic:nts.uk.ctx.basic.pubimp')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.dom')
+		compile project(':uk.com:com.ctx:basic:nts.uk.ctx.basic.pub')
+		//compile project(':uk.com:com.ctx:basic:nts.uk.ctx.basic.pubimp')
 	}
 }
-project (':ctx:pr:core:nts.uk.ctx.pr.core.pub') {
+project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pub') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:pr:core:nts.uk.ctx.pr.core.pubimp') {
+project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pubimp') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pub')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.dom')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.infra')
-	}
-}
-
-project (':ctx:pr:formula:nts.uk.ctx.pr.formula.ws') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
-	}
-}
-project (':ctx:pr:formula:nts.uk.ctx.pr.formula.dom') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-	}
-}
-project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
-		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
-	}
-}
-project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
-	}
-}
-project (':ctx:pr:formula:nts.uk.ctx.pr.formula.ac') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pub')
-		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
-		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
-	}
-}
-project (':ctx:pr:formula:nts.uk.ctx.pr.formula.pub') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-	}
-}
-project (':ctx:pr:formula:nts.uk.ctx.pr.formula.pubimp') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.pub')
-		compile project(':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pub')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.dom')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app')
 	}
 }
 
-project (':ctx:pr:report:nts.uk.ctx.pr.report.ws') {
+project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.ws') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.app')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.app')
 	}
 }
-project (':ctx:pr:report:nts.uk.ctx.pr.report.dom') {
+project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.dom') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:pr:report:nts.uk.ctx.pr.report.app') {
+project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.app') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
-		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.dom')
-		//compile project(':ctx:pr:report:nts.uk.ctx.pr.report.ac')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.find')
+		compile project(':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.dom')
 	}
 }
-project (':ctx:pr:report:nts.uk.ctx.pr.report.infra') {
+project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.infra') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.app')
-		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.dom')
 	}
 }
-project (':ctx:pr:report:nts.uk.ctx.pr.report.ac') {
+project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.ac') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.dom')
-		compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pub')
-		//compile project(':ctx:pr:core:nts.uk.ctx.pr.core.pubimp')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pub')
+		compile project(':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.app')
+		compile project(':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.dom')
 	}
 }
-project (':ctx:pr:report:nts.uk.ctx.pr.report.pub') {
+project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.pub') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 	}
 }
-project (':ctx:pr:report:nts.uk.ctx.pr.report.pubimp') {
+project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.pubimp') {
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.pub')
-		compile project(':ctx:pr:report:nts.uk.ctx.pr.report.dom')
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.pub')
+		compile project(':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.dom')
+	}
+}
+
+project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.ws') {
+	dependencies {
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.app')
+	}
+}
+project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.dom') {
+	dependencies {
+		compile project(':uk.base:shr:nts.uk.shr.com')
+	}
+}
+project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.app') {
+	dependencies {
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.find')
+		compile project(':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.dom')
+		//compile project(':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.ac')
+	}
+}
+project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.infra') {
+	dependencies {
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.app')
+		compile project(':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.dom')
+	}
+}
+project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.ac') {
+	dependencies {
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.dom')
+		compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pub')
+		//compile project(':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pubimp')
+	}
+}
+project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.pub') {
+	dependencies {
+		compile project(':uk.base:shr:nts.uk.shr.com')
+	}
+}
+project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.pubimp') {
+	dependencies {
+		compile project(':uk.base:shr:nts.uk.shr.com')
+		compile project(':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.pub')
+		compile project(':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.dom')
 	}
 }
 
 
-project (':web:nts.uk.com.web') {
+project (':uk.com:com.web:nts.uk.com.web') {
 	apply plugin: 'war'
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
@@ -534,46 +534,46 @@ project (':web:nts.uk.com.web') {
 	}
 	
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 
-		runtime project (':ctx:basic:nts.uk.ctx.basic.ac')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.app')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.dom')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.pub')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.pubimp')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.ws')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.ac')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.app')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.dom')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.infra')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.pub')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.pubimp')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.ws')
 		
-		runtime project (':shr:nts.uk.shr.ws')
-		runtime project (':shr:nts.uk.shr.find')
+		runtime project (':uk.base:shr:nts.uk.shr.ws')
+		runtime project (':uk.base:shr:nts.uk.shr.find')
 		
 		// shr find implement
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.infra')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.pubimp')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ac')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.app')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.infra')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.pubimp')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.ac')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.pubimp')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.ac')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pubimp')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.ac')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.app')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.infra')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.pubimp')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.ac')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.app')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.infra')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.pubimp')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.ac')
 		
 
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.ac')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.app')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp')
-		runtime project (':ctx:sys:portal:nts.uk.ctx.sys.portal.ws')
+		runtime project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.ac')
+		runtime project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.app')
+		runtime project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
+		runtime project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
+		runtime project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub')
+		runtime project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp')
+		runtime project (':uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws')
 	}
 }
 //=====================nts.uk.com.js.web↓============================
-project (':web:nts.uk.com.js.web') {
+project (':uk.base:base.web:nts.uk.com.js.web') {
 	apply plugin: 'war'
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
@@ -611,16 +611,16 @@ project (':web:nts.uk.com.js.web') {
 	}
 	
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 		
 		// implement eraAdapter
-		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.infra')
 		
 	}
 }
 //=====================nts.uk.com.js.web↑============================
 //=====================nts.uk.at.web↓==============================
-project (':web:nts.uk.at.web') {
+project (':uk.at:at.web:nts.uk.at.web') {
 	apply plugin: 'war'
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
@@ -656,36 +656,36 @@ project (':web:nts.uk.at.web') {
 	}
 	
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.app')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.dom')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.infra')
-		compile project(':ctx:at:shared:nts.uk.ctx.at.shared.ws')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.app')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.infra')
+		compile project(':uk.at:at.ctx:shared:nts.uk.ctx.at.shared.ws')
 		
-		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ac')
-		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.app')
-		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.dom')
-		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.infra')
-		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.pub')
-		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.pubimp')
-		runtime project (':ctx:at:schedule:nts.uk.ctx.at.schedule.ws')
+		runtime project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.ac')
+		runtime project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.app')
+		runtime project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
+		runtime project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
+		runtime project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.pub')
+		runtime project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.pubimp')
+		runtime project (':uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.ws')
 		
-		runtime project (':ctx:at:record:nts.uk.ctx.at.record.ac')
-		runtime project (':ctx:at:record:nts.uk.ctx.at.record.app')
-		runtime project (':ctx:at:record:nts.uk.ctx.at.record.dom')
-		runtime project (':ctx:at:record:nts.uk.ctx.at.record.infra')
-		runtime project (':ctx:at:record:nts.uk.ctx.at.record.pub')
-		runtime project (':ctx:at:record:nts.uk.ctx.at.record.pubimp')
-		runtime project (':ctx:at:record:nts.uk.ctx.at.record.ws')
+		runtime project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.ac')
+		runtime project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.app')
+		runtime project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.dom')
+		runtime project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.infra')
+		runtime project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.pub')
+		runtime project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.pubimp')
+		runtime project (':uk.at:at.ctx:record:nts.uk.ctx.at.record.ws')
 
 		// implement eraAdapter
-		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
 //=====================nts.uk.at.web↑==============================
-project (':web:nts.uk.pr.web') {
+project (':uk.pr:pr.web:nts.uk.pr.web') {
 	apply plugin: 'war'
 	apply plugin: "de.richsource.gradle.plugins.typescript"
 	war {
@@ -720,87 +720,87 @@ project (':web:nts.uk.pr.web') {
 	}
 	
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile project(':uk.base:shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ac')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.dom')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.infra')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.pub')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.pubimp')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ws')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.ac')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.dom')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pub')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pubimp')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.ws')
 
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.ac')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.app')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.dom')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.infra')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.pub')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.pubimp')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.ws')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.ac')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.app')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.dom')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.infra')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.pub')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.pubimp')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.ws')
 
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.ac')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.pub')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.pubimp')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.ws')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.ac')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.app')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.dom')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.infra')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.pub')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.pubimp')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.ws')
 		
-		runtime project (':screen:pr:nts.uk.screen.pr.ws')
-		runtime project (':screen:pr:nts.uk.screen.pr.app')
-		runtime project (':screen:pr:nts.uk.screen.pr.infra')
+		runtime project (':uk.pr:pr.screen:nts.uk.screen.pr.ws')
+		runtime project (':uk.pr:pr.screen:nts.uk.screen.pr.app')
+		runtime project (':uk.pr:pr.screen:nts.uk.screen.pr.infra')
 		
-		runtime project (':file:pr:nts.uk.file.pr.app')
-		runtime project (':file:pr:nts.uk.file.pr.infra')
+		runtime project (':uk.pr:pr.file:nts.uk.file.pr.app')
+		runtime project (':uk.pr:pr.file:nts.uk.file.pr.infra')
 		
 		// to provide PrimitiveValue
-		runtime project (':ctx:basic:nts.uk.ctx.basic.dom')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.pub')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.pubimp')
-		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.dom')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.pub')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.pubimp')
+		runtime project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
 
 
-project (':screen:pr:nts.uk.screen.pr.ws') {
+project (':uk.pr:pr.screen:nts.uk.screen.pr.ws') {
 	dependencies {
-		compile project (':screen:pr:nts.uk.screen.pr.app')
-		compile project (':file:pr:nts.uk.file.pr.app')
+		compile project (':uk.pr:pr.screen:nts.uk.screen.pr.app')
+		compile project (':uk.pr:pr.file:nts.uk.file.pr.app')
 	}
 }
 
-project (':screen:pr:nts.uk.screen.pr.app') {
+project (':uk.pr:pr.screen:nts.uk.screen.pr.app') {
 	dependencies {
-	 	compile project (':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+	 	compile project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.dom')
 	}
 }
 
-project (':screen:pr:nts.uk.screen.pr.infra') {
+project (':uk.pr:pr.screen:nts.uk.screen.pr.infra') {
 	dependencies {
-		compile project (':screen:pr:nts.uk.screen.pr.app')
+		compile project (':uk.pr:pr.screen:nts.uk.screen.pr.app')
 	}
 }
 
-project (':file:pr:nts.uk.file.pr.app') {
+project (':uk.pr:pr.file:nts.uk.file.pr.app') {
 	dependencies {
-		compile project (':screen:pr:nts.uk.screen.pr.app')
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
-		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.app')
-		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
- 	 	compile project (':ctx:pr:core:nts.uk.ctx.pr.core.dom')
- 	 	compile project (':ctx:pr:report:nts.uk.ctx.pr.report.dom')
- 	 	compile project (':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
+		compile project (':uk.pr:pr.screen:nts.uk.screen.pr.app')
+		runtime project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app')
+		runtime project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.app')
+		runtime project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.app')
+ 	 	compile project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.dom')
+ 	 	compile project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.dom')
+ 	 	compile project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.dom')
 	}
 }
 
-project (':file:pr:nts.uk.file.pr.infra') {
+project (':uk.pr:pr.file:nts.uk.file.pr.infra') {
 	dependencies {
-		compile project (':file:pr:nts.uk.file.pr.app')
-		compile project (':ctx:pr:core:nts.uk.ctx.pr.core.infra')
-		compile project (':ctx:pr:report:nts.uk.ctx.pr.report.infra')
-		compile project (':ctx:pr:formula:nts.uk.ctx.pr.formula.infra')
-		compile project (':ctx:basic:nts.uk.ctx.basic.infra')
+		compile project (':uk.pr:pr.file:nts.uk.file.pr.app')
+		compile project (':uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app')
+		compile project (':uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.infra')
+		compile project (':uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.infra')
+		compile project (':uk.com:com.ctx:basic:nts.uk.ctx.basic.infra')
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
