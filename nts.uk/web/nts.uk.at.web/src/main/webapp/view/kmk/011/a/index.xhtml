@@ -22,10 +22,10 @@
 				<!-- A1_1: Button Registration -->
 				<button id="btnSave"
 					class="button proceed separate-button fix-button"
-					data-bind="click: Registration,enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KMK011_3')}</button>
+					data-bind="click: Registration,enable: $root.errors.isEmpty"
+					tabindex="1">#{i18n.getText('KMK011_3')}</button>
 				<hr />
 			</div>
-
 			<div id="content-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div class="cf">
@@ -39,7 +39,7 @@
 									columns: columns,
 									multiple: false,
 									value: currentCode,
-									enable: true}" >
+									enable: true}">
 							</table>
 						</div>
 					</div>
@@ -72,10 +72,10 @@
 								<!--A3_3 -->
 								<div data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName'  }">#{i18n.getText('KMK011_9')}</div>
 							</td>
-							<td style = "padding-left: 5px">
-								<!-- A3_4: Divergence Time Name -->
-								 <input tabindex="4"
-								class="nts-input" id="itemname" 
+							<td style="padding-left: 5px">
+								<!-- A3_4: Divergence Time Name --> 
+								<input tabindex="4"
+								class="nts-input" id="itemname" data-name='KMK011_30'
 								data-bind="ntsTextEditor:{
                                          value: divTimeName,
                                          required: true,
@@ -88,13 +88,13 @@
 								<!-- A3_5 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_10')}</div>
 							</td>
-							<td style = "padding-left: 5px">
+							<td style= "padding-left: 5px">
 								<!-- A3_6 Open dialog 021-->
 								<button tabindex="5"
 									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
 								<!-- A3_7: Time item name --> 
-								<input class="nts-input" id = "inpName"
-								style="width: 350px"
+								<input class="nts-input"
+								id="inpName" style="width: 350px" data-name='KMK011_31'
 								data-bind="ntsTextEditor:{
 										value: timeItemName,
 										required: true,
@@ -107,10 +107,12 @@
 								<!-- A3_8: Label -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_12')}</div>
 							</td>
-							<td style = "padding-left: 5px">
+							<td style="padding-left: 5px">
 								<!-- A3_9: Alarm time --> 
-								<input tabindex="6" class="nts-validate" id="inpAlarmTime" style="width: 50px"
-								data-name="AlarmTime" data-bind="ntsTimeEditor: {
+								<input tabindex="6"
+								class="nts-validate" id="inpAlarmTime" style="width: 50px"
+								data-name="KMK011_32"
+								data-bind="ntsTimeEditor: {
 									value: alarmTime,
 									inputFormat: 'time', 
 									mode: 'time', 
@@ -123,10 +125,11 @@
 								<!-- A3_10: Label -->
 								<div class="row" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_13')}</div>
 							</td>
-							<td style = "padding-left: 5px">
+							<td style="padding-left: 5px">
 								<!-- A3_11: Error time --> 
-                                 <input tabindex="7" style="width: 50px"
-                                 data-name="Time Editor" data-bind="ntsTimeEditor: {
+								<input tabindex="7"
+								style="width: 50px" data-name="KMK011_33"
+								data-bind="ntsTimeEditor: {
 									value: errTime,
 									inputFormat: 'time', 
 									mode: 'time', 
