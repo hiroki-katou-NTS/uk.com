@@ -198,9 +198,9 @@ module nts.uk.pr.view.kmf001.j {
 
                 if (!self.isComManaged()) {
                     // Show msg #Msg_146
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_146')).then(function() {
-                        $("#sidebar").ntsSideBar("active", 0);
-                    });
+                    //                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_146')).then(function() {
+                    //                        $("#sidebar").ntsSideBar("active", 0);
+                    //                    });
                 }
             }
 
