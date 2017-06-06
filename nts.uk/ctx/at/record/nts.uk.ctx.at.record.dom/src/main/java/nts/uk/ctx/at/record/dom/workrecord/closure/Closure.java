@@ -12,23 +12,27 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class Closure.
  */
+// 締め
 @Getter
-public class Closure extends AggregateRoot{
-	
+public class Closure extends AggregateRoot {
+
 	/** The company id. */
+	// 会社ID
 	private CompanyId companyId;
-	
+
 	/** The closure id. */
-	private String closureId;
-	
+	// 締めＩＤ
+	private Integer closureId;
+
 	/** The use classification. */
+	// 使用区分
 	private UseClassification useClassification;
-	
-	
+
 	/** The month. */
+	// 当月
 	private ClosureMonth month;
 
-	
-	/** The closure historries. */
-	private List<ClosureHistorry> closureHistorries;
+	/** The closure histories. */
+	// 締め変更履歴
+	private List<ClosureHistory> closureHistories;
 }
