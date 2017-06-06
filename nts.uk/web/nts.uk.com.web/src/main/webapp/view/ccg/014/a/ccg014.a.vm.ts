@@ -4,6 +4,7 @@ module ccg014.a.viewmodel {
     import errors = nts.uk.ui.errors;
     import resource = nts.uk.resource;
     import util = nts.uk.util;
+    import block = nts.uk.ui.block;
 
     export class ScreenModel {
         // TitleMenu List
@@ -26,7 +27,7 @@ module ccg014.a.viewmodel {
                 self.changePreviewIframe(self.selectedTitleMenu().layoutID());
             });
             self.columns = ko.observableArray([
-                { headerText: resource.getText('CCG014_11'), key: 'titleMenuCD', width: 70 },
+                { headerText: resource.getText('CCG014_11'), key: 'titleMenuCD', width: 45 },
                 { headerText: resource.getText('CCG014_12'), key: 'name', width: 260 }
             ]);
             // TitleMenu Details
@@ -44,7 +45,9 @@ module ccg014.a.viewmodel {
         /** Start Page */
         startPage(): JQueryPromise<any> {
             var dfd = this.reloadData();
+            block.invisible();
             dfd.done(() => {
+                block.clear();
                 this.selectTitleMenuByIndex(0);
             });
             return dfd;
@@ -65,6 +68,7 @@ module ccg014.a.viewmodel {
             var self = this;
             var titleMenu = ko.mapping.toJS(self.selectedTitleMenu);
             var titleMenuCD = titleMenu.titleMenuCD;
+            block.invisible();
             $(".nts-input").trigger("validate");
             _.defer(() => {
                 if (!$(".nts-input").ntsError("hasError")) {
@@ -76,12 +80,16 @@ module ccg014.a.viewmodel {
                             });
                         }).fail((res) => {
                             nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
+                        }).always(() => {
+                            block.clear();
                         });
                     }
                     else {
                         service.updateTitleMenu(titleMenu).done((data) => {
                             self.reloadData();
                             nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        }).always(() => {
+                            block.clear();
                         });
                     }
                 }
@@ -93,6 +101,7 @@ module ccg014.a.viewmodel {
             var self = this;
             if (self.selectedTitleMenuCD() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                    block.invisible();
                     service.deleteTitleMenu(self.selectedTitleMenuCD()).done(() => {
                         var index = _.findIndex(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
                         index = _.min([self.listTitleMenu().length - 2, index]);
@@ -101,6 +110,8 @@ module ccg014.a.viewmodel {
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_16" })
+                    }).always(() => {
+                        block.clear();
                     });
                 })
             }
@@ -111,7 +122,7 @@ module ccg014.a.viewmodel {
             var self = this;
             var selectTitleMenu = _.find(self.listTitleMenu(), ['titleMenuCD', self.selectedTitleMenu().titleMenuCD()]);
             windows.setShared("copyData", selectTitleMenu);
-            windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: 'タイトルメニューのコピー', dialogClass: "no-close" }).onClosed(() => {
+            windows.sub.modal("/view/ccg/014/b/index.xhtml", { title: nts.uk.resource.getText("CCG014_16"), dialogClass: "no-close" }).onClosed(() => {
                 var copiedTitleMenuCD = windows.getShared("copyTitleMenuCD");
                 if (copiedTitleMenuCD) {
                     self.reloadData().done(() => {
@@ -131,7 +142,7 @@ module ccg014.a.viewmodel {
                 pgType: 1
             };
             windows.setShared("layout", layoutInfo, false);
-            windows.sub.modal("/view/ccg/031/a/index.xhtml", { title: 'レイアウト設定', dialogClass: "no-close" }).onClosed(() => {
+            windows.sub.modal("/view/ccg/031/a/index.xhtml", { title: nts.uk.resource.getText("CCG031_1"), dialogClass: "no-close" }).onClosed(() => {
                 let returnInfo: commonModel.TransferLayoutInfo = windows.getShared("layout");
                 self.selectedTitleMenu().layoutID(returnInfo.layoutID);
                 _.find(self.listTitleMenu(), ["titleMenuCD", returnInfo.parentCode]).layoutID = returnInfo.layoutID;
@@ -141,7 +152,7 @@ module ccg014.a.viewmodel {
 
         /** Open FlowMenu Setting(030A Dialog) */
         open030A_Dialog() {
-            windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: 'フローメニューの設定', dialogClass: "no-close" });
+            windows.sub.modal("/view/ccg/030/a/index.xhtml", { title: nts.uk.resource.getText("CCG030_1"), dialogClass: "no-close" });
         }
 
         /** Get Selected TitleMenu */

@@ -35,11 +35,14 @@ module ccg014.b.viewmodel {
         submitClickButton() {
             var self = this;
                 service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.copyName(), self.checkOverwritting()).done(() => {
+                    nts.uk.ui.block.invisible();
                     nts.uk.ui.windows.setShared("copyTitleMenuCD", self.copyTitleCD(), false);
                     self.cancel_Dialog();
                 }).fail((res) => {
                    nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
-                });
+                }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
             
         }
     }
