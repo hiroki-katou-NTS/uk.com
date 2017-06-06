@@ -32,12 +32,11 @@
 }
 table#table tr td {
 	padding-top: 15px;
-	margin-left: 10px;
-	min-width: 300px;
-}
-table#table tr td.content-label {
 	padding-left: 50px;
-	padding-right: 10px;
+	min-width: 200px;
+}
+table#table tr td.target-child {
+	min-width: 300px !important;
 }
 .hr_width {
 	width: 760px;
