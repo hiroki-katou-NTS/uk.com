@@ -58,7 +58,10 @@ module nts.uk.pr.view.kmf001.f {
             emPreApply: KnockoutObservable<number>;
             emTimeManage: KnockoutObservable<number>;
             emTimeUnit: KnockoutObservable<number>;
-
+            
+            isEmptyEmployment: KnockoutObservable<boolean>;
+            isEmManageCompen: KnockoutObservable<boolean>;
+            
             constructor() {
                 let self = this;
                 self.compenManage = ko.observable(0);
@@ -145,6 +148,11 @@ module nts.uk.pr.view.kmf001.f {
                 self.emTimeManage = ko.observable(0);
                 self.emTimeUnit = ko.observable(0);
                 
+                self.isEmptyEmployment = ko.observable(false);
+                self.isEmManageCompen = ko.computed(function(){
+                return self.emCompenManage() == UseDivision.Use;    
+                });
+                
                 self.emSelectedCode.subscribe(function(employmentCode: string){
                         self.loadEmploymentSetting(employmentCode);
                 });
@@ -163,6 +171,7 @@ module nts.uk.pr.view.kmf001.f {
                         }
                         else {
                             dfd.resolve();
+                            self.isEmptyEmployment(true);
                         }
                     });
                 return dfd.promise();
@@ -284,12 +293,12 @@ module nts.uk.pr.view.kmf001.f {
 
             private loadToScreen(data: any) {
                 let self = this;
-                self.compenManage(data.isManaged.value);
+                self.compenManage(data.isManaged);
 
-                self.expirationDateCode(data.normalVacationSetting.expirationTime.value);
-                self.compenPreApply(data.normalVacationSetting.preemptionPermit.value);
-                self.compenTimeManage(data.normalVacationSetting.isManageByTime.value);
-                self.timeUnitCode(data.normalVacationSetting.digestiveUnit.value);
+                self.expirationDateCode(data.normalVacationSetting.expirationTime);
+                self.compenPreApply(data.normalVacationSetting.preemptionPermit);
+                self.compenTimeManage(data.normalVacationSetting.isManageByTime);
+                self.timeUnitCode(data.normalVacationSetting.digestiveUnit);
 
                 //if check f3
                 if (data.occurrenceVacationSetting.transferSettingDayOffTime.useDivision == true) {
@@ -300,7 +309,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.checkWorkTime(false);
                 }
                 //set data
-                self.selectedOfWorkTime(data.occurrenceVacationSetting.transferSettingDayOffTime.transferDivision.value);
+                self.selectedOfWorkTime(data.occurrenceVacationSetting.transferSettingDayOffTime.transferDivision);
                 self.workOneDay(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingDayOffTime.oneDayTime));
                 self.workHalfDay(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingDayOffTime.halfDayTime));
                 self.workAll(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingDayOffTime.certainTime));
@@ -312,7 +321,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.checkOverTime(false);
                 }
                 //set data
-                self.selectedOfOverTime(data.occurrenceVacationSetting.transferSettingOverTime.transferDivision.value);
+                self.selectedOfOverTime(data.occurrenceVacationSetting.transferSettingOverTime.transferDivision);
                 self.overOneDay(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingOverTime.oneDayTime));
                 self.overHalfDay(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingOverTime.halfDayTime));
                 self.overAll(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingOverTime.certainTime));
@@ -367,7 +376,7 @@ module nts.uk.pr.view.kmf001.f {
                             useDivision: self.isManageCompen()?self.checkOverTime():data.occurrenceVacationSetting.transferSettingOverTime.useDivision,
                             oneDayTime: self.enableDesignOver()?self.convertTime(self.overOneDay()):data.occurrenceVacationSetting.transferSettingOverTime.oneDayTime,
                             halfDayTime: self.enableDesignOver()?self.convertTime(self.overHalfDay()):data.occurrenceVacationSetting.transferSettingOverTime.halfDayTime,
-                            transferDivision: self.enableOverArea()?self.selectedOfOverTime():data.occurrenceVacationSetting.transferSettingOverTime.transferDivision.value,
+                            transferDivision: self.enableOverArea()?self.selectedOfOverTime():data.occurrenceVacationSetting.transferSettingOverTime.transferDivision,
                             compensatoryOccurrenceDivision: OccurrenceDivision.OverTime
                         },
                         transferSettingDayOffTime: {
@@ -375,7 +384,7 @@ module nts.uk.pr.view.kmf001.f {
                             useDivision: self.isManageCompen()?self.checkWorkTime():data.occurrenceVacationSetting.transferSettingDayOffTime.useDivision,
                             oneDayTime: self.enableDesignWork()?self.convertTime(self.workOneDay()):data.occurrenceVacationSetting.transferSettingDayOffTime.oneDayTime,
                             halfDayTime: self.enableDesignWork()?self.convertTime(self.workHalfDay()):data.occurrenceVacationSetting.transferSettingDayOffTime.halfDayTime,
-                            transferDivision: self.enableWorkArea()?self.selectedOfWorkTime():data.occurrenceVacationSetting.transferSettingDayOffTime.transferDivision.value,
+                            transferDivision: self.enableWorkArea()?self.selectedOfWorkTime():data.occurrenceVacationSetting.transferSettingDayOffTime.transferDivision,
                             compensatoryOccurrenceDivision: OccurrenceDivision.DayOffTime
                         }
                     }

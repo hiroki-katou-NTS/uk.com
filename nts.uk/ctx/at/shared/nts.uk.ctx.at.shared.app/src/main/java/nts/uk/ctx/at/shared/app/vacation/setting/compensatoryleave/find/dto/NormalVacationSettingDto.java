@@ -13,35 +13,35 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacatio
 public class NormalVacationSettingDto implements NormalVacationSetMemento {
 
 	/** The expiration time. */
-	public ExpirationTime expirationTime;
+	public Integer expirationTime;
 
 	/** The preemption permit. */
-	public ApplyPermission preemptionPermit;
+	public Integer preemptionPermit;
 
 	/** The is manage by time. */
-	public ManageDistinct isManageByTime;
+	public Integer isManageByTime;
 
 	/** The digestive unit. */
-	public TimeVacationDigestiveUnit digestiveUnit;
+	public Integer digestiveUnit;
 
 	@Override
 	public void setExpirationTime(ExpirationTime expirationTime) {
-		this.expirationTime = expirationTime;
+		this.expirationTime = expirationTime.value;
 	}
 
 	@Override
 	public void setPreemptionPermit(ApplyPermission preemptionPermit) {
-		this.preemptionPermit = preemptionPermit;
+		this.preemptionPermit = preemptionPermit.value;
 	}
 
 	@Override
 	public void setIsManageByTime(ManageDistinct isManageByTime) {
-		this.isManageByTime = isManageByTime;
+		this.isManageByTime = isManageByTime.value;
 	}
 
 	@Override
 	public void setDigestiveUnit(TimeVacationDigestiveUnit digestiveUnit) {
-		this.digestiveUnit = digestiveUnit;
+		this.digestiveUnit = digestiveUnit.value;
 	}
 
 }
