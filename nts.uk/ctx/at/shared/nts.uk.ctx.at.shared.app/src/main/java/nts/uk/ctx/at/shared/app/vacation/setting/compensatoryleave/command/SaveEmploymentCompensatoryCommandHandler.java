@@ -25,7 +25,7 @@ public class SaveEmploymentCompensatoryCommandHandler extends CommandHandler<Sav
 		String companyId = AppContexts.user().companyId();
 		CompensatoryLeaveEmSetting domain = command.toDomain(companyId);
 
-		CompensatoryLeaveEmSetting findItem = compensLeaveEmSetRepository.find(companyId);
+		CompensatoryLeaveEmSetting findItem = compensLeaveEmSetRepository.find(companyId,domain.getEmploymentCode().v());
 		if (findItem != null) {
 			compensLeaveEmSetRepository.update(domain);
 		} else {

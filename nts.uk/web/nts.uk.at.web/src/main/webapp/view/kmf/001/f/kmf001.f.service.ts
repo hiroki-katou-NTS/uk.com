@@ -71,8 +71,8 @@ module nts.uk.pr.view.kmf001.f {
             return nts.uk.request.ajax(servicePath.updateEmploySetting,command);
         }
 
-        export function findEmploymentSetting(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findEmploymentSetting);
+        export function findEmploymentSetting(employmentCode: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findEmploymentSetting+"/"+employmentCode);
         }
  
         /**
