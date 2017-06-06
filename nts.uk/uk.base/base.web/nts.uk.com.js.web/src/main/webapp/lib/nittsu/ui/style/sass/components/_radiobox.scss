@@ -3,8 +3,7 @@
 .radio-wrapper {
 	
 	&:focus {
-		box-shadow: 0 0 1px 1px $focused_color;
-		border-radius: 2px;
+	  	outline: 1px solid #0096f2;
 	}
 }
 .ntsRadioBox {

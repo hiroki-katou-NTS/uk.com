@@ -130,10 +130,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalfNumeric(text: string) {
-            return  { 
-                        probe: regexp.allHalfNumeric.test(text),
-                        messageId: 'FND_E_NUMERIC'
-                    };
+            return regexp.allHalfNumeric.test(text);
         }
 
         /**
@@ -141,10 +138,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalfAlphabet(text: string) {
-            return {
-                        probe: regexp.allHalfAlphabet.test(text),
-                        messageId: 'NO_MESSAGE'
-                    };
+            return regexp.allHalfAlphabet.test(text);
         }
  
         /**
@@ -152,10 +146,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalfAlphanumeric(text: string) {
-            return {
-                        probe: regexp.allHalfAlphanumeric.test(text),
-                        messageId: 'FND_E_ALPHANUMERIC'
-                    };
+            return regexp.allHalfAlphanumeric.test(text);
         }
 
         /**
@@ -163,10 +154,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalfKatakana(text: string) {
-            return {
-                        probe: regexp.allHalfKatakanaReg.test(text),
-                        messageId: 'NO_MESSAGE' 
-                    };
+            return regexp.allHalfKatakanaReg.test(text);
         }
 
         /**
@@ -174,10 +162,7 @@
          * @param text 解析対象の文字列
          */
         export function allFullKatakana(text: string) {
-            return {
-                        probe: regexp.allFullKatakanaReg.test(text),
-                        messageId: 'FND_E_KANA'
-                    };
+            return regexp.allFullKatakanaReg.test(text);
         }
 
         /**
@@ -185,10 +170,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalf(text: string) {
-            return {
-                        probe: text.length === countHalf(text),
-                        messageId: 'FND_E_ANYHALFWIDTH'
-                    };
+            return text.length === countHalf(text);
         }
 
         /**
@@ -196,10 +178,7 @@
          * @param text 解析対象の文字列
          */
         export function allHiragana(text: string) {
-            return { 
-                        probe: regexp.allHiragana.test(text),
-                        messageId: 'NO_MESSAGE'
-                    };
+            return regexp.allHiragana.test(text);
         }
 
         /**
@@ -207,10 +186,7 @@
          * @param text 解析対象の文字列
          */
         export function allKatakana(text: string) {
-            return {
-                        probe: regexp.allFullKatakanaReg.test(text),
-                        messageId: 'NO_MESSAGE'
-                    };
+            return regexp.allFullKatakanaReg.test(text);
         }
         
         /**
@@ -219,12 +195,8 @@
          */
         export function halfInt(text: string) {
             var val = parseFloat(text);
-            var probe = false;
-            if (val !== NaN && (val * 2) % 1 === 0) probe = true;
-            return {
-                        probe: probe,
-                        messageId: 'FND_E_HALFINT'
-                    };
+            if (val !== NaN && (val * 2) % 1 === 0) return true;
+            return false;
         }
 
         /**
@@ -376,12 +348,12 @@
         export class CharType {
             viewName: string;
             width: number;
-            validator: (text: string) => any;
+            validator: (text: string) => boolean;
 
             constructor(
                 viewName: string,
                 width: number,
-                validator: (text: string) => any) {
+                validator: (text: string) => boolean) {
 
                 this.viewName = viewName;
                 this.width = width;
@@ -390,14 +362,11 @@
 
             validate(text: string) {
                 var result = new ui.validation.ValidationResult();
-                let validateResult = this.validator(text);
-                if (validateResult.probe) {
-                    result.isValid = true;
-                    result.errorMessage = validateResult.messageId;
+                if (this.validator(text)) {
+                    return true;
                 } else {
-                    result.fail(validateResult.messageId);
+                    return false;
                 }
-                return result;
             }
 
             buildConstraintText(maxLength: number) {

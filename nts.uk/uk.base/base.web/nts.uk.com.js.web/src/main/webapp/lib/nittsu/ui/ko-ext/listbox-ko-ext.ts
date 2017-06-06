@@ -160,15 +160,13 @@ module nts.uk.ui.koExtentions {
                     
                     document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
                 }
-                
                 container.data("chaninged", false);
                 if(!_.isEqual(itemSelected, data.value())){
                     data.value(itemSelected);        
                 }
-                
-                container.data("ui-changed", true);
             });
             container.setupSearchScroll("igGrid", true); 
+            
             container.data("multiple", isMultiSelect);
             $("#" + gridId + "_container").find("#" + gridId + "_headers").closest("tr").hide();
             $("#" + gridId + "_container").height($("#" + gridId + "_container").height() - gridHeaderHeight);
@@ -205,7 +203,7 @@ module nts.uk.ui.koExtentions {
             
             container.data("enable", enable);
             
-            if (!((container.attr("filtered") === true && container.attr("filtered") === "true") || container.data("ui-changed") === true)) {
+            if (container.attr("filtered") !== true && container.attr("filtered") !== "true") {
                 let currentSources = options.slice();
                 var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -275,7 +273,7 @@ module nts.uk.ui.koExtentions {
                     container.ntsGridList('setSelected', dataValue);
                 }    
             }
-            container.data("ui-changed", false);
+
             container.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
         }
     }

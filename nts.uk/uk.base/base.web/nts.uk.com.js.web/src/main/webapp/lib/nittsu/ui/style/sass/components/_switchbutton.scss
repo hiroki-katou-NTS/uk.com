@@ -4,21 +4,33 @@
 @import "../base/_clearfix.scss";
 
 button.nts-switch-button {
-	$sbfs: $bfs * 1.4;
+	$sbfs: $bfs*1.4;
+    $_base_top: 0;
+    $_base_height: $sbfs * 3;
     
     $_base_border_bottom: 1px;
+    $_base_margin_bottom: 0;
+    $_base_active_margin_bottom: 2px;
     
-    $_base_padding_v: 2px;
+    $_base_padding_v: 3px;
     $_base_padding_h: 7px;
-    $_base_thickness: 2px;    
+    $_base_thickness: 2px;
+    $_base_font_size_ratio: 1.3;
+    
     $_base_border_bottom_width: $_base_thickness + $_base_border_bottom;
     
-   	$_border_bottom_width: $_base_border_bottom_width;
+   	$_font_size_gap: -0.1;
+   	$_padding_gap_v: -2px;
+   	$_padding_gap_h: -3px;
+   	$_thickness_gap: 0;
+   	$_height: $_base_height + $_padding_gap_v * 2 + $sbfs * $_font_size_gap;
+   	$_border_bottom_width: $_base_border_bottom_width + $_thickness_gap;
    	
-   	font-size: $sbfs;
-   	padding: $_base_padding_v $_base_padding_h;
+   	font-size: $sbfs * ($_base_font_size_ratio + $_font_size_gap);
+   	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
    	/* margin-bottom: $_border_bottom_width; */
   	box-shadow: 0 0 $button-boxshadow-base-color;
+   	height: $_height;
    	margin-left: 0px;
    	margin-right: 0px;
    	margin-bottom: 0px;
@@ -51,10 +63,5 @@ button.nts-switch-button {
 
 .switchButton-wrapper{
 	display: inline-block;  
-	padding: 0;
-	
-	&:focus {
-	  	box-shadow: 0 0 1px 1px $focused_color;
-	  	border-radius: 2px;
-	}
+	padding: 5px 5px 5px 5px;
 }
