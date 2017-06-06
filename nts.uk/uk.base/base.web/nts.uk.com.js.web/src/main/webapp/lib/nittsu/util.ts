@@ -1,4 +1,4 @@
-ï»¿module nts.uk {
+module nts.uk {
 
     export module KeyCodes {
         export const Tab = 9;
@@ -7,7 +7,7 @@
     export module util {
 
         /**
-         * å¸¸ã«trueã‚’è¿”ã™é–¢æ•°ãŒå¿…è¦ã«ãªã£ãŸã‚‰ã“ã‚Œ
+         * í‚Étrue‚ð•Ô‚·ŠÖ”‚ª•K—v‚É‚È‚Á‚½‚ç‚±‚ê
          */
         export function alwaysTrue() {
             return true;
@@ -147,8 +147,8 @@
         }
 
         /**
-         * valueMaybeEmptyãŒnullã¾ãŸã¯undefinedã®å ´åˆã€defaultValueã‚’è¿”ã™ã€‚
-         * ãã†ã§ãªã‘ã‚Œã°ã€valueMaybeEmptyã‚’è¿”ã™ã€‚
+         * valueMaybeEmpty‚ªnull‚Ü‚½‚Íundefined‚Ìê‡AdefaultValue‚ð•Ô‚·B
+         * ‚»‚¤‚Å‚È‚¯‚ê‚ÎAvalueMaybeEmpty‚ð•Ô‚·B
          */
         export function orDefault(valueMaybeEmpty: any, defaultValue: any) {
             return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
@@ -637,6 +637,21 @@
                 message = message.replace(paramRegex, text);
             }
             return message;
+        }
+        
+        export function getControlName(name: string): string {
+            var hashIdx = name.indexOf("#");
+            if (hashIdx !== 0) return name;
+            var names = name.substring(hashIdx + 2, name.length -@1).split(",");
+            if (names.length > 1) {
+                let params: Array<string> = new Array<string>(); 
+                _.forEach(names, function(n: string, idx: number) {
+                    if (idx === 0) return true;
+                    params.push(getText(n.trim()));
+                });
+                return getText(names[0], params);
+            }
+            return getText(names[0]);
         }
         
     }

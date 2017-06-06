@@ -551,6 +551,24 @@ var nts;
                 }
                 return message;
             }
+            function getControlName(name) {
+                var hashIdx = name.indexOf("#");
+                if (hashIdx !== 0)
+                    return name;
+                var names = name.substring(hashIdx + 2, name.length - );
+                split(",");
+                if (names.length > 1) {
+                    var params_1 = new Array();
+                    _.forEach(names, function (n, idx) {
+                        if (idx === 0)
+                            return true;
+                        params_1.push(getText(n.trim()));
+                    });
+                    return getText(names[0], params_1);
+                }
+                return getText(names[0]);
+            }
+            resource.getControlName = getControlName;
         })(resource = uk.resource || (uk.resource = {}));
         uk.sessionStorage = new WebStorageWrapper(window.sessionStorage);
         uk.localStorage = new WebStorageWrapper(window.localStorage);
