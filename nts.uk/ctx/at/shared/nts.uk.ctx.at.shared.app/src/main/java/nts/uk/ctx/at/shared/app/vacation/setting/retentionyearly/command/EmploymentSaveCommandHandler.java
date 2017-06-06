@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -47,7 +49,15 @@ public class EmploymentSaveCommandHandler extends CommandHandler<EmploymentSaveC
 		employmentSetting.validate();
 
 		// Update
-		this.repository.update(employmentSetting);
+//		this.repository.update(employmentSetting);
+		
+		Optional<EmploymentSetting> data = this.repository.find(companyId, employmentSetting.getEmploymentCode());
+		if(data.isPresent()) {
+			this.repository.update(employmentSetting);
+		}
+		else {
+			this.repository.insert(employmentSetting);
+		}
 	}
 
 }

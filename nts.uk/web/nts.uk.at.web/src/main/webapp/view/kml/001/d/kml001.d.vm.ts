@@ -53,7 +53,7 @@ module nts.uk.at.view.kml001.d {
                     }
                 } else {
                     if(self.deleteAble()) { 
-                        nts.uk.ui.dialog.confirm(vmbase.MSG.MSG018).ifYes(function(){
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function(){ 
                             servicebase.personCostCalculationDelete(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                                 .done(function(res: Array<any>) {
                                     nts.uk.ui.windows.setShared('isEdited', 1);

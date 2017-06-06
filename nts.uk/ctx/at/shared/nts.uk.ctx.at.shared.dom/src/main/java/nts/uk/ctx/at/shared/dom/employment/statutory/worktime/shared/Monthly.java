@@ -2,18 +2,19 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.dom.workrecord.closure;
+package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
-import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
 
 /**
- * The Class ClosureMonth.
+ * The Class Monthly.
  */
-@Getter
-public class ClosureMonth extends DomainObject{
-	
-	/** The processing date. */
-	private ClosureYearMonth processingDate;
-	
+public class Monthly extends DomainObject {
+
+	/** The time. */
+	private AttendanceTime time;
+
+	/** The monthly. */
+	private Integer monthly;
 }

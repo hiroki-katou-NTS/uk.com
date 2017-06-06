@@ -2,18 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.dom.workrecord.closure;
+package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
-import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class ClosureMonth.
+ * 通常勤務労働時間設定.
  */
-@Getter
-public class ClosureMonth extends DomainObject{
+public class NormalSetting extends DomainObject {
 	
-	/** The processing date. */
-	private ClosureYearMonth processingDate;
-	
+	/** 法定労働時間設定. */
+	private WorkingTimeSetting statutorySetting;
+
+	/** 週開始. */
+	private WeekStart weekStart;
 }
