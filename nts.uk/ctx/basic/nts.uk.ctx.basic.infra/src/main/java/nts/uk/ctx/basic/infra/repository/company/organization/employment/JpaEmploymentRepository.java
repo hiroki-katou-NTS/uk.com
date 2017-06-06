@@ -31,9 +31,11 @@ import nts.uk.ctx.basic.infra.entity.company.organization.employment.CemptEmploy
 @Stateless
 public class JpaEmploymentRepository extends JpaRepository implements EmploymentRepository {
 
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.employment.EmploymentRepository#findAll(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.employment.EmploymentRepository
+	 * #findAll(java.lang.String)
 	 */
 	@Override
 	public List<Employment> findAll(String companyId) {
@@ -41,28 +43,32 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 		CriteriaQuery<CemptEmployment> cq = bd.createQuery(CemptEmployment.class);
-		
+
 		// Root
 		Root<CemptEmployment> root = cq.from(CemptEmployment.class);
 		cq.select(root);
-		
+
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(CemptEmployment_.cemptEmploymentPK)
-				.get(CemptEmploymentPK_.companyId), companyId));
-		
+		predicateList.add(
+				bd.equal(root.get(CemptEmployment_.cemptEmploymentPK).get(CemptEmploymentPK_.cid),
+						companyId));
+
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		
+
 		// Create Query
 		TypedQuery<CemptEmployment> query = em.createQuery(cq);
-		
-		return query.getResultList().stream()
-				.map(item -> this.toDomain(item)).collect(Collectors.toList());
+
+		return query.getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.employment.EmploymentRepository#findEmployment(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.employment.EmploymentRepository
+	 * #findEmployment(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Optional<Employment> findEmployment(String companyId, String employmentCode) {

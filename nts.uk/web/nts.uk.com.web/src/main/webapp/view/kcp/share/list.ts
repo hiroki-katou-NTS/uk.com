@@ -107,7 +107,7 @@ module kcp.share.list {
         
         // Service paths.
         var servicePath = {
-            findEmployments: '???',
+            findEmployments: "basic/company/organization/employment/findAll/",
             findJobTitles: '???',
             findEmployees: '???'
         }
@@ -117,16 +117,7 @@ module kcp.share.list {
          */
         export function findEmployments(): JQueryPromise<Array<UnitModel>> {
             var dfd = $.Deferred<any>();
-            var data: Array<UnitModel> = [
-                    {code: 'EMC1', name: 'Employment 1'},
-                    {code: 'EMC2', name: 'Employment 2'},
-                    {code: 'EMC3', name: 'Employment 3'},
-                    {code: 'EMC4', name: 'Employment 4'},
-                    {code: 'EMC5', name: 'Employment 5'},
-                    {code: 'EMC6', name: 'Employment 6'},
-                ]
-            dfd.resolve(data);
-            return dfd.promise();
+            return nts.uk.request.ajax(servicePath.findEmployments);
         }
         
         export function findJobTitles(): JQueryPromise<Array<UnitModel>> {
