@@ -193,7 +193,7 @@ module kmk011.b.viewmodel {
         deleteDivReason() {
             nts.uk.ui.block.invisible();
             var self = this;
-            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function() {
+            nts.uk.ui.dialog.confirm({messageId:'Msg_18'}).ifYes(function() {
                 let divReason = self.itemDivReason();
                 self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
                 service.deleteDivReason(divReason).done(function() {

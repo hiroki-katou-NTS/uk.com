@@ -14,7 +14,6 @@ import nts.arc.layer.dom.DomainObject;
 public class ClosureMonth extends DomainObject{
 	
 	/** The processing date. */
-	private ClosureYear processingDate;
-	
+	private ClosureYearMonth processingDate;
 	
 }
