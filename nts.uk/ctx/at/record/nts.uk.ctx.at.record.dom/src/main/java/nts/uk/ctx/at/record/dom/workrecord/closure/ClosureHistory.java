@@ -5,15 +5,29 @@
 package nts.uk.ctx.at.record.dom.workrecord.closure;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class ClosureMonth.
+ * The Class ClosureHistorry.
  */
 @Getter
-public class ClosureMonth extends DomainObject{
+@Setter
+public class ClosureHistory extends DomainObject{
 	
-	/** The processing date. */
-	private ClosureYearMonth processingDate;
+	/** The close name. */
+	private CloseName closeName;
 	
+	/** The closure id. */
+	private ClosureId closureId;
+	
+	/** The closure year. */
+	private ClosureYear endDate;
+	
+	/** The closure date. */
+	private ClosureDate closureDate;
+	
+	/** The start date. */
+	private ClosureDate startDate;
+
 }
