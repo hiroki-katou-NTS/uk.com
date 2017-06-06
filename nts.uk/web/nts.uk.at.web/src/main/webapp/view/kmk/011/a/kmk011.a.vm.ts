@@ -225,8 +225,6 @@ module kmk011.a.viewmodel {
             var self = this;
             //dudt test
             nts.uk.ui.block.invisible();
-            
-//            $("#btnSave").attr("disabled","disabled");
             $('.nts-input').trigger("validate");
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
@@ -271,6 +269,7 @@ module kmk011.a.viewmodel {
                     return dfd.promise();
                 }
             })
+            nts.uk.ui.block.clear();
         }
         clearError(): void {
             if ($('.nts-validate').ntsError("hasError")==true) {

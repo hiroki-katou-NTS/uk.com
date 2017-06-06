@@ -53,16 +53,18 @@ module nts.uk.at.view.kml001.d {
                     }
                 } else {
                     if(self.deleteAble()) { 
-                        nts.uk.ui.dialog.confirm(vmbase.MSG.MSG018).ifYes(function(){
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function(){ 
                             servicebase.personCostCalculationDelete(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
-                            .done(function(res: Array<any>) {
-                                nts.uk.ui.windows.setShared('isEdited', 1);
-                                nts.uk.ui.block.clear();
-                                nts.uk.ui.windows.close();
-                            })
-                            .fail(function(res) {
-                                nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});     
-                            });
+                                .done(function(res: Array<any>) {
+                                    nts.uk.ui.windows.setShared('isEdited', 1);
+                                    nts.uk.ui.block.clear();
+                                    nts.uk.ui.windows.close(); 
+                                })
+                                .fail(function(res) {
+                                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});     
+                                }); 
+                        }).ifNo(function(){
+                            nts.uk.ui.block.clear();        
                         });
                     } else{ 
                         $("#startDateInput-input").ntsError('set', {messageId:"Msg_128"});
