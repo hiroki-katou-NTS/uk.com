@@ -39,16 +39,16 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     /** The manage type. */
     @Basic(optional = false)
     @Column(name = "MANAGE_TYPE")
-    private short manageType;
+    private Integer manageType;
     
     /** The nursing ctr. */
     @Basic(optional = false)
     @Column(name = "NURSING_CTR")
-    private short nursingCtr;
+    private Integer nursingCtr;
     
     /** The start md. */
     @Column(name = "START_MD")
-    private Integer startMd;
+    private Integer startMonthDay;
     
     /** The nursing num leave day. */
     @Column(name = "NURSING_NUM_LEAVE_DAY")

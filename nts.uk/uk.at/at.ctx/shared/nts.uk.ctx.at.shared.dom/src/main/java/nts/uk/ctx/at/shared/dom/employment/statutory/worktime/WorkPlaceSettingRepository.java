@@ -14,14 +14,14 @@ public interface WorkPlaceSettingRepository {
 	 *
 	 * @param setting the setting
 	 */
-	void create(CompanySetting setting);
+	void create(WorkPlaceSetting setting);
 
 	/**
 	 * Update.
 	 *
 	 * @param setting the setting
 	 */
-	void update(CompanySetting setting);
+	void update(WorkPlaceSetting setting);
 
 	/**
 	 * Removes the.
@@ -34,7 +34,7 @@ public interface WorkPlaceSettingRepository {
 	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @return the company setting
+	 * @return the work place setting
 	 */
-	CompanySetting find(String companyId);
+	WorkPlaceSetting find(String companyId);
 }

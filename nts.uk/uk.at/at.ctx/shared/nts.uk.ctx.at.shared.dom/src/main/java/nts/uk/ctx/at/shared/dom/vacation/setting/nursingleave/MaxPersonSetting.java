@@ -13,11 +13,15 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class MaxPersonSetting extends DomainObject {
     
-    /** The nursing number leave day. */
+    /** The nursing number leave day.
+     * 介護看護休暇日数 
+     * */
     // TODO: Not primitive 看護休暇日数
     private Integer nursingNumberLeaveDay;
     
-    /** The nursing number person. */
+    /** The nursing number person.
+     * 要介護看護人数 
+     * */
     // TODO: Not primitive 看護休暇日数
     private Integer nursingNumberPerson;
     

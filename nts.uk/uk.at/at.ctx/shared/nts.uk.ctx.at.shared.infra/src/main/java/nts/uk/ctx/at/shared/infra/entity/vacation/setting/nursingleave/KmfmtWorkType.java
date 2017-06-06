@@ -45,6 +45,11 @@ public class KmfmtWorkType extends UkJpaEntity implements Serializable {
      */
     public KmfmtWorkType() {
     }
+    
+    public KmfmtWorkType(String cid, String workTypeCode) {
+        this.cid = cid;
+        this.workTypeCode = workTypeCode;
+    }
 
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
