@@ -1,116 +1,59 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.sys.portal.infra.repository.toppage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.portal.dom.primitive.TopPageCode;
+import nts.uk.ctx.sys.portal.dom.primitive.TopPageName;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
-import nts.uk.ctx.sys.portal.infra.entity.toppage.CcgmtTopPage;
-import nts.uk.ctx.sys.portal.infra.entity.toppage.CcgmtTopPagePK;
 
-/**
- * The Class JpaTopPageRepository.
- */
 @Stateless
-public class JpaTopPageRepository extends JpaRepository implements TopPageRepository {
+public class JpaTopPageRepository implements TopPageRepository {
 
-	private final String GET_ALL_TOP_PAGE = "SELECT t FROM CcgmtTopPage t WHERE t.ccgmtTopPagePK.cid = :companyId";
-	private final String GET_BY_CODE = "SELECT b FROM CcgmtTopPage b WHERE b.ccgmtTopPagePK.cid = :companyId AND b.ccgmtTopPagePK.topPageCode = :topPageCode";
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository#findAll(java.lang.
-	 * String)
-	 */
 	@Override
 	public List<TopPage> findAll(String companyId) {
-		 return this.queryProxy().query(GET_ALL_TOP_PAGE, CcgmtTopPage.class)
-		 .setParameter("companyId", companyId)
-		 .getList(t -> toDomain(t));
+		// Mock data
+		List<TopPage> lstTopPage = new ArrayList<TopPage>();
+		lstTopPage.add(new TopPage(new TopPageCode("001"), null, new TopPageName("no"), null));
+		lstTopPage.add(new TopPage(new TopPageCode("002"), null, new TopPageName("2"), null));
+		lstTopPage.add(new TopPage(new TopPageCode("003"), null, new TopPageName("4"), null));
+		lstTopPage.add(new TopPage(new TopPageCode("004"), null, new TopPageName("5"), null));
+		return lstTopPage;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository#findByCode(java.lang.
-	 * String, java.lang.String)
-	 */
 	@Override
 	public Optional<TopPage> findByCode(String companyId, String topPageCode) {
-		 return this.queryProxy().query(GET_BY_CODE, CcgmtTopPage.class)
-		 .setParameter("companyId", companyId)
-		 .setParameter("topPageCode", topPageCode)
-		 .getSingle(t -> toDomain(t));
+		List<TopPage> lstTopPage = new ArrayList<TopPage>();
+		lstTopPage.add(new TopPage(new TopPageCode("001"), null, new TopPageName("no"), null));
+		lstTopPage.add(new TopPage(new TopPageCode("002"), null, new TopPageName("2"), null));
+		lstTopPage.add(new TopPage(new TopPageCode("003"), null, new TopPageName("4"), null));
+		lstTopPage.add(new TopPage(new TopPageCode("004"), null, new TopPageName("5"), null));
+		TopPage tp = lstTopPage.stream().filter(item -> {
+			return item.getTopPageCode().v().equals(topPageCode);
+		}).findAny().orElse(null);
+		;
+		return Optional.of(tp);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository#add(nts.uk.ctx.sys.
-	 * portal.dom.toppage.TopPage)
-	 */
 	@Override
-	public void add(TopPage topPage) {
-		CcgmtTopPage entity = toEntity(topPage);
-		this.commandProxy().insert(entity);
+	public void add(String CompanyId, TopPage topPage) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository#update(nts.uk.ctx.sys
-	 * .portal.dom.toppage.TopPage)
-	 */
 	@Override
-	public void update(TopPage topPage) {
-		CcgmtTopPage entity = toEntity(topPage);
-		this.commandProxy().update(entity);
+	public void update(String CompanyId, TopPage topPage) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository#remove(java.lang.
-	 * String, java.lang.String)
-	 */
 	@Override
 	public void remove(String CompanyId, String topPageCode) {
-		CcgmtTopPagePK key = new CcgmtTopPagePK(CompanyId, topPageCode);
-		this.commandProxy().remove(CcgmtTopPage.class, key);
-	}
-
-	/**
-	 * To domain.
-	 *
-	 * @param t the t
-	 * @return the top page
-	 */
-	private TopPage toDomain(CcgmtTopPage t) {
-		return TopPage.createFromJavaType(t.ccgmtTopPagePK.cid, t.ccgmtTopPagePK.topPageCode, t.layoutId, t.topPageName,
-				t.languageNumber);
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the ccgmt top page
-	 */
-	public CcgmtTopPage toEntity(TopPage domain) {
-		CcgmtTopPagePK key = new CcgmtTopPagePK(domain.getCompanyId(), domain.getTopPageCode().v());
-		return new CcgmtTopPage(key, domain.getTopPageName().v(), domain.getLanguageNumber(), domain.getLayoutId());
+		// TODO Auto-generated method stub
+		
 	}
 }

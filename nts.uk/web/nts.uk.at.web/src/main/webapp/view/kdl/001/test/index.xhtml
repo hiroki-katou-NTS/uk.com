@@ -14,8 +14,19 @@
 			</ui:define>
 			
 			<ui:define name="content">
+				<div id="functions-area">
+					<button data-bind="click: singleSelect">SingleSelect</button>
+					<button data-bind="click: multiSelect">MultiSelect</button>
+				</div>
 				<div id="contents-area">
-					<button data-bind="click: testDialog">TestDialog</button>
+					<div>
+						<span>Single Selected Code</span>
+						<div data-bind="text: selectedCode"></div>	
+					</div>
+					<div>
+						<span>Multi Selected Code</span>
+						<div data-bind="text: selectedCodeList"></div>
+					</div>
 				</div>
 			</ui:define>
 		</ui:composition>

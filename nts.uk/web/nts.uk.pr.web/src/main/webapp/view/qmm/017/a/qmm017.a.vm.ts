@@ -104,7 +104,7 @@ module nts.qmm017 {
                                     }).fail(function(res) {
                                         nts.uk.ui.dialog.alert(res);
                                     });
-                                } else if (currentFormulaDetail.easyFormula && currentFormulaDetail.easyFormula.length > 0 && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
+                                } else if (currentFormulaDetail.easyFormula && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 0) {
                                     self.viewModel017c().noneConditionalEasyFormula(new EasyFormula(0, self.viewModel017b));
                                     if (currentFormulaDetail.easyFormula[0]) {
                                         self.viewModel017c().noneConditionalEasyFormula().easyFormulaCode(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaCode);
@@ -114,7 +114,7 @@ module nts.qmm017 {
                                                 self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail(formulaEasyDetail);
                                             });
                                     }
-                                } else if (currentFormulaDetail.easyFormula && currentFormulaDetail.easyFormula.length > 0 && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
+                                } else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo < 6) {
                                     self.viewModel017c().defaultEasyFormula(new EasyFormula(0, self.viewModel017b));
                                     if (currentFormulaDetail.easyFormula[0]) {
                                         self.viewModel017c().defaultEasyFormula().easyFormulaFixMoney(currentFormulaDetail.easyFormula[0].value);
@@ -126,7 +126,7 @@ module nts.qmm017 {
                                                 self.viewModel017c().defaultEasyFormula().easyFormulaDetail(formulaEasyDetail);
                                             });
                                     }
-                                } else if (currentFormulaDetail.easyFormula && currentFormulaDetail.easyFormula.length > 0 && currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
+                                } else if (currentFormula.difficultyAtr === 0 && currentFormula.conditionAtr === 1 && currentFormula.refMasterNo === 6) {
                                     self.viewModel017c().defaultEasyFormula(new EasyFormula(0, self.viewModel017b));
                                     self.viewModel017c().monthlyEasyFormula(new EasyFormula(1, self.viewModel017b));
                                     self.viewModel017c().dailyMonthlyEasyFormula(new EasyFormula(1, self.viewModel017b));

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 550, height: 565 };</script>
+			<script>var dialogSize = { width: 620, height: 640 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName
    			</com:ValidatorScript>
@@ -24,21 +24,19 @@
 				<div>
 					<div class="label">#{i18n.getText('KML001_16')}</div>
 				</div>
-				<table id="premium-set-tbl">
+				<table id="premium-set-tbl-b">
 					<thead>
 						<tr>
 							<th>#{i18n.getText('KML001_21')}</th>
 							<th>#{i18n.getText('KML001_17')}</th>
-							<th data-bind="text: textKML001_18">
-								<!-- <div data-bind="ntsFormLabel: { constraint: 'PremiumName' }">#{i18n.getText('KML001_18','__viewContext.primitiveValueConstraints.PremiumName.maxLength/2')}</div> -->
-							</th>
+							<th data-bind="text: textKML001_18"></th>
 						</tr>
 					</thead>
 					<tbody data-bind="foreach: premiumItemList">
 						<tr>
-							<td data-bind="text: '#{i18n.getText('KML001_30')}'+($index()+1)"></td>
+							<td data-bind="text: $parent.getText($index())"></td>
 							<td>
-								<div class="cf" data-bind="ntsSwitchButton: {
+								<div class="cf" data-name="text: '#{i18n.getText('KML001_17')}'" data-bind="ntsSwitchButton: {
 										options: ko.observableArray([
 											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
 								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
@@ -49,21 +47,20 @@
 										enable: true }"></div>	
 							</td>
 							<td>
-								<input class="premiumName" data-name="表示名称" data-bind="ntsTextEditor: {
+								<input  class="premiumName" data-name="text: '#{i18n.getText('KML001_28')}'" data-bind="ntsTextEditor: {
 										value: name,
 										constraint: 'PremiumName',
-										option: { width: '180px' },
+										option: { width: '220px' },
 										required: true, 
 										enable: Boolean(useAtr()==1) }" />
 							</td>
 						</tr>
 					</tbody>
 				</table>
-				<hr />
-				<div id="center-bottom" class="valign-center control-group">
-					<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
-					<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>
-				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="300" class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
+				<button tabindex="400" class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>	
 			</div>
 		</ui:define>
 	</ui:composition>

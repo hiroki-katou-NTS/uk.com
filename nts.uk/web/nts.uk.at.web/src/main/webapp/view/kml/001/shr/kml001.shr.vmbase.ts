@@ -180,34 +180,28 @@ module nts.uk.at.view.kml001.shr {
              * get one day before input date as string format
              */
             static getOneDayBefore(date: string) {
-                let numberDate = Date.parse(date);
-                // get before day by subtraction one day milliseconds
-                let dayBefore = new Date(numberDate - 24 * 60 * 60 * 1000);
-                return dayBefore.getFullYear() + '/' + (dayBefore.getMonth() + 1) + '/' + dayBefore.getDate();
+                return moment(date).add(-1,'days').format("YYYY/MM/DD");
             }
             
             /**
              * get one day after input date as string format
              */
             static getOneDayAfter(date: string) {
-                let numberDate = Date.parse(date);
-                // get after day by addition one day milliseconds
-                let dayBefore = new Date(numberDate + 24 * 60 * 60 * 1000);
-                return dayBefore.getFullYear() + '/' + (dayBefore.getMonth() + 1) + '/' + dayBefore.getDate();
+                return moment(date).add(1,'days').format("YYYY/MM/DD");
             }
             
             /**
              * check input date in range, if date in range return true
              */
             static validateDateRange(inputDate: string, startDate: string, endDate: string){
-                return (Date.parse(startDate) <= Date.parse(inputDate))&&(Date.parse(inputDate)<=Date.parse(endDate));    
+                return moment(inputDate).isBetween(moment(this.getOneDayBefore(startDate)), moment(this.getOneDayAfter(endDate)));
             }
             
             /**
              * check input date before or equal date
              */
             static validateDateInput(inputDate: string, date: string){
-                return (Date.parse(inputDate) <= Date.parse(date));
+                return moment(inputDate).isSameOrAfter(moment(date));
             }
         }
     

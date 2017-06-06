@@ -6,9 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocation;
-import worklocation.WorkLocation;
-import worklocation.WorkLocationRepository;
 
 @Stateless
 /**

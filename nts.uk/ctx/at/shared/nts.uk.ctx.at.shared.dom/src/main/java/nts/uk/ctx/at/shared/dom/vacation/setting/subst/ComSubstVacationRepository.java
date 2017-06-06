@@ -1,0 +1,29 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
+
+import java.util.Optional;
+
+/**
+ * The Interface ComSubstVacationRepository.
+ */
+public interface ComSubstVacationRepository {
+
+	/**
+	 * Update.
+	 *
+	 * @param setting the setting
+	 */
+    void update(ComSubstVacation setting);
+
+	/**
+	 * Find by id.
+	 *
+	 * @param companyId the company id
+	 * @return the optional
+	 */
+	Optional<ComSubstVacation> findById(String companyId);
+
+}

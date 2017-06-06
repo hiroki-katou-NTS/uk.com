@@ -1,6 +1,5 @@
-#boxSearch {
-	display: flex;
-	vertical-align: middle;
+#lstData {
+	margin-left: 30px;
 }
 
 .btnMenu {
@@ -12,21 +11,23 @@
 	margin-top: 5px;
 }
 
-#total {
-	margin-left: 10px;
-	width: 400px;
-}
-
 #process {
 	text-align: center;
-	vertical-align:middle;
+	vertical-align: middle;
 }
 
 #label {
 	line-height: 40px;
 	text-align: left;
+	margin-left: 10px;
 }
-hr { 
+
+hr {
 	margin-top: 15px;
-	width : 400px; 
+	width: 490px;
+}
+
+#inpSearch {
+	width: 440px;
+	margin-bottom: 15px;
 }

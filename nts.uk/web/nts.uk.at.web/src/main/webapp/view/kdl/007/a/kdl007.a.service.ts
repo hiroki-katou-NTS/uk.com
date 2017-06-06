@@ -1,11 +1,11 @@
 module kdl007.a.service {
     var paths = {
-        getPossibleWorkType: "at/share/attendanceitem/getpossibleworktype"
+        getPayRiseItem: ""
     }
     /**
-    * get all item (item co the duoc chon)
+    * get all item pay rise
     */
-    export function getItemSelected(lstPossible: Array<string>): JQueryPromise<Array<viewmodel.model.ItemModel>> {
-        return nts.uk.request.ajax("at", paths.getPossibleWorkType, lstPossible);
+    export function getAllItem(): JQueryPromise<Array<viewmodel.model.ItemModel>> {
+        return nts.uk.request.ajax("at", paths.getPayRiseItem);
     }
 }

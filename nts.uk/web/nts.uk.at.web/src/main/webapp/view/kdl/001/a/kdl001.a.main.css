@@ -42,11 +42,10 @@ div.nts-column{
 	padding-left: 15px;
 	padding-right: 15px;
 }
-hr { margin-top: 10px; }    
-#center-bottom {
-	padding-left: 350px;
+#day-list-div th, #day-list-div td {
+	padding-left: 10px;
 }
-#center-bottom > button {
+#functions-area-bottom > button {
 	margin-right: 10px;
 }
 

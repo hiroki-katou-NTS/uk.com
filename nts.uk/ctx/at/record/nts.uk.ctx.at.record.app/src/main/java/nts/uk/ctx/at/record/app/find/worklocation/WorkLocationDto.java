@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.app.find.worklocation;
 
 import lombok.Value;
-import worklocation.WorkLocation;
+import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 
 @Value
 /**
