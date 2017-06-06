@@ -40,8 +40,7 @@ module nts.uk.ui.errors {
         }
 
         addError(error: ErrorListItem) {
-            var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) 
-                            && (typeof error.message === "string" ? e.messageText === error.message : e.messageText === error.messageText));
+            var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.messageText == error.messageText);
             
             if (duplicate.length == 0) {
                 if (typeof error.message === "string") {

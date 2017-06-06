@@ -15,21 +15,12 @@
         return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
     }
 
-    export function isNumber(value: any, isDecimalValue?: boolean, option?: any, message?: any) {
+    export function isNumber(value: any, isDecimalValue?: boolean, option?: any) {
         if (isDecimalValue) {
-            if (message !== undefined) message.id = 'FND_E_REALNUMBER';
             return isDecimal(value, option);
         } else {
-            if (message !== undefined) message.id = 'FND_E_INTEGER';
             return isInteger(value, option);
         }
-    }
-    
-    export function isHalfInt(value: any, message?: any) {
-        var val = parseFloat(value);
-        if (message !== undefined) message.id = 'FND_E_HALFINT';
-        if (val !== NaN && (val * 2) % 1 === 0) return true;
-        return false;
     }
 
     /*similar with Math.trunc, get integer value from decimal*/

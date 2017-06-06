@@ -189,10 +189,9 @@ module nts.uk.ui.koExtentions {
         }
 
         getValidator(data: any): validation.IValidator {
-            var name: string = data.name !== undefined ? ko.unwrap(data.name) : "";
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return new validation.StringValidator(name, constraintName, { required: required });
+            return new validation.StringValidator(constraintName, { required: required });
         }
     }
 
@@ -218,10 +217,9 @@ module nts.uk.ui.koExtentions {
         }
 
         getValidator(data: any): validation.IValidator {
-            var name: string = data.name !== undefined ? ko.unwrap(data.name) : "";
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return new validation.StringValidator(name, constraintName, { required: required });
+            return new validation.StringValidator(constraintName, { required: required });
         }
     }
 
@@ -278,12 +276,11 @@ module nts.uk.ui.koExtentions {
         }
 
         getValidator(data: any): validation.IValidator {
-            var name = data.name !== undefined ? ko.unwrap(data.name) : "";
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             this.editorOption['required'] = required;   
             
-            return new validation.NumberValidator(name, constraintName, this.editorOption);
+            return new validation.NumberValidator(constraintName, this.editorOption);
         }
     }
 
@@ -314,13 +311,12 @@ module nts.uk.ui.koExtentions {
         }
 
         getValidator(data: any): validation.IValidator {
-            var name = data.name !== undefined ? ko.unwrap(data.name) : "";
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var inputFormat: string = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
             var mode: string = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-            return new validation.TimeValidator(name, constraintName, { required: required, outputFormat: inputFormat, mode: mode });
+            return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat, mode: mode });
         }
     }
 

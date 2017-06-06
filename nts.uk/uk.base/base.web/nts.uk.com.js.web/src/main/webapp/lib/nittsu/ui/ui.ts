@@ -88,8 +88,6 @@ module nts.uk.ui {
 
                 this.$iframe.bind('load', () => {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
-                    
-                    options.title = '※ダイアログタイトルは基盤で自動化予定';
 
                     this.$dialog.dialog('option', {
                         width: options.width || this.globalContext.dialogSize.width,
@@ -258,10 +256,6 @@ module nts.uk.ui {
         return textId;
     }
 
-    /**
-     * Dialog Module
-     * Using for display info or confirm dialog
-     */
     export module dialog {
         export class DialogHeader {
             icon?: string;
@@ -296,7 +290,7 @@ module nts.uk.ui {
                 .append($control)
                 .appendTo('body')
                 .dialog({
-                    dialogClass: "no-close-btn",
+                    dialogClass: "no-close",
                     width: 'auto',
                     modal: true,
                     minWidth: 300,
@@ -762,54 +756,6 @@ module nts.uk.ui {
     export function confirmSaveDisable() {
         $(window).unbind('beforeunload');
     };
-    
-    /**
-     * Block UI Module
-     * Using for blocking UI when action in progress
-     */
-    export module block {
-        
-        export function invisible() {
-            let rect = calcRect();
-            
-            (<any>$).blockUI({
-                message: null,
-                overlayCSS: { opacity: 0 },
-                css: {
-                    width: rect.width,
-                    left: rect.left
-                }
-            });
-        }
-        
-        export function grayout() {
-            let rect = calcRect();
-            
-            (<any>$).blockUI({
-                message: '<div class="block-ui-message">お待ちください</div>',
-                fadeIn: 200,
-                css: {
-                    width: rect.width,
-                    left: rect.left
-                }
-            });
-        }
-        
-        export function clear() {
-            (<any>$).unblockUI({
-                fadeOut: 200
-            });
-        }
-        
-        function calcRect() {
-            let width = 220;
-            let left = ($(window).width() - width) / 2;
-            return {
-                width: width,
-                left: left
-            };
-        }
-    }
 
     export class DirtyChecker {
 
