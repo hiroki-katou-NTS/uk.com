@@ -2,7 +2,7 @@
 
 ﻿module nts.uk.time {
 
-    var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "YYYY"];
+    var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
     var listEmpire: { [year: string]: string } = {
         "明治": "1868/01/01",
         "大正": "1912/07/30",

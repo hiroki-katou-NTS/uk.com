@@ -123,8 +123,8 @@ button {
 	overflow: visible;
 	
     &:focus {
-	  border-color: #0096f2;
-	  box-shadow: 0 2px 2px 0 #0096f2;
+		border-color: $focused_color;
+		box-shadow: 0 2px 2px 0 $focused_color;
 	  	&.small {
 	    	/* END: SAME ALL SIZES */
 	    }

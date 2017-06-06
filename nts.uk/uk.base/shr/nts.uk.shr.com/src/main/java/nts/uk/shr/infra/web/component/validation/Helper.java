@@ -10,10 +10,16 @@ import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.TimeClockPrimitiveValue;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
 import nts.arc.primitive.constraint.DecimalMaxValue;
 import nts.arc.primitive.constraint.DecimalMinValue;
 import nts.arc.primitive.constraint.DecimalRange;
+import nts.arc.primitive.constraint.HalfIntegerMaxValue;
+import nts.arc.primitive.constraint.HalfIntegerMinValue;
+import nts.arc.primitive.constraint.HalfIntegerRange;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 import nts.arc.primitive.constraint.IntegerRange;
@@ -23,6 +29,9 @@ import nts.arc.primitive.constraint.LongRange;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.constraint.StringRegEx;
+import nts.arc.primitive.constraint.TimeMaxValue;
+import nts.arc.primitive.constraint.TimeMinValue;
+import nts.arc.primitive.constraint.TimeRange;
 
 class Helper {
 	
@@ -40,6 +49,11 @@ class Helper {
 		CONSTRAINTS_SIGNLE_PARAM.put(LongMinValue.class.getSimpleName(), "min");
 		CONSTRAINTS_SIGNLE_PARAM.put(DecimalMaxValue.class.getSimpleName(), "max");
 		CONSTRAINTS_SIGNLE_PARAM.put(DecimalMinValue.class.getSimpleName(), "min");
+		CONSTRAINTS_SIGNLE_PARAM.put(TimeMaxValue.class.getSimpleName(), "max");
+		CONSTRAINTS_SIGNLE_PARAM.put(TimeMinValue.class.getSimpleName(), "min");
+		CONSTRAINTS_SIGNLE_PARAM.put(HalfIntegerMaxValue.class.getSimpleName(), "max");
+		CONSTRAINTS_SIGNLE_PARAM.put(HalfIntegerMinValue.class.getSimpleName(), "min");
+		CONSTRAINTS_SIGNLE_PARAM.put(DecimalMantissaMaxLength.class.getSimpleName(), "mantissaMaxLength");
 	}
 	
 	/**
@@ -50,6 +64,8 @@ class Helper {
 		CONSTRAINTS_MAX_MIN_PARAM.add(IntegerRange.class.getSimpleName());
 		CONSTRAINTS_MAX_MIN_PARAM.add(LongRange.class.getSimpleName());
 		CONSTRAINTS_MAX_MIN_PARAM.add(DecimalRange.class.getSimpleName());
+		CONSTRAINTS_MAX_MIN_PARAM.add(TimeRange.class.getSimpleName());
+		CONSTRAINTS_MAX_MIN_PARAM.add(HalfIntegerRange.class.getSimpleName());
 	}
 	
 	static HashMap<String, String> CHARTYPE_NAMES_MAP = new HashMap<>();
@@ -64,6 +80,10 @@ class Helper {
 	static String getValueType(Class<?> inputClass) {
 		if (StringPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "String";
+		} else if (TimeDurationPrimitiveValue.class.isAssignableFrom(inputClass)) {
+			return "Time";
+		} else if (TimeClockPrimitiveValue.class.isAssignableFrom(inputClass)) { 
+			return "Clock";
 		} else if (IntegerPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "Integer";
 		} else if (LongPrimitiveValue.class.isAssignableFrom(inputClass)) {
@@ -71,7 +91,7 @@ class Helper {
 		} else if (DecimalPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "Decimal";
 		} else if (HalfIntegerPrimitiveValue.class.isAssignableFrom(inputClass)) {
-			return "Decimal";
+			return "HalfInt";
 		} else {
 			throw new RuntimeException("not supported: " + inputClass.getName());
 		}
