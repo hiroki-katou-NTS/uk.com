@@ -49,7 +49,7 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
 		predicateList.add(bd.equal(root.get(CemptEmployment_.cemptEmploymentPK)
-				.get(CemptEmploymentPK_.companyId), companyId));
+				.get(CemptEmploymentPK_.cid), companyId));
 		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));

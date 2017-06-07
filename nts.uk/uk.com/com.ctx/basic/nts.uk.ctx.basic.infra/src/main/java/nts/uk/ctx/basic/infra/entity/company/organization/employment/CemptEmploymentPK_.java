@@ -14,7 +14,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class CemptEmploymentPK_ {
 
 	/** The company id. */
-	public static volatile SingularAttribute<CemptEmploymentPK, String> companyId;
+	public static volatile SingularAttribute<CemptEmploymentPK, String> cid;
 	
 	/** The code. */
 	public static volatile SingularAttribute<CemptEmploymentPK, String> code;
