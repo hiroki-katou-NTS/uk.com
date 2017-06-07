@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -8,17 +7,12 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var DatePickerBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
                     function DatePickerBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
@@ -62,7 +56,6 @@ var nts;
                             $input.addClass(lengthClass);
                             container.append($label);
                         }
-                        // Init Datepicker
                         $input.datepicker({
                             language: 'ja-JP',
                             format: ISOFormat,
@@ -73,13 +66,12 @@ var nts;
                         DatePickerNormalizer.getInstance($input).setCssRanger(data.cssRanger)
                             .fiscalMonthsMode(data.fiscalMonthsMode)
                             .setDefaultCss(data.defaultClass || "");
-                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
+                        var validator = new ui.validation.TimeValidator(name, constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
                         $input.on("change", function (e) {
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
-                                // Day of Week
                                 if (hasDayofWeek) {
                                     if (uk.util.isNullOrEmpty(result.parsedValue))
                                         $label.text("");
@@ -104,14 +96,11 @@ var nts;
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
-                            if (result.isValid) {
+                            if (!result.isValid) {
                                 $input.ntsError('set', "Invalid format");
                             }
                         }));
                     };
-                    /**
-                     * Update
-                     */
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
@@ -129,10 +118,8 @@ var nts;
                         var init = container.data("init");
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
-                        // Value Binding
                         var dateFormatValue = (value() !== "") ? uk.time.formatPattern(value(), valueFormat, ISOFormat) : "";
                         if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
-                            // Check equals to avoid multi datepicker with same value
                             $input.datepicker('setDate', dateFormatValue);
                             $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
                         }
@@ -141,7 +128,6 @@ var nts;
                             $label.text("");
                         }
                         container.data("init", false);
-                        // Properties Binding
                         $input.datepicker('setStartDate', startDate);
                         $input.datepicker('setEndDate', endDate);
                         if (enable !== undefined)
@@ -163,7 +149,6 @@ var nts;
                 var DatePickerNormalizer = (function () {
                     function DatePickerNormalizer() {
                         this.fiscalMonth = 1;
-                        // Constants
                         this.NAMESPACE = "datepicker";
                         this.YEARS = "years";
                         this.MONTHS = "months";
@@ -184,7 +169,6 @@ var nts;
                         this.YMD_FORMAT = "YYYY/MM/DD";
                         this.DATE_SPLITTER = "/";
                     }
-                    // Use this method to get an instance.
                     DatePickerNormalizer.getInstance = function ($input) {
                         var instance = new DatePickerNormalizer();
                         instance.$input = $input;
@@ -268,7 +252,6 @@ var nts;
                             this.colorLevel = this.MONTHS;
                         else if (this.options.format === this.YMD_FORMAT)
                             this.colorLevel = this.DAYS;
-                        // Only set to colorLevel in initialization.
                         if (this.selectedView === undefined)
                             this.selectedView = this.colorLevel;
                     };
@@ -283,7 +266,6 @@ var nts;
                         var _this = this;
                         var holder;
                         var handledYear = location === ViewLocation.CURRENT ? this.viewYear : this.viewYear + 1;
-                        // If processing layer is 1 level above leaf layer
                         if (this.colorLevel === this.structure[currentLayer + 1]) {
                             switch (currentLayer) {
                                 case 0:
@@ -540,14 +522,12 @@ var nts;
                         var layer = colorLevel === this.MONTHS ? 1 : 2;
                         this.$view = this.getView(layer);
                         this.$currentView = this.getView(layer, true);
-                        // Body contents of picker is showing months
                         if (this.selectedView === this.MONTHS) {
                             if (this.viewMonth < this.fiscalMonth)
                                 this.viewYear--;
                             this.fillFiscalMonthsInYear();
                         }
                         this.color();
-                        // Pick time
                         if (this.selectedView === this.MONTHS && this.allowPickMonth()) {
                             if (this.viewMonth < this.fiscalMonth && this.viewYear === this.year)
                                 this.clearPicked();
@@ -587,7 +567,7 @@ var nts;
                     DatePickerNormalizer.prototype.onPick = function () {
                         var self = this;
                         this.$input.on(this.EVENT_PICK, function (evt) {
-                            var view = evt.view; // month | year
+                            var view = evt.view;
                             if (view === self.DAY) {
                                 self.date = evt.date.getDate();
                                 self.month = evt.date.getMonth() + 1;
@@ -616,7 +596,6 @@ var nts;
                         var self = this;
                         self.month = pickedMonth + 1;
                         self.viewMonth = self.month;
-                        // Fiscal month mode
                         if (self.fiscalMonth !== 1) {
                             self.year = self.month >= self.fiscalMonth ? self.viewYear : (self.viewYear + 1);
                             self.viewYear = self.year;

@@ -83,7 +83,7 @@ module nts.uk.pr.view.kmf001.h {
 
                 self.employmentList = ko.observableArray<ItemModel>([]);
                 for (let i = 1; i < 9; i++) {
-                    self.employmentList.push(new ItemModel('0' + i, '基本給', i % 3 === 0));
+                    self.employmentList.push(new ItemModel('0' + i, 'åŸºæœ¬çµ¦', i % 3 === 0));
                 }
 
                 // Load enums
@@ -198,9 +198,9 @@ module nts.uk.pr.view.kmf001.h {
 
                 if (!self.isComManaged()) {
                     // Show msg #Msg_146
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_146')).then(function() {
-                        $("#sidebar").ntsSideBar("active", 0);
-                    });
+                    //                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_146')).then(function() {
+                    //                        $("#sidebar").ntsSideBar("active", 0);
+                    //                    });
                 }
             }
 
@@ -229,13 +229,13 @@ module nts.uk.pr.view.kmf001.h {
 
                 if (!self.validateEmpSetting()) {
                     return;
-                    
-                    
+
+
                 }
 
                 this.service.saveEmpSetting(self.empSettingModel().toEmpSubstVacationDto()).done(function() {
                     // Msg_15
-                    nts.uk.ui.dialog.alert("登録しました。");
+                    nts.uk.ui.dialog.alert("ç™»éŒ²ã�—ã�¾ã�—ã�Ÿã€‚");
                     // nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
                     dfd.resolve();
                 }).fail(function(res) {

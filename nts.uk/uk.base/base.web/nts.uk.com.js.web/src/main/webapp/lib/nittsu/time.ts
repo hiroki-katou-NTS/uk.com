@@ -2,7 +2,7 @@
 
 ﻿module nts.uk.time {
 
-    var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+    var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
     var listEmpire: { [year: string]: string } = {
         "明治": "1868/01/01",
         "大正": "1912/07/30",
@@ -48,7 +48,7 @@
     }
 
     export function yearInJapanEmpire(date: any): JapanYearMonth {
-        let year = moment.utc(date).year();
+        let year = moment.utc(date, defaultInputFormat, true).year();
         if (year == 1868) {
             return new JapanYearMonth("明治元年");
         }

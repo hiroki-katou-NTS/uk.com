@@ -3,10 +3,29 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.primitives;
 
+import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
+
 /**
  * @author hungnm
  *
  */
-public class TimeItemName {
+// 勤怠項目名称
+@StringCharType(CharType.ANY_HALF_WIDTH)
+@StringMaxLength(30)
+public class TimeItemName extends StringPrimitiveValue<TimeItemName> {
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new time item name
+	 *
+	 * @param rawValue
+	 *            the raw value
+	 */
+	public TimeItemName(String rawValue) {
+		super(rawValue);
+	}
 }

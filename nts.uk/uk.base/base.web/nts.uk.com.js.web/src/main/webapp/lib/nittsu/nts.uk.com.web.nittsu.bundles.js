@@ -2,76 +2,6 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
-        var ntsNumber;
-        (function (ntsNumber) {
-            function isInteger(value, option) {
-                if (option !== undefined && option.groupseperator() !== undefined) {
-                    value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
-                }
-                return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
-            }
-            function isDecimal(value, option) {
-                if (option !== undefined) {
-                    var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
-                    value = isDecimal(value) || seperator === undefined ? value : uk.text.replaceAll(value.toString(), seperator, '');
-                }
-                return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
-            }
-            function isNumber(value, isDecimalValue, option) {
-                if (isDecimalValue) {
-                    return isDecimal(value, option);
-                }
-                else {
-                    return isInteger(value, option);
-                }
-            }
-            ntsNumber.isNumber = isNumber;
-            ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
-            function getDecimal(value, scale) {
-                var scaleX = Math.pow(10, scale);
-                return ntsNumber.trunc(value * scaleX) / scaleX;
-            }
-            ntsNumber.getDecimal = getDecimal;
-            function formatNumber(value, formatOption) {
-                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
-                    return value;
-                }
-                var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
-                var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
-                var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
-                var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
-                var formattedValue = "";
-                var stringValue = uk.text.replaceAll(value.toString(), groupSeperator, '');
-                var isMinus = stringValue.charAt(0) === '-';
-                var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
-                if (groupLength > 0) {
-                    var x = values[0].split('').reverse().join('');
-                    for (var i = 0; i < x.length;) {
-                        formattedValue += x.substr(i, groupLength) + (x.length > i + groupLength ? groupSeperator : "");
-                        i += groupLength;
-                    }
-                    formattedValue = formattedValue.split('').reverse().join('');
-                }
-                else {
-                    formattedValue = values[0];
-                }
-                if (values[1] === undefined || decimalLength > values[1].length) {
-                    values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
-                }
-                else {
-                    values[1] = values[1].substr(0, decimalLength);
-                }
-                values[1] = uk.text.splitOrPadRight(values[1], decimalLength, '0');
-                return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
-            }
-            ntsNumber.formatNumber = formatNumber;
-        })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
         var KeyCodes;
         (function (KeyCodes) {
             KeyCodes.Tab = 9;
@@ -349,34 +279,34 @@ var nts;
                         this.value = orDefault(value, null);
                     }
                     Optional.prototype.ifPresent = function (consumer) {
-                        if (this.isPresent) {
+                        if (this.isPresent()) {
                             consumer(this.value);
                         }
                         return this;
                     };
                     Optional.prototype.ifEmpty = function (action) {
-                        if (!this.isPresent) {
+                        if (!this.isPresent()) {
                             action();
                         }
                         return this;
                     };
                     Optional.prototype.map = function (mapper) {
-                        return this.isPresent ? of(mapper(this.value)) : empty();
+                        return this.isPresent() ? of(mapper(this.value)) : empty();
                     };
                     Optional.prototype.isPresent = function () {
                         return this.value !== null;
                     };
                     Optional.prototype.get = function () {
-                        if (!this.isPresent) {
+                        if (!this.isPresent()) {
                             throw new Error('not present');
                         }
                         return this.value;
                     };
                     Optional.prototype.orElse = function (stead) {
-                        return this.isPresent ? this.value : stead;
+                        return this.isPresent() ? this.value : stead;
                     };
                     Optional.prototype.orElseThrow = function (errorBuilder) {
-                        if (!this.isPresent) {
+                        if (!this.isPresent()) {
                             throw errorBuilder();
                         }
                     };
@@ -623,6 +553,42 @@ var nts;
             }
         })(resource = uk.resource || (uk.resource = {}));
         uk.sessionStorage = new WebStorageWrapper(window.sessionStorage);
+        uk.localStorage = new WebStorageWrapper(window.localStorage);
+        var characteristics;
+        (function (characteristics) {
+            var delayToEmulateAjax = 100;
+            function save(key, value) {
+                var dfd = $.Deferred();
+                setTimeout(function () {
+                    uk.localStorage.setItemAsJson(createKey(key), value);
+                    dfd.resolve();
+                }, delayToEmulateAjax);
+                return dfd.promise();
+            }
+            characteristics.save = save;
+            function restore(key) {
+                var dfd = $.Deferred();
+                setTimeout(function () {
+                    var value = uk.localStorage.getItem(createKey(key))
+                        .map(function (v) { return JSON.parse(v); }).orElse(undefined);
+                    dfd.resolve(value);
+                }, delayToEmulateAjax);
+                return dfd.promise();
+            }
+            characteristics.restore = restore;
+            function remove(key) {
+                var dfd = $.Deferred();
+                setTimeout(function () {
+                    uk.localStorage.removeItem(createKey(key));
+                    dfd.resolve();
+                }, delayToEmulateAjax);
+                return dfd.promise();
+            }
+            characteristics.remove = remove;
+            function createKey(key) {
+                return 'nts.uk.characteristics.' + key;
+            }
+        })(characteristics = uk.characteristics || (uk.characteristics = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 var nts;
@@ -1054,6 +1020,76 @@ var nts;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ntsNumber;
+        (function (ntsNumber) {
+            function isInteger(value, option) {
+                if (option !== undefined && option.groupseperator() !== undefined) {
+                    value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
+                }
+                return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
+            }
+            function isDecimal(value, option) {
+                if (option !== undefined) {
+                    var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
+                    value = isDecimal(value) || seperator === undefined ? value : uk.text.replaceAll(value.toString(), seperator, '');
+                }
+                return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
+            }
+            function isNumber(value, isDecimalValue, option) {
+                if (isDecimalValue) {
+                    return isDecimal(value, option);
+                }
+                else {
+                    return isInteger(value, option);
+                }
+            }
+            ntsNumber.isNumber = isNumber;
+            ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
+            function getDecimal(value, scale) {
+                var scaleX = Math.pow(10, scale);
+                return ntsNumber.trunc(value * scaleX) / scaleX;
+            }
+            ntsNumber.getDecimal = getDecimal;
+            function formatNumber(value, formatOption) {
+                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
+                    return value;
+                }
+                var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
+                var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
+                var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
+                var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
+                var formattedValue = "";
+                var stringValue = uk.text.replaceAll(value.toString(), groupSeperator, '');
+                var isMinus = stringValue.charAt(0) === '-';
+                var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
+                if (groupLength > 0) {
+                    var x = values[0].split('').reverse().join('');
+                    for (var i = 0; i < x.length;) {
+                        formattedValue += x.substr(i, groupLength) + (x.length > i + groupLength ? groupSeperator : "");
+                        i += groupLength;
+                    }
+                    formattedValue = formattedValue.split('').reverse().join('');
+                }
+                else {
+                    formattedValue = values[0];
+                }
+                if (values[1] === undefined || decimalLength > values[1].length) {
+                    values[1] = uk.text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
+                }
+                else {
+                    values[1] = values[1].substr(0, decimalLength);
+                }
+                values[1] = uk.text.splitOrPadRight(values[1], decimalLength, '0');
+                return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
+            }
+            ntsNumber.formatNumber = formatNumber;
+        })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -1065,7 +1101,7 @@ var nts;
     (function (uk) {
         var time;
         (function (time_1) {
-            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "YYYY"];
             var listEmpire = {
                 "明治": "1868/01/01",
                 "大正": "1912/07/30",
@@ -1102,7 +1138,7 @@ var nts;
             }());
             time_1.JapanYearMonth = JapanYearMonth;
             function yearInJapanEmpire(date) {
-                var year = moment.utc(date).year();
+                var year = moment.utc(date, defaultInputFormat, true).year();
                 if (year == 1868) {
                     return new JapanYearMonth("明治元年");
                 }
@@ -1900,7 +1936,10 @@ var nts;
                     contentType: options.contentType || 'application/json',
                     url: webserviceLocator.serialize(),
                     dataType: options.dataType || 'json',
-                    data: data
+                    data: data,
+                    headers: {
+                        'PG-Path': location.current.serialize()
+                    }
                 }).done(function (res) {
                     if (res !== undefined && res.businessException) {
                         dfd.reject(res);
@@ -2075,10 +2114,14 @@ var nts;
                         var $functionsArea = $('#functions-area');
                         var $functionsAreaBottom = $('#functions-area-bottom');
                         if ($functionsArea.length > 0) {
-                            $('#func-notifier-errors').position({ my: 'left+5 top-5', at: 'left bottom', of: $('#functions-area') });
+                            _.defer(function () {
+                                $('#func-notifier-errors').position({ my: 'left+5 top-5', at: 'left bottom', of: $('#functions-area') });
+                            });
                         }
                         else if ($functionsAreaBottom.length > 0) {
-                            $('#func-notifier-errors').position({ my: 'left+5 top+48', at: 'left top', of: $('#functions-area-bottom') });
+                            _.defer(function () {
+                                $('#func-notifier-errors').position({ my: 'left+5 top+48', at: 'left top', of: $('#functions-area-bottom') });
+                            });
                         }
                         else {
                             return;
@@ -2489,6 +2532,7 @@ var nts;
                         this.build$dialog(options);
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
+                            options.title = '※ダイアログタイトルは基盤で自動化予定';
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
@@ -2667,7 +2711,7 @@ var nts;
                         .append($control)
                         .appendTo('body')
                         .dialog({
-                        dialogClass: "no-close",
+                        dialogClass: "no-close-btn",
                         width: 'auto',
                         modal: true,
                         minWidth: 300,
@@ -3011,6 +3055,47 @@ var nts;
             }
             ui_1.confirmSaveDisable = confirmSaveDisable;
             ;
+            var block;
+            (function (block) {
+                function invisible() {
+                    var rect = calcRect();
+                    $.blockUI({
+                        message: null,
+                        overlayCSS: { opacity: 0 },
+                        css: {
+                            width: rect.width,
+                            left: rect.left
+                        }
+                    });
+                }
+                block.invisible = invisible;
+                function grayout() {
+                    var rect = calcRect();
+                    $.blockUI({
+                        message: '<div class="block-ui-message">お待ちください</div>',
+                        fadeIn: 200,
+                        css: {
+                            width: rect.width,
+                            left: rect.left
+                        }
+                    });
+                }
+                block.grayout = grayout;
+                function clear() {
+                    $.unblockUI({
+                        fadeOut: 200
+                    });
+                }
+                block.clear = clear;
+                function calcRect() {
+                    var width = 220;
+                    var left = ($(window).width() - width) / 2;
+                    return {
+                        width: width,
+                        left: left
+                    };
+                }
+            })(block = ui_1.block || (ui_1.block = {}));
             var DirtyChecker = (function () {
                 function DirtyChecker(targetViewModelObservable) {
                     this.targetViewModel = targetViewModelObservable;
@@ -6043,6 +6128,7 @@ var nts;
                                     data.value('');
                                 }
                             }
+                            $grid.data("ui-changed", true);
                         });
                         $grid.setupSearchScroll("igGrid", true);
                     };
@@ -6064,7 +6150,7 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if ($grid.attr("filtered") !== true && $grid.attr("filtered") !== "true") {
+                        if (!($grid.attr("filtered") === true && $grid.attr("filtered") === "true") && $grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -6088,6 +6174,7 @@ var nts;
                         if (!isEqual) {
                             $grid.ntsGridList('setSelected', data.value());
                         }
+                        $grid.data("ui-changed", false);
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
                     };
                     return NtsGridListBindingHandler;
@@ -6240,6 +6327,7 @@ var nts;
                             if (!_.isEqual(itemSelected, data.value())) {
                                 data.value(itemSelected);
                             }
+                            container.data("ui-changed", true);
                         });
                         container.setupSearchScroll("igGrid", true);
                         container.data("multiple", isMultiSelect);
@@ -6268,7 +6356,7 @@ var nts;
                             }
                         }
                         container.data("enable", enable);
-                        if (container.attr("filtered") !== true && container.attr("filtered") !== "true") {
+                        if (!((container.attr("filtered") === true && container.attr("filtered") === "true") || container.data("ui-changed") === true)) {
                             var currentSources = options.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -6341,6 +6429,7 @@ var nts;
                                 container.ntsGridList('setSelected', dataValue);
                             }
                         }
+                        container.data("ui-changed", false);
                         container.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
                     };
                     return ListBoxBindingHandler;
@@ -6587,7 +6676,7 @@ var nts;
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
                         var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var selected = data.selected;
-                        var searchMode = ko.unwrap(data.searchMode);
+                        var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
                         var selectedKey = null;
                         if (data.selectedKey) {
                             selectedKey = ko.unwrap(data.selectedKey);
@@ -6648,7 +6737,7 @@ var nts;
                                 var srh = $container.data("searchObject");
                                 var result = srh.search(searchKey, selectedItems);
                                 if (nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight") {
-                                    $input.ntsError("set", "#FND_E_SEARCH_NOHIT");
+                                    nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOHIT");
                                     return;
                                 }
                                 var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
@@ -6685,18 +6774,14 @@ var nts;
                             }
                         };
                         var nextSearch = function () {
-                            $input.ntsError("clear");
                             var searchKey = $input.val();
                             if (nts.uk.util.isNullOrEmpty(searchKey)) {
-                                $input.ntsError("set", "#FND_E_SEARCH_NOWORD");
+                                nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOWORD");
                                 return;
                             }
                             search(searchKey);
                         };
                         $input.keydown(function (event) {
-                            if ($input.ntsError("hasError")) {
-                                $input.ntsError("clear");
-                            }
                             if (event.which == 13) {
                                 event.preventDefault();
                                 nextSearch();
@@ -7470,8 +7555,8 @@ var nts;
                             }
                         });
                         container.keyup(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
                             if (container.data("enable") !== false) {
-                                var code = evt.which || evt.keyCode;
                                 if (code === 32) {
                                     var selectedCode = container.find(".nts-switch-button:first").data('swbtn');
                                     data.value(selectedCode);
@@ -7496,7 +7581,6 @@ var nts;
                                         data.value(selectedCode);
                                     }
                                 }
-                                container.focus();
                             }
                         });
                         var defVal = new nts.uk.util.value.DefaultValue().onReset(container, data.value);
@@ -7511,7 +7595,7 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
                         container.data("enable", enable);
-                        container.addClass("switchButton-wrapper").attr("tabindex", "0");
+                        container.addClass("ntsControl switchButton-wrapper").attr("tabindex", "0");
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);
                             var btnValue = $(btn).data('swbtn');
@@ -7533,6 +7617,7 @@ var nts;
                                 var btn = $('<button>').text(text)
                                     .addClass('nts-switch-button')
                                     .data('swbtn', value)
+                                    .attr('tabindex', "-1")
                                     .on('click', function () {
                                     var selectedValue = $(this).data('swbtn');
                                     data.value(selectedValue);
@@ -7544,9 +7629,6 @@ var nts;
                                 }
                                 container.append(btn);
                             }
-                        });
-                        container.find(".nts-switch-button").focus(function (evt) {
-                            container.focus();
                         });
                         if (enable === true) {
                             $('button', container).prop("disabled", false);
@@ -7663,7 +7745,7 @@ var nts;
                         var width = (data.width !== undefined) ? ko.unwrap(data.width) : null;
                         var height = (data.height !== undefined) ? ko.unwrap(data.height) : null;
                         var direction = (data.direction !== undefined) ? ko.unwrap(data.direction) : "right";
-                        var showIcon = (data.showIcon !== undefined) ? ko.unwrap(data.showIcon) : true;
+                        var showIcon = (data.showIcon !== undefined) ? ko.unwrap(data.showIcon) : false;
                         var visible = (data.visible !== undefined) ? ko.unwrap(data.visible) : true;
                         var container = $(element);
                         container.addClass("panel ntsPanel caret-background");
@@ -7678,7 +7760,7 @@ var nts;
                         var width = (data.width !== undefined) ? ko.unwrap(data.width) : null;
                         var height = (data.height !== undefined) ? ko.unwrap(data.height) : null;
                         var direction = (data.direction !== undefined) ? ko.unwrap(data.direction) : "right";
-                        var showIcon = (data.showIcon !== undefined) ? ko.unwrap(data.showIcon) : true;
+                        var showIcon = (data.showIcon !== undefined) ? ko.unwrap(data.showIcon) : false;
                         var visible = (data.visible !== undefined) ? ko.unwrap(data.visible) : null;
                         var container = $(element);
                         if (!nts.uk.util.isNullOrEmpty(width))
