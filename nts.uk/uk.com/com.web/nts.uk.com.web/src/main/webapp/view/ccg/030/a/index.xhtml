@@ -31,7 +31,7 @@
 				<button class="btnSetting" id="btn004"
 					data-bind="click : closeDialog" tabindex="4">#{i18n.getText('CCG030_6')}</button>
 			</div>
-			
+			<div class="container">
 			<div id="contents-area" class="cf">
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<i class="icon icon-searchbox"></i>
@@ -71,8 +71,8 @@
 						<tr data-bind="with: selectedFlowMenu">
 							<td><div data-bind="ntsFormLabel: { constraint: 'TopPagePartCode',constraint: ['TopPagePartCode','TopPagePartName'], required: true }">#{i18n.getText('CCG030_11')}</div></td>
 							<td colspan="2">
-								<input id="inpCode" data-bind="ntsTextEditor: { value: topPageCode, constraint: 'TopPagePartCode', required: true, enable: $parent.isCreate , name: '#CCG030_21'}" tabindex="5" />
-								<input id="inpName" data-bind="ntsTextEditor: { value: topPageName, constraint: 'TopPagePartName', required: true , name: '#CCG030_22'}" tabindex="6" />
+								<input id="inpCode" data-bind="ntsTextEditor: { value: topPageCode, constraint: 'TopPagePartCode', required: true, enable: $parent.isCreate , name: '#[CCG030_21]'}" tabindex="5" />
+								<input id="inpName" data-bind="ntsTextEditor: { value: topPageName, constraint: 'TopPagePartName', required: true , name: '#[CCG030_22]'}" tabindex="6" />
 							</td>
 						</tr>
 						<tr>
@@ -115,7 +115,7 @@
 					</table>
 				</div>
 			</div>
-		
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
