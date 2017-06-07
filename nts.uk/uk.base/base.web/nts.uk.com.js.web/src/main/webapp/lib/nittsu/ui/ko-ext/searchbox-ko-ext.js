@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,9 +6,6 @@ var nts;
         (function (ui_1) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                * SearchBox Binding Handler
-                */
                 var SearchBox = (function () {
                     function SearchBox(source, searchField, childField) {
                         this.childField = childField;
@@ -45,17 +41,6 @@ var nts;
                     };
                     SearchBox.prototype.cloneDeepX = function (source) {
                         var self = this;
-                        //            let result = [];
-                        //            
-                        //            _.forEach(source, function (item: any){
-                        //                let cloned = _.cloneDeep(item);
-                        //                
-                        //                if(!nts.uk.util.isNullOrUndefined(self.childField)){
-                        //                    cloned[self.childField] = self.cloneDeepX(cloned[self.childField]).slice();        
-                        //                }
-                        //                
-                        //                result.push(cloned);                
-                        //            });   
                         return _.cloneDeep(source);
                     };
                     return SearchBox;
@@ -121,9 +106,6 @@ var nts;
                 var NtsSearchBoxBindingHandler = (function () {
                     function NtsSearchBoxBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var searchBox = $(element);
                         var data = ko.unwrap(valueAccessor());
@@ -131,7 +113,7 @@ var nts;
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
                         var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var selected = data.selected;
-                        var searchMode = ko.unwrap(data.searchMode);
+                        var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
                         var selectedKey = null;
                         if (data.selectedKey) {
                             selectedKey = ko.unwrap(data.selectedKey);
@@ -192,7 +174,7 @@ var nts;
                                 var srh = $container.data("searchObject");
                                 var result = srh.search(searchKey, selectedItems);
                                 if (nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight") {
-                                    $input.ntsError("set", "#FND_E_SEARCH_NOHIT");
+                                    nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOHIT");
                                     return;
                                 }
                                 var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
@@ -209,8 +191,6 @@ var nts;
                                 }
                                 if (targetMode === 'igGrid') {
                                     if (searchMode === "filter") {
-                                        //                            component.igGrid("option", "dataSource", result.options);  
-                                        //                            component.igGrid("dataBind");
                                         $container.data("filteredSrouce", result.options);
                                         component.attr("filtered", true);
                                         selected(selectedValue);
@@ -231,18 +211,14 @@ var nts;
                             }
                         };
                         var nextSearch = function () {
-                            $input.ntsError("clear");
                             var searchKey = $input.val();
                             if (nts.uk.util.isNullOrEmpty(searchKey)) {
-                                $input.ntsError("set", "#FND_E_SEARCH_NOWORD");
+                                nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOWORD");
                                 return;
                             }
                             search(searchKey);
                         };
                         $input.keydown(function (event) {
-                            if ($input.ntsError("hasError")) {
-                                $input.ntsError("clear");
-                            }
                             if (event.which == 13) {
                                 event.preventDefault();
                                 nextSearch();
@@ -279,7 +255,6 @@ var nts;
                                         return oldItem[primaryKey] === item[primaryKey];
                                     }) === undefined;
                                 });
-                                //                    setTimeout(function () {
                                 component.igGrid("option", "dataSource", source);
                                 component.igGrid("dataBind");
                             }

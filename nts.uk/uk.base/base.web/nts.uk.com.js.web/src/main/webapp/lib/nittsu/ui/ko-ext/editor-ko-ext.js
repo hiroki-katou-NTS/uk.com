@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -13,14 +12,12 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var validation = nts.uk.ui.validation;
-                /**
-                 * BaseEditor Processor
-                 */
                 var EditorProcessor = (function () {
                     function EditorProcessor() {
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
+                        var self = this;
                         var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
@@ -36,9 +33,9 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        var validator = this.getValidator(data);
                         $input.on(valueUpdate, function (e) {
                             var newText = $input.val();
+                            var validator = _this.getValidator(data);
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
@@ -49,19 +46,25 @@ var nts;
                                 value(newText);
                             }
                         });
-                        // Format on blur
                         $input.blur(function () {
-                            if (!readonly) {
-                                var formatter = _this.getFormatter(data);
+                            if (!$input.attr('readonly')) {
+                                var formatter = self.getFormatter(data);
                                 var newText = $input.val();
+                                var validator = self.getValidator(data);
                                 var result = validator.validate(newText);
+                                $input.ntsError('clear');
                                 if (result.isValid) {
                                     $input.val(formatter.format(result.parsedValue));
+                                }
+                                else {
+                                    $input.ntsError('set', result.errorMessage);
+                                    value(newText);
                                 }
                             }
                         });
                         $input.on('validate', (function (e) {
                             var newText = $input.val();
+                            var validator = self.getValidator(data);
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (!result.isValid) {
@@ -80,7 +83,6 @@ var nts;
                         var placeholder = this.editorOption.placeholder;
                         var textalign = this.editorOption.textalign;
                         var width = this.editorOption.width;
-                        // Properties
                         if (enable !== false) {
                             $input.removeAttr('disabled');
                         }
@@ -93,7 +95,6 @@ var nts;
                         $input.css('text-align', textalign);
                         if (width.trim() != "")
                             $input.width(width);
-                        // Format value
                         var formatted = $input.ntsError('hasError') ? value() : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
@@ -108,9 +109,6 @@ var nts;
                     };
                     return EditorProcessor;
                 }());
-                /**
-                 * TextEditor Processor
-                 */
                 var TextEditorProcessor = (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
@@ -141,7 +139,7 @@ var nts;
                             }
                         });
                         $input.on("blur", function (e) {
-                            if (!readonly) {
+                            if (!$input.attr('readonly')) {
                                 var newText = $input.val();
                                 var result = validator.validate(newText, { isCheckExpression: true });
                                 $input.ntsError('clear');
@@ -183,15 +181,13 @@ var nts;
                         return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new validation.StringValidator(constraintName, { required: required });
+                        return new validation.StringValidator(name, constraintName, { required: required });
                     };
                     return TextEditorProcessor;
                 }(EditorProcessor));
-                /**
-                 * MultilineEditor Processor
-                 */
                 var MultilineEditorProcessor = (function (_super) {
                     __extends(MultilineEditorProcessor, _super);
                     function MultilineEditorProcessor() {
@@ -211,15 +207,13 @@ var nts;
                         return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
                     };
                     MultilineEditorProcessor.prototype.getValidator = function (data) {
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new validation.StringValidator(constraintName, { required: required });
+                        return new validation.StringValidator(name, constraintName, { required: required });
                     };
                     return MultilineEditorProcessor;
                 }(EditorProcessor));
-                /**
-                 * NumberEditor Processor
-                 */
                 var NumberEditorProcessor = (function (_super) {
                     __extends(NumberEditorProcessor, _super);
                     function NumberEditorProcessor() {
@@ -229,10 +223,7 @@ var nts;
                         _super.prototype.init.call(this, $input, data);
                         $input.focus(function () {
                             var selectionType = document.getSelection().type;
-                            // Remove separator (comma)
                             $input.val(data.value());
-                            // If focusing is caused by Tab key, select text
-                            // this code is needed because removing separator deselects.
                             if (selectionType === 'Range') {
                                 $input.select();
                             }
@@ -270,16 +261,14 @@ var nts;
                         return new uk.text.NumberFormatter({ option: this.editorOption });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         this.editorOption['required'] = required;
-                        return new validation.NumberValidator(constraintName, this.editorOption);
+                        return new validation.NumberValidator(name, constraintName, this.editorOption);
                     };
                     return NumberEditorProcessor;
                 }(EditorProcessor));
-                /**
-                 * TimeEditor Processor
-                 */
                 var TimeEditorProcessor = (function (_super) {
                     __extends(TimeEditorProcessor, _super);
                     function TimeEditorProcessor() {
@@ -304,115 +293,70 @@ var nts;
                         return new uk.text.TimeFormatter({ inputFormat: inputFormat });
                     };
                     TimeEditorProcessor.prototype.getValidator = function (data) {
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
                         var mode = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-                        return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat, mode: mode });
+                        return new validation.TimeValidator(name, constraintName, { required: required, outputFormat: inputFormat, mode: mode });
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
-                /**
-                 * Base Editor
-                 */
                 var NtsEditorBindingHandler = (function () {
                     function NtsEditorBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     NtsEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new EditorProcessor().init($(element), valueAccessor());
                     };
-                    /**
-                     * Update
-                     */
                     NtsEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new EditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsEditorBindingHandler;
                 }());
-                /**
-                 * TextEditor
-                 */
                 var NtsTextEditorBindingHandler = (function (_super) {
                     __extends(NtsTextEditorBindingHandler, _super);
                     function NtsTextEditorBindingHandler() {
                         _super.apply(this, arguments);
                     }
-                    /**
-                     * Init.
-                     */
                     NtsTextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new TextEditorProcessor().init($(element), valueAccessor());
                     };
-                    /**
-                     * Update
-                     */
                     NtsTextEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new TextEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsTextEditorBindingHandler;
                 }(NtsEditorBindingHandler));
-                /**
-                 * NumberEditor
-                 */
                 var NtsNumberEditorBindingHandler = (function () {
                     function NtsNumberEditorBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new NumberEditorProcessor().init($(element), valueAccessor());
                     };
-                    /**
-                     * Update
-                     */
                     NtsNumberEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new NumberEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsNumberEditorBindingHandler;
                 }());
-                /**
-                 * TimeEditor
-                 */
                 var NtsTimeEditorBindingHandler = (function () {
                     function NtsTimeEditorBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     NtsTimeEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new TimeEditorProcessor().init($(element), valueAccessor());
                     };
-                    /**
-                     * Update
-                     */
                     NtsTimeEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
                         new TimeEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsTimeEditorBindingHandler;
                 }());
-                /**
-                 * MultilineEditor
-                 */
                 var NtsMultilineEditorBindingHandler = (function (_super) {
                     __extends(NtsMultilineEditorBindingHandler, _super);
                     function NtsMultilineEditorBindingHandler() {
                         _super.apply(this, arguments);
                     }
-                    /**
-                     * Init.
-                     */
                     NtsMultilineEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new MultilineEditorProcessor().init($(element), valueAccessor());
                     };
-                    /**
-                     * Update
-                     */
                     NtsMultilineEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new MultilineEditorProcessor().update($(element), valueAccessor());
                     };
