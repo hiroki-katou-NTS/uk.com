@@ -10,7 +10,10 @@
          * 常にtrueを返す関数が必要になったらこれ
          */
         export function alwaysTrue() {
-            return true;
+            return { 
+                        probe: true,
+                        messageId: "NO_MESSAGE"
+                    };
         }
         /**
          * function find an item index in array
@@ -637,6 +640,21 @@
                 message = message.replace(paramRegex, text);
             }
             return message;
+        }
+        
+        export function getControlName(name: string): string {
+            var hashIdx = name.indexOf("#");
+            if (hashIdx !== 0) return name;
+            var names = name.substring(hashIdx + 2, name.length -　1).split(",");
+            if (names.length > 1) {
+                let params: Array<string> = new Array<string>(); 
+                _.forEach(names, function(n: string, idx: number) {
+                    if (idx === 0) return true;
+                    params.push(getText(n.trim()));
+                });
+                return getText(names[0], params);
+            }
+            return getText(names[0]);
         }
         
     }
