@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,9 +6,6 @@ var nts;
         (function (ui_1) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * GridList binding handler
-                 */
                 var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
@@ -91,7 +87,6 @@ var nts;
                         }
                         $grid.ntsGridList('setupSelecting');
                         $grid.bind('iggridselectionrowselectionchanging', function (evt, uiX) {
-                            //                console.log(ui);
                             if ($grid.data("enable") === false) {
                                 return false;
                             }
@@ -115,6 +110,7 @@ var nts;
                                     data.value('');
                                 }
                             }
+                            $grid.data("ui-changed", true);
                         });
                         $grid.setupSearchScroll("igGrid", true);
                     };
@@ -136,7 +132,7 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if ($grid.attr("filtered") !== true && $grid.attr("filtered") !== "true") {
+                        if (!($grid.attr("filtered") === true && $grid.attr("filtered") === "true") && $grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -147,7 +143,6 @@ var nts;
                                     var key = c["key"] === undefined ? c["prop"] : c["key"];
                                     s[key] = moment(s[key]).format(c["format"]);
                                 });
-                                //                    currentSources.push(s);
                             });
                             $grid.igGrid('option', 'dataSource', currentSources);
                             $grid.igGrid("dataBind");
@@ -161,6 +156,7 @@ var nts;
                         if (!isEqual) {
                             $grid.ntsGridList('setSelected', data.value());
                         }
+                        $grid.data("ui-changed", false);
                         $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
                     };
                     return NtsGridListBindingHandler;

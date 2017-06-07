@@ -1,5 +1,4 @@
 module kdl002.b.viewmodel {
-    
     export class ScreenModel {
         isMulti: boolean;
         items: KnockoutObservableArray<model.ItemModel2>;
@@ -57,9 +56,6 @@ module kdl002.b.viewmodel {
                 self.items([]);
                 var lst = nts.uk.ui.windows.getShared('SelectedNewItem');
                 console.log(lst);
-//                let lstItemMapping =  _.map(lst , item => {
-//                        return new model.ItemModel2(item, '');
-//                });
                 let aa = new model.ItemModel2(lst, '');
                 self.items.push(aa);
             })
