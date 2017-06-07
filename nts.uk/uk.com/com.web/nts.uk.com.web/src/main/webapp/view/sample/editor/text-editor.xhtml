@@ -17,7 +17,6 @@
 					nts.uk.shr.com.primitive.sample.PersonalWageCode
 					nts.uk.shr.com.primitive.sample.CommonAmount
 					nts.uk.shr.com.primitive.sample.SampleKana
-					nts.uk.shr.com.primitive.sample.SampleHalfInt
 					nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode
 					nts.arc.time.YearMonth
    				</com:ValidatorScript>
@@ -42,17 +41,15 @@
 								<button id="reset" data-bind="click: setDefault">Reset</button>
 							</div>
 							<br/>
-							<input id="text-1" data-name="text-1" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: true, enable: enable, readonly: readonly}" />
+							<input id="text-1" data-name="text-1" data-bind="ntsTextEditor: {name: '#[FND_L_SEARCH_RELEASE]', value: value, constraint: constraint, option: option, required: true, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 							<button data-bind="click: clear">Clear Error</button>
 							<br/>
 							<h3>Kana</h3>
-							<input id="kana-txt" data-bind="ntsTextEditor: { value: valueKana, constraint: 'SampleKana', option: option }"/>
+							<input id="kana-txt" data-bind="ntsTextEditor: { name: '#[FND_N_SPAN_YM_END, FND_L_SEARCH_RELEASE]', value: valueKana, constraint: 'SampleKana', option: option }"/>
 							<h3>Upper case alpha numeric</h3>
-							<input id="an-txt" data-bind="ntsTextEditor: { value: valueUan, constraint: 'PersonalWageCode', option: option }"/>
-							<h3>Half integer</h3>
-							<input id="half-int" data-bind="ntsTextEditor: { value: valueHalfInt, constraint: 'SampleHalfInt', option: option }"/>
+							<input id="an-txt" data-bind="ntsTextEditor: { name: 'Uppercase', value: valueUan, constraint: 'PersonalWageCode', option: option }"/>
 						</div>
 						<h3>Update Immediate</h3>
 						<input id="text-simple" data-name="text-simple" data-bind="ntsTextEditor: {value: value, constraint: 'ResidenceCode', immediate: true}" />

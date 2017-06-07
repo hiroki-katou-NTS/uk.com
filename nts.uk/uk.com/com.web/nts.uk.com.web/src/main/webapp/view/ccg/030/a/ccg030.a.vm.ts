@@ -28,7 +28,7 @@ module ccg030.a.viewmodel {
             });
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("CCG030_19"), key: 'defClassAtr', width: 40, columnCssClass: 'halign-center', template: '{{if ${defClassAtr} == 1 }}<i class="icon icon-dot "></i>{{/if}}' },
-                { headerText: nts.uk.resource.getText("CCG030_9"), key: 'topPageCode', width: 60 },
+                { headerText: nts.uk.resource.getText("CCG030_9"), key: 'topPageCode', width: 45 },
                 { headerText: nts.uk.resource.getText("CCG030_10"), key: 'topPageName', width: 260 }
             ]);
             // Details
@@ -48,8 +48,10 @@ module ccg030.a.viewmodel {
         /** Start page */
         startPage(): JQueryPromise<any> {
             var self = this;
+            nts.uk.ui.block.invisible();
             var dfd = self.reloadData();
             dfd.done(() => {
+                nts.uk.ui.block.clear();
                 self.selectFlowMenuByIndex(0);
             });
 
@@ -74,27 +76,30 @@ module ccg030.a.viewmodel {
             $(".nts-input").trigger("validate");
             if (util.isNullOrEmpty(self.selectedFlowMenu().fileID())
                 $('#file_upload').ntsError('set', '選択されていないファイル');
-            _.delay(() => {
-                if (!errors.hasError()) {
-                    if (self.isCreate() === true) {
-                        service.createFlowMenu(flowMenu).done((data) => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                            self.reloadData().done(() => {
-                                self.selectFlowMenuByIndexByCode(topPageCode);
-                            });
-                        }).fail((res) => {
-                            nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage({ messageId: "Msg_3" });
+            if (!errors.hasError()) {
+                nts.uk.ui.block.invisible();
+                if (self.isCreate() === true) {
+                    service.createFlowMenu(flowMenu).done((data) => {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.reloadData().done(() => {
+                            self.selectFlowMenuByIndexByCode(topPageCode);
                         });
-                    }
-                    else {
-                        service.updateFlowMenu(flowMenu).done((data) => {
-                            self.reloadData();
-                            _.defer(() => { $("#inpName").focus(); });
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        });
-                    }
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alertError(nts.uk.resource.getMessage({ messageId: "Msg_3" }));
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
                 }
-            }, 100);
+                else {
+                    service.updateFlowMenu(flowMenu).done((data) => {
+                        self.reloadData();
+                        _.defer(() => { $("#inpName").focus(); });
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                }
+            }
         }
 
         //蜑企勁繝懊ち繝ｳ繧呈款縺呎凾
@@ -102,6 +107,7 @@ module ccg030.a.viewmodel {
             var self = this;
             if (self.selectedFlowMenuCD() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
+                    nts.uk.ui.block.invisible();
                     service.deleteFlowMenu(self.selectedFlowMenu().toppagePartID())
                         .done(() => {
                             var index = _.findIndex(self.listFlowMenu(), ['titleMenuCD', self.selectedFlowMenu().topPageCode()]);
@@ -113,6 +119,8 @@ module ccg030.a.viewmodel {
                             errors.clearAll();
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_76" });
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
                         });
                 });
             }
@@ -143,9 +151,9 @@ module ccg030.a.viewmodel {
                 onSuccess: function() { },
                 onFail: function() { }
             }
-            if (!util.isNullOrEmpty(self.selectedFlowMenu().toppagePartID())) {
+            /*if (!util.isNullOrEmpty(self.selectedFlowMenu().toppagePartID())) {
                 self.deleteFile();
-            }
+            }*/
             $("#file_upload").ntsFileUpload(option).done(function(res) {
                 self.tempFileID(res[0].id);
                 self.selectedFlowMenu().fileID(res[0].id);
@@ -158,7 +166,6 @@ module ccg030.a.viewmodel {
         }
 
         deleteButtonClick(): void {
-            console.time('deleteFile');
             var self = this;
             var toppagePartID = self.selectedFlowMenu().toppagePartID();
             if (toppagePartID) {
@@ -172,7 +179,7 @@ module ccg030.a.viewmodel {
                         self.selectedFlowMenu().fileName('');
                         self.isDelete(false);
                     }
-                });
+                })
             } else {
                 self.tempFileID(self.selectedFlowMenu().fileID());
                 self.selectedFlowMenu().fileID('');
@@ -183,11 +190,14 @@ module ccg030.a.viewmodel {
 
         private deleteFile(): void {
             var self = this;
+            nts.uk.ui.block.invisible();
             service.deleteFile(self.tempFileID()).done((data) => {
                 self.selectedFlowMenu().fileID('');
                 self.selectedFlowMenu().fileName('');
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+            }).always(() => {
+                nts.uk.ui.block.clear();
             });
         }
 
@@ -202,8 +212,11 @@ module ccg030.a.viewmodel {
 
         // Open ccg030 B Dialog
         open030B_Dialog() {
+            nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared("flowmenu", this.selectedFlowMenu(), false);
-            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: 'プレビュー', dialogClass: "no-close" });
+            nts.uk.ui.windows.sub.modal("/view/ccg/030/b/index.xhtml", { title: nts.uk.resource.getText("CCG030_4"), dialogClass: "no-close" }).onClosed(() => {
+                nts.uk.ui.block.clear();    
+            });
         }
 
         /** Find Current FlowMenu by ID */

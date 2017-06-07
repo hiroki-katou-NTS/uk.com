@@ -6,17 +6,17 @@ __viewContext.ready(function() {
         }
 
         Alert() {
-            nts.uk.ui.dialog.alert("Hello world");
+            nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
         }
 
-        Confirm() {
-            nts.uk.ui.dialog.confirm("Do you want to say \"Hello World!\"?");
-        }
         AlertInfor() {
-            nts.uk.ui.dialog.info({ messageId: "messageid" });
+            nts.uk.ui.dialog.info({ messageId: "Msg_3" });
         }
         AlertError() {
             nts.uk.ui.dialog.alertError({messageId: "Msg_175", messageParams: ["1", "2"]})
+        }
+        Confirm() {
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_3" });
         }
     }
 
