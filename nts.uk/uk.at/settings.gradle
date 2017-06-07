@@ -20,3 +20,10 @@ include 'at.ctx:record:nts.uk.ctx.at.record.infra'
 include 'at.ctx:record:nts.uk.ctx.at.record.pub'
 include 'at.ctx:record:nts.uk.ctx.at.record.pubimp'
 include 'at.ctx:record:nts.uk.ctx.at.record.ws'
+
+include 'at.file:nts.uk.file.at.app'
+include 'at.file:nts.uk.file.at.infra'
+
+include 'at.screen:nts.uk.screen.at.ws'
+include 'at.screen:nts.uk.screen.at.app'
+include 'at.screen:nts.uk.screen.at.infra'
