@@ -42,7 +42,7 @@
 							<div style="float: left">
 								<div style="width: 400; margin-bottom: 10px;"
 									data-bind="ntsSearchBox: {
-									name: '#CCG014_20'
+									name: '#[CCG014_20]'
 									targetKey: 'titleMenuCD',
 									mode:'igGrid',
 									comId: 'titlemenu-list',
@@ -69,8 +69,8 @@
 					<div id="right-content" >
 						<div class="row1 cf" data-bind="with: selectedTitleMenu">
 							<div class="pull-left" data-bind="ntsFormLabel: { constraint: ['TitleMenuCD' , 'Name'], required: true }">#{i18n.getText('CCG014_13')}</div>
-							<input id="titleMenuCD" data-bind="ntsTextEditor: {value: titleMenuCD, constraint: 'TitleMenuCD', enable: $parent.isCreate , immediate: true , required: true ,name: '#CCG014_21' }" tabindex="6" />
-							<input id="titleMenuName" data-bind="ntsTextEditor: {value: name, constraint: 'Name' , required: true , immediate: true ,name: '#CCG014_22'}" tabindex="7"/>
+							<input id="titleMenuCD" data-bind="ntsTextEditor: {value: titleMenuCD, constraint: 'TitleMenuCD', enable: $parent.isCreate , immediate: true , required: true ,name: '#[CCG014_21]' }" tabindex="6" />
+							<input id="titleMenuName" data-bind="ntsTextEditor: {value: name, constraint: 'Name' , required: true , immediate: true ,name: '#[CCG014_22]'}" tabindex="7"/>
 						</div> 
 						<div class="row2"><button class="x-large fixbtn" data-bind="click : open031_1Dialog,enable: !isCreate()" tabindex="8">#{i18n.getText('CCG014_14')}</button></div>
 						<div class="row3">
