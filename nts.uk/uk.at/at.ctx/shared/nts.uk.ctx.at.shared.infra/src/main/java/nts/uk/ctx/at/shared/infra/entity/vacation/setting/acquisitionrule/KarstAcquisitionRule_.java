@@ -10,9 +10,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KmfstAcquisitionRule_.
  */
-@StaticMetamodel(KmfstAcquisitionRule.class)
-public class KmfstAcquisitionRule_ {
+@StaticMetamodel(KarstAcquisitionRule.class)
+public class KarstAcquisitionRule_ {
 	
 	/** The cid. */
-	public static volatile SingularAttribute<KmfstAcquisitionRule, String> cid;
+	public static volatile SingularAttribute<KarstAcquisitionRule, String> cid;
 }

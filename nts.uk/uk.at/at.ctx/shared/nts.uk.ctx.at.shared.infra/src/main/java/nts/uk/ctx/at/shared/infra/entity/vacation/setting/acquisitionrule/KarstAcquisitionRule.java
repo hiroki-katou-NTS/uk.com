@@ -21,8 +21,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KMFST_ACQUISITION_RULE")
-public class KmfstAcquisitionRule extends UkJpaEntity implements Serializable {
+@Table(name = "KARST_ACQUISITION_RULE")
+public class KarstAcquisitionRule extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -60,7 +60,7 @@ public class KmfstAcquisitionRule extends UkJpaEntity implements Serializable {
 	@Column(name = "CATEGORY")
 	private int category;
 
-	public KmfstAcquisitionRule() {
+	public KarstAcquisitionRule() {
 		super();
 	}
 
@@ -70,7 +70,7 @@ public class KmfstAcquisitionRule extends UkJpaEntity implements Serializable {
 	 * @param cid
 	 *            the cid
 	 */
-	public KmfstAcquisitionRule(String cid) {
+	public KarstAcquisitionRule(String cid) {
 		this.cid = cid;
 	}
 
@@ -93,10 +93,10 @@ public class KmfstAcquisitionRule extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KmfstAcquisitionRule)) {
+		if (!(object instanceof KarstAcquisitionRule)) {
 			return false;
 		}
-		KmfstAcquisitionRule other = (KmfstAcquisitionRule) object;
+		KarstAcquisitionRule other = (KarstAcquisitionRule) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;

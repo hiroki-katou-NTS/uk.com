@@ -60,7 +60,7 @@ public enum SixtyHourExtra {
 
 	/** The twelve month. */
 	// 12ヶ月
-	TWELVE_MONTH(12, "12年", "12年");
+	TWELVE_MONTH(12, "12ヶ月", "12ヶ月");
 
 	/** The value. */
 	public int value;
