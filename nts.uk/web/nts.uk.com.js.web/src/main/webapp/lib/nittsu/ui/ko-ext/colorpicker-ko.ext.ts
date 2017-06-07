@@ -35,7 +35,6 @@ module nts.uk.ui.koExtentions {
                 $container.append("<input class='ntsColorPicker'/"); 
                 $picker = $container.find(".ntsColorPicker");     
             }
-            $container.width(width);
             
             $picker.addClass("ntsColorPicker").attr("data-name", dataName);
             
@@ -71,8 +70,11 @@ module nts.uk.ui.koExtentions {
                 }
             });
             
-            $container.find(".sp-replacer").width(width - 10);
-            $container.find(".sp-preview").width(width - 30);
+            if(!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)){
+                $container.width(width);
+                $container.find(".sp-replacer").width(width - 10);
+                $container.find(".sp-preview").width(width - 30);        
+            }
         }
 
         /**

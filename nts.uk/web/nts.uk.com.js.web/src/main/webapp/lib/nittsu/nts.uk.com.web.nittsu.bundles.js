@@ -1141,7 +1141,7 @@ var nts;
                 CharType.prototype.validate = function (text) {
                     var result = new uk.ui.validation.ValidationResult();
                     var validateResult = this.validator(text);
-                    if (validateResult.probe) {
+                    if (validateResult === true || validateResult.probe) {
                         result.isValid = true;
                         result.errorMessage = validateResult.messageId;
                     }
@@ -9911,7 +9911,6 @@ var nts;
                             $container.append("<input class='ntsColorPicker'/");
                             $picker = $container.find(".ntsColorPicker");
                         }
-                        $container.width(width);
                         $picker.addClass("ntsColorPicker").attr("data-name", dataName);
                         $picker.spectrum({
                             preferredFormat: "name",
@@ -9944,8 +9943,11 @@ var nts;
                                 }
                             }
                         });
-                        $container.find(".sp-replacer").width(width - 10);
-                        $container.find(".sp-preview").width(width - 30);
+                        if (!nts.uk.util.isNullOrUndefined(width) && nts.uk.ntsNumber.isNumber(width)) {
+                            $container.width(width);
+                            $container.find(".sp-replacer").width(width - 10);
+                            $container.find(".sp-preview").width(width - 30);
+                        }
                     };
                     /**
                      * Update
