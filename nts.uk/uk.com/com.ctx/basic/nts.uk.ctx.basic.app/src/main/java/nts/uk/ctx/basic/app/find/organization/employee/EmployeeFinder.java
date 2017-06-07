@@ -11,14 +11,14 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmployeeFinder {
-//	@Inject 
-//	private EmployeeRepository EmpRepo;
-//	
-//	public List<EmployeeDto> findByEmployeeCode(String employeeCode){
-//		String companyId = AppContexts.user().companyId();
-//		return this.EmpRepo.findByEmployeeCode(companyId, employeeCode)
-//				.stream()
-//				.map(item ->EmployeeDto.toDomain(item))
-//				.collect(Collectors.toList());
-//	}
+	@Inject 
+	private EmployeeRepository EmpRepo;
+	
+	public List<EmployeeDto> getPersonIdByEmployeeCode(String employeeCode){
+		String companyId = AppContexts.user().companyId();
+		return this.EmpRepo.findByEmployeeCode(companyId, employeeCode)
+				.stream()
+				.map(item ->EmployeeDto.toDomain(item))
+				.collect(Collectors.toList());
+	}
 }
