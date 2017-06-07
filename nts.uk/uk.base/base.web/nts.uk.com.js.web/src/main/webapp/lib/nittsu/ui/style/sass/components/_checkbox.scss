@@ -2,7 +2,7 @@
 .ntsCheckBox {
 	display: inline-block;
 	label{display: inline-block;};
-	padding: 5px 5px 5px 5px;
+	padding: 1px 5px 3px 4px;
 	
 	span.box,
 	span.label {
@@ -71,11 +71,12 @@
 	}
 	
 	&:focus {
-	  	outline: 1px solid #0096f2;
+		box-shadow: 0 0 1px 1px $focused_color;
+		border-radius: 2px;
 	}
 }
 
-.outline .ntsCheckBox {
+.outline .ntsCheckBox-label {
 	color:#fff;
 	
 	input[type="checkbox"] {
@@ -95,7 +96,7 @@
 	}
 }
 
-.minimalist .ntsCheckBox {
+.minimalist .ntsCheckBox-label {
 	$checkbox_minimalist_color: #444;
 	
 	color: $checkbox_minimalist_color;

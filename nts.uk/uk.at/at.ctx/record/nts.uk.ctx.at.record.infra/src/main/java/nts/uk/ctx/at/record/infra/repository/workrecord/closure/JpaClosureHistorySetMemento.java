@@ -32,20 +32,24 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	}
 
 	
-	/**
-	 * Sets the close name.
-	 *
-	 * @param closeName the new close name
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setCloseName(nts.uk.ctx.at.record.dom.workrecord.closure.CloseName)
 	 */
 	@Override
 	public void setCloseName(CloseName closeName) {
 		this.kclmtClosureHist.setName(closeName.v());
 	}
 
-	/**
-	 * Sets the closure id.
-	 *
-	 * @param closureId the new closure id
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setClosureId(nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId)
 	 */
 	@Override
 	public void setClosureId(ClosureId closureId) {
@@ -54,10 +58,12 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 		this.kclmtClosureHist.setKclmtClosureHistPK(pk);
 	}
 
-	/**
-	 * Sets the end date.
-	 *
-	 * @param endDate the new end date
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setEndDate(nts.uk.ctx.at.record.dom.workrecord.closure.ClosureYearMonth)
 	 */
 	@Override
 	public void setEndDate(ClosureYearMonth endDate) {
@@ -74,23 +80,24 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	@Override
 	public void setClosureDate(ClosureDate closureDate) {
 		this.kclmtClosureHist.setCloseDay(closureDate.getDay());
-		if(closureDate.getLastDayOfMonth()){
+		if (closureDate.getLastDayOfMonth()) {
 			this.kclmtClosureHist.setIsLastDay(1);
-		}
-		else {
+		} else {
 			this.kclmtClosureHist.setIsLastDay(0);
 		}
 	}
 
-	/**
-	 * Sets the start date.
-	 *
-	 * @param startDate the new start date
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setStartDate(nts.uk.ctx.at.record.dom.workrecord.closure.
+	 * ClosureYearMonth)
 	 */
 	@Override
 	public void setStartDate(ClosureYearMonth startDate) {
-		// TODO Auto-generated method stub
-		
+		this.kclmtClosureHist.setStrD(startDate.v());
 	}
 
 }

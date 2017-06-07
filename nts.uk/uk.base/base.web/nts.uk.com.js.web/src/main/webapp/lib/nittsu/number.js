@@ -17,15 +17,28 @@ var nts;
                 }
                 return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
             }
-            function isNumber(value, isDecimalValue, option) {
+            function isNumber(value, isDecimalValue, option, message) {
                 if (isDecimalValue) {
+                    if (message !== undefined)
+                        message.id = 'FND_E_REALNUMBER';
                     return isDecimal(value, option);
                 }
                 else {
+                    if (message !== undefined)
+                        message.id = 'FND_E_INTEGER';
                     return isInteger(value, option);
                 }
             }
             ntsNumber.isNumber = isNumber;
+            function isHalfInt(value, message) {
+                var val = parseFloat(value);
+                if (message !== undefined)
+                    message.id = 'FND_E_HALFINT';
+                if (val !== NaN && (val * 2) % 1 === 0)
+                    return true;
+                return false;
+            }
+            ntsNumber.isHalfInt = isHalfInt;
             ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
             function getDecimal(value, scale) {
                 var scaleX = Math.pow(10, scale);

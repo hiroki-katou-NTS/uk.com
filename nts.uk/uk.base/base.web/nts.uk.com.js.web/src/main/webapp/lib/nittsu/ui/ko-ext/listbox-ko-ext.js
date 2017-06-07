@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,33 +6,19 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * ListBox binding handler
-                 */
                 var ListBoxBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
                     function ListBoxBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     ListBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
                         var data = valueAccessor();
-                        // Get options
                         var options = ko.unwrap(data.options);
-                        // Get options value
                         var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
                         var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
                         var selectedValue = ko.unwrap(data.value);
                         var isMultiSelect = ko.unwrap(data.multiple);
                         var enable = ko.unwrap(data.enable);
-                        //            var required = ko.unwrap(data.required) || false;
                         var columns = data.columns;
-                        // Container
-                        var elementId = $(element).attr("id");
+                        var elementId = $(element).addClass("listbox-wrapper").attr("id");
                         var gridId = elementId;
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             gridId = nts.uk.util.randomId();
@@ -46,7 +31,6 @@ var nts;
                         container.data("options", options.slice());
                         container.data("init", true);
                         container.data("enable", enable);
-                        // Create changing event.
                         var changeEvent = new CustomEvent("selectionChange", {
                             detail: {},
                         });
@@ -92,7 +76,6 @@ var nts;
                         });
                         container.ntsGridList('setupSelecting');
                         container.bind('iggridselectionrowselectionchanging', function (evt, uiX) {
-                            //                console.log(ui);
                             if (container.data("enable") === false) {
                                 return false;
                             }
@@ -106,16 +89,12 @@ var nts;
                             var changingEvent = new CustomEvent("selectionChanging", {
                                 detail: itemSelected,
                                 bubbles: true,
-                                cancelable: true,
+                                cancelable: false,
                             });
                             container.data("chaninged", true);
                             document.getElementById(elementId).dispatchEvent(changingEvent);
-                            if (changingEvent.returnValue !== undefined && changingEvent.returnValue === false) {
-                                return false;
-                            }
                         });
                         container.bind('selectionchanged', function () {
-                            //                console.log(ui);
                             var itemSelected;
                             if (container.igGridSelection('option', 'multipleSelection')) {
                                 var selected = container.ntsGridList('getSelected');
@@ -154,34 +133,24 @@ var nts;
                                 var changingEvent = new CustomEvent("selectionChanging", {
                                     detail: itemSelected,
                                     bubbles: true,
-                                    cancelable: true,
+                                    cancelable: false,
                                 });
                                 document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                                if (changingEvent.returnValue === undefined || !changingEvent.returnValue) {
-                                    var oldSelected = container.data("selected");
-                                    container.ntsGridList("setSelected", oldSelected);
-                                    return false;
-                                }
                             }
                             container.data("chaninged", false);
                             if (!_.isEqual(itemSelected, data.value())) {
                                 data.value(itemSelected);
                             }
+                            container.data("ui-changed", true);
                         });
                         container.setupSearchScroll("igGrid", true);
                         container.data("multiple", isMultiSelect);
                         $("#" + gridId + "_container").find("#" + gridId + "_headers").closest("tr").hide();
                         $("#" + gridId + "_container").height($("#" + gridId + "_container").height() - gridHeaderHeight);
                     };
-                    /**
-                     * Update
-                     */
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
                         var data = valueAccessor();
-                        // Get options.
                         var options = ko.unwrap(data.options);
-                        // Get options value.
                         var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
                         var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
                         var selectedValue = ko.unwrap(data.value);
@@ -189,7 +158,6 @@ var nts;
                         var enable = ko.unwrap(data.enable);
                         var columns = data.columns;
                         var rows = data.rows;
-                        // Container.
                         var container = $(element).find(".ntsListBox");
                         if (container.data("enable") !== enable) {
                             if (!enable) {
@@ -202,8 +170,7 @@ var nts;
                             }
                         }
                         container.data("enable", enable);
-                        var currentSource = container.igGrid('option', 'dataSource');
-                        if (!_.isEqual(currentSource, options)) {
+                        if (!((container.attr("filtered") === true && container.attr("filtered") === "true") || container.data("ui-changed") === true)) {
                             var currentSources = options.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -218,27 +185,36 @@ var nts;
                             container.igGrid('option', 'dataSource', currentSources);
                             container.igGrid("dataBind");
                         }
-                        var dataValue = data.value();
                         var isMultiOld = container.igGridSelection('option', 'multipleSelection');
-                        if (container.data("fullValue")) {
-                            if (isMultiOld) {
-                                dataValue = _.map(dataValue, optionValue);
-                            }
-                            else {
-                                dataValue = dataValue[optionValue];
-                            }
-                        }
                         if (isMultiOld !== isMultiSelect) {
                             container.igGridSelection('option', 'multipleSelection', isMultiSelect);
-                            if (isMultiOld && !nts.uk.util.isNullOrUndefined(dataValue) && dataValue.length > 0) {
+                            if (isMultiOld && !nts.uk.util.isNullOrUndefined(data.value()) && data.value().length > 0) {
                                 data.value(data.value()[0]);
                             }
-                            else if (!isMultiOld && !nts.uk.util.isNullOrUndefined(dataValue)) {
+                            else if (!isMultiOld && !nts.uk.util.isNullOrUndefined(data.value())) {
                                 data.value([data.value()]);
+                            }
+                            var dataValue = data.value();
+                            if (container.data("fullValue")) {
+                                if (isMultiOld) {
+                                    dataValue = _.map(dataValue, optionValue);
+                                }
+                                else {
+                                    dataValue = dataValue[optionValue];
+                                }
                             }
                             container.ntsGridList('setSelected', dataValue);
                         }
                         else {
+                            var dataValue = data.value();
+                            if (container.data("fullValue")) {
+                                if (isMultiOld) {
+                                    dataValue = _.map(dataValue, optionValue);
+                                }
+                                else {
+                                    dataValue = dataValue[optionValue];
+                                }
+                            }
                             var currentSelectedItems = container.ntsGridList('getSelected');
                             if (isMultiOld) {
                                 if (currentSelectedItems) {
@@ -267,6 +243,7 @@ var nts;
                                 container.ntsGridList('setSelected', dataValue);
                             }
                         }
+                        container.data("ui-changed", false);
                         container.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
                     };
                     return ListBoxBindingHandler;
