@@ -149,11 +149,11 @@ module kmk011.a.viewmodel {
          */
         startPage(): JQueryPromise<any> {
             var self = this;
-            nts.uk.ui.block.invisible();
+//            nts.uk.ui.block.invisible();
             var dfd = $.Deferred();
             service.getAllDivTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
                 //dudt test
-                nts.uk.ui.block.clear();
+//                nts.uk.ui.block.clear();
                 if (lstDivTime === undefined || lstDivTime.length == 0) {
                     self.dataSource();
                 } else {
@@ -177,16 +177,16 @@ module kmk011.a.viewmodel {
             })
         }
         openBDialog() {
-            nts.uk.ui.block.grayout();
+//            nts.uk.ui.block.grayout();
             var self = this;
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
             nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', }).onClosed(function():any {
-                nts.uk.ui.block.clear();
+//                nts.uk.ui.block.clear();
             });
         }
         openDialog021() {
             var self = this;
-            nts.uk.ui.block.grayout();
+//            nts.uk.ui.block.grayout();
             service.getAllAttItem(1).done(function(lstAllItem: Array<model.AttendanceType>) {
                 var listAllId = [];
                 for (let j = 0; j < lstAllItem.length; j++) {
@@ -200,7 +200,7 @@ module kmk011.a.viewmodel {
                 nts.uk.ui.windows.setShared('SelectedAttendanceId', listIdSelect, true);
                 nts.uk.ui.windows.setShared('Multiple', true, true);
                 nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
-                    nts.uk.ui.block.clear();
+//                    nts.uk.ui.block.clear();
                     var list = nts.uk.ui.windows.getShared('selectedChildAttendace');
                     if(list == null || list === undefined) return;
                     self.list(list);
@@ -224,7 +224,7 @@ module kmk011.a.viewmodel {
         Registration() {
             var self = this;
             //dudt test
-            nts.uk.ui.block.invisible();
+//            nts.uk.ui.block.invisible();
             $('.nts-input').trigger("validate");
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
@@ -251,10 +251,10 @@ module kmk011.a.viewmodel {
                         self.check = false;
                         $("#itemname").focus();
                         //dudt
-                        nts.uk.ui.block.clear();
+//                        nts.uk.ui.block.clear();
                         
                     }).fail(function(error) {
-                        nts.uk.ui.block.clear();
+//                        nts.uk.ui.block.clear();
                         self.check = true;
                         if (error.messageId == 'Msg_82') {
                             $('#inpAlarmTime').ntsError('set', error);
@@ -269,7 +269,7 @@ module kmk011.a.viewmodel {
                     return dfd.promise();
                 }
             })
-            nts.uk.ui.block.clear();
+//            nts.uk.ui.block.clear();
         }
         clearError(): void {
             if ($('.nts-validate').ntsError("hasError")==true) {
