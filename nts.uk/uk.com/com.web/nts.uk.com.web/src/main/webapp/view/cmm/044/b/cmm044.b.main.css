@@ -1,0 +1,28 @@
+
+#D_BTN_001 {
+	margin-top: 2px;
+	margin-left: 35px;
+	width: 90px;
+}
+
+#D_BTN_002 {
+	margin-left: 15px;
+	width: 90px;
+}
+#label-d1-003{
+	margin-top: 20px;
+	margin-left: 35px;
+}
+
+.table1 td,
+.table1 th {border: 1px solid #ccc;} 
+
+.table1 {
+	margin-top: 20px;
+	margin-left: 35px;
+	width: 950px;
+}
+.table1 tr:FIRST-CHILD th {
+	text-align: center;
+	
+}
