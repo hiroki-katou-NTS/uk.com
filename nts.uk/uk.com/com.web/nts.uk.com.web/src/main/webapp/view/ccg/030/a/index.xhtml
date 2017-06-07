@@ -39,6 +39,7 @@
 						<div style="float: left">
 							<div id="searchBox" style="width: 370px; margin-bottom: 30px;"
 								data-bind="ntsSearchBox: {
+								name: '#CCG030_20',
 								targetKey: 'topPageCode',
 								mode: 'igGrid',
 								comId: 'flow-menu-list',
@@ -70,8 +71,8 @@
 						<tr data-bind="with: selectedFlowMenu">
 							<td><div data-bind="ntsFormLabel: { constraint: 'TopPagePartCode',constraint: ['TopPagePartCode','TopPagePartName'], required: true }">#{i18n.getText('CCG030_11')}</div></td>
 							<td colspan="2">
-								<input id="inpCode" data-bind="ntsTextEditor: { value: topPageCode, constraint: 'TopPagePartCode', required: true, enable: $parent.isCreate}" tabindex="5" />
-								<input id="inpName" data-bind="ntsTextEditor: { value: topPageName, constraint: 'TopPagePartName', required: true}" tabindex="6" />
+								<input id="inpCode" data-bind="ntsTextEditor: { value: topPageCode, constraint: 'TopPagePartCode', required: true, enable: $parent.isCreate , name: '#CCG030_21'}" tabindex="5" />
+								<input id="inpName" data-bind="ntsTextEditor: { value: topPageName, constraint: 'TopPagePartName', required: true , name: '#CCG030_22'}" tabindex="6" />
 							</td>
 						</tr>
 						<tr>
@@ -97,11 +98,11 @@
 							<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG030_15')}</div></td>
 							<td><span id="">#{i18n.getText('CCG030_16')}</span> <input 
 								id="inp_width" class="input-size"
-								data-bind="ntsNumberEditor: { value: widthSize, constraint: 'Width', required: true , immediate:true}" tabindex="11" />
+								data-bind="ntsNumberEditor: { value: widthSize, constraint: 'Width', required: true , immediate:true , name: '#CCG014_23'}" tabindex="11" />
 								<span>#{i18n.getText('CCG030_18')}</span> <span
 								style="margin-left: 30px;">#{i18n.getText('CCG030_17')}</span> <input
 								id="inp_height" class="input-size"
-								data-bind="ntsNumberEditor: { value: heightSize, constraint: 'Height', required: true , immediate: true}" tabindex="12" />
+								data-bind="ntsNumberEditor: { value: heightSize, constraint: 'Height', required: true , immediate: true , name: '#CCG014_24'}" tabindex="12" />
 								<span>#{i18n.getText('CCG030_15')}</span></td>
 							<td></td>
 						</tr>
