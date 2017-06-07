@@ -3,10 +3,22 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.enums;
 
+import lombok.AllArgsConstructor;
+
 /**
  * @author hungnm
  *
  */
+@AllArgsConstructor
 public enum UseAtr {
+
+	/* 使用しない */
+	NOT_USE(0, "Enum_UseAtr_NotUse"),
+	/* 使用する */
+	USE(1, "Enum_UseAtr_Use");
+
+	public final int value;
+
+	public final String nameId;
 
 }

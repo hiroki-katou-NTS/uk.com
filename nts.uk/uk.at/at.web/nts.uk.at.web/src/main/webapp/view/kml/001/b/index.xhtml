@@ -36,7 +36,8 @@
 						<tr>
 							<td data-bind="text: $parent.getText($index())"></td>
 							<td>
-								<div class="cf" data-name="KML001_17" data-bind="ntsSwitchButton: {
+								<div class="cf" data-bind="ntsSwitchButton: {
+										name: '#KML001_17',
 										options: ko.observableArray([
 											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
 								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
@@ -47,7 +48,8 @@
 										enable: true }"></div>	
 							</td>
 							<td>
-								<input  class="premiumName" data-name="KML001_28" data-bind="ntsTextEditor: {
+								<input  class="premiumName" data-bind="ntsTextEditor: {
+										name: '#KML001_28',
 										value: name,
 										constraint: 'PremiumName',
 										option: { width: '220px' },

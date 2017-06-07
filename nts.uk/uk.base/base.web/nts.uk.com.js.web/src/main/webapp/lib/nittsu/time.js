@@ -1,4 +1,3 @@
-/// <reference path="reference.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -10,7 +9,7 @@ var nts;
     (function (uk) {
         var time;
         (function (time_1) {
-            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "HHmm"];
+            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
             var listEmpire = {
                 "明治": "1868/01/01",
                 "大正": "1912/07/30",
@@ -47,7 +46,7 @@ var nts;
             }());
             time_1.JapanYearMonth = JapanYearMonth;
             function yearInJapanEmpire(date) {
-                var year = moment.utc(date).year();
+                var year = moment.utc(date, defaultInputFormat, true).year();
                 if (year == 1868) {
                     return new JapanYearMonth("明治元年");
                 }
@@ -129,12 +128,6 @@ var nts;
                 return new JapanDateMoment(date);
             }
             time_1.dateInJapanEmpire = dateInJapanEmpire;
-            /**
-            * Format by pattern
-            * @param  {number} [seconds]	  Input seconds
-            * @param  {string} [formatOption] Format option
-            * @return {string}				Formatted duration
-            */
             function formatSeconds(seconds, formatOption) {
                 seconds = parseInt(String(seconds));
                 var ss = uk.text.padLeft(String(seconds % 60), '0', 2);
@@ -142,19 +135,12 @@ var nts;
                 var mm = uk.text.padLeft(String(minutes % 60), '0', 2);
                 var hours = uk.ntsNumber.trunc(seconds / 60 / 60);
                 var h = String(hours);
-                // TODO: use formatOption
                 return "h:mm:ss"
                     .replace(/h/g, h)
                     .replace(/mm/g, mm)
                     .replace(/ss/g, ss);
             }
             time_1.formatSeconds = formatSeconds;
-            /**
-            * 日付をフォーマットする
-            * @param  {Date}   date	 日付
-            * @param  {String} [format] フォーマット
-            * @return {String}		  フォーマット済み日付
-            */
             function formatDate(date, format) {
                 if (!format)
                     format = 'yyyy-MM-dd hh:mm:ss.SSS';
@@ -182,11 +168,6 @@ var nts;
                 return format;
             }
             time_1.formatDate = formatDate;
-            /**
-            * Format YearMonth
-            * @param  {Number} [yearMonth]	Input Yearmonth
-            * @return {String}				Formatted YearMonth
-            */
             function formatYearMonth(yearMonth) {
                 var result;
                 var num = parseInt(String(yearMonth));
@@ -196,13 +177,6 @@ var nts;
                 return result;
             }
             time_1.formatYearMonth = formatYearMonth;
-            /**
-            * Format by pattern
-            * @param  {Date}   [date]		 Input date
-            * @param  {String} [inputFormat]  Input format
-            * @param  {String} [outputFormat] Output format
-            * @return {String}				Formatted date
-            */
             function formatPattern(date, inputFormat, outputFormat) {
                 outputFormat = uk.text.getISOFormat(outputFormat);
                 var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
@@ -383,7 +357,6 @@ var nts;
                     return ResultParseTimeOfTheDay.failed("invalid time of the day format");
                 var hour = parseInt(timeOfDay.substring(0, stringLength - 2));
                 var minute = parseInt(timeOfDay.substring(stringLength - 2));
-                //console.log(checkNum.substring(0,stringLength-2));
                 if (hour < 0 || hour > 23)
                     return ResultParseTimeOfTheDay.failed("invalid: hour must in range 0-23");
                 if (minute < 0 || minute > 59)
@@ -530,7 +503,6 @@ var nts;
             }
             time_1.parseMoment = parseMoment;
             function UTCDate(year, month, date, hours, minutes, seconds, milliseconds) {
-                // Return local time in UTC
                 if (uk.util.isNullOrUndefined(year)) {
                     var currentDate = new Date();
                     year = currentDate.getUTCFullYear();
@@ -553,6 +525,194 @@ var nts;
                 }
             }
             time_1.UTCDate = UTCDate;
+            var DateTimeFormatter = (function () {
+                function DateTimeFormatter() {
+                    this.shortYmdPattern = /^\d{4}\/\d{1,2}\/\d{1,2}$/;
+                    this.shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
+                    this.shortYmPattern = /^\d{4}\/\d{1,2}$/;
+                    this.shortMdPattern = /^\d{1,2}\/\d{1,2}$/;
+                    this.longYmdPattern = /^\d{4}年\d{1,2}月\d{1,2}日$/;
+                    this.longYmdwPattern = /^\d{4}年\d{1,2}月\d{1,2}日\(\w+\)$/;
+                    this.longFPattern = /^\d{4}年度$/;
+                    this.longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}月\d{1,2}日$/;
+                    this.longJmPattern = /^\w{2}\d{1,3}年\d{1,2}月$/;
+                    this.fullDateTimeShortPattern = /^\d{4}\/\d{1,2}\/\d{1,2} \d+:\d{2}:\d{2}$/;
+                    this.timeShortHmsPattern = /^\d+:\d{2}:\d{2}$/;
+                    this.timeShortHmPattern = /^\d+:\d{2}$/;
+                    this.days = ['日', '月', '火', '水', '木', '金', '土'];
+                }
+                DateTimeFormatter.prototype.shortYmd = function (date) {
+                    var d = this.dateOf(date);
+                    if (this.shortYmdPattern.test(d))
+                        return this.format(d);
+                };
+                DateTimeFormatter.prototype.shortYmdw = function (date) {
+                    var d = this.dateOf(date);
+                    if (this.shortYmdwPattern.test(d))
+                        return d;
+                    if (this.shortYmdPattern.test(d)) {
+                        var dayStr = this.days[new Date(d).getDay()];
+                        return this.format(d) + '(' + dayStr + ')';
+                    }
+                };
+                DateTimeFormatter.prototype.shortYm = function (date) {
+                    var d = this.format(this.dateOf(date));
+                    if (this.shortYmPattern.test(d))
+                        return d;
+                    if (this.shortYmdPattern.test(d)) {
+                        var end = d.lastIndexOf("/");
+                        if (end !== -1)
+                            return d.substring(0, end);
+                    }
+                };
+                DateTimeFormatter.prototype.shortMd = function (date) {
+                    var d = this.format(this.dateOf(date));
+                    if (this.shortMdPattern.test(d))
+                        return d;
+                    if (this.shortYmdPattern.test(d)) {
+                        var start = d.indexOf("/");
+                        if (start !== -1)
+                            return d.substring(start + 1);
+                    }
+                };
+                DateTimeFormatter.prototype.longYmd = function (date) {
+                    var d = this.dateOf(date);
+                    if (this.longYmdPattern.test(d))
+                        return d;
+                    if (this.shortYmdPattern.test(d)) {
+                        var mDate = new Date(d);
+                        return this.toLongJpDate(mDate);
+                    }
+                };
+                DateTimeFormatter.prototype.longYmdw = function (date) {
+                    var d = this.dateOf(date);
+                    if (this.longYmdwPattern.test(d))
+                        return d;
+                    if (this.shortYmdPattern.test(d)) {
+                        var mDate = new Date(d);
+                        return this.toLongJpDate(mDate) + '(' + this.days[mDate.getDay()] + ')';
+                    }
+                };
+                DateTimeFormatter.prototype.toLongJpDate = function (d) {
+                    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+                };
+                DateTimeFormatter.prototype.longF = function (date) {
+                    var d = this.dateOf(date);
+                    if (this.longFPattern.test(d))
+                        return d;
+                    if (this.shortYmdPattern.test(d)) {
+                        var mDate = new Date(d);
+                        return this.fiscalYearOf(mDate) + '年度';
+                    }
+                };
+                DateTimeFormatter.prototype.longJmd = function (date) {
+                    var d = this.dateOf(date);
+                    if (this.longJmdPattern.test(d))
+                        return d;
+                    return this.fullJapaneseDateOf(d);
+                };
+                DateTimeFormatter.prototype.longJm = function (date) {
+                    var d = this.dateOf(date);
+                    if (this.longJmPattern.test(d))
+                        return d;
+                    var jpDate = this.fullJapaneseDateOf(d);
+                    var start = jpDate.indexOf("月");
+                    if (start !== -1) {
+                        return jpDate.substring(0, start + 1);
+                    }
+                };
+                DateTimeFormatter.prototype.fullJapaneseDateOf = function (date) {
+                    if (this.shortYmdPattern.test(date)) {
+                        var d = new Date(date);
+                        return d.toLocaleDateString("ja-JP-u-ca-japanese", { era: 'short' });
+                    }
+                    return date;
+                };
+                DateTimeFormatter.prototype.fiscalYearOf = function (date) {
+                    if (date < new Date(date.getFullYear(), 3, 1))
+                        return date.getFullYear() - 1;
+                    return date.getFullYear();
+                };
+                DateTimeFormatter.prototype.dateOf = function (dateTime) {
+                    if (this.fullDateTimeShortPattern.test(dateTime)) {
+                        return dateTime.split(" ")[0];
+                    }
+                    return dateTime;
+                };
+                DateTimeFormatter.prototype.timeOf = function (dateTime) {
+                    if (this.fullDateTimeShortPattern.test(dateTime)) {
+                        return dateTime.split(" ")[1];
+                    }
+                    return dateTime;
+                };
+                DateTimeFormatter.prototype.timeShortHm = function (time) {
+                    var t = this.timeOf(time);
+                    if (this.timeShortHmPattern.test(t))
+                        return t;
+                    if (this.timeShortHmsPattern.test(t)) {
+                        return t.substring(0, t.lastIndexOf(":"));
+                    }
+                };
+                DateTimeFormatter.prototype.timeShortHms = function (time) {
+                    var t = this.timeOf(time);
+                    if (this.timeShortHmsPattern.test(t))
+                        return t;
+                };
+                DateTimeFormatter.prototype.clockShortHm = function (time) {
+                    return this.timeShortHm(time);
+                };
+                DateTimeFormatter.prototype.fullDateTimeShort = function (dateTime) {
+                    if (this.fullDateTimeShortPattern.test(dateTime))
+                        return dateTime;
+                };
+                DateTimeFormatter.prototype.format = function (date) {
+                    return new Date(date).toLocaleDateString("ja-JP");
+                };
+                return DateTimeFormatter;
+            }());
+            time_1.DateTimeFormatter = DateTimeFormatter;
+            function getFormatter() {
+                switch (systemLanguage) {
+                    case 'ja':
+                        return new DateTimeFormatter();
+                    case 'en':
+                        return null;
+                }
+            }
+            time_1.getFormatter = getFormatter;
+            function applyFormat(format, dateTime, formatter) {
+                if (formatter === undefined)
+                    formatter = getFormatter();
+                switch (format) {
+                    case 'Short_YMD':
+                        return formatter.shortYmd(dateTime);
+                    case 'Short_YMDW':
+                        return formatter.shortYmdw(dateTime);
+                    case 'Short_YM':
+                        return formatter.shortYm(dateTime);
+                    case 'Short_MD':
+                        return formatter.shortMd(dateTime);
+                    case 'Long_YMD':
+                        return formatter.longYmd(dateTime);
+                    case 'Long_YMDW':
+                        return formatter.longYmdw(dateTime);
+                    case 'Long_F':
+                        return formatter.longF(dateTime);
+                    case 'Long_JMD':
+                        return formatter.longJmd(dateTime);
+                    case 'Long_JM':
+                        return formatter.longJm(dateTime);
+                    case 'Time_Short_HM':
+                        return formatter.timeShortHm(dateTime);
+                    case 'Time_Short_HMS':
+                        return formatter.timeShortHms(dateTime);
+                    case 'Clock_Short_HM':
+                        return formatter.clockShortHm(dateTime);
+                    case 'DateTime_Short_YMDHMS':
+                        return formatter.fullDateTimeShort(dateTime);
+                }
+            }
+            time_1.applyFormat = applyFormat;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

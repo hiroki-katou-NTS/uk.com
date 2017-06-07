@@ -3,10 +3,23 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.primitives;
 
+import nts.uk.shr.com.primitive.CodePrimitiveValue;
+
 /**
  * @author hungnm
  *
  */
-public class WorkingTimesheetCode {
+public class WorkingTimesheetCode extends CodePrimitiveValue<WorkingTimesheetCode> {
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new primitive code
+	 *
+	 * @param rawValue
+	 *            the raw value
+	 */
+	public WorkingTimesheetCode(String rawValue) {
+		super(rawValue);
+	}
 }

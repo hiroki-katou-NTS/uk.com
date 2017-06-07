@@ -162,7 +162,6 @@ module kmk011.b.viewmodel {
             service.updateDivReason(divReason).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                     self.getAllDivReasonNew();
-//                     $("#inpCode").focus();
                     nts.uk.ui.block.clear();
                     });;
             }).fail(function(res) {
