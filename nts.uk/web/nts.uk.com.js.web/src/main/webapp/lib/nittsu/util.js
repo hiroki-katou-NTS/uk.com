@@ -333,34 +333,34 @@ var nts;
                         this.value = orDefault(value, null);
                     }
                     Optional.prototype.ifPresent = function (consumer) {
-                        if (this.isPresent) {
+                        if (this.isPresent()) {
                             consumer(this.value);
                         }
                         return this;
                     };
                     Optional.prototype.ifEmpty = function (action) {
-                        if (!this.isPresent) {
+                        if (!this.isPresent()) {
                             action();
                         }
                         return this;
                     };
                     Optional.prototype.map = function (mapper) {
-                        return this.isPresent ? of(mapper(this.value)) : empty();
+                        return this.isPresent() ? of(mapper(this.value)) : empty();
                     };
                     Optional.prototype.isPresent = function () {
                         return this.value !== null;
                     };
                     Optional.prototype.get = function () {
-                        if (!this.isPresent) {
+                        if (!this.isPresent()) {
                             throw new Error('not present');
                         }
                         return this.value;
                     };
                     Optional.prototype.orElse = function (stead) {
-                        return this.isPresent ? this.value : stead;
+                        return this.isPresent() ? this.value : stead;
                     };
                     Optional.prototype.orElseThrow = function (errorBuilder) {
-                        if (!this.isPresent) {
+                        if (!this.isPresent()) {
                             throw errorBuilder();
                         }
                     };
@@ -597,20 +597,83 @@ var nts;
             function formatParams(message, args) {
                 if (args == null || args.length == 0)
                     return message;
-                var paramRegex = /{([0-9])+(:\\w+)?}/;
+                var paramRegex = /{([0-9])+(:\w+)?}/;
                 var matches;
+                var formatter = uk.time.getFormatter();
                 while (matches = paramRegex.exec(message)) {
                     var code = matches[1];
                     var text_2 = args[parseInt(code)];
                     //                if(text!=undefined && text.indexOf("#")==0){
                     //                    text = getText(text.substring(1))
                     //                }
+                    var param = matches[2];
+                    if (param !== undefined && formatter !== undefined) {
+                        text_2 = uk.time.applyFormat(param.substring(1), text_2, formatter);
+                    }
                     message = message.replace(paramRegex, text_2);
                 }
                 return message;
             }
+            function getControlName(name) {
+                var hashIdx = name.indexOf("#");
+                if (hashIdx !== 0)
+                    return name;
+                var names = name.substring(hashIdx + 2, name.length - 1).split(",");
+                if (names.length > 1) {
+                    var params_1 = new Array();
+                    _.forEach(names, function (n, idx) {
+                        if (idx === 0)
+                            return true;
+                        params_1.push(getText(n.trim()));
+                    });
+                    return getText(names[0], params_1);
+                }
+                return getText(names[0]);
+            }
+            resource.getControlName = getControlName;
         })(resource = uk.resource || (uk.resource = {}));
         uk.sessionStorage = new WebStorageWrapper(window.sessionStorage);
+        uk.localStorage = new WebStorageWrapper(window.localStorage);
+        var characteristics;
+        (function (characteristics) {
+            /**
+             * Now, "characteristic data" is saved in Local Storage.
+             * In the future, the data may be saved in DB using Ajax.
+             * So these APIs have jQuery Deferred Interface to support asynchronous.
+             */
+            var delayToEmulateAjax = 100;
+            function save(key, value) {
+                var dfd = $.Deferred();
+                setTimeout(function () {
+                    uk.localStorage.setItemAsJson(createKey(key), value);
+                    dfd.resolve();
+                }, delayToEmulateAjax);
+                return dfd.promise();
+            }
+            characteristics.save = save;
+            function restore(key) {
+                var dfd = $.Deferred();
+                setTimeout(function () {
+                    var value = uk.localStorage.getItem(createKey(key))
+                        .map(function (v) { return JSON.parse(v); }).orElse(undefined);
+                    dfd.resolve(value);
+                }, delayToEmulateAjax);
+                return dfd.promise();
+            }
+            characteristics.restore = restore;
+            function remove(key) {
+                var dfd = $.Deferred();
+                setTimeout(function () {
+                    uk.localStorage.removeItem(createKey(key));
+                    dfd.resolve();
+                }, delayToEmulateAjax);
+                return dfd.promise();
+            }
+            characteristics.remove = remove;
+            function createKey(key) {
+                return 'nts.uk.characteristics.' + key;
+            }
+        })(characteristics = uk.characteristics || (uk.characteristics = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 //# sourceMappingURL=util.js.map

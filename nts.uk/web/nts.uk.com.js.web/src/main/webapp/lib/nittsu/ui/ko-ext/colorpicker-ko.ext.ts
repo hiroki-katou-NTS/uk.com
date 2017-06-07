@@ -2,73 +2,6 @@
 
 module nts.uk.ui.koExtentions {
     
-    jQuery.colorpicker.swatches.custom = {
-                            '000000': {r: 0, g: 0, b: 0},
-                            '444444': {r: 0.266666666666667, g: 0.266666666666667, b: 0.266666666666667},
-                            '666666': {r: 0.4, g: 0.4, b: 0.4},
-                            '999999': {r: 0.6, g: 0.6, b: 0.6},
-              'cccccc': {r: 0.8, g: 0.8, b: 0.8},
-              'eeeeee': {r: 0.9333333333333333, g: 0.9333333333333333, b: 0.9333333333333333},
-              'f3f3f3': {r: 0.9529411764705882, g: 0.9529411764705882, b: 0.9529411764705882},
-              'ffffff': {r: 1, g: 1, b: 1},
-              'ff0000': {r: 1, g: 0, b: 0},
-              'ff9900': {r: 1, g: 0.6, b: 0},
-              'ffff00': {r: 1, g: 1, b: 0},
-              '00ff00': {r: 0, g: 1, b: 0},
-              '00ffff': {r: 0, g: 1, b: 1},
-              '0000ff': {r: 0, g: 0, b: 1},
-              '9900ff': {r: 0.6, g: 0, b: 1},
-              'ff00ff': {r: 1, g: 0, b: 1},
-              'f4cccc': {r: 0.9568627450980392, g: 0.8, b: 0.8},
-              'fce5cd': {r: 0.9882352941176471, g: 0.8980392156862745, b: 0.803921568627451},
-              'fff2cc': {r: 1, g: 0.9568627450980392, b: 0.8},
-              'd9ead3': {r: 0.8509803921568627, g: 0.9176470588235294, b: 0.8274509803921569},
-              'd0e0e3': {r: 0.8156862745098039, g: 0.8784313725490196, b: 0.8901960784313725},
-              'd9d2e9': {r: 0.8509803921568627, g: 0.8235294117647059, b: 0.9137254901960784},
-              'ead1dc': {r: 0.9176470588235294, g: 0.8196078431372549, b: 0.8627450980392157},
-              'ea9999': {r: 0.9176470588235294, g: 0.6, b: 0.6},
-              'f9cb9c': {r: 0.9764705882352941, g: 0.796078431372549, b: 0.6117647058823529},
-              'ffe599': {r: 1, g: 0.8980392156862745, b: 0.6},
-              'b6d7a8': {r: 0.7137254901960784, g: 0.8431372549019608, b: 0.6588235294117647},
-              'a2c4c9': {r: 0.6352941176470588, g: 0.7686274509803922, b: 0.7882352941176471},
-              '9fc5e8': {r: 0.6235294117647059, g: 0.7725490196078431, b: 0.9098039215686275},
-              'b4a7d6': {r: 0.7058823529411765, g: 0.6549019607843137, b: 0.8392156862745098},
-              'd5a6bd': {r: 0.8352941176470588, g: 0.6509803921568627, b: 0.7411764705882353},
-              'e06666': {r: 0.8784313725490196, g: 0.4, b: 0.4},
-              'f6b26b': {r: 0.9647058823529412, g: 0.6980392156862745, b: 0.4196078431372549},
-              'ffd966': {r: 1, g: 0.8509803921568627, b: 0.4},
-              '93c47d': {r: 0.5764705882352941, g: 0.7686274509803922, b: 0.4901960784313725},
-              '76a5af': {r: 0.4627450980392157, g: 0.6470588235294118, b: 0.6862745098039216},
-              '6fa8dc': {r: 0.4352941176470588, g: 0.6588235294117647, b: 0.8627450980392157},
-              '8e7cc3': {r: 0.5568627450980392, g: 0.4862745098039216, b: 0.7647058823529412},
-              'c27ba0': {r: 0.7607843137254902, g: 0.4823529411764706, b: 0.6274509803921569},
-              'cc0000': {r: 0.8, g: 0, b: 0},
-              'e69138': {r: 230, g: 145, b: 56},
-              'f1c232': {r: 241, g: 194, b: 50},
-              '6aa84f': {r: 106, g: 168, b: 79},
-              '45818e': {r: 69, g: 129, b: 142},
-              '3d85c6': {r: 61, g: 133, b: 198},
-              '674ea7': {r: 103, g: 78, b: 167},
-              'a64d79': {r: 166, g: 77, b: 121},
-              '990000': {r: 153, g: 0, b: 0},
-              'b45f06': {r: 180, g: 95, b: 6},
-              'bf9000': {r: 191, g: 144, b: 0},
-              '38761d': {r: 56, g: 118, b: 29},
-              '134f5c': {r: 19, g: 79, b: 92},
-              '0b5394': {r: 11, g: 83, b: 148},
-              '351c75': {r: 53, g: 28, b: 117},
-              '741b47': {r: 116, g: 27, b: 71},
-              '660000': {r: 102, g: 0, b: 0},
-              '783f04': {r: 120, g: 63, b: 4},
-              '7f6000': {r: 127, g: 96, b: 0},
-              '274e13': {r: 39, g: 78, b: 19},
-              '0c343d': {r: 12, g: 52, b: 61},
-              '073763': {r: 7, g: 55, b: 99},
-              '20124d': {r: 32, g: 18, b: 77},
-              '4c1130': {r: 76, g: 17, b: 48}
-            };          
-
-
     /**
      * Dialog binding handler
      */
@@ -78,37 +11,95 @@ module nts.uk.ui.koExtentions {
          * Init. 
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var colorpickerOptions = {
-                parts: ['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'swatches', 'footer'],
-                color: 'fe9810',
-                select: function (event, color) {
-                  console.log(event);
-                  console.log(color);
-                },
-                inline: false,
-                buttonClass: 'ntsButton',
-                layout: {
-                  swatches:   [1, 0, 1, 5],
-                  map:        [2, 0, 1, 5],
-                  bar:        [3, 0, 1, 5],
-                  preview:    [4, 0, 1, 1],
-                  hsv:        [4, 1, 1, 1],
-                  rgb:        [4, 2, 1, 1],
-                  hex:        [4, 4, 1, 1]  
-                },
-                okOnEnter: true,
-                swatches: "custom",
-                swatchesWidth: 130
-            };
+            let data = valueAccessor();
+            let $container = $(element);
             
-            $('.colorpicker').colorpicker(colorpickerOptions);
+            let width = ko.unwrap(data.width);
+            let color = ko.unwrap(data.value);
+            let dataName = ko.unwrap(data.name);
+            let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+            
+            let tag = $container.prop("tagName").toLowerCase();
+            let $picker;
+            if (tag === "input"){
+                $picker = $container; 
+                $picker.appendTo("<div class='ntsControl ntsColorPicker_Container'/>");     
+            } else if (tag === 'div'){
+                $container.addClass("ntsControl ntsColorPicker_Container");
+                $container.append("<input class='ntsColorPicker'/>");    
+                $picker = $container.find(".ntsColorPicker");                  
+            } else {
+                $container.appendTo("<div class='ntsControl ntsColorPicker_Container'/>");
+                $container.hide();
+                $container = $container.parent();
+                $container.append("<input class='ntsColorPicker'/"); 
+                $picker = $container.find(".ntsColorPicker");     
+            }
+            $container.width(width);
+            
+            $picker.addClass("ntsColorPicker").attr("data-name", dataName);
+            
+            $picker.spectrum({
+                preferredFormat: "name",
+                showPaletteOnly: true,
+                togglePaletteOnly: true,
+                togglePaletteMoreText: '強化', 
+                togglePaletteLessText: '略す',
+                color: color,
+                disabled: !enable,
+                showInput: true,
+                showSelectionPalette: true,
+                showInitial: true,
+                chooseText: "確定",
+                cancelText: "キャンセル",
+                allowEmpty:true,
+                showAlpha: true,
+                palette: [
+                    ["#000","#444","#666","#999","#ccc","#eee","#f3f3f3","#fff"],
+                    ["#f00","#f90","#ff0","#0f0","#0ff","#00f","#90f","#f0f"],
+                    ["#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc"],
+                    ["#ea9999","#f9cb9c","#ffe599","#b6d7a8","#a2c4c9","#9fc5e8","#b4a7d6","#d5a6bd"],
+                    ["#e06666","#f6b26b","#ffd966","#93c47d","#76a5af","#6fa8dc","#8e7cc3","#c27ba0"],
+                    ["#c00","#e69138","#f1c232","#6aa84f","#45818e","#3d85c6","#674ea7","#a64d79"],
+                    ["#900","#b45f06","#bf9000","#38761d","#134f5c","#0b5394","#351c75","#741b47"],
+                    ["#600","#783f04","#7f6000","#274e13","#0c343d","#073763","#20124d","#4c1130"]
+                ],
+                change: function(color) {
+                    if(!nts.uk.util.isNullOrUndefined(color) && !nts.uk.util.isNullOrUndefined(data.value)){
+                        data.value(color.toHexString()); // #ff0000    
+                    }
+                }
+            });
+            
+            $container.find(".sp-replacer").width(width - 10);
+            $container.find(".sp-preview").width(width - 30);
         }
 
         /**
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            let data = valueAccessor();
+            let tag = $(element).prop("tagName").toLowerCase();
+            let $picker;
+            if (tag === "input"){
+                $picker = $(element);   
+            } else if (tag === 'div'){  
+                $picker = $(element).find(".ntsColorPicker");                  
+            } else {
+                $picker = $(element).parent().find(".ntsColorPicker");      
+                $(element).hide();    
+            }
             
+            let colorCode = ko.unwrap(data.value);
+            let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+            
+            $picker.spectrum("set", colorCode);
+            if(enable !== false){
+                $picker.spectrum("enable");        
+            } else {
+                $picker.spectrum("disable");    
+            }
         }
     }
 
