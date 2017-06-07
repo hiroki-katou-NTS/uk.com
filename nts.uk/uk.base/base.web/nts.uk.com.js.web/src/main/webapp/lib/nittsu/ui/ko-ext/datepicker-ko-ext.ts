@@ -74,6 +74,7 @@ module nts.uk.ui.koExtentions {
                                 .fiscalMonthsMode(data.fiscalMonthsMode)
                                 .setDefaultCss(data.defaultClass || "");
 
+            name = nts.uk.resource.getControlName(name);
             var validator = new validation.TimeValidator(name, constraintName, {required: required, outputFormat: valueFormat, valueType: valueType});
             $input.on("change", (e) => {
                 var newText = $input.val();
