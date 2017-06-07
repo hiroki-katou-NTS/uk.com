@@ -13,6 +13,7 @@ module kdl014.a.service {
      * get item employee by code 
      */
     export function getPersonByEmpCode(employeeCode): JQueryPromise<any> {
+        debugger;
         return nts.uk.request.ajax("basic", paths.getPersonIdByEmpCode + "/" + employeeCode); 
     }
-}
+}   
