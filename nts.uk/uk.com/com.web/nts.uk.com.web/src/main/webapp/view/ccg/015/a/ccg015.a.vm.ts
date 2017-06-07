@@ -12,6 +12,8 @@ module nts.uk.com.view.ccg015.a {
             languageListOption: KnockoutObservableArray<ItemCbbModel>;
             languageSelectedCode: KnockoutObservable<string>;
             listLinkScreen: KnockoutObservableArray<any>;
+            
+            isProcess: KnockoutObservable<boolean>; 
             constructor() {
                 var self = this;
                 var linkIconImage = "data:image/png;base64,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";
@@ -48,6 +50,8 @@ module nts.uk.com.view.ccg015.a {
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_18"), action: function(evt, ui) { nts.uk.request.jump("/view/ccg/014/a/index.xhtml"); } },
                     { icon: linkIconImage, text: nts.uk.resource.getText("CCG015_19"), action: function(evt, ui) {/*TODO go to ccg018*/ } },
                 ]);
+                
+                self.isProcess = ko.observable(false);
                 //end constructor
             }
 
@@ -111,9 +115,12 @@ module nts.uk.com.view.ccg015.a {
                 $('.nts-input').ntsEditor('validate');
                 if (!$('.nts-input').ntsError('hasError')) {
                     //check update or create
+                    self.isProcess(true);
                     if (self.isNewMode()) {
                         service.registerTopPage(self.collectData()).done(function() {
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                self.isProcess(false);
+                            });
                             self.loadTopPageList().done(function() {
                                 self.toppageSelectedCode(self.collectData().topPageCode);
                             });
@@ -124,7 +131,9 @@ module nts.uk.com.view.ccg015.a {
                     }
                     else {
                         service.updateTopPage(self.collectData()).done(function() {
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                self.isProcess(false);
+                            });
                             self.loadTopPageList().done(function() {
                                 self.toppageSelectedCode(self.collectData().topPageCode);
                             });
@@ -134,7 +143,7 @@ module nts.uk.com.view.ccg015.a {
             }
             private openMyPageSettingDialog() {
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/b/index.xhtml", {
-                    height: 700, width: 850,
+                    height: 650, width: 850,
                     title: "マイページの設定",
                     dialogClass: 'no-close'
                 }).onClosed(() => {
@@ -148,7 +157,7 @@ module nts.uk.com.view.ccg015.a {
                 nts.uk.ui.windows.setShared('topPageName', self.topPageModel().topPageName());
                 nts.uk.ui.windows.setShared('layoutId', self.topPageModel().layoutId());
                 nts.uk.ui.windows.sub.modal("/view/ccg/015/c/index.xhtml", {
-                    height: 400, width: 700,
+                    height: 400, width: 800,
                     title: "他のトップページコピー",
                     dialogClass: 'no-close'
                 }).onClosed(() => {

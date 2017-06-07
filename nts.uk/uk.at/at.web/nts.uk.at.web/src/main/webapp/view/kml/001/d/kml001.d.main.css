@@ -1,5 +1,5 @@
 body {
-	overflow-x: hidden;
+	overflow: hidden;
 }
 
 .column1 {
@@ -29,7 +29,14 @@ body {
 .column1 > div {
 	margin-left: 10px;
 }
-#functions-area-bottom > button {
+hr { margin-top: 20px; }  
+#center-bottom {
+	margin-left: 135px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+#center-bottom > button {
 	margin-right: 10px;
 }
 #dateTime-input {
@@ -54,7 +61,6 @@ body {
 	color: #999999;
 	border-color: #999999 !important;
 }
-.datepicker-container.datepicker-dropdown {
-	margin-top: -163px;
-    margin-left: -220px;
+#func-notifier-errors{
+    margin-top: -255px;	
 }

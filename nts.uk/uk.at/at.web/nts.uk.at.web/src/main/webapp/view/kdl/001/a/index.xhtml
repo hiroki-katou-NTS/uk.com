@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1000, height: 755 };</script>
+				<script>var dialogSize = { width: 1150, height: 755 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="kdl001.a.start.js" />
 				<com:scriptfile path="kdl001.a.vm.js" />
@@ -33,12 +33,12 @@
 					<div id="search-div" class="control-group valign-center">
 						<span data-bind="ntsComboBox: {
 								options: ko.observableArray([
-					                { code: 0, name: '前日' },
-					                { code: 1, name: '当日' },
-					                { code: 2, name: '翌々日' },
-					                { code: 3, name: '翌日' }
+					                { name: '前日' },
+					                { name: '当日' },
+					                { name: '翌日' },
+					                { name: '翌々日' }
 					            ]),
-								optionsValue: 'code',
+								optionsValue: 'name',
 								value: startTimeOption,
 								optionsText: 'name',
 								enable: true,
@@ -49,12 +49,12 @@
 						<span class="label"><!-- #{i18n.getText('KML001_20')} -->~</span>
 						<span data-bind="ntsComboBox: {
 								options: ko.observableArray([
-					                { code: 0, name: '前日' },
-					                { code: 1, name: '当日' },
-					                { code: 2, name: '翌日' },
-					                { code: 3, name: '翌々日'}
+					                { name: '前日' },
+					                { name: '当日' },
+					                { name: '翌日' },
+					                { name: '翌々日'}
 					            ]),
-								optionsValue: 'code',
+								optionsValue: 'name',
 								value: endTimeOption,
 								optionsText: 'name',
 								enable: true,
@@ -67,27 +67,26 @@
 					</div>		
 					<div id="day-list-div">
 						<table id="day-list-tbl" data-bind="ntsGridList: {
-									width: 955,
+									width: 1100,
 									height: 505,
-									options: selectAbleCodeList,
+									options: selectAbleItemList,
 									optionsValue: 'code',
 									columns: ko.observableArray([
 						                { headerText: '#{i18n.getText('KDL001_12')}', prop: 'code', width: 70 },
-						                { headerText: '#{i18n.getText('KDL001_13')}', prop: 'name', width: 100 },
-						                { headerText: '#{i18n.getText('KDL001_14')}', prop: 'workTime1', width: 160 },
-						                { headerText: '#{i18n.getText('KDL001_15')}', prop: 'workTime2', width: 160 },
+						                { headerText: '#{i18n.getText('KDL001_13')}', prop: 'name', width: 150 },
+						                { headerText: '#{i18n.getText('KDL001_14')}', prop: 'workTime1', width: 200 },
+						                { headerText: '#{i18n.getText('KDL001_15')}', prop: 'workTime2', width: 200 },
 						                { headerText: '#{i18n.getText('KDL001_16')}', prop: 'workAtr', width: 120 },
 						                { headerText: '#{i18n.getText('KDL001_17')}', prop: 'remark'}
 						            ]),
 									multiple: multiSelectMode,
-									value: selectedCodeList
+									value: multiSelectMode?selectedCodeList:selectedCode
 								}"></table>
 					</div>
-					<hr align="left"/>
-					<div id="center-bottom">
-						<button class="x-large proceed" data-bind="click: submitAndCloseDialog">#{i18n.getText('KDL001_18')}</button>
-						<button data-bind="click: closeDialog">#{i18n.getText('KDL001_19')}</button>	
-					</div>
+				</div>
+				<div id="functions-area-bottom">
+					<button class="x-large proceed" data-bind="click: submitAndCloseDialog">#{i18n.getText('KDL001_18')}</button>
+					<button data-bind="click: closeDialog">#{i18n.getText('KDL001_19')}</button>	
 				</div>
 			</ui:define>
 		</ui:composition>

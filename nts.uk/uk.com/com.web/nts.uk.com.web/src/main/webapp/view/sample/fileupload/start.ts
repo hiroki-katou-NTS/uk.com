@@ -1,7 +1,7 @@
 __viewContext.ready(function() {
     $("#button").click(function() {
         $("#file_upload").ntsFileUpload({ stereoType: "flowmenu" }).done(function(res) {
-            console.log(res);
+            alert(res);
         }).fail(function(err) {
            nts.uk.ui.dialog.alertError(err);
         });

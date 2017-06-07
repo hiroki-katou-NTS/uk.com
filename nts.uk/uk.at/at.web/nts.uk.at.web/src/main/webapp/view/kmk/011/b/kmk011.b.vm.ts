@@ -19,8 +19,8 @@ module kmk011.b.viewmodel {
             var self = this;
             self.currentCode = ko.observable('');
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KMK011_37'), key: 'divReasonCode',formatter: _.escape, width: 100 },
-                { headerText: nts.uk.resource.getText('KMK011_38'), key: 'divReasonContent',formatter: _.escape, width: 200 }
+                { headerText: nts.uk.resource.getText('KMK011_22'), key: 'divReasonCode',formatter: _.escape, width: 100 },
+                { headerText: nts.uk.resource.getText('KMK011_23'), key: 'divReasonContent',formatter: _.escape, width: 200 }
             ]);
             self.dataSource = ko.observableArray([]);
             self.switchUSe3 = ko.observableArray([
@@ -60,6 +60,7 @@ module kmk011.b.viewmodel {
          * get all divergence reason
          */
         startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             var self = this;
             self.currentCode('');
             var dfd = $.Deferred();
@@ -70,6 +71,7 @@ module kmk011.b.viewmodel {
                 self.divTimeId(id);
             }
             service.getAllDivReason(self.divTimeId().toString()).done(function(lstDivReason: Array<model.Item>) {
+                nts.uk.ui.block.clear();
                 self.currentCode(null);
                 if (id==null||lstDivReason === undefined || lstDivReason.length == 0) {
                     self.dataSource([]);
@@ -114,15 +116,13 @@ module kmk011.b.viewmodel {
             }
         }
         RegistrationDivReason() {
+            nts.uk.ui.block.invisible();
             var self = this;
             $('.nts-input').trigger("validate");
             _.defer(() => {
                 if (!$('.nts-editor').ntsError("hasError")) {
                     if (self.enableCode() == false) {
-                        let objectNew = self.convertCode(self.divReasonCode()) + self.divReasonContent() + self.requiredAtr();
-                        if (self.objectOld == objectNew) {
-                            return;
-                        }
+                        self.convertCode(self.divReasonCode());
                         self.updateDivReason();
                     } else
                         if (self.enableCode() == true) {//add divergence
@@ -141,7 +141,9 @@ module kmk011.b.viewmodel {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getAllDivReasonNew();
                 $("#inpReason").focus();
+                nts.uk.ui.block.clear();
             }).fail(function(error) {
+                nts.uk.ui.block.clear();
                 $('#inpCode').ntsError('set', error);
             });
         }
@@ -151,7 +153,7 @@ module kmk011.b.viewmodel {
                 let code = '0' + value;
                 self.divReasonCode(code);
             }
-            else return;
+            else self.divReasonCode(value);
         }
         updateDivReason() {
             var self = this;
@@ -160,11 +162,12 @@ module kmk011.b.viewmodel {
             service.updateDivReason(divReason).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                     self.getAllDivReasonNew();
-//                     $("#inpCode").focus();
+                    nts.uk.ui.block.clear();
                     });;
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
                 dfd.reject(res);
+                nts.uk.ui.block.clear();
             });
         }
         //get all divergence reason new
@@ -187,17 +190,20 @@ module kmk011.b.viewmodel {
         }
         //delete divergence reason
         deleteDivReason() {
+            nts.uk.ui.block.invisible();
             var self = this;
-            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_18')).ifYes(function() {
+            nts.uk.ui.dialog.confirm({messageId:'Msg_18'}).ifYes(function() {
                 let divReason = self.itemDivReason();
                 self.index_of_itemDelete = self.dataSource().indexOf(self.itemDivReason());
                 service.deleteDivReason(divReason).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
+                        nts.uk.ui.block.clear();
                         self.getDivReasonList_afterDelete();
                          $("#inpCode").focus();
                     });
                 });
             }).ifNo(function() {
+                nts.uk.ui.block.clear();
                 return;
             })
         }

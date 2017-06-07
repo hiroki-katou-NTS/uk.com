@@ -40,11 +40,11 @@ public class WorkTimeDay {
 	
 	private TimeDayAtr p_m_EndAtr;
 	
-	private UseSetting p_m_Use_Atr;
+	private UseSetting p_m_UseAtr;
 
 	public WorkTimeDay(String companyID, String timeDayCD, String workTimeSetCD, int timeNumberCnt, int a_m_StartTime,
 			TimeDayAtr a_m_StartAtr, int a_m_EndTime, TimeDayAtr a_m_EndAtr, UseSetting a_m_UseAtr, int p_m_StartTime,
-			TimeDayAtr p_m_StartAtr, int p_m_EndTime, TimeDayAtr p_m_EndAtr, UseSetting p_m_Use_Atr) {
+			TimeDayAtr p_m_StartAtr, int p_m_EndTime, TimeDayAtr p_m_EndAtr, UseSetting p_m_UseAtr) {
 		super();
 		this.companyID = companyID;
 		this.timeDayCD = timeDayCD;
@@ -59,6 +59,6 @@ public class WorkTimeDay {
 		this.p_m_StartAtr = p_m_StartAtr;
 		this.p_m_EndTime = p_m_EndTime;
 		this.p_m_EndAtr = p_m_EndAtr;
-		this.p_m_Use_Atr = p_m_Use_Atr;
+		this.p_m_UseAtr = p_m_UseAtr;
 	}
 }

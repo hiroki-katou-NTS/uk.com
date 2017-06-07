@@ -5,47 +5,70 @@ module kdl014.a.viewmodel {
         currentCode: KnockoutObservable<any>;
 
         constructor() {
-            this.items = ko.observableArray([]);
-
-            for (let i = 1; i < 11; i++) {
-                this.items.push(new StampModel('2' + _.padStart(i.toString(), 3, '0') + '/10/13', '8:20', '戻り', 'Web', '私用', '支店', '残業'));
-            }
-
-            this.columns = ko.observableArray([
+            var self = this;
+            self.items = ko.observableArray([]);
+            self.columns = ko.observableArray([
                 { headerText: '日付', key: 'date', width: 120 },
-                { headerText: '打刻時間', key: 'time', width: 80 },
-                { headerText: '打刻理由', key: 'reason', width: 80 },
-                { headerText: '打刻区分', key: 'attribute', width: 80 },
-                { headerText: '打刻方法', key: 'method', width: 100 },
-                { headerText: '打刻場所', key: 'location', width: 80 },
-                { headerText: '組み合わせ区分', key: 'combination', width: 100 }
+                { headerText: '打刻時間', key: 'attendanceTime', width: 80 },
+                { headerText: '打刻理由', key: 'stampReasonName', width: 80 },
+                { headerText: '打刻区分', key: 'stampAtrName', width: 80 },
+                { headerText: '打刻方法', key: 'stampMethodName', width: 100 },
+                { headerText: '打刻場所', key: 'workLocationName', width: 80 },
+                { headerText: '組み合わせ区分', key: 'stampCombinationName', width: 100 }
             ]);
-            this.currentCode = ko.observable();
+            self.currentCode = ko.observable();
         }
+
+        /** Start page */
+        start(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            // Get list stamp
+            let cardNumber: string = '00000000000000000001';
+            let startDate: string = '20160808';
+            let endDate: string = '20170808';
+            service.getStampByCode(cardNumber, startDate, endDate).done(function(lstStamp: any) {
+
+                console.log(lstStamp);
+                //console.log(_.padStart(nts.uk.time.parseTime(480, true).format(),5,'0'));
+                //TODO
+                if (lstStamp.length > 0) {
+                    _.forEach(lstStamp, function(item) {
+                        self.items.push(new StampModel(item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime,true).format(),5,'0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+                    }); 
+                }
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message);
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
         /**Close function*/
-        close(){
-            nts.uk.ui.windows.close();   
+        close() {
+            nts.uk.ui.windows.close();
         }
     }
 
 
     class StampModel {
         date: string;
-        time: string;
-        reason: string;
-        attribute: string;
-        method: string;
-        location: string;
-        combination: string;
-        constructor(date: string, time: string, reason: string, attribute: string, method: string, location: string, combination: string) {
+        attendanceTime: string;
+        stampReasonName: string;
+        stampAtrName: string;
+        stampMethodName: string;
+        workLocationName: string;
+        stampCombinationName: string;
+        constructor(date: string, attendanceTime: string, stampReasonName: string, stampAtrName: string, stampMethodName: string, workLocationName: string, stampCombinationName: string) {
             var self = this;
             self.date = date;
-            self.time = time;
-            self.reason = reason;
-            self.attribute = attribute;
-            self.method = method;
-            self.location = location;
-            self.combination = combination;
+            self.attendanceTime = attendanceTime;
+            self.stampReasonName = stampReasonName;
+            self.stampAtrName = stampAtrName;
+            self.stampMethodName = stampMethodName;
+            self.workLocationName = workLocationName;
+            self.stampCombinationName = stampCombinationName;
         }
     }
 }

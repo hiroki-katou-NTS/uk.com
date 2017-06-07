@@ -4,18 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+
 import nts.arc.layer.infra.file.constraint.FileStereo;
 import nts.uk.shr.infra.file.constraint.stereotypes.ExampleStereoType;
-import nts.uk.shr.infra.file.constraint.stereotypes.FlowMenuStereoType;
 
 public class FileStereoFactory {
 	private static Map<String, Class<? extends FileStereo>> fileStereos;
 	static {
 		fileStereos = new HashMap<>();
 
-		fileStereos.put("example", ExampleStereoType.class);
-		
-		fileStereos.put("flowmenu", FlowMenuStereoType.class);
+		fileStereos.put("flowmenu", ExampleStereoType.class);
 
 	}
 

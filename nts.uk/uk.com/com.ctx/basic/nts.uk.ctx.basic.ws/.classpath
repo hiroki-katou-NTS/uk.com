@@ -10,5 +10,7 @@
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="/nts.uk.ctx.basic.app"/>
+	<classpathentry kind="src" path="/nts.uk.ctx.basic.dom"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

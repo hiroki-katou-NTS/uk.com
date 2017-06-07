@@ -9,16 +9,16 @@ package nts.uk.ctx.at.shared.dom.worktime;
 public enum WorkMethodSetting {
 	
 	// 通常勤務
-	NormalWork(0),
+	Enum_Normal_Work(0),
 	
 	// フレックス勤務
-	FlexWork(1),
+	Enum_Flex_Work(1),
 	
 	// 残業枠勤務
-	OvertimeWork(2),
+	Enum_Overtime_Work(2),
 	
 	// 流動勤務
-	FluidWork(3);
+	Enum_Fluid_Work(3);
 	
 	public final int value;
 	

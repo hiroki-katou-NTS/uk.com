@@ -54,13 +54,13 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 
 	@Override
 	public List<EnumConstant> getAllActiveTopPagePartType(String companyID, PGType pgType) {
-		if (pgType == PGType.TopPage) {
+		if (pgType == PGType.TOPPAGE) {
 			return getTopPagePartType(companyID);
 		}
-		else if (pgType == PGType.TitleMenu) {
+		else if (pgType == PGType.TITLEMENU) {
 			return getTitleMenuPartType(companyID);
 		}
-		else if (pgType == PGType.MyPage) {
+		else if (pgType == PGType.MYPAGE) {
 			return getMyPagePartType(companyID);
 		}
 		return null;
@@ -71,13 +71,13 @@ public class TopPagePartServiceImpl implements TopPagePartService{
 		List<EnumConstant> activeTopPagePartTypes = getAllActiveTopPagePartType(companyID, pgType);
 		List<Integer> activeTopPagePartTypeIDs = activeTopPagePartTypes.stream().map(c -> c.getValue()).collect(Collectors.toList());
 		
-		if (pgType == PGType.TopPage) {
+		if (pgType == PGType.TOPPAGE) {
 			return topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
 		}
-		else if (pgType == PGType.TitleMenu) {
+		else if (pgType == PGType.TITLEMENU) {
 			return topPagePartRepository.findByTypes(companyID, activeTopPagePartTypeIDs);
 		}
-		else if (pgType == PGType.MyPage) {
+		else if (pgType == PGType.MYPAGE) {
 			List<String> activeTopPagePartIDs = getMyPageActivePartIDs(companyID);
 			return topPagePartRepository.findByTypesAndIDs(companyID, activeTopPagePartTypeIDs, activeTopPagePartIDs);
 		}

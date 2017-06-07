@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -34,55 +33,51 @@ var nts;
                         this.option.show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
-                        var _this = this;
-                        // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
-                        // 原因がわかるまでひとまずdeferを使っておく
-                        _.defer(function () {
-                            var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.messageText == error.messageText; });
-                            if (duplicate.length == 0) {
-                                if (typeof error.message === "string") {
-                                    error.messageText = error.message;
-                                    error.message = "";
+                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control)
+                            && (typeof error.message === "string" ? e.messageText === error.message : e.messageText === error.messageText); });
+                        if (duplicate.length == 0) {
+                            if (typeof error.message === "string") {
+                                error.messageText = error.message;
+                                error.message = "";
+                            }
+                            else {
+                                if (error.message.message) {
+                                    error.messageText = error.message.message;
+                                    error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
                                 }
                                 else {
-                                    //business exception
-                                    if (error.message.message) {
-                                        error.messageText = error.message.message;
-                                        error.message = error.message.messageId != null && error.message.messageId.length > 0 ? error.message.messageId : "";
-                                    }
-                                    else {
-                                        if (error.$control.length > 0) {
-                                            var controlNameId = error.$control.eq(0).attr("data-name");
-                                            if (controlNameId) {
-                                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
-                                            }
-                                            else {
-                                                error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
-                                            }
+                                    if (error.$control.length > 0) {
+                                        var controlNameId = error.$control.eq(0).attr("data-name");
+                                        if (controlNameId) {
+                                            error.messageText = nts.uk.resource.getMessage(error.message.messageId, nts.uk.resource.getText(controlNameId), error.message.messageParams);
                                         }
                                         else {
-                                            error.messageText = nts.uk.resource.getMessage(error.message.messageId);
+                                            error.messageText = nts.uk.resource.getMessage(error.message.messageId, error.message.messageParams);
                                         }
-                                        error.message = error.message.messageId;
                                     }
+                                    else {
+                                        error.messageText = nts.uk.resource.getMessage(error.message.messageId);
+                                    }
+                                    error.message = error.message.messageId;
                                 }
-                                _this.errors.push(error);
                             }
-                        });
+                            this.errors.push(error);
+                        }
                     };
                     ErrorsViewModel.prototype.hasError = function () {
-                        return this.occurs();
+                        return this.errors().length > 0;
                     };
                     ErrorsViewModel.prototype.clearError = function () {
+                        $(".error").children().each(function (index, element) {
+                            if ($(element).data("hasError"))
+                                $(element).data("hasError", false);
+                        });
                         $(".error").removeClass('error');
                         this.errors.removeAll();
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
-                        var _this = this;
-                        // addErrorと同じ対応
-                        _.defer(function () {
-                            var removeds = _.filter(_this.errors(), function (e) { return e.$control.is($element); });
-                            _this.errors.removeAll(removeds);
+                        this.errors.remove(function (error) {
+                            return error.$control.is($element);
                         });
                     };
                     return ErrorsViewModel;
@@ -98,9 +93,6 @@ var nts;
                     return ErrorHeader;
                 }());
                 errors.ErrorHeader = ErrorHeader;
-                /**
-                 *  Public API
-                **/
                 function errorsViewModel() {
                     return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
                 }

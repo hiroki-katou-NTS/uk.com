@@ -100,7 +100,7 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.20'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.2'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.4.5'
 		
 		compile group: 'base', name: 'nts.uk.shr.com', version: '0.1'
 	}
@@ -294,6 +294,7 @@ project (':at.web:nts.uk.at.web') {
 	dependencies {
 		compile group: 'base', name: 'nts.uk.shr.com', version: '0.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
@@ -317,7 +318,8 @@ project (':at.web:nts.uk.at.web') {
 		runtime project (':at.ctx:record:nts.uk.ctx.at.record.ws')
 
 		// implement eraAdapter
-		compile group: 'basic', name: 'nts.uk.ctx.basic.infra', version: '0.1'
+		compile group: 'com', name: 'nts.uk.ctx.basic.infra', version: '0.1'
+		compile group: 'com', name: 'nts.uk.ctx.basic.dom', version: '0.1'
 	}
 }
 //=====================nts.uk.at.web↑==============================

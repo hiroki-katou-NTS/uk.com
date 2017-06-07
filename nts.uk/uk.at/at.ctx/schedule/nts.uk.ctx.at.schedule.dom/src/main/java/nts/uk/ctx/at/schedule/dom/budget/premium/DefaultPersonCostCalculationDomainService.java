@@ -80,7 +80,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 		Optional<PersonCostCalculation> beforePersonCostResult = this.personCostCalculationRepository.findItemBefore(personCostCalculation.getCompanyID(), currentPersonCostResult.get().getStartDate());
 		Optional<PersonCostCalculation> afterPersonCostResult = this.personCostCalculationRepository.findItemAfter(personCostCalculation.getCompanyID(), currentPersonCostResult.get().getStartDate());
 		if(afterPersonCostResult.isPresent()){
-			if(personCostCalculation.getEndDate().after(afterPersonCostResult.get().getStartDate())) throw new RuntimeException();
+			if(personCostCalculation.getEndDate().after(afterPersonCostResult.get().getStartDate())) throw new RuntimeException("end date after start date");
 		}
 		if(beforePersonCostResult.isPresent()){
 			if(beforePersonCostResult.get().getStartDate().after(personCostCalculation.getStartDate())) throw new BusinessException("Msg_66");
@@ -100,10 +100,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 	@Override
 	public void deletePersonCostCalculation(PersonCostCalculation personCostCalculation) {
 		Optional<PersonCostCalculation> currentPersonCostResult = this.personCostCalculationRepository.findItemByHistoryID(personCostCalculation.getCompanyID(), personCostCalculation.getHistoryID());
-		if(!currentPersonCostResult.isPresent()) throw new RuntimeException();
+		if(!currentPersonCostResult.isPresent()) throw new RuntimeException("itme not exist");
 		Optional<PersonCostCalculation> beforePersonCostResult = this.personCostCalculationRepository.findItemBefore(personCostCalculation.getCompanyID(), currentPersonCostResult.get().getStartDate());
 		Optional<PersonCostCalculation> afterPersonCostResult = this.personCostCalculationRepository.findItemAfter(personCostCalculation.getCompanyID(), currentPersonCostResult.get().getStartDate());
-		if(afterPersonCostResult.isPresent()) throw new RuntimeException();
+		if(afterPersonCostResult.isPresent()) throw new RuntimeException("not last item");
 		if(!beforePersonCostResult.isPresent()){
 			throw new BusinessException("Msg_128");
 		}

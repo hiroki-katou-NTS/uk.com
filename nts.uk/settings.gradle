@@ -1,0 +1,81 @@
+include 'uk.at:at.web:nts.uk.at.web'
+
+include 'uk.at:at.ctx:shared:nts.uk.ctx.at.shared.app'
+include 'uk.at:at.ctx:shared:nts.uk.ctx.at.shared.dom'
+include 'uk.at:at.ctx:shared:nts.uk.ctx.at.shared.infra'
+include 'uk.at:at.ctx:shared:nts.uk.ctx.at.shared.ws'
+
+include 'uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.ac'
+include 'uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.app'
+include 'uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.dom'
+include 'uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.infra'
+include 'uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.pub'
+include 'uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.pubimp'
+include 'uk.at:at.ctx:schedule:nts.uk.ctx.at.schedule.ws'
+
+include 'uk.at:at.ctx:record:nts.uk.ctx.at.record.ac'
+include 'uk.at:at.ctx:record:nts.uk.ctx.at.record.app'
+include 'uk.at:at.ctx:record:nts.uk.ctx.at.record.dom'
+include 'uk.at:at.ctx:record:nts.uk.ctx.at.record.infra'
+include 'uk.at:at.ctx:record:nts.uk.ctx.at.record.pub'
+include 'uk.at:at.ctx:record:nts.uk.ctx.at.record.pubimp'
+include 'uk.at:at.ctx:record:nts.uk.ctx.at.record.ws'
+
+
+include 'uk.base:base.web:nts.uk.com.js.web'
+
+include 'uk.base:shr:nts.uk.shr.com'
+include 'uk.base:shr:nts.uk.shr.ws'
+include 'uk.base:shr:nts.uk.shr.find'
+
+
+include 'uk.com:com.web:nts.uk.com.web'
+
+include 'uk.com:com.ctx:basic:nts.uk.ctx.basic.ac'
+include 'uk.com:com.ctx:basic:nts.uk.ctx.basic.app'
+include 'uk.com:com.ctx:basic:nts.uk.ctx.basic.dom'
+include 'uk.com:com.ctx:basic:nts.uk.ctx.basic.infra'
+include 'uk.com:com.ctx:basic:nts.uk.ctx.basic.pub'
+include 'uk.com:com.ctx:basic:nts.uk.ctx.basic.pubimp'
+include 'uk.com:com.ctx:basic:nts.uk.ctx.basic.ws'
+
+include 'uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.ac'
+include 'uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.app'
+include 'uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom'
+include 'uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra'
+include 'uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub'
+include 'uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp'
+include 'uk.com:com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws'
+
+include 'uk.pr:pr.web:nts.uk.pr.web'
+
+include 'uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.ac'
+include 'uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.app'
+include 'uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.dom'
+include 'uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.infra'
+include 'uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pub'
+include 'uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.pubimp'
+include 'uk.pr:pr.ctx:core:nts.uk.ctx.pr.core.ws'
+
+include 'uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.ac'
+include 'uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.app'
+include 'uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.dom'
+include 'uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.infra'
+include 'uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.pub'
+include 'uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.pubimp'
+include 'uk.pr:pr.ctx:formula:nts.uk.ctx.pr.formula.ws'
+
+include 'uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.ac'
+include 'uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.app'
+include 'uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.dom'
+include 'uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.infra'
+include 'uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.pub'
+include 'uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.pubimp'
+include 'uk.pr:pr.ctx:report:nts.uk.ctx.pr.report.ws'
+
+include 'uk.pr:pr.screen:nts.uk.screen.pr.ws'
+include 'uk.pr:pr.screen:nts.uk.screen.pr.app'
+include 'uk.pr:pr.screen:nts.uk.screen.pr.infra'
+
+include 'uk.pr:pr.file:nts.uk.file.pr.app'
+include 'uk.pr:pr.file:nts.uk.file.pr.infra'

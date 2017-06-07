@@ -1,0 +1,221 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition
+		template="../../../../master/sidebar.xhtml">
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="sidebar-head">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="kmf001.d.service.js" />
+			<com:scriptfile path="kmf001.d.vm.js" />
+			<com:scriptfile path="kmf001.d.start.js" />
+			<script type="text/javascript">
+				// TODO: Code validate.
+				__viewContext.primitiveValueConstraints.NumberOfYear = {
+					valueType : 'Integer',
+					min: 0,
+					max: 99
+				};
+				__viewContext.primitiveValueConstraints.MaxOfDays = {
+						valueType : 'Integer',
+						min: 0,
+						max: 999
+					};
+			</script>
+		</ui:define>
+<!-- #{i18n.getText('Com_FundedPaidHoliday')} -->
+		<ui:define name="sidebar" id="left-sidebar" tabindex="1">
+			<ul class="navigator">
+				<li><a href="#whole-company-tab" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#by-employment-tab" role="tab-navigator" >#{i18n.getText('Com_Employment')}</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="sidebar-content">
+			<div id="whole-company-tab" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Company')}</span>
+					<button  data-bind="click: backToHistorySelection" tabindex="2">休暇の選択に戻る</button>
+					<button class="proceed register-button" data-bind="click: registerWholeCompany, enable: isManaged" tabindex="3">登録</button>
+					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table" tabindex="4">年休付与テーブルの登録</a></div>
+				</div>
+				<div class="ruledLine"></div>
+				
+				<div id="whole-company-content">
+					<div id="whole-company-content-detail">
+						<div class="label warning" id="label-warning"
+							data-bind="style: {display: isManaged()? 'inlineBlock': 'none'}">#{i18n.getText('Com_FundedPaidHoliday')}の設定をする場合は、#{i18n.getText('Com_PaidHoliday')}の管理を「管理する」に設定してください。</div>
+						<div id="form-lbl" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_FundedPaidHoliday')}の扱い</div>
+						<div id="ruledLine1"></div>
+						<table id="whole-company-tbl">
+							<TBODY>
+								<tr>
+									<td style="width: 200px; padding-left: 40px;">
+										<div class="margin-bottom">
+											<span>保持できる年数</span>
+										</div>
+									</td>
+									<td>
+										<div class="margin-bottom">
+											<input id="year-amount-company" data-bind="ntsNumberEditor: {
+												value: retentionYearsAmount,
+												constraint: 'NumberOfYear',
+												option: textEditorOption,
+												required: true,
+												enable: isManaged,
+												readonly: false}" tabindex="5"/> 
+										</div>
+									</td>
+								</tr>
+								
+								<tr>
+									<td style="width: 200px; padding-left: 40px;">
+										<div class="margin-bottom">
+											<span>上限日数</span>
+										</div>
+									</td>
+									<td>
+										<div class="margin-bottom">
+											<input id="max-days-company" data-bind="ntsNumberEditor: {
+												value: maxDaysCumulation,
+												constraint: 'MaxOfDays',
+												option: textEditorOption,
+												required: true,
+												enable: isManaged,
+												readonly: false}" tabindex="6"/>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="width: 200px; height: 60px; padding-left: 40px;">
+										<div>
+											<span>出勤日数として加算</span>
+										</div>
+									</td>
+									<td>
+										<div id="switch-btn" class="cf"
+											data-bind="ntsSwitchButton: {
+												options: leaveAsWorkDaysOpt,
+												optionsValue: 'value',
+												optionsText: 'name',
+												value: leaveAsWorkDays,
+												enable: isManaged}"
+											tabindex="2"></div>
+									</td>
+								</tr>
+							</TBODY>
+						</table>
+					</div>
+				</div>
+
+			</div>
+			
+			
+			
+			<div id="by-employment-tab" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">#{i18n.getText('Com_Employment')}</span>
+					<button data-bind="click: backToHistorySelection" tabindex="2">休暇の選択に戻る</button>
+					<button class="proceed register-button" data-bind="click: registerByEmployment, enable: hasSelectedEmp" tabindex="3">登録</button>
+					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table" tabindex="4">年休付与テーブルの登録</a></div>
+					
+				</div>
+				<div class="ruledLine"></div>
+				<div id="by-employment-content">
+					<table style="margin: 30px">
+						<tr>
+							<td id="left-content"
+								class="bg-green caret-right caret-background">
+								<i class="icon icon-searchbox"></i>
+								
+						 		<table id="single-list" data-bind="ntsGridList: {
+									height: 450,
+									width: '98%',
+									options: employmentList,
+									optionsValue: 'code',
+									columns: columnsSetting,
+									multiple: false,
+									value: selectedCode
+								}"
+								class="cf" tabindex="1"></table> 
+									
+							</td>
+
+							<td id="right-content">
+								<div id="form-lbl" data-bind="ntsFormLabel: {}">保持できる年数</div>
+								<div id="ruledLine2"></div>
+								<table id="right-table" style="margin-left: 30px; margin-top: 20px;">
+									<tr>
+										<td style="width: 200px; height: 60px; padding-left: 40px;">
+											<div>
+												<span>上限日数</span>
+											</div>
+										</td>
+										<td>
+											<div id="switch-btn" class="cf" data-bind="ntsSwitchButton: {
+												options: managementOption,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedManagement,
+												enable: hasSelectedEmp}" tabindex="2"></div>
+										</td>
+									</tr>
+									
+									<tr>
+										<td style="width: 200px; height: 60px; padding-left: 40px;">
+											<div>
+												<span>保持年数</span>
+											</div>
+											<!-- #{i18n.getText('Com_CompensationHoliday')}の管理 -->
+										</td>
+										<td style="padding-left: 5px">
+											<div>
+												<input id='year-amount-emp' data-bind="ntsNumberEditor: {
+													value: yearsAmountByEmp,
+													constraint: 'NumberOfYear',
+													option: textEditorOption,
+													required: true,
+													enable: hasSelectedEmp,
+													readonly: false}" tabindex="3"/>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 200px; height: 60px; padding-left: 40px;">
+											<div>
+												<span>使用期限</span>
+											</div>
+										</td>
+										<td style="padding-left: 5px">
+											<div>
+												<input id='max-days-emp' data-bind="ntsNumberEditor: {
+													value: maxDaysCumulationByEmp,
+													constraint: 'MaxOfDays',
+													option: textEditorOption,
+													required: true,
+													enable: hasSelectedEmp,
+													readonly: false}" tabindex="4"/>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			
+
+		</ui:define>
+
+
+	</ui:composition>
+</body>
+</html>

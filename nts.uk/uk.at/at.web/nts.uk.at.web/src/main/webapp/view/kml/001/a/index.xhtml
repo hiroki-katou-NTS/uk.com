@@ -33,6 +33,7 @@
 								</div>
 								<div id="dateRange-list-container">
 									<table id="dateRange-list" data-bind="ntsGridList: {
+										name: '#[KML001_6]', 
 										height: 290,
 										options: gridPersonCostList,
 										optionsValue: 'dateRange',
@@ -72,9 +73,11 @@
 								</div>
 								<div class="cell valign-center">
 									<div>
-										<div tabindex="5" id="startDateInput" data-name="有効開始日" data-bind="ntsDatePicker: {
+										<div tabindex="5" id="startDateInput" data-bind="ntsDatePicker: {
+											name: '#[KML001_9]',
 											value: newStartDate,
 											dateFormat: 'YYYY/MM/DD',
+											valueFormat: 'YYYY/MM/DD',
 											enable: isInsert }" />
 									</div>
 								</div>
@@ -84,7 +87,8 @@
 									<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_10')}</div>
 								</div>
 								<div class="cell valign-center" data-bind="with: currentPersonCost">
-									<div tabindex="6" id="combo-box" data-name="単価" data-bind="ntsComboBox: {
+									<div tabindex="6" id="combo-box" data-bind="ntsComboBox: {
+															name: '#[KML001_27]',
 															options: ko.observableArray([
 												                { code: 0, name: '#{i18n.getText('KML001_22')}' },
 												                { code: 1, name: '#{i18n.getText('KML001_23')}' },
@@ -102,7 +106,8 @@
 							<div class="table">
 								<div class="item-valign-top" data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('KML001_11')}</div>
 								<a data-bind="with: currentPersonCost">
-									<textarea tabindex="7" id="memo" data-name="備考" data-bind="ntsMultilineEditor: {
+									<textarea tabindex="7" id="memo" data-bind="ntsMultilineEditor: {
+										name: '#[KML001_11]',
 										value: memo,
 										constraint: 'Memo'}" />
 								</a>
