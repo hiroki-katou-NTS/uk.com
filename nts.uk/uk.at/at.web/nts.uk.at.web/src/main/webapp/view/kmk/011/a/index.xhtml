@@ -78,6 +78,7 @@
 								 <input tabindex="4"
 								class="nts-input" id="itemname" 
 								data-bind="ntsTextEditor:{
+										name: '#KMK011_30',
                                          value: divTimeName,
                                          required: true,
                                          constraint: 'DivergenceTimeName',
@@ -97,6 +98,7 @@
 								<input class="nts-input" id = "inpName"
 								style="width: 350px"
 								data-bind="ntsTextEditor:{
+										name: '#KMK011_31',
 										value: timeItemName,
 										required: true,
 										readonly: true,
@@ -111,7 +113,8 @@
 							<td style = "padding-left: 5px">
 								<!-- A3_9: Alarm time --> 
 								<input tabindex="6" class="nts-validate" id="inpAlarmTime" style="width: 50px"
-								data-name="AlarmTime" data-bind="ntsTimeEditor: {
+								data-bind="ntsTimeEditor: {
+									name: '#KMK011_32',
 									value: alarmTime,
 									inputFormat: 'time', 
 									mode: 'time', 
@@ -127,7 +130,9 @@
 							<td style = "padding-left: 5px">
 								<!-- A3_11: Error time --> 
                                  <input tabindex="7" style="width: 50px"
+                                 
                                  data-name="Time Editor" data-bind="ntsTimeEditor: {
+									name: '#KMK011_33',
 									value: errTime,
 									inputFormat: 'time', 
 									mode: 'time', 
