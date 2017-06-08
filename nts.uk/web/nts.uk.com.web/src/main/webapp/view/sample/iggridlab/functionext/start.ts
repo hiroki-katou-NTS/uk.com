@@ -17,7 +17,7 @@ module nts.uk.ui.gridlist {
             id: number;
             flag: boolean;
             ruleCode: number;
-            phone: string;
+            time: string;
             address1: string;
             address2: string;
             combo: string;
@@ -25,7 +25,7 @@ module nts.uk.ui.gridlist {
                 this.id = index;
                 this.flag = index % 2 == 0;
                 this.ruleCode = index % 3 + 1;
-                this.phone = "0123456789";
+                this.time = "13:36";
                 this.address1 = "Hanoi, Vietnam";
                 this.address2 = "愛知県日本";
                 this.combo = String(index % 3 + 1);
@@ -61,7 +61,12 @@ module nts.uk.ui.gridlist {
                                 { headerText: 'ID', key: 'id', dataType: 'number', width: '50px' },
                                 { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '190px', ntsControl: 'Checkbox' },
                                 { headerText: 'RULECODE', key: 'ruleCode', dataType: 'number', width: '100px' },
-                                { headerText: 'Phone', key: 'phone', dataType: 'string', width: '140px' },
+                                { headerText: 'Inbound time', key: 'time', dataType: 'string', width: '140px', 
+                                                constraint: { 
+                                                                primitiveValue: 'SampleTimeClock',
+                                                                required: true
+                                                            }
+                                },
                                 { headerText: 'Address1', key: 'address1', dataType: 'string', width: '150px' },
                                 { headerText: 'Address2', key: 'address2', dataType: 'string', width: '150px' },
                                 { headerText: 'Combobox', key: 'combo', dataType: 'string', width: '230px', ntsControl: 'Combobox' },

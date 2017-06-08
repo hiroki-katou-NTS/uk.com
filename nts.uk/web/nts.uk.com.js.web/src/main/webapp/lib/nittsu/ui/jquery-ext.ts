@@ -997,7 +997,8 @@ module nts.uk.ui.jqueryExtentions {
                 $(this).igGrid(options);
                 return;
             }
-
+            validation.scanValidators($(self), options.columns); 
+            
             var columns = _.map(options.columns, function(column: any) {
                 if (column.ntsControl === undefined) return column;
                 var controlDef = _.find(options.ntsControls, function(ctl: any) {
@@ -1052,7 +1053,7 @@ module nts.uk.ui.jqueryExtentions {
             copyPaste.ifOn($(self), options);
             options.autoCommit = true;
             
-            events.Handler.pull($(self)).filter().onCellUpdate().onDirectEnter();
+            events.Handler.pull($(self)).filter().onCellUpdate().onDirectEnter().onSpacePress();
             $(this).igGrid(options);
         };
         
@@ -1080,6 +1081,7 @@ module nts.uk.ui.jqueryExtentions {
         }
         
         module updating {
+            
             export function addFeature(options: any) {
                 let updateFeature = createUpdateOptions(options); 
                 if (!isFeatureEnable(options.features, feature.UPDATING)) {
@@ -1104,32 +1106,50 @@ module nts.uk.ui.jqueryExtentions {
                 return td.find("div[class*='nts-grid-control']").length > 0;
             } 
             
-            function startEditCell(evt: any) {
-                if (containsNtsControl($(evt.currentTarget)) || evt.keyCode === 13) {
+            function startEditCell(evt: any, ui: any) {
+                if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
+                    let selectedCell = selection.getSelectedCell($(evt.target));
+                    if (util.isNullOrUndefined(selectedCell)) return;
+                    $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index);
                     return false;
                 }
+//                $(ui.editor).on("keyup", cellKeyUp);
                 return true; 
+            }
+            
+            function finishEditCell(evt: any, ui: any) {
+                let validators: any =  $(evt.target).data(validation.VALIDATORS);
+                let fieldValidator = validators[ui.columnKey];
+                if (util.isNullOrUndefined(fieldValidator)) return;
+                let result = fieldValidator.probe(ui.value);
+                if (!result.isValid) $(ui.editor).ntsError("set", result.errorMessage);
             }
             
             export function triggerCellUpdate(evt: any, cell: any) {
                 var grid = evt.currentTarget;
-//                if (cell === undefined || $(grid).igGridUpdating("isEditing") || containsNtsControl($(evt.target))) { 
-//                    evt.stopPropagation();
-//                    return;
-//                }
-                
+                if ($(grid).igGridUpdating("isEditing")) return;
                 if (utils.isAlphaNumeric(evt)) {
-                    $(grid).igGridUpdating("startEdit", cell.id, cell.index);
-                    evt.preventDefault();
-                    evt.stopImmediatePropagation();
+                    startEdit(evt, cell);
                 }
+                if (utils.isDeleteKey(evt)) {
+                    $(grid).one(events.Handler.GRID_EDIT_CELL_STARTED, function(evt: any, ui: any) {
+                        $(ui.editor).find("input").val("");
+                    });
+                    startEdit(evt, cell);
+                }
+            }
+            
+            function startEdit(evt: any, cell: any) {
+                $(evt.currentTarget).igGridUpdating("startEdit", cell.id, cell.index);
+                if ($(cell.element).text().trim() !== "") evt.preventDefault();
+                evt.stopImmediatePropagation();
             }
         }
         
         module selection {
             
             export function addFeature(options: any) {
-                let selection = { name: feature.SELECTION, mode: "cell", activeCellChanged: changedActiveCell };
+                let selection = { name: feature.SELECTION, mode: "cell", cellSelectionChanged: selectCellChange };
                 if (!isFeatureEnable(options.features, feature.SELECTION)) {
                     options.features.push(selection);
                 } else {
@@ -1139,6 +1159,7 @@ module nts.uk.ui.jqueryExtentions {
             
             export function selectPrev($grid: JQuery) {
                 var selectedCell: any = getSelectedCell($grid);
+                if (util.isNullOrUndefined(selectedCell)) return;
                 let columns = getVisibleColumns($grid);
                 if (selectedCell.index > 0) selectCell($grid, selectedCell.rowIndex, selectedCell.index - 1);
                 else if (selectedCell.index === 0 && selectedCell.rowIndex > 0) {
@@ -1154,6 +1175,7 @@ module nts.uk.ui.jqueryExtentions {
             
             function selectNext($grid: JQuery) {
                 var selectedCell: any = getSelectedCell($grid);
+                if (util.isNullOrUndefined(selectedCell)) return;
                 let columns = getVisibleColumns($grid);
                 let dataSource = $grid.igGrid("option", "dataSource");
                 if (selectedCell.index < columns.length - 1) selectCell($grid, selectedCell.rowIndex, selectedCell.index + 1);
@@ -1164,6 +1186,7 @@ module nts.uk.ui.jqueryExtentions {
             
             function selectBelow($grid: JQuery) {
                 var selectedCell: any = getSelectedCell($grid);
+                if (util.isNullOrUndefined(selectedCell)) return;
                 let dataSource = $grid.igGrid("option", "dataSource");
                 if (selectedCell.rowIndex < dataSource.length - 1) {
                     selectCell($grid, selectedCell.rowIndex + 1, selectedCell.index);
@@ -1177,7 +1200,7 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             export function getSelectedCell($grid: JQuery) {
-                return $grid.igGridSelection("selectedCell");
+                return $grid.igGridSelection("selectedCell") || $grid.data("ntsSelectedCell");
             }
             
             export function selectCell($grid: JQuery, rowIndex: number, columnIndex: number) {
@@ -1191,17 +1214,17 @@ module nts.uk.ui.jqueryExtentions {
                 }
             }
             
-            function changedActiveCell(evt: any, ui: any) {
+            function selectCellChange(evt: any, ui: any) {
                 if (util.isNullOrUndefined(ui.cell)) return;
-                $(evt.target).igGridSelection("selectCell", ui.cell.rowIndex, ui.cell.index);
+                $(evt.target).data("ntsSelectedCell", ui.cell);
             }
             
             export function onCellNavigate(evt: any, enterDirection?: string) {
                 var grid = evt.currentTarget;
                 // Tab key
                 if (evt.keyCode === 9) {
-//                    if ($(grid).igGridUpdating("isEditing"))
-//                        $(grid).igGridUpdating("endEdit");
+                    if ($(grid).igGridUpdating("isEditing"))
+                        $(grid).igGridUpdating("endEdit");
                     
                     if (evt.shiftKey) {
                         selection.selectPrev($(grid));
@@ -1671,6 +1694,7 @@ module nts.uk.ui.jqueryExtentions {
             export class Handler {
                 static KEY_DOWN: string = "keydown";
                 static FOCUS_IN: string = "focusin";
+                static GRID_EDIT_CELL_STARTED: string = "iggridupdatingeditcellstarted";
                 $grid: JQuery;
                 
                 constructor($grid: JQuery) {
@@ -1698,6 +1722,20 @@ module nts.uk.ui.jqueryExtentions {
                     return this;
                 }
                 
+                onSpacePress() {
+                    var self = this;
+                    self.$grid.on(Handler.KEY_DOWN, function(evt: any) {
+                        if (!utils.isSpaceKey(evt)) return;
+                        var selectedCell: any = selection.getSelectedCell(self.$grid);
+                        if (util.isNullOrUndefined(selectedCell)) return;
+                        var checkbox = $(selectedCell.element).find(".nts-checkbox-container");
+                        if (checkbox.length > 0) {
+                            checkbox.find("input[type='checkbox']").click();
+                        }
+                    });
+                    return this;
+                }
+                
                 focusInWith(processor: copyPaste.Processor) {
                     this.$grid.on(Handler.FOCUS_IN, function(evt: any) {
                         if ($("#pasteHelper").length > 0 && $("#copyHelper").length > 0) return;
@@ -1712,11 +1750,11 @@ module nts.uk.ui.jqueryExtentions {
                 
                 ctrlCxpWith(processor: copyPaste.Processor) {
                     this.$grid.on(Handler.KEY_DOWN, function(evt: any) {
-                        if (evt.ctrlKey && evt.keyCode === 86) {
+                        if (evt.ctrlKey && utils.isPasteKey(evt)) {
                             $("#pasteHelper").focus();
-                        } else if (evt.ctrlKey && evt.keyCode === 67) {
+                        } else if (evt.ctrlKey && utils.isCopyKey(evt)) {
                             processor.copyHandler();
-                        } else if (evt.ctrlKey && evt.keyCode === 88) {
+                        } else if (evt.ctrlKey && utils.isCutKey(evt)) {
                             processor.cutHandler();   
                         }
                     });
@@ -1726,12 +1764,8 @@ module nts.uk.ui.jqueryExtentions {
                 filter() {
                     var self = this;
                     this.$grid.on(Handler.KEY_DOWN, function(evt: any) {
-                        var cell = selection.getSelectedCell(self.$grid)
-                        if (utils.isTabKey(evt)) {
-                            if (self.$grid.igGridUpdating("isEditing")) {
-                                self.$grid.igGridUpdating("endEdit");
-                            }
-                        } else if (utils.isAlphaNumeric(evt)) {
+                        if (utils.isAlphaNumeric(evt)) {
+                            var cell = selection.getSelectedCell(self.$grid);
                             if (cell === undefined || updating.containsNtsControl($(evt.target)))  
                                 evt.stopImmediatePropagation();
                             return;
@@ -1742,21 +1776,83 @@ module nts.uk.ui.jqueryExtentions {
             }
         }
         
-        module utils {
-            export function isNavigationKey(evt: any) {
-                return evt.shiftKey || evt.keyCode === 9;
+        module validation {
+            export let VALIDATORS: string = "ntsValidators"; 
+            export class ColumnFieldValidator {
+                name: string;
+                primitiveValue: string;
+                options: any;
+                constructor(name: string, primitiveValue: string, options: any) {
+                    this.name = name;
+                    this.primitiveValue = primitiveValue;
+                    this.options = options;
+                }
+                
+                probe(value: string) {
+                    let constraint = nts.uk.ui.validation.getConstraint(this.primitiveValue);
+                    switch (constraint.valueType) {
+                        case "String":
+                            return new nts.uk.ui.validation.StringValidator(this.name, this.primitiveValue, this.options)
+                                    .validate(value, this.options);
+                        case "Integer":
+                        case "Decimal":
+                        case "HalfInt":
+                            return new nts.uk.ui.validation.NumberValidator(this.name, this.primitiveValue, this.options)
+                                    .validate(value);
+                        case "Time":
+                            this.options.mode = "time";
+                            return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
+                                    .validate(value);
+                        case "Clock":
+                            this.options.outputFormat = "time";
+                            return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
+                                    .validate(value);
+                    }
+                }
             }
+            
+            function getValidators(columnsDef: any) : { [columnKey: string]: ColumnFieldValidator } {
+                var validators: any = {};
+                _.forEach(columnsDef, function(def: any) {
+                    if (def.constraint === undefined) return;
+                    validators[def.key] = new ColumnFieldValidator(def.headerText, def.constraint.primitiveValue, def.constraint); 
+                });
+                return validators;
+            }
+            
+            export function scanValidators($grid: JQuery, columnsDef: any) {
+                $grid.data(VALIDATORS, getValidators(columnsDef));
+            }
+        }
+        
+        module utils {
             
             export function isArrowKey(evt: any) {
                 return evt.keyCode >= 37 && evt.keyCode <= 40;
             }
-            
             export function isAlphaNumeric(evt: any) {
                 return evt.keyCode >= 48 && evt.keyCode <= 90;
             }
-            
             export function isTabKey(evt: any) {
                 return evt.keyCode === 9;
+            }
+            export function isEnterKey(evt: any) {
+                return evt.keyCode === 13;
+            }
+            export function isSpaceKey(evt: any) {
+                return evt.keyCode === 32;
+            }
+            export function isDeleteKey(evt: any) {
+                return evt.keyCode === 46;
+            }
+            export function isPasteKey(evt: any) {
+                return evt.keyCode === 86;
+            }
+            export function isCopyKey(evt: any) {
+                return evt.keyCode === 67;
+            }
+            export function isCutKey(evt: any) {
+                return evt.keyCode === 88;
             }
         }
     }
