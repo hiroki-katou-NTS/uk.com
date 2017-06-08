@@ -21,9 +21,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSet
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSet_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtWorkType;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtWorkTypePK_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtWorkType_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkType;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkTypePK_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkType_;
 
 /**
  * The Class JpaNursingVacationSettingRepository.
@@ -98,7 +98,7 @@ public class JpaNursingVacationSettingRepository extends JpaRepository implement
         // NURSING
         KmfmtNursingLeaveSet nursingSetting = this.findNursingLeaveByNursingCategory(result,
                 NursingCategory.Nursing.value);
-        List<KmfmtWorkType> entityWorkTypeNursings = this.findWorkTypeByCompanyId(companyId,
+        List<KmfmtNursingWorkType> entityWorkTypeNursings = this.findWorkTypeByCompanyId(companyId,
                 NursingCategory.Nursing.value);
         listSetting.add(new NursingVacationSetting(
                 new JpaNursingVacationSettingGetMemento(nursingSetting, entityWorkTypeNursings)));
@@ -106,7 +106,7 @@ public class JpaNursingVacationSettingRepository extends JpaRepository implement
         // CHILD NURSING
         KmfmtNursingLeaveSet childNursingSetting = this.findNursingLeaveByNursingCategory(result,
                 NursingCategory.ChildNursing.value);
-        List<KmfmtWorkType> entityWorkTypeChildNursings = this.findWorkTypeByCompanyId(companyId,
+        List<KmfmtNursingWorkType> entityWorkTypeChildNursings = this.findWorkTypeByCompanyId(companyId,
                 NursingCategory.ChildNursing.value);
         listSetting.add(new NursingVacationSetting(
                 new JpaNursingVacationSettingGetMemento(childNursingSetting, entityWorkTypeChildNursings)));
@@ -134,23 +134,23 @@ public class JpaNursingVacationSettingRepository extends JpaRepository implement
      * @param nursingCtr the nursing ctr
      * @return the list
      */
-    private List<KmfmtWorkType> findWorkTypeByCompanyId(String companyId, Integer nursingCtr) {
+    private List<KmfmtNursingWorkType> findWorkTypeByCompanyId(String companyId, Integer nursingCtr) {
         EntityManager em = this.getEntityManager();
         
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfmtWorkType> query = builder.createQuery(KmfmtWorkType.class);
-        Root<KmfmtWorkType> root = query.from(KmfmtWorkType.class);
+        CriteriaQuery<KmfmtNursingWorkType> query = builder.createQuery(KmfmtNursingWorkType.class);
+        Root<KmfmtNursingWorkType> root = query.from(KmfmtNursingWorkType.class);
         
         List<Predicate> predicateList = new ArrayList<>();
         
-        predicateList.add(builder.equal(root.get(KmfmtWorkType_.kmfmtWorkTypePK)
-                .get(KmfmtWorkTypePK_.cid), companyId));
-        predicateList.add(builder.equal(root.get(KmfmtWorkType_.kmfmtWorkTypePK)
-                .get(KmfmtWorkTypePK_.nursingCtr), nursingCtr));
+        predicateList.add(builder.equal(root.get(KmfmtNursingWorkType_.kmfmtWorkTypePK)
+                .get(KmfmtNursingWorkTypePK_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KmfmtNursingWorkType_.kmfmtWorkTypePK)
+                .get(KmfmtNursingWorkTypePK_.nursingCtr), nursingCtr));
         
         query.where(predicateList.toArray(new Predicate[]{}));
         
-        query.orderBy(builder.asc(root.get(KmfmtWorkType_.kmfmtWorkTypePK).get(KmfmtWorkTypePK_.orderNumber)));
+        query.orderBy(builder.asc(root.get(KmfmtNursingWorkType_.kmfmtWorkTypePK).get(KmfmtNursingWorkTypePK_.orderNumber)));
         
         return em.createQuery(query).getResultList();
     }

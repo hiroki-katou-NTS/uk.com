@@ -21,28 +21,28 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KMFMT_WORK_TYPE")
-public class KmfmtWorkType extends UkJpaEntity implements Serializable {
+@Table(name = "KMFMT_NURSING_WORK_TYPE")
+public class KmfmtNursingWorkType extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
     /** The kmfmtWorkTypePK. */
     @EmbeddedId
-    private KmfmtWorkTypePK kmfmtWorkTypePK;
+    private KmfmtNursingWorkTypePK kmfmtWorkTypePK;
     
     /** The work type code. */
     @Size(max = 8)
-    @Column(name = "WORK_TYPE_CODE")
+    @Column(name = "DAY_CD")
     private String workTypeCode;
 
     /**
      * Instantiates a new kmfmt work type.
      */
-    public KmfmtWorkType() {
+    public KmfmtNursingWorkType() {
     }
     
-    public KmfmtWorkType(KmfmtWorkTypePK kmfmtWorkTypePK, String workTypeCode) {
+    public KmfmtNursingWorkType(KmfmtNursingWorkTypePK kmfmtWorkTypePK, String workTypeCode) {
         this.kmfmtWorkTypePK = kmfmtWorkTypePK;
         this.workTypeCode = workTypeCode;
     }
@@ -64,10 +64,10 @@ public class KmfmtWorkType extends UkJpaEntity implements Serializable {
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are
         // not set
-        if (!(object instanceof KmfmtWorkType)) {
+        if (!(object instanceof KmfmtNursingWorkType)) {
             return false;
         }
-        KmfmtWorkType other = (KmfmtWorkType) object;
+        KmfmtNursingWorkType other = (KmfmtNursingWorkType) object;
         if ((this.kmfmtWorkTypePK == null && other.kmfmtWorkTypePK != null) || (this.kmfmtWorkTypePK != null
                 && !this.kmfmtWorkTypePK.equals(other.kmfmtWorkTypePK))) {
             return false;

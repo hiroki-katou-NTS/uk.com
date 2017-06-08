@@ -10,9 +10,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KmfmtWorkType_.
  */
-@StaticMetamodel(KmfmtWorkType.class)
-public class KmfmtWorkType_ {
+@StaticMetamodel(KmfmtNursingWorkType.class)
+public class KmfmtNursingWorkType_ {
     
     /** The kmfmtWorkTypePK. */
-    public static volatile SingularAttribute<KmfmtWorkType, KmfmtWorkTypePK> kmfmtWorkTypePK;
+    public static volatile SingularAttribute<KmfmtNursingWorkType, KmfmtNursingWorkTypePK> kmfmtWorkTypePK;
 }

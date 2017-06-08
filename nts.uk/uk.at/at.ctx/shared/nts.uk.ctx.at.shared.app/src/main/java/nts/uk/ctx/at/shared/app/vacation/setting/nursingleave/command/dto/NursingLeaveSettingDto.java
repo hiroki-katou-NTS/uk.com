@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.command.dto;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
@@ -17,6 +19,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSet
 /**
  * The Class NursingLeaveSettingDto.
  */
+@Setter
+@Getter
 public class NursingLeaveSettingDto {
 
     /** The manage type. */
@@ -69,11 +73,6 @@ public class NursingLeaveSettingDto {
             this.setting = setting;
         }
 
-        /**
-         * Gets the company id.
-         *
-         * @return the company id
-         */
         /*
          * (non-Javadoc)
          * 
@@ -85,11 +84,6 @@ public class NursingLeaveSettingDto {
             return this.companyId;
         }
 
-        /**
-         * Gets the manage type.
-         *
-         * @return the manage type
-         */
         /*
          * (non-Javadoc)
          * 
@@ -101,11 +95,6 @@ public class NursingLeaveSettingDto {
             return ManageDistinct.valueOf(this.setting.manageType);
         }
 
-        /**
-         * Gets the nursing category.
-         *
-         * @return the nursing category
-         */
         /*
          * (non-Javadoc)
          * 
@@ -117,11 +106,6 @@ public class NursingLeaveSettingDto {
             return NursingCategory.valueOf(this.setting.nursingCategory);
         }
 
-        /**
-         * Gets the start month day.
-         *
-         * @return the start month day
-         */
         /*
          * (non-Javadoc)
          * 
@@ -133,11 +117,6 @@ public class NursingLeaveSettingDto {
             return this.setting.startMonthDay;
         }
 
-        /**
-         * Gets the max person setting.
-         *
-         * @return the max person setting
-         */
         /*
          * (non-Javadoc)
          * 
@@ -150,11 +129,6 @@ public class NursingLeaveSettingDto {
                     this.setting.nursingNumberPerson));
         }
 
-        /**
-         * Gets the work type codes.
-         *
-         * @return the work type codes
-         */
         /*
          * (non-Javadoc)
          * 
