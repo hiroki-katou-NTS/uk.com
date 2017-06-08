@@ -10,10 +10,10 @@ import nts.uk.ctx.at.record.dom.stamp.card.StampCardItem;
 @Data
 public class StampCardDto {
 	private String cardNumber;
-	private String PID;
-	public StampCardDto fromDomain(StampCardItem domain) {
-		return new StampCardDto(domain.getPersonId()
-				,domain.getCardNumber().v());
+	private String personId;
+
+	public static StampCardDto fromDomain(StampCardItem domain) {
+		return new StampCardDto(domain.getPersonId(), domain.getCardNumber().v());
 	}
-	
+
 }

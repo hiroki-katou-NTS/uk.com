@@ -23,9 +23,10 @@ public class KwkdtStampCard extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KwkdtStampCardPK kwkdtStampCardPK;
 
+	/* カード番号 */
 	@Basic(optional = false)
-	@Column(name = "PID")
-	public String personId;
+	@Column(name = "CARD_NUMBER")
+	public String cardNumber;
 
 	@Override
 	protected Object getKey() {

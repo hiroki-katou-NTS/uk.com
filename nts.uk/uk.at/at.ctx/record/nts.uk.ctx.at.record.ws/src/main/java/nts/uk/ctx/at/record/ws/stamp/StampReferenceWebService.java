@@ -19,7 +19,7 @@ public class StampReferenceWebService extends WebService {
 	private StampFinder getStamp;
 
 	/**
-	 * get all divergence time
+	 * get Stam Info
 	 * 
 	 * @return
 	 */

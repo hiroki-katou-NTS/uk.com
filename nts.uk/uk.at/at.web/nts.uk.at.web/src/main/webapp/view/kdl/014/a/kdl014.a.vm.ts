@@ -27,6 +27,8 @@ module kdl014.a.viewmodel {
             let cardNumber: string = '00000000000000000001';
             let startDate: string = '20160808';
             let endDate: string = '20170808';
+            let personId: string = '3C3F6EA0-5F1A-4477-844F-9A5DB849D538';
+            //get list Stamp 
             service.getStampByCode(cardNumber, startDate, endDate).done(function(lstStamp: any) {
 
                 console.log(lstStamp);
@@ -34,14 +36,23 @@ module kdl014.a.viewmodel {
                 //TODO
                 if (lstStamp.length > 0) {
                     _.forEach(lstStamp, function(item) {
-                        self.items.push(new StampModel(item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime,true).format(),5,'0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
-                    }); 
+                        self.items.push(new StampModel(item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+                    });
                 }
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alertError(res.message);
                 dfd.reject();
             });
+            //get list Card Number
+            service.getStampNumberByPersonId(personId).done(function(lstStampNumber: any) {
+                console.log(lstStampNumber);
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message);
+                dfd.reject();
+            });
+
             return dfd.promise();
         }
 
