@@ -3,9 +3,15 @@ module kcp001.a.viewmodel {
     import ListType = kcp.share.list.ListType;
     export class ScreenModel {
         selectedCode: KnockoutObservable<string>;
-        listComponentOption: ComponentOption
+        multiSelectedCode: KnockoutObservable<any>;
+        listComponentOption: ComponentOption;
+        listComponentOptionMulti: ComponentOption;
+        listComponentNoneSetting: ComponentOption;
+        listComponentMultiNoneSetting: ComponentOption;
+        
         constructor() {
             this.selectedCode = ko.observable(null);
+            this.multiSelectedCode = ko.observableArray([]);
             this.selectedCode.subscribe(function(newVal) {
                 alert(newVal);
             });
@@ -25,9 +31,39 @@ module kcp001.a.viewmodel {
                      * Return type is String while select.
                      */
                     selectedCode: this.selectedCode,
-                    alreadySettingList: ko.observableArray([{code: 'EMC1', isAlreadySetting: true}])
+                    alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}])
                 }
-            $('#employment-list').ntsListComponent(this.listComponentOption);
+            $('#empt-list-setting').ntsListComponent(this.listComponentOption);
+            
+            
+            this.listComponentOptionMulti = {
+                isShowAlreadySet: true,
+                isMultiSelect: true,
+                listType: ListType.EMPLOYMENT,
+                selectedCode: this.multiSelectedCode,
+                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
+            }
+            $('#empt-list-multi-setting').ntsListComponent(this.listComponentOptionMulti);
+            
+            this.listComponentNoneSetting = {
+                isShowAlreadySet: false,
+                isMultiSelect: false,
+                listType: ListType.EMPLOYMENT,
+                selectedCode: this.selectedCode,
+//                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
+            }
+            $('#empt-list-noSetting').ntsListComponent(this.listComponentNoneSetting);
+            
+            
+            this.listComponentMultiNoneSetting = {
+                isShowAlreadySet: false,
+                isMultiSelect: true,
+                listType: ListType.EMPLOYMENT,
+                selectedCode: this.multiSelectedCode,
+//                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
+            }
+            $('#empt-list-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
+            
         } 
     }
 }
