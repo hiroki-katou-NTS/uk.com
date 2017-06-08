@@ -24,15 +24,6 @@
 	height: 350px;
 }
 
-#inp_002 {
-	float: left;
-}
-
-#inp_003 {
-	float: right;
-	margin-left: 30px;
-}
-
 #nts-input-name {
 	width: 0px !important;
 }
@@ -51,4 +42,8 @@
 #single-list tr td {
 	white-space: nowrap;
 	nowrap: nowrap;
+}
+#inpCode{
+	width: 25px !important;
+	text-align: center;
 }
