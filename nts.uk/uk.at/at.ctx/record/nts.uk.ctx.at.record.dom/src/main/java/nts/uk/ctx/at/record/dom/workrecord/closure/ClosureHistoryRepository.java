@@ -33,4 +33,13 @@ public interface ClosureHistoryRepository {
 	 * @return the list
 	 */
 	public List<ClosureHistory> findByClosureId(ClosureId closureId);
+	
+	
+	/**
+	 * Find by company id.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	public List<ClosureHistory> findByCompanyId(String companyId);
 }

@@ -2,36 +2,30 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.infra.repository.workrecord.closure;
+package nts.uk.ctx.at.record.app.find.workrecord.closure.dto;
 
+import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
-import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHist;
-import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHistPK;
 
 /**
- * The Class JpaClosureHistorySetMemento.
+ * The Class ClosureHistoryFindDto.
  */
-public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
+@Getter
+@Setter
+public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 	
-	/** The kclmt closure hist. */
-	@Setter
-	private KclmtClosureHist kclmtClosureHist;
-
-	/**
-	 * Instantiates a new jpa closure history set memento.
-	 *
-	 * @param kclmtClosureHist the kclmt closure hist
-	 */
-	public JpaClosureHistorySetMemento(KclmtClosureHist kclmtClosureHist) {
-		this.kclmtClosureHist = kclmtClosureHist;
-	}
-
+	/** The id. */
+	private Integer id;
 	
+	/** The name. */
+	private String name;
+	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -41,7 +35,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setCloseName(CloseName closeName) {
-		this.kclmtClosureHist.setName(closeName.v());
+		this.name = closeName.v();
 	}
 
 	/*
@@ -53,9 +47,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setClosureId(ClosureId closureId) {
-		KclmtClosureHistPK pk = new KclmtClosureHistPK();
-		pk.setClosureId(closureId.value);
-		this.kclmtClosureHist.setKclmtClosureHistPK(pk);
+		this.id = closureId.value;
 	}
 
 	/*
@@ -67,7 +59,8 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setEndDate(YearMonth endDate) {
-		this.kclmtClosureHist.setEndD(endDate.v());
+		// Do nothing code
+
 	}
 
 	/*
@@ -79,12 +72,8 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setClosureDate(ClosureDate closureDate) {
-		this.kclmtClosureHist.setCloseDay(closureDate.getDay());
-		if (closureDate.getLastDayOfMonth()) {
-			this.kclmtClosureHist.setIsLastDay(1);
-		} else {
-			this.kclmtClosureHist.setIsLastDay(0);
-		}
+		// Do nothing code
+
 	}
 
 	/*
@@ -97,7 +86,8 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setStartDate(YearMonth startDate) {
-		this.kclmtClosureHist.setStrD(startDate.v());
+		// Do nothing code
+
 	}
 
 }
