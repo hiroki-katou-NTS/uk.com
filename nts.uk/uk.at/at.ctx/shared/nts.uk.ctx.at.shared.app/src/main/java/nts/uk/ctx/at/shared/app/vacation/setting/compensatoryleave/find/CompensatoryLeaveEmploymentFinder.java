@@ -31,7 +31,7 @@ public class CompensatoryLeaveEmploymentFinder {
 		String companyId = AppContexts.user().companyId();
 		CompensatoryLeaveEmSetting findItem = compensLeaveEmSetRepository.find(companyId,employmentCode);
 		if (findItem == null) {
-			throw new BusinessException("Msg_146");
+			return null;
 		}
 		CompensatoryLeaveEmSettingDto compensatoryLeaveEmSettingDto = new CompensatoryLeaveEmSettingDto();
 		findItem.saveToMemento(compensatoryLeaveEmSettingDto);

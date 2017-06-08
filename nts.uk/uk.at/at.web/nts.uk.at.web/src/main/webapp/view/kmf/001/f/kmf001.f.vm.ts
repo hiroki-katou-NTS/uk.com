@@ -298,8 +298,8 @@ module nts.uk.pr.view.kmf001.f {
                     self.emPreApply(data.employmentManageSetting.preemptionPermit);
                     self.emTimeManage(data.employmentTimeManageSetting.isManaged);
                     self.emTimeUnit(data.employmentTimeManageSetting.digestiveUnit);
-                    else
-                {
+                }
+                else {
                     self.emCompenManage(self.manageDistinctEnums()[0].value);
                     self.emExpirationTime(self.expirationTimeEnums()[0].value);
                     self.emPreApply(self.applyPermissionEnums()[0].value);
