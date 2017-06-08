@@ -61,7 +61,7 @@ module nts.uk.pr.view.kmf001.f {
             
             isEmptyEmployment: KnockoutObservable<boolean>;
             isEmManageCompen: KnockoutObservable<boolean>;
-            
+            enableDigestiveUnit: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.compenManage = ko.observable(0);
@@ -136,8 +136,8 @@ module nts.uk.pr.view.kmf001.f {
                 }
                 
                 self.columnsSetting = ko.observableArray([
-                {headerText: '設定済', key: 'setting', width: 50 },
-                    { headerText: 'コード', key: 'code', width: 50 },
+                {headerText: '設定済', key: 'setting', width: 60 },
+                    { headerText: 'コード', key: 'code', width: 100 },
                     { headerText: '名称', key: 'name', width: 200 }
                 ]);
                 self.emSelectedCode = ko.observable('');
@@ -150,7 +150,11 @@ module nts.uk.pr.view.kmf001.f {
                 
                 self.isEmptyEmployment = ko.observable(false);
                 self.isEmManageCompen = ko.computed(function(){
-                return self.emCompenManage() == UseDivision.Use;    
+                return self.emCompenManage() == UseDivision.Use&& !self.isEmptyEmployment();    
+                });
+                
+                self.enableDigestiveUnit = ko.computed(function() {
+                    return self.isEmManageCompen() && !self.isEmptyEmployment() && self.emTimeManage() == UseDivision.Use;
                 });
                 
                 self.emSelectedCode.subscribe(function(employmentCode: string){
@@ -259,6 +263,8 @@ module nts.uk.pr.view.kmf001.f {
                     if (data) {
                         self.loadToScreen(data);
                         self.backUpData(data);
+                    } else {
+                        self.backUpData(self.defaultData());
                     }
                     dfd.resolve();
                 }).fail(function(res) {
@@ -274,6 +280,8 @@ module nts.uk.pr.view.kmf001.f {
                     if (data) {
                         self.loadEmploymentToScreen(data);
                         self.employmentBackUpData(data);
+                    } else {
+                        self.employmentBackUpData(self.employmentDefaultData());
                     }
                     dfd.resolve();
                 }).fail(function(res) {
@@ -283,12 +291,21 @@ module nts.uk.pr.view.kmf001.f {
             }
             
             private loadEmploymentToScreen(data: any){
-                var self =this;
-                self.emCompenManage(data.employmentManageSetting.isManaged);
-                self.emExpirationTime(data.employmentManageSetting.expirationTime);
-                self.emPreApply(data.employmentManageSetting.preemptionPermit);
-                self.emTimeManage(data.employmentTimeManageSetting.isManaged);
-                self.emTimeUnit(data.employmentTimeManageSetting.digestiveUnit);
+                var self = this;
+                if (data) {
+                    self.emCompenManage(data.employmentManageSetting.isManaged);
+                    self.emExpirationTime(data.employmentManageSetting.expirationTime);
+                    self.emPreApply(data.employmentManageSetting.preemptionPermit);
+                    self.emTimeManage(data.employmentTimeManageSetting.isManaged);
+                    self.emTimeUnit(data.employmentTimeManageSetting.digestiveUnit);
+                    else
+                {
+                    self.emCompenManage(self.manageDistinctEnums()[0].value);
+                    self.emExpirationTime(self.expirationTimeEnums()[0].value);
+                    self.emPreApply(self.applyPermissionEnums()[0].value);
+                    self.emTimeManage(self.manageDistinctEnums()[0].value);
+                    self.emTimeUnit(self.timeVacationDigestiveUnitEnums()[0].value);
+                }
             }
 
             private loadToScreen(data: any) {
@@ -358,6 +375,39 @@ module nts.uk.pr.view.kmf001.f {
                 dfd.resolve();
                 return dfd.promise();
             }
+            
+             private defaultData() {
+                var self = this;
+                return {
+                    companyId: "",
+                    isManaged: self.compenManage(),
+                    normalVacationSetting: {
+                        expirationTime: self.expirationDateCode(),
+                        preemptionPermit: self.compenPreApply(),
+                        isManageByTime: self.compenTimeManage(),
+                        digestiveUnit: self.timeUnitCode()
+                    },
+                    occurrenceVacationSetting: {
+                        transferSettingOverTime: {
+                            certainTime: self.convertTime(self.overAll()),
+                            useDivision: self.checkOverTime(),
+                            oneDayTime: self.convertTime(self.overOneDay()),
+                            halfDayTime: self.convertTime(self.overHalfDay()),
+                            transferDivision: self.selectedOfOverTime(),
+                            compensatoryOccurrenceDivision: OccurrenceDivision.OverTime
+                        },
+                        transferSettingDayOffTime: {
+                            certainTime: self.convertTime(self.workAll()),
+                            useDivision: self.checkWorkTime(),
+                            oneDayTime: self.convertTime(self.workOneDay()),
+                            halfDayTime: self.convertTime(self.workHalfDay()),
+                            transferDivision: self.selectedOfWorkTime(),
+                            compensatoryOccurrenceDivision: OccurrenceDivision.DayOffTime
+                        }
+                    }
+                };
+            }
+            
             private collectData() {
                 var self = this;
                 var data = self.backUpData();
@@ -365,10 +415,10 @@ module nts.uk.pr.view.kmf001.f {
                     companyId: "",
                     isManaged: self.compenManage(),
                     normalVacationSetting: {
-                        expirationTime: self.isManageCompen()?self.expirationDateCode():data.normalVacationSetting.expirationTime.value,
-                        preemptionPermit: self.isManageCompen()?self.compenPreApply():data.normalVacationSetting.preemptionPermit.value,
-                        isManageByTime: self.isManageCompen()?self.compenTimeManage():data.normalVacationSetting.isManageByTime.value,
-                        digestiveUnit: self.isManageTime()?self.timeUnitCode():data.normalVacationSetting.digestiveUnit.value
+                        expirationTime: self.isManageCompen()?self.expirationDateCode():data.normalVacationSetting.expirationTime,
+                        preemptionPermit: self.isManageCompen()?self.compenPreApply():data.normalVacationSetting.preemptionPermit,
+                        isManageByTime: self.isManageCompen()?self.compenTimeManage():data.normalVacationSetting.isManageByTime,
+                        digestiveUnit: self.isManageTime()?self.timeUnitCode():data.normalVacationSetting.digestiveUnit
                     },
                     occurrenceVacationSetting: {
                         transferSettingOverTime: {
@@ -407,9 +457,10 @@ module nts.uk.pr.view.kmf001.f {
                 var self = this;
                 service.updateEmploymentSetting(self.collectEmploymentData()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    self.loadEmploymentSetting(self.emSelectedCode());
                 });
             }
-            private collectEmploymentData(){
+            private employmentDefaultData(){
                 var self = this;
                 return {
                     companyId: '',
@@ -425,6 +476,25 @@ module nts.uk.pr.view.kmf001.f {
                     }
                 };    
             }
+            
+             private collectEmploymentData() {
+                var self = this;
+                var data = self.employmentBackUpData();
+                return {
+                    companyId: '',
+                    employmentCode: self.emSelectedCode(),
+                    employmentManageSetting: {
+                        isManaged: self.emCompenManage(),
+                        expirationTime: self.isEmManageCompen() ? self.emExpirationTime() : data.employmentManageSetting.expirationTime,
+                        preemptionPermit: self.isEmManageCompen() ? self.emPreApply() : data.employmentManageSetting.preemptionPermit
+                    },
+                    employmentTimeManageSetting: {
+                        isManaged: self.isEmManageCompen() ? self.emTimeManage() : data.employmentTimeManageSetting.isManaged,
+                        digestiveUnit: self.enableDigestiveUnit() ? self.emTimeUnit() : data.employmentTimeManageSetting.digestiveUnit
+                    }
+                };
+            }
+            
             private gotoVacationSetting() {
                 alert();
             }
