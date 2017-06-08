@@ -17,7 +17,7 @@
             </ui:define>
             
             <ui:define name="content">
-            	<div id="functions-area"><button>test</button></div>
+            	<div id="functions-area"></div>
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -25,14 +25,19 @@
 						<h2>Overview</h2>
 						<p>It's the current window you're working with. It has some useful API to share data between screen or close the current SubWindow.</p>
 						<br/>
-						<input data-bind="value: value"/>
-						<span><input type="checkbox" data-bind="checked: isTransistReturnData"/>Is transist return data</span>
+						<input data-bind="ntsTextEditor: {value: value}"/>
+						<div data-bind="ntsCheckBox: { checked: isTransistReturnData }">IsPersist</div>
 						<button data-bind="click: OpenModalSubWindow">Modal Window</button>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
+									<li><a href="#tabs-usage">Usage</a></li>
 									<li><a href="#tabs-api">API</a></li>
 								</ol>
+								<div id="tabs-usage" class="cf">
+									<h3>Set error for a control</h3>
+									<pre><![CDATA[$('#residence-code').ntsError('set', 'えらーです');]]></pre>
+								</div>
 								<div id="tabs-api" class="cf">
 									<article>
 										<h2>Information</h2>
@@ -41,8 +46,70 @@
 									</article>
 									<br/>
 									<article>
-										<h2>API</h2>
-										<table>
+										<h2>Properties</h2>
+										<table class="table">
+											<colgroup>
+												<col width="200px" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><h4>Name</h4></th>
+													<th><h4>Description</h4></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>selfId</td>
+													<td>
+														<b>Type:</b> string<br/>
+														Current windows Id. Return "MAIN_WINDOW" if current windows is not subwindow
+													</td>
+												</tr>
+												<tr>
+													<td>container</td>
+													<td>
+														<b>Type:</b> ScreenWindowContainer<br/>
+														Get parent container of current window<br/>
+														<div class="catalog-accordion">
+															<a href="#">ScreenWindowContainer</a>
+															<table class="table">
+																<colgroup>
+																	<col width="150px" />
+																</colgroup>
+																<thead>
+																	<tr>
+																		<th><h4>Properties</h4></th>
+																		<th><h4>Description</h4></th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td>localShared</td>
+																		<td><b>Type:</b> { [key: string]: any }<br />
+																			List local shared values in this window (when set isPersist=false)
+																		</td>
+																	</tr>
+																	<tr>
+																		<td>shared</td>
+																		<td><b>Type:</b>{ [key: string]: any }<br />
+																			List global shared values in this window (when set isPersist=true)
+																		</td>
+																	</tr>
+																	<tr>
+																		<td>windows</td>
+																		<td><b>Type:</b> { [key: string]: ScreenWindow }<br />
+																			List of all windows in this screen include main window
+																		</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<h2>Methods</h2>
+										<table class="table">
 											<colgroup>
 												<col width="200px" />
 											</colgroup>

@@ -28,18 +28,27 @@
 						<button onclick="OpenModelessSubWindow({height: 900, width: 900})">Modeless Window</button>
 						<button onclick="openDialog()">Functions Area on Top Dialog</button>
 						<button onclick="openDialogB()">Functions Area on Bottom Dialog</button>
+						<note style="width:600px;"><b>Close button and Title!</b><br/>
+						- Hide or show close button is decided by Kiban team so don't try to change it. Please ignore design document if there is any different<br/> 
+						- Dialog title will be auto display by Kiban team so don't mind about that too 
+						</note>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-call">Javascript Call</a></li>
+									<li><a href="#tabs-call">Usage</a></li>
 									<li><a href="#tabs-api">API</a></li>
 								</ol>
 								<div id="tabs-call" class="cf">
 									<h2>Modal</h2>
-									<pre><![CDATA[nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml");]]></pre>
-									<br/>
+<pre><![CDATA[nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml");
+nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml").onClosed(function(){
+	alert("OK");
+});]]></pre>
 									<h2>Modeless</h2>
-									<pre><![CDATA[nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml");]]></pre>
+<pre><![CDATA[nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml");
+nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml").onClosed(() => {
+	alert("OK");
+});]]></pre>
 								</div>
 								<div id="tabs-api" class="cf">
 									<article>
@@ -49,14 +58,14 @@
 									</article>
 									<br/>
 									<article>
-										<h2>API</h2>
-										<table>
+										<h2>Methods</h2>
+										<table class="table">
 											<colgroup>
 												<col width="200px" />
 											</colgroup>
 											<thead>
 												<tr>
-													<th><h4>Function</h4></th>
+													<th><h4>Name</h4></th>
 													<th><h4>Description</h4></th>
 												</tr>
 											</thead>
@@ -121,17 +130,9 @@
 <pre><![CDATA[nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml").onClosed(() => {
 	alert("OK");
 });]]></pre>
-
 									</article>
 								</div>
 							</div>
-						</article>
-						<article>
-							<note style="width:770px;"><b>No close button!</b><br/>
-							Because everyone often ask about how to hide dialog close button so I'll write it here:<br/>
-							nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml", <b>{dialogClass: "no-close"}</b>);
-							</note>
-							<h2>In next step we'll learn how to pass parameter bettween Window and SubWindow</h2>
 						</article>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
