@@ -8,11 +8,17 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KmfmtWorkType_.
+ * The Class KmfmtWorkTypePK_.
  */
-@StaticMetamodel(KmfmtWorkType.class)
-public class KmfmtWorkType_ {
+@StaticMetamodel(KmfmtWorkTypePK.class)
+public class KmfmtWorkTypePK_ {
     
-    /** The kmfmtWorkTypePK. */
-    public static volatile SingularAttribute<KmfmtWorkType, KmfmtWorkTypePK> kmfmtWorkTypePK;
+    /** The cid. */
+    public static volatile SingularAttribute<KmfmtWorkTypePK, String> cid;
+    
+    /** The nursingCtr. */
+    public static volatile SingularAttribute<KmfmtWorkTypePK, Integer> nursingCtr;
+    
+    /** The order number. */
+    public static volatile SingularAttribute<KmfmtWorkTypePK, Integer> orderNumber;
 }

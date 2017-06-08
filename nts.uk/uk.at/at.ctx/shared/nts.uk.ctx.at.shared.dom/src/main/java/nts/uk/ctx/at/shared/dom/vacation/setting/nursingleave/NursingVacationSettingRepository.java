@@ -14,16 +14,18 @@ public interface NursingVacationSettingRepository {
     /**
      * Adds the.
      *
-     * @param settings the settings
+     * @param nursingSetting the nursing setting
+     * @param childNursingSetting the child nursing setting
      */
-    void add(List<NursingVacationSetting> settings);
+    void add(NursingVacationSetting nursingSetting, NursingVacationSetting childNursingSetting);
     
     /**
      * Update.
      *
-     * @param setting the setting
+     * @param nursingSetting the nursing setting
+     * @param childNursingSetting the child nursing setting
      */
-    void update(List<NursingVacationSetting> settings);
+    void update(NursingVacationSetting nursingSetting, NursingVacationSetting childNursingSetting);
     
     /**
      * Find by company id.
