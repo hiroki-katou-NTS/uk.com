@@ -188,6 +188,7 @@ module nts.uk.ui.koExtentions {
                     component.igGrid("option", "dataSource", srh.seachBox.getDataSource());  
                     component.igGrid("dataBind"); 
                     $container.data("searchKey", null);    
+                    $container.data("filteredSrouce",null);
                     component.attr("filtered", false);          
                 });      
                 
