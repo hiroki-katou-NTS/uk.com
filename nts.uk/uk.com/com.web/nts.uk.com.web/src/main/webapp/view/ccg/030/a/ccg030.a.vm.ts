@@ -22,7 +22,7 @@ module ccg030.a.viewmodel {
             var self = this;
             // list
             self.listFlowMenu = ko.observableArray([]);
-            self.selectedFlowMenuCD = ko.observable("");
+            self.selectedFlowMenuCD = ko.observable(null);
             self.selectedFlowMenuCD.subscribe((value) => {
                 self.findFlowMenu(value);
             });

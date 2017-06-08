@@ -9,7 +9,7 @@ module ccg014.a.viewmodel {
     export class ScreenModel {
         // TitleMenu List
         listTitleMenu: KnockoutObservableArray<any>;
-        selectedTitleMenuCD: KnockoutObservable<string>;
+        selectedTitleMenuCD: KnockoutObservable<any>;
         columns: KnockoutObservableArray<any>;
         // TitleMenu Details
         selectedTitleMenu: KnockoutObservable<model.TitleMenu>;
