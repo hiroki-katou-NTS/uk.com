@@ -3,10 +3,20 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
+import java.util.List;
+
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
+
 /**
  * @author hungnm
  *
  */
 public interface BPTimeItemRepository {
+
+	List<BonusPayTimeItem> getListBonusPayTimeItem();
+
+	void addListBonusPayTimeItem(List<BonusPayTimeItem> lstTimeItem);
+
+	void updateListBonusPayTimeItem(List<BonusPayTimeItem> lstTimeItem);
 
 }

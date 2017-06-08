@@ -3,10 +3,19 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
+import java.util.List;
+
+import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BPTimeItemSetting;
+
 /**
  * @author hungnm
  *
  */
 public interface BPTimeItemSettingRepository {
 
+	List<BPTimeItemSetting> getListSetting(String companyId);
+	
+	void addListSetting(List<BPTimeItemSetting> lstSetting);
+	
+	void updateListSetting(List<BPTimeItemSetting> lstSetting);
 }

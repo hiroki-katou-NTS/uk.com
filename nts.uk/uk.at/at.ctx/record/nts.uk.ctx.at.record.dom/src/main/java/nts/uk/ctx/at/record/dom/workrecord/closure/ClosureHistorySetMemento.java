@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.closure;
 
+import nts.arc.time.YearMonth;
+
 /**
  * The Interface ClosureHistorySetMemento.
  */
@@ -28,7 +30,7 @@ public interface ClosureHistorySetMemento {
 	 *
 	 * @param endDate the new end date
 	 */
-	void setEndDate(ClosureYearMonth endDate);
+	void setEndDate(YearMonth endDate);
 
 	/**
 	 * Sets the closure date.
@@ -42,5 +44,5 @@ public interface ClosureHistorySetMemento {
 	 *
 	 * @param startDate the new start date
 	 */
-	void setStartDate(ClosureYearMonth startDate);
+	void setStartDate(YearMonth startDate);
 }

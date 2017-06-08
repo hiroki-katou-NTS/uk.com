@@ -8,8 +8,9 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 		
-			<!-- <com:ValidatorScript>
-			</com:ValidatorScript> -->
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing
+			</com:ValidatorScript>
 		
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
@@ -61,20 +62,14 @@
 									value: nursingMonth,
 									constraint: '',
 									required: enableNursing,
-									option: {
-										width: '40px',
-										textalign: 'center'
-									},
+									option: $parent.numberEditorOption,
 									enable: enableNursing}"/>
 								<span>月</span>
 								<input id="nursing-day" style="margin-left: 10px;" data-bind="ntsNumberEditor: {
 									value: nursingDay,
 									constraint: '',
 									required: enableNursing,
-									option: {
-										width: '40px',
-										textalign: 'center'
-									},
+									option: $parent.numberEditorOption,
 									enable: enableNursing}"/>
 								<span>日</span>
 							</div></td>
@@ -89,7 +84,7 @@
 									<input id="nursing-number-leave-day" style="float: right;" tabindex="6" class="nts-input"
 										data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
-											constraint: '',
+											constraint: 'NumberDayNursing',
 											required: enableNursing,
 											option: $parent.textEditorOption,
 											enable: enableNursing}" />
@@ -106,7 +101,7 @@
 									<input id="nursing-number-person" style="float: right;" tabindex="7" class="nts-input"
 										data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
-											constraint: '',
+											constraint: 'NumberDayNursing',
 											required: enableNursing,
 											option: $parent.textEditorOption,
 											enable: enableNursing}" />
@@ -166,20 +161,14 @@
 									value: nursingMonth,
 									constraint: '',
 									required: enableNursing,
-									option: {
-										width: '40px',
-										textalign: 'center'
-									},
+									option: $parent.numberEditorOption,
 									enable: enableNursing}"/>
 								<span>月</span>
 								<input id="child-nursing-day" style="margin-left: 10px;" data-bind="ntsNumberEditor: {
 									value: nursingDay,
 									constraint: '',
 									required: enableNursing,
-									option: {
-										width: '40px',
-										textalign: 'center'
-									},
+									option: $parent.numberEditorOption,
 									enable: enableNursing}"/>
 								<span>日</span>
 							</div></td>
@@ -194,7 +183,7 @@
 									<input id="child-nursing-number-leave-day" style="float: right;" tabindex="11" class="nts-input"
 										data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
-											constraint: '',
+											constraint: 'NumberDayNursing',
 											required: enableNursing,
 											option: $parent.textEditorOption,
 											enable: enableNursing}" />
@@ -211,7 +200,7 @@
 									<input id="child-nursing-number-person" style="float: right;" tabindex="12" class="nts-input"
 										data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
-											constraint: '',
+											constraint: 'NumberDayNursing',
 											required: enableNursing,
 											option: $parent.textEditorOption,
 											enable: enableNursing}" />

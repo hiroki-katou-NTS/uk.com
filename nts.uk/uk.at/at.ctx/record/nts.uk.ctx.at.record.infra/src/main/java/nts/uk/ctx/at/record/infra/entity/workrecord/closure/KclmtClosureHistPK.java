@@ -11,9 +11,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class KclmtClosureHistPK.
  */
+@Getter
+@Setter
 @Embeddable
 public class KclmtClosureHistPK implements Serializable {
 
@@ -30,7 +35,7 @@ public class KclmtClosureHistPK implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CLOSURE_ID")
-	private String closureId;
+	private Integer closureId;
 
 	/**
 	 * Instantiates a new kclmt closure hist PK.
@@ -44,46 +49,11 @@ public class KclmtClosureHistPK implements Serializable {
 	 * @param ccid the ccid
 	 * @param closureId the closure id
 	 */
-	public KclmtClosureHistPK(String ccid, String closureId) {
+	public KclmtClosureHistPK(String ccid, Integer closureId) {
 		this.ccid = ccid;
 		this.closureId = closureId;
 	}
 
-	/**
-	 * Gets the ccid.
-	 *
-	 * @return the ccid
-	 */
-	public String getCcid() {
-		return ccid;
-	}
-
-	/**
-	 * Sets the ccid.
-	 *
-	 * @param ccid the new ccid
-	 */
-	public void setCcid(String ccid) {
-		this.ccid = ccid;
-	}
-
-	/**
-	 * Gets the closure id.
-	 *
-	 * @return the closure id
-	 */
-	public String getClosureId() {
-		return closureId;
-	}
-
-	/**
-	 * Sets the closure id.
-	 *
-	 * @param closureId the new closure id
-	 */
-	public void setClosureId(String closureId) {
-		this.closureId = closureId;
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

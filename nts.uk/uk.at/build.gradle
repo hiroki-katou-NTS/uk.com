@@ -102,7 +102,7 @@ subprojects {
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.20'
 		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.4.5'
 		
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.1'
+		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2'
 	}
 }
 
@@ -226,7 +226,6 @@ project (':at.web:nts.uk.at.web') {
 		charset="utf8"
 		target = "ES5"
 		source=  file("src/main/webapp/view")
-		
 	}
 	
 	def explodedWarPath = "${buildDir}/exploded/${war.baseName}.war"
@@ -248,7 +247,7 @@ project (':at.web:nts.uk.at.web') {
 	}
 	
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.1'
+		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		

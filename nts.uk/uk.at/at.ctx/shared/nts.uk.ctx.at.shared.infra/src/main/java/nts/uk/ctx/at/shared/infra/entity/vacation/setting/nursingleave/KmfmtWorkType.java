@@ -5,10 +5,9 @@
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave;
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -28,12 +27,9 @@ public class KmfmtWorkType extends UkJpaEntity implements Serializable {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The cid. */
-    @Id
-    @Basic(optional = false)
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
+    /** The kmfmtWorkTypePK. */
+    @EmbeddedId
+    private KmfmtWorkTypePK kmfmtWorkTypePK;
     
     /** The work type code. */
     @Size(max = 8)
@@ -46,8 +42,8 @@ public class KmfmtWorkType extends UkJpaEntity implements Serializable {
     public KmfmtWorkType() {
     }
     
-    public KmfmtWorkType(String cid, String workTypeCode) {
-        this.cid = cid;
+    public KmfmtWorkType(KmfmtWorkTypePK kmfmtWorkTypePK, String workTypeCode) {
+        this.kmfmtWorkTypePK = kmfmtWorkTypePK;
         this.workTypeCode = workTypeCode;
     }
 
@@ -57,7 +53,7 @@ public class KmfmtWorkType extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
+        hash += (kmfmtWorkTypePK != null ? kmfmtWorkTypePK.hashCode() : 0);
         return hash;
     }
 
@@ -72,7 +68,8 @@ public class KmfmtWorkType extends UkJpaEntity implements Serializable {
             return false;
         }
         KmfmtWorkType other = (KmfmtWorkType) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+        if ((this.kmfmtWorkTypePK == null && other.kmfmtWorkTypePK != null) || (this.kmfmtWorkTypePK != null
+                && !this.kmfmtWorkTypePK.equals(other.kmfmtWorkTypePK))) {
             return false;
         }
         return true;
@@ -85,6 +82,6 @@ public class KmfmtWorkType extends UkJpaEntity implements Serializable {
      */
     @Override
     protected Object getKey() {
-        return this.cid;
+        return this.kmfmtWorkTypePK;
     }
 }

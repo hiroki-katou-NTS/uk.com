@@ -13,6 +13,6 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(KmfmtWorkType.class)
 public class KmfmtWorkType_ {
     
-    /** The cid. */
-    public static volatile SingularAttribute<KmfmtWorkType, String> cid;
+    /** The kmfmtWorkTypePK. */
+    public static volatile SingularAttribute<KmfmtWorkType, KmfmtWorkTypePK> kmfmtWorkTypePK;
 }

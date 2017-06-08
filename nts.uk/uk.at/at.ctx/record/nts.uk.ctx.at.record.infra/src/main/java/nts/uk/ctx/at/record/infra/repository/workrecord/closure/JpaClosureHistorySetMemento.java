@@ -5,11 +5,11 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.closure;
 
 import lombok.Setter;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
-import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureYearMonth;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHist;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHistPK;
 
@@ -54,7 +54,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	@Override
 	public void setClosureId(ClosureId closureId) {
 		KclmtClosureHistPK pk = new KclmtClosureHistPK();
-		pk.setClosureId(String.valueOf(closureId.value));
+		pk.setClosureId(closureId.value);
 		this.kclmtClosureHist.setKclmtClosureHistPK(pk);
 	}
 
@@ -66,7 +66,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 * setEndDate(nts.uk.ctx.at.record.dom.workrecord.closure.ClosureYearMonth)
 	 */
 	@Override
-	public void setEndDate(ClosureYearMonth endDate) {
+	public void setEndDate(YearMonth endDate) {
 		this.kclmtClosureHist.setEndD(endDate.v());
 	}
 
@@ -96,7 +96,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 * ClosureYearMonth)
 	 */
 	@Override
-	public void setStartDate(ClosureYearMonth startDate) {
+	public void setStartDate(YearMonth startDate) {
 		this.kclmtClosureHist.setStrD(startDate.v());
 	}
 

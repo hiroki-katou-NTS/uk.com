@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.dom.workrecord.closure;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.YearMonth;
 
 /**
  * The Class ClosureHistorry.
@@ -26,7 +27,7 @@ public class ClosureHistory extends DomainObject{
 	
 	/** The closure year. */
 	// 終了年月: 年月
-	private ClosureYearMonth endDate;
+	private YearMonth endDate;
 	
 	/** The closure date. */
 	// 締め日: 日付
@@ -34,7 +35,7 @@ public class ClosureHistory extends DomainObject{
 	
 	/** The start date. */
 	// 開始年月: 年月
-	private ClosureYearMonth startDate;
+	private YearMonth startDate;
 
 	
 	/**
