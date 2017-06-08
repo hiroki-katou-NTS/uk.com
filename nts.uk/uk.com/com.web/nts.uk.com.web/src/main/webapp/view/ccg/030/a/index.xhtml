@@ -37,8 +37,9 @@
 					<i class="icon icon-searchbox"></i>
 					<div class="search">
 						<div style="float: left">
-							<div id="searchBox" style="width: 370px; margin-bottom: 30px;"
+							<div id="searchBox" style="width: 360px; margin-bottom: 10px;"
 								data-bind="ntsSearchBox: {
+								searchMode: 'filter',
 								name: '#[CCG030_20]',
 								targetKey: 'topPageCode',
 								mode: 'igGrid',
@@ -52,7 +53,7 @@
 					<div class="gridlist" style="margin-bottom: 20px;">
 						<table id="flow-menu-list"
 							data-bind="ntsGridList: {
-								height: 320,
+								height: 340,
 								options: listFlowMenu,
 								optionsValue: 'topPageCode',
 								columns: columns,

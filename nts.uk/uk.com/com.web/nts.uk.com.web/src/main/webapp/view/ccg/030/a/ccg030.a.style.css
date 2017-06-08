@@ -1,20 +1,6 @@
-#left-content { 
-	margin-left: 20px; 
-	margin-top: 12px; 
-	padding: 20px 5px 10px 20px;
-	float: left; 
-	width: 380px; 
-	height: 400px;
-}
-#right-content {
-	padding-left: 40px; 
-	float: left; 
-	width: 650px;
-	margin-top: 32px;
-}
-
+#left-content {margin-left: 20px;margin-top: 12px;padding: 20px 5px 10px 20px;float: left;width: 380px;height: 400px;}
+#right-content {padding-left: 40px;float: left;width: 650px;margin-top: 32px;}
 .right-layout td {border: solid #fff; border-width:0 10px 10px 0;}
-
 .btn-upload,
 .btn-download {min-width: 175px;}
 .input-size {width: 40px;}
@@ -25,3 +11,5 @@ button.btnSetting{margin-left: 20px;}
 .no-wrap{white-space: nowrap;}
 #flow-menu-list .icon-dot {margin-top:3px;} 
 .ntsControl {display: inline;}
+button.search-btn.caret-bottom {padding-left:10px; padding-right:10px ; margin-left : 15px;}
+button.clear-btn {padding-left:10px; padding-right:10px ; margin-left : 10px;}

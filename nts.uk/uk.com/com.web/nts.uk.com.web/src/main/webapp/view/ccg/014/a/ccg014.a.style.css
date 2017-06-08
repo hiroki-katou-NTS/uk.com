@@ -7,9 +7,11 @@
 #texteditor1.ntsControl .nts-input{ border: 1px solid #999999;}
 #new{margin-left: 30px;}
 button{padding-left: 30px; padding-right: 30px;margin-left: 15px;}
-#delete{margin-left: 50px;}
+button.search-btn.caret-bottom {padding-left:10px; padding-right:10px ; margin-left : 15px;}
+button.clear-btn {padding-left:10px; padding-right:10px ; margin-left : 10px;}
 button.x-large.fixbtn {width: 200px; height: 70px; margin: 30px 0px 0px 0px;}
+#delete{margin-left: 50px;}
 #titleMenuCD {margin-left: 60px;}
 .preview-container {padding:10px; border:1px solid #a0a0a0; margin-top:25px; border-radius: 3px;}
 #preview-iframe {width:700px; height:300px;}
-.ntsSearchBox.nts-editor {width: 280px;}
+input.ntsSearchBox.nts-editor {width: 240px;}
