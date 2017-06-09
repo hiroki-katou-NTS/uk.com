@@ -32,6 +32,7 @@ module kcp001.a.viewmodel {
                      * Return type is String while select.
                      */
                     selectedCode: this.selectedCode,
+                    isDialog: true,
                     alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}])
                 }
             $('#empt-list-setting').ntsListComponent(this.listComponentOption);
@@ -42,6 +43,7 @@ module kcp001.a.viewmodel {
                 isMultiSelect: true,
                 listType: ListType.EMPLOYMENT,
                 selectedCode: this.multiSelectedCode,
+                isDialog: true,
                 alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
             $('#empt-list-multi-setting').ntsListComponent(this.listComponentOptionMulti);
@@ -51,6 +53,7 @@ module kcp001.a.viewmodel {
                 isMultiSelect: false,
                 listType: ListType.EMPLOYMENT,
                 selectedCode: this.selectedCodeNoSetting,
+                isDialog: true
 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
             $('#empt-list-noSetting').ntsListComponent(this.listComponentNoneSetting);
@@ -61,6 +64,7 @@ module kcp001.a.viewmodel {
                 isMultiSelect: true,
                 listType: ListType.EMPLOYMENT,
                 selectedCode: this.multiSelectedCodeNoSetting,
+                isDialog: true
 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
             $('#empt-list-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
