@@ -1053,7 +1053,7 @@ module nts.uk.ui.jqueryExtentions {
             copyPaste.ifOn($(self), options);
             options.autoCommit = true;
             
-            events.Handler.pull($(self)).filter().onCellUpdate().onDirectEnter().onSpacePress();
+            events.Handler.pull($(self)).filter().onCellUpdate().onCellUpdateKeyUp().onDirectEnter().onSpacePress();
             $(this).igGrid(options);
         };
         
@@ -1096,6 +1096,7 @@ module nts.uk.ui.jqueryExtentions {
                 if (isFeatureEnable(options.ntsFeatures, feature.CELL_EDIT)) {
                     updateFeature.editMode = "cell";
                     updateFeature.editCellStarting = startEditCell;
+                    updateFeature.editCellEnding = beforeFinishEditCell;
                 }
                 return updateFeature;
             }
@@ -1109,20 +1110,28 @@ module nts.uk.ui.jqueryExtentions {
             function startEditCell(evt: any, ui: any) {
                 if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
                     let selectedCell = selection.getSelectedCell($(evt.target));
-                    if (util.isNullOrUndefined(selectedCell)) return;
+                    if (util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target))) return;
                     $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index);
                     return false;
                 }
-//                $(ui.editor).on("keyup", cellKeyUp);
                 return true; 
             }
             
-            function finishEditCell(evt: any, ui: any) {
-                let validators: any =  $(evt.target).data(validation.VALIDATORS);
-                let fieldValidator = validators[ui.columnKey];
+            export function onEditCell(evt: any, cell: any) {
+                let $grid = $(evt.currentTarget);
+                if (!$grid.igGridUpdating("isEditing")) return;
+                let validators: any =  $grid.data(validation.VALIDATORS);
+                let fieldValidator = validators[cell.columnKey];
                 if (util.isNullOrUndefined(fieldValidator)) return;
-                let result = fieldValidator.probe(ui.value);
-                if (!result.isValid) $(ui.editor).ntsError("set", result.errorMessage);
+                let cellValue = $(cell.element).find("input:first").val();
+                let result = fieldValidator.probe(cellValue);
+                let $cellContainer = $(cell.element).find("div:first");
+                $cellContainer.ntsError("clear");
+                $cellContainer.css("border-color", "inherit");
+                if (!result.isValid)  {
+                    $cellContainer.ntsError("set", result.errorMessage);
+                    $cellContainer.css("border-color", "#ff6666");
+                }
             }
             
             export function triggerCellUpdate(evt: any, cell: any) {
@@ -1143,6 +1152,16 @@ module nts.uk.ui.jqueryExtentions {
                 $(evt.currentTarget).igGridUpdating("startEdit", cell.id, cell.index);
                 if ($(cell.element).text().trim() !== "") evt.preventDefault();
                 evt.stopImmediatePropagation();
+            }
+            
+            function beforeFinishEditCell(evt: any) {
+                let $grid = $(evt.target);
+                let selectedCell = selection.getSelectedCell($grid);
+                if ($grid.igGridUpdating("isEditing") 
+                    && $(selectedCell.element).find("div:first").ntsError("hasError")) {
+                    return false;
+                }
+                return true;
             }
         }
         
@@ -1200,10 +1219,12 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             export function getSelectedCell($grid: JQuery) {
-                return $grid.igGridSelection("selectedCell") || $grid.data("ntsSelectedCell");
+                return utils.selectable($grid) 
+                        && ($grid.igGridSelection("selectedCell") || $grid.data("ntsSelectedCell"));
             }
             
             export function selectCell($grid: JQuery, rowIndex: number, columnIndex: number) {
+                if (!utils.selectable($grid)) return;
                 $grid.igGridSelection("selectCell", rowIndex, columnIndex);
                 
                 // TODO: Focus nts common controls if exists.
@@ -1221,8 +1242,8 @@ module nts.uk.ui.jqueryExtentions {
             
             export function onCellNavigate(evt: any, enterDirection?: string) {
                 var grid = evt.currentTarget;
-                // Tab key
-                if (evt.keyCode === 9) {
+                
+                if (utils.isTabKey(evt)) {
                     if ($(grid).igGridUpdating("isEditing"))
                         $(grid).igGridUpdating("endEdit");
                     
@@ -1235,13 +1256,13 @@ module nts.uk.ui.jqueryExtentions {
                     return;
                 }
                  
-                // Enter key
-                if (evt.keyCode === 13) {
+                if (utils.isEnterKey(evt)) {
                     if (evt.shiftKey) {
                         selection.selectPrev($(grid));
                     } else {
                         selection.selectFollow($(grid), enterDirection);
                     }
+                    evt.stopImmediatePropagation();
                     return;
                 }
             }
@@ -1543,7 +1564,8 @@ module nts.uk.ui.jqueryExtentions {
 
         class DeleteButton extends Button {
             draw(data: any): JQuery {
-                var btn = super.draw(data);
+                var btnContainer = super.draw(data);
+                var btn = btnContainer.find("button");
                 btn.off("click", data.controlDef.click);
                 btn.on("click", data.deleteRow);
                 return btn;
@@ -1620,7 +1642,7 @@ module nts.uk.ui.jqueryExtentions {
                 
                 private updateWith(data: any) {
                     var self = this;
-                    if (this.$grid.data("igGridSelection") === undefined || this.$grid.data("igGridUpdating") === undefined) return;
+                    if (!utils.selectable(this.$grid) || !utils.updatable(this.$grid)) return;
                     var selectedCell: any = selection.getSelectedCell(this.$grid);
                     if (selectedCell === undefined) return;
                     selectedCell.element.focus();
@@ -1693,7 +1715,10 @@ module nts.uk.ui.jqueryExtentions {
         module events {
             export class Handler {
                 static KEY_DOWN: string = "keydown";
+                static KEY_UP: string = "keyup";
                 static FOCUS_IN: string = "focusin";
+                static CLICK: string = "click";
+                static MOUSE_DOWN: string = "mousedown";
                 static GRID_EDIT_CELL_STARTED: string = "iggridupdatingeditcellstarted";
                 $grid: JQuery;
                 
@@ -1717,7 +1742,18 @@ module nts.uk.ui.jqueryExtentions {
                     var self = this;
                     this.$grid.on(Handler.KEY_DOWN, function(evt: any) {
                         if (evt.ctrlKey) return;
-                        updating.triggerCellUpdate(evt, selection.getSelectedCell(self.$grid));
+                        let selectedCell: any = selection.getSelectedCell(self.$grid);
+                        updating.triggerCellUpdate(evt, selectedCell);
+                    });
+                    return this;
+                }
+                
+                onCellUpdateKeyUp() {
+                    var self = this;
+                    this.$grid.on(Handler.KEY_UP, function(evt: any) {
+                        if (evt.ctrlKey) return;
+                        let selectedCell: any = selection.getSelectedCell(self.$grid);
+                        updating.onEditCell(evt, selectedCell);
                     });
                     return this;
                 }
@@ -1764,13 +1800,31 @@ module nts.uk.ui.jqueryExtentions {
                 filter() {
                     var self = this;
                     this.$grid.on(Handler.KEY_DOWN, function(evt: any) {
-                        if (utils.isAlphaNumeric(evt)) {
-                            var cell = selection.getSelectedCell(self.$grid);
+                        if (utils.isAlphaNumeric(evt) || utils.isDeleteKey(evt)) {
+                            let cell = selection.getSelectedCell(self.$grid);
                             if (cell === undefined || updating.containsNtsControl($(evt.target)))  
                                 evt.stopImmediatePropagation();
                             return;
                         }
+                        
+                        if (utils.isTabKey(evt) && utils.isErrorStatus(self.$grid)) {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                        }
                     });
+                    
+                    self.$grid[0].addEventListener(Handler.MOUSE_DOWN, function(evt: any) {
+                        if (utils.isNotErrorCell(self.$grid, evt)) {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                        }
+                    }, true);
+                    self.$grid[0].addEventListener(Handler.CLICK, function(evt: any) {
+                        if (utils.isNotErrorCell(self.$grid, evt)) {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                        }
+                    }, true);
                     return this;
                 }
             }
@@ -1853,6 +1907,27 @@ module nts.uk.ui.jqueryExtentions {
             }
             export function isCutKey(evt: any) {
                 return evt.keyCode === 88;
+            }
+            
+            export function isErrorStatus($grid: JQuery) {
+                let cell = selection.getSelectedCell($grid);
+                return ($grid.igGridUpdating("isEditing")
+                        && $(cell.element).find("div:first").ntsError("hasError"));
+            }
+            export function isNotErrorCell($grid: JQuery, evt: any) {
+                let cell = selection.getSelectedCell($grid);
+                let $target = $(evt.target);
+                let td = $target;
+                if (!$target.prev().is("td")) td = $target.closest("td"); 
+                return ($grid.igGridUpdating("isEditing") && td.length > 0 && td[0] !== cell.element[0]
+                        && $(cell.element).find("div:first").ntsError("hasError"));
+            }
+            
+            export function selectable($grid: JQuery) {
+                return !util.isNullOrUndefined($grid.data("igGridSelection"));
+            }
+            export function updatable($grid: JQuery) {
+                return !util.isNullOrUndefined($grid.data("igGridUpdating"));
             }
         }
     }
