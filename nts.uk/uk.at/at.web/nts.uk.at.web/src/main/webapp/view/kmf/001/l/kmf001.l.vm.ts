@@ -195,8 +195,10 @@ module nts.uk.pr.view.kmf001.l {
             
             private convertModel(ob : KnockoutObservable<NursingSettingModel>, object: any) {
                 ob().selectedManageNursing(object.manageType);
-                ob().nursingMonth(parseInt(object.startMonthDay/100));
-                ob().nursingDay(object.startMonthDay - ob().nursingMonth() * 100);
+                if (object.startMonthDay) {
+                    ob().nursingMonth(parseInt(object.startMonthDay/100));
+                    ob().nursingDay(object.startMonthDay - ob().nursingMonth() * 100);
+                }
                 ob().nursingNumberLeaveDay(object.nursingNumberLeaveDay);
                 ob().nursingNumberPerson(object.nursingNumberPerson);
                 ob().workTypeCodes(object.workTypeCodes);

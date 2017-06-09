@@ -56,7 +56,7 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     
     /** The list work type. */
     @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = false),
-            @JoinColumn(name = "NURSING_CTR", referencedColumnName = "NURSING_CTR", insertable = true, updatable = false)})
+            @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "NURSING_TYPE", insertable = true, updatable = false)})
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     public List<KmfmtNursingWorkType> listWorkType;
 
