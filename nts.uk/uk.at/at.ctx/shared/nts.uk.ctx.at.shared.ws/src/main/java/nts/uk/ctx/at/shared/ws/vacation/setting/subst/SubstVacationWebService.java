@@ -32,7 +32,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 /**
  * The Class SubstVacationWebService.
  */
-@Path("at/proto/substvacation/")
+@Path("ctx/at/shared/vacation/setting/substvacation/")
 @Produces(MediaType.APPLICATION_JSON)
 public class SubstVacationWebService extends WebService {
 
