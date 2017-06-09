@@ -270,6 +270,7 @@ module nts.uk.at.view.kml001.a {
                 nts.uk.ui.windows.sub.modal("/view/kml/001/c/index.xhtml", { title: "履歴の追加", dialogClass: "no-close" }).onClosed(function() {
                     let newStartDate: string = nts.uk.ui.windows.getShared('newStartDate');
                     if (newStartDate != null) {
+                        nts.uk.ui.errors.clearAll();
                         newStartDate = newStartDate;
                         let copyDataFlag: boolean = nts.uk.ui.windows.getShared('copyDataFlag');
                         if (_.size(self.personCostList()) != 0) { // when PersonCostCalculation list not empty
@@ -374,6 +375,7 @@ module nts.uk.at.view.kml001.a {
                 nts.uk.ui.windows.sub.modal("/view/kml/001/d/index.xhtml", { title: "履歴の編集", dialogClass: "no-close" }).onClosed(function() {
                     let editedIndex = nts.uk.ui.windows.getShared('isEdited');
                     if (editedIndex != null) { // when data is edited
+                        nts.uk.ui.errors.clearAll();
                         if (editedIndex == 1) index -= 1; // when edit is delete, set index to last item
                         servicebase.personCostCalculationSelect()
                             .done(function(res: Array<any>) {
