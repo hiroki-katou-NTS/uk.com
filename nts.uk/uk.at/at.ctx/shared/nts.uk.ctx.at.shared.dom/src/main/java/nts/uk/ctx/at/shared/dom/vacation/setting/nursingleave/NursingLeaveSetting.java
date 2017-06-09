@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  * The class 介護看護休暇設定.
  */
 @Getter
-public class NursingVacationSetting extends AggregateRoot {
+public class NursingLeaveSetting extends AggregateRoot {
     
     /** 会社ID */
     private String companyId;
@@ -39,7 +39,7 @@ public class NursingVacationSetting extends AggregateRoot {
      *
      * @param memento the memento
      */
-    public NursingVacationSetting(NursingVacationSettingGetMemento memento) {
+    public NursingLeaveSetting(NursingLeaveSettingGetMemento memento) {
         this.companyId = memento.getCompanyId();
         this.manageType = memento.getManageType();
         this.nursingCategory = memento.getNursingCategory();
@@ -53,7 +53,7 @@ public class NursingVacationSetting extends AggregateRoot {
      *
      * @param memento the memento
      */
-    public void saveToMemento(NursingVacationSettingSetMemento memento) {
+    public void saveToMemento(NursingLeaveSettingSetMemento memento) {
         memento.setCompanyId(this.companyId);
         memento.setManageType(this.manageType);
         memento.setNursingCategory(this.nursingCategory);

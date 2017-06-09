@@ -10,20 +10,20 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkType;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
 
 /**
  * The Class JpaNursingVacationSettingGetMemento.
  */
-public class JpaNursingVacationSettingGetMemento implements NursingVacationSettingGetMemento {
+public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetMemento {
     
     /** The entity nursing. */
-    private KmfmtNursingLeaveSet entityNursing;
+    private KnlmtNursingLeaveSet entityNursing;
     
     /** The entity work types. */
-    private List<KmfmtNursingWorkType> entityWorkTypes;
+    private List<KnlmtNursingWorkType> entityWorkTypes;
     
     /**
      * Instantiates a new jpa nursing vacation setting get memento.
@@ -31,8 +31,8 @@ public class JpaNursingVacationSettingGetMemento implements NursingVacationSetti
      * @param entityNursing the entity nursing
      * @param entityWorkTypes the entity work types
      */
-    public JpaNursingVacationSettingGetMemento(KmfmtNursingLeaveSet entityNursing,
-            List<KmfmtNursingWorkType> entityWorkTypes) {
+    public JpaNursingLeaveSettingGetMemento(KnlmtNursingLeaveSet entityNursing,
+            List<KnlmtNursingWorkType> entityWorkTypes) {
         this.entityNursing = entityNursing;
         this.entityWorkTypes = entityWorkTypes;
     }
@@ -45,7 +45,7 @@ public class JpaNursingVacationSettingGetMemento implements NursingVacationSetti
      */
     @Override
     public String getCompanyId() {
-        return this.entityNursing.getKmfmtNursingLeaveSetPK().getCid();
+        return this.entityNursing.getKnlmtNursingLeaveSetPK().getCid();
     }
 
     /*
@@ -67,7 +67,7 @@ public class JpaNursingVacationSettingGetMemento implements NursingVacationSetti
      */
     @Override
     public NursingCategory getNursingCategory() {
-        return NursingCategory.valueOf(this.entityNursing.getKmfmtNursingLeaveSetPK().getNursingCtr());
+        return NursingCategory.valueOf(this.entityNursing.getKnlmtNursingLeaveSetPK().getNursingCtr());
     }
 
     /*

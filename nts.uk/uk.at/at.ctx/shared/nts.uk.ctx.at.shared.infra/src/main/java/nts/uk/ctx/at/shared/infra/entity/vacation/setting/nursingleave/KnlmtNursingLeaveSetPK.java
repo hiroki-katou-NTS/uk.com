@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Embeddable
-public class KmfmtNursingWorkTypePK implements Serializable {
+public class KnlmtNursingLeaveSetPK implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -34,15 +34,10 @@ public class KmfmtNursingWorkTypePK implements Serializable {
     @Column(name = "NURSING_TYPE")
     private Integer nursingCtr;
     
-    /** The order number. */
-    @Basic(optional = false)
-    @Column(name = "DISP_ORDER")
-    private Integer orderNumber;
-    
     /**
      * Instantiates a new kmfmt work type PK.
      */
-    public KmfmtNursingWorkTypePK() {
+    public KnlmtNursingLeaveSetPK() {
     }
     
     /**
@@ -52,10 +47,9 @@ public class KmfmtNursingWorkTypePK implements Serializable {
      * @param nursingCtr the nursing ctr
      * @param orderNumber the order number
      */
-    public KmfmtNursingWorkTypePK(String cid, Integer nursingCtr, Integer orderNumber) {
+    public KnlmtNursingLeaveSetPK(String cid, Integer nursingCtr) {
         this.cid = cid;
         this.nursingCtr = nursingCtr;
-        this.orderNumber = orderNumber;
     }
 
     /* (non-Javadoc)
@@ -74,10 +68,10 @@ public class KmfmtNursingWorkTypePK implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KmfmtNursingWorkTypePK)) {
+        if (!(object instanceof KnlmtNursingLeaveSetPK)) {
             return false;
         }
-        KmfmtNursingWorkTypePK other = (KmfmtNursingWorkTypePK) object;
+        KnlmtNursingLeaveSetPK other = (KnlmtNursingLeaveSetPK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }

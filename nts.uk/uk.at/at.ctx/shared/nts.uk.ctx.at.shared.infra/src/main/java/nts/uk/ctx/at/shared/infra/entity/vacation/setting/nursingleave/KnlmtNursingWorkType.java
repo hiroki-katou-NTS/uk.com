@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,29 +20,28 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KMFMT_NURSING_WORK_TYPE")
-public class KmfmtNursingWorkType extends UkJpaEntity implements Serializable {
+@Table(name = "KNLMT_NURSING_WORK_TYPE")
+public class KnlmtNursingWorkType extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kmfmtWorkTypePK. */
+    /** The knlmtNursingWorkTypePK. */
     @EmbeddedId
-    private KmfmtNursingWorkTypePK kmfmtWorkTypePK;
+    private KnlmtNursingWorkTypePK knlmtNursingWorkTypePK;
     
     /** The work type code. */
-    @Size(max = 8)
     @Column(name = "DAY_CD")
     private String workTypeCode;
 
     /**
      * Instantiates a new kmfmt work type.
      */
-    public KmfmtNursingWorkType() {
+    public KnlmtNursingWorkType() {
     }
     
-    public KmfmtNursingWorkType(KmfmtNursingWorkTypePK kmfmtWorkTypePK, String workTypeCode) {
-        this.kmfmtWorkTypePK = kmfmtWorkTypePK;
+    public KnlmtNursingWorkType(KnlmtNursingWorkTypePK knlmtNursingWorkTypePK, String workTypeCode) {
+        this.knlmtNursingWorkTypePK = knlmtNursingWorkTypePK;
         this.workTypeCode = workTypeCode;
     }
 
@@ -53,7 +51,7 @@ public class KmfmtNursingWorkType extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kmfmtWorkTypePK != null ? kmfmtWorkTypePK.hashCode() : 0);
+        hash += (knlmtNursingWorkTypePK != null ? knlmtNursingWorkTypePK.hashCode() : 0);
         return hash;
     }
 
@@ -62,14 +60,13 @@ public class KmfmtNursingWorkType extends UkJpaEntity implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are
         // not set
-        if (!(object instanceof KmfmtNursingWorkType)) {
+        if (!(object instanceof KnlmtNursingWorkType)) {
             return false;
         }
-        KmfmtNursingWorkType other = (KmfmtNursingWorkType) object;
-        if ((this.kmfmtWorkTypePK == null && other.kmfmtWorkTypePK != null) || (this.kmfmtWorkTypePK != null
-                && !this.kmfmtWorkTypePK.equals(other.kmfmtWorkTypePK))) {
+        KnlmtNursingWorkType other = (KnlmtNursingWorkType) object;
+        if ((this.knlmtNursingWorkTypePK == null && other.knlmtNursingWorkTypePK != null) || (this.knlmtNursingWorkTypePK != null
+                && !this.knlmtNursingWorkTypePK.equals(other.knlmtNursingWorkTypePK))) {
             return false;
         }
         return true;
@@ -82,6 +79,6 @@ public class KmfmtNursingWorkType extends UkJpaEntity implements Serializable {
      */
     @Override
     protected Object getKey() {
-        return this.kmfmtWorkTypePK;
+        return this.knlmtNursingWorkTypePK;
     }
 }

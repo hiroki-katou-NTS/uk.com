@@ -10,35 +10,29 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSetPK;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkType;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkTypePK;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK;
 
 /**
  * The Class JpaNursingVacationSettingSetMemento.
  */
-public class JpaNursingVacationSettingSetMemento implements NursingVacationSettingSetMemento {
+public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetMemento {
     
     /** The entity nursing. */
-    private KmfmtNursingLeaveSet entityNursing;
+    private KnlmtNursingLeaveSet entityNursing;
     
     /**
-     * Instantiates a new jpa nursing vacation setting set memento.
+     * Instantiates a new jpa nursing leave setting set memento.
      *
      * @param entityNursing the entity nursing
-     * @param entityWorkTypes the entity work types
      */
-    public JpaNursingVacationSettingSetMemento(KmfmtNursingLeaveSet entityNursing) {
+    public JpaNursingLeaveSettingSetMemento(KnlmtNursingLeaveSet entityNursing) {
         this.entityNursing = entityNursing;
     }
     
-    /**
-     * Sets the company id.
-     *
-     * @param companyId the new company id
-     */
     /*
      * (non-Javadoc)
      * 
@@ -47,16 +41,11 @@ public class JpaNursingVacationSettingSetMemento implements NursingVacationSetti
      */
     @Override
     public void setCompanyId(String companyId) {
-        KmfmtNursingLeaveSetPK pk = new KmfmtNursingLeaveSetPK();
+        KnlmtNursingLeaveSetPK pk = new KnlmtNursingLeaveSetPK();
         pk.setCid(companyId);
-        this.entityNursing.setKmfmtNursingLeaveSetPK(pk);
+        this.entityNursing.setKnlmtNursingLeaveSetPK(pk);
     }
 
-    /**
-     * Sets the manage type.
-     *
-     * @param manageType the new manage type
-     */
     /*
      * (non-Javadoc)
      * 
@@ -69,11 +58,6 @@ public class JpaNursingVacationSettingSetMemento implements NursingVacationSetti
         this.entityNursing.setManageType(manageType.value);
     }
 
-    /**
-     * Sets the nursing category.
-     *
-     * @param nursingCategory the new nursing category
-     */
     /*
      * (non-Javadoc)
      * 
@@ -83,16 +67,11 @@ public class JpaNursingVacationSettingSetMemento implements NursingVacationSetti
      */
     @Override
     public void setNursingCategory(NursingCategory nursingCategory) {
-        KmfmtNursingLeaveSetPK pk = this.entityNursing.getKmfmtNursingLeaveSetPK();
+        KnlmtNursingLeaveSetPK pk = this.entityNursing.getKnlmtNursingLeaveSetPK();
         pk.setNursingCtr(nursingCategory.value);
-        this.entityNursing.setKmfmtNursingLeaveSetPK(pk);
+        this.entityNursing.setKnlmtNursingLeaveSetPK(pk);
     }
 
-    /**
-     * Sets the start month day.
-     *
-     * @param startMonthDay the new start month day
-     */
     /*
      * (non-Javadoc)
      * 
@@ -104,11 +83,6 @@ public class JpaNursingVacationSettingSetMemento implements NursingVacationSetti
         this.entityNursing.setStartMonthDay(startMonthDay);
     }
 
-    /**
-     * Sets the max person setting.
-     *
-     * @param maxPersonSetting the new max person setting
-     */
     /*
      * (non-Javadoc)
      * 
@@ -122,11 +96,6 @@ public class JpaNursingVacationSettingSetMemento implements NursingVacationSetti
         maxPersonSetting.saveToMemento(memento);
     }
 
-    /**
-     * Sets the work type codes.
-     *
-     * @param workTypeCodes the new work type codes
-     */
     /*
      * (non-Javadoc)
      * 
@@ -135,16 +104,16 @@ public class JpaNursingVacationSettingSetMemento implements NursingVacationSetti
      */
     @Override
     public void setWorkTypeCodes(List<String> workTypeCodes) {
-        List<KmfmtNursingWorkType> listWorkType = new ArrayList<>();
+        List<KnlmtNursingWorkType> listWorkType = new ArrayList<>();
         for (int i = 0; i < workTypeCodes.size(); i++) {
             String workTypeCode = workTypeCodes.get(i);
             
-            KmfmtNursingWorkTypePK pk = new KmfmtNursingWorkTypePK();
-            pk.setCid(this.entityNursing.getKmfmtNursingLeaveSetPK().getCid());
-            pk.setNursingCtr(this.entityNursing.getKmfmtNursingLeaveSetPK().getNursingCtr());
+            KnlmtNursingWorkTypePK pk = new KnlmtNursingWorkTypePK();
+            pk.setCid(this.entityNursing.getKnlmtNursingLeaveSetPK().getCid());
+            pk.setNursingCtr(this.entityNursing.getKnlmtNursingLeaveSetPK().getNursingCtr());
             pk.setOrderNumber(i);
             
-            listWorkType.add(new KmfmtNursingWorkType(pk, workTypeCode));
+            listWorkType.add(new KnlmtNursingWorkType(pk, workTypeCode));
         }
         this.entityNursing.setListWorkType(listWorkType);
     }

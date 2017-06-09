@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 /**
  * The Interface NursingVacationSettingSetMemento.
  */
-public interface NursingVacationSettingSetMemento {
+public interface NursingLeaveSettingSetMemento {
     
     /**
      * Sets the company id.

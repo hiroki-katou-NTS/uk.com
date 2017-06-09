@@ -9,9 +9,9 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
 
-public class NursingLeaveSettingDto implements NursingVacationSettingSetMemento {
+public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
 
     /** The manage type. */
     public Integer manageType;

@@ -16,20 +16,20 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSet_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkType;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkTypePK_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkType_;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType_;
 
 /**
  * The Class JpaNursingVacationSettingRepository.
  */
 @Stateless
-public class JpaNursingVacationSettingRepository extends JpaRepository implements NursingVacationSettingRepository {
+public class JpaNursingLeaveSettingRepository extends JpaRepository implements NursingLeaveSettingRepository {
 
     /*
      * (non-Javadoc)
@@ -41,7 +41,7 @@ public class JpaNursingVacationSettingRepository extends JpaRepository implement
      * NursingVacationSetting)
      */
     @Override
-    public void add(NursingVacationSetting nursingSetting, NursingVacationSetting childNursingSetting) {
+    public void add(NursingLeaveSetting nursingSetting, NursingLeaveSetting childNursingSetting) {
         this.commandProxy().insert(this.toEntity(nursingSetting));
         this.getEntityManager().flush();
 
@@ -59,7 +59,7 @@ public class JpaNursingVacationSettingRepository extends JpaRepository implement
      * NursingVacationSetting)
      */
     @Override
-    public void update(NursingVacationSetting nursingSetting, NursingVacationSetting childNursingSetting) {
+    public void update(NursingLeaveSetting nursingSetting, NursingLeaveSetting childNursingSetting) {
 
         this.commandProxy().update(this.toEntity(nursingSetting));
         this.getEntityManager().flush();
@@ -75,41 +75,41 @@ public class JpaNursingVacationSettingRepository extends JpaRepository implement
      * NursingVacationSettingRepository#findByCompanyId(java.lang.String)
      */
     @Override
-    public List<NursingVacationSetting> findByCompanyId(String companyId) {
+    public List<NursingLeaveSetting> findByCompanyId(String companyId) {
         EntityManager em = this.getEntityManager();
         
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfmtNursingLeaveSet> query = builder.createQuery(KmfmtNursingLeaveSet.class);
-        Root<KmfmtNursingLeaveSet> root = query.from(KmfmtNursingLeaveSet.class);
+        CriteriaQuery<KnlmtNursingLeaveSet> query = builder.createQuery(KnlmtNursingLeaveSet.class);
+        Root<KnlmtNursingLeaveSet> root = query.from(KnlmtNursingLeaveSet.class);
         
         List<Predicate> predicateList = new ArrayList<>();
         
-        predicateList.add(builder.equal(root.get(KmfmtNursingLeaveSet_.kmfmtNursingLeaveSetPK)
-                .get(KmfmtNursingLeaveSetPK_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KnlmtNursingLeaveSet_.knlmtNursingLeaveSetPK)
+                .get(KnlmtNursingLeaveSetPK_.cid), companyId));
         
         query.where(predicateList.toArray(new Predicate[]{}));
         
-        List<KmfmtNursingLeaveSet> result = em.createQuery(query).getResultList();
+        List<KnlmtNursingLeaveSet> result = em.createQuery(query).getResultList();
         if (result.isEmpty()) {
             return null;
         }
-        List<NursingVacationSetting> listSetting = new ArrayList<>();
+        List<NursingLeaveSetting> listSetting = new ArrayList<>();
         
         // NURSING
-        KmfmtNursingLeaveSet nursingSetting = this.findNursingLeaveByNursingCategory(result,
+        KnlmtNursingLeaveSet nursingSetting = this.findNursingLeaveByNursingCategory(result,
                 NursingCategory.Nursing.value);
-        List<KmfmtNursingWorkType> entityWorkTypeNursings = this.findWorkTypeByCompanyId(companyId,
+        List<KnlmtNursingWorkType> entityWorkTypeNursings = this.findWorkTypeByCompanyId(companyId,
                 NursingCategory.Nursing.value);
-        listSetting.add(new NursingVacationSetting(
-                new JpaNursingVacationSettingGetMemento(nursingSetting, entityWorkTypeNursings)));
+        listSetting.add(new NursingLeaveSetting(
+                new JpaNursingLeaveSettingGetMemento(nursingSetting, entityWorkTypeNursings)));
         
         // CHILD NURSING
-        KmfmtNursingLeaveSet childNursingSetting = this.findNursingLeaveByNursingCategory(result,
+        KnlmtNursingLeaveSet childNursingSetting = this.findNursingLeaveByNursingCategory(result,
                 NursingCategory.ChildNursing.value);
-        List<KmfmtNursingWorkType> entityWorkTypeChildNursings = this.findWorkTypeByCompanyId(companyId,
+        List<KnlmtNursingWorkType> entityWorkTypeChildNursings = this.findWorkTypeByCompanyId(companyId,
                 NursingCategory.ChildNursing.value);
-        listSetting.add(new NursingVacationSetting(
-                new JpaNursingVacationSettingGetMemento(childNursingSetting, entityWorkTypeChildNursings)));
+        listSetting.add(new NursingLeaveSetting(
+                new JpaNursingLeaveSettingGetMemento(childNursingSetting, entityWorkTypeChildNursings)));
         
         return listSetting;
     }
@@ -120,9 +120,9 @@ public class JpaNursingVacationSettingRepository extends JpaRepository implement
      * @param setting the setting
      * @return the kmfmt nursing leave set
      */
-    private KmfmtNursingLeaveSet toEntity(NursingVacationSetting setting) {
-        KmfmtNursingLeaveSet entity = new KmfmtNursingLeaveSet();
-        JpaNursingVacationSettingSetMemento memento = new JpaNursingVacationSettingSetMemento(entity);
+    private KnlmtNursingLeaveSet toEntity(NursingLeaveSetting setting) {
+        KnlmtNursingLeaveSet entity = new KnlmtNursingLeaveSet();
+        JpaNursingLeaveSettingSetMemento memento = new JpaNursingLeaveSettingSetMemento(entity);
         setting.saveToMemento(memento);
         return entity;
     }
@@ -134,23 +134,24 @@ public class JpaNursingVacationSettingRepository extends JpaRepository implement
      * @param nursingCtr the nursing ctr
      * @return the list
      */
-    private List<KmfmtNursingWorkType> findWorkTypeByCompanyId(String companyId, Integer nursingCtr) {
+    private List<KnlmtNursingWorkType> findWorkTypeByCompanyId(String companyId, Integer nursingCtr) {
         EntityManager em = this.getEntityManager();
         
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfmtNursingWorkType> query = builder.createQuery(KmfmtNursingWorkType.class);
-        Root<KmfmtNursingWorkType> root = query.from(KmfmtNursingWorkType.class);
+        CriteriaQuery<KnlmtNursingWorkType> query = builder.createQuery(KnlmtNursingWorkType.class);
+        Root<KnlmtNursingWorkType> root = query.from(KnlmtNursingWorkType.class);
         
         List<Predicate> predicateList = new ArrayList<>();
         
-        predicateList.add(builder.equal(root.get(KmfmtNursingWorkType_.kmfmtWorkTypePK)
-                .get(KmfmtNursingWorkTypePK_.cid), companyId));
-        predicateList.add(builder.equal(root.get(KmfmtNursingWorkType_.kmfmtWorkTypePK)
-                .get(KmfmtNursingWorkTypePK_.nursingCtr), nursingCtr));
+        predicateList.add(builder.equal(root.get(KnlmtNursingWorkType_.knlmtNursingWorkTypePK)
+                .get(KnlmtNursingWorkTypePK_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KnlmtNursingWorkType_.knlmtNursingWorkTypePK)
+                .get(KnlmtNursingWorkTypePK_.nursingCtr), nursingCtr));
         
         query.where(predicateList.toArray(new Predicate[]{}));
         
-        query.orderBy(builder.asc(root.get(KmfmtNursingWorkType_.kmfmtWorkTypePK).get(KmfmtNursingWorkTypePK_.orderNumber)));
+        query.orderBy(builder.asc(root.get(KnlmtNursingWorkType_.knlmtNursingWorkTypePK)
+                .get(KnlmtNursingWorkTypePK_.orderNumber)));
         
         return em.createQuery(query).getResultList();
     }
@@ -162,9 +163,10 @@ public class JpaNursingVacationSettingRepository extends JpaRepository implement
      * @param nursingCtr the nursing ctr
      * @return the kmfmt nursing leave set
      */
-    private KmfmtNursingLeaveSet findNursingLeaveByNursingCategory(List<KmfmtNursingLeaveSet> listSetting, Integer nursingCtr) {
+    private KnlmtNursingLeaveSet findNursingLeaveByNursingCategory(List<KnlmtNursingLeaveSet> listSetting,
+            Integer nursingCtr) {
         return listSetting.stream()
-                .filter(entity -> entity.getKmfmtNursingLeaveSetPK().getNursingCtr() == nursingCtr)
+                .filter(entity -> entity.getKnlmtNursingLeaveSetPK().getNursingCtr() == nursingCtr)
                 .findFirst()
                 .get();
     }

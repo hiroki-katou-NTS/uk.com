@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.find.dto.NursingLeaveSettingDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -30,7 +30,7 @@ public class NursingLeaveFinder {
     
     /** The nursing repo. */
     @Inject
-    private NursingVacationSettingRepository nursingRepo;
+    private NursingLeaveSettingRepository nursingRepo;
     
     /**
      * Find nursing leave by company id.
@@ -39,17 +39,17 @@ public class NursingLeaveFinder {
      */
     public List<NursingLeaveSettingDto> findNursingLeaveByCompanyId() {
         String companyId = AppContexts.user().companyId();
-        List<NursingVacationSetting> listSetting = this.nursingRepo.findByCompanyId(companyId);
+        List<NursingLeaveSetting> listSetting = this.nursingRepo.findByCompanyId(companyId);
         if (CollectionUtil.isEmpty(listSetting)) {
             return null;
         }
         // NURSING
-        NursingVacationSetting nursingSetting = listSetting.get(INDEX_NURSING_SETTING);
+        NursingLeaveSetting nursingSetting = listSetting.get(INDEX_NURSING_SETTING);
         NursingLeaveSettingDto nursingSettingDto = new NursingLeaveSettingDto();
         nursingSetting.saveToMemento(nursingSettingDto);
         
         // CHILD NURSING
-        NursingVacationSetting childNursingSetting = listSetting.get(INDEX_CHILD_NURSING_SETTING);
+        NursingLeaveSetting childNursingSetting = listSetting.get(INDEX_CHILD_NURSING_SETTING);
         NursingLeaveSettingDto childNursingSettingDto = new NursingLeaveSettingDto();
         childNursingSetting.saveToMemento(childNursingSettingDto);
         

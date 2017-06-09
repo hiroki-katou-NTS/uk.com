@@ -27,15 +27,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Getter
 @Entity
-@Table(name = "KMFMT_NURSING_LEAVE_SET")
-public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
+@Table(name = "KNLMT_NURSING_LEAVE_SET")
+public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kmfmtNursingLeaveSetPK. */
+    /** The knlmtNursingLeaveSetPK. */
     @EmbeddedId
-    private KmfmtNursingLeaveSetPK kmfmtNursingLeaveSetPK;
+    private KnlmtNursingLeaveSetPK knlmtNursingLeaveSetPK;
     
     /** The manage type. */
     @Basic(optional = false)
@@ -58,12 +58,12 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = false),
             @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "NURSING_TYPE", insertable = true, updatable = false)})
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<KmfmtNursingWorkType> listWorkType;
+    public List<KnlmtNursingWorkType> listWorkType;
 
     /**
      * Instantiates a new kmfmt nursing leave set.
      */
-    public KmfmtNursingLeaveSet() {
+    public KnlmtNursingLeaveSet() {
     }
 
     /* (non-Javadoc)
@@ -72,7 +72,7 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kmfmtNursingLeaveSetPK != null ? kmfmtNursingLeaveSetPK.hashCode() : 0);
+        hash += (knlmtNursingLeaveSetPK != null ? knlmtNursingLeaveSetPK.hashCode() : 0);
         return hash;
     }
 
@@ -81,14 +81,13 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KmfmtNursingLeaveSet)) {
+        if (!(object instanceof KnlmtNursingLeaveSet)) {
             return false;
         }
-        KmfmtNursingLeaveSet other = (KmfmtNursingLeaveSet) object;
-        if ((this.kmfmtNursingLeaveSetPK == null && other.kmfmtNursingLeaveSetPK != null)
-                || (this.kmfmtNursingLeaveSetPK != null && !this.kmfmtNursingLeaveSetPK.equals(
-                        other.kmfmtNursingLeaveSetPK))) {
+        KnlmtNursingLeaveSet other = (KnlmtNursingLeaveSet) object;
+        if ((this.knlmtNursingLeaveSetPK == null && other.knlmtNursingLeaveSetPK != null)
+                || (this.knlmtNursingLeaveSetPK != null && !this.knlmtNursingLeaveSetPK.equals(
+                        other.knlmtNursingLeaveSetPK))) {
             return false;
         }
         return true;
@@ -99,6 +98,6 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
      */
     @Override
     protected Object getKey() {
-        return this.kmfmtNursingLeaveSetPK;
+        return this.knlmtNursingLeaveSetPK;
     }
 }

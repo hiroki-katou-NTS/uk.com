@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * The Interface NursingVacationSettingRepository.
  */
-public interface NursingVacationSettingRepository {
+public interface NursingLeaveSettingRepository {
     
     /**
      * Adds the.
@@ -17,7 +17,7 @@ public interface NursingVacationSettingRepository {
      * @param nursingSetting the nursing setting
      * @param childNursingSetting the child nursing setting
      */
-    void add(NursingVacationSetting nursingSetting, NursingVacationSetting childNursingSetting);
+    void add(NursingLeaveSetting nursingSetting, NursingLeaveSetting childNursingSetting);
     
     /**
      * Update.
@@ -25,7 +25,7 @@ public interface NursingVacationSettingRepository {
      * @param nursingSetting the nursing setting
      * @param childNursingSetting the child nursing setting
      */
-    void update(NursingVacationSetting nursingSetting, NursingVacationSetting childNursingSetting);
+    void update(NursingLeaveSetting nursingSetting, NursingLeaveSetting childNursingSetting);
     
     /**
      * Find by company id.
@@ -33,5 +33,5 @@ public interface NursingVacationSettingRepository {
      * @param companyId the company id
      * @return the list
      */
-    List<NursingVacationSetting> findByCompanyId(String companyId);
+    List<NursingLeaveSetting> findByCompanyId(String companyId);
 }
