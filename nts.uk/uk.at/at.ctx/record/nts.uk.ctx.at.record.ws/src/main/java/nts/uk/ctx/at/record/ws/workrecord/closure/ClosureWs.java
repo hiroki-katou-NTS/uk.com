@@ -4,11 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.ws.workrecord.closure;
 
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.find.workrecord.closure.ClosureFinder;
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureFindDto;
 
 /**
  * The Class ClosureWs.
@@ -21,4 +26,28 @@ public class ClosureWs {
 	@Inject
 	private ClosureFinder finder;
 	
+	
+	/**
+	 * Gets the all.
+	 *
+	 * @return the all
+	 */
+	@POST
+	@Path("getall")
+	public List<ClosureFindDto> getAll(){
+		return this.finder.findAll();
+	}
+	
+	
+	/**
+	 * Detail.
+	 *
+	 * @param closureId the closure id
+	 * @return the closure find dto
+	 */
+	@POST
+	@Path("detail/{closureId}")
+	public ClosureFindDto detail(@PathParam("closureId") int closureId){
+		return this.finder.getByClosure(closureId);
+	}
 }

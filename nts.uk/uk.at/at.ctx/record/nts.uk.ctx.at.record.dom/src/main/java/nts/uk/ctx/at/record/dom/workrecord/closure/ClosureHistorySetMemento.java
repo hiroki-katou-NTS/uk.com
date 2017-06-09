@@ -24,6 +24,13 @@ public interface ClosureHistorySetMemento {
 	 * @param closureId the new closure id
 	 */
 	void setClosureId(ClosureId closureId);
+	
+	/**
+	 * Sets the closure history id.
+	 *
+	 * @param closureHistoryId the new closure history id
+	 */
+	void setClosureHistoryId(ClosureHistoryId closureHistoryId);
 
 	/**
 	 * Sets the end date.
