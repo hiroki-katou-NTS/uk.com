@@ -39,11 +39,11 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     
     /** The manage type. */
     @Basic(optional = false)
-    @Column(name = "MANAGE_TYPE")
+    @Column(name = "MANAGE_ATR")
     private Integer manageType;
     
     /** The start md. */
-    @Column(name = "START_MD")
+    @Column(name = "STR_MD")
     private Integer startMonthDay;
     
     /** The nursing num leave day. */
@@ -56,9 +56,9 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     
     /** The list work type. */
     @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = false),
-            @JoinColumn(name = "NURSING_CTR", referencedColumnName = "NURSING_CTR", insertable = true, updatable = false)})
+            @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "NURSING_TYPE", insertable = true, updatable = false)})
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<KmfmtWorkType> listWorkType;
+    public List<KmfmtNursingWorkType> listWorkType;
 
     /**
      * Instantiates a new kmfmt nursing leave set.

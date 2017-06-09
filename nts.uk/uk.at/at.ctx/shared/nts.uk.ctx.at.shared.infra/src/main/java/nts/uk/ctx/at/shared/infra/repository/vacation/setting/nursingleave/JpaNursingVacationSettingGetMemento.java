@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtWorkType;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkType;
 
 /**
  * The Class JpaNursingVacationSettingGetMemento.
@@ -23,7 +23,7 @@ public class JpaNursingVacationSettingGetMemento implements NursingVacationSetti
     private KmfmtNursingLeaveSet entityNursing;
     
     /** The entity work types. */
-    private List<KmfmtWorkType> entityWorkTypes;
+    private List<KmfmtNursingWorkType> entityWorkTypes;
     
     /**
      * Instantiates a new jpa nursing vacation setting get memento.
@@ -32,7 +32,7 @@ public class JpaNursingVacationSettingGetMemento implements NursingVacationSetti
      * @param entityWorkTypes the entity work types
      */
     public JpaNursingVacationSettingGetMemento(KmfmtNursingLeaveSet entityNursing,
-            List<KmfmtWorkType> entityWorkTypes) {
+            List<KmfmtNursingWorkType> entityWorkTypes) {
         this.entityNursing = entityNursing;
         this.entityWorkTypes = entityWorkTypes;
     }

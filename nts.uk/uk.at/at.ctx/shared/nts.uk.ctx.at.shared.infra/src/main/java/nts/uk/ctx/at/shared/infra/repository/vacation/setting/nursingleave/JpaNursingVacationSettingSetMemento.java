@@ -13,8 +13,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingLeaveSetPK;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtWorkType;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtWorkTypePK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkType;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KmfmtNursingWorkTypePK;
 
 /**
  * The Class JpaNursingVacationSettingSetMemento.
@@ -135,16 +135,16 @@ public class JpaNursingVacationSettingSetMemento implements NursingVacationSetti
      */
     @Override
     public void setWorkTypeCodes(List<String> workTypeCodes) {
-        List<KmfmtWorkType> listWorkType = new ArrayList<>();
+        List<KmfmtNursingWorkType> listWorkType = new ArrayList<>();
         for (int i = 0; i < workTypeCodes.size(); i++) {
             String workTypeCode = workTypeCodes.get(i);
             
-            KmfmtWorkTypePK pk = new KmfmtWorkTypePK();
+            KmfmtNursingWorkTypePK pk = new KmfmtNursingWorkTypePK();
             pk.setCid(this.entityNursing.getKmfmtNursingLeaveSetPK().getCid());
             pk.setNursingCtr(this.entityNursing.getKmfmtNursingLeaveSetPK().getNursingCtr());
             pk.setOrderNumber(i);
             
-            listWorkType.add(new KmfmtWorkType(pk, workTypeCode));
+            listWorkType.add(new KmfmtNursingWorkType(pk, workTypeCode));
         }
         this.entityNursing.setListWorkType(listWorkType);
     }

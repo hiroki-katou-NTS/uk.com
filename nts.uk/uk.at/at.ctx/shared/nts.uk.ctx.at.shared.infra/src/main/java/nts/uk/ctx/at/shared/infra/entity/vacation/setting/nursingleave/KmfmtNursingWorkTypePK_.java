@@ -10,15 +10,15 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KmfmtWorkTypePK_.
  */
-@StaticMetamodel(KmfmtWorkTypePK.class)
-public class KmfmtWorkTypePK_ {
+@StaticMetamodel(KmfmtNursingWorkTypePK.class)
+public class KmfmtNursingWorkTypePK_ {
     
     /** The cid. */
-    public static volatile SingularAttribute<KmfmtWorkTypePK, String> cid;
+    public static volatile SingularAttribute<KmfmtNursingWorkTypePK, String> cid;
     
     /** The nursingCtr. */
-    public static volatile SingularAttribute<KmfmtWorkTypePK, Integer> nursingCtr;
+    public static volatile SingularAttribute<KmfmtNursingWorkTypePK, Integer> nursingCtr;
     
     /** The order number. */
-    public static volatile SingularAttribute<KmfmtWorkTypePK, Integer> orderNumber;
+    public static volatile SingularAttribute<KmfmtNursingWorkTypePK, Integer> orderNumber;
 }

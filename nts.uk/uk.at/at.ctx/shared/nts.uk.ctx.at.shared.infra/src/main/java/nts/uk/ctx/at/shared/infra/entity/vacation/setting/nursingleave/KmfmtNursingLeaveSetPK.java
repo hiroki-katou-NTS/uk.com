@@ -31,7 +31,7 @@ public class KmfmtNursingLeaveSetPK implements Serializable {
     
     /** The nursing ctr. */
     @Basic(optional = false)
-    @Column(name = "NURSING_CTR")
+    @Column(name = "NURSING_TYPE")
     private Integer nursingCtr;
     
     /**

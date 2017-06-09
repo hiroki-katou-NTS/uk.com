@@ -128,12 +128,23 @@ module nts.uk.pr.view.kmf001.l {
                     $('#nursing-day').ntsError('validate');
                     $('#nursing-number-leave-day').ntsError('validate');
                     $('#nursing-number-person').ntsError('validate');
+                    
+                    if (!self.nursingSetting().workTypeCodes() || self.nursingSetting().workTypeCodes().length == 0) {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_152'));
+                        return false;
+                    }
                 }
                 if (self.childNursingSetting().enableNursing()) {
                     $('#child-nursing-month').ntsError('validate');
                     $('#child-nursing-day').ntsError('validate');
                     $('#child-nursing-number-leave-day').ntsError('validate');
                     $('#child-nursing-number-person').ntsError('validate');
+                    
+                    if (!self.childNursingSetting().workTypeCodes()
+                            || self.childNursingSetting().workTypeCodes().length == 0) {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_152'));
+                        return false;
+                    }
                 }
                 if ($('.nts-input').ntsError('hasError')) {
                     return false;
@@ -169,13 +180,14 @@ module nts.uk.pr.view.kmf001.l {
             }
             
             private convertObjectCmd(ob : KnockoutObservable<NursingSettingModel>, nursingCategory: number): any {
+                let self = this;
                 let object: any = {};
                 
                 object.manageType = ob().selectedManageNursing();
                 object.nursingCategory = nursingCategory;
-                object.startMonthDay = ob().nursingMonth() * 100 + ob().nursingDay();
+                object.startMonthDay = self.convertMonthDay(ob());
                 object.nursingNumberLeaveDay = ob().nursingNumberLeaveDay();
-                object.nursingNumberPerson = ob().nursingNumberPerson();;
+                object.nursingNumberPerson = ob().nursingNumberPerson();
                 object.workTypeCodes = ob().workTypeCodes();
                 
                 return object;
@@ -183,11 +195,20 @@ module nts.uk.pr.view.kmf001.l {
             
             private convertModel(ob : KnockoutObservable<NursingSettingModel>, object: any) {
                 ob().selectedManageNursing(object.manageType);
-                ob().nursingMonth(object.startMonthDay/100)
-                ob().nursingDay(object.startMonthDay/100 - ob().nursingMonth());
+                if (object.startMonthDay) {
+                    ob().nursingMonth(parseInt(object.startMonthDay/100));
+                    ob().nursingDay(object.startMonthDay - ob().nursingMonth() * 100);
+                }
                 ob().nursingNumberLeaveDay(object.nursingNumberLeaveDay);
                 ob().nursingNumberPerson(object.nursingNumberPerson);
                 ob().workTypeCodes(object.workTypeCodes);
+            }
+            
+            private convertMonthDay(setting : KnockoutObservable<NursingSettingModel>): number {
+                if (!setting.nursingMonth() || !setting.nursingDay()) {
+                    return null;
+                }
+                return parseInt(setting.nursingMonth()) * 100 + parseInt(setting.nursingDay());
             }
         }
         

@@ -16,14 +16,24 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.command.NursingLeaveCommand;
 import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.command.NursingLeaveCommandHandler;
+import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.find.NursingLeaveFinder;
+import nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.find.dto.NursingLeaveSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
+/**
+ * The Class NursingLeaveWs.
+ */
 @Path("ctx/at/share/vacation/setting/nursingleave/")
 @Produces("application/json")
 public class NursingLeaveWs extends WebService {
     
+    /** The nursing handler. */
     @Inject
     private NursingLeaveCommandHandler nursingHandler;
+    
+    /** The nursing finder. */
+    @Inject
+    private NursingLeaveFinder nursingFinder;
     
     /**
      * Find manage distinct.
@@ -50,11 +60,11 @@ public class NursingLeaveWs extends WebService {
     /**
      * Find by company id.
      *
-     * @return the annual paid leave setting find dto
+     * @return the list
      */
-//    @POST
-//    @Path("find/setting")
-//    public AnnualPaidLeaveSettingFindDto findByCompanyId() {
-//        return this.annualFinder.findByCompanyId();
-//    }
+    @POST
+    @Path("find/setting")
+    public List<NursingLeaveSettingDto> findByCompanyId() {
+        return this.nursingFinder.findNursingLeaveByCompanyId();
+    }
 }
