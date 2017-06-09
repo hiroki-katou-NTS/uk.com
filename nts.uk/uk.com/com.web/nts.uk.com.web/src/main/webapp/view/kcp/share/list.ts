@@ -6,6 +6,9 @@ module kcp.share.list {
         isAlreadySetting?: boolean;
     }
     
+    /**
+     * Component option.
+     */
     export interface ComponentOption {
         isShowAlreadySet: boolean;
         isMultiSelect: boolean;
@@ -14,12 +17,18 @@ module kcp.share.list {
         alreadySettingList?: KnockoutObservableArray<UnitModel>;
     }
     
+    /**
+     * List Type
+     */
     export class ListType {
         static EMPLOYMENT = 1;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
     }
     
+    /**
+     * Screen Model.
+     */
     export class ListComponentScreenModel {
         itemList: KnockoutObservableArray<UnitModel>;
         selectedCodes: KnockoutObservable<any>;
@@ -30,7 +39,6 @@ module kcp.share.list {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
             this.isMultiple = false;
-            this.selectedCodes = ko.observable(null);
             
             // Setup list column.
             this.listComponentColumn.push({headerText: 'コード', prop: 'code', width: 50});
@@ -39,13 +47,11 @@ module kcp.share.list {
         /**
          * Init component.
          */
-        public init($input: JQuery, data: ComponentOption) {
+        public init($input: JQuery, data: ComponentOption) :JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
             var self = this;
             self.isMultiple = data.isMultiSelect;
-            self.selectedCodes(data.selectedCode());
-            self.selectedCodes.subscribe((newVal: any) => {
-                data.selectedCode(newVal);
-            })
+            self.selectedCodes = data.selectedCode;
             
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE) {
@@ -68,6 +74,10 @@ module kcp.share.list {
             
             // Find data list.
             this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
+                // Set default value when init component.
+                if (!data.selectedCode() || data.selectedCode().length == 0) {
+                    self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+                }
                 
                 // Map already setting attr to data list.
                 if (data.isShowAlreadySet) {
@@ -83,10 +93,26 @@ module kcp.share.list {
                     .load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/list.xhtml', function() {
                         ko.cleanNode($input[0]);
                         ko.applyBindings(self, $input[0]);
-                    })
+                        $( ".ntsSearchBox" ).focus();
+                    });
+                dfd.resolve();
             });
+            return dfd.promise();
         }
         
+        /**
+         * Select data for multiple or not
+         */
+        private selectData(option: ComponentOption, data: UnitModel) :any {
+            if (this.isMultiple) {
+                return [data.code];
+            }
+            return data.code;
+        }
+        
+        /**
+         * Find data list.
+         */
         public findDataList(listType: ListType):JQueryPromise<Array<UnitModel>> {
             switch(listType) {
                 case ListType.EMPLOYMENT:
@@ -143,16 +169,13 @@ interface JQuery {
     /**
      * Nts list component.
      */
-    ntsListComponent(option: kcp.share.list.ComponentOption);
+    ntsListComponent(option: kcp.share.list.ComponentOption): JQueryPromise<void>;
 }
 
 (function($: any) {
-    $.fn.ntsListComponent = function(option: kcp.share.list.ComponentOption): any {
-
-        // Init nts file upload. 
-        var widget = new kcp.share.list.ListComponentScreenModel().init(this, option);
+    $.fn.ntsListComponent = function(option: kcp.share.list.ComponentOption): JQueryPromise<void> {
 
         // Return.
-        return widget;
+        return new kcp.share.list.ListComponentScreenModel().init(this, option);;
     }
 } (jQuery));
