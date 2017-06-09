@@ -89,8 +89,7 @@ module kcp.share.list {
                 
                 // Init component.
                 self.itemList(dataList);
-                $input.appendTo($('body'))
-                    .load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/list.xhtml', function() {
+                $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/list.xhtml', function() {
                         ko.cleanNode($input[0]);
                         ko.applyBindings(self, $input[0]);
                         $( ".ntsSearchBox" ).focus();
