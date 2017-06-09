@@ -105,7 +105,7 @@ module ccg014.a.viewmodel {
                         index = _.min([self.listTitleMenu().length - 2, index]);
                         self.reloadData().done(() => {
                             self.selectTitleMenuByIndex(index);
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alert();
