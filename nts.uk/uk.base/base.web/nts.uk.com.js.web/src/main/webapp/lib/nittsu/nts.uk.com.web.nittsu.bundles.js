@@ -4020,7 +4020,7 @@ var nts;
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
                             width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
-                                var result = $('<button class="small delete-button">Delete</button>');
+                                var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
                                 if (deleteField === true && primaryKey !== null && !uk.util.isNullOrUndefined(row[primaryKey])) {
                                     return result[0].outerHTML;
@@ -7293,7 +7293,7 @@ var nts;
                                         _.forEach(switchOptions_1, function (opt) {
                                             var value = opt[switchValue_1];
                                             var text = opt[switchText_1];
-                                            var btn = $('<button>').text(text).addClass('nts-switch-button');
+                                            var btn = $('<button class="nts-switch-button" tabindex="-1"/>').text(text);
                                             btn.attr('data-value', value);
                                             if (val == value) {
                                                 btn.addClass('selected');
@@ -7319,7 +7319,8 @@ var nts;
                             columns: iggridColumns,
                             virtualization: true,
                             virtualizationMode: 'continuous',
-                            features: features
+                            features: features,
+                            tabIndex: -1
                         });
                         if (!uk.util.isNullOrUndefined(deleteOptions) && !uk.util.isNullOrUndefined(deleteOptions.deleteField)
                             && deleteOptions.visible === true) {
@@ -7402,7 +7403,7 @@ var nts;
                             $grid.ntsGridList('setSelected', data.value());
                         }
                         $grid.data("ui-changed", false);
-                        $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
+                        $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height).attr("tabindex", "0");
                     };
                     return NtsGridListBindingHandler;
                 }());
@@ -7446,7 +7447,9 @@ var nts;
                         //            var required = ko.unwrap(data.required) || false;
                         var columns = data.columns;
                         // Container
-                        var elementId = $(element).addClass("listbox-wrapper").attr("id");
+                        var $element = $(element);
+                        var elementId = $element.addClass("listbox-wrapper").attr("id");
+                        $element.attr("tabindex", "0");
                         var gridId = elementId;
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             gridId = nts.uk.util.randomId();
@@ -7454,8 +7457,8 @@ var nts;
                         else {
                             gridId += "_grid";
                         }
-                        $(element).append("<table id='" + gridId + "' class='ntsListBox ntsControl'/>");
-                        var container = $(element).find("#" + gridId);
+                        $element.append("<table id='" + gridId + "' class='ntsListBox ntsControl'/>");
+                        var container = $element.find("#" + gridId);
                         container.data("options", options.slice());
                         container.data("init", true);
                         container.data("enable", enable);
@@ -7501,7 +7504,8 @@ var nts;
                             columns: iggridColumns,
                             virtualization: true,
                             virtualizationMode: 'continuous',
-                            features: features
+                            features: features,
+                            tabIndex: -1
                         });
                         container.ntsGridList('setupSelecting');
                         container.bind('iggridselectionrowselectionchanging', function (evt, uiX) {
@@ -8029,7 +8033,7 @@ var nts;
                                 var srh = $container.data("searchObject");
                                 var result = srh.search(searchKey, selectedItems);
                                 if (nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight") {
-                                    nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOHIT");
+                                    nts.uk.ui.dialog.alert(nts.uk.resource.getText("FND_E_SEARCH_NOHIT"));
                                     return;
                                 }
                                 var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
@@ -8070,7 +8074,7 @@ var nts;
                         var nextSearch = function () {
                             var searchKey = $input.val();
                             if (nts.uk.util.isNullOrEmpty(searchKey)) {
-                                nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOWORD");
+                                nts.uk.ui.dialog.alert(nts.uk.resource.getText("FND_E_SEARCH_NOWORD"));
                                 return;
                             }
                             search(searchKey);
@@ -9207,6 +9211,7 @@ var nts;
                             columns: displayColumns,
                             childDataKey: optionsChild,
                             initialExpandDepth: 10,
+                            tabIndex: -1,
                             features: [
                                 {
                                     name: "Selection",
@@ -9235,7 +9240,7 @@ var nts;
                                 }]
                         });
                         var treeGridId = $treegrid.attr('id');
-                        $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
+                        $(element).closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", "0");
                         $treegrid.setupSearchScroll("igTreeGrid");
                     };
                     /**
