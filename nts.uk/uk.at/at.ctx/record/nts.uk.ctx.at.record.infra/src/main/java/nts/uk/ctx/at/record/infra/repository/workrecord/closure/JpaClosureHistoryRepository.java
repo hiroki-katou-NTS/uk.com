@@ -111,6 +111,21 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 			.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository#
+	 * findByHistoryId(java.lang.String, int, java.lang.String)
+	 */
+	@Override
+	public Optional<ClosureHistory> findByHistoryId(String companyId, int closureId,
+			String historyId) {
+		return this.queryProxy()
+				.find(new KclmtClosureHist(companyId, closureId, historyId), KclmtClosureHist.class)
+				.map(c -> this.toDomain(c));
+	}
+
 	/**
 	 * To domain.
 	 *
@@ -212,4 +227,6 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 		
 		return Optional.ofNullable(this.toDomain(resData.get(FIRST_DATA)));
 	}
+
+	
 }

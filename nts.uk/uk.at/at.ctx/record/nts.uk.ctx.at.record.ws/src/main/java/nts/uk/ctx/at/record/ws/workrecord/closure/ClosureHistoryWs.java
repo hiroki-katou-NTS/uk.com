@@ -12,7 +12,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.find.workrecord.closure.ClosureHistoryFinder;
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryDDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryFindDto;
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryInDto;
 
 /**
  * The Class ClosureHistoryWs.
@@ -35,5 +37,17 @@ public class ClosureHistoryWs {
 	@Path("getall")
 	public List<ClosureHistoryFindDto> getAll(){
 		return this.finder.getAllClosureHistory();
+	}
+	
+	/**
+	 * Gets the all.
+	 *
+	 * @param master the master
+	 * @return the all
+	 */
+	@POST
+	@Path("detail")
+	public ClosureHistoryDDto detail(ClosureHistoryInDto master){
+		return this.finder.detail(master);
 	}
 }

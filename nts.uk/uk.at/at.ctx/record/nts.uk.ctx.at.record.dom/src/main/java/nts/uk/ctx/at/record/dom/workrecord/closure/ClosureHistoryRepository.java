@@ -45,6 +45,16 @@ public interface ClosureHistoryRepository {
 	 */
 	public List<ClosureHistory> findByCompanyId(String companyId);
 	
+	/**
+	 * Find by company id.
+	 *
+	 * @param companyId the company id
+	 * @param closureId the closure id
+	 * @param historyId the history id
+	 * @return the list
+	 */
+	public Optional<ClosureHistory> findByHistoryId(String companyId, int closureId, String historyId);
+	
 	
 	
 	/**
