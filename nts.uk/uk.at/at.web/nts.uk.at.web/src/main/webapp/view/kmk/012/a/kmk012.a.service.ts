@@ -18,9 +18,11 @@ module nts.uk.at.view.kmk012.a {
         
         
         // detail data
-        export function detailClosureHistory(closureId: number):JQueryPromise<model.ClosureHistoryDDto> {
-            return nts.uk.request.ajax(paths.detailClosureHistory + "/" + closureId);
+        export function detailClosureHistory(master: model.ClosureHistoryMDto):JQueryPromise<model.ClosureHistoryDDto> {
+            return nts.uk.request.ajax(paths.detailClosureHistory,master);
         }
+        
+        
 
         export module model {
             
