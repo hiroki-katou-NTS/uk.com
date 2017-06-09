@@ -314,7 +314,7 @@ module nts.uk.ui.jqueryExtentions {
                 dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
                 width: 60, formatter: function createButton(deleteField, row) {
                     var primaryKey = $grid.igGrid("option", "primaryKey");
-                    var result = $('<button class="small delete-button">Delete</button>');
+                    var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                     result.attr("data-value", row[primaryKey]);
                     if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey])) {
                         return result[0].outerHTML;

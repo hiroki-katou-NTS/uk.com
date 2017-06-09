@@ -24,8 +24,9 @@
 						<h1>Color Picker</h1>
 						<h2>Overview</h2>
 						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
-						<input data-bind="ntsTextEditor: {value: value}"/>
-						<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: enable, width: 200}"/>
+						<input data-bind="ntsNumberEditor: {value: value}"/>
+					
+						<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
 						<br />					
 						<article class="cf">
 							<div class="tabs">
@@ -36,7 +37,7 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: enable, width: 200}"/>]]></pre>
+<pre><![CDATA[<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -52,22 +53,15 @@
 											<tr>
 												<td>value</td>
 												<td>
-													<b>Type:</b> string<br/>
-													color value (example: '#000000')
-												</td>
-											</tr>
-											<tr>
-												<td>width<br/><i>(optional)</i></td>
-												<td>
-													<b>Type:</b> string<br/>
-													width of color picker
+													<b>Type:</b> int<br/>
+													value like month*100 + days (example: 101)
 												</td>
 											</tr>
 											<tr>
 												<td>enable</td>
 												<td>
 													<b>Type:</b> boolean<br/>
-													enable for color picker
+													enable for component
 												</td>
 											</tr>
 										</tbody>

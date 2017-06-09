@@ -3265,6 +3265,20 @@ button.search-btn {
   line-height: 50px;
 }
 
+/* line 1, ../sass/components/_monthdays.scss */
+.ntsMonthDays_Component{
+  float:left;
+}
+/* line 84, ../sass/components/_monthdays.scss */
+.ntsLabel{
+  padding: 5px 5px 7px 5px;
+}
+/* line 84, ../sass/components/_monthdays.scss */
+.ntsMonthDays_Container{
+  position: relative;
+  top: 10px;
+}
+
 /* line 38, ../sass/base.scss */
 html {
   font-size: 14px;

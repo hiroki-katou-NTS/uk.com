@@ -36,6 +36,7 @@ module nts.uk.ui.koExtentions {
                     textKey: "text",
                     valueKey: "value",
                     width: "60px",
+                    height: "30px",
                     mode : "dropdown",
                     selectionChanged: function (evt, ui) {
                         let currentMonth = ui.items[0].data.value;
@@ -44,7 +45,6 @@ module nts.uk.ui.koExtentions {
                         
                         let value = currentDay[0].data.value > days.length ? days.length: currentDay[0].data.value;
                         $dayPicker.igCombo("option", "dataSource", days);
-//                        $dayPicker.igCombo("value", value);
                         data.value(currentMonth*100 + value);
                     }
               });
@@ -54,6 +54,7 @@ module nts.uk.ui.koExtentions {
                     textKey: "text",
                     valueKey: "value",
                     width: "60px",
+                    height: "30px",
                     mode : "dropdown",
                     selectionChanged: function (evt, ui) {
                         let currentDay = ui.items[0].data.value;
@@ -77,36 +78,40 @@ module nts.uk.ui.koExtentions {
             let $monthPicker = $container.find(".ntsMonthPicker");
             let $dayPicker = $container.find(".ntsDayPicker");
             if(enable !== false){
-                $monthPicker.igCombo("option", "mode", "dropdown");
-                $dayPicker.igCombo("option", "mode", "dropdown");            
+                $monthPicker.igCombo('option', 'disabled', false);
+                $dayPicker.igCombo('option', 'disabled', false);            
             } else {
-                $monthPicker.igCombo("option", "mode", "readonly");
-                $dayPicker.igCombo("option", "mode", "readonly");     
+                $monthPicker.igCombo('option', 'disabled', true);
+                $dayPicker.igCombo('option', 'disabled', true); 
             }
             
             if(!nts.uk.util.isNullOrUndefined(value) && nts.uk.ntsNumber.isNumber(value)){
                 let month = nts.uk.ntsNumber.trunc(parseInt(value) / 100);
                 let day = parseInt(value) % 100;    
                 $monthPicker.igCombo("value", month);
-                $dayPicker.igCombo("value", day);        
-            }
+                $dayPicker.igCombo("value", day);     
+            }   
+            
+            let currentDay = $dayPicker.igCombo( "selectedItems")[0].data.value;
+            let currentMonth = $monthPicker.igCombo( "selectedItems")[0].data.value;
+            data.value(currentMonth*100 + currentDay);
             
         }
         
         static getMonths(): Array<any> {
             
-            let monthSource = [];
+            let monthSource = []; 
             while (monthSource.length < 12){
                 monthSource.push({text: monthSource.length + 1, value: monthSource.length + 1});        
             }
             
             return monthSource;
-        }
+        } 
         
         static getDaysInMonth(month: number): Array<any> {
             
             let daysInMonth = moment(month, "MM").daysInMonth();
-            if (daysInMonth !== NaN) {
+            if (daysInMonth !== NaN) { 
                 if (month === 2){
                     daysInMonth++;        
                 }

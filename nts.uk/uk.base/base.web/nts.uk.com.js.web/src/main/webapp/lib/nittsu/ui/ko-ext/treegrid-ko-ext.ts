@@ -53,6 +53,7 @@ module nts.uk.ui.koExtentions {
                 columns: displayColumns,
                 childDataKey: optionsChild,
                 initialExpandDepth: 10,
+                tabIndex: -1,
                 features: [
                     {
                         name: "Selection",
@@ -80,7 +81,7 @@ module nts.uk.ui.koExtentions {
                     }]
             });
             var treeGridId = $treegrid.attr('id');
-            $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
+            $(element).closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", "0");
             $treegrid.setupSearchScroll("igTreeGrid");
         }
 

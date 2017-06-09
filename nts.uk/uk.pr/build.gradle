@@ -102,7 +102,7 @@ subprojects {
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.20'
 		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.2'
 		
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.1'
+		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.1'
 	}
 }
 
@@ -309,7 +309,7 @@ project (':pr.web:nts.uk.pr.web') {
 	}
 	
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.1'
+		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		
 		runtime project (':pr.ctx:core:nts.uk.ctx.pr.core.ac')
