@@ -15,19 +15,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KmfstAcquisitionRule;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KmfstAcquisitionRule_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet_;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave.JpaAnnualPaidLeaveSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave.JpaManageAnnualSettingGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KarstAcquisitionRule;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KarstAcquisitionRule_;
 
 /**
  * The Class JpaAcquisitionRuleRepository.
@@ -51,7 +43,7 @@ public class JpaAcquisitionRuleRepository extends JpaRepository implements Acqui
 	@Override
 	public void create(AcquisitionRule acquisitionRule) {
 		EntityManager em = this.getEntityManager();
-		KmfstAcquisitionRule entity = new KmfstAcquisitionRule();
+		KarstAcquisitionRule entity = new KarstAcquisitionRule();
 		acquisitionRule.saveToMemento(new JpaAcquisitionRuleSetMemento(entity));
 		em.persist(entity);
 	}
@@ -65,7 +57,7 @@ public class JpaAcquisitionRuleRepository extends JpaRepository implements Acqui
 	@Override
 	public void update(AcquisitionRule acquisitionRule) {
 		EntityManager em = this.getEntityManager();
-		KmfstAcquisitionRule entity = new KmfstAcquisitionRule();
+		KarstAcquisitionRule entity = new KarstAcquisitionRule();
 		acquisitionRule.saveToMemento(new JpaAcquisitionRuleSetMemento(entity));
 		em.merge(entity);
 	}
@@ -78,8 +70,8 @@ public class JpaAcquisitionRuleRepository extends JpaRepository implements Acqui
 	 */
 	@Override
 	public void remove(String companyId) {
-		Optional<KmfstAcquisitionRule> entity = this.queryProxy().find(new KmfstAcquisitionRule(companyId),
-				KmfstAcquisitionRule.class);
+		Optional<KarstAcquisitionRule> entity = this.queryProxy().find(new KarstAcquisitionRule(companyId),
+				KarstAcquisitionRule.class);
 		if (entity.isPresent()) {
 			this.commandProxy().remove(entity.get());
 		}
@@ -96,15 +88,15 @@ public class JpaAcquisitionRuleRepository extends JpaRepository implements Acqui
 	public Optional<AcquisitionRule> findById(String companyId) {
 		EntityManager em = this.getEntityManager();
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfstAcquisitionRule> cq = builder.createQuery(KmfstAcquisitionRule.class);
-        Root<KmfstAcquisitionRule> root = cq.from(KmfstAcquisitionRule.class);
+        CriteriaQuery<KarstAcquisitionRule> cq = builder.createQuery(KarstAcquisitionRule.class);
+        Root<KarstAcquisitionRule> root = cq.from(KarstAcquisitionRule.class);
         List<Predicate> predicateList = new ArrayList<Predicate>();
 
-        predicateList.add(builder.equal(root.get(KmfstAcquisitionRule_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KarstAcquisitionRule_.cid), companyId));
 
         cq.where(predicateList.toArray(new Predicate[]{}));
 
-        List<KmfstAcquisitionRule> list = em.createQuery(cq).getResultList();
+        List<KarstAcquisitionRule> list = em.createQuery(cq).getResultList();
         return list.stream()
                 .map(item -> new AcquisitionRule(new JpaAcquisitionRuleGetMemento(item)))
                 .findFirst();

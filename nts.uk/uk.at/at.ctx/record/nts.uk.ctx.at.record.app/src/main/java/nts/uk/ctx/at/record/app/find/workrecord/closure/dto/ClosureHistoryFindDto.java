@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
+import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
 
@@ -88,6 +89,11 @@ public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 	public void setStartDate(YearMonth startDate) {
 		// Do nothing code
 
+	}
+
+	@Override
+	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
+		// Do nothing code
 	}
 
 }

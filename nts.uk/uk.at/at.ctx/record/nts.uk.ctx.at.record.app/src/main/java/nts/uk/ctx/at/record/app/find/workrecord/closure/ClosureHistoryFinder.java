@@ -4,14 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.workrecord.closure;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryFindDto;
+import nts.uk.ctx.at.record.dom.workrecord.closure.Closure;
+import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistory;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository;
+import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -23,7 +28,13 @@ public class ClosureHistoryFinder {
 
 	/** The repository. */
 	@Inject
-	private ClosureHistoryRepository repository;
+	private ClosureRepository repository;
+	
+	/** The repository history. */
+	@Inject
+	private ClosureHistoryRepository repositoryHistory;
+	
+	
 
 	public List<ClosureHistoryFindDto> getAllClosureHistory() {
 
@@ -33,8 +44,23 @@ public class ClosureHistoryFinder {
 		// get company id
 		String companyId = loginUserContext.companyId();
 
-		// domain to dto
-		return this.repository.findByCompanyId(companyId).stream().map(closureHistory -> {
+		// get all closure
+		List<Closure> closures = this.repository.getAllClosure(companyId);
+		
+		// get data
+		List<ClosureHistory> closureHistories = new ArrayList<>();
+		
+		closures.forEach(closure->{
+			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory
+				.findByLastHistory(companyId, closure.getClosureId());
+			
+			if(closureHistoryLast.isPresent()){
+				closureHistories.add(closureHistoryLast.get());
+			}
+		});
+		
+		// domain to data
+		return closureHistories.stream().map(closureHistory -> {
 			ClosureHistoryFindDto dto = new ClosureHistoryFindDto();
 			closureHistory.saveToMemento(dto);
 			return dto;

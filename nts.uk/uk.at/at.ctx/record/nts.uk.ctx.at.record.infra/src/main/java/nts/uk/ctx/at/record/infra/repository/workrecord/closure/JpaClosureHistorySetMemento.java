@@ -8,6 +8,7 @@ import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
+import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHist;
@@ -63,6 +64,21 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setClosureHistoryId(nts.uk.ctx.at.record.dom.workrecord.closure.
+	 * ClosureHistoryId)
+	 */
+	@Override
+	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
+		KclmtClosureHistPK pk = this.kclmtClosureHist.getKclmtClosureHistPK();
+		pk.setHistId(closureHistoryId.v());
+		this.kclmtClosureHist.setKclmtClosureHistPK(pk);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
 	 * setEndDate(nts.uk.ctx.at.record.dom.workrecord.closure.ClosureYearMonth)
 	 */
 	@Override
@@ -99,5 +115,8 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	public void setStartDate(YearMonth startDate) {
 		this.kclmtClosureHist.setStrD(startDate.v());
 	}
+
+
+	
 
 }
