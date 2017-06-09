@@ -12,9 +12,9 @@ module kcp001.a.viewmodel {
         listComponentMultiNoneSetting: ComponentOption;
         
         constructor() {
-            this.selectedCode = ko.observable(null);
+            this.selectedCode = ko.observable('02');
             this.selectedCodeNoSetting = ko.observable(null);
-            this.multiSelectedCodeNoSetting = ko.observableArray([]);
+            this.multiSelectedCodeNoSetting = ko.observableArray(['02', '04']);
             this.multiSelectedCode = ko.observableArray([]);
             this.listComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
