@@ -290,7 +290,7 @@ module nts.uk.pr.view.kmf001.f {
                 return dfd.promise();
             }
             
-            private loadEmploymentToScreen(data: any){
+            private loadEmploymentToScreen(data: any) {
                 var self = this;
                 if (data) {
                     self.emCompenManage(data.employmentManageSetting.isManaged);
@@ -349,7 +349,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.reCallValidate().done(function() {
                     if (!$('.check_error').ntsError('hasError'))
                         service.update(self.collectData()).done(function() {
-                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.loadSetting();
                         });
                 });
