@@ -5,16 +5,10 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenu;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -45,14 +39,6 @@ public class CcgmtTopPagePart extends UkJpaEntity implements Serializable {
 
 	@Column(name = "HEIGHT")
 	public int height;
-
-	@OneToOne(fetch=FetchType.EAGER)
-	@PrimaryKeyJoinColumns({
-		@PrimaryKeyJoinColumn(name="TOPPAGE_PART_ID", referencedColumnName="TOPPAGE_PART_ID"),
-		@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID")
-	})
-	@JoinTable(name="CCGMT_FLOWMENU")
-	public CcgmtFlowMenu ccgmtFlowMenu;
 	
 	@Override
 	protected Object getKey() {
