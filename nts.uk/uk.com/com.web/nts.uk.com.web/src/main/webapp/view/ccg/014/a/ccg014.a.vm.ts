@@ -66,6 +66,7 @@ module ccg014.a.viewmodel {
         /** Registry Button Click */
         registryButtonClick() {
             var self = this;
+            self.selectedTitleMenu().titleMenuCD(nts.uk.text.padLeft(self.selectedTitleMenu().titleMenuCD(), '0', 4));
             var titleMenu = ko.mapping.toJS(self.selectedTitleMenu);
             var titleMenuCD = titleMenu.titleMenuCD;
             $(".nts-input").trigger("validate");
