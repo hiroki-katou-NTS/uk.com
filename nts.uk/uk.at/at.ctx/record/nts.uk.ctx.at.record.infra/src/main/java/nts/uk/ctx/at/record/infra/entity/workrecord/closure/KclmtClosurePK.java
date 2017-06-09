@@ -29,14 +29,14 @@ public class KclmtClosurePK implements Serializable {
 	/** The ccid. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CCID")
-    private String ccid;
+    @Column(name = "CID")
+    private String cid;
     
     /** The closure id. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "CLOSURE_ID")
-    private String closureId;
+    private Integer closureId;
 
     /**
      * Instantiates a new kclmt closure PK.
@@ -50,8 +50,8 @@ public class KclmtClosurePK implements Serializable {
      * @param ccid the ccid
      * @param closureId the closure id
      */
-    public KclmtClosurePK(String ccid, String closureId) {
-        this.ccid = ccid;
+    public KclmtClosurePK(String cid, int closureId) {
+        this.cid = cid;
         this.closureId = closureId;
     }
 
@@ -62,7 +62,7 @@ public class KclmtClosurePK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (ccid != null ? ccid.hashCode() : 0);
+        hash += (cid != null ? cid.hashCode() : 0);
         hash += (closureId != null ? closureId.hashCode() : 0);
         return hash;
     }
@@ -71,27 +71,29 @@ public class KclmtClosurePK implements Serializable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KclmtClosurePK)) {
-            return false;
-        }
-        KclmtClosurePK other = (KclmtClosurePK) object;
-        if ((this.ccid == null && other.ccid != null) || (this.ccid != null && !this.ccid.equals(other.ccid))) {
-            return false;
-        }
-        if ((this.closureId == null && other.closureId != null) || (this.closureId != null && !this.closureId.equals(other.closureId))) {
-            return false;
-        }
-        return true;
-    }
+	public boolean equals(Object object) {
+		// not set
+		if (!(object instanceof KclmtClosurePK)) {
+			return false;
+		}
+		KclmtClosurePK other = (KclmtClosurePK) object;
+		if ((this.cid == null && other.cid != null)
+			|| (this.cid != null && !this.cid.equals(other.cid))) {
+			return false;
+		}
+		if ((this.closureId == null && other.closureId != null)
+			|| (this.closureId != null && !this.closureId.equals(other.closureId))) {
+			return false;
+		}
+		return true;
+	}
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return "entity.KclmtClosurePK[ ccid=" + ccid + ", closureId=" + closureId + " ]";
+        return "entity.KclmtClosurePK[ cid=" + cid + ", closureId=" + closureId + " ]";
     }
     
 }

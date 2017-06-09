@@ -71,9 +71,10 @@ public class KclmtClosureHist extends UkJpaEntity implements Serializable {
 	 *
 	 * @param ccid the ccid
 	 * @param closureId the closure id
+	 * @param hisId the his id
 	 */
-	public KclmtClosureHist(String ccid, Integer closureId) {
-		this.kclmtClosureHistPK = new KclmtClosureHistPK(ccid, closureId);
+	public KclmtClosureHist(String ccid, Integer closureId, String hisId) {
+		this.kclmtClosureHistPK = new KclmtClosureHistPK(ccid, closureId, hisId);
 	}
 
 	/**

@@ -37,7 +37,7 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.kclmtClosure.getKclmtClosurePK().getCcid());
+		return new CompanyId(this.kclmtClosure.getKclmtClosurePK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -45,7 +45,7 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public Integer getClosureId() {
-		return Integer.parseInt(this.kclmtClosure.getKclmtClosurePK().getClosureId());
+		return this.kclmtClosure.getKclmtClosurePK().getClosureId();
 	}
 
 	/* (non-Javadoc)
@@ -53,8 +53,7 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public UseClassification getUseClassification() {
-		// TODO Auto-generated method stub
-		return null;
+		return UseClassification.valueOf(this.kclmtClosure.getUseClass());
 	}
 
 	/* (non-Javadoc)
