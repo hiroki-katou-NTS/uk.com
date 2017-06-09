@@ -128,6 +128,9 @@ module kmk011.a.viewmodel {
                     self.enableSelect(true);
                 } else {
                     self.enableSelect(false);
+                    if ($('#inpDialog').ntsError("hasError") == true) {
+                        $('#inpDialog').ntsError('clear');
+                    }
                 }
             });
             //subscribe selectInp
@@ -174,11 +177,14 @@ module kmk011.a.viewmodel {
             })
         }
         openBDialog() {
-            nts.uk.ui.block.grayout();
             var self = this;
+            nts.uk.ui.block.grayout();
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
             nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', }).onClosed(function():any {
                 nts.uk.ui.block.clear();
+                if ($('#inpDialog').ntsError("hasError") == true) {
+                    $('#inpDialog').ntsError('clear');
+                }
                 $("#itemname").focus();
             });
         }
@@ -212,8 +218,8 @@ module kmk011.a.viewmodel {
                         self.lstItemSelected(lstName);
                         self.findTimeName(self.divTimeId());
                         if(self.timeItemName()!=''){
-                            if($('.nts-editor').ntsError("hasError")==true){
-                                $('.nts-input').ntsError('clear');
+                            if ($('#inpName').ntsError("hasError") == true) {
+                                $('#inpName').ntsError('clear');
                             }
                         }
                     })
