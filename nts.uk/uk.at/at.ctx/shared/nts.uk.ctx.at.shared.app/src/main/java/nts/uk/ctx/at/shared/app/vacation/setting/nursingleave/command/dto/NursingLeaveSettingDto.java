@@ -13,8 +13,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingVacationSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
 
 /**
  * The Class NursingLeaveSettingDto.
@@ -47,14 +47,14 @@ public class NursingLeaveSettingDto {
      * @param companyId the company id
      * @return the nursing vacation setting
      */
-    public NursingVacationSetting toDomain(String companyId) {
-        return new NursingVacationSetting(new JpaNursingVacationSettingGetMemento(companyId, this));
+    public NursingLeaveSetting toDomain(String companyId) {
+        return new NursingLeaveSetting(new JpaNursingVacationSettingGetMemento(companyId, this));
     }
 
     /**
      * The Class JpaNursingVacationSettingGetMemento.
      */
-    private class JpaNursingVacationSettingGetMemento implements NursingVacationSettingGetMemento {
+    private class JpaNursingVacationSettingGetMemento implements NursingLeaveSettingGetMemento {
 
         /** The company id. */
         private String companyId;

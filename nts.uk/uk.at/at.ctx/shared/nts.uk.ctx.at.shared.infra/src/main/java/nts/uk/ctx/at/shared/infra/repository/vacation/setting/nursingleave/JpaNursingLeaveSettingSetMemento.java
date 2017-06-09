@@ -2,35 +2,37 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.vacation.setting.nursingleave.find.dto;
+package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK;
 
-public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
-
-    /** The manage type. */
-    public Integer manageType;
-
-    /** The nursing category. */
-    public Integer nursingCategory;
-
-    /** The start month day. */
-    public Integer startMonthDay;
-
-    /** The nursing number leave day. */
-    public Integer nursingNumberLeaveDay;
-
-    /** The nursing number person. */
-    public Integer nursingNumberPerson;
-
-    /** The work type codes. */
-    public List<String> workTypeCodes;
-
+/**
+ * The Class JpaNursingVacationSettingSetMemento.
+ */
+public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetMemento {
+    
+    /** The entity nursing. */
+    private KnlmtNursingLeaveSet entityNursing;
+    
+    /**
+     * Instantiates a new jpa nursing leave setting set memento.
+     *
+     * @param entityNursing the entity nursing
+     */
+    public JpaNursingLeaveSettingSetMemento(KnlmtNursingLeaveSet entityNursing) {
+        this.entityNursing = entityNursing;
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -39,6 +41,9 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
      */
     @Override
     public void setCompanyId(String companyId) {
+        KnlmtNursingLeaveSetPK pk = new KnlmtNursingLeaveSetPK();
+        pk.setCid(companyId);
+        this.entityNursing.setKnlmtNursingLeaveSetPK(pk);
     }
 
     /*
@@ -50,7 +55,7 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
      */
     @Override
     public void setManageType(ManageDistinct manageType) {
-        this.manageType = manageType.value;
+        this.entityNursing.setManageType(manageType.value);
     }
 
     /*
@@ -62,7 +67,9 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
      */
     @Override
     public void setNursingCategory(NursingCategory nursingCategory) {
-        this.nursingCategory = nursingCategory.value;
+        KnlmtNursingLeaveSetPK pk = this.entityNursing.getKnlmtNursingLeaveSetPK();
+        pk.setNursingCtr(nursingCategory.value);
+        this.entityNursing.setKnlmtNursingLeaveSetPK(pk);
     }
 
     /*
@@ -73,7 +80,7 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
      */
     @Override
     public void setStartMonthDay(Integer startMonthDay) {
-        this.startMonthDay = startMonthDay;
+        this.entityNursing.setStartMonthDay(startMonthDay);
     }
 
     /*
@@ -85,12 +92,8 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
      */
     @Override
     public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
-        if (maxPersonSetting.getNursingNumberLeaveDay() != null) {
-            this.nursingNumberLeaveDay = maxPersonSetting.getNursingNumberLeaveDay().v();
-        }
-        if (maxPersonSetting.getNursingNumberPerson() != null) {
-            this.nursingNumberPerson = maxPersonSetting.getNursingNumberPerson().v();
-        }
+        JpaMaxPersonSettingSetMemento memento = new JpaMaxPersonSettingSetMemento(this.entityNursing);
+        maxPersonSetting.saveToMemento(memento);
     }
 
     /*
@@ -101,6 +104,17 @@ public class NursingLeaveSettingDto implements NursingLeaveSettingSetMemento {
      */
     @Override
     public void setWorkTypeCodes(List<String> workTypeCodes) {
-        this.workTypeCodes = workTypeCodes;
+        List<KnlmtNursingWorkType> listWorkType = new ArrayList<>();
+        for (int i = 0; i < workTypeCodes.size(); i++) {
+            String workTypeCode = workTypeCodes.get(i);
+            
+            KnlmtNursingWorkTypePK pk = new KnlmtNursingWorkTypePK();
+            pk.setCid(this.entityNursing.getKnlmtNursingLeaveSetPK().getCid());
+            pk.setNursingCtr(this.entityNursing.getKnlmtNursingLeaveSetPK().getNursingCtr());
+            pk.setOrderNumber(i);
+            
+            listWorkType.add(new KnlmtNursingWorkType(pk, workTypeCode));
+        }
+        this.entityNursing.setListWorkType(listWorkType);
     }
 }
