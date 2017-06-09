@@ -124,6 +124,13 @@
                         return katakanaMap[match];
                     }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
         }
+        
+        export function anyChar(text: string) {
+            return {
+                        probe: true,
+                        messageId: 'FND_E_ANY'
+                   }
+        }
 
         /**
          * 文字列が半角数字のみで構成された1文字以上の文字列かどうか判断する
@@ -429,7 +436,7 @@
             Any: new CharType(
                 '全角',
                 1,
-                nts.uk.util.alwaysTrue),
+                nts.uk.text.anyChar),
             Kana: new CharType(
                 'カナ',
                 1,
