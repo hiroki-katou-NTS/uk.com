@@ -77,13 +77,11 @@ module kmk011.b.viewmodel {
                     self.dataSource([]);
                     self.enableCode(true);
                     self.checkModel(false);
-//                    $("#inpCode").focus();
                 } else {
                     self.dataSource(lstDivReason);
                     let reasonFirst = _.first(lstDivReason);
                     self.currentCode(reasonFirst.divReasonCode);
                     self.checkModel(true);
-//                    $("#inpReason").focus();
                 }
                 dfd.resolve();
             })

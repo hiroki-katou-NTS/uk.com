@@ -3,10 +3,10 @@ module kmk011.b {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            if(self.checkModel()!=true){
-                $("#inpCode").focus();
-            }else{
+            if(screenModel.checkModel()){  
                 $("#inpReason").focus();
+            }else{
+                $("#inpCode").focus();
             }
         });
     });
