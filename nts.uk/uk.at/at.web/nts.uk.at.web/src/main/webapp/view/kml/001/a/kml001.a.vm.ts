@@ -209,6 +209,7 @@ module nts.uk.at.view.kml001.a {
                 nts.uk.ui.windows.setShared('isInsert', self.isInsert());
                 nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     if (nts.uk.ui.windows.getShared('updatePremiumSeting') == true) {
+                        nts.uk.ui.errors.clearAll();
                         var dfdPremiumItemSelect = servicebase.premiumItemSelect();
                         var dfdPersonCostCalculationSelect = servicebase.personCostCalculationSelect();
                         $.when(dfdPremiumItemSelect, dfdPersonCostCalculationSelect).done((premiumItemSelectData, dfdPersonCostCalculationSelectData) => {
@@ -412,6 +413,7 @@ module nts.uk.at.view.kml001.a {
                         nts.uk.ui.windows.sub.modal("/view/kdl/021/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                             let newList = nts.uk.ui.windows.getShared('selectedChildAttendace');
                             if (newList != null) {
+                                nts.uk.ui.errors.clearAll();
                                 if (newList.length != 0) {
                                     if (!_.isEqual(newList, currentList)) {
                                         //clone Knockout Object
@@ -423,7 +425,17 @@ module nts.uk.at.view.kml001.a {
                                 } else {
                                     self.currentPersonCost().premiumSets()[index].attendanceItems([]);
                                 }
+                                for(let i=0;i<10;i++){
+                                    max = __viewContext.primitiveValueConstraints.PremiumRate.max;
+                                    min = __viewContext.primitiveValueConstraints.PremiumRate.min;
+                                    rate = Number(self.currentPersonCost().premiumSets()[i].rate());
+                                    if(isNaN(rate)) $(".premiumPercent:eq("+(i)+")").ntsError('set', '割増率は 0 ～ 100 の整数を入力してください');  
+                                    else { 
+                                        if((rate<min)||(rate>max)) $(".premiumPercent:eq("+(i)+")").ntsError('set', '割増率は 0 ～ 100 の整数を入力してください'); 
+                                    }      
+                                }
                             }
+                            
                             nts.uk.ui.block.clear();
                         });
                     }).fail(function(res) {
