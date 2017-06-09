@@ -10,10 +10,40 @@ module kcp.share.list {
      * Component option.
      */
     export interface ComponentOption {
+        /**
+         * is Show Already setting.
+         */
         isShowAlreadySet: boolean;
+        
+        /**
+         * is Multi select.
+         */
         isMultiSelect: boolean;
+        
+        /**
+         * list type.
+         * 1. Employment list.
+         * 2. ???
+         * 3. Job title list.
+         * 4. Employee list.
+         */
         listType: ListType;
+        
+        /**
+         * selected value.
+         * May be string or Array<string>
+         */
         selectedCode: KnockoutObservable<any>;
+        
+        /**
+         * is dialog, if is main screen, set false,
+         */
+        isDialog: boolean;
+        
+        /**
+         * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
+         * ignore when isShowAlreadySet = false.
+         */
         alreadySettingList?: KnockoutObservableArray<UnitModel>;
     }
     
@@ -34,6 +64,7 @@ module kcp.share.list {
         selectedCodes: KnockoutObservable<any>;
         listComponentColumn: Array<any>;
         isMultiple: boolean;
+        isDialog: boolean;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -52,6 +83,7 @@ module kcp.share.list {
             var self = this;
             self.isMultiple = data.isMultiSelect;
             self.selectedCodes = data.selectedCode;
+            self.isDialog = data.isDialog;
             
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE) {
@@ -81,22 +113,35 @@ module kcp.share.list {
                 
                 // Map already setting attr to data list.
                 if (data.isShowAlreadySet) {
-                    var alreadyListCode = data.alreadySettingList().filter(item => item.isAlreadySetting).map(item => item.code);
-                    dataList.forEach((item => {
-                        item.isAlreadySetting = alreadyListCode.indexOf(item.code) > -1;
-                    }))
+                    self.addAreadySettingAttr(dataList, data.alreadySettingList());
+                    
+                    // subscribe when alreadySettingList update => reload component.
+                    data.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
+                        self.addAreadySettingAttr(dataList, newSettings);
+                        self.itemList(dataList);
+                    })
                 }
                 
                 // Init component.
                 self.itemList(dataList);
                 $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/list.xhtml', function() {
-                        ko.cleanNode($input[0]);
-                        ko.applyBindings(self, $input[0]);
-                        $( ".ntsSearchBox" ).focus();
-                    });
+                    ko.cleanNode($input[0]);
+                    ko.applyBindings(self, $input[0]);
+                    $(".ntsSearchBox").focus();
+                });
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+        
+        /**
+         * Add Aready Setting Attr into data list.
+         */
+        private addAreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitModel>) {
+            var alreadyListCode = alreadySettingList.filter(item => item.isAlreadySetting).map(item => item.code);
+            dataList.map((item => {
+                item.isAlreadySetting = alreadyListCode.indexOf(item.code) > -1;
+            }))
         }
         
         /**
