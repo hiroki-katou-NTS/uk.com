@@ -3,7 +3,9 @@ module kcp001.a.viewmodel {
     import ListType = kcp.share.list.ListType;
     export class ScreenModel {
         selectedCode: KnockoutObservable<string>;
+        selectedCodeNoSetting: KnockoutObservable<string>;
         multiSelectedCode: KnockoutObservable<any>;
+        multiSelectedCodeNoSetting: KnockoutObservable<any>;
         listComponentOption: ComponentOption;
         listComponentOptionMulti: ComponentOption;
         listComponentNoneSetting: ComponentOption;
@@ -49,7 +51,7 @@ module kcp001.a.viewmodel {
                 isShowAlreadySet: false,
                 isMultiSelect: false,
                 listType: ListType.EMPLOYMENT,
-                selectedCode: this.selectedCode,
+                selectedCode: this.selectedCodeNoSetting,
 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
             $('#empt-list-noSetting').ntsListComponent(this.listComponentNoneSetting);
@@ -59,7 +61,7 @@ module kcp001.a.viewmodel {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.EMPLOYMENT,
-                selectedCode: this.multiSelectedCode,
+                selectedCode: this.multiSelectedCodeNoSetting,
 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
             $('#empt-list-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
