@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.workrecord.closure;
 
+import nts.arc.time.YearMonth;
+
 /**
  * The Class ClosureHistoryGetMemento.
  */
@@ -29,7 +31,7 @@ public interface ClosureHistoryGetMemento {
 	 *
 	 * @return the end date
 	 */
-	ClosureYearMonth getEndDate();
+	YearMonth getEndDate();
 	
 	/**
 	 * Gets the closure date.
@@ -44,5 +46,5 @@ public interface ClosureHistoryGetMemento {
 	 *
 	 * @return the start date
 	 */
-	ClosureYearMonth getStartDate();
+	YearMonth getStartDate();
 }

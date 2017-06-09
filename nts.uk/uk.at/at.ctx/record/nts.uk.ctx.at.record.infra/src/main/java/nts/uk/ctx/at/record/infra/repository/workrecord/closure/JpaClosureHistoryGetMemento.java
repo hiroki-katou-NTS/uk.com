@@ -5,11 +5,11 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.closure;
 
 import lombok.Setter;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.closure.CloseName;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
-import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureYearMonth;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHist;
 
 /**
@@ -56,8 +56,8 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento{
 	 * @see nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryGetMemento#getEndDate()
 	 */
 	@Override
-	public ClosureYearMonth getEndDate() {
-		return ClosureYearMonth.of(this.kclmtClosureHist.getEndD());
+	public YearMonth getEndDate() {
+		return YearMonth.of(this.kclmtClosureHist.getEndD());
 	}
 
 	/* (non-Javadoc)
@@ -73,8 +73,8 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento{
 	 * @see nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryGetMemento#getStartDate()
 	 */
 	@Override
-	public ClosureYearMonth getStartDate() {
-		return ClosureYearMonth.of(this.kclmtClosureHist.getStrD());
+	public YearMonth getStartDate() {
+		return YearMonth.of(this.kclmtClosureHist.getStrD());
 	}
 
 }

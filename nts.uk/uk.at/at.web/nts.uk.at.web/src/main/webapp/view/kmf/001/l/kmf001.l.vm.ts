@@ -5,13 +5,16 @@ module nts.uk.pr.view.kmf001.l {
         
         export class ScreenModel {
             textEditorOption: KnockoutObservable<any>;
+            numberEditorOption: KnockoutObservable<any>;
             manageDistinctList: KnockoutObservableArray<EnumertionModel>;
             
             // 子の看護
             nursingSetting: KnockoutObservable<NursingSettingModel>;
+            backupNursingSetting: KnockoutObservable<NursingSettingModel>;
             
             // 介護
             childNursingSetting: KnockoutObservable<NursingSettingModel>;
+            backupChildNursingSetting: KnockoutObservable<NursingSettingModel>;
             
             constructor() {
                 let self = this;
@@ -19,12 +22,17 @@ module nts.uk.pr.view.kmf001.l {
                     width: "50px",
                     textalign: "center"
                 }));
+                self.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    width: "40px",
+                    textalign: "center",
+                }));
                 self.manageDistinctList = ko.observableArray([]);
                 
-                self.nursingSetting = ko.observable(new NursingSettingModel(1, null, null, null, null,
-                    ["KDL001", "KDL002", "KDL003", "KDL004"]));
-                self.childNursingSetting = ko.observable(new NursingSettingModel(1, null, null, null, null,
-                    ["KDL001", "KDL002", "KDL003", "KDL004"]));
+                self.nursingSetting = ko.observable(new NursingSettingModel());
+                self.backupNursingSetting = ko.observable(null);
+                
+                self.childNursingSetting = ko.observable(new NursingSettingModel());
+                self.backupChildNursingSetting = ko.observable(null);
             }
             
             public startPage(): JQueryPromise<any> {
@@ -75,15 +83,41 @@ module nts.uk.pr.view.kmf001.l {
             private toJsObject(): any {
                 let self = this;
                 let command: any = {};
-                command.nursingSetting = self.nursingSetting();
-                command.childNursingSetting = self.childNursingSetting();
+                
+                // 管理しない
+                if (self.nursingSetting().selectedManageNursing() == 0 && self.backupNursingSetting()) {
+                    self.backupNursingSetting().selectedManageNursing(self.nursingSetting().selectedManageNursing());
+                    command.nursingSetting = self.convertObjectCmd(self.backupNursingSetting, 0);
+                }
+                // 管理する
+                else {
+                    command.nursingSetting = self.convertObjectCmd(self.nursingSetting, 0);
+                }
+                // 管理しない
+                if (self.childNursingSetting().selectedManageNursing() == 0 && self.backupChildNursingSetting()) {
+                    self.backupChildNursingSetting().selectedManageNursing(self.childNursingSetting().selectedManageNursing());
+                    command.childNursingSetting = self.convertObjectCmd(self.backupChildNursingSetting, 1);
+                }
+                // 管理する
+                else {
+                    command.childNursingSetting = self.convertObjectCmd(self.childNursingSetting, 1);
+                }
                 return command;
             }
             
             private initUI(res: any): any {
                 let self = this;
-                self.nursingSetting(res.nursingSetting);
-                self.childNursingSetting(res.childNursingSetting);
+                if (res) {
+                    // NURSING
+                    self.convertModel(self.nursingSetting, res[0]);
+                    self.backupNursingSetting(new NursingSettingModel());
+                    self.convertModel(self.backupNursingSetting, res[0]);
+                    
+                    // CHILD NURSING
+                    self.convertModel(self.childNursingSetting, res[1]);
+                    self.backupChildNursingSetting(new NursingSettingModel());
+                    self.convertModel(self.backupChildNursingSetting, res[1]);
+                }
             }
             
             private validate(): boolean {
@@ -94,12 +128,23 @@ module nts.uk.pr.view.kmf001.l {
                     $('#nursing-day').ntsError('validate');
                     $('#nursing-number-leave-day').ntsError('validate');
                     $('#nursing-number-person').ntsError('validate');
+                    
+                    if (!self.nursingSetting().workTypeCodes() || self.nursingSetting().workTypeCodes().length == 0) {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_152'));
+                        return false;
+                    }
                 }
                 if (self.childNursingSetting().enableNursing()) {
                     $('#child-nursing-month').ntsError('validate');
                     $('#child-nursing-day').ntsError('validate');
                     $('#child-nursing-number-leave-day').ntsError('validate');
                     $('#child-nursing-number-person').ntsError('validate');
+                    
+                    if (!self.childNursingSetting().workTypeCodes()
+                            || self.childNursingSetting().workTypeCodes().length == 0) {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_152'));
+                        return false;
+                    }
                 }
                 if ($('.nts-input').ntsError('hasError')) {
                     return false;
@@ -133,6 +178,38 @@ module nts.uk.pr.view.kmf001.l {
                 });
                 return dfd.promise();
             }
+            
+            private convertObjectCmd(ob : KnockoutObservable<NursingSettingModel>, nursingCategory: number): any {
+                let self = this;
+                let object: any = {};
+                
+                object.manageType = ob().selectedManageNursing();
+                object.nursingCategory = nursingCategory;
+                object.startMonthDay = self.convertMonthDay(ob());
+                object.nursingNumberLeaveDay = ob().nursingNumberLeaveDay();
+                object.nursingNumberPerson = ob().nursingNumberPerson();
+                object.workTypeCodes = ob().workTypeCodes();
+                
+                return object;
+            }
+            
+            private convertModel(ob : KnockoutObservable<NursingSettingModel>, object: any) {
+                ob().selectedManageNursing(object.manageType);
+                if (object.startMonthDay) {
+                    ob().nursingMonth(parseInt(object.startMonthDay/100));
+                    ob().nursingDay(object.startMonthDay - ob().nursingMonth() * 100);
+                }
+                ob().nursingNumberLeaveDay(object.nursingNumberLeaveDay);
+                ob().nursingNumberPerson(object.nursingNumberPerson);
+                ob().workTypeCodes(object.workTypeCodes);
+            }
+            
+            private convertMonthDay(setting : KnockoutObservable<NursingSettingModel>): number {
+                if (!setting.nursingMonth() || !setting.nursingDay()) {
+                    return null;
+                }
+                return parseInt(setting.nursingMonth()) * 100 + parseInt(setting.nursingDay());
+            }
         }
         
         export class NursingSettingModel {
@@ -146,34 +223,17 @@ module nts.uk.pr.view.kmf001.l {
             workTypeCodes: KnockoutObservableArray<string>;
             typeCode: KnockoutObservable<string>;
             
-//            constructor() {
-//                let self = this;
-//                self.selectedManageNursing = ko.observable(1);
-//                self.enableNursing = ko.computed(function() {
-//                    return self.selectedManageNursing() == 1;
-//                }, self);
-//                self.nursingMonth = ko.observable(null);
-//                self.nursingDay = ko.observable(null);
-//                self.nursingNumberLeaveDay = ko.observable(null);
-//                self.nursingNumberPerson = ko.observable(null);
-//                self.workTypeCodes = ko.observableArray(["KDL001", "KDL002", "KDL003", "KDL004"]);
-//                self.typeCode = ko.computed(function() {
-//                    return self.workTypeCodes().join(", ");
-//                }, self);
-//            }
-            
-            constructor(manageNursing: number, nursingMonth: number, nursingDay: number, nursingNumberLeaveDay: number,
-                    nursingNumberPerson: number, workTypeCodes: Array<string>) {
+            constructor() {
                 let self = this;
-                self.selectedManageNursing = ko.observable(manageNursing);
+                self.selectedManageNursing = ko.observable(1);
                 self.enableNursing = ko.computed(function() {
                     return self.selectedManageNursing() == 1;
                 }, self);
-                self.nursingMonth = ko.observable(nursingMonth);
-                self.nursingDay = ko.observable(nursingDay);
-                self.nursingNumberLeaveDay = ko.observable(nursingNumberLeaveDay);
-                self.nursingNumberPerson = ko.observable(nursingNumberPerson);
-                self.workTypeCodes = ko.observableArray(workTypeCodes);
+                self.nursingMonth = ko.observable(null);
+                self.nursingDay = ko.observable(null);
+                self.nursingNumberLeaveDay = ko.observable(null);
+                self.nursingNumberPerson = ko.observable(null);
+                self.workTypeCodes = ko.observableArray(["001", "002", "003", "004"]);
                 self.typeCode = ko.computed(function() {
                     return self.workTypeCodes().join(", ");
                 }, self);

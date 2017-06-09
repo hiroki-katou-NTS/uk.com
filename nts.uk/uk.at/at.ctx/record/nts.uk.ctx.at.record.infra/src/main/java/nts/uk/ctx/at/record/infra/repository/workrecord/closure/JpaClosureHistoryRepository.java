@@ -102,4 +102,34 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 		domain.saveToMemento(new JpaClosureHistorySetMemento(entity));
 		return entity;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository#
+	 * findByCompanyId(java.lang.String)
+	 */
+	@Override
+	public List<ClosureHistory> findByCompanyId(String companyId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KCLMT_CLOSURE_HIST (KclmtClosureHist SQL)
+		CriteriaQuery<KclmtClosureHist> cq = criteriaBuilder.createQuery(KclmtClosureHist.class);
+
+		// root data
+		Root<KclmtClosureHist> root = cq.from(KclmtClosureHist.class);
+
+		// select root
+		cq.select(root);
+
+		// create query
+		TypedQuery<KclmtClosureHist> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(item -> this.toDomain(item))
+			.collect(Collectors.toList());
+	}
 }

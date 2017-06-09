@@ -5,13 +5,17 @@
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,25 +33,17 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The cid. */
-    @Id
-    @Basic(optional = false)
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
+    /** The kmfmtNursingLeaveSetPK. */
+    @EmbeddedId
+    private KmfmtNursingLeaveSetPK kmfmtNursingLeaveSetPK;
     
     /** The manage type. */
     @Basic(optional = false)
-    @Column(name = "MANAGE_TYPE")
+    @Column(name = "MANAGE_ATR")
     private Integer manageType;
     
-    /** The nursing ctr. */
-    @Basic(optional = false)
-    @Column(name = "NURSING_CTR")
-    private Integer nursingCtr;
-    
     /** The start md. */
-    @Column(name = "START_MD")
+    @Column(name = "STR_MD")
     private Integer startMonthDay;
     
     /** The nursing num leave day. */
@@ -57,6 +53,12 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     /** The nursing num person. */
     @Column(name = "NURSING_NUM_PERSON")
     private Integer nursingNumPerson;
+    
+    /** The list work type. */
+    @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = false),
+            @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "NURSING_TYPE", insertable = true, updatable = false)})
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<KmfmtNursingWorkType> listWorkType;
 
     /**
      * Instantiates a new kmfmt nursing leave set.
@@ -70,7 +72,7 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
+        hash += (kmfmtNursingLeaveSetPK != null ? kmfmtNursingLeaveSetPK.hashCode() : 0);
         return hash;
     }
 
@@ -84,7 +86,9 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
             return false;
         }
         KmfmtNursingLeaveSet other = (KmfmtNursingLeaveSet) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+        if ((this.kmfmtNursingLeaveSetPK == null && other.kmfmtNursingLeaveSetPK != null)
+                || (this.kmfmtNursingLeaveSetPK != null && !this.kmfmtNursingLeaveSetPK.equals(
+                        other.kmfmtNursingLeaveSetPK))) {
             return false;
         }
         return true;
@@ -95,6 +99,6 @@ public class KmfmtNursingLeaveSet extends UkJpaEntity implements Serializable {
      */
     @Override
     protected Object getKey() {
-        return this.cid;
+        return this.kmfmtNursingLeaveSetPK;
     }
 }
