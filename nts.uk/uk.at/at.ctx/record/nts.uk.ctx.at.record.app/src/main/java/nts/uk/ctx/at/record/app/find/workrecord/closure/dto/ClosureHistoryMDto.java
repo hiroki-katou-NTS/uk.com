@@ -14,18 +14,28 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
 
 /**
- * The Class ClosureHistoryFindDto.
+ * The Class ClosureHistoryMDto.
  */
+
 @Getter
 @Setter
-public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
-	
-	/** The id. */
-	private Integer id;
-	
-	/** The name. */
-	private String name;
-	
+public class ClosureHistoryMDto implements ClosureHistorySetMemento {
+
+
+	/** The history id. */
+	private String historyId;
+
+	/** The closure id. */
+	// 締めＩＤ
+	private int closureId;
+
+	/** The end date. */
+	// 終了年月: 年月
+	private int endDate;
+
+	/** The start date. */
+	// 開始年月: 年月
+	private int startDate;
 
 	/*
 	 * (non-Javadoc)
@@ -36,7 +46,8 @@ public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setCloseName(CloseName closeName) {
-		this.name = closeName.v();
+		// No thing code
+
 	}
 
 	/*
@@ -48,7 +59,7 @@ public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setClosureId(ClosureId closureId) {
-		this.id = closureId.value;
+		this.closureId = closureId.value;
 	}
 
 	/*
@@ -56,11 +67,25 @@ public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
-	 * setEndDate(nts.uk.ctx.at.record.dom.workrecord.closure.ClosureYearMonth)
+	 * setClosureHistoryId(nts.uk.ctx.at.record.dom.workrecord.closure.
+	 * ClosureHistoryId)
+	 */
+	@Override
+	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
+		this.historyId = closureHistoryId.v();
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setEndDate(nts.arc.time.YearMonth)
 	 */
 	@Override
 	public void setEndDate(YearMonth endDate) {
-		// Do nothing code
+		this.endDate = endDate.v();
 
 	}
 
@@ -73,8 +98,7 @@ public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setClosureDate(ClosureDate closureDate) {
-		// Do nothing code
-
+		// No thing code
 	}
 
 	/*
@@ -82,18 +106,11 @@ public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
-	 * setStartDate(nts.uk.ctx.at.record.dom.workrecord.closure.
-	 * ClosureYearMonth)
+	 * setStartDate(nts.arc.time.YearMonth)
 	 */
 	@Override
 	public void setStartDate(YearMonth startDate) {
-		// Do nothing code
-
-	}
-
-	@Override
-	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
-		// Do nothing code
+		this.startDate = startDate.v();
 	}
 
 }
