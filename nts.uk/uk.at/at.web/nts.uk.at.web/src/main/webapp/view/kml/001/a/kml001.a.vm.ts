@@ -148,20 +148,47 @@ module nts.uk.at.view.kml001.a {
             saveData(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
-                if (self.isInsert()) {
-                    let index = _.findLastIndex(self.personCostList()) + 1;
-                    if (moment(self.newStartDate()).isAfter(moment(self.lastStartDate))) {
-                        // insert new data if startDate have no error
-                        let ymd = self.newStartDate();
-                        self.currentPersonCost().startDate(ymd);
-                        servicebase.personCostCalculationInsert(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
+                $(".premiumPercent").trigger("validate");
+                if (!nts.uk.ui.errors.hasError())
+                {
+                    if (self.isInsert()) {
+                        let index = _.findLastIndex(self.personCostList()) + 1;
+                        if (moment(self.newStartDate()).isAfter(moment(self.lastStartDate))) {
+                            // insert new data if startDate have no error
+                            let ymd = self.newStartDate();
+                            self.currentPersonCost().startDate(ymd);
+                            servicebase.personCostCalculationInsert(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
+                                .done(function(res: Array<any>) {
+                                    servicebase.personCostCalculationSelect()
+                                        .done(function(newData: Array<any>) {
+                                            // refresh data list
+                                            self.personCostList.removeAll();
+                                            self.gridPersonCostList.removeAll();
+                                            self.isInsert(false);
+                                            self.loadData(newData, index);
+                                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){nts.uk.ui.block.clear();});
+                                        }).fail(function(res) {
+                                            nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                                        });
+                                }).fail(function(res) {
+                                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                                });
+                            
+                        } else {
+                            $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});
+                            nts.uk.ui.block.clear();
+                        }
+                    } else {
+                        // update new data for current personCostCalculation
+                        let index = _.findIndex(self.personCostList(), function(item){return item.historyID() == self.currentPersonCost().historyID()});
+                        self.currentPersonCost().startDate(self.newStartDate());
+                        servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                             .done(function(res: Array<any>) {
                                 servicebase.personCostCalculationSelect()
                                     .done(function(newData: Array<any>) {
                                         // refresh data list
                                         self.personCostList.removeAll();
                                         self.gridPersonCostList.removeAll();
-                                        self.isInsert(false);
                                         self.loadData(newData, index);
                                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){nts.uk.ui.block.clear();});
                                     }).fail(function(res) {
@@ -171,31 +198,8 @@ module nts.uk.at.view.kml001.a {
                                 nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                             });
                         
-                    } else {
-                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});
-                        nts.uk.ui.block.clear();
                     }
-                } else {
-                    // update new data for current personCostCalculation
-                    let index = _.findIndex(self.personCostList(), function(item){return item.historyID() == self.currentPersonCost().historyID()});
-                    self.currentPersonCost().startDate(self.newStartDate());
-                    servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
-                        .done(function(res: Array<any>) {
-                            servicebase.personCostCalculationSelect()
-                                .done(function(newData: Array<any>) {
-                                    // refresh data list
-                                    self.personCostList.removeAll();
-                                    self.gridPersonCostList.removeAll();
-                                    self.loadData(newData, index);
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){nts.uk.ui.block.clear();});
-                                }).fail(function(res) {
-                                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-                                });
-                        }).fail(function(res) {
-                            nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
-                        });
-                    
-                }
+                } else nts.uk.ui.block.clear();
             }
     
             /**
@@ -413,7 +417,7 @@ module nts.uk.at.view.kml001.a {
                         nts.uk.ui.windows.sub.modal("/view/kdl/021/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                             let newList = nts.uk.ui.windows.getShared('selectedChildAttendace');
                             if (newList != null) {
-                                nts.uk.ui.errors.clearAll();
+                                nts.uk.ui.errors.clearAll(); 
                                 if (newList.length != 0) {
                                     if (!_.isEqual(newList, currentList)) {
                                         //clone Knockout Object
@@ -424,15 +428,6 @@ module nts.uk.at.view.kml001.a {
                                     }
                                 } else {
                                     self.currentPersonCost().premiumSets()[index].attendanceItems([]);
-                                }
-                                for(let i=0;i<10;i++){
-                                    max = __viewContext.primitiveValueConstraints.PremiumRate.max;
-                                    min = __viewContext.primitiveValueConstraints.PremiumRate.min;
-                                    rate = Number(self.currentPersonCost().premiumSets()[i].rate());
-                                    if(isNaN(rate)) $(".premiumPercent:eq("+(i)+")").ntsError('set', '割増率は 0 ～ 100 の整数を入力してください');  
-                                    else { 
-                                        if((rate<min)||(rate>max)) $(".premiumPercent:eq("+(i)+")").ntsError('set', '割増率は 0 ～ 100 の整数を入力してください'); 
-                                    }      
                                 }
                             }
                             

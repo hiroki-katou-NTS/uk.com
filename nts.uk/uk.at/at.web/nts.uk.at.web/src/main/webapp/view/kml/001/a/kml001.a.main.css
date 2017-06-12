@@ -78,7 +78,8 @@ input, textarea {
 	outline-color: #999999;
 	outline-width: 1px;
 }
-#premium-set-tbl th:NTH-CHILD(2), #premium-set-tbl td:NTH-CHILD(2) {
+#premium-set-tbl th:NTH-CHILD(2),
+#premium-set-tbl td:NTH-CHILD(2) {
 	border-left: 1px solid #999999;
 	border-right: 1px solid #999999;
 }
@@ -89,7 +90,8 @@ input, textarea {
 	height: 33px;
 	border-top: 1px solid #999999;
 }
-#premium-set-tbl td, th { 
+#premium-set-tbl td,
+#premium-set-tbl th { 
 	padding-left: 5px;
 	padding-right: 5px;
 }
@@ -103,14 +105,17 @@ input, textarea {
 #premium-set-tbl tbody tr td:FIRST-CHILD { 
 	background-color: #EDFAC2;
 }
-#premium-set-tbl th:FIRST-CHILD, td:FIRST-CHILD {
+#premium-set-tbl th:FIRST-CHILD, 
+#premium-set-tbl td:FIRST-CHILD {
 	min-width: 220px;
 	max-width: 220px;
 }
-#premium-set-tbl th:NTH-CHILD(2), td:NTH-CHILD(2) {
+#premium-set-tbl th:NTH-CHILD(2), 
+#premium-set-tbl td:NTH-CHILD(2) {
 	width: 80px;
 }
-#premium-set-tbl th:LAST-CHILD, td:LAST-CHILD {
+#premium-set-tbl th:LAST-CHILD, 
+#premium-set-tbl td:LAST-CHILD {
 	width: 500px;
 }
 .notUse {
