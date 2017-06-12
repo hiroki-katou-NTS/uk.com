@@ -33,7 +33,7 @@ public class JobTitleWs {
 	 */
 	@Path("findall")
 	@POST
-	public List<JobTitleDto> findAll() {
-		return this.finder.findAll();
+	public List<JobTitleDto> findAll(String referenceDate) {
+		return this.finder.findAll(referenceDate);
 	}
 }

@@ -179,7 +179,7 @@ module kcp.share.list {
         // Service paths.
         var servicePath = {
             findEmployments: "basic/company/organization/employment/findAll/",
-            findJobTitles: '???',
+            findJobTitles: "basic/company/organization/jobtitle/findall",
             findClassifications: 'basic/company/organization/classification/findAll/',
         }
         
@@ -193,8 +193,7 @@ module kcp.share.list {
         
         export function findJobTitles(): JQueryPromise<Array<UnitModel>> {
             var dfd = $.Deferred<any>();
-            dfd.resolve();
-            return dfd.promise();
+            return nts.uk.request.ajax(servicePath.findJobTitles);
         }
         
         /**
