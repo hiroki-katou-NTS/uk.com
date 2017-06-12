@@ -1,14 +1,17 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.toppage;
 
 import lombok.Getter;
-import nts.uk.ctx.sys.portal.dom.primitive.LanguageName;
-import nts.uk.ctx.sys.portal.dom.primitive.LanguageNumber;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class Language.
  */
 @Getter
-public class Language {
+public class Language extends DomainObject {
 	
 	/** The lang name. */
 	private LanguageName langName;

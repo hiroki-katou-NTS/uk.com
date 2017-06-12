@@ -46,5 +46,9 @@
 	width: 170px !important;
 }
 #func-notifier-errors{
-    margin-left: -888px;
+    margin-left: -900px;
+}
+#single-list tr td {
+	white-space: nowrap;
+	nowrap: nowrap;
 }
