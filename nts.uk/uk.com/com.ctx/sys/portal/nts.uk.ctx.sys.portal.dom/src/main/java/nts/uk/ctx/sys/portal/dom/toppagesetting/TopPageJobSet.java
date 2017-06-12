@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.portal.dom.enums.System;
  *
  */
 @Getter
-public class TopPageJobTitleSetting extends AggregateRoot {
+public class TopPageJobSet extends AggregateRoot {
 
 	/** The company id. */
 	private String companyId;
@@ -31,7 +31,7 @@ public class TopPageJobTitleSetting extends AggregateRoot {
 	/** System */
 	private System system;
 
-	public TopPageJobTitleSetting(String companyId, TopMenuCode topMenuCode, TopMenuCode loginMenuCode, String jobId,
+	public TopPageJobSet(String companyId, TopMenuCode topMenuCode, TopMenuCode loginMenuCode, String jobId,
 			PersonPermissionSetting personPermissionSet, System system) {
 		super();
 		this.companyId = companyId;
@@ -46,9 +46,9 @@ public class TopPageJobTitleSetting extends AggregateRoot {
 	 * Convert from java type to TopPageJobSetting
 	 *
 	 */
-	public static TopPageJobTitleSetting createFromJavaType(String companyId, String topMenuCode, String loginMenuCode,
+	public static TopPageJobSet createFromJavaType(String companyId, String topMenuCode, String loginMenuCode,
 			String jobId, int personPermissionSet, int system) {
-		return new TopPageJobTitleSetting(companyId, new TopMenuCode(topMenuCode), new TopMenuCode(loginMenuCode), jobId,
+		return new TopPageJobSet(companyId, new TopMenuCode(topMenuCode), new TopMenuCode(loginMenuCode), jobId,
 				EnumAdaptor.valueOf(personPermissionSet, PersonPermissionSetting.class),
 				EnumAdaptor.valueOf(system, System.class));
 	}
