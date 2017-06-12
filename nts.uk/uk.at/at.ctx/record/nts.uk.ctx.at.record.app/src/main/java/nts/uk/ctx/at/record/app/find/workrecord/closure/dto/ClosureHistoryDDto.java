@@ -12,11 +12,11 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
+import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 
 /**
  * The Class ClosureHistoryDDto.
  */
-
 @Getter
 @Setter
 public class ClosureHistoryDDto implements ClosureHistorySetMemento {
@@ -113,5 +113,18 @@ public class ClosureHistoryDDto implements ClosureHistorySetMemento {
 	public void setStartDate(YearMonth startDate) {
 		// No thing code
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setCompanyId(nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId)
+	 */
+	@Override
+	public void setCompanyId(CompanyId companyId) {
+		// No thing code
+	}
+	
 
 }
