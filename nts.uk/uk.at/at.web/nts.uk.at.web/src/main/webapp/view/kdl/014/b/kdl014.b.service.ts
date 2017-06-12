@@ -31,7 +31,6 @@ module kdl014.b.service {
      */
     export function getStampNumberByListPersonId(arrPersonId: Array<string>): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getStampNumberByListPersonId,arrPersonId);
- 
     }
 
 }

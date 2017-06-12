@@ -14,9 +14,9 @@ public class StampFinder {
 	@Inject
 	private StampRepository stampRepo;
 
-	public List<StampDto> findByEmployeeCode(String cardNumber, String startDate, String endDate) {
+	public List<StampDto> findByEmployeeCode(List<String> lstCardNumber, String startDate, String endDate) {
 		String companyId = AppContexts.user().companyId();
-		List<StampDto> lstStamp = stampRepo.findByEmployeeCode(companyId, cardNumber, startDate, endDate)
+		List<StampDto> lstStamp = stampRepo.findByEmployeeCode(companyId, lstCardNumber, startDate, endDate)
 				.stream()
 				.map(item -> StampDto.fromDomain(item))
 				.collect(Collectors.toList());

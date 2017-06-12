@@ -20,8 +20,13 @@ public class StampCardWebService extends WebService {
 
 	@POST
 	@Path("getstampnumberbyempcode/{personId}")
-
 	public List<StampCardDto> getStampNumber(@PathParam("personId") String personId) {
 		return this.getStampCard.findByPersonID(personId);
+	}
+	
+	@POST
+	@Path("getliststampnumberbylstempcode")
+	public List<StampCardDto> getListStampNumber(List<String> lstPersonId) {
+		return this.getStampCard.findByListPersonID(lstPersonId);
 	}
 }

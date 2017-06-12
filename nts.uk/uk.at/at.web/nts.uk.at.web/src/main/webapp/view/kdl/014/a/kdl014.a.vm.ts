@@ -34,7 +34,8 @@ module kdl014.a.viewmodel {
             let lstCardNumber: Array<string> = [];
             //get list Card Number
             service.getPersonIdByEmployee(employeeCode).done(function(employeeInfo: any) {
-                //console.log(employeeInfo.personId);
+                console.log(employeeInfo.personId);
+                debugger;
                 if (employeeInfo !== undefined) {
                     let personId: string = employeeInfo.personId;
                     //get list Card Number

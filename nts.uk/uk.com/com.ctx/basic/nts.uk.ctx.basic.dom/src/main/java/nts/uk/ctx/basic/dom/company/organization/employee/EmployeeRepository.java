@@ -1,8 +1,8 @@
 package nts.uk.ctx.basic.dom.company.organization.employee;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeRepository {
 	// get List Employee
-	List<Employee> findByEmployeeCode(String companyId, String employeeCode);
+	Optional<Employee> getPersonIdByEmployeeCode(String companyId, String employeeCode);
 }

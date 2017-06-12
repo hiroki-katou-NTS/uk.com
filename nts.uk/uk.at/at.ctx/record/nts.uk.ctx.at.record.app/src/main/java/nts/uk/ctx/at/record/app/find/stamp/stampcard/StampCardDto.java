@@ -9,11 +9,13 @@ import nts.uk.ctx.at.record.dom.stamp.card.StampCardItem;
 @AllArgsConstructor
 @Data
 public class StampCardDto {
-	private String cardNumber;
 	private String personId;
+	private String cardNumber;
+	
 
 	public static StampCardDto fromDomain(StampCardItem domain) {
-		return new StampCardDto(domain.getPersonId(), domain.getCardNumber().v());
+		return new StampCardDto(domain.getPersonId(), 
+				domain.getCardNumber().v());
 	}
 
 }

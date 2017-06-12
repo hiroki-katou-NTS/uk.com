@@ -32,40 +32,51 @@ module kdl014.b.viewmodel {
 
 
             let lstCardNumber: Array<string> = [];
+            
+            let lstPersonID: Array<string> =['3C3F6EA0-5F1A-4477-844F-9A5DB849D538','50013D7B-24B1-4877-A37B-F2A83A0126F8','909F2111-7506-48C7-9A5D-B399CDDDC7F3'];
             //get list Card Number
-            service.getPersonIdByEmployee(employeeCode).done(function(employeeInfo: any) {
-                //console.log(employeeInfo.personId);
-                if (employeeInfo !== undefined) {
-                    let personId: string = employeeInfo.personId;
-                    //get list Card Number
-                    service.getStampNumberByPersonId(personId).done(function(lstStampNumber: any) {
-                        _.forEach(lstStampNumber, function(value) {
-                            lstCardNumber.push(value.cardNumber.toString());
-                        };
-                        //get list Stamp 
-                        service.getStampByCode(lstCardNumber, startDate, endDate).done(function(lstStamp: any) {
-                            console.log(lstStamp);
-                            //TODO
-                            if (lstStamp.length > 0) {
-                                _.forEach(lstStamp, function(item) {
-                                    self.items.push(new StampModel('0001','ducpm',item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
-                                });
-                            }
-
-                            dfd.resolve();
-                        }).fail(function(res) {
-                            dfd.reject();
-                        });
-                        dfd.resolve();
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                        dfd.reject();
-                    });
-                }
-                dfd.resolve();
+//            service.getPersonIdByEmployee(employeeCode).done(function(employeeInfo: any) {
+//                //console.log(employeeInfo.personId);
+//                if (employeeInfo !== undefined) {
+//                    let personId: string = employeeInfo.personId;
+//                    //get list Card Number
+//                    service.getStampNumberByPersonId(personId).done(function(lstStampNumber: any) {
+//                        _.forEach(lstStampNumber, function(value) {
+//                            lstCardNumber.push(value.cardNumber.toString());
+//                        };
+//                        //get list Stamp 
+//                        service.getStampByCode(lstCardNumber, startDate, endDate).done(function(lstStamp: any) {
+//                            console.log(lstStamp);
+//                            //TODO
+//                            if (lstStamp.length > 0) {
+//                                _.forEach(lstStamp, function(item) {
+//                                    self.items.push(new StampModel('0001','ducpm',item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+//                                });
+//                            }
+//
+//                            dfd.resolve();
+//                        }).fail(function(res) {
+//                            dfd.reject();
+//                        });
+//                        dfd.resolve();
+//                    }).fail(function(res) {
+//                        nts.uk.ui.dialog.alertError(res.message);
+//                        dfd.reject();
+//                    });
+//                }
+//                dfd.resolve();
+//            }).fail(function(res) {
+//                dfd.reject();
+//            });
+            
+            //Get list stamp number from list person Id
+            service.getStampNumberByListPersonId(lstPersonID).done(function(lstStampNumber: any) {
+                console.log(lstStampNumber);
+                debugger;
             }).fail(function(res) {
                 dfd.reject();
             });
+            
             return dfd.promise();
         }
 

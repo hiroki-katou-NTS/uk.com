@@ -13,10 +13,18 @@ import nts.uk.shr.com.context.AppContexts;
 public class StampCardFinder {
 	@Inject
 	private StampCardRepository stampCardRepo;
-
+	
+	private String companyId = AppContexts.user().companyId();
 	public List<StampCardDto> findByPersonID(String personId) {
-		String companyId = AppContexts.user().companyId();
 		List<StampCardDto> lstCardNumber = stampCardRepo.findByPersonID(companyId, personId)
+				.stream()
+				.map(item -> StampCardDto.fromDomain(item))
+				.collect(Collectors.toList());;
+		return lstCardNumber;
+	}
+
+	public List<StampCardDto> findByListPersonID(List<String> lstPersonId) {
+		List<StampCardDto> lstCardNumber = stampCardRepo.findByListPersonID(companyId, lstPersonId)
 				.stream()
 				.map(item -> StampCardDto.fromDomain(item))
 				.collect(Collectors.toList());;
