@@ -9,13 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Getter
-@Setter
+
 @Entity
 @Table(name = "CMMMT_AGENT")
 @AllArgsConstructor
@@ -29,39 +27,40 @@ public class CmmmtAgent extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "END_DATE")
-	public String endDate;
-
-	@Basic(optional = false)
-	@Column(name = "AGENT_APP_TYPE1")
-	public String agentAppType1;
+	public GeneralDate endDate;
 
 	@Basic(optional = false)
 	@Column(name = "AGENT_SID1")
 	public String agentSid1;
-
+	
 	@Basic(optional = false)
-	@Column(name = "AGENT_APP_TYPE2")
-	public String agentAppType2;
+	@Column(name = "AGENT_APP_TYPE1")
+	public int agentAppType1;
 
 	@Basic(optional = false)
 	@Column(name = "AGENT_SID2")
 	public String agentSid2;
-
+	
 	@Basic(optional = false)
-	@Column(name = "AGENT_APP_TYPE3")
-	public String agentAppType3;
+	@Column(name = "AGENT_APP_TYPE2")
+	public int agentAppType2;
 
 	@Basic(optional = false)
 	@Column(name = "AGENT_SID3")
 	public String agentSid3;
-	
+
 	@Basic(optional = false)
-	@Column(name = "AGENT_APP_TYPE4")
-	public String agentAppType4;
+	@Column(name = "AGENT_APP_TYPE3")
+	public int agentAppType3;
 
 	@Basic(optional = false)
 	@Column(name = "AGENT_SID4")
 	public String agentSid4;
+	
+	@Basic(optional = false)
+	@Column(name = "AGENT_APP_TYPE4")
+	public int agentAppType4;
+
 
 	@Override
 	protected Object getKey() {

@@ -1,11 +1,9 @@
 package nts.uk.ctx.workflow.dom.agent;
 
-import lombok.AllArgsConstructor;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@AllArgsConstructor
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(1)
 public enum AgentAppType {
@@ -16,5 +14,9 @@ public enum AgentAppType {
 	// 2:設定なし
 	NO_SETTINGS(2);
 	public final int value;
+	
+	private AgentAppType(int value){
+		this.value = value;
+	}
 }
 	

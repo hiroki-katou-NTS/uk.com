@@ -6,12 +6,14 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
-@Setter
-@Getter
+
 @Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 public class CmmmtAgentPK implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -26,5 +28,5 @@ public class CmmmtAgentPK implements Serializable{
 	
 	@Basic(optional = false)	
 	@Column(name = "START_DATE")
-	public String startDate;
+	public GeneralDate startDate;
 }
