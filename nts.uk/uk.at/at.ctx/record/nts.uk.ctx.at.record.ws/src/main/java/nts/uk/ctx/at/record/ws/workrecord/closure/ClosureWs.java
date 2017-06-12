@@ -12,6 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.record.app.command.workrecord.closure.ClosureSaveCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.closure.ClosureSaveCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.ClosureFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureFindDto;
 
@@ -25,6 +27,9 @@ public class ClosureWs {
 	/** The finder. */
 	@Inject
 	private ClosureFinder finder;
+	
+	/** The save. */
+	private ClosureSaveCommandHandler save;
 	
 	
 	/**
@@ -50,4 +55,18 @@ public class ClosureWs {
 	public ClosureFindDto detail(@PathParam("closureId") int closureId){
 		return this.finder.getByClosure(closureId);
 	}
+	
+	
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("save")
+	public void save(ClosureSaveCommand command){
+		this.save.handle(command);
+	}
+	
+	
 }

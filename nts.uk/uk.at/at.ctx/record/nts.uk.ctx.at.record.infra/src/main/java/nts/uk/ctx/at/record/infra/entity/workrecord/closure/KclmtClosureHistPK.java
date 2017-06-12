@@ -38,7 +38,7 @@ public class KclmtClosureHistPK implements Serializable {
 	private Integer closureId;
 	
 	
-	/** The hist id. */
+	/** The history id. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "HIST_ID")
