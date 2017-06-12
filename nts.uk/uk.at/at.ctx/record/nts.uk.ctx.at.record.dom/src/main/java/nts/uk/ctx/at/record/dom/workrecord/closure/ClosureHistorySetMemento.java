@@ -26,6 +26,13 @@ public interface ClosureHistorySetMemento {
 	void setClosureId(ClosureId closureId);
 	
 	/**
+	 * Sets the company id.
+	 *
+	 * @param companyId the new company id
+	 */
+	void setCompanyId(CompanyId companyId);
+	
+	/**
 	 * Sets the closure history id.
 	 *
 	 * @param closureHistoryId the new closure history id

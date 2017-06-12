@@ -21,6 +21,10 @@ public class ClosureHistory extends DomainObject{
 	// 名称: 締め名称
 	private CloseName closeName;
 	
+	
+	/** The company id. */
+	private CompanyId companyId;
+	
 	/** The closure id. */
 	// 締めＩＤ
 	private ClosureId closureId;
@@ -49,6 +53,7 @@ public class ClosureHistory extends DomainObject{
 	public ClosureHistory(ClosureHistoryGetMemento memento){
 		this.closeName = memento.getCloseName();
 		this.closureId = memento.getClosureId();
+		this.companyId = memento.getCompanyId();
 		this.closureHistoryId = memento.getClosureHistoryId();
 		this.endDate = memento.getEndDate();
 		this.closureDate = memento.getClosureDate();
@@ -64,6 +69,7 @@ public class ClosureHistory extends DomainObject{
 	public void saveToMemento(ClosureHistorySetMemento memento){
 		memento.setCloseName(this.closeName);
 		memento.setClosureId(this.closureId);
+		memento.setCompanyId(this.companyId);
 		memento.setClosureHistoryId(this.closureHistoryId);
 		memento.setEndDate(this.endDate);
 		memento.setClosureDate(this.closureDate);

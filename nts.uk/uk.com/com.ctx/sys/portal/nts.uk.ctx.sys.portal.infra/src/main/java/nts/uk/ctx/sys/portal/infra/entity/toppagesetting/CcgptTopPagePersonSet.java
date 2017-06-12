@@ -9,26 +9,33 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "CCGPT_TOPPAGE_PERSON_SET")
 public class CcgptTopPagePersonSet extends UkJpaEntity {
-	
+
 	@EmbeddedId
-	public CcgptTopPagePersonSetPK ccgptTopPagePersonSetPK;	
-	
+	public CcgptTopPagePersonSetPK ccgptTopPagePersonSetPK;
+
 	/** The top menu no. */
 	@Column(name = "TOP_MENU_NO")
 	public String topMenuNo;
-	
+
 	/** The login menu no. */
 	@Column(name = "LOGIN_MENU_NO")
 	public String loginMenuNo;
 
+	@Column(name = "SYSTEM")
+	public int system;
+
 	@Override
-	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return ccgptTopPagePersonSetPK;
+	protected CcgptTopPagePersonSetPK getKey() {
+		return this.ccgptTopPagePersonSetPK;
 	}
 }

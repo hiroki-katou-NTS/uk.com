@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
+import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 
 /**
  * The Class ClosureHistoryFindDto.
@@ -94,6 +95,12 @@ public class ClosureHistoryFindDto implements ClosureHistorySetMemento{
 	@Override
 	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
 		// Do nothing code
+	}
+
+	@Override
+	public void setCompanyId(CompanyId companyId) {
+		// Do nothing code
+		
 	}
 
 }

@@ -22,6 +22,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistory;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHist;
+import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHistPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHistPK_;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHist_;
 
@@ -122,7 +123,7 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 	public Optional<ClosureHistory> findByHistoryId(String companyId, int closureId,
 			String historyId) {
 		return this.queryProxy()
-				.find(new KclmtClosureHist(companyId, closureId, historyId), KclmtClosureHist.class)
+				.find(new KclmtClosureHistPK(companyId, closureId, historyId), KclmtClosureHist.class)
 				.map(c -> this.toDomain(c));
 	}
 

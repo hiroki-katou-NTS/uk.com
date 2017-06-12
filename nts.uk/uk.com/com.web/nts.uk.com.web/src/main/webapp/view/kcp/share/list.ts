@@ -66,6 +66,8 @@ module kcp.share.list {
         listComponentColumn: Array<any>;
         isMultiple: boolean;
         isDialog: boolean;
+        hasBaseDate: boolean;
+        baseDate: KnockoutObservable<Date>;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -73,8 +75,9 @@ module kcp.share.list {
             this.isMultiple = false;
             
             // Setup list column.
-            this.listComponentColumn.push({headerText: 'コード', prop: 'code', width: 50});
-            this.listComponentColumn.push({headerText: '名称', prop: 'name', width: 170});
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: 50});
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170});
+            this.baseDate = ko.observable(new Date());
         }
         /**
          * Init component.
@@ -85,17 +88,18 @@ module kcp.share.list {
             self.isMultiple = data.isMultiSelect;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE;
             
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE) {
-                self.listComponentColumn.push({headerText: '所属', prop: 'companyName', width: 50});
+                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'companyName', width: 50});
             }
             
             // If show Already setting.
             if (data.isShowAlreadySet) {
                 // Add row already setting.
                 self.listComponentColumn.push({
-                    headerText: '設定済', prop: 'isAlreadySetting', width: 30,
+                    headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 30,
                     formatter: function(isAlreadySet: string) {
                         if (isAlreadySet == 'true') {
                             return '<div style="text-align: center;"><i class="icon icon-dot"></i></div>';
