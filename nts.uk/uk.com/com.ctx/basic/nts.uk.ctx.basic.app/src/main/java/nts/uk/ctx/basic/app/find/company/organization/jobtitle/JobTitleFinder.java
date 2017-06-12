@@ -31,10 +31,10 @@ public class JobTitleFinder {
 	 *
 	 * @return the list
 	 */
-	public List<JobTitleDto> findAll() {
+	public List<JobTitleDto> findAll(String referenceDate) {
 		String companyId = AppContexts.user().companyId();
-
-		List<JobTitle> jobs = repository.findAll(companyId, GeneralDate.today());
+		GeneralDate baseDate = GeneralDate.fromString(referenceDate, "yyyy/MM/dd");
+		List<JobTitle> jobs = repository.findAll(companyId, baseDate);
 
 		return jobs.stream().map(job -> {
 			JobTitleDto memento = new JobTitleDto();

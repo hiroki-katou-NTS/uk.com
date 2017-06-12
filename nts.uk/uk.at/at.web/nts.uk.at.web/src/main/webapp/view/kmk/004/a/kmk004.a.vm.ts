@@ -1,8 +1,6 @@
 module nts.uk.at.view.kmk004.a {
     export module viewmodel {
 
-        import abc = service.model.Monthly;
-
         export class ScreenModel {
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
@@ -177,21 +175,11 @@ module nts.uk.at.view.kmk004.a {
         }
         export class Monthly {
             month: string;
-            value: KnockoutObservable<number>;
+            time: KnockoutObservable<number>;
 
             constructor(month: string, value: number) {
                 let self = this;
-                self.value = ko.observable(value);
-                self.month = month;
-            }
-        }
-        export class Monthly implements service.model.Monthly {
-            month: string;
-            value: KnockoutObservable<number>;
-
-            constructor(month: string, value: number) {
-                let self = this;
-                self.value = ko.observable(value);
+                self.time = ko.observable(value);
                 self.month = month;
             }
         }

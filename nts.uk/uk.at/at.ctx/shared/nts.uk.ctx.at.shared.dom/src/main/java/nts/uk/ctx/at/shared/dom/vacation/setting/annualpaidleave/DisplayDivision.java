@@ -9,11 +9,11 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
  */
 public enum DisplayDivision {
     
-	/** The Notshow. */
-	Notshow(0, "表示しない", "表示しない"),
-    
     /** The Indicate. */
-    Indicate(1, "表示する", "表示する");
+    Indicate(1, "表示する", "表示する"),
+    
+    /** The Notshow. */
+    Notshow(0, "表示しない", "表示しない");
 
 	/** The value. */
 	public int value;

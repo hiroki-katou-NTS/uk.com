@@ -4,55 +4,66 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find.dto;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
+import lombok.Setter;
 
 /**
  * The Class AnnualPaidLeaveSettingFindDto.
  */
-public class AnnualPaidLeaveSettingFindDto implements AnnualPaidLeaveSettingSetMemento {
+@Setter
+public class AnnualPaidLeaveSettingFindDto {
 
     /** The annual manage. */
     public Integer annualManage;
 
-    /** The manage setting. */
-    public ManageAnnualSettingFindDto setting;
+    /** The add attendance day. */
+    public Integer addAttendanceDay;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * AnnualPaidLeaveSettingSetMemento#setCompanyId(java.lang.String)
-     */
-    @Override
-    public void setCompanyId(String companyId) {
-    }
+    /** The max manage semi vacation. */
+    public Integer maxManageSemiVacation;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * AnnualPaidLeaveSettingSetMemento#setYearManageType(nts.uk.ctx.at.shared.
-     * dom.vacation.setting.ManageDistinct)
-     */
-    @Override
-    public void setYearManageType(ManageDistinct yearManageType) {
-        this.annualManage = yearManageType.value;
-    }
+    /** The max number semi vacation. */
+    public Integer maxNumberSemiVacation;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * AnnualPaidLeaveSettingSetMemento#setYearManageSetting(nts.uk.ctx.at.
-     * shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting)
-     */
-    @Override
-    public void setYearManageSetting(ManageAnnualSetting yearManageSetting) {
-        ManageAnnualSettingFindDto setting = new ManageAnnualSettingFindDto();
-        yearManageSetting.saveToMemento(setting);
-        this.setting = setting;
-    }
+    /** The max number company. */
+    public Integer maxNumberCompany;
+
+    /** The max grant day. */
+    public Double maxGrantDay;
+
+    /** The max remaining day. */
+    public Double maxRemainingDay;
+
+    /** The number year retain. */
+    public Integer numberYearRetain;
+
+    /** The preemption annual vacation. */
+    public Integer preemptionAnnualVacation;
+
+    /** The preemption year leave. */
+    public Integer preemptionYearLeave;
+
+    /** The remaining number display. */
+    public Integer remainingNumberDisplay;
+
+    /** The next grant day display. */
+    public Integer nextGrantDayDisplay;
+
+    /** The time manage type. */
+    public Integer timeManageType;
+
+    /** The time unit. */
+    public Integer timeUnit;
+
+    /** The manage max day vacation. */
+    public Integer manageMaxDayVacation;
+
+    /** The reference. */
+    public Integer reference;
+
+    /** The max time day. */
+    public Integer maxTimeDay;
+
+    /** The is enough time one day. */
+    public Boolean isEnoughTimeOneDay;
 
 }

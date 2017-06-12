@@ -1,11 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 /**
- * The Interface AnnualPaidLeaveSettingRepository.
+ * The Interface AnnualVacationSettingRepository.
  */
 public interface AnnualPaidLeaveSettingRepository {
     
@@ -27,7 +27,7 @@ public interface AnnualPaidLeaveSettingRepository {
      * Find by company id.
      *
      * @param companyId the company id
-     * @return the annual paid leave setting
+     * @return the annual vacation setting
      */
     AnnualPaidLeaveSetting findByCompanyId(String companyId);
 }
