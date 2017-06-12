@@ -29,16 +29,17 @@
 							<td id="contents-left"
 								class="bg-green caret-right caret-background">
 								<i class="icon icon-searchbox"></i>
-								<div id="lstClosureHistory" 
-									data-bind="ntsListBox: {
-									options: lstClosureHistory,
-									optionsValue: 'id',
-									optionsText: 'view',
-									multiple: false,
-									value: selectCodeLstClosure,
-									enable: true,
-									rows: 5  }">
-								</div>	
+								<div
+									id="lstClosureHistory" 
+										data-bind="ntsListBox: {
+										options: lstClosureHistory,
+										optionsValue: 'id',
+										optionsText: 'view',
+										multiple: false,
+										value: selectCodeLstClosure,
+										enable: true,
+										rows: 10  }" >
+								</div>
 						</td>
 							<td id="contents-right">
 	
@@ -81,7 +82,8 @@
 								</div>
 								
 								<div class="contents">
-									<div class="lableData" 
+									<div class="lableData"  
+										id="lstClosureHistoryHistory" 
 										data-bind="ntsListBox: {
 										options: closureModel.closureHistories,
 										optionsValue: 'historyId',
@@ -90,7 +92,7 @@
 										value: selectCodeLstClosureHistory,
 										enable: true,
 										rows: 5  }">
-									</div>
+									</div>	
 										<div class="contents">
 											<div class="lableDataEnd" data-bind="ntsFormLabel: {required: true}">
 												<label>#{i18n.getText('KMK012_9')}</label>
@@ -98,7 +100,7 @@
 											<div class="valueData">
 												<input class="nts-input" id="inpname" 
 													data-bind="ntsTextEditor:{
-			                                        value: name,
+			                                        value: closureHistoryModel.closureName,
 			                                        required: true,
 			                                        constraint: 'CloseName',
 			                                        enable: true}" />
@@ -115,7 +117,7 @@
 												 <div id="cobxDayOfMonth" data-bind="ntsComboBox: {
 													options: lstDayOfMonth,
 													optionsValue: 'day',
-													value: day,
+													value: closureHistoryModel.closureDate,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
