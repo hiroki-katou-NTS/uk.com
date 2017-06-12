@@ -8122,7 +8122,7 @@ var nts;
                                 var srh = $container.data("searchObject");
                                 var result = srh.search(searchKey, selectedItems);
                                 if (nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight") {
-                                    nts.uk.ui.dialog.alert(nts.uk.resource.getText("FND_E_SEARCH_NOHIT"));
+                                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
                                     return;
                                 }
                                 var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
@@ -8163,7 +8163,7 @@ var nts;
                         var nextSearch = function () {
                             var searchKey = $input.val();
                             if (nts.uk.util.isNullOrEmpty(searchKey)) {
-                                nts.uk.ui.dialog.alert(nts.uk.resource.getText("FND_E_SEARCH_NOWORD"));
+                                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
                                 return;
                             }
                             search(searchKey);
