@@ -93,7 +93,7 @@ module kcp.share.list {
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE;
-            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYMENT;
+            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE && data.isMultiSelect;
             self.initGridStyle(data);
             
             // Setup list column.
@@ -188,13 +188,15 @@ module kcp.share.list {
                 break;
             }
             var alreadySettingColSize = data.isShowAlreadySet ? 70 : 0;
-            var multiSelectColSize = data.isMultiSelect ? 50 : 0;
+            var multiSelectColSize = data.isMultiSelect ? 65 : 0;
+            var selectAllButtonSize = this.isHasButtonSelectAll ? 60 : 0;
             var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
-                + alreadySettingColSize + multiSelectColSize;
+                + alreadySettingColSize + multiSelectColSize + selectAllButtonSize;
+            var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
-                totalColumnSize: Math.max(350, totalColumnSize),
-                totalComponentSize: Math.max(350, totalColumnSize) + 2
+                totalColumnSize: Math.max(minTotalSize, totalColumnSize),
+                totalComponentSize: Math.max(minTotalSize, totalColumnSize) + 2
             };
         }
         
