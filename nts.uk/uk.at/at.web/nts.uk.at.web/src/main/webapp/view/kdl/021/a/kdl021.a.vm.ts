@@ -16,7 +16,7 @@ module kdl021.a.viewmodel {
             //header
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'code', width: 70 },
-                { headerText: nts.uk.resource.getText("KDL021_4"), prop: 'name', width: 230 }
+                { headerText: nts.uk.resource.getText("KDL021_4"), prop: 'name', width: 245 ,formatter: _.escape}
             ]);
             self.currentCodeList = ko.observableArray();
             self.posibleItems = [];
@@ -26,6 +26,7 @@ module kdl021.a.viewmodel {
         //load data
         start() {
             var self = this;
+            nts.uk.ui.block.invisible();
             //all possible attendance items
             self.posibleItems = nts.uk.ui.windows.getShared('AllAttendanceObj');
             //selected attendace items
@@ -42,6 +43,8 @@ module kdl021.a.viewmodel {
                     self.items(self.dataSoure);
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
 
             }

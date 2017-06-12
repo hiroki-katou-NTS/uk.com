@@ -10,6 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeName
+				nts.uk.ctx.at.record.dom.divergencetime.Time
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk011.a.main.css" />
@@ -20,9 +21,9 @@
 		<ui:define name="content">
 			<div id="function_area">
 				<!-- A1_1: Button Registration -->
-				<button id="btn_001"
+				<button id="btnSave"
 					class="button proceed separate-button fix-button"
-					data-bind="click: Registration" tabindex="1">#{i18n.getText('KMK011_3')}</button>
+					data-bind="click: Registration,enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KMK011_3')}</button>
 				<hr />
 			</div>
 
@@ -72,11 +73,12 @@
 								<!--A3_3 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_9')}</div>
 							</td>
-							<td>
+							<td style = "padding-left: 5px">
 								<!-- A3_4: Divergence Time Name -->
 								 <input tabindex="4"
-								class="nts-input" id="div-time-name" 
+								class="nts-input" id="itemname" 
 								data-bind="ntsTextEditor:{
+										name: '#[KMK011_30]',
                                          value: divTimeName,
                                          required: true,
                                          constraint: 'DivergenceTimeName',
@@ -88,13 +90,15 @@
 								<!-- A3_5 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_10')}</div>
 							</td>
-							<td>
-								<!-- A3_6 -->
+							<td style = "padding-left: 5px">
+								<!-- A3_6 Open dialog 021-->
 								<button tabindex="5"
 									data-bind="click: openDialog021,enable: enableUse">#{i18n.getText('KMK011_11')}</button>
-								<!-- A3_7: Time item name --> <input class="nts-input"
+								<!-- A3_7: Time item name --> 
+								<input class="nts-input" id = "inpName"
 								style="width: 350px"
 								data-bind="ntsTextEditor:{
+										name: '#[KMK011_31]',
 										value: timeItemName,
 										required: true,
 										readonly: true,
@@ -106,13 +110,16 @@
 								<!-- A3_8: Label -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_12')}</div>
 							</td>
-							<td>
-								<!-- A3_9: Alarm time --> <input tabindex="6"
-								class="nts-validate" id="inpAlarmTime" style="width: 50px"
-								data-bind="ntsTextEditor: {
-                                         value: alarmTime,
-                                         enable: enableUse}"
-								data-name="AlarmTime" />
+							<td style = "padding-left: 5px">
+								<!-- A3_9: Alarm time --> 
+								<input tabindex="6" class="nts-validate" id="inpAlarmTime" style="width: 50px"
+								data-bind="ntsTimeEditor: {
+									name: '#[KMK011_32]',
+									value: alarmTime,
+									inputFormat: 'time', 
+									mode: 'time', 
+									constraint: 'Time',
+									enable: enableUse}" />
 							</td>
 						</tr>
 						<tr class="row">
@@ -120,12 +127,16 @@
 								<!-- A3_10: Label -->
 								<div class="row" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_13')}</div>
 							</td>
-							<td>
-								<!-- A3_11: Error time --> <input tabindex="7"
-								style="width: 50px"
-								data-bind="ntsTextEditor:{
-                                         value: errTime,
-                                         enable: enableUse}" />
+							<td style = "padding-left: 5px">
+								<!-- A3_11: Error time --> 
+                                 <input tabindex="7" style="width: 50px"
+                                 data-bind="ntsTimeEditor: {
+									name: '#[KMK011_33]',
+									value: errTime,
+									inputFormat: 'time', 
+									mode: 'time', 
+									constraint: 'Time',
+									enable: enableUse}" />
 							</td>
 						</tr>
 						<tr class="row">
@@ -142,9 +153,9 @@
 									optionsText: 'name',
 									value: selectSel,
 									enable: enableUse }">
-								</div> <!-- A3_14: Open Dialog Divergence Reason -->
+								</div> 
+								<!-- A3_14: Open Dialog Divergence Reason -->
 								<button tabindex="9" class="nts-validate" id="inpDialog"
-									style="margin-left: 30px;"
 									data-bind="click: openBDialog, enable: enableSelect">#{i18n.getText('KMK011_15')}</button>
 							</td>
 						</tr>

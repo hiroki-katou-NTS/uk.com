@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceItemSet;
@@ -29,6 +28,7 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 		String companyId = AppContexts.user().companyId();
 		DivergenceTime divTime = DivergenceTime.createSimpleFromJavaType(companyId,
 									context.getCommand().getDivTime().getDivTimeId(),
+									context.getCommand().getDivTime().getAttendanceId(),
 									context.getCommand().getDivTime().getDivTimeName(),
 									context.getCommand().getDivTime().getDivTimeUseSet(),
 									context.getCommand().getDivTime().getAlarmTime(),
@@ -40,18 +40,22 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 		Boolean checkTime = DivergenceTime.checkAlarmErrTime(context.getCommand().getDivTime().getAlarmTime(), context.getCommand().getDivTime().getErrTime());
 		if(checkTime == true){
 			if(check.isExit(context.getCommand().getDivTime().getSelectSet().getSelectUseSet(),context.getCommand().getDivTime().getDivTimeId())){
-				if(context.getCommand().getTimeItem().isEmpty()){
-					divTimeRepo.updateDivTime(divTime);
-				}else{
-					List<DivergenceItemSet> listUpdate = context.getCommand().getTimeItem().stream().map(c -> {
-						return new DivergenceItemSet(companyId, c.getDivTimeId(), c.getAttendanceId());
-					}).collect(Collectors.toList());
-					if (listUpdate == null) {
-						return;
+				if(context.getCommand().getTimeItemName().compareTo("")!=0){
+					if(context.getCommand().getTimeItem().isEmpty()){
+						divTimeRepo.updateDivTime(divTime);
+					}else{
+						List<DivergenceItemSet> listUpdate = context.getCommand().getTimeItem().stream().map(c -> {
+							return new DivergenceItemSet(companyId, c.getDivTimeId(), c.getAttendanceId());
+						}).collect(Collectors.toList());
+						if (listUpdate == null) {
+							return;
+						}
+						divTimeRepo.deleteItemId(companyId, context.getCommand().getDivTime().getDivTimeId());
+						divTimeRepo.addItemId(listUpdate);
+						divTimeRepo.updateDivTime(divTime);
 					}
-					divTimeRepo.deleteItemId(companyId, context.getCommand().getDivTime().getDivTimeId());
-					divTimeRepo.addItemId(listUpdate);
-					divTimeRepo.updateDivTime(divTime);
+				}else{
+					throw new BusinessException("This field is required");
 				}
 			}else{
 				throw new BusinessException("Msg_32");
@@ -60,7 +64,7 @@ public class UpdateDivergenceTimeCommandHandler extends CommandHandler<UpdateDiv
 		}else{
 			throw new BusinessException("Msg_82");
 		}
-		
+				
 	}
 	
 }
