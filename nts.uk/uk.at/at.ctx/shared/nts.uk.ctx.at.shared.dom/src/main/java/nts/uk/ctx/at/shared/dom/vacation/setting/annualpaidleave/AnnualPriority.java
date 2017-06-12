@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 /**
  * The Enum PreemptionPermit.
  */
-public enum PreemptionPermit {
+public enum AnnualPriority {
 
 	/** The fifo. */
 	FIFO(0, "先入れ先出し", "先入れ先出し"),
@@ -25,7 +25,7 @@ public enum PreemptionPermit {
 	public String description;
 
 	/** The Constant values. */
-	private final static PreemptionPermit[] values = PreemptionPermit.values();
+	private final static AnnualPriority[] values = AnnualPriority.values();
 
 	/**
 	 * Instantiates a new preemption permit.
@@ -34,7 +34,7 @@ public enum PreemptionPermit {
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private PreemptionPermit(int value, String nameId, String description) {
+	private AnnualPriority(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -46,14 +46,14 @@ public enum PreemptionPermit {
 	 * @param value the value
 	 * @return the preemption permit
 	 */
-	public static PreemptionPermit valueOf(Integer value) {
+	public static AnnualPriority valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (PreemptionPermit val : PreemptionPermit.values) {
+		for (AnnualPriority val : AnnualPriority.values) {
 			if (val.value == value) {
 				return val;
 			}

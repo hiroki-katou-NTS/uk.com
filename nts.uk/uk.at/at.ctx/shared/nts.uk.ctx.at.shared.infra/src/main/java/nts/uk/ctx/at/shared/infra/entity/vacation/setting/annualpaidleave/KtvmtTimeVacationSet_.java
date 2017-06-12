@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave;
@@ -8,11 +8,11 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KmfmtAnnualPaidLeave_.
+ * The Class KtvmtTimeVacationSet_.
  */
-@StaticMetamodel(KmfmtAnnualPaidLeave.class)
-public class KmfmtAnnualPaidLeave_ {
+@StaticMetamodel(KtvmtTimeVacationSet.class)
+public class KtvmtTimeVacationSet_ {
     
     /** The cid. */
-    public static volatile SingularAttribute<KmfmtAnnualPaidLeave, String> cid;
+    public static volatile SingularAttribute<KtvmtTimeVacationSet, String> cid;
 }

@@ -4,30 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import lombok.Builder;
 
 /**
  * The Class RemainingNumberSetting.
  */
-@Setter
-@Getter
+@Builder
 public class RemainingNumberSetting {
 
-	/** The work day calculate. */
-	private ManageDistinct workDayCalculate;
+    /** The retention year. */
+    // 保持年数
+    public RetentionYear retentionYear;
 
-	/** The half day manage. */
-	private HalfDayManage halfDayManage;
-
-	/** The maximum day vacation. */
-	private AnnualLeaveGrantDate maximumDayVacation;
-
-	/** The remaining day max number. */
-	// TODO: Not find Primitive 残数上限日数
-	private Integer remainingDayMaxNumber;
-
-	/** The retention year. */
-	private RetentionYear retentionYear;
+    /** The remaining day max number. */
+    // 残数上限日数
+    public MaxRemainingDay remainingDayMaxNumber;
 }

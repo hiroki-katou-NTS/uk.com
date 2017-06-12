@@ -29,7 +29,7 @@ public class MonthlyDto {
 	 * @return the list
 	 */
 	public static List<MonthlyDto> fromDomain(List<Monthly> domain) {
-		return domain.stream().map(item -> new MonthlyDto(item.getMonth().v(), item.getTime()))
+		return domain.stream().map(item -> new MonthlyDto(item.getMonth().v(), item.getTime().v()))
 				.collect(Collectors.toList());
 	}
 }
