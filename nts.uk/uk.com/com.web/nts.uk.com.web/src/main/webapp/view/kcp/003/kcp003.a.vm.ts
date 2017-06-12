@@ -10,12 +10,14 @@ module kcp003.a.viewmodel {
         listComponentOptionMulti: ComponentOption;
         listComponentNoneSetting: ComponentOption;
         listComponentMultiNoneSetting: ComponentOption;
+//        baseDate: KnockoutObservable<string>;
         
         constructor() {
             this.selectedCode = ko.observable('2');
             this.selectedCodeNoSetting = ko.observable(null);
             this.multiSelectedCodeNoSetting = ko.observableArray(['2', '4']);
             this.multiSelectedCode = ko.observableArray([]);
+//            this.baseDate = ko.observable(null);
             this.listComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
