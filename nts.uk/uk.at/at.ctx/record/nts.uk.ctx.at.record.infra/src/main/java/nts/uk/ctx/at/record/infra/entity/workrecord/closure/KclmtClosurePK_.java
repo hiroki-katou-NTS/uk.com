@@ -14,7 +14,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class KclmtClosurePK_ {
 
 	/** The ccid. */
-	public static volatile SingularAttribute<KclmtClosurePK, String> ccid;
+	public static volatile SingularAttribute<KclmtClosurePK, String> cid;
 
 	/** The closure id. */
 	public static volatile SingularAttribute<KclmtClosurePK, String> closureId;

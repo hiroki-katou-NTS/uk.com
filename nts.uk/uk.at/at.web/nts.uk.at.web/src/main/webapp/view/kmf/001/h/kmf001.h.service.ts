@@ -4,13 +4,13 @@ module nts.uk.pr.view.kmf001.h {
          *  Service paths
          */
         var paths: any = {
-            getComSetting: "at/proto/substvacation/com/find",
-            getEmpSetting: "at/proto/substvacation/emp/find",
-            saveComSetting: "at/proto/substvacation/com/save",
-            saveEmpSetting: "at/proto/substvacation/emp/save",
-            vacationExpirationEnum: "at/proto/substvacation/enum/vacationexpiration",
-            applyPermissionEnum: "at/proto/substvacation/enum/applypermission",
-            manageDistinctEnum: "at/proto/substvacation/enum/managedistinct",
+            getComSetting: "ctx/at/shared/vacation/setting/substvacation/com/find",
+            getEmpSetting: "ctx/at/shared/vacation/setting/substvacation/emp/find",
+            saveComSetting: "ctx/at/shared/vacation/setting/substvacation/com/save",
+            saveEmpSetting: "ctx/at/shared/vacation/setting/substvacation/emp/save",
+            vacationExpirationEnum: "ctx/at/shared/vacation/setting/substvacation/enum/vacationexpiration",
+            applyPermissionEnum: "ctx/at/shared/vacation/setting/substvacation/enum/applypermission",
+            manageDistinctEnum: "ctx/at/shared/vacation/setting/substvacation/enum/managedistinct",
         };
 
         /**
