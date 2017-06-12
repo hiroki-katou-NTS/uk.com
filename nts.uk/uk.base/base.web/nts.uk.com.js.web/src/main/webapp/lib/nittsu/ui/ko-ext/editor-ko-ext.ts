@@ -142,7 +142,7 @@ module nts.uk.ui.koExtentions {
                 }
             });
 
-            $input.on("change", (e) => {
+            $input.on("blur", (e) => {
                 if (!$input.attr('readonly')) {
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });

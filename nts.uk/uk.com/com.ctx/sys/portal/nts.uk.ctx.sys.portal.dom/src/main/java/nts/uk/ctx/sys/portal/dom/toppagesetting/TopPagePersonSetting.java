@@ -1,48 +1,45 @@
 package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
+import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 
 /**
- * The Class TopPagePersonSetting.
+ * 
+ * @author sonnh1
+ *
  */
+@Getter
 public class TopPagePersonSetting extends AggregateRoot {
 
 	/** The company id. */
 	private String companyId;
-	
+
 	/** The employee id. */
 	private String employeeId;
-	
-	/** The top menu code. */
-	private String topMenuCd;
-	
-	/** The login menu code. */
-	private String loginMenuCd;
 
-	/**
-	 * Instantiates a new top page title set.
-	 *
-	 * @param companyId the company id
-	 * @param employeeId the employee id
-	 * @param topMenuCd the top menu code
-	 * @param loginMenuCd the login menu code
-	 */
-	public TopPagePersonSetting(String companyId, String employeeId, String topMenuCd, String loginMenuCd) {
+	/** The top menu code. */
+	private TopMenuCode topMenuCode;
+
+	/** The login menu code. */
+	private TopMenuCode loginMenuCode;
+	
+	/** System */
+	private System system;
+
+	public TopPagePersonSetting(String companyId, String employeeId, TopMenuCode topMenuCode, TopMenuCode loginMenuCode,
+			System system) {
 		this.companyId = companyId;
 		this.employeeId = employeeId;
-		this.topMenuCd = topMenuCd;
-		this.loginMenuCd = loginMenuCd;
-	} 
-	
-	/**
-	 * Creates the from java type.
-	 *
-	 * @param companyId the company id
-	 * @param employeeId the employee id
-	 * @param topMenuCd the top menu code
-	 * @param loginMenuCd the login menu code
-	 */
-	public static TopPagePersonSetting createFromJavaType(String companyId, String employeeId, String topMenuCd, String loginMenuCd) {
-		return new TopPagePersonSetting(companyId, employeeId, topMenuCd, loginMenuCd);
+		this.topMenuCode = topMenuCode;
+		this.loginMenuCode = loginMenuCode;
+		this.system = system;
+	}
+
+	public static TopPagePersonSetting createFromJavaType(String companyId, String employeeId, String topMenuCode,
+			String loginMenuCode, int system) {
+		return new TopPagePersonSetting(companyId, employeeId, new TopMenuCode(topMenuCode),
+				new TopMenuCode(loginMenuCode), EnumAdaptor.valueOf(system, System.class));
 	}
 }

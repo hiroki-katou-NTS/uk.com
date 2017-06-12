@@ -24,7 +24,6 @@ public class ScriptFile extends UIComponentBase {
             "/lib/generic/jqueryui/jquery-ui.js",
             "/lib/generic/jquery/jquery.steps.js",
             "/lib/generic/jqueryplugin/jquery.blockui.js",
-            "/lib/generic/spectrum/spectrum.js",
             "/lib/generic/momentjs/moment.js",
             "/lib/generic/momentjs/ja.js",
             "/lib/generic/lodash/lodash-4.16.6.min.js",

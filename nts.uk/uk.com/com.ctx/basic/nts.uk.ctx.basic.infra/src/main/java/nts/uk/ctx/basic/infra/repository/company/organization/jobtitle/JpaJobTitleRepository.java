@@ -51,7 +51,7 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		predicateList
 				.add(cb.equal(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.companyId), companyId));
-		predicateList.add(cb.lessThanOrEqualTo(root.get(CjtmtJobTitle_.endDate), referenceDate));
+		predicateList.add(cb.lessThanOrEqualTo(root.get(CjtmtJobTitle_.startDate), referenceDate));
 		predicateList.add(cb.greaterThanOrEqualTo(root.get(CjtmtJobTitle_.endDate), referenceDate));
 
 		List<Order> orderList = new ArrayList<Order>();

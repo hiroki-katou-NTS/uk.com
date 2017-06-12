@@ -21,7 +21,6 @@ public class StyleFile extends UIComponentBase {
             "/lib/generic/jqueryui/jquery-ui.css",
             "/lib/generic/igniteui/css/structure/infragistics.css",
             "/lib/nittsu/ui/style/stylesheets/base.css",
-            "/lib/generic/spectrum/spectrum.css"
     }));
 
     @SuppressWarnings("serial")
