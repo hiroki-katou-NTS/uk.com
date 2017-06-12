@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @AllArgsConstructor
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(1)
-public enum AgentAppType4 {
+public enum AgentAppType {
 	// 0:代行者指定
 	SUBSTITUTE_DESIGNATION(0),
 	// 1:パス
@@ -17,3 +17,4 @@ public enum AgentAppType4 {
 	NO_SETTINGS(2);
 	public final int value;
 }
+	

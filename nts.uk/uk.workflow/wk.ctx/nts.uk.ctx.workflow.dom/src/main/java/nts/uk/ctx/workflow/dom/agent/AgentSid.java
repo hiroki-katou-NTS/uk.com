@@ -4,10 +4,10 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class AgentSid3.
+ * The Class AgentSid1.
  */
 @StringMaxLength(36)
-public class AgentSid3 extends StringPrimitiveValue<EmployeeId> {
+public class AgentSid extends StringPrimitiveValue<EmployeeId> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -17,7 +17,7 @@ public class AgentSid3 extends StringPrimitiveValue<EmployeeId> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public AgentSid3(String rawValue) {
+	public AgentSid(String rawValue) {
 		super(rawValue);
 	}
 

@@ -98,6 +98,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 					.getSingle().map(e -> {
 						return Optional.of(toDomain(e));
 					}).orElse(Optional.empty());
+			
 		} catch (Exception e) {
 			throw e;
 		}
