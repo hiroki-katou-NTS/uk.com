@@ -31,7 +31,7 @@ public class WorkingTimeSettingDto {
 	 * @return the working time setting dto
 	 */
 	public static WorkingTimeSettingDto fromDomain(WorkingTimeSetting domain) {
-		return new WorkingTimeSettingDto(domain.getDaily(), MonthlyDto.fromDomain(domain.getMonthly()),
-				domain.getWeekly());
+		return new WorkingTimeSettingDto(domain.getDaily().v(), MonthlyDto.fromDomain(domain.getMonthly()),
+				domain.getWeekly().v());
 	}
 }
