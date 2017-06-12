@@ -72,7 +72,7 @@ module nts.uk.at.view.kmk012.a {
                 var self = this;
                 service.detailClosure(closureId).done(function(data){
                     self.closureModel.updateData(data);
-                    self.detailClosureHistory(data.closureHistories[0]);
+                    //self.detailClosureHistory(data.closureHistories[0]);
                 });
            }
             
@@ -148,6 +148,7 @@ module nts.uk.at.view.kmk012.a {
             }
 
             updateData(dto: ClosureDto) {
+                console.log(dto);
                 this.closureId(dto.closureId);
                 this.useClassification(dto.useClassification);
                 this.month(dto.month);
@@ -189,6 +190,7 @@ module nts.uk.at.view.kmk012.a {
                 this.closureDate = ko.observable(0);
             }
             updateData(dto: ClosureHistoryDDto){
+                console.log(dto);
                 this.historyId(dto.historyId);
                 this.closureId(dto.closureId);
                 this.closureName(dto.closureName);
