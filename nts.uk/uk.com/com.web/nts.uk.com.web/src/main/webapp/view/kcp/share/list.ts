@@ -52,6 +52,7 @@ module kcp.share.list {
      */
     export class ListType {
         static EMPLOYMENT = 1;
+        static Classification = 2;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
     }
@@ -164,7 +165,7 @@ module kcp.share.list {
                 case ListType.JOB_TITLE:
                     return service.findJobTitles();
                 case ListType.EMPLOYEE:
-                    return service.findEmployees();
+                    return service.findClassifications();
             }
         }
         
@@ -179,7 +180,7 @@ module kcp.share.list {
         var servicePath = {
             findEmployments: "basic/company/organization/employment/findAll/",
             findJobTitles: '???',
-            findEmployees: '???'
+            findClassifications: 'basic/company/organization/classification/findAll/',
         }
         
         /**
@@ -196,10 +197,13 @@ module kcp.share.list {
             return dfd.promise();
         }
         
-        export function findEmployees(): JQueryPromise<Array<UnitModel>> {
+        /**
+         * Find Classification list.
+         */
+        export function findClassifications(): JQueryPromise<Array<UnitModel>> {
             var dfd = $.Deferred<any>();
             dfd.resolve();
-            return dfd.promise();
+            return nts.uk.request.ajax(servicePath.findClassifications);
         }
         
     }
