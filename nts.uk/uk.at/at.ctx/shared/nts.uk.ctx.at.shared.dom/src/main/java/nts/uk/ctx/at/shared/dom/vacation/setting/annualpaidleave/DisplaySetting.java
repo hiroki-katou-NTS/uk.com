@@ -12,9 +12,11 @@ import lombok.Builder;
 @Builder
 public class DisplaySetting {
     
-    /** The remaining number display. */
-    public DisplayDivision remainingNumberDisplay;
-    
     /** The next grant day display. */
+    // 次回付与日数表示区分
     public DisplayDivision nextGrantDayDisplay;
+    
+    /** The remaining number display. */
+    // 残数表示区分
+    public DisplayDivision remainingNumberDisplay;
 }
