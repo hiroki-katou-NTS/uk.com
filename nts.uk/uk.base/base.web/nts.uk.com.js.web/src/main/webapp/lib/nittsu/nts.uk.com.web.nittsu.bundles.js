@@ -507,6 +507,7 @@ var nts;
                     }
                     DefaultValue.prototype.onReset = function ($control, koValue) {
                         var self = this;
+                        $control.addClass("reset-element");
                         $control.on(DefaultValue.RESET_EVT, function (e) {
                             var param = e.detail;
                             self.asDefault($(this), koValue, param.value, param.immediateApply);
@@ -881,6 +882,13 @@ var nts;
                 }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
             }
             text_3.oneByteKatakanaToTwoByte = oneByteKatakanaToTwoByte;
+            function anyChar(text) {
+                return {
+                    probe: true,
+                    messageId: 'FND_E_ANY'
+                };
+            }
+            text_3.anyChar = anyChar;
             /**
              * 文字列が半角数字のみで構成された1文字以上の文字列かどうか判断する
              * @param text 解析対象の文字列
@@ -1164,7 +1172,7 @@ var nts;
                 AlphaNumeric: new CharType('半角英数字', 0.5, nts.uk.text.allHalfAlphanumeric),
                 Alphabet: new CharType('半角英字', 0.5, nts.uk.text.allHalfAlphabet),
                 Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
-                Any: new CharType('全角', 1, nts.uk.util.alwaysTrue),
+                Any: new CharType('全角', 1, nts.uk.text.anyChar),
                 Kana: new CharType('カナ', 1, nts.uk.text.allFullKatakana),
                 HalfInt: new CharType('半整数', 0.5, nts.uk.text.halfInt)
             };
@@ -2354,6 +2362,8 @@ var nts;
                     kiban.title(__viewContext.title || 'THIS IS TITLE');
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
+                    // off event reset for class reset-not-apply
+                    $(".reset-not-apply").find(".reset-element").off("reset");
                 };
                 $(function () {
                     ui.documentReady.fire();
@@ -2518,7 +2528,7 @@ var nts;
                         }
                         var message = {};
                         var validateFail = false, max = 99999999, min = 0, mantissaMaxLength;
-                        if (this.constraint.valueType === "HalfInt") {
+                        if (!uk.util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {
                             if (!uk.ntsNumber.isHalfInt(inputText, message))
                                 validateFail = true;
                         }
@@ -4678,7 +4688,7 @@ var nts;
                         // Copy&Paste
                         copyPaste.ifOn($(self), options);
                         options.autoCommit = true;
-                        events.Handler.pull($(self)).filter().onCellUpdate().onDirectEnter().onSpacePress();
+                        events.Handler.pull($(self)).filter().onCellUpdate().onCellUpdateKeyUp().onDirectEnter().onSpacePress();
                         $(this).igGrid(options);
                     };
                     function isFeatureEnable(features, name) {
@@ -4721,6 +4731,7 @@ var nts;
                             if (isFeatureEnable(options.ntsFeatures, feature.CELL_EDIT)) {
                                 updateFeature.editMode = "cell";
                                 updateFeature.editCellStarting = startEditCell;
+                                updateFeature.editCellEnding = beforeFinishEditCell;
                             }
                             return updateFeature;
                         }
@@ -4734,23 +4745,32 @@ var nts;
                         function startEditCell(evt, ui) {
                             if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
                                 var selectedCell = selection.getSelectedCell($(evt.target));
-                                if (uk.util.isNullOrUndefined(selectedCell))
+                                if (uk.util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target)))
                                     return;
                                 $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index);
                                 return false;
                             }
-                            //                $(ui.editor).on("keyup", cellKeyUp);
                             return true;
                         }
-                        function finishEditCell(evt, ui) {
-                            var validators = $(evt.target).data(validation.VALIDATORS);
-                            var fieldValidator = validators[ui.columnKey];
+                        function onEditCell(evt, cell) {
+                            var $grid = $(evt.currentTarget);
+                            if (!$grid.igGridUpdating("isEditing"))
+                                return;
+                            var validators = $grid.data(validation.VALIDATORS);
+                            var fieldValidator = validators[cell.columnKey];
                             if (uk.util.isNullOrUndefined(fieldValidator))
                                 return;
-                            var result = fieldValidator.probe(ui.value);
-                            if (!result.isValid)
-                                $(ui.editor).ntsError("set", result.errorMessage);
+                            var cellValue = $(cell.element).find("input:first").val();
+                            var result = fieldValidator.probe(cellValue);
+                            var $cellContainer = $(cell.element).find("div:first");
+                            $cellContainer.ntsError("clear");
+                            $cellContainer.css("border-color", "inherit");
+                            if (!result.isValid) {
+                                $cellContainer.ntsError("set", result.errorMessage);
+                                $cellContainer.css("border-color", "#ff6666");
+                            }
                         }
+                        updating.onEditCell = onEditCell;
                         function triggerCellUpdate(evt, cell) {
                             var grid = evt.currentTarget;
                             if ($(grid).igGridUpdating("isEditing"))
@@ -4771,6 +4791,15 @@ var nts;
                             if ($(cell.element).text().trim() !== "")
                                 evt.preventDefault();
                             evt.stopImmediatePropagation();
+                        }
+                        function beforeFinishEditCell(evt) {
+                            var $grid = $(evt.target);
+                            var selectedCell = selection.getSelectedCell($grid);
+                            if ($grid.igGridUpdating("isEditing")
+                                && $(selectedCell.element).find("div:first").ntsError("hasError")) {
+                                return false;
+                            }
+                            return true;
                         }
                     })(updating || (updating = {}));
                     var selection;
@@ -4832,10 +4861,13 @@ var nts;
                             });
                         }
                         function getSelectedCell($grid) {
-                            return $grid.igGridSelection("selectedCell") || $grid.data("ntsSelectedCell");
+                            return utils.selectable($grid)
+                                && ($grid.igGridSelection("selectedCell") || $grid.data("ntsSelectedCell"));
                         }
                         selection_1.getSelectedCell = getSelectedCell;
                         function selectCell($grid, rowIndex, columnIndex) {
+                            if (!utils.selectable($grid))
+                                return;
                             $grid.igGridSelection("selectCell", rowIndex, columnIndex);
                             // TODO: Focus nts common controls if exists.
                             var selectedCell = getSelectedCell($grid);
@@ -4852,8 +4884,7 @@ var nts;
                         }
                         function onCellNavigate(evt, enterDirection) {
                             var grid = evt.currentTarget;
-                            // Tab key
-                            if (evt.keyCode === 9) {
+                            if (utils.isTabKey(evt)) {
                                 if ($(grid).igGridUpdating("isEditing"))
                                     $(grid).igGridUpdating("endEdit");
                                 if (evt.shiftKey) {
@@ -4865,14 +4896,14 @@ var nts;
                                 evt.preventDefault();
                                 return;
                             }
-                            // Enter key
-                            if (evt.keyCode === 13) {
+                            if (utils.isEnterKey(evt)) {
                                 if (evt.shiftKey) {
                                     selection.selectPrev($(grid));
                                 }
                                 else {
                                     selection.selectFollow($(grid), enterDirection);
                                 }
+                                evt.stopImmediatePropagation();
                                 return;
                             }
                         }
@@ -5175,7 +5206,8 @@ var nts;
                             _super.apply(this, arguments);
                         }
                         DeleteButton.prototype.draw = function (data) {
-                            var btn = _super.prototype.draw.call(this, data);
+                            var btnContainer = _super.prototype.draw.call(this, data);
+                            var btn = btnContainer.find("button");
                             btn.off("click", data.controlDef.click);
                             btn.on("click", data.deleteRow);
                             return btn;
@@ -5243,7 +5275,7 @@ var nts;
                             };
                             Processor.prototype.updateWith = function (data) {
                                 var self = this;
-                                if (this.$grid.data("igGridSelection") === undefined || this.$grid.data("igGridUpdating") === undefined)
+                                if (!utils.selectable(this.$grid) || !utils.updatable(this.$grid))
                                     return;
                                 var selectedCell = selection.getSelectedCell(this.$grid);
                                 if (selectedCell === undefined)
@@ -5336,7 +5368,18 @@ var nts;
                                 this.$grid.on(Handler.KEY_DOWN, function (evt) {
                                     if (evt.ctrlKey)
                                         return;
-                                    updating.triggerCellUpdate(evt, selection.getSelectedCell(self.$grid));
+                                    var selectedCell = selection.getSelectedCell(self.$grid);
+                                    updating.triggerCellUpdate(evt, selectedCell);
+                                });
+                                return this;
+                            };
+                            Handler.prototype.onCellUpdateKeyUp = function () {
+                                var self = this;
+                                this.$grid.on(Handler.KEY_UP, function (evt) {
+                                    if (evt.ctrlKey)
+                                        return;
+                                    var selectedCell = selection.getSelectedCell(self.$grid);
+                                    updating.onEditCell(evt, selectedCell);
                                 });
                                 return this;
                             };
@@ -5384,17 +5427,36 @@ var nts;
                             Handler.prototype.filter = function () {
                                 var self = this;
                                 this.$grid.on(Handler.KEY_DOWN, function (evt) {
-                                    if (utils.isAlphaNumeric(evt)) {
+                                    if (utils.isAlphaNumeric(evt) || utils.isDeleteKey(evt)) {
                                         var cell = selection.getSelectedCell(self.$grid);
                                         if (cell === undefined || updating.containsNtsControl($(evt.target)))
                                             evt.stopImmediatePropagation();
                                         return;
                                     }
+                                    if (utils.isTabKey(evt) && utils.isErrorStatus(self.$grid)) {
+                                        evt.preventDefault();
+                                        evt.stopImmediatePropagation();
+                                    }
                                 });
+                                self.$grid[0].addEventListener(Handler.MOUSE_DOWN, function (evt) {
+                                    if (utils.isNotErrorCell(self.$grid, evt)) {
+                                        evt.preventDefault();
+                                        evt.stopImmediatePropagation();
+                                    }
+                                }, true);
+                                self.$grid[0].addEventListener(Handler.CLICK, function (evt) {
+                                    if (utils.isNotErrorCell(self.$grid, evt)) {
+                                        evt.preventDefault();
+                                        evt.stopImmediatePropagation();
+                                    }
+                                }, true);
                                 return this;
                             };
                             Handler.KEY_DOWN = "keydown";
+                            Handler.KEY_UP = "keyup";
                             Handler.FOCUS_IN = "focusin";
+                            Handler.CLICK = "click";
+                            Handler.MOUSE_DOWN = "mousedown";
                             Handler.GRID_EDIT_CELL_STARTED = "iggridupdatingeditcellstarted";
                             return Handler;
                         }());
@@ -5485,6 +5547,30 @@ var nts;
                             return evt.keyCode === 88;
                         }
                         utils.isCutKey = isCutKey;
+                        function isErrorStatus($grid) {
+                            var cell = selection.getSelectedCell($grid);
+                            return ($grid.igGridUpdating("isEditing")
+                                && $(cell.element).find("div:first").ntsError("hasError"));
+                        }
+                        utils.isErrorStatus = isErrorStatus;
+                        function isNotErrorCell($grid, evt) {
+                            var cell = selection.getSelectedCell($grid);
+                            var $target = $(evt.target);
+                            var td = $target;
+                            if (!$target.prev().is("td"))
+                                td = $target.closest("td");
+                            return ($grid.igGridUpdating("isEditing") && td.length > 0 && td[0] !== cell.element[0]
+                                && $(cell.element).find("div:first").ntsError("hasError"));
+                        }
+                        utils.isNotErrorCell = isNotErrorCell;
+                        function selectable($grid) {
+                            return !uk.util.isNullOrUndefined($grid.data("igGridSelection"));
+                        }
+                        utils.selectable = selectable;
+                        function updatable($grid) {
+                            return !uk.util.isNullOrUndefined($grid.data("igGridUpdating"));
+                        }
+                        utils.updatable = updatable;
                     })(utils || (utils = {}));
                 })(ntsGrid = jqueryExtentions.ntsGrid || (jqueryExtentions.ntsGrid = {}));
             })(jqueryExtentions = ui_2.jqueryExtentions || (ui_2.jqueryExtentions = {}));
@@ -6673,6 +6759,9 @@ var nts;
                             errors.forEach(function (error, index) {
                                 // Row
                                 var $row = $("<tr></tr>");
+                                $row.click(function () {
+                                    error.$control[0].focus();
+                                });
                                 $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
                                 headers.forEach(function (header) {
                                     if (ko.unwrap(header.visible))
