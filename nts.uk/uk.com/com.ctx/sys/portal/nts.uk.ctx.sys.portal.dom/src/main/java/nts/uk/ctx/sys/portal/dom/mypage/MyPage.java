@@ -1,14 +1,15 @@
 package nts.uk.ctx.sys.portal.dom.mypage;
 
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class MyPage.
  */
+@Value
+@EqualsAndHashCode(callSuper = false)
 public class MyPage extends AggregateRoot {
-
-	/** The company id. */
-	private String companyId;
 	
 	/** The employee id. */
 	private String employeeId;
@@ -19,12 +20,10 @@ public class MyPage extends AggregateRoot {
 	/**
 	 * Instantiates a new my page.
 	 *
-	 * @param companyId the company id
 	 * @param employeeId the employee id
 	 * @param layoutId the layout id
 	 */
-	public MyPage(String companyId, String employeeId, String layoutId) {		
-		this.companyId = companyId;
+	public MyPage(String employeeId, String layoutId) {	
 		this.employeeId = employeeId;
 		this.layoutId = layoutId;
 	}	
@@ -32,11 +31,10 @@ public class MyPage extends AggregateRoot {
 	/**
 	 * Creates the from java type.
 	 *
-	 * @param companyId the company id
 	 * @param employeeId the employee id
 	 * @param layoutId the layout id
 	 */
-	public static MyPage createFromJavaType(String companyId, String employeeId, String LayoutId) {
-		return new MyPage(companyId, employeeId, LayoutId);
+	public static MyPage createFromJavaType(String employeeId, String LayoutId) {
+		return new MyPage(employeeId, LayoutId);
 	}
 }

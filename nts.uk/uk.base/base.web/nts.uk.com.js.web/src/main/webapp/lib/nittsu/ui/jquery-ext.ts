@@ -314,7 +314,7 @@ module nts.uk.ui.jqueryExtentions {
                 dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
                 width: 60, formatter: function createButton(deleteField, row) {
                     var primaryKey = $grid.igGrid("option", "primaryKey");
-                    var result = $('<button class="small delete-button">Delete</button>');
+                    var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                     result.attr("data-value", row[primaryKey]);
                     if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey])) {
                         return result[0].outerHTML;
@@ -988,6 +988,7 @@ module nts.uk.ui.jqueryExtentions {
     export module ntsGrid {
         $.fn.ntsGrid = function(options: any) {
             var self = this;
+            
             if (typeof options === "string") {
                 ntsAction($(self), options, [].slice.call(arguments).slice(1));
                 return;
@@ -996,7 +997,8 @@ module nts.uk.ui.jqueryExtentions {
                 $(this).igGrid(options);
                 return;
             }
-
+            validation.scanValidators($(self), options.columns); 
+            
             var columns = _.map(options.columns, function(column: any) {
                 if (column.ntsControl === undefined) return column;
                 var controlDef = _.find(options.ntsControls, function(ctl: any) {
@@ -1046,15 +1048,232 @@ module nts.uk.ui.jqueryExtentions {
                 return column;
             });
             options.columns = columns;
-
-            if (_.find(options.features, function(feature: any) {
-                return feature.name === "Updating";
-            }) === undefined) {
-                options.features.push({ name: 'Updating', enableAddRow: false, enableDeleteRow: false, editMode: 'none' });
-            }
+            updating.addFeature(options);
+            // Copy&Paste
+            copyPaste.ifOn($(self), options);
             options.autoCommit = true;
+            
+            events.Handler.pull($(self)).filter().onCellUpdate().onCellUpdateKeyUp().onDirectEnter().onSpacePress();
             $(this).igGrid(options);
         };
+        
+        function isFeatureEnable(features: any, name: string) {
+            return _.find(features, function(feature: any) {
+                return feature.name === name;
+            }) !== undefined;
+        }
+        
+        module feature {
+            export let UPDATING = "Updating";
+            export let SELECTION = "Selection";
+            export let COPY_PASTE = "CopyPaste";
+            export let CELL_EDIT = "CellEdit";
+            export function replaceBy(options: any, featureName: string, newFeature: any) {
+                let replaceId: number;
+                _.forEach(options.features, function(feature: any, id: number) {
+                    if (feature.name === featureName) {
+                        replaceId = id;
+                        return false;
+                    }
+                });
+                options.features.splice(replaceId, 1, newFeature);
+            }
+        }
+        
+        module updating {
+            
+            export function addFeature(options: any) {
+                let updateFeature = createUpdateOptions(options); 
+                if (!isFeatureEnable(options.features, feature.UPDATING)) {
+                    options.features.push(updateFeature);
+                } else {
+                    feature.replaceBy(options, feature.UPDATING, createUpdateOptions(options));
+                }
+            }
+            
+            function createUpdateOptions(options: any) {
+                let updateFeature: any = { name: feature.UPDATING, enableAddRow: false, enableDeleteRow: false, editMode: 'none' };
+                if (isFeatureEnable(options.ntsFeatures, feature.CELL_EDIT)) {
+                    updateFeature.editMode = "cell";
+                    updateFeature.editCellStarting = startEditCell;
+                    updateFeature.editCellEnding = beforeFinishEditCell;
+                }
+                return updateFeature;
+            }
+            
+            export function containsNtsControl($target: any) {
+                let td = $target;
+                if (!$target.prev().is("td")) td = $target.closest("td");
+                return td.find("div[class*='nts-grid-control']").length > 0;
+            } 
+            
+            function startEditCell(evt: any, ui: any) {
+                if (containsNtsControl($(evt.currentTarget)) || utils.isEnterKey(evt) || utils.isTabKey(evt)) {
+                    let selectedCell = selection.getSelectedCell($(evt.target));
+                    if (util.isNullOrUndefined(selectedCell) || !utils.selectable($(evt.target))) return;
+                    $(evt.target).igGridSelection("selectCell", selectedCell.rowIndex, selectedCell.index);
+                    return false;
+                }
+                return true; 
+            }
+            
+            export function onEditCell(evt: any, cell: any) {
+                let $grid = $(evt.currentTarget);
+                if (!$grid.igGridUpdating("isEditing")) return;
+                let validators: any =  $grid.data(validation.VALIDATORS);
+                let fieldValidator = validators[cell.columnKey];
+                if (util.isNullOrUndefined(fieldValidator)) return;
+                let cellValue = $(cell.element).find("input:first").val();
+                let result = fieldValidator.probe(cellValue);
+                let $cellContainer = $(cell.element).find("div:first");
+                $cellContainer.ntsError("clear");
+                $cellContainer.css("border-color", "inherit");
+                if (!result.isValid)  {
+                    $cellContainer.ntsError("set", result.errorMessage);
+                    $cellContainer.css("border-color", "#ff6666");
+                }
+            }
+            
+            export function triggerCellUpdate(evt: any, cell: any) {
+                var grid = evt.currentTarget;
+                if ($(grid).igGridUpdating("isEditing")) return;
+                if (utils.isAlphaNumeric(evt)) {
+                    startEdit(evt, cell);
+                }
+                if (utils.isDeleteKey(evt)) {
+                    $(grid).one(events.Handler.GRID_EDIT_CELL_STARTED, function(evt: any, ui: any) {
+                        $(ui.editor).find("input").val("");
+                    });
+                    startEdit(evt, cell);
+                }
+            }
+            
+            function startEdit(evt: any, cell: any) {
+                $(evt.currentTarget).igGridUpdating("startEdit", cell.id, cell.index);
+                if ($(cell.element).text().trim() !== "") evt.preventDefault();
+                evt.stopImmediatePropagation();
+            }
+            
+            function beforeFinishEditCell(evt: any) {
+                let $grid = $(evt.target);
+                let selectedCell = selection.getSelectedCell($grid);
+                if ($grid.igGridUpdating("isEditing") 
+                    && $(selectedCell.element).find("div:first").ntsError("hasError")) {
+                    return false;
+                }
+                return true;
+            }
+        }
+        
+        module selection {
+            
+            export function addFeature(options: any) {
+                let selection = { name: feature.SELECTION, mode: "cell", cellSelectionChanged: selectCellChange };
+                if (!isFeatureEnable(options.features, feature.SELECTION)) {
+                    options.features.push(selection);
+                } else {
+                    feature.replaceBy(options, feature.SELECTION, selection);
+                }
+            }
+            
+            export function selectPrev($grid: JQuery) {
+                var selectedCell: any = getSelectedCell($grid);
+                if (util.isNullOrUndefined(selectedCell)) return;
+                let columns = getVisibleColumns($grid);
+                if (selectedCell.index > 0) selectCell($grid, selectedCell.rowIndex, selectedCell.index - 1);
+                else if (selectedCell.index === 0 && selectedCell.rowIndex > 0) {
+                    selectCell($grid, selectedCell.rowIndex - 1, columns.length - 1);
+                }
+            }
+            
+            export function selectFollow($grid: JQuery, enterDirection?: string) {
+                var enter = enterDirection || "right";
+                if (enter === "right") selectNext($grid);
+                else selectBelow($grid);
+            }
+            
+            function selectNext($grid: JQuery) {
+                var selectedCell: any = getSelectedCell($grid);
+                if (util.isNullOrUndefined(selectedCell)) return;
+                let columns = getVisibleColumns($grid);
+                let dataSource = $grid.igGrid("option", "dataSource");
+                if (selectedCell.index < columns.length - 1) selectCell($grid, selectedCell.rowIndex, selectedCell.index + 1);
+                else if (selectedCell.index === columns.length - 1 && selectedCell.rowIndex < dataSource.length - 1) {
+                    selectCell($grid, selectedCell.rowIndex + 1, 0);
+                } 
+            }
+            
+            function selectBelow($grid: JQuery) {
+                var selectedCell: any = getSelectedCell($grid);
+                if (util.isNullOrUndefined(selectedCell)) return;
+                let dataSource = $grid.igGrid("option", "dataSource");
+                if (selectedCell.rowIndex < dataSource.length - 1) {
+                    selectCell($grid, selectedCell.rowIndex + 1, selectedCell.index);
+                }
+            }
+            
+            function getVisibleColumns($grid: JQuery) {
+                return _.filter($grid.igGrid("option", "columns"), function(column: any) {
+                    return column.hidden !== true;
+                });
+            }
+            
+            export function getSelectedCell($grid: JQuery) {
+                return utils.selectable($grid) 
+                        && ($grid.igGridSelection("selectedCell") || $grid.data("ntsSelectedCell"));
+            }
+            
+            export function selectCell($grid: JQuery, rowIndex: number, columnIndex: number) {
+                if (!utils.selectable($grid)) return;
+                $grid.igGridSelection("selectCell", rowIndex, columnIndex);
+                
+                // TODO: Focus nts common controls if exists.
+                let selectedCell: any = getSelectedCell($grid);
+                let ntsCombo = $(selectedCell.element).find(".nts-combo-container"); 
+                if (ntsCombo.length > 0) {
+                    ntsCombo.find("input").select();
+                }
+            }
+            
+            function selectCellChange(evt: any, ui: any) {
+                if (util.isNullOrUndefined(ui.cell)) return;
+                $(evt.target).data("ntsSelectedCell", ui.cell);
+            }
+            
+            export function onCellNavigate(evt: any, enterDirection?: string) {
+                var grid = evt.currentTarget;
+                
+                if (utils.isTabKey(evt)) {
+                    if ($(grid).igGridUpdating("isEditing"))
+                        $(grid).igGridUpdating("endEdit");
+                    
+                    if (evt.shiftKey) {
+                        selection.selectPrev($(grid));
+                    } else {
+                        selection.selectFollow($(grid));
+                    }
+                    evt.preventDefault();
+                    return;
+                }
+                 
+                if (utils.isEnterKey(evt)) {
+                    if (evt.shiftKey) {
+                        selection.selectPrev($(grid));
+                    } else {
+                        selection.selectFollow($(grid), enterDirection);
+                    }
+                    evt.stopImmediatePropagation();
+                    return;
+                }
+            }
+            
+            export class Direction {
+                to: string;
+                bind(evt: any) {
+                    onCellNavigate(evt, this.to);
+                }
+            }
+        }
 
         function ntsAction($grid: JQuery, method: string, params: Array<any>) {
             switch (method) {
@@ -1067,6 +1286,10 @@ module nts.uk.ui.jqueryExtentions {
                     break;
                 case "disableNtsControlAt":
                     disableNtsControlAt($grid, params[0], params[1], params[2]);
+                    break;
+                case "directEnter":
+                    var direction: selection.Direction = $grid.data("enter");
+                    direction.to = params[0];
                     break;
             }
         }
@@ -1262,7 +1485,7 @@ module nts.uk.ui.jqueryExtentions {
                     return option;
                 });
 
-                var comboMode: string = data.editable ? 'editable' : 'dropdown';
+                var comboMode: string = data.controlDef.editable ? 'editable' : 'dropdown';
                 container.igCombo({
                     dataSource: data.controlDef.options,
                     valueKey: data.controlDef.optionsValue,
@@ -1341,10 +1564,370 @@ module nts.uk.ui.jqueryExtentions {
 
         class DeleteButton extends Button {
             draw(data: any): JQuery {
-                var btn = super.draw(data);
+                var btnContainer = super.draw(data);
+                var btn = btnContainer.find("button");
                 btn.off("click", data.controlDef.click);
                 btn.on("click", data.deleteRow);
                 return btn;
+            }
+        }
+        
+        module copyPaste {
+            enum PasteMode {
+                NEW,
+                UPDATE
+            }
+            
+            export class Processor {
+                $grid: JQuery;
+                options: any;
+                pasteInMode: PasteMode = PasteMode.UPDATE;
+            
+                constructor(options: any) {
+                    this.options = options;
+                }
+                static addFeatures(options: any) {
+                    selection.addFeature(options);
+                    return new Processor(options);
+                }
+                
+                chainEvents($grid: JQuery) {
+                    var self = this;
+                    self.$grid = $grid;
+                    events.Handler.pull(self.$grid).focusInWith(self).ctrlCxpWith(self);
+                }
+                
+                copyHandler() {
+                    var selectedCell: any = selection.getSelectedCell(this.$grid);
+                    var content = selectedCell.element.text();
+                    $("#copyHelper").val(content).select();
+                    document.execCommand("copy");
+                    return selectedCell;
+                }
+                
+                cutHandler() {
+                    var selectedCell = this.copyHandler();
+                    var row = this.$grid.igGrid("rowAt", selectedCell.rowIndex);
+                    var updatedRowData = {};
+                    updatedRowData[selectedCell.columnKey] = "";
+                    this.$grid.igGridUpdating("updateRow", parseInt($(row).data("id")), updatedRowData);
+                }
+                
+                pasteHandler(evt: any) {
+                    var cbData;
+                    if (window.clipboardData) {
+                        window.event.returnValue = false;
+                        cbData = window.clipboardData.getData("text");
+                    } else {
+                        cbData = evt.originalEvent.clipboardData.getData("text/plain");
+                    }
+                    
+                    cbData = this.process(cbData);
+                    this.pasteInMode === PasteMode.UPDATE ? this.updateWith(cbData) : this.addNew(cbData);
+                }
+                
+                private process(data: string) {
+                    var dataRows = _.map(data.split("\n"), function(row) {
+                        return row.split("\t");
+                    });
+                    
+                    var rowsCount = dataRows.length;
+                    if ((dataRows[rowsCount - 1].length === 1 && dataRows[rowsCount - 1][0] === "")
+                        || dataRows.length === 1 && dataRows[0].length === 1 
+                            && (dataRows[0][0] === "" || dataRows[0][0] === "\r")) {
+                        dataRows.pop();
+                    }
+                    return dataRows;
+                }
+                
+                private updateWith(data: any) {
+                    var self = this;
+                    if (!utils.selectable(this.$grid) || !utils.updatable(this.$grid)) return;
+                    var selectedCell: any = selection.getSelectedCell(this.$grid);
+                    if (selectedCell === undefined) return;
+                    selectedCell.element.focus();
+                    
+                    var visibleColumns = this.getVisibleColumns();
+                    var columnIndex = selectedCell.index;
+                    var rowIndex = selectedCell.rowIndex;
+                    if (!this.pasteable(columnIndex + data[0].length - visibleColumns.length)) return;
+                    
+                    _.forEach(data, function(row: any, idx: number) {
+                        var gridRow = self.$grid.igGrid("rowAt", rowIndex + idx);
+                        var rowData = {};
+                        for (var i = 0; i < row.length; i++) {
+                            var columnKey = visibleColumns[columnIndex + i].key;
+                            if (visibleColumns[columnIndex + i].dataType === "number") {
+                                rowData[columnKey] = parseInt(row[i]);
+                            } else {
+                                rowData[columnKey] = row[i];
+                            }
+                        }
+                        self.$grid.igGridUpdating("updateRow", parseInt($(gridRow).data("id")), rowData);    
+                    });
+                }
+                
+                private addNew(data: any) {
+                    var self = this;
+                    var visibleColumns = this.getVisibleColumns();
+                    if (!this.pasteable(data[0].length - visibleColumns.length)) return;
+                    
+                    _.forEach(data, function(row: any, idx: number) {
+                        var rowData = {};
+                        for (var i = 0; i < visibleColumns.length; i++) {
+                            var columnKey = visibleColumns[i].key;
+                            if (visibleColumns[i].dataType === "number") {
+                                rowData[columnKey] = parseInt(row[i]);
+                            } else {
+                                rowData[columnKey] = row[i];
+                            }
+                        }
+                        self.$grid.igGridUpdating("addRow", rowData);
+                    });
+                }
+                
+                private getVisibleColumns() {
+                    return _.filter(this.$grid.igGrid("option", "columns"), function(column: any) {
+                        return column.hidden !== true;
+                    });
+                }
+                
+                private pasteable(excessColumns) {
+                    if (excessColumns > 0) {
+                        nts.uk.ui.dialog.alert("Copied table structure doesn't match.");
+                        return false;
+                    }
+                    return true; 
+                } 
+            }
+            
+            export function ifOn($grid: JQuery, options: any) {
+                if (options.ntsFeatures === undefined) return;
+                _.forEach(options.ntsFeatures, function(f: any) {
+                    if (f.name === feature.COPY_PASTE) {
+                        Processor.addFeatures(options).chainEvents($grid);
+                        return false;
+                    }    
+                });
+            }   
+        }
+        
+        module events {
+            export class Handler {
+                static KEY_DOWN: string = "keydown";
+                static KEY_UP: string = "keyup";
+                static FOCUS_IN: string = "focusin";
+                static CLICK: string = "click";
+                static MOUSE_DOWN: string = "mousedown";
+                static GRID_EDIT_CELL_STARTED: string = "iggridupdatingeditcellstarted";
+                $grid: JQuery;
+                
+                constructor($grid: JQuery) {
+                    this.$grid = $grid; 
+                }
+                
+                static pull($grid): Handler {
+                    return new Handler($grid);
+                }
+                
+                onDirectEnter() {
+                    // Enter direction
+                    var direction: selection.Direction = new selection.Direction();
+                    this.$grid.on(Handler.KEY_DOWN, $.proxy(direction.bind, direction));
+                    this.$grid.data("enter", direction);
+                    return this;
+                }
+                
+                onCellUpdate() {
+                    var self = this;
+                    this.$grid.on(Handler.KEY_DOWN, function(evt: any) {
+                        if (evt.ctrlKey) return;
+                        let selectedCell: any = selection.getSelectedCell(self.$grid);
+                        updating.triggerCellUpdate(evt, selectedCell);
+                    });
+                    return this;
+                }
+                
+                onCellUpdateKeyUp() {
+                    var self = this;
+                    this.$grid.on(Handler.KEY_UP, function(evt: any) {
+                        if (evt.ctrlKey) return;
+                        let selectedCell: any = selection.getSelectedCell(self.$grid);
+                        updating.onEditCell(evt, selectedCell);
+                    });
+                    return this;
+                }
+                
+                onSpacePress() {
+                    var self = this;
+                    self.$grid.on(Handler.KEY_DOWN, function(evt: any) {
+                        if (!utils.isSpaceKey(evt)) return;
+                        var selectedCell: any = selection.getSelectedCell(self.$grid);
+                        if (util.isNullOrUndefined(selectedCell)) return;
+                        var checkbox = $(selectedCell.element).find(".nts-checkbox-container");
+                        if (checkbox.length > 0) {
+                            checkbox.find("input[type='checkbox']").click();
+                        }
+                    });
+                    return this;
+                }
+                
+                focusInWith(processor: copyPaste.Processor) {
+                    this.$grid.on(Handler.FOCUS_IN, function(evt: any) {
+                        if ($("#pasteHelper").length > 0 && $("#copyHelper").length > 0) return;
+                        var pasteArea = $("<textarea id='pasteHelper'/>").css({ "opacity": 0, "overflow": "hidden" })
+                                            .on("paste", $.proxy(processor.pasteHandler, processor));
+                        var copyArea = $("<textarea id='copyHelper'/>").css({ "opacity": 0, "overflow": "hidden" });
+                        $("<div/>").css({ "position": "fixed", "top": -10000, "left": -10000 })
+                                    .appendTo($(document.body)).append(pasteArea).append(copyArea);
+                    });
+                    return this;
+                }
+                
+                ctrlCxpWith(processor: copyPaste.Processor) {
+                    this.$grid.on(Handler.KEY_DOWN, function(evt: any) {
+                        if (evt.ctrlKey && utils.isPasteKey(evt)) {
+                            $("#pasteHelper").focus();
+                        } else if (evt.ctrlKey && utils.isCopyKey(evt)) {
+                            processor.copyHandler();
+                        } else if (evt.ctrlKey && utils.isCutKey(evt)) {
+                            processor.cutHandler();   
+                        }
+                    });
+                    return this;
+                }
+                
+                filter() {
+                    var self = this;
+                    this.$grid.on(Handler.KEY_DOWN, function(evt: any) {
+                        if (utils.isAlphaNumeric(evt) || utils.isDeleteKey(evt)) {
+                            let cell = selection.getSelectedCell(self.$grid);
+                            if (cell === undefined || updating.containsNtsControl($(evt.target)))  
+                                evt.stopImmediatePropagation();
+                            return;
+                        }
+                        
+                        if (utils.isTabKey(evt) && utils.isErrorStatus(self.$grid)) {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                        }
+                    });
+                    
+                    self.$grid[0].addEventListener(Handler.MOUSE_DOWN, function(evt: any) {
+                        if (utils.isNotErrorCell(self.$grid, evt)) {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                        }
+                    }, true);
+                    self.$grid[0].addEventListener(Handler.CLICK, function(evt: any) {
+                        if (utils.isNotErrorCell(self.$grid, evt)) {
+                            evt.preventDefault();
+                            evt.stopImmediatePropagation();
+                        }
+                    }, true);
+                    return this;
+                }
+            }
+        }
+        
+        module validation {
+            export let VALIDATORS: string = "ntsValidators"; 
+            export class ColumnFieldValidator {
+                name: string;
+                primitiveValue: string;
+                options: any;
+                constructor(name: string, primitiveValue: string, options: any) {
+                    this.name = name;
+                    this.primitiveValue = primitiveValue;
+                    this.options = options;
+                }
+                
+                probe(value: string) {
+                    let constraint = nts.uk.ui.validation.getConstraint(this.primitiveValue);
+                    switch (constraint.valueType) {
+                        case "String":
+                            return new nts.uk.ui.validation.StringValidator(this.name, this.primitiveValue, this.options)
+                                    .validate(value, this.options);
+                        case "Integer":
+                        case "Decimal":
+                        case "HalfInt":
+                            return new nts.uk.ui.validation.NumberValidator(this.name, this.primitiveValue, this.options)
+                                    .validate(value);
+                        case "Time":
+                            this.options.mode = "time";
+                            return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
+                                    .validate(value);
+                        case "Clock":
+                            this.options.outputFormat = "time";
+                            return new nts.uk.ui.validation.TimeValidator(this.name, this.primitiveValue, this.options)
+                                    .validate(value);
+                    }
+                }
+            }
+            
+            function getValidators(columnsDef: any) : { [columnKey: string]: ColumnFieldValidator } {
+                var validators: any = {};
+                _.forEach(columnsDef, function(def: any) {
+                    if (def.constraint === undefined) return;
+                    validators[def.key] = new ColumnFieldValidator(def.headerText, def.constraint.primitiveValue, def.constraint); 
+                });
+                return validators;
+            }
+            
+            export function scanValidators($grid: JQuery, columnsDef: any) {
+                $grid.data(VALIDATORS, getValidators(columnsDef));
+            }
+        }
+        
+        module utils {
+            
+            export function isArrowKey(evt: any) {
+                return evt.keyCode >= 37 && evt.keyCode <= 40;
+            }
+            export function isAlphaNumeric(evt: any) {
+                return evt.keyCode >= 48 && evt.keyCode <= 90;
+            }
+            export function isTabKey(evt: any) {
+                return evt.keyCode === 9;
+            }
+            export function isEnterKey(evt: any) {
+                return evt.keyCode === 13;
+            }
+            export function isSpaceKey(evt: any) {
+                return evt.keyCode === 32;
+            }
+            export function isDeleteKey(evt: any) {
+                return evt.keyCode === 46;
+            }
+            export function isPasteKey(evt: any) {
+                return evt.keyCode === 86;
+            }
+            export function isCopyKey(evt: any) {
+                return evt.keyCode === 67;
+            }
+            export function isCutKey(evt: any) {
+                return evt.keyCode === 88;
+            }
+            
+            export function isErrorStatus($grid: JQuery) {
+                let cell = selection.getSelectedCell($grid);
+                return ($grid.igGridUpdating("isEditing")
+                        && $(cell.element).find("div:first").ntsError("hasError"));
+            }
+            export function isNotErrorCell($grid: JQuery, evt: any) {
+                let cell = selection.getSelectedCell($grid);
+                let $target = $(evt.target);
+                let td = $target;
+                if (!$target.prev().is("td")) td = $target.closest("td"); 
+                return ($grid.igGridUpdating("isEditing") && td.length > 0 && td[0] !== cell.element[0]
+                        && $(cell.element).find("div:first").ntsError("hasError"));
+            }
+            
+            export function selectable($grid: JQuery) {
+                return !util.isNullOrUndefined($grid.data("igGridSelection"));
+            }
+            export function updatable($grid: JQuery) {
+                return !util.isNullOrUndefined($grid.data("igGridUpdating"));
             }
         }
     }

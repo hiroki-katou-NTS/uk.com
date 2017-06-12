@@ -14,8 +14,42 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="employment-list"></div>
+		
+		<div style="margin-left: 30px">
+			<BUTTON id="test-button" data-bind="click: setAlreadyCheck">Click me</BUTTON>
+		</div>
+		<table style="margin: 30px;">
+			<tr>
+				<td style="width: 640px;">
+					<div style="margin-bottom: 30px; padding-left: 20px">
+						<p style="font-size: 30px">単一選択モード</p>
+					</div>
+					<div id="empt-list-setting"></div>
+				</td>
+				<td>
+					<div style="margin-bottom: 30px; padding-left: 20px">
+						<p style="font-size: 30px">複数選択モード</p>
+					</div>
+					<div id="empt-list-multi-setting"></div>
+				</td>
+			</tr>
 			
+			<tr>
+				<td style="width: 640px; padding-top: 30px">
+					<div style="margin-bottom: 30px; padding-left: 20px">
+						<p style="font-size: 30px">単一選択モード</p>
+					</div>
+					<div id="empt-list-noSetting"></div>
+				</td>
+				<td style="padding-top: 30px">
+					<div style="margin-bottom: 30px; padding-left: 20px">
+						<p style="font-size: 30px">複数選択モード</p>
+					</div>
+					<div id="empt-list-multiSelect-noSetting"></div>
+				</td>
+			</tr>
+		</table>
+		
 		</ui:define>
 	</ui:composition>
 </body>

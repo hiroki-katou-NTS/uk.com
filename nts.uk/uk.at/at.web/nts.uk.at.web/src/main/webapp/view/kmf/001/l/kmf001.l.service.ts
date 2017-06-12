@@ -4,10 +4,10 @@ module nts.uk.pr.view.kmf001.l {
          *  Service paths
          */
         var servicePath: any = {
-            findManageDistinct: 'ctx/at/share/vacation/setting/annualpaidleave/find/managedistinct',
+            findManageDistinct: 'ctx/at/share/vacation/setting/nursingleave/find/managedistinct',
             
-            save: 'ctx/at/share/vacation/setting/annualpaidleave/save',
-            findSetting: 'ctx/at/share/vacation/setting/annualpaidleave/find/setting'
+            save: 'ctx/at/share/vacation/setting/nursingleave/save',
+            findSetting: 'ctx/at/share/vacation/setting/nursingleave/find/setting'
         };
         
         export function findManageDistinct(): JQueryPromise<any> {

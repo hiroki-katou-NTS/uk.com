@@ -25,6 +25,13 @@ public interface ClosureHistoryGetMemento {
 	 */
 	ClosureId getClosureId();
 	
+	/**
+	 * Gets the closure history id.
+	 *
+	 * @return the closure history id
+	 */
+	ClosureHistoryId getClosureHistoryId();
+	
 	
 	/**
 	 * Gets the end date.
