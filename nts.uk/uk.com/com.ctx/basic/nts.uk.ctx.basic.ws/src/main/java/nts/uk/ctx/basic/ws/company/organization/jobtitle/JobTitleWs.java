@@ -9,7 +9,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -32,9 +31,9 @@ public class JobTitleWs {
 	 *
 	 * @return the list
 	 */
-	@Path("findall/{referenceDate}")
+	@Path("findall")
 	@POST
-	public List<JobTitleDto> findAll(@PathParam("referenceDate") String referenceDate) {
-		return this.finder.findAll(referenceDate);
+	public List<JobTitleDto> findAll(Kcp003Dto dto) {
+		return this.finder.findAll(dto.getBaseDate());
 	}
 }

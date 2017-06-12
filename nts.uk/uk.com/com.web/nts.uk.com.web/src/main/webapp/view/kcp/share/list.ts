@@ -246,8 +246,11 @@ module kcp.share.list {
             return nts.uk.request.ajax(servicePath.findEmployments);
         }
         
+        /**
+         * Find Job title.
+         */
         export function findJobTitles(baseDate: Date): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax(servicePath.findJobTitles, {baseDate: baseDate.toDateString()});
+            return nts.uk.request.ajax(servicePath.findJobTitles, {baseDate: baseDate});
         }
         
         /**
