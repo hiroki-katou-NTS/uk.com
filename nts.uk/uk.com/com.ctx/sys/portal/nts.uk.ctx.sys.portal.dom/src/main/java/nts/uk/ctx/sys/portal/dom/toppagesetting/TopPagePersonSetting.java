@@ -10,39 +10,39 @@ public class TopPagePersonSetting extends AggregateRoot {
 	/** The company id. */
 	private String companyId;
 	
-	/** The top menu no. */
-	private String topMenuNo;
-	
-	/** The login menu no. */
-	private String loginMenuNo;
-	
 	/** The employee id. */
 	private String employeeId;
+	
+	/** The top menu code. */
+	private String topMenuCd;
+	
+	/** The login menu code. */
+	private String loginMenuCd;
 
 	/**
 	 * Instantiates a new top page title set.
 	 *
 	 * @param companyId the company id
-	 * @param topMenuNo the top menu no
-	 * @param loginMenuNo the login menu no
 	 * @param employeeId the employee id
+	 * @param topMenuCd the top menu code
+	 * @param loginMenuCd the login menu code
 	 */
-	public TopPagePersonSetting(String companyId, String topMenuNo, String loginMenuNo, String employeeId) {
+	public TopPagePersonSetting(String companyId, String employeeId, String topMenuCd, String loginMenuCd) {
 		this.companyId = companyId;
-		this.topMenuNo = topMenuNo;
-		this.loginMenuNo = loginMenuNo;
 		this.employeeId = employeeId;
+		this.topMenuCd = topMenuCd;
+		this.loginMenuCd = loginMenuCd;
 	} 
 	
 	/**
 	 * Creates the from java type.
 	 *
 	 * @param companyId the company id
-	 * @param topMenuNo the top menu no
-	 * @param loginMenuNo the login menu no
 	 * @param employeeId the employee id
+	 * @param topMenuCd the top menu code
+	 * @param loginMenuCd the login menu code
 	 */
-	public static TopPagePersonSetting createFromJavaType(String companyId, String topMenuNo, String loginMenuNo, String employeeId) {
-		return new TopPagePersonSetting(companyId, topMenuNo, loginMenuNo, employeeId);
+	public static TopPagePersonSetting createFromJavaType(String companyId, String employeeId, String topMenuCd, String loginMenuCd) {
+		return new TopPagePersonSetting(companyId, employeeId, topMenuCd, loginMenuCd);
 	}
 }

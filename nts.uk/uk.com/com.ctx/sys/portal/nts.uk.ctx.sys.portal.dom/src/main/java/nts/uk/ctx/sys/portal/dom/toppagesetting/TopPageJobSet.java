@@ -10,14 +10,14 @@ public class TopPageJobSet extends AggregateRoot {
 	/** The company id. */
 	private String companyId;
 	
-	/** The top menu no. */
-	private String topMenuNo;
-	
-	/** The login menu no. */
-	private String loginMenuNo;
-	
 	/** The job id. */
 	private String jobId;
+	
+	/** The top menu no. */
+	private String topMenuCd;
+	
+	/** The login menu no. */
+	private String loginMenuCd;	
 	
 	/** The person permission set. */
 	private int personPermissionSet;
@@ -26,16 +26,16 @@ public class TopPageJobSet extends AggregateRoot {
 	 * Instantiates a new top page title set.
 	 *
 	 * @param companyId the company id
-	 * @param topMenuNo the top menu no
-	 * @param loginMenuNo the login menu no
 	 * @param jobId the user id
+	 * @param topMenuCd the top menu code
+	 * @param loginMenuCd the login menu code 
 	 * @param personPermissionSet the layout id
 	 */
-	public TopPageJobSet(String companyId, String topMenuNo, String loginMenuNo, String jobId, int personPermissionSet) {
+	public TopPageJobSet(String companyId, String jobId, String topMenuCd, String loginMenuCd, int personPermissionSet) {
 		this.companyId = companyId;
-		this.topMenuNo = topMenuNo;
-		this.loginMenuNo = loginMenuNo;
 		this.jobId = jobId;
+		this.topMenuCd = topMenuCd;
+		this.loginMenuCd = loginMenuCd;
 		this.personPermissionSet = personPermissionSet;
 	} 
 	
@@ -43,12 +43,12 @@ public class TopPageJobSet extends AggregateRoot {
 	 * Creates the from java type.
 	 *
 	 * @param companyId the company id
-	 * @param topMenuNo the top menu no
-	 * @param loginMenuNo the login menu no
 	 * @param jobId the user id
+	 * @param topMenuCd the top menu code
+	 * @param loginMenuCd the login menu code 
 	 * @param personPermissionSet the layout id
 	 */
-	public static TopPageJobSet createFromJavaType(String companyId, String topMenuNo, String loginMenuNo, String jobId, int personPermissionSet) {
-		return new TopPageJobSet(companyId, topMenuNo, loginMenuNo, jobId, personPermissionSet);
+	public static TopPageJobSet createFromJavaType(String companyId, String jobId, String topMenuCd, String loginMenuCd, int personPermissionSet) {
+		return new TopPageJobSet(companyId, jobId, topMenuCd, loginMenuCd, personPermissionSet);
 	}
 }

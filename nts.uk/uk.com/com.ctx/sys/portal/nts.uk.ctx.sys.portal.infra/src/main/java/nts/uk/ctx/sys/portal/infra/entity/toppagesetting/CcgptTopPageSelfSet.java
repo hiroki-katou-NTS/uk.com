@@ -12,14 +12,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "CCGPT_PERSON_HOMEPAGE_SET")
-public class CcgptPersonHomePageSet extends UkJpaEntity {
+public class CcgptTopPageSelfSet extends UkJpaEntity {
 	
 	@EmbeddedId
-	public CcgptPersonHomePageSetPK ccgptPersonHomePageSetPK;	
+	public CcgptTopPageSelfSetPK ccgptTopPageSelfSetPK;	
 
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return ccgptPersonHomePageSetPK;
+		return ccgptTopPageSelfSetPK;
 	}
 }

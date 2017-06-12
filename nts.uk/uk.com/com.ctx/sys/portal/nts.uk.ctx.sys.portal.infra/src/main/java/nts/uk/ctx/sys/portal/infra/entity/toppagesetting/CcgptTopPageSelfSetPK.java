@@ -10,12 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class CcgptPersonHomePageSetPK {
-
-	/** The company id. */
-	@Column(name = "CID")
-	public String companyId;
-	
+public class CcgptTopPageSelfSetPK {
 	/** The employee Id. */
 	@Column(name = "SID")
 	public String employeeId;
@@ -23,4 +18,8 @@ public class CcgptPersonHomePageSetPK {
 	/** The code. */
 	@Column(name = "CODE")
 	public String code;
+	
+	/** The division. */
+	@Column(name = "DIVISION")
+	public int division;
 }

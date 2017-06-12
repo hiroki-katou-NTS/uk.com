@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.infra.entity.toppagesetting;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -16,6 +17,10 @@ public class CcgptTopPageSet extends UkJpaEntity {
 	
 	@EmbeddedId
 	public CcgptTopPageSetPK ccgptTopPageSetPK;	
+	
+	/** The category setting. */
+	@Column(name = "CTG_SET")
+	public int ctgSet;
 
 	@Override
 	protected Object getKey() {

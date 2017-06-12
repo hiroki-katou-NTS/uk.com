@@ -18,6 +18,14 @@ public class CcgptTopPageJobSet extends UkJpaEntity {
 	@EmbeddedId
 	public CcgptTopPageJobSetPK ccgptTopPageJobSetPK;	
 	
+	/** The top menu code. */
+	@Column(name = "TOP_MENU_CD")
+	public String topMenuCd;
+	
+	/** The login menu code. */
+	@Column(name = "LOGIN_MENU_CD")
+	public String loginMenuCd;	
+	
 	/** The person mission set. */
 	@Column(name = "PERSON_PERMISSION_SET")
 	public int personPermissionSet;

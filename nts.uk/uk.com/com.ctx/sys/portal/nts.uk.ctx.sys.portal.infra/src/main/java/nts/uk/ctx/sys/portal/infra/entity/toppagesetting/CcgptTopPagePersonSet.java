@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.infra.entity.toppagesetting;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -15,7 +16,15 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class CcgptTopPagePersonSet extends UkJpaEntity {
 	
 	@EmbeddedId
-	public CcgptTopPagePersonSetPK ccgptTopPagePersonSetPK;		
+	public CcgptTopPagePersonSetPK ccgptTopPagePersonSetPK;	
+	
+	/** The top menu no. */
+	@Column(name = "TOP_MENU_NO")
+	public String topMenuNo;
+	
+	/** The login menu no. */
+	@Column(name = "LOGIN_MENU_NO")
+	public String loginMenuNo;
 
 	@Override
 	protected Object getKey() {

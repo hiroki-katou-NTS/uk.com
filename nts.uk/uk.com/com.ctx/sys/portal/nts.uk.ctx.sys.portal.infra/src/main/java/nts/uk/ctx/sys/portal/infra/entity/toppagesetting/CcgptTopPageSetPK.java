@@ -13,9 +13,5 @@ import lombok.NoArgsConstructor;
 public class CcgptTopPageSetPK {
 	/** The companyId. */
 	@Column(name = "CID")
-	public String companyId;
-	
-	/** The category setting. */
-	@Column(name = "CTG_SET")
-	public int ctgSet;
+	public String companyId;	
 }

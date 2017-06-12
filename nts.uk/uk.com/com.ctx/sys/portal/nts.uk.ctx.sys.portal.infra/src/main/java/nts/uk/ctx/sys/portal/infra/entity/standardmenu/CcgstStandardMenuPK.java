@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class CcgmtStandardMenuPK {
+public class CcgstStandardMenuPK {
 	@Column(name = "CID")
 	public String companyId;
+	
+	/** The menu code. */
+	@Column(name = "CODE")
+	public String code;
 }
