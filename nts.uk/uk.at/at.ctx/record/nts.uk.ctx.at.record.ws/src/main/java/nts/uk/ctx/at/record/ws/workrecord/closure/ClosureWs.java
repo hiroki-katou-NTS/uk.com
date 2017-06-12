@@ -29,6 +29,7 @@ public class ClosureWs {
 	private ClosureFinder finder;
 	
 	/** The save. */
+	@Inject
 	private ClosureSaveCommandHandler save;
 	
 	
