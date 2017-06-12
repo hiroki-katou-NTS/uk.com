@@ -74,7 +74,7 @@ module nts.uk.ui.gridlist {
                             ], 
                             features: [{ name: 'Sorting', type: 'local' }],
                             ntsFeatures: [{ name: 'CopyPaste' },
-                                            { name: 'CellEdit' }]
+                                            { name: 'CellEdit' }],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                                             { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: true, controlType: 'ComboBox', enable: true },
                                             { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
