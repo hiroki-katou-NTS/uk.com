@@ -20,9 +20,6 @@ public class KmkmtDivergenceTime extends UkJpaEntity implements Serializable{
 	/*主キー*/
 	@EmbeddedId
 	public KmkmtDivergenceTimePK kmkmtDivergenceTimePK;
-	/*勤怠項目ID*/
-	@Column(name = "ATTENDANCE_ID")
-	public int attendanceId;
 	/*乖離時間名称*/
 	@Column(name = "DIVERGENCETIME_NAME")
 	public String divTimeName;
@@ -50,7 +47,7 @@ public class KmkmtDivergenceTime extends UkJpaEntity implements Serializable{
 	
 	@Override
 	protected Object getKey() {
-		return kmkmtDivergenceTimePK;
+		return null;
 	}
 	
 	

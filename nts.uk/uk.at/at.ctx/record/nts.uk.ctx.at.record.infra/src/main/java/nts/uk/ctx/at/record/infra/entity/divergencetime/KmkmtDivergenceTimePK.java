@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmkmtDivergenceTimePK implements Serializable {
+public class KmkmtDivergenceTimePK implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	/*会社ID*/

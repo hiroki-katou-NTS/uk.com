@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 480, height: 300 };</script>
+			<script>var dialogSize = { width: 480, height: 295 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../shr/kml001.shr.servicebase.js" />
 			<com:scriptfile path="../shr/kml001.shr.vmbase.js" />
@@ -28,13 +28,11 @@
 					<div class="cell">
 						<div class="dateTime-input">
 							<div>
-								<div tabindex="1" id="startDateInput" data-bind="ntsDatePicker: {
-											name: '#[KML001_44]',
-											value: newStartDate,
-											dateFormat: 'YYYY/MM/DD',
-											valueFormat: 'YYYY/MM/DD',
-											startDate: beginStartDate,
-											enable: true }" />
+								<input id="startDateInput" data-name="期間" data-bind="ntsTimeEditor: {
+									value: newStartDate,
+									option: { width: '90px', inputFormat: 'date' },
+									required: true,
+									enable: true }" />
 							</div>
 						</div>
 						<label>#{i18n.getText('KML001_40')}</label>
@@ -46,8 +44,7 @@
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_46')}</div>
 					</div>
 					<div class="cell">
-						<div tabindex="2" data-bind="ntsRadioBoxGroup: {
-									name: '#[KML001_46]',
+						<div data-name="履歴の引継ぎ" data-bind="ntsRadioBoxGroup: {
 									options: ko.observableArray([
 							            { value: true, name: textKML001_47 },
 							            { value: false, name: '#{i18n.getText('KML001_48')}'}
@@ -58,10 +55,11 @@
 									enable: true }"></div>
 					</div>
 				</div>
-			</div>
-			<div id="functions-area-bottom">
-				<button tabindex="3" class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
-				<button tabindex="4" class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>	
+				<hr />
+				<div id="center-bottom" class="valign-center control-group">
+					<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
+					<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

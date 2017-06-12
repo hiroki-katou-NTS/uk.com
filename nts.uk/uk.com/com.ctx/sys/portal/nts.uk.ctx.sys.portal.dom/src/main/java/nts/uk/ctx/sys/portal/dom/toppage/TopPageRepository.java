@@ -1,15 +1,8 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.sys.portal.dom.toppage;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- * The Interface TopPageRepository.
- */
 public interface TopPageRepository {
 
 	/**
@@ -34,16 +27,18 @@ public interface TopPageRepository {
  	/**
 	  * Adds the.
 	  *
+	  * @param CompanyId the company id
 	  * @param topPage the top page
 	  */
-	 void add(TopPage topPage);
+	 void add(String CompanyId, TopPage topPage);
 	 
  	/**
 	  * Update.
 	  *
+	  * @param CompanyId the company id
 	  * @param topPage the top page
 	  */
- 	void update(TopPage topPage);
+ 	void update(String CompanyId, TopPage topPage);
 	 
  	/**
 	  * Removes the.

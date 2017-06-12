@@ -30,7 +30,7 @@ public class UpdateDivergenceReasonCommandHandler extends CommandHandler<UpdateD
 		if(divReasonF.isPresent()){
 			divTimeRepo.updateDivReason(divReason);
 		}else{
-			throw new BusinessException("対象データがありません。");
+			throw new BusinessException("du lieu da khong con ton tai trong db");
 		}
 	}
 

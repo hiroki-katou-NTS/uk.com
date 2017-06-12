@@ -29,7 +29,8 @@ public class KmkmtDivergenceReason extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return kmkmtDivergenceReasonPK;
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

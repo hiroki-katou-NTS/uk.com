@@ -20,6 +20,6 @@ public class KmkmtDivergenceItemSetPK implements Serializable {
 	@Column(name = "DIVERGENCETIME_ID")
 	public int divTimeId;
 	/*乖離項目ID*/
-	@Column(name = "ATTENDANCE_ID")
+	@Column(name = "DIVERGENCEITEM_ID")
 	public int divergenceItemId;
 }

@@ -12,6 +12,5 @@ public class UpdateDivergenceTimeCommand {
 
 	private DivergenceTime divTime;
 	private List<TimeItemSet> timeItem;
-	private String timeItemName;
 	
 }
