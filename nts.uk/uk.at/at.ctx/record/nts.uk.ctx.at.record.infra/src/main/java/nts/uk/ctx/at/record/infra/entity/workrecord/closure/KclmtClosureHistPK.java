@@ -11,9 +11,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class KclmtClosureHistPK.
  */
+@Getter
+@Setter
 @Embeddable
 public class KclmtClosureHistPK implements Serializable {
 
@@ -23,14 +28,21 @@ public class KclmtClosureHistPK implements Serializable {
 	/** The ccid. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CCID")
-	private String ccid;
+	@Column(name = "CID")
+	private String cid;
 	
 	/** The closure id. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "CLOSURE_ID")
-	private String closureId;
+	private Integer closureId;
+	
+	
+	/** The hist id. */
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "HIST_ID")
+	private String histId;
 
 	/**
 	 * Instantiates a new kclmt closure hist PK.
@@ -44,46 +56,12 @@ public class KclmtClosureHistPK implements Serializable {
 	 * @param ccid the ccid
 	 * @param closureId the closure id
 	 */
-	public KclmtClosureHistPK(String ccid, String closureId) {
-		this.ccid = ccid;
+	public KclmtClosureHistPK(String cid, Integer closureId, String histId) {
+		this.cid = cid;
 		this.closureId = closureId;
+		this.histId = histId;
 	}
 
-	/**
-	 * Gets the ccid.
-	 *
-	 * @return the ccid
-	 */
-	public String getCcid() {
-		return ccid;
-	}
-
-	/**
-	 * Sets the ccid.
-	 *
-	 * @param ccid the new ccid
-	 */
-	public void setCcid(String ccid) {
-		this.ccid = ccid;
-	}
-
-	/**
-	 * Gets the closure id.
-	 *
-	 * @return the closure id
-	 */
-	public String getClosureId() {
-		return closureId;
-	}
-
-	/**
-	 * Sets the closure id.
-	 *
-	 * @param closureId the new closure id
-	 */
-	public void setClosureId(String closureId) {
-		this.closureId = closureId;
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -91,7 +69,7 @@ public class KclmtClosureHistPK implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (ccid != null ? ccid.hashCode() : 0);
+		hash += (cid != null ? cid.hashCode() : 0);
 		hash += (closureId != null ? closureId.hashCode() : 0);
 		return hash;
 	}
@@ -107,8 +85,8 @@ public class KclmtClosureHistPK implements Serializable {
 			return false;
 		}
 		KclmtClosureHistPK other = (KclmtClosureHistPK) object;
-		if ((this.ccid == null && other.ccid != null)
-			|| (this.ccid != null && !this.ccid.equals(other.ccid))) {
+		if ((this.cid == null && other.cid != null)
+			|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
 		if ((this.closureId == null && other.closureId != null)
@@ -123,7 +101,7 @@ public class KclmtClosureHistPK implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.KclmtClosureHistPK[ ccid=" + ccid + ", closureId=" + closureId + " ]";
+		return "entity.KclmtClosureHistPK[ cid=" + cid + ", closureId=" + closureId + " ]";
 	}
 	
 

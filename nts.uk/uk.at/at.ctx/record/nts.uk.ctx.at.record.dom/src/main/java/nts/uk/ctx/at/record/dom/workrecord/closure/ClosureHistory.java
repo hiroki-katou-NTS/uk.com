@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.dom.workrecord.closure;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.YearMonth;
 
 /**
  * The Class ClosureHistorry.
@@ -24,9 +25,12 @@ public class ClosureHistory extends DomainObject{
 	// 締めＩＤ
 	private ClosureId closureId;
 	
+	/** The closure history id. */
+	private ClosureHistoryId closureHistoryId;
+	
 	/** The closure year. */
 	// 終了年月: 年月
-	private ClosureYearMonth endDate;
+	private YearMonth endDate;
 	
 	/** The closure date. */
 	// 締め日: 日付
@@ -34,7 +38,7 @@ public class ClosureHistory extends DomainObject{
 	
 	/** The start date. */
 	// 開始年月: 年月
-	private ClosureYearMonth startDate;
+	private YearMonth startDate;
 
 	
 	/**
@@ -45,6 +49,7 @@ public class ClosureHistory extends DomainObject{
 	public ClosureHistory(ClosureHistoryGetMemento memento){
 		this.closeName = memento.getCloseName();
 		this.closureId = memento.getClosureId();
+		this.closureHistoryId = memento.getClosureHistoryId();
 		this.endDate = memento.getEndDate();
 		this.closureDate = memento.getClosureDate();
 		this.startDate = memento.getStartDate();
@@ -59,6 +64,7 @@ public class ClosureHistory extends DomainObject{
 	public void saveToMemento(ClosureHistorySetMemento memento){
 		memento.setCloseName(this.closeName);
 		memento.setClosureId(this.closureId);
+		memento.setClosureHistoryId(this.closureHistoryId);
 		memento.setEndDate(this.endDate);
 		memento.setClosureDate(this.closureDate);
 		memento.setStartDate(this.startDate);

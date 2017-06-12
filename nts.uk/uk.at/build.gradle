@@ -102,7 +102,7 @@ subprojects {
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.20'
 		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.4.5'
 		
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.1'
+		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2'
 	}
 }
 
@@ -209,50 +209,6 @@ project (':at.ctx:record:nts.uk.ctx.at.record.pubimp') {
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.infra')
 	}
 }
-
-project (':at.screen:nts.uk.screen.at.ws') {
-	dependencies {
-		compile project (':at.screen:nts.uk.screen.at.app')
-		compile project (':at.file:nts.uk.file.at.app')
-	}
-}
-
-project (':at.screen:nts.uk.screen.at.app') {
-	dependencies {
-	 	
-	}
-}
-
-project (':at.screen:nts.uk.screen.at.infra') {
-	dependencies {
-		compile project (':at.screen:nts.uk.screen.at.app')
-	}
-}
-
-project (':at.file:nts.uk.file.at.app') {
-	dependencies {
-		compile project (':at.screen:nts.uk.screen.at.app')
-		
-		compile project (':at.ctx:record:nts.uk.ctx.at.record.app')
-		compile project (':at.ctx:record:nts.uk.ctx.at.record.dom')
-		compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.app')
-		compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
-		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.app')
-		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.dom')
-	}
-}
-
-project (':at.file:nts.uk.file.at.infra') {
-	dependencies {
-		compile project (':at.file:nts.uk.file.at.app')
-		
-		compile project (':at.ctx:shared:nts.uk.ctx.at.shared.infra')
-		compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
-		compile project (':at.ctx:record:nts.uk.ctx.at.record.infra')
-		compile group: 'aspose', name: 'cells', version: '9.0.0'
-	}
-}
-
 //=========================at:record↑=====================================
 
 //=====================nts.uk.at.web↓==============================
@@ -270,7 +226,6 @@ project (':at.web:nts.uk.at.web') {
 		charset="utf8"
 		target = "ES5"
 		source=  file("src/main/webapp/view")
-		
 	}
 	
 	def explodedWarPath = "${buildDir}/exploded/${war.baseName}.war"
@@ -292,7 +247,7 @@ project (':at.web:nts.uk.at.web') {
 	}
 	
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.1'
+		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		

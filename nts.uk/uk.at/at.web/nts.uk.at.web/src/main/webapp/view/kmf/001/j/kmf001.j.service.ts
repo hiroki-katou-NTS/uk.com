@@ -4,13 +4,13 @@ module nts.uk.pr.view.kmf001.j {
          *  Service paths
          */
         var paths: any = {
-            getComSetting: "at/proto/sixtyhourvacation/com/find",
-            getEmpSetting: "at/proto/sixtyhourvacation/emp/find",
-            saveComSetting: "at/proto/sixtyhourvacation/com/save",
-            saveEmpSetting: "at/proto/sixtyhourvacation/emp/save",
-            manageDistinctEnum: "at/proto/sixtyhourvacation/enum/managedistinct",
-            sixtyHourExtraEnum: "at/proto/sixtyhourvacation/enum/sixtyhourextra",
-            timeDigestiveUnitEnum: "at/proto/sixtyhourvacation/enum/timedigestiveunit",
+            getComSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/find",
+            getEmpSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/emp/find",
+            saveComSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/save",
+            saveEmpSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/emp/save",
+            manageDistinctEnum: "ctx/at/shared/vacation/setting/sixtyhourvacation/enum/managedistinct",
+            sixtyHourExtraEnum: "ctx/at/shared/vacation/setting/sixtyhourvacation/enum/sixtyhourextra",
+            timeDigestiveUnitEnum: "ctx/at/shared/vacation/setting/sixtyhourvacation/enum/timedigestiveunit",
         };
 
         /**
