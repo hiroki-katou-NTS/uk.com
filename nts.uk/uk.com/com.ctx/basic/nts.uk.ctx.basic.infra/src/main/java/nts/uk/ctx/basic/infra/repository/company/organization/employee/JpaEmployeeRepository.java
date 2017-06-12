@@ -1,5 +1,6 @@
 package nts.uk.ctx.basic.infra.repository.company.organization.employee;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -16,6 +17,10 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE 
 			+ " WHERE c.kmnmtEmployeePK.companyId = :companyId"
 			+ " AND c.kmnmtEmployeePK.employeeCode =:employeeCode";
+	
+	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_WHERE 
+			+ " WHERE c.kmnmtEmployeePK.companyId = :companyId"
+			+ " AND c.kmnmtEmployeePK.employeeCode IN :listEmployeeCode";
 
 	private static Employee toDomain(KmnmtEmployee entity) {
 		Employee domain = Employee.createFromJavaStyle(entity.kmnmtEmployeePK.companyId,
@@ -35,6 +40,15 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 				.setParameter("employeeCode", employeeCode)
 				.getSingle(c -> toDomain(c));
 		return person;
+	}
+
+	@Override
+	public List<Employee> getListPersonByListEmployee(String companyId, List<String> listEmployeeCode) {
+		List<Employee> lstPerson = this.queryProxy().query(SELECT_BY_LIST_EMP_CODE, KmnmtEmployee.class)
+				.setParameter("companyId", companyId)
+				.setParameter("listEmployeeCode", listEmployeeCode)
+				.getList(c -> toDomain(c));
+		return lstPerson;
 	}
 
 }

@@ -29,11 +29,8 @@ module kdl014.b.viewmodel {
             let startDate: string = '20160808';
             let endDate: string = '20170808';
             let employeeCode: string = '00003';
-
-
             let lstCardNumber: Array<string> = [];
-            
-            let lstPersonID: Array<string> =['3C3F6EA0-5F1A-4477-844F-9A5DB849D538','50013D7B-24B1-4877-A37B-F2A83A0126F8','909F2111-7506-48C7-9A5D-B399CDDDC7F3'];
+            //let lstPersonID: Array<string> =['3C3F6EA0-5F1A-4477-844F-9A5DB849D538','50013D7B-24B1-4877-A37B-F2A83A0126F8','909F2111-7506-48C7-9A5D-B399CDDDC7F3'];
             //get list Card Number
 //            service.getPersonIdByEmployee(employeeCode).done(function(employeeInfo: any) {
 //                //console.log(employeeInfo.personId);
@@ -70,9 +67,33 @@ module kdl014.b.viewmodel {
 //            });
             
             //Get list stamp number from list person Id
-            service.getStampNumberByListPersonId(lstPersonID).done(function(lstStampNumber: any) {
-                console.log(lstStampNumber);
-                debugger;
+//            service.getStampNumberByListPersonId(lstPersonID).done(function(lstStampNumber: any) {
+//                console.log(lstStampNumber);
+//                debugger;
+//            }).fail(function(res) {
+//                dfd.reject();
+//            });
+            let lstPersonID: Array<string> = [];
+            let lstStampNumber: Array<string> =[];
+            service.getListPersonByListEmployee(lstEmployeeCode).done(function(lstPersonId: any) {
+                if(lstPersonId.length>0){
+                    _.forEach(lstPersonId, function(item){
+                        lstPersonID.push(item.personId);    
+                    });  
+                    console.log(lstPersonID);
+                    //Get list STAMP NUMBER from PersonID 
+                    service.getStampNumberByListPersonId(lstPersonID).done(function(StampNumbers: any) {
+                        if(StampNumbers.length>0){
+                            _.forEach(StampNumbers, function(i){
+                                 lstStampNumber.push(i.cardNumber);
+                            });  
+                            //Get List Stamp Reference
+                              
+                        }
+                    }).fail(function(res) {
+                        dfd.reject();
+                    });  
+                }
             }).fail(function(res) {
                 dfd.reject();
             });

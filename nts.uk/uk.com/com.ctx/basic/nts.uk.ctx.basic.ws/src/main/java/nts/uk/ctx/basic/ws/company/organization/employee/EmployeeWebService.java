@@ -1,5 +1,7 @@
 package nts.uk.ctx.basic.ws.company.organization.employee;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,6 +22,12 @@ public class EmployeeWebService extends WebService {
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}")
 	public EmployeeDto getPersonIdByEmployeeCode(@PathParam("employeeCode") String employeeCode) {
-		return employeeFinder.getPersonIdByEmployeeCode(employeeCode).orElse(null);
+		return this.employeeFinder.getPersonIdByEmployeeCode(employeeCode).orElse(null);
+	}
+	
+	@POST
+	@Path("getListPersonIdByEmployeeCode")
+	public List<EmployeeDto> getListPersonIdByEmployeeCode(List<String> lstEmployeeCode) {
+		return this.employeeFinder.getListPersonIdByEmployeeCode(lstEmployeeCode);
 	}
 }
