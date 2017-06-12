@@ -57,8 +57,12 @@ module kdl002.b.viewmodel {
                 self.items([]);
                 var lst = nts.uk.ui.windows.getShared('SelectedNewItem');
                 console.log(lst);
-                let aa = new model.ItemModel2(lst, '');
-                self.items.push(aa);
+                let lstItemMapping =  _.map(lst , item => {
+                    return new model.ItemModel2(item, '');
+                });
+//                let aa = new model.ItemModel2(lst, '');
+//                self.items.push(aa);
+                self.items(lstItemMapping);
             })
         }
         OpenDialog002(){
@@ -67,12 +71,13 @@ module kdl002.b.viewmodel {
             //all possible items
             nts.uk.ui.windows.setShared('AllItemObj',['001','002','003','005','008'],true);
             //selected items
-            nts.uk.ui.windows.setShared('SelectedItemId','003',true);
+            nts.uk.ui.windows.setShared('SelectedItemId',['003'],true);
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                 self.items([]);
                 var lst = nts.uk.ui.windows.getShared('SelectedNewItem');
                 console.log(lst);
-                self.items.push(nts.uk.ui.windows.getShared('SelectedNewItem'));
+//                self.items.push(nts.uk.ui.windows.getShared('SelectedNewItem'));
+                self.items(lst);
             })
         }
     }

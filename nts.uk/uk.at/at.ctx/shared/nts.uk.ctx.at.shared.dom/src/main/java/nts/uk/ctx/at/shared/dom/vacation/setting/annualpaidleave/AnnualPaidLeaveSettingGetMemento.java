@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
- * The Interface AnnualPaidLeaveSettingGetMemento.
+ * The Interface AnnualVacationSettingGetMemento.
  */
 public interface AnnualPaidLeaveSettingGetMemento {
     
@@ -19,6 +19,13 @@ public interface AnnualPaidLeaveSettingGetMemento {
     String getCompanyId();
 
     /**
+     * Gets the acquisition setting.
+     *
+     * @return the acquisition setting
+     */
+    AcquisitionSetting getAcquisitionSetting();
+
+    /**
      * Gets the year manage type.
      *
      * @return the year manage type
@@ -26,9 +33,16 @@ public interface AnnualPaidLeaveSettingGetMemento {
     ManageDistinct getYearManageType();
 
     /**
-     * Gets the year manage setting.
+     * Gets the manage annual setting.
      *
-     * @return the year manage setting
+     * @return the manage annual setting
      */
-    ManageAnnualSetting getYearManageSetting();
+    ManageAnnualSetting getManageAnnualSetting();
+
+    /**
+     * Gets the time setting.
+     *
+     * @return the time setting
+     */
+    TimeVacationSetting getTimeSetting();
 }

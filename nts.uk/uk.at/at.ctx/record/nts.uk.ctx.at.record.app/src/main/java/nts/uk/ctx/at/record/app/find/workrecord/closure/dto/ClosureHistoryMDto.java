@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
+import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 
 /**
  * The Class ClosureHistoryMDto.
@@ -111,6 +112,18 @@ public class ClosureHistoryMDto implements ClosureHistorySetMemento {
 	@Override
 	public void setStartDate(YearMonth startDate) {
 		this.startDate = startDate.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setCompanyId(nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId)
+	 */
+	@Override
+	public void setCompanyId(CompanyId companyId) {
+		// Do nothing code
 	}
 
 }

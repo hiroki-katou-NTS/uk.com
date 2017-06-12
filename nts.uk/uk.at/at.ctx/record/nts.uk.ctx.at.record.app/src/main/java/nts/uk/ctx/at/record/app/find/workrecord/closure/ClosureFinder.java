@@ -75,6 +75,7 @@ public class ClosureFinder {
 		
 		List<ClosureHistory> closureHistories = this.repositoryHistory.findByClosureId(companyId,
 			closureId);
+		
 		// exist data
 		if(closure.isPresent()){
 			closure.get().setClosureHistories(closureHistories);

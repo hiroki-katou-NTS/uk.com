@@ -5,12 +5,14 @@ module nts.uk.at.view.kmk012.a {
     import ClosureDto = service.model.ClosureDto;
     import ClosureHistoryMDto = service.model.ClosureHistoryMDto;
     import ClosureHistoryDDto = service.model.ClosureHistoryDDto;
+    import ClosureSaveDto = service.model.ClosureSaveDto;
+    
     export module viewmodel {
 
         export class ScreenModel {
             lstClosureHistory: KnockoutObservableArray<ClosureHistoryFindDto>;
             closureModel: ClosureModel;
-            closureHistoryModel: ClosureHistoryModel;
+            closureHistoryModel: ClosureHistoryDetailModel;
             useClassification: KnockoutObservableArray<any>;
             lstDayOfMonth: KnockoutObservableArray<DayofMonth>;
             columnsLstClosureHistory: KnockoutObservableArray<any>;
@@ -18,11 +20,13 @@ module nts.uk.at.view.kmk012.a {
             selectCodeLstClosureHistory: KnockoutObservable<ClosureHistoryMDto>;
             
             
+            
+            
             constructor() {
                 var self = this;
                 self.lstClosureHistory = ko.observableArray<ClosureHistoryFindDto>([]);
                 self.closureModel = new ClosureModel();
-                self.closureHistoryModel = new ClosureHistoryModel();
+                self.closureHistoryModel = new ClosureHistoryDetailModel();
                  self.columnsLstClosureHistory = ko.observableArray([
                     { headerText: 'コード', prop: 'id', width: 120 },
                     { headerText: '名称', prop: 'name', width: 120 }
@@ -72,15 +76,15 @@ module nts.uk.at.view.kmk012.a {
                 var self = this;
                 service.detailClosure(closureId).done(function(data){
                     self.closureModel.updateData(data);
+                    self.selectCodeLstClosureHistory(data.closureHistories[0]);
                     self.detailClosureHistory(data.closureHistories[0]);
                 });
            }
             
             detailClosureHistory(master: ClosureHistoryMDto){
-                console.log(master);
                 var self = this;
                 service.detailClosureHistory(master).done(function(data){
-                   self.closureHistoryModel.updateDate(data);
+                    self.closureHistoryModel.updateData(data);
                 });
             }
             
@@ -104,9 +108,24 @@ module nts.uk.at.view.kmk012.a {
             
             
             
-            saveClosureHistory(): void {
-                var self = this;;
+            
+            collectData(): ClosureSaveDto {
+                var self = this;
+                var dto: ClosureSaveDto;
+                dto = new ClosureSaveDto();
+                dto.closureId = self.closureModel.closureId();
+                dto.useClassification = self.closureModel.useClassification();
+                dto.month = self.closureModel.month();
+                return dto;
             }
+            
+            saveClosureHistory(): void {
+                var self = this;
+                service.saveClosure(self.collectData()).done(function() {
+                    console.log('YES');
+                });
+            }
+    
             
         }
         
@@ -147,7 +166,7 @@ module nts.uk.at.view.kmk012.a {
                 this.closureHistories = ko.observableArray<ClosureHistoryMDto>([]);
             }
 
-            updateData(dto: ClosureDto) {
+            updateData(dto: ClosureDto):void {
                 this.closureId(dto.closureId);
                 this.useClassification(dto.useClassification);
                 this.month(dto.month);
@@ -166,7 +185,7 @@ module nts.uk.at.view.kmk012.a {
             }
         }
 
-        export class ClosureHistoryModel {
+        export class ClosureHistoryDetailModel {
 
             /** The history id. */
             historyId: KnockoutObservable<string>;
@@ -188,7 +207,9 @@ module nts.uk.at.view.kmk012.a {
                 this.closureName = ko.observable('');
                 this.closureDate = ko.observable(0);
             }
-            updateData(dto: ClosureHistoryDDto){
+                
+                
+            updateData(dto: ClosureHistoryDDto): void{
                 this.historyId(dto.historyId);
                 this.closureId(dto.closureId);
                 this.closureName(dto.closureName);

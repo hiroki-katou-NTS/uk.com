@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
+import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHist;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHistPK;
 
@@ -114,6 +115,21 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	@Override
 	public void setStartDate(YearMonth startDate) {
 		this.kclmtClosureHist.setStrD(startDate.v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistorySetMemento#
+	 * setCompanyId(nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId)
+	 */
+	@Override
+	public void setCompanyId(CompanyId companyId) {
+		KclmtClosureHistPK pk = this.kclmtClosureHist.getKclmtClosureHistPK();
+		pk.setCid(companyId.v());
+		this.kclmtClosureHist.setKclmtClosureHistPK(pk);
+		
 	}
 
 

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureDate;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryId;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureId;
+import nts.uk.ctx.at.record.dom.workrecord.closure.CompanyId;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHist;
 
 /**
@@ -88,6 +89,14 @@ public class JpaClosureHistoryGetMemento implements ClosureHistoryGetMemento{
 	@Override
 	public ClosureHistoryId getClosureHistoryId() {
 		return new ClosureHistoryId(this.kclmtClosureHist.getKclmtClosureHistPK().getHistId());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryGetMemento#getCompanyId()
+	 */
+	@Override
+	public CompanyId getCompanyId() {
+		return new CompanyId(this.kclmtClosureHist.getKclmtClosureHistPK().getCid());
 	}
 
 }

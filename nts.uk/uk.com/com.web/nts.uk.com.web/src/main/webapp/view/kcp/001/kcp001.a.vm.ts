@@ -69,6 +69,12 @@ module kcp001.a.viewmodel {
             }
             $('#empt-list-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
             
-        } 
+        }
+        
+        setAlreadyCheck() {
+            this.listComponentOption.alreadySettingList.push({"code": "02", "isAlreadySetting": true});
+        }
+        
+        
     }
 }

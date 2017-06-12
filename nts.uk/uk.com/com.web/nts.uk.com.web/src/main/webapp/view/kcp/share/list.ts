@@ -52,8 +52,15 @@ module kcp.share.list {
      */
     export class ListType {
         static EMPLOYMENT = 1;
+        static Classification = 2;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
+    }
+    
+    export interface GridStyle {
+        codeColumnSize: number;
+        totalColumnSize: number;
+        totalComponentSize: number;
     }
     
     /**
@@ -65,15 +72,16 @@ module kcp.share.list {
         listComponentColumn: Array<any>;
         isMultiple: boolean;
         isDialog: boolean;
+        hasBaseDate: boolean;
+        baseDate: KnockoutObservable<Date>;
+        isHasButtonSelectAll: boolean;
+        gridStyle: GridStyle;
         
         constructor() {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
             this.isMultiple = false;
-            
-            // Setup list column.
-            this.listComponentColumn.push({headerText: 'コード', prop: 'code', width: 50});
-            this.listComponentColumn.push({headerText: '名称', prop: 'name', width: 170});
+            this.baseDate = ko.observable(new Date());
         }
         /**
          * Init component.
@@ -84,17 +92,23 @@ module kcp.share.list {
             self.isMultiple = data.isMultiSelect;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE;
+            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE && data.isMultiSelect;
+            self.initGridStyle(data);
             
+            // Setup list column.
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE) {
-                self.listComponentColumn.push({headerText: '所属', prop: 'companyName', width: 50});
+                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'companyName', width: 150});
             }
             
             // If show Already setting.
             if (data.isShowAlreadySet) {
                 // Add row already setting.
                 self.listComponentColumn.push({
-                    headerText: '設定済', prop: 'isAlreadySetting', width: 30,
+                    headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 70,
                     formatter: function(isAlreadySet: string) {
                         if (isAlreadySet == 'true') {
                             return '<div style="text-align: center;"><i class="icon icon-dot"></i></div>';
@@ -154,18 +168,61 @@ module kcp.share.list {
             return data.code;
         }
         
+        private initGridStyle(data: ComponentOption) {
+            var codeColumnSize: number = 50;
+            var companyColumnSize: number = 0;
+            switch(data.listType) {
+                case ListType.EMPLOYMENT:
+                    break;
+                case ListType.JOB_TITLE:
+                    codeColumnSize = 70;
+                    break;
+                case ListType.Classification:
+                    codeColumnSize = 150;
+                    break;
+                case ListType.EMPLOYEE:
+                    codeColumnSize = 150;
+                    companyColumnSize = 150;
+                    break;
+                default:
+                break;
+            }
+            var alreadySettingColSize = data.isShowAlreadySet ? 70 : 0;
+            var multiSelectColSize = data.isMultiSelect ? 65 : 0;
+            var selectAllButtonSize = this.isHasButtonSelectAll ? 60 : 0;
+            var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
+                + alreadySettingColSize + multiSelectColSize + selectAllButtonSize;
+            var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
+            this.gridStyle = {
+                codeColumnSize: codeColumnSize,
+                totalColumnSize: Math.max(minTotalSize, totalColumnSize),
+                totalComponentSize: Math.max(minTotalSize, totalColumnSize) + 2
+            };
+        }
+        
         /**
          * Find data list.
          */
-        public findDataList(listType: ListType):JQueryPromise<Array<UnitModel>> {
+        private findDataList(listType: ListType):JQueryPromise<Array<UnitModel>> {
             switch(listType) {
                 case ListType.EMPLOYMENT:
                     return service.findEmployments();
                 case ListType.JOB_TITLE:
-                    return service.findJobTitles();
-                case ListType.EMPLOYEE:
-                    return service.findEmployees();
+                    return service.findJobTitles(this.baseDate());
+                case ListType.Classification:
+                    return service.findClassifications();
             }
+        }
+        
+        /**
+         * Select all.
+         */
+        public selectAll() {
+            var self = this;
+            if (self.itemList().length == 0 || !self.isMultiple) {
+                return;
+            }
+            self.selectedCodes(self.itemList().map(item => item.code));
         }
         
     }
@@ -178,28 +235,29 @@ module kcp.share.list {
         // Service paths.
         var servicePath = {
             findEmployments: "basic/company/organization/employment/findAll/",
-            findJobTitles: '???',
-            findEmployees: '???'
+            findJobTitles: 'basic/company/organization/jobtitle/findall/',
+            findClassifications: 'basic/company/organization/classification/findAll/',
         }
         
         /**
          * Find Employment list.
          */
         export function findEmployments(): JQueryPromise<Array<UnitModel>> {
-            var dfd = $.Deferred<any>();
             return nts.uk.request.ajax(servicePath.findEmployments);
         }
         
-        export function findJobTitles(): JQueryPromise<Array<UnitModel>> {
-            var dfd = $.Deferred<any>();
-            dfd.resolve();
-            return dfd.promise();
+        /**
+         * Find Job title.
+         */
+        export function findJobTitles(baseDate: Date): JQueryPromise<Array<UnitModel>> {
+            return nts.uk.request.ajax(servicePath.findJobTitles, {baseDate: baseDate});
         }
         
-        export function findEmployees(): JQueryPromise<Array<UnitModel>> {
-            var dfd = $.Deferred<any>();
-            dfd.resolve();
-            return dfd.promise();
+        /**
+         * Find Classification list.
+         */
+        export function findClassifications(): JQueryPromise<Array<UnitModel>> {
+            return nts.uk.request.ajax(servicePath.findClassifications);
         }
         
     }

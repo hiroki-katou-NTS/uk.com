@@ -11,26 +11,8 @@ public class StandardMenuDto {
 	/** The company id. */
 	private String companyId;
 	
-	/** The Url. */
-	private String url;
-	
-	/** The Web Menu Setting Display Indicator. */
-	private int webMenuSettingDisplayIndicator;
-	
 	/** The menu code. */
 	private String code;
-	
-	/** The system. */
-	private String system;
-	
-	/** The classification. */
-	private String classification;
-	
-	/** The After Login Display Indicator. */
-	private int afterLoginDisplayIndicator;
-	
-	/** The Log Setting Display Indicator. */
-	private int logSettingDisplayIndicator;
 
 	/** The Target Items. */
 	private String targetItems;
@@ -38,32 +20,60 @@ public class StandardMenuDto {
 	/** The Display Name. */
 	private String displayName;
 	
+	/** The Display Order. */
+	private int displayOrder;
+	
+	/** The menuAtr. */
+	private int menuAtr;
+	
+	/** The url. */
+	private String url;
+	
+	/** The system. */
+	private int system;
+	
+	/** The classification. */
+	private int classification;
+	
+	/** The webMenuSetting. */
+	private int webMenuSetting;
+	
+	/** The afterLoginDisplay. */
+	private int afterLoginDisplay;
+	
+	/** The logSettingDisplay. */
+	private int logSettingDisplay;
+	
 	/**
 	 * From domain.
 	 *
 	 * @param companyId the company Id
-	 * @param url the url
-	 * @param webMenuSettingDisplayIndicator the webMenuSettingDisplayIndicator
 	 * @param code the menu code
-	 * @param system the system
-	 * @param classification the classification
-	 * @param afterLoginDisplayIndicator the afterLoginDisplayIndicator
-	 * @param logSettingDisplayIndicator the logSettingDisplayIndicator
 	 * @param targetItems the target items
 	 * @param displayName the display name
+	 * @param displayOrder the displayOrder
+	 * @param menuAtr the menuAtr
+	 * @param url the url
+	 * @param system the system
+	 * @param classification the classification
+	 * @param webMenuSetting the webMenuSetting
+	 * @param afterLoginDisplay the afterLoginDisplay
+	 * @param logSettingDisplay the logSettingDisplay
 	 */
 	public static StandardMenuDto fromDomain(StandardMenu standardMenu) {
 		StandardMenuDto standardMenuDto = new StandardMenuDto();
 		standardMenuDto.companyId = standardMenu.getCompanyId();
+		standardMenuDto.code = standardMenu.getCode().v();
+		standardMenuDto.targetItems = standardMenu.getTargetItems();
+		standardMenuDto.displayName = standardMenu.getDisplayName().v();
+		standardMenuDto.displayOrder = standardMenu.getDisplayOrder();
+		standardMenuDto.menuAtr = standardMenu.getMenuAtr();
 		standardMenuDto.url = standardMenu.getUrl();
-		standardMenuDto.webMenuSettingDisplayIndicator = standardMenu.getWebMenuSettingDisplayIndicator();
-		standardMenuDto.code = standardMenu.getCode();
 		standardMenuDto.system = standardMenu.getSystem();
 		standardMenuDto.classification = standardMenu.getClassification();
-		standardMenuDto.afterLoginDisplayIndicator = standardMenu.getAfterLoginDisplayIndicator();
-		standardMenuDto.logSettingDisplayIndicator = standardMenu.getLogSettingDisplayIndicator();
-		standardMenuDto.targetItems = standardMenu.getTargetItems();
-		standardMenuDto.displayName = standardMenu.getDisplayName();
+		standardMenuDto.webMenuSetting = standardMenu.getWebMenuSetting();
+		standardMenuDto.afterLoginDisplay = standardMenu.getAfterLoginDisplay();
+		standardMenuDto.logSettingDisplay = standardMenu.getLogSettingDisplay();
 		return standardMenuDto;
 	}
 }

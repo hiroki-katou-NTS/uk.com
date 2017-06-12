@@ -69,7 +69,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	 */
 	@Override
 	public void setUseClassification(UseClassification useClassification) {
-		// TODO Auto-generated method stub
+		this.kclmtClosure.setUseClass(useClassification.value);
 	}
 
 	/*
