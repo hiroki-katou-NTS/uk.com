@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
-import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgmtStandardMenu;
-import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgmtStandardMenuPK;
+import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenu;
+import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
 
 /**
  * The Class JpaStandardMenuRepository.
@@ -29,7 +29,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	 */
 	@Override
 	public List<StandardMenu> findAll(String companyId) {
-		return this.queryProxy().query(GET_ALL_STANDARD_MENU, CcgmtStandardMenu.class)
+		return this.queryProxy().query(GET_ALL_STANDARD_MENU, CcgstStandardMenu.class)
 				 .setParameter("companyId", companyId)
 				 .getList(t -> toDomain(t));
 	}
@@ -43,7 +43,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	 */
 	@Override
 	public List<StandardMenu> findAllWithAfterLoginDisplayIndicatorIsTrue(String companyId) {
-		return this.queryProxy().query(GET_ALL_STANDARD_MENU_AFTER_LOGIN_DISPLAY_INDICATOR_IS_TRUE, CcgmtStandardMenu.class)
+		return this.queryProxy().query(GET_ALL_STANDARD_MENU_AFTER_LOGIN_DISPLAY_INDICATOR_IS_TRUE, CcgstStandardMenu.class)
 				 .setParameter("companyId", companyId).setParameter("afterLoginDisplayIndicatorValue", AFTER_LOGIN_DISPLAY_INDICATOR_VALUE)
 				 .getList(t -> toDomain(t));
 	}
@@ -54,9 +54,10 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	 * @param s the s
 	 * @return the top page
 	 */
-	private StandardMenu toDomain(CcgmtStandardMenu s) {
-		return StandardMenu.createFromJavaType(s.ccgmtStandardMenuPK.companyId, s.url, s.webMenuSettingDisplayIndicator, s.code, s.system,
-				s.classification, s.afterLoginDisplayIndicator, s.logSettingDisplayIndicator, s.targetItems, s.displayName);
+	private StandardMenu toDomain(CcgstStandardMenu s) {
+		return StandardMenu.createFromJavaType(s.ccgmtStandardMenuPK.companyId, s.ccgmtStandardMenuPK.code, s.targetItems,
+				s.displayName, s.displayOrder, s.menuAtr, s.url, s.system, s.classification, s.webMenuSetting, 
+				s.afterLoginDisplay, s.logSettingDisplay);
 	}
 
 	/**
@@ -65,10 +66,10 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	 * @param domain the domain
 	 * @return the ccgmt standard menu
 	 */
-	public CcgmtStandardMenu toEntity(StandardMenu domain) {
-		CcgmtStandardMenuPK key = new CcgmtStandardMenuPK(domain.getCompanyId());
-		return new CcgmtStandardMenu(key, domain.getUrl(), domain.getWebMenuSettingDisplayIndicator(), domain.getCode(), domain.getSystem(),
-				domain.getClassification(), domain.getAfterLoginDisplayIndicator(), domain.getLogSettingDisplayIndicator(), domain.getTargetItems(), 
-				domain.getDisplayName());
+	public CcgstStandardMenu toEntity(StandardMenu domain) {
+		CcgstStandardMenuPK key = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v());
+		return new CcgstStandardMenu(key, domain.getTargetItems(), domain.getDisplayName().v(), domain.getDisplayOrder(),
+				domain.getMenuAtr(), domain.getUrl(), domain.getSystem(), domain.getClassification(), domain.getWebMenuSetting(),
+				domain.getAfterLoginDisplay(), domain.getLogSettingDisplay());
 	}
 }

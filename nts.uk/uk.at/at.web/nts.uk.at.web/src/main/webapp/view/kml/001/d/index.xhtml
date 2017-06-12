@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 500, height: 300 };</script>
+				<script>var dialogSize = { width: 480, height: 290 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="../shr/kml001.shr.servicebase.js" />
 				<com:scriptfile path="../shr/kml001.shr.vmbase.js" />
@@ -26,14 +26,14 @@
 							<div data-bind="ntsFormLabel: { required: isUpdate }">#{i18n.getText('KML001_51')}</div>
 						</div>
 						<div class="cell">
-							<div>
-								<span tabindex="1" class="ntsControl">
+							<div data-name="編集方法">
+								<span class="ntsControl">
 									<label class="ntsRadioBox">
 										<input type="radio" name="textRadio" data-bind="checkedValue: false, checked: isUpdate, enable: deleteAble" />
 										<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KML001_52')}'"></span>
 									</label>
 								</span>		
-								<span tabindex="1" class="ntsControl">
+								<span class="ntsControl">
 									<label class="ntsRadioBox">
 										<input type="radio" name="textRadio" data-bind="checkedValue: true, checked: isUpdate, enable: true" />
 										<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KML001_53')}'"></span>
@@ -44,13 +44,10 @@
 								<div data-bind="ntsFormLabel: {}, css: { 'form-label-delete': !isUpdate(), 'form-label-update': isUpdate }">#{i18n.getText('KML001_44')}</div>
 								<div class="dateTime-input">
 									<div>
-										<div tabindex="2" id="startDateInput" data-bind="ntsDatePicker: {
-											name: '#[KML001_44]',
+										<input id="startDateInput" data-name="期間" data-bind="ntsTimeEditor: {
 											value: newStartDate,
-											dateFormat: 'YYYY/MM/DD',
-											valueFormat: 'YYYY/MM/DD',
-											startDate: onedayAfterBeforeStartDate,
-											endDate: currentEndDate,
+											option: { width: '90px', inputFormat: 'date' },
+											required: true,
 											enable: isUpdate }" />
 									</div>
 								</div>
@@ -59,10 +56,11 @@
 							</div>
 						</div>
 					</div>
-				</div>
-				<div id="functions-area-bottom">
-					<button tabindex="3" class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
-					<button tabindex="4" class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>
+					<hr />
+					<div id="center-bottom" class="valign-center control-group">
+						<button class="x-large proceed center-e" data-bind="click: submitAndCloseDialog, enable: $root.errors.isEmpty">#{i18n.getText('KML001_19')}</button>
+						<button class="ui-dialog-titlebar-close" data-bind="click: closeDialog">#{i18n.getText('KML001_20')}</button>
+					</div>
 				</div>
 			</ui:define>
 		</ui:composition>

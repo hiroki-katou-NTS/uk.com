@@ -15,14 +15,6 @@ public class CcgptTopPagePersonSetPK {
 	@Column(name = "CID")
 	public String companyId;
 	
-	/** The top menu no. */
-	@Column(name = "TOP_MENU_NO")
-	public String topMenuNo;
-	
-	/** The login menu no. */
-	@Column(name = "LOGIN_MENU_NO")
-	public String loginMenuNo;
-	
 	/** The employee id. */
 	@Column(name = "SID")
 	public String employeeId;

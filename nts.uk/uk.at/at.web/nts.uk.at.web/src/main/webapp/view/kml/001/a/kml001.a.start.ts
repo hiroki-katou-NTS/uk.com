@@ -1,6 +1,6 @@
-module nts.uk.at.view.kml001.a {
+module kml001.a {
     __viewContext.ready(function() {
-        var screenModel = new nts.uk.at.view.kml001.a.viewmodel.ScreenModel();
+        var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
             if(screenModel.isInsert()){
@@ -8,8 +8,6 @@ module nts.uk.at.view.kml001.a {
             } else {
                 $("#memo").focus();    
             }    
-            $("#premium-set-tbl > tbody > tr > td:NTH-CHILD(2) input").each(function (i) { $(this).attr('tabindex', i + 8); });
-            $("#premium-set-tbl > tbody > tr > td:NTH-CHILD(3) button").each(function (i) { $(this).attr('tabindex', i + 9); });
         });
     });
 }

@@ -27,7 +27,7 @@
 				<!-- B1_2: Button Registration -->
 				<button tabindex="2" id="btn_002"
 					class="button proceed separate-button fix-button"
-					data-bind="click: RegistrationDivReason,enable: $root.errors.isEmpty">#{i18n.getText('KMK011_3')}</button>
+					data-bind="click: RegistrationDivReason">#{i18n.getText('KMK011_3')}</button>
 				<!-- B1_3: Button Delete -->
 				<button tabindex="3" id="btn_005"
 					class="button danger separate-button fix-button"
@@ -42,11 +42,10 @@
 				<div id="left-content" style="float: left"
 					class="bg-green caret-right caret-background">
 					<div style="float: left; margin: 20px">
-						<!-- B2_2: List Divergence Reason -->
 						<table tabindex="5" id="single-list"
 							data-bind="ntsGridList:{
 								width: 330,
-								height: 350,
+								height: 250,
 								options: dataSource,								
 								optionsValue: 'divReasonCode',
 								columns: columns,
@@ -72,15 +71,14 @@
 							<input tabindex="6" class="nts-input" id="inpCode"
 								style="width: 20px"
 								data-bind="ntsTextEditor: {
-										  name: '#[KMK011_22]',
                                           value: divReasonCode,
                                           constraint: 'DiverdenceReasonCode', 
                                           enable: enableCode, 
-                                          required: true}"/> 
+                                          required: true}"
+								data-name="Code" /> 
 								<!-- B3_3: Divergence Reason Content --> 
 								<input tabindex="7" class="nts-input" id="inpReason"
 								data-bind="ntsTextEditor: {
-										  name: '#[KMK011_23]',
                                           value: divReasonContent,
                                           constraint: 'DivergenceReasonContent',
                                           required: true}" />
@@ -88,12 +86,12 @@
 						</tr>
 						<tr class="row">
 							<td>
-								<!-- B3_4: Label -->
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_38')}</div>
+								<!-- B3_4 -->
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_22')}</div>
 							</td>
 							<td>
-								<!-- B3_5: SwitchButton Required-->
-								<div tabindex="8"
+								<!-- B3_5 -->
+								<div tabindex="8" class="cf"
 									data-bind="ntsSwitchButton: {
 									options: switchUSe3,
 									optionsValue: 'code',
@@ -106,7 +104,7 @@
 						<tr>
 							<td></td>
 							<td>
-								<!-- B3_6: Text --> 
+								<!-- B3_6 --> 
 								<label id="A_LBL_003">※#{i18n.getText('KMK011_27')}</label>
 							</td>
 						</tr>

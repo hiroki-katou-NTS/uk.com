@@ -26,7 +26,7 @@ public class UpdateExternalBudgetCommandHandler extends CommandHandler<UpdateExt
 		ExternalBudget exBudget = command.toDomain();
 		
 		if(!this.budgetRepo.find(AppContexts.user().companyId(), command.getExternalBudgetCode()).isPresent()){
-			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
+			throw new BusinessException(new RawErrorMessage("項目が存在しません、削除されしたようです。"));
 		}
 		// update process
 		budgetRepo.update(exBudget);

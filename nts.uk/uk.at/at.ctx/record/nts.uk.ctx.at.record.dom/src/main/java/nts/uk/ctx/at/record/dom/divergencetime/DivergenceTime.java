@@ -11,8 +11,6 @@ public class DivergenceTime extends AggregateRoot{
 	private String companyId;
 	/*乖離時間ID*/
 	private int divTimeId;
-	/*勤怠項目ID*/
-	private int attendanceId;
 	/*乖離時間名称*/
 	private DivergenceTimeName divTimeName;
 	/*乖離時間使用設定*/
@@ -28,7 +26,6 @@ public class DivergenceTime extends AggregateRoot{
 
 	public DivergenceTime(String companyId, 
 						int divTimeId, 
-						int attendanceId,
 						DivergenceTimeName divTimeName,
 						UseSetting divTimeUseSet, 
 						Time alarmTime,
@@ -38,7 +35,6 @@ public class DivergenceTime extends AggregateRoot{
 		super();
 		this.companyId = companyId;
 		this.divTimeId = divTimeId;
-		this.attendanceId = attendanceId;
 		this.divTimeName = divTimeName;
 		this.divTimeUseSet = divTimeUseSet;
 		this.alarmTime = alarmTime;
@@ -49,7 +45,6 @@ public class DivergenceTime extends AggregateRoot{
 	
 	public static DivergenceTime createSimpleFromJavaType(String companyId,
 														int divTimeId,
-														int attendanceId,
 														String divTimeName,
 														int divTimeUseSet,
 														int alarmTime,
@@ -61,7 +56,6 @@ public class DivergenceTime extends AggregateRoot{
 		return new DivergenceTime(
 				companyId, 
 				divTimeId, 
-				attendanceId,
 				new DivergenceTimeName(divTimeName),
 				EnumAdaptor.valueOf(divTimeUseSet, UseSetting.class),
 				new Time(BigDecimal.valueOf(alarmTime)), 

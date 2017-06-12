@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.standardmenu;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -7,85 +8,98 @@ import nts.arc.layer.dom.AggregateRoot;
  * The Class StandardMenu.
  */
 @Value
+@EqualsAndHashCode(callSuper = false)
 public class StandardMenu extends AggregateRoot {
 	/** The company id. */
 	private String companyId;
 	
-	/** The Url. */
-	private String url;
-	
-	/** The Web Menu Setting Display Indicator. */
-	private int webMenuSettingDisplayIndicator;
-	
 	/** The menu code. */
-	private String code;
-	
-	/** The system. */
-	private String system;
-	
-	/** The classification. */
-	private String classification;
-	
-	/** The After Login Display Indicator. */
-	private int afterLoginDisplayIndicator;
-	
-	/** The Log Setting Display Indicator. */
-	private int logSettingDisplayIndicator;
+	private MenuCode code;
 
 	/** The Target Items. */
 	private String targetItems;
 	
 	/** The Display Name. */
-	private String displayName;
+	private MenuDisplayName displayName;
+	
+	/** The Display Order. */
+	private int displayOrder;
+	
+	/** The menuAtr. */
+	private int menuAtr;
+	
+	/** The url. */
+	private String url;
+	
+	/** The system. */
+	private int system;
+	
+	/** The classification. */
+	private int classification;
+	
+	/** The webMenuSetting. */
+	private int webMenuSetting;
+	
+	/** The afterLoginDisplay. */
+	private int afterLoginDisplay;
+	
+	/** The logSettingDisplay. */
+	private int logSettingDisplay;
 
 	/**
 	 * Instantiates a new Standard Menu.
 	 *
 	 * @param companyId the company Id
-	 * @param url the url
-	 * @param webMenuSettingDisplayIndicator the webMenuSettingDisplayIndicator
 	 * @param code the menu code
-	 * @param system the system
-	 * @param classification the classification
-	 * @param afterLoginDisplayIndicator the afterLoginDisplayIndicator
-	 * @param logSettingDisplayIndicator the logSettingDisplayIndicator
 	 * @param targetItems the target items
 	 * @param displayName the display name
+	 * @param displayOrder the displayOrder
+	 * @param menuAtr the menuAtr
+	 * @param url the url
+	 * @param system the system
+	 * @param classification the classification
+	 * @param webMenuSetting the webMenuSetting
+	 * @param afterLoginDisplay the afterLoginDisplay
+	 * @param logSettingDisplay the logSettingDisplay
 	 */
-	public StandardMenu(String companyId, String url, int webMenuSettingDisplayIndicator, String code, String system,
-			String classification, int afterLoginDisplayIndicator, int logSettingDisplayIndicator, String targetItems,
-			String displayName) {
+	public StandardMenu(String companyId, MenuCode code, String targetItems, MenuDisplayName displayName, int displayOrder,
+			int menuAtr, String url, int system, int classification, int webMenuSetting,
+			int afterLoginDisplay, int logSettingDisplay) {
+		
 		this.companyId = companyId;
-		this.url = url;
-		this.webMenuSettingDisplayIndicator = webMenuSettingDisplayIndicator;
 		this.code = code;
-		this.system = system;
-		this.classification = classification;
-		this.afterLoginDisplayIndicator = afterLoginDisplayIndicator;
-		this.logSettingDisplayIndicator = logSettingDisplayIndicator;
 		this.targetItems = targetItems;
 		this.displayName = displayName;
-	}
+		this.displayOrder = displayOrder;
+		this.menuAtr = menuAtr;
+		this.url = url;
+		this.system = system;
+		this.classification = classification;
+		this.webMenuSetting = webMenuSetting;
+		this.afterLoginDisplay = afterLoginDisplay;
+		this.logSettingDisplay = logSettingDisplay;
+	}	
 	
 	/**
 	 * Creates the from java type.
 	 *
 	 * @param companyId the company Id
-	 * @param url the url
-	 * @param webMenuSettingDisplayIndicator the webMenuSettingDisplayIndicator
 	 * @param code the menu code
-	 * @param system the system
-	 * @param classification the classification
-	 * @param afterLoginDisplayIndicator the afterLoginDisplayIndicator
-	 * @param logSettingDisplayIndicator the logSettingDisplayIndicator
 	 * @param targetItems the target items
 	 * @param displayName the display name
+	 * @param displayOrder the displayOrder
+	 * @param menuAtr the menuAtr
+	 * @param url the url
+	 * @param system the system
+	 * @param classification the classification
+	 * @param webMenuSetting the webMenuSetting
+	 * @param afterLoginDisplay the afterLoginDisplay
+	 * @param logSettingDisplay the logSettingDisplay
 	 */
-	public static StandardMenu createFromJavaType(String companyId, String url, int webMenuSettingDisplayIndicator, String code, String system,
-			String classification, int afterLoginDisplayIndicator, int logSettingDisplayIndicator, String targetItems,
-			String displayName) {
-		return new StandardMenu(companyId, url, webMenuSettingDisplayIndicator, code, system,
-				classification, afterLoginDisplayIndicator, logSettingDisplayIndicator, targetItems,
-				displayName);
-	}
+	public static StandardMenu createFromJavaType(String companyId, String code, String targetItems, String displayName, 
+			int displayOrder, int menuAtr, String url, int system, int classification, int webMenuSetting,
+			int afterLoginDisplay, int logSettingDisplay) {
+		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName), displayOrder, menuAtr, url, system, classification, 
+				webMenuSetting,	afterLoginDisplay, logSettingDisplay);
+	}	
 }
