@@ -3,7 +3,9 @@ module nts.uk.at.view.kmk012.a {
         var paths = {
             getAllClosureHistory: "ctx/at/record/workrecord/closure/history/getall",
             detailClosure: "ctx/at/record/workrecord/closure/detail",
-            detailClosureHistory: "ctx/at/record/workrecord/closure/history/detail"
+            saveClosure: "ctx/at/record/workrecord/closure/save",
+            detailClosureHistory: "ctx/at/record/workrecord/closure/history/detail",
+            saveClosureHistory: "ctx/at/record/workrecord/closure/history/save"
         }
         
         // get all data        
@@ -14,6 +16,11 @@ module nts.uk.at.view.kmk012.a {
         // detail data
         export function detailClosure(closureId: number):JQueryPromise<model.ClosureDto> {
             return nts.uk.request.ajax(paths.detailClosure + "/" + closureId);
+        }
+        
+        // detail data
+        export function saveClosure(dto: model.ClosureSaveDto):JQueryPromise<model.ClosureDto> {
+            return nts.uk.request.ajax(paths.saveClosure, dto);
         }
         
         
@@ -104,6 +111,17 @@ module nts.uk.at.view.kmk012.a {
                 month: number;
                 
                 closureHistories: ClosureHistoryMDto[];
+            }
+            
+            export class ClosureSaveDto{
+                /** The closure id. */
+                closureId: number;
+
+                /** The use classification. */
+                useClassification: number;
+
+                /** The day. */
+                month: number;
             }
         }
 

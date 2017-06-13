@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
+import java.util.Optional;
+
 /**
  * The Interface CompanySettingRepository.
  */
@@ -36,5 +38,5 @@ public interface CompanySettingRepository {
 	 * @param companyId the company id
 	 * @return the company setting
 	 */
-	CompanySetting find(String companyId);
+	Optional<CompanySetting> find(String companyId);
 }

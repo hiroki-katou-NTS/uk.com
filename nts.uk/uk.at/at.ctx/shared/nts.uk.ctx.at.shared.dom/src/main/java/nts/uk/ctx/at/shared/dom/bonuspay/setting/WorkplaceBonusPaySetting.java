@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
  * @author hungnm

@@ -17,10 +17,12 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtAnnualPaidLeave;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtAnnualPaidLeave_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtAnnualPaidLeave;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtAnnualPaidLeave_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeVacationSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeVacationSet_;
 
 /**
  * The Class JpaAnnualPaidLeaveSettingRepository.
@@ -37,7 +39,8 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
      */
     @Override
     public void add(AnnualPaidLeaveSetting setting) {
-        this.commandProxy().insert(this.toEntity(setting));
+        KalmtAnnualPaidLeave v = this.toEntity(setting);
+        this.commandProxy().insert(v);
     }
 
     /*
@@ -63,53 +66,76 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
         EntityManager em = this.getEntityManager();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfmtAnnualPaidLeave> cq = builder.createQuery(KmfmtAnnualPaidLeave.class);
-        Root<KmfmtAnnualPaidLeave> root = cq.from(KmfmtAnnualPaidLeave.class);
+        CriteriaQuery<KalmtAnnualPaidLeave> cq = builder.createQuery(KalmtAnnualPaidLeave.class);
+        Root<KalmtAnnualPaidLeave> root = cq.from(KalmtAnnualPaidLeave.class);
 
         List<Predicate> predicateList = new ArrayList<Predicate>();
 
-        predicateList.add(builder.equal(root.get(KmfmtAnnualPaidLeave_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KalmtAnnualPaidLeave_.cid), companyId));
 
         cq.where(predicateList.toArray(new Predicate[]{}));
         
-        List<KmfmtAnnualPaidLeave> result = em.createQuery(cq).getResultList();
+        List<KalmtAnnualPaidLeave> result = em.createQuery(cq).getResultList();
         if (result.isEmpty()) {
             return null;
         }
-        KmfmtAnnualPaidLeave entity = result.get(0);
-        KmfmtMngAnnualSet entityManage = findManageByCompanyId(companyId);
+        KalmtAnnualPaidLeave entity = result.get(0);
+        KmamtMngAnnualSet entityYear = findYearManageByCompanyId(companyId);
+        KtvmtTimeVacationSet entityTime = findTimeManageByCompanyId(companyId);
 
-        return new AnnualPaidLeaveSetting(new JpaAnnualPaidLeaveSettingGetMemento(entity, entityManage));
+        return new AnnualPaidLeaveSetting(new JpaAnnualPaidLeaveSettingGetMemento(entity, entityYear, entityTime));
     }
     
     /**
      * To entity.
      *
      * @param setting the setting
-     * @return the kmfmt annual paid leave
+     * @return the kalmt annual paid leave
      */
-    private KmfmtAnnualPaidLeave toEntity(AnnualPaidLeaveSetting setting) {
-        KmfmtAnnualPaidLeave entity = new KmfmtAnnualPaidLeave();
+    private KalmtAnnualPaidLeave toEntity(AnnualPaidLeaveSetting setting) {
+        KalmtAnnualPaidLeave entity = new KalmtAnnualPaidLeave();
         setting.saveToMemento(new JpaAnnualPaidLeaveSettingSetMemento(entity));
         return entity;
     }
     
     /**
-     * Find manage by company id.
+     * Find year manage by company id.
      *
      * @param companyId the company id
-     * @return the kmfmt mng annual set
+     * @return the kmamt mng annual set
      */
-    private KmfmtMngAnnualSet findManageByCompanyId(String companyId) {
+    private KmamtMngAnnualSet findYearManageByCompanyId(String companyId) {
         EntityManager em = this.getEntityManager();
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfmtMngAnnualSet> cq = builder.createQuery(KmfmtMngAnnualSet.class);
-        Root<KmfmtMngAnnualSet> root = cq.from(KmfmtMngAnnualSet.class);
+        CriteriaQuery<KmamtMngAnnualSet> cq = builder.createQuery(KmamtMngAnnualSet.class);
+        Root<KmamtMngAnnualSet> root = cq.from(KmamtMngAnnualSet.class);
 
         List<Predicate> predicateList = new ArrayList<Predicate>();
 
-        predicateList.add(builder.equal(root.get(KmfmtMngAnnualSet_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KmamtMngAnnualSet_.cid), companyId));
+
+        cq.where(predicateList.toArray(new Predicate[]{}));
+
+        return em.createQuery(cq).getSingleResult();
+    }
+    
+    /**
+     * Find time manage by company id.
+     *
+     * @param companyId the company id
+     * @return the ktvmt time vacation set
+     */
+    private KtvmtTimeVacationSet findTimeManageByCompanyId(String companyId) {
+        EntityManager em = this.getEntityManager();
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KtvmtTimeVacationSet> cq = builder.createQuery(KtvmtTimeVacationSet.class);
+        Root<KtvmtTimeVacationSet> root = cq.from(KtvmtTimeVacationSet.class);
+
+        List<Predicate> predicateList = new ArrayList<Predicate>();
+
+        predicateList.add(builder.equal(root.get(KtvmtTimeVacationSet_.cid), companyId));
 
         cq.where(predicateList.toArray(new Predicate[]{}));
 
