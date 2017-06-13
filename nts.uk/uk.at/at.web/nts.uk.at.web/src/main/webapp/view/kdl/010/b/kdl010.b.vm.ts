@@ -16,6 +16,9 @@ module kdl010.b.viewmodel {
             return dfd.promise();
         }
         openDialog() {
+            var self = this;
+            nts.uk.ui.windows.setShared('SelectWorkLocation', self.workLocationCD());
+            console.log(self.workLocationCD);
             nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() =>{
             var self = this;
             var returnItem = nts.uk.ui.windows.getShared("workLocation");
