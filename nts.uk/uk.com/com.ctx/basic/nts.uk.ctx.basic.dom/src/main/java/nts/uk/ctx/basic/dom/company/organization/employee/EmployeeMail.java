@@ -5,17 +5,17 @@ import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * 
- * 社員CD
+ * 社員 MAIL
  */
-@StringMaxLength(12)
-public class EmployeeCode extends StringPrimitiveValue<EmployeeCode> {
+@StringMaxLength(80)
+public class EmployeeMail extends StringPrimitiveValue<EmployeeMail> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public EmployeeCode(String rawValue) {
+	public EmployeeMail(String rawValue) {
 		super(rawValue);
 	}
 

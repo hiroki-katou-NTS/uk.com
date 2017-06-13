@@ -19,15 +19,13 @@ public class StampReferenceWebService extends WebService {
 	private StampFinder getStamp;
 
 	/**
-	 * get all divergence time
+	 * get Stamp Info
 	 * 
 	 * @return
 	 */
 	@POST
-	@Path("getstampbyempcode/{cardNumber}/{startDate}/{endDate}")
-	public List<StampDto> getStampReference(@PathParam("cardNumber") String cardNumber,
-			@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
+	@Path("getstampbyempcode/{startDate}/{endDate}")
+	public List<StampDto> getStampReference(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate, List<String> cardNumber) {
 		return this.getStamp.findByEmployeeCode(cardNumber, startDate, endDate);
 	}
-
 }

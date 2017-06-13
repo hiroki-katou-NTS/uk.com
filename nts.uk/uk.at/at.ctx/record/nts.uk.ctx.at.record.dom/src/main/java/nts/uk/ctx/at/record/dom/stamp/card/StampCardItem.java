@@ -9,11 +9,10 @@ import nts.uk.ctx.at.record.dom.stamp.CardNumber;
 @Getter
 public class StampCardItem extends AggregateRoot {
 	private String companyId;
-	private CardNumber cardNumber;
 	private String personId;
+	private CardNumber cardNumber;
 
-	public static StampCardItem createFromJavaType(String companyId, String cardNumber, String personId) {
-		return new StampCardItem(companyId, new CardNumber(cardNumber), personId);
+	public static StampCardItem createFromJavaType(String companyId, String personId, String cardNumber) {
+		return new StampCardItem(companyId, personId, new CardNumber(cardNumber));
 	}
-
 }
