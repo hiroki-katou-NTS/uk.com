@@ -18,8 +18,8 @@ module nts.uk.at.view.kmk012.a {
             return nts.uk.request.ajax(paths.detailClosure + "/" + closureId);
         }
         
-        // detail data
-        export function saveClosure(dto: model.ClosureSaveDto):JQueryPromise<model.ClosureDto> {
+        // save data
+        export function saveClosure(dto: model.ClosureSaveDto):JQueryPromise<void> {
             return nts.uk.request.ajax(paths.saveClosure, dto);
         }
         
@@ -27,6 +27,12 @@ module nts.uk.at.view.kmk012.a {
         // detail data
         export function detailClosureHistory(master: model.ClosureHistoryMDto):JQueryPromise<model.ClosureHistoryDDto> {
             return nts.uk.request.ajax(paths.detailClosureHistory,master);
+        }
+        
+        // save data
+        export function saveClosureHistory(dto: model.ClosureHistoryDto):JQueryPromise<void> {
+            var data = {closureHistory: dto};
+            return nts.uk.request.ajax(paths.saveClosureHistory,data);
         }
         
         
@@ -122,6 +128,32 @@ module nts.uk.at.view.kmk012.a {
 
                 /** The day. */
                 month: number;
+            }
+            
+            export class ClosureHistoryDto{
+            
+                /** The close name. */
+                // 名称: 締め名称
+                closeName: string;
+
+                /** The closure id. */
+                // 締めＩＤ
+                closureId: number;
+    
+                /** The closure history id. */
+                closureHistoryId: string;
+
+                /** The closure year. */
+                // 終了年月: 年月
+                endDate: number;
+    
+                /** The closure date. */
+                // 締め日: 日付
+                closureDate: number;
+    
+                /** The start date. */
+                // 開始年月: 年月
+                startDate: number;
             }
         }
 

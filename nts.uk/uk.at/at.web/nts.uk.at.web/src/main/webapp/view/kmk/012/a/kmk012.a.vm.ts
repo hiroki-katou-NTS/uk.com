@@ -6,6 +6,7 @@ module nts.uk.at.view.kmk012.a {
     import ClosureHistoryMDto = service.model.ClosureHistoryMDto;
     import ClosureHistoryDDto = service.model.ClosureHistoryDDto;
     import ClosureSaveDto = service.model.ClosureSaveDto;
+    import ClosureHistoryDto = service.model.ClosureHistoryDto;
     
     export module viewmodel {
 
@@ -42,7 +43,7 @@ module nts.uk.at.view.kmk012.a {
                 
                 
                 self.selectCodeLstClosure.subscribe(function(val: ClosureHistoryFindDto) {
-                   self.detailClosure(val.id);
+                   self.detailClosure(val.id,'');
                 });
                 
                 self.selectCodeLstClosureHistory.subscribe(function(val: ClosureHistoryMDto){
@@ -65,19 +66,29 @@ module nts.uk.at.view.kmk012.a {
                     }
                    self.lstClosureHistory(dataRes);
                    self.selectCodeLstClosure(data[0]);
-                   self.detailClosure(data[0].id);
+                   self.detailClosure(data[0].id,'');
                 });
                 dfd.resolve();
                 return dfd.promise();
             }
             
             
-            detailClosure(closureId: number){
+            detailClosure(closureId: number, historyId: string): void{
                 var self = this;
                 service.detailClosure(closureId).done(function(data){
                     self.closureModel.updateData(data);
-                    self.selectCodeLstClosureHistory(data.closureHistories[0]);
-                    self.detailClosureHistory(data.closureHistories[0]);
+                    if(historyId == undefined || historyId === ''){
+                        self.selectCodeLstClosureHistory(data.closureHistories[0]);
+                        self.detailClosureHistory(data.closureHistories[0]);
+                    } else {
+                        for(var  master: ClosureHistoryMDto of data.closureHistories){
+                            if(master.historyId === historyId){
+                                self.selectCodeLstClosureHistory(master);
+                                self.detailClosureHistory(master);
+                                return;
+                            }    
+                        }
+                    }
                 });
            }
             
@@ -122,8 +133,51 @@ module nts.uk.at.view.kmk012.a {
             saveClosureHistory(): void {
                 var self = this;
                 service.saveClosure(self.collectData()).done(function() {
-                    console.log('YES');
+                    service.saveClosureHistory(self.collectDataHistory()).done(function(){
+                        self.reloadPage(self.selectCodeLstClosure().id,
+                            self.selectCodeLstClosureHistory().historyId);
+                    });
                 });
+            }
+            
+            reloadPage(closureId: number, historyId: string): void{
+                var self = this;
+                 service.getAllClosureHistory().done(function(data) {
+                    var dataRes: ClosureHistoryFindDto[] = [];
+                    for (var item: ClosureHistoryFindDto of data) {
+                        var dataI: ClosureHistoryFindDto = new ClosureHistoryFindDto();
+                        dataI.id = item.id; 
+                        dataI.name = item.name;
+                        dataI.updateData();
+                        dataRes.push(dataI);
+                    }
+                   self.lstClosureHistory(dataRes);
+                   for (var closure: ClosureHistoryFindDto of data){
+                        if(closure.id == closureId){
+                            self.selectCodeLstClosure(closure);
+                            self.detailClosure(closureId, historyId);
+                            return;    
+                        }    
+                   }
+                   
+                });
+            }
+            
+            
+            collectDataHistory(): ClosureHistoryDto{
+                var self = this;
+                var dto: ClosureHistoryDto;
+                dto = new ClosureHistoryDto();
+                dto.closeName = self.closureHistoryModel.closureName();
+                dto.closureId = self.closureHistoryModel.closureId();
+                dto.closureHistoryId = self.closureHistoryModel.historyId();
+                dto.closureDate = self.closureHistoryModel.closureDate();
+                return dto;    
+            }
+            
+             // 締め期間確認 
+            public openConfirmClosingPeriodDialog(): void {
+                nts.uk.ui.windows.sub.modal('/view/kmk/012/d/index.xhtml', { title: '締め期間確認 ', dialogClass: 'no-close' });
             }
     
             

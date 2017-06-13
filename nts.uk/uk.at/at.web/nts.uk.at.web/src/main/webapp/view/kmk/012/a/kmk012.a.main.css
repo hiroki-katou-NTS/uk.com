@@ -1,5 +1,8 @@
 @CHARSET "UTF-8";
 
+#functions-area{
+	height: 50px;
+}
 #contents-left, #contents-right {
 	padding: 20px;
 	vertical-align: top !important;
@@ -22,12 +25,12 @@
 }
 
 .lableData{
-	width: 200px;
+	width: 170px;
 	float: left;
 }
 
 .lableDataEnd{
-	width: 200px;
+	width: 130px;
 	margin-left: 50px;
 	float: left;
 }
