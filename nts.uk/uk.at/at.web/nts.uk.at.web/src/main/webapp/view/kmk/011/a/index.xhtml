@@ -19,12 +19,11 @@
 			<com:scriptfile path="kmk011.a.service.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="function_area">
+			<div id="functions-area">
 				<!-- A1_1: Button Registration -->
 				<button id="btnSave"
 					class="button proceed separate-button fix-button"
 					data-bind="click: Registration,enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KMK011_3')}</button>
-				<hr />
 			</div>
 
 			<div id="content-area">
@@ -71,7 +70,7 @@
 						<tr class="row">
 							<td>
 								<!--A3_3 -->
-								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_9')}</div>
+								<div data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK011_9')}</div>
 							</td>
 							<td style = "padding-left: 5px">
 								<!-- A3_4: Divergence Time Name -->

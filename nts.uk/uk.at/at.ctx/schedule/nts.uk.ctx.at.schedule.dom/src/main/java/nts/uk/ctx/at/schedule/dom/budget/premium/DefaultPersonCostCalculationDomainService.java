@@ -94,7 +94,19 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 						beforePersonCostResult.get().getMemo(),
 						beforePersonCostResult.get().getPremiumSettings()));
 		}
-		this.personCostCalculationRepository.update(personCostCalculation);
+		if(personCostCalculation.getPremiumSettings()==null){
+			this.personCostCalculationRepository.update(
+				new PersonCostCalculation(
+						personCostCalculation.getCompanyID(), 
+						personCostCalculation.getHistoryID(),
+						personCostCalculation.getStartDate(), 
+						personCostCalculation.getEndDate(), 
+						personCostCalculation.getUnitPrice(), 
+						personCostCalculation.getMemo(),
+						currentPersonCostResult.get().getPremiumSettings()));
+		} else {
+			this.personCostCalculationRepository.update(personCostCalculation);
+		}
 	}
 
 	@Override
