@@ -10,16 +10,16 @@
 
 #btn_001 {
 	border: 1px solid #aaa;
-	padding-bottom: 20px;
+	padding-bottom: 15px;
 }
-
 #left-content {
-	margin: 5px 0px 0 20px !important;
+	margin: 10px 0px 0 20px !important;
 	float: left;
 }
 
 #right-content {
 	margin-left: 40px;
+	margin-top: 10px;
 	float: left;
 	height: 350px;
 }
