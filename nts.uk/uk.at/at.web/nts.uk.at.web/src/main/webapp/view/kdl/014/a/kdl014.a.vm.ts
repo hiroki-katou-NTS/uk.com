@@ -34,8 +34,7 @@ module kdl014.a.viewmodel {
             let lstCardNumber: Array<string> = [];
             //get list Card Number
             service.getPersonIdByEmployee(employeeCode).done(function(employeeInfo: any) {
-                console.log(employeeInfo.personId);
-                debugger;
+//                console.log(employeeInfo.personId);
                 if (employeeInfo !== undefined) {
                     let personId: string = employeeInfo.personId;
                     //get list Card Number
@@ -45,9 +44,6 @@ module kdl014.a.viewmodel {
                         };
                         //get list Stamp 
                         service.getStampByCode(lstCardNumber, startDate, endDate).done(function(lstStamp: any) {
-                            //console.log(_.padStart(nts.uk.time.parseTime(480, true).format(),5,'0'));
-                            //TODO
-                            console.log(lstStamp);
                             if (lstStamp.length > 0) {
                                 _.forEach(lstStamp, function(item) {
                                     self.items.push(new StampModel(item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));

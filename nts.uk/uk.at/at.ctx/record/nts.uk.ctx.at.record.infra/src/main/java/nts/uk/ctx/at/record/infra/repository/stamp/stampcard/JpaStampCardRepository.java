@@ -14,23 +14,24 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 
 	private final String SELECT_BY_PERSON = "SELECT c FROM KwkdtStampCard c"
 			+ " WHERE c.kwkdtStampCardPK.companyId = :companyId" 
-			+ " AND c.kwkdtStampCardPK.personId = :personId";
+			+ " AND c.personId = :personId";
 	
 	private final String SELECT_BY_LIST_PERSON = "SELECT c FROM KwkdtStampCard c"
 			+ " WHERE c.kwkdtStampCardPK.companyId = :companyId" 
-			+ " AND c.kwkdtStampCardPK.personId IN :listPersonId";
+			+ " AND c.personId IN :listPersonId";
 
 	private static StampCardItem toDomain(KwkdtStampCard entity) {
 		StampCardItem domain = StampCardItem.createFromJavaType(
 				entity.kwkdtStampCardPK.companyId,
-				entity.kwkdtStampCardPK.personId, 
+				entity.personId, 
 				entity.kwkdtStampCardPK.cardNumber);
 		return domain;
 	}
 
 	@Override
 	public List<StampCardItem> findByPersonID(String companyId, String personId) {
-		return this.queryProxy().query(SELECT_BY_PERSON, KwkdtStampCard.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_PERSON, KwkdtStampCard.class)
+				.setParameter("companyId", companyId)
 				.setParameter("personId", personId).getList(c -> toDomain(c));
 	}
 

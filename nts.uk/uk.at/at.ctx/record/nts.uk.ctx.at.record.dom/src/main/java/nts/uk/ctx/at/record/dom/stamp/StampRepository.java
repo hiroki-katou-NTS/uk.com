@@ -9,7 +9,4 @@ public interface StampRepository {
 	
 	// get List Stamp by Date
 	List<StampItem> findByDate(String companyId, String cardNumber, String startDate, String endDate);
-
-
-	
 }

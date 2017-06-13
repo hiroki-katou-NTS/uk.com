@@ -16,10 +16,6 @@ public class KwkdtStampCardPK implements Serializable {
 	/* 会社ID */
 	@Column(name = "CID")
 	public String companyId;
-
-	/* 個人ID */
-	@Column(name = "PID")
-	public String personId;
 	
 	/* カード番号 */
 	@Column(name = "CARD_NUMBER")

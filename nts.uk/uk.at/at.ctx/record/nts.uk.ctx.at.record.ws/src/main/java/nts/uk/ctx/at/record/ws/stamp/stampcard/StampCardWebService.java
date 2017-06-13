@@ -17,13 +17,11 @@ import nts.uk.ctx.at.record.app.find.stamp.stampcard.StampCardFinder;
 public class StampCardWebService extends WebService {
 	@Inject
 	private StampCardFinder getStampCard;
-
 	@POST
 	@Path("getstampnumberbyempcode/{personId}")
 	public List<StampCardDto> getStampNumber(@PathParam("personId") String personId) {
 		return this.getStampCard.findByPersonID(personId);
 	}
-	
 	@POST
 	@Path("getliststampnumberbylstempcode")
 	public List<StampCardDto> getListStampNumber(List<String> lstPersonId) {

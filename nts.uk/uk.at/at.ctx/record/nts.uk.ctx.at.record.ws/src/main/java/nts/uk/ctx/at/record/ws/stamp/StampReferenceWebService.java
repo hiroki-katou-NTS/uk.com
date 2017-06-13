@@ -28,5 +28,4 @@ public class StampReferenceWebService extends WebService {
 	public List<StampDto> getStampReference(@PathParam("startDate") String startDate, @PathParam("endDate") String endDate, List<String> cardNumber) {
 		return this.getStamp.findByEmployeeCode(cardNumber, startDate, endDate);
 	}
-
 }

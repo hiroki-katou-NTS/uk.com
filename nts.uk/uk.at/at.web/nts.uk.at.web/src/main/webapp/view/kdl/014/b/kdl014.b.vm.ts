@@ -73,14 +73,19 @@ module kdl014.b.viewmodel {
 //            }).fail(function(res) {
 //                dfd.reject();
 //            });
+            let lstEmployeeCode: Array<string> = ['00003','00002'];
             let lstPersonID: Array<string> = [];
+            let lstEmloyee: Array<PersonModel> = [];
             let lstStampNumber: Array<string> =[];
-            service.getListPersonByListEmployee(lstEmployeeCode).done(function(lstPersonId: any) {
-                if(lstPersonId.length>0){
-                    _.forEach(lstPersonId, function(item){
-                        lstPersonID.push(item.personId);    
+            let lstSource: Array<StampModel>=[];
+            service.getListPersonByListEmployee(lstEmployeeCode).done(function(persons: any) {
+                if(persons.length>0){
+                    //console.log(persons);
+                    _.forEach(persons, function(person){
+                        lstPersonID.push(person.personId);
+                        lstEmloyee.push(new PersonModel(person.employeeCode,person.personId));
                     });  
-                    console.log(lstPersonID);
+                    console.log(lstEmloyee);
                     //Get list STAMP NUMBER from PersonID 
                     service.getStampNumberByListPersonId(lstPersonID).done(function(StampNumbers: any) {
                         if(StampNumbers.length>0){
@@ -88,7 +93,22 @@ module kdl014.b.viewmodel {
                                  lstStampNumber.push(i.cardNumber);
                             });  
                             //Get List Stamp Reference
-                              
+                            service.getStampByCode(lstStampNumber, startDate, endDate).done(function(lstStamp: any) {
+                                if (lstStamp.length > 0) {
+                                    _.forEach(lstStamp, function(item) {
+                                        _.forEach(lstEmloyee, function(employee){
+                                            if(employee.personId == item.personId){
+                                               lstSource.push(new StampModel(employee.employeeCd,'name',item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName)); 
+                                            } 
+                                        });
+                                    });
+                                }
+                                self.items(_.orderBy(lstSource,['employeeCd'],['desc']));
+                                dfd.resolve();
+                            }).fail(function(res) {
+                                dfd.reject();
+                            });
+                            dfd.resolve();  
                         }
                     }).fail(function(res) {
                         dfd.reject();
@@ -129,6 +149,16 @@ module kdl014.b.viewmodel {
             self.stampMethodName = stampMethodName;
             self.workLocationName = workLocationName;
             self.stampCombinationName = stampCombinationName;
+        }
+    }
+    
+    class PersonModel{
+        employeeCd : string;
+        personId: string;
+        constructor(employeeCd:string,personId:string){
+            var self= this;
+            self.employeeCd = employeeCd;
+            self.personId = personId;    
         }
     }
 }
