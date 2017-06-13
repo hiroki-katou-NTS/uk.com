@@ -108,3 +108,13 @@
 .endAction {
 	margin-top: 20px;
 }
+
+.startChangeDate{
+	width: 40px;
+	float: left;
+}
+
+.endChangeDate{
+	width: 100px;
+	float: left;
+}

@@ -175,8 +175,8 @@ module nts.uk.at.view.kmk012.a {
              // 締め期間確認 
             public openConfirmClosingPeriodDialog(): void {
                 var self = this;
-                nts.uk.ui.windows.setShared('closureModel', self.closureModel);
-                nts.uk.ui.windows.setShared('closureHistoryModel', self.closureHistoryModel);
+                nts.uk.ui.windows.setShared('closureId', self.closureModel.closureId());
+                nts.uk.ui.windows.setShared('historyId', self.closureHistoryModel.historyId());
                 nts.uk.ui.windows.sub.modal('/view/kmk/012/d/index.xhtml', 
                 { title: '締め期間確認 ', dialogClass: 'no-close' });
             }
@@ -269,13 +269,6 @@ module nts.uk.at.view.kmk012.a {
                 this.closureId(dto.closureId);
                 this.closureName(dto.closureName);
                 this.closureDate(dto.closureDate);
-            }
-            
-            getDayClosureDate(): string{
-                if(this.closureDate() == 0){
-                    return "末日";
-                }
-                return this.closureDate()+"日";
             }
             
         }
