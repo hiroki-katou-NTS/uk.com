@@ -29,7 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.UseClassification;
 public class ClosureFindDto implements ClosureSetMemento{
 	
 	/** The closure id. */
-	private Integer closureId;
+	private int closureId;
 	
 	/** The use classification. */
 	private int useClassification;

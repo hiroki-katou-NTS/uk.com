@@ -74,7 +74,7 @@ public class ClosureFinder {
 		ClosureFindDto dto = new ClosureFindDto();
 		
 		List<ClosureHistory> closureHistories = this.repositoryHistory.findByClosureId(companyId,
-			closureId);
+				closureId);
 		
 		// exist data
 		if(closure.isPresent()){

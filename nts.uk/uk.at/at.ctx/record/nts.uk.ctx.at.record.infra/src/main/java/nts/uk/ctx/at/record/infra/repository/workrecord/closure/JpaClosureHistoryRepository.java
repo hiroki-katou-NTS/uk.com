@@ -181,7 +181,8 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 
 
 	@Override
-	public Optional<ClosureHistory> findByLastHistory(String companyId, int closureId) {
+	public Optional<ClosureHistory> findByLastHistory(String companyId, int closureId,
+			int yearMonth) {
 		
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -209,12 +210,18 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 			root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.closureId),
 			closureId));
 		
+		// less than or equal year month
+		lstpredicateWhere.add(
+				criteriaBuilder.lessThanOrEqualTo(root.get(KclmtClosureHist_.strD), yearMonth));
+		
+		
+		// great than or equal year month
+		lstpredicateWhere.add(
+				criteriaBuilder.greaterThanOrEqualTo(root.get(KclmtClosureHist_.endD), yearMonth));
+		
+		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		
-		// order by end date
-		cq.orderBy(criteriaBuilder.desc(root.get(KclmtClosureHist_.endD)));
-		
 		
 		// create query
 		TypedQuery<KclmtClosureHist> query = em.createQuery(cq).setMaxResults(FIRST_LENGTH);
