@@ -2559,7 +2559,7 @@ var nts;
                             result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]));
                         }
                         else {
-                            result.success(inputText === "0" ? inputText : uk.text.removeFromStart(inputText, "0"));
+                            result.success(value.toString() === "0" ? inputText : uk.text.removeFromStart(inputText, "0"));
                         }
                         return result;
                     };
