@@ -6,6 +6,11 @@ module kcp.share.list {
         isAlreadySetting?: boolean;
     }
     
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
+    }
+    
     /**
      * Component option.
      */
@@ -36,6 +41,11 @@ module kcp.share.list {
         selectedCode: KnockoutObservable<any>;
         
         /**
+         * baseDate
+         */
+        baseDate?: KnockoutObservable<Date>;
+        
+        /**
          * is dialog, if is main screen, set false,
          */
         isDialog: boolean;
@@ -44,7 +54,7 @@ module kcp.share.list {
          * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
-        alreadySettingList?: KnockoutObservableArray<UnitModel>;
+        alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
     }
     
     /**
@@ -61,6 +71,7 @@ module kcp.share.list {
         codeColumnSize: number;
         totalColumnSize: number;
         totalComponentSize: number;
+        totalHeight: number;
     }
     
     /**
@@ -76,12 +87,13 @@ module kcp.share.list {
         baseDate: KnockoutObservable<Date>;
         isHasButtonSelectAll: boolean;
         gridStyle: GridStyle;
+        listType: ListType;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         constructor() {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
             this.isMultiple = false;
-            this.baseDate = ko.observable(new Date());
         }
         /**
          * Init component.
@@ -95,6 +107,10 @@ module kcp.share.list {
             self.hasBaseDate = data.listType == ListType.JOB_TITLE;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE && data.isMultiSelect;
             self.initGridStyle(data);
+            self.listType = data.listType;
+            if (data.baseDate) {
+                self.baseDate = data.baseDate;
+            }
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
@@ -106,6 +122,7 @@ module kcp.share.list {
             
             // If show Already setting.
             if (data.isShowAlreadySet) {
+                self.alreadySettingList = data.alreadySettingList;
                 // Add row already setting.
                 self.listComponentColumn.push({
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 70,
@@ -127,10 +144,10 @@ module kcp.share.list {
                 
                 // Map already setting attr to data list.
                 if (data.isShowAlreadySet) {
-                    self.addAreadySettingAttr(dataList, data.alreadySettingList());
+                    self.addAreadySettingAttr(dataList, self.alreadySettingList());
                     
                     // subscribe when alreadySettingList update => reload component.
-                    data.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
+                    self.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
                         self.addAreadySettingAttr(dataList, newSettings);
                         self.itemList(dataList);
                     })
@@ -142,6 +159,7 @@ module kcp.share.list {
                     ko.cleanNode($input[0]);
                     ko.applyBindings(self, $input[0]);
                     $(".ntsSearchBox").focus();
+                    $('.base-date-editor').find('.nts-input').width(133);
                 });
                 dfd.resolve();
             });
@@ -193,10 +211,12 @@ module kcp.share.list {
             var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize + selectAllButtonSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
+            var totalHeight: number = this.hasBaseDate ? 500 : 452;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),
-                totalComponentSize: Math.max(minTotalSize, totalColumnSize) + 2
+                totalComponentSize: Math.max(minTotalSize, totalColumnSize) + 2,
+                totalHeight: totalHeight
             };
         }
         
@@ -211,6 +231,8 @@ module kcp.share.list {
                     return service.findJobTitles(this.baseDate());
                 case ListType.Classification:
                     return service.findClassifications();
+                default:
+                    return;
             }
         }
         
@@ -225,6 +247,18 @@ module kcp.share.list {
             self.selectedCodes(self.itemList().map(item => item.code));
         }
         
+        /**
+         * Reload screen data.
+         */
+        public reload() {
+            var self = this;
+            self.findDataList(self.listType).done((data: UnitModel[]) => {
+                if (self.alreadySettingList) {
+                    self.addAreadySettingAttr(data, self.alreadySettingList());
+                }
+                self.itemList(data);
+            });
+        }
     }
     
     /**
