@@ -223,7 +223,7 @@ public class AnnualPaidLeaveSaveCommand {
          */
         @Override
         public AnnualLeaveGrantDay getMaxGrantDay() {
-            return new AnnualLeaveGrantDay(this.command.maxGrantDay);
+            return this.command.maxGrantDay == null ? null : new AnnualLeaveGrantDay(this.command.maxGrantDay);
         }
 
         /*
@@ -263,7 +263,8 @@ public class AnnualPaidLeaveSaveCommand {
         public RemainingNumberSetting getRemainingNumberSetting() {
             RemainingNumberSetting remain = RemainingNumberSetting.builder()
                     .retentionYear(new RetentionYear(this.command.numberYearRetain))
-                    .remainingDayMaxNumber(new MaxRemainingDay(this.command.maxRemainingDay))
+                    .remainingDayMaxNumber(this.command.maxRemainingDay != null ? new MaxRemainingDay(
+                            this.command.maxRemainingDay) : null)
                     .build();
             return remain;
         }

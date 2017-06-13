@@ -54,7 +54,7 @@ module nts.uk.pr.view.kmf001.l {
                 let command = self.toJsObject();
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         dfd.resolve();
                     });
                 }).fail(function(res) {
@@ -130,7 +130,7 @@ module nts.uk.pr.view.kmf001.l {
                     $('#nursing-number-person').ntsError('validate');
                     
                     if (!self.nursingSetting().workTypeCodes() || self.nursingSetting().workTypeCodes().length == 0) {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_152'));
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_152"});
                         return false;
                     }
                 }
@@ -142,7 +142,7 @@ module nts.uk.pr.view.kmf001.l {
                     
                     if (!self.childNursingSetting().workTypeCodes()
                             || self.childNursingSetting().workTypeCodes().length == 0) {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_152'));
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_152"});
                         return false;
                     }
                 }
@@ -225,7 +225,7 @@ module nts.uk.pr.view.kmf001.l {
             
             constructor() {
                 let self = this;
-                self.selectedManageNursing = ko.observable(1);
+                self.selectedManageNursing = ko.observable(0);
                 self.enableNursing = ko.computed(function() {
                     return self.selectedManageNursing() == 1;
                 }, self);

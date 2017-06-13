@@ -67,9 +67,6 @@ table#table tr td.title {
 .ntsControl {
     display: inline !important;
 }
-.td-combo-box {
-	padding-left: 4px;
-}
 #combo-box-time-unit {
 	width: 83px;
 	min-width: 0px !important

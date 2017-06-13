@@ -48,7 +48,9 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
      */
     @Override
     public void setMaxGrantDay(AnnualLeaveGrantDay maxGrantDay) {
-        this.entity.setHalfMaxGrantDay(maxGrantDay.v());
+        if (maxGrantDay != null) {
+            this.entity.setHalfMaxGrantDay(maxGrantDay.v());
+        }
     }
 
     /*
@@ -87,7 +89,9 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
     @Override
     public void setRemainingNumberSetting(RemainingNumberSetting remainingNumberSetting) {
         this.entity.setRetentionYear(remainingNumberSetting.retentionYear.v());
-        this.entity.setRemainingMaxDay(remainingNumberSetting.remainingDayMaxNumber.v());
+        if (remainingNumberSetting.remainingDayMaxNumber != null) {
+            this.entity.setRemainingMaxDay(remainingNumberSetting.remainingDayMaxNumber.v());
+        }
     }
 
     /*

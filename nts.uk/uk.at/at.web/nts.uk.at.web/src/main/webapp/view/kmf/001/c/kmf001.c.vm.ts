@@ -4,7 +4,7 @@ module nts.uk.pr.view.kmf001.c {
         import EnumertionModel = service.model.EnumerationModel;
         
         export class ScreenModel {
-            textEditorOption: KnockoutObservable<any>;
+            numberEditorOption: KnockoutObservable<any>;
             
             halfIntegerEditorOption: KnockoutObservable<any>;
             
@@ -45,7 +45,7 @@ module nts.uk.pr.view.kmf001.c {
             
             constructor() {
                 let self = this;
-                self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                self.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     width: "50px",
                     textalign: "right"
                 }));
@@ -56,14 +56,14 @@ module nts.uk.pr.view.kmf001.c {
                 }));
                 // 年休の管理
                 self.manageDistinctList = ko.observableArray([]);
-                self.selectedAnnualManage = ko.observable(1);
+                self.selectedAnnualManage = ko.observable(0);
                 self.enableAnnualVacation = ko.computed(function() {
                     return self.selectedAnnualManage() == 1;
                 }, self);
                 
                 // 年次有給休暇の扱い
-                self.selectedAddAttendanceDay = ko.observable(1);
-                self.selectedMaxManageSemiVacation = ko.observable(1);
+                self.selectedAddAttendanceDay = ko.observable(0);
+                self.selectedMaxManageSemiVacation = ko.observable(0);
                 self.maxDayReferenceList = ko.observableArray([]);
                 self.selectedMaxNumberSemiVacation = ko.observable(0);
                 self.maxNumberCompany = ko.observable("");
@@ -80,24 +80,24 @@ module nts.uk.pr.view.kmf001.c {
                 
                 // 年休取得の設定
                 self.permissionList = ko.observableArray([]);
-                self.selectedPermission = ko.observable(1);
+                self.selectedPermission = ko.observable(0);
                 self.preemptionPermitList = ko.observableArray([]);
-                self.selectedPreemptionPermit = ko.observable(1);
+                self.selectedPreemptionPermit = ko.observable(0);
                 
                 // 表示設定
                 self.displayDivisionList = ko.observableArray([]);
-                self.selectedNumberRemainingYearly = ko.observable(1);
-                self.selectedNextAnunalVacation = ko.observable(1);
+                self.selectedNumberRemainingYearly = ko.observable(0);
+                self.selectedNextAnunalVacation = ko.observable(0);
                 
                 // 時間年休
-                self.selectedTimeManagement = ko.observable(1);
+                self.selectedTimeManagement = ko.observable(0);
                 self.vacationTimeUnitList = ko.observableArray([]);
                 self.enableTimeSetting = ko.computed(function() {
                     return self.selectedTimeManagement() == 1 && self.enableAnnualVacation();
                 }, self);
                 self.selectedVacationTimeUnit = ko.observable(0);
                 self.selectedMaxDayVacation = ko.observable(0);
-                self.selectedManageUpperLimitDayVacation = ko.observable(1);
+                self.selectedManageUpperLimitDayVacation = ko.observable(0);
                 self.timeMaxNumberCompany = ko.observable("");
                 self.requiredTimeMaxNumberCompany = ko.computed(function() {
                     return self.enableAnnualVacation() && self.selectedManageUpperLimitDayVacation() == 1;
@@ -128,11 +128,11 @@ module nts.uk.pr.view.kmf001.c {
                 let command = self.toJsObject();
                 service.save(command).done(function() {
                     self.loadSetting().done(function() {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         dfd.resolve();
                     });
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
             }
             
@@ -205,31 +205,13 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 self.clearError();
                 if (self.enableAnnualVacation()) {
-                    if (self.requiredMaxNumberCompany()
-                        || (self.requiredMaxNumberCompany() == false && self.maxNumberCompany())) {
+                    if (self.requiredMaxNumberCompany()) {
                         $('#max-number-company').ntsEditor('validate');
                     }
                     $('#max-grant-day').ntsEditor('validate');
                     $('#max-remaining-day').ntsEditor('validate');
                     $('#number-year-retain').ntsEditor('validate');
-                    if (self.requiredTimeMaxNumberCompany()
-                        || (!self.requiredTimeMaxNumberCompany() && self.timeMaxNumberCompany())) {
-                        $('#time-max-day-company').ntsEditor('validate');
-                    }
-                } else {
-                    if (self.maxNumberCompany()) {
-                        $('#max-number-company').ntsEditor('validate');
-                    }
-                    if (self.maxGrantDay()) {
-                        $('#max-grant-day').ntsEditor('validate');
-                    }
-                    if (self.maxRemainingDay()) {
-                        $('#max-remaining-day').ntsEditor('validate');
-                    }
-                    if (self.numberYearRetain()) {
-                        $('#number-year-retain').ntsEditor('validate');
-                    }
-                    if (self.timeMaxNumberCompany()) {
+                    if (self.requiredTimeMaxNumberCompany()) {
                         $('#time-max-day-company').ntsEditor('validate');
                     }
                 }
