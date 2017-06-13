@@ -43,6 +43,9 @@ module nts.uk.pr.view.kmf001.c {
             enableTimeMaxNumberCompany: KnockoutObservable<boolean>;
             isEnoughTimeOneDay: KnockoutObservable<boolean>;
             
+            // Data backup
+            dataBackup: KnockoutObservable<any>;
+            
             constructor() {
                 let self = this;
                 self.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
@@ -67,16 +70,15 @@ module nts.uk.pr.view.kmf001.c {
                 self.maxDayReferenceList = ko.observableArray([]);
                 self.selectedMaxNumberSemiVacation = ko.observable(0);
                 self.maxNumberCompany = ko.observable("");
+                self.enableMaxNumberCompany = ko.computed(function() {
+                    return self.selectedMaxNumberSemiVacation() == 0 && self.enableAnnualVacation();
+                }, self);
                 self.requiredMaxNumberCompany = ko.computed(function() {
-                    return self.enableAnnualVacation() && self.selectedMaxManageSemiVacation() == 1;
+                    return self.enableMaxNumberCompany() && self.selectedMaxManageSemiVacation() == 1;
                 });
                 self.maxGrantDay = ko.observable("");
                 self.maxRemainingDay = ko.observable("");
                 self.numberYearRetain = ko.observable("");
-                self.enableMaxNumberCompany = ko.computed(function() {
-                    return self.selectedMaxNumberSemiVacation() == 0 && self.enableAnnualVacation();
-                }, self);
-
                 
                 // 年休取得の設定
                 self.permissionList = ko.observableArray([]);
@@ -100,12 +102,15 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedManageUpperLimitDayVacation = ko.observable(0);
                 self.timeMaxNumberCompany = ko.observable("");
                 self.requiredTimeMaxNumberCompany = ko.computed(function() {
-                    return self.enableAnnualVacation() && self.selectedManageUpperLimitDayVacation() == 1;
+                    return self.enableTimeSetting() && self.selectedManageUpperLimitDayVacation() == 1;
                 });
                 self.enableTimeMaxNumberCompany = ko.computed(function() {
                     return self.enableTimeSetting() && self.selectedMaxDayVacation() == 0;
                 });
                 self.isEnoughTimeOneDay = ko.observable(true);
+                
+                // Data backup
+                self.dataBackup = ko.observable(null);
             }
             
             public startPage(): JQueryPromise<any> {
@@ -156,32 +161,48 @@ module nts.uk.pr.view.kmf001.c {
             
             private toJsObject(): any {
                 let self = this;
+                let dataBackup = self.dataBackup();
+                if (!dataBackup) {
+                    dataBackup = self.defaultValue();
+                }
                 let command: any = {};
+                
                 command.annualManage = self.selectedAnnualManage();
-                command.addAttendanceDay = self.selectedAddAttendanceDay();
-                command.maxManageSemiVacation = self.selectedMaxManageSemiVacation();
-                command.maxNumberSemiVacation = self.selectedMaxNumberSemiVacation();
-                command.maxNumberCompany = self.maxNumberCompany();
-                command.maxGrantDay = self.maxGrantDay();
-                command.maxRemainingDay = self.maxRemainingDay();
-                command.numberYearRetain = self.numberYearRetain();
-                command.preemptionAnnualVacation = self.selectedPermission();
-                command.preemptionYearLeave = self.selectedPreemptionPermit();
-                command.remainingNumberDisplay = self.selectedNumberRemainingYearly();
-                command.nextGrantDayDisplay = self.selectedNextAnunalVacation();
-                command.timeManageType = self.selectedTimeManagement();
-                command.timeUnit = self.selectedVacationTimeUnit();
-                command.manageMaxDayVacation = self.selectedManageUpperLimitDayVacation();
-                command.reference = self.selectedMaxDayVacation();
-                command.maxTimeDay = self.timeMaxNumberCompany();
-                command.isEnoughTimeOneDay = self.isEnoughTimeOneDay();
+                
+                // Annual Setting
+                command.addAttendanceDay = self.enableAnnualVacation() ? self.selectedAddAttendanceDay() : dataBackup.addAttendanceDay;
+                command.maxManageSemiVacation = self.enableAnnualVacation() ? self.selectedMaxManageSemiVacation() : dataBackup.maxManageSemiVacation;
+                command.maxNumberSemiVacation = self.enableAnnualVacation() ? self.selectedMaxNumberSemiVacation() : dataBackup.maxNumberSemiVacation;
+                command.maxNumberCompany = self.enableMaxNumberCompany() ? self.maxNumberCompany() : dataBackup.maxNumberCompany;
+                command.maxGrantDay = self.enableAnnualVacation() ? self.maxGrantDay() : dataBackup.maxGrantDay;
+                command.maxRemainingDay = self.enableAnnualVacation() ? self.maxRemainingDay() : dataBackup.maxRemainingDay;
+                command.numberYearRetain = self.enableAnnualVacation() ? self.numberYearRetain() : dataBackup.numberYearRetain;
+                command.preemptionAnnualVacation = self.enableAnnualVacation() ? self.selectedPermission() : dataBackup.preemptionAnnualVacation;
+                command.preemptionYearLeave = self.enableAnnualVacation() ? self.selectedPreemptionPermit() : dataBackup.preemptionYearLeave;
+                command.remainingNumberDisplay = self.enableAnnualVacation() ? self.selectedNumberRemainingYearly() : dataBackup.remainingNumberDisplay;
+                command.nextGrantDayDisplay = self.enableAnnualVacation() ? self.selectedNextAnunalVacation() : dataBackup.nextGrantDayDisplay;
+                
+                // Time Leave Setting
+                command.timeManageType = self.enableAnnualVacation() ? self.selectedTimeManagement() : dataBackup.timeManageType;
+                command.timeUnit = self.enableTimeSetting() ? self.selectedVacationTimeUnit() : dataBackup.timeUnit;
+                command.manageMaxDayVacation = self.enableTimeSetting() ? self.selectedManageUpperLimitDayVacation() : dataBackup.manageMaxDayVacation;
+                command.reference = self.enableTimeSetting() ? self.selectedMaxDayVacation() : dataBackup.reference;
+                command.maxTimeDay = self.enableTimeMaxNumberCompany() ? self.timeMaxNumberCompany() : dataBackup.maxTimeDay;
+                command.isEnoughTimeOneDay = self.enableTimeMaxNumberCompany() ? self.isEnoughTimeOneDay() : dataBackup.isEnoughTimeOneDay;
+                
                 return command;
             }
             
             private initUI(res: any): any {
                 let self = this;
+                
+                // backup
+                self.dataBackup(res);
+                
+                // set UI
                 self.selectedAnnualManage(res.annualManage);
                 
+                // Annual Setting
                 self.selectedAddAttendanceDay(res.addAttendanceDay);
                 self.selectedMaxManageSemiVacation(res.maxManageSemiVacation);
                 self.selectedMaxNumberSemiVacation(res.maxNumberSemiVacation);
@@ -193,6 +214,8 @@ module nts.uk.pr.view.kmf001.c {
                 self.selectedPreemptionPermit(res.preemptionYearLeave);
                 self.selectedNumberRemainingYearly(res.remainingNumberDisplay);
                 self.selectedNextAnunalVacation(res.nextGrantDayDisplay);
+                
+                // Time Leave Setting
                 self.selectedTimeManagement(res.timeManageType);
                 self.selectedVacationTimeUnit(res.timeUnit);
                 self.selectedManageUpperLimitDayVacation(res.manageMaxDayVacation);
@@ -201,17 +224,46 @@ module nts.uk.pr.view.kmf001.c {
                 self.isEnoughTimeOneDay(res.isEnoughTimeOneDay);
             }
             
+            private defaultValue(): any {
+                let backup: any = {};
+                backup.annualManage = 0;
+                // Annual Setting
+                backup.addAttendanceDay = 0;
+                backup.maxManageSemiVacation = 0;
+                backup.maxNumberSemiVacation = 0;
+                backup.maxNumberCompany = '';
+                backup.maxGrantDay = '';
+                backup.maxRemainingDay = '';
+                backup.numberYearRetain = '';
+                backup.preemptionAnnualVacation = 0;
+                backup.preemptionYearLeave = 0;
+                backup.remainingNumberDisplay = 0;
+                backup.nextGrantDayDisplay = 0;
+                
+                // Time Leave Setting
+                backup.timeManageType = 0;
+                backup.timeUnit = 0;
+                backup.manageMaxDayVacation = 0;
+                backup.reference = 0;
+                backup.maxTimeDay = '';
+                backup.isEnoughTimeOneDay = true;
+                
+                return backup;
+            }
+            
             private validate(): boolean {
                 let self = this;
                 self.clearError();
                 if (self.enableAnnualVacation()) {
-                    if (self.requiredMaxNumberCompany()) {
+                    if (self.requiredMaxNumberCompany()
+                        || (self.requiredMaxNumberCompany() == false && self.maxNumberCompany())) {
                         $('#max-number-company').ntsEditor('validate');
                     }
                     $('#max-grant-day').ntsEditor('validate');
                     $('#max-remaining-day').ntsEditor('validate');
                     $('#number-year-retain').ntsEditor('validate');
-                    if (self.requiredTimeMaxNumberCompany()) {
+                    if (self.requiredTimeMaxNumberCompany()
+                        || (!self.requiredTimeMaxNumberCompany() && self.timeMaxNumberCompany())) {
                         $('#time-max-day-company').ntsEditor('validate');
                     }
                 }
