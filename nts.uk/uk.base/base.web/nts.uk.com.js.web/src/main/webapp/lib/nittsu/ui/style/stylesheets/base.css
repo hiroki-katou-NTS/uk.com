@@ -2253,6 +2253,7 @@ button.nts-switch-button[disabled]:hover {
   font-family: "Meiryo UI";
   font-size: 13px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 /* line 118, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,

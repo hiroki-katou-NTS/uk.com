@@ -2768,6 +2768,11 @@ var nts;
                             return error.$control.is($element);
                         });
                     };
+                    ErrorsViewModel.prototype.getErrorByElement = function ($element) {
+                        return _.find(this.errors(), function (e) {
+                            return e.$control.is($element);
+                        });
+                    };
                     return ErrorsViewModel;
                 }());
                 errors.ErrorsViewModel = ErrorsViewModel;
@@ -2812,6 +2817,10 @@ var nts;
                     errorsViewModel().removeErrorByElement($control);
                 }
                 errors.removeByElement = removeByElement;
+                function getErrorByElement($element) {
+                    return errorsViewModel().getErrorByElement($element);
+                }
+                errors.getErrorByElement = getErrorByElement;
             })(errors = ui.errors || (ui.errors = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -3796,6 +3805,9 @@ var nts;
                         if (action === DATA_HAS_ERROR) {
                             return _.some($control, function (c) { return hasError($(c)); });
                         }
+                        else if (action === 'getError') {
+                            return getErrorByElement($control.first());
+                        }
                         else {
                             $control.each(function (index) {
                                 var $item = $(this);
@@ -3812,6 +3824,9 @@ var nts;
                             case 'clear':
                                 return clearErrors($control);
                         }
+                    }
+                    function getErrorByElement($control) {
+                        return ui.errors.getErrorByElement($control);
                     }
                     function setError($control, message) {
                         $control.data(DATA_HAS_ERROR, true);
@@ -6847,12 +6862,16 @@ var nts;
                             var newText = $input.val();
                             var validator = _this.getValidator(data);
                             var result = validator.validate(newText);
-                            $input.ntsError('clear');
                             if (result.isValid) {
+                                $input.ntsError('clear');
                                 value(result.parsedValue);
                             }
                             else {
-                                $input.ntsError('set', result.errorMessage);
+                                var error = $input.ntsError('getError');
+                                if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+                                    $input.ntsError('clear');
+                                    $input.ntsError('set', result.errorMessage);
+                                }
                                 value(newText);
                             }
                         });
@@ -6863,12 +6882,16 @@ var nts;
                                 var newText = $input.val();
                                 var validator = self.getValidator(data);
                                 var result = validator.validate(newText);
-                                $input.ntsError('clear');
                                 if (result.isValid) {
+                                    $input.ntsError('clear');
                                     $input.val(formatter.format(result.parsedValue));
                                 }
                                 else {
-                                    $input.ntsError('set', result.errorMessage);
+                                    var error = $input.ntsError('getError');
+                                    if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+                                        $input.ntsError('clear');
+                                        $input.ntsError('set', result.errorMessage);
+                                    }
                                     value(newText);
                                 }
                             }

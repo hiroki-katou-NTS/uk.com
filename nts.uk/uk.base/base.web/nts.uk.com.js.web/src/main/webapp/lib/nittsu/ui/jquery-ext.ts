@@ -56,7 +56,9 @@ module nts.uk.ui.jqueryExtentions {
             var $control = $(this);
             if (action === DATA_HAS_ERROR) {
                 return _.some($control, c => hasError($(c)));
-            } else {
+            } else if (action === 'getError') {
+                return getErrorByElement($control.first());        
+            }else {
                 $control.each(function(index) {
                     var $item = $(this);
                     $item = processErrorOnItem($item, message, action);
@@ -74,6 +76,10 @@ module nts.uk.ui.jqueryExtentions {
                 case 'clear':
                     return clearErrors($control);
             }
+        }
+        
+        function getErrorByElement($control: JQuery) {
+            return ui.errors.getErrorByElement($control);
         }
 
         function setError($control: JQuery, message: any) {
