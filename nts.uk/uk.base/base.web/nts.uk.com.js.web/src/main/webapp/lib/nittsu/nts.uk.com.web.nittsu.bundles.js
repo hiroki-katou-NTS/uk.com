@@ -7427,6 +7427,7 @@ var nts;
                             }
                         });
                         $grid.bind('selectionchanged', function () {
+                            $grid.data("ui-changed", true);
                             if (data.multiple) {
                                 var selected = $grid.ntsGridList('getSelected');
                                 if (selected) {
@@ -7445,7 +7446,6 @@ var nts;
                                     data.value('');
                                 }
                             }
-                            $grid.data("ui-changed", true);
                         });
                         $grid.setupSearchScroll("igGrid", true);
                     };
@@ -7662,10 +7662,10 @@ var nts;
                                 document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
                             }
                             container.data("chaninged", false);
+                            container.data("ui-changed", true);
                             if (!_.isEqual(itemSelected, data.value())) {
                                 data.value(itemSelected);
                             }
-                            container.data("ui-changed", true);
                         });
                         container.setupSearchScroll("igGrid", true);
                         container.data("multiple", isMultiSelect);
@@ -8099,6 +8099,9 @@ var nts;
                                 component.igGrid("dataBind");
                                 $container.data("searchKey", null);
                                 component.attr("filtered", false);
+                                _.defer(function () {
+                                    component.trigger("selectChange");
+                                });
                             });
                         }
                         $input.attr("placeholder", placeHolder);
@@ -8195,7 +8198,7 @@ var nts;
                             component = $("#" + ko.unwrap(data.comId));
                         }
                         var srhX = $searchBox.data("searchObject");
-                        if (searchMode === "filter") {
+                        if (searchMode === "filter" && (component.attr("filtered") === true || component.attr("filtered") === "true")) {
                             var filteds_1 = $searchBox.data("filteredSrouce");
                             if (!nts.uk.util.isNullOrUndefined(filteds_1)) {
                                 var source = _.filter(arr, function (item) {

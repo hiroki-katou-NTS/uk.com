@@ -165,11 +165,11 @@ module nts.uk.ui.koExtentions {
                 }
                 
                 container.data("chaninged", false);
+                container.data("ui-changed", true);
                 if(!_.isEqual(itemSelected, data.value())){
                     data.value(itemSelected);        
                 }
                 
-                container.data("ui-changed", true);
             });
             container.setupSearchScroll("igGrid", true); 
             container.data("multiple", isMultiSelect);

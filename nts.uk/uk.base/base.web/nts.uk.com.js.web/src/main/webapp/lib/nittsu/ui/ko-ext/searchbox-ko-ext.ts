@@ -188,7 +188,10 @@ module nts.uk.ui.koExtentions {
                     component.igGrid("option", "dataSource", srh.seachBox.getDataSource());  
                     component.igGrid("dataBind"); 
                     $container.data("searchKey", null);    
-                    component.attr("filtered", false);          
+                    component.attr("filtered", false);     
+                    _.defer(function() {
+                        component.trigger("selectChange");    
+                    });     
                 });      
                 
             }
@@ -292,7 +295,7 @@ module nts.uk.ui.koExtentions {
             }
             let srhX: SearchPub= $searchBox.data("searchObject");
             
-            if(searchMode === "filter"){
+            if(searchMode === "filter" && (component.attr("filtered") === true || component.attr("filtered") === "true")){
                 let filteds: Array<any> = $searchBox.data("filteredSrouce");   
                 if(!nts.uk.util.isNullOrUndefined(filteds)) {
                     let source = _.filter(arr, function (item: any){
