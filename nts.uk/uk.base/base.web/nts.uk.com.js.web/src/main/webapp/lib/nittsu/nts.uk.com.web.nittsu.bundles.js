@@ -3800,12 +3800,13 @@ var nts;
                 var ntsError;
                 (function (ntsError) {
                     var DATA_HAS_ERROR = 'hasError';
+                    var DATA_GET_ERROR = 'getError';
                     $.fn.ntsError = function (action, message) {
                         var $control = $(this);
                         if (action === DATA_HAS_ERROR) {
                             return _.some($control, function (c) { return hasError($(c)); });
                         }
-                        else if (action === 'getError') {
+                        else if (action === DATA_GET_ERROR) {
                             return getErrorByElement($control.first());
                         }
                         else {

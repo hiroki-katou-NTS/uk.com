@@ -51,12 +51,13 @@ module nts.uk.ui.jqueryExtentions {
 
     module ntsError {
         var DATA_HAS_ERROR = 'hasError';
+        var DATA_GET_ERROR = 'getError';
 
         $.fn.ntsError = function(action: string, message: any): any {
             var $control = $(this);
             if (action === DATA_HAS_ERROR) {
                 return _.some($control, c => hasError($(c)));
-            } else if (action === 'getError') {
+            } else if (action === DATA_GET_ERROR) {
                 return getErrorByElement($control.first());        
             }else {
                 $control.each(function(index) {
