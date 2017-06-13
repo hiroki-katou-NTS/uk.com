@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.stamp.stampcard;
+package nts.uk.ctx.basic.infra.entity.company.organization.employee;
 
 import java.io.Serializable;
 
@@ -11,14 +11,18 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KwkdtStampCardPK implements Serializable {
+public class KmnmtEmployeePK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 会社ID */
 	@Column(name = "CID")
 	public String companyId;
-	
-	/* カード番号 */
-	@Column(name = "CARD_NUMBER")
-	public String cardNumber;
-
+	/* 個人ID */
+	@Column(name = "PID")
+	public String personId;
+	/* 社員ID */
+	@Column(name = "SID")
+	public String employeeId;
+	/* 社員CD */
+	@Column(name = "SCD")
+	public String employeeCode;
 }
