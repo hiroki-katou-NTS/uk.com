@@ -14,11 +14,14 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 public class YearVacationTimeMaxDay {
 
 	/** The manage max day vacation. */
-	public ManageDistinct manageMaxDayVacation;
+    // 管理区分
+	public ManageDistinct manageType;
 
 	/** The reference. */
+	// 参照先
 	public MaxDayReference reference;
 
 	/** The max time day. */
-	public MaxTimeDay maxTimeDay;
+	// 会社一律上限日数
+	public MaxTimeDay maxNumberUniformCompany;
 }

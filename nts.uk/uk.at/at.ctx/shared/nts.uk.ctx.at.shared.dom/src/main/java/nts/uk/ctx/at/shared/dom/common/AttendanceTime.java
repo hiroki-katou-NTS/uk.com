@@ -4,12 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.common;
 
-import nts.arc.primitive.TimeClockPrimitiveValue;
+import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
  * 勤怠時間.
  */
-public class AttendanceTime extends TimeClockPrimitiveValue<AttendanceTime> {
+// max value = 48 hours (2880 minutes).
+// min value = 0 hours.
+@IntegerMaxValue(2880)
+@IntegerMinValue(0)
+public class AttendanceTime extends IntegerPrimitiveValue<AttendanceTime> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -19,19 +25,8 @@ public class AttendanceTime extends TimeClockPrimitiveValue<AttendanceTime> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public AttendanceTime(Long rawValue) {
+	public AttendanceTime(Integer rawValue) {
 		super(rawValue);
-	}
-
-	/**
-	 * Instantiates a new attendance time.
-	 *
-	 * @param hour the hour
-	 * @param minute the minute
-	 * @param second the second
-	 */
-	public AttendanceTime(int hour, int minute, int second) {
-		super(hour, minute, second);
 	}
 
 }

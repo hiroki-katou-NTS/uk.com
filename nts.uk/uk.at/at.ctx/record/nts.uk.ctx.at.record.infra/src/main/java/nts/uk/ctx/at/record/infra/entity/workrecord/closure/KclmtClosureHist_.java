@@ -20,10 +20,10 @@ public class KclmtClosureHist_ {
 	public static volatile SingularAttribute<KclmtClosureHist, String> name;
 	
 	/** The str D. */
-	public static volatile SingularAttribute<KclmtClosureHist, Long> strD;
+	public static volatile SingularAttribute<KclmtClosureHist, Integer> strD;
 	
 	/** The end D. */
-	public static volatile SingularAttribute<KclmtClosureHist, Long> endD;
+	public static volatile SingularAttribute<KclmtClosureHist, Integer> endD;
 	
 	/** The close day. */
 	public static volatile SingularAttribute<KclmtClosureHist, Integer> closeDay;

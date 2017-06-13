@@ -10,8 +10,7 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionType;
-import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KmfstAcquisitionRule;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KarstAcquisitionRule;
 
 /**
  * The Class JpaAcquisitionRuleGetMemento.
@@ -19,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KmfstA
 public class JpaAcquisitionRuleGetMemento implements AcquisitionRuleGetMemento {
 
 	/** The type value. */
-	private KmfstAcquisitionRule typeValue;
+	private KarstAcquisitionRule typeValue;
 
 	/**
 	 * Instantiates a new jpa acquisition rule get memento.
@@ -27,7 +26,7 @@ public class JpaAcquisitionRuleGetMemento implements AcquisitionRuleGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaAcquisitionRuleGetMemento(KmfstAcquisitionRule typeValue) {
+	public JpaAcquisitionRuleGetMemento(KarstAcquisitionRule typeValue) {
 		super();
 		this.typeValue = typeValue;
 

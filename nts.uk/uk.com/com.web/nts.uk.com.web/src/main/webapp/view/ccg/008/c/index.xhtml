@@ -11,7 +11,7 @@
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
   			</com:ValidatorScript>
-  			<script>var dialogSize = { width: 250, height: 300 };</script>
+  			<script>var dialogSize = { width: 400, height: 500 };</script>
 			<com:stylefile path="ccg008.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg008.c.start.js" />
@@ -22,14 +22,29 @@
 		<ui:define name="content">
 			<div id="contents-area">
 								
-				<div id="functions-area-bottom">
-					<button id="b1_003" class="large" data-bind="click: closeDialog" >#{i18n.getText('CCG008_6')}</button>
+				<div id="functions-area-bottom" class="function-area-bottom">
+					<button id="c1_005" class="large proceed" data-bind="click: save" >#{i18n.getText('CCG008_9')}</button>
+					<button id="c1_006" class="" data-bind="click: closeDialog" >#{i18n.getText('CCG008_10')}</button>
 				</div>
 				<br/>
 				<div class="functions-area-content">
-					<button id="b1_001" data-bind="click: openTopPageSet">#{i18n.getText('CCG008_2')}</button>					
-					<button id="b1_002" data-bind="click: openMyPageSet">#{i18n.getText('CCG008_5')}</button>
-				</div>			
+					<p class="dialog-header">#{i18n.getText('CCG008_7')}</p>
+					<br/>
+					<table id="toppage-treegrid"
+						data-bind="ntsTreeGridView:{
+							width: 320,
+							height: 240,
+							dataSource: dataItems,
+							value: singleSelectedCode,
+							headers: headers,
+							primaryKey: 'code',
+							childDataKey: '',
+							primaryText: 'name',
+							multiple: false,
+							enable: true,
+							extColumns: [{headerText: headers(), key: 'code', width: '100px', dataType: 'string'}],
+							showCheckBox: false}"></table>
+				</div>		
 									
 			</div>
 		</ui:define>

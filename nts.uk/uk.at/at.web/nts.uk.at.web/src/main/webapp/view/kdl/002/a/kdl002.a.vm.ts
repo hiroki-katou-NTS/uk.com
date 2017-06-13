@@ -31,11 +31,7 @@ module kdl002.a.viewmodel {
             self.posibleItems = nts.uk.ui.windows.getShared('AllItemObj');
             //selected items
             var selectCode = nts.uk.ui.windows.getShared('SelectedItemId');
-            if(self.isMulti == false){
-                self.currentCodeList.push(selectCode);
-            }else{
-                self.currentCodeList(selectCode);
-            }
+            self.currentCodeList(selectCode);
             //set source
             if(self.posibleItems == null || self.posibleItems === undefined){
                 self.items();
@@ -56,6 +52,7 @@ module kdl002.a.viewmodel {
         }
         //event When click to 決定 ボタン
         register() {
+//            var t0 = performance.now(); 
             var self = this;
             if(self.isMulti == true){
                 let lstObj = [];
@@ -76,10 +73,13 @@ module kdl002.a.viewmodel {
                 if(objectNew2 != undefined && objectNew2 != null){
                     var lstObj2 ={ "code": objectNew2.workTypeCode, "name":objectNew2.name};
                 }
-                nts.uk.ui.windows.setShared('SelectedNewItem', lstObj2,true);
+                let listnew =[];
+                listnew.push(lstObj2);
+                nts.uk.ui.windows.setShared('SelectedNewItem', listnew,true);
             }
-            
             nts.uk.ui.windows.close();
+//            var t1 = performance.now();
+//            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         /**
          * find item is selected
@@ -93,7 +93,10 @@ module kdl002.a.viewmodel {
         }
         //Close Dialog
         close() {
+//            var t0 = performance.now(); 
             nts.uk.ui.windows.close();
+//            var t1 = performance.now();
+//            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
     }
     export module model {

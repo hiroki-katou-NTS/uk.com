@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.annualpaidleave.find;
@@ -33,8 +33,44 @@ public class AnnualPaidLeaveFinder {
         if (paidLeaveSetting == null) {
             return null;
         }
-        AnnualPaidLeaveSettingFindDto output = new AnnualPaidLeaveSettingFindDto();
-        paidLeaveSetting.saveToMemento(output);
-        return output;
+        return this.converetToDto(paidLeaveSetting);
+    }
+    
+    /**
+     * Converet to dto.
+     *
+     * @param setting the setting
+     * @return the annual paid leave setting find dto
+     */
+    private AnnualPaidLeaveSettingFindDto converetToDto(AnnualPaidLeaveSetting setting) {
+        AnnualPaidLeaveSettingFindDto dto = new AnnualPaidLeaveSettingFindDto();
+        
+        dto.setAnnualManage(setting.getYearManageType().value);
+        
+        // AcquisitionSetting
+        dto.setPreemptionAnnualVacation(setting.getAcquisitionSetting().annualPriority.value);
+        dto.setPreemptionYearLeave(setting.getAcquisitionSetting().permitType.value);
+        
+        // Manage Annual
+        dto.setAddAttendanceDay(setting.getManageAnnualSetting().isWorkDayCalculate() == true ? 1 : 0);
+        dto.setMaxManageSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().manageType.value);
+        dto.setMaxNumberSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().reference.value);
+        dto.setMaxNumberCompany(setting.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v());
+        dto.setMaxGrantDay(setting.getManageAnnualSetting().getMaxGrantDay().v());
+        dto.setMaxRemainingDay(setting.getManageAnnualSetting().getRemainingNumberSetting().remainingDayMaxNumber.v());
+        dto.setNumberYearRetain(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
+        dto.setRemainingNumberDisplay(setting.getManageAnnualSetting().getDisplaySetting().remainingNumberDisplay.value);
+        dto.setNextGrantDayDisplay(setting.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);
+        
+        
+        // Time Manage
+        dto.setTimeManageType(setting.getTimeSetting().getTimeManageType().value);
+        dto.setTimeUnit(setting.getTimeSetting().getTimeUnit().value);
+        dto.setManageMaxDayVacation(setting.getTimeSetting().getMaxYearDayLeave().manageType.value);
+        dto.setReference(setting.getTimeSetting().getMaxYearDayLeave().reference.value);
+        dto.setMaxTimeDay(setting.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
+        dto.setIsEnoughTimeOneDay(setting.getTimeSetting().isEnoughTimeOneDay());
+        
+        return dto;
     }
 }

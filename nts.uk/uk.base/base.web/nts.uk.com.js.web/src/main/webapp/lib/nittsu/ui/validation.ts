@@ -151,17 +151,17 @@ module nts.uk.ui.validation {
             if (validateFail) {
                 result.fail(nts.uk.resource.getMessage(message.id, [ this.name, min, max, mantissaMaxLength ]));
             } else {
-                result.success(inputText === "0" ? inputText : text.removeFromStart(inputText, "0"));
+                result.success(value.toString() === "0" ? inputText : text.removeFromStart(inputText, "0"));
             }
             return result; 
-        }
+        } 
     }
 
     export class TimeValidator implements IValidator {
         name: string;
         constraint: any;
         outputFormat: string;
-        required: boolean;
+        required: boolean; 
         valueType: string;
         mode: string;
         constructor(name: string, primitiveValueName: string, option?: any) {
@@ -217,7 +217,7 @@ module nts.uk.ui.validation {
                     }
                 }
                 if (!result.isValid && this.constraint.valueType === "Time") {
-                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]);
+                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]));
                 }
                 return result;   
             }
@@ -267,7 +267,7 @@ module nts.uk.ui.validation {
                 }
                 
                 if (!result.isValid && this.constraint.valueType === "Clock") {
-                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]);
+                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]));
                 }
             }
             return result;

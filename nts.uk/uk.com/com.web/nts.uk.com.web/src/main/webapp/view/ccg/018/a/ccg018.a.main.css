@@ -1,0 +1,31 @@
+@CHARSET "UTF-8";
+
+#link-icon {
+	width: 30px;
+	vertical-align: middle;
+}
+
+#A1_6, #B1_7 {
+	margin-left: 2px;
+	vertical-align: middle;
+}
+
+.sidebar-content-header button {
+	width: 80px;
+}
+
+#A1_4, #B1_4 {
+	margin: 0 20px 0 50px;
+}
+
+#A1_6 {
+	margin-left: 650px;
+}
+
+#B1_7 {
+	margin-left: 32px;
+}
+
+#B1_6 {
+	margin-left: 533px
+}

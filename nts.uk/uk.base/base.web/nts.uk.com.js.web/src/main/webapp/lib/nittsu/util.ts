@@ -426,6 +426,7 @@
                 static RESET_EVT: string = "reset";
                 onReset($control: JQuery, koValue: (data?: any) => any) {
                     var self = this;
+                    $control.addClass("reset-element");
                     $control.on(DefaultValue.RESET_EVT, function(e: any) {
                         var param = e.detail;
                         self.asDefault($(this), koValue, param.value, param.immediateApply);

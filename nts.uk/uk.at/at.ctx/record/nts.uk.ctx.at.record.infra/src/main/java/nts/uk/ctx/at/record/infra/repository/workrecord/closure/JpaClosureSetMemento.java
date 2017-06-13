@@ -43,7 +43,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	@Override
 	public void setCompanyId(CompanyId companyId) {
 		KclmtClosurePK pk = new KclmtClosurePK();
-		pk.setCcid(companyId.v());
+		pk.setCid(companyId.v());
 		this.kclmtClosure.setKclmtClosurePK(pk);
 	}
 
@@ -56,7 +56,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	@Override
 	public void setClosureId(Integer closureId) {
 		KclmtClosurePK pk = this.kclmtClosure.getKclmtClosurePK();
-		pk.setClosureId(closureId.toString());
+		pk.setClosureId(closureId);
 		this.kclmtClosure.setKclmtClosurePK(pk);
 	}
 
@@ -69,7 +69,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	 */
 	@Override
 	public void setUseClassification(UseClassification useClassification) {
-		// TODO Auto-generated method stub
+		this.kclmtClosure.setUseClass(useClassification.value);
 	}
 
 	/*
