@@ -1,54 +1,56 @@
 package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
+import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 
 /**
- * The Class TopPageTitleSet.
+ * 
+ * @author sonnh1
+ *
  */
+@Getter
 public class TopPageJobSet extends AggregateRoot {
-	
+
 	/** The company id. */
 	private String companyId;
-	
-	/** The top menu no. */
-	private String topMenuNo;
-	
-	/** The login menu no. */
-	private String loginMenuNo;
-	
+
+	/** The top menu code. */
+	private TopMenuCode topMenuCode;
+
+	/** The login menu code. */
+	private TopMenuCode loginMenuCode;
+
 	/** The job id. */
 	private String jobId;
-	
-	/** The person permission set. */
-	private int personPermissionSet;
 
-	/**
-	 * Instantiates a new top page title set.
-	 *
-	 * @param companyId the company id
-	 * @param topMenuNo the top menu no
-	 * @param loginMenuNo the login menu no
-	 * @param jobId the user id
-	 * @param personPermissionSet the layout id
-	 */
-	public TopPageJobSet(String companyId, String topMenuNo, String loginMenuNo, String jobId, int personPermissionSet) {
+	/** The person permission set. */
+	private PersonPermissionSetting personPermissionSet;
+
+	/** System */
+	private System system;
+
+	public TopPageJobSet(String companyId, TopMenuCode topMenuCode, TopMenuCode loginMenuCode, String jobId,
+			PersonPermissionSetting personPermissionSet, System system) {
+		super();
 		this.companyId = companyId;
-		this.topMenuNo = topMenuNo;
-		this.loginMenuNo = loginMenuNo;
+		this.topMenuCode = topMenuCode;
+		this.loginMenuCode = loginMenuCode;
 		this.jobId = jobId;
 		this.personPermissionSet = personPermissionSet;
-	} 
-	
-	/**
-	 * Creates the from java type.
-	 *
-	 * @param companyId the company id
-	 * @param topMenuNo the top menu no
-	 * @param loginMenuNo the login menu no
-	 * @param jobId the user id
-	 * @param personPermissionSet the layout id
-	 */
-	public static TopPageJobSet createFromJavaType(String companyId, String topMenuNo, String loginMenuNo, String jobId, int personPermissionSet) {
-		return new TopPageJobSet(companyId, topMenuNo, loginMenuNo, jobId, personPermissionSet);
+		this.system = system;
 	}
+
+	/**
+	 * Convert from java type to TopPageJobSetting
+	 *
+	 */
+	public static TopPageJobSet createFromJavaType(String companyId, String topMenuCode, String loginMenuCode,
+			String jobId, int personPermissionSet, int system) {
+		return new TopPageJobSet(companyId, new TopMenuCode(topMenuCode), new TopMenuCode(loginMenuCode), jobId,
+				EnumAdaptor.valueOf(personPermissionSet, PersonPermissionSetting.class),
+				EnumAdaptor.valueOf(system, System.class));
+	}
+
 }

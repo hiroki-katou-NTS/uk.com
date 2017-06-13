@@ -4,24 +4,34 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class YearVacationManageSetting.
  */
+@Getter
 public class ManageAnnualSetting extends DomainObject {
     
+    /** The maximum day vacation. */
+    // 付与上限日数
+    private AnnualLeaveGrantDay maxGrantDay;
+    
+    /** The half day manage. */
+    // 半日年休管理
+    private HalfDayManage halfDayManage;
+    
+    /** The work day calculate. */
+    // 年休を出勤日数として加算する
+    private boolean isWorkDayCalculate;
+    
     /** The remaining number setting. */
+    // 残数設定
     private RemainingNumberSetting remainingNumberSetting;
-
-    /** The acquisition setting. */
-    private AcquisitionVacationSetting acquisitionSetting;
     
     /** The display setting. */
+    // 表示設定
     private DisplaySetting displaySetting;
-    
-    /** The time setting. */
-    private TimeVacationSetting timeSetting;
     
     /**
      * Instantiates a new manage annual setting.
@@ -30,10 +40,11 @@ public class ManageAnnualSetting extends DomainObject {
      */
     public ManageAnnualSetting(ManageAnnualSettingGetMemento memento) {
         super();
+        this.maxGrantDay = memento.getMaxGrantDay();
+        this.halfDayManage = memento.getHalfDayManage();
+        this.isWorkDayCalculate = memento.getIsWorkDayCalculate();
         this.remainingNumberSetting = memento.getRemainingNumberSetting();
-        this.acquisitionSetting = memento.getAcquisitionSetting();
         this.displaySetting = memento.getDisplaySetting();
-        this.timeSetting = memento.getTimeSetting();
     }
     
     /**
@@ -42,9 +53,10 @@ public class ManageAnnualSetting extends DomainObject {
      * @param memento the memento
      */
     public void saveToMemento(ManageAnnualSettingSetMemento memento) {
+        memento.setMaxGrantDay(this.maxGrantDay);
+        memento.setHalfDayManage(this.halfDayManage);
+        memento.setWorkDayCalculate(this.isWorkDayCalculate);
         memento.setRemainingNumberSetting(this.remainingNumberSetting);
-        memento.setAcquisitionSetting(this.acquisitionSetting);
         memento.setDisplaySetting(this.displaySetting);
-        memento.setTimeSetting(this.timeSetting);
     }
 }

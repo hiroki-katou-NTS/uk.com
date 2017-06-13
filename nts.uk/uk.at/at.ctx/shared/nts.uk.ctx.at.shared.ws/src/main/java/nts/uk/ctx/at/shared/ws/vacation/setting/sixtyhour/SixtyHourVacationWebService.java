@@ -31,7 +31,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 /**
  * The Class SixtyHourVacationWebService.
  */
-@Path("at/proto/sixtyhourvacation/")
+@Path("ctx/at/shared/vacation/setting/sixtyhourvacation/")
 @Produces(MediaType.APPLICATION_JSON)
 public class SixtyHourVacationWebService {
 	

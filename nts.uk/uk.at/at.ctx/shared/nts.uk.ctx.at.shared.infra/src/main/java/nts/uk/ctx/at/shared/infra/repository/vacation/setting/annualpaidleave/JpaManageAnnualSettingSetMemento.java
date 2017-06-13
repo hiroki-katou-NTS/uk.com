@@ -1,116 +1,110 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
-import javax.inject.Inject;
-
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionVacationSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplaySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmfmtMngAnnualSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
 
 /**
  * The Class JpaManageAnnualSettingSetMemento.
  */
 public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetMemento {
+    
+    /** The entity. */
+    private KmamtMngAnnualSet entity;
+    
+    /**
+     * Instantiates a new jpa manage annual setting set memento.
+     *
+     * @param entity the entity
+     */
+    public JpaManageAnnualSettingSetMemento(KmamtMngAnnualSet entity) {
+        this.entity = entity;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setCompanyId(java.lang.String)
+     */
+    @Override
+    public void setCompanyId(String companyId) {
+        this.entity.setCid(companyId);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setMaxGrantDay(nts.uk.ctx.at.shared.dom.
+     * vacation.setting.annualpaidleave.AnnualLeaveGrantDay)
+     */
+    @Override
+    public void setMaxGrantDay(AnnualLeaveGrantDay maxGrantDay) {
+        if (maxGrantDay != null) {
+            this.entity.setHalfMaxGrantDay(maxGrantDay.v());
+        }
+    }
 
-	/** The manage annual. */
-	@Inject
-	private KmfmtMngAnnualSet manageAnnual;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setHalfDayManage(nts.uk.ctx.at.shared.dom.
+     * vacation.setting.annualpaidleave.HalfDayManage)
+     */
+    @Override
+    public void setHalfDayManage(HalfDayManage halfDayManage) {
+        this.entity.setHalfMaxDayYear(halfDayManage.maxDayOfYear);
+        this.entity.setHalfManageAtr(halfDayManage.manageType.value);
+        this.entity.setHalfMaxReference(halfDayManage.reference.value);
+        this.entity.setHalfMaxUniformComp(halfDayManage.maxNumberUniformCompany.v());
+    }
 
-	/**
-	 * Instantiates a new jpa manage annual setting set memento.
-	 *
-	 * @param manageAnnual
-	 *            the manage annual
-	 */
-	public JpaManageAnnualSettingSetMemento(KmfmtMngAnnualSet manageAnnual) {
-		this.manageAnnual = manageAnnual;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setWorkDayCalculate(boolean)
+     */
+    @Override
+    public void setWorkDayCalculate(boolean isWorkDayCalculate) {
+        this.entity.setIsWorkDayCal(isWorkDayCalculate == true ? 1 : 0);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
-	 * ManageAnnualSettingSetMemento#setCompanyId(java.lang.String)
-	 */
-	@Override
-	public void setCompanyId(String companyId) {
-		this.manageAnnual.setCid(companyId);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setRemainingNumberSetting(nts.uk.ctx.at.
+     * shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting)
+     */
+    @Override
+    public void setRemainingNumberSetting(RemainingNumberSetting remainingNumberSetting) {
+        this.entity.setRetentionYear(remainingNumberSetting.retentionYear.v());
+        if (remainingNumberSetting.remainingDayMaxNumber != null) {
+            this.entity.setRemainingMaxDay(remainingNumberSetting.remainingDayMaxNumber.v());
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
-	 * ManageAnnualSettingSetMemento#setRemainingNumberSetting(nts.uk.ctx.pr.
-	 * core.dom.vacation.setting.annualpaidleave.RemainingNumberSetting)
-	 */
-	@Override
-	public void setRemainingNumberSetting(RemainingNumberSetting remaining) {
-		this.manageAnnual.setWorkDayCal(remaining.getWorkDayCalculate().value);
-		this.manageAnnual.setHalfDayMngAtr(remaining.getHalfDayManage().manageType.value);
-		this.manageAnnual.setMngReference(remaining.getHalfDayManage().reference.value);
-		if (remaining.getHalfDayManage().maxNumberUniformCompany != null) {
-		    this.manageAnnual.setCUniformMaxNumber(remaining.getHalfDayManage().maxNumberUniformCompany.v());
-		}
-		if (remaining.getMaximumDayVacation() != null) {
-		    this.manageAnnual.setMaxDayOneYear(remaining.getMaximumDayVacation().v());
-		}
-		if (remaining.getRemainingDayMaxNumber() != null) {
-		    this.manageAnnual.setRemainDayMaxNum(remaining.getRemainingDayMaxNumber());
-		}
-		if (remaining.getRetentionYear() != null) {
-		    this.manageAnnual.setRetentionYear(remaining.getRetentionYear().v());
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+     * ManageAnnualSettingSetMemento#setDisplaySetting(nts.uk.ctx.at.shared.dom.
+     * vacation.setting.annualpaidleave.DisplaySetting)
+     */
+    @Override
+    public void setDisplaySetting(DisplaySetting displaySetting) {
+        this.entity.setNextGrantDayDispAtr(displaySetting.nextGrantDayDisplay.value);
+        this.entity.setRemainingNumDispAtr(displaySetting.remainingNumberDisplay.value);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
-	 * ManageAnnualSettingSetMemento#setAcquisitionSetting(nts.uk.ctx.pr.core.
-	 * dom.vacation.setting.annualpaidleave.AcquisitionVacationSetting)
-	 */
-	@Override
-	public void setAcquisitionSetting(AcquisitionVacationSetting acquisitionSetting) {
-		this.manageAnnual.setYearVacaPriority(acquisitionSetting.yearVacationPriority.value);
-		this.manageAnnual.setPermitType(acquisitionSetting.permitType.value);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
-	 * ManageAnnualSettingSetMemento#setDisplaySetting(nts.uk.ctx.pr.core.dom.
-	 * vacation.setting.annualpaidleave.DisplaySetting)
-	 */
-	@Override
-	public void setDisplaySetting(DisplaySetting displaySetting) {
-		this.manageAnnual.setRemainNumDisplay(displaySetting.remainingNumberDisplay.value);
-		this.manageAnnual.setNextGrantDayDisplay(displaySetting.nextGrantDayDisplay.value);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
-	 * ManageAnnualSettingSetMemento#setTimeSetting(nts.uk.ctx.pr.core.dom.
-	 * vacation.setting.annualpaidleave.TimeVacationSetting)
-	 */
-	@Override
-	public void setTimeSetting(TimeVacationSetting timeSetting) {
-		this.manageAnnual.setTimeMngAtr(timeSetting.getTimeManageType().value);
-		this.manageAnnual.setTimeUnit(timeSetting.getTimeUnit().value);
-		this.manageAnnual.setTimeMaxDayMng(timeSetting.getMaxDay().manageMaxDayVacation.value);
-		this.manageAnnual.setTimeMngReference(timeSetting.getMaxDay().reference.value);
-		if (timeSetting.getMaxDay().maxTimeDay != null) {
-		    this.manageAnnual.setTimeMngMaxDay(timeSetting.getMaxDay().maxTimeDay.v());
-		}
-		this.manageAnnual.setEnoughOneDay(timeSetting.isEnoughTimeOneDay() == true ? 1 : 0);
-	}
 }

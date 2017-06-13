@@ -14,7 +14,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 public class MaxTimeDay extends IntegerPrimitiveValue<MaxTimeDay> {
     
     /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = -1378529469055542099L;
+    private static final long serialVersionUID = 1L;
     
     /**
      * Instantiates a new max time day.

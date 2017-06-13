@@ -101,6 +101,7 @@ module nts.uk.ui.koExtentions {
             });
 
             $grid.bind('selectionchanged', () => {
+                $grid.data("ui-changed", true);
                 if (data.multiple) {
                     let selected: Array<any> = $grid.ntsGridList('getSelected');
                     if (selected) {
@@ -116,7 +117,6 @@ module nts.uk.ui.koExtentions {
                         data.value('');
                     }
                 }
-                $grid.data("ui-changed", true);
             });
             $grid.setupSearchScroll("igGrid", true); 
         }

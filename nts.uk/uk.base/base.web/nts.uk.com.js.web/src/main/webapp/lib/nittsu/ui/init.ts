@@ -47,6 +47,9 @@ module nts.uk.ui {
             viewModelBuilt.fire(_viewModel);
             
             ko.applyBindings(_viewModel);
+            
+            // off event reset for class reset-not-apply
+            $(".reset-not-apply").find(".reset-element").off("reset");
         }
         
         $(function () {

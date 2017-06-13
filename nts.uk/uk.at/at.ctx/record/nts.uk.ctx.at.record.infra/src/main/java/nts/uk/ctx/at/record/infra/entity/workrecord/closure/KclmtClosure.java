@@ -11,11 +11,15 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KclmtClosure.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KCLMT_CLOSURE")
 public class KclmtClosure extends UkJpaEntity implements Serializable {
@@ -29,7 +33,7 @@ public class KclmtClosure extends UkJpaEntity implements Serializable {
     
     /** The use class. */
     @Column(name = "USE_CLASS")
-    private String useClass;
+    private Integer useClass;
     
     /** The month. */
     @Column(name = "MONTH")
@@ -57,7 +61,7 @@ public class KclmtClosure extends UkJpaEntity implements Serializable {
      * @param ccid the ccid
      * @param closureId the closure id
      */
-    public KclmtClosure(String ccid, String closureId) {
+    public KclmtClosure(String ccid, int closureId) {
         this.kclmtClosurePK = new KclmtClosurePK(ccid, closureId);
     }
 
@@ -79,42 +83,6 @@ public class KclmtClosure extends UkJpaEntity implements Serializable {
         this.kclmtClosurePK = kclmtClosurePK;
     }
 
-
-    /**
-     * Gets the use class.
-     *
-     * @return the use class
-     */
-    public String getUseClass() {
-        return useClass;
-    }
-
-    /**
-     * Sets the use class.
-     *
-     * @param useClass the new use class
-     */
-    public void setUseClass(String useClass) {
-        this.useClass = useClass;
-    }
-
-    /**
-     * Gets the month.
-     *
-     * @return the month
-     */
-    public Integer getMonth() {
-        return month;
-    }
-
-    /**
-     * Sets the month.
-     *
-     * @param month the new month
-     */
-    public void setMonth(Integer month) {
-        this.month = month;
-    }
 
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()

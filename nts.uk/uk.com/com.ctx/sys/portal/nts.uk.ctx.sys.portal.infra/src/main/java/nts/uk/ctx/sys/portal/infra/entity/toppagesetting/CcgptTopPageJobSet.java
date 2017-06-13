@@ -9,22 +9,37 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "CCGPT_TOPPAGE_JOB_SET")
 public class CcgptTopPageJobSet extends UkJpaEntity {
-	
+
 	@EmbeddedId
-	public CcgptTopPageJobSetPK ccgptTopPageJobSetPK;	
-	
+	public CcgptTopPageJobSetPK ccgptTopPageJobSetPK;
+
+	/** The top menu code. */
+	@Column(name = "TOP_MENU_CD")
+	public String topMenuCd;
+
+	/** The login menu code. */
+	@Column(name = "LOGIN_MENU_CD")
+	public String loginMenuCd;
+
 	/** The person mission set. */
 	@Column(name = "PERSON_PERMISSION_SET")
 	public int personPermissionSet;
 
+	@Column(name = "SYSTEM")
+	public int system;
+
 	@Override
-	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return ccgptTopPageJobSetPK;
+	protected CcgptTopPageJobSetPK getKey() {
+		return this.ccgptTopPageJobSetPK;
 	}
 }

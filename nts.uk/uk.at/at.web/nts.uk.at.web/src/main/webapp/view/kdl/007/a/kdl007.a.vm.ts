@@ -34,11 +34,12 @@ module kdl007.a.viewmodel {
             if(selectCode==null || selectCode === undefined){
                 selectCode = "";
             }
-            if(self.isMulti == false){
-                self.currentCodeList.push(selectCode);
-            }else{
-                self.currentCodeList(selectCode);
-            }
+            self.currentCodeList(selectCode);
+//            if(self.isMulti == false){
+//                self.currentCodeList.push(selectCode);
+//            }else{
+//                self.currentCodeList(selectCode);
+//            }
             
             //get all item 
 //            service.getAllItem().done(function(lstItem: Array<model.ItemModel>){
@@ -91,7 +92,10 @@ module kdl007.a.viewmodel {
 
                 nts.uk.ui.windows.setShared('SelectedNewItem', lstObj,true);
             }else{
-                nts.uk.ui.windows.setShared('SelectedNewItem', self.currentCodeList(),true);
+                let objectNew = self.findItem(self.currentCodeList().toString());
+                let listnew =[];
+                listnew.push(objectNew.code);
+                nts.uk.ui.windows.setShared('SelectedNewItem', listnew,true);
             }
             nts.uk.ui.windows.close();
         }

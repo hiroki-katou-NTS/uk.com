@@ -11,12 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class CcgptMyPagePK {
-	
-	/** The companyId. */
-	@Column(name = "CID")
-	public String companyId;
-	
-	/** The sid. */
+	/** The employee id. */
 	@Column(name = "SID")
 	public String employeeId;
 	

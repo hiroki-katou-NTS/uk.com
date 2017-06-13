@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.acquisitionrule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrderGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Priority;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KmfstAcquisitionRule;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KarstAcquisitionRule;
 
 /**
  * The Class JpaAcquisitionOrderGetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.acquisitionrule.KmfstA
 public class JpaAcquisitionOrderGetMemento implements AcquisitionOrderGetMemento {
 
 	/** The type value. */
-	private KmfstAcquisitionRule typeValue;
+	private KarstAcquisitionRule typeValue;
 
 	/** The va type. */
 	private AcquisitionType vaType;
@@ -28,7 +28,7 @@ public class JpaAcquisitionOrderGetMemento implements AcquisitionOrderGetMemento
 	 * @param vaType
 	 *            the va type
 	 */
-	public JpaAcquisitionOrderGetMemento(KmfstAcquisitionRule typeValue, AcquisitionType vaType) {
+	public JpaAcquisitionOrderGetMemento(KarstAcquisitionRule typeValue, AcquisitionType vaType) {
 		super();
 		this.typeValue = typeValue;
 		this.vaType = vaType;

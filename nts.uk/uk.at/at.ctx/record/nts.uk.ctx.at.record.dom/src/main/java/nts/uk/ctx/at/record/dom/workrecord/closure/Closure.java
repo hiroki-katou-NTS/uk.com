@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.dom.workrecord.closure;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -34,5 +35,33 @@ public class Closure extends AggregateRoot {
 
 	/** The closure histories. */
 	// 締め変更履歴
+	@Setter
 	private List<ClosureHistory> closureHistories;
+	
+	/**
+	 * Instantiates a new closure.
+	 *
+	 * @param memento the memento
+	 */
+	public Closure(ClosureGetMemento memento){
+		this.companyId = memento.getCompanyId();
+		this.closureId = memento.getClosureId();
+		this.useClassification = memento.getUseClassification();
+		this.month = memento.getMonth();
+		this.closureHistories = memento.getClosureHistories();
+	}
+	
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ClosureSetMemento memento){
+		memento.setCompanyId(this.companyId);
+		memento.setClosureId(this.closureId);
+		memento.setUseClassification(this.useClassification);
+		memento.setMonth(this.month);
+		memento.setClosureHistories(this.closureHistories);
+	}
 }

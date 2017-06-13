@@ -5,8 +5,16 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<div id="nts-component-list"
 		class="caret-right caret-background bg-green"
-		style="width: 352px; height: 452px; padding: 20px; border-radius: 5px;">
-		<div style="width: 350px; margin-bottom: 10px;"
+		style="padding: 20px; border-radius: 5px;" data-bind="style: {width: gridStyle.totalComponentSize + 'px', height: gridStyle.totalHeight + 'px'}">
+		<com:ko tag="if" bind="!isDialog">
+			<i class="icon icon-searchbox"></i>
+		</com:ko>
+		<com:ko tag="if" bind="hasBaseDate">
+			<div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">#{i18n.getText('KCP003_2')}</div>
+			<div class="base-date-editor" style="margin-left: 20px;" data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: getItemNameForBaseDate()}"></div>
+			<button data-bind="click: reload" style="width: 100px">#{i18n.getText('KCP003_3')}</button>
+		</com:ko>
+		<div style="width: 350px; margin-bottom: 10px; float: left;"
 			data-bind="ntsSearchBox: {searchMode: 'filter',
 				targetKey: 'code',
 				comId: 'list-table',
@@ -16,15 +24,20 @@
 				fields: ['name', 'code'],
 				mode: 'igGrid'}">
 		</div>
-		<table id="list-table"
+
+		<com:ko tag="if" bind="isHasButtonSelectAll">
+			<button data-bind="click: selectAll" style="margin-top: 5px;margin-left: 4px;">#{i18n.getText('KCP004_7')}</button>
+		</com:ko>
+		<table style="clear: both;" id="list-table"
 			data-bind="ntsGridList: {								
 				height: 400,
-				width: 350,
+				width: gridStyle.totalColumnSize,
 				dataSource: itemList,
 				primaryKey: 'code',
 				columns: listComponentColumn,
 				multiple: isMultiple,
-				value: selectedCodes}">
+				value: selectedCodes,
+				name: getItemNameForList()}">
 		</table>
 	</div>
 </ui:composition>

@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.PreemptionPermit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 
 /**
  * The Class AnnualPaidLeaveWs.
@@ -70,7 +70,7 @@ public class AnnualPaidLeaveWs extends WebService {
     @POST
     @Path("find/preemptionpermit")
     public List<EnumConstant> findPreemptionPermit() {
-        return EnumAdaptor.convertToValueNameList(PreemptionPermit.class);
+        return EnumAdaptor.convertToValueNameList(AnnualPriority.class);
     }
     
     /**
