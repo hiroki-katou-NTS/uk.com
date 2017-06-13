@@ -104,7 +104,7 @@ module kcp.share.list {
             self.isMultiple = data.isMultiSelect;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE;
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE && data.isMultiSelect;
             self.initGridStyle(data);
             self.listType = data.listType;
@@ -158,8 +158,12 @@ module kcp.share.list {
                 $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/list.xhtml', function() {
                     ko.cleanNode($input[0]);
                     ko.applyBindings(self, $input[0]);
-                    $(".ntsSearchBox").focus();
                     $('.base-date-editor').find('.nts-input').width(133);
+                    if (self.hasBaseDate) {
+                        $('.base-date-editor').find('.nts-input').focus();
+                    } else {
+                        $(".ntsSearchBox").focus();
+                    }
                 });
                 dfd.resolve();
             });
@@ -258,6 +262,26 @@ module kcp.share.list {
                 }
                 self.itemList(data);
             });
+        }
+        
+        public getItemNameForList(): string {
+            switch(this.listType) {
+                case ListType.EMPLOYMENT:
+                    return '#[KCP001_1]';
+                case ListType.JOB_TITLE:
+                    return '#[KCP003_1]';
+                case ListType.Classification:
+                    return '#[KCP002_1]';
+                default:
+                    return '';
+            }
+        }
+        
+        public getItemNameForBaseDate(): string {
+            if (this.hasBaseDate) {
+                return '#[KCP003_2 ]'
+            }
+            return '';
         }
     }
     

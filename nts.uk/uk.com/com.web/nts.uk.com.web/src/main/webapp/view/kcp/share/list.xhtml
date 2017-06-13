@@ -10,11 +10,11 @@
 			<i class="icon icon-searchbox"></i>
 		</com:ko>
 		<com:ko tag="if" bind="hasBaseDate">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KCP003_2')}</div>
-			<div class="base-date-editor" style="margin-left: 20px;" data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate}"></div>
+			<div data-bind="ntsFormLabel: {}" style="margin-bottom: 10px;">#{i18n.getText('KCP003_2')}</div>
+			<div class="base-date-editor" style="margin-left: 20px;" data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name: getItemNameForBaseDate()}"></div>
 			<button data-bind="click: reload" style="width: 100px">#{i18n.getText('KCP003_3')}</button>
 		</com:ko>
-		<div style="width: 350px; margin-bottom: 10px; float: left; margin-top: 10px;"
+		<div style="width: 350px; margin-bottom: 10px; float: left;"
 			data-bind="ntsSearchBox: {searchMode: 'filter',
 				targetKey: 'code',
 				comId: 'list-table',
@@ -36,7 +36,8 @@
 				primaryKey: 'code',
 				columns: listComponentColumn,
 				multiple: isMultiple,
-				value: selectedCodes}">
+				value: selectedCodes,
+				name: getItemNameForList()}">
 		</table>
 	</div>
 </ui:composition>
