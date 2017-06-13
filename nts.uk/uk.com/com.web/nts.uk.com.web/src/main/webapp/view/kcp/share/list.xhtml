@@ -6,7 +6,7 @@
 	<div id="nts-component-list"
 		class="caret-right caret-background bg-green"
 		style="padding: 20px; border-radius: 5px;" data-bind="style: {width: gridStyle.totalComponentSize + 'px', height: gridStyle.totalHeight + 'px'}">
-		<com:ko tag="if" bind="isDialog">
+		<com:ko tag="if" bind="!isDialog">
 			<i class="icon icon-searchbox"></i>
 		</com:ko>
 		<com:ko tag="if" bind="hasBaseDate">
