@@ -29,13 +29,13 @@ public class TopPageSelfSettingFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		// get top page
-//		List<TopPage> topPages = topPageRepository.findAll(companyId);
-//		if (!topPages.isEmpty()) {
-//			topPages.stream()
-//					.forEach(x -> {
-//						result.add(new SelectMyPageDto(x.getTopPageCode().v(), x.getTopPageName().v(), 0));
-//					});
-//		}
+		List<TopPage> topPages = topPageRepository.findAll(companyId);
+		if (!topPages.isEmpty()) {
+			topPages.stream()
+					.forEach(x -> {
+						result.add(new SelectMyPageDto(x.getTopPageCode().v(), x.getTopPageName().v(), 0));
+					});
+		}
 		
 		// get standard menu
 		List<StandardMenu> standardMenus = standardMenuRepository.findAllWithAfterLoginDisplayIndicatorIsTrue(companyId);

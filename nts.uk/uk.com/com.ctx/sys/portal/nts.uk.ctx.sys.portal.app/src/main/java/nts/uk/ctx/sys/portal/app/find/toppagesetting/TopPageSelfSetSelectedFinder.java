@@ -11,10 +11,10 @@ import nts.uk.shr.com.context.AppContexts;
 public class TopPageSelfSetSelectedFinder {
 	@Inject
 	private TopPageSelfSetRepository repository;
-	public Optional<TopPageSelfSettingDto> getTopPageSelfSet(){
+	public TopPageSelfSettingDto getTopPageSelfSet(){
 		String employeeId = AppContexts.user().employeeCode();
 		Optional<TopPageSelfSettingDto> lst = this.repository.getTopPageSelfSet(employeeId)
 				.map(c->TopPageSelfSettingDto.fromDomain(c));
-		return lst;
+		return lst.get();
 	}
 }
