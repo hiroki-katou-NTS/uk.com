@@ -30,13 +30,14 @@ public interface CompanySettingRepository {
 	 *
 	 * @param companyId the company id
 	 */
-	void remove(String companyId);
+	void remove(String companyId, int year);
 
 	/**
 	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @return the company setting
+	 * @param year the year
+	 * @return the optional
 	 */
-	Optional<CompanySetting> find(String companyId);
+	Optional<CompanySetting> find(String companyId, int year);
 }

@@ -11,7 +11,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGPT_PERSON_HOMEPAGE_SET")
+@Table(name = "CCGPT_TOPPAGE_SELF_SET")
 public class CcgptTopPageSelfSet extends UkJpaEntity {
 	
 	@EmbeddedId

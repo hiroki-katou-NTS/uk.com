@@ -9,8 +9,7 @@ module kcp.share.tree {
     
     export interface UnitAlreadySettingModel {
         code: string;
-        isAlreadySetting: boolean;
-        isUseParentSetting: boolean;
+        settingType: SettingType;
     }
     
     export interface TreeComponentOption {
@@ -69,6 +68,8 @@ module kcp.share.tree {
         isMultiple: boolean;
         hasBaseDate: boolean;
         baseDate: KnockoutObservable<Date>;
+        levelList: Array<number>;
+        levelSelected: KnockoutObservable<number>;
         
         constructor() {
             this.itemList = ko.observableArray([]);
@@ -76,6 +77,8 @@ module kcp.share.tree {
             this.baseDate = ko.observable(new Date());
             this.treeComponentColumn = [{ headerText: nts.uk.resource.getText("KCP004_5"), key: 'code', dataType: "string", hidden: true },
             { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: "200px", dataType: "string" }];
+            this.levelList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            this.levelSelected = ko.observable(10);
         }
         
         public init($input: JQuery, data: TreeComponentOption) :JQueryPromise<void> {
@@ -101,6 +104,11 @@ module kcp.share.tree {
                 });
             }
             
+            // Find data.
+            service.findWorkplaceTree(self).done(function(res: Array<UnitModel>) {
+                
+            })
+            
             return dfd.promise();
         }
         
@@ -117,6 +125,7 @@ module kcp.share.tree {
          * Find Employment list.
          */
         export function findWorkplaceTree(screenModel: TreeComponentScreenModel): JQueryPromise<Array<UnitModel>> {
+            
             return nts.uk.request.ajax(servicePath.findWorkplaceTree);
         }
         

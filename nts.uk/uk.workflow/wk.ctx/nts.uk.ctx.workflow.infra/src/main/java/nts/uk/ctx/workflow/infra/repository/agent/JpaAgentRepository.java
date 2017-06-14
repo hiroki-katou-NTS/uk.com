@@ -14,20 +14,27 @@ import nts.uk.ctx.workflow.infra.entity.agent.CmmmtAgentPK;
 
 @Stateless
 public class JpaAgentRepository extends JpaRepository implements AgentRepository {
+	private static final String SELECT_ALL;
+	
 	private static final String SELECT_ALL_AGENT;
 	
 	private static final String QUERY_IS_EXISTED;
 	
 	static {
-
 		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");	
+		SELECT_ALL = builderString.toString();
+		
+		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");		
 		SELECT_ALL_AGENT = builderString.toString();
 		
-		
+		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
@@ -63,13 +70,13 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				agent.getEmployeeId(),
 				agent.getStartDate());
 		cmmmtAgent.endDate = agent.getEndDate();
-		cmmmtAgent.agentSid1 = agent.getAgentSid1().v();
+		cmmmtAgent.agentSid1 = agent.getAgentSid1();
 		cmmmtAgent.agentAppType1 = agent.getAgentAppType1().value;
-		cmmmtAgent.agentSid2 = agent.getAgentSid2().v();
+		cmmmtAgent.agentSid2 = agent.getAgentSid2();
 		cmmmtAgent.agentAppType2 = agent.getAgentAppType2().value;
-		cmmmtAgent.agentSid3 = agent.getAgentSid3().v();
+		cmmmtAgent.agentSid3 = agent.getAgentSid3();
 		cmmmtAgent.agentAppType3 = agent.getAgentAppType3().value;
-		cmmmtAgent.agentSid4 = agent.getAgentSid4().v();
+		cmmmtAgent.agentSid4 = agent.getAgentSid4();
 		cmmmtAgent.agentAppType4 = agent.getAgentAppType4().value;
 		cmmmtAgent.cmmmtAgentPK = cmmmtAgentPK;
 		return cmmmtAgent;
@@ -120,9 +127,17 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	public boolean isExisted(String companyId, String employeeId, GeneralDate startDate) {
 		return this.queryProxy().query(QUERY_IS_EXISTED, long.class)
 				.setParameter("companyId", companyId)
-				.setParameter("employeeId",  employeeId)
+				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", startDate)
 				.getSingle().get() > 0;
 	}
 	
+	@Override
+	public List<Agent> findAll(String companyId, GeneralDate startDate, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("companyId", startDate)
+				.setParameter("companyId", endDate)
+				.getList(c -> convertToDomain(c));
+	}
 }

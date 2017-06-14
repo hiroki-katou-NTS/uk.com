@@ -6,14 +6,14 @@ package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Data;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
 
 /**
  * 労働時間設定.
  */
-@Value
+@Data
 public class WorkingTimeSetting extends DomainObject {
 
 	/** 日単位. */

@@ -31,8 +31,8 @@ public class CompanySettingFinder {
 	 *
 	 * @return the company setting dto
 	 */
-	public CompanySettingDto find() {
-		Optional<CompanySetting> optCompanySetting = this.repository.find(companyId);
+	public CompanySettingDto find(int year) {
+		Optional<CompanySetting> optCompanySetting = this.repository.find(companyId, year);
 		if(optCompanySetting.isPresent()) {
 			return CompanySettingDto.fromDomain(optCompanySetting.get());
 		}
