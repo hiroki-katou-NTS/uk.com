@@ -20,11 +20,11 @@ public class DeleteAgentCommandHandler extends CommandHandler<DeleteAgentCommand
 		DeleteAgentCommand deleteAgentCommand = context.getCommand();
 		String employeeId = deleteAgentCommand.getEmployeeId();
 		String companyId = AppContexts.user().companyId();
+		
 		if (!agentRepository.isExisted(companyId, employeeId, deleteAgentCommand.getStartDate())) {
-
 			throw new BusinessException(new RawErrorMessage("対象データがありません。"));
 		}
-
+		
 		agentRepository.delete(companyId, employeeId, deleteAgentCommand.getStartDate());
 
 	}

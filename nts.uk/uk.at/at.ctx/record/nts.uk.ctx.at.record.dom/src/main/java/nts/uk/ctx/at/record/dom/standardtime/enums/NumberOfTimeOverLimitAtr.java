@@ -81,7 +81,7 @@ public enum NumberOfTimeOverLimitAtr {
 			name = "12‰ñ";
 			break;
 		default:
-			name = "0‰ñ";
+			name = "6‰ñ";
 			break;
 		}
 		return name;
