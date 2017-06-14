@@ -46,7 +46,6 @@ module nts.uk.pr.view.kmf001.d {
                     isDialog: false,
                     alreadySettingList: ko.observableArray([{ code: '01', isAlreadySetting: true }])
                 };
-                $('#by-employment-content').ntsListComponent(this.listComponentOption);
                 
                 self.retentionYearsAmount = ko.observable(null);
                 self.maxDaysCumulation = ko.observable(null);
