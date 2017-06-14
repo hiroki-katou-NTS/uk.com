@@ -83,9 +83,8 @@ module nts.uk.pr.view.kmf001.h {
 
                 self.employmentList = ko.observableArray<ItemModel>([]);
                 for (let i = 1; i < 9; i++) {
-                    self.employmentList.push(new ItemModel('0' + i, 'åŸºæœ¬çµ¦', i % 3 === 0));
+                    self.employmentList.push(new ItemModel('0' + i, '基本給', i % 3 === 0));
                 }
-
                 // Load enums
                 $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums()).done(function() {
                     self.loadComSettingDetails();
@@ -105,7 +104,7 @@ module nts.uk.pr.view.kmf001.h {
                     self.vacationExpirationEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -120,7 +119,7 @@ module nts.uk.pr.view.kmf001.h {
                     self.applyPermissionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -135,7 +134,7 @@ module nts.uk.pr.view.kmf001.h {
                     self.manageDistinctEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -161,7 +160,7 @@ module nts.uk.pr.view.kmf001.h {
                     dfd.resolve();
                 }).fail(function(res) {
 
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -187,7 +186,7 @@ module nts.uk.pr.view.kmf001.h {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -197,10 +196,6 @@ module nts.uk.pr.view.kmf001.h {
                 let self = this;
 
                 if (!self.isComManaged()) {
-                    // Show msg #Msg_146
-                    //                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_146')).then(function() {
-                    //                        $("#sidebar").ntsSideBar("active", 0);
-                    //                    });
                 }
             }
 
@@ -217,9 +212,9 @@ module nts.uk.pr.view.kmf001.h {
 
                 this.service.saveComSetting(self.settingModel().toSubstVacationSettingDto()).done(function() {
                     // Msg_15
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                    nts.uk.ui.dialog.alert(nts.uk.ui.dialog.info({ messageId: "Msg_15" }));
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
             }
 
@@ -229,30 +224,17 @@ module nts.uk.pr.view.kmf001.h {
 
                 if (!self.validateEmpSetting()) {
                     return;
-
-
                 }
-
                 this.service.saveEmpSetting(self.empSettingModel().toEmpSubstVacationDto()).done(function() {
-                    // Msg_15
-                    nts.uk.ui.dialog.alert("ç™»éŒ²ã�—ã�¾ã�—ã�Ÿã€‚");
-                    // nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
             }
 
             private validateComSetting(): boolean {
                 let self = this;
-
-                // Have no input
-                // $('input').ntsEditor('validate');
-                //
-                // if ($('.nts-input').ntsError('hasError')) {
-                // return false;
-                // }
-
                 return true;
             }
 
@@ -260,20 +242,11 @@ module nts.uk.pr.view.kmf001.h {
                 if (!$('.nts-input').ntsError('hasError')) {
                     return;
                 }
-
                 $('input').ntsError('clear');
             }
 
             private validateEmpSetting(): boolean {
                 let self = this;
-
-                // Have no input
-                // $('input').ntsEditor('validate');
-                //
-                // if ($('.nts-input').ntsError('hasError')) {
-                // return false;
-                // }
-
                 return true;
             }
 
@@ -281,7 +254,6 @@ module nts.uk.pr.view.kmf001.h {
                 if (!$('.nts-input').ntsError('hasError')) {
                     return;
                 }
-
                 $('input').ntsError('clear');
             }
 
