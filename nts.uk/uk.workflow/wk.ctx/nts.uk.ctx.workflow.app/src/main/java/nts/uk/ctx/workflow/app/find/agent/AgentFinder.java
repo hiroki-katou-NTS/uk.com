@@ -41,9 +41,9 @@ public class AgentFinder {
 	 * Find all agent by company
 	 * @return
 	 */
-	public List<AgentDto> findAll() {
+	public List<AgentDto> findAll(GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		return agentRepository.findAll(companyId).stream().map(e -> {
+		return agentRepository.findAll(companyId,startDate,endDate).stream().map(e -> {
 			return convertToDbType(e);
 		}).collect(Collectors.toList());
 	}
