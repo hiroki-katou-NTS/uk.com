@@ -1,14 +1,23 @@
 module nts.uk.at.view.kmk012.d {
 
     import DayofMonth = nts.uk.at.view.kmk012.a.service.model.DayofMonth;
+    import ClosureSaveDto = nts.uk.at.view.kmk012.a.service.model.ClosureSaveDto;
+    import ClosureHistoryDto = nts.uk.at.view.kmk012.a.service.model.ClosureHistoryDto;
     import ClosureHistoryInDto = service.model.ClosureHistoryInDto;
     import ClosureDetailDto = service.model.ClosureDetailDto;
+    import DayMonthInDto = service.model.DayMonthInDto;
+    import DayMonthDto = service.model.DayMonthDto;
+    import DayMonthChangeInDto = service.model.DayMonthChangeInDto;
+    import DayMonthChangeDto = service.model.DayMonthChangeDto;
 
     export module viewmodel {
 
         export class ScreenModel {
             closureDetailModel: ClosureDetailModel;
             lstDayOfMonth: KnockoutObservableArray<DayofMonth>;
+            dayMonthModel: DayMonthModel;
+            dayMonthChangeModel: DayMonthChangeModel;
+            
 
             constructor() {
                 var self = this;
@@ -18,9 +27,35 @@ module nts.uk.at.view.kmk012.d {
                 input.closureId = nts.uk.ui.windows.getShared("closureId");
                 self.closureDetailModel = new ClosureDetailModel();
                 self.lstDayOfMonth = ko.observableArray<DayofMonth>(self.intDataMonth());
+                self.dayMonthModel = new DayMonthModel();
+                self.dayMonthChangeModel = new DayMonthChangeModel();
                 service.detailClosureHistory(input).done(function(data) {
                     self.closureDetailModel.updateData(data);
+                    self.updateDayMonthModel();
+                    self.updateDayMonthChangeModel();
                 });
+                self.closureDetailModel.month.subscribe(function(){
+                    self.updateDayMonthModel();
+                    self.updateDayMonthChangeModel();
+                });
+                
+                self.closureDetailModel.closureDateChange.subscribe(function() {
+                    self.updateDayMonthChangeModel();
+                });
+            }
+            
+            updateDayMonthModel(): void{
+                var self = this;
+                service.getDayMonth(self.convertDayIn()).done(function(res) {
+                    self.dayMonthModel.updateData(res);
+                });
+            }
+            
+            updateDayMonthChangeModel(): void{
+                var self = this;
+                service.getDayMonthChange(self.convertDayChangeIn()).done(function(res) {
+                    self.dayMonthChangeModel.updateData(res);
+                });  
             }
 
             intDataMonth(): DayofMonth[] {
@@ -40,8 +75,57 @@ module nts.uk.at.view.kmk012.d {
                 data.push(dayLast);
                 return data;
             }
+            
+            convertDayIn(): DayMonthInDto{
+                var self = this;
+                var dto: DayMonthInDto = new DayMonthInDto();
+                dto.month = self.closureDetailModel.month(); 
+                dto.closureDate = self.closureDetailModel.closureDate();
+                return dto;
+            }
+            
+            convertDayChangeIn(): DayMonthChangeInDto{
+                var self = this;
+                var dto: DayMonthChangeInDto = new DayMonthChangeInDto();
+                dto.month = self.closureDetailModel.month();
+                dto.closureDate = self.closureDetailModel.closureDate();
+                dto.changeClosureDate = self.closureDetailModel.closureDateChange();
+                return dto;
+            }
+            
+            collectClosureSaveDto(): ClosureSaveDto{
+                var self = this;
+                var dto: ClosureSaveDto = new ClosureSaveDto();
+                dto.closureId = self.closureDetailModel.closureId();
+                dto.useClassification = self.closureDetailModel.useClassification();
+                dto.month = self.closureDetailModel.month();
+                return dto; 
+            }
+            
+            collectClosureHistoryDto(): ClosureHistoryDto{
+                var self = this;
+                var dto: ClosureHistoryDto = new ClosureHistoryDto();
+                dto.closureId = self.closureDetailModel.closureId();
+                dto.closeName = self.closureDetailModel.closureName();
+                dto.closureHistoryId = self.closureDetailModel.historyId();
+                dto.endDate = self.closureDetailModel.endDate();
+                dto.closureDate = self.closureDetailModel.closureDateChange();
+                dto.startDate = self.closureDetailModel.startDate();
+                return dto; 
+            }
+            
+            closeWindowns(): void {
+                nts.uk.ui.windows.close();
+            }
 
-
+            saveChangeClosureDate(): void {
+                var self = this;
+                nts.uk.at.view.kmk012.a.service.saveClosure(self.collectClosureSaveDto()).done(function() {
+                    nts.uk.at.view.kmk012.a.service.saveClosureHistory(self.collectClosureHistoryDto()).done(function() {
+                        self.closeWindowns();
+                    });
+                });    
+            }
 
         }
 
@@ -58,6 +142,8 @@ module nts.uk.at.view.kmk012.d {
 
             /** The closure date. */
             closureDate: KnockoutObservable<number>;
+            
+            closureDateChange: KnockoutObservable<number>;
 
             /** The use classification. */
             useClassification: KnockoutObservable<number>;
@@ -79,6 +165,7 @@ module nts.uk.at.view.kmk012.d {
                 this.historyId = ko.observable('');
                 this.closureName = ko.observable('');
                 this.closureDate = ko.observable(0);
+                this.closureDateChange = ko.observable(0);
                 this.month = ko.observable(0);
                 this.endDate = ko.observable(0);
                 this.startDate = ko.observable(0);
@@ -90,6 +177,7 @@ module nts.uk.at.view.kmk012.d {
                 this.historyId(dto.historyId);
                 this.closureName(dto.closureName);
                 this.closureDate(dto.closureDate);
+                this.closureDateChange(dto.closureDate);
                 this.month(dto.month);
                 this.endDate(dto.endDate);
                 this.startDate(dto.startDate);
@@ -101,31 +189,44 @@ module nts.uk.at.view.kmk012.d {
                 }
                 return this.closureDate()+"日";
             }
-            getNextClosureDate(): number {
-                if (this.closureDate() == 0 || this.closureDate() == 30) {
-                    return 1;
-                }
-                return this.closureDate() + 1;
-            }
+        }
+        
+        export class DayMonthModel {
+            
+            /** The begin day. */
+            beginDay: KnockoutObservable<string>;
 
-            getStartClosureDate(): string {
-                var startDateStr: string =  nts.uk.time.formatYearMonth(this.startDate());
-                startDateStr=startDateStr+'/'+this.getNextClosureDate();
-                return startDateStr; 
+            /** The end day. */
+            endDay: KnockoutObservable<string>;
+            
+            constructor(){
+                this.beginDay = ko.observable('');    
+                this.endDay = ko.observable('');    
             }
             
-            getPreviouClosureDate(): number {
-                if (this.closureDate() == 0) {
-                    return 1;
-                }
-                return this.closureDate();
+            updateData(dto: DayMonthDto){
+                this.beginDay(dto.beginDay);
+                this.endDay(dto.endDay);
             }
             
-             getEndClosureDate(): string {
-                var endDateStr: string =  nts.uk.time.formatYearMonth(this.endDate());
-                endDateStr=endDateStr+'/'+this.getPreviouClosureDate();
-                return endDateStr; 
+        }
+        
+        export class DayMonthChangeModel{
+            
+            beforeClosureDate: DayMonthModel;
+            
+            afterClosureDate: DayMonthModel;
+            
+            constructor() {
+                this.beforeClosureDate = new DayMonthModel();
+                this.afterClosureDate = new DayMonthModel();
+            }
+            
+            updateData(dto: DayMonthChangeDto){
+                this.beforeClosureDate.updateData(dto.beforeClosureDate);    
+                this.afterClosureDate.updateData(dto.afterClosureDate);    
             }
         }
     }
+        
 }
