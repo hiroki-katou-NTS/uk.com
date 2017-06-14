@@ -17,19 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KmfmtRetentionYearly.
  */
-
-/**
- * Gets the leave as work days.
- *
- * @return the leave as work days
- */
 @Getter
-
-/**
- * Sets the leave as work days.
- *
- * @param leaveAsWorkDays the new leave as work days
- */
 @Setter
 @Entity
 @Table(name = "KMFMT_RETENTION_YEARLY")
@@ -43,12 +31,12 @@ public class KmfmtRetentionYearly extends UkJpaEntity {
     
     /** The year amount. */
     @NotNull
-    @Column(name = "YEAR_AMOUNT")
+    @Column(name = "NUMBER_OF_YEAR")
     private short yearAmount;
     
     /** The max days retention. */
     @NotNull
-    @Column(name = "MAX_DAYS_RETENTION")
+    @Column(name = "MAX_NUMBER_OF_DAYS")
     private short maxDaysRetention;
     
     /** The leave as work days. */
