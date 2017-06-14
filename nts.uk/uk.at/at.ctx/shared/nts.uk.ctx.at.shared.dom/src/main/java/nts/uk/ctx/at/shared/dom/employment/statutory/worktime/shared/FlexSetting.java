@@ -4,13 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
-import lombok.Value;
+import lombok.Data;
 import nts.arc.layer.dom.DomainObject;
 
 /**
  * フレックス勤務労働時間設定.
  */
-@Value
+@Data
 public class FlexSetting extends DomainObject {
 
 	/** 所定労働時間設定. */

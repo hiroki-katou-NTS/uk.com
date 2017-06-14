@@ -4,13 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
-import lombok.Getter;
+import lombok.Value;
 import nts.arc.layer.dom.DomainObject;
 
 /**
  * 通常勤務労働時間設定.
  */
-@Getter
+@Value
 public class NormalSetting extends DomainObject {
 	
 	/** 法定労働時間設定. */
