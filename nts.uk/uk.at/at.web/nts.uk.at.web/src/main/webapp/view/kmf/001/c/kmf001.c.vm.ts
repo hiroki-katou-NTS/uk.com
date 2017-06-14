@@ -289,7 +289,7 @@ module nts.uk.pr.view.kmf001.c {
                     self.manageDistinctList(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -302,7 +302,7 @@ module nts.uk.pr.view.kmf001.c {
                     self.permissionList(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -315,7 +315,7 @@ module nts.uk.pr.view.kmf001.c {
                     self.preemptionPermitList(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -328,7 +328,7 @@ module nts.uk.pr.view.kmf001.c {
                     self.displayDivisionList(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -341,7 +341,7 @@ module nts.uk.pr.view.kmf001.c {
                     self.vacationTimeUnitList(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -354,7 +354,7 @@ module nts.uk.pr.view.kmf001.c {
                     self.maxDayReferenceList(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                   nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
