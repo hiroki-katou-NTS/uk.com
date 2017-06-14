@@ -20,27 +20,17 @@
 			<div id="content-area" class="cf">
 				<table id="TblHeader">
 					<tr>
-						<td class="formLabel"><div data-bind="ntsFormLabel: {}">表示期間</div></td>
-						<td>2016/01/01(火)</td>
-						<td>~ 2017/01/01</td>
+						<td class="formLabel"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL014_3')}</div></td>
+						<td data-bind="text: startDate"></td>
+						<td data-bind="text: endDate"></td>
 					</tr>
 				</table>
 				<div class="Content">
-					<table id="StampList"
-						data-bind="ntsGridList: {								
-								height: 260,
-								dataSource: items,
-								primaryKey: 'code',
-								columns: columns,
-								enable: true,
-								multiple: false,
-								value: currentCode
-							}">
-					</table>
+					<table id="igGridStamp"></table>
 				</div>
-				<hr/>
-				<div id="process">
-					<button id="btnCancel" class="large" data-bind="click: close" tabindex="4">閉じる</button>
+				<div id="functions-area-bottom">
+					<button id="btnCancel" class="large" data-bind="click: close"
+						tabindex="4">#{i18n.getText('KDL014_10')}</button>
 				</div>
 			</div>
 		</ui:define>
