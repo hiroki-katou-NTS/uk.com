@@ -11,7 +11,7 @@
 }
 
 .sidebar-content-header button {
-	width: 80px;
+	width: 110px;
 }
 
 #A1_4, #B1_4 {
@@ -19,7 +19,32 @@
 }
 
 #A1_6 {
-	margin-left: 650px;
+	margin-left: 395px;
+}
+
+#A2_1 {
+	margin: 25px 60px 0px 50px;
+}
+
+#A2_2 {
+	margin-right: 30px;
+}
+
+#image {
+	float: left;
+	margin-left: 5px;
+	margin-top: 10px;
+	height: 600px;
+}
+
+#part-2 {
+	float: left;
+	margin: 60px;
+}
+
+#part-3 {
+	float: left;
+	width: 30%
 }
 
 #B1_7 {
@@ -27,5 +52,5 @@
 }
 
 #B1_6 {
-	margin-left: 533px
+	margin-left: 250px
 }
