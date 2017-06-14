@@ -21,25 +21,25 @@ public class Agent extends AggregateRoot {
 
 	private GeneralDate endDate;
 
-	private AgentSid agentSid1;
+	private String agentSid1;
 
 	private AgentAppType agentAppType1;
 
-	private AgentSid agentSid2;
+	private String agentSid2;
 
 	private AgentAppType agentAppType2;
 
-	private AgentSid agentSid3;
+	private String agentSid3;
 
 	private AgentAppType agentAppType3;
 
-	private AgentSid agentSid4;
+	private String agentSid4;
 
 	private AgentAppType agentAppType4;
 
 	public Agent(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate,
-			AgentSid agentSid1, AgentAppType agentAppType1, AgentSid agentSid2, AgentAppType agentAppType2,
-			AgentSid agentSid3, AgentAppType agentAppType3, AgentSid agentSid4, AgentAppType agentAppType4) {
+			String agentSid1, AgentAppType agentAppType1, String agentSid2, AgentAppType agentAppType2,
+			String agentSid3, AgentAppType agentAppType3, String agentSid4, AgentAppType agentAppType4) {
 		super();
 
 		this.companyId = companyId;
@@ -76,13 +76,13 @@ public class Agent extends AggregateRoot {
 				employeeId, 
 				endDate, 
 				startDate,
-				new AgentSid(agentSid1),
+				agentSid1,
 				EnumAdaptor.valueOf(agentAppType1, AgentAppType.class),
-				new AgentSid(agentSid2),
+				agentSid2,
 				EnumAdaptor.valueOf(agentAppType2, AgentAppType.class),
-				new AgentSid(agentSid3),
+				agentSid3,
 				EnumAdaptor.valueOf(agentAppType3, AgentAppType.class),
-				new AgentSid(agentSid4),
+				agentSid4,
 				EnumAdaptor.valueOf(agentAppType4, AgentAppType.class)
 				);
 	}
@@ -103,7 +103,7 @@ public class Agent extends AggregateRoot {
 			rangeDateLastest = rangeDateList.get(0);
 			rangeDateLast = rangeDateList.get(0);
 		} else if (rangeDateList.size() > 1) {
-			// latest
+			// lastest
 			rangeDateLastest = rangeDateList.get(0);
 			// last
 			rangeDateLast = rangeDateList.get(rangeDateList.size() - 1);
