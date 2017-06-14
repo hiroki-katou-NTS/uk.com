@@ -60,7 +60,6 @@ module kcp003.a.viewmodel {
                 selectedCode: this.selectedCodeNoSetting,
                 isDialog: false,
                 baseDate: this.baseDate,
-//                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
             $('#jobTitle-noSetting').ntsListComponent(this.listComponentNoneSetting);
             
@@ -72,15 +71,9 @@ module kcp003.a.viewmodel {
                 selectedCode: this.multiSelectedCodeNoSetting,
                 isDialog: false,
                 baseDate: this.baseDate,
-//                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
             $('#jobTitle-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
             
-        }
-        
-        private setAlreadyCheck() {
-            var self = this;
-            self.listComponentOption.alreadySettingList.push({"code": "2", "isAlreadySetting": true});
         }
         
         private settingRegistedItem() {

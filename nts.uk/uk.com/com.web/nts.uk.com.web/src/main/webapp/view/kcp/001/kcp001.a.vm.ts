@@ -54,7 +54,6 @@ module kcp001.a.viewmodel {
                 listType: ListType.EMPLOYMENT,
                 selectedCode: this.selectedCodeNoSetting,
                 isDialog: true
-//                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             };
             $('#empt-list-noSetting').ntsListComponent(this.listComponentNoneSetting);
             
@@ -65,23 +64,22 @@ module kcp001.a.viewmodel {
                 listType: ListType.EMPLOYMENT,
                 selectedCode: this.multiSelectedCodeNoSetting,
                 isDialog: true
-//                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             };
             $('#empt-list-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
             
         }
         
-        private setAlreadyCheck() {
+        private setAlreadyCheck(): void {
             var self = this;
             self.listComponentOption.alreadySettingList.push({"code": "02", "isAlreadySetting": true});
         }
         
-        private settingRegistedItem() {
+        private settingRegistedItem(): void {
             var self = this;
             self.listComponentOption.alreadySettingList.push({"code": this.selectedCode().toString(), "isAlreadySetting": true});
         }
         
-        private settingDeletedItem() {
+        private settingDeletedItem(): void {
             let self = this;
             self.listComponentOption.alreadySettingList.remove(function(item) {
                 return item.code == self.selectedCode();
