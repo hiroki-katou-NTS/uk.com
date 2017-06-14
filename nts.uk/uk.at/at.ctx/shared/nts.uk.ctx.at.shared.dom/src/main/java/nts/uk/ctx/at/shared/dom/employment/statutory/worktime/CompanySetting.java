@@ -35,6 +35,12 @@ public class CompanySetting extends AggregateRoot {
 
 	/**
 	 * Instantiates a new company setting.
+	 */
+	public CompanySetting() {
+	}
+
+	/**
+	 * Instantiates a new company setting.
 	 *
 	 * @param memento the memento
 	 */

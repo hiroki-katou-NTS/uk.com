@@ -47,11 +47,11 @@ public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     private Integer startMonthDay;
     
     /** The nursing num leave day. */
-    @Column(name = "NURSING_NUM_LEAVE_DAY")
+    @Column(name = "NUM_LEAVE_DAY")
     private Integer nursingNumLeaveDay;
     
     /** The nursing num person. */
-    @Column(name = "NURSING_NUM_PERSON")
+    @Column(name = "NUM_PERSON")
     private Integer nursingNumPerson;
     
     /** The list work type. */
