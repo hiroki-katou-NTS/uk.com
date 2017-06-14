@@ -4,8 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -27,14 +28,14 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 	/** The company id. */
 	private CompanyId companyId;
 
-	/** The normal. */
-	private NormalSetting normal;
+	/** The normal setting. */
+	private NormalSetting normalSetting;
 
-	/** The flex. */
-	private FlexSetting flex;
+	/** The flex setting. */
+	private FlexSetting flexSetting;
 
-	/** The labor. */
-	private DeformationLaborSetting labor;
+	/** The deformed setting. */
+	private DeformationLaborSetting deformedSetting;
 
 	/** The year. */
 	private Year year;
@@ -47,22 +48,23 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 	public JpaCompanySettingGetMemento(List<JcwtstCompanyWtSet> typeValue) {
 		this.companyId = new CompanyId(typeValue.get(0).getJcwtstCompanyWtSetPK().getCid());
 		this.year = new Year(typeValue.get(0).getJcwtstCompanyWtSetPK().getYK());
-		this.flex = new FlexSetting();
+		this.flexSetting = new FlexSetting();
 
 		typeValue.forEach(item -> {
 			switch (item.getJcwtstCompanyWtSetPK().getCtg()) {
-			case 1:
-				this.normal = new NormalSetting(this.getWorkTimeSetting(item), WeekStart.valueOf(item.getWeeklyTime()));
+			case 0:
+				this.normalSetting = new NormalSetting(this.getWorkTimeSetting(item),
+						WeekStart.valueOf(item.getWeeklyTime()));
 				break;
-			case 2:
+			case 1:
 				if (item.getJcwtstCompanyWtSetPK().getType() == 1) {
-					this.flex.setSpecifiedSetting(this.getWorkTimeSetting(item));
+					this.flexSetting.setSpecifiedSetting(this.getWorkTimeSetting(item));
 					break;
 				}
-				this.flex.setStatutorySetting(this.getWorkTimeSetting(item));
+				this.flexSetting.setStatutorySetting(this.getWorkTimeSetting(item));
 				break;
-			case 3:
-				this.labor = new DeformationLaborSetting(this.getWorkTimeSetting(item),
+			case 2:
+				this.deformedSetting = new DeformationLaborSetting(this.getWorkTimeSetting(item),
 						WeekStart.valueOf(item.getWeeklyTime()));
 				break;
 			default:
@@ -92,8 +94,8 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 	 * @param item the item
 	 * @return the monthly
 	 */
-	private List<Monthly> getMonthly(JcwtstCompanyWtSet item) {
-		List<Monthly> monthly = new ArrayList<Monthly>();
+	private Set<Monthly> getMonthly(JcwtstCompanyWtSet item) {
+		Set<Monthly> monthly = new HashSet<Monthly>();
 		monthly.add(new Monthly(new AttendanceTime(item.getJanTime()), java.time.Month.JANUARY));
 		monthly.add(new Monthly(new AttendanceTime(item.getFebTime()), java.time.Month.FEBRUARY));
 		monthly.add(new Monthly(new AttendanceTime(item.getMarTime()), java.time.Month.MARCH));
@@ -117,7 +119,7 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 	 */
 	@Override
 	public FlexSetting getFlexSetting() {
-		return this.flex;
+		return this.flexSetting;
 	}
 
 	/*
@@ -128,7 +130,7 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 	 */
 	@Override
 	public DeformationLaborSetting getDeformationLaborSetting() {
-		return this.labor;
+		return this.deformedSetting;
 	}
 
 	/*
@@ -161,7 +163,7 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 	 */
 	@Override
 	public NormalSetting getNormalSetting() {
-		return this.normal;
+		return this.normalSetting;
 	}
 
 }
