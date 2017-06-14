@@ -5,6 +5,7 @@ import nts.arc.time.GeneralDate;
 
 @Value
 public class UpdateAgentCommand {
+	
 	private String companyId;
 	
 	private String employeeId;

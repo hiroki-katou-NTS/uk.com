@@ -178,7 +178,9 @@ module nts.uk.at.view.kmk012.a {
                 nts.uk.ui.windows.setShared('closureId', self.closureModel.closureId());
                 nts.uk.ui.windows.setShared('historyId', self.closureHistoryModel.historyId());
                 nts.uk.ui.windows.sub.modal('/view/kmk/012/d/index.xhtml', 
-                { title: '締め期間確認 ', dialogClass: 'no-close' });
+                { title: '締め期間確認 ', dialogClass: 'no-close' }).onClosed(function(){
+                    self.reloadPage(self.closureModel.closureId(), self.closureHistoryModel.historyId());    
+                });
             }
     
             
