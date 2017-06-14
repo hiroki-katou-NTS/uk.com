@@ -8,8 +8,8 @@ module kdl010.a.viewmodel {
             this.selectCode = ko.observable([]);
             this.workLocationList = ko.observableArray([]);
             this.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL010_8"), prop: 'workLocationCD', width: 100 },
-                { headerText: nts.uk.resource.getText("KDL010_2"), prop: 'workLocationName', width: 230 }
+                { headerText: nts.uk.resource.getText("KDL010_8"), prop: 'workLocationCD', width: 60 },
+                { headerText: nts.uk.resource.getText("KDL010_2"), prop: 'workLocationName', width: 220 }
             ]);
 
         }
@@ -24,7 +24,6 @@ module kdl010.a.viewmodel {
                 self.workLocationList(workLocationList);
                 self.workLocationList().unshift(new WorkLocation( "", "選択なし"));
                 self.selectCode(nts.uk.ui.windows.getShared('SelectWorkLocation'));
-                console.log(nts.uk.ui.windows.getShared('SelectWorkLocation'));
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
@@ -42,7 +41,6 @@ module kdl010.a.viewmodel {
             var selectWorkLocation = _.find(self.workLocationList(), ['workLocationCD', self.selectCode()]);
             if (selectWorkLocation !== undefined) {
                 nts.uk.ui.windows.setShared("workLocation", selectWorkLocation, true);
-                console.log(selectWorkLocation);
             }
              else {
                 nts.uk.ui.windows.setShared("workLocation", null, true);

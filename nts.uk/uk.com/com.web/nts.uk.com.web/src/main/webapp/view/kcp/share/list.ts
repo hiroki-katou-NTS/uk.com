@@ -143,6 +143,8 @@ module kcp.share.list {
             // With list type is employee list, use employee input.
             if (self.listType == ListType.EMPLOYEE) {
                 self.initComponent(data, data.employeeInputList, $input);
+                dfd.resolve();
+                return dfd.promise();
             }
             
             // Find data list.
@@ -173,7 +175,10 @@ module kcp.share.list {
 
             // Init component.
             self.itemList(dataList);
-            $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/list.xhtml', function() {
+            var webserviceLocator = nts.uk.request.location.siteRoot
+                .mergeRelativePath('nts.uk.com.web/')
+                .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
+            $input.load(webserviceLocator, function() {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);

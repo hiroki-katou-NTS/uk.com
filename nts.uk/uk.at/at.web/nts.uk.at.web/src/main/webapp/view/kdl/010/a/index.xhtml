@@ -24,7 +24,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<label>#{i18n.getText('KDL010_1')}</label>
-				<div style="width: 400px"
+				<div style="width: 400px" tabindex="2"
 							data-bind="ntsSearchBox: {
 						searchMode: 'filter',
 						targetKey: 'workLocationCD',
@@ -34,7 +34,7 @@
 			    	    selectedKey: 'workLocationCD',
 			    	    fields: ['workLocationCD', 'workLocationName'], 
 			    	    mode: 'igGrid'}" />
-				<table id="multi-list"
+				<table id="multi-list" tabindex="3"
 					data-bind="ntsGridList: {
 						height: 320,
 						options: workLocationList,
@@ -46,8 +46,8 @@
 
 			</div>
 			<div id= "functions-area-bottom">
-					<button class="proceed x-large" id="save" data-bind = "click : submit">#{i18n.getText('KDL010_3')}</button>
-					<button id="cancel" data-bind = "click: cancel_Dialog">#{i18n.getText('KDL010_4')}</button>
+					<button class="proceed x-large" id="save" data-bind = "click : submit" tabindex="4">#{i18n.getText('KDL010_3')}</button>
+					<button id="cancel" data-bind = "click: cancel_Dialog" tabindex="5">#{i18n.getText('KDL010_4')}</button>
 				</div>
 		</ui:define>
 	</ui:composition>
