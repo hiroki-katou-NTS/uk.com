@@ -20,34 +20,36 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class AddAgentCommandHandler extends CommandHandler<AddAgentCommand> {
+public class AddAgentCommandHandler extends CommandHandler<AgentCommandBase> {
+	
 	@Inject
 	private AgentRepository agentRepository;
 	@Inject
 	private AgentFinder finder;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddAgentCommand> context) {
+	protected void handle(CommandHandlerContext<AgentCommandBase> context) {
 
-		AddAgentCommand addAgentCommand = context.getCommand();
+		AgentCommandBase agentCommandBase = context.getCommand();
 
-		String employeeId = addAgentCommand.getEmployeeId();
+		String employeeId = agentCommandBase.getEmployeeId();
 		String companyId = AppContexts.user().companyId();
 
 		Agent agentInfor = new Agent(
 				companyId, 
 				employeeId, 
-				addAgentCommand.getStartDate(),
-				addAgentCommand.getEndDate(), 
-				addAgentCommand.getAgentSid1(),
-				EnumAdaptor.valueOf(addAgentCommand.getAgentAppType1(), AgentAppType.class),
-				addAgentCommand.getAgentSid2(),
-				EnumAdaptor.valueOf(addAgentCommand.getAgentAppType2(), AgentAppType.class),
-				addAgentCommand.getAgentSid3(),
-				EnumAdaptor.valueOf(addAgentCommand.getAgentAppType3(), AgentAppType.class),
-				addAgentCommand.getAgentSid4(),
-				EnumAdaptor.valueOf(addAgentCommand.getAgentAppType4(), AgentAppType.class));
+				agentCommandBase.getStartDate(),
+				agentCommandBase.getEndDate(), 
+				agentCommandBase.getAgentSid1(),
+				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType1(), AgentAppType.class),
+				agentCommandBase.getAgentSid2(),
+				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType2(), AgentAppType.class),
+				agentCommandBase.getAgentSid3(),
+				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType3(), AgentAppType.class),
+				agentCommandBase.getAgentSid4(),
+				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType4(), AgentAppType.class));
 		
+		//Validate Date
 		List<AgentDto> agents = finder.findAll(employeeId);
 		
 		List<RangeDate> rangeDateList = agents.stream()

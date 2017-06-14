@@ -1,13 +1,11 @@
 package nts.uk.ctx.workflow.app.command.agent;
 
+
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 @Value
-public class UpdateAgentCommand {
-	
-	private String companyId;
-	
+public class AgentCommandBase {
 	private String employeeId;
 	
 	private GeneralDate startDate;
@@ -28,5 +26,5 @@ public class UpdateAgentCommand {
 
 	private String agentSid4;
 
-	private int agentAppType4;	
+	private int agentAppType4;
 }
