@@ -55,4 +55,11 @@ public interface AgentRepository {
 	 * @return
 	 */
 	boolean isExisted(String companyId, String employeeId, GeneralDate startDate);
+
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	List<Agent> findAll(String companyId);
 }

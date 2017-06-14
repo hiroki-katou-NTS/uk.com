@@ -13,23 +13,49 @@ import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class AgentFinder {
 
 	@Inject
 	private AgentRepository agentRepository;
 
-	public List<AgentDto> init() {
-		String employeeId = AppContexts.user().companyId();
+	/**
+	 * Find agent by employee
+	 * @param employeeId
+	 * @return
+	 */
+	public List<AgentDto> findAll(String employeeId) {
+		
 		String companyId = AppContexts.user().companyId();
 		return agentRepository.findAllAgent(companyId, employeeId).stream().map(e -> {
 			return convertToDbType(e);
 		}).collect(Collectors.toList());
 	}
-
-	public AgentDto getAgentDto(GeneralDate startDate) {
-		String companyId = AppContexts.user().companyCode();
-		String employeeId = AppContexts.user().companyId();
+	
+	/**
+	 * Find all agent by company
+	 * @return
+	 */
+	public List<AgentDto> findAll() {
+		String companyId = AppContexts.user().companyId();
+		return agentRepository.findAll(companyId).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * 
+	 * @param employeeId
+	 * @param startDate
+	 * @return
+	 */
+	public AgentDto getAgentDto(String employeeId, GeneralDate startDate) {
+		String companyId = AppContexts.user().companyId();
 		Optional<AgentDto> payClassification = this.agentRepository.getAgentByStartDate(companyId, employeeId, startDate).map(c -> convertToDbType(c));
 		if(payClassification.isPresent()){
 			return payClassification.get();
@@ -38,16 +64,21 @@ public class AgentFinder {
 		}
 	}
 
+	/**
+	 * 
+	 * @param agent
+	 * @return
+	 */
 	private AgentDto convertToDbType(Agent agent) {
 		AgentDto agentDto = new AgentDto();
 		 
-				agentDto.setAgentSid1(agent.getAgentSid1().v());
+				agentDto.setAgentSid1(agent.getAgentSid1());
 				agentDto.setAgentAppType1(agent.getAgentAppType1().value);
-				agentDto.setAgentSid2(agent.getAgentSid2().v());
+				agentDto.setAgentSid2(agent.getAgentSid2());
 				agentDto.setAgentAppType2(agent.getAgentAppType2().value);
-				agentDto.setAgentSid3(agent.getAgentSid3().v());
+				agentDto.setAgentSid3(agent.getAgentSid3());
 				agentDto.setAgentAppType3(agent.getAgentAppType3().value);
-				agentDto.setAgentSid4(agent.getAgentSid4().v());
+				agentDto.setAgentSid4(agent.getAgentSid4());
 				agentDto.setAgentAppType4(agent.getAgentAppType4().value);
 	
 		return agentDto;

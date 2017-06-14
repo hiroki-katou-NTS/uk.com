@@ -5,7 +5,11 @@ import nts.arc.time.GeneralDate;
 
 @Value
 public class DeleteAgentCommand {
-private String companyId;
-private String employeeId;
-private GeneralDate startDate;
+	
+	private String companyId;
+	
+	private String employeeId;
+	
+	private GeneralDate startDate;
+	
 }

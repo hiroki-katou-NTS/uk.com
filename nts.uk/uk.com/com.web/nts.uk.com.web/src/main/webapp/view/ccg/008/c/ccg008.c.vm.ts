@@ -2,29 +2,40 @@ module nts.uk.com.view.ccg008.c {
     export module viewmodel {
         export class ScreenModel {
             index: number;
-            dataItems: any;
-            selectedCode: any;
-            singleSelectedCode: any;
-            headers: any;
-            
+            dataItems: KnockoutObservableArray<model.Node>;
+            selectedCode: KnockoutObservable<string>;
+            columns: KnockoutObservableArray<any>;
+            itemSelected: KnockoutObservable<model.TopPageSelfSet>;
             constructor() {
                 var self = this;
+            self.columns = ko.observableArray([
+                { headerText: nts.uk.resource.getText("CCG008_8"), prop: 'code', width: 70 }
+            ]);
                 self.dataItems = ko.observableArray([]);
-                self.selectedCode = ko.observableArray([]);
-                self.singleSelectedCode = ko.observable(null);
-                self.index = 0;
-                self.headers = ko.observableArray([nts.uk.resource.getText("CCG008_8")]);
+                self.itemSelected = ko.observable(null);
+                self.selectedCode = ko.observable(null);
             }
             
-            start(): JQueryPromise<void> {
+            start(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                service.getSelectMyTopPage().done(function(res) {
-                    var items = _.map(res, function(item: any) {
-                        return new Node(item.code, item.name);
+                service.getSelectMyTopPage().done(function(lst: Array<model.Node>) {
+                    if(lst===null|| lst===undefined || lst.length==0){
+                        self.dataItems([]);
+                        self.selectedCode();
+                    }else{
+                        var items = _.map(res, function(item: any) {
+                        return new model.Node(item.code, item.name);
                     });
                     self.dataItems(items);
+                    service.getTopPageSelfSet().done(function(topPageSelfSet: model.TopPageSelfSet){
+                        let itemSeletced = new model.TopPageSelfSet(topPageSelfSet.code,topPageSelfSet.division);
+                        self.itemSelected(itemSeletced)
+                        self.selectedCode(topPageSelfSet.code);
+                    })
                     dfd.resolve();
+                    }
+                dfd.resolve();
                 }).fail(function(err){
                     nts.uk.ui.dialog.alert(err);
                 });
@@ -32,16 +43,10 @@ module nts.uk.com.view.ccg008.c {
                 return dfd.promise();
             }
                 
-            save(): void {
+            register(): void {
                 var self = this;
-                var data = {
-                    employeeId: 0,
-                    code: self.singleSelectedCode(), 
-                    division: 0    
-                };
-                
+                let data = new model.TopPageSelfSet(self.singleSelectedCode(),self.itemSelected().division);
                 service.save(data).done(function(res) {
-                    
                 }).fail(function(err){
                     nts.uk.ui.dialog.alert(err);
                 });
@@ -51,19 +56,24 @@ module nts.uk.com.view.ccg008.c {
                 nts.uk.ui.windows.close();   
             }  
         }  
-        
-        class Node {
+    }
+    export module model {
+        export class Node {
             code: string;
             name: string;
-            nodeText: string;
-            custom: string;
             constructor(code: string, name: string) {
                 var self = this;
                 self.code = code;
                 self.name = name;
-                self.nodeText = self.code + ' ' + self.name;
-                self.custom = 'Random' + new Date().getTime();
             }
         }
+        export class TopPageSelfSet{
+            code: string;
+            division: number;
+            constructor(code: string,division: number){
+                this.code = code;
+                this.division = division;    
+            }
+        }   
     }
 }
