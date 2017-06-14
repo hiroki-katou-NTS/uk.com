@@ -2078,7 +2078,7 @@ var nts;
         var request;
         (function (request) {
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
-            var WEB_APP_NAME = {
+            request.WEB_APP_NAME = {
                 com: 'nts.uk.com.web',
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web'
@@ -2197,7 +2197,7 @@ var nts;
                     data = JSON.stringify(data);
                 }
                 var webserviceLocator = location.siteRoot
-                    .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(request.WEB_APP_NAME[webAppId] + '/')
                     .mergeRelativePath(location.ajaxRootDir)
                     .mergeRelativePath(path);
                 $.ajax({
@@ -2313,8 +2313,8 @@ var nts;
                 location.siteRoot = location.appRoot.mergeRelativePath('../');
                 location.ajaxRootDir = 'webapi/';
                 var currentAppName = _.takeRight(location.appRoot.serialize().split('/'), 2)[0];
-                for (var id in WEB_APP_NAME) {
-                    if (currentAppName === WEB_APP_NAME[id]) {
+                for (var id in request.WEB_APP_NAME) {
+                    if (currentAppName === request.WEB_APP_NAME[id]) {
                         location.currentAppId = id;
                         break;
                     }
