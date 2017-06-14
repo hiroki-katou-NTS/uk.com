@@ -24,5 +24,5 @@
 **/*.d.ts
 **/nts.uk.com.js.web/src/main/webapp/lib/nittsu/ui/style/.sass-cache
 **/*.launch
-**/.sonar/
 **/.sonar
+**/sonar-project*.properties
