@@ -22,19 +22,20 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateAgentCommandHandler extends CommandHandler<UpdateAgentCommand> {
+public class UpdateAgentCommandHandler extends CommandHandler<AgentCommandBase> {
 	@Inject
 	private AgentRepository agentRepository;
 	@Inject
 	private AgentFinder finder;
 	
 	@Override
-	protected void handle(CommandHandlerContext<UpdateAgentCommand> context) {
-		UpdateAgentCommand updateAgentCommand = context.getCommand();
-		String employeeId = updateAgentCommand.getEmployeeId();
+	protected void handle(CommandHandlerContext<AgentCommandBase> context) {
+		
+		AgentCommandBase agentCommandBase = context.getCommand();
+		String employeeId = agentCommandBase.getEmployeeId();
 		String companyId = AppContexts.user().companyId();
 			
-		Optional<Agent> upAgent = agentRepository.getAgentByStartDate(companyId, employeeId, updateAgentCommand.getStartDate());
+		Optional<Agent> upAgent = agentRepository.getAgentByStartDate(companyId, employeeId, agentCommandBase.getStartDate());
 		if(!upAgent.isPresent()){
 			throw new BusinessException("ER026");
 		}
@@ -42,17 +43,18 @@ public class UpdateAgentCommandHandler extends CommandHandler<UpdateAgentCommand
 		Agent agentInfor = new Agent(
 				companyId, 
 				employeeId, 
-				updateAgentCommand.getStartDate(),
-				updateAgentCommand.getEndDate(), 
-				(updateAgentCommand.getAgentSid1()),
-				EnumAdaptor.valueOf(updateAgentCommand.getAgentAppType1(), AgentAppType.class),
-				(updateAgentCommand.getAgentSid2()),
-				EnumAdaptor.valueOf(updateAgentCommand.getAgentAppType2(), AgentAppType.class),
-				(updateAgentCommand.getAgentSid3()),
-				EnumAdaptor.valueOf(updateAgentCommand.getAgentAppType3(), AgentAppType.class),
-				(updateAgentCommand.getAgentSid4()),
-				EnumAdaptor.valueOf(updateAgentCommand.getAgentAppType4(), AgentAppType.class));
+				agentCommandBase.getStartDate(),
+				agentCommandBase.getEndDate(), 
+				(agentCommandBase.getAgentSid1()),
+				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType1(), AgentAppType.class),
+				(agentCommandBase.getAgentSid2()),
+				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType2(), AgentAppType.class),
+				(agentCommandBase.getAgentSid3()),
+				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType3(), AgentAppType.class),
+				(agentCommandBase.getAgentSid4()),
+				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType4(), AgentAppType.class));
 		
+		//Validate Date
 		List<AgentDto> agents = finder.findAll(employeeId);
 		
 		List<RangeDate> rangeDateList = agents.stream()
@@ -61,6 +63,6 @@ public class UpdateAgentCommandHandler extends CommandHandler<UpdateAgentCommand
 		
 		agentInfor.validateDate(rangeDateList);
 		
-		agentRepository.add(agentInfor);
+		agentRepository.update(agentInfor);
 	}
 }

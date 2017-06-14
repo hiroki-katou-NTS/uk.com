@@ -9,14 +9,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.workflow.app.command.agent.AddAgentCommand;
 import nts.uk.ctx.workflow.app.command.agent.AddAgentCommandHandler;
+import nts.uk.ctx.workflow.app.command.agent.AgentCommandBase;
 import nts.uk.ctx.workflow.app.command.agent.DeleteAgentCommand;
 import nts.uk.ctx.workflow.app.command.agent.DeleteAgentCommandHandler;
-import nts.uk.ctx.workflow.app.command.agent.UpdateAgentCommand;
 import nts.uk.ctx.workflow.app.command.agent.UpdateAgentCommandHandler;
-import nts.uk.ctx.workflow.app.find.agent.AgentFinder;
 import nts.uk.ctx.workflow.app.find.agent.AgentDto;
+import nts.uk.ctx.workflow.app.find.agent.AgentFinder;
 
 
 @Path("workflow/agent")
@@ -43,13 +42,13 @@ public class AgentWebService extends WebService{
 	
 	@Path("add")
 	@POST
-	public void add(AddAgentCommand command) {
+	public void add(AgentCommandBase command) {
 		this.addAgentCommandHandler.handle(command);
 	}
 	
 	@Path("update")
 	@POST
-	public void update(UpdateAgentCommand command){
+	public void update(AgentCommandBase command){
 		this.updateAgentCommandHandler.handle(command);
 	}
 	
