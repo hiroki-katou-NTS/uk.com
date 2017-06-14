@@ -20,9 +20,11 @@ module kdl010.a.viewmodel {
             self.selectCode(nts.uk.ui.windows.getShared('SelectWorkLocation'));
             /** Get list WorkLocation*/
             service.getAllWorkLocation().done(function(workLocationList: Array<viewmodel.WorkLocation>) {
+                 workLocationList = _.orderBy(workLocationList, ["workLocationCD"], ["asc"]);
                 self.workLocationList(workLocationList);
                 self.workLocationList().unshift(new WorkLocation( "", "選択なし"));
                 self.selectCode(nts.uk.ui.windows.getShared('SelectWorkLocation'));
+                console.log(nts.uk.ui.windows.getShared('SelectWorkLocation'));
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
