@@ -222,7 +222,7 @@ project (':com.web:nts.uk.com.web') {
 	}
 	
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.2'
+		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.3'
 		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1'
 		compile group: 'base', name: 'nts.uk.shr.ws', version: '0.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
