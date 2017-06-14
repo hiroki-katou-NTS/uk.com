@@ -150,7 +150,7 @@ module nts.uk.pr.view.kmf001.c {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -255,15 +255,15 @@ module nts.uk.pr.view.kmf001.c {
                 let self = this;
                 self.clearError();
                 if (self.enableAnnualVacation()) {
-                    if (self.requiredMaxNumberCompany()
-                        || (self.requiredMaxNumberCompany() == false && self.maxNumberCompany())) {
+                    if (self.enableMaxNumberCompany() && (self.requiredMaxNumberCompany()
+                        || (self.requiredMaxNumberCompany() == false && self.maxNumberCompany()))) {
                         $('#max-number-company').ntsEditor('validate');
                     }
                     $('#max-grant-day').ntsEditor('validate');
                     $('#max-remaining-day').ntsEditor('validate');
                     $('#number-year-retain').ntsEditor('validate');
-                    if (self.requiredTimeMaxNumberCompany()
-                        || (!self.requiredTimeMaxNumberCompany() && self.timeMaxNumberCompany())) {
+                    if (self.enableTimeMaxNumberCompany() && (self.requiredTimeMaxNumberCompany()
+                        || (!self.requiredTimeMaxNumberCompany() && self.timeMaxNumberCompany()))) {
                         $('#time-max-day-company').ntsEditor('validate');
                     }
                 }
