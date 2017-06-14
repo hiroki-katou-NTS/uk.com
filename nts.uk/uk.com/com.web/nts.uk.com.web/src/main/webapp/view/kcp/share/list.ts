@@ -172,7 +172,7 @@ module kcp.share.list {
                     self.itemList(dataList);
                 })
             }
-
+            
             // Init component.
             self.itemList(dataList);
             var webserviceLocator = nts.uk.request.location.siteRoot
@@ -348,6 +348,7 @@ interface JQuery {
 
     /**
      * Nts list component.
+     * This Function used after apply binding only.
      */
     ntsListComponent(option: kcp.share.list.ComponentOption): JQueryPromise<void>;
 }
