@@ -5,18 +5,17 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
+ * The Class TopPageSetting
  * 
  * @author sonnh1
  * 
- *         The Class TopPageSetting
+ * 
  */
 @Getter
 public class TopPageSetting extends AggregateRoot {
 
-	/** The company id. */
 	private String companyId;
 
-	/** The category setting. */
 	private CatelogySetting ctgSet;
 
 	public TopPageSetting(String companyId, CatelogySetting ctgSet) {
