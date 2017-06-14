@@ -127,15 +127,17 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	public boolean isExisted(String companyId, String employeeId, GeneralDate startDate) {
 		return this.queryProxy().query(QUERY_IS_EXISTED, long.class)
 				.setParameter("companyId", companyId)
-				.setParameter("employeeId",  employeeId)
+				.setParameter("employeeId", employeeId)
 				.setParameter("startDate", startDate)
 				.getSingle().get() > 0;
 	}
 	
 	@Override
-	public List<Agent> findAll(String companyId) {
+	public List<Agent> findAll(String companyId, GeneralDate startDate, GeneralDate endDate) {
 		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
+				.setParameter("companyId", startDate)
+				.setParameter("companyId", endDate)
 				.getList(c -> convertToDomain(c));
 	}
 }
