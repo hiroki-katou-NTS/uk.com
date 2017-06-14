@@ -11,7 +11,8 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="sidebar-head">
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../../../../../nts.uk.com.web/view/kcp/share/list.js" />
+			<!-- <com:scriptfile path="../../../../../nts.uk.com.web/view/kcp/share/list.js" /> -->
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="kmf001.d.service.js" />
 			<com:scriptfile path="kmf001.d.vm.js" />
@@ -130,23 +131,10 @@
 				</div>
 				<div class="ruledLine"></div>
 				<div id="by-employment-content">
-					<!-- <table style="margin: 30px">
+					<table style="margin: 30px">
 						<tr>
-							<td id="left-content"
-								class="bg-green caret-right caret-background">
-								<i class="icon icon-searchbox"></i>
-								
-						 		<table id="single-list" data-bind="ntsGridList: {
-									height: 450,
-									width: '98%',
-									options: employmentList,
-									optionsValue: 'code',
-									columns: columnsSetting,
-									multiple: false,
-									value: selectedCode
-								}"
-								class="cf" tabindex="1"></table> 
-									
+							<td>
+								<div id="left-content"></div>
 							</td>
 
 							<td id="right-content">
@@ -209,7 +197,7 @@
 								</table>
 							</td>
 						</tr>
-					</table> -->
+					</table>
 				</div>
 			</div>
 			
