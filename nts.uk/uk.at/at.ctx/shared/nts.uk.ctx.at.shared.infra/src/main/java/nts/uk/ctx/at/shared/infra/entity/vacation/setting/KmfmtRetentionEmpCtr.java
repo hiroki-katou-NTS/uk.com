@@ -29,13 +29,13 @@ public class KmfmtRetentionEmpCtr extends UkJpaEntity {
 	protected KmfmtRetentionEmpCtrPK kmfmtRetentionEmpCtrPK;
 
 	/** The year amount. */
-	@Column(name = "YEAR_AMOUNT")
+	@Column(name = "NUMBER_OF_YEAR")
 	private short yearAmount;
 
 	/** The max days retention. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "MAX_DAYS_RETENTION")
+	@Column(name = "MAX_NUMBER_OF_DAYS")
 	private short maxDaysRetention;
 
 	/** The management ctr atr. */
