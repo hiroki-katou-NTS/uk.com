@@ -35,7 +35,7 @@ module kcp003.a.viewmodel {
                      * Return type is String while select.
                      */
                     selectedCode: this.selectedCode,
-                    isDialog: true,
+                    isDialog: false,
                     baseDate: this.baseDate,
                     alreadySettingList: ko.observableArray([{code: '1', isAlreadySetting: true}])
                 }
@@ -47,7 +47,7 @@ module kcp003.a.viewmodel {
                 isMultiSelect: true,
                 listType: ListType.JOB_TITLE,
                 selectedCode: this.multiSelectedCode,
-                isDialog: true,
+                isDialog: false,
                 baseDate: this.baseDate,
                 alreadySettingList: ko.observableArray([{code: '1', isAlreadySetting: true}, {code: '2', isAlreadySetting: true}])
             }
@@ -58,7 +58,7 @@ module kcp003.a.viewmodel {
                 isMultiSelect: false,
                 listType: ListType.JOB_TITLE,
                 selectedCode: this.selectedCodeNoSetting,
-                isDialog: true,
+                isDialog: false,
                 baseDate: this.baseDate,
 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
@@ -70,7 +70,7 @@ module kcp003.a.viewmodel {
                 isMultiSelect: true,
                 listType: ListType.JOB_TITLE,
                 selectedCode: this.multiSelectedCodeNoSetting,
-                isDialog: true,
+                isDialog: false,
                 baseDate: this.baseDate,
 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
@@ -78,8 +78,21 @@ module kcp003.a.viewmodel {
             
         }
         
-        setAlreadyCheck() {
-            this.listComponentOption.alreadySettingList.push({"code": "2", "isAlreadySetting": true});
+        private setAlreadyCheck() {
+            var self = this;
+            self.listComponentOption.alreadySettingList.push({"code": "2", "isAlreadySetting": true});
+        }
+        
+        private settingRegistedItem() {
+            var self = this;
+            self.listComponentOption.alreadySettingList.push({"code": this.selectedCode().toString(), "isAlreadySetting": true});
+        }
+        
+        private settingDeletedItem() {
+            let self = this;
+            self.listComponentOption.alreadySettingList.remove(function(item) {
+                return item.code == self.selectedCode();
+            });
         }
         
         
