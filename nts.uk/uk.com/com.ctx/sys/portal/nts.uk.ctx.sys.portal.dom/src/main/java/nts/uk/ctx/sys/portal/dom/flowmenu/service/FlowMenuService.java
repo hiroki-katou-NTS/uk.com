@@ -22,6 +22,13 @@ public interface FlowMenuService {
 	 */
 	void createFlowMenu(FlowMenu flowMenu);
 
+	/**
+	 * Update FlowMenu
+	 * 
+	 * @param
+	 */
+	void updateFlowMenu(FlowMenu flowMenu);
+
 	
 	/**
 	 * Delete FlowMenu

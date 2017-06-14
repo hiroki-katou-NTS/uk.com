@@ -24,16 +24,10 @@ var nts;
                 allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
                 allHiragana: /^[ぁ-ん　ー ]*$/,
             };
-            /**
-             * 文字列の半角文字数を数える（Unicode用）
-             * @param text 解析対象の文字列
-             */
             function countHalf(text) {
                 var count = 0;
                 for (var i = 0; i < text.length; i++) {
                     var c = text.charCodeAt(i);
-                    // 0x20 ～ 0x80: 半角記号と半角英数字
-                    // 0xff61 ～ 0xff9f: 半角カタカナ
                     if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
                         count += 1;
                     }
@@ -87,11 +81,6 @@ var nts;
                 return text;
             }
             text_1.hiraganaToKatakana = hiraganaToKatakana;
-            /**
-             * 半角カタカナを全角カタカナに変換
-             *
-             * @param {String} str 変換したい文字列
-             */
             function oneByteKatakanaToTwoByte(text) {
                 var katakanaMap = {
                     'ｶﾞ': 'ガ', 'ｷﾞ': 'ギ', 'ｸﾞ': 'グ', 'ｹﾞ': 'ゲ', 'ｺﾞ': 'ゴ',
@@ -120,85 +109,73 @@ var nts;
                 }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
             }
             text_1.oneByteKatakanaToTwoByte = oneByteKatakanaToTwoByte;
-            /**
-             * 文字列が半角数字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
-             */
             function allHalfNumeric(text) {
-                return regexp.allHalfNumeric.test(text);
+                return {
+                    probe: regexp.allHalfNumeric.test(text),
+                    messageId: 'FND_E_NUMERIC'
+                };
             }
             text_1.allHalfNumeric = allHalfNumeric;
-            /**
-             * 文字列が半角英字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
-             */
             function allHalfAlphabet(text) {
-                return regexp.allHalfAlphabet.test(text);
+                return {
+                    probe: regexp.allHalfAlphabet.test(text),
+                    messageId: 'NO_MESSAGE'
+                };
             }
             text_1.allHalfAlphabet = allHalfAlphabet;
-            /**
-             * 文字列が半角英数字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
-             */
             function allHalfAlphanumeric(text) {
-                return regexp.allHalfAlphanumeric.test(text);
+                return {
+                    probe: regexp.allHalfAlphanumeric.test(text),
+                    messageId: 'FND_E_ALPHANUMERIC'
+                };
             }
             text_1.allHalfAlphanumeric = allHalfAlphanumeric;
-            /**
-             * 文字列が半角カナのみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
-             */
             function allHalfKatakana(text) {
-                return regexp.allHalfKatakanaReg.test(text);
+                return {
+                    probe: regexp.allHalfKatakanaReg.test(text),
+                    messageId: 'NO_MESSAGE'
+                };
             }
             text_1.allHalfKatakana = allHalfKatakana;
-            /**
-             * 文字列が全角カナのみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
-             */
             function allFullKatakana(text) {
-                return regexp.allFullKatakanaReg.test(text);
+                return {
+                    probe: regexp.allFullKatakanaReg.test(text),
+                    messageId: 'FND_E_KANA'
+                };
             }
             text_1.allFullKatakana = allFullKatakana;
-            /**
-             * 文字列が半角文字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
-             */
             function allHalf(text) {
-                return text.length === countHalf(text);
+                return {
+                    probe: text.length === countHalf(text),
+                    messageId: 'FND_E_ANYHALFWIDTH'
+                };
             }
             text_1.allHalf = allHalf;
-            /**
-             * 文字列が平仮名のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
-             */
             function allHiragana(text) {
-                return regexp.allHiragana.test(text);
+                return {
+                    probe: regexp.allHiragana.test(text),
+                    messageId: 'NO_MESSAGE'
+                };
             }
             text_1.allHiragana = allHiragana;
-            /**
-             * 文字列がカタカナのみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
-             */
             function allKatakana(text) {
-                return regexp.allFullKatakanaReg.test(text);
+                return {
+                    probe: regexp.allFullKatakanaReg.test(text),
+                    messageId: 'NO_MESSAGE'
+                };
             }
             text_1.allKatakana = allKatakana;
-            /**
-             * Determines if text is half integer
-             * @param text text to check
-             */
             function halfInt(text) {
                 var val = parseFloat(text);
+                var probe = false;
                 if (val !== NaN && (val * 2) % 1 === 0)
-                    return true;
-                return false;
+                    probe = true;
+                return {
+                    probe: probe,
+                    messageId: 'FND_E_HALFINT'
+                };
             }
             text_1.halfInt = halfInt;
-            /**
-             * 文字列中のHTML記号をサニタイズする
-             * @param text 変換対象の文字列
-             */
             function htmlEncode(text) {
                 var element = document.createElement('pre');
                 if (typeof element.textContent !== 'undefined') {
@@ -210,37 +187,21 @@ var nts;
                 return element.innerHTML;
             }
             text_1.htmlEncode = htmlEncode;
-            /**
-             * 1文字目のみ小文字に変換する
-             * @param text 変換対象の文字列
-             */
             function toLowerCaseFirst(text) {
                 return text.charAt(0).toLowerCase() + text.slice(1);
             }
             text_1.toLowerCaseFirst = toLowerCaseFirst;
             ;
-            /**
-             * 1文字目のみ大文字に変換する
-             * @param text 変換対象の文字列
-             */
             function toUpperCaseFirst(text) {
                 return text.charAt(0).toUpperCase() + text.slice(1);
             }
             text_1.toUpperCaseFirst = toUpperCaseFirst;
-            /**
-             * Convert lower case text to upper case one
-             * @param text text to convert
-             */
             function toUpperCase(text) {
                 return text.replace(/[a-z]/g, function (c) {
                     return String.fromCharCode(c.charCodeAt(0) - 0x20);
                 });
             }
             text_1.toUpperCase = toUpperCase;
-            /**
-            * 指定された文字列が、null、undefined、Emptyか判定する
-            * @param text 判定対象の文字列
-            */
             function isNullOrEmpty(text) {
                 var result = true;
                 if (text !== null && text !== undefined) {
@@ -250,11 +211,6 @@ var nts;
                 return result;
             }
             text_1.isNullOrEmpty = isNullOrEmpty;
-            /**
-            * 指定した文字列の各書式項目を、対応するオブジェクトの値と等価のテキストに置換する
-            * @param text 書式文字列
-            * @param args 置換の文字列（配列可）
-            */
             function format(format) {
                 var args = [];
                 for (var _i = 1; _i < arguments.length; _i++) {
@@ -271,33 +227,14 @@ var nts;
                 return format.replace(/\{(\w+)\}/g, replaceFunction);
             }
             text_1.format = format;
-            /**
-            * 変換文字列の先頭に、文字数分の指定文字列を追加する
-            * @param text 変換対象の文字列
-            * @param paddingChar 指定文字列
-            * @param length 文字数
-            */
             function padLeft(text, paddingChar, length) {
                 return charPadding(text, paddingChar, true, length);
             }
             text_1.padLeft = padLeft;
-            /**
-            * 変換文字列の末尾に、文字数分の指定文字列を追加する
-            * @param text 変換対象の文字列
-            * @param paddingChar 指定文字列
-            * @param length 文字数
-            */
             function padRight(text, paddingChar, length) {
                 return charPadding(text, paddingChar, false, length);
             }
             text_1.padRight = padRight;
-            /**
-            * 指定した文字列に、指定した文字列数分、指定文字列を追加する
-            * @param text 変換対象の文字列
-            * @param paddingChar 埋める文字列
-            * @param isPadLeft 左埋めフラグ（false：右埋め）
-            * @param length 文字数
-            */
             function charPadding(text, paddingChar, isPadLeft, length) {
                 var result;
                 if (countHalf(paddingChar) !== 1) {
@@ -340,9 +277,6 @@ var nts;
                     return findLastContinousIndex(originalString, charSet, startIndex + charSet.length);
                 }
             }
-            /**
-             * Type of characters
-             */
             var CharType = (function () {
                 function CharType(viewName, width, validator) {
                     this.viewName = viewName;
@@ -351,12 +285,15 @@ var nts;
                 }
                 CharType.prototype.validate = function (text) {
                     var result = new uk.ui.validation.ValidationResult();
-                    if (this.validator(text)) {
-                        return true;
+                    var validateResult = this.validator(text);
+                    if (validateResult.probe) {
+                        result.isValid = true;
+                        result.errorMessage = validateResult.messageId;
                     }
                     else {
-                        return false;
+                        result.fail(validateResult.messageId);
                     }
+                    return result;
                 };
                 CharType.prototype.buildConstraintText = function (maxLength) {
                     return this.viewName + this.getViewLength(maxLength) + '文字';
@@ -389,17 +326,13 @@ var nts;
                 return charType;
             }
             text_1.getCharType = getCharType;
-            /**
-             * Format for EmployeeCode
-             * @return {String}  EmployeeCode
-             */
-            function formatEmployeeCode(code, filldirection, fillcharacter, length) {
+            function formatCode(code, filldirection, fillcharacter, length) {
                 if (filldirection === "left")
                     return padLeft(code, fillcharacter, length);
                 else
                     return padRight(code, fillcharacter, length);
             }
-            text_1.formatEmployeeCode = formatEmployeeCode;
+            text_1.formatCode = formatCode;
             function splitOrPadRight(originalString, length, char) {
                 if (originalString === undefined || length > originalString.length) {
                     originalString = text.padRight(originalString ? originalString : "", char ? char : " ", length);
@@ -468,12 +401,15 @@ var nts;
                 }
                 StringFormatter.prototype.format = function (source) {
                     var constraintName = this.args.constraintName;
-                    if (constraintName === "EmployeeCode") {
-                        var constraint = this.args.constraint;
-                        var filldirection = this.args.editorOption.filldirection;
-                        var fillcharacter = this.args.editorOption.fillcharacter;
-                        var length = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
-                        return formatEmployeeCode(source, filldirection, fillcharacter, length);
+                    var autofill = this.args.editorOption.autofill;
+                    if (!uk.util.isNullOrEmpty(source)) {
+                        if (autofill === true || constraintName === "EmployeeCode") {
+                            var constraint = this.args.constraint;
+                            var filldirection = this.args.editorOption.filldirection;
+                            var fillcharacter = this.args.editorOption.fillcharacter;
+                            var length = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
+                            return formatCode(source, filldirection, fillcharacter, length);
+                        }
                     }
                     return source;
                 };

@@ -21,4 +21,14 @@ public class ClosureDate extends DomainObject{
 	/** The last day of month. */
 	private Boolean lastDayOfMonth;
 
+	/**
+	 * Instantiates a new closure date.
+	 *
+	 * @param day the day
+	 * @param lastDayOfMonth the last day of month
+	 */
+	public ClosureDate(Integer day, Boolean lastDayOfMonth) {
+		this.day = day;
+		this.lastDayOfMonth = lastDayOfMonth;
+	}
 }

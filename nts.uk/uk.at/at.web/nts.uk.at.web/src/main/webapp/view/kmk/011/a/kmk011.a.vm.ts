@@ -1,8 +1,6 @@
 module kmk011.a.viewmodel {
     export class ScreenModel {
-        //time
         alarmTime: KnockoutObservable<number>;
-        //A_label_x
         columns: KnockoutObservableArray<any>;
         dataSource: KnockoutObservableArray<model.DivergenceTime>;
         currentCode: KnockoutObservable<any>;
@@ -152,7 +150,6 @@ module kmk011.a.viewmodel {
             nts.uk.ui.block.invisible();
             var dfd = $.Deferred();
             service.getAllDivTime().done(function(lstDivTime: Array<model.DivergenceTime>) {
-                //dudt test
                 nts.uk.ui.block.clear();
                 if (lstDivTime === undefined || lstDivTime.length == 0) {
                     self.dataSource();
@@ -223,7 +220,6 @@ module kmk011.a.viewmodel {
         }
         Registration() {
             var self = this;
-            //dudt test
             nts.uk.ui.block.invisible();
             $('.nts-input').trigger("validate");
             _.defer(() => {
@@ -250,7 +246,6 @@ module kmk011.a.viewmodel {
                         self.list([]);
                         self.check = false;
                         $("#itemname").focus();
-                        //dudt
                         nts.uk.ui.block.clear();
                         
                     }).fail(function(error) {

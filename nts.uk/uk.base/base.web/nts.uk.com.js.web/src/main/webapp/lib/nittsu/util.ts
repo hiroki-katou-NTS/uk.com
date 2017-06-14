@@ -10,7 +10,10 @@
          * 常にtrueを返す関数が必要になったらこれ
          */
         export function alwaysTrue() {
-            return true;
+            return { 
+                        probe: true,
+                        messageId: "NO_MESSAGE"
+                    };
         }
         /**
          * function find an item index in array
@@ -324,21 +327,21 @@
                 }
 
                 ifPresent(consumer: (value: V) => {}) {
-                    if (this.isPresent) {
+                    if (this.isPresent()) {
                         consumer(this.value);
                     }
                     return this;
                 }
 
                 ifEmpty(action: () => {}) {
-                    if (!this.isPresent) {
+                    if (!this.isPresent()) {
                         action();
                     }
                     return this;
                 }
 
                 map<M>(mapper: (value: V) => M): Optional<M> {
-                    return this.isPresent ? of(mapper(this.value)) : empty();
+                    return this.isPresent() ? of(mapper(this.value)) : empty();
                 }
 
                 isPresent(): boolean {
@@ -346,18 +349,18 @@
                 }
 
                 get(): V {
-                    if (!this.isPresent) {
+                    if (!this.isPresent()) {
                         throw new Error('not present');
                     }
                     return this.value;
                 }
 
                 orElse(stead: V): V {
-                    return this.isPresent ? this.value : stead;
+                    return this.isPresent() ? this.value : stead;
                 }
 
                 orElseThrow(errorBuilder: () => Error) {
-                    if (!this.isPresent) {
+                    if (!this.isPresent()) {
                         throw errorBuilder();
                     }
                 }
@@ -639,7 +642,72 @@
             return message;
         }
         
+        export function getControlName(name: string): string {
+            var hashIdx = name.indexOf("#");
+            if (hashIdx !== 0) return name;
+            var names = name.substring(hashIdx + 2, name.length -　1).split(",");
+            if (names.length > 1) {
+                let params: Array<string> = new Array<string>(); 
+                _.forEach(names, function(n: string, idx: number) {
+                    if (idx === 0) return true;
+                    params.push(getText(n.trim()));
+                });
+                return getText(names[0], params);
+            }
+            return getText(names[0]);
+        }
+        
     }
+     
     export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
+    export var localStorage = new WebStorageWrapper(window.localStorage);
 
+    export module characteristics {
+        
+        /**
+         * Now, "characteristic data" is saved in Local Storage.
+         * In the future, the data may be saved in DB using Ajax.
+         * So these APIs have jQuery Deferred Interface to support asynchronous. 
+         */
+        
+        let delayToEmulateAjax = 100;
+        
+        export function save(key: string, value: any) {
+            let dfd = $.Deferred();
+            
+            setTimeout(() => {
+                localStorage.setItemAsJson(createKey(key), value);
+                dfd.resolve();
+            }, delayToEmulateAjax);
+            
+            return dfd.promise();
+        }
+        
+        export function restore(key: string): JQueryPromise<any> {
+            let dfd = $.Deferred();
+            
+            setTimeout(() => {
+                let value = localStorage.getItem(createKey(key))
+                    .map(v => JSON.parse(v)).orElse(undefined);
+                dfd.resolve(value);
+            }, delayToEmulateAjax);
+            
+            return dfd.promise();
+        }
+        
+        export function remove(key: string) {
+            let dfd = $.Deferred();
+            
+            setTimeout(() => {
+                localStorage.removeItem(createKey(key));
+                dfd.resolve();
+            }, delayToEmulateAjax);
+            
+            return dfd.promise();
+        }
+        
+        function createKey(key: string): string {
+            return 'nts.uk.characteristics.' + key;
+        }
+    }
 }

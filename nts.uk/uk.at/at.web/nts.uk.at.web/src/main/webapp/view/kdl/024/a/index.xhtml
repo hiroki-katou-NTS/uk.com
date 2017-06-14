@@ -32,7 +32,8 @@
 				<div class="left-content">
 					<div id="lstBudget" class="bg-green caret-right caret-background" >
 						<table id="single-list"
-							data-bind="ntsGridList: {								
+							data-bind="ntsGridList: {
+								name:'#[KDL024_12]',								
 								height: 255,
 								dataSource: listBudget,
 								primaryKey: 'externalBudgetCode',
@@ -54,6 +55,7 @@
 							</td>
 							<td>
 								<input id="inpCode" class="nts-checkvalue" data-bind="ntsTextEditor: {
+									name: '#[KDL024_5]',
 									value: externalBudgetCode,
 									constraint: 'ExternalBudgetCd',
 									required: true,
@@ -62,6 +64,7 @@
 									data-name="BudgetCode"
 									tabindex="5"/>
 								<input id="inpName" class="nts-checkvalue" data-bind="ntsTextEditor: {
+									name:'#[KDL024_6]',
 									value: externalBudgetName,
 									required: true,
 									constraint: 'ExternalBudgetName'}"
@@ -71,7 +74,7 @@
 						</tr>
 						<tr>
 							<td>
-								<div id="divAttribute" data-bind="ntsFormLabel:{required: true }">#{i18n.getText('KDL024_8')}</div>
+								<div id="divAttribute" data-bind="name: '#[KDL024_8]',ntsFormLabel:{required: true }">#{i18n.getText('KDL024_8')}</div>
 							</td>
 							<td>
 								<div id="cmbAttribute"
@@ -90,7 +93,7 @@
 						</tr>
 						<tr>
 							<td>
-								<div id="divAttribute" data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KDL024_9')}</div>
+								<div id="divAttribute" data-bind="name: '#[KDL024_9]',ntsFormLabel:{required: true}">#{i18n.getText('KDL024_9')}</div>
 							</td>
 							<td>
 								<div class="cf"

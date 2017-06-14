@@ -3,7 +3,6 @@ package nts.uk.shr.infra.web.component.validation;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 import javax.faces.component.FacesComponent;
@@ -12,7 +11,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import lombok.val;
-import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.PrimitiveValueConstraintPackage;
 import nts.uk.shr.infra.web.component.internal.TagContentsUtil;
 
@@ -84,13 +82,6 @@ public class ValidatorScript extends UIComponentBase {
 	        	String parametersString = Helper.getAnnotationParametersString(representationOfAnnotation);
 				writeConstraint(rw, constraintName, parametersString);
 	        });
-		writeConstraint(rw, pvClass);
-	}
-	
-	private static void writeConstraint(ResponseWriter rw, Class<?> pvClass) {
-		if (HalfIntegerPrimitiveValue.class.isAssignableFrom(pvClass)) {
-			writeConstraintParameter(rw, "charType", "'HalfInt'");
-		}
 	}
 	
 	private static void writeConstraint(ResponseWriter rw, String constraintName, String parametersString) {
@@ -115,7 +106,13 @@ public class ValidatorScript extends UIComponentBase {
 			rw.write("\n\t\t");
 			rw.write(jsName);
 			rw.write(": ");
-			rw.write(jsValue);
+			if (jsValue.contains(":")) {
+				rw.write("'");
+				rw.write(jsValue);
+				rw.write("'");
+			} else {
+				rw.write(jsValue);
+			}
 			rw.write(",");
 		} catch (IOException e) {
 			throw new RuntimeException(e);

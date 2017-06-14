@@ -42,6 +42,7 @@
 				<div id="left-content" style="float: left"
 					class="bg-green caret-right caret-background">
 					<div style="float: left; margin: 20px">
+						<!-- B2_2: List Divergence Reason -->
 						<table tabindex="5" id="single-list"
 							data-bind="ntsGridList:{
 								width: 330,
@@ -71,14 +72,15 @@
 							<input tabindex="6" class="nts-input" id="inpCode"
 								style="width: 20px"
 								data-bind="ntsTextEditor: {
+										  name: '#[KMK011_22]',
                                           value: divReasonCode,
                                           constraint: 'DiverdenceReasonCode', 
                                           enable: enableCode, 
-                                          required: true}"
-								data-name="Code" /> 
+                                          required: true}"/> 
 								<!-- B3_3: Divergence Reason Content --> 
 								<input tabindex="7" class="nts-input" id="inpReason"
 								data-bind="ntsTextEditor: {
+										  name: '#[KMK011_23]',
                                           value: divReasonContent,
                                           constraint: 'DivergenceReasonContent',
                                           required: true}" />
@@ -86,12 +88,12 @@
 						</tr>
 						<tr class="row">
 							<td>
-								<!-- B3_4 -->
+								<!-- B3_4: Label -->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK011_38')}</div>
 							</td>
 							<td>
-								<!-- B3_5 -->
-								<div tabindex="8" class="cf"
+								<!-- B3_5: SwitchButton Required-->
+								<div tabindex="8"
 									data-bind="ntsSwitchButton: {
 									options: switchUSe3,
 									optionsValue: 'code',
@@ -104,7 +106,7 @@
 						<tr>
 							<td></td>
 							<td>
-								<!-- B3_6 --> 
+								<!-- B3_6: Text --> 
 								<label id="A_LBL_003">※#{i18n.getText('KMK011_27')}</label>
 							</td>
 						</tr>

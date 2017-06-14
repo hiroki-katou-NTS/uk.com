@@ -18,14 +18,14 @@ module kdl002.a.viewmodel {
                 { headerText: nts.uk.resource.getText("KDL002_4"), prop: 'name', width: 200 ,formatter: _.escape},
                 { headerText: nts.uk.resource.getText("KDL002_5"), prop: 'memo', width: 230 ,formatter: _.escape}
             ]);
-            self.currentCodeList = ko.observableArray([]);
+            self.currentCodeList = ko.observableArray([]);;
             self.posibleItems = [];
             self.start();
         }
         //load data
         start() {
             var self = this;
-//            self.posibleItems = ['001','002','003','005','008'];
+            
             self.isMulti = nts.uk.ui.windows.getShared('ModeMultiple');
             //all possible items
             self.posibleItems = nts.uk.ui.windows.getShared('AllItemObj');
@@ -43,6 +43,7 @@ module kdl002.a.viewmodel {
             }
             if (self.posibleItems.length > 0) {
                 service.getItemSelected(self.posibleItems).done(function(lstItem: Array<model.ItemModel>) {
+                    $("input").focus();
                     let lstItemMapping =  _.map(lstItem , item => {
                         return new model.ItemModel(item.workTypeCode, item.name, item.memo);
                     });

@@ -45,7 +45,7 @@
 							class="icon icon-searchbox"></i>
 							<div id="searchlaborInsuranceOffice">
 								<div id="box_search"
-									data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
+									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list', 
 									items: listTopPage, selected: toppageSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 								<table id="single-list"
 									data-bind="ntsGridList: {
@@ -87,16 +87,18 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input tabindex="2" id="inp_code"
-										class="nts-input tr40 save-error" data-name="コード"
+										class="nts-input tr40 save-error"
 										data-bind="ntsTextEditor: {
+											name: '#[CCG015_42]',
 											value: topPageCode,
 											enable: $parent.isNewMode(),
 											required:true,
 											constraint: 'TopPageCode'}" />
 									</td>
-									<td class = "pad_left_20"><input tabindex="3" id="inp_name" data-name="名称"
+									<td class = "pad_left_20"><input tabindex="3" id="inp_name"
 										class="nts-input tr240 save-error"
 										data-bind="ntsTextEditor: {
+											name: '#[CCG015_43]',
 											value: topPageName,
 											enable: true,
 											required:false,

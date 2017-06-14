@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "CCGMT_MY_PAGE_SET")
 public class CcgmtStandardMenu extends UkJpaEntity {
 	@EmbeddedId
-	private CcgmtStandardMenuPK ccgmtStandardMenuPK;
+	public CcgmtStandardMenuPK ccgmtStandardMenuPK;
 	
 	/** The Url. */
 	public String url;

@@ -17,6 +17,7 @@
 					nts.uk.shr.com.primitive.sample.PersonalWageCode
 					nts.uk.shr.com.primitive.sample.CommonAmount
 					nts.arc.time.YearMonth
+					nts.uk.shr.com.primitive.sample.SampleHalfInt
    				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="../catalog/catalog.js" />
@@ -30,13 +31,15 @@
 					<div id="content" class="cf">
 						<h1>NumberEditor</h1>
 						<div data-bind="with: numbereditor">
-							<input id="number-1" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<input id="number-1" data-bind="ntsNumberEditor: { name: 'Number', value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
+						<h3>Half integer</h3>
+						<input id="half-int" data-bind="ntsNumberEditor: { name: 'HalfInt', value: valueHalfInt, constraint: 'SampleHalfInt', option: { decimallength: 1 } }"/>
 						<br/>
 						<div data-bind="with: numbereditor2">
-							<input id="number-2" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<input id="number-2" data-bind="ntsNumberEditor: { name:'Deci', value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 							<span data-bind="ntsCheckBox: {checked: required}">Required</span>

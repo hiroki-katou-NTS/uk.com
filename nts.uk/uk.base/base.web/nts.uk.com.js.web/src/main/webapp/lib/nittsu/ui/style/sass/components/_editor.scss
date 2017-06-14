@@ -6,9 +6,12 @@ $editor-border-color: #999999;
 		border: 1px solid $editor-border-color;
 		padding: 5px 10px;
 		font-family: $font_family_monospace;
-		border-radius: 5px;
+		border-radius: 3px;
 		overflow: visible;
-		&:focus{outline: none;}
+		&:focus{
+			outline: none;
+			box-shadow: 0 0 1px 1px $focused_color;
+		}
 	}
 	
 	/* Extra Symbol */
