@@ -176,7 +176,7 @@ module kcp.share.list {
             // Init component.
             self.itemList(dataList);
             var webserviceLocator = nts.uk.request.location.siteRoot
-                .mergeRelativePath('nts.uk.com.web/')
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
             $input.load(webserviceLocator, function() {
                 ko.cleanNode($input[0]);

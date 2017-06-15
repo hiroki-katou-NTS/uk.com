@@ -35,22 +35,22 @@ public class KwpmtWorkplacePK implements Serializable {
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 5)
-    @Column(name = "WKPID")
-    private String wkpid;
+    @Column(name = "WPL_ID")
+    private String wplid;
 
     public KwpmtWorkplacePK() {
     }
 
-    public KwpmtWorkplacePK(String cid, String wkpid) {
+    public KwpmtWorkplacePK(String cid, String wplid) {
         this.cid = cid;
-        this.wkpid = wkpid;
+        this.wplid = wplid;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
-        hash += (wkpid != null ? wkpid.hashCode() : 0);
+        hash += (wplid != null ? wplid.hashCode() : 0);
         return hash;
     }
 
@@ -64,7 +64,7 @@ public class KwpmtWorkplacePK implements Serializable {
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }
-        if ((this.wkpid == null && other.wkpid != null) || (this.wkpid != null && !this.wkpid.equals(other.wkpid))) {
+        if ((this.wplid == null && other.wplid != null) || (this.wplid != null && !this.wplid.equals(other.wplid))) {
             return false;
         }
         return true;
@@ -72,7 +72,7 @@ public class KwpmtWorkplacePK implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.KwpmtWorkplacePK[ cid=" + cid + ", wkpid=" + wkpid + " ]";
+        return "entity.KwpmtWorkplacePK[ cid=" + cid + ", wkpid=" + wplid + " ]";
     }
     
 }

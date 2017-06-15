@@ -11,7 +11,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPageSelfSettingCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPageSelfSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.SelectMyPageDto;
-import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSelfSetSelectedFinder;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSelfSettingDto;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSelfSettingFinder;
 
@@ -25,8 +24,6 @@ public class TopPageSelfWebService extends WebService {
 	private TopPageSelfSettingFinder topPageSelfSettingFinder;
 	@Inject
 	private TopPageSelfSettingCommandHandler saveCommandHandler;
-	@Inject 
-	private TopPageSelfSetSelectedFinder getTopPageSelfSet;
 	/**
 	 * Lay du lieu tu domain トップページ va 標準メニュー
 	 * @return
@@ -52,6 +49,6 @@ public class TopPageSelfWebService extends WebService {
 	@POST
 	@Path("/finditemselected")
 	public TopPageSelfSettingDto getTopPageSelfSet(){
-		return getTopPageSelfSet.getTopPageSelfSet();
+		return topPageSelfSettingFinder.getTopPageSelfSet();
 	}
 }
