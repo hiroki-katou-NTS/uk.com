@@ -39,7 +39,7 @@
                 <div class="contents-area">
                 	<com:ko tag="with" bind="companyWTSetting">
                     <div class="control-group">
-                        <div data-name="abc" id ="abc" data-bind="ntsDatePicker: {value: year, dateFormat: 'yearmonth'}"></div>
+                        <div data-name="abc" id ="abc" data-bind="ntsDatePicker: {value: ym, dateFormat: 'yearmonth'}"></div>
                     </div>
                     <div id="tab-panel" data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">
                     	<!-- NORMAL WORK TIME SETTING START -->
@@ -53,7 +53,7 @@
 												optionsText: 'name',
 												enable: true}"></div>
                             </div>
-                     <com:ko tag="with" bind="normalWTSetting">
+                     <com:ko tag="with" bind="normalSetting">
                             <com:ko tag="with" bind="statutorySetting">
                             <div class="control-group">
                                 <div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
@@ -85,10 +85,10 @@
                                     <com:ko tag="foreach" bind="monthly">
                                         <tr>
                                             <td class="bg-green">
-                                                <div data-bind="text: month"></div>
+                                                <div data-bind="text: month+'月度'"></div>
                                             </td>
                                             <td>
-                                                <input data-bind="ntsTimeEditor: {value: value, inputFormat: 'time', mode: 'time', required: true}" />
+                                                <input data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', mode: 'time', required: true}" />
                                             </td>
                                         </tr>
                                     </com:ko>
@@ -101,8 +101,7 @@
                         
                         <!-- FLEX WORK TIME SETTING START -->
                         <div class="tab-content-2">
-                        <com:ko tag="with" bind="flexWTSetting">
-                            <com:ko tag="with" bind="statutorySetting">
+                        <com:ko tag="with" bind="flexSetting">
                             <div class="control-group">
                                 <div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
                                 <table style="margin-left: 105px; display: inline" class="border-all bg-green">
@@ -111,13 +110,13 @@
                                         <td>#{i18n.getText('KMK004_16')}</td>
                                         <td>#{i18n.getText('KMK004_8')}</td>
                                     </tr>
-                                    <tr class="bg-green">
+                                    <tr data-bind="with: flexDaily" class="bg-green">
                                         <td>#{i18n.getText('KMK004_9')}</td>
                                         <td class="bg-green">
-                                        	<input data-bind="ntsTimeEditor: {value: daily, inputFormat: 'time', mode: 'time', required: true}" />
+                                        	<input data-bind="ntsTimeEditor: {value: specifiedTime, inputFormat: 'time', mode: 'time', required: true}" />
                                         </td>
                                         <td class="bg-green">
-                                        	
+                                        	<input data-bind="ntsTimeEditor: {value: statutoryTime, inputFormat: 'time', mode: 'time', required: true}" />
                                         </td>
                                     </tr>
                                 </table>
@@ -129,20 +128,23 @@
                                         <td>#{i18n.getText('KMK004_17')}</td>
                                         <td>#{i18n.getText('KMK004_8')}</td>
                                     </tr>
-                                    <com:ko tag="foreach" bind="monthly">
+                                    <com:ko tag="foreach" bind="flexMonthly">
                                         <tr>
                                             <td class="bg-green">
                                                 <div data-bind="text: month"></div>
                                             </td>
                                             <td>
-                                                <input data-bind="ntsTimeEditor: {value: value, inputFormat: 'time', mode: 'time', required: true}" />
+                                                <input data-bind="ntsTimeEditor: {value: specifiedTime, inputFormat: 'time', mode: 'time', required: true}" />
+                                            </td>
+                                            <td>
+                                                <input data-bind="ntsTimeEditor: {value: statutoryTime, inputFormat: 'time', mode: 'time', required: true}" />
                                             </td>
                                         </tr>
                                     </com:ko>
                                     
                                 </table>
                             </div>
-                            </com:ko></com:ko>
+                            </com:ko>
                         </div>
                         <!-- FLEX WORK TIME SETTING END -->
                         
@@ -157,7 +159,7 @@
 												optionsText: 'name',
 												enable: true}"></div>
                             </div>
-                     <com:ko tag="with" bind="deformationLaborWTSetting">
+                     <com:ko tag="with" bind="deformationLaborSetting">
                             <com:ko tag="with" bind="statutorySetting">
                             <div class="control-group">
                                 <div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
@@ -192,7 +194,7 @@
                                                 <div data-bind="text: month"></div>
                                             </td>
                                             <td>
-                                                <input data-bind="ntsTimeEditor: {value: value, inputFormat: 'time', mode: 'time', required: true}" />
+                                                <input data-bind="ntsTimeEditor: {value: time, inputFormat: 'time', mode: 'time', required: true}" />
                                             </td>
                                         </tr>
                                     </com:ko>

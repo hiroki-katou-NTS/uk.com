@@ -69,4 +69,5 @@ public class ClosureHistoryWs {
 	public void save(ClosureHistorySaveCommand command){
 		 this.save.handle(command);
 	}
+	
 }

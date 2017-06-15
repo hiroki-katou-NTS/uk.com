@@ -2,7 +2,7 @@ module kcp.share.list {
     export interface UnitModel {
         code: string;
         name?: string;
-        companyName?: string;
+        workplaceName?: string;
         isAlreadySetting?: boolean;
     }
     
@@ -28,7 +28,7 @@ module kcp.share.list {
         /**
          * list type.
          * 1. Employment list.
-         * 2. ???
+         * 2. Classification.
          * 3. Job title list.
          * 4. Employee list.
          */
@@ -55,6 +55,11 @@ module kcp.share.list {
          * ignore when isShowAlreadySet = false.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
+        
+        /**
+         * Employee input list.
+         */
+        employeeInputList?: Array<UnitModel>;
     }
     
     /**
@@ -117,7 +122,7 @@ module kcp.share.list {
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE) {
-                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'companyName', width: 150});
+                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
             }
             
             // If show Already setting.
@@ -135,39 +140,54 @@ module kcp.share.list {
                 });
             }
             
+            // With list type is employee list, use employee input.
+            if (self.listType == ListType.EMPLOYEE) {
+                self.initComponent(data, data.employeeInputList, $input);
+                dfd.resolve();
+                return dfd.promise();
+            }
+            
             // Find data list.
             this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
-                // Set default value when init component.
-                if (!data.selectedCode() || data.selectedCode().length == 0) {
-                    self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
-                }
-                
-                // Map already setting attr to data list.
-                if (data.isShowAlreadySet) {
-                    self.addAreadySettingAttr(dataList, self.alreadySettingList());
-                    
-                    // subscribe when alreadySettingList update => reload component.
-                    self.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
-                        self.addAreadySettingAttr(dataList, newSettings);
-                        self.itemList(dataList);
-                    })
-                }
-                
-                // Init component.
-                self.itemList(dataList);
-                $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/list.xhtml', function() {
-                    ko.cleanNode($input[0]);
-                    ko.applyBindings(self, $input[0]);
-                    $('.base-date-editor').find('.nts-input').width(133);
-                    if (self.hasBaseDate) {
-                        $('.base-date-editor').find('.nts-input').focus();
-                    } else {
-                        $(".ntsSearchBox").focus();
-                    }
-                });
+                self.initComponent(data, dataList, $input);
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+        
+        private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) {
+            var self = this;
+            // Set default value when init component.
+            if (!data.selectedCode() || data.selectedCode().length == 0) {
+                self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+            }
+
+            // Map already setting attr to data list.
+            if (data.isShowAlreadySet) {
+                self.addAreadySettingAttr(dataList, self.alreadySettingList());
+
+                // subscribe when alreadySettingList update => reload component.
+                self.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
+                    self.addAreadySettingAttr(dataList, newSettings);
+                    self.itemList(dataList);
+                })
+            }
+            
+            // Init component.
+            self.itemList(dataList);
+            var webserviceLocator = nts.uk.request.location.siteRoot
+                .mergeRelativePath('nts.uk.com.web/')
+                .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
+            $input.load(webserviceLocator, function() {
+                ko.cleanNode($input[0]);
+                ko.applyBindings(self, $input[0]);
+                $('.base-date-editor').find('.nts-input').width(133);
+                if (self.hasBaseDate) {
+                    $('.base-date-editor').find('.nts-input').focus();
+                } else {
+                    $(".ntsSearchBox").focus();
+                }
+            });
         }
         
         /**
@@ -301,21 +321,21 @@ module kcp.share.list {
          * Find Employment list.
          */
         export function findEmployments(): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax(servicePath.findEmployments);
+            return nts.uk.request.ajax('com', servicePath.findEmployments);
         }
         
         /**
          * Find Job title.
          */
         export function findJobTitles(baseDate: Date): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax(servicePath.findJobTitles, {baseDate: baseDate});
+            return nts.uk.request.ajax('com', servicePath.findJobTitles, {baseDate: baseDate});
         }
         
         /**
          * Find Classification list.
          */
         export function findClassifications(): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax(servicePath.findClassifications);
+            return nts.uk.request.ajax('com', servicePath.findClassifications);
         }
         
     }
@@ -328,6 +348,7 @@ interface JQuery {
 
     /**
      * Nts list component.
+     * This Function used after apply binding only.
      */
     ntsListComponent(option: kcp.share.list.ComponentOption): JQueryPromise<void>;
 }

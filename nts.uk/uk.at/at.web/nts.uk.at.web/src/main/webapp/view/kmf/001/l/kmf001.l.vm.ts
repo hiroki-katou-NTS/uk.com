@@ -174,7 +174,7 @@ module nts.uk.pr.view.kmf001.l {
                     self.manageDistinctList(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }

@@ -11,10 +11,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.EmploymentSaveCommand;
-import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.EmploymentSaveCommandHandler;
-import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.EmploymentSettingFinder;
-import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find.dto.EmploymentSettingFindDto;
+import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.command.CompanySettingSaveCommand;
+import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.command.CompanySettingSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.find.CompanySettingDto;
+import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.find.CompanySettingFinder;
 
 /**
  * The Class CompanySettingWs.
@@ -25,22 +25,22 @@ public class CompanySettingWs extends WebService {
 	
 	/** The save. */
 	@Inject
-	private EmploymentSaveCommandHandler save;
+	private CompanySettingSaveCommandHandler handler;
 	
 	/** The finder. */
 	@Inject
-	private EmploymentSettingFinder finder;
+	private CompanySettingFinder finder;
 	
 	/**
 	 * Find.
 	 *
-	 * @param empCode the emp code
-	 * @return the employment setting find dto
+	 * @param year the year
+	 * @return the company setting dto
 	 */
 	@POST
-	@Path("find/{empCode}")
-	public EmploymentSettingFindDto find(@PathParam("empCode") String empCode) {
-		return this.finder.find(empCode);
+	@Path("find/{year}")
+	public CompanySettingDto find(@PathParam("year") int year) {
+		return this.finder.find(year);
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class CompanySettingWs extends WebService {
 	 */
 	@POST
 	@Path("save")
-	public void save(EmploymentSaveCommand command) {
-		this.save.handle(command);
+	public void save(CompanySettingSaveCommand command) {
+		this.handler.handle(command);
 	}
 }

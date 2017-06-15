@@ -105,7 +105,7 @@ module nts.uk.pr.view.kmf001.j {
                     self.timeDigestiveUnitEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -120,7 +120,7 @@ module nts.uk.pr.view.kmf001.j {
                     self.sixtyHourExtraEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -135,7 +135,7 @@ module nts.uk.pr.view.kmf001.j {
                     self.manageDistinctEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -160,8 +160,7 @@ module nts.uk.pr.view.kmf001.j {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);   
                 });
 
                 return dfd.promise();
@@ -187,7 +186,7 @@ module nts.uk.pr.view.kmf001.j {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                   nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -197,10 +196,6 @@ module nts.uk.pr.view.kmf001.j {
                 let self = this;
 
                 if (!self.isComManaged()) {
-                    // Show msg #Msg_146
-                    //                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_146')).then(function() {
-                    //                        $("#sidebar").ntsSideBar("active", 0);
-                    //                    });
                 }
             }
 
@@ -217,12 +212,11 @@ module nts.uk.pr.view.kmf001.j {
 
                 this.service.saveComSetting(self.settingModel().toSixtyHourVacationSettingDto()).done(function() {
                     // Msg_15
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                    nts.uk.ui.dialog.alert(nts.uk.ui.dialog.info({ messageId: "Msg_15" }));
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
             }
-
             public saveEmpSetting(): void {
                 let self = this;
                 let dfd = $.Deferred();
@@ -232,25 +226,15 @@ module nts.uk.pr.view.kmf001.j {
                 }
 
                 this.service.saveEmpSetting(self.empSettingModel().toEmp60HourVacationDto()).done(function() {
-                    // Msg_15
-                    nts.uk.ui.dialog.alert("登録しました。");
-                    // nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_15'));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
             }
 
             private validateComSetting(): boolean {
                 let self = this;
-
-                // Have no input
-                // $('input').ntsEditor('validate');
-                //
-                // if ($('.nts-input').ntsError('hasError')) {
-                // return false;
-                // }
-
                 return true;
             }
 
@@ -258,23 +242,13 @@ module nts.uk.pr.view.kmf001.j {
                 if (!$('.nts-input').ntsError('hasError')) {
                     return;
                 }
-
                 $('input').ntsError('clear');
             }
 
             private validateEmpSetting(): boolean {
                 let self = this;
-
-                // Have no input
-                // $('input').ntsEditor('validate');
-                //
-                // if ($('.nts-input').ntsError('hasError')) {
-                // return false;
-                // }
-
                 return true;
             }
-
             private clearErrorEmpSetting(): void {
                 if (!$('.nts-input').ntsError('hasError')) {
                     return;
@@ -282,7 +256,6 @@ module nts.uk.pr.view.kmf001.j {
 
                 $('input').ntsError('clear');
             }
-
         }
 
         // Model class

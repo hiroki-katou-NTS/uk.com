@@ -222,7 +222,7 @@ project (':com.web:nts.uk.com.web') {
 	}
 	
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.2'
+		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.3'
 		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1'
 		compile group: 'base', name: 'nts.uk.shr.ws', version: '0.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
@@ -268,6 +268,11 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.pub', version: '0.1'
 		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.pubimp', version: '0.1'
 		runtime group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.ac', version: '0.1'
+		
+		runtime group: 'workflow', name: 'nts.uk.ctx.workflow.app', version: '0.1'
+		runtime group: 'workflow', name: 'nts.uk.ctx.workflow.dom', version: '0.1'
+		runtime group: 'workflow', name: 'nts.uk.ctx.workflow.infra', version: '0.1'
+		runtime group: 'workflow', name: 'nts.uk.ctx.workflow.ws', version: '0.1'
 	}
 }
 //========================nts.uk.com.web↑=====================================

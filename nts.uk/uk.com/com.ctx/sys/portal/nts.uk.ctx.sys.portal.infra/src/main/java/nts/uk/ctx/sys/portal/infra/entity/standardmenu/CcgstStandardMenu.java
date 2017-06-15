@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.infra.entity.standardmenu;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -12,8 +14,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGMT_MY_PAGE_SET")
-public class CcgstStandardMenu extends UkJpaEntity {
+@Table(name = "CCGST_STANDARD_MENU")
+public class CcgstStandardMenu extends UkJpaEntity implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
 	public CcgstStandardMenuPK ccgmtStandardMenuPK;
 	
@@ -42,7 +49,7 @@ public class CcgstStandardMenu extends UkJpaEntity {
 	public int system;
 	
 	/** The classification. */
-	@Column(name = "CLASSIFICATION")
+	@Column(name = "MENU_CLS")
 	public int classification;
 	
 	/** The webMenuSetting. */
