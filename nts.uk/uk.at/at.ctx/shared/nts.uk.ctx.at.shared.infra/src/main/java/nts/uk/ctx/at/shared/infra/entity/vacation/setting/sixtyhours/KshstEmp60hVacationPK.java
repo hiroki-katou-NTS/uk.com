@@ -36,7 +36,7 @@ public class KshstEmp60hVacationPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 36)
-    @Column(name = "CONTRACT_TYPE_CD")
+    @Column(name = "EMP_TYPE_CD")
     private String contractTypeCd;
 
     /**

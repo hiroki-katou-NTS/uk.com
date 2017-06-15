@@ -6,6 +6,8 @@ package nts.uk.ctx.basic.dom.company.organization.workplace;
 
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface WorkplaceRepository.
  */
@@ -30,10 +32,9 @@ public interface WorkplaceRepository {
 	 * Find all.
 	 *
 	 * @param companyId the company id
-	 * @param date the date
-	 * @param format the format
+	 * @param generalDate the general date
 	 * @return the list
 	 */
-	List<Workplace> findAll(String companyId, String date, String format);
+	List<Workplace> findAll(String companyId, GeneralDate generalDate);
 
 }

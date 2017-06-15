@@ -47,7 +47,7 @@ public class CompanySettingSaveCommandHandler extends CommandHandler<CompanySett
 		companySetting.validate();
 
 		// Update
-		Optional<CompanySetting> optCompanySetting = this.repository.find(companyId);
+		Optional<CompanySetting> optCompanySetting = this.repository.find(companyId, command.getYear().v());
 		if(optCompanySetting.isPresent()) {
 			this.repository.update(companySetting);
 		}

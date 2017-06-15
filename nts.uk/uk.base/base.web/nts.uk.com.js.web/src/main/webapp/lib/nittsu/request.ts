@@ -3,7 +3,7 @@ module nts.uk.request {
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
 
     export type WebAppId = 'com' | 'pr' | 'at';
-    const WEB_APP_NAME = {
+    export const WEB_APP_NAME = {
         com: 'nts.uk.com.web',
         pr: 'nts.uk.pr.web',
         at: 'nts.uk.at.web'

@@ -4,16 +4,21 @@ module nts.uk.at.view.kmk004.a {
          *  Service paths
          */
         var servicePath: any = {
-            findCompanySetting: 'ctx/at/share/vacation/setting/annualpaidleave/find/managedistinct',
-            saveCompanySetting: 'ctx/at/share/vacation/setting/annualpaidleave/save',
+            findCompanySetting: 'ctx/at/shared/employment/statutory/worktime/company/find',
+            saveCompanySetting: 'ctx/at/shared/employment/statutory/worktime/company/save',
+            removeCompanySetting: 'ctx/at/shared/employment/statutory/worktime/company/remove',
         };
 
         export function saveCompanySetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveCompanySetting, command);
         }
 
-        export function findCompanySetting(): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findCompanySetting);
+        export function findCompanySetting(year: number): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findCompanySetting + '/' + year);
+        }
+
+        export function removeCompanySetting(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.removeCompanySetting, command);
         }
 
     }

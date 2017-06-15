@@ -8,8 +8,8 @@ module kdl010.a.viewmodel {
             this.selectCode = ko.observable([]);
             this.workLocationList = ko.observableArray([]);
             this.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL010_8"), prop: 'workLocationCD', width: 100 },
-                { headerText: nts.uk.resource.getText("KDL010_2"), prop: 'workLocationName', width: 230 }
+                { headerText: nts.uk.resource.getText("KDL010_8"), prop: 'workLocationCD', width: 60 },
+                { headerText: nts.uk.resource.getText("KDL010_2"), prop: 'workLocationName', width: 220 }
             ]);
 
         }
@@ -17,10 +17,13 @@ module kdl010.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            self.selectCode(nts.uk.ui.windows.getShared('SelectWorkLocation'));
             /** Get list WorkLocation*/
             service.getAllWorkLocation().done(function(workLocationList: Array<viewmodel.WorkLocation>) {
+                 workLocationList = _.orderBy(workLocationList, ["workLocationCD"], ["asc"]);
                 self.workLocationList(workLocationList);
-                console.log(self.workLocationList());
+                self.workLocationList().unshift(new WorkLocation( "", "選択なし"));
+                self.selectCode(nts.uk.ui.windows.getShared('SelectWorkLocation'));
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
@@ -37,10 +40,10 @@ module kdl010.a.viewmodel {
             var self = this;
             var selectWorkLocation = _.find(self.workLocationList(), ['workLocationCD', self.selectCode()]);
             if (selectWorkLocation !== undefined) {
-                nts.uk.ui.windows.setShared("workLocation", selectWorkLocation, false);
+                nts.uk.ui.windows.setShared("workLocation", selectWorkLocation, true);
             }
              else {
-                nts.uk.ui.windows.setShared("workLocation", null, false);
+                nts.uk.ui.windows.setShared("workLocation", null, true);
                 }
             self.cancel_Dialog();
         }

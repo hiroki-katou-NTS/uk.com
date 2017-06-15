@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureFindDto;
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryInDto;
 import nts.uk.ctx.at.record.dom.workrecord.closure.Closure;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistory;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository;
@@ -80,6 +82,38 @@ public class ClosureFinder {
 		if(closure.isPresent()){
 			closure.get().setClosureHistories(closureHistories);
 			closure.get().saveToMemento(dto);
+		}
+		return dto;
+	}
+	
+	/**
+	 * Detail master.
+	 *
+	 * @param master the master
+	 * @return the closure detail dto
+	 */
+	public ClosureDetailDto detailMaster(ClosureHistoryInDto master){
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get company id
+		String companyId = loginUserContext.companyId();
+
+		// call service
+		Optional<Closure> closure = this.repository.getClosureById(companyId, master.getClosureId());
+
+		ClosureDetailDto dto = new ClosureDetailDto();
+
+		Optional<ClosureHistory> closureHistory = this.repositoryHistory.findByHistoryId(companyId,
+				master.getClosureId(), master.getHistoryId());
+
+		// exist data
+		if (closure.isPresent()) {
+			closure.get().saveToMemento(dto);
+		}
+		
+		if(closureHistory.isPresent()){
+			closureHistory.get().saveToMemento(dto);
 		}
 		return dto;
 	}

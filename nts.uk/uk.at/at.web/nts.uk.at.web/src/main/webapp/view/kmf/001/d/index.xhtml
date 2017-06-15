@@ -11,29 +11,22 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="sidebar-head">
 			<com:scriptfile set="IGNITE" />
+			<!-- <com:scriptfile path="../../../../../nts.uk.com.web/view/kcp/share/list.js" /> -->
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="kmf001.d.service.js" />
 			<com:scriptfile path="kmf001.d.vm.js" />
 			<com:scriptfile path="kmf001.d.start.js" />
-			<script type="text/javascript">
-				// TODO: Code validate.
-				__viewContext.primitiveValueConstraints.NumberOfYear = {
-					valueType : 'Integer',
-					min: 0,
-					max: 99
-				};
-				__viewContext.primitiveValueConstraints.MaxOfDays = {
-						valueType : 'Integer',
-						min: 0,
-						max: 999
-					};
-			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention
+				nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearsAmount
+			</com:ValidatorScript>
 		</ui:define>
 <!-- #{i18n.getText('Com_FundedPaidHoliday')} -->
 		<ui:define name="sidebar" id="left-sidebar" tabindex="1">
 			<ul class="navigator">
 				<li><a href="#whole-company-tab" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#by-employment-tab" role="tab-navigator" >#{i18n.getText('Com_Employment')}</a></li>
+				<li><a href="#by-employment-tab" role="tab-navigator" data-bind="click: switchToEmploymentTab">#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
 		</ui:define>
 
@@ -65,7 +58,7 @@
 										<div class="margin-bottom">
 											<input id="year-amount-company" data-bind="ntsNumberEditor: {
 												value: retentionYearsAmount,
-												constraint: 'NumberOfYear',
+												constraint: 'RetentionYearsAmount',
 												option: textEditorOption,
 												required: true,
 												enable: isManaged,
@@ -84,7 +77,7 @@
 										<div class="margin-bottom">
 											<input id="max-days-company" data-bind="ntsNumberEditor: {
 												value: maxDaysCumulation,
-												constraint: 'MaxOfDays',
+												constraint: 'MaxDaysRetention',
 												option: textEditorOption,
 												required: true,
 												enable: isManaged,
@@ -123,7 +116,7 @@
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Employment')}</span>
 					<button data-bind="click: backToHistorySelection" tabindex="2">#{i18n.getText('KMF001_27')}</button>
-					<button class="proceed register-button" data-bind="click: registerByEmployment, enable: hasSelectedEmp" tabindex="3">#{i18n.getText('KMF001_28')}</button>
+					<button class="proceed register-button" data-bind="click: registerByEmployment, enable: isManaged" tabindex="3">#{i18n.getText('KMF001_28')}</button>
 					<div class="register-annual-holiday-table"><a href="#register-annual-holiday-table" tabindex="4">#{i18n.getText('KMF001_29')}</a></div>
 					
 				</div>
@@ -131,21 +124,8 @@
 				<div id="by-employment-content">
 					<table style="margin: 30px">
 						<tr>
-							<td id="left-content"
-								class="bg-green caret-right caret-background">
-								<i class="icon icon-searchbox"></i>
-								
-						 		<table id="single-list" data-bind="ntsGridList: {
-									height: 450,
-									width: '98%',
-									options: employmentList,
-									optionsValue: 'code',
-									columns: columnsSetting,
-									multiple: false,
-									value: selectedCode
-								}"
-								class="cf" tabindex="1"></table> 
-									
+							<td>
+								<div id="left-content"></div>
 							</td>
 
 							<td id="right-content">
@@ -173,13 +153,13 @@
 											<div>
 												<span>#{i18n.getText('KMF001_73')}</span>
 											</div>
-											<!-- #{i18n.getText('Com_CompensationHoliday')}の管理 -->
+											#{i18n.getText('Com_CompensationHoliday')}の管理
 										</td>
 										<td style="padding-left: 5px">
 											<div>
 												<input id='year-amount-emp' data-bind="ntsNumberEditor: {
 													value: yearsAmountByEmp,
-													constraint: 'NumberOfYear',
+													constraint: 'RetentionYearsAmount',
 													option: textEditorOption,
 													required: true,
 													enable: hasSelectedEmp,
@@ -197,7 +177,7 @@
 											<div>
 												<input id='max-days-emp' data-bind="ntsNumberEditor: {
 													value: maxDaysCumulationByEmp,
-													constraint: 'MaxOfDays',
+													constraint: 'MaxDaysRetention',
 													option: textEditorOption,
 													required: true,
 													enable: hasSelectedEmp,
