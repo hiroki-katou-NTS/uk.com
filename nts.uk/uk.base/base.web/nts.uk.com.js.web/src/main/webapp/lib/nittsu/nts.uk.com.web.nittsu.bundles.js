@@ -555,8 +555,7 @@ var nts;
                 var hashIdx = name.indexOf("#");
                 if (hashIdx !== 0)
                     return name;
-                var names = name.substring(hashIdx + 2, name.length - );
-                split(",");
+                var names = name.substring(hashIdx + 2, name.length - 1).split(",");
                 if (names.length > 1) {
                     var params_1 = new Array();
                     _.forEach(names, function (n, idx) {
