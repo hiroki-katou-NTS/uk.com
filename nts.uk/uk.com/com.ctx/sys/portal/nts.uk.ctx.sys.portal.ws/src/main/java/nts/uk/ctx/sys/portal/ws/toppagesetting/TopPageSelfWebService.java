@@ -11,10 +11,11 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPageSelfSettingCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPageSelfSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.SelectMyPageDto;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSelfSettingDto;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSelfSettingFinder;
 
 /**
- * The Class MyPageWebService.
+ * @author hoatt
  */
 @Path("topageselfsetting")
 @Stateless
@@ -23,16 +24,31 @@ public class TopPageSelfWebService extends WebService {
 	private TopPageSelfSettingFinder topPageSelfSettingFinder;
 	@Inject
 	private TopPageSelfSettingCommandHandler saveCommandHandler;
-	
+	/**
+	 * Lay du lieu tu domain トップページ va 標準メニュー
+	 * @return
+	 */
 	@POST
 	@Path("/select")
 	public List<SelectMyPageDto> findSelectMyPage() {
 		return topPageSelfSettingFinder.findSelectMyPage();
 	}
-	
+	/**
+	 * Xu ly dang ky top page self set
+	 * @param comamnd
+	 */
 	@POST
-	@Path("/add")
+	@Path("/save")
 	public void saveSelfSetting(TopPageSelfSettingCommand comamnd) {
 		this.saveCommandHandler.handle(comamnd);
+	}
+	/**
+	 * Lay du lieu tu domain 本人トップページ設定 
+	 * @return
+	 */
+	@POST
+	@Path("/finditemselected")
+	public TopPageSelfSettingDto getTopPageSelfSet(){
+		return topPageSelfSettingFinder.getTopPageSelfSet();
 	}
 }

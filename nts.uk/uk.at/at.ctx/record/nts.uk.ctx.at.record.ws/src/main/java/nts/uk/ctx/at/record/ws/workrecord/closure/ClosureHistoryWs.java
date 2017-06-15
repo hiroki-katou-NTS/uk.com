@@ -11,6 +11,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.record.app.command.workrecord.closure.ClosureHistoryAddCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.closure.ClosureHistoryAddCommandHandler;
+import nts.uk.ctx.at.record.app.command.workrecord.closure.ClosureHistorySaveCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.closure.ClosureHistorySaveCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.ClosureHistoryFinder;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryDDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryFindDto;
@@ -26,6 +30,15 @@ public class ClosureHistoryWs {
 	/** The finder. */
 	@Inject
 	private ClosureHistoryFinder finder;
+	
+	
+	/** The save. */
+	@Inject
+	private ClosureHistorySaveCommandHandler save;
+	
+	/** The add. */
+	@Inject
+	private ClosureHistoryAddCommandHandler add;
 	
 	
 	/**
@@ -50,4 +63,28 @@ public class ClosureHistoryWs {
 	public ClosureHistoryDDto detail(ClosureHistoryInDto master){
 		return this.finder.detail(master);
 	}
+	
+	/**
+	 * Gets the all.
+	 *
+	 * @param command the command
+	 * @return the all
+	 */
+	@POST
+	@Path("save")
+	public void save(ClosureHistorySaveCommand command){
+		 this.save.handle(command);
+	}
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("add")
+	public void add(ClosureHistoryAddCommand command){
+		this.add.handle(command);
+	}
+	
 }

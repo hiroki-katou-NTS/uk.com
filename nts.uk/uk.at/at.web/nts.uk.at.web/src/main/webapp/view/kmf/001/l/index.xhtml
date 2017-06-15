@@ -38,7 +38,7 @@
 					<div data-bind="with: nursingSetting">
 						<table id="table">
 							<thead>
-								<div data-bind="ntsFormLabel: {required: true}"
+								<div data-bind="ntsFormLabel: {}"
 									style="margin-right: 50px;">#{i18n.getText('KMF001_108')}</div>
 								<span tabindex="4"
 									data-bind="ntsSwitchButton: {
@@ -54,7 +54,7 @@
 							</thead>
 
 							<tr>
-								<th colspan="3"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_107')}</div>
+								<th colspan="3"><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF001_107')}</div>
 									<div class="hr_width">
 										<hr />
 									</div></th>
@@ -92,6 +92,7 @@
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
 											constraint: 'NumberDayNursing',
+											name: '#[KMF001_111]',
 											required: enableNursing,
 											option: $parent.textEditorOption,
 											enable: enableNursing}" />
@@ -110,6 +111,7 @@
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
 											constraint: 'NumberDayNursing',
+											name: '#[KMF001_112]',
 											required: enableNursing,
 											option: $parent.textEditorOption,
 											enable: enableNursing}" />
@@ -125,7 +127,7 @@
 										<input class="nts-input"
 											data-bind="ntsTextEditor: {
 											value: typeCode,
-											constraint: '',
+											name: '#[KMF001_114]',
 											required: enableNursing,
 											option: {
 												width: '92.5%',
@@ -145,7 +147,7 @@
 					<div data-bind="with: childNursingSetting">
 						<table id="table">
 							<thead>
-								<div data-bind="ntsFormLabel: {required: true}"
+								<div data-bind="ntsFormLabel: {}"
 									style="margin-right: 50px;">#{i18n.getText('KMF001_116')}</div>
 								<span tabindex="9"
 									data-bind="ntsSwitchButton: {
@@ -161,7 +163,7 @@
 							</thead>
 
 							<tr>
-								<th colspan="3"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_115')}</div>
+								<th colspan="3"><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF001_115')}</div>
 									<div class="hr_width">
 										<hr />
 									</div></th>
@@ -198,6 +200,7 @@
 											style="float: right;" tabindex="11" class="nts-input"
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberLeaveDay,
+											name: '#[KMF001_119]',
 											constraint: 'NumberDayNursing',
 											required: enableNursing,
 											option: $parent.textEditorOption,
@@ -217,6 +220,7 @@
 											data-bind="ntsNumberEditor: {
 											value: nursingNumberPerson,
 											constraint: 'NumberDayNursing',
+											name: '#[KMF001_120]',
 											required: enableNursing,
 											option: $parent.textEditorOption,
 											enable: enableNursing}" />
@@ -232,7 +236,7 @@
 										<input class="nts-input"
 											data-bind="ntsTextEditor: {
 											value: typeCode,
-											constraint: '',
+											name: '#[KMF001_121]',
 											required: enableNursing,
 											option: {
 												width: '92.5%',

@@ -2,8 +2,13 @@ module kcp.share.list {
     export interface UnitModel {
         code: string;
         name?: string;
-        companyName?: string;
+        workplaceName?: string;
         isAlreadySetting?: boolean;
+    }
+    
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
     }
     
     /**
@@ -23,7 +28,7 @@ module kcp.share.list {
         /**
          * list type.
          * 1. Employment list.
-         * 2. ???
+         * 2. Classification.
          * 3. Job title list.
          * 4. Employee list.
          */
@@ -36,15 +41,30 @@ module kcp.share.list {
         selectedCode: KnockoutObservable<any>;
         
         /**
+         * baseDate. Available for job title list only.
+         */
+        baseDate?: KnockoutObservable<Date>;
+        
+        /**
          * is dialog, if is main screen, set false,
          */
         isDialog: boolean;
         
         /**
+         * check is show select all button or not. Available for employee list only.
+         */
+        isShowSelectAllButton?: boolean;
+        
+        /**
          * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
-        alreadySettingList?: KnockoutObservableArray<UnitModel>;
+        alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
+        
+        /**
+         * Employee input list. Available for employee list only.
+         */
+        employeeInputList?: Array<UnitModel>;
     }
     
     /**
@@ -61,6 +81,7 @@ module kcp.share.list {
         codeColumnSize: number;
         totalColumnSize: number;
         totalComponentSize: number;
+        totalHeight: number;
     }
     
     /**
@@ -76,12 +97,13 @@ module kcp.share.list {
         baseDate: KnockoutObservable<Date>;
         isHasButtonSelectAll: boolean;
         gridStyle: GridStyle;
+        listType: ListType;
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         constructor() {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
             this.isMultiple = false;
-            this.baseDate = ko.observable(new Date());
         }
         /**
          * Init component.
@@ -92,20 +114,26 @@ module kcp.share.list {
             self.isMultiple = data.isMultiSelect;
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            self.hasBaseDate = data.listType == ListType.JOB_TITLE;
-            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE && data.isMultiSelect;
+            self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
+            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
+                 && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
+            self.listType = data.listType;
+            if (data.baseDate) {
+                self.baseDate = data.baseDate;
+            }
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE) {
-                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'companyName', width: 150});
+                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
             }
             
             // If show Already setting.
             if (data.isShowAlreadySet) {
+                self.alreadySettingList = data.alreadySettingList;
                 // Add row already setting.
                 self.listComponentColumn.push({
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 70,
@@ -118,34 +146,60 @@ module kcp.share.list {
                 });
             }
             
+            // With list type is employee list, use employee input.
+            if (self.listType == ListType.EMPLOYEE) {
+                self.initComponent(data, data.employeeInputList, $input);
+                dfd.resolve();
+                return dfd.promise();
+            }
+            
             // Find data list.
             this.findDataList(data.listType).done(function(dataList: Array<UnitModel>) {
-                // Set default value when init component.
-                if (!data.selectedCode() || data.selectedCode().length == 0) {
-                    self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
-                }
-                
-                // Map already setting attr to data list.
-                if (data.isShowAlreadySet) {
-                    self.addAreadySettingAttr(dataList, data.alreadySettingList());
-                    
-                    // subscribe when alreadySettingList update => reload component.
-                    data.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
-                        self.addAreadySettingAttr(dataList, newSettings);
-                        self.itemList(dataList);
-                    })
-                }
-                
-                // Init component.
-                self.itemList(dataList);
-                $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/list.xhtml', function() {
-                    ko.cleanNode($input[0]);
-                    ko.applyBindings(self, $input[0]);
-                    $(".ntsSearchBox").focus();
-                });
+                self.initComponent(data, dataList, $input);
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+        
+        private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) {
+            var self = this;
+            // Set default value when init component.
+            if (!data.selectedCode() || data.selectedCode().length == 0) {
+                self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+            }
+
+            // Map already setting attr to data list.
+            // With employee list => not mapping with already setting list.
+            if (data.isShowAlreadySet && self.listType != ListType.EMPLOYEE) {
+                self.addAreadySettingAttr(dataList, self.alreadySettingList());
+
+                // subscribe when alreadySettingList update => reload component.
+                self.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
+                    self.addAreadySettingAttr(dataList, newSettings);
+                    self.itemList(dataList);
+                })
+            }
+            
+            // Init component.
+            self.itemList(dataList);
+            var webserviceLocator = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
+            $input.load(webserviceLocator, function() {
+                ko.cleanNode($input[0]);
+                ko.applyBindings(self, $input[0]);
+                $('.base-date-editor').find('.nts-input').width(133);
+                if (self.hasBaseDate) {
+                    $('.base-date-editor').find('.nts-input').focus();
+                } else {
+                    $(".ntsSearchBox").focus();
+                }
+            });
+            
+            // defined function get data list.
+            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                return dataList;
+            }
         }
         
         /**
@@ -188,15 +242,17 @@ module kcp.share.list {
                 break;
             }
             var alreadySettingColSize = data.isShowAlreadySet ? 70 : 0;
-            var multiSelectColSize = data.isMultiSelect ? 65 : 0;
+            var multiSelectColSize = data.isMultiSelect ? 55 : 0;
             var selectAllButtonSize = this.isHasButtonSelectAll ? 60 : 0;
             var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
-                + alreadySettingColSize + multiSelectColSize + selectAllButtonSize;
+                + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
+            var totalHeight: number = this.hasBaseDate ? 500 : 452;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),
-                totalComponentSize: Math.max(minTotalSize, totalColumnSize) + 2
+                totalComponentSize: Math.max(minTotalSize, totalColumnSize) + 2,
+                totalHeight: totalHeight
             };
         }
         
@@ -211,6 +267,8 @@ module kcp.share.list {
                     return service.findJobTitles(this.baseDate());
                 case ListType.Classification:
                     return service.findClassifications();
+                default:
+                    return;
             }
         }
         
@@ -225,6 +283,38 @@ module kcp.share.list {
             self.selectedCodes(self.itemList().map(item => item.code));
         }
         
+        /**
+         * Reload screen data.
+         */
+        public reload() {
+            var self = this;
+            self.findDataList(self.listType).done((data: UnitModel[]) => {
+                if (self.alreadySettingList) {
+                    self.addAreadySettingAttr(data, self.alreadySettingList());
+                }
+                self.itemList(data);
+            });
+        }
+        
+        public getItemNameForList(): string {
+            switch(this.listType) {
+                case ListType.EMPLOYMENT:
+                    return '#[KCP001_1]';
+                case ListType.JOB_TITLE:
+                    return '#[KCP003_1]';
+                case ListType.Classification:
+                    return '#[KCP002_1]';
+                default:
+                    return '';
+            }
+        }
+        
+        public getItemNameForBaseDate(): string {
+            if (this.hasBaseDate) {
+                return '#[KCP003_2 ]'
+            }
+            return '';
+        }
     }
     
     /**
@@ -243,21 +333,21 @@ module kcp.share.list {
          * Find Employment list.
          */
         export function findEmployments(): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax(servicePath.findEmployments);
+            return nts.uk.request.ajax('com', servicePath.findEmployments);
         }
         
         /**
          * Find Job title.
          */
         export function findJobTitles(baseDate: Date): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax(servicePath.findJobTitles, {baseDate: baseDate});
+            return nts.uk.request.ajax('com', servicePath.findJobTitles, {baseDate: baseDate});
         }
         
         /**
          * Find Classification list.
          */
         export function findClassifications(): JQueryPromise<Array<UnitModel>> {
-            return nts.uk.request.ajax(servicePath.findClassifications);
+            return nts.uk.request.ajax('com', servicePath.findClassifications);
         }
         
     }
@@ -270,14 +360,18 @@ interface JQuery {
 
     /**
      * Nts list component.
+     * This Function used after apply binding only.
      */
     ntsListComponent(option: kcp.share.list.ComponentOption): JQueryPromise<void>;
+    
+    getDataList(): Array<kcp.share.list.UnitModel>;
 }
 
 (function($: any) {
     $.fn.ntsListComponent = function(option: kcp.share.list.ComponentOption): JQueryPromise<void> {
 
         // Return.
-        return new kcp.share.list.ListComponentScreenModel().init(this, option);;
+        return new kcp.share.list.ListComponentScreenModel().init(this, option);
     }
+    
 } (jQuery));

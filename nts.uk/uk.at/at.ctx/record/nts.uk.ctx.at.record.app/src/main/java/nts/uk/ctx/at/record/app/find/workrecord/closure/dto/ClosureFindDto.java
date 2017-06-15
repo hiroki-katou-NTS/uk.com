@@ -18,18 +18,12 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.UseClassification;
 /**
  * The Class ClosureFindDto.
  */
-
-/**
- * Gets the month.
- *
- * @return the month
- */
 @Getter
 @Setter
 public class ClosureFindDto implements ClosureSetMemento{
 	
 	/** The closure id. */
-	private Integer closureId;
+	private int closureId;
 	
 	/** The use classification. */
 	private int useClassification;
@@ -37,6 +31,8 @@ public class ClosureFindDto implements ClosureSetMemento{
 	/** The month. */
 	private int month;
 	
+	/** The closure selected. */
+	private ClosureHistoryMDto closureSelected;
 	
 	/** The closure histories. */
 	private List<ClosureHistoryMDto> closureHistories;

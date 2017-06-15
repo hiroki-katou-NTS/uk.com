@@ -10,6 +10,7 @@ module kcp003.a.viewmodel {
         listComponentOptionMulti: ComponentOption;
         listComponentNoneSetting: ComponentOption;
         listComponentMultiNoneSetting: ComponentOption;
+        baseDate: KnockoutObservable<Date>;
 //        baseDate: KnockoutObservable<string>;
         
         constructor() {
@@ -17,7 +18,7 @@ module kcp003.a.viewmodel {
             this.selectedCodeNoSetting = ko.observable(null);
             this.multiSelectedCodeNoSetting = ko.observableArray(['2', '4']);
             this.multiSelectedCode = ko.observableArray([]);
-//            this.baseDate = ko.observable(null);
+            this.baseDate = ko.observable(new Date());
             this.listComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
@@ -34,7 +35,8 @@ module kcp003.a.viewmodel {
                      * Return type is String while select.
                      */
                     selectedCode: this.selectedCode,
-                    isDialog: true,
+                    isDialog: false,
+                    baseDate: this.baseDate,
                     alreadySettingList: ko.observableArray([{code: '1', isAlreadySetting: true}])
                 }
             $('#jobTitle-setting').ntsListComponent(this.listComponentOption);
@@ -45,7 +47,8 @@ module kcp003.a.viewmodel {
                 isMultiSelect: true,
                 listType: ListType.JOB_TITLE,
                 selectedCode: this.multiSelectedCode,
-                isDialog: true,
+                isDialog: false,
+                baseDate: this.baseDate,
                 alreadySettingList: ko.observableArray([{code: '1', isAlreadySetting: true}, {code: '2', isAlreadySetting: true}])
             }
             $('#jobTitle-multi-setting').ntsListComponent(this.listComponentOptionMulti);
@@ -55,8 +58,8 @@ module kcp003.a.viewmodel {
                 isMultiSelect: false,
                 listType: ListType.JOB_TITLE,
                 selectedCode: this.selectedCodeNoSetting,
-                isDialog: true
-//                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
+                isDialog: false,
+                baseDate: this.baseDate,
             }
             $('#jobTitle-noSetting').ntsListComponent(this.listComponentNoneSetting);
             
@@ -66,15 +69,23 @@ module kcp003.a.viewmodel {
                 isMultiSelect: true,
                 listType: ListType.JOB_TITLE,
                 selectedCode: this.multiSelectedCodeNoSetting,
-                isDialog: true
-//                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
+                isDialog: false,
+                baseDate: this.baseDate,
             }
             $('#jobTitle-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
             
         }
         
-        setAlreadyCheck() {
-            this.listComponentOption.alreadySettingList.push({"code": "2", "isAlreadySetting": true});
+        private settingRegistedItem() {
+            var self = this;
+            self.listComponentOption.alreadySettingList.push({"code": this.selectedCode().toString(), "isAlreadySetting": true});
+        }
+        
+        private settingDeletedItem() {
+            let self = this;
+            self.listComponentOption.alreadySettingList.remove(function(item) {
+                return item.code == self.selectedCode();
+            });
         }
         
         

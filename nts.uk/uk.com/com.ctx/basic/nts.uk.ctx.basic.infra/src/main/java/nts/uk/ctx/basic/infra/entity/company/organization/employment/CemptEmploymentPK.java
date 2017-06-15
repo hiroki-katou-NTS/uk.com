@@ -26,7 +26,7 @@ public class CemptEmploymentPK implements Serializable {/**
 	
 	/** The code. */
 	@Basic(optional = false)
-	@Column(name="CODE")
+	@Column(name="EMPTCD")
 	private String code;
 	
 	

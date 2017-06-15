@@ -1,29 +1,4 @@
-#c1_005{
-	padding: 15px 30px 35px 25px;
-	right: 15px;
-	margin-left: 20px;
-}
-
-#c1_006{
-	padding: 10px 10px 28px 10px;
-}
-
-.function-area-bottom{
-	margin-left: -10px;
-}
-
-.dialog-header{
-	padding-left: 20px;
-}
-
-.nts-treegridview{
-	padding: 0 30px;
-}
-
-.ui-igtreegrid-expandcell{
-	display: none;
-}
-
-th.ui-iggrid-rowselector-class {
-	background-color: #CFF1A5;
+#btnSave {
+	width: 125px;
+	margin-right: 10px;
 }

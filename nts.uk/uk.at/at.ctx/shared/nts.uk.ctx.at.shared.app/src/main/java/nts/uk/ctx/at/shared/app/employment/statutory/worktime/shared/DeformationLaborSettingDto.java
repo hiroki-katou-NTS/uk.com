@@ -4,13 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.employment.statutory.worktime.shared;
 
-import lombok.Value;
+import lombok.Data;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 
 /**
  * The Class DeformationLaborSettingDto.
  */
-@Value
+@Data
 public class DeformationLaborSettingDto {
 
 	/** The statutory setting. */
@@ -27,6 +28,21 @@ public class DeformationLaborSettingDto {
 	 */
 	public static DeformationLaborSettingDto fromDomain(DeformationLaborSetting domain) {
 		WorkingTimeSettingDto statutorySetting = WorkingTimeSettingDto.fromDomain(domain.getStatutorySetting());
-		return new DeformationLaborSettingDto(statutorySetting, domain.getWeekStart().value);
+		DeformationLaborSettingDto dto = new DeformationLaborSettingDto();
+		dto.setStatutorySetting(statutorySetting);
+		dto.setWeekStart(domain.getWeekStart().value);
+		return dto;
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @param dto the dto
+	 * @return the deformation labor setting
+	 */
+	public static DeformationLaborSetting toDomain(DeformationLaborSettingDto dto) {
+		DeformationLaborSetting domain = new DeformationLaborSetting(
+				WorkingTimeSettingDto.toDomain(dto.getStatutorySetting()), WeekStart.valueOf(dto.getWeekStart()));
+		return domain;
 	}
 }

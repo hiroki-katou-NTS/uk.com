@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryDDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryInDto;
-import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryMDto;
 import nts.uk.ctx.at.record.dom.workrecord.closure.Closure;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistory;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository;
@@ -54,8 +53,8 @@ public class ClosureHistoryFinder {
 		List<ClosureHistory> closureHistories = new ArrayList<>();
 		
 		closures.forEach(closure->{
-			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory
-				.findByLastHistory(companyId, closure.getClosureId());
+			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory.findBySelectedYearMonth(
+					companyId, closure.getClosureId(), closure.getMonth().getProcessingDate().v());
 			
 			if(closureHistoryLast.isPresent()){
 				closureHistories.add(closureHistoryLast.get());
@@ -92,4 +91,5 @@ public class ClosureHistoryFinder {
 		}
 		return dto;
 	}
+	
 }

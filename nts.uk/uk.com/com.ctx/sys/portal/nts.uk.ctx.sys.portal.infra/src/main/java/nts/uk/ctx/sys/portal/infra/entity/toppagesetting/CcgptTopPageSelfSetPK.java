@@ -1,8 +1,9 @@
 package nts.uk.ctx.sys.portal.infra.entity.toppagesetting;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -10,16 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class CcgptTopPageSelfSetPK {
+public class CcgptTopPageSelfSetPK implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	/** The employee Id. */
 	@Column(name = "SID")
 	public String employeeId;
-	
-	/** The code. */
-	@Column(name = "CODE")
-	public String code;
-	
-	/** The division. */
-	@Column(name = "DIVISION")
-	public int division;
 }

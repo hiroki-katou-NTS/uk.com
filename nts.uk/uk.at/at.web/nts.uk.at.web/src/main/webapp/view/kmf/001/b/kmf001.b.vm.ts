@@ -63,7 +63,7 @@ module nts.uk.pr.view.kmf001.b {
                     self.categoryEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
 
                 return dfd.promise();
@@ -82,7 +82,7 @@ module nts.uk.pr.view.kmf001.b {
                     self.initUI(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -151,13 +151,13 @@ module nts.uk.pr.view.kmf001.b {
                         service.updateAcquisitionRule(command).done(function() {
                             self.loadAcquisitionRule().done(function(res) {
                                 // Msg_15
-                                nts.uk.ui.dialog.alert("登録しました。").then(function() {
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                     self.closeDialog();
                                 });
                                 dfd.resolve();
                             });
                         }).fail(function(res) {
-                            nts.uk.ui.dialog.alert(res.message);
+                            nts.uk.ui.dialog.alertError(res.message);
                         });
 
                     }
@@ -166,13 +166,13 @@ module nts.uk.pr.view.kmf001.b {
                     service.updateAcquisitionRule(command).done(function() {
                         self.loadAcquisitionRule().done(function(res) {
                             // Msg_15
-                            nts.uk.ui.dialog.alert("登録しました。").then(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                                 self.closeDialog();
                             });
                             dfd.resolve();
                         });
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alert(res.message);
+                        nts.uk.ui.dialog.alertError(res.message);
                     });
 
                 }

@@ -7,8 +7,11 @@ module nts.uk.pr.view.kmf001.d {
     import EmploymentSettingDto = service.model.EmploymentSettingDto;
     import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
     
+    
     export module viewmodel {
         export class ScreenModel {
+            selectedItem: KnockoutObservable<string>;
+            listComponentOption: KnockoutObservable<any>;
             
             retentionYearsAmount: KnockoutObservable<number>;
             maxDaysCumulation: KnockoutObservable<number>;
@@ -32,6 +35,17 @@ module nts.uk.pr.view.kmf001.d {
 
             constructor() {
                 var self = this;
+                this.selectedItem = ko.observable(null);
+                
+                this.listComponentOption = {
+                    isShowAlreadySet: true, // is show already setting column.
+                    isMultiSelect: false, // is multiselect.
+                    listType: ListType.EMPLOYMENT,
+                    selectedCode: this.selectedItem,
+                    isDialog: false,
+                    alreadySettingList: ko.observableArray([{ code: '01', isAlreadySetting: true }])
+                };
+                
                 self.retentionYearsAmount = ko.observable(null);
                 self.maxDaysCumulation = ko.observable(null);
                 self.yearsAmountByEmp = ko.observable(null);
@@ -160,6 +174,10 @@ module nts.uk.pr.view.kmf001.d {
                 return dto;
             }
             
+            private switchToEmploymentTab(): void {
+                $('#left-content').ntsListComponent(this.listComponentOption);
+            }
+            
             private registerWholeCompany(): void {
                 var self = this;
                 // Clear errors
@@ -175,11 +193,10 @@ module nts.uk.pr.view.kmf001.d {
                 }
                 
                 service.saveRetentionYearly(self.collectWholeCompanyData()).done(function() {
-//                    nts.uk.ui.dialog.alert('登録しました。');
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 })
                     .fail((res) => {
-                        nts.uk.ui.dialog.alert(res.message);
+                        nts.uk.ui.dialog.alertError(res.message);
                     });
             }
             
@@ -215,10 +232,24 @@ module nts.uk.pr.view.kmf001.d {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 })
                     .fail((res) => {
-//                        nts.uk.ui.dialog.alert(res.message);
+                        nts.uk.ui.dialog.alertError(res.message);
                     });
             }
             
+        }
+        
+        export class ListType {
+            static EMPLOYMENT = 1;
+            static Classification = 2;
+            static JOB_TITLE = 3;
+            static EMPLOYEE = 4;
+        }
+        
+        export interface UnitModel {
+            code: string;
+            name?: string;
+            workplaceName?: string;
+            isAlreadySetting?: boolean;
         }
         
         class ItemModel {

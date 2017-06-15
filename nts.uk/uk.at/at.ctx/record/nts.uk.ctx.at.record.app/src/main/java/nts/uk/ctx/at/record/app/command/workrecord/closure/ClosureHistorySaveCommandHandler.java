@@ -4,11 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.workrecord.closure;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryDto;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistory;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -42,6 +46,28 @@ public class ClosureHistorySaveCommandHandler extends CommandHandler<ClosureHist
 		
 		// get command
 		ClosureHistorySaveCommand command = context.getCommand();
+		
+		Optional<ClosureHistory> closureHistory = this.repository.findByHistoryId(companyId,
+				command.getClosureHistory().getClosureId(),
+				command.getClosureHistory().getClosureHistoryId());
+		
+		if(closureHistory.isPresent()){
+			Optional<ClosureHistory> closureHistoryLast = this.repository
+					.findByHistoryLast(companyId, command.getClosureHistory().getClosureId());
+			
+			// edit history not last 
+			if (closureHistoryLast.isPresent()
+					&& closureHistoryLast.get().getClosureHistoryId()
+							.equals(command.getClosureHistory().getClosureHistoryId())
+					&& command.getClosureHistory().getClosureDate() != closureHistoryLast.get()
+							.toClosureDate()) {
+				throw new BusinessException("Msg_154");
+			}
+			ClosureHistoryDto dto = command.getClosureHistory();
+			dto.setStartDate(closureHistory.get().getStartDate().v());
+			dto.setEndDate(closureHistory.get().getEndDate().v());
+			command.setClosureHistory(dto);
+		}
 		
 		// to domain
 		ClosureHistory domain = command.toDomain(companyId);

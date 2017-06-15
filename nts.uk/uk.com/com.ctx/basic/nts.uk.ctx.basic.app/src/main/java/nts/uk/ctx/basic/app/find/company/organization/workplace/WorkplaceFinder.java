@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceFindDto;
 import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceInDto;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
@@ -41,9 +42,10 @@ public class WorkplaceFinder {
 		
 		// get company id
 		String companyId = loginUserContext.companyId();
-		
+		// format date => general date
+		GeneralDate generalDate = GeneralDate.fromString(inDto.getDate(), inDto.getFormat());
 		// to domain
-		return this.repository.findAll(companyId, inDto.getDate(), inDto.getFormat()).stream()
+		return this.repository.findAll(companyId, generalDate).stream()
 			.map(domain -> {
 				WorkplaceFindDto dto = new WorkplaceFindDto();
 				domain.saveToMemento(dto);

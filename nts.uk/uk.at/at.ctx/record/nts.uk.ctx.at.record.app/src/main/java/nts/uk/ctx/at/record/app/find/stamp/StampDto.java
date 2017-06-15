@@ -24,6 +24,7 @@ public class StampDto {
 	private int stampReason;
 	private String stampReasonName;
 	private GeneralDate date;
+	private String personId;
 
 	public static StampDto fromDomain(StampItem domain) {
 		return new StampDto(domain.getCardNumber().v(), 
@@ -39,6 +40,7 @@ public class StampDto {
 				domain.getWorkLocationName().v(),
 				domain.getStampReason().value,
 				domain.getStampReason().name,
-				domain.getDate());
+				domain.getDate(),
+				domain.getPersonId());
 	}
 }

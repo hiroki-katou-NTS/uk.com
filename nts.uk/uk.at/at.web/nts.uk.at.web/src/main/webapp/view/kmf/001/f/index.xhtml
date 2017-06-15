@@ -144,22 +144,20 @@
 							<td class="pad_left_70"><label>#{i18n.getText('KMF001_81')}</label></td>
 							<td class="inp_time"><input id="workOneDay"
 								class="check_error" tabindex="9" style="float: right;"
-								data-name="Time Of Days Editor"
-								data-bind="ntsTimeEditor: {value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
+								data-bind="ntsTimeEditor: {name:'#[KMF001_81]', value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
 							</td>
 							<td class="pad_left_70"><label>#{i18n.getText('KMF001_82')}</label></td>
 							<td class="inp_time"><input id="workHalfDay"
 								class="check_error" tabindex="10"
-								data-name="Time Of Days Editor"
-								data-bind="ntsTimeEditor: {value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
+								data-bind="ntsTimeEditor: {name:'#[KMF001_82]', value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
 							</td>
 						</tr>
 						<tr>
 							<td class="inp_time">
 								<div class="float_right">
 									<input id="workAll" class="check_error"
-										data-name="Time Of Days Editor" tabindex="11"
-										data-bind="ntsTimeEditor: {value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
+										data-name="KMF001_137" tabindex="11"
+										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
 								</div>
 							</td>
 							<td><label>#{i18n.getText('KMF001_83')}</label></td>
@@ -181,22 +179,20 @@
 							<td class="pad_left_70"><label>#{i18n.getText('KMF001_81')}</label></td>
 							<td class="inp_time"><input id="overOneDay"
 								class="check_error" tabindex="14"
-								data-name="Time Of Days Editor"
-								data-bind="ntsTimeEditor: {value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+								data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 							</td>
 							<td class="pad_left_70"><label>#{i18n.getText('KMF001_82')}</label></td>
 							<td class="inp_time"><input id="overHalfDay"
 								class="check_error" tabindex="15"
-								data-name="Time Of Days Editor"
-								data-bind="ntsTimeEditor: {value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+								data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 							</td>
 						</tr>
 						<tr>
 							<td class="inp_time">
 								<div class="float_right">
 									<input id="overAll" class="check_error"
-										data-name="Time Of Days Editor" tabindex="16"
-										data-bind="ntsTimeEditor: {value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
+										data-name="KMF001_137" tabindex="16"
+										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
 								</div>
 							</td>
 							<td><label>#{i18n.getText('KMF001_83')}</label></td>
@@ -228,7 +224,7 @@
 						<div style="padding:20px;">
 							<table id="single-list"
 								data-bind="ntsGridList: {
-									height: 450,
+									height: 400,
 									width: '100%',
 									options: employmentList,
 									optionsValue: 'code',
