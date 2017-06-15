@@ -551,6 +551,23 @@ var nts;
                 }
                 return message;
             }
+            function getControlName(name) {
+                var hashIdx = name.indexOf("#");
+                if (hashIdx !== 0)
+                    return name;
+                var names = name.substring(hashIdx + 2, name.length - 1).split(",");
+                if (names.length > 1) {
+                    var params_1 = new Array();
+                    _.forEach(names, function (n, idx) {
+                        if (idx === 0)
+                            return true;
+                        params_1.push(getText(n.trim()));
+                    });
+                    return getText(names[0], params_1);
+                }
+                return getText(names[0]);
+            }
+            resource.getControlName = getControlName;
         })(resource = uk.resource || (uk.resource = {}));
         uk.sessionStorage = new WebStorageWrapper(window.sessionStorage);
         uk.localStorage = new WebStorageWrapper(window.localStorage);
@@ -702,43 +719,78 @@ var nts;
                 }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
             }
             text_3.oneByteKatakanaToTwoByte = oneByteKatakanaToTwoByte;
+            function anyChar(text) {
+                return {
+                    probe: true,
+                    messageId: 'FND_E_ANY'
+                };
+            }
+            text_3.anyChar = anyChar;
             function allHalfNumeric(text) {
-                return regexp.allHalfNumeric.test(text);
+                return {
+                    probe: regexp.allHalfNumeric.test(text),
+                    messageId: 'FND_E_NUMERIC'
+                };
             }
             text_3.allHalfNumeric = allHalfNumeric;
             function allHalfAlphabet(text) {
-                return regexp.allHalfAlphabet.test(text);
+                return {
+                    probe: regexp.allHalfAlphabet.test(text),
+                    messageId: 'NO_MESSAGE'
+                };
             }
             text_3.allHalfAlphabet = allHalfAlphabet;
             function allHalfAlphanumeric(text) {
-                return regexp.allHalfAlphanumeric.test(text);
+                return {
+                    probe: regexp.allHalfAlphanumeric.test(text),
+                    messageId: 'FND_E_ALPHANUMERIC'
+                };
             }
             text_3.allHalfAlphanumeric = allHalfAlphanumeric;
             function allHalfKatakana(text) {
-                return regexp.allHalfKatakanaReg.test(text);
+                return {
+                    probe: regexp.allHalfKatakanaReg.test(text),
+                    messageId: 'NO_MESSAGE'
+                };
             }
             text_3.allHalfKatakana = allHalfKatakana;
             function allFullKatakana(text) {
-                return regexp.allFullKatakanaReg.test(text);
+                return {
+                    probe: regexp.allFullKatakanaReg.test(text),
+                    messageId: 'FND_E_KANA'
+                };
             }
             text_3.allFullKatakana = allFullKatakana;
             function allHalf(text) {
-                return text.length === countHalf(text);
+                return {
+                    probe: text.length === countHalf(text),
+                    messageId: 'FND_E_ANYHALFWIDTH'
+                };
             }
             text_3.allHalf = allHalf;
             function allHiragana(text) {
-                return regexp.allHiragana.test(text);
+                return {
+                    probe: regexp.allHiragana.test(text),
+                    messageId: 'NO_MESSAGE'
+                };
             }
             text_3.allHiragana = allHiragana;
             function allKatakana(text) {
-                return regexp.allFullKatakanaReg.test(text);
+                return {
+                    probe: regexp.allFullKatakanaReg.test(text),
+                    messageId: 'NO_MESSAGE'
+                };
             }
             text_3.allKatakana = allKatakana;
             function halfInt(text) {
                 var val = parseFloat(text);
+                var probe = false;
                 if (val !== NaN && (val * 2) % 1 === 0)
-                    return true;
-                return false;
+                    probe = true;
+                return {
+                    probe: probe,
+                    messageId: 'FND_E_HALFINT'
+                };
             }
             text_3.halfInt = halfInt;
             function htmlEncode(text) {
@@ -850,12 +902,15 @@ var nts;
                 }
                 CharType.prototype.validate = function (text) {
                     var result = new uk.ui.validation.ValidationResult();
-                    if (this.validator(text)) {
-                        return true;
+                    var validateResult = this.validator(text);
+                    if (validateResult.probe) {
+                        result.isValid = true;
+                        result.errorMessage = validateResult.messageId;
                     }
                     else {
-                        return false;
+                        result.fail(validateResult.messageId);
                     }
+                    return result;
                 };
                 CharType.prototype.buildConstraintText = function (maxLength) {
                     return this.viewName + this.getViewLength(maxLength) + '文字';
@@ -871,7 +926,7 @@ var nts;
                 AlphaNumeric: new CharType('半角英数字', 0.5, nts.uk.text.allHalfAlphanumeric),
                 Alphabet: new CharType('半角英字', 0.5, nts.uk.text.allHalfAlphabet),
                 Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
-                Any: new CharType('全角', 1, nts.uk.util.alwaysTrue),
+                Any: new CharType('全角', 1, nts.uk.text.anyChar),
                 Kana: new CharType('カナ', 1, nts.uk.text.allFullKatakana),
                 HalfInt: new CharType('半整数', 0.5, nts.uk.text.halfInt)
             };
@@ -1039,15 +1094,28 @@ var nts;
                 }
                 return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
             }
-            function isNumber(value, isDecimalValue, option) {
+            function isNumber(value, isDecimalValue, option, message) {
                 if (isDecimalValue) {
+                    if (message !== undefined)
+                        message.id = 'FND_E_REALNUMBER';
                     return isDecimal(value, option);
                 }
                 else {
+                    if (message !== undefined)
+                        message.id = 'FND_E_INTEGER';
                     return isInteger(value, option);
                 }
             }
             ntsNumber.isNumber = isNumber;
+            function isHalfInt(value, message) {
+                var val = parseFloat(value);
+                if (message !== undefined)
+                    message.id = 'FND_E_HALFINT';
+                if (val !== NaN && (val * 2) % 1 === 0)
+                    return true;
+                return false;
+            }
+            ntsNumber.isHalfInt = isHalfInt;
             ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
             function getDecimal(value, scale) {
                 var scaleX = Math.pow(10, scale);
@@ -1101,7 +1169,7 @@ var nts;
     (function (uk) {
         var time;
         (function (time_1) {
-            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "HH:mm", "YYYY"];
+            var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
             var listEmpire = {
                 "明治": "1868/01/01",
                 "大正": "1912/07/30",
@@ -2114,14 +2182,10 @@ var nts;
                         var $functionsArea = $('#functions-area');
                         var $functionsAreaBottom = $('#functions-area-bottom');
                         if ($functionsArea.length > 0) {
-                            _.defer(function () {
-                                $('#func-notifier-errors').position({ my: 'left+5 top-5', at: 'left bottom', of: $('#functions-area') });
-                            });
+                            $('#func-notifier-errors').position({ my: 'left+5 top-5', at: 'left bottom', of: $('#functions-area') });
                         }
                         else if ($functionsAreaBottom.length > 0) {
-                            _.defer(function () {
-                                $('#func-notifier-errors').position({ my: 'left+5 top+48', at: 'left top', of: $('#functions-area-bottom') });
-                            });
+                            $('#func-notifier-errors').position({ my: 'left+5 top+48', at: 'left top', of: $('#functions-area-bottom') });
                         }
                         else {
                             return;
@@ -2168,7 +2232,8 @@ var nts;
                 }());
                 validation.ValidationResult = ValidationResult;
                 var StringValidator = (function () {
-                    function StringValidator(primitiveValueName, option) {
+                    function StringValidator(name, primitiveValueName, option) {
+                        this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
                         this.charType = uk.text.getCharType(primitiveValueName);
                         this.required = option.required;
@@ -2177,10 +2242,11 @@ var nts;
                         var result = new ValidationResult();
                         if (this.required !== undefined && this.required !== false) {
                             if (uk.util.isNullOrEmpty(inputText)) {
-                                result.fail('This field is required');
+                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]));
                                 return result;
                             }
                         }
+                        var validateResult;
                         if (this.charType !== null && this.charType !== undefined) {
                             if (this.charType.viewName === '半角数字') {
                                 inputText = uk.text.toOneByteAlphaNumberic(inputText);
@@ -2194,14 +2260,17 @@ var nts;
                             else if (this.charType.viewName === 'カナ') {
                                 inputText = uk.text.hiraganaToKatakana(uk.text.oneByteKatakanaToTwoByte(inputText));
                             }
-                            if (!this.charType.validate(inputText)) {
-                                result.fail('Invalid text');
+                            validateResult = this.charType.validate(inputText);
+                            if (!validateResult.isValid) {
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, !uk.util.isNullOrUndefined(this.constraint)
+                                        ? (!uk.util.isNullOrUndefined(this.constraint.maxLength)
+                                            ? this.constraint.maxLength : 9999) : 9999]));
                                 return result;
                             }
                         }
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
-                                result.fail('Max length for this input is ' + this.constraint.maxLength);
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, this.constraint.maxLength]));
                                 return result;
                             }
                             if (!uk.util.isNullOrUndefined(option) && option.isCheckExpression === true) {
@@ -2218,7 +2287,8 @@ var nts;
                 }());
                 validation.StringValidator = StringValidator;
                 var NumberValidator = (function () {
-                    function NumberValidator(primitiveValueName, option) {
+                    function NumberValidator(name, primitiveValueName, option) {
+                        this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
                         this.option = option;
                     }
@@ -2228,7 +2298,7 @@ var nts;
                         if (this.option !== undefined) {
                             if (nts.uk.util.isNullOrUndefined(inputText) || inputText.trim().length <= 0) {
                                 if (this.option['required'] === true && nts.uk.util.isNullOrEmpty(this.option['defaultValue'])) {
-                                    result.fail('This field is required.');
+                                    result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]));
                                     return result;
                                 }
                                 else {
@@ -2239,30 +2309,49 @@ var nts;
                             isDecimalNumber = (this.option.decimallength > 0);
                             inputText = uk.text.replaceAll(inputText.toString(), this.option.groupseperator, '');
                         }
-                        if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber)) {
-                            result.fail('invalid number');
-                            return result;
+                        var message = {};
+                        var validateFail = false, max = 99999999, min = 0, mantissaMaxLength;
+                        if (!uk.util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {
+                            if (!uk.ntsNumber.isHalfInt(inputText, message))
+                                validateFail = true;
+                        }
+                        else if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber, undefined, message)) {
+                            validateFail = true;
                         }
                         var value = isDecimalNumber ?
                             uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
-                        if (this.constraint !== null) {
-                            if (this.constraint.max !== undefined && value > this.constraint.max) {
-                                result.fail('max value is: ' + this.constraint.max);
-                                return result;
+                        if (!uk.util.isNullOrUndefined(this.constraint)) {
+                            if (!uk.util.isNullOrUndefined(this.constraint.max)) {
+                                max = this.constraint.max;
+                                if (value > this.constraint.max)
+                                    validateFail = true;
                             }
-                            if (this.constraint.min !== undefined && value < this.constraint.min) {
-                                result.fail('min value is: ' + this.constraint.min);
-                                return result;
+                            if (!uk.util.isNullOrUndefined(this.constraint.min)) {
+                                min = this.constraint.min;
+                                if (value < this.constraint.min)
+                                    validateFail = true;
+                            }
+                            if (!uk.util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
+                                mantissaMaxLength = this.constraint.mantissaMaxLength;
+                                var parts = String(value).split(".");
+                                if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
+                                    validateFail = true;
                             }
                         }
-                        result.success(inputText === "0" ? inputText : uk.text.removeFromStart(inputText, "0"));
+                        if (validateFail) {
+                            result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]));
+                        }
+                        else {
+                            result.success(inputText === "0" ? inputText : uk.text.removeFromStart(inputText, "0"));
+                        }
                         return result;
                     };
                     return NumberValidator;
                 }());
                 validation.NumberValidator = NumberValidator;
                 var TimeValidator = (function () {
-                    function TimeValidator(primitiveValueName, option) {
+                    function TimeValidator(name, primitiveValueName, option) {
+                        this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
                         this.required = (option && option.required) ? option.required : false;
@@ -2273,7 +2362,7 @@ var nts;
                         var result = new ValidationResult();
                         if (uk.util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
-                                result.fail('This field is required');
+                                result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]));
                                 return result;
                             }
                             else {
@@ -2281,13 +2370,35 @@ var nts;
                                 return result;
                             }
                         }
+                        var maxStr, minStr;
                         if (this.mode === "time") {
                             var timeParse = uk.time.parseTime(inputText, false);
                             if (timeParse.success) {
                                 result.success(timeParse.toValue());
                             }
                             else {
-                                result.fail(timeParse.getMsg());
+                                result.fail();
+                            }
+                            if (!uk.util.isNullOrUndefined(this.constraint)) {
+                                if (!uk.util.isNullOrUndefined(this.constraint.max)) {
+                                    maxStr = this.constraint.max;
+                                    var max = uk.time.parseTime(this.constraint.max);
+                                    if (timeParse.success && (max.hours < timeParse.hours
+                                        || (max.hours === timeParse.hours && max.minutes < timeParse.minutes))) {
+                                        result.fail();
+                                    }
+                                }
+                                if (!uk.util.isNullOrUndefined(this.constraint.min)) {
+                                    minStr = this.constraint.min;
+                                    var min = uk.time.parseTime(this.constraint.min);
+                                    if (timeParse.success && (min.hours > timeParse.hours
+                                        || (min.hours === timeParse.hours && min.minutes > timeParse.minutes))) {
+                                        result.fail();
+                                    }
+                                }
+                            }
+                            if (!result.isValid && this.constraint.valueType === "Time") {
+                                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]));
                             }
                             return result;
                         }
@@ -2310,6 +2421,30 @@ var nts;
                         }
                         else {
                             result.fail(parseResult.getMsg());
+                        }
+                        if (this.outputFormat === "time") {
+                            if (!uk.util.isNullOrUndefined(this.constraint)) {
+                                var inputMoment = parseResult.toValue();
+                                if (!uk.util.isNullOrUndefined(this.constraint.max)) {
+                                    maxStr = this.constraint.max;
+                                    var maxMoment = moment.duration(maxStr);
+                                    if (parseResult.success && (maxMoment.hours() < inputMoment.hours()
+                                        || (maxMoment.hours() === inputMoment.hours() && maxMoment.minutes() < inputMoment.minutes()))) {
+                                        result.fail();
+                                    }
+                                }
+                                if (!uk.util.isNullOrUndefined(this.constraint.min)) {
+                                    minStr = this.constraint.min;
+                                    var minMoment = moment.duration(minStr);
+                                    if (parseResult.success && (minMoment.hours() > inputMoment.hours()
+                                        || (minMoment.hours() === inputMoment.hours() && minMoment.minutes() > inputMoment.minutes()))) {
+                                        result.fail();
+                                    }
+                                }
+                            }
+                            if (!result.isValid && this.constraint.valueType === "Clock") {
+                                result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]));
+                            }
                         }
                         return result;
                     };
@@ -2363,7 +2498,8 @@ var nts;
                         this.option.show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
-                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.messageText == error.messageText; });
+                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control)
+                            && (typeof error.message === "string" ? e.messageText === error.message : e.messageText === error.messageText); });
                         if (duplicate.length == 0) {
                             if (typeof error.message === "string") {
                                 error.messageText = error.message;
@@ -4804,6 +4940,7 @@ var nts;
                     DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var value = data.value;
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "YYYY/MM/DD";
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
@@ -4857,7 +4994,8 @@ var nts;
                         DatePickerNormalizer.getInstance($input).setCssRanger(data.cssRanger)
                             .fiscalMonthsMode(data.fiscalMonthsMode)
                             .setDefaultCss(data.defaultClass || "");
-                        var validator = new ui.validation.TimeValidator(constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
+                        name = nts.uk.resource.getControlName(name);
+                        var validator = new ui.validation.TimeValidator(name, constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
                         $input.on("change", function (e) {
                             var newText = $input.val();
                             var result = validator.validate(newText);
@@ -5762,9 +5900,11 @@ var nts;
                         return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
+                        name = nts.uk.resource.getControlName(name);
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new validation.StringValidator(constraintName, { required: required });
+                        return new validation.StringValidator(name, constraintName, { required: required });
                     };
                     return TextEditorProcessor;
                 }(EditorProcessor));
@@ -5787,9 +5927,11 @@ var nts;
                         return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
                     };
                     MultilineEditorProcessor.prototype.getValidator = function (data) {
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
+                        name = nts.uk.resource.getControlName(name);
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new validation.StringValidator(constraintName, { required: required });
+                        return new validation.StringValidator(name, constraintName, { required: required });
                     };
                     return MultilineEditorProcessor;
                 }(EditorProcessor));
@@ -5840,10 +5982,12 @@ var nts;
                         return new uk.text.NumberFormatter({ option: this.editorOption });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
+                        name = nts.uk.resource.getControlName(name);
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         this.editorOption['required'] = required;
-                        return new validation.NumberValidator(constraintName, this.editorOption);
+                        return new validation.NumberValidator(name, constraintName, this.editorOption);
                     };
                     return NumberEditorProcessor;
                 }(EditorProcessor));
@@ -5871,12 +6015,14 @@ var nts;
                         return new uk.text.TimeFormatter({ inputFormat: inputFormat });
                     };
                     TimeEditorProcessor.prototype.getValidator = function (data) {
+                        var name = data.name !== undefined ? ko.unwrap(data.name) : "";
+                        name = nts.uk.resource.getControlName(name);
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var inputFormat = (data.inputFormat !== undefined) ? ko.unwrap(data.inputFormat) : option.inputFormat;
                         var mode = (data.mode !== undefined) ? ko.unwrap(data.mode) : "";
-                        return new validation.TimeValidator(constraintName, { required: required, outputFormat: inputFormat, mode: mode });
+                        return new validation.TimeValidator(name, constraintName, { required: required, outputFormat: inputFormat, mode: mode });
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
@@ -6150,7 +6296,7 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if (!($grid.attr("filtered") === true && $grid.attr("filtered") === "true") && $grid.data("ui-changed") !== true) {
+                        if (!($grid.attr("filtered") === true || $grid.attr("filtered") === "true") && $grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -6713,6 +6859,7 @@ var nts;
                                 component.igGrid("option", "dataSource", srh.seachBox.getDataSource());
                                 component.igGrid("dataBind");
                                 $container.data("searchKey", null);
+                                $container.data("filteredSrouce", null);
                                 component.attr("filtered", false);
                             });
                         }
