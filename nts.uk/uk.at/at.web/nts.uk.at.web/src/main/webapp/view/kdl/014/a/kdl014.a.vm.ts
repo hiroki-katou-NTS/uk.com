@@ -35,11 +35,13 @@ module kdl014.a.viewmodel {
             var dfd = $.Deferred<any>();
 
             // Get list stamp
-            let startDate: string = '20160808';
-            let endDate: string = '20170808';
+            //let startDate: string = '20160808';
+            let startDate: string = nts.uk.ui.windows.getShared("kdl014startDateA");
+            let endDate: string = nts.uk.ui.windows.getShared("kdl014endDateA");
             self.startDate = moment(startDate, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ~';
             self.endDate = moment(endDate, 'YYYYMMDD').format('YYYY/MM/DD');
-            let employeeCode: string = '00003';
+            //let employeeCode: string = '00003';
+            let employeeCode: string = nts.uk.ui.windows.getShared("kdl014employeeCodeA");
             self.employeeCD = employeeCode;
             self.employeeName = "name" + self.employeeCD;
             let lstCardNumber: Array<string> = [];
@@ -56,7 +58,6 @@ module kdl014.a.viewmodel {
                         });
                         //get list Stamp 
                         service.getStampByCode(lstCardNumber, startDate, endDate).done(function(lstStamp: any) {
-                            console.log(lstStamp);
                             if (lstStamp.length > 0) {
                                 _.forEach(lstStamp, function(item) {
                                     lstSource.push(new StampModel(moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
@@ -64,12 +65,7 @@ module kdl014.a.viewmodel {
                             };
                             //set list data source
                             self.items(_.orderBy(lstSource, ['date', 'attendanceTime'], ['asc', 'asc']));
-                            $("#igGridStamp").igGrid({
-                                width: '780px',
-                                height: '260px',
-                                dataSource: self.items(),
-                                columns: self.columns()
-                            });
+                            $("#igGridStamp").igGrid({ dataSource: self.items() });
                             dfd.resolve();
                         }).fail(function(res) {
                             dfd.reject();

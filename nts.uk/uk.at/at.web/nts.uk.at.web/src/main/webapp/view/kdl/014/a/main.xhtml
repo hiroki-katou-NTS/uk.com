@@ -9,11 +9,58 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:stylefile path="main.css" />
 			<com:scriptfile path="kdl014.main.js" />
 		</ui:define>
 		<ui:define name="content">
-			<button data-bind="click: openKDL014">Open A DIALOG 打刻参照</button>
-			<button data-bind="click: openKDL014B">Open B DIALOG 打刻参照</button>
+			<div id="screenA">
+				<div>
+					<table>
+						<tr>
+							<td>Start Date</td>
+							<td><input id="startDateA"></input></td>
+						</tr>
+	
+						<tr>
+							<td>End Date</td>
+							<td><input id="endDateA"></input></td>
+						</tr>
+	
+						<tr>
+							<td>EmployeeCode</td>
+							<td><input id="employeeCodeA"></input></td>
+						</tr>
+					</table>
+				</div>
+				
+				<div>
+					<button data-bind="click: openKDL014">Open A DIALOG 打刻参照</button>
+				</div>
+			</div>
+			
+			<div id="screenB">
+				<div>
+					<table>
+						<tr>
+							<td>Start Date</td>
+							<td><input id="startDateB"></input></td>
+						</tr>
+	
+						<tr>
+							<td>End Date</td>
+							<td><input id="endDateB"></input></td>
+						</tr>
+						<tr>
+							<td>List Employee</td>
+							<td><input id="lstEmployeeB"></input></td>
+						</tr>
+					</table>
+				</div>
+				
+				<div>
+					<button data-bind="click: openKDL014B">Open B DIALOG 打刻参照</button>
+				</div>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
