@@ -12,7 +12,6 @@ module nts.uk.pr.view.kmf001.d {
         export class ScreenModel {
             selectedItem: KnockoutObservable<string>;
             listComponentOption: KnockoutObservable<any>;
-//            listComponentOption: ComponentOption;
             
             retentionYearsAmount: KnockoutObservable<number>;
             maxDaysCumulation: KnockoutObservable<number>;
@@ -194,11 +193,10 @@ module nts.uk.pr.view.kmf001.d {
                 }
                 
                 service.saveRetentionYearly(self.collectWholeCompanyData()).done(function() {
-//                    nts.uk.ui.dialog.alert('登録しました。');
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 })
                     .fail((res) => {
-                        nts.uk.ui.dialog.alert(res.message);
+                        nts.uk.ui.dialog.alertError(res.message);
                     });
             }
             
@@ -234,7 +232,7 @@ module nts.uk.pr.view.kmf001.d {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 })
                     .fail((res) => {
-//                        nts.uk.ui.dialog.alert(res.message);
+                        nts.uk.ui.dialog.alertError(res.message);
                     });
             }
             

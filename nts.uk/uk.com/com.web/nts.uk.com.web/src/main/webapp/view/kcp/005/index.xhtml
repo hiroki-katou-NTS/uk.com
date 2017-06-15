@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../../../../nts.uk.com.web/view/kcp/share/list.js" />
+			<com:scriptfile path="kcp005.a.vm.js" />
+			<com:scriptfile path="kcp005.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+		
+		<div style="margin-left: 30px">
+			<BUTTON id="test-button" data-bind="click: settingRegistedItem">Register</BUTTON>
+			<BUTTON id="test-button" data-bind="click: settingDeletedItem">Delete</BUTTON>
+		</div>
+		<table style="margin: 30px;">
+			<tr>
+				<td>
+					<div style="margin-bottom: 30px; padding-left: 20px">
+						<p style="font-size: 30px">複数選択モード</p>
+					</div>
+					<div id="employee-setting"></div>
+				</td>
+				<td style="padding-left: 50px">
+					<div style="margin-bottom: 30px; padding-left: 20px">
+						<p style="font-size: 30px">単一選択モード</p>
+					</div>
+					<div id="employee-multi-setting"></div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td style="width: 640px; padding-top: 100px">
+					<div style="margin-bottom: 30px; padding-left: 20px">
+						<p style="font-size: 30px">複数選択モード</p>
+					</div>
+					<div id="employee-noSetting"></div>
+				</td>
+				<td style="padding-top: 100px; padding-left: 50px">
+					<div style="margin-bottom: 30px; padding-left: 20px">
+						<p style="font-size: 30px">単一選択モード</p>
+					</div>
+					<div id="employee-multiSelect-noSetting"></div>
+				</td>
+			</tr>
+		</table>
+		
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
