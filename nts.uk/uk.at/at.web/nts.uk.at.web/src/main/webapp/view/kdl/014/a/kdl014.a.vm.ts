@@ -21,14 +21,19 @@ module kdl014.a.viewmodel {
             ]);
             self.employeeCode = '';
             self.employeeName = '';
+            $("#igGridStamp").igGrid({
+                width: '780px',
+                height: '260px',
+                dataSource: self.items(),
+                columns: self.columns()
+            });
         }
 
         /** Start page */
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            
-            console.time('loadStamps');
+
             // Get list stamp
             let startDate: string = '20160808';
             let endDate: string = '20170808';
@@ -39,7 +44,7 @@ module kdl014.a.viewmodel {
             self.employeeName = "name" + self.employeeCD;
             let lstCardNumber: Array<string> = [];
             let lstSource: Array<StampModel> = [];
-            
+
             //get list Card Number
             service.getPersonIdByEmployee(employeeCode).done(function(employeeInfo: any) {
                 if (employeeInfo !== undefined) {
@@ -48,7 +53,7 @@ module kdl014.a.viewmodel {
                     service.getStampNumberByPersonId(personId).done(function(lstStampNumber: any) {
                         _.forEach(lstStampNumber, function(value) {
                             lstCardNumber.push(value.cardNumber.toString());
-                        };
+                        });
                         //get list Stamp 
                         service.getStampByCode(lstCardNumber, startDate, endDate).done(function(lstStamp: any) {
                             console.log(lstStamp);
@@ -65,8 +70,6 @@ module kdl014.a.viewmodel {
                                 dataSource: self.items(),
                                 columns: self.columns()
                             });
-                            console.timeEnd('loadStamps');
-                            //console.log("loadStamps  "+(t1-t0)+"  milliseconds");
                             dfd.resolve();
                         }).fail(function(res) {
                             dfd.reject();
@@ -82,7 +85,7 @@ module kdl014.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
-            
+
         }
 
         /**Close function*/
