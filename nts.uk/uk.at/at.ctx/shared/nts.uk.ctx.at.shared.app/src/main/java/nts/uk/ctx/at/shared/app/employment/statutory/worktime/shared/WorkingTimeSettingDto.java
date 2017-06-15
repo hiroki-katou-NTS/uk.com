@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.employment.statutory.worktime.shared;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
@@ -22,7 +22,7 @@ public class WorkingTimeSettingDto {
 	private int daily;
 
 	/** The monthly. */
-	private Set<MonthlyDto> monthly;
+	private List<MonthlyDto> monthly;
 
 	/** The weekly. */
 	private int weekly;
@@ -48,9 +48,9 @@ public class WorkingTimeSettingDto {
 	 * @return the working time setting
 	 */
 	public static WorkingTimeSetting toDomain(WorkingTimeSettingDto dto) {
-		Set<Monthly> monthly = dto.getMonthly().stream().map(item -> {
+		List<Monthly> monthly = dto.getMonthly().stream().map(item -> {
 			return new Monthly(new AttendanceTime(item.getTime()), java.time.Month.of(item.getMonth()));
-		}).collect(Collectors.toSet());
+		}).collect(Collectors.toList());
 		WorkingTimeSetting domain = new WorkingTimeSetting();
 		domain.setDaily(new AttendanceTime(dto.getDaily()));
 		domain.setWeekly(new AttendanceTime(dto.getWeekly()));
