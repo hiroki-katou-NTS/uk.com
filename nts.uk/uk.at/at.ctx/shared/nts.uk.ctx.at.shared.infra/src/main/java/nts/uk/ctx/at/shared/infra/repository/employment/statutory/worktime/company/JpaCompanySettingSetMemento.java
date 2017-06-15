@@ -55,19 +55,25 @@ public class JpaCompanySettingSetMemento implements CompanySettingSetMemento {
 	 */
 	@Override
 	public void setFlexSetting(FlexSetting flexSetting) {
+		// Set statutory category & type.
 		JcwtstCompanyWtSetPK staPk = this.flexStatutory.getJcwtstCompanyWtSetPK();
 		staPk.setCtg(1);
 		staPk.setType(0);
 		this.flexStatutory.setJcwtstCompanyWtSetPK(staPk);
+
+		// Set statutory work time setting.
 		WorkingTimeSetting statutory = flexSetting.getStatutorySetting();
 		this.flexStatutory.setDailyTime(statutory.getDaily().v());
 		this.flexStatutory.setWeeklyTime(statutory.getWeekly().v());
 		this.flexStatutory = this.setMonthly(this.flexStatutory, statutory.getMonthly());
 
+		// Set specified category & type.
 		JcwtstCompanyWtSetPK spePk = this.flexSpecified.getJcwtstCompanyWtSetPK();
 		spePk.setCtg(1);
 		spePk.setType(1);
 		this.flexSpecified.setJcwtstCompanyWtSetPK(spePk);
+
+		// Set specified work time setting.
 		WorkingTimeSetting specified = flexSetting.getSpecifiedSetting();
 		this.flexSpecified.setDailyTime(specified.getDaily().v());
 		this.flexSpecified.setWeeklyTime(specified.getWeekly().v());
@@ -84,11 +90,16 @@ public class JpaCompanySettingSetMemento implements CompanySettingSetMemento {
 	 */
 	@Override
 	public void setDeformationLaborSetting(DeformationLaborSetting deformationLaborSetting) {
+		// Set category & type.
 		JcwtstCompanyWtSetPK pk = this.deformed.getJcwtstCompanyWtSetPK();
 		pk.setCtg(2);
 		pk.setType(0);
 		this.deformed.setJcwtstCompanyWtSetPK(pk);
+
+		//Set start week
 		this.deformed.setStrWeek(deformationLaborSetting.getWeekStart().value);
+		
+		// Set work time setting.
 		WorkingTimeSetting wts = deformationLaborSetting.getStatutorySetting();
 		this.deformed.setDailyTime(wts.getDaily().v());
 		this.deformed.setWeeklyTime(wts.getWeekly().v());
@@ -153,11 +164,16 @@ public class JpaCompanySettingSetMemento implements CompanySettingSetMemento {
 	 */
 	@Override
 	public void setNormalSetting(NormalSetting normalSetting) {
+		// Set category & type.
 		JcwtstCompanyWtSetPK pk = this.normal.getJcwtstCompanyWtSetPK();
 		pk.setCtg(0);
 		pk.setType(0);
 		this.normal.setJcwtstCompanyWtSetPK(pk);
+
+		// Set start week.
 		this.normal.setStrWeek(normalSetting.getWeekStart().value);
+
+		// Set work time setting.
 		WorkingTimeSetting wts = normalSetting.getStatutorySetting();
 		this.normal.setDailyTime(wts.getDaily().v());
 		this.normal.setWeeklyTime(wts.getWeekly().v());

@@ -53,7 +53,7 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 			switch (item.getJcwtstCompanyWtSetPK().getCtg()) {
 			case 0:
 				this.normalSetting = new NormalSetting(this.getWorkTimeSetting(item),
-						WeekStart.valueOf(item.getWeeklyTime()));
+						WeekStart.valueOf(item.getStrWeek()));
 				break;
 			case 1:
 				if (item.getJcwtstCompanyWtSetPK().getType() == 1) {
@@ -64,7 +64,7 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 				break;
 			case 2:
 				this.deformedSetting = new DeformationLaborSetting(this.getWorkTimeSetting(item),
-						WeekStart.valueOf(item.getWeeklyTime()));
+						WeekStart.valueOf(item.getStrWeek()));
 				break;
 			default:
 				break;
@@ -82,7 +82,7 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 	private WorkingTimeSetting getWorkTimeSetting(JcwtstCompanyWtSet item) {
 		WorkingTimeSetting wts = new WorkingTimeSetting();
 		wts.setDaily(new AttendanceTime(item.getDailyTime()));
-		wts.setWeekly(new AttendanceTime(item.getDailyTime()));
+		wts.setWeekly(new AttendanceTime(item.getWeeklyTime()));
 		wts.setMonthly(this.getMonthly(item));
 		return wts;
 	}
