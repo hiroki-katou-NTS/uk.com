@@ -114,7 +114,7 @@ module nts.uk.at.view.kmk012.d {
                     });
                     
                 }).fail(function(error){
-                   nts.uk.ui.dialog.info(error);
+                   nts.uk.ui.dialog.alertError(error);
                 });
                   
             }

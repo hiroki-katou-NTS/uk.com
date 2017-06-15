@@ -139,7 +139,7 @@ module nts.uk.at.view.kmk012.a {
                                 self.selectCodeLstClosureHistory().historyId);
                         });
                     }).fail(function(error) {
-                        nts.uk.ui.dialog.info(error).then(function() {
+                        nts.uk.ui.dialog.alertError(error).then(function() {
                             self.reloadPage(self.selectCodeLstClosure().id,
                                 self.selectCodeLstClosureHistory().historyId);
                         });
