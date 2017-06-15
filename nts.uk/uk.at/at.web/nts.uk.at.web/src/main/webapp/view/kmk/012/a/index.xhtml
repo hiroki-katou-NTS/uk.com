@@ -43,7 +43,7 @@
 						</td>
 							<td id="contents-right">
 	
-								<div class="contents">
+								<div class="contents" data-bind="if : visibleUseClassification()">
 									<div class="lableData" data-bind="ntsFormLabel: {required: false}">
 										<label>#{i18n.getText('KMK012_2')}</label>
 									</div>
@@ -91,7 +91,7 @@
 										multiple: false,
 										value: selectCodeLstClosureHistory,
 										enable: true,
-										rows: 5  }">
+										rows: 10  }">
 									</div>	
 										<div class="contents">
 											<div class="lableDataEnd" data-bind="ntsFormLabel: {required: true}">
@@ -99,9 +99,11 @@
 											</div>
 											<div class="valueData">
 												<input class="nts-input" id="inpname" 
+													data-name="#{i18n.getText('KMK012_9')}"
 													data-bind="ntsTextEditor:{
 			                                        value: closureHistoryModel.closureName,
 			                                        required: true,
+			                                       	option: textEditorOption,
 			                                        constraint: 'CloseName',
 			                                        enable: true}" />
 											</div>
@@ -120,7 +122,7 @@
 													value: closureHistoryModel.closureDate,
 													optionsText: 'name',
 													editable: true,
-													enable: true,
+													enable: enableChangeClosureDate,
 													columns: [
 														{ prop: 'name', length: 4 }
 													]}"></div>

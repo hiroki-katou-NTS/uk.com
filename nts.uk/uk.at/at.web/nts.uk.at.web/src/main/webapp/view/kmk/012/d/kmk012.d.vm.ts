@@ -1,14 +1,13 @@
 module nts.uk.at.view.kmk012.d {
 
     import DayofMonth = nts.uk.at.view.kmk012.a.service.model.DayofMonth;
-    import ClosureSaveDto = nts.uk.at.view.kmk012.a.service.model.ClosureSaveDto;
-    import ClosureHistoryDto = nts.uk.at.view.kmk012.a.service.model.ClosureHistoryDto;
     import ClosureHistoryInDto = service.model.ClosureHistoryInDto;
     import ClosureDetailDto = service.model.ClosureDetailDto;
     import DayMonthInDto = service.model.DayMonthInDto;
     import DayMonthDto = service.model.DayMonthDto;
     import DayMonthChangeInDto = service.model.DayMonthChangeInDto;
     import DayMonthChangeDto = service.model.DayMonthChangeDto;
+    import ClosureHistoryAddDto = service.model.ClosureHistoryAddDto;
 
     export module viewmodel {
 
@@ -93,25 +92,14 @@ module nts.uk.at.view.kmk012.d {
                 return dto;
             }
             
-            collectClosureSaveDto(): ClosureSaveDto{
+            collectClosureHistoryAddDto(): ClosureHistoryAddDto {
                 var self = this;
-                var dto: ClosureSaveDto = new ClosureSaveDto();
+                var dto: ClosureHistoryAddDto = new ClosureHistoryAddDto();
                 dto.closureId = self.closureDetailModel.closureId();
-                dto.useClassification = self.closureDetailModel.useClassification();
-                dto.month = self.closureDetailModel.month();
-                return dto; 
-            }
-            
-            collectClosureHistoryDto(): ClosureHistoryDto{
-                var self = this;
-                var dto: ClosureHistoryDto = new ClosureHistoryDto();
-                dto.closureId = self.closureDetailModel.closureId();
-                dto.closeName = self.closureDetailModel.closureName();
-                dto.closureHistoryId = self.closureDetailModel.historyId();
-                dto.endDate = self.closureDetailModel.endDate();
+                dto.endDate = 999912;
+                dto.startDate = self.closureDetailModel.month();
                 dto.closureDate = self.closureDetailModel.closureDateChange();
-                dto.startDate = self.closureDetailModel.startDate();
-                return dto; 
+                return dto;
             }
             
             closeWindowns(): void {
@@ -120,11 +108,15 @@ module nts.uk.at.view.kmk012.d {
 
             saveChangeClosureDate(): void {
                 var self = this;
-                nts.uk.at.view.kmk012.a.service.saveClosure(self.collectClosureSaveDto()).done(function() {
-                    nts.uk.at.view.kmk012.a.service.saveClosureHistory(self.collectClosureHistoryDto()).done(function() {
+                service.addClosureHistory(self.collectClosureHistoryAddDto()).done(function(){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         self.closeWindowns();
                     });
-                });    
+                    
+                }).fail(function(error){
+                   nts.uk.ui.dialog.info(error);
+                });
+                  
             }
 
         }

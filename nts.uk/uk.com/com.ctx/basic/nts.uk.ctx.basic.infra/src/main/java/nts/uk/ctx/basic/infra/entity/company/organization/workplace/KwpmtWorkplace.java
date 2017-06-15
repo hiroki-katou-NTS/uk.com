@@ -39,12 +39,12 @@ public class KwpmtWorkplace extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Size(min = 1, max = 120)
-	@Column(name = "WKPCD")
-	private String wkpcd;
+	@Column(name = "WPL_CD")
+	private String wplcd;
 	
 	@Size(max = 120)
-	@Column(name = "WKPNAME")
-	private String wkpname;
+	@Column(name = "WPL_NAME")
+	private String wplname;
 	
 	@Column(name = "STR_D")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -61,9 +61,9 @@ public class KwpmtWorkplace extends UkJpaEntity implements Serializable {
 		this.kwpmtWorkplacePK = kwpmtWorkplacePK;
 	}
 
-	public KwpmtWorkplace(KwpmtWorkplacePK kwpmtWorkplacePK, int exclusVer, String wkpcd) {
+	public KwpmtWorkplace(KwpmtWorkplacePK kwpmtWorkplacePK, String wkpcd) {
 		this.kwpmtWorkplacePK = kwpmtWorkplacePK;
-		this.wkpcd = wkpcd;
+		this.wplcd = wkpcd;
 	}
 
 	public KwpmtWorkplace(String cid, String wkpid) {

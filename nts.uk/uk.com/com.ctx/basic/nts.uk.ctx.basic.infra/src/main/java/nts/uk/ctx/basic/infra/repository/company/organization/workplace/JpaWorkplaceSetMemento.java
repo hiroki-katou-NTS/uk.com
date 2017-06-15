@@ -67,7 +67,7 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	@Override
 	public void setWorkplaceId(WorkplaceId workplaceId) {
 		KwpmtWorkplacePK pk = this.kwpmtWorkplace.getKwpmtWorkplacePK();
-		pk.setWkpid(workplaceId.v());
+		pk.setWplid(workplaceId.v());
 		this.kwpmtWorkplace.setKwpmtWorkplacePK(pk);
 	}
 
@@ -81,7 +81,7 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setWorkplaceCode(WorkplaceCode workplaceCode) {
-		this.kwpmtWorkplace.setWkpcd(workplaceCode.v());;
+		this.kwpmtWorkplace.setWplcd(workplaceCode.v());;
 	}
 
 	/*
@@ -94,7 +94,7 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setWorkplaceName(WorkplaceName workplaceName) {
-		this.kwpmtWorkplace.setWkpname(workplaceName.v());
+		this.kwpmtWorkplace.setWplname(workplaceName.v());
 	}
 
 }

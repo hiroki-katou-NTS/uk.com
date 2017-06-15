@@ -35,8 +35,8 @@ public class KwpmtWplHierarchy extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
-    @Column(name = "WKPCD")
-    private String wkpcd;
+    @Column(name = "WPL_CD")
+    private String wplcd;
 
     public KwpmtWplHierarchy() {
     }
@@ -45,9 +45,9 @@ public class KwpmtWplHierarchy extends UkJpaEntity implements Serializable {
         this.kwpmtWplHierarchyPK = kwpmtWplHierarchyPK;
     }
 
-    public KwpmtWplHierarchy(KwpmtWplHierarchyPK kwpmtWplHierarchyPK, int exclusVer, String wkpcd) {
+    public KwpmtWplHierarchy(KwpmtWplHierarchyPK kwpmtWplHierarchyPK, int exclusVer, String wplcd) {
         this.kwpmtWplHierarchyPK = kwpmtWplHierarchyPK;
-        this.wkpcd = wkpcd;
+        this.wplcd = wplcd;
     }
 
     public KwpmtWplHierarchy(String cid, String wkpid, String hisId) {

@@ -53,7 +53,7 @@ public class ClosureHistoryFinder {
 		List<ClosureHistory> closureHistories = new ArrayList<>();
 		
 		closures.forEach(closure->{
-			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory.findByLastHistory(
+			Optional<ClosureHistory> closureHistoryLast = this.repositoryHistory.findBySelectedYearMonth(
 					companyId, closure.getClosureId(), closure.getMonth().getProcessingDate().v());
 			
 			if(closureHistoryLast.isPresent()){

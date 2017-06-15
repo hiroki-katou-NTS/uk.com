@@ -65,7 +65,7 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 */
 	@Override
 	public WorkplaceId getWorkplaceId() {
-		return new WorkplaceId(this.kwpmtWorkplace.getKwpmtWorkplacePK().getWkpid());
+		return new WorkplaceId(this.kwpmtWorkplace.getKwpmtWorkplacePK().getWplid());
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 */
 	@Override
 	public WorkplaceCode getWorkplaceCode() {
-		return new WorkplaceCode(this.kwpmtWorkplace.getWkpcd());
+		return new WorkplaceCode(this.kwpmtWorkplace.getWplcd());
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 */
 	@Override
 	public WorkplaceName getWorkplaceName() {
-		return new WorkplaceName(this.kwpmtWorkplace.getWkpname());
+		return new WorkplaceName(this.kwpmtWorkplace.getWplname());
 	}
 
 }
