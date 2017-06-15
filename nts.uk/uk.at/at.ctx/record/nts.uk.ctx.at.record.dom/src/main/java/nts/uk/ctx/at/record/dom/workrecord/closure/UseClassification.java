@@ -17,10 +17,8 @@ public enum UseClassification {
 	/* 使用する*/
 	UseClass_Use(1);
 	
+	/** The value. */
 	public int value;
-
-	/** The description. */
-	public String description;
 
 	/** The Constant values. */
 	private final static UseClassification[] values = UseClassification.values();

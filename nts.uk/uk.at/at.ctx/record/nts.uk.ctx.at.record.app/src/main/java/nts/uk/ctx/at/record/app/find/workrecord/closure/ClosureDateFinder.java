@@ -23,11 +23,20 @@ import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.DayMonthInDto;
 @Setter
 public class ClosureDateFinder {
 
-	/** The Constant NEXT_DAY_MONT. */
-	public static final int NEXT_DAY_MONT = 1;
+	/** The Constant ONE_HUNDRED_COUNT. */
+	public static final int ONE_HUNDRED_COUNT = 100;
 	
+	/** The Constant TOTAL_MONTH_OF_YEAR. */
+	public static final int TOTAL_MONTH_OF_YEAR = 12;
+	
+	/** The Constant NEXT_DAY_MONT. */
+	public static final int NEXT_DAY_MONTH = 1;
+	
+	/** The Constant ZERO_DAY_MONT. */
+	public static final int ZERO_DAY_MONTH = 0;
+
 	/** The Constant FORMAT_DATE. */
-	  public static final SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy/MM/dd");
+	public static final String FORMAT_DATE_STR = "yyyy/MM/dd";
 
 	/** The begin closure date. */
 	private int beginClosureDate;
@@ -37,12 +46,16 @@ public class ClosureDateFinder {
 
 	/** The closure date. */
 	private int closureDate;
+	
+	/** The format date. */
+	private SimpleDateFormat formatDate;
 
 	/**
 	 * Instantiates a new closure date finder.
 	 */
 	public ClosureDateFinder() {
 		super();
+		this.formatDate = new SimpleDateFormat(FORMAT_DATE_STR);
 	}
 
 
@@ -55,7 +68,7 @@ public class ClosureDateFinder {
 	public Date nextDay(Date day) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(day);
-		cal.add(Calendar.DAY_OF_MONTH, NEXT_DAY_MONT); 
+		cal.add(Calendar.DAY_OF_MONTH, NEXT_DAY_MONTH); 
 		return cal.getTime();
 	}
 	
@@ -68,7 +81,7 @@ public class ClosureDateFinder {
 	public Date previousDay(Date day) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(day);
-		cal.add(Calendar.DAY_OF_MONTH, -NEXT_DAY_MONT); 
+		cal.add(Calendar.DAY_OF_MONTH, -NEXT_DAY_MONTH); 
 		return cal.getTime();
 	}
 
@@ -81,7 +94,7 @@ public class ClosureDateFinder {
 	public Date nextMonth(Date day) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(day);
-		cal.add(Calendar.MONTH, NEXT_DAY_MONT); 
+		cal.add(Calendar.MONTH, NEXT_DAY_MONTH); 
 		return cal.getTime();
 	}
 	
@@ -94,7 +107,7 @@ public class ClosureDateFinder {
 	public Date previousMonth(Date day) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(day);
-		cal.add(Calendar.MONTH, -NEXT_DAY_MONT); 
+		cal.add(Calendar.MONTH, -NEXT_DAY_MONTH); 
 		return cal.getTime();
 	}
 
@@ -110,10 +123,10 @@ public class ClosureDateFinder {
 	 */
 	public Date toDay(int closureDate) {
 		int date = closureDate;
-		int year = this.month / 100;
-		int month = this.month % 100;
-		if (closureDate == 0) {
-			return this.toDate(year, month, NEXT_DAY_MONT);
+		int year = this.month / ONE_HUNDRED_COUNT;
+		int month = this.month % ONE_HUNDRED_COUNT;
+		if (closureDate == ZERO_DAY_MONTH) {
+			return this.toDate(year, month, NEXT_DAY_MONTH);
 		}
 		return this.toDate(year, month, date);
 	}
@@ -124,9 +137,9 @@ public class ClosureDateFinder {
 	 * @return the date
 	 */
 	public Date lastMonth(){
-		int year = this.month / 100;
-		int month = this.month % 100;
-		return this.previousDay(this.toDate(year, month + 1, NEXT_DAY_MONT));
+		int year = this.month / ONE_HUNDRED_COUNT;
+		int month = this.month % ONE_HUNDRED_COUNT;
+		return this.previousDay(this.toDate(year, month + NEXT_DAY_MONTH, NEXT_DAY_MONTH));
 	}
 	
 	
@@ -136,9 +149,9 @@ public class ClosureDateFinder {
 	 * @return the date
 	 */
 	public Date beginMonth(){
-		int year = this.month / 100;
-		int month = this.month % 100;
-		return this.toDate(year, month, NEXT_DAY_MONT);
+		int year = this.month / ONE_HUNDRED_COUNT;
+		int month = this.month % ONE_HUNDRED_COUNT;
+		return this.toDate(year, month, NEXT_DAY_MONTH);
 	}
 	
 	/**
@@ -151,7 +164,7 @@ public class ClosureDateFinder {
 	 */
 	public Date toDate(int year, int month, int day) {
 		Calendar cal = Calendar.getInstance();
-		cal.set(year, month - 1, day, 0, 0);
+		cal.set(year, month - NEXT_DAY_MONTH, day, ZERO_DAY_MONTH, ZERO_DAY_MONTH);
 		return cal.getTime();
 	}
 	
@@ -164,7 +177,7 @@ public class ClosureDateFinder {
 	public int getMonthDay(Date date){
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		return cal.get(Calendar.MONTH) + 1;
+		return cal.get(Calendar.MONTH) + NEXT_DAY_MONTH;
 	}
 
 	/**
@@ -178,7 +191,7 @@ public class ClosureDateFinder {
 		this.setMonth(input.getMonth());
 		Date today = this.toDay(input.getClosureDate());
 		DayMonthDto dto = new DayMonthDto();
-		if (this.getMonthDay(today) == this.getMonth() % 100) {
+		if (this.getMonthDay(today) == this.getMonth() % ONE_HUNDRED_COUNT) {
 			dto.setBeginDay(this.formatDate(this.previousMonth(this.nextDay(today))));
 			dto.setEndDay(this.formatDate(today));
 		} else {
@@ -201,7 +214,7 @@ public class ClosureDateFinder {
 		DayMonthDto beforeClosureDate = new DayMonthDto();
 		DayMonthDto afterClosureDate = new DayMonthDto();
 		if (input.getChangeClosureDate() == input.getClosureDate()) {
-			if (this.getMonthDay(today) == this.getMonth() % 100) {
+			if (this.getMonthDay(today) == this.getMonth() % ONE_HUNDRED_COUNT) {
 				beforeClosureDate
 						.setBeginDay(this.formatDate(this.previousMonth(this.nextDay(today))));
 				beforeClosureDate.setEndDay(this.formatDate(today));
@@ -216,7 +229,7 @@ public class ClosureDateFinder {
 			}
 		}else {
 			 Date todayChange = this.toDay(input.getChangeClosureDate());
-			if (this.getMonthDay(today) == this.getMonth() % 100) {
+			if (this.getMonthDay(today) == this.getMonth() % ONE_HUNDRED_COUNT) {
 				beforeClosureDate
 						.setBeginDay(this.formatDate(this.previousMonth(this.nextDay(today))));
 			} else {
@@ -224,7 +237,7 @@ public class ClosureDateFinder {
 			}
 			
 			if(input.getClosureDate() > input.getChangeClosureDate()){
-				if (this.getMonthDay(todayChange) == this.getMonth() % 100) {
+				if (this.getMonthDay(todayChange) == this.getMonth() % ONE_HUNDRED_COUNT) {
 					beforeClosureDate.setEndDay(this.formatDate(todayChange));
 				} else {
 					beforeClosureDate.setEndDay(this.formatDate(this.lastMonth()));
@@ -233,10 +246,11 @@ public class ClosureDateFinder {
 				beforeClosureDate.setEndDay(this.formatDate(this.previousMonth(todayChange)));
 			}
 			
-			if (this.getMonthDay(todayChange) == this.getMonth() % 100) {
+			if (this.getMonthDay(todayChange) == this.getMonth() % ONE_HUNDRED_COUNT) {
 				afterClosureDate.setBeginDay(this.formatDate(this.nextDay(todayChange)));
-				if (this.getMonthDay(this.nextMonth(todayChange)) == (this.getMonth() % 100 + 1)
-						% 12) {
+				if (this.getMonthDay(this.nextMonth(
+						todayChange)) == (this.getMonth() % ONE_HUNDRED_COUNT + NEXT_DAY_MONTH)
+								% TOTAL_MONTH_OF_YEAR) {
 					afterClosureDate.setEndDay(this.formatDate(this.nextMonth(todayChange)));
 				}
 				else {
@@ -260,6 +274,6 @@ public class ClosureDateFinder {
 	 * @return the string
 	 */
 	public String formatDate(Date date){
-		return FORMAT_DATE.format(date);
+		return this.formatDate.format(date);
 	}
 }
