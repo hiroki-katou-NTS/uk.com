@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 460, height: 600 };</script>
+			<script>var dialogSize = { width: 440, height: 600 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.at.record.dom.worklocation.Latitude
 					nts.uk.ctx.at.record.dom.worklocation.Longitude
@@ -24,7 +24,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<label>#{i18n.getText('KDL010_1')}</label>
-				<div style="width: 400px" tabindex="2"
+				<div style="width: 370px" tabindex="2"
 							data-bind="ntsSearchBox: {
 						searchMode: 'filter',
 						targetKey: 'workLocationCD',
@@ -36,7 +36,7 @@
 			    	    mode: 'igGrid'}" />
 				<table id="multi-list" tabindex="3"
 					data-bind="ntsGridList: {
-						height: 320,
+						height: 340,
 						options: workLocationList,
 						optionsValue: 'workLocationCD',
 						value: selectCode,

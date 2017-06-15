@@ -31,6 +31,8 @@ public class ClosureFindDto implements ClosureSetMemento{
 	/** The month. */
 	private int month;
 	
+	/** The closure selected. */
+	private ClosureHistoryMDto closureSelected;
 	
 	/** The closure histories. */
 	private List<ClosureHistoryMDto> closureHistories;

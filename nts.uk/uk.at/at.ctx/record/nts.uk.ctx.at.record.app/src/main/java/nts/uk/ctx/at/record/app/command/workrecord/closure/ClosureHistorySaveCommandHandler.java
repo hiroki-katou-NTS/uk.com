@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.app.find.workrecord.closure.dto.ClosureHistoryDto;
@@ -51,6 +52,17 @@ public class ClosureHistorySaveCommandHandler extends CommandHandler<ClosureHist
 				command.getClosureHistory().getClosureHistoryId());
 		
 		if(closureHistory.isPresent()){
+			Optional<ClosureHistory> closureHistoryLast = this.repository
+					.findByHistoryLast(companyId, command.getClosureHistory().getClosureId());
+			
+			// edit history not last 
+			if (closureHistoryLast.isPresent()
+					&& closureHistoryLast.get().getClosureHistoryId()
+							.equals(command.getClosureHistory().getClosureHistoryId())
+					&& command.getClosureHistory().getClosureDate() != closureHistoryLast.get()
+							.toClosureDate()) {
+				throw new BusinessException("Msg_154");
+			}
 			ClosureHistoryDto dto = command.getClosureHistory();
 			dto.setStartDate(closureHistory.get().getStartDate().v());
 			dto.setEndDate(closureHistory.get().getEndDate().v());

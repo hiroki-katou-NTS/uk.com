@@ -24,15 +24,16 @@ public class TopPageSelfSettingCommandHandler extends CommandHandler<TopPageSelf
 	private TopPageSelfSetRepository repository;
 	@Override
 	protected void handle(CommandHandlerContext<TopPageSelfSettingCommand> context) {
+		//lay employeeId
 		String employeeId = AppContexts.user().employeeCode();
 		TopPageSelfSet topPageNew = TopPageSelfSet.createFromJavaType(employeeId,
 										context.getCommand().getCode(),
 										context.getCommand().getDivision());
-		
-		Optional<TopPageSelfSet> topPage = repository.findTopPageSelfSetbyCode(employeeId, context.getCommand().getCode());
-		if(topPage.isPresent()){
+		//Kiem tra trong du lieu trong data
+		Optional<TopPageSelfSet> topPage = repository.getTopPageSelfSet(employeeId);
+		if(topPage.isPresent()){//da co->update
 			repository.updateTopPageSelfSet(topPageNew);
-		}else{
+		}else{//chua co->them moi
 			repository.addTopPageSelfSet(topPageNew);
 		}
 	}

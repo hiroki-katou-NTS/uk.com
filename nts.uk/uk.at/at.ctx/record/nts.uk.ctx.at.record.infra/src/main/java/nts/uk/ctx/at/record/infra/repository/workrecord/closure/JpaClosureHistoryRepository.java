@@ -122,9 +122,8 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 	@Override
 	public Optional<ClosureHistory> findByHistoryId(String companyId, int closureId,
 			String historyId) {
-		return this.queryProxy()
-				.find(new KclmtClosureHistPK(companyId, closureId, historyId), KclmtClosureHist.class)
-				.map(c -> this.toDomain(c));
+		return this.queryProxy().find(new KclmtClosureHistPK(companyId, closureId, historyId),
+				KclmtClosureHist.class).map(c -> this.toDomain(c));
 	}
 
 	/**
@@ -181,7 +180,7 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 
 
 	@Override
-	public Optional<ClosureHistory> findByLastHistory(String companyId, int closureId,
+	public Optional<ClosureHistory> findBySelectedYearMonth(String companyId, int closureId,
 			int yearMonth) {
 		
 		// get entity manager
@@ -233,6 +232,54 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 			return Optional.empty();
 		}
 		
+		return Optional.ofNullable(this.toDomain(resData.get(FIRST_DATA)));
+	}
+
+	@Override
+	public Optional<ClosureHistory> findByHistoryLast(String companyId, int closureId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KCLMT_CLOSURE_HIST (KclmtClosureHist SQL)
+		CriteriaQuery<KclmtClosureHist> cq = criteriaBuilder.createQuery(KclmtClosureHist.class);
+
+		// root data
+		Root<KclmtClosureHist> root = cq.from(KclmtClosureHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.cid),
+				companyId));
+
+		// equal closure id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KclmtClosureHist_.kclmtClosureHistPK).get(KclmtClosureHistPK_.closureId),
+				closureId));
+
+		
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// order by end date desc
+		cq.orderBy(criteriaBuilder.desc(root.get(KclmtClosureHist_.endD)));
+		
+		// create query
+		TypedQuery<KclmtClosureHist> query = em.createQuery(cq).setMaxResults(FIRST_LENGTH);
+
+		// exclude select
+		List<KclmtClosureHist> resData = query.getResultList();
+
+		if (CollectionUtil.isEmpty(resData)) {
+			return Optional.empty();
+		}
+
 		return Optional.ofNullable(this.toDomain(resData.get(FIRST_DATA)));
 	}
 

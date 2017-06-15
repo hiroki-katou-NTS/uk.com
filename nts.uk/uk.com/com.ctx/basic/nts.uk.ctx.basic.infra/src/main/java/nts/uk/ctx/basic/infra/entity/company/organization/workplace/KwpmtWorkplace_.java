@@ -10,22 +10,25 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class KwpmtWorkHistPK_.
+ * The Class KwpmtWorkPlace_.
  */
-@StaticMetamodel(KwpmtWorkPlace.class)
-public class KwpmtWorkPlace_ {
+@StaticMetamodel(KwpmtWorkplace.class)
+public class KwpmtWorkplace_ {
 
-	/** The ccid. */
-	public static volatile SingularAttribute<KwpmtWorkPlace, KwpmtWorkPlacePK> kwpmtWorkPlacePK;
+	/** The kwpmt workplace PK. */
+	public static volatile SingularAttribute<KwpmtWorkplace, KwpmtWorkplacePK> kwpmtWorkplacePK;
 	
 	/** The str D. */
-	public static volatile SingularAttribute<KwpmtWorkPlace, GeneralDate> strD;
+	public static volatile SingularAttribute<KwpmtWorkplace, GeneralDate> strD;
 	
 	/** The end D. */
-	public static volatile SingularAttribute<KwpmtWorkPlace, GeneralDate> endD;
+	public static volatile SingularAttribute<KwpmtWorkplace, GeneralDate> endD;
+	
+	/** The wkpcd. */
+	public static volatile SingularAttribute<KwpmtWorkplace, String> wkpcd;
 	
 	/** The wkpname. */
-	public static volatile SingularAttribute<KwpmtWorkPlace, String> wkpname;
+	public static volatile SingularAttribute<KwpmtWorkplace, String> wkpname;
 	
 
 }

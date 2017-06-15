@@ -8,12 +8,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KwpmtWorkHierarchy_.
+ * The Class KwpmtWplHierarchy_.
  */
-@StaticMetamodel(KwpmtWorkHierarchy.class)
-public class KwpmtWorkHierarchy_ {
+@StaticMetamodel(KwpmtWplHierarchy.class)
+public class KwpmtWplHierarchy_ {
 
-	/** The cclmt management category PK. */
-	public static volatile SingularAttribute<KwpmtWorkHierarchy, KwpmtWorkHierarchyPK> kwpmtWorkHierarchyPK;
+	/** The kwpmt wpl hierarchy PK. */
+	public static volatile SingularAttribute<KwpmtWplHierarchy, KwpmtWplHierarchyPK> kwpmtWplHierarchyPK;
+	
+	/** The wkpcd. */
+	public static volatile SingularAttribute<KwpmtWplHierarchy, String> wkpcd;
 
 }

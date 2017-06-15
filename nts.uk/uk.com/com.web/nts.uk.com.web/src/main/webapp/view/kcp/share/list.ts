@@ -176,7 +176,7 @@ module kcp.share.list {
             // Init component.
             self.itemList(dataList);
             var webserviceLocator = nts.uk.request.location.siteRoot
-                .mergeRelativePath('nts.uk.com.web/')
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
             $input.load(webserviceLocator, function() {
                 ko.cleanNode($input[0]);
@@ -188,6 +188,11 @@ module kcp.share.list {
                     $(".ntsSearchBox").focus();
                 }
             });
+            
+            // defined function get data list.
+            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                return dataList;
+            }
         }
         
         /**
@@ -351,12 +356,15 @@ interface JQuery {
      * This Function used after apply binding only.
      */
     ntsListComponent(option: kcp.share.list.ComponentOption): JQueryPromise<void>;
+    
+    getDataList(): Array<kcp.share.list.UnitModel>;
 }
 
 (function($: any) {
     $.fn.ntsListComponent = function(option: kcp.share.list.ComponentOption): JQueryPromise<void> {
 
         // Return.
-        return new kcp.share.list.ListComponentScreenModel().init(this, option);;
+        return new kcp.share.list.ListComponentScreenModel().init(this, option);
     }
+    
 } (jQuery));

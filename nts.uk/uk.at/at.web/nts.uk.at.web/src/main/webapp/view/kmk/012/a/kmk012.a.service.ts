@@ -14,27 +14,27 @@ module nts.uk.at.view.kmk012.a {
         }
 
         // detail data
-        export function detailClosure(closureId: number):JQueryPromise<model.ClosureDto> {
+        export function detailClosure(closureId: number): JQueryPromise<model.ClosureDto> {
             return nts.uk.request.ajax(paths.detailClosure + "/" + closureId);
         }
-        
+
         // save data
-        export function saveClosure(dto: model.ClosureSaveDto):JQueryPromise<void> {
+        export function saveClosure(dto: model.ClosureSaveDto): JQueryPromise<void> {
             return nts.uk.request.ajax(paths.saveClosure, dto);
         }
-        
-        
+
+
         // detail data
-        export function detailClosureHistory(master: model.ClosureHistoryMDto):JQueryPromise<model.ClosureHistoryDDto> {
-            return nts.uk.request.ajax(paths.detailClosureHistory,master);
+        export function detailClosureHistory(master: model.ClosureHistoryMDto): JQueryPromise<model.ClosureHistoryDDto> {
+            return nts.uk.request.ajax(paths.detailClosureHistory, master);
         }
-        
+
         // save data
-        export function saveClosureHistory(dto: model.ClosureHistoryDto):JQueryPromise<void> {
-            var data = {closureHistory: dto};
-            return nts.uk.request.ajax(paths.saveClosureHistory,data);
+        export function saveClosureHistory(dto: model.ClosureHistoryDto): JQueryPromise<void> {
+            var data = { closureHistory: dto };
+            return nts.uk.request.ajax(paths.saveClosureHistory, data);
         }
-        
+
         
 
         export module model {
@@ -116,6 +116,10 @@ module nts.uk.at.view.kmk012.a {
                 /** The day. */
                 month: number;
                 
+                // selected
+                closureSelected: ClosureHistoryMDto;
+                
+                // data history
                 closureHistories: ClosureHistoryMDto[];
             }
             
@@ -155,6 +159,7 @@ module nts.uk.at.view.kmk012.a {
                 // 開始年月: 年月
                 startDate: number;
             }
+            
         }
 
     }
