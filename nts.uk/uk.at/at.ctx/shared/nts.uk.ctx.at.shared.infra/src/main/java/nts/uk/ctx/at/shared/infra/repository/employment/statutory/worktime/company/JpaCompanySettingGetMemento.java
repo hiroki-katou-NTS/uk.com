@@ -2,11 +2,10 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime;
+package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.company;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -94,8 +93,8 @@ public class JpaCompanySettingGetMemento implements CompanySettingGetMemento {
 	 * @param item the item
 	 * @return the monthly
 	 */
-	private Set<Monthly> getMonthly(JcwtstCompanyWtSet item) {
-		Set<Monthly> monthly = new HashSet<Monthly>();
+	private List<Monthly> getMonthly(JcwtstCompanyWtSet item) {
+		List<Monthly> monthly = new ArrayList<Monthly>();
 		monthly.add(new Monthly(new AttendanceTime(item.getJanTime()), java.time.Month.JANUARY));
 		monthly.add(new Monthly(new AttendanceTime(item.getFebTime()), java.time.Month.FEBRUARY));
 		monthly.add(new Monthly(new AttendanceTime(item.getMarTime()), java.time.Month.MARCH));

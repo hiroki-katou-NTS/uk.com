@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime;
+package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.company;
 
 import java.util.ArrayList;
 import java.util.List;

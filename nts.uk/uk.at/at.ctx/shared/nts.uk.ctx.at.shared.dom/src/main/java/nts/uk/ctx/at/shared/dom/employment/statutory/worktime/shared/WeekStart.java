@@ -7,30 +7,39 @@ package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 /**
  * The Enum WeekStart.
  */
+//週開始
 public enum WeekStart {
 
 	/** The Monday. */
+	//月曜日
 	Monday(0),
 
 	/** The Tuesday. */
+	//火曜日
 	Tuesday(1),
 
 	/** The Wednesday. */
+	//水曜日
 	Wednesday(2),
 
 	/** The Thursday. */
+	//木曜日
 	Thursday(3),
 
 	/** The Friday. */
+	//金曜日
 	Friday(4),
 
 	/** The Saturday. */
+	//土曜日
 	Saturday(5),
 
 	/** The Sunday. */
+	//日曜日
 	Sunday(6),
 
 	/** The Tightening start date. */
+	//締め開始日
 	TighteningStartDate(7);
 
 	/** The value. */

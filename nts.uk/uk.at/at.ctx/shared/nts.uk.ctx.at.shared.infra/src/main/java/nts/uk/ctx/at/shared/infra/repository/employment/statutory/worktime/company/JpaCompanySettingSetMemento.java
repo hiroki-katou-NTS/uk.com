@@ -2,9 +2,9 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime;
+package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.company;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -171,7 +171,7 @@ public class JpaCompanySettingSetMemento implements CompanySettingSetMemento {
 	 * @param monthly the monthly
 	 * @return the jcwtst company wt set
 	 */
-	private JcwtstCompanyWtSet setMonthly(JcwtstCompanyWtSet entity, Set<Monthly> monthly) {
+	private JcwtstCompanyWtSet setMonthly(JcwtstCompanyWtSet entity, List<Monthly> monthly) {
 		monthly.forEach(month -> {
 			switch (month.getMonth()) {
 			case JANUARY:
