@@ -1,4 +1,4 @@
-﻿module nts.uk {
+module nts.uk {
 
     export module KeyCodes {
         export const Tab = 9;
