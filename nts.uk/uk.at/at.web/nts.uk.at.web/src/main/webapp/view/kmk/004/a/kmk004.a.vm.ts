@@ -9,9 +9,13 @@ module nts.uk.at.view.kmk004.a {
             selectedCode: KnockoutObservable<string>;
 
             companyWTSetting: KnockoutObservable<CompanyWTSetting>;
+            usageUnitSetting: UsageUnitSetting;
+            currentYear: number;
 
             constructor() {
                 let self = this;
+                self.currentYear = new Date().getFullYear();
+                self.usageUnitSetting = new UsageUnitSetting();
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText("KMK004_3"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: nts.uk.resource.getText("KMK004_4"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -28,8 +32,13 @@ module nts.uk.at.view.kmk004.a {
                     new ItemModel('7', '締め開始日')
                 ]);
                 self.companyWTSetting = ko.observable(new CompanyWTSetting());
+                self.companyWTSetting().year(self.currentYear);
                 self.selectedCode = ko.observable('');
                 self.selectedTab = ko.observable('tab-1');
+            }
+            
+            public gotoE(): void {
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/e/index.xhtml");
             }
 
             public startPage(): JQueryPromise<any> {
@@ -54,9 +63,12 @@ module nts.uk.at.view.kmk004.a {
 
             public loadCompanySetting(): void {
                 let self = this;
-                service.findCompanySetting(2017).done(res => {
-                    let abc = ko.mapping.fromJS(res);
-                    console.log(abc);
+                service.findCompanySetting(self.companyWTSetting().year()).done(res => {
+                    if (res) {
+                        let abc = ko.mapping.fromJS(res);
+                        self.companyWTSetting(abc);
+                        console.log(abc);
+                    }
                 });
             }
 
@@ -88,7 +100,7 @@ module nts.uk.at.view.kmk004.a {
 
             constructor() {
                 let self = this;
-                self.year = ko.observable(2017);
+                self.year = ko.observable(0);
                 self.deformationLaborSetting = new DeformationLaborSetting();
                 self.flexSetting = new FlexSetting();
                 self.normalSetting = new NormalSetting();
@@ -139,27 +151,27 @@ module nts.uk.at.view.kmk004.a {
         }
         export class DeformationLaborSetting {
             statutorySetting: WorkingTimeSetting;
-            weekStart: number;
+            weekStart: KnockoutObservable<number>;
 
             constructor() {
                 let self = this;
                 self.statutorySetting = new WorkingTimeSetting();
-                self.weekStart = 0;
+                self.weekStart = ko.observable(0);
             }
         }
         export class FlexSetting {
             flexDaily: FlexDaily;
-            flexMonthly: Array<FlexMonth>;
+            flexMonthly: KnockoutObservableArray<FlexMonth>;
 
             constructor() {
                 let self = this;
                 self.flexDaily = new FlexDaily();
-                self.flexMonthly = new Array<FlexMonth>();
+                self.flexMonthly = new ko.observableArray<FlexMonth>([]);
                 for (let i = 1; i < 13; i++) {
                     let flm = new FlexMonth();
-                    flm.month = i;
-                    flm.statutoryTime(i+100);
-                    flm.specifiedTime(i+200);
+                    flm.month(i);
+                    flm.statutoryTime(0);
+                    flm.specifiedTime(0);
                     self.flexMonthly.push(flm);
                 }
             }
@@ -169,33 +181,34 @@ module nts.uk.at.view.kmk004.a {
             specifiedTime: KnockoutObservable<number>;
             constructor() {
                 let self = this;
-                self.statutoryTime = ko.observable(1);
-                self.specifiedTime = ko.observable(1);
+                self.statutoryTime = ko.observable(0);
+                self.specifiedTime = ko.observable(0);
             }
         }
         export class FlexMonth {
-            month: number;
-            statutoryTime: KnockoutObservable<number>;;
-            specifiedTime: KnockoutObservable<number>;;
+            month: KnockoutObservable<number>;
+            statutoryTime: KnockoutObservable<number>;
+            specifiedTime: KnockoutObservable<number>;
             constructor() {
                 let self = this;
-                self.statutoryTime = ko.observable();
-                self.specifiedTime = ko.observable();
+                self.month = ko.observable(0);
+                self.statutoryTime = ko.observable(0);
+                self.specifiedTime = ko.observable(0);
             }
         }
         export class NormalSetting {
             statutorySetting: WorkingTimeSetting;
-            weekStart: number;
+            weekStart: KnockoutObservable<number>;
 
             constructor() {
                 let self = this;
                 self.statutorySetting = new WorkingTimeSetting();
-                self.weekStart = 0;
+                self.weekStart = ko.observable(0);
             }
         }
         export class WorkingTimeSetting {
             daily: KnockoutObservable<number>;
-            monthly: Array<Monthly>;
+            monthly: KnockoutObservableArray<Monthly>;
             startMonth: KnockoutObservable<number>;
             weekly: KnockoutObservable<number>;
 
@@ -204,20 +217,34 @@ module nts.uk.at.view.kmk004.a {
                 self.daily = ko.observable(0);
                 self.startMonth = ko.observable(0);
                 self.weekly = ko.observable(0);
-                self.monthly = [];
+                self.monthly = ko.observableArray<Monthly>([]);
                 for (let i = 1; i < 13; i++) {
-                    self.monthly.push(new Monthly(i , i+322));
+                    let m = new Monthly();
+                    m.month(i);
+                    self.monthly.push(m);
                 }
             }
         }
         export class Monthly {
-            month: number;
+            month: KnockoutObservable<number>;
             time: KnockoutObservable<number>;
 
-            constructor(month: number, value: number) {
+            constructor() {
                 let self = this;
-                self.time = ko.observable(value);
-                self.month = month;
+                self.time = ko.observable(0);
+                self.month = ko.observable(0);
+            }
+        }
+        export class UsageUnitSetting {
+            employee: KnockoutObservable<boolean>;
+            employment: KnockoutObservable<boolean>;
+            workPlace: KnockoutObservable<boolean>;
+
+            constructor() {
+                let self = this;
+                self.employee = ko.observable(true);
+                self.employment = ko.observable(true);
+                self.workPlace = ko.observable(true);
             }
         }
     }
