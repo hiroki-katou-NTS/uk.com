@@ -3,14 +3,13 @@ package nts.uk.ctx.workflow.dom.agent;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 @Getter
-@Setter
+
 public class Agent extends AggregateRoot {
 
 	private String companyId;
@@ -57,6 +56,22 @@ public class Agent extends AggregateRoot {
 
 	}
 	
+	/**
+	 * Create from java type of agent
+	 * @param companyId
+	 * @param employeeId
+	 * @param endDate
+	 * @param startDate
+	 * @param agentSid1
+	 * @param agentAppType1
+	 * @param agentSid2
+	 * @param agentAppType2
+	 * @param agentSid3
+	 * @param agentAppType3
+	 * @param agentSid4
+	 * @param agentAppType4
+	 * @return
+	 */
 	public static Agent createFromJavaType(
 			String companyId, 
 			String employeeId, 
