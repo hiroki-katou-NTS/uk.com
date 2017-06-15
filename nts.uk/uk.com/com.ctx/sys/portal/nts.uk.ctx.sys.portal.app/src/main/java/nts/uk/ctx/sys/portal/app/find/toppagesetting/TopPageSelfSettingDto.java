@@ -14,6 +14,7 @@ public class TopPageSelfSettingDto {
 
 	/** The top page code. */
 	private int division;
+	
 	public static TopPageSelfSettingDto fromDomain(TopPageSelfSet domain){
 		return new TopPageSelfSettingDto(domain.getEmployeeId(),
 					domain.getCode(),

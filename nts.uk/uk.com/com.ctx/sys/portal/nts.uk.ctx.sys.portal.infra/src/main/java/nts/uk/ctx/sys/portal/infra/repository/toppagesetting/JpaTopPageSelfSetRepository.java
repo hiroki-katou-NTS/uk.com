@@ -19,21 +19,19 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageSelfSetPK;
 public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPageSelfSetRepository {
 	private final String SELECT_TOPPAGE_SELFSET = "SELECT c FROM CcgptTopPageSelfSet c"
 			+ " WHERE c.ccgptTopPageSelfSetPK.employeeId = :employeeId";
-	private final String SELECT_TOPPAGE_SELFSET_BYCODE = "SELECT c FROM CcgptTopPageSelfSet c"
-			+ " WHERE c.ccgptTopPageSelfSetPK.employeeId = :employeeId"
-			+ " AND c.ccgptTopPageSelfSetPK.code = :code";
+	
 	private static TopPageSelfSet toDomain(CcgptTopPageSelfSet entity){
 		val domain = TopPageSelfSet.createFromJavaType(
 				entity.ccgptTopPageSelfSetPK.employeeId,
-				entity.ccgptTopPageSelfSetPK.code,
-				entity.ccgptTopPageSelfSetPK.division);
+				entity.code,
+				entity.division);
 		return domain;
 	}
 	private static CcgptTopPageSelfSet toEntity(TopPageSelfSet domain){
 		val entity = new CcgptTopPageSelfSet();
-		entity.ccgptTopPageSelfSetPK = new CcgptTopPageSelfSetPK(domain.getEmployeeId(),
-												domain.getCode(),
-												domain.getDivision().value);
+		entity.ccgptTopPageSelfSetPK = new CcgptTopPageSelfSetPK(domain.getEmployeeId());
+		entity.code = domain.getCode();
+		entity.division = domain.getDivision().value;
 		return entity;
 	}
  	/**
@@ -54,19 +52,6 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 	@Override
 	public void addTopPageSelfSet(TopPageSelfSet topPageSelfSet) {
 		this.commandProxy().insert(toEntity(topPageSelfSet));
-	}
- 	/**
- 	 * find top page self set by code
- 	 * @param employeeId
- 	 * @param code
- 	 * @return
- 	 */
-	@Override
-	public Optional<TopPageSelfSet> findTopPageSelfSetbyCode(String employeeId, String code) {
-		return this.queryProxy().query(SELECT_TOPPAGE_SELFSET_BYCODE, CcgptTopPageSelfSet.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("code", code)
-				.getSingle(c->toDomain(c));
 	}
  	/**
  	 * update top page self set
