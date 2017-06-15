@@ -7,13 +7,13 @@ package nts.uk.ctx.at.shared.app.employment.statutory.worktime.shared;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Value;
+import lombok.Data;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Monthly;
 
 /**
  * The Class MonthlyDto.
  */
-@Value
+@Data
 public class MonthlyDto {
 
 	/** The month. */
@@ -26,10 +26,14 @@ public class MonthlyDto {
 	 * From domain.
 	 *
 	 * @param domain the domain
-	 * @return the list
+	 * @return the sets the
 	 */
 	public static List<MonthlyDto> fromDomain(List<Monthly> domain) {
-		return domain.stream().map(item -> new MonthlyDto(item.getMonth().getValue(), item.getTime().v()))
-				.collect(Collectors.toList());
+		return domain.stream().map(item -> {
+			MonthlyDto dto = new MonthlyDto();
+			dto.setMonth(item.getMonth().getValue());
+			dto.setTime(item.getTime().v());
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }

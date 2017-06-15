@@ -11,6 +11,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.command.CompanySettingRemoveCommand;
+import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.command.CompanySettingRemoveCommandHandler;
 import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.command.CompanySettingSaveCommand;
 import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.command.CompanySettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.find.CompanySettingDto;
@@ -22,15 +24,19 @@ import nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.find.Compa
 @Path("ctx/at/shared/employment/statutory/worktime/company")
 @Produces("application/json")
 public class CompanySettingWs extends WebService {
-	
-	/** The save. */
+
+	/** The save handler. */
 	@Inject
-	private CompanySettingSaveCommandHandler handler;
-	
+	private CompanySettingSaveCommandHandler saveHandler;
+
+	/** The remove handler. */
+	@Inject
+	private CompanySettingRemoveCommandHandler removeHandler;
+
 	/** The finder. */
 	@Inject
 	private CompanySettingFinder finder;
-	
+
 	/**
 	 * Find.
 	 *
@@ -42,7 +48,18 @@ public class CompanySettingWs extends WebService {
 	public CompanySettingDto find(@PathParam("year") int year) {
 		return this.finder.find(year);
 	}
-	
+
+	/**
+	 * Removes the.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("remove")
+	public void remove(CompanySettingRemoveCommand command) {
+		this.removeHandler.handle(command);
+	}
+
 	/**
 	 * Save.
 	 *
@@ -51,6 +68,6 @@ public class CompanySettingWs extends WebService {
 	@POST
 	@Path("save")
 	public void save(CompanySettingSaveCommand command) {
-		this.handler.handle(command);
+		this.saveHandler.handle(command);
 	}
 }

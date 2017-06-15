@@ -15,3 +15,8 @@ include 'com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra'
 include 'com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub'
 include 'com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp'
 include 'com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws'
+
+include 'wk.ctx:nts.uk.ctx.workflow.app'
+include 'wk.ctx:nts.uk.ctx.workflow.dom'
+include 'wk.ctx:nts.uk.ctx.workflow.infra'
+include 'wk.ctx:nts.uk.ctx.workflow.ws'

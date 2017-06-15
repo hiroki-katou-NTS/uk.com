@@ -1,54 +1,29 @@
 module cmm044.a.service {
-    import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
+
 
     var paths: any = {
-        getLayoutName: "pr/core/allotsetting/findcompanyallotlayoutname/{0}",
+        findAllAgent: "workflow/agent/find/",
+        deleteAgent: "workflow/agent/delete/",
+        addAgent: "",
+        updateAgent: ""
+    }
+    export function findAllAgent(employeeId: string): JQueryPromise<Array<viewmodel.model.AgentDto>> {
+        var dfd = $.Deferred<Array<viewmodel.model.AgentDto>>();
+        return nts.uk.request.ajax("com", paths.findAllAgent + employeeId);
     }
 
-    export function getData() {
-
-        return $.Deferred().resolve(true).promise();
+    export function deleteAgent(agent: viewmodel.DeleteAgent) {
+        var dfd = $.Deferred<viewmodel.DeleteAgent>();
+        return nts.uk.request.ajax("com", paths.deleteAgent, agent)
     }
 
-    export function saveData(models: Array<any>) {
-        return $.Deferred().resolve(true).promise();
+    export function addAgent(): JQueryPromise<Array<viewmodel.model.AgentAppDto>> {
+        var dfd = $.Deferred<Array<viewmodel.model.AgentAppDto>>();
+        return nts.uk.request.ajax("com", paths.addAgent);
     }
 
-    export function deleteData(models: Array<any>) {
-        let dfd = $.Deferred();
-        if (models.length > 0) {
-            models.map((m) => {
-                let data: any = {
-                    payStmtCode: m.paymentDetailCode || '00',
-                    bonusStmtCode: m.bonusDetailCode || '00',
-                    startDate: m.startDate,
-                    endDate: m.endDate,
-                    historyId: m.historyId
-                };
-
-                ajax(paths.deleteAllotCompanySetting, data)
-                    .done(d => dfd.resolve(d)).fail(m => dfd.reject(m));
-            });
-        }
-        return dfd.promise();
-    }
-
-    // Get layout master name
-    export function getAllotLayoutName(stmtCode: string) {
-        let dfd = $.Deferred();
-        if (stmtCode) {
-            ajax(format(paths.getLayoutName, stmtCode), undefined, {
-                dataType: 'text',
-                contentType: 'text/plain'
-            })
-                .done(function(res: string) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
-                });
-        }
-        return dfd.promise();
+    export function updateAgent(): JQueryPromise<Array<viewmodel.model.AgentDto>> {
+        var dfd = $.Deferred<Array<viewmodel.model.AgentDto>>();
+        return nts.uk.request.ajax("com", paths.updateAgent);
     }
 }

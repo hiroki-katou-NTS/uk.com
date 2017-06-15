@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.employment.statutory.worktime.company.command;
 
+import lombok.Data;
 import nts.uk.ctx.at.shared.app.employment.statutory.worktime.shared.DeformationLaborSettingDto;
 import nts.uk.ctx.at.shared.app.employment.statutory.worktime.shared.FlexSettingDto;
 import nts.uk.ctx.at.shared.app.employment.statutory.worktime.shared.NormalSettingDto;
@@ -13,10 +14,12 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.CompanySettingGetM
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class CompanySettingSaveCommand.
  */
+@Data
 public class CompanySettingSaveCommand implements CompanySettingGetMemento {
 
 	/** The flex setting. */
@@ -39,8 +42,7 @@ public class CompanySettingSaveCommand implements CompanySettingGetMemento {
 	 */
 	@Override
 	public FlexSetting getFlexSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return FlexSettingDto.toDomain(this.flexSetting);
 	}
 
 	/*
@@ -51,8 +53,7 @@ public class CompanySettingSaveCommand implements CompanySettingGetMemento {
 	 */
 	@Override
 	public DeformationLaborSetting getDeformationLaborSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return DeformationLaborSettingDto.toDomain(this.deformationLaborSetting);
 	}
 
 	/*
@@ -63,8 +64,7 @@ public class CompanySettingSaveCommand implements CompanySettingGetMemento {
 	 */
 	@Override
 	public Year getYear() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Year(this.year);
 	}
 
 	/*
@@ -75,8 +75,7 @@ public class CompanySettingSaveCommand implements CompanySettingGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CompanyId(AppContexts.user().companyId());
 	}
 
 	/*
@@ -87,8 +86,7 @@ public class CompanySettingSaveCommand implements CompanySettingGetMemento {
 	 */
 	@Override
 	public NormalSetting getNormalSetting() {
-		// TODO Auto-generated method stub
-		return null;
+		return NormalSettingDto.toDomain(this.normalSetting);
 	}
 
 }

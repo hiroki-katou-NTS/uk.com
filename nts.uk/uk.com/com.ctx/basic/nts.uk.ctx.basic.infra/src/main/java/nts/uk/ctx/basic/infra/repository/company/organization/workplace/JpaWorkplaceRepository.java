@@ -20,9 +20,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkPlace;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkPlacePK_;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkPlace_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkplace;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkplacePK_;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkplace_;
 
 /**
  * The Class JpaWorkplaceRepository.
@@ -64,16 +64,16 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * findAll(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<Workplace> findAll(String companyId, String date, String format) {
+	public List<Workplace> findAll(String companyId,GeneralDate generalDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KWPMT_WORK_PLACE (KwpmtWorkPlace SQL)
-		CriteriaQuery<KwpmtWorkPlace> cq = criteriaBuilder.createQuery(KwpmtWorkPlace.class);
+		CriteriaQuery<KwpmtWorkplace> cq = criteriaBuilder.createQuery(KwpmtWorkplace.class);
 
 		// root data
-		Root<KwpmtWorkPlace> root = cq.from(KwpmtWorkPlace.class);
+		Root<KwpmtWorkplace> root = cq.from(KwpmtWorkplace.class);
 
 		// select root
 		cq.select(root);
@@ -83,28 +83,25 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-			root.get(KwpmtWorkPlace_.kwpmtWorkPlacePK).get(KwpmtWorkPlacePK_.ccid), companyId));
-		
-		// format date => general date
-		GeneralDate generalDate = GeneralDate.fromString(date, format);
+			root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.cid), companyId));
 		
 		// >= general date
 		lstpredicateWhere
-			.add(criteriaBuilder.lessThanOrEqualTo(root.get(KwpmtWorkPlace_.strD), generalDate));
+			.add(criteriaBuilder.lessThanOrEqualTo(root.get(KwpmtWorkplace_.strD), generalDate));
 		
 		// <= general date
 		lstpredicateWhere
-		.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KwpmtWorkPlace_.endD), generalDate));
+		.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KwpmtWorkplace_.endD), generalDate));
 		
 		// equal company id
 		lstpredicateWhere.add(criteriaBuilder.equal(
-			root.get(KwpmtWorkPlace_.kwpmtWorkPlacePK).get(KwpmtWorkPlacePK_.ccid), companyId));
+			root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.cid), companyId));
 		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<KwpmtWorkPlace> query = em.createQuery(cq);
+		TypedQuery<KwpmtWorkplace> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(workplace -> toDomain(workplace))
@@ -117,7 +114,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * @param entity the entity
 	 * @return the workplace
 	 */
-	private Workplace toDomain(KwpmtWorkPlace entity){
+	private Workplace toDomain(KwpmtWorkplace entity){
 		return new Workplace(new JpaWorkplaceGetMemento(entity));
 	}
 	
@@ -128,8 +125,8 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 * @param domain the domain
 	 * @return the kwpmt work place
 	 */
-	private KwpmtWorkPlace toEntity(Workplace domain){
-		KwpmtWorkPlace entity = new KwpmtWorkPlace();
+	private KwpmtWorkplace toEntity(Workplace domain){
+		KwpmtWorkplace entity = new KwpmtWorkplace();
 		domain.saveToMemento(new JpaWorkplaceSetMemento(entity));
 		return entity;
 	}

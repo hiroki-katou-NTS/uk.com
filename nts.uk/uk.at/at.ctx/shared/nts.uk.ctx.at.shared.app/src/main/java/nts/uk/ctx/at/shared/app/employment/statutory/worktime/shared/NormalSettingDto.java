@@ -4,13 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.employment.statutory.worktime.shared;
 
-import lombok.Value;
+import lombok.Data;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 
 /**
  * The Class NormalSettingDto.
  */
-@Value
+
+/**
+ * Instantiates a new normal setting dto.
+ */
+@Data
 public class NormalSettingDto {
 
 	/** The statutory setting. */
@@ -27,6 +32,21 @@ public class NormalSettingDto {
 	 */
 	public static NormalSettingDto fromDomain(NormalSetting domain) {
 		WorkingTimeSettingDto statutorySetting = WorkingTimeSettingDto.fromDomain(domain.getStatutorySetting());
-		return new NormalSettingDto(statutorySetting, domain.getWeekStart().value);
+		NormalSettingDto dto = new NormalSettingDto();
+		dto.setStatutorySetting(statutorySetting);
+		dto.setWeekStart(domain.getWeekStart().value);
+		return dto;
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @param dto the dto
+	 * @return the normal setting
+	 */
+	public static NormalSetting toDomain(NormalSettingDto dto) {
+		NormalSetting domain = new NormalSetting(WorkingTimeSettingDto.toDomain(dto.getStatutorySetting()),
+				WeekStart.valueOf(dto.getWeekStart()));
+		return domain;
 	}
 }

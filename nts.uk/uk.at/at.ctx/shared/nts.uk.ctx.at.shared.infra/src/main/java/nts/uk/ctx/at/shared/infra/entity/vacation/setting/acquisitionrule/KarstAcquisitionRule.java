@@ -57,7 +57,7 @@ public class KarstAcquisitionRule extends UkJpaEntity implements Serializable {
 	private int specialHoliday;
 
 	/** The setting classfication. */
-	@Column(name = "CATEGORY")
+	@Column(name = "MANAGE_ATR")
 	private int category;
 
 	public KarstAcquisitionRule() {
