@@ -27,8 +27,18 @@ module nts.uk.at.view.kmk004.a {
                 self.selectedTab = ko.observable('tab-1');
             }
 
+            public startPage(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                service.findCompanySetting(2017);
+                dfd.resolve();
+                return dfd.promise();
+            }
+
             public save(): void {
                 let self = this;
+                self.companyWTSetting().year(2017);
+                service.saveCompanySetting(ko.toJS(self.companyWTSetting));
                 console.log(ko.toJS(self.companyWTSetting));
             }
             
@@ -38,7 +48,11 @@ module nts.uk.at.view.kmk004.a {
 
             public loadCompanySetting(companySetting: any): void {
                 let self = this;
+                service.findCompanySetting(2017);
                 self.companyWTSetting(new CompanyWTSetting());
+                let abc = ko.observable();
+                ko.mapping.fromJS(companySetting, abc);
+                console.log(abc());
             }
 
             private sort(startMonth: number): Array<any> {
@@ -51,12 +65,6 @@ module nts.uk.at.view.kmk004.a {
                 return list;
             }
 
-            public startPage(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred<any>();
-                dfd.resolve();
-                return dfd.promise();
-            }
         }
         export class ItemModel {
             code: string;
@@ -68,23 +76,25 @@ module nts.uk.at.view.kmk004.a {
             }
         }
         export class CompanyWTSetting {
-            deformationLaborWTSetting: DeformationLaborWTSetting;
-            flexWTSetting: FlexWTSetting;
-            normalWTSetting: NormalWTSetting;
+            deformationLaborSetting: DeformationLaborSetting;
+            flexSetting: FlexSetting;
+            normalSetting: NormalSetting;
             year: KnockoutObservable<number>;
+            ym: KnockoutObservable<number>;
 
             constructor() {
                 let self = this;
-                self.year = ko.observable(201705);
-                self.deformationLaborWTSetting = new DeformationLaborWTSetting();
-                self.flexWTSetting = new FlexWTSetting();
-                self.normalWTSetting = new NormalWTSetting();
+                self.year = ko.observable(2017);
+                self.ym = ko.observable(201706);
+                self.deformationLaborSetting = new DeformationLaborSetting();
+                self.flexSetting = new FlexSetting();
+                self.normalSetting = new NormalSetting();
             }
         }
         export class WorkPlaceWTSetting {
-            deformationLaborWTSetting: DeformationLaborWTSetting;
-            flexWTSetting: FlexWTSetting;
-            normalWTSetting: NormalWTSetting;
+            deformationLaborSetting: DeformationLaborSetting;
+            flexSetting: FlexSetting;
+            normalSetting: NormalSetting;
             year: KnockoutObservable<number>;
             workPlaceId: string;
 
@@ -92,9 +102,9 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 self.workPlaceId = '';
                 self.year = ko.observable(201705);
-                self.deformationLaborWTSetting = new DeformationLaborWTSetting();
-                self.flexWTSetting = new FlexWTSetting();
-                self.normalWTSetting = new NormalWTSetting();
+                self.deformationLaborSetting = new DeformationLaborSetting();
+                self.flexSetting = new FlexSetting();
+                self.normalSetting = new NormalSetting();
             }
         }
         export class EmployeeWTSetting {
@@ -105,15 +115,15 @@ module nts.uk.at.view.kmk004.a {
             constructor() {
                 let self = this;
                 self.year = ko.observable(201705);
-                self.deformationLaborWTSetting = new DeformationLaborWTSetting();
-                self.flexWTSetting = new FlexWTSetting();
-                self.normalWTSetting = new NormalWTSetting();
+                self.deformationLaborSetting = new DeformationLaborSetting();
+                self.flexSetting = new FlexSetting();
+                self.normalSetting = new NormalSetting();
             }
         }
         export class EmploymentWTSetting {
-            deformationLaborWTSetting: DeformationLaborWTSetting;
-            flexWTSetting: FlexWTSetting;
-            normalWTSetting: NormalWTSetting;
+            deformationLaborSetting: DeformationLaborSetting;
+            flexSetting: FlexSetting;
+            normalSetting: NormalSetting;
             year: KnockoutObservable<number>;
             employmentCode: string;
 
@@ -121,12 +131,12 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 self.employmentCode = '';
                 self.year = ko.observable(201705);
-                self.deformationLaborWTSetting = new DeformationLaborWTSetting();
-                self.flexWTSetting = new FlexWTSetting();
-                self.normalWTSetting = new NormalWTSetting();
+                self.deformationLaborSetting = new DeformationLaborSetting();
+                self.flexSetting = new FlexSetting();
+                self.normalSetting = new NormalSetting();
             }
         }
-        export class DeformationLaborWTSetting {
+        export class DeformationLaborSetting {
             statutorySetting: WorkingTimeSetting;
             weekStart: number;
 
@@ -136,17 +146,40 @@ module nts.uk.at.view.kmk004.a {
                 self.weekStart = 0;
             }
         }
-        export class FlexWTSetting {
-            statutorySetting: WorkingTimeSetting;
-            specifiedSetting: WorkingTimeSetting;
+        export class FlexSetting {
+            flexDaily: FlexDaily;
+            flexMonthly: Array<FlexMonth>;
 
             constructor() {
                 let self = this;
-                self.statutorySetting = new WorkingTimeSetting();
-                self.specifiedSetting = new WorkingTimeSetting();
+                self.flexDaily = new FlexDaily();
+                self.flexMonthly = new Array<FlexMonth>();
+                for (let i = 1; i < 13; i++) {
+                    self.flexMonthly.push(new FlexMonth());
+                }
             }
         }
-        export class NormalWTSetting {
+        export class FlexDaily {
+            statutoryTime: KnockoutObservable<number>;
+            specifiedTime: KnockoutObservable<number>;
+            constructor() {
+                let self = this;
+                self.statutoryTime = ko.observable(1);
+                self.specifiedTime = ko.observable(1);
+            }
+        }
+        export class FlexMonth {
+            month: number;
+            statutoryTime: KnockoutObservable<number>;;
+            specifiedTime: KnockoutObservable<number>;;
+            constructor() {
+                let self = this;
+                self.month = 1
+                self.statutoryTime = ko.observable(1);
+                self.specifiedTime = ko.observable(1);
+            }
+        }
+        export class NormalSetting {
             statutorySetting: WorkingTimeSetting;
             weekStart: number;
 
@@ -169,15 +202,15 @@ module nts.uk.at.view.kmk004.a {
                 self.weekly = ko.observable(0);
                 self.monthly = [];
                 for (let i = 1; i < 13; i++) {
-                    self.monthly.push(new Monthly(i + '月度', 12));
+                    self.monthly.push(new Monthly(i , 12));
                 }
             }
         }
         export class Monthly {
-            month: string;
+            month: number;
             time: KnockoutObservable<number>;
 
-            constructor(month: string, value: number) {
+            constructor(month: number, value: number) {
                 let self = this;
                 self.time = ko.observable(value);
                 self.month = month;

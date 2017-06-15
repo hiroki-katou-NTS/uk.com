@@ -15,7 +15,7 @@ public class KmkmtAgeementTimeWorkPlacePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "WORKPLACE_ID")
+	@Column(name = "WKPCD")
 	public String workPlaceId;
 
 	@Column(name = "BASIC_SETTING_ID")

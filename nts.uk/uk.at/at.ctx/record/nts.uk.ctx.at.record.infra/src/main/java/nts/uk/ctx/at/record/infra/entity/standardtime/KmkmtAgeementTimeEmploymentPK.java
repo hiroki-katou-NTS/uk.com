@@ -21,6 +21,6 @@ public class KmkmtAgeementTimeEmploymentPK implements Serializable {
 	@Column(name = "BASIC_SETTING_ID")
 	public String basicSettingId;
 
-	@Column(name = "EMPLOYMENT_CTG_CODE")
+	@Column(name = "EMP_CTG_CODE")
 	public String employmentCategoryCode;
 }

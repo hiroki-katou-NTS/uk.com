@@ -21,6 +21,6 @@ public class KmkmtAgeementTimeClassPK implements Serializable {
 	@Column(name = "BASIC_SETTING_ID")
 	public String basicSettingId;
 	
-	@Column(name = "CLASSIFICATION_CODE")
+	@Column(name = "CLSCD")
 	public String classificationCode;
 }

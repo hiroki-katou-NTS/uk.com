@@ -36,7 +36,7 @@ module nts.uk.pr.view.kmf001.d {
 
             constructor() {
                 var self = this;
-                this.selectedItem = ko.observable('02');
+                this.selectedItem = ko.observable(null);
                 
                 this.listComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
@@ -175,6 +175,10 @@ module nts.uk.pr.view.kmf001.d {
                 return dto;
             }
             
+            private switchToEmploymentTab(): void {
+                $('#left-content').ntsListComponent(this.listComponentOption);
+            }
+            
             private registerWholeCompany(): void {
                 var self = this;
                 // Clear errors
@@ -241,6 +245,13 @@ module nts.uk.pr.view.kmf001.d {
             static Classification = 2;
             static JOB_TITLE = 3;
             static EMPLOYEE = 4;
+        }
+        
+        export interface UnitModel {
+            code: string;
+            name?: string;
+            workplaceName?: string;
+            isAlreadySetting?: boolean;
         }
         
         class ItemModel {

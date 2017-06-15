@@ -23,7 +23,7 @@ module nts.uk.com.view.ccg008.c.service {
      * hoatt
      * get top page self set
      */
-    export function getTopPageSelfSet(): JQueryPromise<viewmodel.model.TopPageSelfSet>{
+    export function getTopPageSelfSet(): JQueryPromise<any>{
         return nts.uk.request.ajax("com",paths.getTopPageSelfSet);
     }
 }

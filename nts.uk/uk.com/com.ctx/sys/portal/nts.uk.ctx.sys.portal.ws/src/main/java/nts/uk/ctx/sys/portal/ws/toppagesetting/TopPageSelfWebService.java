@@ -43,7 +43,7 @@ public class TopPageSelfWebService extends WebService {
 	
 	@POST
 	@Path("/finditemselected")
-	public Optional<TopPageSelfSettingDto> getTopPageSelfSet(){
+	public TopPageSelfSettingDto getTopPageSelfSet(){
 		return getTopPageSelfSet.getTopPageSelfSet();
 	}
 }
