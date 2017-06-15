@@ -16,7 +16,7 @@ module kdl014.a.viewmodel {
                 { headerText: nts.uk.resource.getText("KDL014_6"), key: 'stampAtrName', width: 80 },
                 { headerText: nts.uk.resource.getText("KDL014_11"), key: 'stampMethodName', width: 100 },
                 { headerText: nts.uk.resource.getText("KDL014_13"), key: 'stampReasonName', width: 80 },
-                { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 80 },
+                { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 170 },
                 { headerText: nts.uk.resource.getText("KDL014_12"), key: 'stampCombinationName', width: 100 }
             ]);
             self.employeeCode = '';
@@ -32,7 +32,7 @@ module kdl014.a.viewmodel {
             // Get list stamp
             let startDate: string = '20160808';
             let endDate: string = '20170808';
-            self.startDate = moment(Number(startDate), 'YYYYMMDD').format('YYYY/MM/DD') + '  ~';
+            self.startDate = moment(Number(startDate), 'YYYYMMDD').format('YYYY/MM/DD ddd') + '  ~';
             self.endDate = moment(Number(endDate), 'YYYYMMDD').format('YYYY/MM/DD');
             let employeeCode: string = '00003';
             let test: string = '00003';
@@ -61,12 +61,13 @@ module kdl014.a.viewmodel {
                             //set list data source
                             self.items(_.orderBy(lstSource, ['date', 'attendanceTime'], ['asc', 'asc']));
                             $("#igGridStamp").igGrid({
-                                width: '640px',
+                                width: '780px',
                                 height: '260px',
                                 dataSource: self.items(),
                                 columns: self.columns()
                             });
                             console.timeEnd('loadStamps');
+                            //console.log("loadStamps  "+(t1-t0)+"  milliseconds");
                             dfd.resolve();
                         }).fail(function(res) {
                             dfd.reject();

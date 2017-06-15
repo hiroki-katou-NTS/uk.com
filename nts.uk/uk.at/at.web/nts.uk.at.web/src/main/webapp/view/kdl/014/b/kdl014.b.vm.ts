@@ -16,7 +16,7 @@ module kdl014.b.viewmodel {
                 { headerText: nts.uk.resource.getText("KDL014_6"), key: 'stampAtrName', width: 80 },
                 { headerText: nts.uk.resource.getText("KDL014_11"), key: 'stampMethodName', width: 100 },
                 { headerText: nts.uk.resource.getText("KDL014_13"), key: 'stampReasonName', width: 80 },
-                { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 80 },
+                { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 170 },
                 { headerText: nts.uk.resource.getText("KDL014_12"), key: 'stampCombinationName', width: 100 }
             ]);
             startDate ='';
@@ -25,12 +25,13 @@ module kdl014.b.viewmodel {
 
         /** Start page */
         start(): JQueryPromise<any> {
-            var self = this;
+            var self = this;    
             var dfd = $.Deferred<any>();
             // Get list stamp
+            console.time('loadStampsByDate');
             let startDate: string = '20160808';
             let endDate: string = '20170808';
-            self.startDate = moment(Number(startDate), 'YYYYMMDD').format('YYYY/MM/DD') + '  ~';
+            self.startDate = moment(Number(startDate), 'YYYYMMDD').format('YYYY/MM/DD ddd') + '  ~';
             self.endDate = moment(Number(endDate), 'YYYYMMDD').format('YYYY/MM/DD');
             let lstCardNumber: Array<string> = [];
             let lstEmployeeCode: Array<string> = ['00003','00002'];
@@ -54,6 +55,7 @@ module kdl014.b.viewmodel {
                             //Get List Stamp Reference
                             service.getStampByCode(lstStampNumber, startDate, endDate).done(function(lstStamp: any) {
                                 if (lstStamp.length > 0) {
+                                    console.log(lstStamp);
                                     _.forEach(lstStamp, function(item) {
                                         _.forEach(lstEmloyee, function(employee){
                                             if(employee.personId == item.personId){
@@ -63,8 +65,9 @@ module kdl014.b.viewmodel {
                                     });
                                 }
                                 self.items(_.orderBy(lstSource,['date','attendanceTime','employeeCd'],['asc','asc','asc']));
+                                console.timeEnd('loadStampsByDate');
                                 $("#igGridStamp").igGrid({
-                                    width: '800px',
+                                    width: '910px',
                                     height: '300px',
                                     dataSource: self.items(),
                                     columns: self.columns()
