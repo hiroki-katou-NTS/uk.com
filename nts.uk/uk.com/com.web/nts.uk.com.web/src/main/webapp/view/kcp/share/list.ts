@@ -41,7 +41,7 @@ module kcp.share.list {
         selectedCode: KnockoutObservable<any>;
         
         /**
-         * baseDate
+         * baseDate. Available for job title list only.
          */
         baseDate?: KnockoutObservable<Date>;
         
@@ -51,13 +51,18 @@ module kcp.share.list {
         isDialog: boolean;
         
         /**
+         * check is show select all button or not. Available for employee list only.
+         */
+        isShowSelectAllButton?: boolean;
+        
+        /**
          * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         /**
-         * Employee input list.
+         * Employee input list. Available for employee list only.
          */
         employeeInputList?: Array<UnitModel>;
     }
@@ -110,7 +115,8 @@ module kcp.share.list {
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
-            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE && data.isMultiSelect;
+            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
+                 && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
             self.listType = data.listType;
             if (data.baseDate) {
@@ -163,7 +169,8 @@ module kcp.share.list {
             }
 
             // Map already setting attr to data list.
-            if (data.isShowAlreadySet) {
+            // With employee list => not mapping with already setting list.
+            if (data.isShowAlreadySet && self.listType != ListType.EMPLOYEE) {
                 self.addAreadySettingAttr(dataList, self.alreadySettingList());
 
                 // subscribe when alreadySettingList update => reload component.
@@ -235,10 +242,10 @@ module kcp.share.list {
                 break;
             }
             var alreadySettingColSize = data.isShowAlreadySet ? 70 : 0;
-            var multiSelectColSize = data.isMultiSelect ? 65 : 0;
+            var multiSelectColSize = data.isMultiSelect ? 55 : 0;
             var selectAllButtonSize = this.isHasButtonSelectAll ? 60 : 0;
             var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
-                + alreadySettingColSize + multiSelectColSize + selectAllButtonSize;
+                + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             var totalHeight: number = this.hasBaseDate ? 500 : 452;
             this.gridStyle = {
