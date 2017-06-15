@@ -18,9 +18,14 @@ module nts.uk.at.view.kmk004.a {
                     { id: 'tab-3', title: nts.uk.resource.getText("KMK004_5"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.itemList = ko.observableArray([
-                    new ItemModel('基本給1', '基本給'),
-                    new ItemModel('基本給2', '役職手当'),
-                    new ItemModel('0003', '基本給')
+                    new ItemModel('0', '月曜日'),
+                    new ItemModel('1', '火曜日'),
+                    new ItemModel('2', '水曜日'),
+                    new ItemModel('3', '木曜日'),
+                    new ItemModel('4', '金曜日'),
+                    new ItemModel('5', '土曜日'),
+                    new ItemModel('6', '日曜日'),
+                    new ItemModel('7', '締め開始日')
                 ]);
                 self.companyWTSetting = ko.observable(new CompanyWTSetting());
                 self.selectedCode = ko.observable('');
@@ -30,29 +35,29 @@ module nts.uk.at.view.kmk004.a {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                service.findCompanySetting(2017);
+                self.loadCompanySetting();
                 dfd.resolve();
                 return dfd.promise();
             }
 
             public save(): void {
                 let self = this;
-                self.companyWTSetting().year(2017);
                 service.saveCompanySetting(ko.toJS(self.companyWTSetting));
                 console.log(ko.toJS(self.companyWTSetting));
             }
-            
+
             public remove(): void {
-                
+                let self = this;
+                let command = {year: self.companyWTSetting().year()}
+                service.removeCompanySetting(command);
             }
 
-            public loadCompanySetting(companySetting: any): void {
+            public loadCompanySetting(): void {
                 let self = this;
-                service.findCompanySetting(2017);
-                self.companyWTSetting(new CompanyWTSetting());
-                let abc = ko.observable();
-                ko.mapping.fromJS(companySetting, abc);
-                console.log(abc());
+                service.findCompanySetting(2017).done(res => {
+                    let abc = ko.mapping.fromJS(res);
+                    console.log(abc);
+                });
             }
 
             private sort(startMonth: number): Array<any> {
@@ -80,12 +85,10 @@ module nts.uk.at.view.kmk004.a {
             flexSetting: FlexSetting;
             normalSetting: NormalSetting;
             year: KnockoutObservable<number>;
-            ym: KnockoutObservable<number>;
 
             constructor() {
                 let self = this;
                 self.year = ko.observable(2017);
-                self.ym = ko.observable(201706);
                 self.deformationLaborSetting = new DeformationLaborSetting();
                 self.flexSetting = new FlexSetting();
                 self.normalSetting = new NormalSetting();
@@ -114,10 +117,8 @@ module nts.uk.at.view.kmk004.a {
 
             constructor() {
                 let self = this;
-                self.year = ko.observable(201705);
-                self.deformationLaborSetting = new DeformationLaborSetting();
-                self.flexSetting = new FlexSetting();
-                self.normalSetting = new NormalSetting();
+                self.yearMonth = ko.observable();
+                self.employeeId = '';
             }
         }
         export class EmploymentWTSetting {
@@ -155,7 +156,11 @@ module nts.uk.at.view.kmk004.a {
                 self.flexDaily = new FlexDaily();
                 self.flexMonthly = new Array<FlexMonth>();
                 for (let i = 1; i < 13; i++) {
-                    self.flexMonthly.push(new FlexMonth());
+                    let flm = new FlexMonth();
+                    flm.month = i;
+                    flm.statutoryTime(i+100);
+                    flm.specifiedTime(i+200);
+                    self.flexMonthly.push(flm);
                 }
             }
         }
@@ -174,9 +179,8 @@ module nts.uk.at.view.kmk004.a {
             specifiedTime: KnockoutObservable<number>;;
             constructor() {
                 let self = this;
-                self.month = 1
-                self.statutoryTime = ko.observable(1);
-                self.specifiedTime = ko.observable(1);
+                self.statutoryTime = ko.observable();
+                self.specifiedTime = ko.observable();
             }
         }
         export class NormalSetting {
@@ -202,7 +206,7 @@ module nts.uk.at.view.kmk004.a {
                 self.weekly = ko.observable(0);
                 self.monthly = [];
                 for (let i = 1; i < 13; i++) {
-                    self.monthly.push(new Monthly(i , 12));
+                    self.monthly.push(new Monthly(i , i+322));
                 }
             }
         }
