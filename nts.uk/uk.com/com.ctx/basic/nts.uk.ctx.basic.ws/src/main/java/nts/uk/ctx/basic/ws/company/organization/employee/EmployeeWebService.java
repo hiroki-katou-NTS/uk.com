@@ -22,7 +22,9 @@ public class EmployeeWebService extends WebService {
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}")
 	public EmployeeDto getPersonIdByEmployeeCode(@PathParam("employeeCode") String employeeCode) {
-		return this.employeeFinder.getPersonIdByEmployeeCode(employeeCode).orElse(null);
+		//return 
+		EmployeeDto test = 		this.employeeFinder.getPersonIdByEmployeeCode(employeeCode).orElse(null);
+		return test;
 	}
 	
 	@POST

@@ -5,22 +5,19 @@ module nts.uk.com.view.ccg008.c.service {
         save: "topageselfsetting/save",
         getTopPageSelfSet: "topageselfsetting/finditemselected"
     }
-    
     /**
-     * 
+     * get my top page
      */
-    export function getSelectMyTopPage(): JQueryPromise<Array<viewmodel.model.Node>> {
+    export function getSelectMyTopPage(): JQueryPromise<Array<any>> {
         return nts.uk.request.ajax("com",paths.getSelectMyTopPage);
     }
-    
     /**
-     * 
+     * save top page is selected
      */
     export function save(data: any): JQueryPromise<Array<any>> {
         return nts.uk.request.ajax("com",paths.save, data);
     }
     /**
-     * hoatt
      * get top page self set
      */
     export function getTopPageSelfSet(): JQueryPromise<any>{

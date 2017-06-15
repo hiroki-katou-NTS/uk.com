@@ -11,21 +11,21 @@ import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceCode;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceName;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceSetMemento;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkPlace;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkPlacePK;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkplace;
+import nts.uk.ctx.basic.infra.entity.company.organization.workplace.KwpmtWorkplacePK;
 
 public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	
 	@Setter
-	private KwpmtWorkPlace kwpmtWorkPlace;
+	private KwpmtWorkplace kwpmtWorkplace;
 	
 	/**
 	 * Instantiates a new jpa workplace set memento.
 	 *
 	 * @param kwpmtWorkPlace the kwpmt work place
 	 */
-	public JpaWorkplaceSetMemento(KwpmtWorkPlace kwpmtWorkPlace) {
-		this.kwpmtWorkPlace = kwpmtWorkPlace;
+	public JpaWorkplaceSetMemento(KwpmtWorkplace kwpmtWorkPlace) {
+		this.kwpmtWorkplace = kwpmtWorkPlace;
 	}
 
 	/*
@@ -37,9 +37,9 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		KwpmtWorkPlacePK pk = new KwpmtWorkPlacePK();
-		pk.setCcid(companyId.v());
-		this.kwpmtWorkPlace.setKwpmtWorkPlacePK(pk);
+		KwpmtWorkplacePK pk = new KwpmtWorkplacePK();
+		pk.setCid(companyId.v());
+		this.kwpmtWorkplace.setKwpmtWorkplacePK(pk);
 	}
 
 	/*
@@ -51,8 +51,8 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setPeriod(Period period) {
-		this.kwpmtWorkPlace.setStrD(period.getStartDate());
-		this.kwpmtWorkPlace.setEndD(period.getEndDate());
+		this.kwpmtWorkplace.setStrD(period.getStartDate());
+		this.kwpmtWorkplace.setEndD(period.getEndDate());
 		
 	}
 
@@ -66,9 +66,9 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setWorkplaceId(WorkplaceId workplaceId) {
-		KwpmtWorkPlacePK pk = this.kwpmtWorkPlace.getKwpmtWorkPlacePK();
+		KwpmtWorkplacePK pk = this.kwpmtWorkplace.getKwpmtWorkplacePK();
 		pk.setWkpid(workplaceId.v());
-		this.kwpmtWorkPlace.setKwpmtWorkPlacePK(pk);
+		this.kwpmtWorkplace.setKwpmtWorkplacePK(pk);
 	}
 
 	/*
@@ -81,9 +81,7 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setWorkplaceCode(WorkplaceCode workplaceCode) {
-		KwpmtWorkPlacePK pk = this.kwpmtWorkPlace.getKwpmtWorkPlacePK();
-		pk.setWkpcd(workplaceCode.v());
-		this.kwpmtWorkPlace.setKwpmtWorkPlacePK(pk);
+		this.kwpmtWorkplace.setWkpcd(workplaceCode.v());;
 	}
 
 	/*
@@ -96,7 +94,7 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setWorkplaceName(WorkplaceName workplaceName) {
-		this.kwpmtWorkPlace.setWkpname(workplaceName.v());
+		this.kwpmtWorkplace.setWkpname(workplaceName.v());
 	}
 
 }
