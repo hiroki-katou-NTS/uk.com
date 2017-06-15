@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.webmenu;
 
-public enum ActivationClassification {
+public enum SelectedAtr {
     	
 	BootFromTreeMenu(0),
 	
@@ -8,7 +8,7 @@ public enum ActivationClassification {
 
 	public int value;
 
-	private ActivationClassification(int type) {
+	private SelectedAtr(int type) {
 		this.value = type;
 	}
 	

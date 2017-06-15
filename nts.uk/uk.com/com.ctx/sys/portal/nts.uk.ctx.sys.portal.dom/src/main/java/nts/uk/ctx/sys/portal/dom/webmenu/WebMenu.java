@@ -1,59 +1,62 @@
 package nts.uk.ctx.sys.portal.dom.webmenu;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
-@AllArgsConstructor
+@Getter
 public class WebMenu extends AggregateRoot {
-	
+
 	/**
 	 * 
 	 */
-	@Getter
-	private String companyCode;
-	
+	private String companyId;
+
 	/**
 	 * 
 	 */
-	@Getter
+
 	private WebMenuCode webMenuCode;
-	
+
 	/**
 	 * 
 	 */
-	@Getter
+
 	private WebMenuName webMenuName;
-	
+
 	/**
 	 * 
 	 */
-	@Getter
+
 	private DefaultMenu defaultMenu;
-	
+
 	/**
 	 * 
 	 */
-	@Getter
-	private MenuBar menuBar;
-	
-	/**
-	 * 
-	 */
-	@Getter
-	private TitleMenu titleMenu;
-	
-	/**
-	 * 
-	 */
-	@Getter
-	private TreeMenu treeMenu;
+
+	private List<MenuBar> menuBars;
 	
 	
-/*	public static WebMenu createFromJavaType() {
+	public static WebMenu createFromJavaType(String companyId, String webMenuCode, String webMenuName, int defaultMenu, List<MenuBar> menuBars) {
 		return new WebMenu(
-				companyCode, webMenuCode, webMenuName, defaultMenu)
-	}*/
+				companyId,
+				new WebMenuCode(webMenuCode),
+				new WebMenuName(webMenuName),
+				EnumAdaptor.valueOf(defaultMenu, DefaultMenu.class),
+				menuBars);
+	}
+
+	public WebMenu(String companyId, WebMenuCode webMenuCode, WebMenuName webMenuName, DefaultMenu defaultMenu,
+			List<MenuBar> menuBars) {
+		super();
+		this.companyId = companyId;
+		this.webMenuCode = webMenuCode;
+		this.webMenuName = webMenuName;
+		this.defaultMenu = defaultMenu;
+		this.menuBars = menuBars;
+	}
 	
 	
 }

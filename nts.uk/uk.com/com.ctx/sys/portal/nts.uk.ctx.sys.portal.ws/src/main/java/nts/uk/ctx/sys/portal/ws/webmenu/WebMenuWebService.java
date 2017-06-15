@@ -1,0 +1,60 @@
+package nts.uk.ctx.sys.portal.ws.webmenu;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommandHander;
+import nts.uk.ctx.sys.portal.app.command.webmenu.UpdateWebMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.webmenu.UpdateWebMenuCommandHander;
+import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
+import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuFinder;
+
+@Path("webmenu")
+@Stateless
+public class WebMenuWebService extends WebService {
+
+	@Inject
+	private WebMenuFinder webMenuFinder;
+
+	@Inject
+	private AddWebMenuCommandHandler addWebMenuCommandHandler;
+
+	@Inject
+	private UpdateWebMenuCommandHander updateWebMenuCommandHander;
+
+	@Inject
+	private RemoveWebMenuCommandHander removeWebMenuCommandHander;
+
+	@POST
+	@Path("add")
+	public void add(AddWebMenuCommand command) {
+		this.addWebMenuCommandHandler.handle(command);
+	};
+
+	@POST
+	@Path("update")
+	public void update(UpdateWebMenuCommand command) {
+		this.updateWebMenuCommandHander.handle(command);
+	};
+
+	@POST
+	@Path("remove")
+	public void remove(RemoveWebMenuCommand command) {
+		this.removeWebMenuCommandHander.handle(command);
+	};
+
+	@POST
+	@Path("find/all")
+	public List<WebMenuDto> findAll() {
+		return this.webMenuFinder.findAll();
+	};
+
+}

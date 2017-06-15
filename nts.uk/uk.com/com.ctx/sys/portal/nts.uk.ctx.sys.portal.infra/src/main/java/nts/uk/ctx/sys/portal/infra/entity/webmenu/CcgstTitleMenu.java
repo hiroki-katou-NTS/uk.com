@@ -1,10 +1,16 @@
 package nts.uk.ctx.sys.portal.infra.entity.webmenu;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -27,25 +33,56 @@ public class CcgstTitleMenu extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public CcgstTitleMenuPK ccgstTitleMenuPK;
 	
+	@Column(name = "TITLE_MENU_NAME")
+	public String titleMenuName;
+	
 	@Column(name = "BACKGROUND_COLOR")
 	public String  backgroundColor;
-	
-	@Column(name = "LETTER_COLOR")
-	public String letterColor;
 	
 	@Column(name = "IMAGE_FILE")
 	public String imageFile;
 	
+	@Column(name = "TEXT_COLOR")
+	public String textColor;	
+	
+	@Column(name = "TITLE_MENU_ATR")
+	public int titleMenuAtr;
+	
 	@Column(name = "TITLE_MENU_CD")
 	public String titleMenuCD;
 	
-	@Column(name = "TITLE_MENU_INDICATOR")
-	public int titleMenuIndicator;
-
+	@Column(name = "DISPLAY_ORDER")
+	public int displayOrder;
+	
+	@ManyToOne
+	@JoinColumns( {
+        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+        @JoinColumn(name = "WEB_MENU_CD", referencedColumnName = "WEB_MENU_CD", insertable = false, updatable = false)
+    })
+	public CcgstMenuBar menuBar;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="titleMenu", orphanRemoval = true)
+	public List<CcgstTreeMenu> treeMenus;
+	
 	@Override
 	protected Object getKey() {
 		
 		return ccgstTitleMenuPK;
+	}
+
+	public CcgstTitleMenu(CcgstTitleMenuPK ccgstTitleMenuPK, String titleMenuName, String backgroundColor,
+			String imageFile, String textColor, int titleMenuAtr, String titleMenuCD, int displayOrder,
+			List<CcgstTreeMenu> treeMenus) {
+		super();
+		this.ccgstTitleMenuPK = ccgstTitleMenuPK;
+		this.titleMenuName = titleMenuName;
+		this.backgroundColor = backgroundColor;
+		this.imageFile = imageFile;
+		this.textColor = textColor;
+		this.titleMenuAtr = titleMenuAtr;
+		this.titleMenuCD = titleMenuCD;
+		this.displayOrder = displayOrder;
+		this.treeMenus = treeMenus;
 	}
 
 }
