@@ -32,8 +32,8 @@ public class KwpmtWplHierarchyPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 5)
-    @Column(name = "WKPID")
-    private String wkpid;
+    @Column(name = "WPL_ID")
+    private String wplid;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 40)
@@ -43,9 +43,9 @@ public class KwpmtWplHierarchyPK implements Serializable {
     public KwpmtWplHierarchyPK() {
     }
 
-    public KwpmtWplHierarchyPK(String cid, String wkpid, String hisId) {
+    public KwpmtWplHierarchyPK(String cid, String wplid, String hisId) {
         this.cid = cid;
-        this.wkpid = wkpid;
+        this.wplid = wplid;
         this.hisId = hisId;
     }
 
@@ -58,11 +58,11 @@ public class KwpmtWplHierarchyPK implements Serializable {
     }
 
     public String getWkpid() {
-        return wkpid;
+        return wplid;
     }
 
     public void setWkpid(String wkpid) {
-        this.wkpid = wkpid;
+        this.wplid = wkpid;
     }
 
     public String getHisId() {
@@ -77,7 +77,7 @@ public class KwpmtWplHierarchyPK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
-        hash += (wkpid != null ? wkpid.hashCode() : 0);
+        hash += (wplid != null ? wplid.hashCode() : 0);
         hash += (hisId != null ? hisId.hashCode() : 0);
         return hash;
     }
@@ -92,7 +92,7 @@ public class KwpmtWplHierarchyPK implements Serializable {
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }
-        if ((this.wkpid == null && other.wkpid != null) || (this.wkpid != null && !this.wkpid.equals(other.wkpid))) {
+        if ((this.wplid == null && other.wplid != null) || (this.wplid != null && !this.wplid.equals(other.wplid))) {
             return false;
         }
         if ((this.hisId == null && other.hisId != null) || (this.hisId != null && !this.hisId.equals(other.hisId))) {
@@ -103,7 +103,7 @@ public class KwpmtWplHierarchyPK implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.KwpmtWplHierarchyPK[ cid=" + cid + ", wkpid=" + wkpid + ", hisId=" + hisId + " ]";
+        return "entity.KwpmtWplHierarchyPK[ cid=" + cid + ", wkpid=" + wplid + ", hisId=" + hisId + " ]";
     }
     
 }
