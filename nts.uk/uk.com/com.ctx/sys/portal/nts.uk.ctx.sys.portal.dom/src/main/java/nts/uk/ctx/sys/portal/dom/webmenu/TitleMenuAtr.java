@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.webmenu;
 
-public enum TitleMenuIndicator {
+public enum TitleMenuAtr {
 
 	
 	NotSetTitleMenu(0),
@@ -10,7 +10,7 @@ public enum TitleMenuIndicator {
 
 	public int value;
 
-	private TitleMenuIndicator(int type) {
+	private TitleMenuAtr(int type) {
 		this.value = type;
 	}
 }

@@ -1,10 +1,13 @@
 package nts.uk.ctx.sys.portal.infra.entity.webmenu;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -27,10 +30,12 @@ public class CcgstWebMenu extends UkJpaEntity implements Serializable {
 	
 	@Column(name = "DEFAULT_MENU")
 	public int defaultMenu;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="webMenu", orphanRemoval = true)
+	public List<CcgstMenuBar> menuBars;
 
 	@Override
-	protected Object getKey() {
-		
+	protected Object getKey() {		
 		return ccgstWebMenuPK;
 	}
 
