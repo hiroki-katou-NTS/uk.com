@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.worktime;
+package nts.uk.ctx.at.shared.infra.entity.worktimeset;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -15,17 +15,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KwtdpWorkTimeDayPK {
+public class KwtspWorkTimeSetPK {
 	
 	@Column(name="CID")
 	public String companyID;
 	
-	@Column(name="TIME_DAY_CD")
-	public String timeDayCD;
+	@Column(name="WORK_TIME_SET_ID")
+	public String workTimeSetID;
 	
-	@Column(name="WORK_TIME_SET_CD")
-	public String workTimeSetCD;
-	
-	@Column(name="TIME_NUMBER_CNT")
-	public int timeNumberCnt;
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.worktime;
+package nts.uk.ctx.at.shared.dom.worktimeset;
 
 /**
  * 日区分

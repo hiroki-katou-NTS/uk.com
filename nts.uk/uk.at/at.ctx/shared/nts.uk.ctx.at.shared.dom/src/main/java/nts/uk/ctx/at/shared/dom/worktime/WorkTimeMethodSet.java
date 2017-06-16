@@ -6,13 +6,13 @@ package nts.uk.ctx.at.shared.dom.worktime;
  *
  */
 
-public enum WorkMethodSetting {
+public enum WorkTimeMethodSet {
 	
-	// 通常勤務
-	Enum_Normal_Work(0),
+	// 固定勤務
+	Enum_Fixed_Work(0),
 	
-	// フレックス勤務
-	Enum_Flex_Work(1),
+	// 時差勤務
+	Enum_Jogging_Time(1),
 	
 	// 残業枠勤務
 	Enum_Overtime_Work(2),
@@ -22,7 +22,7 @@ public enum WorkMethodSetting {
 	
 	public final int value;
 	
-	WorkMethodSetting(int value){
+	WorkTimeMethodSet(int value){
 		this.value = value;
 	}
 
