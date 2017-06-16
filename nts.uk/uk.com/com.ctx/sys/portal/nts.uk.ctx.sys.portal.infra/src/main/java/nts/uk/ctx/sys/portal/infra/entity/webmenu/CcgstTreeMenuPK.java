@@ -31,6 +31,9 @@ public class CcgstTreeMenuPK implements Serializable {
 	@Column(name = "TITLE_MENU_ID")
 	public String titleMenuId;
 		
+	@Column(name = "MENU_BAR_ID")
+	public String menuBarId;
+	
 	@Column(name = "DISPLAY_ORDER")
 	public int displayOrder;
 

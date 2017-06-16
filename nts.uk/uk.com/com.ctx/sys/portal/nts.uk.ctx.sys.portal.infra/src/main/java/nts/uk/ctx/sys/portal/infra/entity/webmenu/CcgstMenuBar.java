@@ -28,10 +28,7 @@ public class CcgstMenuBar extends UkJpaEntity implements Serializable {
 	
 	@EmbeddedId
     public CcgstMenuBarPK ccgstMenuBarPK;
-	
-	@Column(name = "MENU_BAR_ID")
-	public String menuBarId;
-	
+		
 	@Column(name = "MENU_BAR_NAME")
 	public String  menuBarName;
 	
@@ -59,8 +56,8 @@ public class CcgstMenuBar extends UkJpaEntity implements Serializable {
 	
 	@ManyToOne
 	@JoinColumns( {
-        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-        @JoinColumn(name = "WEB_MENU_CD", referencedColumnName = "WEB_MENU_CD", insertable = false, updatable = false)
+        @JoinColumn(name = "CID", referencedColumnName = "CCGST_WEB_MENU.CID", insertable = false, updatable = false),
+        @JoinColumn(name = "WEB_MENU_CD", referencedColumnName = "CCGST_WEB_MENU.WEB_MENU_CD", insertable = false, updatable = false)
     })
 	public CcgstWebMenu webMenu;
 
@@ -72,12 +69,11 @@ public class CcgstMenuBar extends UkJpaEntity implements Serializable {
 		return ccgstMenuBarPK;
 	}
 
-	public CcgstMenuBar(CcgstMenuBarPK ccgstMenuBarPK, String menuBarId, String menuBarName, int selectedAtr,
+	public CcgstMenuBar(CcgstMenuBarPK ccgstMenuBarPK, String menuBarName, int selectedAtr,
 			int system, int menuCls, String code, String backgroundColor, String textColor, int displayOrder,
 			List<CcgstTitleMenu> titleMenus) {
 		super();
 		this.ccgstMenuBarPK = ccgstMenuBarPK;
-		this.menuBarId = menuBarId;
 		this.menuBarName = menuBarName;
 		this.selectedAtr = selectedAtr;
 		this.system = system;
