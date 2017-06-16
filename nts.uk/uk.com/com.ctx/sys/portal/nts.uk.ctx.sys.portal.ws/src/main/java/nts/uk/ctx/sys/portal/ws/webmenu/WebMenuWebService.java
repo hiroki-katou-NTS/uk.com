@@ -2,10 +2,10 @@ package nts.uk.ctx.sys.portal.ws.webmenu;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommand;
@@ -17,8 +17,8 @@ import nts.uk.ctx.sys.portal.app.command.webmenu.UpdateWebMenuCommandHander;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuFinder;
 
-@Path("webmenu")
-@Stateless
+@Path("sys/portal/webmenu")
+@Produces("application/json")
 public class WebMenuWebService extends WebService {
 
 	@Inject
