@@ -2,7 +2,7 @@
 .control-group.valign-top > * { vertical-align: top; }
 .control-group.valign-bottom > * { vertical-align: bottom; }
 body {
-	overflow: hidden;
+	overflow-x: hidden;
 }
 .control-group { 
 	margin: 5px;
