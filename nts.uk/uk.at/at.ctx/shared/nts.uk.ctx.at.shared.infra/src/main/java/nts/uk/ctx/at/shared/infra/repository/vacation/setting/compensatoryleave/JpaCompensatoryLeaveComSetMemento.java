@@ -4,19 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveCom;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtNormalVacationSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSetPK;
 
 /**
  * The Class JpaCompensatoryLeaveComSetMemento.
@@ -57,40 +54,55 @@ public class JpaCompensatoryLeaveComSetMemento implements CompensatoryLeaveComSe
     public void setIsManaged(ManageDistinct isManaged) {
         this.entity.setManageAtr(isManaged.value);
     }
+	@Override
+	public void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void setCompensatoryOccurrenceSetting(List<CompensatoryOccurrenceSetting> compensatoryOccurrenceSetting) {
+		// TODO Auto-generated method stub
+		
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveComSetMemento#setNormalVacationSetting(nts.uk.ctx.at.
-     * shared.dom.vacation.setting.compensatoryleave.NormalVacationSetting)
-     */
-    @Override
-    public void setNormalVacationSetting(NormalVacationSetting setting) {
-        KmfmtNormalVacationSet entityNormal = new KmfmtNormalVacationSet();
-        setting.saveToMemento(new JpaNormalVacationSetMemento(entityNormal));
-        entityNormal.setCid(this.entity.getCid());
-        this.entity.setNormal(entityNormal);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveComSetMemento#setOccurrenceVacationSetting(nts.uk.ctx.at
-     * .shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetting)
-     */
-    @Override
-    public void setOccurrenceVacationSetting(OccurrenceVacationSetting setting) {
-    	KmfmtOccurVacationSet overTimeOccurr = new KmfmtOccurVacationSet();
-    	KmfmtOccurVacationSet dayOffTimeTimeOccurr = new KmfmtOccurVacationSet();
-        setting.saveToMemento(new JpaOccurrenceVacationSetMemento(overTimeOccurr,dayOffTimeTimeOccurr));
-        overTimeOccurr.setKmfmtOccurVacationSetPK(new KmfmtOccurVacationSetPK(this.entity.getCid(),setting.getTransferSettingOverTime().getCompensatoryOccurrenceDivision().value));
-        dayOffTimeTimeOccurr.setKmfmtOccurVacationSetPK(new KmfmtOccurVacationSetPK(this.entity.getCid(),setting.getTransferSettingDayOffTime().getCompensatoryOccurrenceDivision().value));
-        List<KmfmtOccurVacationSet> lstOccurr = new ArrayList<>();
-        lstOccurr.add(overTimeOccurr);
-        lstOccurr.add(dayOffTimeTimeOccurr);
-        this.entity.setListOccur(lstOccurr);
-    }
+//    /*
+//     * (non-Javadoc)
+//     * 
+//     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
+//     * CompensatoryLeaveComSetMemento#setNormalVacationSetting(nts.uk.ctx.at.
+//     * shared.dom.vacation.setting.compensatoryleave.NormalVacationSetting)
+//     */
+//    @Override
+//    public void setNormalVacationSetting(NormalVacationSetting setting) {
+//        KmfmtNormalVacationSet entityNormal = new KmfmtNormalVacationSet();
+//        setting.saveToMemento(new JpaNormalVacationSetMemento(entityNormal));
+//        entityNormal.setCid(this.entity.getCid());
+//        this.entity.setNormal(entityNormal);
+//    }
+//
+//    /*
+//     * (non-Javadoc)
+//     * 
+//     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
+//     * CompensatoryLeaveComSetMemento#setOccurrenceVacationSetting(nts.uk.ctx.at
+//     * .shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetting)
+//     */
+//    @Override
+//    public void setOccurrenceVacationSetting(OccurrenceVacationSetting setting) {
+//    	KmfmtOccurVacationSet overTimeOccurr = new KmfmtOccurVacationSet();
+//    	KmfmtOccurVacationSet dayOffTimeTimeOccurr = new KmfmtOccurVacationSet();
+//        setting.saveToMemento(new JpaOccurrenceVacationSetMemento(overTimeOccurr,dayOffTimeTimeOccurr));
+//        overTimeOccurr.setKmfmtOccurVacationSetPK(new KmfmtOccurVacationSetPK(this.entity.getCid(),setting.getTransferSettingOverTime().getCompensatoryOccurrenceDivision().value));
+//        dayOffTimeTimeOccurr.setKmfmtOccurVacationSetPK(new KmfmtOccurVacationSetPK(this.entity.getCid(),setting.getTransferSettingDayOffTime().getCompensatoryOccurrenceDivision().value));
+//        List<KmfmtOccurVacationSet> lstOccurr = new ArrayList<>();
+//        lstOccurr.add(overTimeOccurr);
+//        lstOccurr.add(dayOffTimeTimeOccurr);
+//        this.entity.setListOccur(lstOccurr);
+//    }
 
 }

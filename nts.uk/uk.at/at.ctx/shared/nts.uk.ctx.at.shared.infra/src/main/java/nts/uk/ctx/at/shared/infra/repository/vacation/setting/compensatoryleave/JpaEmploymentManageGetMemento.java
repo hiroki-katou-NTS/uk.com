@@ -4,13 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentManageGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveEmp;
 
-public class JpaEmploymentManageGetMemento implements EmploymentManageGetMemento {
+public class JpaEmploymentManageGetMemento {
 
 	/** The entity. */
 	private KmfmtCompensLeaveEmp entity;
@@ -22,19 +18,19 @@ public class JpaEmploymentManageGetMemento implements EmploymentManageGetMemento
 		this.entity = entity;
 	}
 
-	@Override
-	public ManageDistinct getIsManaged() {
-		return ManageDistinct.valueOf(this.entity.getManage());
-	}
-
-	@Override
-	public ExpirationTime getExpirationTime() {
-		return ExpirationTime.valueOf(this.entity.getExpireTime());
-	}
-
-	@Override
-	public ApplyPermission getPreemptionPermit() {
-		return ApplyPermission.valueOf(this.entity.getPreempPermit());
-	}
+//	@Override
+//	public ManageDistinct getIsManaged() {
+//		return ManageDistinct.valueOf(this.entity.getManage());
+//	}
+//
+//	@Override
+//	public ExpirationTime getExpirationTime() {
+//		return ExpirationTime.valueOf(this.entity.getExpireTime());
+//	}
+//
+//	@Override
+//	public ApplyPermission getPreemptionPermit() {
+//		return ApplyPermission.valueOf(this.entity.getPreempPermit());
+//	}
 
 }
