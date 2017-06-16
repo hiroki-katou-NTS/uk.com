@@ -35,18 +35,17 @@ module kdl014.a.viewmodel {
             var dfd = $.Deferred<any>();
 
             // Get list stamp
-            let startDate: string = '20160808';
-            let endDate: string = '20170808';
-            self.startDate = moment(startDate, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ~';
-            self.endDate = moment(endDate, 'YYYYMMDD').format('YYYY/MM/DD');
-            let employeeCode: string = '00003';
-            self.employeeCD = employeeCode;
+            let startTemp = nts.uk.ui.windows.getShared("kdl014startDateA");
+            let endTemp = nts.uk.ui.windows.getShared("kdl014endDateA");
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ~';
+            self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD');
+            self.employeeCD = nts.uk.ui.windows.getShared("kdl014employeeCodeA");
+            //demo
             self.employeeName = "name" + self.employeeCD;
             let lstCardNumber: Array<string> = [];
             let lstSource: Array<StampModel> = [];
-
             //get list Card Number
-            service.getPersonIdByEmployee(employeeCode).done(function(employeeInfo: any) {
+            service.getPersonIdByEmployee('00003').done(function(employeeInfo: any) {
                 if (employeeInfo !== undefined) {
                     let personId: string = employeeInfo.personId;
                     //get list Card Number
@@ -55,8 +54,7 @@ module kdl014.a.viewmodel {
                             lstCardNumber.push(value.cardNumber.toString());
                         });
                         //get list Stamp 
-                        service.getStampByCode(lstCardNumber, startDate, endDate).done(function(lstStamp: any) {
-                            console.log(lstStamp);
+                        service.getStampByCode(lstCardNumber, startTemp, endTemp).done(function(lstStamp: any) {
                             if (lstStamp.length > 0) {
                                 _.forEach(lstStamp, function(item) {
                                     lstSource.push(new StampModel(moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
@@ -64,12 +62,7 @@ module kdl014.a.viewmodel {
                             };
                             //set list data source
                             self.items(_.orderBy(lstSource, ['date', 'attendanceTime'], ['asc', 'asc']));
-                            $("#igGridStamp").igGrid({
-                                width: '780px',
-                                height: '260px',
-                                dataSource: self.items(),
-                                columns: self.columns()
-                            });
+                            $("#igGridStamp").igGrid({ dataSource: self.items() });
                             dfd.resolve();
                         }).fail(function(res) {
                             dfd.reject();

@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.portal.app.find.webmenu;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,21 +26,19 @@ public class WebMenuFinder {
 
 		String companyId = AppContexts.user().companyId();
 
-		List<WebMenuDto> result = new ArrayList<>();
-
 		List<WebMenu> webMenuList = webMenuRepository.findAll(companyId);
 
-		webMenuList.forEach(webMenuItem -> {
+		List<WebMenuDto> result = webMenuList.stream().map(webMenuItem -> {
 			List<MenuBarDto> menuBars = toMenuBar(webMenuItem);
 			
-			result.add(new WebMenuDto(
+			return new WebMenuDto(
 					companyId, 
 					webMenuItem.getWebMenuCode().v(), 
 					webMenuItem.getWebMenuName().v(), 
 					webMenuItem.getDefaultMenu().value,
-					menuBars));
-		});
-
+					menuBars);
+		}).collect(Collectors.toList());
+		
 		return result;
 	}
 

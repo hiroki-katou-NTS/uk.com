@@ -33,11 +33,9 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 
 	@Override
 	public List<WebMenu> findAll(String companyId) {
-		this.queryProxy().query(SEL_1, CcgstWebMenu.class).setParameter("companyId", companyId).getList(w -> {
+		return this.queryProxy().query(SEL_1, CcgstWebMenu.class).setParameter("companyId", companyId).getList(w -> {
 			return toDomain(companyId, w);
 		});
-
-		return null;
 	}
 	
 	@Override
