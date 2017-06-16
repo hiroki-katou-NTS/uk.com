@@ -1,51 +1,24 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.basic.dom.company;
 
-import java.util.List;
 import java.util.Optional;
+
 /**
- * 
- * @author lanlt
- *
+ * The Interface CompanyRepository.
  */
 
 public interface CompanyRepository {
-	/**
-	 * SEL_1
-	 * @param companyCd
-	 * @return Optional<Company>
-	 */
-	List<Company> getAllCompanys();
 	
 	/**
-	 * SEL_2
-	 * find a company by 
-	 * @param companyCode
-	 * @return Optional<Company>
+	 * Gets the comany id.
+	 *
+	 * @param companyId the company id
+	 * @return the comany id
 	 */
-	Optional<Company> getCompanyDetail(String companyCd);
+	Optional<Company> getComanyId(String companyId);
 	
-	/**
-	 * SEL_4
-	 * @param companyCd
-	 * @param use_Kt_Set
-	 * @return Optional<Company>
-	 */
-	Optional<Company> getCompanyByUserKtSet(String companyCd, int use_Kt_Set);														
-	/**
-	 * Add a company
-	 * @param company
-	 */
-	
-	void add(Company company);
-	/**
-	 * Update a copany
-	 * @param company
-	 */
-	void update(Company company);
-	/**
-	 * Delete a company
-	 * @param companyCode
-	 */
-	void delete(String companyCd);
 }
 

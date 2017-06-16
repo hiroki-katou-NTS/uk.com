@@ -30,5 +30,11 @@ public class CcgstTitleMenuPK implements Serializable {
 	/** Web menu code */
 	@Column(name = "WEB_MENU_CD")
 	public String webMenuCd;
+	
+	@Column(name = "MENU_BAR_ID")
+	public String menuBarId;
+	
+	@Column(name = "TITLE_MENU_ID")
+	public String titleMenuId;
 
 }

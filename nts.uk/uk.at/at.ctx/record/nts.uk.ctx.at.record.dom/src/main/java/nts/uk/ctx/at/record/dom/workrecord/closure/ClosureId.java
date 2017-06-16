@@ -12,27 +12,23 @@ package nts.uk.ctx.at.record.dom.workrecord.closure;
 public enum ClosureId {
 
 	/** The Regular employee. */
-	RegularEmployee(0, "正社員"),
+	RegularEmployee(1),
 
 	/** The Part time job. */
-	PartTimeJob(1,"アルバイト"),
+	PartTimeJob(2),
 	
 	/** The Closure three. */
-	ClosureThree(2,"締め3"),
+	ClosureThree(3),
 	
 	/** The Closure four. */
-	ClosureFour(3,"締め4"),
+	ClosureFour(4),
 	
 	/** The Closure five. */
-	ClosureFive(4,"締め5");
-	
+	ClosureFive(5);
 
 	
 	/** The value. */
 	public int value;
-
-	/** The description. */
-	public String description;
 	
 	/** The Constant values. */
 	private final static ClosureId[] values = ClosureId.values();
@@ -43,9 +39,8 @@ public enum ClosureId {
 	 * @param value the value
 	 * @param description the description
 	 */
-	private ClosureId(int value, String description) {
+	private ClosureId(int value) {
 		this.value = value;
-		this.description = description;
 	}
 
 	/**

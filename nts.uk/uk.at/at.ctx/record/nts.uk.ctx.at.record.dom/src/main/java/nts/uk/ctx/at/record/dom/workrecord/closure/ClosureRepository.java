@@ -17,7 +17,7 @@ public interface ClosureRepository {
 	 *
 	 * @param closure the closure
 	 */
-	public void add(Closure closure);
+	void add(Closure closure);
 	
 	
 	/**
@@ -25,7 +25,7 @@ public interface ClosureRepository {
 	 *
 	 * @param closure the closure
 	 */
-	public void update(Closure closure);
+	void update(Closure closure);
 	
 	
 	/**
@@ -34,7 +34,7 @@ public interface ClosureRepository {
 	 * @param companyId the company id
 	 * @return the all closure
 	 */
-	public List<Closure> getAllClosure(String companyId);
+	List<Closure> getAllClosure(String companyId);
 	
 	
 	/**

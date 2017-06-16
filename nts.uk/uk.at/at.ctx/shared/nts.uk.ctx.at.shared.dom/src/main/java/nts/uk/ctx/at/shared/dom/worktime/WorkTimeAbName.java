@@ -4,7 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 
+ * 就業時間帯略名
  * @author Doan Duy Hung
  *
  */

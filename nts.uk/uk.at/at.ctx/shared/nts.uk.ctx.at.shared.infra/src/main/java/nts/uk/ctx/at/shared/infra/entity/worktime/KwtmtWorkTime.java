@@ -3,12 +3,6 @@ package nts.uk.ctx.at.shared.infra.entity.worktime;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumns;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -30,30 +24,26 @@ public class KwtmtWorkTime extends UkJpaEntity{
 	@EmbeddedId
 	public KwtmpWorkTimePK kwtmpWorkTimePK;
 	
-	@Column(name="SORT_BY")
-	public int sortBy;
-
-	@Column(name="NAME")
-	public String name;
-
-	@Column(name="AB_NAME")
-	public String abName;
-
-	@Column(name="SYMBOL")
-	public String symbol;
-
-	@Column(name="REMARKS")
-	public String remarks;
-
-	@Column(name="DISPLAY_ATR")
+	@Column(name="NOTE")
+	public String note;
+	
+	@Column(name="DAILY_WORK_ATR")
+	public int workTimeDailyAtr;
+	
+	@Column(name="METHOD_ATR")
+	public int workTimeMethodSet;
+	
+	@Column(name="DISP_ATR")
 	public int displayAtr;
 
-	@Column(name="METHOD_ATR")
-	public int methodAtr;
+	@Column(name="NAME")
+	public String workTimeName;
 
-	@OneToOne(targetEntity=KwtstWorkTimeSet.class)
-	@JoinTable(name="KWTST_WORK_TIME_SET")
-	public KwtstWorkTimeSet kwtstWorkTimeSet;
+	@Column(name="AB_NAME")
+	public String workTimeAbName;
+
+	@Column(name="SYMBOL")
+	public String workTimeSymbol;
 	
 	@Override
 	protected Object getKey() {

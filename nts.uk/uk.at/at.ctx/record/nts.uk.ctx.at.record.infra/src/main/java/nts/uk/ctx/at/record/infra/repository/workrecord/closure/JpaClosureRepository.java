@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.workrecord.closure;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -20,6 +22,8 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.Closure;
 import nts.uk.ctx.at.record.dom.workrecord.closure.ClosureRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosure;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosurePK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosurePK_;
+import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosure_;
 
 /**
  * The Class JpaClosureRepository.
@@ -73,6 +77,20 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 
 		// select root
 		cq.select(root);
+		
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.cid), companyId));
+				
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
+		// order by closure id asc
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KclmtClosure_.kclmtClosurePK).get(KclmtClosurePK_.closureId)));
 
 		// create query
 		TypedQuery<KclmtClosure> query = em.createQuery(cq);
