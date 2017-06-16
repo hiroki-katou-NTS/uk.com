@@ -6,14 +6,12 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet;
 
 /**
  * The Class JpaOccurrenceVacationSetMemento.
  */
-public class JpaOccurrenceVacationSetMemento implements OccurrenceVacationSetMemento {
+public class JpaOccurrenceVacationSetMemento {
 
 	/** The entity. */
 	@Inject
@@ -41,11 +39,11 @@ public class JpaOccurrenceVacationSetMemento implements OccurrenceVacationSetMem
 	 * shared.dom.vacation.setting.compensatoryleave.
 	 * CompensatoryTransferSetting)
 	 */
-	@Override
-	public void setTransferSettingOverTime(CompensatoryTransferSetting transferSettingOverTime) {
-		JpaCompensatoryTransferSetMemento memento = new JpaCompensatoryTransferSetMemento(this.overTimeEntity);
-		transferSettingOverTime.saveToMemento(memento);
-	}
+//	@Override
+//	public void setTransferSettingOverTime(CompensatoryTransferSetting transferSettingOverTime) {
+//		JpaCompensatoryTransferSetMemento memento = new JpaCompensatoryTransferSetMemento(this.overTimeEntity);
+//		transferSettingOverTime.saveToMemento(memento);
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -55,10 +53,10 @@ public class JpaOccurrenceVacationSetMemento implements OccurrenceVacationSetMem
 	 * shared.dom.vacation.setting.compensatoryleave.
 	 * CompensatoryTransferSetting)
 	 */
-	@Override
-	public void setTransferSettingDayOffTime(CompensatoryTransferSetting transferSettingDayOffTime) {
-		JpaCompensatoryTransferSetMemento memento = new JpaCompensatoryTransferSetMemento(this.dayOffTimeEntity);
-		transferSettingDayOffTime.saveToMemento(memento);
-	}
+//	@Override
+//	public void setTransferSettingDayOffTime(CompensatoryTransferSetting transferSettingDayOffTime) {
+//		JpaCompensatoryTransferSetMemento memento = new JpaCompensatoryTransferSetMemento(this.dayOffTimeEntity);
+//		transferSettingDayOffTime.saveToMemento(memento);
+//	}
 
 }
