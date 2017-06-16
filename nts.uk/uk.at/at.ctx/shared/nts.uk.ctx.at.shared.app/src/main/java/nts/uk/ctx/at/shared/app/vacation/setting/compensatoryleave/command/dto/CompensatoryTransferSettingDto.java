@@ -6,13 +6,18 @@ package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingGetMemento;
 
 @Getter
+
+/**
+ * Sets the transfer division.
+ *
+ * @param transferDivision the new transfer division
+ */
 @Setter
 public class CompensatoryTransferSettingDto {
 
@@ -31,54 +36,70 @@ public class CompensatoryTransferSettingDto {
 	/** The transfer division. */
 	private Integer transferDivision;
 
-	/** The compensatory occurrence division. */
-	private Integer compensatoryOccurrenceDivision;
-
-	public CompensatoryTransferSetting toDomain() {
-		return new CompensatoryTransferSetting(new CompensatoryTransferGetMementoImpl(this));
+	/**
+	 * To domain.
+	 *
+	 * @return the transfer setting
+	 */
+	public TransferSetting toDomain() {
+		return new TransferSetting(new TransferSettingGetMementoImpl(this));
 	}
 
-	public class CompensatoryTransferGetMementoImpl implements CompensatoryTransferGetMemento {
+	/**
+	 * The Class TransferSettingGetMementoImpl.
+	 */
+	public class TransferSettingGetMementoImpl implements TransferSettingGetMemento {
 
 		/** The compensatory transfer setting dto. */
 		private CompensatoryTransferSettingDto compensatoryTransferSettingDto;
 
 		/**
-		 * @param compensatoryTransferSettingDto
+		 * Instantiates a new transfer setting get memento impl.
+		 *
+		 * @param compensatoryTransferSettingDto the compensatory transfer setting dto
 		 */
-		public CompensatoryTransferGetMementoImpl(CompensatoryTransferSettingDto compensatoryTransferSettingDto) {
+		public TransferSettingGetMementoImpl(CompensatoryTransferSettingDto compensatoryTransferSettingDto) {
 			this.compensatoryTransferSettingDto = compensatoryTransferSettingDto;
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#getCertainTime()
+		 */
 		@Override
 		public OneDayTime getCertainTime() {
 			return new OneDayTime(this.compensatoryTransferSettingDto.certainTime.longValue());
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#isUseDivision()
+		 */
 		@Override
-		public boolean getUseDivision() {
+		public boolean isUseDivision() {
 			return this.compensatoryTransferSettingDto.useDivision;
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#getOneDayTime()
+		 */
 		@Override
 		public OneDayTime getOneDayTime() {
 			return new OneDayTime(this.compensatoryTransferSettingDto.oneDayTime.longValue());
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#getHalfDayTime()
+		 */
 		@Override
 		public OneDayTime getHalfDayTime() {
 			return new OneDayTime(this.compensatoryTransferSettingDto.halfDayTime.longValue());
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave2.TransferSettingGetMemento#getTransferDivision()
+		 */
 		@Override
 		public TransferSettingDivision getTransferDivision() {
 			return TransferSettingDivision.valueOf(this.compensatoryTransferSettingDto.transferDivision);
-		}
-
-		@Override
-		public CompensatoryOccurrenceDivision getCompensatoryOccurrenceDivision() {
-			return CompensatoryOccurrenceDivision
-					.valueOf(this.compensatoryTransferSettingDto.compensatoryOccurrenceDivision);
 		}
 
 	}

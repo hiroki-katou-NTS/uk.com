@@ -4,13 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacationSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnitSetMemento;
 
-public class NormalVacationSettingDto implements NormalVacationSetMemento {
+public class CompensatoryDigestiveTimeUnitDto implements CompensatoryDigestiveTimeUnitSetMemento {
 
 	/** The expiration time. */
 	public Integer expirationTime;
@@ -23,16 +21,6 @@ public class NormalVacationSettingDto implements NormalVacationSetMemento {
 
 	/** The digestive unit. */
 	public Integer digestiveUnit;
-
-	@Override
-	public void setExpirationTime(ExpirationTime expirationTime) {
-		this.expirationTime = expirationTime.value;
-	}
-
-	@Override
-	public void setPreemptionPermit(ApplyPermission preemptionPermit) {
-		this.preemptionPermit = preemptionPermit.value;
-	}
 
 	@Override
 	public void setIsManageByTime(ManageDistinct isManageByTime) {

@@ -8,29 +8,25 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 
-/**
- * Gets the digestive unit.
- *
- * @return the digestive unit
- */
 @Getter
-public class EmploymentCompensatoryTimeManageSetting {
+public class CompensatoryDigestiveTimeUnit {
+    
 	// 管理区分
-	/** The is managed. */
-	private ManageDistinct isManaged;
-
+	/** The is manage by time. */
+	private ManageDistinct isManageByTime;
+	
 	// 消化単位
 	/** The digestive unit. */
 	private TimeVacationDigestiveUnit digestiveUnit;
 
 	/**
-	 * Instantiates a new employment compensatory time manage setting.
+	 * Instantiates a new compensatory digestive time unit.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public EmploymentCompensatoryTimeManageSetting(EmploymentTimeManageGetMemento memento) {
-		this.isManaged = memento.getIsManaged();
+	public CompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnitGetMemento memento) {
+		this.isManageByTime = memento.getIsManageByTime();
 		this.digestiveUnit = memento.getDigestiveUnit();
 	}
 
@@ -40,8 +36,8 @@ public class EmploymentCompensatoryTimeManageSetting {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(EmploymentTimeManageSetMemento memento) {
-		memento.setIsManaged(this.isManaged);
+	public void saveToMemento(CompensatoryDigestiveTimeUnitSetMemento memento) {
 		memento.setDigestiveUnit(this.digestiveUnit);
+		memento.setIsManageByTime(this.isManageByTime);
 	}
 }
