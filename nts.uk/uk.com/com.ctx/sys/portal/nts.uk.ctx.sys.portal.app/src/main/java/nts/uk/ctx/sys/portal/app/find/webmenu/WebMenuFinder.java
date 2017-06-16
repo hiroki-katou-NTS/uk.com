@@ -1,0 +1,99 @@
+package nts.uk.ctx.sys.portal.app.find.webmenu;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
+import nts.uk.ctx.sys.portal.dom.webmenu.TitleMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.WebMenu;
+import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
+import nts.uk.shr.com.context.AppContexts;
+
+@Stateless
+public class WebMenuFinder {
+
+	@Inject
+	private WebMenuRepository webMenuRepository;
+
+	/**
+	 * 
+	 * @return
+	 */
+	public List<WebMenuDto> findAll() {
+
+		String companyId = AppContexts.user().companyId();
+
+		List<WebMenuDto> result = new ArrayList<>();
+
+		List<WebMenu> webMenuList = webMenuRepository.findAll(companyId);
+
+		webMenuList.forEach(webMenuItem -> {
+			List<MenuBarDto> menuBars = toMenuBar(webMenuItem);
+			
+			result.add(new WebMenuDto(
+					companyId, 
+					webMenuItem.getWebMenuCode().v(), 
+					webMenuItem.getWebMenuName().v(), 
+					webMenuItem.getDefaultMenu().value,
+					menuBars));
+		});
+
+		return result;
+	}
+
+	/**
+	 * convert to  MenuBar
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	private static List<MenuBarDto> toMenuBar(WebMenu domain) {
+		List<MenuBarDto> menuBars = domain.getMenuBars().stream().map(mn -> {
+			List<TitleMenuDto> titleMenus = toTitleMenu(domain, mn);
+
+			return new MenuBarDto(mn.getCode().v(), mn.getMenuBarName().v(),
+					mn.getSelectedAtr().value, mn.getSystem().value, mn.getMenuCls().value,
+					mn.getBackgroundColor().v(), mn.getTextColor().v(), mn.getDisplayOrder(), titleMenus);
+		}).collect(Collectors.toList());
+		return menuBars;
+	}
+
+	/**
+	 * convert to  TitleMenu
+	 * 
+	 * @param domain
+	 * @param mn
+	 * @return
+	 */
+	private static List<TitleMenuDto> toTitleMenu(WebMenu domain, MenuBar mn) {
+		List<TitleMenuDto> titleMenus = mn.getTitleMenu().stream().map(tm -> {
+			List<TreeMenuDto> treeMenus = toTreeMenu(domain, tm);
+
+			return new TitleMenuDto(tm.getTitleMenuName().v(), tm.getBackgroundColor().v(),
+					tm.getImageFile(), tm.getTextColor().v(), tm.getTitleMenuAtr().value, tm.getTitleMenuCode().v(),
+					tm.getDisplayOrder(), treeMenus);
+		}).collect(Collectors.toList());
+		
+		return titleMenus;
+	}
+
+	/**
+	 * convert to  TreeMenu
+	 * 
+	 * @param domain
+	 * @param tm
+	 * @return
+	 */
+	private static List<TreeMenuDto> toTreeMenu(WebMenu domain, TitleMenu tm) {
+		List<TreeMenuDto> treeMenus = tm.getTreeMenu().stream().map(trm -> {
+			return new TreeMenuDto(trm.getCode().v(), trm.getDisplayOrder(), trm.getClassification().value,
+					trm.getSystem().value);
+		}).collect(Collectors.toList());
+		return treeMenus;
+	}
+
+}

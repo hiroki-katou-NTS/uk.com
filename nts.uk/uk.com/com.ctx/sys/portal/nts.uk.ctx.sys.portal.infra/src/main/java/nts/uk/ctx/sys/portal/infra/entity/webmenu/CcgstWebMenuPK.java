@@ -22,7 +22,7 @@ public class CcgstWebMenuPK  implements Serializable {
 	
 	/** Company ID */
 	@Column(name = "CID")
-	public String companyID;
+	public String companyId;
 	
 	/** Web menu code */
 	@Column(name = "WEB_MENU_CD")
