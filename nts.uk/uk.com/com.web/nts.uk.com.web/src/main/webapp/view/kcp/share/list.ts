@@ -277,7 +277,7 @@ module kcp.share.list {
                     break;
                 case ListType.EMPLOYEE:
                     codeColumnSize = 150;
-                    companyColumnSize = 150;
+                    companyColumnSize = data.isShowWorkPlaceName ? 150 : 0;
                     break;
                 default:
                 break;

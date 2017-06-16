@@ -13,32 +13,28 @@ import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KwkdtStampCard;
 public class JpaStampCardRepository extends JpaRepository implements StampCardRepository {
 
 	private final String SELECT_BY_PERSON = "SELECT c FROM KwkdtStampCard c"
-			+ " WHERE c.kwkdtStampCardPK.companyId = :companyId" 
-			+ " AND c.personId = :personId";
+			+ " WHERE c.personId = :personId";
 	
 	private final String SELECT_BY_LIST_PERSON = "SELECT c FROM KwkdtStampCard c"
-			+ " WHERE c.kwkdtStampCardPK.companyId = :companyId" 
-			+ " AND c.personId IN :listPersonId";
+			+ " WHERE c.personId IN :listPersonId";
 
 	private static StampCardItem toDomain(KwkdtStampCard entity) {
 		StampCardItem domain = StampCardItem.createFromJavaType(
-				entity.kwkdtStampCardPK.companyId,
 				entity.personId, 
 				entity.kwkdtStampCardPK.cardNumber);
 		return domain;
 	}
 
 	@Override
-	public List<StampCardItem> findByPersonID(String companyId, String personId) {
+	public List<StampCardItem> findByPersonID(String personId) {
 		return this.queryProxy().query(SELECT_BY_PERSON, KwkdtStampCard.class)
-				.setParameter("companyId", companyId)
-				.setParameter("personId", personId).getList(c -> toDomain(c));
+				.setParameter("personId", personId)
+				.getList(c -> toDomain(c));
 	}
 
 	@Override
-	public List<StampCardItem> findByListPersonID(String companyId, List<String> LstPID) {
+	public List<StampCardItem> findByListPersonID(List<String> LstPID) {
 		return this.queryProxy().query(SELECT_BY_LIST_PERSON, KwkdtStampCard.class)
-				.setParameter("companyId", companyId)
 				.setParameter("listPersonId", LstPID)
 				.getList(c -> toDomain(c));
 	}

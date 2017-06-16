@@ -6,10 +6,11 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCompensatoryManageSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCompensatoryTimeManageSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveEmp;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveEmpPK;
 
@@ -42,16 +43,34 @@ public class JpaCompensatoryLeaveEmSettingSetMemento implements CompensatoryLeav
 	}
 
 	@Override
-	public void setEmploymentManageSetting(EmploymentCompensatoryManageSetting employmentManageSetting) {
-		this.entity.setManage(employmentManageSetting.getIsManaged().value);
-		this.entity.setExpireTime(employmentManageSetting.getExpirationTime().value);
-		this.entity.setPreempPermit(employmentManageSetting.getPreemptionPermit().value);
+	public void setIsManaged(ManageDistinct isManaged) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void setEmploymentTimeManageSetting(EmploymentCompensatoryTimeManageSetting employmentTimeManageSetting) {
-		this.entity.setTimeManage(employmentTimeManageSetting.getIsManaged().value);
-		this.entity.setDigestiveUnit(employmentTimeManageSetting.getDigestiveUnit().value);
+	public void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse) {
+		// TODO Auto-generated method stub
+		
 	}
+
+	@Override
+	public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+//	@Override
+//	public void setEmploymentManageSetting(EmploymentCompensatoryManageSetting employmentManageSetting) {
+//		this.entity.setManage(employmentManageSetting.getIsManaged().value);
+//		this.entity.setExpireTime(employmentManageSetting.getExpirationTime().value);
+//		this.entity.setPreempPermit(employmentManageSetting.getPreemptionPermit().value);
+//	}
+//
+//	@Override
+//	public void setEmploymentTimeManageSetting(EmploymentCompensatoryTimeManageSetting employmentTimeManageSetting) {
+//		this.entity.setTimeManage(employmentTimeManageSetting.getIsManaged().value);
+//		this.entity.setDigestiveUnit(employmentTimeManageSetting.getDigestiveUnit().value);
+//	}
 
 }

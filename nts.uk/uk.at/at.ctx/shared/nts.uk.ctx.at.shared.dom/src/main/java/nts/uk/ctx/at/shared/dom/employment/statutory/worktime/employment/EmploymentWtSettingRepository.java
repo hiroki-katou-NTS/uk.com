@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment;
 
+import java.util.Optional;
+
 /**
- * The Interface CompanySettingRepository.
+ * The Interface EmploymentWtSettingRepository.
  */
 public interface EmploymentWtSettingRepository {
 
@@ -27,14 +29,16 @@ public interface EmploymentWtSettingRepository {
 	 * Removes the.
 	 *
 	 * @param companyId the company id
+	 * @param year the year
 	 */
-	void remove(String companyId);
+	void remove(String companyId, int year);
 
 	/**
 	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @return the employment setting
+	 * @param year the year
+	 * @return the optional
 	 */
-	EmploymentWtSetting find(String companyId);
+	Optional<EmploymentWtSetting> find(String companyId, int year);
 }

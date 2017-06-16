@@ -8,7 +8,6 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 
 @Embeddable
@@ -27,6 +26,7 @@ public class CmmmtAgentPK implements Serializable{
 	public String employeeId;
 	
 	@Basic(optional = false)	
-	@Column(name = "START_DATE")
-	public GeneralDate startDate;
+	@Column(name = "REQUEST_ID")
+	public String requestId;
+
 }

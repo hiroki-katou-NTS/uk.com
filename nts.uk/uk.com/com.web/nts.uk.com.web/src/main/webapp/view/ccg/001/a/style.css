@@ -1,3 +1,9 @@
+@CHARSET "UTF-8";
+
+.contentkcp{
+	min-height: 550px;
+}
+
 .btn_big {
 	width: 200px;
 	background-color:#2ECC71;

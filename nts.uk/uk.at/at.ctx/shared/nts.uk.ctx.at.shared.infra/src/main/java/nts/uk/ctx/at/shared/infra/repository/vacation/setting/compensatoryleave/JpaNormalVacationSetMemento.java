@@ -6,17 +6,12 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacationSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtNormalVacationSet;
 
 /**
  * The Class JpaNormalVacationSetMemento.
  */
-public class JpaNormalVacationSetMemento implements NormalVacationSetMemento {
+public class JpaNormalVacationSetMemento {
     
     /** The entity. */
     @Inject
@@ -43,10 +38,10 @@ public class JpaNormalVacationSetMemento implements NormalVacationSetMemento {
      * NormalVacationSetMemento#setExpirationTime(nts.uk.ctx.at.shared.dom.
      * vacation.setting.compensatoryleave.ExpirationTime)
      */
-    @Override
-    public void setExpirationTime(ExpirationTime expirationTime) {
-        this.entity.setExpireTime(expirationTime.value);
-    }
+//    @Override
+//    public void setExpirationTime(ExpirationTime expirationTime) {
+//        this.entity.setExpireTime(expirationTime.value);
+//    }
 
     /**
      * Sets the preemption permit.
@@ -59,10 +54,10 @@ public class JpaNormalVacationSetMemento implements NormalVacationSetMemento {
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
      * NormalVacationSetMemento#setPreemptionPermit(java.lang.Boolean)
      */
-    @Override
-    public void setPreemptionPermit(ApplyPermission preemptionPermit) {
-        this.entity.setPreempPermit(preemptionPermit.value);
-    }
+//    @Override
+//    public void setPreemptionPermit(ApplyPermission preemptionPermit) {
+//        this.entity.setPreempPermit(preemptionPermit.value);
+//    }
 
     /**
      * Sets the checks if is manage by time.
@@ -76,10 +71,10 @@ public class JpaNormalVacationSetMemento implements NormalVacationSetMemento {
      * NormalVacationSetMemento#setIsManageByTime(nts.uk.ctx.at.shared.dom.
      * vacation.setting.ManageDistinct)
      */
-    @Override
-    public void setIsManageByTime(ManageDistinct isManageByTime) {
-        this.entity.setIsMngTime(isManageByTime.value);
-    }
+//    @Override
+//    public void setIsManageByTime(ManageDistinct isManageByTime) {
+//        this.entity.setIsMngTime(isManageByTime.value);
+//    }
 
     /**
      * Sets the digestive unit.
@@ -93,9 +88,9 @@ public class JpaNormalVacationSetMemento implements NormalVacationSetMemento {
      * NormalVacationSetMemento#setDigestiveUnit(nts.uk.ctx.at.shared.dom.
      * vacation.setting.TimeVacationDigestiveUnit)
      */
-    @Override
-    public void setDigestiveUnit(TimeVacationDigestiveUnit digestiveUnit) {
-        this.entity.setDigestiveUnit(digestiveUnit.value);
-    }
+//    @Override
+//    public void setDigestiveUnit(TimeVacationDigestiveUnit digestiveUnit) {
+//        this.entity.setDigestiveUnit(digestiveUnit.value);
+//    }
 
 }

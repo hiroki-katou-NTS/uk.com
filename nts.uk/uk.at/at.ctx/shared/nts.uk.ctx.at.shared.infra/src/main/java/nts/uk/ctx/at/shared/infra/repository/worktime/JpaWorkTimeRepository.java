@@ -11,7 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeAbName;
-import nts.uk.ctx.at.shared.dom.worktime.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDisplayName;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
@@ -55,7 +55,7 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 	 */
 	private WorkTime convertToDomainWorkTime(KwtmtWorkTime kwtmtWorkTime){
 		return new WorkTime(
-			new WorkTimeCode(kwtmtWorkTime.kwtmpWorkTimePK.siftCD), 
+			new SiftCode(kwtmtWorkTime.kwtmpWorkTimePK.siftCD), 
 			kwtmtWorkTime.kwtmpWorkTimePK.companyID, 
 			new WorkTimeNote(kwtmtWorkTime.note), 
 			new WorkTimeDivision(

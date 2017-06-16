@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.portal.ws.toppagesetting;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,14 +17,13 @@ import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSelfSettingFinder;
  * @author hoatt
  */
 @Path("topageselfsetting")
-@Stateless
 public class TopPageSelfWebService extends WebService {
 	@Inject
 	private TopPageSelfSettingFinder topPageSelfSettingFinder;
 	@Inject
 	private TopPageSelfSettingCommandHandler saveCommandHandler;
 	/**
-	 * Lay du lieu tu domain トップページ va 標準メニュー
+	 * Lay du lieu tu domain トップページ 
 	 * @return
 	 */
 	@POST

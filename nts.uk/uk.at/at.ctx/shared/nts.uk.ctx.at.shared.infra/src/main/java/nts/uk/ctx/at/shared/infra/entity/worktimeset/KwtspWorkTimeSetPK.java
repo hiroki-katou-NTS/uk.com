@@ -20,7 +20,7 @@ public class KwtspWorkTimeSetPK {
 	@Column(name="CID")
 	public String companyID;
 	
-	@Column(name="WORK_TIME_SET_ID")
-	public String workTimeSetID;
+	@Column(name="SIFT_CD")
+	public String siftCD;
 	
 }
