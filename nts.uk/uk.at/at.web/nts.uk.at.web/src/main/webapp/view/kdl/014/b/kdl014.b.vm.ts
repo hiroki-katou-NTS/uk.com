@@ -34,12 +34,12 @@ module kdl014.b.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             // Get list stamp
-            let startDate: string = '20160808';
-            let endDate: string = '20170808';
-            self.startDate = moment(Number(startDate), 'YYYYMMDD').format('YYYY/MM/DD ddd') + '  ~';
-            self.endDate = moment(Number(endDate), 'YYYYMMDD').format('YYYY/MM/DD');
+            let startTemp: string = nts.uk.ui.windows.getShared("kdl014startDateB");
+            let endTemp: string = nts.uk.ui.windows.getShared("kdl014endDateB");
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD ddd') + '  ~';
+            self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD');
+            let lstEmployeeCode: Array<string> = nts.uk.ui.windows.getShared("kdl014lstEmployeeB");
             let lstCardNumber: Array<string> = [];
-            let lstEmployeeCode: Array<string> = ['00003', '00002'];
             let lstPersonID: Array<string> = [];
             let lstEmloyee: Array<PersonModel> = [];
             let lstStampNumber: Array<string> = [];
@@ -58,7 +58,7 @@ module kdl014.b.viewmodel {
                                 lstStampNumber.push(i.cardNumber);
                             });
                             //Get List Stamp Reference
-                            service.getStampByCode(lstStampNumber, startDate, endDate).done(function(lstStamp: any) {
+                            service.getStampByCode(lstStampNumber, startTemp, endTemp).done(function(lstStamp: any) {
                                 if (lstStamp.length > 0) {
                                     console.log(lstStamp);
                                     _.forEach(lstStamp, function(item) {
