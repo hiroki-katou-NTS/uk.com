@@ -10183,6 +10183,81 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 /**
+                 * Dialog binding handler
+                 */
+                var NtsDateRangePickerBindingHandler = (function () {
+                    function NtsDateRangePickerBindingHandler() {
+                    }
+                    /**
+                     * Init. sssss
+                     */
+                    NtsDateRangePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var $container = $(element);
+                        var dateType = ko.unwrap(data.type);
+                        var maxRange = ko.unwrap(data.maxRange);
+                        var color = ko.unwrap(data.value);
+                        var dataName = ko.unwrap(data.name);
+                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+                        var showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
+                        var id = nts.uk.util.randomId();
+                        $container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
+                        var $datePickerArea = $container.find(".ntsDateRange_Container");
+                        $datePickerArea.append("<div class='ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsRangeLabel'><label>～</label></div>" +
+                            "<div class='ntsEndDate ntsControl nts-datepicker-wrapper' />");
+                        if (showNextPrevious === true) {
+                            $datePickerArea.before("<div class= 'ntsDateNextButton'/>");
+                            $datePickerArea.after("<div class='ntsDatePreviousButton'/>");
+                        }
+                        var $startDateArea = $datePickerArea.find(".ntsStartDate");
+                        var $endDateArea = $datePickerArea.find(".ntsEndDate");
+                        $startDateArea.append("<input id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker' />");
+                        $endDateArea.append("<input id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker' />");
+                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+                        var ISOFormat = uk.text.getISOFormat(dateFormat);
+                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
+                        var $input = $container.find(".ntsDatepicker");
+                        // Init Datepicker
+                        $input.datepicker({
+                            language: 'ja-JP',
+                            format: ISOFormat,
+                            autoHide: true,
+                        });
+                        name = nts.uk.resource.getControlName(name);
+                        $input.on("change", function (e) {
+                            var newText = $input.val();
+                        });
+                        $input.on("blur", function () {
+                            var newText = $input.val();
+                        });
+                        $input.on('validate', (function (e) {
+                            var newText = $input.val();
+                        }));
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var $container = $(element);
+                    };
+                    return NtsDateRangePickerBindingHandler;
+                }());
+                ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
                  * LinkButton
                  */
                 var NtsLinkButtonBindingHandler = (function () {
