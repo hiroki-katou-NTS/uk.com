@@ -26,7 +26,7 @@ public class KclmtClosurePK implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The ccid. */
+	/** The cid. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "CID")

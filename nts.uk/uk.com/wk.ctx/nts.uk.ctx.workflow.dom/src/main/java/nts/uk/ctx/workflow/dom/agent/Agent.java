@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.agent;
 
 import java.util.List;
+import java.util.UUID;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -15,6 +16,8 @@ public class Agent extends AggregateRoot {
 	private String companyId;
 
 	private String employeeId;
+	
+	private UUID requestId;
 
 	private GeneralDate startDate;
 
@@ -36,13 +39,14 @@ public class Agent extends AggregateRoot {
 
 	private AgentAppType agentAppType4;
 
-	public Agent(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate,
+	public Agent(String companyId, String employeeId, UUID requestId, GeneralDate startDate, GeneralDate endDate,
 			String agentSid1, AgentAppType agentAppType1, String agentSid2, AgentAppType agentAppType2,
 			String agentSid3, AgentAppType agentAppType3, String agentSid4, AgentAppType agentAppType4) {
 		super();
 
 		this.companyId = companyId;
 		this.employeeId = employeeId;
+		this.requestId = requestId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.agentSid1 = agentSid1;
@@ -75,6 +79,7 @@ public class Agent extends AggregateRoot {
 	public static Agent createFromJavaType(
 			String companyId, 
 			String employeeId, 
+			String requestId,
 			GeneralDate endDate, 
 			GeneralDate startDate,
 			String agentSid1,
@@ -89,6 +94,7 @@ public class Agent extends AggregateRoot {
 		return new Agent(
 				companyId, 
 				employeeId, 
+				UUID.fromString(requestId),
 				endDate, 
 				startDate,
 				agentSid1,
@@ -100,6 +106,14 @@ public class Agent extends AggregateRoot {
 				agentSid4,
 				EnumAdaptor.valueOf(agentAppType4, AgentAppType.class)
 				);
+	}
+	
+	/**
+	 * create new request id
+	 * @return
+	 */
+	public static UUID createRequestId() {
+		return UUID.randomUUID();
 	}
 	
 	/**
@@ -129,7 +143,7 @@ public class Agent extends AggregateRoot {
 		
 		// check start date and end date
 		if (!checkDateLatest(rangeDateLastest) || !checkDateLast(rangeDateLast)) {
-			throw new BusinessException(""); // had error
+			throw new BusinessException("Msg_012"); // had error
 		}
 	}
 	
@@ -151,8 +165,8 @@ public class Agent extends AggregateRoot {
 	 * @param rangeDateLast range date last
 	 * @return false if end date after end date in range date latest, else true
 	 */
-	private boolean checkDateLast(RangeDate rangeDateLast) {		
-		if (this.endDate.after(rangeDateLast.getStartDate())) {
+	private boolean checkDateLast(RangeDate rangeDateLast) {	
+		if (this.startDate.before(rangeDateLast.getEndDate()) && this.endDate.after(rangeDateLast.getStartDate())) {
 			return false;
 		}
 		

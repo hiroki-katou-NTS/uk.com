@@ -4,7 +4,7 @@ module kdl014.b.viewmodel {
         columns: KnockoutObservableArray<NtsGridListColumn>;
         startDate: string;
         endDate: string;
-        
+
         constructor() {
             var self = this;
             self.items = ko.observableArray([]);
@@ -19,73 +19,73 @@ module kdl014.b.viewmodel {
                 { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 170 },
                 { headerText: nts.uk.resource.getText("KDL014_12"), key: 'stampCombinationName', width: 100 }
             ]);
-            startDate ='';
-            endDate ='';           
+            startDate = '';
+            endDate = '';
+            $("#igGridStamp").igGrid({
+                width: '910px',
+                height: '300px',
+                dataSource: self.items(),
+                columns: self.columns()
+            });
         }
 
         /** Start page */
         start(): JQueryPromise<any> {
-            var self = this;    
+            var self = this;
             var dfd = $.Deferred<any>();
             // Get list stamp
-            console.time('loadStampsByDate');
-            let startDate: string = '20160808';
-            let endDate: string = '20170808';
-            self.startDate = moment(Number(startDate), 'YYYYMMDD').format('YYYY/MM/DD ddd') + '  ~';
-            self.endDate = moment(Number(endDate), 'YYYYMMDD').format('YYYY/MM/DD');
+            let startTemp: string = nts.uk.ui.windows.getShared("kdl014startDateB");
+            let endTemp: string = nts.uk.ui.windows.getShared("kdl014endDateB");
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD ddd') + '  ~';
+            self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD');
+            let lstEmployeeCode: Array<string> = nts.uk.ui.windows.getShared("kdl014lstEmployeeB");
             let lstCardNumber: Array<string> = [];
-            let lstEmployeeCode: Array<string> = ['00003','00002'];
             let lstPersonID: Array<string> = [];
             let lstEmloyee: Array<PersonModel> = [];
-            let lstStampNumber: Array<string> =[];
-            let lstSource: Array<StampModel>=[];
+            let lstStampNumber: Array<string> = [];
+            let lstSource: Array<StampModel> = [];
             service.getListPersonByListEmployee(lstEmployeeCode).done(function(persons: any) {
-                if(persons.length>0){
+                if (persons.length > 0) {
                     //console.log(persons);
-                    _.forEach(persons, function(person){
+                    _.forEach(persons, function(person) {
                         lstPersonID.push(person.personId);
-                        lstEmloyee.push(new PersonModel(person.employeeCode,person.personId));
-                    });  
+                        lstEmloyee.push(new PersonModel(person.employeeCode, person.personId));
+                    });
                     //Get list STAMP NUMBER from PersonID 
                     service.getStampNumberByListPersonId(lstPersonID).done(function(StampNumbers: any) {
-                        if(StampNumbers.length>0){
-                            _.forEach(StampNumbers, function(i){
-                                 lstStampNumber.push(i.cardNumber);
-                            });  
+                        if (StampNumbers.length > 0) {
+                            _.forEach(StampNumbers, function(i) {
+                                lstStampNumber.push(i.cardNumber);
+                            });
                             //Get List Stamp Reference
-                            service.getStampByCode(lstStampNumber, startDate, endDate).done(function(lstStamp: any) {
+                            service.getStampByCode(lstStampNumber, startTemp, endTemp).done(function(lstStamp: any) {
                                 if (lstStamp.length > 0) {
                                     console.log(lstStamp);
                                     _.forEach(lstStamp, function(item) {
-                                        _.forEach(lstEmloyee, function(employee){
-                                            if(employee.personId == item.personId){
-                                               lstSource.push(new StampModel(employee.employeeCd,'name',item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName)); 
-                                            } 
+                                        _.forEach(lstEmloyee, function(employee) {
+                                            if (employee.personId == item.personId) {
+                                                lstSource.push(new StampModel(employee.employeeCd, 'name', item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+                                                return false;
+                                            }
                                         });
                                     });
                                 }
-                                self.items(_.orderBy(lstSource,['date','attendanceTime','employeeCd'],['asc','asc','asc']));
-                                console.timeEnd('loadStampsByDate');
-                                $("#igGridStamp").igGrid({
-                                    width: '910px',
-                                    height: '300px',
-                                    dataSource: self.items(),
-                                    columns: self.columns()
-                                });
+                                self.items(_.orderBy(lstSource, ['date', 'attendanceTime', 'employeeCd'], ['asc', 'asc', 'asc']));
+                                $("#igGridStamp").igGrid({ dataSource: self.items() });
                                 dfd.resolve();
                             }).fail(function(res) {
                                 dfd.reject();
                             });
-                            dfd.resolve();  
+                            dfd.resolve();
                         }
                     }).fail(function(res) {
                         dfd.reject();
-                    });  
+                    });
                 }
             }).fail(function(res) {
                 dfd.reject();
             });
-            
+
             return dfd.promise();
         }
 
@@ -97,8 +97,8 @@ module kdl014.b.viewmodel {
 
 
     class StampModel {
-        employeeCd:string;
-        employeeName:string;
+        employeeCd: string;
+        employeeName: string;
         date: string;
         attendanceTime: string;
         stampReasonName: string;
@@ -106,7 +106,7 @@ module kdl014.b.viewmodel {
         stampMethodName: string;
         workLocationName: string;
         stampCombinationName: string;
-        constructor(employeeCd:string,employeeName:string,date: string, attendanceTime: string, stampReasonName: string, stampAtrName: string, stampMethodName: string, workLocationName: string, stampCombinationName: string) {
+        constructor(employeeCd: string, employeeName: string, date: string, attendanceTime: string, stampReasonName: string, stampAtrName: string, stampMethodName: string, workLocationName: string, stampCombinationName: string) {
             var self = this;
             self.employeeCd = employeeCd;
             self.employeeName = employeeName;
@@ -119,14 +119,14 @@ module kdl014.b.viewmodel {
             self.stampCombinationName = stampCombinationName;
         }
     }
-    
-    class PersonModel{
-        employeeCd : string;
+
+    class PersonModel {
+        employeeCd: string;
         personId: string;
-        constructor(employeeCd:string,personId:string){
-            var self= this;
+        constructor(employeeCd: string, personId: string) {
+            var self = this;
             self.employeeCd = employeeCd;
-            self.personId = personId;    
+            self.personId = personId;
         }
     }
 }

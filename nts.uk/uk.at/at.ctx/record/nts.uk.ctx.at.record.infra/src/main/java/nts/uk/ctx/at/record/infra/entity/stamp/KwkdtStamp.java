@@ -28,15 +28,13 @@ public class KwkdtStamp extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KwkdtStampPK kwkdtStampPK;
 
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "WORK_LOCATION_CD", referencedColumnName = "WORK_LOCATION_CD", insertable = false, updatable = false) })
-	@OneToOne(optional = false, cascade = CascadeType.DETACH)
-	
-	public KwlmtWorkLocation kwlmtWorkLocation;
+//	@JoinColumn(name = "WORK_LOCATION_CD", referencedColumnName = "WORK_LOCATION_CD", insertable = false, updatable = false)
+//	@OneToOne(optional = false, cascade = CascadeType.DETACH)
+//	public KwlmtWorkLocation kwlmtWorkLocation;
 
 	@Basic(optional = false)
-	@Column(name = "WORK_TIME_CD")
-	public String workTimeCd;
+	@Column(name = "SIFT_CD")
+	public String siftCd;
 
 	@Basic(optional = false)
 	@Column(name = "STAMP_COMBINATION_ATR")

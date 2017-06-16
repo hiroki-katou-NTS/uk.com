@@ -7,14 +7,12 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet;
 
 /**
  * The Class JpaOccurrenceVacationGetMemento.
  */
-public class JpaOccurrenceVacationGetMemento implements OccurrenceVacationGetMemento {
+public class JpaOccurrenceVacationGetMemento  {
     
     /** The entity. */
     private List<KmfmtOccurVacationSet> lstEntityOccur;
@@ -34,15 +32,15 @@ public class JpaOccurrenceVacationGetMemento implements OccurrenceVacationGetMem
      * @return the transfer setting
      */
 
-	@Override
-	public CompensatoryTransferSetting getTransferSettingDayOffTime() {
-		return new CompensatoryTransferSetting(new JpaCompensatoryTransferGetMemento(findByType(CompensatoryOccurrenceDivision.WorkDayOffTime)));
-	}
-    
-    @Override
-    public CompensatoryTransferSetting getTransferSettingOverTime() {
-        return new CompensatoryTransferSetting(new JpaCompensatoryTransferGetMemento(findByType(CompensatoryOccurrenceDivision.FromOverTime)));
-    }
+//	@Override
+//	public CompensatoryTransferSetting getTransferSettingDayOffTime() {
+//		return new CompensatoryTransferSetting(new JpaCompensatoryTransferGetMemento(findByType(CompensatoryOccurrenceDivision.WorkDayOffTime)));
+//	}
+//    
+//    @Override
+//    public CompensatoryTransferSetting getTransferSettingOverTime() {
+//        return new CompensatoryTransferSetting(new JpaCompensatoryTransferGetMemento(findByType(CompensatoryOccurrenceDivision.FromOverTime)));
+//    }
 
     private KmfmtOccurVacationSet findByType(CompensatoryOccurrenceDivision type) {
     	return lstEntityOccur.stream()

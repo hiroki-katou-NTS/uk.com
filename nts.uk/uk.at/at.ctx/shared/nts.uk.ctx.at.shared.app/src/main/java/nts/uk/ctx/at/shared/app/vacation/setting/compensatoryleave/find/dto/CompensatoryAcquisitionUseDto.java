@@ -1,0 +1,34 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto;
+
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUseSetMemento;
+
+public class CompensatoryAcquisitionUseDto implements CompensatoryAcquisitionUseSetMemento {
+
+	/** The expiration time. */
+	public Integer expirationTime;
+
+	/** The preemption permit. */
+	public Integer preemptionPermit;
+
+	/** The is manage by time. */
+	public Integer isManageByTime;
+
+	/** The digestive unit. */
+	public Integer digestiveUnit;
+
+	@Override
+	public void setExpirationTime(ExpirationTime expirationTime) {
+		this.expirationTime = expirationTime.value;
+	}
+
+	@Override
+	public void setPreemptionPermit(ApplyPermission preemptionPermit) {
+		this.preemptionPermit = preemptionPermit.value;
+	}
+}

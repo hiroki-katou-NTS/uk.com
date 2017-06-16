@@ -48,7 +48,9 @@
 										<label>#{i18n.getText('KMK012_2')}</label>
 									</div>
 									<div class="valueData">
-											<div class="cf" id="selUseClassification"
+											<div class="cf"
+												tabindex="1" 
+												id="selUseClassification"
 												data-bind="ntsSwitchButton: {
 												options: useClassification,
 												optionsValue: 'code',
@@ -66,7 +68,11 @@
 										<label>#{i18n.getText('KMK012_5')}</label>
 									</div>
 									<div class="valueData">
-										<div data-bind="ntsDatePicker: {value: closureModel.month, dateFormat: 'yearmonth'}"></div>
+										<div data-name="#{i18n.getText('KMK012_5')}" 
+											tabindex="2"  
+											data-bind="ntsDatePicker: 
+											{value: closureModel.month, dateFormat: 'yearmonth'}">
+										</div>
 									</div>
 								</div>
 								<br />
@@ -78,11 +84,12 @@
 								
 								
 								<div class="contents" >
-									<button data-bind="click: openConfirmClosingPeriodDialog">#{i18n.getText('KMK012_6')}</button>
+									<button tabindex="3" data-bind="click: openConfirmClosingPeriodDialog">#{i18n.getText('KMK012_6')}</button>
 								</div>
 								
 								<div class="contents">
 									<div class="lableData"  
+										tabindex="5"  
 										id="lstClosureHistoryHistory" 
 										data-bind="ntsListBox: {
 										options: closureModel.closureHistories,
@@ -98,7 +105,9 @@
 												<label>#{i18n.getText('KMK012_9')}</label>
 											</div>
 											<div class="valueData">
-												<input class="nts-input" id="inpname" 
+												<input class="nts-input" 
+													id="inpname"
+													tabindex="7"   
 													data-name="#{i18n.getText('KMK012_9')}"
 													data-bind="ntsTextEditor:{
 			                                        value: closureHistoryModel.closureName,
@@ -116,7 +125,9 @@
 												<label>#{i18n.getText('KMK012_10')}</label>
 											</div>
 											<div class="valueData">
-												 <div id="cobxDayOfMonth" data-bind="ntsComboBox: {
+												 <div id="cobxDayOfMonth"
+												 	tabindex="8"   
+												 	data-bind="ntsComboBox: {
 													options: lstDayOfMonth,
 													optionsValue: 'day',
 													value: closureHistoryModel.closureDate,

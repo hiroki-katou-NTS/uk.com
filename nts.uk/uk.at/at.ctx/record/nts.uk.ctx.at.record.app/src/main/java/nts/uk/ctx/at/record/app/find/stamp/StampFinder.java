@@ -13,7 +13,12 @@ import nts.uk.shr.com.context.AppContexts;
 public class StampFinder {
 	@Inject
 	private StampRepository stampRepo;
-
+	
+	/**
+	 * 
+	 * Get list Stamp Info by StartDate, endDate, list Card Number
+	 * 
+	 * */
 	public List<StampDto> findByEmployeeCode(List<String> lstCardNumber, String startDate, String endDate) {
 		String companyId = AppContexts.user().companyId();
 		List<StampDto> lstStamp = stampRepo.findByEmployeeCode(companyId, lstCardNumber, startDate, endDate)

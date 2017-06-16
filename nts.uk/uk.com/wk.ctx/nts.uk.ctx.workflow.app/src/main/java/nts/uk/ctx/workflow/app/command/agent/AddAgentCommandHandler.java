@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.app.command.agent;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -8,8 +9,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.workflow.app.find.agent.AgentDto;
 import nts.uk.ctx.workflow.app.find.agent.AgentFinder;
 import nts.uk.ctx.workflow.dom.agent.Agent;
@@ -20,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class AddAgentCommandHandler extends CommandHandler<AgentCommandBase> {
+public class AddAgentCommandHandler extends CommandHandlerWithResult<AgentCommandBase, String> {
 	
 	@Inject
 	private AgentRepository agentRepository;
@@ -28,16 +29,18 @@ public class AddAgentCommandHandler extends CommandHandler<AgentCommandBase> {
 	private AgentFinder finder;
 
 	@Override
-	protected void handle(CommandHandlerContext<AgentCommandBase> context) {
+	protected String handle(CommandHandlerContext<AgentCommandBase> context) {
 
 		AgentCommandBase agentCommandBase = context.getCommand();
 
 		String employeeId = agentCommandBase.getEmployeeId();
 		String companyId = AppContexts.user().companyId();
+		UUID requestId = Agent.createRequestId();	
 
 		Agent agentInfor = new Agent(
 				companyId, 
-				employeeId, 
+				employeeId,
+				requestId,
 				agentCommandBase.getStartDate(),
 				agentCommandBase.getEndDate(), 
 				agentCommandBase.getAgentSid1(),
@@ -50,7 +53,7 @@ public class AddAgentCommandHandler extends CommandHandler<AgentCommandBase> {
 				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType4(), AgentAppType.class));
 		
 		//Validate Date
-		List<AgentDto> agents = finder.findAll(employeeId);
+		List<AgentDto> agents = finder.findAllEmploy(employeeId);
 		
 		List<RangeDate> rangeDateList = agents.stream()
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
@@ -59,6 +62,8 @@ public class AddAgentCommandHandler extends CommandHandler<AgentCommandBase> {
 		agentInfor.validateDate(rangeDateList);
 		
 		agentRepository.add(agentInfor);
+		
+		return requestId.toString();
 	}
 
 }

@@ -4,10 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+
 /**
  * The Interface UsageUnitSettingSetMemento.
  */
 public interface UsageUnitSettingSetMemento {
+	
+	/**
+	 * Sets the company id.
+	 *
+	 * @param companyId the new company id
+	 */
+	void setCompanyId(CompanyId companyId);
 
 	/**
 	 * Sets the employee.

@@ -4,11 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+
 /**
  * The Interface UsageUnitSettingGetMemento.
  */
 public interface UsageUnitSettingGetMemento {
 
+	/**
+	 * Gets the company id.
+	 *
+	 * @return the company id
+	 */
+	CompanyId getCompanyId();
+	
 	/**
 	 * Gets the employee.
 	 *

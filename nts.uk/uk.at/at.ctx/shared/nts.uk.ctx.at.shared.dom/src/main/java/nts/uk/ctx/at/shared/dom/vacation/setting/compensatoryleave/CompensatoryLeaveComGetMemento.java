@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+import java.util.List;
+
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
@@ -24,18 +26,25 @@ public interface CompensatoryLeaveComGetMemento {
 	 * @return the checks if is managed
 	 */
 	ManageDistinct getIsManaged();
+
+	/**
+	 * Gets the compensatory acquisition use.
+	 *
+	 * @return the compensatory acquisition use
+	 */
+	CompensatoryAcquisitionUse getCompensatoryAcquisitionUse();
 	
 	/**
-	 * Gets the normal vacation setting.
+	 * Gets the compensatory digestive time unit.
 	 *
-	 * @return the normal vacation setting
+	 * @return the compensatory digestive time unit
 	 */
-	NormalVacationSetting getNormalVacationSetting();
-	
+	CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit();
+
 	/**
-	 * Gets the occurrence vacation setting.
+	 * Gets the compensatory occurrence setting.
 	 *
-	 * @return the occurrence vacation setting
+	 * @return the compensatory occurrence setting
 	 */
-	OccurrenceVacationSetting getOccurrenceVacationSetting();
+	List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting();
 }
