@@ -232,10 +232,10 @@ module kcp.share.list {
                     self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
                     return;
                 case SelectType.NO_SELECT:
-                    self.selectedCodes(null);
+                    self.selectedCodes(data.isMultiSelect ? [] : null);
                     return;
                 default:
-                    self.selectedCodes(null);
+                    self.selectedCodes(data.isMultiSelect ? [] : null);
             }
         }
         
