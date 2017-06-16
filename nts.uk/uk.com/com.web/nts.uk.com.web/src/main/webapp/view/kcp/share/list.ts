@@ -51,6 +51,15 @@ module kcp.share.list {
         isDialog: boolean;
         
         /**
+         * Select Type.
+         * 1 - Select by selected codes.
+         * 2 - Select All (Cannot select all while single select).
+         * 3 - Select First item.
+         * 4 - No select.
+         */
+        selectType: SelectType;
+        
+        /**
          * check is show select all button or not. Available for employee list only.
          */
         isShowSelectAllButton?: boolean;
@@ -63,8 +72,16 @@ module kcp.share.list {
         
         /**
          * Employee input list. Available for employee list only.
+         * structure: {code: string, name: string, workplaceName: string, isAlreadySetting: boolean}.
          */
         employeeInputList?: Array<UnitModel>;
+    }
+    
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
     }
     
     /**
@@ -164,9 +181,7 @@ module kcp.share.list {
         private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) {
             var self = this;
             // Set default value when init component.
-            if (!data.selectedCode() || data.selectedCode().length == 0) {
-                self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
-            }
+            self.initSelectedValue(data, dataList);
 
             // Map already setting attr to data list.
             // With employee list => not mapping with already setting list.
@@ -199,6 +214,28 @@ module kcp.share.list {
             // defined function get data list.
             $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
                 return dataList;
+            }
+        }
+        
+        private initSelectedValue(data: ComponentOption, dataList: Array<UnitModel>) {
+            var self = this;
+            switch(data.selectType) {
+                case SelectType.SELECT_BY_SELECTED_CODE:
+                    return;
+                case SelectType.SELECT_ALL:
+                    if (!self.isMultiple){
+                        return;
+                    }
+                    self.selectedCodes(dataList.map(item => item.code));
+                    return;
+                case SelectType.SELECT_FIRST_ITEM:
+                    self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+                    return;
+                case SelectType.NO_SELECT:
+                    self.selectedCodes(null);
+                    return;
+                default:
+                    self.selectedCodes(null);
             }
         }
         
