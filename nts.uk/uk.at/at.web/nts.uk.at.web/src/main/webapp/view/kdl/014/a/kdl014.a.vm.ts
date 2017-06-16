@@ -45,7 +45,7 @@ module kdl014.a.viewmodel {
             let lstCardNumber: Array<string> = [];
             let lstSource: Array<StampModel> = [];
             //get list Card Number
-            service.getPersonIdByEmployee('00003').done(function(employeeInfo: any) {
+            service.getPersonIdByEmployee(self.employeeCD ).done(function(employeeInfo: any) {
                 if (employeeInfo !== undefined) {
                     let personId: string = employeeInfo.personId;
                     //get list Card Number
