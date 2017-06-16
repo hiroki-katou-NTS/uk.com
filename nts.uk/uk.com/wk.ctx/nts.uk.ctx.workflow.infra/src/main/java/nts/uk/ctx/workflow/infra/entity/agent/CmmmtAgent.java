@@ -24,6 +24,10 @@ public class CmmmtAgent extends UkJpaEntity implements Serializable {
 
 	@EmbeddedId
 	public CmmmtAgentPK cmmmtAgentPK;
+	
+	@Basic(optional = false)
+	@Column(name = "START_DATE")
+	public GeneralDate startDate;
 
 	@Basic(optional = false)
 	@Column(name = "END_DATE")
