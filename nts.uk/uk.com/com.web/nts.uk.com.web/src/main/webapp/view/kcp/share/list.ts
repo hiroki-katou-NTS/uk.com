@@ -77,7 +77,7 @@ module kcp.share.list {
         
         /**
          * Employee input list. Available for employee list only.
-         * structure: {code: string, name: string, workplaceName: string, isAlreadySetting: boolean}.
+         * structure: {code: string, name: string, workplaceName: string}.
          */
         employeeInputList?: Array<UnitModel>;
     }
@@ -189,8 +189,7 @@ module kcp.share.list {
             self.initSelectedValue(data, dataList);
 
             // Map already setting attr to data list.
-            // With employee list => not mapping with already setting list.
-            if (data.isShowAlreadySet && self.listType != ListType.EMPLOYEE) {
+            if (data.isShowAlreadySet) {
                 self.addAreadySettingAttr(dataList, self.alreadySettingList());
 
                 // subscribe when alreadySettingList update => reload component.
