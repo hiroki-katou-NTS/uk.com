@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.infra.entity.agent.CmmmtAgent;
@@ -31,7 +30,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
-		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");		
+		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
+		builderString.append(" ORDER BY e.startDate DESC");
 		SELECT_ALL_AGENT = builderString.toString();
 		
 		builderString = new StringBuilder();
@@ -39,7 +39,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
 		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
-		builderString.append(" AND e.cmmmtAgentPK.startDate = :startDate");
+		builderString.append(" AND e.cmmmtAgentPK.requestId = :requestId");
 		QUERY_IS_EXISTED = builderString.toString();
 		
 		}
@@ -50,7 +50,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		Agent agent = Agent.createFromJavaType(
 				cmmmtAgent.cmmmtAgentPK.companyId,
 				cmmmtAgent.cmmmtAgentPK.employeeId,
-				cmmmtAgent.cmmmtAgentPK.startDate,
+				cmmmtAgent.cmmmtAgentPK.requestId,
+				cmmmtAgent.startDate,
 				cmmmtAgent.endDate,
 				cmmmtAgent.agentSid1,
 				cmmmtAgent.agentAppType1,
@@ -68,7 +69,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		CmmmtAgentPK cmmmtAgentPK = new CmmmtAgentPK(
 				agent.getCompanyId(),
 				agent.getEmployeeId(),
-				agent.getStartDate());
+				agent.getRequestId().toString());
+		cmmmtAgent.startDate = agent.getStartDate();
 		cmmmtAgent.endDate = agent.getEndDate();
 		cmmmtAgent.agentSid1 = agent.getAgentSid1();
 		cmmmtAgent.agentAppType1 = agent.getAgentAppType1().value;
@@ -112,32 +114,16 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	 * delete Agent
 	 */
 	@Override
-	public void delete(String companyId, String employeeId, GeneralDate startDate) {
-		CmmmtAgentPK cmmmtAgentPK = new CmmmtAgentPK(companyId, employeeId, startDate);
+	public void delete(String companyId, String employeeId, String requestId) {
+		CmmmtAgentPK cmmmtAgentPK = new CmmmtAgentPK(companyId, employeeId, requestId);
 		this.commandProxy().remove(CmmmtAgent.class, cmmmtAgentPK);
 	}
 
-	@Override
-	public Optional<Agent> getAgentByStartDate(String companyId, String employeeId, GeneralDate startDate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
-	public boolean isExisted(String companyId, String employeeId, GeneralDate startDate) {
-		return this.queryProxy().query(QUERY_IS_EXISTED, long.class)
-				.setParameter("companyId", companyId)
-				.setParameter("employeeId", employeeId)
-				.setParameter("startDate", startDate)
-				.getSingle().get() > 0;
-	}
-	
-	@Override
-	public List<Agent> findAll(String companyId, GeneralDate startDate, GeneralDate endDate) {
-		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
-				.setParameter("companyId", companyId)
-				.setParameter("companyId", startDate)
-				.setParameter("companyId", endDate)
-				.getList(c -> convertToDomain(c));
+	public Optional<Agent> find(String companyId, String employeeId, String requestId) {
+		CmmmtAgentPK primaryKey = new CmmmtAgentPK(companyId, employeeId, requestId);
+		return this.queryProxy().find(primaryKey, CmmmtAgent.class)
+				.map(x -> convertToDomain(x));
 	}
 }

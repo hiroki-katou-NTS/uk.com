@@ -10,6 +10,6 @@ public class DeleteAgentCommand {
 	
 	private String employeeId;
 	
-	private GeneralDate startDate;
+	private String requestId;
 	
 }

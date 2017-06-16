@@ -27,8 +27,7 @@ public class TopPageSelfSettingCommandHandler extends CommandHandler<TopPageSelf
 		//lay employeeId
 		String employeeId = AppContexts.user().employeeCode();
 		TopPageSelfSet topPageNew = TopPageSelfSet.createFromJavaType(employeeId,
-										context.getCommand().getCode(),
-										context.getCommand().getDivision());
+										context.getCommand().getCode());
 		//Kiem tra trong du lieu trong data
 		Optional<TopPageSelfSet> topPage = repository.getTopPageSelfSet(employeeId);
 		if(topPage.isPresent()){//da co->update

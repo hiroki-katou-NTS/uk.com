@@ -10,14 +10,14 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 
 @StringMaxLength(3)
-public class WorkTimeCode extends StringPrimitiveValue<WorkTimeCode>{
+public class SiftCode extends StringPrimitiveValue<SiftCode>{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4042037564670742671L;
 
-	public WorkTimeCode(String rawValue) {
+	public SiftCode(String rawValue) {
 		super(rawValue);
 	}
 

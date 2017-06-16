@@ -11,7 +11,4 @@ public class TopPageSelfSettingCommand {
 	
 	/** The top page code. */
 	private String code;
-
-	/** The top page code. */
-	private int division;
 }
