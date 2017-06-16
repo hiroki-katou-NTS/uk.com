@@ -8,19 +8,19 @@ import lombok.Getter;
 
 @Getter
 public class TransferSetting {
-	
+	//一定時間
 	/** The certain time. */
 	private OneDayTime certainTime;
-	
+	//使用区分
 	/** The use division. */
 	private boolean useDivision;
-	
+	//指定時間.1日の時間
 	/** The one day time. */
 	private OneDayTime oneDayTime;
-	
+	//指定時間.半日の時間
 	/** The half day time. */
 	private OneDayTime halfDayTime;
-	
+	//振替区分
 	/** The transfer division. */
 	private TransferSettingDivision transferDivision;
 	

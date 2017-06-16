@@ -16,18 +16,19 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 @Getter
 public class CompensatoryLeaveComSetting extends AggregateRoot {
 	
+	//会社ID
 	/** The company id. */
 	private String companyId;
-	
+	//管理区分
 	/** The is managed. */
 	private ManageDistinct isManaged;
-	
+	//取得と使用方法
 	/** The normal vacation setting. */
 	private CompensatoryAcquisitionUse compensatoryAcquisitionUse;
-	
+	//時間代休の消化単位
 	/** The compensatory digestive time unit. */
 	private CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit;
-	
+	//発生設定
 	/** The occurrence vacation setting. */
 	private List<CompensatoryOccurrenceSetting> compensatoryOccurrenceSetting;
 	
