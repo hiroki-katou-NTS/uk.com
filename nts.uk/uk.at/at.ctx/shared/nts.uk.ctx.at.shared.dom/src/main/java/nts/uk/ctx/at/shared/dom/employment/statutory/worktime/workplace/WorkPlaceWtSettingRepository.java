@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace;
 
 /**
- * The Interface CompanySettingRepository.
+ * The Interface WorkPlaceWtSettingRepository.
  */
 public interface WorkPlaceWtSettingRepository {
 
@@ -27,14 +27,16 @@ public interface WorkPlaceWtSettingRepository {
 	 * Removes the.
 	 *
 	 * @param companyId the company id
+	 * @param year the year
 	 */
-	void remove(String companyId);
+	void remove(String companyId, int year);
 
 	/**
 	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @return the work place setting
+	 * @param year the year
+	 * @return the work place wt setting
 	 */
-	WorkPlaceWtSetting find(String companyId);
+	WorkPlaceWtSetting find(String companyId, int year);
 }
