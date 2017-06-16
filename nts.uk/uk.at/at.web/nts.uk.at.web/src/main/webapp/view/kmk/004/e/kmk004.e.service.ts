@@ -4,22 +4,33 @@ module nts.uk.at.view.kmk004.e {
          *  Service paths
          */
         var servicePath: any = {
-            findCompanySetting: 'ctx/at/shared/employment/statutory/worktime/company/find',
-            saveCompanySetting: 'ctx/at/shared/employment/statutory/worktime/company/save',
-            removeCompanySetting: 'ctx/at/shared/employment/statutory/worktime/company/remove',
+            findUsageUnitSetting: 'ctx/at/shared/employment/statutory/worktime/usage/unit/setting/find',
+            saveUsageUnitSetting: 'ctx/at/shared/employment/statutory/worktime/usage/unit/setting/save'
         };
 
-        export function saveCompanySetting(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.saveCompanySetting, command);
+        export function findUsageUnitSetting(): JQueryPromise<model.UsageUnitSettingDto> {
+            return nts.uk.request.ajax(servicePath.findUsageUnitSetting);
+        }
+        
+        export function saveUsageUnitSetting(dto: model.UsageUnitSettingDto): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.saveUsageUnitSetting, dto);
         }
 
-        export function findCompanySetting(year: number): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.findCompanySetting + '/' + year);
-        }
 
-        export function removeCompanySetting(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.removeCompanySetting, command);
-        }
+        export module model {
 
+            export class UsageUnitSettingDto {
+                
+                /** The employee. */
+                employee: boolean;
+
+                /** The work place. */
+                workPlace: boolean;
+                
+                /** The employment. */
+                employment: boolean;
+            }
+
+        }
     }
 }

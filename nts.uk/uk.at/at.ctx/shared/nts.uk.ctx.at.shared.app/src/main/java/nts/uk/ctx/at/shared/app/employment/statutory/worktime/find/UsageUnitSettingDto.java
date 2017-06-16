@@ -2,34 +2,32 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime;
+package nts.uk.ctx.at.shared.app.employment.statutory.worktime.find;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.UsageUnitSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.JuuwtstUsageUnitWtSet;
 
 /**
- * The Class JpaUsageUnitSettingSetMemento.
+ * The Class UsageUnitSettingDto.
  */
-public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento {
+@Getter
+@Setter
+public class UsageUnitSettingDto implements UsageUnitSettingSetMemento {
 
-	/** The Constant DEFINED_TRUE. */
-	public static final int DEFINED_TRUE = 1;
+	/** The employee. */
+	// 社員の労働時間と日数の管理をする
+	private boolean employee;
 
-	/** The Constant DEFINED_FALSE. */
-	public static final int DEFINED_FALSE = 0;
+	/** The work place. */
+	// 職場の労働時間と日数の管理をする
+	private boolean workPlace;
 
-	/** The setting. */
-	private JuuwtstUsageUnitWtSet setting;
+	/** The employment. */
+	// 雇用の労働時間と日数の管理をする
+	private boolean employment;
 
-	/**
-	 * Instantiates a new jpa usage unit setting set memento.
-	 *
-	 * @param setting the setting
-	 */
-	public JpaUsageUnitSettingSetMemento(JuuwtstUsageUnitWtSet setting) {
-		this.setting = setting;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -40,8 +38,9 @@ public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.setting.setCid(companyId.v());
+		// Do nothing code
 	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -50,11 +49,7 @@ public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento
 	 */
 	@Override
 	public void setEmployee(boolean employee) {
-		if (employee) {
-			this.setting.setIsEmp(DEFINED_TRUE);
-		} else {
-			this.setting.setIsEmp(DEFINED_FALSE);
-		}
+		this.employee = employee;
 	}
 
 	/*
@@ -65,12 +60,7 @@ public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento
 	 */
 	@Override
 	public void setWorkPlace(boolean workPlace) {
-		if (workPlace) {
-			this.setting.setIsWkp(DEFINED_TRUE);
-		} else {
-			this.setting.setIsWkp(DEFINED_FALSE);
-		}
-
+		this.workPlace = workPlace;
 	}
 
 	/*
@@ -81,12 +71,6 @@ public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento
 	 */
 	@Override
 	public void setEmployment(boolean employment) {
-		if (employment) {
-			this.setting.setIsEmpt(DEFINED_TRUE);
-		} else {
-			this.setting.setIsEmpt(DEFINED_FALSE);
-		}
-
+		this.employment = employment;
 	}
-
 }

@@ -65,6 +65,11 @@ module kcp.share.list {
         isShowSelectAllButton?: boolean;
         
         /**
+         * check is show work place column. Available for employee list only.
+         */
+        isShowWorkPlaceName?: boolean;
+        
+        /**
          * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
@@ -72,7 +77,7 @@ module kcp.share.list {
         
         /**
          * Employee input list. Available for employee list only.
-         * structure: {code: string, name: string, workplaceName: string, isAlreadySetting: boolean}.
+         * structure: {code: string, name: string, workplaceName: string}.
          */
         employeeInputList?: Array<UnitModel>;
     }
@@ -144,7 +149,7 @@ module kcp.share.list {
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170});
             // With Employee list, add column company name.
-            if (data.listType == ListType.EMPLOYEE) {
+            if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
                 self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
             }
             
@@ -184,8 +189,7 @@ module kcp.share.list {
             self.initSelectedValue(data, dataList);
 
             // Map already setting attr to data list.
-            // With employee list => not mapping with already setting list.
-            if (data.isShowAlreadySet && self.listType != ListType.EMPLOYEE) {
+            if (data.isShowAlreadySet) {
                 self.addAreadySettingAttr(dataList, self.alreadySettingList());
 
                 // subscribe when alreadySettingList update => reload component.
@@ -341,6 +345,8 @@ module kcp.share.list {
                     return '#[KCP003_1]';
                 case ListType.Classification:
                     return '#[KCP002_1]';
+                case ListType.EMPLOYEE:
+                    return '#[KCP005_1]';
                 default:
                     return '';
             }
