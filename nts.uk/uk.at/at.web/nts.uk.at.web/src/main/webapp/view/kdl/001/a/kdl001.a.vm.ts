@@ -17,7 +17,7 @@ module nts.uk.at.view.kdl001.a {
                 self.multiSelectMode = nts.uk.ui.windows.getShared('multiSelectMode');
                 self.selectAbleCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('selectAbleCodeList'));
                 self.selectedCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('selectedCodeList'));
-                self.selectedCode = ko.observable(nts.uk.ui.windows.getShared('selectedCode'));
+                self.selectedCode = ko.observable(null);
                 self.searchOption = ko.observable(0); 
                 self.startTimeOption = ko.observable(1);
                 self.startTime = ko.observable(0);
@@ -33,6 +33,15 @@ module nts.uk.at.view.kdl001.a {
                     .done(function(data) {
                         self.rootList = data;
                         self.selectAbleItemList(_.clone(self.rootList));
+                        if(!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())){
+                            if(nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
+                                self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
+                            }
+                            self.selectedCode(_.first(self.selectAbleItemList()).code); 
+                        } else {
+                            self.selectedCodeList([]);
+                            self.selectedCode(null);  
+                        }
                         dfd.resolve(); 
                     })
                     .fail(function(res) { 
@@ -53,7 +62,7 @@ module nts.uk.at.view.kdl001.a {
                 kdl001.a.service.findByTime(command)
                     .done(function(data) {
                         self.selectAbleItemList(data);
-                        if(self.selectAbleItemList().length != 0){
+                        if(!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())){
                             self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
                             self.selectedCode(_.first(self.selectAbleItemList()).code);    
                         } else {
@@ -69,6 +78,10 @@ module nts.uk.at.view.kdl001.a {
                 
             returnData(){
                 var self = this;
+                self.startTimeOption(1);
+                self.startTime(0);
+                self.endTimeOption(1); 
+                self.endTime(0); 
                 self.selectAbleItemList(_.clone(self.rootList));   
                 if(self.selectAbleItemList().length!=0) {
                     self.selectedCodeList([_.first(self.selectAbleItemList()).code]);

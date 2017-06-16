@@ -19,7 +19,7 @@ public class WorkTimeSet {
 	
 	private int rangeTimeDay;
 	
-	private String workTimeSetID;
+	private String siftCD;
 	
 	private String additionSetID;
 	
@@ -31,12 +31,12 @@ public class WorkTimeSet {
 	
 	private int predetermineAtr;
 
-	public WorkTimeSet(String companyID, int rangeTimeDay, String workTimeSetID, String additionSetID,
+	public WorkTimeSet(String companyID, int rangeTimeDay, String siftCD, String additionSetID,
 			WorkTimeNightShift nightShiftAtr, List<WorkTimeDay> workTimeDay, int startDateClock, int predetermineAtr) {
 		super();
 		this.companyID = companyID;
 		this.rangeTimeDay = rangeTimeDay;
-		this.workTimeSetID = workTimeSetID;
+		this.siftCD = siftCD;
 		this.additionSetID = additionSetID;
 		this.nightShiftAtr = nightShiftAtr;
 		this.workTimeDay = workTimeDay;

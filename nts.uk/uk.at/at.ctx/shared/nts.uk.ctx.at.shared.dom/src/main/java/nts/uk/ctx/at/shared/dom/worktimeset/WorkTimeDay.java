@@ -16,9 +16,7 @@ public class WorkTimeDay {
 	
 	private String companyID;
 	
-	private String timeDayID;
-	
-	private String workTimeSetID;
+	private String siftCD;
 	
 	private int timeNumberCnt;
 	
@@ -40,13 +38,12 @@ public class WorkTimeDay {
 	
 	private TimeDayAtr p_m_EndAtr;
 
-	public WorkTimeDay(String companyID, String timeDayID, String workTimeSetID, int timeNumberCnt, UseSetting use_atr,
+	public WorkTimeDay(String companyID, String siftCD, int timeNumberCnt, UseSetting use_atr,
 			int a_m_StartCLock, TimeDayAtr a_m_StartAtr, int a_m_EndClock, TimeDayAtr a_m_EndAtr, int p_m_StartClock,
 			TimeDayAtr p_m_StartAtr, int p_m_EndClock, TimeDayAtr p_m_EndAtr) {
 		super();
 		this.companyID = companyID;
-		this.timeDayID = timeDayID;
-		this.workTimeSetID = workTimeSetID;
+		this.siftCD = siftCD;
 		this.timeNumberCnt = timeNumberCnt;
 		this.use_atr = use_atr;
 		this.a_m_StartCLock = a_m_StartCLock;
