@@ -17,15 +17,19 @@ public class CompensatoryLeaveEmSetting extends AggregateRoot {
 	// 会社ID
 	/** The company id. */
 	private String companyId;
+	
 	// 雇用区分コード
 	/** The employment code. */
 	private EmploymentCode employmentCode;
+	
 	// 管理区分
 	/** The is managed. */
 	private ManageDistinct isManaged;
+	
 	// 設定
 	/** The compensatory acquisition use. */
 	private CompensatoryAcquisitionUse compensatoryAcquisitionUse;
+	
 	// 時間代休の消化単位
 	/** The compensatory digestive time unit. */
 	private CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit;

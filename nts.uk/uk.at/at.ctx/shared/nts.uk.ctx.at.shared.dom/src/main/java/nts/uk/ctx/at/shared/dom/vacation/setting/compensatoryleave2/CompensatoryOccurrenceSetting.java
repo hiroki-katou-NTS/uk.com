@@ -14,9 +14,11 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Getter
 public class CompensatoryOccurrenceSetting extends DomainObject {
+    
 	// 発生元区分
 	/** The occurrence type. */
 	private CompensatoryOccurrenceDivision occurrenceType;
+	
 	// 振替設定
 	/** The transfer setting. */
 	private TransferSetting transferSetting;

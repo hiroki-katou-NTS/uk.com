@@ -14,9 +14,11 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
  */
 @Getter
 public class CompensatoryAcquisitionUse extends DomainObject {
+    
 	//使用期限
 	/** The expiration time. */
 	private ExpirationTime expirationTime;
+	
 	//先取り許可
 	/** The preemption permit. */
 	private ApplyPermission preemptionPermit;

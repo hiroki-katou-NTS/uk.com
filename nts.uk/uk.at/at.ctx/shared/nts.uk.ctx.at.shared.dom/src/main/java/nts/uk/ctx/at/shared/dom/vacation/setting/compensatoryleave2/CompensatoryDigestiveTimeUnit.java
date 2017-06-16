@@ -10,9 +10,11 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 
 @Getter
 public class CompensatoryDigestiveTimeUnit {
+    
 	// 管理区分
 	/** The is manage by time. */
 	private ManageDistinct isManageByTime;
+	
 	// 消化単位
 	/** The digestive unit. */
 	private TimeVacationDigestiveUnit digestiveUnit;
