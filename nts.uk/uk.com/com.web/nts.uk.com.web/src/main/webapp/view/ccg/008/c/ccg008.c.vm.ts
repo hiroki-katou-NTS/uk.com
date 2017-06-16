@@ -23,7 +23,7 @@ module nts.uk.com.view.ccg008.c {
             start(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                //Lay du lieu tu domain トップページ va 標準メニュー
+                //Lay du lieu tu domain トップページ
                 service.getSelectMyTopPage().done(function(lst: Array<model.Node>) {
                     if (lst === null || lst === undefined || lst.length == 0) {
                         self.dataItems([]);
@@ -31,8 +31,7 @@ module nts.uk.com.view.ccg008.c {
                     } else {
                         var items = [];
                         _.map(lst, function(item: any) {
-                            let str = item.code + item.division;
-                            items.push({"code":str , "name": item.name});
+                            items.push({"code":item.code , "name": item.name});
                         });
                         self.dataItems(items);
                         //Lay du lieu tu domain 本人トップページ設定 
@@ -41,9 +40,7 @@ module nts.uk.com.view.ccg008.c {
                                 //Truong hop khong co du lieu
                                 self.selectedCode();
                             }else{
-                                //ghep code va division de phan biet code cua 2 domain トップページ va 標準メニュー
-                                let str2 = topPageSelfSet.code + topPageSelfSet.division;
-                                self.selectedCode(str2);
+                                self.selectedCode(topPageSelfSet.code);
                             }
                         })
                         dfd.resolve();
@@ -73,14 +70,10 @@ module nts.uk.com.view.ccg008.c {
                 let test = self.find(self.selectedCode());
                 //khong co item nao duoc chon
                 if(test===null||test===undefined){
-                    nts.uk.ui.windows.close();
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_128"});
                 }else{
                     //co item duoc chon
-                    let str = self.selectedCode();
-                    let str_length = str.length;
-                    let codeNew = str.slice(0, (str_length-1));//code
-                    let division = parseInt(str.slice((str_length-1),str_length));//divison
-                    let data = new model.TopPageSelfSet(codeNew, division);
+                    let data = new model.TopPageSelfSet(self.selectedCode());
                     service.save(data).done(function(res) {
                         nts.uk.ui.windows.close();
                     }).fail(function(err) {
@@ -101,19 +94,15 @@ module nts.uk.com.view.ccg008.c {
         export class Node {
             code: string;
             name: string;
-            division: number;
-            constructor(code: string, name: string,division: number) {
+            constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
-                this.division = division;
             }
         }
         export class TopPageSelfSet {
             code: string;
-            division: number;
-            constructor(code: string, division: number) {
+            constructor(code: string) {
                 this.code = code;
-                this.division = division;
             }
         }
     }

@@ -25,10 +25,6 @@ public class CcgptTopPageSelfSet extends UkJpaEntity implements Serializable{
 	@Column(name = "CODE")
 	public String code;
 	
-	/** The division. */
-	@Column(name = "DIVISION")
-	public int division;
-	
 	@Override
 	protected Object getKey() {
 		return ccgptTopPageSelfSetPK;
