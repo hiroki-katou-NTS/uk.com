@@ -138,28 +138,28 @@ module kcp.share.tree {
             
             // Find data.
             service.findWorkplaceTree(self).done(function(res: Array<UnitModel>) {
-                
                 // fake data
                 res = self.fake();
-                
-                // Set default value when init component.
-                if (!data.selectedCode() || data.selectedCode().length == 0) {
-                    self.selectedCodes(res.length > 0 ? self.selectData(data, res[0]) : null);
+                if (res) {
+                    // Set default value when init component.
+                    if (!data.selectedCode() || data.selectedCode().length == 0) {
+                        self.selectedCodes(res.length > 0 ? self.selectData(data, res[0]) : null);
+                    }
+                    
+                    // Map already setting attr to data list.
+                    if (data.isShowAlreadySet) {
+                        self.addAreadySettingAttr(res, self.alreadySettingList());
+                    }
+                    
+                    // Init component.
+                    self.itemList(res);
+                    self.backupItemList(res);
+                    $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/tree.xhtml', function() {
+                        ko.cleanNode($input[0]);
+                        ko.applyBindings(self, $input[0]);
+                    });
+                    dfd.resolve();
                 }
-                
-                // Map already setting attr to data list.
-                if (data.isShowAlreadySet) {
-                    self.addAreadySettingAttr(res, self.alreadySettingList());
-                }
-                
-                // Init component.
-                self.itemList(res);
-                self.backupItemList(res);
-                $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/tree.xhtml', function() {
-                    ko.cleanNode($input[0]);
-                    ko.applyBindings(self, $input[0]);
-                });
-                dfd.resolve();
             });
             
             return dfd.promise();
@@ -197,11 +197,13 @@ module kcp.share.tree {
         private reload() {
             let self = this;
             service.findWorkplaceTree(self).done(function(res: Array<UnitModel>) {
-                if (self.alreadySettingList) {
-                    self.addAreadySettingAttr(res, self.alreadySettingList());
+                if (res) {
+                    if (self.alreadySettingList) {
+                        self.addAreadySettingAttr(res, self.alreadySettingList());
+                    }
+                    self.itemList(res);
+                    self.backupItemList(res);
                 }
-                self.itemList(res);
-                self.backupItemList(res);
             });
         }
         
