@@ -29,74 +29,73 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 
 	private final String findWorkTimeSetByList = "SELECT a FROM KwtstWorkTimeSet a "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
-			+ "AND a.kwtspWorkTimeSetPK.workTimeSetID IN :workTimeSetIDs";
+			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs";
 	
 	private final String findWorkTimeSetByStart = "SELECT DISTINCT a FROM KwtstWorkTimeSet a, KwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
-			+ "AND a.kwtspWorkTimeSetPK.workTimeSetID IN :workTimeSetIDs "
+			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs "
 			+ "AND a.kwtspWorkTimeSetPK.companyID = b.kwtdpWorkTimeDayPK.companyID "
-			+ "AND a.kwtspWorkTimeSetPK.workTimeSetID = b.kwtdpWorkTimeDayPK.workTimeSetID "
+			+ "AND a.kwtspWorkTimeSetPK.siftCDs = b.kwtdpWorkTimeDayPK.siftCD "
 			+ "AND b.a_m_StartAtr = :a_m_StartAtr "
 			+ "AND b.a_m_StartClock = :a_m_StartClock";
 	
 	private final String findWorkTimeSetByEnd = "SELECT DISTINCT a FROM KwtstWorkTimeSet a, KwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
-			+ "AND a.kwtspWorkTimeSetPK.workTimeSetID IN :workTimeSetIDs "
+			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs "
 			+ "AND a.kwtspWorkTimeSetPK.companyID = b.kwtdpWorkTimeDayPK.companyID "
-			+ "AND a.kwtspWorkTimeSetPK.workTimeSetID = b.kwtdpWorkTimeDayPK.workTimeSetID "
+			+ "AND a.kwtspWorkTimeSetPK.siftCD = b.kwtdpWorkTimeDayPK.siftCD "
 			+ "AND b.p_m_EndAtr = :p_m_EndAtr "
 			+ "AND b.p_m_EndClock = :p_m_EndClock";
 	
 	private final String findWorkTimeSetByStartAndEnd = "SELECT DISTINCT a FROM KwtstWorkTimeSet a, KwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
-			+ "AND a.kwtspWorkTimeSetPK.workTimeSetID IN :workTimeSetIDs "
+			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs "
 			+ "AND a.kwtspWorkTimeSetPK.companyID = b.kwtdpWorkTimeDayPK.companyID "
-			+ "AND a.kwtspWorkTimeSetPK.workTimeSetID = b.kwtdpWorkTimeDayPK.workTimeSetID "
+			+ "AND a.kwtspWorkTimeSetPK.siftCD = b.kwtdpWorkTimeDayPK.siftCD "
 			+ "AND b.a_m_StartAtr = :a_m_StartAtr "
 			+ "AND b.a_m_StartClock = :a_m_StartClock "
 			+ "AND b.p_m_EndAtr = :p_m_EndAtr "
 			+ "AND b.p_m_EndClock = :p_m_EndClock";
 	
 	@Override
-	public Optional<WorkTimeSet> findByCode(String companyID, String workTimeSetID) {
-		return this.queryProxy().find(new KwtspWorkTimeSetPK(companyID, workTimeSetID), KwtstWorkTimeSet.class)
+	public Optional<WorkTimeSet> findByCode(String companyID, String siftCD) {
+		return this.queryProxy().find(new KwtspWorkTimeSetPK(companyID, siftCD), KwtstWorkTimeSet.class)
 				.map(x -> convertToDomainWorkTimeSet(x));
 	}
 
 	@Override
-	public List<WorkTimeSet> findByCodeList(String companyID, List<String> workTimeSetIDs) {
+	public List<WorkTimeSet> findByCodeList(String companyID, List<String> siftCDs) {
 		return this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
 				.setParameter("companyID", companyID)
-				.setParameter("workTimeSetIDs", workTimeSetIDs)
+				.setParameter("siftCDs", siftCDs)
 				.getList(x -> convertToDomainWorkTimeSet(x));
 	}
 
 	@Override
-	public List<WorkTimeSet> findByStart(String companyID, List<String> workTimeSetIDs, int startAtr, int startClock) {
+	public List<WorkTimeSet> findByStart(String companyID, List<String> siftCDs, int startAtr, int startClock) {
 		return this.queryProxy().query(findWorkTimeSetByStart, KwtstWorkTimeSet.class)
 				.setParameter("companyID", companyID)
-				.setParameter("workTimeSetIDs", workTimeSetIDs)
+				.setParameter("siftCDs", siftCDs)
 				.setParameter("a_m_StartAtr", startAtr)
 				.setParameter("a_m_StartClock", startClock)
 				.getList(x -> convertToDomainWorkTimeSet(x));
 	}
 
 	@Override
-	public List<WorkTimeSet> findByEnd(String companyID, List<String> workTimeSetIDs, int endAtr, int endClock) {
+	public List<WorkTimeSet> findByEnd(String companyID, List<String> siftCDs, int endAtr, int endClock) {
 		return this.queryProxy().query(findWorkTimeSetByEnd, KwtstWorkTimeSet.class)
 				.setParameter("companyID", companyID)
-				.setParameter("workTimeSetIDs", workTimeSetIDs)
+				.setParameter("siftCDs", siftCDs)
 				.setParameter("p_m_EndAtr", endAtr)
 				.setParameter("p_m_EndClock", endClock)
 				.getList(x -> convertToDomainWorkTimeSet(x));
 	}
 
 	@Override
-	public List<WorkTimeSet> findByStartAndEnd(String companyID, List<String> workTimeSetIDs, int startAtr,
-			int startClock, int endAtr, int endClock) {
+	public List<WorkTimeSet> findByStartAndEnd(String companyID, List<String> siftCDs, int startAtr, int startClock, int endAtr, int endClock) {
 		return this.queryProxy().query(findWorkTimeSetByStartAndEnd, KwtstWorkTimeSet.class)
 				.setParameter("companyID", companyID)
-				.setParameter("workTimeSetIDs", workTimeSetIDs)
+				.setParameter("siftCDs", siftCDs)
 				.setParameter("a_m_StartAtr", startAtr)
 				.setParameter("a_m_StartClock", startClock)
 				.setParameter("p_m_EndAtr", endAtr)
@@ -113,7 +112,7 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 		return new WorkTimeSet(
 				kwtstWorkTimeSet.kwtspWorkTimeSetPK.companyID, 
 				kwtstWorkTimeSet.rangeTimeDay,
-				kwtstWorkTimeSet.kwtspWorkTimeSetPK.workTimeSetID, 
+				kwtstWorkTimeSet.kwtspWorkTimeSetPK.siftCD, 
 				kwtstWorkTimeSet.additionSetID, 
 				EnumAdaptor.valueOf(kwtstWorkTimeSet.nightShiftAtr, WorkTimeNightShift.class), 
 				kwtstWorkTimeSet.kwtdtWorkTimeDay.stream().map(x -> convertToDomainWorkTimeDay(x)).collect(Collectors.toList()),
@@ -130,8 +129,7 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	private WorkTimeDay convertToDomainWorkTimeDay(KwtdtWorkTimeDay kwtdtWorkTimeDay){
 		return new WorkTimeDay(
 			kwtdtWorkTimeDay.kwtdpWorkTimeDayPK.companyID, 
-			kwtdtWorkTimeDay.kwtdpWorkTimeDayPK.timeDayID, 
-			kwtdtWorkTimeDay.kwtdpWorkTimeDayPK.workTimeSetID, 
+			kwtdtWorkTimeDay.kwtdpWorkTimeDayPK.siftCD, 
 			kwtdtWorkTimeDay.kwtdpWorkTimeDayPK.timeNumberCnt, 
 			EnumAdaptor.valueOf(kwtdtWorkTimeDay.useAtr, UseSetting.class),
 			kwtdtWorkTimeDay.a_m_StartClock, 

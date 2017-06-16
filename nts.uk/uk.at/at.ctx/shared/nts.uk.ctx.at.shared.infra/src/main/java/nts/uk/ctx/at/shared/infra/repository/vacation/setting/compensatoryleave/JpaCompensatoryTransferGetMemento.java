@@ -6,16 +6,15 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryTransferGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet;
 
 /**
  * The Class JpaCompensatoryTransferGetMemento.
  */
-public class JpaCompensatoryTransferGetMemento implements CompensatoryTransferGetMemento {
+public class JpaCompensatoryTransferGetMemento implements TransferSettingGetMemento {
 	
 	private static final Integer useValue = 1;
     
@@ -43,16 +42,16 @@ public class JpaCompensatoryTransferGetMemento implements CompensatoryTransferGe
         return new OneDayTime(Long.valueOf(this.entity.getCertainTime()));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryTransferGetMemento#getUseDivision()
-     */
-    @Override
-	public boolean getUseDivision() {
-		return this.entity.getUseDivision() == useValue ? true : false;
-    }
+//    /*
+//     * (non-Javadoc)
+//     * 
+//     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
+//     * CompensatoryTransferGetMemento#getUseDivision()
+//     */
+//    @Override
+//	public boolean getUseDivision() {
+//		return this.entity.getUseDivision() == useValue ? true : false;
+//    }
 
     /*
      * (non-Javadoc)
@@ -87,8 +86,14 @@ public class JpaCompensatoryTransferGetMemento implements CompensatoryTransferGe
         return TransferSettingDivision.valueOf(this.entity.getTransfDivision());
     }
 
+//	@Override
+//	public CompensatoryOccurrenceDivision getCompensatoryOccurrenceDivision() {
+//		return CompensatoryOccurrenceDivision.valueOf(this.entity.getKmfmtOccurVacationSetPK().getOccurrDivision());
+//	}
+
 	@Override
-	public CompensatoryOccurrenceDivision getCompensatoryOccurrenceDivision() {
-		return CompensatoryOccurrenceDivision.valueOf(this.entity.getKmfmtOccurVacationSetPK().getOccurrDivision());
+	public boolean isUseDivision() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -12,9 +12,9 @@ module nts.uk.at.view.kdl001.test {
                 var self = this;
                 nts.uk.ui.windows.setShared('multiSelectMode', false);
                 nts.uk.ui.windows.setShared('selectAbleCodeList', [
-                    "1"
+                    "1","2"
                 ]);
-                nts.uk.ui.windows.setShared('selectedCode', self.selectedCode());
+                nts.uk.ui.windows.setShared('selectedCodeList', [self.selectedCode()]);
                 nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     if(nts.uk.ui.windows.getShared("selectedCodeList")!=null){
                         self.selectedCode(nts.uk.ui.windows.getShared("selectedCodeList")[0]);    
