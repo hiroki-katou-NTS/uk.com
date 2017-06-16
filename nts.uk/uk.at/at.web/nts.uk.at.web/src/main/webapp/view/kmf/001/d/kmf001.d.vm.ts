@@ -22,8 +22,8 @@ module nts.uk.pr.view.kmf001.d {
             annualManage: KnockoutObservable<number>;
             
             employmentList: KnockoutObservableArray<ItemModel>;
-            columnsSetting: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            selectedCode: KnockoutObservable<string>;
+//            columnsSetting: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+//            selectedCode: KnockoutObservable<string>;
             managementOption: KnockoutObservableArray<ManagementModel>;
             selectedManagement: KnockoutObservable<number>;
             hasSelectedEmp: KnockoutObservable<boolean>;
@@ -56,15 +56,15 @@ module nts.uk.pr.view.kmf001.d {
                     textalign: "left"
                 }));
                 self.employmentList = ko.observableArray<ItemModel>([]);
-                for (let i = 1; i < 4; i++) {
-                    self.employmentList.push(new ItemModel('0' + i, '基本給'));
-                }
+//                for (let i = 1; i < 4; i++) {
+//                    self.employmentList.push(new ItemModel('0' + i, '基本給'));
+//                }
                 
-                self.columnsSetting = ko.observableArray([
-                    { headerText: 'コード', key: 'code', width: 100 },
-                    { headerText: '名称', key: 'name', width: 300 }
-                ]);
-                self.selectedCode = ko.observable('');
+//                self.columnsSetting = ko.observableArray([
+//                    { headerText: 'コード', key: 'code', width: 100 },
+//                    { headerText: '名称', key: 'name', width: 300 }
+//                ]);
+//                self.selectedCode = ko.observable(null);
                 self.managementOption = ko.observableArray<ManagementModel>([
                     new ManagementModel(1, '管理する'),
                     new ManagementModel(0, '管理しない')
@@ -75,7 +75,7 @@ module nts.uk.pr.view.kmf001.d {
                     return self.selectedManagement() == 1;
                 }, self);
                 
-                self.selectedCode.subscribe(function(data: string) {
+                self.selectedItem.subscribe(function(data: string) {
                     service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
                         self.hasSelectedEmp(true);
                         $('#switch-btn').focus();
@@ -150,9 +150,11 @@ module nts.uk.pr.view.kmf001.d {
                     self.maxDaysCumulationByEmp();
                     self.selectedManagement(0);
                 }
-                self.yearsAmountByEmp(data.upperLimitSetting.retentionYearsAmount);
-                self.maxDaysCumulationByEmp(data.upperLimitSetting.maxDaysCumulation);
-                self.selectedManagement(data.managementCategory);
+                else {
+                    self.yearsAmountByEmp(data.upperLimitSetting.retentionYearsAmount);
+                    self.maxDaysCumulationByEmp(data.upperLimitSetting.maxDaysCumulation);
+                    self.selectedManagement(data.managementCategory);
+                }
             }
             
             initializeWholeCompanyData(data: RetentionYearlyFindDto): void {
@@ -175,7 +177,19 @@ module nts.uk.pr.view.kmf001.d {
             }
             
             private switchToEmploymentTab(): void {
-                $('#left-content').ntsListComponent(this.listComponentOption);
+                var self = this;
+                // employmentList...
+                $('#left-content').ntsListComponent(self.listComponentOption).done(function() {
+                    self.employmentList($('#left-content').getDataList());
+                    self.selectedItem(self.employmentList()[0].code);
+                    if((self.employmentList() == undefined) || (self.employmentList().length <= 0)) {
+                        self.hasSelectedEmp(false);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_146" });
+                    }
+                    else {
+                        self.hasSelectedEmp(true);
+                    }
+                });
             }
             
             private registerWholeCompany(): void {
@@ -207,7 +221,7 @@ module nts.uk.pr.view.kmf001.d {
                 upperLimitDto.retentionYearsAmount = self.yearsAmountByEmp();
                 upperLimitDto.maxDaysCumulation = self.maxDaysCumulationByEmp();
                 dto.upperLimitSetting = upperLimitDto;
-                dto.employmentCode = self.selectedCode();
+                dto.employmentCode = self.selectedItem();
                 dto.managementCategory = self.selectedManagement();
                 return dto;
             }

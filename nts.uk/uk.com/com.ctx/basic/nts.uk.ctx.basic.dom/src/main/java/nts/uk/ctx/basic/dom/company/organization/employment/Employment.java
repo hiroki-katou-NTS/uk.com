@@ -9,42 +9,24 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.basic.dom.company.organization.CompanyId;
 
 /**
- * The Class Employment.
- */
-
-/**
- * Gets the employment name.
- *
- * @return the employment name
- */
-
-/**
- * Gets the employment name.
- *
- * @return the employment name
- */
-
-/**
- * Gets the employment name.
- *
- * @return the employment name
+ * 雇用.
  */
 @Getter
 public class Employment extends AggregateRoot{
 	
-	/** The company id. */
+	/** 会社ID. */
 	private CompanyId companyId;
 	
-	/** The work closure id. */
+	/** 就業締めID. */
 	private Integer workClosureId;
 	
-	/** The salary closure id. */
+	/** 給与締めID. */
 	private Integer salaryClosureId;
 	
-	/** The employment code. */
+	/** 雇用コード. */
 	private EmploymentCode employmentCode;
 	
-	/** The employment name. */
+	/** 雇用名称. */
 	private EmploymentName employmentName;
 	
 	/**
