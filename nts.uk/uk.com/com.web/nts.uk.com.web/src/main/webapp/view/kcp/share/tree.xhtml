@@ -3,7 +3,81 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<div id="nts-component-tree" class="caret-right caret-background bg-green">
-	
+	<div id="nts-component-tree"
+		class="caret-right caret-background bg-green" 
+		style="padding: 20px; border-radius: 5px;">
+		<com:ko tag="if" bind="!isDialog">
+			<i class="icon icon-searchbox"></i>
+		</com:ko>
+		<div data-bind="visible: !isMultiple">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KCP004_2')}</div>
+			<div class="base-date-editor" style="margin-left: 20px; margin-right: 5px;"
+				data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]'}"></div>
+			<button data-bind="click: reload" style="width: 100px">#{i18n.getText('KCP004_3')}</button>
+		</div>
+		
+		<div style="margin-top: 10px;margin-bottom: 10px;">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KCP004_4')}</div>
+			<div id="combo-box" style="width: 100px;margin-left: 34px;"
+				data-bind="ntsComboBox: {
+					options: levelList,
+					optionsValue: 'level',
+					value: levelSelected,
+					optionsText: 'name',
+					editable: false,
+					enable: true,
+					columns: [
+						{ prop: 'name', length: 4 },
+					]}"></div>
+		</div>
+		
+		<div>
+			<div style="width: 350px; margin-bottom: 10px;display: inline-block;"
+				data-bind="ntsSearchBox: {
+					targetKey: 'code',
+					mode: 'igTree',
+					comId: getComIdSearchBox(),
+					items: itemList, 
+					selected: selectedCodes,
+					selectedKey: 'code',
+					childField: 'childs',
+					fields: ['name', 'code']}">
+			</div>
+			<com:ko tag="if" bind="isMultiple">
+				<button data-bind="click: selectAll" style="display: inline-block;">#{i18n.getText('KCP004_7')}</button>
+				<button  data-bind="click: selectSubParent" style="display: inline-block;">#{i18n.getText('KCP004_8')}</button>
+			</com:ko>
+		</div>
+		
+		<com:ko tag="if" bind="!isMultiple" >
+			<table id="single-tree-grid" class="cf"
+				data-bind="ntsTreeGridView:{
+					height: 315,
+					dataSource: itemList,
+					value: selectedCodes,
+					primaryKey: 'code',
+					childDataKey: 'childs',
+					primaryText: 'nodeText',
+					multiple: isMultiple,
+					enable: true,
+					extColumns: treeComponentColumn,
+					showCheckBox: isMultiple}">
+			</table>
+		</com:ko>
+		<com:ko tag="if" bind="isMultiple" >
+			<table id="multiple-tree-grid" class="cf"
+				data-bind="ntsTreeGridView:{
+					height: 315,
+					options: itemList,
+					selectedValues: selectedCodes,
+					optionsValue: 'code',
+					optionsChild: 'childs',
+					optionsText: 'nodeText',
+					multiple: isMultiple,
+					extColumns: treeComponentColumn,
+					enable: true,
+					showCheckBox: isMultiple}">
+			</table>
+		</com:ko>
 	</div>
 </ui:composition>
