@@ -41,7 +41,7 @@ module kcp.share.list {
         selectedCode: KnockoutObservable<any>;
         
         /**
-         * baseDate
+         * baseDate. Available for job title list only.
          */
         baseDate?: KnockoutObservable<Date>;
         
@@ -51,15 +51,42 @@ module kcp.share.list {
         isDialog: boolean;
         
         /**
+         * Select Type.
+         * 1 - Select by selected codes.
+         * 2 - Select All (Cannot select all while single select).
+         * 3 - Select First item.
+         * 4 - No select.
+         */
+        selectType: SelectType;
+        
+        /**
+         * check is show select all button or not. Available for employee list only.
+         */
+        isShowSelectAllButton?: boolean;
+        
+        /**
+         * check is show work place column. Available for employee list only.
+         */
+        isShowWorkPlaceName?: boolean;
+        
+        /**
          * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         /**
-         * Employee input list.
+         * Employee input list. Available for employee list only.
+         * structure: {code: string, name: string, workplaceName: string}.
          */
         employeeInputList?: Array<UnitModel>;
+    }
+    
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
     }
     
     /**
@@ -110,7 +137,8 @@ module kcp.share.list {
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
-            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE && data.isMultiSelect;
+            self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
+                 && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
             self.listType = data.listType;
             if (data.baseDate) {
@@ -121,7 +149,7 @@ module kcp.share.list {
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170});
             // With Employee list, add column company name.
-            if (data.listType == ListType.EMPLOYEE) {
+            if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
                 self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150});
             }
             
@@ -158,9 +186,7 @@ module kcp.share.list {
         private initComponent(data: ComponentOption, dataList: Array<UnitModel>, $input: JQuery) {
             var self = this;
             // Set default value when init component.
-            if (!data.selectedCode() || data.selectedCode().length == 0) {
-                self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
-            }
+            self.initSelectedValue(data, dataList);
 
             // Map already setting attr to data list.
             if (data.isShowAlreadySet) {
@@ -176,7 +202,7 @@ module kcp.share.list {
             // Init component.
             self.itemList(dataList);
             var webserviceLocator = nts.uk.request.location.siteRoot
-                .mergeRelativePath('nts.uk.com.web/')
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
             $input.load(webserviceLocator, function() {
                 ko.cleanNode($input[0]);
@@ -188,6 +214,33 @@ module kcp.share.list {
                     $(".ntsSearchBox").focus();
                 }
             });
+            
+            // defined function get data list.
+            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                return dataList;
+            }
+        }
+        
+        private initSelectedValue(data: ComponentOption, dataList: Array<UnitModel>) {
+            var self = this;
+            switch(data.selectType) {
+                case SelectType.SELECT_BY_SELECTED_CODE:
+                    return;
+                case SelectType.SELECT_ALL:
+                    if (!self.isMultiple){
+                        return;
+                    }
+                    self.selectedCodes(dataList.map(item => item.code));
+                    return;
+                case SelectType.SELECT_FIRST_ITEM:
+                    self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+                    return;
+                case SelectType.NO_SELECT:
+                    self.selectedCodes(data.isMultiSelect ? [] : null);
+                    return;
+                default:
+                    self.selectedCodes(data.isMultiSelect ? [] : null);
+            }
         }
         
         /**
@@ -224,16 +277,16 @@ module kcp.share.list {
                     break;
                 case ListType.EMPLOYEE:
                     codeColumnSize = 150;
-                    companyColumnSize = 150;
+                    companyColumnSize = data.isShowWorkPlaceName ? 150 : 0;
                     break;
                 default:
                 break;
             }
             var alreadySettingColSize = data.isShowAlreadySet ? 70 : 0;
-            var multiSelectColSize = data.isMultiSelect ? 65 : 0;
+            var multiSelectColSize = data.isMultiSelect ? 55 : 0;
             var selectAllButtonSize = this.isHasButtonSelectAll ? 60 : 0;
             var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
-                + alreadySettingColSize + multiSelectColSize + selectAllButtonSize;
+                + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             var totalHeight: number = this.hasBaseDate ? 500 : 452;
             this.gridStyle = {
@@ -292,6 +345,8 @@ module kcp.share.list {
                     return '#[KCP003_1]';
                 case ListType.Classification:
                     return '#[KCP002_1]';
+                case ListType.EMPLOYEE:
+                    return '#[KCP005_1]';
                 default:
                     return '';
             }
@@ -351,12 +406,15 @@ interface JQuery {
      * This Function used after apply binding only.
      */
     ntsListComponent(option: kcp.share.list.ComponentOption): JQueryPromise<void>;
+    
+    getDataList(): Array<kcp.share.list.UnitModel>;
 }
 
 (function($: any) {
     $.fn.ntsListComponent = function(option: kcp.share.list.ComponentOption): JQueryPromise<void> {
 
         // Return.
-        return new kcp.share.list.ListComponentScreenModel().init(this, option);;
+        return new kcp.share.list.ListComponentScreenModel().init(this, option);
     }
+    
 } (jQuery));

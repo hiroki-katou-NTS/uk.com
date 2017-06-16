@@ -2,25 +2,26 @@ module nts.uk.at.view.kdl001.a {
     export module viewmodel {
         export class ScreenModel {
             multiSelectMode: KnockoutObservable<boolean>; 
+            rootList: Array<WorkTimeSet>;
             selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
             selectAbleCodeList: KnockoutObservableArray<string>;
             selectedCodeList: KnockoutObservableArray<string>;
             selectedCode: KnockoutObservable<string>;
             searchOption: KnockoutObservable<number>;
-            startTimeOption: KnockoutObservable<string>;
+            startTimeOption: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
-            endTimeOption: KnockoutObservable<string>;
+            endTimeOption: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             constructor() {
                 var self = this;
                 self.multiSelectMode = nts.uk.ui.windows.getShared('multiSelectMode');
                 self.selectAbleCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('selectAbleCodeList'));
                 self.selectedCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('selectedCodeList'));
-                self.selectedCode = ko.observable(nts.uk.ui.windows.getShared('selectedCode'));
+                self.selectedCode = ko.observable(null);
                 self.searchOption = ko.observable(0); 
-                self.startTimeOption = ko.observable('当日');
+                self.startTimeOption = ko.observable(1);
                 self.startTime = ko.observable(0);
-                self.endTimeOption = ko.observable('当日'); 
+                self.endTimeOption = ko.observable(1); 
                 self.endTime = ko.observable(0);  
                 self.selectAbleItemList = ko.observableArray([]);
             }
@@ -28,9 +29,19 @@ module nts.uk.at.view.kdl001.a {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                service.findByCodeList(self.selectAbleCodeList())
+                kdl001.a.service.findByCodeList(self.selectAbleCodeList())
                     .done(function(data) {
-                        self.selectAbleItemList(data);
+                        self.rootList = data;
+                        self.selectAbleItemList(_.clone(self.rootList));
+                        if(!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())){
+                            if(nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
+                                self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
+                            }
+                            self.selectedCode(_.first(self.selectAbleItemList()).code); 
+                        } else {
+                            self.selectedCodeList([]);
+                            self.selectedCode(null);  
+                        }
                         dfd.resolve(); 
                     })
                     .fail(function(res) { 
@@ -39,35 +50,61 @@ module nts.uk.at.view.kdl001.a {
             }
             
             search(){
+                nts.uk.ui.block.invisible();
                 var self = this;
-                let inputString = self.startTimeOption().toString()+self.startTime().toString()+' ~ '+self.endTimeOption().toString()+self.endTime().toString();
-                $('#day-list-tbl > tbody > tr').css('display','none');
-                let allRow = $('#day-list-tbl > tbody > tr');
-                for(let i=1;i<=allRow.length;i++){
-                    let tr = $('#day-list-tbl > tbody > tr:nth-child('+i+')');
-                    let col1=3; let col2=4;
-                    if(self.multiSelectMode) { col1=4; col2=5; }
-                    for(let j=col1;j<=col2;j++){
-                        if(tr.find(":nth-child("+j+")").text().indexOf(inputString) > -1) {
-                            tr.css('display','');
-                            break;
-                        }   
-                    }    
-                }        
+                let command = {
+                    codelist: _.map(self.rootList, function(item){ return item.code}),
+                    startAtr: self.startTimeOption(),
+                    startTime: nts.uk.util.isNullOrEmpty(self.startTime())?-1:self.startTime(),
+                    endAtr: self.endTimeOption(),
+                    endTime: nts.uk.util.isNullOrEmpty(self.endTime())?-1:self.endTime()
+                }
+                kdl001.a.service.findByTime(command)
+                    .done(function(data) {
+                        self.selectAbleItemList(data);
+                        if(!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())){
+                            self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
+                            self.selectedCode(_.first(self.selectAbleItemList()).code);    
+                        } else {
+                            self.selectedCodeList([]);
+                            self.selectedCode(null);  
+                        }
+                        nts.uk.ui.block.clear();
+                    })
+                    .fail(function(res) { 
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});
+                    });
             }
                 
             returnData(){
-                $('#day-list-tbl > tbody > tr').css('display','');        
+                var self = this;
+                self.startTimeOption(1);
+                self.startTime(0);
+                self.endTimeOption(1); 
+                self.endTime(0); 
+                self.selectAbleItemList(_.clone(self.rootList));   
+                if(self.selectAbleItemList().length!=0) {
+                    self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
+                    self.selectedCode(_.first(self.selectAbleItemList()).code);   
+                } else {
+                    self.selectedCodeList([]);
+                    self.selectedCode(null);    
+                }
+                $("#inputStartTime").focus();
             }
             
             submitAndCloseDialog(){
+                nts.uk.ui.block.invisible();
                 var self = this;
-                if(self.multiSelectMode){
-                    nts.uk.ui.windows.setShared('selectedCodeList', self.selectedCodeList());    
+                if(!self.multiSelectMode) 
+                    self.selectedCodeList(nts.uk.util.isNullOrUndefined(self.selectedCode())?[]:[self.selectedCode()]);
+                if(self.selectedCodeList().length==0){
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_29" }).then(function(){nts.uk.ui.block.clear();});
                 } else {
-                    nts.uk.ui.windows.setShared('selectedCode', self.selectedCode());    
+                    nts.uk.ui.windows.setShared('selectedCodeList', self.selectedCodeList());   
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.windows.close(); 
                 }
-                nts.uk.ui.windows.close();   
             }
             
             closeDialog(){

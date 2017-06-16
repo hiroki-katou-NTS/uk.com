@@ -4,37 +4,45 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+
 /**
  * The Interface CompensatoryLeaveEmSettingGetMemento.
  */
 public interface CompensatoryLeaveEmSettingGetMemento {
+	 
+ 	/**
+ 	 * Gets the company id.
+ 	 *
+ 	 * @return the company id
+ 	 */
+ 	String getCompanyId(); 
+     
+     /**
+      * Gets the employment code.
+      *
+      * @return the employment code
+      */
+     EmploymentCode getEmploymentCode();
+     
+     /**
+      * Gets the checks if is managed.
+      *
+      * @return the checks if is managed
+      */
+     ManageDistinct getIsManaged();
 
-	/**
-	 * Gets the company id.
-	 *
-	 * @return the company id
-	 */
-	String getCompanyId();
-
-	/**
-	 * Gets the employment code.
-	 *
-	 * @return the employment code
-	 */
-	EmploymentCode getEmploymentCode();
-
-	/**
-	 * Gets the employment manage setting.
-	 *
-	 * @return the employment manage setting
-	 */
-	EmploymentCompensatoryManageSetting getEmploymentManageSetting();
-
-	/**
-	 * Gets the employment time manage setting.
-	 *
-	 * @return the employment time manage setting
-	 */
-	EmploymentCompensatoryTimeManageSetting getEmploymentTimeManageSetting();
-
+     /**
+      * Gets the compensatory acquisition use.
+      *
+      * @return the compensatory acquisition use
+      */
+     CompensatoryAcquisitionUse getCompensatoryAcquisitionUse();
+     
+     /**
+      * Gets the compensatory digestive time unit.
+      *
+      * @return the compensatory digestive time unit
+      */
+     CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit();
 }

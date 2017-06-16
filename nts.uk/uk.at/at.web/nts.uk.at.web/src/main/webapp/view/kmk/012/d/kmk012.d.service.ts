@@ -3,7 +3,8 @@ module nts.uk.at.view.kmk012.d {
         var paths = {
             detailClosureHistory: "ctx/at/record/workrecord/closure/detailhistory",
             getDayMonth: "ctx/at/record/workrecord/closure/getday",
-            getDayMonthChange: "ctx/at/record/workrecord/closure/getdaychange"
+            getDayMonthChange: "ctx/at/record/workrecord/closure/getdaychange",
+            addClosureHistory: "ctx/at/record/workrecord/closure/history/add"
         }
         
         // detail data
@@ -21,6 +22,11 @@ module nts.uk.at.view.kmk012.d {
             return nts.uk.request.ajax(paths.getDayMonthChange,dto);
         }
        
+            // save data
+        export function addClosureHistory(dto: model.ClosureHistoryAddDto): JQueryPromise<void> {
+            var data = { closureHistoryAdd: dto };
+            return nts.uk.request.ajax(paths.addClosureHistory, data);
+        }
         
         export module model {
 
@@ -105,6 +111,25 @@ module nts.uk.at.view.kmk012.d {
                 changeClosureDate: number;
             }
             
+            
+            export class ClosureHistoryAddDto{
+                
+                /** The closure id. */
+                // 締めＩＤ
+                closureId: number;
+
+                /** The closure year. */
+                // 終了年月: 年月
+                endDate: number;
+
+                /** The closure date. */
+                // 締め日: 日付
+                closureDate: number;
+
+                /** The start date. */
+                // 開始年月: 年月
+                startDate: number;
+            }
         }
 
     }

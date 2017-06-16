@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.Data;
 import nts.arc.layer.dom.DomainObject;
@@ -20,7 +20,7 @@ public class WorkingTimeSetting extends DomainObject {
 	private AttendanceTime daily;
 
 	/** 月単位. */
-	private Set<Monthly> monthly;
+	private List<Monthly> monthly;
 
 	/** 週単位. */
 	private AttendanceTime weekly;

@@ -11,7 +11,7 @@
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageCode
 				nts.uk.ctx.sys.portal.dom.toppage.TopPageName
   			</com:ValidatorScript>
-  			<script>var dialogSize = { width: 400, height: 500 };</script>
+  			<script>var dialogSize = { width: 285, height: 420 };</script>
 			<com:stylefile path="ccg008.c.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="ccg008.c.start.js" />
@@ -20,18 +20,22 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
-				<p class="dialog-header">#{i18n.getText('CCG008_7')}</p>
+			<div>
+				<div style="margin: 20px 0px 0px 25px">
+					<label>#{i18n.getText('CCG008_7')}</label>
+				</div>
+				<div style="margin: 20px 0px 0px 25px">
 					<!-- C1_002 -->
-					<table id="single-list" 
+					<table id="single-list"
 						data-bind="ntsGridList: {
-									height: 390,
-									width: 580,
+									height: 233,
+									width: 245,
 									options: dataItems,
 									optionsValue: 'code',
 									columns: columns,
 									value: selectedCode}">
-					</table>		
+					</table>
+				</div>		
 				<div id="functions-area-bottom">
 					<div id="process">
 					<!-- C1_005 -->

@@ -7,9 +7,10 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtNormalVacationSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet;
@@ -74,35 +75,21 @@ public class JpaCompensatoryLeaveComGetMemento implements CompensatoryLeaveComGe
         return ManageDistinct.valueOf(this.entity.getManageAtr());
     }
 
-    /**
-     * Gets the normal vacation setting.
-     *
-     * @return the normal vacation setting
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveComGetMemento#getNormalVacationSetting()
-     */
-    @Override
-    public NormalVacationSetting getNormalVacationSetting() {
-        return new NormalVacationSetting(new JpaNormalVacationGetMemento(this.entityNormal));
-    }
+	@Override
+	public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    /**
-     * Gets the occurrence vacation setting.
-     *
-     * @return the occurrence vacation setting
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveComGetMemento#getOccurrenceVacationSetting()
-     */
-    @Override
-    public OccurrenceVacationSetting getOccurrenceVacationSetting() {
-        return new OccurrenceVacationSetting(new JpaOccurrenceVacationGetMemento(this.lstEntityOccur));
-    }
+	@Override
+	public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

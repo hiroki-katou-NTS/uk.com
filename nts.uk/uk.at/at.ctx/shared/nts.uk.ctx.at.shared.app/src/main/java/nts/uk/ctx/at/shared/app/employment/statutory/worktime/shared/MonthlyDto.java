@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.employment.statutory.worktime.shared;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
@@ -28,12 +28,12 @@ public class MonthlyDto {
 	 * @param domain the domain
 	 * @return the sets the
 	 */
-	public static Set<MonthlyDto> fromDomain(Set<Monthly> domain) {
+	public static List<MonthlyDto> fromDomain(List<Monthly> domain) {
 		return domain.stream().map(item -> {
 			MonthlyDto dto = new MonthlyDto();
-			dto.setMonth(item.getTime().v());
-			dto.setTime(item.getMonth().getValue());
+			dto.setMonth(item.getMonth().getValue());
+			dto.setTime(item.getTime().v());
 			return dto;
-		}).collect(Collectors.toSet());
+		}).collect(Collectors.toList());
 	}
 }

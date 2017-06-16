@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+
+#description {
+	margin-top: 20px;
+	margin-left: 40px;
+}
+
+.company {
+	margin-top: 10px;
+	margin-left: 70px;
+}
+
+.ntsControlCheckbox {
+	margin-top: 15px;
+	margin-left: 40px;
+}
+
+.ntsControlRadio {
+	margin-top: 10px;
+	margin-left: 60px;
+}
+
+.settingCompany {
+	float: left;
+}
+
+.radioCheck {
+	float: left;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
+.rightSettingCompany {
+	float: left;
+	margin-left: 70px;
+	margin-top: 45px;
+}
+
+.endButton {
+	margin-top: 20px;
+}

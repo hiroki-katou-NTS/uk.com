@@ -91,17 +91,26 @@
 							</span></td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><label>#{i18n.getText('KMF001_78')}</label></td>
-							<td class= "padding_over" colspan="2"><span tabindex="8"
-								data-bind="ntsSwitchButton: {
+							<td colspan="6">
+								<div data-bind="ntsFormLabel: {}">
+									#{i18n.getText('KMF001_78')} <span style="padding-left: 50px;" tabindex="8"
+										data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										value: compenTimeManage,
 										enable: isManageCompen }">
-							</span></td>
-							<td><label>#{i18n.getText('KMF001_102')}</label></td>
-							<td class= "padding_over">
+									</span>
+								</div>
+								<div class="hr_width">
+									<hr />
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td><label class="pad_left_30">#{i18n.getText('KMF001_102')}</label></td>
+							<td class="padding_over">
 								<div class="combo-box" tabindex="9"
 									data-bind="ntsComboBox: {
 										options: timeVacationDigestiveUnitEnums,

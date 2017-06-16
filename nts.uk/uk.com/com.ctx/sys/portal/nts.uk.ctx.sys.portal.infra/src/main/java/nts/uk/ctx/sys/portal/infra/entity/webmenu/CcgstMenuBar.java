@@ -1,10 +1,16 @@
 package nts.uk.ctx.sys.portal.infra.entity.webmenu;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -17,29 +23,66 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "CCGST_MENU_BAR")
 public class CcgstMenuBar extends UkJpaEntity implements Serializable {
-	 
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
     public CcgstMenuBarPK ccgstMenuBarPK;
+		
+	@Column(name = "MENU_BAR_NAME")
+	public String  menuBarName;
 	
-	@Column(name = "ACT_CLASSIFCATION")
-	public int actClassifcation;
+	@Column(name = "SELECTED_ATR")
+	public int selectedAtr;
+	
+	@Column(name = "SYSTEM")
+	public int system;
+	
+	@Column(name = "MENU_CLS")
+	public int menuCls;
+	
+	@Column(name = "CODE")
+	public String code;
 	
 	@Column(name = "BACKGROUND_COLOR")
 	public String  backgroundColor;
 	
-	@Column(name = "LETTER_COLOR")
-	public String letterColor;
+	@Column(name = "TEXT_COLOR")
+	public String textColor;
 	
-	@Column(name = "MENU_BAR_NAME")
-	public String  menuBarName;
+	@Column(name = "DISPLAY_ORDER")
+	public int displayOrder;
+	
+	
+	@ManyToOne
+	@JoinColumns( {
+        @JoinColumn(name = "CID", referencedColumnName = "CCGST_WEB_MENU.CID", insertable = false, updatable = false),
+        @JoinColumn(name = "WEB_MENU_CD", referencedColumnName = "CCGST_WEB_MENU.WEB_MENU_CD", insertable = false, updatable = false)
+    })
+	public CcgstWebMenu webMenu;
 
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="menuBar", orphanRemoval = true)
+	public List<CcgstTitleMenu> titleMenus;
+	
 	@Override
 	protected Object getKey() {
-		
 		return ccgstMenuBarPK;
+	}
+
+	public CcgstMenuBar(CcgstMenuBarPK ccgstMenuBarPK, String menuBarName, int selectedAtr,
+			int system, int menuCls, String code, String backgroundColor, String textColor, int displayOrder,
+			List<CcgstTitleMenu> titleMenus) {
+		super();
+		this.ccgstMenuBarPK = ccgstMenuBarPK;
+		this.menuBarName = menuBarName;
+		this.selectedAtr = selectedAtr;
+		this.system = system;
+		this.menuCls = menuCls;
+		this.code = code;
+		this.backgroundColor = backgroundColor;
+		this.textColor = textColor;
+		this.displayOrder = displayOrder;
+		this.titleMenus = titleMenus;
 	}
 
 }

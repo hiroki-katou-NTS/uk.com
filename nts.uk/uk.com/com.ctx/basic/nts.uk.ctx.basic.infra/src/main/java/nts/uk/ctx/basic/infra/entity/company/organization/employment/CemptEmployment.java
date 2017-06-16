@@ -50,7 +50,7 @@ public class CemptEmployment extends UkJpaEntity implements Serializable {
 	
 	/** The name. */
 	@Basic(optional = false)
-	@Column(name="NAME")
+	@Column(name="EMPT_NAME")
 	private String name;
 	
 	

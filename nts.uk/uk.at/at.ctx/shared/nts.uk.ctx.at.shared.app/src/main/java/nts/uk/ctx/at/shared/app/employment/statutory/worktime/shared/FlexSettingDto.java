@@ -5,9 +5,8 @@
 package nts.uk.ctx.at.shared.app.employment.statutory.worktime.shared;
 
 import java.time.Month;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
@@ -25,7 +24,7 @@ public class FlexSettingDto {
 	private FlexDaily flexDaily;
 
 	/** The statutory setting. */
-	private Set<FlexMonth> flexMonthly;
+	private List<FlexMonth> flexMonthly;
 
 	/**
 	 * From domain.
@@ -38,22 +37,22 @@ public class FlexSettingDto {
 		WorkingTimeSettingDto specifiedSetting = WorkingTimeSettingDto.fromDomain(domain.getSpecifiedSetting());
 		WorkingTimeSettingDto statutorySetting = WorkingTimeSettingDto.fromDomain(domain.getStatutorySetting());
 
-		Set<FlexMonth> flexMonthly = new HashSet<>();
+		List<FlexMonth> flexMonthly = new ArrayList<FlexMonth>();
 
 		// Set specifiedSetting.
 		specifiedSetting.getMonthly().forEach(item -> {
 			FlexMonth fm = new FlexMonth();
 			fm.setMonth(item.getMonth());
 			fm.setSpecifiedTime(item.getTime());
-			flexMonthly.add(new FlexMonth());
+			flexMonthly.add(fm);
 		});
 
 		// Set statutorySetting
 		statutorySetting.getMonthly().forEach(item -> {
-			FlexMonth fm = flexMonthly.stream().filter(i -> i.getMonth() == item.getMonth()).findFirst().get();
-			flexMonthly.remove(fm);
+			FlexMonth fm = flexMonthly.stream().filter(i -> i.getMonth() != item.getMonth()).findFirst().get();
+			//flexMonthly.remove(fm);
 			fm.setStatutoryTime(item.getTime());
-			flexMonthly.add(fm);
+			//flexMonthly.add(fm);
 		});
 		//TODO code nghich.
 		/*for(int i=1; i<13; i++) {
@@ -76,8 +75,8 @@ public class FlexSettingDto {
 	public static FlexSetting toDomain(FlexSettingDto dto) {
 		AttendanceTime speDaily = new AttendanceTime(dto.getFlexDaily().getSpecifiedTime());
 		AttendanceTime staDaily = new AttendanceTime(dto.getFlexDaily().getStatutoryTime());
-		Set<Monthly> speMonthly = new HashSet<Monthly>();
-		Set<Monthly> staMonthly = new HashSet<Monthly>();
+		List<Monthly> speMonthly = new ArrayList<Monthly>();
+		List<Monthly> staMonthly = new ArrayList<Monthly>();
 
 		dto.getFlexMonthly().forEach(item -> {
 			Month m = java.time.Month.of(item.getMonth());

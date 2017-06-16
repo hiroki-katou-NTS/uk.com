@@ -68,3 +68,16 @@
 	width: 600px;
 	vertical-align: top;
 }
+.td-style {
+	width: 200px; 
+	padding-left: 40px;
+	height: 60px;
+}
+
+#right-table {
+	margin-left: 30px; 
+	margin-top: 20px;
+}
+.padding-left-5px {
+	padding-left: 5px;
+}
