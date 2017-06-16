@@ -346,6 +346,8 @@ module kcp.share.list {
                     return '#[KCP003_1]';
                 case ListType.Classification:
                     return '#[KCP002_1]';
+                case ListType.EMPLOYEE:
+                    return '#[KCP005_1]';
                 default:
                     return '';
             }
