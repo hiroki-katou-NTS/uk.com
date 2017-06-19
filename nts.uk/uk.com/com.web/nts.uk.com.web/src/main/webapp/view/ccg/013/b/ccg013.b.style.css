@@ -1,0 +1,6 @@
+.ntsRadioBox {display: block;}
+.caret-bottom.outline {font-size: 3rem;; display:block ; margin: 10px 0px 10px 150px;}
+#list{ background-color: #E0F59E; height: 490px ;width: 400px;}
+.ui-igcombo-wrapper {vertical-align: middle;}
+.caret-bottom.outline:after, .caret-top.outline:after, .caret-left.outline:after, .caret-right.outline:after {color: #97D155;}
+td{border-right-width: 30px; border-style: solid;border-color: #FFFFFF; border-bottom-width: 15px;}

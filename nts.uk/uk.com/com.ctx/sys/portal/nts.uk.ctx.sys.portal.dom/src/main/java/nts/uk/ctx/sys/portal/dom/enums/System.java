@@ -22,6 +22,8 @@ public enum System {
 	 * 3:Ｑ太郎
 	 */
 	KYUYOU(3);
+	
+	
 
 	public final int value;
 

@@ -13,7 +13,7 @@ module kcp005.a.viewmodel {
         listComponentNoneSetting: ComponentOption;
         listComponentMultiNoneSetting: ComponentOption;
         baseDate: KnockoutObservable<Date>;
-        employeeList: Array<UnitModel>
+        employeeList: KnockoutObservableArray<UnitModel>;
         alreadySettingList: KnockoutObservableArray<any>;
         
         constructor() {
@@ -22,7 +22,7 @@ module kcp005.a.viewmodel {
             this.multiSelectedCodeNoSetting = ko.observableArray([]);
             this.multiSelectedCode = ko.observableArray([]);
             this.baseDate = ko.observable(new Date());
-            this.employeeList = ([{code: '01', name: 'Angela Baby', workplaceName: 'HN'},
+            this.employeeList = ko.observableArray<UnitModel>([{code: '01', name: 'Angela Baby', workplaceName: 'HN'},
                     {code: '02', name: 'Angela Phuong Trinh', workplaceName: 'HN'},
                     {code: '03', name: 'Angela Linh Tinh', workplaceName: 'HCM'},
                     {code: '04', name: 'Min', workplaceName: 'HN'}
@@ -103,7 +103,24 @@ module kcp005.a.viewmodel {
             })[0]);
         }
         
-        
+        private settingCopiedItem() {
+            var self = this;
+            
+            self.listComponentOption = {
+                    isShowAlreadySet: false, // is show already setting column.
+                    isMultiSelect: true, // is multiselect.
+                    listType: ListType.EMPLOYEE,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    employeeInputList: self.employeeList,
+                    isShowWorkPlaceName: false,
+                    selectedCode: self.selectedCode,
+                    isDialog: false,
+                    baseDate: self.baseDate,
+                    isShowSelectAllButton: false,
+                    alreadySettingList: self.alreadySettingList
+                }
+            $('#employee-setting').ntsListComponent(self.listComponentOption);
+        }
     }
 
 }
