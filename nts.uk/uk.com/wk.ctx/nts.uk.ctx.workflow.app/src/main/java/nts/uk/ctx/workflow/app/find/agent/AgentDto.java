@@ -6,9 +6,9 @@ import nts.arc.time.GeneralDate;
 @Data
 public class AgentDto {
 	
-	private String companyId;
-
 	private String employeeId;
+	
+	private String requestId;
 
 	private GeneralDate startDate;
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company;
+package nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment;
 
 import java.io.Serializable;
 
@@ -12,26 +12,27 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class JcwtstCompanyWtSet.
+ * The Class JewtstEmploymentWtSet.
  */
 @Entity
 @Getter
 @Setter
-@Table(name = "JCWTST_COMPANY_WT_SET")
-public class JcwtstCompanyWtSet extends UkJpaEntity implements Serializable {
+@Table(name = "JEWTST_Employment_WT_SET")
+public class JewtstEmploymentWtSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The jcwtst company wt set PK. */
+	/** The jewtst employment wt set PK. */
 	@EmbeddedId
-	protected JcwtstCompanyWtSetPK jcwtstCompanyWtSetPK;
+	protected JewtstEmploymentWtSetPK jewtstEmploymentWtSetPK;
 
 	/** The str week. */
 	@Column(name = "STR_WEEK")
@@ -118,14 +119,26 @@ public class JcwtstCompanyWtSet extends UkJpaEntity implements Serializable {
 	@NotNull
 	@Column(name = "DEC_TIME")
 	private int decTime;
+	
+	/** The empt cd. */
+	@Basic(optional = false)
+	@Null
+	@Column(name = "EMPTCD")
+	private String emptCd;
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
+	 * Instantiates a new jewtst employment wt set.
+	 */
+	public JewtstEmploymentWtSet() {
+
+	}
+
+	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.jcwtstCompanyWtSetPK;
+		return this.jewtstEmploymentWtSetPK;
 	}
+
 }

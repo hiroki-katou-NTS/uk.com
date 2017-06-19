@@ -22,7 +22,7 @@ class ProfileHandler implements KnockoutBindingHandler {
         }
 
         input.setAttribute('type', 'text');
-        input.setAttribute('readonly', 'readonly');
+        //input.setAttribute('readonly', 'readonly');
         input.classList.add("nts-editor");
         input.classList.add("nts-input");
   

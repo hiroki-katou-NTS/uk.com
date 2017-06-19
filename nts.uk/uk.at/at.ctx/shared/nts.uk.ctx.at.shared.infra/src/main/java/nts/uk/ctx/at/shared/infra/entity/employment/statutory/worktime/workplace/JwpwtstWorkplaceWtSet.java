@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company;
+package nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace;
 
 import java.io.Serializable;
 
@@ -12,26 +12,27 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class JcwtstCompanyWtSet.
+ * The Class JwpwtstWorkplaceWtSet.
  */
 @Entity
 @Getter
 @Setter
-@Table(name = "JCWTST_COMPANY_WT_SET")
-public class JcwtstCompanyWtSet extends UkJpaEntity implements Serializable {
+@Table(name = "JWPWTST_WORKPLACE_WT_SET")
+public class JwpwtstWorkplaceWtSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The jcwtst company wt set PK. */
+	/** The jwpwtst workplace wt set PK. */
 	@EmbeddedId
-	protected JcwtstCompanyWtSetPK jcwtstCompanyWtSetPK;
+	protected JwpwtstWorkplaceWtSetPK jwpwtstWorkplaceWtSetPK;
 
 	/** The str week. */
 	@Column(name = "STR_WEEK")
@@ -119,6 +120,18 @@ public class JcwtstCompanyWtSet extends UkJpaEntity implements Serializable {
 	@Column(name = "DEC_TIME")
 	private int decTime;
 
+	/** The wkp id. */
+	@Basic(optional = false)
+	@Null
+	@Column(name = "WKPID")
+	private String wkpId;
+
+	/**
+	 * Instantiates a new jwpwtst workplace wt set.
+	 */
+	public JwpwtstWorkplaceWtSet() {
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -126,6 +139,6 @@ public class JcwtstCompanyWtSet extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.jcwtstCompanyWtSetPK;
+		return this.jwpwtstWorkplaceWtSetPK;
 	}
 }
