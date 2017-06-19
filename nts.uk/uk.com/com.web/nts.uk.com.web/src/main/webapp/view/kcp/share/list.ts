@@ -79,7 +79,7 @@ module kcp.share.list {
          * Employee input list. Available for employee list only.
          * structure: {code: string, name: string, workplaceName: string}.
          */
-        employeeInputList?: Array<UnitModel>;
+        employeeInputList?: KnockoutObservableArray<UnitModel>;
     }
     
     export class SelectType {
@@ -170,7 +170,10 @@ module kcp.share.list {
             
             // With list type is employee list, use employee input.
             if (self.listType == ListType.EMPLOYEE) {
-                self.initComponent(data, data.employeeInputList, $input);
+                self.initComponent(data, data.employeeInputList(), $input);
+                data.employeeInputList.subscribe(dataList => {
+                    self.initComponent(data, data.employeeInputList(), $input);
+                })
                 dfd.resolve();
                 return dfd.promise();
             }
