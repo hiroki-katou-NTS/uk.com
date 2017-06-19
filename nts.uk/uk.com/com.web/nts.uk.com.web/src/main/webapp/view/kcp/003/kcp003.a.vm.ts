@@ -7,11 +7,14 @@ module kcp003.a.viewmodel {
         selectedCodeNoSetting: KnockoutObservable<string>;
         multiSelectedCode: KnockoutObservable<any>;
         multiSelectedCodeNoSetting: KnockoutObservable<any>;
+        selectedCodeUnSelect: KnockoutObservable<string>;
+        
         listComponentOption: ComponentOption;
         listComponentOptionMulti: ComponentOption;
         listComponentNoneSetting: ComponentOption;
         listComponentMultiNoneSetting: ComponentOption;
         baseDate: KnockoutObservable<Date>;
+        listComponentUnSelect: ComponentOption;
         alreadySettingList: KnockoutObservableArray<any>;
         
         constructor() {
@@ -20,6 +23,7 @@ module kcp003.a.viewmodel {
             this.multiSelectedCodeNoSetting = ko.observableArray([]);
             this.multiSelectedCode = ko.observableArray([]);
             this.baseDate = ko.observable(new Date());
+            this.selectedCodeUnSelect = ko.observable('3');
             this.alreadySettingList = ko.observableArray([{code: '01', isAlreadySetting: true}, , {code: '02', isAlreadySetting: true}]);
             this.listComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
@@ -27,7 +31,7 @@ module kcp003.a.viewmodel {
                     listType: ListType.JOB_TITLE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: this.selectedCode,
-                    isDialog: false,
+                    isDialog: true,
                     baseDate: this.baseDate,
                     alreadySettingList: this.alreadySettingList
                 }
@@ -64,10 +68,23 @@ module kcp003.a.viewmodel {
                 listType: ListType.JOB_TITLE,
                 selectType: SelectType.NO_SELECT,
                 selectedCode: this.multiSelectedCodeNoSetting,
-                isDialog: false,
+                isDialog: true,
                 baseDate: this.baseDate,
             }
             $('#jobTitle-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
+            
+            this.listComponentUnSelect = {
+                isShowAlreadySet: true,
+                isMultiSelect: false, 
+                listType: ListType.JOB_TITLE,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: this.selectedCodeUnSelect,
+                isDialog: false,
+                isShowNoSelectRow: true,
+                alreadySettingList: this.alreadySettingList,
+                baseDate: this.baseDate,
+            }
+            $('#jobTitle-list-unSelect').ntsListComponent(this.listComponentUnSelect);
             
         }
         
