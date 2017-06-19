@@ -768,4 +768,12 @@
                 return formatter.fullDateTimeShort(dateTime);
         }
     }
+     
+    export function isEndOfMonth(value: string, format: string) : boolean{
+        let currentDate = moment(value, format);
+        if(currentDate.isValid()){
+            return currentDate.daysInMonth() === currentDate.date();        
+        }
+        return false;
+    }
 }
