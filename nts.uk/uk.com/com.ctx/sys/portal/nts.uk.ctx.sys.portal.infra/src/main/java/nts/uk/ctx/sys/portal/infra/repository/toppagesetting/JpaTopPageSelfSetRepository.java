@@ -23,15 +23,13 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 	private static TopPageSelfSet toDomain(CcgptTopPageSelfSet entity){
 		val domain = TopPageSelfSet.createFromJavaType(
 				entity.ccgptTopPageSelfSetPK.employeeId,
-				entity.code,
-				entity.division);
+				entity.code);
 		return domain;
 	}
 	private static CcgptTopPageSelfSet toEntity(TopPageSelfSet domain){
 		val entity = new CcgptTopPageSelfSet();
 		entity.ccgptTopPageSelfSetPK = new CcgptTopPageSelfSetPK(domain.getEmployeeId());
 		entity.code = domain.getCode();
-		entity.division = domain.getDivision().value;
 		return entity;
 	}
  	/**

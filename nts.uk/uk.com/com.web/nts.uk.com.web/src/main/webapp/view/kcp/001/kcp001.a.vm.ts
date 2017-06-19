@@ -1,6 +1,7 @@
 module kcp001.a.viewmodel {
     import ComponentOption = kcp.share.list.ComponentOption;
     import ListType = kcp.share.list.ListType;
+    import SelectType = kcp.share.list.SelectType;
     export class ScreenModel {
         selectedCode: KnockoutObservable<string>;
         selectedCodeNoSetting: KnockoutObservable<string>;
@@ -10,12 +11,14 @@ module kcp001.a.viewmodel {
         listComponentOptionMulti: ComponentOption;
         listComponentNoneSetting: ComponentOption;
         listComponentMultiNoneSetting: ComponentOption;
+        alreadySettingList: KnockoutObservableArray<any>;
         
         constructor() {
             this.selectedCode = ko.observable('02');
             this.selectedCodeNoSetting = ko.observable(null);
-            this.multiSelectedCodeNoSetting = ko.observableArray(['02', '04']);
+            this.multiSelectedCodeNoSetting = ko.observableArray([]);
             this.multiSelectedCode = ko.observableArray([]);
+            this.alreadySettingList = ko.observableArray([{code: '01', isAlreadySetting: true}, , {code: '02', isAlreadySetting: true}]);
             this.listComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
@@ -26,6 +29,7 @@ module kcp001.a.viewmodel {
                      * 4- Employee list.
                      */
                     listType: ListType.EMPLOYMENT,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     /**
                      * Selected value:
                      * Return type is Array<string> while multiselect.
@@ -33,7 +37,7 @@ module kcp001.a.viewmodel {
                      */
                     selectedCode: this.selectedCode,
                     isDialog: true,
-                    alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}])
+                    alreadySettingList: this.alreadySettingList
                 };
             $('#empt-list-setting').ntsListComponent(this.listComponentOption);
             
@@ -42,9 +46,10 @@ module kcp001.a.viewmodel {
                 isShowAlreadySet: true,
                 isMultiSelect: true,
                 listType: ListType.EMPLOYMENT,
+                selectType: SelectType.SELECT_ALL,
                 selectedCode: this.multiSelectedCode,
                 isDialog: true,
-                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
+                alreadySettingList: this.alreadySettingList
             };
             $('#empt-list-multi-setting').ntsListComponent(this.listComponentOptionMulti);
             
@@ -52,6 +57,7 @@ module kcp001.a.viewmodel {
                 isShowAlreadySet: false,
                 isMultiSelect: false,
                 listType: ListType.EMPLOYMENT,
+                selectType: SelectType.SELECT_FIRST_ITEM,
                 selectedCode: this.selectedCodeNoSetting,
                 isDialog: true
             };
@@ -62,6 +68,7 @@ module kcp001.a.viewmodel {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.EMPLOYMENT,
+                selectType: SelectType.NO_SELECT,
                 selectedCode: this.multiSelectedCodeNoSetting,
                 isDialog: true
             };
@@ -71,19 +78,19 @@ module kcp001.a.viewmodel {
         
         private setAlreadyCheck(): void {
             var self = this;
-            self.listComponentOption.alreadySettingList.push({"code": "02", "isAlreadySetting": true});
+            self.alreadySettingList.push({"code": "02", "isAlreadySetting": true});
         }
         
         private settingRegistedItem(): void {
             var self = this;
-            self.listComponentOption.alreadySettingList.push({"code": this.selectedCode().toString(), "isAlreadySetting": true});
+            self.alreadySettingList.push({"code": self.selectedCode().toString(), "isAlreadySetting": true});
         }
         
-        private settingDeletedItem(): void {
+        private settingDeletedItem() {
             let self = this;
-            self.listComponentOption.alreadySettingList.remove(function(item) {
+            self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
                 return item.code == self.selectedCode();
-            });
+            })[0]);
         }
         
         
