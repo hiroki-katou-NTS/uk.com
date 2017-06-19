@@ -232,6 +232,7 @@ module nts.uk.ui.koExtentions {
             }
             
             $input.prop("disabled", !enable);
+            $container.find(".ntsDateRangeButton").prop("disabled", !enable);
         }
     }
 

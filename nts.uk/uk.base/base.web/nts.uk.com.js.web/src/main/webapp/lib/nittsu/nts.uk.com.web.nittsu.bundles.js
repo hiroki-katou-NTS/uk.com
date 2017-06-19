@@ -10400,6 +10400,7 @@ var nts;
                             }
                         }
                         $input.prop("disabled", !enable);
+                        $container.find(".ntsDateRangeButton").prop("disabled", !enable);
                     };
                     return NtsDateRangePickerBindingHandler;
                 }());
