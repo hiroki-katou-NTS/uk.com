@@ -1,13 +1,14 @@
 module ccg013.a {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
-        screenModel.startPage()
-        __viewContext.bind(screenModel);
-
+        screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
+        });    
         
-        $(function() {
-                $("#sortable").sortable();
-                $("#sortable").disableSelection();
-            });
     });
 }
+
+$(function() {
+    $("#sortable").sortable();
+    $("#sortable").disableSelection();
+});

@@ -28,22 +28,31 @@
 				<button id="A_BTN_003" class="danger">削除</button>
 			</div>
 			<div id="contents-area">
-				<div class="left-content">
-					<div id="LST_001" style="margin-left: 10px;">
+				<div id="left-content"
+					class="bg-green caret-right caret-background cf"
+					style="width: 340px">
+					<div id="LST_001" style="margin-left: 10px; padding: 10px;">
 						<table id="single-list"
-							data-bind="ntsGridList: {								
-							height: 350,
-							dataSource: items,
-							primaryKey: 'code',
-							columns: columns2,
-							multiple: false,
-							value: currentCode
+							data-bind="ntsGridList: {	
+								width: 300,
+								height: 300,
+								dataSource: items,
+								primaryKey: 'code',
+								columns: columns2,
+								multiple: false,
+								value: currentCode
 						}"></table>
 					</div>
 				</div>
-				<ul id="sortable" data-bind="foreach: itemMenu">
-					<li data-bind="text: Name,css: code"></li>
-				</ul>
+				<div class="right-content">
+					<div class="right-content-left">
+						<div data-bind="ntsFormLabel: {}">銀行コード/名称</div>
+						<input data-bind="ntsTextEditor: {value: simpleValue}" />
+						<input data-bind="ntsTextEditor: {value: simpleValue}" />
+					</div>
+					<div class="right-content-right">
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -7,9 +7,11 @@ module ccg013.a.viewmodel {
         currentCode: KnockoutObservable<any>;
         itemMenu: KnockoutObservableArray<any>;
         contextmenu1: KnockoutObservable<string>;
+        simpleValue: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
+            self.simpleValue = ko.observable("123");    
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
             self.items = ko.observableArray([]);
@@ -50,7 +52,12 @@ module ccg013.a.viewmodel {
 
         }
 
-        startPage() {
+        startPage(): JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
+            service.loadWebMenu().done(function(data) {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
     }
 
