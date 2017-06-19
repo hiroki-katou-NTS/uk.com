@@ -75,9 +75,9 @@ public class JpaCompensAcquisitionUseSetMemento implements CompensatoryAcquisiti
     @Override
     public void setPreemptionPermit(ApplyPermission preemptionPermit) {
         if (this.entityCom != null) {
-            this.entityCom.setExpTime(preemptionPermit.value);
+            this.entityCom.setPreempPermitAtr(preemptionPermit.value);
         } else {
-            this.entityEmp.setExpTime(preemptionPermit.value);
+            this.entityEmp.setPreempPermitAtr(preemptionPermit.value);
         }
     }
 

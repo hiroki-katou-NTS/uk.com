@@ -10,27 +10,18 @@
 
 #btn_001 {
 	border: 1px solid #aaa;
-	padding-bottom: 20px;
+	padding-bottom: 15px;
 }
-
 #left-content {
-	margin: 5px 0px 0 20px !important;
+	margin: 10px 0px 0 20px !important;
 	float: left;
 }
 
 #right-content {
 	margin-left: 40px;
+	margin-top: 10px;
 	float: left;
 	height: 350px;
-}
-
-#inp_002 {
-	float: left;
-}
-
-#inp_003 {
-	float: right;
-	margin-left: 30px;
 }
 
 #nts-input-name {
@@ -45,10 +36,11 @@
 #inpReason {
 	width: 170px !important;
 }
-#func-notifier-errors{
-    margin-left: -900px;
-}
 #single-list tr td {
 	white-space: nowrap;
 	nowrap: nowrap;
+}
+#inpCode{
+	width: 25px !important;
+	text-align: center;
 }

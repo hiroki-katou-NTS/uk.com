@@ -5,9 +5,9 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 960, height: 500 };</script>
+			<script>var dialogSize = { width: 960, height: 520 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
 				nts.uk.ctx.at.record.dom.divergencetime.DiverdenceReasonCode
@@ -19,7 +19,7 @@
 			<com:scriptfile path="kmk011.b.service.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="function_area">
+			<div id="functions-area" style = "height: 55px">
 				<!-- B1_1: Button New -->
 				<button tabindex="1" id="btn_001"
 					class="button separate-button fix-button"
@@ -36,7 +36,6 @@
 				<button tabindex="4" id="btn_004"
 					class="button separate-button fix-button"
 					data-bind="click: closeDialog">#{i18n.getText('KMK011_21')}</button>
-				<hr />
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left"
@@ -59,18 +58,17 @@
 				<div id="right-content" style="float: left;">
 					<table>
 						<colgroup>
-							<col width="180px" />
+							<col width="200px" />
 							<col width="*" />
 						</colgroup>
 						<tr class="row">
 							<td>
 								<!-- B3_1: Label -->
-								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK011_22')}</div>
+								<div data-bind="ntsFormLabel: {required: true,constraint:['DiverdenceReasonCode','DivergenceReasonContent'] }">#{i18n.getText('KMK011_22')}</div>
 							</td>
 							<td>
 							<!-- B3_2: Divergence Reason Code -->
 							<input tabindex="6" class="nts-input" id="inpCode"
-								style="width: 20px"
 								data-bind="ntsTextEditor: {
 										  name: '#[KMK011_22]',
                                           value: divReasonCode,

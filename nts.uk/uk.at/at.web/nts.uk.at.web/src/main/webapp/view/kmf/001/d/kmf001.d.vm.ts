@@ -197,7 +197,6 @@ module nts.uk.pr.view.kmf001.d {
                 // Clear errors
                 $('#year-amount-company').ntsError('clear');
                 $('#max-days-company').ntsError('clear');
-                
                 // Validate. 
                 $('#year-amount-company').ntsEditor('validate');
                 $('#max-days-company').ntsEditor('validate');

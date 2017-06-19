@@ -10,9 +10,11 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryD
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionEmp;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeEmp;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeEmpPK;
 
 /**
  * The Class JpaCompensLeaveEmSettingSetMemento.
@@ -91,6 +93,12 @@ public class JpaCompensLeaveEmSettingSetMemento implements CompensatoryLeaveEmSe
         JpaCompensAcquisitionUseSetMemento memento = new JpaCompensAcquisitionUseSetMemento(entityAcquisition);
         compensatoryAcquisitionUse.saveToMemento(memento);
         
+        KclmtAcquisitionEmpPK pk = new KclmtAcquisitionEmpPK();
+        pk.setCid(this.entity.getKclmtCompensLeaveEmpPK().getCid());
+        pk.setEmpcd(this.entity.getKclmtCompensLeaveEmpPK().getEmpcd());
+        
+        entityAcquisition.setKclmtAcquisitionEmpPK(pk);
+        
         this.entity.setKclmtAcquisitionEmp(entityAcquisition);
     }
 
@@ -107,6 +115,12 @@ public class JpaCompensLeaveEmSettingSetMemento implements CompensatoryLeaveEmSe
         KctmtDigestTimeEmp entityDigestTime = new KctmtDigestTimeEmp();
         JpaCompensDigestiveTimeUnitSetMemento memento = new JpaCompensDigestiveTimeUnitSetMemento(entityDigestTime);
         compensatoryDigestiveTimeUnit.saveToMemento(memento);
+        
+        KctmtDigestTimeEmpPK pk = new KctmtDigestTimeEmpPK();
+        pk.setCid(this.entity.getKclmtCompensLeaveEmpPK().getCid());
+        pk.setEmpcd(this.entity.getKclmtCompensLeaveEmpPK().getEmpcd());
+        
+        entityDigestTime.setKctmtDigestTimeEmpPK(pk);
         
         this.entity.setKctmtDigestTimeEmp(entityDigestTime);
     }

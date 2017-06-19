@@ -46,11 +46,11 @@
 						</div>
 					</div>
 				</div>
-				<hr />
-				<div id="this-functions-area" class="control-group halign-center">
-					<button data-bind = "click : updateMyPageSetting" class="btn-default proceed x-large">#{i18n.getText('CCG015_30')}</button>
-					<button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button>
-				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button data-bind="click : updateMyPageSetting"
+					class="btn-default proceed x-large">#{i18n.getText('CCG015_30')}</button>
+				<button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button>
 			</div>
 			<script type="text/html" id="widget-template">
 					<div class="float_left" id="widget_lbl_code_name" data-bind="ntsFormLabel: {required: true}">
