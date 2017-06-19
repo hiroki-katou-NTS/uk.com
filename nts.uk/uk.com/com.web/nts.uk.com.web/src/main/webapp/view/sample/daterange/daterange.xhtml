@@ -24,8 +24,14 @@
 						<h1>Color Picker</h1>
 						<h2>Overview</h2>
 						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
-						<input data-bind="ntsTextEditor: {value: value}"/>
-						<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: enable, width: 200}"/>
+						
+						<div>
+							<h2>Value</h2>
+							<label data-bind="text: dateValue"></label>
+							<div>Start date: <label data-bind="text: dateValue().startDate"></label></div>
+							<div>End date: <label data-bind="text: dateValue().endDate"></label></div>
+						</div>
+						<div id="daterangepicker" data-bind="ntsDateRangePicker: { enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>
 						<br />					
 						<article class="cf">
 							<div class="tabs">

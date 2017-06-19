@@ -16,7 +16,7 @@ module nts.uk.ui.koExtentions {
                         
             let dateType = ko.unwrap(data.type);
             let maxRange = ko.unwrap(data.maxRange);
-            let color = ko.unwrap(data.value);
+            let value = data.value; 
             let dataName = ko.unwrap(data.name);
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             let showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
@@ -27,12 +27,85 @@ module nts.uk.ui.koExtentions {
             
             let $datePickerArea = $container.find(".ntsDateRange_Container"); 
             
-            $datePickerArea.append("<div class='ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsRangeLabel'><label>～</label></div>" +
-                "<div class='ntsEndDate ntsControl nts-datepicker-wrapper' />");
+            $datePickerArea.append("<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
+                "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' />");
+            
+            let dateFormat: string = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+            var ISOFormat = text.getISOFormat(dateFormat);
+            ISOFormat = ISOFormat.replace(/d/g,"").trim();
             
             if (showNextPrevious === true) {
-                $datePickerArea.before("<div class= 'ntsDateNextButton'/>");        
-                $datePickerArea.after("<div class='ntsDatePreviousButton'/>"); 
+                $datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'><button class = 'ntsDateNextButton ntsButton ntsDateRangeButton auto-height'/></div>");        
+                $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'><button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton auto-height'/></div>"); 
+                
+                let $nextButton = $container.find(".ntsDateNextButton");
+                let $prevButton = $container.find(".ntsDatePrevButton");
+                
+                $nextButton.text("next").click(function (evt, ui){
+                    let $startDate = $container.find(".ntsStartDatePicker");
+                    let $endDate = $container.find(".ntsEndDatePicker");
+                    
+                    let oldValue = value(); 
+                    let currentStart = $startDate.val();
+                    let currentEnd = $endDate.val();   
+                    if (!nts.uk.util.isNullOrEmpty(currentStart)){
+                        let startDate = moment(currentStart, dateFormat);   
+                        if(startDate.isValid()) {
+                            let isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                            startDate.month(startDate.month() + 1);   
+                            if(isEndOfMonth){
+                                startDate.endOf("month");           
+                            }
+                            oldValue.startDate = startDate.format(dateFormat);         
+                        }     
+                    }    
+                    
+                    if (!nts.uk.util.isNullOrEmpty(currentEnd)){
+                        let endDate = moment(currentEnd, dateFormat);   
+                        if(endDate.isValid()) { 
+                            let isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                            endDate.month(endDate.month() + 1);   
+                            if(isEndOfMonth){
+                                endDate.endOf("month");           
+                            }
+                            oldValue.endDate = endDate.format(dateFormat);         
+                        }     
+                    } 
+                    value(oldValue);       
+                });
+                
+                $prevButton.text("prev").click(function (evt, ui){
+                    let $startDate = $container.find(".ntsStartDatePicker");
+                    let $endDate = $container.find(".ntsEndDatePicker");
+                    
+                    let oldValue = value(); 
+                    let currentStart = $startDate.val();
+                    let currentEnd = $endDate.val();   
+                    if (!nts.uk.util.isNullOrEmpty(currentStart)){
+                        let startDate = moment(currentStart, dateFormat);   
+                        if(startDate.isValid()) {
+                            let isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                            startDate.month(startDate.month() - 1);   
+                            if(isEndOfMonth){
+                                startDate.endOf("month");           
+                            }
+                            oldValue.startDate = startDate.format(dateFormat);         
+                        }     
+                    }    
+                    
+                    if (!nts.uk.util.isNullOrEmpty(currentEnd)){
+                        let endDate = moment(currentEnd, dateFormat);   
+                        if(endDate.isValid()) {
+                            let isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                            endDate.month(endDate.month() - 1);   
+                            if(isEndOfMonth){
+                                endDate.endOf("month");           
+                            }
+                            oldValue.endDate = endDate.format(dateFormat);         
+                        }     
+                    } 
+                    value(oldValue);      
+                });
             }
               
             let $startDateArea = $datePickerArea.find(".ntsStartDate");
@@ -40,10 +113,6 @@ module nts.uk.ui.koExtentions {
             
             $startDateArea.append("<input id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker' />");
             $endDateArea.append("<input id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker' />");
-            
-            let dateFormat: string = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
-            var ISOFormat = text.getISOFormat(dateFormat);
-            ISOFormat = ISOFormat.replace(/d/g,"").trim();
             
             let $input = $container.find(".ntsDatepicker");
             // Init Datepicker
@@ -53,18 +122,70 @@ module nts.uk.ui.koExtentions {
                 autoHide: true, 
             });
             
-            name = nts.uk.resource.getControlName(name);
+            dataName = nts.uk.util.isNullOrUndefined(dataName) ? "月日入力フォーム" : nts.uk.resource.getControlName(dataName);
+            var validator = new validation.TimeValidator(dataName, "", {required: false, outputFormat: dateFormat, valueType: "string"});
             $input.on("change", (e) => {
-                var newText = $input.val();
+                let $target = $(e.target);
+                var newText = $target.val();
+                var result = validator.validate(newText);
+                $target.ntsError('clear');
+                
+                let oldValue = value();
+                if($target.hasClass("ntsStartDatePicker")){
+                    oldValue.startDate = result.isValid ? result.parsedValue : newText;            
+                } else {
+                    oldValue.endDate = result.isValid ? result.parsedValue : newText;    
+                }
+                if (!result.isValid) {
+                    $target.ntsError('set', result.errorMessage);
+                } else {
+                    $input.ntsError('clear');
+                    let startDate = moment(oldValue.startDate, dateFormat);
+                    let endDate = moment(oldValue.endDate, dateFormat);
+                    if (endDate.isBefore(startDate)) {
+                        $input.ntsError('set', "期間誤り");    
+                    } else if(dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth"){
+                        let start = parseInt(startDate.format("YYYYMMDD"));
+                        let end = parseInt(endDate.format("YYYYMMDD"));    
+                        if(end - start > 31 || end - start < 0){
+                            $input.ntsError('set', "最長期間違反");         
+                        }
+                    }  
+                }
+                
+                value(oldValue);
             });
             
-            $input.on("blur", () => {
-                var newText = $input.val();
+            $input.on("blur", (e) => {
+                var newText = $(e.target).val();
+                var result = validator.validate(newText);
+                if (!result.isValid) {
+                    $(e.target).ntsError('set', result.errorMessage);
+                }
             });
 
 
             $input.on('validate', (function(e: Event) {
-                var newText = $input.val();
+                let $target = $(e.target);
+                var newText = $target.val();
+                var result = validator.validate(newText);
+                $target.ntsError('clear');
+                if (!result.isValid) {
+                    $(e.target).ntsError('set', "Invalid format");
+                }　 else {
+                    $input.ntsError('clear');
+                    let startDate = moment(value().startDate, dateFormat);
+                    let endDate = moment(value().endDate, dateFormat);
+                    if (endDate.isBefore(startDate)) {
+                        $input.ntsError('set', "期間誤り");    
+                    } else if(dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth"){
+                        let start = parseInt(startDate.format("YYYYMMDD"));
+                        let end = parseInt(endDate.format("YYYYMMDD"));    
+                        if(end - start > 31 || end - start < 0){
+                            $input.ntsError('set', "最長期間違反");         
+                        }
+                    }      
+                }
             }));
         }
 
@@ -74,6 +195,43 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             let data = valueAccessor();
             let $container = $(element);
+            let dateType = ko.unwrap(data.type);
+            let maxRange = ko.unwrap(data.maxRange);
+            let dataName = ko.unwrap(data.name);
+            let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+            
+            let dateFormat: string = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+            var ISOFormat = text.getISOFormat(dateFormat);
+            ISOFormat = ISOFormat.replace(/d/g,"").trim();
+            
+            let $input = $container.find(".ntsDatepicker");
+            let $startDate = $container.find(".ntsStartDatePicker");
+            let $endDate = $container.find(".ntsEndDatePicker");
+            
+            if(!nts.uk.util.isNullOrUndefined(data.value())){
+                let startDate = (data.value().startDate !== "") ? time.formatPattern(data.value().startDate, dateFormat, ISOFormat) : "";
+                let oldStart = $startDate.val(); 
+                if(startDate !== oldStart){
+                    if (startDate !== "" && startDate !== "Invalid date") {
+                    // Check equals to avoid multi datepicker with same value
+                        $startDate.datepicker('setDate', startDate);
+                    } else {
+                        $startDate.val("");
+                    }     
+                }   
+                var endDate = (data.value().endDate !== "") ? time.formatPattern(data.value().endDate, dateFormat, ISOFormat) : "";
+                let oldEnd = $endDate.val();
+                if (endDate !== oldEnd){
+                    if (endDate !== "" && endDate !== "Invalid date") {
+                        // Check equals to avoid multi datepicker with same value
+                        $endDate.datepicker('setDate', endDate);
+                    } else {
+                        $endDate.val("");
+                    }       
+                } 
+            }
+            
+            $input.prop("disabled", !enable);
         }
     }
 

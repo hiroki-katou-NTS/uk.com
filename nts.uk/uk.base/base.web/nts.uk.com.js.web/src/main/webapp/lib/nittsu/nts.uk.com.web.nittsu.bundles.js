@@ -2068,6 +2068,14 @@ var nts;
                 }
             }
             time_1.applyFormat = applyFormat;
+            function isEndOfMonth(value, format) {
+                var currentDate = moment(value, format);
+                if (currentDate.isValid()) {
+                    return currentDate.daysInMonth() === currentDate.date();
+                }
+                return false;
+            }
+            time_1.isEndOfMonth = isEndOfMonth;
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10179,7 +10187,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_15) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10196,26 +10204,88 @@ var nts;
                         var $container = $(element);
                         var dateType = ko.unwrap(data.type);
                         var maxRange = ko.unwrap(data.maxRange);
-                        var color = ko.unwrap(data.value);
+                        var value = data.value;
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
                         var showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
                         var id = nts.uk.util.randomId();
                         $container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
                         var $datePickerArea = $container.find(".ntsDateRange_Container");
-                        $datePickerArea.append("<div class='ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsRangeLabel'><label>～</label></div>" +
-                            "<div class='ntsEndDate ntsControl nts-datepicker-wrapper' />");
+                        $datePickerArea.append("<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
+                            "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' />");
+                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+                        var ISOFormat = uk.text.getISOFormat(dateFormat);
+                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
                         if (showNextPrevious === true) {
-                            $datePickerArea.before("<div class= 'ntsDateNextButton'/>");
-                            $datePickerArea.after("<div class='ntsDatePreviousButton'/>");
+                            $datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'><button class = 'ntsDateNextButton ntsButton ntsDateRangeButton auto-height'/></div>");
+                            $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'><button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton auto-height'/></div>");
+                            var $nextButton = $container.find(".ntsDateNextButton");
+                            var $prevButton = $container.find(".ntsDatePrevButton");
+                            $nextButton.text("next").click(function (evt, ui) {
+                                var $startDate = $container.find(".ntsStartDatePicker");
+                                var $endDate = $container.find(".ntsEndDatePicker");
+                                var oldValue = value();
+                                var currentStart = $startDate.val();
+                                var currentEnd = $endDate.val();
+                                if (!nts.uk.util.isNullOrEmpty(currentStart)) {
+                                    var startDate = moment(currentStart, dateFormat);
+                                    if (startDate.isValid()) {
+                                        var isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                                        startDate.month(startDate.month() + 1);
+                                        if (isEndOfMonth) {
+                                            startDate.endOf("month");
+                                        }
+                                        oldValue.startDate = startDate.format(dateFormat);
+                                    }
+                                }
+                                if (!nts.uk.util.isNullOrEmpty(currentEnd)) {
+                                    var endDate = moment(currentEnd, dateFormat);
+                                    if (endDate.isValid()) {
+                                        var isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                                        endDate.month(endDate.month() + 1);
+                                        if (isEndOfMonth) {
+                                            endDate.endOf("month");
+                                        }
+                                        oldValue.endDate = endDate.format(dateFormat);
+                                    }
+                                }
+                                value(oldValue);
+                            });
+                            $prevButton.text("prev").click(function (evt, ui) {
+                                var $startDate = $container.find(".ntsStartDatePicker");
+                                var $endDate = $container.find(".ntsEndDatePicker");
+                                var oldValue = value();
+                                var currentStart = $startDate.val();
+                                var currentEnd = $endDate.val();
+                                if (!nts.uk.util.isNullOrEmpty(currentStart)) {
+                                    var startDate = moment(currentStart, dateFormat);
+                                    if (startDate.isValid()) {
+                                        var isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                                        startDate.month(startDate.month() - 1);
+                                        if (isEndOfMonth) {
+                                            startDate.endOf("month");
+                                        }
+                                        oldValue.startDate = startDate.format(dateFormat);
+                                    }
+                                }
+                                if (!nts.uk.util.isNullOrEmpty(currentEnd)) {
+                                    var endDate = moment(currentEnd, dateFormat);
+                                    if (endDate.isValid()) {
+                                        var isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                                        endDate.month(endDate.month() - 1);
+                                        if (isEndOfMonth) {
+                                            endDate.endOf("month");
+                                        }
+                                        oldValue.endDate = endDate.format(dateFormat);
+                                    }
+                                }
+                                value(oldValue);
+                            });
                         }
                         var $startDateArea = $datePickerArea.find(".ntsStartDate");
                         var $endDateArea = $datePickerArea.find(".ntsEndDate");
                         $startDateArea.append("<input id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker' />");
                         $endDateArea.append("<input id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker' />");
-                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
-                        var ISOFormat = uk.text.getISOFormat(dateFormat);
-                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
                         var $input = $container.find(".ntsDatepicker");
                         // Init Datepicker
                         $input.datepicker({
@@ -10223,15 +10293,70 @@ var nts;
                             format: ISOFormat,
                             autoHide: true,
                         });
-                        name = nts.uk.resource.getControlName(name);
+                        dataName = nts.uk.util.isNullOrUndefined(dataName) ? "月日入力フォーム" : nts.uk.resource.getControlName(dataName);
+                        var validator = new ui_15.validation.TimeValidator(dataName, "", { required: false, outputFormat: dateFormat, valueType: "string" });
                         $input.on("change", function (e) {
-                            var newText = $input.val();
+                            var $target = $(e.target);
+                            var newText = $target.val();
+                            var result = validator.validate(newText);
+                            $target.ntsError('clear');
+                            var oldValue = value();
+                            if ($target.hasClass("ntsStartDatePicker")) {
+                                oldValue.startDate = result.isValid ? result.parsedValue : newText;
+                            }
+                            else {
+                                oldValue.endDate = result.isValid ? result.parsedValue : newText;
+                            }
+                            if (!result.isValid) {
+                                $target.ntsError('set', result.errorMessage);
+                            }
+                            else {
+                                $input.ntsError('clear');
+                                var startDate = moment(oldValue.startDate, dateFormat);
+                                var endDate = moment(oldValue.endDate, dateFormat);
+                                if (endDate.isBefore(startDate)) {
+                                    $input.ntsError('set', "期間誤り");
+                                }
+                                else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
+                                    var start = parseInt(startDate.format("YYYYMMDD"));
+                                    var end = parseInt(endDate.format("YYYYMMDD"));
+                                    if (end - start > 31 || end - start < 0) {
+                                        $input.ntsError('set', "最長期間違反");
+                                    }
+                                }
+                            }
+                            value(oldValue);
                         });
-                        $input.on("blur", function () {
-                            var newText = $input.val();
+                        $input.on("blur", function (e) {
+                            var newText = $(e.target).val();
+                            var result = validator.validate(newText);
+                            if (!result.isValid) {
+                                $(e.target).ntsError('set', result.errorMessage);
+                            }
                         });
                         $input.on('validate', (function (e) {
-                            var newText = $input.val();
+                            var $target = $(e.target);
+                            var newText = $target.val();
+                            var result = validator.validate(newText);
+                            $target.ntsError('clear');
+                            if (!result.isValid) {
+                                $(e.target).ntsError('set', "Invalid format");
+                            }
+                            else {
+                                $input.ntsError('clear');
+                                var startDate = moment(value().startDate, dateFormat);
+                                var endDate = moment(value().endDate, dateFormat);
+                                if (endDate.isBefore(startDate)) {
+                                    $input.ntsError('set', "期間誤り");
+                                }
+                                else if (dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth") {
+                                    var start = parseInt(startDate.format("YYYYMMDD"));
+                                    var end = parseInt(endDate.format("YYYYMMDD"));
+                                    if (end - start > 31 || end - start < 0) {
+                                        $input.ntsError('set', "最長期間違反");
+                                    }
+                                }
+                            }
                         }));
                     };
                     /**
@@ -10240,11 +10365,46 @@ var nts;
                     NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
+                        var dateType = ko.unwrap(data.type);
+                        var maxRange = ko.unwrap(data.maxRange);
+                        var dataName = ko.unwrap(data.name);
+                        var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+                        var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
+                        var ISOFormat = uk.text.getISOFormat(dateFormat);
+                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
+                        var $input = $container.find(".ntsDatepicker");
+                        var $startDate = $container.find(".ntsStartDatePicker");
+                        var $endDate = $container.find(".ntsEndDatePicker");
+                        if (!nts.uk.util.isNullOrUndefined(data.value())) {
+                            var startDate = (data.value().startDate !== "") ? uk.time.formatPattern(data.value().startDate, dateFormat, ISOFormat) : "";
+                            var oldStart = $startDate.val();
+                            if (startDate !== oldStart) {
+                                if (startDate !== "" && startDate !== "Invalid date") {
+                                    // Check equals to avoid multi datepicker with same value
+                                    $startDate.datepicker('setDate', startDate);
+                                }
+                                else {
+                                    $startDate.val("");
+                                }
+                            }
+                            var endDate = (data.value().endDate !== "") ? uk.time.formatPattern(data.value().endDate, dateFormat, ISOFormat) : "";
+                            var oldEnd = $endDate.val();
+                            if (endDate !== oldEnd) {
+                                if (endDate !== "" && endDate !== "Invalid date") {
+                                    // Check equals to avoid multi datepicker with same value
+                                    $endDate.datepicker('setDate', endDate);
+                                }
+                                else {
+                                    $endDate.val("");
+                                }
+                            }
+                        }
+                        $input.prop("disabled", !enable);
                     };
                     return NtsDateRangePickerBindingHandler;
                 }());
                 ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+            })(koExtentions = ui_15.koExtentions || (ui_15.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -10589,7 +10749,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_15) {
+        (function (ui_16) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -10679,7 +10839,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_15.koExtentions || (ui_15.koExtentions = {}));
+            })(koExtentions = ui_16.koExtentions || (ui_16.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
