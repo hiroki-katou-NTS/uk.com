@@ -14,15 +14,16 @@ module kdl014.a.viewmodel {
                 { headerText: nts.uk.resource.getText("KDL014_4"), key: 'date', width: 130 },
                 { headerText: nts.uk.resource.getText("KDL014_5"), key: 'attendanceTime', width: 80 },
                 { headerText: nts.uk.resource.getText("KDL014_6"), key: 'stampAtrName', width: 80 },
-                { headerText: nts.uk.resource.getText("KDL014_11"), key: 'stampMethodName', width: 130 },
+                { headerText: nts.uk.resource.getText("KDL014_11"), key: 'stampMethodName', width: 150 },
                 { headerText: nts.uk.resource.getText("KDL014_13"), key: 'stampReasonName', width: 80 },
                 { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 170 },
                 { headerText: nts.uk.resource.getText("KDL014_12"), key: 'stampCombinationName', width: 100 }
             ]);
             self.employeeCode = '';
             self.employeeName = '';
+            debugger;
             $("#igGridStamp").igGrid({
-                width: '780px',
+                width: '900px',
                 height: '260px',
                 dataSource: self.items(),
                 columns: self.columns()
