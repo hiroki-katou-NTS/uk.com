@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * 
@@ -9,12 +9,12 @@ import java.util.Optional;
  */
 public interface TopPageJobSetRepository {
 	/**
-	 * 
+	 *  find by list jobId
 	 * @param companyId
 	 * @param jobId
 	 * @return
 	 */
-	Optional<TopPageJobSet> findByJobId(String companyId, String jobId);
+	List<TopPageJobSet> findByListJobId(String companyId, List<String> jobId);
 
 	/**
 	 * Insert into table TOPPAGE_JOB_SET
