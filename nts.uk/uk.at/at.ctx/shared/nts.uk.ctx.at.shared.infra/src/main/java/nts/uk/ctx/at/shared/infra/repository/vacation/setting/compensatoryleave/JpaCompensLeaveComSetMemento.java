@@ -67,11 +67,13 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
      */
     @Override
     public void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse) {
-        KclmtAcquisitionCom entity = new KclmtAcquisitionCom();
-        JpaCompensAcquisitionUseSetMemento memento = new JpaCompensAcquisitionUseSetMemento(entity);
+        KclmtAcquisitionCom entityAcquisition = new KclmtAcquisitionCom();
+        JpaCompensAcquisitionUseSetMemento memento = new JpaCompensAcquisitionUseSetMemento(entityAcquisition);
         compensatoryAcquisitionUse.saveToMemento(memento);
         
-        this.entity.setKclmtAcquisitionCom(entity);
+        entityAcquisition.setCid(this.entity.getCid());
+        
+        this.entity.setKclmtAcquisitionCom(entityAcquisition);
     }
 
     /*
@@ -84,11 +86,13 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
      */
     @Override
     public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
-        KctmtDigestTimeCom entity = new KctmtDigestTimeCom();
-        JpaCompensDigestiveTimeUnitSetMemento memento = new JpaCompensDigestiveTimeUnitSetMemento(entity);
+        KctmtDigestTimeCom entityDigestTime = new KctmtDigestTimeCom();
+        JpaCompensDigestiveTimeUnitSetMemento memento = new JpaCompensDigestiveTimeUnitSetMemento(entityDigestTime);
         compensatoryDigestiveTimeUnit.saveToMemento(memento);
         
-        this.entity.setKctmtDigestTimeCom(entity);
+        entityDigestTime.setCid(this.entity.getCid());
+        
+        this.entity.setKctmtDigestTimeCom(entityDigestTime);
     }
 
     /*
