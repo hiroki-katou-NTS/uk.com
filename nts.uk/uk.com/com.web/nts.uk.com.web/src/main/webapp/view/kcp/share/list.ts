@@ -139,7 +139,11 @@ module kcp.share.list {
             var dfd = $.Deferred<void>();
             var self = this;
             self.isMultiple = data.isMultiSelect;
-            self.selectedCodes = data.selectedCode;
+            if (data.isMultiSelect) {
+                self.selectedCodes = ko.observableArray([]);
+            } else {
+                self.selectedCodes = data.selectedCode;
+            }
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
@@ -151,6 +155,20 @@ module kcp.share.list {
             } else {
                 self.baseDate = ko.observable(new Date());
             }
+            
+            self.selectedCodes.subscribe(function(seletedVal: any) {
+                if (data.isMultiSelect) {
+                    // With multi-select => remove no select item.
+                    var noSeletectIndex = (<Array<string>>seletedVal).indexOf('');
+                    if (noSeletectIndex > -1) {
+                        var dataSelected = seletedVal.slice();
+                        (<Array<string>>dataSelected).splice(noSeletectIndex);
+                        data.selectedCode(dataSelected);
+                    } else {
+                        data.selectedCode(seletedVal);
+                    }
+                }
+            })
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
@@ -241,6 +259,9 @@ module kcp.share.list {
             var self = this;
             switch(data.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
+                    if (self.isMultiple) {
+                        self.selectedCodes(data.selectedCode());
+                    }
                     return;
                 case SelectType.SELECT_ALL:
                     if (!self.isMultiple){
