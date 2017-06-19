@@ -128,6 +128,9 @@ module kmk011.a.viewmodel {
                     self.enableSelect(true);
                 } else {
                     self.enableSelect(false);
+                    if ($('#inpDialog').ntsError("hasError") == true) {
+                        $('#inpDialog').ntsError('clear');
+                    }
                 }
             });
             //subscribe selectInp
@@ -174,11 +177,15 @@ module kmk011.a.viewmodel {
             })
         }
         openBDialog() {
-            nts.uk.ui.block.grayout();
             var self = this;
+            nts.uk.ui.block.grayout();
             nts.uk.ui.windows.setShared('KMK011_divTimeId', self.divTimeId(), true);
             nts.uk.ui.windows.sub.modal('/view/kmk/011/b/index.xhtml', { title: '選択肢の設定', }).onClosed(function():any {
                 nts.uk.ui.block.clear();
+                if ($('#inpDialog').ntsError("hasError") == true) {
+                    $('#inpDialog').ntsError('clear');
+                }
+                $("#itemname").focus();
             });
         }
         openDialog021() {
@@ -198,6 +205,7 @@ module kmk011.a.viewmodel {
                 nts.uk.ui.windows.setShared('Multiple', true, true);
                 nts.uk.ui.windows.sub.modal('../../../kdl/021/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
+                    $("#itemname").focus();
                     var list = nts.uk.ui.windows.getShared('selectedChildAttendace');
                     if(list == null || list === undefined) return;
                     self.list(list);
@@ -210,8 +218,8 @@ module kmk011.a.viewmodel {
                         self.lstItemSelected(lstName);
                         self.findTimeName(self.divTimeId());
                         if(self.timeItemName()!=''){
-                            if($('.nts-editor').ntsError("hasError")==true){
-                                $('.nts-input').ntsError('clear');
+                            if ($('#inpName').ntsError("hasError") == true) {
+                                $('#inpName').ntsError('clear');
                             }
                         }
                     })

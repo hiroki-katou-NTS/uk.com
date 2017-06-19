@@ -38,28 +38,42 @@ public class UpdatePersonCostCalculationCommandHandler extends CommandHandler<Pe
 	protected void handle(CommandHandlerContext<PersonCostCalculationCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		PersonCostCalculationCommand command = context.getCommand();
-		this.personCostCalculationDomainService.updatePersonCostCalculation(
-				new PersonCostCalculation(
-						companyID, 
-						command.getHistoryID(), 
-						GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), 
-						GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"),
-						EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class),
-						new Memo(command.getMemo()), 
-						command.getPremiumSets().stream()
-							.map(x -> new PremiumSetting(
-									x.getCompanyID(), 
-									x.getHistoryID(), 
-									x.getPremiumID(), 
-									new PremiumRate(x.getRate()), 
-									x.getAttendanceID(),
-									new PremiumName(x.getName()), 
-									x.getDisplayNumber(), 
-									EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class), 
-									x.getAttendanceItems().stream().map(y -> y.getShortAttendanceID()).collect(Collectors.toList())))
-							.collect(Collectors.toList())
-				)
-		);
+		if(command.getPremiumSets().size()!=0) {
+			this.personCostCalculationDomainService.updatePersonCostCalculation(
+					new PersonCostCalculation(
+							companyID, 
+							command.getHistoryID(), 
+							GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), 
+							GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"),
+							EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class),
+							new Memo(command.getMemo()), 
+							command.getPremiumSets().stream()
+								.map(x -> new PremiumSetting(
+										x.getCompanyID(), 
+										x.getHistoryID(), 
+										x.getPremiumID(), 
+										new PremiumRate(x.getRate()), 
+										x.getAttendanceID(),
+										new PremiumName(x.getName()), 
+										x.getDisplayNumber(), 
+										EnumAdaptor.valueOf(x.getUseAtr(), UseAttribute.class), 
+										x.getAttendanceItems().stream().map(y -> y.getShortAttendanceID()).collect(Collectors.toList())))
+								.collect(Collectors.toList())
+					)
+			);
+		} else {
+			this.personCostCalculationDomainService.updatePersonCostCalculation(
+					new PersonCostCalculation(
+							companyID, 
+							command.getHistoryID(), 
+							GeneralDate.fromString(command.getStartDate(), "yyyy/MM/dd"), 
+							GeneralDate.fromString(command.getEndDate(), "yyyy/MM/dd"),
+							EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class),
+							new Memo(command.getMemo()), 
+							null
+					)
+			);
+		}
 	}
 
 }

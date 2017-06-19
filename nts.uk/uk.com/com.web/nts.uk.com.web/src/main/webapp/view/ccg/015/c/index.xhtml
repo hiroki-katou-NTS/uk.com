@@ -45,14 +45,16 @@
 									<label>#{i18n.getText('CCG015_13')}</label>
 								</div>
 							</td>
-							<td class="pad_top_20"><input tabindex="2" id="inp-code" class="nts-input save-error"
+							<td class="pad_top_20"><input tabindex="2" id="inp-code"
+								class="nts-input save-error"
 								data-bind="ntsTextEditor: {
 								name: '#[CCG015_42]',
 								value: newTopPageCode,
 								required: true,
 								constraint: 'TopPageCode' 
 								}" /></td>
-							<td class="pad_top_20 pad_left_20"><input tabindex="3" id="inp-name" class="nts-input save-error"
+							<td class="pad_top_20 pad_left_20"><input tabindex="3"
+								id="inp-name" class="nts-input save-error"
 								data-bind="ntsTextEditor: {
 								name: '#[CCG015_43]',
 								value: newTopPageName,
@@ -62,14 +64,15 @@
 						</tr>
 					</table>
 				</div>
-				<hr />
+			</div>
+
+			<div id="functions-area-bottom" class="bottom_area_style">
 				<div class="bg-yellow">
-				<div data-bind="ntsCheckBox: { checked: check, enable: true}">#{i18n.getText('CCG015_38')}</div>
+					<div data-bind="ntsCheckBox: { checked: check, enable: true}">#{i18n.getText('CCG015_38')}</div>
 				</div>
-				<div id="this-functions-area" class="control-group halign-center">
-					<button data-bind = " click: copyTopPage" class="btn-default proceed x-large copy_btn">#{i18n.getText('CCG015_37')}</button>
-					<button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button>
-				</div>
+				<button data-bind=" click: copyTopPage"
+					class="btn-default proceed x-large copy_btn">#{i18n.getText('CCG015_37')}</button>
+				<button onclick="nts.uk.ui.windows.close()">#{i18n.getText('CCG015_31')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

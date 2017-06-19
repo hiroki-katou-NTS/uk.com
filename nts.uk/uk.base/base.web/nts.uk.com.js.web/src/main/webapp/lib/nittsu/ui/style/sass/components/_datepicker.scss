@@ -247,3 +247,17 @@
 		top: 1px;
 	}
 }
+
+.ntsDateRange_Container{
+	.ntsDateRangeComponent{
+	  float: left;
+	}
+	.ntsRangeLabel{
+	  padding: 6px 5px 6px 5px;
+	}
+	
+	.ntsRangeButton_Container {
+	    padding: 2px 2px 2px 2px;
+    }
+}
+

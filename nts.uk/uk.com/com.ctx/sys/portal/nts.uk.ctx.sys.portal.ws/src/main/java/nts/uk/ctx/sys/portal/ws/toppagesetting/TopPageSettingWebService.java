@@ -3,24 +3,25 @@ package nts.uk.ctx.sys.portal.ws.toppagesetting;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-
-import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.portal.app.find.layout.LayoutDto;
-import nts.uk.ctx.sys.portal.app.find.toppagesetting.DisplayMyPageFinder;
+import javax.ws.rs.Produces;
 /**
  * 
- * @author hoatt
+ * @author sonnh1
  *
  */
-@Path("topageselfsetting")
-public class TopPageSettingWebService extends WebService {
 
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSettingDto;
+import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSettingFinder;
+
+@Path("sys/portal/toppagesetting")
+@Produces("application/json")
+public class TopPageSettingWebService {
 	@Inject
-	private DisplayMyPageFinder myPage;
-	
+	TopPageSettingFinder topPageSettingFinder;
+
 	@POST
-	@Path("getmypage")
-	public LayoutDto activeLayoutSetting(String layoutID) {
-		return myPage.findLayout(layoutID);
+	@Path("findByCId")
+	public TopPageSettingDto findByCId() {
+		return topPageSettingFinder.findByCId();
 	}
 }

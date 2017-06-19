@@ -41,6 +41,7 @@ module nts.uk.at.view.kml001.d {
                         nts.uk.ui.block.clear();
                     } else {
                         self.currentPersonCost().startDate(self.newStartDate());
+                        self.currentPersonCost().premiumSets([]);
                         servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                             .done(function(res: Array<any>) {
                                 nts.uk.ui.windows.setShared('isEdited', 0);
