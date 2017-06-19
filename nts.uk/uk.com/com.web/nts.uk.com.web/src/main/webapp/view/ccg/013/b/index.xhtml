@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ccg013.b.style.css" />
+			<com:scriptfile path="ccg013.b.start.js" />
+			<com:scriptfile path="ccg013.b.service.js" />
+			<com:scriptfile path="ccg013.b.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="container">
+				<div id="contents-area">
+					<span>#{i18n.getText('CCG013_17')}</span>
+					<table class= "control">
+				<tr>
+							<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_18')}</div></td>
+							<td><input data-bind="ntsTextEditor: {value: simpleValue}" /></td>
+							<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
+							<td><div id="colorpicker" data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 200}"/></td>
+						</tr>
+						<tr>
+							<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_20')}</div></td>
+							<td><div
+									data-bind="ntsRadioBoxGroup: {
+										options: itemRadio,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedId,
+										enable: true}">
+								</div>
+								<button
+									data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
+							</td>
+							<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_23')}</div></td>
+							<td><div id="colorpicker" data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 200}"/></td>
+						</tr>
+					</table>
+				</div>
+				<div id="list">
+					<div class="system selec">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_24')}</div>
+					<div id="system selection" data-bind="ntsComboBox: {
+								options: listSystemSelect,
+								value: selectedCode,
+								optionsText: 'name',
+								enable: true,
+								}"></div>
+					</div>
+						<span class="caret-bottom outline"></span>
+						<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+							items: listStandardMenu, selected: currentCodeList, selectedKey: 'code', fields: ['displayName', 'code'], mode: 'igGrid'}" />		
+						<table id="multi-list" data-bind="ntsGridList: {
+								height: 320,
+								options: listStandardMenu,
+								optionsValue: 'code',
+								columns: columns,
+								value: currentCodeList
+							}"></table>
+					
+								
+				</div>
+				
+					
+			</div>
+		<div id="functions-area-bottom">
+		<button class=" x-large proceed">#{i18n.getText('CCG013_28')}</button>
+		<button>#{i18n.getText('CCG013_29')}</button>
+		</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
