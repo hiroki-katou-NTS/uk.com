@@ -4,41 +4,44 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
-import javax.inject.Inject;
-
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSetPK;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KocmtOccurrenceSet;
 
 /**
- * The Class JpaCompensatoryTransferSetMemento.
+ * The Class JpaTransferSettingSetMemento.
  */
-public class JpaCompensatoryTransferSetMemento implements TransferSettingSetMemento {
-	
-    private static final Integer useValue = 1;
-    private static final Integer notUseValue = 0;
+public class JpaTransferSettingSetMemento implements TransferSettingSetMemento {
     
     /** The entity. */
-    @Inject
-    private KmfmtOccurVacationSet entity;
+    private KocmtOccurrenceSet entity;
+    
+    /** The value true. */
+    private static int VALUE_TRUE = 1;
+    
+    /** The value false. */
+    private static int VALUE_FALSE = 0;
     
     /**
-     * Instantiates a new jpa compensatory transfer set memento.
+     * Instantiates a new jpa transfer setting set memento.
      *
      * @param entity the entity
      */
-    public JpaCompensatoryTransferSetMemento(KmfmtOccurVacationSet entity) {
+    public JpaTransferSettingSetMemento(KocmtOccurrenceSet entity) {
         this.entity = entity;
     }
+    
+    /**
+     * Sets the certain time.
+     *
+     * @param certainTime the new certain time
+     */
     /*
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryTransferSetMemento#setCertainTime(nts.uk.ctx.at.shared.dom.
+     * TransferSettingSetMemento#setCertainTime(nts.uk.ctx.at.shared.dom.
      * vacation.setting.compensatoryleave.OneDayTime)
      */
     @Override
@@ -46,34 +49,49 @@ public class JpaCompensatoryTransferSetMemento implements TransferSettingSetMeme
         this.entity.setCertainTime(certainTime.v());
     }
 
+    /**
+     * Sets the use division.
+     *
+     * @param useDivision the new use division
+     */
     /*
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryTransferSetMemento#setUseDivision(boolean)
+     * TransferSettingSetMemento#setUseDivision(boolean)
      */
     @Override
     public void setUseDivision(boolean useDivision) {
-		this.entity.setUseDivision(useDivision == true?useValue:notUseValue);
+        this.entity.setUseType(useDivision == true ? VALUE_TRUE : VALUE_FALSE);
     }
 
+    /**
+     * Sets the one day time.
+     *
+     * @param oneDayTime the new one day time
+     */
     /*
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryTransferSetMemento#setOneDayTime(nts.uk.ctx.at.shared.dom.
-     * vacation.setting.compensatoryleave.OneDayTime)
+     * TransferSettingSetMemento#setOneDayTime(nts.uk.ctx.at.shared.dom.vacation
+     * .setting.compensatoryleave.OneDayTime)
      */
     @Override
     public void setOneDayTime(OneDayTime oneDayTime) {
         this.entity.setOneDayTime(oneDayTime.v());
     }
 
+    /**
+     * Sets the half day time.
+     *
+     * @param halfDayTime the new half day time
+     */
     /*
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryTransferSetMemento#setHalfDayTime(nts.uk.ctx.at.shared.dom.
+     * TransferSettingSetMemento#setHalfDayTime(nts.uk.ctx.at.shared.dom.
      * vacation.setting.compensatoryleave.OneDayTime)
      */
     @Override
@@ -81,29 +99,21 @@ public class JpaCompensatoryTransferSetMemento implements TransferSettingSetMeme
         this.entity.setHalfDayTime(halfDayTime.v());
     }
 
+    /**
+     * Sets the transfer division.
+     *
+     * @param transferDivision the new transfer division
+     */
     /*
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryTransferSetMemento#setTransferDivision(nts.uk.ctx.at.shared.
-     * dom.vacation.setting.compensatoryleave.TransferSettingDivision)
+     * TransferSettingSetMemento#setTransferDivision(nts.uk.ctx.at.shared.dom.
+     * vacation.setting.compensatoryleave.TransferSettingDivision)
      */
     @Override
     public void setTransferDivision(TransferSettingDivision transferDivision) {
-        this.entity.setTransfDivision(transferDivision.value);
+        this.entity.setTransfType(transferDivision.value);
     }
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-	 * CompensatoryTransferSetMemento#setCompensatoryOccurrenceDivision(nts.uk.
-	 * ctx.at.shared.dom.vacation.setting.compensatoryleave.
-	 * CompensatoryOccurrenceDivision)
-	 */
-//	@Override
-//	public void setCompensatoryOccurrenceDivision(CompensatoryOccurrenceDivision compensatoryOccurrenceDivision) {
-//		this.entity.setKmfmtOccurVacationSetPK(new KmfmtOccurVacationSetPK(AppContexts.user().companyId(),compensatoryOccurrenceDivision.value));
-//	}
 
 }

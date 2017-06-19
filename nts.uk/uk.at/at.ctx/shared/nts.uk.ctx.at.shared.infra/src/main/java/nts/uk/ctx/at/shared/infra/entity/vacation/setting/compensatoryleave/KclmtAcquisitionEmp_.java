@@ -8,14 +8,11 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KmfmtCompensLeaveCom_.
+ * The Class KclmtAcquisitionEmp_.
  */
-@StaticMetamodel(KmfmtCompensLeaveEmpPK.class)
-public class KmfmtCompensLeaveEmpPK_ {
-
-    /** The cid. */
-    public static volatile SingularAttribute<KmfmtCompensLeaveEmpPK, String> cid;
+@StaticMetamodel(KclmtAcquisitionEmp.class)
+public class KclmtAcquisitionEmp_ {
     
-    /** The emp cd. */
-    public static volatile SingularAttribute<KmfmtCompensLeaveEmpPK, String> empCd;
+    /** The cid. */
+    public static volatile SingularAttribute<KclmtAcquisitionEmp, String> cid;
 }
