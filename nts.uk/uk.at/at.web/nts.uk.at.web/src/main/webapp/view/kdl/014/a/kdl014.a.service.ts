@@ -2,7 +2,7 @@ module kdl014.a.service {
     var paths = {
         getStampByEmployeeCode: "at/record/stamp/getstampbyempcode",
         getStampNumberByPersonId: "at/record/stamp/stampcard/getstampnumberbyempcode",
-        getPersonIdByEmployeeCode: "basic/organization/getPersonIdByEmployeeCode"
+        getPersonIdByEmployeeCode: "basic/organization/employee/getPersonIdByEmployeeCode"
     }
     /**
      * get list List Stamp by Code

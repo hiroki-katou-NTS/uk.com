@@ -3,8 +3,8 @@ module kdl014.b.service {
         getStampByEmployeeCode: "at/record/stamp/getstampbyempcode",
         getStampNumberByPersonId: "at/record/stamp/stampcard/getstampnumberbyempcode",
         getStampNumberByListPersonId: "at/record/stamp/stampcard/getliststampnumberbylstempcode",
-        getPersonIdByEmployeeCode: "basic/organization/getPersonIdByEmployeeCode",
-        getListPersonByListEmployee: "basic/organization/getListPersonIdByEmployeeCode"
+        getPersonIdByEmployeeCode: "basic/organization/employee/getPersonIdByEmployeeCode",
+        getListPersonByListEmployee: "basic/organization/employee/getListPersonIdByEmployeeCode"
     }
     /**
      * get list List Stamp by Code
@@ -34,7 +34,7 @@ module kdl014.b.service {
         return nts.uk.request.ajax("at", paths.getStampNumberByListPersonId, arrPersonId);
     }
 
-    /**
+    /** 
      * get list Person ID by Employee CD 
      */
     export function getListPersonByListEmployee(arrEmployeeCD: Array<string>): JQueryPromise<any> {

@@ -16,4 +16,8 @@ table td {
 	margin-left: 25px;
 }
 
+.ui-widget-header {
+	font-weight: normal !important;
+}
+
 
