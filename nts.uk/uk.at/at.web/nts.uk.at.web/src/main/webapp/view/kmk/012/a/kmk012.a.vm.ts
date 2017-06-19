@@ -22,6 +22,8 @@ module nts.uk.at.view.kmk012.a {
             textEditorOption: KnockoutObservable<any>;
             visibleUseClassification: KnockoutObservable<boolean>;
             enableChangeClosureDate: KnockoutObservable<boolean>;
+            enableChangeClosureDateAnd: KnockoutObservable<boolean>;
+            enableUseClassification: KnockoutObservable<boolean>;
                         
             constructor() {
                 var self = this;
@@ -54,11 +56,26 @@ module nts.uk.at.view.kmk012.a {
                 
                 self.selectCodeLstClosureHistory.subscribe(function(val: ClosureHistoryMDto){
                     self.enableChangeClosureDate(val.historyId == self.closureModel.closureHistories()[0].historyId);
+                    self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
                     self.detailClosureHistory(val);
                 });
                 
                 self.visibleUseClassification = ko.observable(true);
                 self.enableChangeClosureDate = ko.observable(true);
+                self.enableUseClassification = ko.observable(true);
+                self.enableChangeClosureDateAnd = ko.observable(true);
+                
+                
+                self.closureModel.useClassification.subscribe(function(val: number){
+                    if (val == 0) {
+                        self.enableUseClassification(false);
+                        self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
+                    }
+                    else {
+                        self.enableUseClassification(true);
+                        self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
+                    }
+                });
             }
 
             // start page
@@ -96,6 +113,7 @@ module nts.uk.at.view.kmk012.a {
                 var self = this;
                 service.detailClosureHistory(master).done(function(data){
                     self.closureHistoryModel.updateData(data);
+                    self.clearValiate();
                 });
             }
             
@@ -130,8 +148,26 @@ module nts.uk.at.view.kmk012.a {
                 return dto;
             }
             
+            clearValiate(){
+                $('#inpMonth').ntsError('clear');
+                 
+            }
+            
+            validateClient(): boolean {
+                $("#inpMonth").ntsEditor("validate");
+                $("#inpname").ntsEditor("validate");
+                
+                if($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
+            
             saveClosureHistory(): void {
                 var self = this;
+                if(self.validateClient()){
+                    return;    
+                }
                 service.saveClosure(self.collectData()).done(function() {
                     service.saveClosureHistory(self.collectDataHistory()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
@@ -250,6 +286,8 @@ module nts.uk.at.view.kmk012.a {
                 }
                 this.closureHistories(dataRes);
             }
+            
+            
         }
 
         export class ClosureHistoryDetailModel {
