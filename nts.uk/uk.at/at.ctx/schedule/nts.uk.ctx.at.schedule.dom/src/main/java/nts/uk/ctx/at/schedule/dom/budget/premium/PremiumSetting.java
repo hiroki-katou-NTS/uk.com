@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import nts.arc.validate.Validatable;
 /**
  * 
  * @author Doan Duy Hung
@@ -11,7 +12,7 @@ import lombok.Value;
  */
 @Value
 @EqualsAndHashCode(callSuper = false)
-public class PremiumSetting {
+public class PremiumSetting implements Validatable{
 	
 	private String companyID;
 	
@@ -44,6 +45,11 @@ public class PremiumSetting {
 		this.displayNumber = displayNumber;
 		this.useAtr = useAtr;
 		this.attendanceItems = attendanceItems;
+	}
+
+	@Override
+	public void validate() {
+		this.rate.validate();
 	}
     
 }

@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 800, height: 325 };</script>
+			<script>var dialogSize = { width: 800, height: 375 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuCD
 					nts.uk.ctx.sys.portal.dom.titlemenu.Name
@@ -33,9 +33,8 @@
 					<input id="copycode" data-bind="ntsTextEditor: {value: copyTitleCD, constraint: 'TitleMenuCD', required: true,name: '#[CCG014_21]'}" tabindex="1" />
 	     			<input id="copyname" data-bind="ntsTextEditor: {value: copyName, constraint: 'Name', required: true ,name: '[#CCG014_22]'}" tabindex="2"/>
 				</div>
-				<hr style="width: 100%; margin-top: 30px;" />
-				<div id="checkOverwritting" data-bind="ntsCheckBox: { checked: checkOverwritting }" tabindex="3">#{i18n.getText('CCG014_23')}</div>
-				<div class="button">
+				<div id="functions-area-bottom">
+					<div id="checkOverwritting" data-bind="ntsCheckBox: { checked: checkOverwritting }" tabindex="3">#{i18n.getText('CCG014_23')}</div>
 					<button id="execution" class="proceed x-large fixbtn" data-bind="click: submitClickButton, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('CCG014_3')}</button>
 					<button id="cancel" data-bind="click: cancel_Dialog" tabindex="5">#{i18n.getText('CCG014_19')}</button>
 				</div>

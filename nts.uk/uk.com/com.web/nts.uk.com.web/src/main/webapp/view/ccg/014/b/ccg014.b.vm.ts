@@ -17,7 +17,6 @@ module ccg014.b.viewmodel {
             if (nts.uk.util.isNullOrEmpty(self.copyTitleCD())) {
                 _.defer(() => { $("#copycode").focus(); });
             }
-
         }
 
         /** Close Dialog */
@@ -34,16 +33,16 @@ module ccg014.b.viewmodel {
         /* Copy TitleMenu */
         submitClickButton() {
             var self = this;
-                service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.copyName(), self.checkOverwritting()).done(() => {
-                    nts.uk.ui.block.invisible();
-                    nts.uk.ui.windows.setShared("copyTitleMenuCD", self.copyTitleCD(), false);
-                    self.cancel_Dialog();
-                }).fail((res) => {
-                   nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
-                }).always(() => {
-                        nts.uk.ui.block.clear();
-                    });
-            
+            self.copyTitleCD(nts.uk.text.padLeft(self.copyTitleCD(), '0', 4));
+            service.copyTitleMenu(self.titlecode(), self.copyTitleCD(), self.copyName(), self.checkOverwritting()).done(() => {
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.windows.setShared("copyTitleMenuCD", self.copyTitleCD(), false);
+                self.cancel_Dialog();
+            }).fail((res) => {
+                nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
         }
     }
 }
