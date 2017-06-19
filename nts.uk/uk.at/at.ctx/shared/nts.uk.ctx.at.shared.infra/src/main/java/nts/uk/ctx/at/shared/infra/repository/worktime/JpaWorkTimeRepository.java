@@ -44,16 +44,17 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 	@Override
 	public List<WorkTime> findByCodeList(String companyID, List<String> siftCDs) {
 		List<WorkTime> result = new ArrayList<WorkTime>();
-		while(siftCDs.size()-500>0) {
-			List<String> subCodelist = siftCDs.subList(0, 500);
+		int i = 0;
+		while(siftCDs.size()-(i+500)>0) {
+			List<String> subCodelist = siftCDs.subList(i, i+500);
 			List<WorkTime> subResult = this.queryProxy().query(findWorkTimeByList, KwtmtWorkTime.class)
 					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
 					.getList(x -> convertToDomainWorkTime(x));
 			result.addAll(subResult);
-			siftCDs.removeAll(subCodelist);
+			i+=500;
 		}
 		List<WorkTime> lastResult = this.queryProxy().query(findWorkTimeByList, KwtmtWorkTime.class)
-				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs)
+				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
 				.getList(x -> convertToDomainWorkTime(x));
 		result.addAll(lastResult);
 		return 	result;

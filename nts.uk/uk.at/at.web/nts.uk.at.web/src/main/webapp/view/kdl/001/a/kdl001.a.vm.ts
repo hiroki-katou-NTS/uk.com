@@ -82,9 +82,9 @@ module nts.uk.at.view.kdl001.a {
             returnData(){
                 var self = this;
                 self.startTimeOption(1);
-                self.startTime(0);
+                self.startTime('');
                 self.endTimeOption(1); 
-                self.endTime(0); 
+                self.endTime(''); 
                 self.selectAbleItemList(_.clone(self.rootList));   
                 if(self.selectAbleItemList().length!=0) {
                     self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
