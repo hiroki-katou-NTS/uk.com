@@ -60,6 +60,11 @@ module kcp.share.list {
         selectType: SelectType;
         
         /**
+         * Check is show no select row in grid list.
+         */
+        isShowNoSelectRow: boolean;
+        
+        /**
          * check is show select all button or not. Available for employee list only.
          */
         isShowSelectAllButton?: boolean;
@@ -141,8 +146,10 @@ module kcp.share.list {
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
             self.listType = data.listType;
-            if (data.baseDate) {
+            if (self.hasBaseDate) {
                 self.baseDate = data.baseDate;
+            } else {
+                self.baseDate = ko.observable(new Date());
             }
             
             // Setup list column.
@@ -202,8 +209,14 @@ module kcp.share.list {
                 })
             }
             
+            
+            
             // Init component.
             self.itemList(dataList);
+            // Check is show no select row.
+            if (data.isShowNoSelectRow) {
+                self.itemList.unshift({code: null, name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+            }
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
@@ -212,7 +225,7 @@ module kcp.share.list {
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
                 if (self.hasBaseDate) {
-                    $('.base-date-editor').find('.nts-input').focus();
+                    $('.base-date-editor').find('.nts-input').first().focus();
                 } else {
                     $(".ntsSearchBox").focus();
                 }
