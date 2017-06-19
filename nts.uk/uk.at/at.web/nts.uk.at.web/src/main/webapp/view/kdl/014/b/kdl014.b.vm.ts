@@ -9,12 +9,12 @@ module kdl014.b.viewmodel {
             var self = this;
             self.items = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL014_8"), key: 'employeeCd', width: 80 },
-                { headerText: nts.uk.resource.getText("KDL014_9"), key: 'employeeName', width: 80 },
-                { headerText: nts.uk.resource.getText("KDL014_4"), key: 'date', width: 120 },
+                { headerText: nts.uk.resource.getText("KDL014_8"), key: 'employeeCd', width: 110 },
+                { headerText: nts.uk.resource.getText("KDL014_9"), key: 'employeeName', width: 120 },
+                { headerText: nts.uk.resource.getText("KDL014_4"), key: 'date', width: 130 },
                 { headerText: nts.uk.resource.getText("KDL014_5"), key: 'attendanceTime', width: 80 },
                 { headerText: nts.uk.resource.getText("KDL014_6"), key: 'stampAtrName', width: 80 },
-                { headerText: nts.uk.resource.getText("KDL014_11"), key: 'stampMethodName', width: 100 },
+                { headerText: nts.uk.resource.getText("KDL014_11"), key: 'stampMethodName', width: 120 },
                 { headerText: nts.uk.resource.getText("KDL014_13"), key: 'stampReasonName', width: 80 },
                 { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 170 },
                 { headerText: nts.uk.resource.getText("KDL014_12"), key: 'stampCombinationName', width: 100 }
@@ -22,8 +22,8 @@ module kdl014.b.viewmodel {
             startDate = '';
             endDate = '';
             $("#igGridStamp").igGrid({
-                width: '910px',
-                height: '300px',
+                width: '1005px',
+                height: '400px',
                 dataSource: self.items(),
                 columns: self.columns()
             });
@@ -36,8 +36,8 @@ module kdl014.b.viewmodel {
             // Get list stamp
             let startTemp: string = nts.uk.ui.windows.getShared("kdl014startDateB");
             let endTemp: string = nts.uk.ui.windows.getShared("kdl014endDateB");
-            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD ddd') + '  ~';
-            self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD');
+            self.startDate = moment(startTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)') + '  ~';
+            self.endDate = moment(endTemp, 'YYYYMMDD').format('YYYY/MM/DD (ddd)');
             let lstEmployeeCode: Array<string> = nts.uk.ui.windows.getShared("kdl014lstEmployeeB");
             let lstCardNumber: Array<string> = [];
             let lstPersonID: Array<string> = [];
@@ -46,7 +46,6 @@ module kdl014.b.viewmodel {
             let lstSource: Array<StampModel> = [];
             service.getListPersonByListEmployee(lstEmployeeCode).done(function(persons: any) {
                 if (persons.length > 0) {
-                    //console.log(persons);
                     _.forEach(persons, function(person) {
                         lstPersonID.push(person.personId);
                         lstEmloyee.push(new PersonModel(person.employeeCode, person.personId));
@@ -60,11 +59,10 @@ module kdl014.b.viewmodel {
                             //Get List Stamp Reference
                             service.getStampByCode(lstStampNumber, startTemp, endTemp).done(function(lstStamp: any) {
                                 if (lstStamp.length > 0) {
-                                    console.log(lstStamp);
                                     _.forEach(lstStamp, function(item) {
                                         _.forEach(lstEmloyee, function(employee) {
                                             if (employee.personId == item.personId) {
-                                                lstSource.push(new StampModel(employee.employeeCd, 'name', item.date, _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
+                                                lstSource.push(new StampModel(employee.employeeCd, 'name', moment(item.date, 'YYYY/MM/DD').format('YYYY/MM/DD (ddd)'), _.padStart(nts.uk.time.parseTime(item.attendanceTime, true).format(), 5, '0'), item.stampReasonName, item.stampAtrName, item.stampMethodName, item.workLocationName, item.stampCombinationName));
                                                 return false;
                                             }
                                         });
@@ -78,10 +76,12 @@ module kdl014.b.viewmodel {
                             });
                             dfd.resolve();
                         }
+                        dfd.resolve();
                     }).fail(function(res) {
                         dfd.reject();
                     });
                 }
+                dfd.resolve();
             }).fail(function(res) {
                 dfd.reject();
             });
