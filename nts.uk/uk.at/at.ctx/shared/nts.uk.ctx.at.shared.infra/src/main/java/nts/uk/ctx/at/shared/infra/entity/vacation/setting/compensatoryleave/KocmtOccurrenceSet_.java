@@ -8,11 +8,11 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KmfmtOccurVacationSet_.
+ * The Class KocmtOccurrenceSet_.
  */
-@StaticMetamodel(KmfmtOccurVacationSet.class)
-public class KmfmtOccurVacationSet_ {
+@StaticMetamodel(KocmtOccurrenceSet.class)
+public class KocmtOccurrenceSet_ {
     
-    /** The cid. */
-    public static volatile SingularAttribute<KmfmtOccurVacationSet, KmfmtOccurVacationSetPK> kmfmtOccurVacationSetPK;
+    /** The kocmt occurrence set PK. */
+    public static volatile SingularAttribute<KocmtOccurrenceSet, KocmtOccurrenceSetPK> kocmtOccurrenceSetPK;
 }
