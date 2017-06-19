@@ -119,35 +119,6 @@ public class JcwtstCompanyWtSet extends UkJpaEntity implements Serializable {
 	@Column(name = "DEC_TIME")
 	private int decTime;
 
-	/**
-	 * Instantiates a new jcwtst company wt set.
-	 */
-	public JcwtstCompanyWtSet() {
-	}
-
-	/**
-	 * Instantiates a new jcwtst company wt set.
-	 *
-	 * @param jcwtstCompanyWtSetPK the jcwtst company wt set PK
-	 */
-	public JcwtstCompanyWtSet(JcwtstCompanyWtSetPK jcwtstCompanyWtSetPK) {
-		super();
-		this.jcwtstCompanyWtSetPK = jcwtstCompanyWtSetPK;
-	}
-
-	/**
-	 * Instantiates a new jcwtst company wt set.
-	 *
-	 * @param cid the cid
-	 * @param yK the y K
-	 * @param ctg the ctg
-	 * @param type the type
-	 */
-	public JcwtstCompanyWtSet(String cid, int yK, int ctg, int type) {
-		super();
-		this.jcwtstCompanyWtSetPK = new JcwtstCompanyWtSetPK(cid, yK, ctg, type);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

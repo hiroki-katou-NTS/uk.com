@@ -37,14 +37,22 @@ public class AgentWebService extends WebService{
 	@Path("find/{employeeId}")
 	@POST
 	public List<AgentDto> findAll(@PathParam("employeeId") String employeeId) {
-		return agentFinder.findAll(employeeId);
+		return agentFinder.findAllEmploy(employeeId);
+		
+	}
+	
+	@Path("find")
+	@POST
+	public AgentDto find(AgentParam param) {
+		return agentFinder.getAgentDto(param.getEmployeeId(), param.getRequestId());
 		
 	}
 	
 	@Path("add")
 	@POST
-	public void add(AgentCommandBase command) {
-		this.addAgentCommandHandler.handle(command);
+	@Produces("text/plain")
+	public String add(AgentCommandBase command) {
+		return this.addAgentCommandHandler.handle(command);
 	}
 	
 	@Path("update")

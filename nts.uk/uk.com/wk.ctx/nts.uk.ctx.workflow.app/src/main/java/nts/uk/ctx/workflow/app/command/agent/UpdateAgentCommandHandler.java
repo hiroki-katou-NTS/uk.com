@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.app.command.agent;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -34,15 +35,16 @@ public class UpdateAgentCommandHandler extends CommandHandler<AgentCommandBase> 
 		AgentCommandBase agentCommandBase = context.getCommand();
 		String employeeId = agentCommandBase.getEmployeeId();
 		String companyId = AppContexts.user().companyId();
-			
-		Optional<Agent> upAgent = agentRepository.getAgentByStartDate(companyId, employeeId, agentCommandBase.getStartDate());
+		String requestId = agentCommandBase.getRequestId();			
+		Optional<Agent> upAgent = agentRepository.find(companyId, employeeId, requestId);
 		if(!upAgent.isPresent()){
-			throw new BusinessException("ER026");
+			throw new BusinessException("");
 		}
 		
 		Agent agentInfor = new Agent(
 				companyId, 
-				employeeId, 
+				employeeId,
+				UUID.fromString(requestId),
 				agentCommandBase.getStartDate(),
 				agentCommandBase.getEndDate(), 
 				(agentCommandBase.getAgentSid1()),
@@ -55,13 +57,13 @@ public class UpdateAgentCommandHandler extends CommandHandler<AgentCommandBase> 
 				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType4(), AgentAppType.class));
 		
 		//Validate Date
-		List<AgentDto> agents = finder.findAll(employeeId);
+		List<AgentDto> agents = finder.findAllEmploy(employeeId);
 		
 		List<RangeDate> rangeDateList = agents.stream()
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
 				.collect(Collectors.toList());
 		
-		agentInfor.validateDate(rangeDateList);
+		//agentInfor.validateDate(rangeDateList);
 		
 		agentRepository.update(agentInfor);
 	}

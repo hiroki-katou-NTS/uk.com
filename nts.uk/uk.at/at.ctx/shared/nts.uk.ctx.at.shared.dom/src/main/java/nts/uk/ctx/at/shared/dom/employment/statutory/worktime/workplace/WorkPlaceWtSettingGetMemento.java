@@ -4,51 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace;
 
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.DeformationLaborSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
-import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetting;
+import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.WtSettingGetMemento;
 
 /**
- * The Interface CompanySettingGetMemento.
+ * The Interface WorkPlaceWtSettingGetMemento.
  */
-public interface WorkPlaceWtSettingGetMemento {
-
-	/**
-	 * Gets the flex setting.
-	 *
-	 * @return the flex setting
-	 */
-	FlexSetting getFlexSetting();
-
-	/**
-	 * Gets the deformation labor setting.
-	 *
-	 * @return the deformation labor setting
-	 */
-	DeformationLaborSetting getDeformationLaborSetting();
-
-	/**
-	 * Gets the year.
-	 *
-	 * @return the year
-	 */
-	Year getYear();
-
-	/**
-	 * Gets the company id.
-	 *
-	 * @return the company id
-	 */
-	CompanyId getCompanyId();
-
-	/**
-	 * Gets the normal setting.
-	 *
-	 * @return the normal setting
-	 */
-	NormalSetting getNormalSetting();
+public interface WorkPlaceWtSettingGetMemento extends WtSettingGetMemento{
 
 	/**
 	 * Gets the work place id.

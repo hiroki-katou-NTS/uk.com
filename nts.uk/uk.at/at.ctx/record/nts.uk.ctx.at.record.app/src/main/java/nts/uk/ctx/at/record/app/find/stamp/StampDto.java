@@ -14,7 +14,7 @@ public class StampDto {
 	private int attendanceTime;
 	private int stampCombinationAtr;
 	private String stampCombinationName;
-	private String workTimeCd;
+	private String siftCd;
 	private int stampMethod;
 	private String stampMethodName;
 	private int stampAtr;
@@ -31,7 +31,7 @@ public class StampDto {
 				domain.getAttendanceTime().v(), 
 				domain.getStampCombinationAtr().value,
 				domain.getStampCombinationAtr().name,
-				domain.getWorkTimeCd().v(), 
+				domain.getSiftCd().v(), 
 				domain.getStampMethod().value,
 				domain.getStampMethod().name,
 				domain.getStampAtr().value,

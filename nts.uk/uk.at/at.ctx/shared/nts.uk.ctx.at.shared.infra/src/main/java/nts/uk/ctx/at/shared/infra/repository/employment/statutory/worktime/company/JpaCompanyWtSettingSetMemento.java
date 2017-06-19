@@ -124,10 +124,10 @@ public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento
 		pkSpe.setYK(year.v());
 		pkSta.setYK(year.v());
 
-		this.deformed = new JcwtstCompanyWtSet(pkNo);
-		this.normal = new JcwtstCompanyWtSet(pkDe);
-		this.flexSpecified = new JcwtstCompanyWtSet(pkSpe);
-		this.flexStatutory = new JcwtstCompanyWtSet(pkSta);
+		this.deformed.setJcwtstCompanyWtSetPK(pkDe);
+		this.normal.setJcwtstCompanyWtSetPK(pkNo);
+		this.flexSpecified.setJcwtstCompanyWtSetPK(pkSpe);
+		this.flexStatutory.setJcwtstCompanyWtSetPK(pkSta);
 	}
 
 	/*
@@ -149,10 +149,10 @@ public class JpaCompanyWtSettingSetMemento implements CompanyWtSettingSetMemento
 		pkSpe.setCid(companyId.v());
 		pkSta.setCid(companyId.v());
 
-		this.deformed = new JcwtstCompanyWtSet(pkNo);
-		this.normal = new JcwtstCompanyWtSet(pkDe);
-		this.flexSpecified = new JcwtstCompanyWtSet(pkSpe);
-		this.flexStatutory = new JcwtstCompanyWtSet(pkSta);
+		this.deformed.setJcwtstCompanyWtSetPK(pkDe);
+		this.normal.setJcwtstCompanyWtSetPK(pkNo);
+		this.flexSpecified.setJcwtstCompanyWtSetPK(pkSpe);
+		this.flexStatutory.setJcwtstCompanyWtSetPK(pkSta);
 	}
 
 	/*

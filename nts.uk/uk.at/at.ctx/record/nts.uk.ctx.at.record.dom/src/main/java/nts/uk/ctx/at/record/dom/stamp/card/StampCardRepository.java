@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface StampCardRepository {
 	// Get List Card by Person ID
-	List<StampCardItem> findByPersonID(String companyId,String PID);
+	List<StampCardItem> findByPersonID(String PID);
 	
 	// Get List Card by List Person ID
-	List<StampCardItem> findByListPersonID(String companyId,List<String> LstPID);
+	List<StampCardItem> findByListPersonID(List<String> LstPID);
 	
 }

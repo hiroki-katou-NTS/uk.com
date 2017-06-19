@@ -13,7 +13,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.find.company.organization.employee.EmployeeDto;
 import nts.uk.ctx.basic.app.find.company.organization.employee.EmployeeFinder;
 
-@Path("basic/organization")
+@Path("basic/organization/employee")
 @Produces(MediaType.APPLICATION_JSON)
 public class EmployeeWebService extends WebService {
 	@Inject

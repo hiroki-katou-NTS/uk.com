@@ -44,6 +44,7 @@ module nts.uk.pr.view.kmf001.h {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
                     listType: ListType.EMPLOYMENT,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: this.selectedItem,
                     isDialog: false,
                     alreadySettingList: ko.observableArray([{ code: '01', isAlreadySetting: true }])
@@ -82,7 +83,7 @@ module nts.uk.pr.view.kmf001.h {
                 }, self);
 
                 self.selectedContractTypeCode = ko.observable('');
-                self.selectedContractTypeCode.subscribe(function(data: string) {
+                self.selectedItem.subscribe(function(data: string) {
                     self.empSettingModel().contractTypeCode(data);
                     self.loadEmpSettingDetails(data);
                 });
@@ -102,7 +103,7 @@ module nts.uk.pr.view.kmf001.h {
                 // Load enums
                 $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums()).done(function() {
                     self.loadComSettingDetails();
-                    self.selectedContractTypeCode(self.employmentList()[0].code);
+                    self.selectedItem(self.employmentList()[0].code);
                     dfd.resolve();
                 });
 
@@ -110,7 +111,8 @@ module nts.uk.pr.view.kmf001.h {
             }
             private checkComManaged(): void {
                 $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
-                    if(!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0 ){
+                    if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
+                        this.hasEmp(false);
                         nts.uk.ui.dialog.info({ messageId: "Msg_146" });
                     }
                 });
@@ -130,7 +132,6 @@ module nts.uk.pr.view.kmf001.h {
 
                 return dfd.promise();
             }
-
             private loadApplyPermissionEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
 
@@ -301,6 +302,12 @@ module nts.uk.pr.view.kmf001.h {
                 return new EmpSubstVacationDto(this.contractTypeCode(),
                     new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave()));
             }
+        }
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
         }
         export class ListType {
             static EMPLOYMENT = 1;

@@ -20,11 +20,8 @@ public class KwtdpWorkTimeDayPK {
 	@Column(name="CID")
 	public String companyID;
 	
-	@Column(name="TIME_DAY_ID")
-	public String timeDayID;
-	
-	@Column(name="WORK_TIME_SET_ID")
-	public String workTimeSetID;
+	@Column(name="SIFT_CD")
+	public String siftCD;
 	
 	@Column(name="TIME_NUMBER_CNT")
 	public int timeNumberCnt;

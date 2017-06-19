@@ -14,7 +14,7 @@ module kdl014.a.viewmodel {
                 { headerText: nts.uk.resource.getText("KDL014_4"), key: 'date', width: 130 },
                 { headerText: nts.uk.resource.getText("KDL014_5"), key: 'attendanceTime', width: 80 },
                 { headerText: nts.uk.resource.getText("KDL014_6"), key: 'stampAtrName', width: 80 },
-                { headerText: nts.uk.resource.getText("KDL014_11"), key: 'stampMethodName', width: 100 },
+                { headerText: nts.uk.resource.getText("KDL014_11"), key: 'stampMethodName', width: 130 },
                 { headerText: nts.uk.resource.getText("KDL014_13"), key: 'stampReasonName', width: 80 },
                 { headerText: nts.uk.resource.getText("KDL014_7"), key: 'workLocationName', width: 170 },
                 { headerText: nts.uk.resource.getText("KDL014_12"), key: 'stampCombinationName', width: 100 }
@@ -45,7 +45,7 @@ module kdl014.a.viewmodel {
             let lstCardNumber: Array<string> = [];
             let lstSource: Array<StampModel> = [];
             //get list Card Number
-            service.getPersonIdByEmployee('00003').done(function(employeeInfo: any) {
+            service.getPersonIdByEmployee(self.employeeCD ).done(function(employeeInfo: any) {
                 if (employeeInfo !== undefined) {
                     let personId: string = employeeInfo.personId;
                     //get list Card Number

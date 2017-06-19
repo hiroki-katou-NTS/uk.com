@@ -13,10 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KwkdtStampCardPK implements Serializable {
 	private static final long serialVersionUID = 1L;
-	/* 会社ID */
-	@Column(name = "CID")
-	public String companyId;
-	
 	/* カード番号 */
 	@Column(name = "CARD_NUMBER")
 	public String cardNumber;
