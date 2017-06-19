@@ -125,12 +125,15 @@ module kcp.share.list {
         isHasButtonSelectAll: boolean;
         gridStyle: GridStyle;
         listType: ListType;
+        componentGridId: string;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        searchOption: any;
         
         constructor() {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
             this.isMultiple = false;
+            this.componentGridId = (Date.now()).toString();
         }
         /**
          * Init component.
@@ -139,7 +142,11 @@ module kcp.share.list {
             var dfd = $.Deferred<void>();
             var self = this;
             self.isMultiple = data.isMultiSelect;
-            self.selectedCodes = data.selectedCode;
+            if (data.isMultiSelect) {
+                self.selectedCodes = ko.observableArray([]);
+            } else {
+                self.selectedCodes = data.selectedCode;
+            }
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
@@ -151,6 +158,23 @@ module kcp.share.list {
             } else {
                 self.baseDate = ko.observable(new Date());
             }
+            
+            self.selectedCodes.subscribe(function(seletedVal: any) {
+                if (!seletedVal) {
+                    return;
+                }
+                if (data.isMultiSelect) {
+                    // With multi-select => remove no select item.
+                    var noSeletectIndex = (<Array<string>>seletedVal).indexOf('');
+                    if (noSeletectIndex > -1) {
+                        var dataSelected = seletedVal.slice();
+                        (<Array<string>>dataSelected).splice(noSeletectIndex);
+                        data.selectedCode(dataSelected);
+                    } else {
+                        data.selectedCode(seletedVal);
+                    }
+                }
+            })
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize});
@@ -217,10 +241,21 @@ module kcp.share.list {
             if (data.isShowNoSelectRow) {
                 self.itemList.unshift({code: null, name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
+            this.searchOption = {
+                searchMode: 'filter',
+                targetKey: 'code',
+                comId: this.componentGridId,
+                items: this.itemList,
+                selected: this.selectedCodes,
+                selectedKey: 'code',
+                fields: ['name', 'code'],
+                mode: 'igGrid'
+            }
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
             $input.load(webserviceLocator, function() {
+                $input.find('table').attr('id', self.componentGridId);
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
@@ -241,6 +276,9 @@ module kcp.share.list {
             var self = this;
             switch(data.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
+                    if (self.isMultiple) {
+                        self.selectedCodes(data.selectedCode());
+                    }
                     return;
                 case SelectType.SELECT_ALL:
                     if (!self.isMultiple){

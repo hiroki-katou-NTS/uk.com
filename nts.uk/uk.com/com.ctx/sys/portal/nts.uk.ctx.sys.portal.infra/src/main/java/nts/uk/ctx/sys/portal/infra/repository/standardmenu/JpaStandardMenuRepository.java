@@ -70,7 +70,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	public CcgstStandardMenu toEntity(StandardMenu domain) {
 		CcgstStandardMenuPK key = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v());
 		return new CcgstStandardMenu(key, domain.getTargetItems(), domain.getDisplayName().v(), domain.getDisplayOrder(),
-				domain.getMenuAtr(), domain.getUrl(), domain.getSystem(), domain.getClassification(), domain.getWebMenuSetting(),
+				domain.getMenuAtr(), domain.getUrl(), domain.getSystem().value, domain.getClassification(), domain.getWebMenuSetting(),
 				domain.getAfterLoginDisplay(), domain.getLogSettingDisplay());
 	}
 }

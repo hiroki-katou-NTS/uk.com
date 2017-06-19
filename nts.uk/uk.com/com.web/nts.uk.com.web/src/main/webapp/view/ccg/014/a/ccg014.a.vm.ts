@@ -9,7 +9,7 @@ module ccg014.a.viewmodel {
     export class ScreenModel {
         // TitleMenu List
         listTitleMenu: KnockoutObservableArray<any>;
-        selectedTitleMenuCD: KnockoutObservable<string>;
+        selectedTitleMenuCD: KnockoutObservable<any>;
         columns: KnockoutObservableArray<any>;
         // TitleMenu Details
         selectedTitleMenu: KnockoutObservable<model.TitleMenu>;
@@ -66,34 +66,33 @@ module ccg014.a.viewmodel {
         /** Registry Button Click */
         registryButtonClick() {
             var self = this;
+            self.selectedTitleMenu().titleMenuCD(nts.uk.text.padLeft(self.selectedTitleMenu().titleMenuCD(), '0', 4));
             var titleMenu = ko.mapping.toJS(self.selectedTitleMenu);
             var titleMenuCD = titleMenu.titleMenuCD;
-            block.invisible();
             $(".nts-input").trigger("validate");
-            _.defer(() => {
-                if (!$(".nts-input").ntsError("hasError")) {
-                    if (self.isCreate() === true) {
-                        service.createTitleMenu(titleMenu).done((data) => {
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                            self.reloadData().done(() => {
-                                self.selectTitleMenuByIndexByCode(titleMenuCD);
-                            });
-                        }).fail((res) => {
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
-                        }).always(() => {
-                            block.clear();
+            if (!$(".nts-input").ntsError("hasError")) {
+                block.invisible();
+                if (self.isCreate() === true) {
+                    service.createTitleMenu(titleMenu).done((data) => {
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        self.reloadData().done(() => {
+                            self.selectTitleMenuByIndexByCode(titleMenuCD);
                         });
-                    }
-                    else {
-                        service.updateTitleMenu(titleMenu).done((data) => {
-                            self.reloadData();
-                            nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                        }).always(() => {
-                            block.clear();
-                        });
-                    }
+                    }).fail((res) => {
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
+                    }).always(() => {
+                        block.clear();
+                    });
                 }
-            });
+                else {
+                    service.updateTitleMenu(titleMenu).done((data) => {
+                        self.reloadData();
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    }).always(() => {
+                        block.clear();
+                    });
+                }
+            }
         }
 
         /**Delete Button Click */
@@ -107,9 +106,10 @@ module ccg014.a.viewmodel {
                         index = _.min([self.listTitleMenu().length - 2, index]);
                         self.reloadData().done(() => {
                             self.selectTitleMenuByIndex(index);
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                         });
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" })
+                        nts.uk.ui.dialog.alert();
                     }).always(() => {
                         block.clear();
                     });

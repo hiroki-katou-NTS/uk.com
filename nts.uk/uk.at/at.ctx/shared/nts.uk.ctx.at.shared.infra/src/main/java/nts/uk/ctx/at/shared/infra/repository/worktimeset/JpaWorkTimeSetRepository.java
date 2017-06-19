@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.worktimeset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,29 +34,29 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	
 	private final String findWorkTimeSetByStart = "SELECT DISTINCT a FROM KwtstWorkTimeSet a, KwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
-			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs "
 			+ "AND a.kwtspWorkTimeSetPK.companyID = b.kwtdpWorkTimeDayPK.companyID "
-			+ "AND a.kwtspWorkTimeSetPK.siftCDs = b.kwtdpWorkTimeDayPK.siftCD "
+			+ "AND a.kwtspWorkTimeSetPK.siftCD = b.kwtdpWorkTimeDayPK.siftCD "
 			+ "AND b.a_m_StartAtr = :a_m_StartAtr "
-			+ "AND b.a_m_StartClock = :a_m_StartClock";
+			+ "AND b.a_m_StartClock = :a_m_StartClock "
+			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs ";
 	
 	private final String findWorkTimeSetByEnd = "SELECT DISTINCT a FROM KwtstWorkTimeSet a, KwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
-			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs "
 			+ "AND a.kwtspWorkTimeSetPK.companyID = b.kwtdpWorkTimeDayPK.companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD = b.kwtdpWorkTimeDayPK.siftCD "
 			+ "AND b.p_m_EndAtr = :p_m_EndAtr "
-			+ "AND b.p_m_EndClock = :p_m_EndClock";
+			+ "AND b.p_m_EndClock = :p_m_EndClock "
+			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs ";
 	
 	private final String findWorkTimeSetByStartAndEnd = "SELECT DISTINCT a FROM KwtstWorkTimeSet a, KwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
-			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs "
 			+ "AND a.kwtspWorkTimeSetPK.companyID = b.kwtdpWorkTimeDayPK.companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD = b.kwtdpWorkTimeDayPK.siftCD "
 			+ "AND b.a_m_StartAtr = :a_m_StartAtr "
 			+ "AND b.a_m_StartClock = :a_m_StartClock "
 			+ "AND b.p_m_EndAtr = :p_m_EndAtr "
-			+ "AND b.p_m_EndClock = :p_m_EndClock";
+			+ "AND b.p_m_EndClock = :p_m_EndClock "
+			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs ";
 	
 	@Override
 	public Optional<WorkTimeSet> findByCode(String companyID, String siftCD) {
@@ -65,42 +66,86 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 
 	@Override
 	public List<WorkTimeSet> findByCodeList(String companyID, List<String> siftCDs) {
-		return this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
-				.setParameter("companyID", companyID)
-				.setParameter("siftCDs", siftCDs)
+		List<WorkTimeSet> result = new ArrayList<WorkTimeSet>();
+		int i = 0;
+		while(siftCDs.size()-(i+500)>0) {
+			List<String> subCodelist = siftCDs.subList(i, i+500);
+			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
+					.getList(x -> convertToDomainWorkTimeSet(x));
+			result.addAll(subResult);
+			i+=500;
+		}
+		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByList, KwtstWorkTimeSet.class)
+				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
 				.getList(x -> convertToDomainWorkTimeSet(x));
+		result.addAll(lastResult);
+		return result;
 	}
 
 	@Override
 	public List<WorkTimeSet> findByStart(String companyID, List<String> siftCDs, int startAtr, int startClock) {
-		return this.queryProxy().query(findWorkTimeSetByStart, KwtstWorkTimeSet.class)
-				.setParameter("companyID", companyID)
-				.setParameter("siftCDs", siftCDs)
-				.setParameter("a_m_StartAtr", startAtr)
-				.setParameter("a_m_StartClock", startClock)
+		List<WorkTimeSet> result = new ArrayList<WorkTimeSet>();
+		int i = 0;
+		while(siftCDs.size()-(i+500)>0) {
+			List<String> subCodelist = siftCDs.subList(i, i+500);
+			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByStart, KwtstWorkTimeSet.class)
+					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
+					.setParameter("a_m_StartAtr", startAtr).setParameter("a_m_StartClock", startClock)
+					.getList(x -> convertToDomainWorkTimeSet(x));
+			result.addAll(subResult);
+			i+=500;
+		}
+		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByStart, KwtstWorkTimeSet.class)
+				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
+				.setParameter("a_m_StartAtr", startAtr).setParameter("a_m_StartClock", startClock)
 				.getList(x -> convertToDomainWorkTimeSet(x));
+		result.addAll(lastResult);
+		return result;
 	}
 
 	@Override
 	public List<WorkTimeSet> findByEnd(String companyID, List<String> siftCDs, int endAtr, int endClock) {
-		return this.queryProxy().query(findWorkTimeSetByEnd, KwtstWorkTimeSet.class)
-				.setParameter("companyID", companyID)
-				.setParameter("siftCDs", siftCDs)
-				.setParameter("p_m_EndAtr", endAtr)
-				.setParameter("p_m_EndClock", endClock)
+		List<WorkTimeSet> result = new ArrayList<WorkTimeSet>();
+		int i = 0;
+		while(siftCDs.size()-(i+500)>0) {
+			List<String> subCodelist = siftCDs.subList(i, i+500);
+			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByEnd, KwtstWorkTimeSet.class)
+					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
+					.setParameter("p_m_EndAtr", endAtr).setParameter("p_m_EndClock", endClock)
+					.getList(x -> convertToDomainWorkTimeSet(x));
+			result.addAll(subResult);
+			i+=500;
+		}
+		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByEnd, KwtstWorkTimeSet.class)
+				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
+				.setParameter("p_m_EndAtr", endAtr).setParameter("p_m_EndClock", endClock)
 				.getList(x -> convertToDomainWorkTimeSet(x));
+		result.addAll(lastResult);
+		return result;
 	}
 
 	@Override
 	public List<WorkTimeSet> findByStartAndEnd(String companyID, List<String> siftCDs, int startAtr, int startClock, int endAtr, int endClock) {
-		return this.queryProxy().query(findWorkTimeSetByStartAndEnd, KwtstWorkTimeSet.class)
-				.setParameter("companyID", companyID)
-				.setParameter("siftCDs", siftCDs)
-				.setParameter("a_m_StartAtr", startAtr)
-				.setParameter("a_m_StartClock", startClock)
-				.setParameter("p_m_EndAtr", endAtr)
-				.setParameter("p_m_EndClock", endClock)
+		List<WorkTimeSet> result = new ArrayList<WorkTimeSet>();
+		int i = 0;
+		while(siftCDs.size()-(i+500)>0) {
+			List<String> subCodelist = siftCDs.subList(i, i+500);
+			List<WorkTimeSet> subResult = this.queryProxy().query(findWorkTimeSetByStartAndEnd, KwtstWorkTimeSet.class)
+					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
+					.setParameter("a_m_StartAtr", startAtr).setParameter("a_m_StartClock", startClock)
+					.setParameter("p_m_EndAtr", endAtr).setParameter("p_m_EndClock", endClock)
+					.getList(x -> convertToDomainWorkTimeSet(x));
+			result.addAll(subResult);
+			i+=500;
+		}
+		List<WorkTimeSet> lastResult = this.queryProxy().query(findWorkTimeSetByStartAndEnd, KwtstWorkTimeSet.class)
+				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
+				.setParameter("a_m_StartAtr", startAtr).setParameter("a_m_StartClock", startClock)
+				.setParameter("p_m_EndAtr", endAtr).setParameter("p_m_EndClock", endClock)
 				.getList(x -> convertToDomainWorkTimeSet(x));
+		result.addAll(lastResult);
+		return result;
 	}
 	
 	/**

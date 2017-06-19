@@ -1,18 +1,21 @@
 module nts.uk.com.view.ccg001.a {
     import ListType = kcp.share.list.ListType;
+    import TreeType = kcp.share.tree.TreeType;
     
     export module viewmodel {
         export class ScreenModel {
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
             selectedCode: KnockoutObservableArray<string>;
-            date: KnockoutObservable<Date>;
+            baseDate: KnockoutObservable<Date>;
             employments: any;
             classifications: any;
+            jobtitles: any;
+            workplaces: any;
             constructor() {
                 let self = this;
-                self.date = ko.observable(new Date());
                 self.selectedCode = ko.observableArray([]);
+                self.baseDate = ko.observable(new Date());
                 self.tabs = ko.observableArray([
                     {
                         id: 'tab-1',
@@ -48,6 +51,28 @@ module nts.uk.com.view.ccg001.a {
                 }
                 
                  $('#classificationList').ntsListComponent(this.employments);
+                
+                self.jobtitles = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: true,
+                    listType: ListType.JOB_TITLE,
+                    selectedCode: this.selectedCode,
+                    isDialog: false,
+                    baseDate: self.baseDate,
+                }
+                
+                $('#jobtitleList').ntsListComponent(self.jobtitles);
+                
+                self.workplaces = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: false,
+                    treeType: TreeType.WORK_PLACE,
+                    selectedCode: self.selectedCode,
+                    baseDate: self.baseDate,
+                    isDialog: false
+                }
+                
+                //$('#workplaces').ntsListComponent(self.workplaces);
             }
 
             public startPage(): JQueryPromise<any> {
