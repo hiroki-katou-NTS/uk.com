@@ -44,11 +44,11 @@ module nts.uk.pr.view.kmf001.j {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
                     listType: ListType.EMPLOYMENT,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: this.selectedItem,
                     isDialog: false,
                     alreadySettingList: ko.observableArray([{ code: '01', isAlreadySetting: true }])
                 };
-
                 self.timeDigestiveUnitEnums = ko.observableArray([]);
                 self.sixtyHourExtraEnums = ko.observableArray([]);
                 self.manageDistinctEnums = ko.observableArray([]);
@@ -83,7 +83,7 @@ module nts.uk.pr.view.kmf001.j {
                 }, self);
 
                 self.selectedContractTypeCode = ko.observable('');
-                self.selectedContractTypeCode.subscribe(function(data: string) {
+                self.selectedItem.subscribe(function(data: string) {
                     self.empSettingModel().contractTypeCode(data);
                     self.loadEmpSettingDetails(data);
                 });
@@ -104,7 +104,7 @@ module nts.uk.pr.view.kmf001.j {
                 // Load enums
                 $.when(self.loadTimeDigestiveUnitEnums(), self.loadSixtyHourExtraEnums(), self.loadManageDistinctEnums()).done(function() {
                     self.loadComSettingDetails();
-                    self.selectedContractTypeCode(self.employmentList()[0].code);
+                    self.selectedItem(self.employmentList()[0].code);
                     dfd.resolve();
                 });
 
@@ -114,6 +114,7 @@ module nts.uk.pr.view.kmf001.j {
             private checkComManaged(): void {
                 $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
                     if(!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0 ){
+                        this.hasEmp(false);
                         nts.uk.ui.dialog.info({ messageId: "Msg_146" });
                     }
                 });
@@ -196,7 +197,7 @@ module nts.uk.pr.view.kmf001.j {
 
                 self.clearErrorEmpSetting();
 
-                this.service.findEmpSetting(contractTypeCode).done(function(res: Emp60HourVacationDto) {
+                this.service.findEmpSetting(self.selectedItem()).done(function(res: Emp60HourVacationDto) {
                     if (res) {
                         self.empSettingModel().contractTypeCode(res.contractTypeCode);
                         self.empSettingModel().isManage(res.isManage);
@@ -302,6 +303,12 @@ module nts.uk.pr.view.kmf001.j {
                 return new Emp60HourVacationDto(this.contractTypeCode(),
                     new SixtyHourVacationSettingDto(this.isManage(), this.digestiveUnit(), this.sixtyHourExtra()));
             }
+        }
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
         }
         export class ListType {
             static EMPLOYMENT = 1;
