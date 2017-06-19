@@ -46,7 +46,9 @@ public class JpaTransferSettingSetMemento implements TransferSettingSetMemento {
      */
     @Override
     public void setCertainTime(OneDayTime certainTime) {
-        this.entity.setCertainTime(certainTime.v());
+        if (certainTime != null) {
+            this.entity.setCertainTime(certainTime.v());
+        }
     }
 
     /**
@@ -79,7 +81,9 @@ public class JpaTransferSettingSetMemento implements TransferSettingSetMemento {
      */
     @Override
     public void setOneDayTime(OneDayTime oneDayTime) {
-        this.entity.setOneDayTime(oneDayTime.v());
+        if (oneDayTime != null) {
+            this.entity.setOneDayTime(oneDayTime.v());
+        }
     }
 
     /**
@@ -96,7 +100,9 @@ public class JpaTransferSettingSetMemento implements TransferSettingSetMemento {
      */
     @Override
     public void setHalfDayTime(OneDayTime halfDayTime) {
-        this.entity.setHalfDayTime(halfDayTime.v());
+        if (halfDayTime != null) {
+            this.entity.setHalfDayTime(halfDayTime.v());
+        }
     }
 
     /**
