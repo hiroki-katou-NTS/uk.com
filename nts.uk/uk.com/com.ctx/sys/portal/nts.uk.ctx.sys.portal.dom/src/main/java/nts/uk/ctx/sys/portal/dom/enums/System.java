@@ -21,9 +21,11 @@ public enum System {
 	/**
 	 * 3:Ｑ太郎
 	 */
-	KYUYOU(3);
-	
-	
+	KYUYOU(3),
+	/**
+	 * 4:共通
+	 */
+	COMMON(4);
 
 	public final int value;
 

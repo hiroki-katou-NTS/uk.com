@@ -24,8 +24,14 @@
 						<h1>Color Picker</h1>
 						<h2>Overview</h2>
 						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
-						<input data-bind="ntsTextEditor: {value: value}"/>
-						<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: enable, width: 200}"/>
+						
+						<div>
+							<h2>Value</h2>
+							<label data-bind="text: dateValue"></label>
+							<div>Start date: <label data-bind="text: dateValue().startDate"></label> <input data-bind="ntsTimeEditor: {value: startDateString}"/></div>
+							<div>End date: <label data-bind="text: dateValue().endDate"></label> <input data-bind="ntsTimeEditor: {value: endDateString}"/></div>
+						</div>
+						<div id="daterangepicker" data-bind="ntsDateRangePicker: { enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>
 						<br />					
 						<article class="cf">
 							<div class="tabs">
@@ -36,7 +42,7 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div id="colorpicker" data-bind="ntsColorPicker: {value: value, enable: enable, width: 200}"/>]]></pre>
+<pre><![CDATA[<div id="daterangepicker" data-bind="ntsDateRangePicker: { enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -52,22 +58,43 @@
 											<tr>
 												<td>value</td>
 												<td>
-													<b>Type:</b> string<br/>
-													color value (example: '#000000')
+													<b>Type:</b> object<br/>
+													object value for start date and end date. Format {startDate: string, endDate: string} (example: {startDate: '2017/02/02', endDate: '2018/02/02'})
 												</td>
 											</tr>
 											<tr>
-												<td>width<br/><i>(optional)</i></td>
+												<td>type<br/></td>
 												<td>
 													<b>Type:</b> string<br/>
-													width of color picker
+													format of date range picker. Currently, there are fullDate and yearmonth
 												</td>
 											</tr>
 											<tr>
 												<td>enable</td>
 												<td>
 													<b>Type:</b> boolean<br/>
-													enable for color picker
+													enable for date range picker
+												</td>
+											</tr>
+											<tr>
+												<td>maxRange</td>
+												<td>
+													<b>Type:</b> string<br/>
+													range validate for date range picker. Currently, therer are mode: none / oneMonth / oneYear
+												</td>
+											</tr>
+											<tr>
+												<td>name</td>
+												<td>
+													<b>Type:</b> string<br/>
+													name for date range picker
+												</td>
+											</tr>
+											<tr>
+												<td>showNextPrevious</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													show button next or previous of date range picker
 												</td>
 											</tr>
 										</tbody>
@@ -76,14 +103,28 @@
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
-        value: KnockoutObservable<string>;
         enable: KnockoutObservable<boolean>;
+        dateValue: KnockoutObservable<any>;
+        startDateString: KnockoutObservable<string>;
+        endDateString: KnockoutObservable<string>;
         
         constructor() {
             var self = this;
-            
-            self.value = ko.observable('');
             self.enable = ko.observable(true);
+            
+            self.startDateString = ko.observable("");
+            self.endDateString = ko.observable("");
+            self.dateValue = ko.observable({});
+            
+            self.startDateString.subscribe(function(value){
+                self.dateValue().startDate = value;
+                self.dateValue.valueHasMutated();        
+            });
+            
+            self.endDateString.subscribe(function(value){
+                self.dateValue().endDate = value;   
+                self.dateValue.valueHasMutated();      
+            });
         }
     }]]></pre>
 								</div>
