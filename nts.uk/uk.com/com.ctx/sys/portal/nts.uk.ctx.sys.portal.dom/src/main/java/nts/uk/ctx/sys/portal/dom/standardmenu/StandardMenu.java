@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.dom.standardmenu;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 
 /**
  * The Class StandardMenu.
@@ -32,7 +33,7 @@ public class StandardMenu extends AggregateRoot {
 	private String url;
 	
 	/** The system. */
-	private int system;
+	private System system;
 	
 	/** The classification. */
 	private int classification;
