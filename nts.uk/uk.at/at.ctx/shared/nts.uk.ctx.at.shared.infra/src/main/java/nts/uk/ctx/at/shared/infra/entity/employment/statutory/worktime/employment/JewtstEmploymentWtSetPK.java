@@ -49,6 +49,12 @@ public class JewtstEmploymentWtSetPK implements Serializable {
 	@Column(name = "TYPE")
 	private int type;
 
+	/** The empt cd. */
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "EMPTCD")
+	private String emptCd;
+
 	/**
 	 * Instantiates a new jewtst employment wt set PK.
 	 */
@@ -62,12 +68,14 @@ public class JewtstEmploymentWtSetPK implements Serializable {
 	 * @param yK the y K
 	 * @param ctg the ctg
 	 * @param type the type
+	 * @param emptCd the empt cd
 	 */
-	public JewtstEmploymentWtSetPK(String cid, int yK, int ctg, int type) {
+	public JewtstEmploymentWtSetPK(String cid, int yK, int ctg, int type, String emptCd) {
 		this.cid = cid;
 		this.yK = yK;
 		this.ctg = ctg;
 		this.type = type;
+		this.emptCd = emptCd;
 	}
 
 }

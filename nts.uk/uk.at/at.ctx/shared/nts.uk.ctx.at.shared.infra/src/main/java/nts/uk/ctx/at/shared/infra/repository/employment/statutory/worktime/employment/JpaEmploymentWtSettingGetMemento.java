@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetti
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewtstEmploymentWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewtstEmploymentWtSetPK;
 
 /**
  * The Class JpaEmploymentWtSettingGetMemento.
@@ -48,10 +49,10 @@ public class JpaEmploymentWtSettingGetMemento implements EmploymentWtSettingGetM
 	 * @param typeValue the type value
 	 */
 	public JpaEmploymentWtSettingGetMemento(List<JewtstEmploymentWtSet> typeValue) {
-		JewtstEmploymentWtSet commonValue = typeValue.get(0);
-		this.companyId = new CompanyId(commonValue.getJewtstEmploymentWtSetPK().getCid());
-		this.year = new Year(commonValue.getJewtstEmploymentWtSetPK().getYK());
-		this.employmentCode = commonValue.getEmptCd();
+		JewtstEmploymentWtSetPK pk = typeValue.get(0).getJewtstEmploymentWtSetPK();
+		this.companyId = new CompanyId(pk.getCid());
+		this.year = new Year(pk.getYK());
+		this.employmentCode = pk.getEmptCd();
 		this.flexSetting = new FlexSetting();
 
 		typeValue.forEach(item -> {
