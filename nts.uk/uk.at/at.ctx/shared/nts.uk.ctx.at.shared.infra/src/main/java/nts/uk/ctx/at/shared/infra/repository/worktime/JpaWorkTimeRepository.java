@@ -1,17 +1,17 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeAbName;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDisplayName;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
@@ -43,9 +43,20 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 
 	@Override
 	public List<WorkTime> findByCodeList(String companyID, List<String> siftCDs) {
-		List<KwtmtWorkTime> result = this.queryProxy().query(findWorkTimeByList, KwtmtWorkTime.class)
-			.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs).getList();
-		return 	result.stream().map(x -> convertToDomainWorkTime(x)).collect(Collectors.toList());
+		List<WorkTime> result = new ArrayList<WorkTime>();
+		while(siftCDs.size()-500>0) {
+			List<String> subCodelist = siftCDs.subList(0, 500);
+			List<WorkTime> subResult = this.queryProxy().query(findWorkTimeByList, KwtmtWorkTime.class)
+					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
+					.getList(x -> convertToDomainWorkTime(x));
+			result.addAll(subResult);
+			siftCDs.removeAll(subCodelist);
+		}
+		List<WorkTime> lastResult = this.queryProxy().query(findWorkTimeByList, KwtmtWorkTime.class)
+				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs)
+				.getList(x -> convertToDomainWorkTime(x));
+		result.addAll(lastResult);
+		return 	result;
 	}
 	
 	/**
