@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
-import nts.uk.ctx.at.record.dom.standardtime.enums.NumberOfTimeOverLimitAtr;
-import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthAtr;
-import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingType;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
+import nts.uk.ctx.at.record.dom.standardtime.enums.NumberOfTimeOverLimitType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 
 /**
  * 
@@ -13,17 +14,19 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingType;
  *
  */
 @Getter
-public class AgreementOperationSetting {
+public class AgreementOperationSetting extends AggregateRoot{
 	
 	private String companyId;
 	
-	private StartingMonthAtr startingMonth;
+	private StartingMonthType startingMonth;
 	
-	private NumberOfTimeOverLimitAtr numberOfTimesOverLimitAtr;
-	
-	private ClosingDateAtr closingDateAtr;
+	private NumberOfTimeOverLimitType numberTimesOverLimitType;
 	
 	private ClosingDateType closingDateType;
 	
-	private TargetSettingType targetSettingType;
+	private ClosingDateAtr closingDateAtr;
+	
+	private TargetSettingAtr yearlyWorkTableAtr;
+	
+	private TargetSettingAtr alarmListAtr;
 }

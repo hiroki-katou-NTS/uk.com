@@ -12,6 +12,8 @@ module nts.uk.at.view.kmk004.a {
 
             companyWTSetting: KnockoutObservable<CompanyWTSetting>;
             employmentWTSetting: KnockoutObservable<EmploymentWTSetting>;
+            workplaceWTSetting: KnockoutObservable<WorkPlaceWTSetting>;
+
             usageUnitSetting: UsageUnitSetting;
             listEmploymentOption: any;
             selectedEmploymentCode: KnockoutObservable<string>;
@@ -36,6 +38,7 @@ module nts.uk.at.view.kmk004.a {
                 ]);
                 self.companyWTSetting = ko.observable(new CompanyWTSetting());
                 self.employmentWTSetting = ko.observable(new EmploymentWTSetting());
+                self.workplaceWTSetting = ko.observable(new WorkPlaceWTSetting());
                 self.selectedTab = ko.observable('tab-1');
 
                 self.selectedEmploymentCode = ko.observable('');
@@ -47,7 +50,7 @@ module nts.uk.at.view.kmk004.a {
                     self.loadEmploymentSetting(code);
                 });
             }
-            
+
             private setListComponentOption(): void {
                 let self = this;
                 self.listEmploymentOption = {
@@ -62,7 +65,18 @@ module nts.uk.at.view.kmk004.a {
 
             public onSelectEmployment(): void {
                 let self = this;
-                self.setAlreadySettingList();
+                service.findAllEmploymentSetting(self.companyWTSetting().year()).done(res => {
+                    self.setAlreadySettingEmploymentList(res);
+                    // Select first employment.
+                    let list = $('#list-employment').getDataList();
+                    self.selectedEmploymentCode(list[0].code);
+                });
+            }
+
+            public onSelectWorkplace(): void {
+                let self = this;
+                self.setAlreadySettingWorkplaceList();
+                self.loadWorkplaceSetting('1');
             }
 
             public gotoE(): void {
@@ -73,9 +87,7 @@ module nts.uk.at.view.kmk004.a {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                self.loadUsageUnitSetting();
-                self.loadCompanySetting();
-                dfd.resolve();
+                $.when(self.loadUsageUnitSetting(), self.loadCompanySetting()).done(() => dfd.resolve());
                 return dfd.promise();
             }
 
@@ -86,7 +98,7 @@ module nts.uk.at.view.kmk004.a {
 
             public saveEmployment(): void {
                 let self = this;
-                service.saveEmploymentSetting(ko.toJS(self.employmentWTSetting)).done(() => self.setAlreadySettingList());
+                service.saveEmploymentSetting(ko.toJS(self.employmentWTSetting)).done(() => self.setAlreadySettingEmploymentList());
             }
 
             public removeEmployment(): void {
@@ -94,7 +106,26 @@ module nts.uk.at.view.kmk004.a {
                 let empt = self.employmentWTSetting();
                 let command = { year: empt.year(), employmentCode: empt.employmentCode() }
                 service.removeEmploymentSetting(command).done(() => {
-                    self.setAlreadySettingList();
+                    self.setAlreadySettingEmploymentList();
+                    let code = self.employmentWTSetting().employmentCode();
+                    let name = self.employmentWTSetting().employmentName();
+                    let empt = new EmploymentWTSetting();
+                    empt.employmentCode(code);
+                    empt.employmentName(name);
+                    self.employmentWTSetting(empt);
+                });
+            }
+            public saveWorkplace(): void {
+                let self = this;
+                service.saveWorkplaceSetting(ko.toJS(self.workplaceWTSetting)).done(() => self.setAlreadySettingWorkplaceList());
+            }
+
+            public removeWorkplace(): void {
+                let self = this;
+                let workplace = self.workplaceWTSetting();
+                let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
+                service.removeEmploymentSetting(command).done(() => {
+                    self.setAlreadySettingEmploymentList();
                     let code = self.employmentWTSetting().employmentCode();
                     let name = self.employmentWTSetting().employmentName();
                     let empt = new EmploymentWTSetting();
@@ -105,7 +136,7 @@ module nts.uk.at.view.kmk004.a {
             }
             public remove(): void {
                 let self = this;
-                let command = {year: self.companyWTSetting().year()}
+                let command = { year: self.companyWTSetting().year() }
                 service.removeCompanySetting(command);
             }
 
@@ -114,8 +145,7 @@ module nts.uk.at.view.kmk004.a {
                 service.findCompanySetting(self.companyWTSetting().year()).done(res => {
                     // update mode.
                     if (res) {
-                        let abc = ko.mapping.fromJS(res);
-                        self.companyWTSetting(abc);
+                        self.companyWTSetting(ko.mapping.fromJS(res));
                     }
                     else {
                         // new mode.
@@ -126,18 +156,37 @@ module nts.uk.at.view.kmk004.a {
 
             public loadEmploymentSetting(code: string): void {
                 let self = this;
-                let request = { year: self.employmentWTSetting().year(), employmentCode: code };
-                service.findEmploymentSetting(request).done(res => {
+                if (code) {
+                    let request = { year: self.employmentWTSetting().year(), employmentCode: code };
+                    service.findEmploymentSetting(request).done(res => {
+                        // update mode.
+                        if (res) {
+                            self.employmentWTSetting(ko.mapping.fromJS(res));
+                        } else {
+                            // new mode.
+                            let list = $('#list-employment').getDataList();
+                            let employment = list.filter(item => item.code == code)[0];
+                            let empt = new EmploymentWTSetting();
+                            empt.employmentCode(code);
+                            empt.employmentName(employment.name);
+                            self.employmentWTSetting(empt);
+                        }
+                    });
+                }
+            }
+
+            public loadWorkplaceSetting(id: string): void {
+                let self = this;
+                let request = { year: self.employmentWTSetting().year(), workplaceId: id };
+                service.findWorkplaceSetting(request).done(res => {
                     // update mode.
                     if (res) {
-                        let abc = ko.mapping.fromJS(res);
-                        self.employmentWTSetting(abc);
+                        self.workplaceWTSetting(ko.mapping.fromJS(res));
                     } else {
                         // new mode.
-                        let empt = new EmploymentWTSetting();
-                        empt.employmentCode(code);
-                        empt.employmentName('fake name');
-                        self.employmentWTSetting(empt);
+                        let workplace = new WorkPlaceWTSetting();
+                        workplace.workPlaceId(id);
+                        self.workplaceWTSetting(workplace);
                     }
                 });
             }
@@ -153,12 +202,17 @@ module nts.uk.at.view.kmk004.a {
                 });
                 return dfd.promise();
             }
-            
-            private setAlreadySettingList(): void {
+
+            private setAlreadySettingEmploymentList(listCode: Array<String>): void {
                 let self = this;
-                service.findAllEmploymentSetting(self.companyWTSetting().year()).done(res => {
-                    self.employmentCodes.removeAll();
-                    res.forEach(item => self.employmentCodes.push({ code: item, isAlreadySetting: true }));
+                self.employmentCodes.removeAll();
+                listCode.forEach(item => self.employmentCodes.push({ code: item, isAlreadySetting: true }));
+            }
+
+            private setAlreadySettingWorkplaceList(): void {
+                let self = this;
+                service.findAllWorkplaceSetting(self.companyWTSetting().year()).done(res => {
+                    //TODO...
                 });
             }
 
@@ -201,11 +255,15 @@ module nts.uk.at.view.kmk004.a {
             flexSetting: FlexSetting;
             normalSetting: NormalSetting;
             year: KnockoutObservable<number>;
-            workPlaceId: string;
+            workPlaceId: KnockoutObservable<string>;
+            workplaceCode: KnockoutObservable<string>;
+            workplaceName: KnockoutObservable<string>;
 
             constructor() {
                 let self = this;
-                self.workPlaceId = '';
+                self.workPlaceId = ko.observable('1');
+                self.workplaceCode = ko.observable('1');
+                self.workplaceName = ko.observable('test');
                 self.year = ko.observable(new Date().getFullYear());
                 self.deformationLaborSetting = new DeformationLaborSetting();
                 self.flexSetting = new FlexSetting();

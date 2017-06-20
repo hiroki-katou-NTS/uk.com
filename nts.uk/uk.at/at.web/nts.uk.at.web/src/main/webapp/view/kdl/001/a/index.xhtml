@@ -71,14 +71,7 @@
 									height: 355,
 									options: selectAbleItemList,
 									optionsValue: 'code',
-									columns: ko.observableArray([
-						                { headerText: '#{i18n.getText('KDL001_12')}', prop: 'code', width: 70 },
-						                { headerText: '#{i18n.getText('KDL001_13')}', prop: 'name', width: 150 },
-						                { headerText: '#{i18n.getText('KDL001_14')}', prop: 'workTime1', width: 230 },
-						                { headerText: '#{i18n.getText('KDL001_15')}', prop: 'workTime2', width: 230 },
-						                { headerText: '#{i18n.getText('KDL001_16')}', prop: 'workAtr', width: 120 },
-						                { headerText: '#{i18n.getText('KDL001_17')}', prop: 'remark'}
-						            ]),
+									columns: columns,
 									multiple: multiSelectMode,
 									value: multiSelectMode?selectedCodeList:selectedCode
 								}"></table>

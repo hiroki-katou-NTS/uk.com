@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.standardtime;
 import java.time.YearMonth;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
 
@@ -12,9 +13,9 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
  *
  */
 @Getter
-public class AgreementMonthSetting {
+public class AgreementMonthSetting extends AggregateRoot{
 
-	private String companyId;
+	private String employeeId;
 
 	private YearMonth yearMonthValue;
 	

@@ -9,10 +9,11 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum ClassificationUseAtr {
-	// 0: 使用する
-	USE(0),
-	// 1: 使用しない
-	NOT_USE(1);
+	
+	// 0: 使用しない
+	NOT_USE(0),
+	// 1: 使用する
+	USE(1);
 
 	public final int value;
 
@@ -20,10 +21,10 @@ public enum ClassificationUseAtr {
 		String name;
 		switch (value) {
 		case 0:
-			name = "使用する";
+			name = "使用しない";
 			break;
 		case 1:
-			name = "使用しない";
+			name = "使用する";
 			break;
 		default:
 			name = "使用する";

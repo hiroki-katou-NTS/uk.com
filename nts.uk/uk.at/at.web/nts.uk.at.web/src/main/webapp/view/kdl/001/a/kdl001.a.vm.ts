@@ -1,6 +1,7 @@
 module nts.uk.at.view.kdl001.a {
     export module viewmodel {
         export class ScreenModel {
+            columns: KnockoutObservableArray<NtsGridListColumn>;
             multiSelectMode: KnockoutObservable<boolean>; 
             rootList: Array<WorkTimeSet>;
             selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
@@ -14,6 +15,14 @@ module nts.uk.at.view.kdl001.a {
             endTime: KnockoutObservable<number>;
             constructor() {
                 var self = this;
+                self.columns = ko.observableArray([
+                    { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 70 },
+                    { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 150 },
+                    { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 230 },
+                    { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 230 },
+                    { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 120 },
+                    { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>'}
+                ]);
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
                 self.selectAbleCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectAbleCodeList'));
                 self.selectedCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectedCodeList'));

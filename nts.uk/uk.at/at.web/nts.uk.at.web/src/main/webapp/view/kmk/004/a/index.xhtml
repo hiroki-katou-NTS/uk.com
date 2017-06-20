@@ -29,9 +29,9 @@
 		<ui:define name="sidebar">
 			<ul class="navigator" data-bind="with: usageUnitSetting">
 				<li><a href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="visible: workPlace"><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
-				<li data-bind="click: $parent.onSelectEmployment(), visible: employment"><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
-				<li data-bind="visible: employee"><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
+				<li data-bind="click: $parent.onSelectWorkplace(), visible: true"><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li data-bind="click: $parent.onSelectEmployment(), visible: true"><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
+				<li data-bind="visible: false"><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">

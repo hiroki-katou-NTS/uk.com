@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -36,7 +37,7 @@ public class KwtstWorkTimeSet extends UkJpaEntity{
 	@Column(name="NIGHT_SHIFT_ATR")
 	public int nightShiftAtr;
 	
-	@OneToMany(targetEntity=KwtdtWorkTimeDay.class)
+	@OneToMany(targetEntity=KwtdtWorkTimeDay.class, fetch=FetchType.LAZY)
 	@JoinTable(name="KWTDT_WORK_TIME_DAY")
 	public List<KwtdtWorkTimeDay> kwtdtWorkTimeDay;
 	
