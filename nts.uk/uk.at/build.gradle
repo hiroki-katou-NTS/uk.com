@@ -249,6 +249,7 @@ project (':at.web:nts.uk.at.web') {
 	
 	dependencies {
 		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.3'
+		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		
@@ -274,6 +275,7 @@ project (':at.web:nts.uk.at.web') {
 		runtime project (':at.ctx:record:nts.uk.ctx.at.record.ws')
 
 		// implement eraAdapter
+		compile group: 'com', name: 'nts.uk.ctx.basic.app', version: '0.1'
 		compile group: 'com', name: 'nts.uk.ctx.basic.infra', version: '0.1'
 		compile group: 'com', name: 'nts.uk.ctx.basic.dom', version: '0.1'
 	}
