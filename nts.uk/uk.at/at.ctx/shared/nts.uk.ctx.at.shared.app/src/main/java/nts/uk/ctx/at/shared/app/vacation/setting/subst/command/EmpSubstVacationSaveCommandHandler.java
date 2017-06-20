@@ -69,9 +69,6 @@ public class EmpSubstVacationSaveCommandHandler
 			// Insert into db
 			this.repository.insert(empSubstVacation);
 		}
-
-		// Update into db
-		this.repository.update(empSubstVacation);
 	}
 
 }
