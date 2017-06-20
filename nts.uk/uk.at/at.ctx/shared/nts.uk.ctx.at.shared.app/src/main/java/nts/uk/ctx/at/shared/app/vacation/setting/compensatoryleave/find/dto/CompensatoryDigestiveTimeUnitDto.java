@@ -10,12 +10,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryD
 
 public class CompensatoryDigestiveTimeUnitDto implements CompensatoryDigestiveTimeUnitSetMemento {
 
-	/** The expiration time. */
-	public Integer expirationTime;
-
-	/** The preemption permit. */
-	public Integer preemptionPermit;
-
 	/** The is manage by time. */
 	public Integer isManageByTime;
 

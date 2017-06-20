@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetti
 /**
  * 職場労働時間設定.
  */
+@Getter
 public class WorkPlaceWtSetting extends AggregateRoot {
 
 	/** フレックス勤務労働時間設定. */

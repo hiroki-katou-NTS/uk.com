@@ -40,7 +40,14 @@ public class JpaRetentionYearlySettingRepo extends JpaRepository implements Rete
 	 */
 	@Override
 	public void update(RetentionYearlySetting setting) {
-		KmfmtRetentionYearly entity = new KmfmtRetentionYearly();
+		Optional<KmfmtRetentionYearly> optional = this.queryProxy().find(setting.getCompanyId(), KmfmtRetentionYearly.class);
+		KmfmtRetentionYearly entity = null;
+		if(optional.isPresent()) {
+			entity = optional.get();
+		}
+		else{
+			entity = new KmfmtRetentionYearly();
+		}
 		setting.saveToMemento(new JpaRetentionYearlySetMemento(entity));
 		this.commandProxy().update(entity);
 	}

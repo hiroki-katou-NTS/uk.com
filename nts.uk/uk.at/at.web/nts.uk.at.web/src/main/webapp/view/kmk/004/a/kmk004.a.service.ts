@@ -11,7 +11,16 @@ module nts.uk.at.view.kmk004.a {
             findAllEmploymentSetting: 'ctx/at/shared/employment/statutory/worktime/employment/findall',
             saveEmploymentSetting: 'ctx/at/shared/employment/statutory/worktime/employment/save',
             removeEmploymentSetting: 'ctx/at/shared/employment/statutory/worktime/employment/remove',
+            findWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/find',
+            findAllWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/findall',
+            saveWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/save',
+            removeWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/remove',
+            getCompany: 'basic/company/getcompany'
         };
+
+        export function getCompany(): JQueryPromise<any> {
+            return nts.uk.request.ajax('com', servicePath.getCompany);
+        }
 
         export function saveCompanySetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveCompanySetting, command);
@@ -39,6 +48,22 @@ module nts.uk.at.view.kmk004.a {
 
         export function removeEmploymentSetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.removeEmploymentSetting, command);
+        }
+
+        export function saveWorkplaceSetting(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveWorkplaceSetting, command);
+        }
+
+        export function findWorkplaceSetting(request: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findWorkplaceSetting, request);
+        }
+
+        export function findAllWorkplaceSetting(year: number): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findAllWorkplaceSetting + '/' + year);
+        }
+
+        export function removeWorkplaceSetting(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.removeWorkplaceSetting, command);
         }
 
     }

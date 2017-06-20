@@ -54,7 +54,16 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 */
 	@Override
 	public void update(EmploymentSetting employmentSetting) {
-		KmfmtRetentionEmpCtr entity = new KmfmtRetentionEmpCtr();
+		Optional<KmfmtRetentionEmpCtr> optional = this.queryProxy()
+				.find(new KmfmtRetentionEmpCtrPK(employmentSetting.getCompanyId(),
+						employmentSetting.getEmploymentCode()), KmfmtRetentionEmpCtr.class);
+		KmfmtRetentionEmpCtr entity = null;
+		if(optional.isPresent()) {
+			entity = optional.get();
+		}
+		else {
+			entity = new KmfmtRetentionEmpCtr();
+		}
 		employmentSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
 		this.commandProxy().update(entity);
 	}

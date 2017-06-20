@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.Employm
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class CompanySettingFinder.
+ * The Class EmploymentWtSettingFinder.
  */
 @Stateless
 public class EmploymentWtSettingFinder {
@@ -30,15 +30,17 @@ public class EmploymentWtSettingFinder {
 	/**
 	 * Find.
 	 *
-	 * @return the company setting dto
+	 * @param request the request
+	 * @return the employment wt setting dto
 	 */
 	public EmploymentWtSettingDto find(EmploymentWtSettingRequest request) {
 		Optional<EmploymentWtSetting> optEmploymentSetting = this.repository.find(companyId, request.getYear(),
 				request.getEmploymentCode());
+		// Update mode.
 		if (optEmploymentSetting.isPresent()) {
 			return EmploymentWtSettingDto.fromDomain(optEmploymentSetting.get());
 		}
-		// TODO ko co du lieu thi vao new mode.
+		// New mode.
 		return null;
 	}
 

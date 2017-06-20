@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -69,20 +70,19 @@ public class SaveCompensatoryLeaveCommand {
 
 		@Override
 		public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.command.compensatoryAcquisitionUse.toDomain();
 		}
 
 		@Override
 		public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.command.compensatoryDigestiveTimeUnit.toDomain();
 		}
 
 		@Override
 		public List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.command.compensatoryOccurrenceSetting.stream().map(item -> {
+				return item.toDomain();
+			}).collect(Collectors.toList());
 		}
 	}
 }

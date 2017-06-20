@@ -64,6 +64,4 @@ public class JwpwtstWorkplaceWtSet_ {
 	/** The dec time. */
 	public static volatile SingularAttribute<JwpwtstWorkplaceWtSet, Integer> decTime;
 
-	/** The wkp id. */
-	public static volatile SingularAttribute<JwpwtstWorkplaceWtSet, String> wkpId;
 }

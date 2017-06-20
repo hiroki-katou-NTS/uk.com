@@ -7,27 +7,26 @@
 <body>
 	<ui:composition>
 		<div class="sidebar-content-header">
-			<span class="title">#{i18n.getText('Com_Person')}</span>
-			<button id="save" data-bind="click: saveEmployment" class="proceed">#{i18n.getText('KMK004_27')}</button>
-			<button class="danger" data-bind="click: removeEmployment">#{i18n.getText('KMK004_29')}</button>
+			<span class="title">#{i18n.getText('Com_Employment')}</span>
+			<button tabindex="1" id="save" data-bind="click: saveEmployment" class="proceed">#{i18n.getText('KMK004_27')}</button>
+			<button tabindex="3" class="danger" data-bind="click: removeEmployment, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
 		</div>
 		<div class="contents-area">
 			<div id="list-employment" class="pull-left"></div>
 			<div id="right-content" class="pull-left">
 				<com:ko tag="with" bind="employmentWTSetting">
 				<div class="control-group">
-					<input id="yearPicker" data-name="abc"
+					<input id="yearPicker" data-name="#KMK004_31" tabindex="1"
 						data-bind="ntsNumberEditor: {
 													value: year,
 													constraint: 'Year',
-													required: true}"
-						tabindex="4" />
+													required: true}"/>
 				</div>
 				<div id="lblEmployment" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Employment')}</div>
 				<span id="lblEmploymentCode" data-bind="text: employmentCode"></span>
 				<span id="lblEmploymentName" data-bind="text: employmentName"></span>
 				<div id="tab-panel"
-					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">
+					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.employmentSelectedTab}">
 					<!-- NORMAL WORK TIME SETTING START -->
 					<div class="tab-content-1">
 						<com:ko tag="with" bind="normalSetting">

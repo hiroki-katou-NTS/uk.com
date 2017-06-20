@@ -76,9 +76,9 @@ public class JpaCompensDigestiveTimeUnitSetMemento implements CompensatoryDigest
     @Override
     public void setDigestiveUnit(TimeVacationDigestiveUnit digestiveUnit) {
         if (this.entityCom != null) {
-            this.entityCom.setManageAtr(digestiveUnit.value);
+            this.entityCom.setDigestiveUnit(digestiveUnit.value);
         } else {
-            this.entityEmp.setManageAtr(digestiveUnit.value);
+            this.entityEmp.setDigestiveUnit(digestiveUnit.value);
         }
     }
 

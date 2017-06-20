@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -35,5 +38,16 @@ public class CompensatoryLeaveEmploymentFinder {
 		CompensatoryLeaveEmSettingDto compensatoryLeaveEmSettingDto = new CompensatoryLeaveEmSettingDto();
 		findItem.saveToMemento(compensatoryLeaveEmSettingDto);
 		return compensatoryLeaveEmSettingDto;
+	}
+	
+	/**
+	 * Find all employment.
+	 *
+	 * @return the list
+	 */
+	public List<String> findAllEmployment() {
+		String companyId = AppContexts.user().companyId();
+		return compensLeaveEmSetRepository.findAll(companyId).stream().map(item -> item.getEmploymentCode().v())
+				.collect(Collectors.toList());
 	}
 }
