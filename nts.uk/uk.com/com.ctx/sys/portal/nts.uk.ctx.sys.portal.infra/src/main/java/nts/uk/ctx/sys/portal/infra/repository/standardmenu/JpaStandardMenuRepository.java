@@ -57,7 +57,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	 */
 	private StandardMenu toDomain(CcgstStandardMenu s) {
 		return StandardMenu.createFromJavaType(s.ccgmtStandardMenuPK.companyId, s.ccgmtStandardMenuPK.code, s.targetItems,
-				s.displayName, s.displayOrder, s.menuAtr, s.url, s.system, s.classification, s.webMenuSetting, 
+				s.displayName, s.displayOrder, s.menuAtr, s.url, s.ccgmtStandardMenuPK.system, s.ccgmtStandardMenuPK.classification, s.webMenuSetting, 
 				s.afterLoginDisplay, s.logSettingDisplay);
 	}
 
@@ -68,9 +68,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	 * @return the ccgmt standard menu
 	 */
 	public CcgstStandardMenu toEntity(StandardMenu domain) {
-		CcgstStandardMenuPK key = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v());
+		CcgstStandardMenuPK key = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification());
 		return new CcgstStandardMenu(key, domain.getTargetItems(), domain.getDisplayName().v(), domain.getDisplayOrder(),
-				domain.getMenuAtr(), domain.getUrl(), domain.getSystem().value, domain.getClassification(), domain.getWebMenuSetting(),
+				domain.getMenuAtr(), domain.getUrl(), domain.getWebMenuSetting(),
 				domain.getAfterLoginDisplay(), domain.getLogSettingDisplay());
 	}
 }
