@@ -2,12 +2,12 @@ package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.portal.app.find.layout.LayoutDto;
+import nts.uk.ctx.sys.portal.app.find.flowmenu.FlowMenuDto;
+import nts.uk.ctx.sys.portal.app.find.flowmenu.FlowMenuFinder;
 import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingDto;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementDto;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementPartDto;
@@ -27,14 +27,26 @@ public class DefaultTopPageSetFactory implements TopPageSetFactory {
 
 	@Inject
 	TopPagePartService topPagePartService;
+	@Inject
+	FlowMenuFinder flowmenu;
 
 	@Override
-	public LayoutDto buildLayoutDto(Layout layout, List<Placement> placements, MyPageSettingDto myPage) {
+	public LayoutForMyPageDto buildLayoutDto(Layout layout, List<Placement> placements, MyPageSettingDto myPage) {
 		if (myPage.getUseMyPage().intValue() == 0) {
 			return null;
 		} else {
 			List<PlacementDto> placementDtos = buildPlacementDto(layout, placements, myPage);
-			return new LayoutDto(layout.getCompanyID(), layout.getLayoutID(), layout.getPgType().value, placementDtos);
+			List<FlowMenuDto> flowmenuNew = new ArrayList<FlowMenuDto>();
+			List<PlacementDto> placementNew = new ArrayList<PlacementDto>();
+			for (PlacementDto placementDto : placementDtos) {
+				if(placementDto.getPlacementPartDto().getType().intValue()==2){
+					FlowMenuDto flowMenu = flowmenu.getFlowMenu(placementDto.getPlacementPartDto().getTopPagePartID());
+					if(flowMenu != null) flowmenuNew.add(flowMenu);
+				}else{
+					placementNew.add(placementDto);
+				}
+			}
+			return new LayoutForMyPageDto(layout.getCompanyID(), layout.getLayoutID(), layout.getPgType().value, flowmenuNew,placementNew);
 		}
 	}
 

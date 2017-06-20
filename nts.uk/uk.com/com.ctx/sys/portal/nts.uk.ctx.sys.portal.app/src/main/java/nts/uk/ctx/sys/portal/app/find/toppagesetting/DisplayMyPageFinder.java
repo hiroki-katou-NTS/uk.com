@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.portal.app.find.layout.LayoutDto;
 import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingDto;
 import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingFinder;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
@@ -37,13 +36,13 @@ public class DisplayMyPageFinder {
 	 * @param layoutID
 	 * @return Optional Layout
 	 */
-	public LayoutDto findLayout(String layoutID) {
+	public LayoutForMyPageDto findLayout(String layoutID) {
 		String companyId = AppContexts.user().companyId();
 		Optional<Layout> layout = toppageRepository.find(layoutID,2);
 		if (layout.isPresent()) {
 			List<Placement> placements = placementRepository.findByLayout(layoutID);
 			MyPageSettingDto myPageSetting = myPageSetFinder.findByCompanyId(companyId);
-			LayoutDto layoutNew = topPageSet.buildLayoutDto(layout.get(), placements,myPageSetting);
+			LayoutForMyPageDto layoutNew = topPageSet.buildLayoutDto(layout.get(), placements,myPageSetting);
 			return layoutNew;
 		}
 		return null;
