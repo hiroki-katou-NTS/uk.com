@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,6 +20,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp_;
 
@@ -121,7 +123,14 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
      * @return the kclmt compens leave emp
      */
     private KclmtCompensLeaveEmp toEntity(CompensatoryLeaveEmSetting setting) {
-        KclmtCompensLeaveEmp entity = new KclmtCompensLeaveEmp();
+        Optional<KclmtCompensLeaveEmp> optinal = this.queryProxy().find(new KclmtCompensLeaveEmpPK(
+                setting.getCompanyId(), setting.getEmploymentCode().v()), KclmtCompensLeaveEmp.class);
+        KclmtCompensLeaveEmp entity = null;
+        if (optinal.isPresent()) {
+            entity = optinal.get();
+        } else {
+            entity = new KclmtCompensLeaveEmp();
+        }
         JpaCompensLeaveEmSettingSetMemento memento = new JpaCompensLeaveEmSettingSetMemento(entity);
         setting.saveToMemento(memento);
         return entity;

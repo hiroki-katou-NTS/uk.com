@@ -13,6 +13,13 @@ import java.util.Optional;
 public interface EmpSubstVacationRepository {
 
 	/**
+	 * Insert.
+	 *
+	 * @param setting the setting
+	 */
+	void insert(EmpSubstVacation setting);
+
+	/**
 	 * Update.
 	 *
 	 * @param setting the setting

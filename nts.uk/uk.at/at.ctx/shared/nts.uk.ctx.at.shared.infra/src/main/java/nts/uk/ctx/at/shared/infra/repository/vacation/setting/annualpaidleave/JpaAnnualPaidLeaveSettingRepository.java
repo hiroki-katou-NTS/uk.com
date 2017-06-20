@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -90,7 +91,14 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
      * @return the kalmt annual paid leave
      */
     private KalmtAnnualPaidLeave toEntity(AnnualPaidLeaveSetting setting) {
-        KalmtAnnualPaidLeave entity = new KalmtAnnualPaidLeave();
+        Optional<KalmtAnnualPaidLeave> optinal = this.queryProxy().find(setting.getCompanyId(),
+                KalmtAnnualPaidLeave.class);
+        KalmtAnnualPaidLeave entity = null;
+        if (optinal.isPresent()) {
+            entity = optinal.get();
+        } else {
+            entity = new KalmtAnnualPaidLeave();
+        }
         setting.saveToMemento(new JpaAnnualPaidLeaveSettingSetMemento(entity));
         return entity;
     }

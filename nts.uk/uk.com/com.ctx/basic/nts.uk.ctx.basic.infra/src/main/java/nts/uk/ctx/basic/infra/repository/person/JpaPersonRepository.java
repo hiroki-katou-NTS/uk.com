@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -24,6 +25,7 @@ import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson_;
 /**
  * The Class JpaPersonRepository.
  */
+@Stateless
 public class JpaPersonRepository extends JpaRepository implements PersonRepository {
 
 	/*

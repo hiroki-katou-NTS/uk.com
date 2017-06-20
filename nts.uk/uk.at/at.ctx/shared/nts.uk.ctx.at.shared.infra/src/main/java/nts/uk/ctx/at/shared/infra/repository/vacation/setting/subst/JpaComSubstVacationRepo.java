@@ -32,12 +32,35 @@ public class JpaComSubstVacationRepo extends JpaRepository implements ComSubstVa
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
+	 * ComSubstVacationRepository#insert(nts.uk.ctx.at.shared.dom.vacation.
+	 * setting.subst.ComSubstVacation)
+	 */
+	@Override
+	public void insert(ComSubstVacation setting) {
+		KsvstComSubstVacation entity = new KsvstComSubstVacation();
+
+		setting.saveToMemento(new JpaComSubstVacationSetMemento(entity));
+
+		this.commandProxy().insert(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
 	 * ComSubstVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.
 	 * setting.subst.ComSubstVacation)
 	 */
 	@Override
 	public void update(ComSubstVacation setting) {
-		this.commandProxy().update(this.toEntity(setting));
+		Optional<KsvstComSubstVacation> optEntity = this.queryProxy().find(setting.getCompanyId(),
+				KsvstComSubstVacation.class);
+
+		KsvstComSubstVacation entity = optEntity.get();
+
+		setting.saveToMemento(new JpaComSubstVacationSetMemento(entity));
+
+		this.commandProxy().update(entity);
 	}
 
 	/*
@@ -67,19 +90,6 @@ public class JpaComSubstVacationRepo extends JpaRepository implements ComSubstVa
 		}
 
 		return Optional.of(new ComSubstVacation(new JpaComSubstVacationGetMemento(results.get(0))));
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param setting
-	 *            the setting
-	 * @return the ksvst com subst vacation
-	 */
-	private KsvstComSubstVacation toEntity(ComSubstVacation setting) {
-		KsvstComSubstVacation entity = new KsvstComSubstVacation();
-		setting.saveToMemento(new JpaComSubstVacationSetMemento(entity));
-		return entity;
 	}
 
 }

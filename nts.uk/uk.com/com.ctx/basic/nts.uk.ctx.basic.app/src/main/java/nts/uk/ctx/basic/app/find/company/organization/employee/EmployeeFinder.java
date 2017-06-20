@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.basic.app.find.company.organization.employee;
 
 import java.util.List;
@@ -28,5 +32,15 @@ public class EmployeeFinder {
 				.stream()
 				.map(item -> EmployeeDto.fromDomain(item))
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * Gets the all employee.
+	 *
+	 * @return the all employee
+	 */
+	public List<EmployeeDto> getAllEmployee() {
+		return this.EmpRepo.getAllEmployee(companyId).stream()
+				.map(item -> EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}
 }

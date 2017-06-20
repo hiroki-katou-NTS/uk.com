@@ -217,7 +217,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.manageDistinctEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -229,7 +229,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.applyPermissionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -241,7 +241,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.expirationTimeEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -253,7 +253,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.timeVacationDigestiveUnitEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -265,7 +265,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.compensatoryOccurrenceDivisionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -280,7 +280,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.transferSettingDivisionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -297,7 +297,7 @@ module nts.uk.pr.view.kmf001.f {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -314,7 +314,7 @@ module nts.uk.pr.view.kmf001.f {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
