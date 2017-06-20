@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employmen
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
- * The Class JpaCompanySettingRepository.
+ * The Class JpaEmploymentWtSettingRepository.
  */
 @Stateless
 public class JpaEmploymentWtSettingRepository extends JpaRepository implements EmploymentWtSettingRepository {
@@ -75,6 +75,9 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 				new JewtstEmploymentWtSetPK(companyId, year, WtSettingConstant.DEFORMED, WtSettingConstant.STATUTORY, employmentCode));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentWtSettingRepository#find(java.lang.String, int, java.lang.String)
+	 */
 	@Override
 	public Optional<EmploymentWtSetting> find(String companyId, int year, String employmentCode) {
 		// Get entity manager
@@ -98,6 +101,9 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentWtSettingRepository#findAll(java.lang.String, int)
+	 */
 	@Override
 	public List<String> findAll(String companyId, int year) {
 		// Get entity manager
@@ -124,12 +130,11 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	/**
 	 * To entity.
 	 *
-	 * @param domain
-	 *            the domain
+	 * @param domain the domain
 	 * @return the list
 	 */
 	private List<JewtstEmploymentWtSet> toEntity(EmploymentWtSetting domain) {
-		List<JewtstEmploymentWtSet> entities = new ArrayList<>();
+		List<JewtstEmploymentWtSet> entities = new ArrayList<JewtstEmploymentWtSet>();
 		JpaEmploymentWtSettingSetMemento memento = new JpaEmploymentWtSettingSetMemento();
 		domain.saveToMemento(memento);
 		entities.add(memento.getDeformed());
@@ -142,8 +147,7 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	/**
 	 * To domain.
 	 *
-	 * @param entities
-	 *            the entities
+	 * @param entities the entities
 	 * @return the employment wt setting
 	 */
 	private EmploymentWtSetting toDomain(List<JewtstEmploymentWtSet> entities) {
