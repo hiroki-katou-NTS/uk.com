@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.infra.repository.standardtime;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlace
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeWorkPlace;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeWorkPlacePK;
 
+@Stateless
 public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository implements AgreementTimeOfWorkPlaceRepository {
 
 	private static final String DELETE_BY_ONE_KEY;

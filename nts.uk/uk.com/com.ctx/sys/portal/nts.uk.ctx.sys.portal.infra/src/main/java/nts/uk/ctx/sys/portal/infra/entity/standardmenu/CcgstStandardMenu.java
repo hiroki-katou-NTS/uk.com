@@ -44,14 +44,6 @@ public class CcgstStandardMenu extends UkJpaEntity implements Serializable {
 	@Column(name = "URL")
 	public String url;
 	
-	/** The system. */
-	@Column(name = "SYSTEM")
-	public int system;
-	
-	/** The classification. */
-	@Column(name = "MENU_CLS")
-	public int classification;
-	
 	/** The webMenuSetting. */
 	@Column(name = "WEB_MENU_SETTING")
 	public int webMenuSetting;

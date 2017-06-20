@@ -1,5 +1,13 @@
 @CHARSET "UTF-8";
 
+#tab-panel{
+	max-width: 570px;
+}
+
+.ntsSearchBox{
+	width: 230px !important;
+}
+
 .controlSetting {
 	color: #2ECC71;
 	margin-left: 5px
@@ -7,6 +15,11 @@
 
 .contentkcp {
 	min-height: 550px;
+	max-width: 550px;
+}
+
+.accordion{
+	max-width: 550px;
 }
 
 .btn_big {

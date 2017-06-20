@@ -193,11 +193,16 @@ module nts.uk.pr.view.kmf001.f {
                 });
                 return dfd.promise();
             }
+            //switch to com tab
+            private switchToCompanyTab() {
+                var self = this;
+                self.loadSetting();
+            }
             //switch to em tab
             private switchToEmploymentTab() {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                $('#list-employ-component').ntsListComponent(this.listComponentOption).done(() => {
+                $.when($('#list-employ-component').ntsListComponent(this.listComponentOption),self.loadEmploymentList()).done(() => {
                     self.employmentList($('#sample-component').getDataList());
                     if (!$('#sample-component').getDataList() || $('#sample-component').getDataList().length <= 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_146", messageParams: [] });
@@ -217,7 +222,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.manageDistinctEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -229,7 +234,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.applyPermissionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -241,7 +246,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.expirationTimeEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -253,7 +258,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.timeVacationDigestiveUnitEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -265,7 +270,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.compensatoryOccurrenceDivisionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -280,7 +285,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.transferSettingDivisionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -297,7 +302,7 @@ module nts.uk.pr.view.kmf001.f {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -314,7 +319,7 @@ module nts.uk.pr.view.kmf001.f {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }

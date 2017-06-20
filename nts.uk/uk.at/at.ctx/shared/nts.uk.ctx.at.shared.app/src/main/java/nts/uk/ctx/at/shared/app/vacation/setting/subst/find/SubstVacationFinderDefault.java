@@ -4,18 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.subst.find;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.EmpSubstVacationDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.SubstVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SubstVacationFinderDefault.
@@ -43,8 +45,7 @@ public class SubstVacationFinderDefault implements SubstVacationFinder {
 		Optional<ComSubstVacation> optComSubVacation = this.comSvRepository.findById(companyId);
 
 		if (!optComSubVacation.isPresent()) {
-			// TODO: find msg id
-			throw new BusinessException("");
+			return null;
 		}
 
 		SubstVacationSettingDto dto = new SubstVacationSettingDto();
@@ -68,8 +69,7 @@ public class SubstVacationFinderDefault implements SubstVacationFinder {
 
 		// Check exist
 		if (!optEmpSubVacation.isPresent()) {
-			// TODO: find msg id
-			throw new BusinessException("");
+			return null;
 		}
 
 		EmpSubstVacationDto dto = new EmpSubstVacationDto();
@@ -77,6 +77,16 @@ public class SubstVacationFinderDefault implements SubstVacationFinder {
 		optEmpSubVacation.get().saveToMemento(dto);
 
 		return dto;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.app.vacation.setting.subst.find.SubstVacationFinder#findAllEmployment()
+	 */
+	@Override
+	public List<String> findAllEmployment() {
+		String companyId = AppContexts.user().companyId();
+		return empSvRepository.findAll(companyId).stream().map(item -> item.getEmpContractTypeCode())
+				.collect(Collectors.toList());
 	}
 
 }

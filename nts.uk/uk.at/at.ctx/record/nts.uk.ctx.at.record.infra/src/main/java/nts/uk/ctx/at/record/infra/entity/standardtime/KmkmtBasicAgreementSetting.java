@@ -16,12 +16,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KMKST_BASIC_AGREEMENT_SET")
-public class KmkstBasicAgreementSetting extends UkJpaEntity implements Serializable {
+public class KmkmtBasicAgreementSetting extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KmkstBasicAgreementSettingPK kmkstBasicAgreementSettingPK;
+	public KmkmtBasicAgreementSettingPK kmkmtBasicAgreementSettingPK;
 
 	@Column(name = "ALARM_WEEK")
 	public BigDecimal alarmWeek;
@@ -88,6 +88,6 @@ public class KmkstBasicAgreementSetting extends UkJpaEntity implements Serializa
 
 	@Override
 	protected Object getKey() {
-		return this.kmkstBasicAgreementSettingPK;
+		return this.kmkmtBasicAgreementSettingPK;
 	}
 }

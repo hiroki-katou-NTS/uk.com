@@ -16,6 +16,7 @@
 			<com:scriptfile path="ccg008.a.start.js" />
 			<com:scriptfile path="ccg008.a.service.js" />
 			<com:scriptfile path="ccg008.a.vm.js" />
+			<com:stylefile path="../../common/common.css" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -32,13 +33,35 @@
 						</div>
 					</div>
 					<div class="tab-content-2">
-						<div class="preview-area-2">
-							
-								<iframe id="preview-iframe-2"></iframe>
+					<div class="placement-wraper">
+					<div class="placement-container overflow-x overflow-y">
+						<div class="widget-container">
+							<com:ko-foreach bind="placements">
+								<div class="widget-panel preview" data-bind="attr: {id: placementID}">
+									<div class="panel-header">
+										<span class="title" data-bind="text: name"></span>
+									</div>
+									<div class="panel-content placeholder">
+										<!-- External Url -->
+										<iframe data-bind="visible: isExternalUrl, attr:{src: url}"  />
+										<!-- TopPage Part -->
+									</div>
+								</div>
+							</com:ko-foreach>
 						</div>
 					</div>
+				</div>
+<!-- 						<div class="preview">
+							<div id="preview-flowmenu" class="widget-panel preview" data-bind="with: flowmenu">
+ 								<div class="panel-header">
+									<span class="title" data-bind="text: topPageName()"></span>
+								</div> 
+								<div class="panel-content">
+								</div>
+							</div>
+						</div> -->
+					</div>
 				</div>				
-									
 			</div>
 		</ui:define>
 	</ui:composition>
