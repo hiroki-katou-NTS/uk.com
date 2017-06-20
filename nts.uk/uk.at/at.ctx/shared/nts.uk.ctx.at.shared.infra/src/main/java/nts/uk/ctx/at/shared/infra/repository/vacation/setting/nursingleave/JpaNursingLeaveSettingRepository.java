@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.nursingleave;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet_;
 
@@ -114,7 +116,14 @@ public class JpaNursingLeaveSettingRepository extends JpaRepository implements N
      * @return the kmfmt nursing leave set
      */
     private KnlmtNursingLeaveSet toEntity(NursingLeaveSetting setting) {
-        KnlmtNursingLeaveSet entity = new KnlmtNursingLeaveSet();
+        Optional<KnlmtNursingLeaveSet> optinal = this.queryProxy().find(new KnlmtNursingLeaveSetPK(
+                setting.getCompanyId(), setting.getNursingCategory().value), KnlmtNursingLeaveSet.class);
+        KnlmtNursingLeaveSet entity = null;
+        if (optinal.isPresent()) {
+            entity = optinal.get();
+        } else {
+            entity = new KnlmtNursingLeaveSet();
+        }
         JpaNursingLeaveSettingSetMemento memento = new JpaNursingLeaveSettingSetMemento(entity);
         setting.saveToMemento(memento);
         return entity;
