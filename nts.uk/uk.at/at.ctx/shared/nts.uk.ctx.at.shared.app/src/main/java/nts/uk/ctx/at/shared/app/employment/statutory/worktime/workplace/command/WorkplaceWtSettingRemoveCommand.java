@@ -15,6 +15,6 @@ public class WorkplaceWtSettingRemoveCommand {
 	/** The year. */
 	private int year;
 
-	/** The work place id. */
-	private String workPlaceId;
+	/** The workplace id. */
+	private String workplaceId;
 }

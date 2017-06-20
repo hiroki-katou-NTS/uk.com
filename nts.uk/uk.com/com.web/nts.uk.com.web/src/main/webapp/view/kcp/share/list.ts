@@ -239,7 +239,7 @@ module kcp.share.list {
             self.itemList(dataList);
             // Check is show no select row.
             if (data.isShowNoSelectRow) {
-                self.itemList.unshift({code: null, name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+                self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
             this.searchOption = {
                 searchMode: 'filter',

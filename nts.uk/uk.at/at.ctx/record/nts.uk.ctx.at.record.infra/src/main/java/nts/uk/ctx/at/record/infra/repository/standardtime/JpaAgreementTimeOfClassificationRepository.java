@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.infra.repository.standardtime;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassific
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeClass;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeClassPK;
 
+@Stateless
 public class JpaAgreementTimeOfClassificationRepository extends JpaRepository
 		implements AgreementTimeOfClassificationRepository {
 

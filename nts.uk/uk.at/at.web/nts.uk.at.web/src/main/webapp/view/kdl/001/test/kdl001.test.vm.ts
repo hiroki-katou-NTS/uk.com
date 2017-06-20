@@ -32,13 +32,28 @@ module nts.uk.at.view.kdl001.test {
                 });        
             }
             
-            addSample(){
+            add1000Sample(){
                 nts.uk.ui.block.invisible();
                 var self = this;
                 let arrayData = [];
                 for(let a=65;a<=74;a++){
                     for(let b=65;b<=74;b++){
                         for(let c=65;c<=74;c++){
+                            arrayData.push(String.fromCharCode(a)+String.fromCharCode(b)+String.fromCharCode(c));            
+                        }    
+                    }    
+                }
+                self.selectedCodeAbleList(arrayData.toString());
+                nts.uk.ui.block.clear();
+            }
+            
+            add10000Sample(){
+                nts.uk.ui.block.invisible();
+                var self = this;
+                let arrayData = [];
+                for(let a=65;a<=87;a++){
+                    for(let b=65;b<=87;b++){
+                        for(let c=65;c<=87;c++){
                             arrayData.push(String.fromCharCode(a)+String.fromCharCode(b)+String.fromCharCode(c));            
                         }    
                     }    

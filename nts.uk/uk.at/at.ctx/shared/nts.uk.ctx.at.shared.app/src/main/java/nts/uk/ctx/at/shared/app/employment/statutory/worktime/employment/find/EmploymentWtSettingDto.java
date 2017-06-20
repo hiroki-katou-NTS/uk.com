@@ -50,6 +50,6 @@ public class EmploymentWtSettingDto {
 
 		return new EmploymentWtSettingDto.EmploymentWtSettingDtoBuilder().year(domain.getYear().v())
 				.deformationLaborSetting(deformationLaborSetting).flexSetting(flexSetting).normalSetting(normalSetting)
-				.employmentCode(domain.getEmploymentCode()).employmentName("fake").build();
+				.employmentCode(domain.getEmploymentCode()).build();
 	}
 }

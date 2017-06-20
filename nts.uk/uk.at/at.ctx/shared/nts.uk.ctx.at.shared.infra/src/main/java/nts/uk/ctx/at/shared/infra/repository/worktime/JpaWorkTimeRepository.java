@@ -57,7 +57,7 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 				.setParameter("companyID", companyID).setParameter("siftCDs", siftCDs.subList(i, siftCDs.size()))
 				.getList(x -> convertToDomainWorkTime(x));
 		result.addAll(lastResult);
-		return 	result;
+		return result;
 	}
 	
 	/**
