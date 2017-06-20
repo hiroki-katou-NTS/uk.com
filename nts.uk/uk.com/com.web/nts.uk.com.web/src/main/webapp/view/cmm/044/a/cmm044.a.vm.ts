@@ -20,15 +20,19 @@ module cmm044.a.viewmodel {
         selectedId4: KnockoutObservable<number>;
         index_of_itemDelete: any;
 
-        //List Time
-        //histItems: KnockoutObservableArray<ListModel> = ko.observableArray([new ListModel({ historyId: 'NEW', startDate: 20170104, endDate: 99991201 }),
-        //new ListModel({ historyId: 'NEW', startDate: 20160104, endDate: 20170103 })
-        //]);
-        //histSelectedItem: KnockoutObservable<ListModel> = ko.observable(new ListModel({ historyId: 'NEW', startDate: 20170104, endDate: 99991201 }));
+        displayEmployeeInfo1: KnockoutObservable<boolean>;
+        displayEmployeeInfo2: KnockoutObservable<boolean>;
+        displayEmployeeInfo3: KnockoutObservable<boolean>;
+        displayEmployeeInfo4: KnockoutObservable<boolean>;
+
         histItems: KnockoutObservableArray<model.AgentDto>;
         currentAgent: KnockoutObservable<model.AgentDto>;
         histSelectedItem: KnockoutObservable<any>;
         currentItem: KnockoutObservable<model.AgentAppDto>;
+        agentAppType1: KnockoutObservable<number>;
+        agentAppType2: KnockoutObservable<number>;
+        agentAppType3: KnockoutObservable<number>;
+        agentAppType4: KnockoutObservable<number>;
 
         constructor() {
             let self = this;
@@ -41,6 +45,33 @@ module cmm044.a.viewmodel {
                 { id: 'tab-3', title: '給与承認', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-4', title: '経理承認', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
+
+            self.displayEmployeeInfo1 = ko.observable(true);
+            self.displayEmployeeInfo2 = ko.observable(true);
+            self.displayEmployeeInfo3 = ko.observable(true);
+            self.displayEmployeeInfo4 = ko.observable(true);
+
+            self.agentAppType1 = ko.observable(0);
+            self.agentAppType2 = ko.observable(0);
+            self.agentAppType3 = ko.observable(0);
+            self.agentAppType4 = ko.observable(0);
+            self.agentAppType1.subscribe(function(newValue) {
+                self.displayEmployeeInfo1(newValue == 0);
+                self.currentItem().agentAppType1(newValue);
+            });
+            self.agentAppType2.subscribe(function(newValue) {
+                self.displayEmployeeInfo2(newValue == 0);
+                self.currentItem().agentAppType2(newValue);
+            });
+            self.agentAppType3.subscribe(function(newValue) {
+                self.displayEmployeeInfo3(newValue == 0);
+                self.currentItem().agentAppType3(newValue);
+            });
+            self.agentAppType4.subscribe(function(newValue) {
+                self.displayEmployeeInfo4(newValue == 0);
+                self.currentItem().agentAppType4(newValue);
+            });
+
             self.histItems = ko.observableArray([]);
             self.selectedTab = ko.observable('tab-1');
             self.empItems = ko.observableArray([]);
@@ -50,39 +81,22 @@ module cmm044.a.viewmodel {
                     if (self.histItems().length > 0) {
                         self.histSelectedItem(self.histItems()[0].requestId);
                     } else {
-                        self.currentItem(new model.AgentAppDto(newValue.personId, "", "", "", "", null, "", null, "", null, "", null));
-                    }    
+                        self.currentItem(new model.AgentAppDto(newValue.personId, "", "", "", "", self.agentAppType1(), "", self.agentAppType2(), "", self.agentAppType3(), "", self.agentAppType4()));
+                    }
                 });
             });
+
             self.histSelectedItem = ko.observable("");
             self.histSelectedItem.subscribe(function(requestId) {
-                self.getAgen(self.empSelectedItem().personId, requestId);
+                if (requestId) {
+                    self.getAgen(self.empSelectedItem().personId, requestId);
+                }
             });
             self.itemList = ko.observableArray([
                 new BoxModel(0, '代理'),
                 new BoxModel(1, 'パス'),
                 new BoxModel(2, '設定しない(待ってもらう)')
             ]);
-            self.selectedId1 = ko.observable(0);
-            self.selectedId1.subscribe(function(codeChanged) {
-            
-            });
-
-            self.selectedId2 = ko.observable(0);
-            self.selectedId2.subscribe(function(codeChanged) {
-
-            });
-
-            self.selectedId3 = ko.observable(0);
-            self.selectedId3.subscribe(function(codeChanged) {
-
-            });
-
-            self.selectedId4 = ko.observable(0);
-            self.selectedId4.subscribe(function(codeChanged) {
-
-            });
-
             self.start();
         }
         start() {
@@ -91,7 +105,7 @@ module cmm044.a.viewmodel {
             self.empItems.removeAll();
 
             //Demo EmployeeCode & EmployeeId 
-            _.range(10).map(i => {
+            _.range(12).map(i => {
                 i++;
                 if (i < 10) {
                     self.empItems.push(new PersonModel({
@@ -144,9 +158,9 @@ module cmm044.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             if (!requestId) {
-                return;    
+                return;
             }
-            
+
             var param = {
                 employeeId: employeeId,
                 requestId: requestId
@@ -157,6 +171,11 @@ module cmm044.a.viewmodel {
                     agent.agentSid2, agent.agentAppType2,
                     agent.agentSid3, agent.agentAppType3,
                     agent.agentSid4, agent.agentAppType4));
+
+                self.agentAppType1(agent.agentAppType1);
+                self.agentAppType2(agent.agentAppType2);
+                self.agentAppType3(agent.agentAppType3);
+                self.agentAppType4(agent.agentAppType4);
 
                 dfd.resolve();
             }).fail(function(error) {
@@ -186,13 +205,12 @@ module cmm044.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            if (self.histItems().length === 0) {
-                service.addAgent(self.currentItem()).done(function() {
-                }).fail(function(res) {
-                    alert(res.message);
-                    dfd.reject(res);
-                })
-            }
+
+
+            self.currentItem().agentAppType1(self.agentAppType1());
+            self.currentItem().agentAppType2(self.agentAppType2());
+            self.currentItem().agentAppType3(self.agentAppType3());
+            self.currentItem().agentAppType4(self.agentAppType4());
 
             var agent = ko.toJSON(self.currentItem());
             agent["employeeId"] = self.empSelectedItem().personId;
@@ -207,9 +225,15 @@ module cmm044.a.viewmodel {
                     dfd.reject(res);
                 })
             } else {
-                service.addAgent(agent).done(function(requestId) {
-                    self.getAllAgen(self.empSelectedItem().personId);
-                    self.histSelectedItem(requestId);
+                service.addAgent(agent).done(function(res) {
+                    var resObj = ko.toJS(res);
+                    if (resObj.businessException) {
+                        nts.uk.ui.dialog(resObj.message);
+                        self.histSelectedItem("");
+                    } else {
+                        self.getAllAgen(self.empSelectedItem().personId);
+                        self.histSelectedItem(res);
+                    }
                 }).fail(function(res) {
                     alert(res.message);
                     dfd.reject(res);
@@ -221,37 +245,64 @@ module cmm044.a.viewmodel {
             let self = this;
 
             let dfd = $.Deferred<any>();
-            self.index_of_itemDelete = self.histItems().indexOf(self.histSelectedItem());
-            if (self.histItems().length == 1) {
-                nts.uk.ui.dialog.alert("選択している履歴の職位が1件のみのため、\r\n履歴の編集ボタンから履歴削除を行ってください。")
-            } else {
+            var index_of_itemDelete = _.findIndex(self.histItems(), ['requestId', self.histSelectedItem()]);
+            
                 nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                     var agent = {
                         employeeId: self.empSelectedItem().personId,
                         requestId: self.currentItem().requestId()
-                    }
-                    service.deleteAgent(agent).done(function(res) {
-                        self.getAllAgen(self.empSelectedItem().personId);
+                    };
+                    service.deleteAgent(agent).done(function() {
+                        $.when(self.getAllAgen(self.empSelectedItem().personId)).done(function(){
+                            var requestId = "";
+                            if (self.histItems().length == 0) {
+                                self.initAgent();    
+                            } else if (self.histItems().length == 1) {
+                                requestId = self.histItems()[0].requestId;
+                            } else if(index_of_itemDelete == self.histItems().length){     
+                                requestId = self.histItems()[index_of_itemDelete - 1].requestId;
+                            }else {                  
+                                requestId = self.histItems()[index_of_itemDelete].requestId;
+                            }
+                            
+                            self.histSelectedItem(requestId);
+                        });
                     }).fail(function(res) {
                         dfd.reject(res);
                     })
+
+
                 }).ifNo(function() {
                 });
-            }
+
+            
 
         }
 
         initAgent() {
             let self = this;
-            self.selectedId1 = ko.observable(0);
-            self.selectedId2 = ko.observable(0);
-            self.selectedId3 = ko.observable(0);
-            self.selectedId4 = ko.observable(0);
+            self.displayEmployeeInfo1(true);
+            self.displayEmployeeInfo2(true);
+            self.displayEmployeeInfo3(true);
+            self.displayEmployeeInfo4(true);
+
+            self.agentAppType1(0);
+            self.agentAppType2(0);
+            self.agentAppType3(0);
+            self.agentAppType4(0);
+
             self.histSelectedItem("");
-            self.currentItem(new model.AgentAppDto(self.empSelectedItem().personId, "", "", "", "", null, "", null, "", null, "", null));
+            self.currentItem(new model.AgentAppDto(self.empSelectedItem().personId, "", "", "", "", self.agentAppType1(), "", self.agentAppType2(), "", self.agentAppType3(), "", self.agentAppType4()));
         }
         openDDialog() {
-            let self = this;
+            let self = this;  
+            nts.uk.ui.windows.setShared('cmm044StartDate', self.currentItem().startDate(), true);
+            nts.uk.ui.windows.setShared('cmm044EndDate', self.currentItem().endDate(), true);
+            nts.uk.ui.windows.sub.modal('/view/cmm/044/b/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
+            });
+        }
+        openCDL021() {
+            let slef = this;
             nts.uk.ui.windows.sub.modal('/view/cmm/044/b/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }

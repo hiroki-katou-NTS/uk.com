@@ -10,18 +10,16 @@ module cmm044.a.service {
     }
 
     export function findAgent(parameter: any): JQueryPromise<viewmodel.model.AgentDto> {
-        var dfd = $.Deferred<viewmodel.model.AgentDto>();
-        return nts.uk.request.ajax("com", paths.findAgent, parameter);
+        return nts.uk.request.ajax("com",paths.findAgent, parameter);
     }
 
     export function findAllAgent(employeeId: string): JQueryPromise<Array<viewmodel.model.AgentDto>> {
         var dfd = $.Deferred<Array<viewmodel.model.AgentDto>>();
-        return nts.uk.request.ajax("com", paths.findAllAgent + employeeId);
+        return nts.uk.request.ajax("com",paths.findAllAgent + employeeId);
     }
 
     export function deleteAgent(agent: any) {
-        var dfd = $.Deferred<viewmodel.model.AgentDto>();
-        return nts.uk.request.ajax("com", paths.deleteAgent, agent)
+        return nts.uk.request.ajax("com",paths.deleteAgent, agent)
     }
 
     export function addAgent(agent: any) {
@@ -29,7 +27,6 @@ module cmm044.a.service {
     }
 
     export function updateAgent(agent: any) {
-        var dfd = $.Deferred<Array<viewmodel.model.AgentAppDto>>();
-        return nts.uk.request.ajax("com", paths.updateAgent, agent);
+        return nts.uk.request.ajax("com",paths.updateAgent, agent);
     }
 }
