@@ -153,7 +153,7 @@ public class Agent extends AggregateRoot {
 	 * @return false if start date before end date in range date latest, else true
 	 */
 	private boolean checkDateLatest(RangeDate rangeDateLatest) {		
-		if (this.startDate.before(rangeDateLatest.getEndDate())) {
+		if (this.startDate.before(rangeDateLatest.getEndDate()) && this.endDate.after(rangeDateLatest.getStartDate())) {
 			return false;
 		}
 		
