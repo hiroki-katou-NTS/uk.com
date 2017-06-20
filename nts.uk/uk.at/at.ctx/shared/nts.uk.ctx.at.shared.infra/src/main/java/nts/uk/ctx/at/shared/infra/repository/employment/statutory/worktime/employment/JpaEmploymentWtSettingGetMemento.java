@@ -55,7 +55,6 @@ public class JpaEmploymentWtSettingGetMemento implements EmploymentWtSettingGetM
 		this.companyId = new CompanyId(pk.getCid());
 		this.year = new Year(pk.getYK());
 		this.employmentCode = pk.getEmptCd();
-		this.flexSetting = new FlexSetting();
 
 		this.setToDomain(typeValues);
 	}

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetti
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSetPK;
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
@@ -45,12 +46,23 @@ public class JpaCompanyWtSettingGetMemento implements CompanyWtSettingGetMemento
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaCompanyWtSettingGetMemento(List<JcwtstCompanyWtSet> typeValue) {
-		this.companyId = new CompanyId(typeValue.get(0).getJcwtstCompanyWtSetPK().getCid());
-		this.year = new Year(typeValue.get(0).getJcwtstCompanyWtSetPK().getYK());
-		this.flexSetting = new FlexSetting();
+	public JpaCompanyWtSettingGetMemento(List<JcwtstCompanyWtSet> typeValues) {
+		// Get pk.
+		JcwtstCompanyWtSetPK pk = typeValues.get(WtSettingConstant.NORMAL).getJcwtstCompanyWtSetPK();
+		this.companyId = new CompanyId(pk.getCid());
+		this.year = new Year(pk.getYK());
 
-		typeValue.forEach(item -> {
+		this.setToDomain(typeValues);
+	}
+
+	/**
+	 * Sets the to domain.
+	 *
+	 * @param entities the new to domain
+	 */
+	private void setToDomain(List<JcwtstCompanyWtSet> entities) {
+		this.flexSetting = new FlexSetting();
+		entities.forEach(item -> {
 			switch (item.getJcwtstCompanyWtSetPK().getCtg()) {
 			case WtSettingConstant.NORMAL:
 				this.normalSetting = new NormalSetting(this.getWorkTimeSetting(item),
