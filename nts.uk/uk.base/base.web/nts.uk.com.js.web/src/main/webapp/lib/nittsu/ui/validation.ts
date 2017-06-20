@@ -125,7 +125,7 @@ module nts.uk.ui.validation {
 
             var message: any = {};
             var validateFail = false, max = 99999999, min = 0, mantissaMaxLength;
-            if (this.constraint.valueType === "HalfInt") {
+            if (!util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {
                 if (!ntsNumber.isHalfInt(inputText, message)) validateFail = true;
             } else if (!ntsNumber.isNumber(inputText, isDecimalNumber, undefined, message)) {
                 validateFail = true;

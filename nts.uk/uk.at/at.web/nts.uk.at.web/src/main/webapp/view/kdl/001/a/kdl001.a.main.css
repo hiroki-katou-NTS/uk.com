@@ -2,7 +2,7 @@
 .control-group.valign-top > * { vertical-align: top; }
 .control-group.valign-bottom > * { vertical-align: bottom; }
 body {
-	overflow: hidden;
+	overflow-x: hidden;
 }
 .control-group { 
 	margin: 5px;
@@ -44,6 +44,12 @@ div.nts-column{
 }
 #day-list-div th, #day-list-div td {
 	padding-left: 10px;
+}
+#day-list-tbl > tbody > tr > td:LAST-CHILD {
+    height: 40px;
+}
+#day-list-tbl > tbody > tr > td:LAST-CHILD > span{
+   	display: inline-block;
 }
 #functions-area-bottom > button {
 	margin-right: 10px;

@@ -2,9 +2,8 @@ package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
 import java.util.Optional;
 
-/**
- * The Interface TopPageSelfSetRepository.
- */
+import nts.uk.ctx.sys.portal.dom.layout.Layout;
+
 /**
  * 
  * @author hoatt
@@ -25,16 +24,16 @@ public interface TopPageSelfSetRepository {
  	 */
  	Optional<TopPageSelfSet> getTopPageSelfSet(String employeeId);
  	/**
- 	 * find top page self set by code
- 	 * @param employeeId
- 	 * @param code
- 	 * @return
- 	 */
- 	Optional<TopPageSelfSet> findTopPageSelfSetbyCode(String employeeId,String code);
- 	/**
  	 * update top page self set
  	 * @param topPageSelfSet
  	 */
  	void updateTopPageSelfSet(TopPageSelfSet topPageSelfSet);
+	/**
+	 * Find a Layout
+	 *
+	 * @param layoutID
+	 * @return Optional Layout
+	 */
+	Optional<Layout> find(String layoutID, int pgType);
 }
 

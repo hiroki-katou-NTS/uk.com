@@ -11,14 +11,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Entity
-@Table(name = "CCGMT_TITLEMENU")
-@AllArgsConstructor
-@NoArgsConstructor
 
 /**
  * author hieult
  */
+@Entity
+@Table(name = "CCGMT_TITLEMENU")
+@AllArgsConstructor
+@NoArgsConstructor
 public class CcgmtTitleMenu extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

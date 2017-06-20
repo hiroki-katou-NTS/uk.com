@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div class="sidebar-content-header">
+			<span class="title">#{i18n.getText('Com_Person')}</span>
+			<button id="save" data-bind="click: saveEmployment" class="proceed">#{i18n.getText('KMK004_27')}</button>
+			<button class="danger" data-bind="click: removeEmployment">#{i18n.getText('KMK004_29')}</button>
+		</div>
+		<div class="contents-area">
+			<div id="list-employment" class="pull-left"></div>
+			<div id="right-content" class="pull-left">
+				<com:ko tag="with" bind="employmentWTSetting">
+				<div class="control-group">
+					<input id="yearPicker" data-name="abc"
+						data-bind="ntsNumberEditor: {
+													value: year,
+													constraint: 'Year',
+													required: true}"
+						tabindex="4" />
+				</div>
+				<div id="lblEmployment" data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Employment')}</div>
+				<span id="lblEmploymentCode" data-bind="text: employmentCode"></span>
+				<span id="lblEmploymentName" data-bind="text: employmentName"></span>
+				<div id="tab-panel"
+					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab}">
+					<!-- NORMAL WORK TIME SETTING START -->
+					<div class="tab-content-1">
+						<com:ko tag="with" bind="normalSetting">
+						<div class="control-group">
+							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
+							<div style="margin-left: 50px; display: inline-flex"
+								id="combo-box"
+								data-bind="ntsComboBox: {
+												options: $parents[1].itemList,
+												optionsValue: 'code',
+												value: weekStart,
+												optionsText: 'name',
+												enable: true}"></div>
+						</div>
+							<com:ko tag="with" bind="statutorySetting">
+								<div class="control-group">
+									<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
+									<table style="margin-left: 105px; display: inline"
+										class="border-all">
+										<tr class="bg-dark-green">
+											<td></td>
+											<td>#{i18n.getText('KMK004_8')}</td>
+										</tr>
+										<tr>
+											<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
+											<td><input
+												data-bind="ntsTimeEditor: {value: daily, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
+											<td><input
+												data-bind="ntsTimeEditor: {value: weekly, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class="control-group">
+									<table class="border-all"
+										style="display: inline; margin-left: 200px">
+										<tr class="bg-dark-green">
+											<td>#{i18n.getText('KMK004_13')}</td>
+											<td>#{i18n.getText('KMK004_8')}</td>
+										</tr>
+										<com:ko tag="foreach" bind="monthly">
+											<tr>
+												<td class="bg-green">
+													<div data-bind="text: month()+'月度'"></div>
+												</td>
+												<td><input
+													data-bind="ntsTimeEditor: {value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												</td>
+											</tr>
+										</com:ko>
+									</table>
+								</div>
+							</com:ko>
+						</com:ko>
+					</div>
+					<!-- NORMAL WORK TIME SETTING END -->
+
+					<!-- FLEX WORK TIME SETTING START -->
+					<div class="tab-content-2">
+						<com:ko tag="with" bind="flexSetting">
+							<div class="control-group">
+								<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
+								<table style="margin-left: 105px; display: inline"
+									class="border-all">
+									<tr class="bg-dark-green">
+										<td></td>
+										<td>#{i18n.getText('KMK004_16')}</td>
+										<td>#{i18n.getText('KMK004_8')}</td>
+									</tr>
+									<tr data-bind="with: flexDaily">
+										<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
+										<td><input
+											data-bind="ntsTimeEditor: {value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+										</td>
+										<td><input
+											data-bind="ntsTimeEditor: {value: statutoryTime, constraint:'AttendanceTime',inputFormat: 'time', mode: 'time', required: true}" />
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="control-group">
+								<table class="border-all"
+									style="display: inline; margin-left: 200px">
+									<tr class="bg-dark-green">
+										<td>#{i18n.getText('KMK004_13')}</td>
+										<td>#{i18n.getText('KMK004_17')}</td>
+										<td>#{i18n.getText('KMK004_8')}</td>
+									</tr>
+									<com:ko tag="foreach" bind="flexMonthly">
+										<tr>
+											<td class="bg-green">
+												<div data-bind="text: month()+'月度'"></div>
+											</td>
+											<td><input
+												data-bind="ntsTimeEditor: {value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+											</td>
+											<td><input
+												data-bind="ntsTimeEditor: {value: statutoryTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+											</td>
+										</tr>
+									</com:ko>
+
+								</table>
+							</div>
+						</com:ko>
+					</div>
+					<!-- FLEX WORK TIME SETTING END -->
+
+					<!-- DEFORMATION LABOR WORK TIME SETTING START -->
+					<div class="tab-content-3">
+						<com:ko tag="with" bind="deformationLaborSetting">
+						<div class="control-group">
+							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
+							<div style="margin-left: 50px; display: inline-flex"
+								id="combo-box"
+								data-bind="ntsComboBox: {
+												options: $parents[1].itemList,
+												optionsValue: 'code',
+												value: weekStart,
+												optionsText: 'name',
+												enable: true}"></div>
+						</div>
+							<com:ko tag="with" bind="statutorySetting">
+								<div class="control-group">
+									<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_7')}</div>
+									<table style="margin-left: 105px; display: inline"
+										class="border-all">
+										<tr class="bg-dark-green">
+											<td></td>
+											<td>#{i18n.getText('KMK004_8')}</td>
+										</tr>
+										<tr>
+											<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
+											<td><input
+												data-bind="ntsTimeEditor: {value: daily, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
+											<td><input
+												data-bind="ntsTimeEditor: {value: weekly, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class="control-group">
+									<table class="border-all"
+										style="display: inline; margin-left: 200px">
+										<tr class="bg-dark-green">
+											<td>#{i18n.getText('KMK004_13')}</td>
+											<td>#{i18n.getText('KMK004_8')}</td>
+										</tr>
+										<com:ko tag="foreach" bind="monthly">
+											<tr>
+												<td class="bg-green">
+													<div data-bind="text: month()+'月度'"></div>
+												</td>
+												<td><input
+													data-bind="ntsTimeEditor: {value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												</td>
+											</tr>
+										</com:ko>
+									</table>
+								</div>
+							</com:ko>
+						</com:ko>
+					</div>
+					<!-- DEFORMATION LABOR WORK TIME SETTING END -->
+				</div>
+			</com:ko>
+			</div>
+		</div>
+	</ui:composition>
+</body>
+</html>

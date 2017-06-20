@@ -4,38 +4,47 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+import java.util.List;
+
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
  * The Interface CompensatoryLeaveComSetMemento.
  */
 public interface CompensatoryLeaveComSetMemento {
-	
+
 	/**
 	 * Sets the company id.
 	 *
 	 * @param companyId the new company id
 	 */
 	void setCompanyId(String companyId);
-	
+
 	/**
 	 * Sets the checks if is managed.
 	 *
 	 * @param isManaged the new checks if is managed
 	 */
 	void setIsManaged (ManageDistinct isManaged);
-	
+
 	/**
-	 * Sets the normal vacation setting.
+	 * Sets the compensatory acquisition use.
 	 *
-	 * @param normalVacationSetting the new normal vacation setting
+	 * @param compensatoryAcquisitionUse the new compensatory acquisition use
 	 */
-	void setNormalVacationSetting(NormalVacationSetting normalVacationSetting);
-	
+	void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse);
+
 	/**
-	 * Sets the occurrence vacation setting.
+      * Sets the compensatory digestive time unit.
+      *
+      * @param compensatoryDigestiveTimeUnit the new compensatory digestive time unit
+      */
+     void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit);
+
+	/**
+	 * Sets the compensatory occurrence setting.
 	 *
-	 * @param occurrenceVacationSetting the new occurrence vacation setting
+	 * @param compensatoryOccurrenceSetting the new compensatory occurrence setting
 	 */
-	void setOccurrenceVacationSetting(OccurrenceVacationSetting occurrenceVacationSetting);
+     void setCompensatoryOccurrenceSetting(List<CompensatoryOccurrenceSetting> compensatoryOccurrenceSetting);
 }

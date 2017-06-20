@@ -16,13 +16,8 @@ table td {
 	margin-left: 25px;
 }
 
-#process {
-	text-align: center;
-	vertical-align: middle;
+.ui-widget-header {
+	font-weight: normal !important;
 }
 
-hr {
-	margin-top: 20px;
-	margin-bottom: 30px;
-	width:Å@800px;
-}
+

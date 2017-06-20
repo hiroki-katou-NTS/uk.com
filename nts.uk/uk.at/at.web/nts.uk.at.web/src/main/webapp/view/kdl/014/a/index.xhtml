@@ -14,38 +14,28 @@
 			<com:scriptfile path="kdl014.a.start.js" />
 			<com:scriptfile path="kdl014.a.service.js" />
 			<com:scriptfile path="kdl014.a.vm.js" />
-			<script>var dialogSize = { width: 710 , height: 550};</script>
+			<script>var dialogSize = { width: 950 , height: 550};</script>
 		</ui:define>
 		<ui:define name="content">
 			<div id="content-area" class="cf">
 				<table id="TblHeader">
 					<tr>
-						<td class="FormLabel"><div data-bind="ntsFormLabel: {}">社員</div></td>
-						<td>000000001</td>
-						<td>ducpm</td>
+						<td class="FormLabel"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL014_2')}</div></td>
+						<td data-bind="text: employeeCD"></td>
+						<td data-bind="text: employeeName"></td>
 					</tr>
 					<tr>
-						<td class="formLabel"><div data-bind="ntsFormLabel: {}">表示期間</div></td>
-						<td>2016/01/01(火)</td>
-						<td>~ 2017/01/01</td>
+						<td class="formLabel"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL014_3')}</div></td>
+						<td data-bind="text: startDate"></td>
+						<td data-bind="text: endDate"></td>
 					</tr>
 				</table>
 				<div class="Content">
-					<table id="StampList"
-						data-bind="ntsGridList: {								
-								height: 260,
-								dataSource: items,
-								primaryKey: 'code',
-								columns: columns,
-								enable: true,
-								multiple: false,
-								value: currentCode
-							}">
-					</table>
+					<table id="igGridStamp"></table>
 				</div>
-				<hr/>
-				<div id="process">
-					<button id="btnCancel" class="large" data-bind="click: close" tabindex="4">閉じる</button>
+				<div id="functions-area-bottom">
+					<button id="btnCancel" class="large" data-bind="click: close"
+						tabindex="4">#{i18n.getText('KDL014_10')}</button>
 				</div>
 			</div>
 		</ui:define>

@@ -10,6 +10,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -51,12 +52,12 @@ public class KalmtAnnualPaidLeave extends UkJpaEntity implements Serializable {
     private Integer manageAtr;
     
     /** The kmamt mng annual set. */
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     @PrimaryKeyJoinColumn
     public KmamtMngAnnualSet kmamtMngAnnualSet;
     
     /** The ktvmt time vacation set. */
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
     @PrimaryKeyJoinColumn
     public KtvmtTimeVacationSet ktvmtTimeVacationSet;
 

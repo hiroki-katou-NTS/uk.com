@@ -113,9 +113,6 @@ button.nts-switch-button {
 	width: 110px !important;
 }
 
-#contents-area {
-	padding: 20px !important;
-}
 #inp-name {
 	width: 180px !important;
 }
@@ -129,9 +126,11 @@ button.nts-switch-button {
 .bg-yellow {
 	padding: 10px 5px;
 	margin: 11px 156px;
-	width: 41%;
 }
 .copy_btn{
 	margin-left: -45px;
 	margin-right: 19px;
+}
+.bottom_area_style{
+	height: 150px !important;
 }

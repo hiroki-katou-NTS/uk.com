@@ -3,8 +3,13 @@ module nts.uk.pr.view.kmf001.h {
         import Enum = service.model.Enum;
         import SubstVacationSettingDto = service.model.SubstVacationSettingDto;
         import EmpSubstVacationDto = service.model.EmpSubstVacationDto;
+        import EmploymentSettingDto = service.model.EmploymentSettingDto;
+        import EmploymentSettingFindDto = service.model.EmploymentSettingFindDto;
 
         export class ScreenModel {
+            //list component option
+            selectedItem: KnockoutObservable<string>;
+            listComponentOption: KnockoutObservable<any>;
 
             // Service.
             service: service.Service;
@@ -33,7 +38,17 @@ module nts.uk.pr.view.kmf001.h {
             constructor() {
                 var self = this;
                 self.service = service.instance;
+                this.selectedItem = ko.observable(null);
 
+                this.listComponentOption = {
+                    isShowAlreadySet: true, // is show already setting column.
+                    isMultiSelect: false, // is multiselect.
+                    listType: ListType.EMPLOYMENT,
+                    selectType: SelectType.SELECT_FIRST_ITEM,
+                    selectedCode: this.selectedItem,
+                    isDialog: false,
+                    alreadySettingList: ko.observableArray([{ code: '01', isAlreadySetting: true }])
+                };
                 self.vacationExpirationEnums = ko.observableArray([]);
                 self.applyPermissionEnums = ko.observableArray([]);
                 self.manageDistinctEnums = ko.observableArray([]);
@@ -68,7 +83,7 @@ module nts.uk.pr.view.kmf001.h {
                 }, self);
 
                 self.selectedContractTypeCode = ko.observable('');
-                self.selectedContractTypeCode.subscribe(function(data: string) {
+                self.selectedItem.subscribe(function(data: string) {
                     self.empSettingModel().contractTypeCode(data);
                     self.loadEmpSettingDetails(data);
                 });
@@ -88,11 +103,19 @@ module nts.uk.pr.view.kmf001.h {
                 // Load enums
                 $.when(self.loadVacationExpirationEnums(), self.loadApplyPermissionEnums(), self.loadManageDistinctEnums()).done(function() {
                     self.loadComSettingDetails();
-                    self.selectedContractTypeCode(self.employmentList()[0].code);
+                    self.selectedItem(self.employmentList()[0].code);
                     dfd.resolve();
                 });
 
                 return dfd.promise();
+            }
+            private checkComManaged(): void {
+                $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
+                    if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
+                        this.hasEmp(false);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_146" });
+                    }
+                });
             }
 
             private loadVacationExpirationEnums(): JQueryPromise<Array<Enum>> {
@@ -109,7 +132,6 @@ module nts.uk.pr.view.kmf001.h {
 
                 return dfd.promise();
             }
-
             private loadApplyPermissionEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
 
@@ -191,14 +213,6 @@ module nts.uk.pr.view.kmf001.h {
 
                 return dfd.promise();
             }
-
-            public checkComManaged(): void {
-                let self = this;
-
-                if (!self.isComManaged()) {
-                }
-            }
-
             public back(): void {
                 nts.uk.request.jump("/view/kmf/001/a/index.xhtml", {});
             }
@@ -212,7 +226,7 @@ module nts.uk.pr.view.kmf001.h {
 
                 this.service.saveComSetting(self.settingModel().toSubstVacationSettingDto()).done(function() {
                     // Msg_15
-                    nts.uk.ui.dialog.alert(nts.uk.ui.dialog.info({ messageId: "Msg_15" }));
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
@@ -289,7 +303,24 @@ module nts.uk.pr.view.kmf001.h {
                     new SubstVacationSettingDto(this.isManage(), this.expirationDate(), this.allowPrepaidLeave()));
             }
         }
-
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
+        }
+        export class ListType {
+            static EMPLOYMENT = 1;
+            static Classification = 2;
+            static JOB_TITLE = 3;
+            static EMPLOYEE = 4;
+        }
+        export interface UnitModel {
+            code: string;
+            name?: string;
+            workplaceName?: string;
+            isAlreadySetting?: boolean;
+        }
         // Temp
         export class ItemModel {
             code: string;

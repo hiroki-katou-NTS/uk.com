@@ -16,9 +16,9 @@ import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
 @Stateless
 public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository {
 
-	private final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgmtStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
-	private final String GET_ALL_STANDARD_MENU_AFTER_LOGIN_DISPLAY_INDICATOR_IS_TRUE = "SELECT s FROM CcgmtStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId AND s.afterLoginDisplayIndicator = :afterLoginDisplayIndicatorValue";
-	private final int AFTER_LOGIN_DISPLAY_INDICATOR_VALUE = 1;
+	private final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
+	private final String GET_ALL_STANDARD_MENU_AFTER_LOGIN_DISPLAY_INDICATOR_IS_TRUE = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId AND s.afterLoginDisplay = :afterLoginDisplay";
+	private final int afterLoginDisplay = 1;
 	
 	/*
 	 * (non-Javadoc)
@@ -44,7 +44,8 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	@Override
 	public List<StandardMenu> findAllWithAfterLoginDisplayIndicatorIsTrue(String companyId) {
 		return this.queryProxy().query(GET_ALL_STANDARD_MENU_AFTER_LOGIN_DISPLAY_INDICATOR_IS_TRUE, CcgstStandardMenu.class)
-				 .setParameter("companyId", companyId).setParameter("afterLoginDisplayIndicatorValue", AFTER_LOGIN_DISPLAY_INDICATOR_VALUE)
+				 .setParameter("companyId", companyId)
+				 .setParameter("afterLoginDisplay", afterLoginDisplay)
 				 .getList(t -> toDomain(t));
 	}
 
@@ -69,7 +70,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	public CcgstStandardMenu toEntity(StandardMenu domain) {
 		CcgstStandardMenuPK key = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v());
 		return new CcgstStandardMenu(key, domain.getTargetItems(), domain.getDisplayName().v(), domain.getDisplayOrder(),
-				domain.getMenuAtr(), domain.getUrl(), domain.getSystem(), domain.getClassification(), domain.getWebMenuSetting(),
+				domain.getMenuAtr(), domain.getUrl(), domain.getSystem().value, domain.getClassification(), domain.getWebMenuSetting(),
 				domain.getAfterLoginDisplay(), domain.getLogSettingDisplay());
 	}
 }

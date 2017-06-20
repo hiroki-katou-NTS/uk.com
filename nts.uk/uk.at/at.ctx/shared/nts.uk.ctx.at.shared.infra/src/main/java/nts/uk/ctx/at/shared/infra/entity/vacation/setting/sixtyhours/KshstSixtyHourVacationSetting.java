@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class KshstSixtyHourVacationSetting extends UkJpaEntity {
 	/** The manage distinct. */
-	@Column(name = "MANAGE_DISTINCT")
+	@Column(name = "IS_MANAGE")
 	private int manageDistinct;
 
 	/** The sixty hour extra. */
@@ -27,7 +27,7 @@ public abstract class KshstSixtyHourVacationSetting extends UkJpaEntity {
 	private int sixtyHourExtra;
 
 	/** The time digest tive. */
-	@Column(name = "TIME_DIGEST_TIVE")
+	@Column(name = "DIGESTIVE_UNIT")
 	private int timeDigestTive;
 
 }

@@ -4,16 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto.NormalVacationSettingDto;
-import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto.OccurrenceVacationSettingDto;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto.CompensatoryAcquisitionUseDto;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto.CompensatoryDigestiveTimeUnitDto;
+import nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.command.dto.CompensatoryOccurrenceSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.NormalVacationSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OccurrenceVacationSetting;
-
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 @Getter
 @Setter
 public class SaveCompensatoryLeaveCommand {
@@ -25,10 +28,13 @@ public class SaveCompensatoryLeaveCommand {
 	private Integer isManaged;
 
 	/** The normal vacation setting. */
-	private NormalVacationSettingDto normalVacationSetting;
+	private CompensatoryAcquisitionUseDto compensatoryAcquisitionUse;
 
 	/** The occurrence vacation setting. */
-	private OccurrenceVacationSettingDto occurrenceVacationSetting;
+	private CompensatoryDigestiveTimeUnitDto compensatoryDigestiveTimeUnit;
+	
+	/** The compensatory occurrence setting. */
+	private List<CompensatoryOccurrenceSettingDto> compensatoryOccurrenceSetting; 
 
 	public CompensatoryLeaveComSetting toDomain(String companyId) {
 		return new CompensatoryLeaveComSetting(new CompensatoryLeaveComGetMementoImpl(companyId, this));
@@ -62,13 +68,21 @@ public class SaveCompensatoryLeaveCommand {
 		}
 
 		@Override
-		public NormalVacationSetting getNormalVacationSetting() {
-			return this.command.normalVacationSetting.toDomain();
+		public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override
-		public OccurrenceVacationSetting getOccurrenceVacationSetting() {
-			return this.command.occurrenceVacationSetting.toDomain();
+		public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

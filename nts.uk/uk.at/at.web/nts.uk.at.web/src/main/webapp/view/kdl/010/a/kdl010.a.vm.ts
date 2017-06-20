@@ -9,7 +9,7 @@ module kdl010.a.viewmodel {
             this.workLocationList = ko.observableArray([]);
             this.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KDL010_8"), prop: 'workLocationCD', width: 60 },
-                { headerText: nts.uk.resource.getText("KDL010_2"), prop: 'workLocationName', width: 220 }
+                { headerText: nts.uk.resource.getText("KDL010_2"), prop: 'workLocationName', width: 290 }
             ]);
 
         }
@@ -17,13 +17,12 @@ module kdl010.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.selectCode(nts.uk.ui.windows.getShared('SelectWorkLocation'));
             /** Get list WorkLocation*/
             service.getAllWorkLocation().done(function(workLocationList: Array<viewmodel.WorkLocation>) {
                  workLocationList = _.orderBy(workLocationList, ["workLocationCD"], ["asc"]);
                 self.workLocationList(workLocationList);
-                self.workLocationList().unshift(new WorkLocation( "", "選択なし"));
-                self.selectCode(nts.uk.ui.windows.getShared('SelectWorkLocation'));
+                self.workLocationList().unshift(new WorkLocation( "", nts.uk.resource.getText("KDL010_9")));
+                self.selectCode(nts.uk.ui.windows.getShared('KDL010SelectWorkLocation'));
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.fail();
@@ -40,10 +39,10 @@ module kdl010.a.viewmodel {
             var self = this;
             var selectWorkLocation = _.find(self.workLocationList(), ['workLocationCD', self.selectCode()]);
             if (selectWorkLocation !== undefined) {
-                nts.uk.ui.windows.setShared("workLocation", selectWorkLocation, true);
+                nts.uk.ui.windows.setShared("KDL010workLocation", selectWorkLocation.workLocationCD);
             }
              else {
-                nts.uk.ui.windows.setShared("workLocation", null, true);
+                nts.uk.ui.windows.setShared("KDL010workLocation", null, true);
                 }
             self.cancel_Dialog();
         }

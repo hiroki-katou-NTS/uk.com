@@ -43,12 +43,14 @@
 						</td>
 							<td id="contents-right">
 	
-								<div class="contents">
+								<div class="contents" data-bind="if : visibleUseClassification()">
 									<div class="lableData" data-bind="ntsFormLabel: {required: false}">
 										<label>#{i18n.getText('KMK012_2')}</label>
 									</div>
 									<div class="valueData">
-											<div class="cf" id="selUseClassification"
+											<div class="cf"
+												tabindex="1" 
+												id="selUseClassification"
 												data-bind="ntsSwitchButton: {
 												options: useClassification,
 												optionsValue: 'code',
@@ -62,11 +64,20 @@
 								<br />
 								<br />
 								<div class="contents" >
-									<div class="lableData" data-bind="ntsFormLabel: {required: true}">
+									<div class="lableData" 
+										data-name="#{i18n.getText('KMK012_5')}" 
+										data-bind="ntsFormLabel: {required: true}">
 										<label>#{i18n.getText('KMK012_5')}</label>
 									</div>
 									<div class="valueData">
-										<div data-bind="ntsDatePicker: {value: closureModel.month, dateFormat: 'yearmonth'}"></div>
+										<div 
+											class="nts-input"
+											id="inpMonth"
+											data-name="#{i18n.getText('KMK012_5')}" 
+											tabindex="2"  
+											data-bind="ntsDatePicker: 
+											{value: closureModel.month, required: true, enable: enableUseClassification, dateFormat: 'yearmonth'}">
+										</div>
 									</div>
 								</div>
 								<br />
@@ -78,11 +89,12 @@
 								
 								
 								<div class="contents" >
-									<button data-bind="click: openConfirmClosingPeriodDialog">#{i18n.getText('KMK012_6')}</button>
+									<button tabindex="3" data-bind="click: openConfirmClosingPeriodDialog, enable: enableUseClassification">#{i18n.getText('KMK012_6')}</button>
 								</div>
 								
 								<div class="contents">
 									<div class="lableData"  
+										tabindex="5"  
 										id="lstClosureHistoryHistory" 
 										data-bind="ntsListBox: {
 										options: closureModel.closureHistories,
@@ -90,20 +102,24 @@
 										optionsText: 'view',
 										multiple: false,
 										value: selectCodeLstClosureHistory,
-										enable: true,
-										rows: 5  }">
+										enable: enableUseClassification,
+										rows: 10  }">
 									</div>	
 										<div class="contents">
-											<div class="lableDataEnd" data-bind="ntsFormLabel: {required: true}">
+											<div class="lableDataEnd" data-bind="ntsFormLabel: {required: false}">
 												<label>#{i18n.getText('KMK012_9')}</label>
 											</div>
 											<div class="valueData">
-												<input class="nts-input" id="inpname" 
+												<input class="nts-input" 
+													id="inpname"
+													tabindex="7"   
+													data-name="#{i18n.getText('KMK012_9')}"
 													data-bind="ntsTextEditor:{
 			                                        value: closureHistoryModel.closureName,
-			                                        required: true,
-			                                        constraint: 'CloseName',
-			                                        enable: true}" />
+			                                        required: false,
+			                                        enable: enableUseClassification,
+			                                       	option: textEditorOption,
+			                                        constraint: 'CloseName'}" />
 											</div>
 										</div>
 										<br />
@@ -114,13 +130,15 @@
 												<label>#{i18n.getText('KMK012_10')}</label>
 											</div>
 											<div class="valueData">
-												 <div id="cobxDayOfMonth" data-bind="ntsComboBox: {
+												 <div id="cobxDayOfMonth"
+												 	tabindex="8"   
+												 	data-bind="ntsComboBox: {
 													options: lstDayOfMonth,
 													optionsValue: 'day',
 													value: closureHistoryModel.closureDate,
 													optionsText: 'name',
 													editable: true,
-													enable: true,
+													enable: enableChangeClosureDateAnd,
 													columns: [
 														{ prop: 'name', length: 4 }
 													]}"></div>

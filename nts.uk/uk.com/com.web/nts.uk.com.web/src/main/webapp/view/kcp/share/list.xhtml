@@ -15,20 +15,13 @@
 			<button data-bind="click: reload" style="width: 100px">#{i18n.getText('KCP003_3')}</button>
 		</com:ko>
 		<div style="width: 350px; margin-bottom: 10px; float: left;"
-			data-bind="ntsSearchBox: {searchMode: 'filter',
-				targetKey: 'code',
-				comId: 'list-table',
-				items: itemList,
-				selected: selectedCodes,
-				selectedKey: 'code',
-				fields: ['name', 'code'],
-				mode: 'igGrid'}">
+			data-bind="ntsSearchBox: searchOption">
 		</div>
 
 		<com:ko tag="if" bind="isHasButtonSelectAll">
 			<button data-bind="click: selectAll" style="margin-top: 5px;margin-left: 4px;">#{i18n.getText('KCP004_7')}</button>
 		</com:ko>
-		<table style="clear: both;" id="list-table"
+		<table style="clear: both;"
 			data-bind="ntsGridList: {								
 				height: 400,
 				width: gridStyle.totalColumnSize,

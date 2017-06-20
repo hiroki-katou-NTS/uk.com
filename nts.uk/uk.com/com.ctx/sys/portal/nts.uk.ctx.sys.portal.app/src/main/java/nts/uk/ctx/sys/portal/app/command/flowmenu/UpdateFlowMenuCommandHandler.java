@@ -14,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.flowmenu.service.FlowMenuService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -21,15 +22,18 @@ import nts.uk.shr.com.context.AppContexts;
 public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuCommand> {
 	
 	@Inject
-	public FlowMenuRepository repository;
+	private FlowMenuRepository repository;
 
+	@Inject
+	private FlowMenuService flowMenuService;
+	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		UpdateFlowMenuCommand command = context.getCommand();
 		
 		// Check FlowMenu is Existence	
-		Optional<FlowMenu> checkFlowMenu = repository.getFlowMenu(companyId, context.getCommand().getToppagePartID());
+		Optional<FlowMenu> checkFlowMenu = repository.findByCode(companyId, context.getCommand().getToppagePartID());
 		if(!checkFlowMenu.isPresent()){
 			throw new BusinessException("ER026");
 		}
@@ -40,6 +44,6 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 		flowMenu.setSize(command.getWidthSize(), command.getHeightSize());
 		flowMenu.setFileID(command.getFileID());
 		flowMenu.setDefClassAtr(command.getDefClassAtr());
-		repository.update(flowMenu);
+		flowMenuService.updateFlowMenu(flowMenu);
 	}
 }

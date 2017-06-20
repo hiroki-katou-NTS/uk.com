@@ -16,13 +16,13 @@ public class EmployeeFinder {
 	private EmployeeRepository EmpRepo;
 
 	private String companyId = AppContexts.user().companyId();
-
+	
+	/** Get person ID by EmployeeCode */
 	public Optional<EmployeeDto> getPersonIdByEmployeeCode(String employeeCode) {
-		Optional<EmployeeDto> test = this.EmpRepo.getPersonIdByEmployeeCode(companyId, employeeCode)
+		return this.EmpRepo.getPersonIdByEmployeeCode(companyId, employeeCode)
 				.map(item -> EmployeeDto.fromDomain(item));
-		return test;
 	}
-
+	/** Get person ID by LIST EmployeeCode */
 	public List<EmployeeDto> getListPersonIdByEmployeeCode(List<String> listEmployeeCode) {
 		return this.EmpRepo.getListPersonByListEmployee(companyId, listEmployeeCode)
 				.stream()

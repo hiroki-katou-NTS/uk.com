@@ -14,8 +14,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.basic.app.find.company.organization.employment.EmploymentFinder;
-import nts.uk.ctx.basic.app.find.company.organization.employment.dto.EmploymentFindDto;
+import nts.uk.shr.find.employment.EmploymentDto;
+import nts.uk.shr.find.employment.EmploymentFinder;
 
 /**
  * The Class EmploymentWebService.
@@ -35,19 +35,20 @@ public class EmploymentWebService extends WebService {
 	 */
 	@POST
 	@Path("findAll")
-	public List<EmploymentFindDto> findAll() {
+	public List<EmploymentDto> findAll() {
 		return this.finder.findAll();
 	}
+	
 	
 	/**
 	 * Find by id.
 	 *
 	 * @param employmentCode the employment code
-	 * @return the employment find dto
+	 * @return the employment dto
 	 */
 	@POST
 	@Path("findById/{employmentCode}")
-	public EmploymentFindDto findById(@PathParam("employmentCode") String employmentCode) {
-		return this.finder.getById(employmentCode);
+	public EmploymentDto findById(@PathParam("employmentCode") String employmentCode) {
+		return this.finder.findByCode(employmentCode);
 	}
 }

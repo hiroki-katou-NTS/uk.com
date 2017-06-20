@@ -26,11 +26,11 @@ module kdl002.a.viewmodel {
         start() {
             var self = this;
             
-            self.isMulti = nts.uk.ui.windows.getShared('ModeMultiple');
+            self.isMulti = nts.uk.ui.windows.getShared('KDL002_Multiple');
             //all possible items
-            self.posibleItems = nts.uk.ui.windows.getShared('AllItemObj');
+            self.posibleItems = nts.uk.ui.windows.getShared('KDL002_AllItemObj');
             //selected items
-            var selectCode = nts.uk.ui.windows.getShared('SelectedItemId');
+            var selectCode = nts.uk.ui.windows.getShared('KDL002_SelectedItemId');
             self.currentCodeList(selectCode);
             //set source
             if(self.posibleItems == null || self.posibleItems === undefined){
@@ -67,7 +67,7 @@ module kdl002.a.viewmodel {
                     return;
                 }
 
-                nts.uk.ui.windows.setShared('SelectedNewItem', lstObj,true);
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', lstObj,true);
             }else{
                 let objectNew2 = self.findItem(self.currentCodeList().toString());
                 if(objectNew2 != undefined && objectNew2 != null){
@@ -75,7 +75,7 @@ module kdl002.a.viewmodel {
                 }
                 let listnew =[];
                 listnew.push(lstObj2);
-                nts.uk.ui.windows.setShared('SelectedNewItem', listnew,true);
+                nts.uk.ui.windows.setShared('KDL002_SelectedNewItem', listnew,true);
             }
             nts.uk.ui.windows.close();
 //            var t1 = performance.now();

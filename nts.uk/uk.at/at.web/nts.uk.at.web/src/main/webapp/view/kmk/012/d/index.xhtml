@@ -21,9 +21,12 @@
 			</ui:define>
 			<ui:define name="content">
 				<div class="processingDate">
-					<div id="valueProcessingDate" data-name="#{i18n.getText('KMK012_35')}"
+					<div id="valueProcessingDate" 
+						class="nts-input"
+						data-name="#{i18n.getText('KMK012_35')}"
+						tabindex="1"  
 						data-bind="ntsDatePicker: 
-						{value: closureDetailModel.month, dateFormat: 'yearmonth'}">
+						{value: closureDetailModel.month, required: true, dateFormat: 'yearmonth'}">
 					</div>
 					<div id="lableProcessingDate"><label>#{i18n.getText('KMK012_25')}</label></div>
 				</div>
@@ -53,6 +56,7 @@
 					<div class="lableChangeAfter"><label>#{i18n.getText('KMK012_27')}</label></div>
 					<div class="valueChangeAfter">
 						<div id="cobxDayOfMonth" 
+							tabindex="2"  
 							data-name="#{i18n.getText('KMK012_10')}"
 							data-bind="ntsComboBox: {
 							options: lstDayOfMonth,
@@ -87,8 +91,8 @@
 				
 				<center>
 					<div class="endAction">
-						<button class="proceed large" data-bind="click: saveChangeClosureDate">#{i18n.getText('KMK012_32')}</button>
-						<button class="large btnclose"  data-bind="click: closeWindowns">#{i18n.getText('KMK012_33')}</button>
+						<button tabindex="3" class="proceed large" data-bind="click: saveChangeClosureDate">#{i18n.getText('KMK012_32')}</button>
+						<button tabindex="4" class="large btnclose"  data-bind="click: closeWindowns">#{i18n.getText('KMK012_33')}</button>
 					</div>
 				</center>
 			</ui:define>

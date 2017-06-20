@@ -1,11 +1,9 @@
 module kdl010.b.viewmodel {
     export class ScreenModel {
         workLocationCD: KnockoutObservable<string>;
-        workLocationName: KnockoutObservable<string>;
         constructor() {
             var self = this;
             self.workLocationCD = ko.observable("");
-            self.workLocationName = ko.observable("");
         }
 
         startPage(): JQueryPromise<any> {
@@ -18,13 +16,17 @@ module kdl010.b.viewmodel {
         openDialog() {
             var self = this;
             nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.setShared('SelectWorkLocation', self.workLocationCD());
-            nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() =>{
-            var self = this;
-            var returnItem = nts.uk.ui.windows.getShared("workLocation");
-            self.workLocationCD(returnItem.workLocationCD);
-            self.workLocationName(returnItem.workLocationName);
-            nts.uk.ui.block.clear();    
+            nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD());
+            nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                var self = this;
+                var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                if (returnWorkLocationCD !== undefined) {
+                    self.workLocationCD(returnWorkLocationCD);
+                    nts.uk.ui.block.clear();
+                }
+                else{
+                    self.workLocationCD = ko.observable("");
+                    nts.uk.ui.block.clear();}
             });
         }
     }

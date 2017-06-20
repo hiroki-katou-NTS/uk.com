@@ -2,10 +2,8 @@ module nts.uk.pr.view.kmf001.b {
     export module viewmodel {
 
         import Enum = service.model.Enum;
-
+        
         export class ScreenModel {
-
-
             textEditorOption: KnockoutObservable<any>;
             categoryEnums: KnockoutObservableArray<Enum>;
             selectedPriority: KnockoutObservable<number>;

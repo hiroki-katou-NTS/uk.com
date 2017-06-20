@@ -75,4 +75,16 @@ public class ClosureHistory extends DomainObject{
 		memento.setClosureDate(this.closureDate);
 		memento.setStartDate(this.startDate);
 	}
+	
+	/**
+	 * To closure date.
+	 *
+	 * @return the int
+	 */
+	public int toClosureDate(){
+		if(this.getClosureDate().getLastDayOfMonth()){
+			return 0;
+		}
+		return this.getClosureDate().getDay();
+	}
 }

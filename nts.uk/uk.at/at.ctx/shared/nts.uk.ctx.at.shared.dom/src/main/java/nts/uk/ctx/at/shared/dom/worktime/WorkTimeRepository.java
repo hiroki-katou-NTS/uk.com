@@ -17,7 +17,7 @@ public interface WorkTimeRepository {
 	 * @param workTimeCD Work Time Code
 	 * @return Work Time
 	 */
-	public Optional<WorkTime> findByCode(String companyID, String workTimeCD);
+	public Optional<WorkTime> findByCode(String companyID, String siftCD);
 	
 	/**
 	 * get list Work Time by Work Time Code list and Company ID
@@ -25,6 +25,6 @@ public interface WorkTimeRepository {
 	 * @param workTimeCDs Work Time Code list
 	 * @return list Work Time
 	 */
-	public List<WorkTime> findByCodeList(String companyID, List<String> workTimeCDs);
+	public List<WorkTime> findByCodeList(String companyID, List<String> siftCDs);
 	
 }

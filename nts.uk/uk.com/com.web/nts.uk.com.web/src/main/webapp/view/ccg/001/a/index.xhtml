@@ -7,7 +7,10 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="ccg001.a.vm.js" />
 			<com:scriptfile path="ccg001.a.start.js" />
 		</ui:define>
@@ -15,19 +18,40 @@
 		<ui:define name="content">
 			<!-- BEGIN CONTENT AREA -->
 			<div id="contents-area">
-			<div data-bind="ntsFormLabel: {}">基準日</div>
-			<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
-			<button id="btn_apply" data-bind="">適用</button>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_1')}</div>
+			<div data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
+			<button id="btn_apply" data-bind="">#{i18n.getText('CCG001_2')}</button>
 				<div id="tab-panel"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 					<div class="tab-content-1">
-						<span class="btn_big">参照可能な社員すべて</span><span style="color:#2ECC71; margin-left: 5px" class="caret-right"></span><br/>
-						<span class="btn_big">自分だけ</span><span style="color:#2ECC71; margin-left: 5px" class="caret-right"></span><br/>
-						<span class="btn_small">おなじ職場の社員</span><span style="color:#2ECC71; margin-left: 5px" class="caret-right"></span><br/>
-						<span class="btn_small">おなじ+配下の職場の社員</span><span style="color:#2ECC71; margin-left: 5px" class="caret-right"></span><br/>
+						<span class="btn_big">#{i18n.getText('CCG001_10')}</span>
+						<span class="controlSetting caret-right"></span>
+						<br/>
+						<span class="btn_big">#{i18n.getText('CCG001_11')}</span>
+						<span class="controlSetting caret-right"></span>
+						<br/>
+						<span class="btn_small">#{i18n.getText('CCG001_12')}</span>
+						<span class="controlSetting caret-right"></span>
+						<br/>
+						<span class="btn_small">#{i18n.getText('CCG001_13')}</span>
+						<span class="controlSetting caret-right"></span>
+						<br/>
 					</div>
 					<div class="tab-content-2">
-						<div>しぼり込み条件</div>
+						<div>
+							<label>#{i18n.getText('CCG001_20')}</label>
+						</div>
+						<div class="accordion">
+							<h3><label>#{i18n.getText('CCG001_5')}</label></h3>
+							<div class="contentkcp" id="employeeList"></div>
+							<h3><label>#{i18n.getText('CCG001_6')}</label></h3>
+							<div class="contentkcp" id ="classificationList"></div>
+							<h3><label>#{i18n.getText('CCG001_7')}</label></h3>
+							<div class="contentkcp" id="jobtitleList"></div>
+							<h3><label>#{i18n.getText('CCG001_8')}</label></h3>
+							<div class="contentkcp" id="workplaces"></div>
+						</div>
+						
 						<hr/>
 						<div>雇用でしぼり込む</div>
 						<div>分類でしぼり込む</div>

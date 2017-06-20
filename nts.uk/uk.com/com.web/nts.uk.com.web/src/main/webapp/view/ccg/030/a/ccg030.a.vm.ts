@@ -22,7 +22,7 @@ module ccg030.a.viewmodel {
             var self = this;
             // list
             self.listFlowMenu = ko.observableArray([]);
-            self.selectedFlowMenuCD = ko.observable("");
+            self.selectedFlowMenuCD = ko.observable(null);
             self.selectedFlowMenuCD.subscribe((value) => {
                 self.findFlowMenu(value);
             });
@@ -74,7 +74,7 @@ module ccg030.a.viewmodel {
             var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
             var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
-            if (util.isNullOrEmpty(self.selectedFlowMenu().fileID())
+            if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
                 $('#file_upload').ntsError('set', '選択されていないファイル');
             if (!errors.hasError()) {
                 nts.uk.ui.block.invisible();

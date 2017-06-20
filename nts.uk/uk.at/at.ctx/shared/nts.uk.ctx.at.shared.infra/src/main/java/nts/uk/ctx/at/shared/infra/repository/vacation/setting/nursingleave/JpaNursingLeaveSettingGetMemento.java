@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
 
 /**
  * The Class JpaNursingVacationSettingGetMemento.
@@ -22,19 +21,14 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
     /** The entity nursing. */
     private KnlmtNursingLeaveSet entityNursing;
     
-    /** The entity work types. */
-    private List<KnlmtNursingWorkType> entityWorkTypes;
-    
     /**
      * Instantiates a new jpa nursing vacation setting get memento.
      *
      * @param entityNursing the entity nursing
      * @param entityWorkTypes the entity work types
      */
-    public JpaNursingLeaveSettingGetMemento(KnlmtNursingLeaveSet entityNursing,
-            List<KnlmtNursingWorkType> entityWorkTypes) {
+    public JpaNursingLeaveSettingGetMemento(KnlmtNursingLeaveSet entityNursing) {
         this.entityNursing = entityNursing;
-        this.entityWorkTypes = entityWorkTypes;
     }
     
     /*
@@ -100,7 +94,9 @@ public class JpaNursingLeaveSettingGetMemento implements NursingLeaveSettingGetM
      */
     @Override
     public List<String> getWorkTypeCodes() {
-        return this.entityWorkTypes.stream()
+        return this.entityNursing.getListWorkType().stream()
+                .filter(entity -> entity.getKnlmtNursingWorkTypePK().getNursingCtr() == this.entityNursing
+                        .getKnlmtNursingLeaveSetPK().getNursingCtr())
                 .map(entity -> entity.getWorkTypeCode())
                 .collect(Collectors.toList());
     }
