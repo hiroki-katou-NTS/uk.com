@@ -109,3 +109,6 @@ table#table tr td.title {
 .margin_right_50{
 	margin-right: 50px;
 }
+.padding_head {
+	width: 40px;
+}
