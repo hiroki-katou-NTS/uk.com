@@ -38,7 +38,7 @@ public class WorkplaceWtSettingRemoveCommandHandler extends CommandHandler<Workp
 	protected void handle(CommandHandlerContext<WorkplaceWtSettingRemoveCommand> context) {
 		// Get Command
 		WorkplaceWtSettingRemoveCommand command = context.getCommand();
-		this.repository.remove(companyId, command.getYear(), command.getWorkPlaceId());
+		this.repository.remove(companyId, command.getYear(), command.getWorkplaceId());
 	}
 
 }
