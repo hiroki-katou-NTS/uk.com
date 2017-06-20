@@ -1,13 +1,5 @@
 @CHARSET "UTF-8";
 
-.nts-switch-button {
-	min-width: 80px;
-	font-size: 13px !important;
-	height: 30px !important;
-	padding: 3px 7px !important;
-	margin-bottom: 3px !important;
-}
-
 .btn-default {
 	margin-left: 20px;
 	min-width: 80px;
@@ -54,6 +46,7 @@ table#table tr td.title {
 #radio_group_over {
 	display: inline-grid;
 }
+
 .ntsRadioBox {
 	padding: 10px;
 }
@@ -62,10 +55,13 @@ table#table tr td.title {
 	margin-left: 50px;
 }
 
-.pad_left_30 {	
+.pad_left_30 {
 	padding-left: 30px;
 }
-.pad_left_60 {	
+.pad_left_50 {
+	padding-left: 50px;
+}
+.pad_left_60 {
 	padding-left: 60px;
 }
 
@@ -90,10 +86,26 @@ table#table tr td.title {
 .float_right {
 	float: right;
 }
-.padding_over{
+
+.padding_over {
 	padding: 10px;
 }
-.lbl_text{
+
+.lbl_text {
 	width: 300px;
 	padding-left: 40px;
+}
+
+#main-scr-tbl {
+	margin: 50px;
+	width: 1000px;
+}
+
+#main-scr-tbl-right {
+	vertical-align: top;
+	padding-left: 50px;
+	padding-top: 10px;
+}
+.margin_right_50{
+	margin-right: 50px;
 }
