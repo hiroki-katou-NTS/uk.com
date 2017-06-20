@@ -23,20 +23,23 @@ public class KmkmtAgeementOperationSetting extends UkJpaEntity implements Serial
 	@EmbeddedId
     public KmkmtAgeementOperationSettingPK kmkmtAgeementOperationSettingPK;
 	
-	@Column(name ="STARTING_MONTH_ATR")
-	public BigDecimal startingMonthAtr;
+	@Column(name ="STARTING_MONTH_TYPE")
+	public BigDecimal startingMonthType;
 	
-	@Column(name ="NUMBER_OF_TIMES_OVER_LIMIT_ATR")
-	public BigDecimal numberOfTimesOverLimitAtr;
-	
-	@Column(name ="CLOSING_DATE_ATR")
-	public BigDecimal closingDateAtr;
+	@Column(name ="NUMBER_TIMES_OVER_LIMIT_TYPE")
+	public BigDecimal numberTimesOverLimitType;
 	
 	@Column(name ="CLOSING_DATE_TYPE")
 	public BigDecimal closingDateType;
 	
-	@Column(name ="TARGET_SETTING_TYPE")
-	public BigDecimal targetSettingType;
+	@Column(name ="CLOSING_DATE_ATR")
+	public BigDecimal closingDateAtr;
+	
+	@Column(name ="YEARLY_WORK_TABLE_ATR")
+	public BigDecimal yearlyWorkTableAtr;
+	
+	@Column(name ="ALARM_LIST_ATR")
+	public BigDecimal alarmListAtr;
 	
 	@Override
 	protected Object getKey() {
