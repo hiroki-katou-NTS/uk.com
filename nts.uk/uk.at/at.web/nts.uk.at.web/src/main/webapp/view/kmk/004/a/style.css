@@ -7,8 +7,9 @@
 	min-width: 60px;
 }
 
-.border-all.ntsControl.nts-input {
-	width: 50px;
+.border-all input {
+	width: 80px;
+	text-align: center !important;
 }
 
 .contents-area {
@@ -17,4 +18,7 @@
 }
 .bg-dark-green {
 	background-color: #C7F391;
+}
+#right-content {
+	margin-left: 60px;
 }
