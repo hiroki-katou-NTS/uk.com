@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime;
 
+import java.util.Optional;
+
 /**
  * The Interface UsageUnitSettingRepository.
  */
@@ -17,10 +19,10 @@ public interface UsageUnitSettingRepository {
 	void update(UsageUnitSetting setting);
 
 	/**
-	 * Find.
+	 * Find by company.
 	 *
 	 * @param companyId the company id
-	 * @return the usage unit setting
+	 * @return the optional
 	 */
-	UsageUnitSetting find(String companyId);
+	Optional<UsageUnitSetting> findByCompany(String companyId);
 }

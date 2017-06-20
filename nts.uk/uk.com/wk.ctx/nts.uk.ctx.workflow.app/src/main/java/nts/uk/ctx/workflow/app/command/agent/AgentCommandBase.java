@@ -6,7 +6,10 @@ import nts.arc.time.GeneralDate;
 
 @Value
 public class AgentCommandBase {
+	
 	private String employeeId;
+	
+	private String requestId;
 	
 	private GeneralDate startDate;
 	

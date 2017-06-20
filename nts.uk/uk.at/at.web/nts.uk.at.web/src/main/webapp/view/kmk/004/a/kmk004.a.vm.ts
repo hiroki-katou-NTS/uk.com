@@ -1,20 +1,23 @@
 module nts.uk.at.view.kmk004.a {
     export module viewmodel {
 
+        import UsageUnitSettingService = nts.uk.at.view.kmk004.e.service;
+
         export class ScreenModel {
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
 
             itemList: KnockoutObservableArray<ItemModel>;
-            selectedCode: KnockoutObservable<string>;
+            employmentCodes: KnockoutObservableArray<any>;
 
             companyWTSetting: KnockoutObservable<CompanyWTSetting>;
+            employmentWTSetting: KnockoutObservable<EmploymentWTSetting>;
             usageUnitSetting: UsageUnitSetting;
-            currentYear: number;
+            listEmploymentOption: any;
+            selectedEmploymentCode: KnockoutObservable<string>;
 
             constructor() {
                 let self = this;
-                self.currentYear = new Date().getFullYear();
                 self.usageUnitSetting = new UsageUnitSetting();
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText("KMK004_3"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -32,18 +35,45 @@ module nts.uk.at.view.kmk004.a {
                     new ItemModel('7', '締め開始日')
                 ]);
                 self.companyWTSetting = ko.observable(new CompanyWTSetting());
-                self.companyWTSetting().year(self.currentYear);
-                self.selectedCode = ko.observable('');
+                self.employmentWTSetting = ko.observable(new EmploymentWTSetting());
                 self.selectedTab = ko.observable('tab-1');
+
+                self.selectedEmploymentCode = ko.observable('');
+
+                self.employmentCodes = ko.observableArray([]);
+                self.setListComponentOption();
+                $('#list-employment').ntsListComponent(this.listEmploymentOption);
+                self.selectedEmploymentCode.subscribe(code => {
+                    self.loadEmploymentSetting(code);
+                });
             }
             
+            private setListComponentOption(): void {
+                let self = this;
+                self.listEmploymentOption = {
+                    isShowAlreadySet: true, // is show already setting column.
+                    isMultiSelect: false, // is multiselect.
+                    listType: 1,
+                    selectedCode: this.selectedEmploymentCode,
+                    isDialog: false,
+                    alreadySettingList: self.employmentCodes
+                };
+            }
+
+            public onSelectEmployment(): void {
+                let self = this;
+                self.setAlreadySettingList();
+            }
+
             public gotoE(): void {
-                nts.uk.ui.windows.sub.modal("/view/kmk/004/e/index.xhtml");
+                let self = this;
+                nts.uk.ui.windows.sub.modal("/view/kmk/004/e/index.xhtml").onClosed(() => self.loadUsageUnitSetting());
             }
 
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
+                self.loadUsageUnitSetting();
                 self.loadCompanySetting();
                 dfd.resolve();
                 return dfd.promise();
@@ -52,9 +82,27 @@ module nts.uk.at.view.kmk004.a {
             public save(): void {
                 let self = this;
                 service.saveCompanySetting(ko.toJS(self.companyWTSetting));
-                console.log(ko.toJS(self.companyWTSetting));
             }
 
+            public saveEmployment(): void {
+                let self = this;
+                service.saveEmploymentSetting(ko.toJS(self.employmentWTSetting)).done(() => self.setAlreadySettingList());
+            }
+
+            public removeEmployment(): void {
+                let self = this;
+                let empt = self.employmentWTSetting();
+                let command = { year: empt.year(), employmentCode: empt.employmentCode() }
+                service.removeEmploymentSetting(command).done(() => {
+                    self.setAlreadySettingList();
+                    let code = self.employmentWTSetting().employmentCode();
+                    let name = self.employmentWTSetting().employmentName();
+                    let empt = new EmploymentWTSetting();
+                    empt.employmentCode(code);
+                    empt.employmentName(name);
+                    self.employmentWTSetting(empt);
+                });
+            }
             public remove(): void {
                 let self = this;
                 let command = {year: self.companyWTSetting().year()}
@@ -64,11 +112,53 @@ module nts.uk.at.view.kmk004.a {
             public loadCompanySetting(): void {
                 let self = this;
                 service.findCompanySetting(self.companyWTSetting().year()).done(res => {
+                    // update mode.
                     if (res) {
                         let abc = ko.mapping.fromJS(res);
                         self.companyWTSetting(abc);
-                        console.log(abc);
                     }
+                    else {
+                        // new mode.
+                        self.companyWTSetting(new CompanyWTSetting());
+                    }
+                });
+            }
+
+            public loadEmploymentSetting(code: string): void {
+                let self = this;
+                let request = { year: self.employmentWTSetting().year(), employmentCode: code };
+                service.findEmploymentSetting(request).done(res => {
+                    // update mode.
+                    if (res) {
+                        let abc = ko.mapping.fromJS(res);
+                        self.employmentWTSetting(abc);
+                    } else {
+                        // new mode.
+                        let empt = new EmploymentWTSetting();
+                        empt.employmentCode(code);
+                        empt.employmentName('fake name');
+                        self.employmentWTSetting(empt);
+                    }
+                });
+            }
+
+            public loadUsageUnitSetting(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                UsageUnitSettingService.findUsageUnitSetting().done(function(res: UsageUnitSettingService.model.UsageUnitSettingDto) {
+                    self.usageUnitSetting.employee(res.employee);
+                    self.usageUnitSetting.employment(res.employment);
+                    self.usageUnitSetting.workPlace(res.workPlace);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            private setAlreadySettingList(): void {
+                let self = this;
+                service.findAllEmploymentSetting(self.companyWTSetting().year()).done(res => {
+                    self.employmentCodes.removeAll();
+                    res.forEach(item => self.employmentCodes.push({ code: item, isAlreadySetting: true }));
                 });
             }
 
@@ -100,7 +190,7 @@ module nts.uk.at.view.kmk004.a {
 
             constructor() {
                 let self = this;
-                self.year = ko.observable(0);
+                self.year = ko.observable(new Date().getFullYear());
                 self.deformationLaborSetting = new DeformationLaborSetting();
                 self.flexSetting = new FlexSetting();
                 self.normalSetting = new NormalSetting();
@@ -116,7 +206,7 @@ module nts.uk.at.view.kmk004.a {
             constructor() {
                 let self = this;
                 self.workPlaceId = '';
-                self.year = ko.observable(201705);
+                self.year = ko.observable(new Date().getFullYear());
                 self.deformationLaborSetting = new DeformationLaborSetting();
                 self.flexSetting = new FlexSetting();
                 self.normalSetting = new NormalSetting();
@@ -138,12 +228,22 @@ module nts.uk.at.view.kmk004.a {
             flexSetting: FlexSetting;
             normalSetting: NormalSetting;
             year: KnockoutObservable<number>;
-            employmentCode: string;
+            employmentCode: KnockoutObservable<string>;
+            employmentName: KnockoutObservable<string>;
 
             constructor() {
                 let self = this;
-                self.employmentCode = '';
-                self.year = ko.observable(201705);
+                self.employmentCode = ko.observable('');
+                self.employmentName = ko.observable('');
+                self.year = ko.observable(new Date().getFullYear());
+                self.deformationLaborSetting = new DeformationLaborSetting();
+                self.flexSetting = new FlexSetting();
+                self.normalSetting = new NormalSetting();
+            }
+
+            // TODO: testing.
+            public reset(): void {
+                let self = this;
                 self.deformationLaborSetting = new DeformationLaborSetting();
                 self.flexSetting = new FlexSetting();
                 self.normalSetting = new NormalSetting();
@@ -223,6 +323,12 @@ module nts.uk.at.view.kmk004.a {
                     m.month(i);
                     self.monthly.push(m);
                 }
+            }
+            public reset(): void {
+                let self = this;
+                self.daily(0);
+                self.startMonth(0);
+                self.weekly(0);
             }
         }
         export class Monthly {

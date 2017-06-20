@@ -7,16 +7,17 @@ module cmm044.a.viewmodel {
     import formatym = nts.uk.time.parseYearMonthDate;
 
     export class ScreenModel {
-        empItems: KnockoutObservableArray<PersonModel> = ko.observableArray([new PersonModel({ personId: '99900000-0000-0000-0000-000000000001', code: 'A000000001', name: '日通　社員1', baseDate: 20170104 })]);
-        empSelectedItem: KnockoutObservable<PersonModel> = ko.observable(new PersonModel({ personId: '99900000-0000-0000-0000-000000000002', code: 'A000000001', name: '日通　社員1', baseDate: 20170104 }));
+        empItems: KnockoutObservableArray<PersonModel>;
+        empSelectedItem: KnockoutObservable<any>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        simpleValue: KnockoutObservable<string>;
-        simpleValue1: KnockoutObservable<string>;
+        startDate: KnockoutObservable<string>;
+        endDate: KnockoutObservable<string>;
         itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        date: KnockoutObservable<string>;
-        date1: KnockoutObservable<string>;
+        selectedId1: KnockoutObservable<number>;
+        selectedId2: KnockoutObservable<number>;
+        selectedId3: KnockoutObservable<number>;
+        selectedId4: KnockoutObservable<number>;
         index_of_itemDelete: any;
 
         //List Time
@@ -25,18 +26,15 @@ module cmm044.a.viewmodel {
         //]);
         //histSelectedItem: KnockoutObservable<ListModel> = ko.observable(new ListModel({ historyId: 'NEW', startDate: 20170104, endDate: 99991201 }));
         histItems: KnockoutObservableArray<model.AgentDto>;
-        histSelectedItem: KnockoutObservable<string>;
-        currentItem: KnockoutObservable<model.AgentDto>;
-
+        currentAgent: KnockoutObservable<model.AgentDto>;
+        histSelectedItem: KnockoutObservable<any>;
+        currentItem: KnockoutObservable<model.AgentAppDto>;
 
         constructor() {
             let self = this;
             self.index_of_itemDelete = ko.observable(-1);
             self.currentItem = ko.observable(null);
-            self.simpleValue = ko.observable("2017/01/04");
-            self.simpleValue1 = ko.observable("9999/12/01");
-            self.date = ko.observable('20000101');
-            self.date1 = ko.observable('99990112');
+            self.currentAgent = ko.observable(null);
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: '就業承認', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: '人事承認', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -44,19 +42,45 @@ module cmm044.a.viewmodel {
                 { id: 'tab-4', title: '経理承認', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             self.histItems = ko.observableArray([]);
-            self.histSelectedItem = ko.observable("");
             self.selectedTab = ko.observable('tab-1');
+            self.empItems = ko.observableArray([]);
+            self.empSelectedItem = ko.observable();
             self.empSelectedItem.subscribe(function(newValue) {
-
+                $.when(self.getAllAgen(newValue.personId)).done(function() {
+                    if (self.histItems().length > 0) {
+                        self.histSelectedItem(self.histItems()[0].requestId);
+                    } else {
+                        self.currentItem(new model.AgentAppDto(newValue.personId, "", "", "", "", null, "", null, "", null, "", null));
+                    }    
+                });
+            });
+            self.histSelectedItem = ko.observable("");
+            self.histSelectedItem.subscribe(function(requestId) {
+                self.getAgen(self.empSelectedItem().personId, requestId);
             });
             self.itemList = ko.observableArray([
                 new BoxModel(0, '代理'),
                 new BoxModel(1, 'パス'),
                 new BoxModel(2, '設定しない(待ってもらう)')
             ]);
-            self.selectedId = ko.observable(0);
-            self.selectedId.subscribe(function(codeChanged) {
-                self.disableRadioBox(codeChanged);
+            self.selectedId1 = ko.observable(0);
+            self.selectedId1.subscribe(function(codeChanged) {
+            
+            });
+
+            self.selectedId2 = ko.observable(0);
+            self.selectedId2.subscribe(function(codeChanged) {
+
+            });
+
+            self.selectedId3 = ko.observable(0);
+            self.selectedId3.subscribe(function(codeChanged) {
+
+            });
+
+            self.selectedId4 = ko.observable(0);
+            self.selectedId4.subscribe(function(codeChanged) {
+
             });
 
             self.start();
@@ -74,75 +98,140 @@ module cmm044.a.viewmodel {
                         personId: '99900000-0000-0000-0000-00000000000' + i,
                         code: 'A00000000' + i,
                         name: '日通　社員' + i,
-                        baseDate: 20170105
                     }));
                 } else {
                     self.empItems.push(new PersonModel({
                         personId: '99900000-0000-0000-0000-00000000000' + i,
                         code: 'A0000000' + i,
                         name: '日通　社員' + i,
-                        baseDate: 20170105
                     }));
 
                 }
             });
 
-            service.findAllAgent(self.empSelectedItem().personId).done(function(agent_arr: Array<model.AgentDto>) {
-                self.histItems(agent_arr);
-                if (self.histItems().length > 0) {
-                    self.histSelectedItem(self.histItems()[0].startDate)
-                }
-                //                     else {
-                //                    self.initRegisterPayClassification();
-                //                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-                dfd.reject(error);
-            })
+            // fix 
+            self.empSelectedItem(self.empItems()[0]);
+
+            dfd.resolve();
 
             return dfd.promise();
         }
 
-        disableRadioBox(value: number) {
+        /**
+         * find agen by employee
+         */
+        getAllAgen(employeeId): JQueryPromise<any> {
             var self = this;
-            if (value == 1 || value == 2) {
-                $('#BTN_A4_003').hide();
-                $('#A4-004').hide();
+            var dfd = $.Deferred();
+            self.histItems.removeAll();
+            service.findAllAgent(employeeId).done(function(agent_arr: Array<model.AgentDto>) {
+                if (agent_arr && agent_arr.length) {
+                    self.histItems.removeAll();
+                    for (var i = 0; i < agent_arr.length; i++) {
+                        self.histItems.push(new model.AgentDto(agent_arr[i].companyId, agent_arr[i].employeeId, agent_arr[i].requestId, agent_arr[i].startDate, agent_arr[i].endDate, agent_arr[i].agentSid1, agent_arr[i].agentAppType1, agent_arr[i].agentSid2, agent_arr[i].agentAppType2, agent_arr[i].agentSid3, agent_arr[i].agentAppType3, agent_arr[i].agentSid4, agent_arr[i].agentAppType4));
+                    }
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+                dfd.reject(error);
+            });
+
+            return dfd.promise();
+        }
+
+        getAgen(employeeId: string, requestId: string): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            if (!requestId) {
+                return;    
+            }
+            
+            var param = {
+                employeeId: employeeId,
+                requestId: requestId
+            };
+            service.findAgent(param).done(function(agent: model.AgentDto) {
+                self.currentItem(new model.AgentAppDto(employeeId, requestId, agent.startDate, agent.endDate,
+                    agent.agentSid1, agent.agentAppType1,
+                    agent.agentSid2, agent.agentAppType2,
+                    agent.agentSid3, agent.agentAppType3,
+                    agent.agentSid4, agent.agentAppType4));
+
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+                dfd.reject(error);
+            });
+
+            return dfd.promise();
+        }
+
+        /**
+         * 
+         */
+        findInHistItem(employeeId: string, requestId: string): model.AgentDto {
+            var self = this;
+            return _.find(self.histItems(), function(item: any) {
+                if (item.employeeId == employeeId && item.requestId == requestId) {
+                    return item;
+                }
+            });
+        }
+
+        /**
+         * Add new agent and Update agent
+         */
+        addAgent() {
+            var self = this;
+            var dfd = $.Deferred<any>();
+
+            if (self.histItems().length === 0) {
+                service.addAgent(self.currentItem()).done(function() {
+                }).fail(function(res) {
+                    alert(res.message);
+                    dfd.reject(res);
+                })
+            }
+
+            var agent = ko.toJSON(self.currentItem());
+            agent["employeeId"] = self.empSelectedItem().personId;
+
+            var existsItem = self.findInHistItem(self.currentItem().employeeId(), self.histSelectedItem());
+
+            if (existsItem) {
+                service.updateAgent(agent).done(function() {
+                    self.getAllAgen(self.empSelectedItem().personId);
+                }).fail(function(res) {
+                    alert(res.message);
+                    dfd.reject(res);
+                })
             } else {
-                $('#BTN_A4_003').show();
-                $('#A4-004').show();
+                service.addAgent(agent).done(function(requestId) {
+                    self.getAllAgen(self.empSelectedItem().personId);
+                    self.histSelectedItem(requestId);
+                }).fail(function(res) {
+                    alert(res.message);
+                    dfd.reject(res);
+                })
             }
         }
 
-//        addAgent() {
-//            var self = this;
-//            var dfd = $.Deferred<any>();
-//
-//            if (self.histItems().length === 0) {
-//                let agent = new viewmodel.model.AgenApptDto(self.currentItem().startDate, self.currentItem().endDate, self.currentItem().agentSid, self.currentItem().agentAppType);
-//                service.addAgent(agent).done(function() {
-//
-//                    self.getAgentListFirst();
-//                }).fail(function(res) {
-//                    alert(res.message);
-//                    dfd.reject(res);
-//                })
-//            }
-//        }
-        getAgentListFirst() { }
         deleteAgent() {
             let self = this;
 
             let dfd = $.Deferred<any>();
-            let item = new model.DeleteAgent(self.currentItem().companyId, self.currentItem().employeeId, self.currentItem().startDate);
-            self.index_of_itemDelete = self.histItems().indexOf(self.currentItem());
+            self.index_of_itemDelete = self.histItems().indexOf(self.histSelectedItem());
             if (self.histItems().length == 1) {
                 nts.uk.ui.dialog.alert("選択している履歴の職位が1件のみのため、\r\n履歴の編集ボタンから履歴削除を行ってください。")
             } else {
                 nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
-                    service.deleteAgent(item).done(function(res) {
-                        self.getAgentList_afterDelete();
+                    var agent = {
+                        employeeId: self.empSelectedItem().personId,
+                        requestId: self.currentItem().requestId()
+                    }
+                    service.deleteAgent(agent).done(function(res) {
+                        self.getAllAgen(self.empSelectedItem().personId);
                     }).fail(function(res) {
                         dfd.reject(res);
                     })
@@ -151,35 +240,16 @@ module cmm044.a.viewmodel {
             }
 
         }
-        getAgentList_afterDelete() {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            service.findAllAgent(self.histSelectedItem()).done(function(agent_arr: Array<model.AgentDto>) {
-                self.histItems = ko.observableArray([]);
-                self.histItems(agent_arr);
-                if (self.histItems().length > 0) {
-                    if (self.index_of_itemDelete === self.histItems().length) {
-                        self.histSelectedItem(self.histItems()[self.index_of_itemDelete - 1].employeeId)
-                        self.date(self.histItems()[self.index_of_itemDelete - 1].startDate);
-                        self.date1(self.histItems()[self.index_of_itemDelete - 1].endDate);
-                    } else {
-                        self.histSelectedItem(self.histItems()[self.index_of_itemDelete].employeeId)
-                        self.date(self.histItems()[self.index_of_itemDelete].startDate);
-                        self.date1(self.histItems()[self.index_of_itemDelete].endDate);
-                    }
-                } else {
-                    self.initAgent();
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-            })
-            dfd.resolve();
-            return dfd.promise();
+
+        initAgent() {
+            let self = this;
+            self.selectedId1 = ko.observable(0);
+            self.selectedId2 = ko.observable(0);
+            self.selectedId3 = ko.observable(0);
+            self.selectedId4 = ko.observable(0);
+            self.histSelectedItem("");
+            self.currentItem(new model.AgentAppDto(self.empSelectedItem().personId, "", "", "", "", null, "", null, "", null, "", null));
         }
-
-
-        initAgent() { }
         openDDialog() {
             let self = this;
             nts.uk.ui.windows.sub.modal('/view/cmm/044/b/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
@@ -187,8 +257,6 @@ module cmm044.a.viewmodel {
         }
 
     }
-
-
 
     interface IPersonModel {
         personId: string;
@@ -211,12 +279,7 @@ module cmm044.a.viewmodel {
         }
     }
 
-    interface IListModel {
-        companyId: string;
-        employeeId: string;
-        startDate: string;
-        endDate: string;
-    }
+
     class BoxModel {
         id: number;
         name: string;
@@ -226,64 +289,67 @@ module cmm044.a.viewmodel {
             self.name = name;
         }
     }
-    export class ListModel {
-        companyId: string;
-        employeeId: string;
-        startDate: string;
-        endDate: string;
-        agentSid: string;
-
-        text: string;
-        isMaxDate: boolean = false;
-
-        constructor(param: IListModel) {
-            this.companyId = param.employeeId;
-            this.employeeId = param.employeeId;
-            this.startDate = param.startDate;
-            this.endDate = param.endDate;
-
-
-            this.update();
-        }
-
-        update() {
-            let sDate = formatym(this.startDate);
-            let endDate = formatym(this.endDate);
-            this.text = moment.utc([sDate.year, sDate.month - 1, sDate.date]).format("YYYY/MM/DD") + " ~ " + moment.utc([endDate.year, endDate.month - 1, endDate.date]).format("YYYY/MM/DD");
-        }
-    }
-
 
     export module model {
         export class AgentDto {
             companyId: string;
             employeeId: string;
+            requestId: string;
             startDate: string;
             endDate: string;
-            agentSid: string;
-            agentAppType: number;
-            constructor(companyId: string, employeeId: string, startDate: string, endDate: string, agentSid: string, agentAppType: number) {
-                this.companyId = employeeId;
+            agentSid1: string;
+            agentAppType1: number;
+            agentSid2: string;
+            agentAppType2: number;
+            agentSid3: string;
+            agentAppType3: number;
+            agentSid4: string;
+            agentAppType4: number;
+            text: string;
+            constructor(companyId: string, employeeId: string, requestId: string, startDate: string, endDate: string, agentSid1: string, agentAppType1: number, agentSid2: string, agentAppType2: number, agentSid3: string, agentAppType3: number, agentSid4: string, agentAppType4: number) {
+                this.companyId = companyId;
                 this.employeeId = employeeId;
+                this.requestId = requestId;
                 this.startDate = startDate;
                 this.endDate = endDate;
-                this.agentSid = agentSid;
-                this.agentAppType = agentAppType;
+                this.agentSid1 = agentSid1;
+                this.agentAppType1 = agentAppType1;
+                this.agentSid2 = agentSid2;
+                this.agentAppType2 = agentAppType2;
+                this.agentSid3 = agentSid3;
+                this.agentAppType3 = agentAppType3;
+                this.agentSid4 = agentSid4;
+                this.agentAppType4 = agentAppType4;
+                this.text = startDate + ' ~ ' + endDate;
             }
         }
-        
-           export class AgenApptDto {
 
-            startDate: string;
-            endDate: string;
-            agentSid: string;
-            agentAppType: number;
-            constructor(startDate: string, endDate: string, agentSid: string, agentAppType: number) {
-
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.agentSid = agentSid;
-                this.agentAppType = agentAppType;
+        export class AgentAppDto {
+            employeeId: KnockoutObservable<string>;
+            requestId: KnockoutObservable<string>;
+            startDate: KnockoutObservable<string>;
+            endDate: KnockoutObservable<string>;
+            agentSid1: KnockoutObservable<string>;
+            agentAppType1: KnockoutObservable<number>;
+            agentSid2: KnockoutObservable<string>;
+            agentAppType2: KnockoutObservable<number>;
+            agentSid3: KnockoutObservable<string>;
+            agentAppType3: KnockoutObservable<number>;
+            agentSid4: KnockoutObservable<string>;
+            agentAppType4: KnockoutObservable<number>;
+            constructor(employeeId: string, requestId: string, startDate: string, endDate: string, agentSid1: string, agentAppType1: number, agentSid2: string, agentAppType2: number, agentSid3: string, agentAppType3: number, agentSid4: string, agentAppType4: number) {
+                this.employeeId = ko.observable(employeeId);
+                this.requestId = ko.observable(requestId);
+                this.startDate = ko.observable(startDate);
+                this.endDate = ko.observable(endDate);
+                this.agentSid1 = ko.observable(agentSid1);
+                this.agentAppType1 = ko.observable(agentAppType1);
+                this.agentSid2 = ko.observable(agentSid2);
+                this.agentAppType2 = ko.observable(agentAppType2);
+                this.agentSid3 = ko.observable(agentSid3);
+                this.agentAppType3 = ko.observable(agentAppType3);
+                this.agentSid4 = ko.observable(agentSid4);
+                this.agentAppType4 = ko.observable(agentAppType4);
             }
         }
 
@@ -291,25 +357,16 @@ module cmm044.a.viewmodel {
         export class DeleteAgent {
             companyId: string;
             employeeId: string;
-            startDate: string;
-            constructor(companyId: string, employeeId: string, startDate: string) {
+            requestId: string;
+            constructor(companyId: string, employeeId: string, requestId: string) {
                 this.companyId = employeeId;
                 this.employeeId = employeeId;
-                this.startDate = startDate;
+                this.requestId = requestId;
             }
         }
 
 
-        export class InputField {
-            date: KnockoutObservable<string>;
-            date1: KnockoutObservable<string>;
 
-            constructor(agent: AgenApptDto, enable) {
-                this.date = ko.observable(agent.startDate);
-                this.date1 = ko.observable(agent.endDate);
-
-            }
-        }
     }
 
 

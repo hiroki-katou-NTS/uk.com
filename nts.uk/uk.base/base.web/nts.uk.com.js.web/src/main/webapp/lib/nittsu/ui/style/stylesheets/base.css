@@ -2968,6 +2968,18 @@ button.search-btn {
   right: 10px;
   top: 1px;
 }
+/* line 252, ../sass/components/_datepicker.scss */
+.ntsDateRange_Container .ntsDateRangeComponent{
+  float: left;
+}
+/* line 255, ../sass/components/_datepicker.scss */
+.ntsDateRange_Container .ntsRangeLabel{
+  padding: 6px 5px 6px 5px;
+}
+/* line 255, ../sass/components/_datepicker.scss */
+.ntsDateRange_Container .ntsRangeButton_Container{
+  padding: 2px 2px 2px 2px;
+}
 
 /* line 1, ../sass/components/_contextmenu.scss */
 .ntsContextMenu {

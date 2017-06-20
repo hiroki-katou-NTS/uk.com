@@ -1,33 +1,46 @@
+@CHARSET "UTF-8";
+
+.controlSetting {
+	color: #2ECC71;
+	margin-left: 5px
+}
+
+.contentkcp {
+	min-height: 550px;
+}
+
 .btn_big {
 	width: 200px;
-	background-color:#2ECC71;
+	background-color: #2ECC71;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	margin-top: 5px;
-	margin-bottom:5px;
+	margin-bottom: 5px;
 	color: white;
 	border-radius: 5px;
 	display: inline-block;
 }
-.btn_small{
+
+.btn_small {
 	width: 200px;
-	background-color:#2ECC71;
+	background-color: #2ECC71;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	margin-top: 5px;
-	margin-bottom:5px;
+	margin-bottom: 5px;
 	color: white;
 	border-radius: 5px;
 	display: inline-block;
 }
-.btn_apply{
+
+.btn_apply {
 	width: 200px;
 	text-align: center;
-	background-color:#2ECC71;
+	background-color: #2ECC71;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	margin-top: 5px;
-	margin-bottom:5px;
+	margin-bottom: 5px;
 	color: white;
 	display: inline-block;
 }

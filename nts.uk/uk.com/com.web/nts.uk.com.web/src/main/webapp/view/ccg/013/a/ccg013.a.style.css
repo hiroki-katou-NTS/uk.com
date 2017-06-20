@@ -11,19 +11,18 @@
 }
 
 #left-content {
-	width: 40%;
 	float: left;
+	width: 40%;
 }
 
-#right-content {
-	margin-top: 10px;
-	width: 60%;
+.right-content {
 	float: left;
-	argin-left: 20px;
+	width: 60%;
+	margin-left: 70px;
 }
 
 .right-content-left {
-	margin-left: 400px;
+	float: left;
 }
 
 #A_LST_001 {
@@ -70,4 +69,59 @@
 
 button.search-btn {
 	width: 80px;
+}
+
+.bg-yellow {
+	width: 200px;
+	height: 28px;
+	display: inline;
+	margin-left: 30px
+}
+
+.control-group {
+	margin-bottom: 15px;
+}
+
+.ui-widget.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+	height: 55px !important;
+	border-radius: 0px !important;
+	background-color: rgb(226, 239, 218) !important;
+	padding-top: 0px !important;
+	margin-bottom: -1px !important;
+}
+
+.ui-widget.ui-tabs .ui-tabs-nav {
+	padding: 0px !important
+}
+
+.ui-widget.ui-tabs .ui-tabs-nav li a {
+	background-color: rgb(112, 173, 71);
+}
+
+.ui-tabs .ui-tabs-nav {
+	padding: 0px !important
+}
+
+.ui-widget.ui-tabs .ui-tabs-nav li {
+	border-radius: 0px !important;
+	margin-right: 25px
+}
+
+.ui-widget.ui-tabs .ui-tabs-panel {
+    border-radius: 0px !important;
+    border: 1px solid #B1B1B1 !important;
+    background-color: rgb(226, 239, 218) !important;
+}
+
+ul.tree-menu li {
+   	height: 35px;
+    width: 135px;
+    border-top: 1px solid rgb(128, 164, 104) !important;
+    border-left: 1px solid rgb(128, 164, 104) !important;
+    border-right: 1px solid rgb(128, 164, 104) !important;
+    border-bottom: none !important;
+}
+
+.title-menu div.cell {
+	padding-right: 21px !important;
 }

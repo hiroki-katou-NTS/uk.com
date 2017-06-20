@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 @EqualsAndHashCode(callSuper = false)
 public class WorkTime extends AggregateRoot {
 
-	private WorkTimeCode siftCD;
+	private SiftCode siftCD;
 	
 	private String companyID;
 	
@@ -27,7 +27,7 @@ public class WorkTime extends AggregateRoot {
 
 	private WorkTimeDisplayName workTimeDisplayName;
 
-	public WorkTime(WorkTimeCode siftCD, String companyID, WorkTimeNote note, WorkTimeDivision workTimeDivision,
+	public WorkTime(SiftCode siftCD, String companyID, WorkTimeNote note, WorkTimeDivision workTimeDivision,
 			UseSetting dispAtr, WorkTimeDisplayName workTimeDisplayName) {
 		super();
 		this.siftCD = siftCD;

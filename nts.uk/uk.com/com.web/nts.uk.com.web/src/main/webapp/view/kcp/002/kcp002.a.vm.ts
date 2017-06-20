@@ -1,6 +1,7 @@
 module kcp002.a.viewmodel {
     import ComponentOption = kcp.share.list.ComponentOption;
     import ListType = kcp.share.list.ListType;
+    import SelectType = kcp.share.list.SelectType;
     export class ScreenModel {
         selectedCode: KnockoutObservable<string>;
         selectedCodeNoSetting: KnockoutObservable<string>;
@@ -31,6 +32,7 @@ module kcp002.a.viewmodel {
                  * Return type is Array<string> while multiselect.
                  * Return type is String while select.
                  */
+                selectType : SelectType.SELECT_BY_SELECTED_CODE;
                 selectedCode: this.selectedCode,
                 isDialog: true,
                 alreadySettingList: ko.observableArray([{ code: '0000000001', isAlreadySetting: true }])
@@ -42,6 +44,7 @@ module kcp002.a.viewmodel {
                 isShowAlreadySet: true,
                 isMultiSelect: true,
                 listType: ListType.Classification,
+                selectType : SelectType.SELECT_ALL;
                 selectedCode: this.multiSelectedCode,
                 isDialog: true,
                 alreadySettingList: ko.observableArray([{ code: '0000000001', isAlreadySetting: true }, { code: '0000000002', isAlreadySetting: true }])
@@ -52,6 +55,7 @@ module kcp002.a.viewmodel {
                 isShowAlreadySet: false,
                 isMultiSelect: false,
                 listType: ListType.Classification,
+                selectType : SelectType.SELECT_FIRST_ITEM;
                 selectedCode: this.selectedCodeNoSetting,
                 isDialog: true
                 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
@@ -63,6 +67,7 @@ module kcp002.a.viewmodel {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.Classification,
+                selectType : SelectType.NO_SELECT;
                 selectedCode: this.multiSelectedCodeNoSetting,
                 isDialog: true
                 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])

@@ -19,3 +19,7 @@ table td {
 td #link{
 	width: 10px;
 }
+
+.ui-widget-header {
+	font-weight: normal !important;
+}

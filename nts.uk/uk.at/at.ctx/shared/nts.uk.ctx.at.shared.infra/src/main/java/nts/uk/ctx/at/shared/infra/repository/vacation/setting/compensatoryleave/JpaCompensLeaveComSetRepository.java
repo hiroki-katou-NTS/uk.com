@@ -15,22 +15,21 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveCom;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveCom_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtNormalVacationSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtNormalVacationSet_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtOccurVacationSet_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveCom;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveCom_;
 
 /**
  * The Class JpaCompensLeaveComSetRepository.
  */
 @Stateless
 public class JpaCompensLeaveComSetRepository extends JpaRepository implements CompensLeaveComSetRepository {
-
+    
+    /** The element first. */
+    private static int ELEMENT_FIRST = 0;
+    
     /*
      * (non-Javadoc)
      * 
@@ -40,7 +39,7 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
      */
     @Override
     public void insert(CompensatoryLeaveComSetting setting) {
-        this.commandProxy().insert(toEntity(setting));
+        this.commandProxy().insert(this.toEntity(setting));
         this.getEntityManager().flush();
     }
 
@@ -53,7 +52,7 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
      */
     @Override
     public void update(CompensatoryLeaveComSetting setting) {
-        this.commandProxy().update(toEntity(setting));
+        this.commandProxy().update(this.toEntity(setting));
         this.getEntityManager().flush();
     }
 
@@ -66,76 +65,34 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
     @Override
     public CompensatoryLeaveComSetting find(String companyId) {
         EntityManager em = this.getEntityManager();
-
+        
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfmtCompensLeaveCom> query = builder.createQuery(KmfmtCompensLeaveCom.class);
-        Root<KmfmtCompensLeaveCom> root = query.from(KmfmtCompensLeaveCom.class);
-
-        List<Predicate> predicateList = new ArrayList<Predicate>();
-
-        predicateList.add(builder.equal(root.get(KmfmtCompensLeaveCom_.cid), companyId));
-
-        List<KmfmtCompensLeaveCom> result = em.createQuery(query).getResultList();
-        if (result.isEmpty()) {
+        CriteriaQuery<KclmtCompensLeaveCom> query = builder.createQuery(KclmtCompensLeaveCom.class);
+        Root<KclmtCompensLeaveCom> root = query.from(KclmtCompensLeaveCom.class);
+        
+        List<Predicate> predicateList = new ArrayList<>();
+        
+        predicateList.add(builder.equal(root.get(KclmtCompensLeaveCom_.cid), companyId));
+        
+        query.where(predicateList.toArray(new Predicate[]{}));
+        List<KclmtCompensLeaveCom> result = em.createQuery(query).getResultList();
+        if (CollectionUtil.isEmpty(result)) {
             return null;
         }
-        KmfmtCompensLeaveCom entity = result.get(0);
-        KmfmtNormalVacationSet entityNormal = findNormal(companyId);
-        List<KmfmtOccurVacationSet> lstEntityOccur = findOccurVacation(companyId);
-        
-        return new CompensatoryLeaveComSetting(
-                new JpaCompensatoryLeaveComGetMemento(entity, entityNormal, lstEntityOccur));
+        KclmtCompensLeaveCom entity = result.get(ELEMENT_FIRST);
+        return new CompensatoryLeaveComSetting(new JpaCompensLeaveComGetMemento(entity));
     }
-    
+
     /**
      * To entity.
      *
      * @param setting the setting
-     * @return the kmfmt compens leave com
+     * @return the kclmt compens leave com
      */
-    private KmfmtCompensLeaveCom toEntity(CompensatoryLeaveComSetting setting) {
-        KmfmtCompensLeaveCom entity = new KmfmtCompensLeaveCom();
-        setting.saveToMemento(new JpaCompensatoryLeaveComSetMemento(entity));
+    private KclmtCompensLeaveCom toEntity(CompensatoryLeaveComSetting setting) {
+        KclmtCompensLeaveCom entity = new KclmtCompensLeaveCom();
+        JpaCompensLeaveComSetMemento memento = new JpaCompensLeaveComSetMemento(entity);
+        setting.saveToMemento(memento);
         return entity;
-    }
-    
-    /**
-     * Find normal.
-     *
-     * @param companyId the company id
-     * @return the kmfmt normal vacation set
-     */
-    private KmfmtNormalVacationSet findNormal(String companyId) {
-        EntityManager em = this.getEntityManager();
-        
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfmtNormalVacationSet> query = builder.createQuery(KmfmtNormalVacationSet.class);
-        Root<KmfmtNormalVacationSet> root = query.from(KmfmtNormalVacationSet.class);
-        
-        List<Predicate> predicateList = new ArrayList<Predicate>();
-
-        predicateList.add(builder.equal(root.get(KmfmtNormalVacationSet_.cid), companyId));
-        
-        return em.createQuery(query).getSingleResult();
-    }
-    
-    /**
-     * Find occur vacation.
-     *
-     * @param companyId the company id
-     * @return the list
-     */
-    private List<KmfmtOccurVacationSet> findOccurVacation(String companyId) {
-        EntityManager em = this.getEntityManager();
-
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<KmfmtOccurVacationSet> query = builder.createQuery(KmfmtOccurVacationSet.class);
-        Root<KmfmtOccurVacationSet> root = query.from(KmfmtOccurVacationSet.class);
-
-        List<Predicate> predicateList = new ArrayList<Predicate>();
-
-        predicateList.add(builder.equal(root.get(KmfmtOccurVacationSet_.kmfmtOccurVacationSetPK).get(KmfmtOccurVacationSetPK_.cid), companyId));
-
-        return em.createQuery(query).getResultList();
     }
 }

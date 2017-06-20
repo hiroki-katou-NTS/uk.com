@@ -4,10 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.compensatoryleave.find.dto;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCompensatoryManageSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCompensatoryTimeManageSetting;
 
 public class CompensatoryLeaveEmSettingDto implements CompensatoryLeaveEmSettingSetMemento {
 
@@ -19,11 +20,16 @@ public class CompensatoryLeaveEmSettingDto implements CompensatoryLeaveEmSetting
 	/** The employment code. */
 	public EmploymentCode employmentCode;
 
-	/** The employment manage setting. */
-	public EmploymentCompensatoryManageSettingDto employmentManageSetting;
+	/** The is managed. */
+	public Integer isManaged;
 
-	/** The employment time manage setting. */
-	public EmploymentCompensatoryTimeManageSettingDto employmentTimeManageSetting;
+	// 設定
+	/** The compensatory acquisition use. */
+	public CompensatoryAcquisitionUseDto compensatoryAcquisitionUse;
+
+	// 時間代休の消化単位
+	/** The compensatory digestive time unit. */
+	public CompensatoryDigestiveTimeUnitDto compensatoryDigestiveTimeUnit;
 
 	@Override
 	public void setCompanyId(String companyId) {
@@ -36,17 +42,22 @@ public class CompensatoryLeaveEmSettingDto implements CompensatoryLeaveEmSetting
 	}
 
 	@Override
-	public void setEmploymentManageSetting(EmploymentCompensatoryManageSetting employmentManageSetting) {
-		EmploymentCompensatoryManageSettingDto employmentCompensatoryManageSettingDto = new EmploymentCompensatoryManageSettingDto();
-		employmentManageSetting.saveToMemento(employmentCompensatoryManageSettingDto);
-		this.employmentManageSetting = employmentCompensatoryManageSettingDto;
+	public void setIsManaged(ManageDistinct isManaged) {
+		this.isManaged = isManaged.value;
 	}
 
 	@Override
-	public void setEmploymentTimeManageSetting(EmploymentCompensatoryTimeManageSetting employmentTimeManageSetting) {
-		EmploymentCompensatoryTimeManageSettingDto employmentCompensatoryTimeManageSettingDto = new EmploymentCompensatoryTimeManageSettingDto();
-		employmentTimeManageSetting.saveToMemento(employmentCompensatoryTimeManageSettingDto);
-		this.employmentTimeManageSetting = employmentCompensatoryTimeManageSettingDto;
+	public void setCompensatoryAcquisitionUse(CompensatoryAcquisitionUse compensatoryAcquisitionUse) {
+		CompensatoryAcquisitionUseDto acquisitionUse = new CompensatoryAcquisitionUseDto();
+		compensatoryAcquisitionUse.saveToMemento(acquisitionUse);
+		this.compensatoryAcquisitionUse = acquisitionUse;
+	}
+
+	@Override
+	public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
+		CompensatoryDigestiveTimeUnitDto digestiveTimeUnit = new CompensatoryDigestiveTimeUnitDto();
+		compensatoryDigestiveTimeUnit.saveToMemento(digestiveTimeUnit);
+		this.compensatoryDigestiveTimeUnit = digestiveTimeUnit;
 	}
 
 }

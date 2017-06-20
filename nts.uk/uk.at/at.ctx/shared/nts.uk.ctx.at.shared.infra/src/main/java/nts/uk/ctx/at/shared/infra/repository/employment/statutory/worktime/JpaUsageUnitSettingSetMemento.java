@@ -4,13 +4,44 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.UsageUnitSettingSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.JuuwtstUsageUnitWtSet;
 
 /**
  * The Class JpaUsageUnitSettingSetMemento.
  */
 public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento {
 
+	/** The Constant DEFINED_TRUE. */
+	public static final int DEFINED_TRUE = 1;
+
+	/** The Constant DEFINED_FALSE. */
+	public static final int DEFINED_FALSE = 0;
+
+	/** The setting. */
+	private JuuwtstUsageUnitWtSet setting;
+
+	/**
+	 * Instantiates a new jpa usage unit setting set memento.
+	 *
+	 * @param setting the setting
+	 */
+	public JpaUsageUnitSettingSetMemento(JuuwtstUsageUnitWtSet setting) {
+		this.setting = setting;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.
+	 * UsageUnitSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.
+	 * CompanyId)
+	 */
+	@Override
+	public void setCompanyId(CompanyId companyId) {
+		this.setting.setCid(companyId.v());
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -19,8 +50,11 @@ public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento
 	 */
 	@Override
 	public void setEmployee(boolean employee) {
-		// TODO Auto-generated method stub
-
+		if (employee) {
+			this.setting.setIsEmp(DEFINED_TRUE);
+		} else {
+			this.setting.setIsEmp(DEFINED_FALSE);
+		}
 	}
 
 	/*
@@ -31,7 +65,11 @@ public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento
 	 */
 	@Override
 	public void setWorkPlace(boolean workPlace) {
-		// TODO Auto-generated method stub
+		if (workPlace) {
+			this.setting.setIsWkp(DEFINED_TRUE);
+		} else {
+			this.setting.setIsWkp(DEFINED_FALSE);
+		}
 
 	}
 
@@ -43,7 +81,11 @@ public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento
 	 */
 	@Override
 	public void setEmployment(boolean employment) {
-		// TODO Auto-generated method stub
+		if (employment) {
+			this.setting.setIsEmpt(DEFINED_TRUE);
+		} else {
+			this.setting.setIsEmpt(DEFINED_FALSE);
+		}
 
 	}
 

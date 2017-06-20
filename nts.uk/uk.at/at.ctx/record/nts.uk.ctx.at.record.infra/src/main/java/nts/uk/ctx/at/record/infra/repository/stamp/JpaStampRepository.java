@@ -14,21 +14,22 @@ import nts.uk.ctx.at.record.infra.entity.stamp.KwkdtStamp;
 public class JpaStampRepository extends JpaRepository implements StampRepository {
 	private final String SELECT_NO_WHERE = "SELECT e.personId, d.workLocationName, c FROM KwkdtStamp c";
 	private final String SELECT_BY_EMPPLOYEE_CODE = SELECT_NO_WHERE
-			+ " INNER JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
 			+ " INNER JOIN KwkdtStampCard e ON e.kwkdtStampCardPK.cardNumber = c.kwkdtStampPK.cardNumber"
-			+ " WHERE c.kwkdtStampPK.companyId = :companyId" + " AND c.kwkdtStampPK.date > :startDate"
-			+ " AND c.kwkdtStampPK.date < :endDate" + " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber";
+			+ " WHERE c.kwkdtStampPK.date >= :startDate"
+			+ " AND c.kwkdtStampPK.date <= :endDate" 
+			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber";
 
 	private static StampItem toDomain(Object[] object) {
 		String personId = (String) object[0];
 		String workLocationName = (String) object[1];
 		KwkdtStamp entity = (KwkdtStamp) object[2];
 		StampItem domain = StampItem.createFromJavaType(
-				entity.kwkdtStampPK.companyId, 
 				entity.kwkdtStampPK.cardNumber,
 				entity.kwkdtStampPK.attendanceTime, 
 				entity.stampCombinationAtr, 
-				entity.workTimeCd, 
+				entity.siftCd, 
 				entity.stampMethod,
 				entity.kwkdtStampPK.stampAtr, 
 				entity.workLocationCd, 

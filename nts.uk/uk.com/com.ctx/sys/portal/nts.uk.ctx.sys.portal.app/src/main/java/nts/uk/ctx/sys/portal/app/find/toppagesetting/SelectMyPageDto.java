@@ -15,10 +15,4 @@ public class SelectMyPageDto {
 	 * Top page name & Menu name
 	 */
 	private String name;
-	
-	/**
-	 * 0 - Toppage
-	 * 1 - Menu
-	 */
-	private int division;
 }

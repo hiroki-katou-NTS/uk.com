@@ -4,13 +4,41 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.UsageUnitSettingGetMemento;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.JuuwtstUsageUnitWtSet;
 
 /**
  * The Class JpaUsageUnitSettingGetMemento.
  */
 public class JpaUsageUnitSettingGetMemento implements UsageUnitSettingGetMemento {
 
+	/** The Constant DEFINED_TRUE. */
+	public static final int DEFINED_TRUE = 1;
+
+	/** The setting. */
+	private JuuwtstUsageUnitWtSet setting;
+
+	/**
+	 * Instantiates a new jpa usage unit setting get memento.
+	 *
+	 * @param setting the setting
+	 */
+	public JpaUsageUnitSettingGetMemento(JuuwtstUsageUnitWtSet setting) {
+		this.setting = setting;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.
+	 * UsageUnitSettingGetMemento#getCompanyId()
+	 */
+	@Override
+	public CompanyId getCompanyId() {
+		return new CompanyId(this.setting.getCid());
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -19,8 +47,7 @@ public class JpaUsageUnitSettingGetMemento implements UsageUnitSettingGetMemento
 	 */
 	@Override
 	public boolean getEmployee() {
-		// TODO Auto-generated method stub
-		return false;
+		return (this.setting.getIsEmp() == DEFINED_TRUE);
 	}
 
 	/*
@@ -31,8 +58,7 @@ public class JpaUsageUnitSettingGetMemento implements UsageUnitSettingGetMemento
 	 */
 	@Override
 	public boolean getWorkPlace() {
-		// TODO Auto-generated method stub
-		return false;
+		return (this.setting.getIsWkp() == DEFINED_TRUE);
 	}
 
 	/*
@@ -43,8 +69,8 @@ public class JpaUsageUnitSettingGetMemento implements UsageUnitSettingGetMemento
 	 */
 	@Override
 	public boolean getEmployment() {
-		// TODO Auto-generated method stub
-		return false;
+		return (this.setting.getIsEmpt() == DEFINED_TRUE);
 	}
+
 
 }

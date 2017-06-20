@@ -8,10 +8,20 @@ module ccg013.a.viewmodel {
         itemMenu: KnockoutObservableArray<any>;
         contextmenu1: KnockoutObservable<string>;
         simpleValue: KnockoutObservable<string>;
+        tabs: KnockoutObservableArray<any>;
+        selectedTab: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
-            self.simpleValue = ko.observable("123");    
+
+            self.tabs = ko.observableArray([
+                { id: 'tab-1', title: 'Tab Title 1', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: 'Tab Title 2', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-3', title: 'Tab Title 3', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-4', title: 'Tab Title 4', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
+            ]);
+            self.selectedTab = ko.observable('tab-2');
+            self.simpleValue = ko.observable("123");
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
             self.items = ko.observableArray([]);
@@ -25,9 +35,9 @@ module ccg013.a.viewmodel {
             ]);
 
             self.columns2 = ko.observableArray([
-                { headerText: '既定', key: 'code', width: 100 },
-                { headerText: 'コード', key: 'name', width: 150 },
-                { headerText: '名称', key: 'description', width: 150 }
+                { headerText: '既定', key: 'code', width: 50 },
+                { headerText: 'コード', key: 'name', width: 50 },
+                { headerText: '名称', key: 'description', width: 50 }
             ]);
 
             var menu1 = new nts.uk.ui.contextmenu.ContextMenu(".context-menu1", [

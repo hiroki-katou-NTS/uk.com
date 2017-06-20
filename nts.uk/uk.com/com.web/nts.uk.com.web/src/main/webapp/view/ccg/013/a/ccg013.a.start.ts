@@ -5,10 +5,16 @@ module ccg013.a {
             __viewContext.bind(screenModel);
         });    
         
+        var tabs = $( "#tabs" ).tabs();
+        tabs.find( ".ui-tabs-nav" ).sortable({
+          axis: "x"
+        }).disableSelection();
+        
+        $( ".title-menu" ).sortable({
+            axis: "x"    
+        }).disableSelection();
+        $( ".tree-menu" ).sortable({
+            axis: "y"    
+        }).disableSelection();;
     });
 }
-
-$(function() {
-    $("#sortable").sortable();
-    $("#sortable").disableSelection();
-});

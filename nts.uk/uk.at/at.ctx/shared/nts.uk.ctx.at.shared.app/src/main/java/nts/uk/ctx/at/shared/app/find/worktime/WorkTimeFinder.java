@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.shared.app.find.worktime;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -48,29 +46,51 @@ public class WorkTimeFinder {
 	 */
 	public List<WorkTimeDto> findByCodeList(List<String> codeList){
 		String companyID = AppContexts.user().companyId();
-		List<WorkTime> workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-		List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCodeList(companyID, codeList);
-		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
+		if(codeList.isEmpty()){
+			return Collections.emptyList();
+		} else {
+			List<WorkTime> workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
+			List<WorkTimeSet> workTimeSetItems = this.workTimeSetRepository.findByCodeList(companyID, codeList);
+			return getWorkTimeDtos(workTimeItems, workTimeSetItems);
+		}
 	}
 	
+	/**
+	 * find list Work Time Dto by input time and code list
+	 * @param codeList code list
+	 * @param startAtr start time option
+	 * @param startTime start time	
+	 * @param endAtr end time option
+	 * @param endTime end time
+	 * @return list Work Time Dto
+	 */
 	public List<WorkTimeDto> findByTime(List<String> codeList, int startAtr, int startTime, int endAtr, int endTime){
-		String companyID = AppContexts.user().companyId();
-		List<WorkTime> workTimeItems = new ArrayList<>();
-		List<WorkTimeSet> workTimeSetItems = new ArrayList<>();
-		if((startTime>-1)&&(endTime>-1)) {
-			if(((24*60*startAtr)+startTime)>((24*60*endAtr)+endTime)) throw new BusinessException("Msg_54");
-			workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-			workTimeSetItems = this.workTimeSetRepository.findByStartAndEnd(companyID, codeList, startAtr, startTime, endAtr, endTime);
-		} else if((startTime>-1)&&(endTime<=-1)) {
-			workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-			workTimeSetItems = this.workTimeSetRepository.findByStart(companyID, codeList, startAtr, startTime);
-		} else if((startTime<=-1)&&(endTime>-1)) {
-			workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
-			workTimeSetItems = this.workTimeSetRepository.findByEnd(companyID, codeList, endAtr, endTime);
+		if(codeList.isEmpty()){
+			return Collections.emptyList();
 		} else {
-			throw new BusinessException("Msg_53");
+			String companyID = AppContexts.user().companyId();
+			List<WorkTime> workTimeItems = new ArrayList<>();
+			List<WorkTimeSet> workTimeSetItems = new ArrayList<>();
+			// when both start time and end time is valid
+			if((startTime>-1)&&(endTime>-1)) {
+				// compare start time and end time
+				if(((24*60*startAtr)+startTime)>((24*60*endAtr)+endTime)) throw new BusinessException("Msg_54");
+				workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
+				workTimeSetItems = this.workTimeSetRepository.findByStartAndEnd(companyID, codeList, startAtr, startTime, endAtr, endTime);
+			// when only start time is select	
+			} else if((startTime>-1)&&(endTime<=-1)) {
+				workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
+				workTimeSetItems = this.workTimeSetRepository.findByStart(companyID, codeList, startAtr, startTime);
+			// when only end time is select				
+			} else if((startTime<=-1)&&(endTime>-1)) {
+				workTimeItems = this.workTimeRepository.findByCodeList(companyID, codeList);
+				workTimeSetItems = this.workTimeSetRepository.findByEnd(companyID, codeList, endAtr, endTime);
+			// when both start time and end time is invalid
+			} else {
+				throw new BusinessException("Msg_53");
+			}
+			return getWorkTimeDtos(workTimeItems, workTimeSetItems);
 		}
-		return getWorkTimeDtos(workTimeItems, workTimeSetItems);
 	}
 	
 	/**
@@ -88,7 +108,7 @@ public class WorkTimeFinder {
 				int index = workTimeSetItems.indexOf(item);
 				WorkTime currentWorkTime = workTimeItems.get(index);
 				WorkTimeSet currentWorkTimeSet = workTimeSetItems.get(index);
-				if(currentWorkTimeSet.getWorkTimeDay().size()==0) {
+				if(currentWorkTimeSet.getWorkTimeDay().isEmpty()) {
 					continue;
 				} else if(currentWorkTimeSet.getWorkTimeDay().stream().allMatch(x -> x.getUse_atr().equals(UseSetting.UseAtr_NotUse))) {
 					continue;
@@ -147,16 +167,7 @@ public class WorkTimeFinder {
 	 * @return string HH:mm format
 	 */
 	private String formatTime(int time) {
-		String inputTime = (time/60)+":"+(time%60);
-        SimpleDateFormat curFormater = new SimpleDateFormat("H:m"); 
-        Date timeObj = null;
-		try {
-			timeObj = curFormater.parse(inputTime);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} 
-        SimpleDateFormat postFormater = new SimpleDateFormat("HH:mm"); 
-        return postFormater.format(timeObj); 
+		return String.format("%02d:%02d", time/60, time%60);
 	}
 	
 }
