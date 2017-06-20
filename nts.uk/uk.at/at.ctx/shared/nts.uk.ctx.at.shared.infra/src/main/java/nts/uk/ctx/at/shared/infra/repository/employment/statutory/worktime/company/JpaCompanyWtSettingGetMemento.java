@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.NormalSetti
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSet;
+import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
  * The Class JpaCompanySettingGetMemento.
@@ -51,18 +52,18 @@ public class JpaCompanyWtSettingGetMemento implements CompanyWtSettingGetMemento
 
 		typeValue.forEach(item -> {
 			switch (item.getJcwtstCompanyWtSetPK().getCtg()) {
-			case 0:
+			case WtSettingConstant.NORMAL:
 				this.normalSetting = new NormalSetting(this.getWorkTimeSetting(item),
 						WeekStart.valueOf(item.getStrWeek()));
 				break;
-			case 1:
-				if (item.getJcwtstCompanyWtSetPK().getType() == 1) {
+			case WtSettingConstant.FLEX:
+				if (item.getJcwtstCompanyWtSetPK().getType() == WtSettingConstant.SPECIFIED) {
 					this.flexSetting.setSpecifiedSetting(this.getWorkTimeSetting(item));
 					break;
 				}
 				this.flexSetting.setStatutorySetting(this.getWorkTimeSetting(item));
 				break;
-			case 2:
+			case WtSettingConstant.DEFORMED:
 				this.deformedSetting = new DeformationLaborSetting(this.getWorkTimeSetting(item),
 						WeekStart.valueOf(item.getStrWeek()));
 				break;
@@ -70,7 +71,6 @@ public class JpaCompanyWtSettingGetMemento implements CompanyWtSettingGetMemento
 				break;
 			}
 		});
-
 	}
 
 	/**

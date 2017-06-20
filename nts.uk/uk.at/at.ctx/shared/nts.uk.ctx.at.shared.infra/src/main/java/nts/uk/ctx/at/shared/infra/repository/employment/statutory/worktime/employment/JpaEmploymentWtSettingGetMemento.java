@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewtstEmploymentWtSet;
 import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employment.JewtstEmploymentWtSetPK;
+import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
  * The Class JpaEmploymentWtSettingGetMemento.
@@ -46,29 +47,40 @@ public class JpaEmploymentWtSettingGetMemento implements EmploymentWtSettingGetM
 	/**
 	 * Instantiates a new jpa employment wt setting get memento.
 	 *
-	 * @param typeValue the type value
+	 * @param typeValues the type values
 	 */
-	public JpaEmploymentWtSettingGetMemento(List<JewtstEmploymentWtSet> typeValue) {
-		JewtstEmploymentWtSetPK pk = typeValue.get(0).getJewtstEmploymentWtSetPK();
+	public JpaEmploymentWtSettingGetMemento(List<JewtstEmploymentWtSet> typeValues) {
+		// Get pk
+		JewtstEmploymentWtSetPK pk = typeValues.get(WtSettingConstant.NORMAL).getJewtstEmploymentWtSetPK();
 		this.companyId = new CompanyId(pk.getCid());
 		this.year = new Year(pk.getYK());
 		this.employmentCode = pk.getEmptCd();
 		this.flexSetting = new FlexSetting();
 
-		typeValue.forEach(item -> {
+		this.setToDomain(typeValues);
+	}
+	
+	/**
+	 * Sets the to domain.
+	 *
+	 * @param entities the new to domain
+	 */
+	private void setToDomain(List<JewtstEmploymentWtSet> entities) {
+		this.flexSetting = new FlexSetting();
+		entities.forEach(item -> {
 			switch (item.getJewtstEmploymentWtSetPK().getCtg()) {
-			case 0:
+			case WtSettingConstant.NORMAL:
 				this.normalSetting = new NormalSetting(this.getWorkTimeSetting(item),
 						WeekStart.valueOf(item.getStrWeek()));
 				break;
-			case 1:
-				if (item.getJewtstEmploymentWtSetPK().getType() == 1) {
+			case WtSettingConstant.FLEX:
+				if (item.getJewtstEmploymentWtSetPK().getType() == WtSettingConstant.SPECIFIED) {
 					this.flexSetting.setSpecifiedSetting(this.getWorkTimeSetting(item));
 					break;
 				}
 				this.flexSetting.setStatutorySetting(this.getWorkTimeSetting(item));
 				break;
-			case 2:
+			case WtSettingConstant.DEFORMED:
 				this.deformedSetting = new DeformationLaborSetting(this.getWorkTimeSetting(item),
 						WeekStart.valueOf(item.getStrWeek()));
 				break;
@@ -76,7 +88,6 @@ public class JpaEmploymentWtSettingGetMemento implements EmploymentWtSettingGetM
 				break;
 			}
 		});
-
 	}
 
 	/**
