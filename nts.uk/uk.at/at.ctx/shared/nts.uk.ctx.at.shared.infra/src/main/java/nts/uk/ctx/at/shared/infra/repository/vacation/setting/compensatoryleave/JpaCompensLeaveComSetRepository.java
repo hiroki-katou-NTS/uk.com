@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -90,7 +91,14 @@ public class JpaCompensLeaveComSetRepository extends JpaRepository implements Co
      * @return the kclmt compens leave com
      */
     private KclmtCompensLeaveCom toEntity(CompensatoryLeaveComSetting setting) {
-        KclmtCompensLeaveCom entity = new KclmtCompensLeaveCom();
+        Optional<KclmtCompensLeaveCom> optinal = this.queryProxy().find(setting.getCompanyId(),
+                KclmtCompensLeaveCom.class);
+        KclmtCompensLeaveCom entity = null;
+        if (optinal.isPresent()) {
+            entity = optinal.get();
+        } else {
+            entity = new KclmtCompensLeaveCom();
+        }
         JpaCompensLeaveComSetMemento memento = new JpaCompensLeaveComSetMemento(entity);
         setting.saveToMemento(memento);
         return entity;

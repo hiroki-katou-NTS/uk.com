@@ -41,7 +41,10 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      */
     @Override
     public void setCompanyId(String companyId) {
-        KnlmtNursingLeaveSetPK pk = new KnlmtNursingLeaveSetPK();
+        KnlmtNursingLeaveSetPK pk = this.entityNursing.getKnlmtNursingLeaveSetPK();
+        if (pk == null) {
+            pk = new KnlmtNursingLeaveSetPK();
+        }
         pk.setCid(companyId);
         this.entityNursing.setKnlmtNursingLeaveSetPK(pk);
     }
@@ -68,6 +71,9 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
     @Override
     public void setNursingCategory(NursingCategory nursingCategory) {
         KnlmtNursingLeaveSetPK pk = this.entityNursing.getKnlmtNursingLeaveSetPK();
+        if (pk == null) {
+            pk = new KnlmtNursingLeaveSetPK();
+        }
         pk.setNursingCtr(nursingCategory.value);
         this.entityNursing.setKnlmtNursingLeaveSetPK(pk);
     }
