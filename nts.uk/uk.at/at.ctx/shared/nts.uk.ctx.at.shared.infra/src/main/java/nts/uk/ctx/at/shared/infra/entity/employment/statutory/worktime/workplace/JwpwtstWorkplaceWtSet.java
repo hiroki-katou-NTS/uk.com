@@ -120,12 +120,6 @@ public class JwpwtstWorkplaceWtSet extends UkJpaEntity implements Serializable {
 	@Column(name = "DEC_TIME")
 	private int decTime;
 
-	/** The wkp id. */
-	@Basic(optional = false)
-	@Null
-	@Column(name = "WKPID")
-	private String wkpId;
-
 	/**
 	 * Instantiates a new jwpwtst workplace wt set.
 	 */

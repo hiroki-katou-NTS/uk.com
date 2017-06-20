@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.basic.ws.company.organization.employee;
 
 import java.util.List;
@@ -29,5 +33,16 @@ public class EmployeeWebService extends WebService {
 	@Path("getListPersonIdByEmployeeCode")
 	public List<EmployeeDto> getListPersonIdByEmployeeCode(List<String> lstEmployeeCode) {
 		return this.employeeFinder.getListPersonIdByEmployeeCode(lstEmployeeCode);
+	}
+	
+	/**
+	 * Gets the all employee.
+	 *
+	 * @return the all employee
+	 */
+	@POST
+	@Path("getAllEmployee")
+	public List<EmployeeDto> getAllEmployee() {
+		return this.employeeFinder.getAllEmployee();
 	}
 }

@@ -12,7 +12,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -119,12 +118,6 @@ public class JewtstEmploymentWtSet extends UkJpaEntity implements Serializable {
 	@NotNull
 	@Column(name = "DEC_TIME")
 	private int decTime;
-	
-	/** The empt cd. */
-	@Basic(optional = false)
-	@Null
-	@Column(name = "EMPTCD")
-	private String emptCd;
 
 	/**
 	 * Instantiates a new jewtst employment wt set.

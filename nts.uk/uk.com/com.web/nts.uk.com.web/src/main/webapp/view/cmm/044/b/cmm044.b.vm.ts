@@ -3,16 +3,39 @@ module cmm044.b.viewmodel {
         date: KnockoutObservable<string>;
         yearMonth: KnockoutObservable<number>;
         agentData: KnockoutObservable<AgentData>;
-        personCom: KnockoutObservable<PersonCom>;
+        startDate: KnockoutObservable<any>;
+        endDate: KnockoutObservable<any>;
+        inp_startDate: KnockoutObservable<string>;
+        inp_endDate: KnockoutObservable<string>;
+        personList: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
             self.date = ko.observable('20000101');
             self.yearMonth = ko.observable(200001);
+            self.startDate = ko.observable(null);
+            self.endDate = ko.observable(null);
+        }
+        start() {
+            var self = this;
+            var dfd = $.Deferred();
+
+            self.startDate(nts.uk.ui.windows.getShared('cmm044StartDate'));
+            self.endDate(nts.uk.ui.windows.getShared('cmm044EndDate'));
+            self.personList = ko.observableArray([
+                { firstName: 'Bert', lastName: 'Bertington' },
+                { firstName: 'Charles', lastName: 'Charlesforth' },
+                { firstName: 'Denise', lastName: 'Dentiste' }
+            ]);
+
+            dfd.resolve();
+            return dfd.promise();
         }
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
+    }
+
     class AgentData {
         requestCode: KnockoutObservable<string>;
         requestName: KnockoutObservable<string>;
@@ -40,5 +63,5 @@ module cmm044.b.viewmodel {
 
 
 
-}
+
 }

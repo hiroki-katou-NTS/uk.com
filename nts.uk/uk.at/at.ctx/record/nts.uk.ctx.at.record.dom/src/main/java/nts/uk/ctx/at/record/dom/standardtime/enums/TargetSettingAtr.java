@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum TargetSettingType {
+public enum TargetSettingAtr {
 	// 0: 月別実績データ
 	MONTHLY_ACTUAL_DATA(0),
 	// 1: 補助月データ

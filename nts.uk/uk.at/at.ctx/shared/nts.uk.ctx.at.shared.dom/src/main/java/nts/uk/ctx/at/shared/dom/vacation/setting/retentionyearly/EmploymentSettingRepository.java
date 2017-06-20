@@ -1,9 +1,10 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,4 +42,12 @@ public interface EmploymentSettingRepository {
 	 * @return the employment setting
 	 */
 	Optional<EmploymentSetting> find(String companyId, String employmentCode);
+	
+	/**
+	 * Find all.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<EmploymentSetting> findAll(String companyId);
 }

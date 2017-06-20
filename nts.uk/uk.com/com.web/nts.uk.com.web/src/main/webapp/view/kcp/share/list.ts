@@ -125,12 +125,15 @@ module kcp.share.list {
         isHasButtonSelectAll: boolean;
         gridStyle: GridStyle;
         listType: ListType;
+        componentGridId: string;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+        searchOption: any;
         
         constructor() {
             this.itemList = ko.observableArray([]);
             this.listComponentColumn = [];
             this.isMultiple = false;
+            this.componentGridId = (Date.now()).toString();
         }
         /**
          * Init component.
@@ -157,6 +160,9 @@ module kcp.share.list {
             }
             
             self.selectedCodes.subscribe(function(seletedVal: any) {
+                if (!seletedVal) {
+                    return;
+                }
                 if (data.isMultiSelect) {
                     // With multi-select => remove no select item.
                     var noSeletectIndex = (<Array<string>>seletedVal).indexOf('');
@@ -235,10 +241,21 @@ module kcp.share.list {
             if (data.isShowNoSelectRow) {
                 self.itemList.unshift({code: null, name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
+            this.searchOption = {
+                searchMode: 'filter',
+                targetKey: 'code',
+                comId: this.componentGridId,
+                items: this.itemList,
+                selected: this.selectedCodes,
+                selectedKey: 'code',
+                fields: ['name', 'code'],
+                mode: 'igGrid'
+            }
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/list.xhtml').serialize();
             $input.load(webserviceLocator, function() {
+                $input.find('table').attr('id', self.componentGridId);
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);

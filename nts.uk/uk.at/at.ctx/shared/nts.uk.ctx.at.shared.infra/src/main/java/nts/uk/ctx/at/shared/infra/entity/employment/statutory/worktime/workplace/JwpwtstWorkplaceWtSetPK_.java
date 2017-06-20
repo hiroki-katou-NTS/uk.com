@@ -23,6 +23,9 @@ public class JwpwtstWorkplaceWtSetPK_ {
 	public static volatile SingularAttribute<JwpwtstWorkplaceWtSetPK, Integer> ctg;
 
 	/** The type. */
-	public static volatile SingularAttribute<JwpwtstWorkplaceWtSet, Integer> type;
+	public static volatile SingularAttribute<JwpwtstWorkplaceWtSetPK, Integer> type;
+
+	/** The wkp id. */
+	public static volatile SingularAttribute<JwpwtstWorkplaceWtSetPK, String> wkpId;
 
 }

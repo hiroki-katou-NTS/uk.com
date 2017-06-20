@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum NumberOfTimeOverLimitAtr {
+public enum NumberOfTimeOverLimitType {
 	// 0: 0‰ñ
 	ZERO_TIMES(0),
 	// 1: 1‰ñ

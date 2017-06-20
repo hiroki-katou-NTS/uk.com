@@ -11,61 +11,60 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.basic.app.find.company.organization.employment.dto.EmploymentFindDto;
 import nts.uk.ctx.basic.dom.company.organization.employment.Employment;
 import nts.uk.ctx.basic.dom.company.organization.employment.EmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.find.employment.EmploymentDto;
+import nts.uk.shr.find.employment.EmploymentFinder;
 
 /**
- * The Class EmploymentFinder.
+ * The Class DefaultEmploymentFinder.
  */
 @Stateless
-public class EmploymentFinder {
+public class DefaultEmploymentFinder implements EmploymentFinder{
 
 	/** The repository. */
 	@Inject
 	private EmploymentRepository repository;
 	
-	/**
-	 * Find all.
-	 *
-	 * @return the list
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.find.employment.EmploymentFinder#findAll()
 	 */
-	public List<EmploymentFindDto> findAll() {
-		
+	public List<EmploymentDto> findAll() {
+
 		// Get Login User Info
 		LoginUserContext loginUserContext = AppContexts.user();
-		
+
 		// Get Company Id
 		String companyId = loginUserContext.companyId();
-		
+
 		// Get All Employment
 		List<Employment> empList = this.repository.findAll(companyId);
-		
+
 		// Save to Memento
 		return empList.stream().map(empoyment -> {
-			EmploymentFindDto dto = new EmploymentFindDto();
-			empoyment.saveToMemento(dto);
+			EmploymentDto dto = new EmploymentDto();
+			dto.setCode(empoyment.getEmploymentCode().v());
+			dto.setName(empoyment.getEmploymentName().v());
 			return dto;
 		}).collect(Collectors.toList());
 	}
 	
-	/**
-	 * Gets the by id.
-	 *
-	 * @param employmentCode the employment code
-	 * @return the by id
+	
+
+	/* (non-Javadoc)
+	 * @see nts.uk.shr.find.employment.EmploymentFinder#findByCode(java.lang.String)
 	 */
-	public EmploymentFindDto getById(String employmentCode) {
-		
+	@Override
+	public EmploymentDto findByCode(String employmentCode) {
 		String companyId = AppContexts.user().companyId();
-		EmploymentFindDto outputData = new EmploymentFindDto();
+		EmploymentDto dto = new EmploymentDto();
 		Optional<Employment> employment = this.repository.findEmployment(companyId, employmentCode);
-		
-		if(employment.isPresent()) {
-			employment.get().saveToMemento(outputData);
-			return outputData;
+		if (employment.isPresent()) {
+			dto.setCode(employmentCode);
+			dto.setName(employment.get().toString());
+			return dto;
 		}
 		return null;
 	}

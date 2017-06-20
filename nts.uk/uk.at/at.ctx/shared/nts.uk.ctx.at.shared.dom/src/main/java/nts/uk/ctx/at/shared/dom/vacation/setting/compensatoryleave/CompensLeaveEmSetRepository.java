@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+import java.util.List;
+
 /**
  * The Interface CompensLeaveEmSetRepository.
  */
@@ -30,5 +32,13 @@ public interface CompensLeaveEmSetRepository {
 	 * @param employmentCode the employment code
 	 * @return the compensatory leave em setting
 	 */
-	CompensatoryLeaveEmSetting find(String companyId,String employmentCode);
+	CompensatoryLeaveEmSetting find(String companyId, String employmentCode);
+	
+	/**
+	 * Find all.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<CompensatoryLeaveEmSetting> findAll(String companyId);
 }

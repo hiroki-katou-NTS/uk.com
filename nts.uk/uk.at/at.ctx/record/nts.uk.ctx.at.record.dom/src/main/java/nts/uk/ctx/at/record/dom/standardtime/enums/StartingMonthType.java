@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
  *
  */
 @AllArgsConstructor
-public enum StartingMonthAtr {
+public enum StartingMonthType {
 
 	// 0: 1ŒŽ
 	JANUARY(0),

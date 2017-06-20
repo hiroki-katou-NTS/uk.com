@@ -15,9 +15,9 @@ public class KmkmtAgeementYearSettingPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "EMPLOYEE_ID")
+	@Column(name = "SID")
 	public String employeeId;
 	
-	@Column(name = "YEAR_VALUE")
+	@Column(name = "Y_K")
 	public String yearValue;
 }

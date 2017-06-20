@@ -49,6 +49,12 @@ public class JwpwtstWorkplaceWtSetPK implements Serializable {
 	@Column(name = "TYPE")
 	private int type;
 
+	/** The wkp id. */
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "WKPID")
+	private String wkpId;
+
 	/**
 	 * Instantiates a new jwpwtst workplace wt set PK.
 	 */
@@ -62,12 +68,14 @@ public class JwpwtstWorkplaceWtSetPK implements Serializable {
 	 * @param yK the y K
 	 * @param ctg the ctg
 	 * @param type the type
+	 * @param wkpId the wkp id
 	 */
-	public JwpwtstWorkplaceWtSetPK(String cid, int yK, int ctg, int type) {
+	public JwpwtstWorkplaceWtSetPK(String cid, int yK, int ctg, int type, String wkpId) {
 		this.cid = cid;
 		this.yK = yK;
 		this.ctg = ctg;
 		this.type = type;
+		this.wkpId = wkpId;
 	}
 
 }
