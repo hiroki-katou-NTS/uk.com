@@ -193,11 +193,16 @@ module nts.uk.pr.view.kmf001.f {
                 });
                 return dfd.promise();
             }
+            //switch to com tab
+            private switchToCompanyTab() {
+                var self = this;
+                self.loadSetting();
+            }
             //switch to em tab
             private switchToEmploymentTab() {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                $('#list-employ-component').ntsListComponent(this.listComponentOption).done(() => {
+                $.when($('#list-employ-component').ntsListComponent(this.listComponentOption),self.loadEmploymentList()).done(() => {
                     self.employmentList($('#sample-component').getDataList());
                     if (!$('#sample-component').getDataList() || $('#sample-component').getDataList().length <= 0) {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_146", messageParams: [] });

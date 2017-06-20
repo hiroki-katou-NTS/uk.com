@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -14,6 +15,7 @@ import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktimeset.TimeDayAtr;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
@@ -38,6 +40,24 @@ public class WorkTimeFinder {
 	
 	@Inject
 	private WorkTimeSetRepository workTimeSetRepository;
+	private String[] timeDayAtr = new String[4];
+	private String[] workTimeMethodSet = new String[4];
+	@PostConstruct
+	private void loadInitialData(){
+		
+		timeDayAtr[0] = internationalization.getItemName(TimeDayAtr.Enum_DayAtr_PreviousDay.name()).get();
+		timeDayAtr[1] =	internationalization.getItemName(TimeDayAtr.Enum_DayAtr_Day.name()).get();
+		timeDayAtr[2] =	internationalization.getItemName(TimeDayAtr.Enum_DayAtr_NextDay.name()).get();
+		timeDayAtr[3] =	internationalization.getItemName(TimeDayAtr.Enum_DayAtr_SkipDay.name()).get();
+		
+		//workTimeMethodSet[0] = internationalization.getItemName(WorkTimeMethodSet.Enum_Fixed_Work.name()).get();
+		//workTimeMethodSet[1] = internationalization.getItemName(WorkTimeMethodSet.Enum_Jogging_Time.name()).get();
+		workTimeMethodSet[0] = internationalization.getItemName(WorkTimeMethodSet.Enum_Overtime_Work.name()).get();
+		workTimeMethodSet[1] = internationalization.getItemName(WorkTimeMethodSet.Enum_Overtime_Work.name()).get();
+		workTimeMethodSet[2] = internationalization.getItemName(WorkTimeMethodSet.Enum_Overtime_Work.name()).get();
+		workTimeMethodSet[3] = internationalization.getItemName(WorkTimeMethodSet.Enum_Fluid_Work.name()).get();
+	}
+	
 	
 	/**
 	 * find list Work Time Dto by code list 
@@ -108,34 +128,36 @@ public class WorkTimeFinder {
 				int index = workTimeSetItems.indexOf(item);
 				WorkTime currentWorkTime = workTimeItems.get(index);
 				WorkTimeSet currentWorkTimeSet = workTimeSetItems.get(index);
-				if(currentWorkTimeSet.getWorkTimeDay().isEmpty()) {
+				if((currentWorkTimeSet.getWorkTimeDay1()==null)&&(currentWorkTimeSet.getWorkTimeDay2()==null)) {
 					continue;
-				} else if(currentWorkTimeSet.getWorkTimeDay().stream().allMatch(x -> x.getUse_atr().equals(UseSetting.UseAtr_NotUse))) {
+				} else if(
+						currentWorkTimeSet.getWorkTimeDay1().getUse_atr().equals(UseSetting.UseAtr_NotUse)&&
+						currentWorkTimeSet.getWorkTimeDay2().getUse_atr().equals(UseSetting.UseAtr_NotUse)) {
 					continue;
 				} else {
 					workTimeDtos.add(
 						new WorkTimeDto(
 							currentWorkTime.getSiftCD().v(), 
 							currentWorkTime.getWorkTimeDisplayName().getWorkTimeName().v(), 
-							(currentWorkTimeSet.getWorkTimeDay().size()>=1)
+							(!(currentWorkTimeSet.getWorkTimeDay1()==null))
 								?createWorkTimeField(
-									currentWorkTimeSet.getWorkTimeDay().get(0).getUse_atr(),
-									currentWorkTimeSet.getWorkTimeDay().get(0).getA_m_StartCLock(),
-									currentWorkTimeSet.getWorkTimeDay().get(0).getA_m_StartAtr(),
-									currentWorkTimeSet.getWorkTimeDay().get(0).getP_m_EndClock(),
-									currentWorkTimeSet.getWorkTimeDay().get(0).getP_m_EndAtr()
+									currentWorkTimeSet.getWorkTimeDay1().getUse_atr(),
+									currentWorkTimeSet.getWorkTimeDay1().getA_m_StartCLock(),
+									currentWorkTimeSet.getWorkTimeDay1().getA_m_StartAtr(),
+									currentWorkTimeSet.getWorkTimeDay1().getP_m_EndClock(),
+									currentWorkTimeSet.getWorkTimeDay1().getP_m_EndAtr()
 								):null
 							, 
-							(currentWorkTimeSet.getWorkTimeDay().size()>=2)
+							(!(currentWorkTimeSet.getWorkTimeDay2()==null))
 								?createWorkTimeField(
-									currentWorkTimeSet.getWorkTimeDay().get(1).getUse_atr(),
-									currentWorkTimeSet.getWorkTimeDay().get(1).getA_m_StartCLock(),
-									currentWorkTimeSet.getWorkTimeDay().get(1).getA_m_StartAtr(),
-									currentWorkTimeSet.getWorkTimeDay().get(1).getP_m_EndClock(),
-									currentWorkTimeSet.getWorkTimeDay().get(1).getP_m_EndAtr()
+									currentWorkTimeSet.getWorkTimeDay2().getUse_atr(),
+									currentWorkTimeSet.getWorkTimeDay2().getA_m_StartCLock(),
+									currentWorkTimeSet.getWorkTimeDay2().getA_m_StartAtr(),
+									currentWorkTimeSet.getWorkTimeDay2().getP_m_EndClock(),
+									currentWorkTimeSet.getWorkTimeDay2().getP_m_EndAtr()
 								):null
-							, 
-							internationalization.getItemName(currentWorkTime.getWorkTimeDivision().getWorkTimeMethodSet().name()).get(), 
+							,  
+							workTimeMethodSet[currentWorkTime.getWorkTimeDivision().getWorkTimeMethodSet().value],
 							currentWorkTime.getNote().v()
 						)
 					);
@@ -157,7 +179,7 @@ public class WorkTimeFinder {
 	 */
 	private String createWorkTimeField(UseSetting useAtr, int start, TimeDayAtr startAtr, int end, TimeDayAtr endAtr) {
 		if(useAtr.equals(UseSetting.UseAtr_Use)){
-			return internationalization.getItemName(startAtr.name()).get()+formatTime(start)+" ~ "+internationalization.getItemName(endAtr.name()).get()+formatTime(end);
+			return timeDayAtr[startAtr.value]+formatTime(start)+" ~ "+timeDayAtr[endAtr.value]+formatTime(end);
 		} else return null;
 	}
 	

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.subst.find;
 
+import java.util.List;
+
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.EmpSubstVacationDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.subst.find.dto.SubstVacationSettingDto;
 
@@ -28,4 +30,11 @@ public interface SubstVacationFinder {
 	 * @return the emp subst vacation dto
 	 */
 	EmpSubstVacationDto findEmpSetting(String companyId, String contractTypeCode);
+	
+	/**
+	 * Find all employment.
+	 *
+	 * @return the list
+	 */
+	List<String> findAllEmployment();
 }

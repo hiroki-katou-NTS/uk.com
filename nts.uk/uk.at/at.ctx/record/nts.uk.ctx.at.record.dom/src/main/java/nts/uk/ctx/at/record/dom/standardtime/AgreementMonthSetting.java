@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
-import java.time.YearMonth;
+import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
 
@@ -13,13 +14,29 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
  *
  */
 @Getter
-public class AgreementMonthSetting extends AggregateRoot{
+public class AgreementMonthSetting extends AggregateRoot {
 
 	private String employeeId;
 
 	private YearMonth yearMonthValue;
-	
+
 	private ErrorOneMonth errorOneMonth;
-	
+
 	private AlarmOneMonth alarmOneMonth;
+
+	public AgreementMonthSetting(String employeeId, YearMonth yearMonthValue, ErrorOneMonth errorOneMonth,
+			AlarmOneMonth alarmOneMonth) {
+		super();
+		this.employeeId = employeeId;
+		this.yearMonthValue = yearMonthValue;
+		this.errorOneMonth = errorOneMonth;
+		this.alarmOneMonth = alarmOneMonth;
+	}
+
+	public static AgreementMonthSetting createFromJavaType(String employeeId, BigDecimal yearMonthValue,
+			BigDecimal errorOneMonth, BigDecimal alarmOneMonth) {
+		return new AgreementMonthSetting(employeeId, new YearMonth(yearMonthValue.intValue()),
+				new ErrorOneMonth(errorOneMonth), new AlarmOneMonth(alarmOneMonth));
+	}
+
 }

@@ -15,7 +15,12 @@ module nts.uk.at.view.kmk004.a {
             findAllWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/findall',
             saveWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/save',
             removeWorkplaceSetting: 'ctx/at/shared/employment/statutory/worktime/workplace/remove',
+            getCompany: 'basic/company/getcompany'
         };
+
+        export function getCompany(): JQueryPromise<any> {
+            return nts.uk.request.ajax('com', servicePath.getCompany);
+        }
 
         export function saveCompanySetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveCompanySetting, command);
