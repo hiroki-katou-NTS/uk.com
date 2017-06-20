@@ -23,8 +23,9 @@
 
 		<ui:define tabindex="1" name="sidebar">
 			<ul class="navigator">
-				<li><a href="#company-tab" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#employment-tab" role="tab-navigator" data-bind="click: switchToEmploymentTab">#{i18n.getText('Com_Employment')}</a></li>
+				<li><a href="#company-tab" role="tab-navigator">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#employment-tab" role="tab-navigator"
+					data-bind="click: switchToEmploymentTab" class="active">#{i18n.getText('Com_Employment')}</a></li>
 			</ul>
 		</ui:define>
 
@@ -166,8 +167,7 @@
 						<tr>
 							<td class="inp_time">
 								<div class="float_right">
-									<input id="workAll" class="check_error"
-										tabindex="11"
+									<input id="workAll" class="check_error" tabindex="11"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
 								</div>
 							</td>
@@ -201,8 +201,7 @@
 						<tr>
 							<td class="inp_time">
 								<div class="float_right">
-									<input id="overAll" class="check_error"
-										tabindex="16"
+									<input id="overAll" class="check_error" tabindex="16"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
 								</div>
 							</td>
@@ -239,16 +238,10 @@
 								<!-- right -->
 								<table>
 									<tr>
-										<td colspan="2">
+										<td colspan="3">
 											<div data-bind="ntsFormLabel: {required: true}"
 												class="margin_right_50">#{i18n.getText('KMF001_88')}</div>
-											<div>
-												<hr />
-											</div>
 										</td>
-									</tr>
-									<tr>
-										<td class="lbl_text"><label>#{i18n.getText('KMF001_89')}</label></td>
 										<td class="padding_over"><span tabindex=""
 											data-bind="ntsSwitchButton: {
 												options: manageDistinctEnums,
@@ -259,7 +252,29 @@
 										</span></td>
 									</tr>
 									<tr>
-										<td class="lbl_text"><label>#{i18n.getText('KMF001_90')}</label></td>
+										<td colspan="4">
+											<div>
+												<hr />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="padding_head"></td>
+										<td colspan="3">
+											<div data-bind="ntsFormLabel: {}" class="margin_right_50">#{i18n.getText('KMF001_89')}</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="padding_head"></td>
+										<td colspan="3">
+											<div>
+												<hr />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td></td>
+										<td colspan="2" class="lbl_text"><label>#{i18n.getText('KMF001_90')}</label></td>
 										<td class="padding_over"><div tabindex=""
 												class="combo-box"
 												data-bind="ntsComboBox: {
@@ -274,7 +289,8 @@
 												]}"></div></td>
 									</tr>
 									<tr>
-										<td class="lbl_text"><label>#{i18n.getText('KMF001_91')}</label></td>
+										<td></td>
+										<td colspan="2" class="lbl_text"><label>#{i18n.getText('KMF001_91')}</label></td>
 										<td class="padding_over"><span tabindex=""
 											data-bind="ntsSwitchButton: {
 												options: applyPermissionEnums,
@@ -285,8 +301,9 @@
 										</span></td>
 									</tr>
 									<tr>
-										<td>
-											<div data-bind="ntsFormLabel: {}" class="margin_right_50">#{i18n.getText('KMF001_78')}</div>
+										<td></td>
+										<td colspan="2">
+											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_78')}</div>
 										</td>
 										<td class="padding_over">
 											<div>
@@ -302,14 +319,16 @@
 										</td>
 									</tr>
 									<tr>
-										<td colspan="2">
+										<td class="padding_head"></td>
+										<td colspan="3">
 											<div>
 												<hr />
 											</div>
 										</td>
 									</tr>
 									<tr>
-										<td class="lbl_text"><label>#{i18n.getText('KMF001_102')}</label></td>
+										<td></td>
+										<td colspan="2" class="lbl_text"><label>#{i18n.getText('KMF001_102')}</label></td>
 										<td class="padding_over"><div tabindex="6"
 												class="combo-box"
 												data-bind="ntsComboBox: {
