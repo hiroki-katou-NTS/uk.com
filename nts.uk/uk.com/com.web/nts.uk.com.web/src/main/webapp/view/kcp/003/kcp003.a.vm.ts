@@ -24,7 +24,7 @@ module kcp003.a.viewmodel {
             this.multiSelectedCode = ko.observableArray([]);
             this.baseDate = ko.observable(new Date());
             this.selectedCodeUnSelect = ko.observable('3');
-            this.alreadySettingList = ko.observableArray([{code: '01', isAlreadySetting: true}, , {code: '02', isAlreadySetting: true}]);
+            this.alreadySettingList = ko.observableArray([{code: '1', isAlreadySetting: true}, , {code: '2', isAlreadySetting: true}]);
             this.listComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.

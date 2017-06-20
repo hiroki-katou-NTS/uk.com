@@ -23,8 +23,6 @@ module nts.uk.pr.view.kmf001.d {
             annualManage: KnockoutObservable<number>;
             
             employmentList: KnockoutObservableArray<ItemModel>;
-//            columnsSetting: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-//            selectedCode: KnockoutObservable<string>;
             managementOption: KnockoutObservableArray<ManagementModel>;
             selectedManagement: KnockoutObservable<number>;
             hasSelectedEmp: KnockoutObservable<boolean>;
@@ -59,16 +57,6 @@ module nts.uk.pr.view.kmf001.d {
                     textmode: "text",
                     textalign: "left"
                 }));
-                
-//                self.employmentList.subscribe(function(data) {
-//                    service.findAllByEmployment().done(function(data: any) {
-//                        for (var i = 0; i < data.length; i++) {
-//                            self.alreadySettingList.push(data[i].code);
-//                        }
-//                    });
-//                });
-                
-
                 self.managementOption = ko.observableArray<ManagementModel>([
                     new ManagementModel(1, '管理する'),
                     new ManagementModel(0, '管理しない')
@@ -79,15 +67,7 @@ module nts.uk.pr.view.kmf001.d {
                     return self.selectedManagement() == 1;
                 }, self);
                 
-                self.selectedItem.subscribe(function(data: string) {
-                    service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
-                        self.hasSelectedEmp(true);
-                        $('#switch-btn').focus();
-                        self.bindEmploymentSettingData(data1);
-                        
-                    });
-                    
-                });
+                
                 
                 self.annualManage = ko.observable(1);
                 self.isManaged = ko.computed(function() {
@@ -149,6 +129,7 @@ module nts.uk.pr.view.kmf001.d {
             
             private bindEmploymentSettingData(data: EmploymentSettingFindDto): void {
                 var self = this;
+                self.clearErrors();
                 if(data == undefined) {
                     self.yearsAmountByEmp(null);
                     self.maxDaysCumulationByEmp(null);
@@ -182,10 +163,20 @@ module nts.uk.pr.view.kmf001.d {
             
             private switchToEmploymentTab(): void {
                 var self = this;
+                // Already Setting List
                 service.findAllByEmployment().done(function(data: any) {
                     for (var i = 0; i < data.length; i++) {
-                        self.alreadySettingList.push(data[i].employmentCode);
+                        self.alreadySettingList.push({"code": data[i].employmentCode, "isAlreadySetting": true});
                     }
+                });
+                // Selected Item subscribe
+                self.selectedItem.subscribe(function(data: string) {
+                    service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
+                        self.hasSelectedEmp(true);
+                        $('#switch-btn').focus();
+                        self.bindEmploymentSettingData(data1);
+                    });
+                    
                 });
                 // employmentList...
                 $('#left-content').ntsListComponent(self.listComponentOption).done(function() {
@@ -240,8 +231,7 @@ module nts.uk.pr.view.kmf001.d {
             private registerByEmployment(): void {
                 var self = this;
                 // Clear errors
-                $('#year-amount-emp').ntsError('clear');
-                $('#max-days-emp').ntsError('clear');
+                self.clearErrors();
                 
                 // Validate. 
                 $('#year-amount-emp').ntsEditor('validate');
@@ -252,12 +242,18 @@ module nts.uk.pr.view.kmf001.d {
                 }
                 
                 service.saveByEmployment(self.collectDataByEmployment()).done(function() {
-//                    nts.uk.ui.dialog.alert('登録しました。');
+                    self.alreadySettingList.push({"code": self.selectedItem(), "isAlreadySetting": true});
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 })
                     .fail((res) => {
                         nts.uk.ui.dialog.alertError(res.message);
                     });
+            }
+            
+            private clearErrors(): void {
+                // Clear errors
+                $('#year-amount-emp').ntsError('clear');
+                $('#max-days-emp').ntsError('clear');
             }
             
         }
