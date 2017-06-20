@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -57,10 +58,11 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		predicateList.add(builder.equal(root.get(KsvstEmpSubstVacation_.kclstEmpSubstVacationPK)
-				.get(KsvstEmpSubstVacationPK_.cid), companyId));
-		predicateList.add(builder.equal(root.get(KsvstEmpSubstVacation_.kclstEmpSubstVacationPK)
-				.get(KsvstEmpSubstVacationPK_.contractTypeCd), contractTypeCode));
+		predicateList.add(builder.equal(
+				root.get(KsvstEmpSubstVacation_.kclstEmpSubstVacationPK).get(KsvstEmpSubstVacationPK_.cid), companyId));
+		predicateList.add(builder.equal(
+				root.get(KsvstEmpSubstVacation_.kclstEmpSubstVacationPK).get(KsvstEmpSubstVacationPK_.contractTypeCd),
+				contractTypeCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
@@ -71,6 +73,31 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 		}
 
 		return Optional.of(new EmpSubstVacation(new JpaEmpSubstVacationGetMemento(results.get(0))));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
+	 * EmpSubstVacationRepository#findAll(java.lang.String)
+	 */
+	@Override
+	public List<EmpSubstVacation> findAll(String companyId) {
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<KsvstEmpSubstVacation> cq = builder.createQuery(KsvstEmpSubstVacation.class);
+		Root<KsvstEmpSubstVacation> root = cq.from(KsvstEmpSubstVacation.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		predicateList.add(builder.equal(
+				root.get(KsvstEmpSubstVacation_.kclstEmpSubstVacationPK).get(KsvstEmpSubstVacationPK_.cid), companyId));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		return em.createQuery(cq).getResultList().stream()
+				.map(entity -> new EmpSubstVacation(new JpaEmpSubstVacationGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 	/**
