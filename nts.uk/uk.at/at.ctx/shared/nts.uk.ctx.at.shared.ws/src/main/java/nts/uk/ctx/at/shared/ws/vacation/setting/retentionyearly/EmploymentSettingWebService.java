@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.vacation.setting.retentionyearly;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -52,5 +54,12 @@ public class EmploymentSettingWebService extends WebService {
 	@Path("save")
 	public void save(EmploymentSaveCommand command) {
 		this.save.handle(command);
+	}
+	
+	
+	@POST
+	@Path("findAll")
+	public List<EmploymentSettingFindDto> findAll() {
+		return this.finder.findAll();
 	}
 }

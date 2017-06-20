@@ -15,10 +15,10 @@ public class JpaStampRepository extends JpaRepository implements StampRepository
 	private final String SELECT_NO_WHERE = "SELECT e.personId, d.workLocationName, c FROM KwkdtStamp c";
 	private final String SELECT_BY_EMPPLOYEE_CODE = SELECT_NO_WHERE
 			+ " LEFT JOIN KwlmtWorkLocation d ON c.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " AND d.kwlmtWorkLocationPK.companyID = :companyId"
 			+ " INNER JOIN KwkdtStampCard e ON e.kwkdtStampCardPK.cardNumber = c.kwkdtStampPK.cardNumber"
-			+ " WHERE d.kwlmtWorkLocationPK.companyID = :companyId" 
-			+ " AND c.kwkdtStampPK.date > :startDate"
-			+ " AND c.kwkdtStampPK.date < :endDate" 
+			+ " WHERE c.kwkdtStampPK.date >= :startDate"
+			+ " AND c.kwkdtStampPK.date <= :endDate" 
 			+ " AND c.kwkdtStampPK.cardNumber IN :lstCardNumber";
 
 	private static StampItem toDomain(Object[] object) {

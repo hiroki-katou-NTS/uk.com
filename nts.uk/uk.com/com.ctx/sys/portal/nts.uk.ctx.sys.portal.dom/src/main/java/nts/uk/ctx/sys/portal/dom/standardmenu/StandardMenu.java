@@ -2,7 +2,9 @@ package nts.uk.ctx.sys.portal.dom.standardmenu;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 
 /**
  * The Class StandardMenu.
@@ -32,7 +34,7 @@ public class StandardMenu extends AggregateRoot {
 	private String url;
 	
 	/** The system. */
-	private int system;
+	private System system;
 	
 	/** The classification. */
 	private int classification;
@@ -63,7 +65,7 @@ public class StandardMenu extends AggregateRoot {
 	 * @param logSettingDisplay the logSettingDisplay
 	 */
 	public StandardMenu(String companyId, MenuCode code, String targetItems, MenuDisplayName displayName, int displayOrder,
-			int menuAtr, String url, int system, int classification, int webMenuSetting,
+			int menuAtr, String url, System system, int classification, int webMenuSetting,
 			int afterLoginDisplay, int logSettingDisplay) {
 		
 		this.companyId = companyId;
@@ -99,7 +101,8 @@ public class StandardMenu extends AggregateRoot {
 	public static StandardMenu createFromJavaType(String companyId, String code, String targetItems, String displayName, 
 			int displayOrder, int menuAtr, String url, int system, int classification, int webMenuSetting,
 			int afterLoginDisplay, int logSettingDisplay) {
-		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName), displayOrder, menuAtr, url, system, classification, 
+		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName), displayOrder, menuAtr, url,
+				EnumAdaptor.valueOf(system, System.class), classification, 
 				webMenuSetting,	afterLoginDisplay, logSettingDisplay);
 	}	
 }

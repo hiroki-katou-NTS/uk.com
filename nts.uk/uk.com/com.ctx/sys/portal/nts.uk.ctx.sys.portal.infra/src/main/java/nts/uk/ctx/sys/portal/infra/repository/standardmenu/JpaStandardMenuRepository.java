@@ -16,7 +16,7 @@ import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
 @Stateless
 public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository {
 
-	private final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgmtStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
+	private final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
 	private final String GET_ALL_STANDARD_MENU_AFTER_LOGIN_DISPLAY_INDICATOR_IS_TRUE = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId AND s.afterLoginDisplay = :afterLoginDisplay";
 	private final int afterLoginDisplay = 1;
 	
@@ -70,7 +70,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	public CcgstStandardMenu toEntity(StandardMenu domain) {
 		CcgstStandardMenuPK key = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v());
 		return new CcgstStandardMenu(key, domain.getTargetItems(), domain.getDisplayName().v(), domain.getDisplayOrder(),
-				domain.getMenuAtr(), domain.getUrl(), domain.getSystem(), domain.getClassification(), domain.getWebMenuSetting(),
+				domain.getMenuAtr(), domain.getUrl(), domain.getSystem().value, domain.getClassification(), domain.getWebMenuSetting(),
 				domain.getAfterLoginDisplay(), domain.getLogSettingDisplay());
 	}
 }

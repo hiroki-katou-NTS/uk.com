@@ -117,8 +117,7 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 			new CcgmtTopPagePartPK(domain.getCompanyID(), domain.getToppagePartID()),
 			domain.getCode().v(), domain.getName().v(),
 			domain.getType().value,
-			domain.getSize().getWidth().v(), domain.getSize().getHeight().v(),
-			null
+			domain.getSize().getWidth().v(), domain.getSize().getHeight().v()
 		);
 	}
 }

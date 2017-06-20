@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.find;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -47,5 +49,26 @@ public class EmploymentSettingFinder {
 			return outputData;
 		}
 		return null;
+	}
+	
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	public List<EmploymentSettingFindDto> findAll() {
+		// Get Login User Info
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// Get Company Id
+		String companyId = loginUserContext.companyId();
+		
+		List<EmploymentSetting> empSettingList = this.repository.findAll(companyId);
+		return empSettingList.stream().map(empoyment -> {
+			EmploymentSettingFindDto dto = new EmploymentSettingFindDto();
+			empoyment.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+		
 	}
 }

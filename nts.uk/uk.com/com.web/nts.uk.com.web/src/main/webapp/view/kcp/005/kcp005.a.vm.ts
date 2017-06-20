@@ -8,21 +8,24 @@ module kcp005.a.viewmodel {
         selectedCodeNoSetting: KnockoutObservable<string>;
         multiSelectedCode: KnockoutObservable<any>;
         multiSelectedCodeNoSetting: KnockoutObservable<any>;
+        selectedCodeUnSelect: KnockoutObservable<string>;
+        
         listComponentOption: ComponentOption;
         listComponentOptionMulti: ComponentOption;
         listComponentNoneSetting: ComponentOption;
         listComponentMultiNoneSetting: ComponentOption;
-        baseDate: KnockoutObservable<Date>;
-        employeeList: Array<UnitModel>
+        listComponentUnSelect: ComponentOption;
+        
+        employeeList: KnockoutObservableArray<UnitModel>;
         alreadySettingList: KnockoutObservableArray<any>;
         
         constructor() {
             this.selectedCode = ko.observable('02');
             this.selectedCodeNoSetting = ko.observable(null);
+            this.selectedCodeUnSelect = ko.observable('03');
             this.multiSelectedCodeNoSetting = ko.observableArray([]);
             this.multiSelectedCode = ko.observableArray([]);
-            this.baseDate = ko.observable(new Date());
-            this.employeeList = ([{code: '01', name: 'Angela Baby', workplaceName: 'HN'},
+            this.employeeList = ko.observableArray<UnitModel>([{code: '01', name: 'Angela Baby', workplaceName: 'HN'},
                     {code: '02', name: 'Angela Phuong Trinh', workplaceName: 'HN'},
                     {code: '03', name: 'Angela Linh Tinh', workplaceName: 'HCM'},
                     {code: '04', name: 'Min', workplaceName: 'HN'}
@@ -37,7 +40,6 @@ module kcp005.a.viewmodel {
                     isShowWorkPlaceName: false,
                     selectedCode: this.selectedCode,
                     isDialog: false,
-                    baseDate: this.baseDate,
                     isShowSelectAllButton: false,
                     alreadySettingList: this.alreadySettingList
                     
@@ -54,7 +56,6 @@ module kcp005.a.viewmodel {
                 employeeInputList: this.employeeList,
                 selectedCode: this.multiSelectedCode,
                 isDialog: true,
-                baseDate: this.baseDate,
                 isShowSelectAllButton: false,
                 alreadySettingList: this.alreadySettingList
             }
@@ -70,7 +71,6 @@ module kcp005.a.viewmodel {
                 employeeInputList: this.employeeList,
                 selectedCode: this.multiSelectedCodeNoSetting,
                 isDialog: true,
-                baseDate: this.baseDate,
                 isShowSelectAllButton: true,
             }
             $('#employee-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
@@ -84,10 +84,22 @@ module kcp005.a.viewmodel {
                 employeeInputList: this.employeeList,
                 selectedCode: this.selectedCodeNoSetting,
                 isDialog: true,
-                baseDate: this.baseDate,
                 isShowSelectAllButton: false,
             }
             $('#employee-noSetting').ntsListComponent(this.listComponentNoneSetting);
+            
+            this.listComponentUnSelect = {
+                isShowAlreadySet: true,
+                isMultiSelect: false, 
+                listType: ListType.EMPLOYEE,
+                employeeInputList: this.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: this.selectedCodeUnSelect,
+                isDialog: true,
+                isShowNoSelectRow: true,
+                alreadySettingList: this.alreadySettingList
+            }
+            $('#employee-list-unSelect').ntsListComponent(this.listComponentUnSelect);
             
         }
         
@@ -103,7 +115,23 @@ module kcp005.a.viewmodel {
             })[0]);
         }
         
-        
+        private settingCopiedItem() {
+            var self = this;
+            
+            self.listComponentOption = {
+                    isShowAlreadySet: false, // is show already setting column.
+                    isMultiSelect: true, // is multiselect.
+                    listType: ListType.EMPLOYEE,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    employeeInputList: self.employeeList,
+                    isShowWorkPlaceName: false,
+                    selectedCode: self.selectedCode,
+                    isDialog: false,
+                    isShowSelectAllButton: false,
+                    alreadySettingList: self.alreadySettingList
+                }
+            $('#employee-setting').ntsListComponent(self.listComponentOption);
+        }
     }
 
 }

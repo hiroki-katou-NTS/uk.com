@@ -5,52 +5,39 @@
 	vertical-align: middle;
 }
 
-#A1_6, #B1_7 {
+#A1-6 {
 	margin-left: 2px;
 	vertical-align: middle;
 }
 
 .sidebar-content-header button {
-	width: 110px;
+	width: 90px;
 }
 
-#A1_4, #B1_4 {
+#A1-4 {
 	margin: 0 20px 0 50px;
 }
 
-#A1_6 {
-	margin-left: 395px;
+#A1-6 {
+	margin-left: 420px;
 }
 
-#A2_1 {
+#A2-1 {
 	margin: 25px 60px 0px 50px;
 }
 
-#A2_2 {
+#A2-2 {
 	margin-right: 30px;
 }
 
-#image {
-	float: left;
-	margin-left: 5px;
-	margin-top: 10px;
-	height: 600px;
+#A2-3 {
+	width: 90px;
 }
 
-#part-2 {
-	float: left;
-	margin: 60px;
+#A2-4 {
+	margin: 15px 0 0 50px !important;
 }
 
-#part-3 {
-	float: left;
-	width: 30%
-}
-
-#B1_7 {
-	margin-left: 32px;
-}
-
-#B1_6 {
-	margin-left: 250px
+.nts-switch-button {
+	width: 90px
 }

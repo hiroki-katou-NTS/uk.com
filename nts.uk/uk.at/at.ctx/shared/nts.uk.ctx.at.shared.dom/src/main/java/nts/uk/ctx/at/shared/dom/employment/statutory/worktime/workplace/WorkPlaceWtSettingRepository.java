@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace;
 
+import java.util.Optional;
+
 /**
  * The Interface WorkPlaceWtSettingRepository.
  */
@@ -36,7 +38,7 @@ public interface WorkPlaceWtSettingRepository {
 	 *
 	 * @param companyId the company id
 	 * @param year the year
-	 * @return the work place wt setting
+	 * @return the optional
 	 */
-	WorkPlaceWtSetting find(String companyId, int year);
+	Optional<WorkPlaceWtSetting> find(String companyId, int year);
 }

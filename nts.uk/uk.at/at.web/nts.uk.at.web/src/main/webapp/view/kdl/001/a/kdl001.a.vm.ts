@@ -14,21 +14,22 @@ module nts.uk.at.view.kdl001.a {
             endTime: KnockoutObservable<number>;
             constructor() {
                 var self = this;
-                self.multiSelectMode = nts.uk.ui.windows.getShared('multiSelectMode');
-                self.selectAbleCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('selectAbleCodeList'));
-                self.selectedCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('selectedCodeList'));
+                self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
+                self.selectAbleCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectAbleCodeList'));
+                self.selectedCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectedCodeList'));
                 self.selectedCode = ko.observable(null);
                 self.searchOption = ko.observable(0); 
                 self.startTimeOption = ko.observable(1);
-                self.startTime = ko.observable(0);
+                self.startTime = ko.observable('');
                 self.endTimeOption = ko.observable(1); 
-                self.endTime = ko.observable(0);  
+                self.endTime = ko.observable('');  
                 self.selectAbleItemList = ko.observableArray([]);
             }
             
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                nts.uk.ui.block.invisible();
                 kdl001.a.service.findByCodeList(self.selectAbleCodeList())
                     .done(function(data) {
                         self.rootList = data;
@@ -42,9 +43,11 @@ module nts.uk.at.view.kdl001.a {
                             self.selectedCodeList([]);
                             self.selectedCode(null);  
                         }
+                        nts.uk.ui.block.clear();
                         dfd.resolve(); 
                     })
                     .fail(function(res) { 
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function(){nts.uk.ui.block.clear();});
                     });
                 return dfd.promise();
             }
@@ -79,9 +82,9 @@ module nts.uk.at.view.kdl001.a {
             returnData(){
                 var self = this;
                 self.startTimeOption(1);
-                self.startTime(0);
+                self.startTime('');
                 self.endTimeOption(1); 
-                self.endTime(0); 
+                self.endTime(''); 
                 self.selectAbleItemList(_.clone(self.rootList));   
                 if(self.selectAbleItemList().length!=0) {
                     self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
@@ -101,7 +104,7 @@ module nts.uk.at.view.kdl001.a {
                 if(self.selectedCodeList().length==0){
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_29" }).then(function(){nts.uk.ui.block.clear();});
                 } else {
-                    nts.uk.ui.windows.setShared('selectedCodeList', self.selectedCodeList());   
+                    nts.uk.ui.windows.setShared('kml001selectedCodeList', self.selectedCodeList());   
                     nts.uk.ui.block.clear();
                     nts.uk.ui.windows.close(); 
                 }

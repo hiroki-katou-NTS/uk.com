@@ -12,6 +12,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
@@ -57,7 +58,7 @@ public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
     /** The list work type. */
     @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = false),
             @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "NURSING_TYPE", insertable = true, updatable = false)})
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     public List<KnlmtNursingWorkType> listWorkType;
 
     /**

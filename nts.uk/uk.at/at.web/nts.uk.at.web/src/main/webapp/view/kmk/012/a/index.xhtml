@@ -64,14 +64,19 @@
 								<br />
 								<br />
 								<div class="contents" >
-									<div class="lableData" data-bind="ntsFormLabel: {required: true}">
+									<div class="lableData" 
+										data-name="#{i18n.getText('KMK012_5')}" 
+										data-bind="ntsFormLabel: {required: true}">
 										<label>#{i18n.getText('KMK012_5')}</label>
 									</div>
 									<div class="valueData">
-										<div data-name="#{i18n.getText('KMK012_5')}" 
+										<div 
+											class="nts-input"
+											id="inpMonth"
+											data-name="#{i18n.getText('KMK012_5')}" 
 											tabindex="2"  
 											data-bind="ntsDatePicker: 
-											{value: closureModel.month, dateFormat: 'yearmonth'}">
+											{value: closureModel.month, required: true, enable: enableUseClassification, dateFormat: 'yearmonth'}">
 										</div>
 									</div>
 								</div>
@@ -84,7 +89,7 @@
 								
 								
 								<div class="contents" >
-									<button tabindex="3" data-bind="click: openConfirmClosingPeriodDialog">#{i18n.getText('KMK012_6')}</button>
+									<button tabindex="3" data-bind="click: openConfirmClosingPeriodDialog, enable: enableUseClassification">#{i18n.getText('KMK012_6')}</button>
 								</div>
 								
 								<div class="contents">
@@ -97,11 +102,11 @@
 										optionsText: 'view',
 										multiple: false,
 										value: selectCodeLstClosureHistory,
-										enable: true,
+										enable: enableUseClassification,
 										rows: 10  }">
 									</div>	
 										<div class="contents">
-											<div class="lableDataEnd" data-bind="ntsFormLabel: {required: true}">
+											<div class="lableDataEnd" data-bind="ntsFormLabel: {required: false}">
 												<label>#{i18n.getText('KMK012_9')}</label>
 											</div>
 											<div class="valueData">
@@ -111,10 +116,10 @@
 													data-name="#{i18n.getText('KMK012_9')}"
 													data-bind="ntsTextEditor:{
 			                                        value: closureHistoryModel.closureName,
-			                                        required: true,
+			                                        required: false,
+			                                        enable: enableUseClassification,
 			                                       	option: textEditorOption,
-			                                        constraint: 'CloseName',
-			                                        enable: true}" />
+			                                        constraint: 'CloseName'}" />
 											</div>
 										</div>
 										<br />
@@ -133,7 +138,7 @@
 													value: closureHistoryModel.closureDate,
 													optionsText: 'name',
 													editable: true,
-													enable: enableChangeClosureDate,
+													enable: enableChangeClosureDateAnd,
 													columns: [
 														{ prop: 'name', length: 4 }
 													]}"></div>

@@ -100,7 +100,7 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.21'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.4.5'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.5'
 		
 		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.2'
 	}
@@ -118,7 +118,7 @@ project (':com.ctx:basic:nts.uk.ctx.basic.dom') {
 }
 project (':com.ctx:basic:nts.uk.ctx.basic.app') {
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1'
+		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.dom')
 	}
 }
@@ -157,7 +157,7 @@ project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom') {
 }
 project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.app') {
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1'
+		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.dom')
 	}
 }
@@ -223,7 +223,7 @@ project (':com.web:nts.uk.com.web') {
 	
 	dependencies {
 		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.3'
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1'
+		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile group: 'base', name: 'nts.uk.shr.ws', version: '0.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
