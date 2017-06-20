@@ -15,7 +15,7 @@ module nts.uk.pr.view.kmf001.f {
             update: 'ctx/at/shared/vacation/setting/compensatoryleave/save',
             find: 'ctx/at/shared/vacation/setting/compensatoryleave/find',
             //employment
-            getListEmployment: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/findall',
+            findAllEmploymentSetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/findall',
             updateEmploySetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/save',
             findEmploymentSetting: 'ctx/at/shared/vacation/setting/compensatoryleave/employment/findsetting'
         };
@@ -83,7 +83,11 @@ module nts.uk.pr.view.kmf001.f {
         export function findEmploymentSetting(employmentCode: string): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.findEmploymentSetting + "/" + employmentCode);
         }
-
+        
+        //find all em setting 
+        export function findAllEmploymentSetting(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findAllEmploymentSetting);
+        }
         /**
         * Model namespace.
         */

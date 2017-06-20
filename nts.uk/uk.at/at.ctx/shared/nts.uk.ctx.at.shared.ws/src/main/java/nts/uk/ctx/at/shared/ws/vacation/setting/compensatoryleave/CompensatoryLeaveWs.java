@@ -146,9 +146,8 @@ public class CompensatoryLeaveWs extends WebService {
 	 */
 	@POST
 	@Path("employment/findall")
-	public List<EnumConstant> getAllEmployment() {
-		//TODO mock data list employment
-		return null;
+	public List<String> getAllEmployment() {
+		return compensatoryLeaveEmploymentFinder.findAllEmployment();
 	}
 	
 	/**

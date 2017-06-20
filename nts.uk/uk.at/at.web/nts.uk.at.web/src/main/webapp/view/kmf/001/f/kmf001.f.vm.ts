@@ -156,7 +156,7 @@ module nts.uk.pr.view.kmf001.f {
                 });
 
                 //for list em
-                this.alreadySettingList = ko.observableArray([{ code: '01', isAlreadySetting: true }, { code: '02', isAlreadySetting: true }]);
+                this.alreadySettingList = ko.observableArray([]);
                 this.listComponentOption = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
@@ -172,7 +172,7 @@ module nts.uk.pr.view.kmf001.f {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadExpirationTimeEnums(), self.loadTimeVacationDigestiveUnitEnums(),
-                    self.loadCompensatoryOccurrenceDivisionEnums(), self.loadTransferSettingDivisionEnums()).done(function() {
+                    self.loadCompensatoryOccurrenceDivisionEnums(), self.loadTransferSettingDivisionEnums(), self.loadEmploymentList()).done(function() {
                         self.loadSetting().done(function() {
                             dfd.resolve();
                         });
@@ -180,6 +180,19 @@ module nts.uk.pr.view.kmf001.f {
                 return dfd.promise();
             }
 
+            private loadEmploymentList(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                //get list employment
+                self.alreadySettingList([]);
+                service.findAllEmploymentSetting().done((data: Array<string>) => {
+                    for (let emCode of data) {
+                        self.alreadySettingList.push({ code: emCode, isAlreadySetting: true });
+                    }
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
             //switch to em tab
             private switchToEmploymentTab() {
                 let self = this;
@@ -491,9 +504,11 @@ module nts.uk.pr.view.kmf001.f {
                 var self = this;
                 service.updateEmploymentSetting(self.collectEmploymentData()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    //reload list employment
-                    $('#list-employ-component').ntsListComponent(this.listComponentOption).done(() => {
-                        self.loadEmploymentSetting(self.emSelectedCode());
+                    self.loadEmploymentList().done(() => {
+                        //reload list employment
+                        $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
+                            self.loadEmploymentSetting(self.emSelectedCode());
+                        });
                     });
                 });
             }
