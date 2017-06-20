@@ -16,4 +16,12 @@ public class CcgstStandardMenuPK {
 	/** The menu code. */
 	@Column(name = "CODE")
 	public String code;
+	
+	/** The system. */
+	@Column(name = "SYSTEM")
+	public int system;
+	
+	/** The classification. */
+	@Column(name = "MENU_CLS")
+	public int classification;
 }
