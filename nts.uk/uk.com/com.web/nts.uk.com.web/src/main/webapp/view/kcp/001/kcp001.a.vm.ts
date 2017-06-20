@@ -98,7 +98,7 @@ module kcp001.a.viewmodel {
         
         private setAlreadyCheck(): void {
             var self = this;
-            self.alreadySettingList.push({"code": "02", "isAlreadySetting": true});
+            self.alreadySettingList.push({"code": self.selectedCode(), "isAlreadySetting": true});
         }
         
         private settingRegistedItem(): void {

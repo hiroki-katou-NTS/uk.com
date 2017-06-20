@@ -6,9 +6,10 @@ module kcp005.a.viewmodel {
     export class ScreenModel {
         selectedCode: KnockoutObservable<string>;
         selectedCodeNoSetting: KnockoutObservable<string>;
-        multiSelectedCode: KnockoutObservable<any>;
-        multiSelectedCodeNoSetting: KnockoutObservable<any>;
+        multiSelectedCode: KnockoutObservableArray<string>;
+        multiSelectedCodeNoSetting: KnockoutObservableArray<string>;
         selectedCodeUnSelect: KnockoutObservable<string>;
+        copySelectedCode: KnockoutObservableArray<string>;
         
         listComponentOption: ComponentOption;
         listComponentOptionMulti: ComponentOption;
@@ -24,13 +25,14 @@ module kcp005.a.viewmodel {
             this.selectedCodeNoSetting = ko.observable(null);
             this.selectedCodeUnSelect = ko.observable('03');
             this.multiSelectedCodeNoSetting = ko.observableArray([]);
-            this.multiSelectedCode = ko.observableArray([]);
+            this.multiSelectedCode = ko.observableArray(['02', '04']);
             this.employeeList = ko.observableArray<UnitModel>([{code: '01', name: 'Angela Baby', workplaceName: 'HN'},
                     {code: '02', name: 'Angela Phuong Trinh', workplaceName: 'HN'},
                     {code: '03', name: 'Angela Linh Tinh', workplaceName: 'HCM'},
                     {code: '04', name: 'Min', workplaceName: 'HN'}
                 ]);
             this.alreadySettingList = ko.observableArray([{code: '01', isAlreadySetting: true}, , {code: '02', isAlreadySetting: true}]);
+            this.copySelectedCode = ko.observableArray(['02', '04']);
             this.listComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
@@ -125,7 +127,7 @@ module kcp005.a.viewmodel {
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     employeeInputList: self.employeeList,
                     isShowWorkPlaceName: false,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.copySelectedCode,
                     isDialog: false,
                     isShowSelectAllButton: false,
                     alreadySettingList: self.alreadySettingList
