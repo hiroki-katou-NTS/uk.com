@@ -65,7 +65,7 @@ public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHisto
 		if (closure.isPresent() && closureHistoryLast.isPresent()
 				&& closure.get().getMonth().getProcessingDate().v() >= closureHistoryLast.get()
 						.getStartDate().v()
-				&& command.getClosureHistoryAdd().getStartDate() <= closure.get().getMonth()
+				&& command.getClosureHistoryAdd().getStartDate() < closure.get().getMonth()
 						.getProcessingDate().v()) {
 			throw new BusinessException("Msg_180");
 		}
@@ -75,7 +75,7 @@ public class ClosureHistoryAddCommandHandler extends CommandHandler<ClosureHisto
 						.getStartDate().v()
 				&& command.getClosureHistoryAdd().getStartDate() <= closureHistoryLast.get()
 						.getStartDate().v()) {
-			throw new BusinessException("Msg_180");
+			throw new BusinessException("Msg_102");
 		}
 		
 		// to domain

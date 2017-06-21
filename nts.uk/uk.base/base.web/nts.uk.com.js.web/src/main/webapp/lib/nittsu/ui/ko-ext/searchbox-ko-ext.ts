@@ -239,14 +239,14 @@ module nts.uk.ui.koExtentions {
                             $container.data("filteredSrouce", result.options); 
                             component.attr("filtered", true);   
                             selected(selectedValue);
-//                            selected.valueHasMutated();
+                            selected.valueHasMutated();
                         } else {
                             selected(selectedValue);    
                         }
                         component.ntsGridList("setSelected", selectedProperties);
                     } else if (targetMode == 'igTree') {
                         component.ntsTreeView("setSelected", selectedProperties);
-                        data.selected(selectedValue);
+                        selected(selectedValue);
                     }
                     _.defer(function() {
                         component.trigger("selectChange");    

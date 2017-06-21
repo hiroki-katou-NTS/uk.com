@@ -58,7 +58,7 @@
 .ntsControl.ntsProfile .nts-label.nts-name:before {
 	content: '↵';
 	position: absolute;
-	margin-left: 425px;
+	margin-left: 418px;
 	margin-top: -7px;
 	font-size: 2em;
 	color: #ccc;
@@ -83,13 +83,14 @@
 
 .cell-column1 {
 	float: left;
+	margin-left: -15px;
 }
 
 .bg-green {
 	margin-top: 30px;
 	margin-left: 20px;
 	width: 300px;
-	height: 650px;
+	height: 530px;
 	float: left;
 }
 
@@ -98,12 +99,17 @@
 }
 
 .right-content {
-	margin-left: 15px;
+	margin-left: -45px;
 	float: left;
+}
+#daterangepicker{
+	float: right;
+	margin-top: 33px;
+	margin-right: 277px;
 }
 
 .tab-content-2, .tab-content-1, .tab-content-3, .tab-content-4 {
-	height: 529px;
+	height: 407px;
 	width: 550px;
 }
 .cell-column1{
@@ -119,11 +125,11 @@
 }
 
 #H_LST_001_displayContainer {
-	height: 601px !important;
+	height: 490px !important;
 }
 
 #H_LST_001_scrollContainer {
-	height: 601px !important;
+	height: 490px !important;
 }
 
 #H_LST_001_container{
@@ -134,7 +140,7 @@
 }
 
 #label-a4-001 {
-	margin-top: 20px;
+	margin-top: 10px;
 	margin-left: 20px;
 }
 
@@ -145,22 +151,25 @@
 #H_LST_001_container{
 	
 }
-
+#img-employee{
+	width: 90px;
+    margin-top: 27px;
+}
 .row-data {
 	margin-top: 10px !important;
 }
 
 .ntsControl.radio-wrapper {
 	margin-left: 56px;
-	margin-top: 25px;
+	margin-top: 7px;
 }
 
 .radio {
-	width: 166px;
+	width: 182px;
 }
 
 .ntsRadioBox {
-	margin-bottom: 20px;
+	margin-bottom: 17px;
 	display: block;
 }
 

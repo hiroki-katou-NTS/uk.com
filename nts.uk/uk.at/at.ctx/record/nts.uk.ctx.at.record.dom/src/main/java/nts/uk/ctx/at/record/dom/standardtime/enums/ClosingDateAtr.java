@@ -9,6 +9,10 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum ClosingDateAtr {
+	
+	/*
+	 * ‚R‚U‹¦’è’÷‚ß“ú‹æ•ª
+	 */
 	// 0:  ‹Î‘Ó‚Ì’÷‚ß“ú‚Æ“¯‚¶
 	SAME_AS_CLOSING_DATE(0),
 	// 1: ’÷‚ß“ú‚ðŽw’è

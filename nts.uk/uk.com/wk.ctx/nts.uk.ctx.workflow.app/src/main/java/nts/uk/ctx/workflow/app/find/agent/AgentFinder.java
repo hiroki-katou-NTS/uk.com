@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,11 +35,18 @@ public class AgentFinder {
 			return convertToDbType(e);
 		}).collect(Collectors.toList());
 	}
+	
+	public List<AgentDto> findAll(String employeeId,GeneralDate startDate, GeneralDate endDate) {
+		String companyId = AppContexts.user().companyId();
+		return agentRepository.findAll(companyId,employeeId, startDate,endDate).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList());
+	}
 		
 	/**
 	 * 
 	 * @param employeeId
-	 * @param startDate
+	 * @param requestId
 	 * @return
 	 */
 	public AgentDto getAgentDto(String employeeId, String requestId) {
@@ -73,5 +81,7 @@ public class AgentFinder {
 	
 		return agentDto;
 	}
+
+	
 	
 }

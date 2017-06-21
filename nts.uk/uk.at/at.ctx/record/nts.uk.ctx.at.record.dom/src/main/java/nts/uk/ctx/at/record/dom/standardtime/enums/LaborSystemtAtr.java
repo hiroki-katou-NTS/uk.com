@@ -9,6 +9,10 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum LaborSystemtAtr {
+	
+	/*
+	 * ‚R‚U‹¦’è˜J“­§
+	 */
 	//0: ˆê”Ê˜J“­§
 	GENERAL_LABOR_SYSTEM(0),
 	//1: •ÏŒ`˜J“­ŠÔ§
