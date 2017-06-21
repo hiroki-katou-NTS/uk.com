@@ -198,7 +198,7 @@ module nts.uk.ui.validation {
                 if (timeParse.success) {
                     result.success(timeParse.toValue());
                 } else {
-                    result.fail(); 
+                    result.fail(""); 
                 }
                 
                 if (!util.isNullOrUndefined(this.constraint)) {
@@ -207,7 +207,7 @@ module nts.uk.ui.validation {
                         let max = time.parseTime(this.constraint.max);
                         if (timeParse.success && (max.hours < timeParse.hours
                             || (max.hours === timeParse.hours && max.minutes < timeParse.minutes))) {
-                            result.fail();
+                            result.fail("");
                         }
                     }
                     
@@ -216,7 +216,7 @@ module nts.uk.ui.validation {
                         let min = time.parseTime(this.constraint.min);
                         if (timeParse.success && (min.hours > timeParse.hours
                             || (min.hours === timeParse.hours && min.minutes > timeParse.minutes))) {
-                            result.fail();
+                            result.fail("");
                         }
                     }
                     
@@ -258,7 +258,7 @@ module nts.uk.ui.validation {
                         let maxMoment = moment.duration(maxStr);
                         if (parseResult.success && (maxMoment.hours() < inputMoment.hours() 
                             || (maxMoment.hours() === inputMoment.hours() && maxMoment.minutes() < inputMoment.minutes()))) {
-                            result.fail();
+                            result.fail("");
                         } 
                     } 
                     if (!util.isNullOrUndefined(this.constraint.min)) {
@@ -266,7 +266,7 @@ module nts.uk.ui.validation {
                         let minMoment = moment.duration(minStr);
                         if (parseResult.success && (minMoment.hours() > inputMoment.hours()
                             || (minMoment.hours() === inputMoment.hours() && minMoment.minutes() > inputMoment.minutes()))) {
-                            result.fail();
+                            result.fail("");
                         }
                     }
                     
