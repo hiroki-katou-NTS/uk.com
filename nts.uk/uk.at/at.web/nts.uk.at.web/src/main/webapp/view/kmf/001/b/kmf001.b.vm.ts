@@ -15,6 +15,13 @@ module nts.uk.pr.view.kmf001.b {
             fundedPaidHoliday: KnockoutObservable<number>;
             exsessHoliday: KnockoutObservable<number>;
             specialHoliday: KnockoutObservable<number>;
+            
+            paidLeaveSetting: KnockoutObservable<boolean>;
+            retentionYearlySetting: KnockoutObservable<boolean>;
+            compensLeaveComSetSetting: KnockoutObservable<boolean>;
+            comSubtSetting: KnockoutObservable<boolean>;
+            com60HSetting: KnockoutObservable<boolean>;
+            nursingSetting: KnockoutObservable<boolean>;
 
             enableHelpButton: KnockoutObservable<boolean>;
 
@@ -40,6 +47,13 @@ module nts.uk.pr.view.kmf001.b {
                 self.fundedPaidHoliday = ko.observable(null);
                 self.exsessHoliday = ko.observable(null);
                 self.specialHoliday = ko.observable(null);
+                
+                self.paidLeaveSetting = ko.observable(true);
+                self.retentionYearlySetting = ko.observable(true);
+                self.compensLeaveComSetSetting = ko.observable(true);
+                self.comSubtSetting = ko.observable(true);
+                self.com60HSetting = ko.observable(true);
+                self.nursingSetting = ko.observable(true);
 
                 self.enableHelpButton = ko.observable(true);
             }
@@ -47,11 +61,21 @@ module nts.uk.pr.view.kmf001.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(self.loadCategoryEnums()).done(function(res) {
+                $.when(self.loadApplySetting(),self.loadCategoryEnums()).done(function(res) {
                     self.loadAcquisitionRule();
                     dfd.resolve();
                 });
                 return dfd.promise();
+            }
+            private loadApplySetting() : JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findSettingAll().done(function(res: any){
+                     alert('abc');
+                     dfd.resolve();
+                }).fail(function(res){
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
             }
             private loadCategoryEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
