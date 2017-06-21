@@ -38,7 +38,7 @@ module nts.uk.pr.view.kmf001.j {
             constructor() {
                 var self = this;
                 self.service = service.instance;
-                selfself.selectedItem = ko.observable(null);
+                self.selectedItem = ko.observable(null);
                 self.alreadySettingList = ko.observableArray([]);
 
                 self.timeDigestiveUnitEnums = ko.observableArray([]);
