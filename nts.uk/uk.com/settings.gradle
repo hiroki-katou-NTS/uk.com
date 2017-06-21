@@ -1,5 +1,9 @@
 include 'com.web:nts.uk.com.web'
 
+include 'shr:nts.uk.shr.com'
+include 'shr:nts.uk.shr.ws'
+include 'shr:nts.uk.shr.find'
+
 include 'com.ctx:basic:nts.uk.ctx.basic.ac'
 include 'com.ctx:basic:nts.uk.ctx.basic.app'
 include 'com.ctx:basic:nts.uk.ctx.basic.dom'

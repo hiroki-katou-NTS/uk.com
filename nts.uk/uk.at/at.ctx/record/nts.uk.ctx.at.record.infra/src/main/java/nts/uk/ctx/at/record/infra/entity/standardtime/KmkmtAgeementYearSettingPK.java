@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.standardtime;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -19,5 +20,5 @@ public class KmkmtAgeementYearSettingPK implements Serializable {
 	public String employeeId;
 	
 	@Column(name = "Y_K")
-	public String yearValue;
+	public BigDecimal yearValue;
 }

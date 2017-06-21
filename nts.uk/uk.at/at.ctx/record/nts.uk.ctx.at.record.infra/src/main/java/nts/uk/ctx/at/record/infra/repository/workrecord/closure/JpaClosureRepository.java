@@ -54,7 +54,7 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 */
 	@Override
 	public void update(Closure closure) {
-		this.commandProxy().update(this.toEntity(closure));
+		this.commandProxy().update(this.toEntityUpdate(closure));
 	}
 
 	/*
@@ -131,6 +131,24 @@ public class JpaClosureRepository extends JpaRepository implements ClosureReposi
 	 */
 	private KclmtClosure toEntity(Closure domain){
 		KclmtClosure entity = new KclmtClosure();
+		domain.saveToMemento(new JpaClosureSetMemento(entity));
+		return entity;
+	}
+
+	/**
+	 * To entity update.
+	 *
+	 * @param domain the domain
+	 * @return the kclmt closure
+	 */
+	private KclmtClosure toEntityUpdate(Closure domain) {
+		KclmtClosure entity = new KclmtClosure();
+		Optional<KclmtClosure> optionalEntity = this.queryProxy().find(
+				new KclmtClosurePK(domain.getCompanyId().v(), domain.getClosureId()),
+				KclmtClosure.class);
+		if (optionalEntity.isPresent()) {
+			entity = optionalEntity.get();
+		}
 		domain.saveToMemento(new JpaClosureSetMemento(entity));
 		return entity;
 	}

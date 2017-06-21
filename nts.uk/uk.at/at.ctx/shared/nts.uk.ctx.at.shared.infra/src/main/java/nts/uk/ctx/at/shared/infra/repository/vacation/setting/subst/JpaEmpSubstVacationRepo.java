@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,6 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacation;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacationPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacationPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacation_;
 
@@ -33,12 +35,36 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-	 * EmpSubstVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.
+	 * EmpSubstVacationRepository#insert(nts.uk.ctx.at.shared.dom.vacation.
 	 * setting.subst.EmpSubstVacation)
 	 */
 	@Override
+	public void insert(EmpSubstVacation setting) {
+		KsvstEmpSubstVacation entity = new KsvstEmpSubstVacation();
+
+		setting.saveToMemento(new JpaEmpSubstVacationSetMemento(entity));
+
+		this.commandProxy().insert(entity);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
+	 * ComSubstVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.
+	 * setting.subst.ComSubstVacation)
+	 */
+	@Override
 	public void update(EmpSubstVacation setting) {
-		this.commandProxy().update(this.toEntity(setting));
+		Optional<KsvstEmpSubstVacation> optEntity = this.queryProxy()
+				.find(new KsvstEmpSubstVacationPK(setting.getCompanyId(),
+						setting.getEmpContractTypeCode()), KsvstEmpSubstVacation.class);
+
+		KsvstEmpSubstVacation entity = optEntity.get();
+
+		setting.saveToMemento(new JpaEmpSubstVacationSetMemento(entity));
+
+		this.commandProxy().update(entity);
 	}
 
 	/*
@@ -73,17 +99,29 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 		return Optional.of(new EmpSubstVacation(new JpaEmpSubstVacationGetMemento(results.get(0))));
 	}
 
-	/**
-	 * To entity.
-	 *
-	 * @param setting
-	 *            the setting
-	 * @return the ksvst com subst vacation
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
+	 * EmpSubstVacationRepository#findAll(java.lang.String)
 	 */
-	private KsvstEmpSubstVacation toEntity(EmpSubstVacation setting) {
-		KsvstEmpSubstVacation entity = new KsvstEmpSubstVacation();
-		setting.saveToMemento(new JpaEmpSubstVacationSetMemento(entity));
-		return entity;
+	@Override
+	public List<EmpSubstVacation> findAll(String companyId) {
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<KsvstEmpSubstVacation> cq = builder.createQuery(KsvstEmpSubstVacation.class);
+		Root<KsvstEmpSubstVacation> root = cq.from(KsvstEmpSubstVacation.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		predicateList.add(builder.equal(root.get(KsvstEmpSubstVacation_.kclstEmpSubstVacationPK)
+				.get(KsvstEmpSubstVacationPK_.cid), companyId));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		return em.createQuery(cq).getResultList().stream()
+				.map(entity -> new EmpSubstVacation(new JpaEmpSubstVacationGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 }

@@ -8,11 +8,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationSet
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacationPK;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacationPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstSixtyHourVacationSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacationPK;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstSubstVacationSetting;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst.JpaSubstVacationSettingSetMemento;
 
 /**
  * The Class JpaEmpSubstVacationSetMemento.

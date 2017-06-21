@@ -100,9 +100,9 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.21'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.5'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.5.1'
 		
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.3'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
 	}
 }
 
@@ -110,7 +110,7 @@ subprojects {
 //=========================at:shared===================================
 project (':at.ctx:shared:nts.uk.ctx.at.shared.app') {
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
@@ -142,7 +142,7 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom') {
 }
 project (':at.ctx:schedule:nts.uk.ctx.at.schedule.app') {
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
@@ -183,7 +183,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.dom') {
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.app') {
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
@@ -226,6 +226,7 @@ project (':at.web:nts.uk.at.web') {
 		charset="utf8"
 		target = "ES5"
 		source=  file("src/main/webapp/view")
+		
 	}
 	
 	def explodedWarPath = "${buildDir}/exploded/${war.baseName}.war"
@@ -247,7 +248,8 @@ project (':at.web:nts.uk.at.web') {
 	}
 	
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.3'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		
@@ -273,6 +275,7 @@ project (':at.web:nts.uk.at.web') {
 		runtime project (':at.ctx:record:nts.uk.ctx.at.record.ws')
 
 		// implement eraAdapter
+		compile group: 'com', name: 'nts.uk.ctx.basic.app', version: '0.1'
 		compile group: 'com', name: 'nts.uk.ctx.basic.infra', version: '0.1'
 		compile group: 'com', name: 'nts.uk.ctx.basic.dom', version: '0.1'
 	}

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find;
 
+import java.util.List;
+
 import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find.dto.Emp60HourVacationDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find.dto.SixtyHourVacationSettingDto;
 
@@ -27,4 +29,12 @@ public interface SixtyHourVacationFinder {
 	 * @return the emp subst vacation dto
 	 */
 	Emp60HourVacationDto findEmpSetting(String companyId, String contractTypeCode);
+	
+	/**
+	 * Find all employment.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<String> findAllEmployment();
 }

@@ -19,13 +19,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation_;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst.JpaComSubstVacationGetMemento;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst.JpaComSubstVacationSetMemento;
 
 /**
  * The Class JpaComSubstVacationRepo.

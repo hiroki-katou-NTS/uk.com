@@ -1,14 +1,32 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
-import nts.uk.ctx.at.record.infra.entity.standardtime.KmkstBasicAgreementSetting;
-import nts.uk.ctx.at.record.infra.entity.standardtime.KmkstBasicAgreementSettingPK;
+import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtBasicAgreementSetting;
+import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtBasicAgreementSettingPK;
 
+@Stateless
 public class JpaBasicAgreementSettingRepository extends JpaRepository implements BasicAgreementSettingRepository{
 
+	private static final String UPDATE_BY_KEY;
+	
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("UPDATE KmkmtBasicAgreementSetting a ");
+		builderString.append("SET a.alarmWeek = :alarmWeek , a.alarmTwoWeeks = :alarmTwoWeeks , a.alarmFourWeeks = :alarmFourWeeks , a.alarmOneMonth = :alarmOneMonth ,"
+				+ " a.alarmTwoMonths = :alarmTwoMonths , a.alarmThreeMonths = :alarmThreeMonths , a.alarmOneYear = :alarmOneYear , a.errorWeek = :errorWeek ,"
+				+ " a.errorTwoWeeks = :errorTwoWeeks , a.errorFourWeeks = :errorFourWeeks , a.errorOneMonth = :errorOneMonth , a.errorTwoMonths = :errorTwoMonths , "
+				+ " a.errorThreeMonths = :errorThreeMonths , a.errorOneYear = :errorOneYear , a.limitWeek = :limitWeek , a.limitTwoWeeks = :limitTwoWeeks , "
+				+ " a.limitFourWeeks = :limitFourWeeks , a.limitOneMonth = :limitOneMonth , a.limitTwoMonths = :limitTwoMonths ,"
+				+ " a.limitThreeMonths = :limitThreeMonths , a.limitOneYear = :limitOneYear ");
+		builderString.append("WHERE a.kmkmtBasicAgreementSettingPK.basicSettingId = :basicSettingId ");
+		UPDATE_BY_KEY = builderString.toString();
+	}
+	
 	@Override
 	public void add(BasicAgreementSetting basicAgreementSetting) {
 		this.commandProxy().insert(toEntity(basicAgreementSetting));
@@ -16,19 +34,41 @@ public class JpaBasicAgreementSettingRepository extends JpaRepository implements
 
 	@Override
 	public void update(BasicAgreementSetting basicAgreementSetting) {
-		this.commandProxy().update(toEntity(basicAgreementSetting));
+		this.getEntityManager().createQuery(UPDATE_BY_KEY)
+				.setParameter("basicSettingId", basicAgreementSetting.getBasicSettingId())
+				.setParameter("alarmWeek", basicAgreementSetting.getAlarmWeek().v())
+				.setParameter("alarmTwoWeeks", basicAgreementSetting.getAlarmTwoWeeks().v())
+				.setParameter("alarmFourWeeks", basicAgreementSetting.getAlarmFourWeeks().v())
+				.setParameter("alarmOneMonth", basicAgreementSetting.getAlarmOneMonth().v())
+				.setParameter("alarmTwoMonths", basicAgreementSetting.getAlarmTwoMonths().v())
+				.setParameter("alarmThreeMonths", basicAgreementSetting.getAlarmThreeMonths().v())
+				.setParameter("alarmOneYear", basicAgreementSetting.getAlarmOneYear().v())
+				.setParameter("errorWeek", basicAgreementSetting.getErrorWeek().v())
+				.setParameter("errorTwoWeeks", basicAgreementSetting.getErrorTwoWeeks().v())
+				.setParameter("errorFourWeeks", basicAgreementSetting.getErrorFourWeeks().v())
+				.setParameter("errorOneMonth", basicAgreementSetting.getErrorOneMonth().v())
+				.setParameter("errorTwoMonths", basicAgreementSetting.getErrorTwoMonths().v())
+				.setParameter("errorThreeMonths", basicAgreementSetting.getErrorThreeMonths().v())
+				.setParameter("errorOneYear", basicAgreementSetting.getErrorOneYear().v())
+				.setParameter("limitWeek", basicAgreementSetting.getLimitWeek().v())
+				.setParameter("limitTwoWeeks", basicAgreementSetting.getLimitTwoWeeks().v())
+				.setParameter("limitFourWeeks", basicAgreementSetting.getLimitFourWeeks().v())
+				.setParameter("limitOneMonth", basicAgreementSetting.getLimitOneMonth().v())
+				.setParameter("limitTwoMonths", basicAgreementSetting.getLimitTwoMonths().v())
+				.setParameter("limitThreeMonths", basicAgreementSetting.getLimitThreeMonths().v())
+				.setParameter("limitOneYear", basicAgreementSetting.getLimitOneYear().v()).executeUpdate();
 	}
 
 	@Override
 	public void remove(String basicSettingId) {
-		this.commandProxy().remove(KmkstBasicAgreementSetting.class,new KmkstBasicAgreementSettingPK(basicSettingId));
+		this.commandProxy().remove(KmkmtBasicAgreementSetting.class,new KmkmtBasicAgreementSettingPK(basicSettingId));
 	}
 
-	private KmkstBasicAgreementSetting toEntity(BasicAgreementSetting basicAgreementSetting){
-		val entity = new KmkstBasicAgreementSetting();
+	private KmkmtBasicAgreementSetting toEntity(BasicAgreementSetting basicAgreementSetting){
+		val entity = new KmkmtBasicAgreementSetting();
 		
-		entity.kmkstBasicAgreementSettingPK = new KmkstBasicAgreementSettingPK();
-		entity.kmkstBasicAgreementSettingPK.basicSettingId = basicAgreementSetting.getBasicSettingId();
+		entity.kmkmtBasicAgreementSettingPK = new KmkmtBasicAgreementSettingPK();
+		entity.kmkmtBasicAgreementSettingPK.basicSettingId = basicAgreementSetting.getBasicSettingId();
 		entity.alarmWeek = basicAgreementSetting.getAlarmWeek().v();
 		entity.alarmTwoWeeks = basicAgreementSetting.getAlarmTwoWeeks().v();
 		entity.alarmFourWeeks = basicAgreementSetting.getAlarmFourWeeks().v();

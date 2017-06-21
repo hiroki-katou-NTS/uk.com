@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
  * The Class CompanyCompensatoryLeave.
@@ -21,6 +22,15 @@ public class Com60HourVacation extends DomainObject {
 	/** The setting. */
 	// 設定
 	private SixtyHourVacationSetting setting;
+
+	/**
+	 * Checks if is managed.
+	 *
+	 * @return true, if is managed
+	 */
+	public boolean isManaged() {
+		return this.setting.getIsManage().equals(ManageDistinct.YES);
+	}
 
 	/**
 	 * Instantiates a new company compensatory leave.

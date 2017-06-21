@@ -1,10 +1,17 @@
 @CHARSET "UTF-8";
 
-.border-all td{
+.contents-area {
+	width: 1280px;
+}
+.border-all td {
 	border: solid grey 1px;
 	text-align: center;
-	padding: 5px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 10px;
+	padding-left: 10px;
 	min-width: 60px;
+	max-width: 100px;
 }
 
 .border-all input {
@@ -21,4 +28,13 @@
 }
 #right-content {
 	margin-left: 60px;
+}
+#btn-usage-unit {
+	margin-left: 600px;
+}
+.action-bar {
+	margin-left: 30px;
+}
+.btn-remove {
+	margin-left: 100px;
 }
