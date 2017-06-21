@@ -17,9 +17,9 @@ module nts.uk.at.view.kmk004.a {
             employmentCodes: KnockoutObservableArray<any>;
             selectedEmploymentCode: KnockoutObservable<string>;
 
-            // New mode flag.
+            // Flag.
             isNewMode: KnockoutObservable<boolean>;
-            // Sidebar flag.
+            isLoading: KnockoutObservable<boolean>;
             isCompanySelected: KnockoutObservable<boolean>;
             isEmploymentSelected: KnockoutObservable<boolean>;
             isWorkplaceSelected: KnockoutObservable<boolean>;
@@ -30,6 +30,7 @@ module nts.uk.at.view.kmk004.a {
 
                 // Flag.
                 self.isNewMode = ko.observable(true);
+                self.isLoading = ko.observable(true);
                 self.isCompanySelected = ko.observable(true);
                 self.isEmploymentSelected = ko.observable(false);
                 self.isWorkplaceSelected = ko.observable(false);
@@ -87,8 +88,7 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 $.when(self.loadUsageUnitSetting(),
-                    self.loadCompanySetting(),
-                    $('#list-employment').ntsListComponent(this.listEmploymentOption))
+                    self.loadCompanySetting())
                     .done(() => dfd.resolve());
                 return dfd.promise();
             }
@@ -98,7 +98,7 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectCompany(): void {
                 let self = this;
-                self.companyWTSetting = new CompanyWTSetting();
+                self.isLoading(true);
                 self.loadCompanySetting();
                 self.isCompanySelected(true);
                 self.isEmploymentSelected(false);
@@ -111,16 +111,18 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectEmployment(): void {
                 let self = this;
+                self.isLoading(true);
                 self.isCompanySelected(false);
                 self.isEmploymentSelected(true);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
-                self.setAlreadySettingEmploymentList();
-                // Select first employment.
-                let list = $('#list-employment').getDataList();
-                if (list) {
-                    self.selectedEmploymentCode(list[0].code);
-                }
+                $('#list-employment').ntsListComponent(this.listEmploymentOption).done(() => {
+                    // Select first employment.
+                    let list = $('#list-employment').getDataList();
+                    if (list) {
+                        self.selectedEmploymentCode(list[0].code);
+                    }
+                });
             }
 
             /**
@@ -128,11 +130,11 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectWorkplace(): void {
                 let self = this;
+                self.isLoading(true);
                 self.isCompanySelected(false);
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(true);
-                self.setAlreadySettingWorkplaceList();
                 // mock data.
                 self.loadWorkplaceSetting('1');
             }
@@ -226,10 +228,13 @@ module nts.uk.at.view.kmk004.a {
              */
             public removeCompanySetting(): void {
                 let self = this;
-                let command = { year: self.companyWTSetting.year() }
+                let selectedYear = self.companyWTSetting.year();
+                let command = { year: selectedYear }
                 service.removeCompanySetting(command).done(() => {
-                    let newSetting = ko.toJS(new CompanyWTSetting());
-                    self.companyWTSetting.updateData(newSetting);
+                    // Reserve current year.
+                    let newSetting = new CompanyWTSetting();
+                    newSetting.year(selectedYear);
+                    self.companyWTSetting.updateData(ko.toJS(newSetting));
                     self.isNewMode(true);
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 });
@@ -258,6 +263,7 @@ module nts.uk.at.view.kmk004.a {
                         }
                         // Sort month.
                         self.companyWTSetting.sortMonth(startMonth);
+                        self.isLoading(false);
                         dfd.resolve();
                     });
                 return dfd.promise();
@@ -302,6 +308,7 @@ module nts.uk.at.view.kmk004.a {
                         }
                         // Sort month.
                         self.employmentWTSetting.sortMonth(startMonth);
+                        self.isLoading(false);
                     });
                 self.setAlreadySettingEmploymentList();
             }
@@ -340,6 +347,7 @@ module nts.uk.at.view.kmk004.a {
                     self.workplaceWTSetting.workplaceName('name');
                     // Sort month.
                     self.workplaceWTSetting.sortMonth(startMonth);
+                    self.isLoading(false);
                 });
                 self.setAlreadySettingWorkplaceList();
             }
