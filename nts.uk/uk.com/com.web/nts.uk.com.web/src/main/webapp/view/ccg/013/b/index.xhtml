@@ -27,7 +27,7 @@
 							<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_18')}</div></td>
 							<td><input data-bind="ntsTextEditor: {value: simpleValue}" /></td>
 							<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
-							<td><div id="colorpicker" data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 200}"/></td>
+							<td><div id="colorpicker" data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50}"/></td>
 						</tr>
 						<tr>
 							<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_20')}</div></td>
@@ -39,11 +39,11 @@
 										value: selectedId,
 										enable: true}">
 								</div>
-								<button
-									data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
+								<button 
+									data-bind="ntsHelpButton: {image: 'img/lam.jpg', position: 'right top', enable: true }">?</button>
 							</td>
 							<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_23')}</div></td>
-							<td><div id="colorpicker" data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 200}"/></td>
+							<td><div id="colorpicker" data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50}"/></td>
 						</tr>
 					</table>
 				</div>
@@ -53,19 +53,21 @@
 					<div id="system selection" data-bind="ntsComboBox: {
 								options: listSystemSelect,
 								value: selectedCode,
+								optionsValue: 'code',
 								optionsText: 'name',
 								enable: true,
 								}"></div>
+					<div data-bind="text: selectedCode"></div>
 					</div>
 						<span class="caret-bottom outline"></span>
-						<div style="width: 350px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
-							items: listStandardMenu, selected: currentCodeList, selectedKey: 'code', fields: ['displayName', 'code'], mode: 'igGrid'}" />		
+						<div style="width: 350px ; margin-bottom: 20px;" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+							items: listStandardMenu, selected: selectCode, selectedKey: 'code', fields: ['displayName', 'code'], mode: 'igGrid'}" />		
 						<table id="multi-list" data-bind="ntsGridList: {
 								height: 320,
 								options: listStandardMenu,
 								optionsValue: 'code',
 								columns: columns,
-								value: currentCodeList
+								value: selectCode
 							}"></table>
 					
 								
