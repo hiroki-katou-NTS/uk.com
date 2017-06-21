@@ -28,8 +28,7 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 */
 	@Override
 	public void update(UsageUnitSetting setting) {
-		this.commandProxy().update(this.toEntitỵ̣̣(setting));
-
+		this.commandProxy().update(this.updateEntity(this.toEntitỵ̣̣(setting)));
 	}
 
 	/*
@@ -40,32 +39,44 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 */
 	@Override
 	public Optional<UsageUnitSetting> findByCompany(String companyId) {
-		return this.queryProxy().find(companyId, JuuwtstUsageUnitWtSet.class)
-				.map(setting -> this.toDomain(setting));
+		return this.queryProxy().find(companyId, JuuwtstUsageUnitWtSet.class).map(setting -> this.toDomain(setting));
 	}
-	
-	
+
 	/**
 	 * To domain.
 	 *
 	 * @param entity the entity
 	 * @return the usage unit setting
 	 */
-	private UsageUnitSetting toDomain(JuuwtstUsageUnitWtSet entity){
+	private UsageUnitSetting toDomain(JuuwtstUsageUnitWtSet entity) {
 		return new UsageUnitSetting(new JpaUsageUnitSettingGetMemento(entity));
 	}
-	
-	
+
 	/**
 	 * To entitỵ̣̣.
 	 *
 	 * @param domain the domain
 	 * @return the juuwtst usage unit wt set
 	 */
-	private JuuwtstUsageUnitWtSet toEntitỵ̣̣(UsageUnitSetting domain){
+	private JuuwtstUsageUnitWtSet toEntitỵ̣̣(UsageUnitSetting domain) {
 		JuuwtstUsageUnitWtSet entity = new JuuwtstUsageUnitWtSet();
 		domain.saveToMemento(new JpaUsageUnitSettingSetMemento(entity));
 		return entity;
+	}
+
+	/**
+	 * Update entity.
+	 *
+	 * @param entity the entity
+	 * @return the juuwtst usage unit wt set
+	 */
+	private JuuwtstUsageUnitWtSet updateEntity(JuuwtstUsageUnitWtSet entity) {
+		JuuwtstUsageUnitWtSet updatedEntity = this.queryProxy().find(entity.getCid(), JuuwtstUsageUnitWtSet.class)
+				.get();
+		updatedEntity.setIsEmp(entity.getIsEmp());
+		updatedEntity.setIsEmpt(entity.getIsEmpt());
+		updatedEntity.setIsWkp(entity.getIsWkp());
+		return updatedEntity;
 	}
 
 }
