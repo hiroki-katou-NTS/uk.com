@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.TopPageSelfSettingCommand;
@@ -19,6 +20,7 @@ import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSelfSettingFinder;
  * @author hoatt
  */
 @Path("topageselfsetting")
+@Produces("application/json")
 public class TopPageSelfWebService extends WebService {
 	@Inject
 	private TopPageSelfSettingFinder topPageSelfSettingFinder;
@@ -62,5 +64,10 @@ public class TopPageSelfWebService extends WebService {
 	@Path("getmypage")
 	public LayoutForMyPageDto activeLayoutSetting(String layoutID) {
 		return myPage.findLayout(layoutID);
+	}
+	@POST
+	@Path("gettoppage")
+	public LayoutForMyPageDto activeLayoutTopPage(String topPageCode){
+		return myPage.findLayoutTopPage(topPageCode);
 	}
 }
