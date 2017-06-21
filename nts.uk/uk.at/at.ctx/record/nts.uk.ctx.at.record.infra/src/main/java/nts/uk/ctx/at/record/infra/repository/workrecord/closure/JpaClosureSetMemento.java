@@ -31,6 +31,9 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	 * @param kclmtClosure the kclmt closure
 	 */
 	public JpaClosureSetMemento(KclmtClosure kclmtClosure) {
+		if(kclmtClosure.getKclmtClosurePK() == null){
+			kclmtClosure.setKclmtClosurePK(new KclmtClosurePK());
+		}
 		this.kclmtClosure = kclmtClosure;
 	}
 
@@ -42,9 +45,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		KclmtClosurePK pk = new KclmtClosurePK();
-		pk.setCid(companyId.v());
-		this.kclmtClosure.setKclmtClosurePK(pk);
+		this.kclmtClosure.getKclmtClosurePK().setCid(companyId.v());
 	}
 
 	/*
@@ -55,9 +56,7 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	 */
 	@Override
 	public void setClosureId(Integer closureId) {
-		KclmtClosurePK pk = this.kclmtClosure.getKclmtClosurePK();
-		pk.setClosureId(closureId);
-		this.kclmtClosure.setKclmtClosurePK(pk);
+		this.kclmtClosure.getKclmtClosurePK().setClosureId(closureId);
 	}
 
 	/*
