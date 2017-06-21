@@ -1,6 +1,7 @@
 __viewContext.ready(function () {
     class ScreenModel {
         enable: KnockoutObservable<boolean>;
+        required: KnockoutObservable<boolean>;
         dateValue: KnockoutObservable<any>;
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
@@ -8,6 +9,7 @@ __viewContext.ready(function () {
         constructor() {
             var self = this;
             self.enable = ko.observable(true);
+            self.required = ko.observable(true);
             
             self.startDateString = ko.observable("");
             self.endDateString = ko.observable("");

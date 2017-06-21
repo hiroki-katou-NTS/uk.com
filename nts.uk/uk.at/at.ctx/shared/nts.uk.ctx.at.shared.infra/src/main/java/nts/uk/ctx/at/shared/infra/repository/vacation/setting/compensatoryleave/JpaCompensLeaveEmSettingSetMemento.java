@@ -30,6 +30,10 @@ public class JpaCompensLeaveEmSettingSetMemento implements CompensatoryLeaveEmSe
      * @param entity the entity
      */
     public JpaCompensLeaveEmSettingSetMemento(KclmtCompensLeaveEmp entity) {
+        // check exist primary key
+        if (entity.getKclmtCompensLeaveEmpPK() == null) {
+            entity.setKclmtCompensLeaveEmpPK(new KclmtCompensLeaveEmpPK());
+        }
         this.entity = entity;
     }
     
@@ -42,12 +46,7 @@ public class JpaCompensLeaveEmSettingSetMemento implements CompensatoryLeaveEmSe
      */
     @Override
     public void setCompanyId(String companyId) {
-        KclmtCompensLeaveEmpPK pk = this.entity.getKclmtCompensLeaveEmpPK();
-        if (pk == null) {
-            pk = new KclmtCompensLeaveEmpPK();
-        }
-        pk.setCid(companyId);
-        this.entity.setKclmtCompensLeaveEmpPK(pk);
+        this.entity.getKclmtCompensLeaveEmpPK().setCid(companyId);
     }
 
     /*
@@ -59,12 +58,7 @@ public class JpaCompensLeaveEmSettingSetMemento implements CompensatoryLeaveEmSe
      */
     @Override
     public void setEmploymentCode(EmploymentCode employmentCode) {
-        KclmtCompensLeaveEmpPK pk = this.entity.getKclmtCompensLeaveEmpPK();
-        if (pk == null) {
-            pk = new KclmtCompensLeaveEmpPK();
-        }
-        pk.setEmpcd(employmentCode.v());
-        this.entity.setKclmtCompensLeaveEmpPK(pk);
+        this.entity.getKclmtCompensLeaveEmpPK().setEmpcd(employmentCode.v());
     }
 
     /*

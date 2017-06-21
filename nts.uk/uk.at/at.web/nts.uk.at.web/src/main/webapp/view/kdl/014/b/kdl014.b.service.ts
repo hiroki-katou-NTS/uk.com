@@ -9,7 +9,7 @@ module kdl014.b.service {
      * get list List Stamp by Code
      */
     export function getStampByCode(arrCardNumber: Array<string>, startDate, endDate): JQueryPromise<any> {
-        //return nts.uk.request.ajax("at", paths.getStampByEmployeeCode + "/" + startDate + "/" + endDate, arrCardNumber);
+        arrCardNumber = arrCardNumber ? arrCardNumber: [];
         return nts.uk.request.ajax("at", nts.uk.text.format(paths.getStampByEmployeeCode, startDate, endDate), arrCardNumber);
     }
 
@@ -17,7 +17,8 @@ module kdl014.b.service {
      * get list PersonId 
      */
     export function getPersonIdByEmployee(employeeCode): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", nts.uk.text.format(paths.getPersonIdByEmployeeCode,employeeCode);
+        employeeCode = employeeCode ? employeeCode : null;
+        return nts.uk.request.ajax("com", nts.uk.text.format(paths.getPersonIdByEmployeeCode,employeeCode));
     }
 
     /**

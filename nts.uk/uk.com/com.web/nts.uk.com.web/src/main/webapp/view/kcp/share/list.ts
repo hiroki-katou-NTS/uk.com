@@ -192,7 +192,7 @@ module kcp.share.list {
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 70,
                     formatter: function(isAlreadySet: string) {
                         if (isAlreadySet == 'true') {
-                            return '<div style="text-align: center;"><i class="icon icon-dot"></i></div>';
+                            return '<div style="text-align: center;"><i class="icon icon-78"></i></div>';
                         }
                         return '';
                     }
@@ -239,7 +239,7 @@ module kcp.share.list {
             self.itemList(dataList);
             // Check is show no select row.
             if (data.isShowNoSelectRow) {
-                self.itemList.unshift({code: null, name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+                self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
             this.searchOption = {
                 searchMode: 'filter',
@@ -259,6 +259,12 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
+                
+                // Add icon to column already setting.
+                var iconLink = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                .mergeRelativePath('/view/kcp/share/icon/icon78.png').serialize();
+                $('.icon-78').attr('style', "background: url('"+ iconLink +"');width: 20px;height: 20px;background-size: 20px 20px;")
                 if (self.hasBaseDate) {
                     $('.base-date-editor').find('.nts-input').first().focus();
                 } else {

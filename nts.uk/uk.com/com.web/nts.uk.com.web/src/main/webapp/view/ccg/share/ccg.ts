@@ -1,22 +1,22 @@
 module nts.uk.com.view.ccg.share.ccg {
-    
-    
+
+    import ListType = kcp.share.list.ListType;
+    import TreeType = kcp.share.tree.TreeType;
+    import SelectType = kcp.share.list.SelectType;
+    import UnitModel = kcp.share.list.UnitModel;
+
     export class PersonModel {
         personId: string;
 
         personName: string;
     }
 
-    import ListType = kcp.share.list.ListType;
-    import TreeType = kcp.share.tree.TreeType;
-
-
     export interface GroupOption {
         /**
          * is Multi select.
          */
         isMultiSelect: boolean;
-        
+
         onSearchAllClicked: (data: any) => void;
     }
 
@@ -34,8 +34,9 @@ module nts.uk.com.view.ccg.share.ccg {
         classifications: any;
         jobtitles: any;
         workplaces: any;
+        employeeinfo: any;
         onSearchAllClicked: (data: PersonModel) => void;
-        
+
 
         constructor() {
             var self = this;
@@ -123,17 +124,47 @@ module nts.uk.com.view.ccg.share.ccg {
 
             return dfd.promise();
         }
-        
-        searchAllEmployee(): void{
+
+        searchAllEmployee(): void {
             var self = this;
-            service.findAllPerson().done(data=>{
-                self.onSearchAllClicked(data);    
+            service.findAllPerson().done(data => {
+                self.onSearchAllClicked(data);
             });
         }
+
+        searchDataEmployee(): void {
+            var self = this;
+            service.findAllPerson().done(data => {
+                self.employeeinfo = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: self.isMultiple,
+                    listType: ListType.EMPLOYEE,
+                    employeeInputList: self.toUnitModel(data),
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.selectedCode,
+                    isDialog: false,
+                    isShowNoSelectRow: false,
+                }  
+                $('#employeeinfo').ntsListComponent(self.employeeinfo); 
+            });
+            
+        }
         
+        public toUnitModel(dataList: PersonModel[]): KnockoutObservableArray<UnitModel> {
+            var dataRes: UnitModel[] = [];
+
+            for (var item: PersonModel of dataList) {
+                dataRes.push({
+                    code: item.personId,
+                    name: item.personName
+                });
+            }
+            return ko.observableArray(dataRes);
+        }
+
 
     }
-    
+
 
     /**
     * Service,

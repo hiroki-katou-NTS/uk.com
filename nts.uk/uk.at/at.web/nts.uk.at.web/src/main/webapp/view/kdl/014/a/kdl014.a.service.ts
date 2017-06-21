@@ -8,18 +8,18 @@ module kdl014.a.service {
      * get list List Stamp by Code
      */
     export function getStampByCode(arrCardNumber: Array<string>, startDate, endDate): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getStampByEmployeeCode, startDate, endDate), arrCardNumber);
+        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getStampByEmployeeCode, startDate, endDate), arrCardNumber));
     }
 
     /**
      * get list Stamp Number
      */
     export function getStampNumberByPersonId(personId): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getStampNumberByPersonId, personId);
- 
+        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getStampNumberByPersonId, personId));
     }
     export function getPersonIdByEmployee(employeeCode): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", nts.uk.text.format(paths.getPersonIdByEmployeeCode, employeeCode);
+        employeeCode = employeeCode ? employeeCode : null;
+        return nts.uk.request.ajax("com", nts.uk.text.format(paths.getPersonIdByEmployeeCode, employeeCode));
     }
 
 }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.basic.dom.person;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface PersonRepository.
@@ -18,4 +19,13 @@ public interface PersonRepository {
 	 * @return the person by person id
 	 */
 	List<Person> getPersonByPersonId(List<String> personIds);
+	
+	
+	/**
+	 * Gets the by person id.
+	 *
+	 * @param personId the person id
+	 * @return the by person id
+	 */
+	Optional<Person> getByPersonId(String personId);
 }

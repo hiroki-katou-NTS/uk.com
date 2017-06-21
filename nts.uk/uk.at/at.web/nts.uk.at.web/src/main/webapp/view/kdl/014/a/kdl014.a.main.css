@@ -23,3 +23,7 @@ td #link{
 .ui-widget-header {
 	font-weight: normal !important;
 }
+
+.ui-iggrid .ui-iggrid-tablebody td{
+	height: 44px !important;
+}

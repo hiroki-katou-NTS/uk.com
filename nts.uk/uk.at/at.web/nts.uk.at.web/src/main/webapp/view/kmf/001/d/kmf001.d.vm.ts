@@ -84,18 +84,8 @@ module nts.uk.pr.view.kmf001.d {
                 var dfd = $.Deferred<void>();
                 var self = this;
                 self.findIsManaged().done(function() {
-                    service.findRetentionYearly().done(function(data: RetentionYearlyFindDto) {
-                        if (data == null) {
-                            self.retentionYearsAmount(1);
-                            self.maxDaysCumulation(40);
-                            self.leaveAsWorkDays(false);
-                        }
-                        else {
-                            self.initializeWholeCompanyData(data);
-                        }
-                        dfd.resolve();
-                         $('#year-amount-company').focus();
-                    });
+                    self.findRetentionYearly();
+                    dfd.resolve();
                 })
                 .fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -125,6 +115,22 @@ module nts.uk.pr.view.kmf001.d {
             
             private backToHistorySelection() {
                 nts.uk.request.jump("/view/kmf/001/a/index.xhtml");
+            }
+            
+            private findRetentionYearly(): void {
+                var self = this;
+                service.findRetentionYearly().done(function(data: RetentionYearlyFindDto) {
+                        if (data == null) {
+                            self.retentionYearsAmount(null);
+                            self.maxDaysCumulation(null);
+                            self.leaveAsWorkDays(false);
+                        }
+                        else {
+                            self.initializeWholeCompanyData(data);
+                        }
+                        
+                         $('#year-amount-company').focus();
+                    });
             }
             
             private bindEmploymentSettingData(data: EmploymentSettingFindDto): void {
@@ -186,7 +192,7 @@ module nts.uk.pr.view.kmf001.d {
                     self.selectedItem(self.employmentList()[0].code);
                     if((self.employmentList() == undefined) || (self.employmentList().length <= 0)) {
                         self.hasSelectedEmp(false);
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_146", messageParams: []})
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_146"});
                     }
                     else {
                         self.hasSelectedEmp(true);
@@ -194,6 +200,12 @@ module nts.uk.pr.view.kmf001.d {
                 });
             }
             
+            
+            private switchToCompanyTab(): void {
+                var self = this;
+//                self.startPage();
+                self.findRetentionYearly();
+            }
             private registerWholeCompany(): void {
                 var self = this;
                 // Clear errors
