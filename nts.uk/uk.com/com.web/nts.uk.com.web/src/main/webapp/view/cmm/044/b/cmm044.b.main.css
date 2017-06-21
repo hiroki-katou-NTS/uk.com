@@ -3,6 +3,7 @@
 	margin-top: 2px;
 	margin-left: 35px;
 	width: 90px;
+	margin-left: 45px;
 }
 
 #D_BTN_002 {
@@ -11,14 +12,17 @@
 }
 #label-d1-003{
 	margin-top: 20px;
-	margin-left: 35px;
+	margin-left: 40px;
 }
-th{background-color: #E0F59E}
+th{
+	background-color: #E0F59E;
+	padding: 5px 0;	
+}
 .table1 td,
 .table1 th {border: 1px solid #ccc;} 
 
 .table1 {
-	margin-top: 20px;
+	margin-top: 42px;
 	margin-left: 35px;
 	width: 950px;
 }
@@ -26,3 +30,13 @@ th{background-color: #E0F59E}
 	text-align: center;
 	
 }
+.ntsDateRange_Container{
+	margin-left: 95px;
+    margin-top: -34px;
+}
+.caret-bottom{
+	margin-left: 10px;
+}
+td{padding: 5px 0}
+
+	

@@ -3,6 +3,8 @@ package nts.uk.ctx.workflow.dom.agent;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 public interface AgentRepository {
 	/**
 	 * find all Agent
@@ -36,7 +38,7 @@ public interface AgentRepository {
 	 */
 	void delete(String companyId, String employeeId, String requestId);
 	/**
-	 * get agent by start date
+	 * get agent by requestId
 	 * 
 	 * @param companyId
 	 * @param employeeId
@@ -44,4 +46,13 @@ public interface AgentRepository {
 	 * @return
 	 */
 	Optional<Agent> find(String companyId, String employeeId, String requestId);
+
+	/**
+	 * get agent by Date
+	 * @param companyId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<Agent> findAll(String companyId, GeneralDate startDate, GeneralDate endDate);
 }
