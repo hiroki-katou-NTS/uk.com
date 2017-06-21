@@ -102,7 +102,7 @@ subprojects {
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.21'
 		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.5.1'
 		
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.3'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
 	}
 }
 
@@ -110,7 +110,7 @@ subprojects {
 //=========================at:shared===================================
 project (':at.ctx:shared:nts.uk.ctx.at.shared.app') {
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
 }
@@ -142,7 +142,7 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom') {
 }
 project (':at.ctx:schedule:nts.uk.ctx.at.schedule.app') {
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
@@ -183,7 +183,7 @@ project (':at.ctx:record:nts.uk.ctx.at.record.dom') {
 }
 project (':at.ctx:record:nts.uk.ctx.at.record.app') {
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 	}
@@ -248,8 +248,8 @@ project (':at.web:nts.uk.at.web') {
 	}
 	
 	dependencies {
-		compile group: 'base', name: 'nts.uk.shr.com', version: '0.2.3'
-		compile group: 'base', name: 'nts.uk.shr.find', version: '0.1.1'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.2.3'
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: '0.1.1'
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		
