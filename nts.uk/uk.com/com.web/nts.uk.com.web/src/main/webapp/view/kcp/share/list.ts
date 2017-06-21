@@ -265,16 +265,21 @@ module kcp.share.list {
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/kcp/share/icon/icon78.png').serialize();
                 $('.icon-78').attr('style', "background: url('"+ iconLink +"');width: 20px;height: 20px;background-size: 20px 20px;")
-                if (self.hasBaseDate) {
-                    $('.base-date-editor').find('.nts-input').first().focus();
-                } else {
-                    $(".ntsSearchBox").focus();
-                }
+                
             });
             
             // defined function get data list.
             $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
                 return dataList;
+            }
+            
+            // defined function focus
+            $.fn.focusComponent = function() {
+                if (self.hasBaseDate) {
+                    $('.base-date-editor').find('.nts-input').first().focus();
+                } else {
+                    $(".ntsSearchBox").focus();
+                }
             }
         }
         
@@ -467,7 +472,15 @@ interface JQuery {
      */
     ntsListComponent(option: kcp.share.list.ComponentOption): JQueryPromise<void>;
     
+    /**
+     * Get data list in component.
+     */
     getDataList(): Array<kcp.share.list.UnitModel>;
+    
+    /**
+     * Focus component.
+     */
+    focusComponent(): void;
 }
 
 (function($: any) {
