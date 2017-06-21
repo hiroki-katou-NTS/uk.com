@@ -27,7 +27,7 @@
 			<com:scriptfile path="kmk004.a.start.js" />
 		</ui:define>
 		<ui:define name="sidebar">
-			<ul class="navigator">
+			<ul class="navigator" data-bind="visible: true" style="display: none">
 				<li data-bind="click: onSelectCompany"><a tabindex="1" href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
 				<li data-bind="click: onSelectWorkplace, visible: usageUnitSetting.workplace"><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
 				<li data-bind="click: onSelectEmployment, visible: usageUnitSetting.employment"><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
@@ -35,31 +35,40 @@
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
+			<div data-bind="visible: true" style="display: none">
+				<!-- COMPANY WORK TIME SETTING  START -->
+				<div id="tabpanel-1" role="tabpanel">
+					<com:ko tag="if" bind="isCompanySelected">
+						<ui:include src="a.xhtml" />
+					</com:ko>
+				</div>
+				<!-- COMPANY WORK TIME SETTING END -->
 
-			<!-- COMPANY WORK TIME SETTING  START -->
-			<div id="tabpanel-1" role="tabpanel" data-bind="visible: true" style="display: none">
-				<ui:include src="a.xhtml" />
-			</div>
-			<!-- COMPANY WORK TIME SETTING END -->
+				<!-- WORKPLACE WORK TIME SETTING START -->
+				<div id="tabpanel-2" role="tabpanel">
+					<com:ko tag="if" bind="isWorkplaceSelected">
+					<h1 data-bind="text: isWorkplaceSelected"></h1>
+						<ui:include src="d.xhtml" />
+					</com:ko>
+				</div>
+				<!-- WORKPLACE WORK TIME SETTING END -->
 
-			<!-- WORKPLACE WORK TIME SETTING START -->
-			<div id="tabpanel-2" role="tabpanel">
-				<ui:include src="d.xhtml" />
-			</div>
-			<!-- WORKPLACE WORK TIME SETTING END -->
+				<!-- EMPLOYMENT WORK TIME SETTING START -->
+				<div id="tabpanel-3" role="tabpanel">
+					<com:ko tag="if" bind="isEmploymentSelected">
+						<ui:include src="c.xhtml" />
+					</com:ko>
+				</div>
+				<!-- EMPLOYMENT WORK TIME SETTING END -->
 
-			<!-- EMPLOYMENT WORK TIME SETTING START -->
-			<div id="tabpanel-3" role="tabpanel">
-				<ui:include src="c.xhtml" />
+				<!-- EMPLOYEE WORK TIME SETTING START -->
+				<div id="tabpanel-4" role="tabpanel">
+					<com:ko tag="if" bind="isEmployeeSelected">
+						<ui:include src="b.xhtml" />
+					</com:ko>
+				</div>
+				<!-- EMPLOYEE WORK TIME SETTING END -->
 			</div>
-			<!-- EMPLOYMENT WORK TIME SETTING END -->
-		
-			<!-- EMPLOYEE WORK TIME SETTING START -->
-			<div id="tabpanel-4" role="tabpanel">
-				<ui:include src="b.xhtml" />
-			</div>
-			<!-- EMPLOYEE WORK TIME SETTING END -->
-
 		</ui:define>
 	</ui:composition>
 </body>

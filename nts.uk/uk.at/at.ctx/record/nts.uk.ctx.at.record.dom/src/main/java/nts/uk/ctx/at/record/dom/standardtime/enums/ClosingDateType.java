@@ -10,6 +10,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ClosingDateType {
 	
+	/*
+	 * ‚R‚U‹¦’è’÷‚ß“ú
+	 */
 	// 0: 1“ú
 	FIRST(0),
 	// 1: 2“ú

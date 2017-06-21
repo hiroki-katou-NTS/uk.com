@@ -67,12 +67,10 @@ public class AgentWebService extends WebService {
 		this.deleteAgentCommandHandler.handle(command);
 	}
 
-	@Path("findAll/{employeeId}/{startDate}/{endDate}")
+	@Path("findAll")
 	@POST
-	public List<AgentDto> findAllDate(@PathParam("employeeId") String employeeId,
-									  @PathParam("startDate") GeneralDate startDate, 
-									  @PathParam("endDate") GeneralDate endDate) {
-		return agentFinder.findAll(employeeId, startDate, endDate);
+	public List<AgentDto> findAllDate(DateParam dateParam) {
+		return agentFinder.findAll(dateParam.getEmployeeId(),dateParam.getStartDate(),dateParam.getEndDate());
 
 	}
 }

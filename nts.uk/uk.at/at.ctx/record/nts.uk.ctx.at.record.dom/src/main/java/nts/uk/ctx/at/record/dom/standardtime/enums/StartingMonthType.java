@@ -10,6 +10,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum StartingMonthType {
 
+	/*
+	 * ‚R‚U‹¦’è‹NŽZŒŽ
+	 */
 	// 0: 1ŒŽ
 	JANUARY(0),
 	// 1: 2ŒŽ

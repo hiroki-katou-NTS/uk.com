@@ -8,8 +8,10 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
 			<span class="title">#{i18n.getText('Com_Workplace')}</span>
-			<button tabindex="1" id="save" data-bind="click: saveWorkplace" class="proceed">#{i18n.getText('KMK004_27')}</button>
+			<span class="action-bar">
+			<button tabindex="1" data-bind="click: saveWorkplace" class="proceed">#{i18n.getText('KMK004_27')}</button>
 			<button tabindex="3" class="danger" data-bind="click: removeWorkplace, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
+			</span>
 		</div>
 		<div class="contents-area">
 			<div id="list-workplace" class="pull-left"></div>

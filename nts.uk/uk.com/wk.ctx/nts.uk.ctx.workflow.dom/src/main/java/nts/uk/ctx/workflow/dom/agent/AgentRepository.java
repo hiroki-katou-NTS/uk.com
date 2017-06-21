@@ -54,5 +54,5 @@ public interface AgentRepository {
 	 * @param endDate
 	 * @return
 	 */
-	List<Agent> findAll(String companyId, GeneralDate startDate, GeneralDate endDate);
+	List<Agent> findAll(String companyId,String employeeId, GeneralDate startDate, GeneralDate endDate);
 }

@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.comp
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -53,7 +54,8 @@ public class JpaCompanyWtSettingRepository extends JpaRepository implements Comp
 	@Override
 	public void update(CompanyWtSetting setting) {
 		List<JcwtstCompanyWtSet> entities = this.toEntity(setting);
-		commandProxy().updateAll(entities);
+		commandProxy()
+				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
 
 	/*
@@ -129,6 +131,32 @@ public class JpaCompanyWtSettingRepository extends JpaRepository implements Comp
 		entities.add(memento.getFlexStatutory());
 		entities.add(memento.getNormal());
 		return entities;
+	}
+
+	/**
+	 * Update entity.
+	 *
+	 * @param entity the entity
+	 * @return the jcwtst company wt set
+	 */
+	private JcwtstCompanyWtSet updateEntity(JcwtstCompanyWtSet entity) {
+		JcwtstCompanyWtSet updatedEntity = this.queryProxy().find(entity.getJcwtstCompanyWtSetPK(), JcwtstCompanyWtSet.class).get();
+		updatedEntity.setDailyTime(entity.getDailyTime());
+		updatedEntity.setWeeklyTime(entity.getWeeklyTime());
+		updatedEntity.setStrWeek(entity.getStrWeek());
+		updatedEntity.setJanTime(entity.getJanTime());
+		updatedEntity.setFebTime(entity.getFebTime());
+		updatedEntity.setMarTime(entity.getMarTime());
+		updatedEntity.setAprTime(entity.getAprTime());
+		updatedEntity.setMayTime(entity.getMayTime());
+		updatedEntity.setJunTime(entity.getJunTime());
+		updatedEntity.setJulTime(entity.getJulTime());
+		updatedEntity.setAugTime(entity.getAugTime());
+		updatedEntity.setSepTime(entity.getSepTime());
+		updatedEntity.setOctTime(entity.getOctTime());
+		updatedEntity.setNovTime(entity.getNovTime());
+		updatedEntity.setDecTime(entity.getDecTime());
+		return updatedEntity;
 	}
 
 }
