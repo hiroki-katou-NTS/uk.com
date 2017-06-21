@@ -8,26 +8,29 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
 			<span class="title">#{i18n.getText('Com_Company')}</span>
+			<span class="action-bar">
 			<button tabindex="1" id="save" data-bind="click: saveCompanySetting" class="proceed">#{i18n.getText('KMK004_27')}</button>
-			<button tabindex="3" class="danger" data-bind="click: removeCompanySetting, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
-			<button tabindex="4" id="aaa" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
+			<button tabindex="3" class="btn-remove danger" data-bind="click: removeCompanySetting, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
+			<button tabindex="4" id="btn-usage-unit" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
+			</span>
 		</div>
 		<div class="contents-area">
 			<com:ko tag="with" bind="companyWTSetting">
 				<div class="control-group">
-					<input id="yearPicker" data-name="#KMK004_31" tabindex="1"
+					<input tabindex="1" id="yearPicker" data-name="#KMK004_31"
 						data-bind="ntsNumberEditor: {
 													value: year,
 													constraint: 'Year',
 													required: true}"/>
 				</div>
-				<div id="tab-panel"
-					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.companySelectedTab}">
+				<div id="tab-panel" class="pull-left"
+					data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
+
 					<!-- NORMAL WORK TIME SETTING START -->
 					<div class="tab-content-1">
 						<com:ko tag="with" bind="normalSetting">
 						<div class="control-group">
-							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div><span data-bind="text: weekStart()"></span>
+							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
 							<div tabindex="3" style="margin-left: 50px; display: inline-flex"
 								id="combo-box"
 								data-bind="ntsComboBox: {
@@ -123,7 +126,7 @@
 											<td><input tabindex="16" data-name="#KMK004_21"
 												data-bind="ntsTimeEditor: {value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
-											<td><input tabindex="17" data-name="#KMK004_22"
+											<td><input tabindex="16" data-name="#KMK004_22"
 												data-bind="ntsTimeEditor: {value: statutoryTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>

@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.agent.Agent;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.infra.entity.agent.CmmmtAgent;
@@ -125,5 +126,13 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		CmmmtAgentPK primaryKey = new CmmmtAgentPK(companyId, employeeId, requestId);
 		return this.queryProxy().find(primaryKey, CmmmtAgent.class)
 				.map(x -> convertToDomain(x));
+	}
+	@Override
+	public List<Agent> findAll(String companyId, GeneralDate startDate, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("companyId", startDate)
+				.setParameter("companyId", endDate)
+				.getList(c -> convertToDomain(c));
 	}
 }
