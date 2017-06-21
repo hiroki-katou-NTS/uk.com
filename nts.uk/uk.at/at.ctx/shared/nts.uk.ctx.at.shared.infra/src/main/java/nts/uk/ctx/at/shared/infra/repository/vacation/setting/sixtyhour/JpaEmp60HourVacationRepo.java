@@ -35,8 +35,14 @@ public class JpaEmp60HourVacationRepo extends JpaRepository implements Emp60Hour
 	 */
 	@Override
 	public void update(Emp60HourVacation setting) {
-		this.commandProxy().update(this.toEntity(setting));
-		
+		EntityManager em = this.getEntityManager();
+		Optional<KshstEmp60hVacation> optional = this.queryProxy().find(setting.getCompanyId(),
+				KshstEmp60hVacation.class);
+		if (optional.isPresent()) {
+			KshstEmp60hVacation entity = optional.get();
+			setting.saveToMemento(new JpaEmp60HourVacationSetMemento(entity));
+			em.merge(entity);
+		}		
 	}
 
 	/* (non-Javadoc)
@@ -89,16 +95,5 @@ public class JpaEmp60HourVacationRepo extends JpaRepository implements Emp60Hour
 				.collect(Collectors.toList());
 	}
 	
-	/**
-	 * To entity.
-	 *
-	 * @param setting the setting
-	 * @return the kshst emp 60 h vacation
-	 */
-	private KshstEmp60hVacation toEntity(Emp60HourVacation setting) {
-		KshstEmp60hVacation entity = new KshstEmp60hVacation();
-		setting.saveToMemento(new JpaEmp60HourVacationSetMemento(entity));
-		return entity;
-	}
-
+	
 }

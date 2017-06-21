@@ -18,8 +18,8 @@ import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.command.Acquisi
 import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.command.SaveAcquisitionRuleCommandHandler;
 import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find.AcquisitionRuleDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find.AcquisitionRuleFinder;
+import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find.ApplySettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
-
 
 /**
  * The Class AcquisitionRuleWs.
@@ -27,11 +27,11 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
 @Path("ctx/at/share/vacation/setting/acquisitionrule/")
 @Produces("application/json")
 public class AcquisitionRuleWs extends WebService {
-	
+
 	/** The finder. */
 	@Inject
 	private AcquisitionRuleFinder finder;
-	
+
 	/** The save. */
 	@Inject
 	private SaveAcquisitionRuleCommandHandler save;
@@ -42,22 +42,29 @@ public class AcquisitionRuleWs extends WebService {
 	 * @return the acquisition rule dto
 	 */
 	@POST
-    @Path("find")
-    public AcquisitionRuleDto findByCompanyId() {
-        return this.finder.find();
-    }
-	
+	@Path("find")
+	public AcquisitionRuleDto findByCompanyId() {
+		return this.finder.find();
+	}
+
+	@POST
+	@Path("find/setting")
+	public ApplySettingDto findBySetting() {
+		return this.finder.findBySetting();
+	}
+
 	/**
 	 * Update.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
-    @Path("update")
-    public void update(AcquisitionRuleCommand command) {
-        this.save.handle(command);
-    }
-	
+	@Path("update")
+	public void update(AcquisitionRuleCommand command) {
+		this.save.handle(command);
+	}
+
 	/**
 	 * Gets the vacation expiration enum.
 	 *
