@@ -24,6 +24,7 @@
 						<h1>Color Picker</h1>
 						<h2>Overview</h2>
 						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
+						<span data-bind="ntsCheckBox: { checked: required }">Required</span>
 						
 						<div>
 							<h2>Value</h2>
@@ -31,7 +32,7 @@
 							<div>Start date: <label data-bind="text: dateValue().startDate"></label> <input data-bind="ntsTimeEditor: {value: startDateString}"/></div>
 							<div>End date: <label data-bind="text: dateValue().endDate"></label> <input data-bind="ntsTimeEditor: {value: endDateString}"/></div>
 						</div>
-						<div id="daterangepicker" data-bind="ntsDateRangePicker: { enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>
+						<div id="daterangepicker" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>
 						<br />					
 						<article class="cf">
 							<div class="tabs">
@@ -42,7 +43,7 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div id="daterangepicker" data-bind="ntsDateRangePicker: { enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>]]></pre>
+<pre><![CDATA[<div id="daterangepicker" data-bind="ntsDateRangePicker: { required: required, enable: enable, showNextPrevious: true, value: dateValue, maxRange: 'oneMonth'}"/>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -91,6 +92,13 @@
 												</td>
 											</tr>
 											<tr>
+												<td>required</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													set required for date range picker
+												</td>
+											</tr>
+											<tr>
 												<td>showNextPrevious</td>
 												<td>
 													<b>Type:</b> boolean<br/>
@@ -104,6 +112,7 @@
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
         enable: KnockoutObservable<boolean>;
+        required: KnockoutObservable<boolean>;
         dateValue: KnockoutObservable<any>;
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
@@ -111,6 +120,7 @@
         constructor() {
             var self = this;
             self.enable = ko.observable(true);
+            self.required = ko.observable(true);
             
             self.startDateString = ko.observable("");
             self.endDateString = ko.observable("");

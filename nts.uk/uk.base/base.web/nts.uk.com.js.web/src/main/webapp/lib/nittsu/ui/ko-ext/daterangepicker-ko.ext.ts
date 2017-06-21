@@ -20,6 +20,7 @@ module nts.uk.ui.koExtentions {
             let dataName = ko.unwrap(data.name);
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
             let showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
+            let required = ko.unwrap(data.required);
             
             let id = nts.uk.util.randomId();
             
@@ -27,8 +28,11 @@ module nts.uk.ui.koExtentions {
             
             let $datePickerArea = $container.find(".ntsDateRange_Container"); 
             
-            $datePickerArea.append("<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
-                "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' />");
+            $datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" + 
+                "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
+                "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' /></div>");
+            
+            $datePickerArea.data("required", required);
             
             let dateFormat: string = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
             var ISOFormat = text.getISOFormat(dateFormat);
@@ -124,11 +128,14 @@ module nts.uk.ui.koExtentions {
             
             dataName = nts.uk.util.isNullOrUndefined(dataName) ? "月日入力フォーム" : nts.uk.resource.getControlName(dataName);
             var validator = new validation.TimeValidator(dataName, "", {required: false, outputFormat: dateFormat, valueType: "string"});
+            
+            let $ntsDateRange = $container.find(".ntsRangeLabel");
             $input.on("change", (e) => {
                 let $target = $(e.target);
                 var newText = $target.val();
-                var result = validator.validate(newText);
                 $target.ntsError('clear');
+                $ntsDateRange.ntsError("clear");
+                var result = validator.validate(newText);
                 
                 let oldValue = value();
                 if($target.hasClass("ntsStartDatePicker")){
@@ -136,19 +143,20 @@ module nts.uk.ui.koExtentions {
                 } else {
                     oldValue.endDate = result.isValid ? result.parsedValue : newText;    
                 }
-                if (!result.isValid) {
+                if(nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true){
+                    $target.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ])); 
+                } else if (!result.isValid) {
                     $target.ntsError('set', result.errorMessage);
-                } else {
-                    $input.ntsError('clear');
+                } else if (!nts.uk.util.isNullOrEmpty(newText)) {
                     let startDate = moment(oldValue.startDate, dateFormat);
                     let endDate = moment(oldValue.endDate, dateFormat);
                     if (endDate.isBefore(startDate)) {
-                        $input.ntsError('set', "期間誤り");    
+                        $ntsDateRange.ntsError('set', "期間誤り");    
                     } else if(dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth"){
                         let start = parseInt(startDate.format("YYYYMMDD"));
                         let end = parseInt(endDate.format("YYYYMMDD"));    
                         if(end - start > 31 || end - start < 0){
-                            $input.ntsError('set', "最長期間違反");         
+                            $ntsDateRange.ntsError('set', "最長期間違反");         
                         }
                     }  
                 }
@@ -158,33 +166,40 @@ module nts.uk.ui.koExtentions {
             
             $input.on("blur", (e) => {
                 var newText = $(e.target).val();
-                var result = validator.validate(newText);
-                if (!result.isValid) {
-                    $(e.target).ntsError('set', result.errorMessage);
+                if(nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true){
+                    $(e.target).ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ])); 
+                } else {
+                    var result = validator.validate(newText);
+                    if (!result.isValid) {
+                        $(e.target).ntsError('set', result.errorMessage);
+                    }    
                 }
             });
 
 
             $input.on('validate', (function(e: Event) {
                 let $target = $(e.target);
-                var newText = $target.val();
+                var newText = $target.val(); 
                 var result = validator.validate(newText);
                 $target.ntsError('clear');
-                if (!result.isValid) {
-                    $(e.target).ntsError('set', "Invalid format");
-                }　 else {
-                    $input.ntsError('clear');
-                    let startDate = moment(value().startDate, dateFormat);
-                    let endDate = moment(value().endDate, dateFormat);
+                $ntsDateRange.ntsError("clear");
+                if(nts.uk.util.isNullOrEmpty(newText) && $datePickerArea.data("required") === true){
+                    $target.ntsError('set', nts.uk.resource.getMessage('FND_E_REQ_INPUT', [ dataName ])); 
+                } else if (!result.isValid) {
+                    $target.ntsError('set', result.errorMessage);
+                } else if (!nts.uk.util.isNullOrEmpty(newText)) {
+                    $ntsDateRange.ntsError("clear");
+                    let startDate = moment(oldValue.startDate, dateFormat);
+                    let endDate = moment(oldValue.endDate, dateFormat);
                     if (endDate.isBefore(startDate)) {
-                        $input.ntsError('set', "期間誤り");    
+                        $ntsDateRange.ntsError('set', "期間誤り");    
                     } else if(dateFormat === "YYYY/MM/DD" && maxRange === "oneMonth"){
                         let start = parseInt(startDate.format("YYYYMMDD"));
                         let end = parseInt(endDate.format("YYYYMMDD"));    
                         if(end - start > 31 || end - start < 0){
-                            $input.ntsError('set', "最長期間違反");         
+                            $ntsDateRange.ntsError('set', "最長期間違反");         
                         }
-                    }      
+                    }  
                 }
             }));
         }
@@ -199,6 +214,7 @@ module nts.uk.ui.koExtentions {
             let maxRange = ko.unwrap(data.maxRange);
             let dataName = ko.unwrap(data.name);
             let enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+            let required = ko.unwrap(data.required);
             
             let dateFormat: string = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
             var ISOFormat = text.getISOFormat(dateFormat);
@@ -233,6 +249,8 @@ module nts.uk.ui.koExtentions {
             
             $input.prop("disabled", !enable);
             $container.find(".ntsDateRangeButton").prop("disabled", !enable);
+            let $datePickerArea = $container.find(".ntsDateRange_Container"); 
+            $datePickerArea.data("required", required);
         }
     }
 

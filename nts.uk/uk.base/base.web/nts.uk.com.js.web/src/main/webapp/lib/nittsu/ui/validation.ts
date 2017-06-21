@@ -1,7 +1,8 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui.validation {
-
+	import util = nts.uk.util;
+	
     export interface IValidator {
         validate(inputText: string, option?: any): ValidationResult;
     }
@@ -55,7 +56,7 @@ module nts.uk.ui.validation {
             }
             let validateResult;
             // Check CharType
-            if (this.charType !== null && this.charType !== undefined) {
+            if (!util.isNullOrUndefined(this.charType)) {
                 if (this.charType.viewName === '半角数字') {
                     inputText = text.toOneByteAlphaNumberic(inputText);        
                 } else if (this.charType.viewName === '半角英数字') {
@@ -77,8 +78,11 @@ module nts.uk.ui.validation {
             // Check Constraint
             if (this.constraint !== undefined && this.constraint !== null) {
                 if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
+                	let maxLength = this.constraint.maxLength;
+                	if (this.constraint.charType == "Any")
+                		maxLength = maxLength/2;
                     result.fail(nts.uk.resource.getMessage(validateResult.errorMessage,
-                                [ this.name, this.constraint.maxLength ]));
+                                [ this.name, maxLength ]));
                     return result;
                 }
                 
@@ -194,7 +198,7 @@ module nts.uk.ui.validation {
                 if (timeParse.success) {
                     result.success(timeParse.toValue());
                 } else {
-                    result.fail(); 
+                    result.fail(""); 
                 }
                 
                 if (!util.isNullOrUndefined(this.constraint)) {
@@ -203,7 +207,7 @@ module nts.uk.ui.validation {
                         let max = time.parseTime(this.constraint.max);
                         if (timeParse.success && (max.hours < timeParse.hours
                             || (max.hours === timeParse.hours && max.minutes < timeParse.minutes))) {
-                            result.fail();
+                            result.fail("");
                         }
                     }
                     
@@ -212,12 +216,13 @@ module nts.uk.ui.validation {
                         let min = time.parseTime(this.constraint.min);
                         if (timeParse.success && (min.hours > timeParse.hours
                             || (min.hours === timeParse.hours && min.minutes > timeParse.minutes))) {
-                            result.fail();
+                            result.fail("");
                         }
                     }
-                }
-                if (!result.isValid && this.constraint.valueType === "Time") {
-                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]));
+                    
+                    if (!result.isValid && this.constraint.valueType === "Time") {
+                        result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]));
+                    }
                 }
                 return result;   
             }
@@ -253,7 +258,7 @@ module nts.uk.ui.validation {
                         let maxMoment = moment.duration(maxStr);
                         if (parseResult.success && (maxMoment.hours() < inputMoment.hours() 
                             || (maxMoment.hours() === inputMoment.hours() && maxMoment.minutes() < inputMoment.minutes()))) {
-                            result.fail();
+                            result.fail("");
                         } 
                     } 
                     if (!util.isNullOrUndefined(this.constraint.min)) {
@@ -261,14 +266,15 @@ module nts.uk.ui.validation {
                         let minMoment = moment.duration(minStr);
                         if (parseResult.success && (minMoment.hours() > inputMoment.hours()
                             || (minMoment.hours() === inputMoment.hours() && minMoment.minutes() > inputMoment.minutes()))) {
-                            result.fail();
+                            result.fail("");
                         }
+                    }
+                    
+                    if (!result.isValid && this.constraint.valueType === "Clock") {
+                        result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]));
                     }
                 }
                 
-                if (!result.isValid && this.constraint.valueType === "Clock") {
-                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]));
-                }
             }
             return result;
         }
