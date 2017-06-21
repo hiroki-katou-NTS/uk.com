@@ -128,9 +128,10 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.map(x -> convertToDomain(x));
 	}
 	@Override
-	public List<Agent> findAll(String companyId, GeneralDate startDate, GeneralDate endDate) {
+	public List<Agent> findAll(String companyId,String employeeId, GeneralDate startDate, GeneralDate endDate) {
 		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
+				.setParameter("companyId", employeeId)
 				.setParameter("companyId", startDate)
 				.setParameter("companyId", endDate)
 				.getList(c -> convertToDomain(c));
