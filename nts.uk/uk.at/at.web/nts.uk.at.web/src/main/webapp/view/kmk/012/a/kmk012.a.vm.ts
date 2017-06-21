@@ -184,8 +184,10 @@ module nts.uk.at.view.kmk012.a {
                             });
                         });
                     } else {
-                        self.reloadPage(self.selectCodeLstClosure().id,
-                            self.selectCodeLstClosureHistory().historyId);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            self.reloadPage(self.selectCodeLstClosure().id,
+                                self.selectCodeLstClosureHistory().historyId);
+                        });
                     }
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error).then(function() {
