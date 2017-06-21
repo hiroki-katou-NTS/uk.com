@@ -38,25 +38,34 @@
 			<div data-bind="visible: true" style="display: none">
 				<!-- COMPANY WORK TIME SETTING  START -->
 				<div id="tabpanel-1" role="tabpanel">
-					<ui:include src="a.xhtml" />
+					<com:ko tag="if" bind="isCompanySelected">
+						<ui:include src="a.xhtml" />
+					</com:ko>
 				</div>
 				<!-- COMPANY WORK TIME SETTING END -->
 
 				<!-- WORKPLACE WORK TIME SETTING START -->
 				<div id="tabpanel-2" role="tabpanel">
-					<ui:include src="d.xhtml" />
+					<com:ko tag="if" bind="isWorkplaceSelected">
+					<h1 data-bind="text: isWorkplaceSelected"></h1>
+						<ui:include src="d.xhtml" />
+					</com:ko>
 				</div>
 				<!-- WORKPLACE WORK TIME SETTING END -->
 
 				<!-- EMPLOYMENT WORK TIME SETTING START -->
 				<div id="tabpanel-3" role="tabpanel">
-					<ui:include src="c.xhtml" />
+					<com:ko tag="if" bind="isEmploymentSelected">
+						<ui:include src="c.xhtml" />
+					</com:ko>
 				</div>
 				<!-- EMPLOYMENT WORK TIME SETTING END -->
 
 				<!-- EMPLOYEE WORK TIME SETTING START -->
 				<div id="tabpanel-4" role="tabpanel">
-					<ui:include src="b.xhtml" />
+					<com:ko tag="if" bind="isEmployeeSelected">
+						<ui:include src="b.xhtml" />
+					</com:ko>
 				</div>
 				<!-- EMPLOYEE WORK TIME SETTING END -->
 			</div>

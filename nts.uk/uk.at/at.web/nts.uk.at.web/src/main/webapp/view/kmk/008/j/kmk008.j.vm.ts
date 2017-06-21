@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk008.g {
+module nts.uk.at.view.kmk008.j {
     export module viewmodel {
         export class ScreenModel {
             printType: number;

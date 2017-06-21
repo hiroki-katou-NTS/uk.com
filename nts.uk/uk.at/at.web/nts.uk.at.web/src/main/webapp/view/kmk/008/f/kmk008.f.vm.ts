@@ -9,6 +9,7 @@ module nts.uk.at.view.kmk008.f {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                dfd.resolve();
                 return dfd.promise();
             }
         }
