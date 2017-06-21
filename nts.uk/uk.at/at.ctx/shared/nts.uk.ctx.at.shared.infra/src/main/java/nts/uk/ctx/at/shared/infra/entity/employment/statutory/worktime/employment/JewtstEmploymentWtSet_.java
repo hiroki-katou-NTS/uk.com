@@ -64,6 +64,4 @@ public class JewtstEmploymentWtSet_ {
 	/** The dec time. */
 	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> decTime;
 
-	/** The empt cd. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, String> emptCd;
 }

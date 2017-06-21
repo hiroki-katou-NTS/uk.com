@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk008.a.main.css" />
+			<com:scriptfile path="kmk008.a.start.js" />
+			<com:scriptfile path="kmk008.a.vm.js" />
+			<com:scriptfile path="kmk008.a.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area"></div>
+			<div id="contents-area">
+				<div>
+					<div class="panel panel-frame contents-area-right boder-style">
+						<div class="panel panel-frame panel-custom-A1_1">#{i18n.getText('KMK008_1')}</div>
+						<div class="label lbl-unit-setting-explanation">#{i18n.getText('KMK008_2')}</div>
+						<button class="btn-unit-setting" tabindex="1">#{i18n.getText('KMK008_3')}</button>
+						<div class="caret-right-outline">
+							<span class="caret-bottom outline" style="font-size: 3.5em;"></span>
+						</div>
+					</div>
+					<div class="caret-right-outline">
+						<span class="caret-right outline"></span>
+					</div>
+					<div class="panel panel-frame contents-area-middle boder-style">背景色も枠線もなし</div>
+					<div class="panel panel-frame contents-area-left boder-style"></div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

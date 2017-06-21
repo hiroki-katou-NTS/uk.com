@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.toppagesetting;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -11,6 +12,7 @@ import nts.uk.ctx.sys.portal.dom.enums.System;
  *
  */
 @Getter
+@EqualsAndHashCode(callSuper = false)
 public class TopPageJobSet extends AggregateRoot {
 
 	/** The company id. */

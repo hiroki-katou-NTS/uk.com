@@ -23,6 +23,6 @@ public class JcwtstCompanyWtSetPK_ {
 	public static volatile SingularAttribute<JcwtstCompanyWtSetPK, Integer> ctg;
 
 	/** The type. */
-	public static volatile SingularAttribute<JcwtstCompanyWtSet, Integer> type;
+	public static volatile SingularAttribute<JcwtstCompanyWtSetPK, Integer> type;
 
 }

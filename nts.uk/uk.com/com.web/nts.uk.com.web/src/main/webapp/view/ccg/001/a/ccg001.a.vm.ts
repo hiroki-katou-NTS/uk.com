@@ -1,59 +1,55 @@
-module nts.uk.com.view.ccg001.a {
+module nts.uk.com.view.ccg001.a {  
+
     import ListType = kcp.share.list.ListType;
-    
+    import SelectType = kcp.share.list.SelectType;
+    import UnitModel = kcp.share.list.UnitModel;
+    import PersonModel = nts.uk.com.view.ccg.share.ccg.PersonModel;
     export module viewmodel {
         export class ScreenModel {
-            tabs: KnockoutObservableArray<NtsTabPanelModel>;
-            selectedTab: KnockoutObservable<string>;
+           
+            ccgcomponent: any;
+            personinfo: any;
             selectedCode: KnockoutObservableArray<string>;
-            date: KnockoutObservable<Date>;
-            employments: any;
-            classifications: any;
             constructor() {
-                let self = this;
-                self.date = ko.observable(new Date());
+                var self = this;
                 self.selectedCode = ko.observableArray([]);
-                self.tabs = ko.observableArray([
-                    {
-                        id: 'tab-1',
-                        title: nts.uk.resource.getText("CCG001_3"),
-                        content: '.tab-content-1',
-                        enable: ko.observable(true),
-                        visible: ko.observable(true)
-                    },
-                    {
-                        id: 'tab-2',
-                        title: nts.uk.resource.getText("CCG001_4"),
-                        content: '.tab-content-2',
-                        enable: ko.observable(true),
-                        visible: ko.observable(true)
+                self.ccgcomponent = {
+                    isMultiSelect: true,
+                    onSearchAllClicked: function(dataList: any) {
+                        self.personinfo = {
+                            isShowAlreadySet: false,
+                            isMultiSelect: self.ccgcomponent.isMultiSelect,
+                            listType: ListType.EMPLOYEE,
+                            employeeInputList: self.toUnitModel(dataList),
+                            selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                            selectedCode: self.selectedCode,
+                            isDialog: false,
+                            isShowNoSelectRow: false,
+                        }
+                        $('#personinfo').ntsListComponent(self.personinfo);
                     }
-                ]);
-                self.selectedTab = ko.observable('tab-1');
-                self.employments = {
-                    isShowAlreadySet: false,
-                    isMultiSelect: true,
-                    listType: ListType.EMPLOYMENT,
-                    selectedCode: self.selectedCode,
-                    isDialog: true
-                };
-                $('#employeeList').ntsListComponent(this.employments);
-                
-                self.classifications = {
-                    isShowAlreadySet: false,
-                    isMultiSelect: true,
-                    listType: ListType.Classification,
-                    selectedCode: self.selectedCode,
-                    isDialog: true
                 }
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                 
-                 $('#classificationList').ntsListComponent(this.employments);
+                
             }
 
             public startPage(): JQueryPromise<any> {
                 let dfd = $.Deferred<any>();
                 dfd.resolve();
                 return dfd.promise();
+            }
+            
+            public toUnitModel(dataList: PersonModel[]): KnockoutObservableArray<UnitModel>{
+                var dataRes: UnitModel[] = [];    
+                
+                for(var item: PersonModel of dataList){
+                    dataRes.push({
+                        code: item.personId,
+                        name: item.personName
+                    }); 
+                }
+                return ko.observableArray(dataRes);
             }
         }
     }

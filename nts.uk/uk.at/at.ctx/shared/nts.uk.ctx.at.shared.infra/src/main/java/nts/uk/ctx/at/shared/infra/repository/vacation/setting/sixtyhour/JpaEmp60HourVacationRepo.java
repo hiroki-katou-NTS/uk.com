@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.sixtyhour;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,15 +20,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacationPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacation_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacation;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacationPK_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstEmpSubstVacation_;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst.JpaEmpSubstVacationGetMemento;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst.JpaEmpSubstVacationSetMemento;
 
 /**
  * The Class JpaEmpSubstVacationRepo.
@@ -35,12 +30,18 @@ import nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst.JpaEmpSubstV
 @Stateless
 public class JpaEmp60HourVacationRepo extends JpaRepository implements Emp60HourVacationRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacation)
+	 */
 	@Override
 	public void update(Emp60HourVacation setting) {
 		this.commandProxy().update(this.toEntity(setting));
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRepository#findById(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Optional<Emp60HourVacation> findById(String companyId, String contractTypeCode) {
 		EntityManager em = this.getEntityManager();
@@ -66,9 +67,38 @@ public class JpaEmp60HourVacationRepo extends JpaRepository implements Emp60Hour
 
 		return Optional.of(new Emp60HourVacation(new JpaEmp60HourVacationGetMemento(results.get(0))));
 	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRepository#findAll(java.lang.String)
+	 */
+	@Override
+	public List<Emp60HourVacation> findAll(String companyId) {
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<KshstEmp60hVacation> cq = builder.createQuery(KshstEmp60hVacation.class);
+		Root<KshstEmp60hVacation> root = cq.from(KshstEmp60hVacation.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		predicateList.add(builder.equal(root.get(KshstEmp60hVacation_.kshstEmp60hVacationPK)
+				.get(KshstEmp60hVacationPK_.cid), companyId));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		return em.createQuery(cq).getResultList().stream()
+				.map(entity -> new Emp60HourVacation(new JpaEmp60HourVacationGetMemento(entity)))
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * To entity.
+	 *
+	 * @param setting the setting
+	 * @return the kshst emp 60 h vacation
+	 */
 	private KshstEmp60hVacation toEntity(Emp60HourVacation setting) {
 		KshstEmp60hVacation entity = new KshstEmp60hVacation();
 		setting.saveToMemento(new JpaEmp60HourVacationSetMemento(entity));
 		return entity;
 	}
+
 }

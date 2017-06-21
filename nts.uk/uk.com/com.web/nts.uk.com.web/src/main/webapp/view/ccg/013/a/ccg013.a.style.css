@@ -1,61 +1,127 @@
 @CHARSET "UTF-8";
 
-#contents-area {
-	width: 1040px;
+#functions-area {
 	margin-top: 10px;
 }
 
-#functions-area {
+#contents-area {
+	width: 1300px;
 	margin-top: 10px;
+	margin-left: 10px;
+}
+
+#left-content {
+	float: left;
+	width: 40%;
+}
+
+.right-content {
+	float: left;
+	width: 60%;
+	margin-left: 70px;
+}
+
+.right-content-left {
+	float: left;
+}
+
+#A_LST_001 {
+	height: 550px;
+	margin: 16px 0px 0px 40px;
+}
+
+#A_BTN_001 {
+	margin-left: 10px;
+}
+
+#A_BTN_003 {
+	width: 80px;
+	margin-left: 70px;
+}
+
+#A_BTN_004 {
+	width: 80px;
+}
+
+.link-button {
+	margin-left: 270px;
+}
+
+#A_LBL_002, #A_LBL_003, #A_LBL_005, #A_LBL_006, #A_LBL_010 {
+	margin: 0px 0px 20px 40px;
+}
+
+#A_LBL_009, #A_LBL_011 {
+	margin: 0px 0px 20px 93px;
+}
+
+#A_LBL_006 {
+	margin: 13px 0px 20px 40px;
+}
+
+#A_INP_002, #A_INP_003, #A_INP_004, #A_INP_005, #A_INP_006 {
+	border-radius: 5px;
+}
+
+.ntsSearchBox {
+	width: 350px;
+}
+
+button.search-btn {
+	width: 80px;
+}
+
+.bg-yellow {
+	width: 200px;
+	height: 28px;
+	display: inline;
+	margin-left: 30px
 }
 
 .control-group {
 	margin-bottom: 15px;
 }
 
-.left-content {
-	float: left;
-	width: 32%;
+.ui-widget.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+	height: 55px !important;
+	border-radius: 0px !important;
+	background-color: rgb(226, 239, 218) !important;
+	padding-top: 0px !important;
+	margin-bottom: -1px !important;
 }
 
-.right-content {
-	float: left;
-	width: 68%;
+.ui-widget.ui-tabs .ui-tabs-nav {
+	padding: 0px !important
 }
 
-.right-content-left {
-	float: left;
-	width: 30%
+.ui-widget.ui-tabs .ui-tabs-nav li a {
+	background-color: rgb(112, 173, 71);
 }
 
-.right-content-right {
-	float: left;
-	width: 70%
+.ui-tabs .ui-tabs-nav {
+	padding: 0px !important
 }
 
-#LBL_001, #LBL_002 {
-	margin-bottom: 10px;
+.ui-widget.ui-tabs .ui-tabs-nav li {
+	border-radius: 0px !important;
+	margin-right: 25px
 }
 
-
-.text-editor1 {
-	border: 1px solid #4F4F4F;
-	border-radius: 5px;
-	height: 25px;
+.ui-widget.ui-tabs .ui-tabs-panel {
+    border-radius: 0px !important;
+    border: 1px solid #B1B1B1 !important;
+    background-color: rgb(226, 239, 218) !important;
 }
 
-.text-editor2 {
-	border: 1px solid #4F4F4F;
-	border-radius: 5px;
-	height: 25px;
+ul.tree-menu li {
+   	height: 35px;
+    width: 135px;
+    border-top: 1px solid rgb(128, 164, 104) !important;
+    border-left: 1px solid rgb(128, 164, 104) !important;
+    border-right: 1px solid rgb(128, 164, 104) !important;
+    border-bottom: none !important;
 }
 
-.text-editor3 {
-	border: 1px solid #4F4F4F;
-	border-radius: 5px;
-	height: 25px;
+.title-menu div.cell {
+	padding-right: 21px !important;
 }
-
-#sortable { list-style-type: none; margin: 0; padding: 0; width: 40%; float: right;}
-#sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
-#sortable li span { position: absolute; margin-left: -1.3em; }

@@ -23,8 +23,8 @@ public class KmkmtAgeementTimeCompany extends UkJpaEntity implements Serializabl
 	@EmbeddedId
 	public KmkmtAgeementTimeCompanyPK kmkmtAgeementTimeCompanyPK;
 
-	@Column(name = "LABOR_SYSTEM_TYPE")
-	public BigDecimal laborSystemType;
+	@Column(name = "LABOR_SYSTEM_ATR")
+	public BigDecimal laborSystemAtr;
 
 	@Override
 	protected Object getKey() {

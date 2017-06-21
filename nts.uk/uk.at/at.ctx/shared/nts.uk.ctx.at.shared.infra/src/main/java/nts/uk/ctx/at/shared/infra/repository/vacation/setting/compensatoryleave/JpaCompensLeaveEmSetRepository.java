@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -18,59 +19,121 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveEmp;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveEmpPK;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KmfmtCompensLeaveEmp_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmpPK_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp_;
 
+/**
+ * The Class JpaCompensLeaveEmSetRepository.
+ */
 @Stateless
 public class JpaCompensLeaveEmSetRepository extends JpaRepository implements CompensLeaveEmSetRepository {
+    
+    /** The element first. */
+    private static int ELEMENT_FIRST = 0;
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
+     * CompensLeaveEmSetRepository#insert(nts.uk.ctx.at.shared.dom.vacation.
+     * setting.compensatoryleave.CompensatoryLeaveEmSetting)
+     */
+    @Override
+    public void insert(CompensatoryLeaveEmSetting setting) {
+        this.commandProxy().insert(this.toEntity(setting));
+        this.getEntityManager().flush();
+    }
 
-	@Override
-	public void insert(CompensatoryLeaveEmSetting setting) {
-		this.commandProxy().insert(this.toEntity(setting));
-		this.getEntityManager().flush();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
+     * CompensLeaveEmSetRepository#update(nts.uk.ctx.at.shared.dom.vacation.
+     * setting.compensatoryleave.CompensatoryLeaveEmSetting)
+     */
+    @Override
+    public void update(CompensatoryLeaveEmSetting setting) {
+        this.commandProxy().update(this.toEntity(setting));
+        this.getEntityManager().flush();
+    }
 
-	private KmfmtCompensLeaveEmp toEntity(CompensatoryLeaveEmSetting setting) {
-		KmfmtCompensLeaveEmp entity = new KmfmtCompensLeaveEmp();
-		setting.saveToMemento(new JpaCompensatoryLeaveEmSettingSetMemento(entity));
-		return entity;
-	}
-
-	@Override
-	public void update(CompensatoryLeaveEmSetting setting) {
-		this.commandProxy().update(this.toEntity(setting));
-		this.getEntityManager().flush();
-	}
-
-	@Override
-	public CompensatoryLeaveEmSetting find(String companyId, String employmentCode) {
-		
-		Optional<KmfmtCompensLeaveEmp> findItem = this.queryProxy().find(new KmfmtCompensLeaveEmpPK(companyId, employmentCode), KmfmtCompensLeaveEmp.class);
-		/*EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KmfmtCompensLeaveEmp> query = builder.createQuery(KmfmtCompensLeaveEmp.class);
-		Root<KmfmtCompensLeaveEmp> root = query.from(KmfmtCompensLeaveEmp.class);
-
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-
-		predicateList.add(builder.equal(root.get(KmfmtCompensLeaveEmp_.kmfmtCompensLeaveEmpPK),
-				));
-		em.createQuery(query).getResultList();
-
-		KmfmtCompensLeaveEmp result = em.createQuery(query).getSingleResult();
-		if (result == null) {
-			return null;
-		} else {
-			return new CompensatoryLeaveEmSetting(new JpaCompensatoryLeaveEmSettingGetMemento(result));
-		}
-		*/
-		if (findItem.isPresent()) {
-			return new CompensatoryLeaveEmSetting(new JpaCompensatoryLeaveEmSettingGetMemento(findItem.get()));
-		} else {
-			return null;
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
+     * CompensLeaveEmSetRepository#find(java.lang.String, java.lang.String)
+     */
+    @Override
+    public CompensatoryLeaveEmSetting find(String companyId, String employmentCode) {
+        EntityManager em = this.getEntityManager();
+        
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KclmtCompensLeaveEmp> query = builder.createQuery(KclmtCompensLeaveEmp.class);
+        Root<KclmtCompensLeaveEmp> root = query.from(KclmtCompensLeaveEmp.class);
+        
+        List<Predicate> predicateList = new ArrayList<>();
+        
+        predicateList.add(builder.equal(root.get(KclmtCompensLeaveEmp_.kclmtCompensLeaveEmpPK).get(
+                KclmtCompensLeaveEmpPK_.cid), companyId));
+        predicateList.add(builder.equal(root.get(KclmtCompensLeaveEmp_.kclmtCompensLeaveEmpPK).get(
+                KclmtCompensLeaveEmpPK_.empcd), employmentCode));
+        
+        query.where(predicateList.toArray(new Predicate[]{}));
+        
+        List<KclmtCompensLeaveEmp> result = em.createQuery(query).getResultList();
+        if (result.isEmpty()) {
+            return null;
+        }
+        KclmtCompensLeaveEmp entity = result.get(ELEMENT_FIRST);
+        return new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity));
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
+     * CompensLeaveEmSetRepository#findAll(java.lang.String)
+     */
+    @Override
+    public List<CompensatoryLeaveEmSetting> findAll(String companyId) {
+        EntityManager em = this.getEntityManager();
+        
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<KclmtCompensLeaveEmp> query = builder.createQuery(KclmtCompensLeaveEmp.class);
+        Root<KclmtCompensLeaveEmp> root = query.from(KclmtCompensLeaveEmp.class);
+        
+        List<Predicate> predicateList = new ArrayList<>();
+        
+        predicateList.add(builder.equal(root.get(KclmtCompensLeaveEmp_.kclmtCompensLeaveEmpPK).get(
+                KclmtCompensLeaveEmpPK_.cid), companyId));
+        
+        query.where(predicateList.toArray(new Predicate[]{}));
+        
+        return em.createQuery(query).getResultList().stream()
+                .map(entity -> new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity)))
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * To entity.
+     *
+     * @param setting the setting
+     * @return the kclmt compens leave emp
+     */
+    private KclmtCompensLeaveEmp toEntity(CompensatoryLeaveEmSetting setting) {
+        Optional<KclmtCompensLeaveEmp> optinal = this.queryProxy().find(new KclmtCompensLeaveEmpPK(
+                setting.getCompanyId(), setting.getEmploymentCode().v()), KclmtCompensLeaveEmp.class);
+        KclmtCompensLeaveEmp entity = null;
+        if (optinal.isPresent()) {
+            entity = optinal.get();
+        } else {
+            entity = new KclmtCompensLeaveEmp();
+        }
+        JpaCompensLeaveEmSettingSetMemento memento = new JpaCompensLeaveEmSettingSetMemento(entity);
+        setting.saveToMemento(memento);
+        return entity;
+    }
 
 }

@@ -25,50 +25,39 @@
 					<label>期間</label>
 				</div>
 				<div id="date1"
-					data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+					data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
 				<span>~</span>
 				<div id="date2"
-					data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+					data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div>
 				<button class="caret-bottom">削除</button>
 				<div>
 					<table class="table1">
-						<tr>							
-							<th colspan="2">依頼者</th>
-							<th colspan="1">所属職場コード</th>
-							<th colspan="1">所属職場名</th>
-							<th colspan="1">職位</th>
-							<th colspan="1">代行開始日</th>
-							<th colspan="1">代行終了日</th>
-							<th colspan="1">代行対象</th>
-							<th colspan="2">代行者</th>
-						</tr>
-
-						<tr>
-							<th>A000000001</th>
-							<td>日通　社員1</td>
-							<td>SAKAE00001</td>
-							<td>100,000</td>
-							<td>50,000</td>
-							<td>30,000</td>
-							<td>100,000</td>
-							<td>50,000</td>
-							<td>30,000</td>
-							<td>100,000</td>
-							
-						</tr>
-						<tr>
-							<th>A000000002</th>
-							<td>日通　社員1</td>
-							<td>SAKAE00002</td>
-							<td>12,000</td>
-							<td>50,000</td>
-							<td>30,000</td>
-							<td>100,000</td>
-							<td>50,000</td>
-							<td>30,000</td>
-							<td>100,000</td>
-							
-						</tr>
+						<tbody>
+							<tr>							
+								<th colspan="2">依頼者</th>
+								<th colspan="1">所属職場コード</th>
+								<th colspan="1">所属職場名</th>
+								<th colspan="1">職位</th>
+								<th colspan="1">代行開始日</th>
+								<th colspan="1">代行終了日</th>
+								<th colspan="1">代行対象</th>
+								<th colspan="2">代行者</th>
+							</tr>
+							<com:ko-foreach bind="personList">
+							<tr>
+								<td data-bind="text: $data.firstName"></td>
+								<td data-bind="text: $data.lastName"></td>
+								<td>SAKAE00001</td>
+								<td>100,000</td>
+								<td>50,000</td>
+								<td>30,000</td>
+								<td>100,000</td>
+								<td>50,000</td>
+								<td>30,000</td>
+								<td>100,000</td>
+							</tr>
+							</com:ko-foreach>
+						</tbody>
 					</table>
 				</div>
 

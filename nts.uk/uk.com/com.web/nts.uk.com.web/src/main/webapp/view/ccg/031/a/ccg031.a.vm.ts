@@ -107,7 +107,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
         openAddDialog(row: number, column: number, element: HTMLElement): void {
             var self = this;
             block.invisible();
-            $(element).addClass("placeholder");
+            $(element).addClass("hover");
             windows.setShared("pgtype", self.pgType, false);
             windows.setShared("size", { row: row, column: column }, false);
             windows.sub.modal("/view/ccg/031/b/index.xhtml", { title: "ウィジェットの追加" }).onClosed(() => {
@@ -122,7 +122,7 @@ module nts.uk.com.view.ccg031.a.viewmodel {
                     self.markOccupiedAll();
                     self.setupDragDrop();
                 };
-                $(element).removeClass("placeholder");
+                $(element).removeClass("hover");
             });
         }
 

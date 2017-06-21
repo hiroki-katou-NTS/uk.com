@@ -101,6 +101,17 @@ public class SixtyHourVacationWebService {
 	}
 	
 	/**
+	 * Gets the all employment.
+	 *
+	 * @return the all employment
+	 */
+	@POST
+	@Path("emp/findall")
+	public List<String> getAllEmployment() {
+		return this.sixtyHourVacationFinder.findAllEmployment();
+	}
+	
+	/**
 	 * Gets the manage distinct.
 	 *
 	 * @return the manage distinct

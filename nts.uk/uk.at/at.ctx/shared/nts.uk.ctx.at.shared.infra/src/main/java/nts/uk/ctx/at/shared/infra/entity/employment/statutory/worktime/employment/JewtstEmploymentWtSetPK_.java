@@ -23,6 +23,9 @@ public class JewtstEmploymentWtSetPK_ {
 	public static volatile SingularAttribute<JewtstEmploymentWtSetPK, Integer> ctg;
 
 	/** The type. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> type;
+	public static volatile SingularAttribute<JewtstEmploymentWtSetPK, Integer> type;
+
+	/** The empt cd. */
+	public static volatile SingularAttribute<JewtstEmploymentWtSetPK, String> emptCd;
 
 }

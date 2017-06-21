@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
@@ -29,7 +30,7 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
  *
  */
 @Getter
-public class BasicAgreementSetting {
+public class BasicAgreementSetting extends AggregateRoot {
 
 	private String basicSettingId;
 	
