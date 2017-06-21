@@ -24,6 +24,10 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+            var code =  nts.uk.ui.windows.getShared("TopPageCode");
+//            service.getTopPageByCode(code).done(function(){
+//                
+//            });
             service.getMyPage("b137dc10-6f4c-4cda-93a4-207117f111fb").done((data: model.LayoutForMyPageDto) => {
                 console.log(data);
                 self.topPageName('flow-menu');

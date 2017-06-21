@@ -177,7 +177,13 @@ module nts.uk.at.view.kmk004.a {
                 service.removeWorkplaceSetting(command).done(() => {
                     self.isNewMode(true);
                     self.setAlreadySettingWorkplaceList();
-                    self.workplaceWTSetting = new WorkPlaceWTSetting();
+                    // Reserve current code + name + year + id.
+                    let newSetting = new WorkPlaceWTSetting();
+                    newSetting.year(workplace.year());
+                    newSetting.workplaceId(workplace.workplaceId());
+                    newSetting.workplaceCode(workplace.workplaceCode());
+                    newSetting.workplaceName(workplace.workplaceName());
+                    self.workplaceWTSetting.updateData(ko.toJS(newSetting));
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                 });
             }
@@ -229,14 +235,15 @@ module nts.uk.at.view.kmk004.a {
              */
             public loadEmploymentSetting(code?: string): void {
                 let self = this;
+                let currentSetting = self.employmentWTSetting;
                 let request;
                 // Code changed.
                 if (code) {
-                    request = { year: self.employmentWTSetting.year(), employmentCode: code };
+                    request = { year: currentSetting.year(), employmentCode: code };
                 } 
                 // Year changed. Code is unchanged
                 else {
-                    request = { year: self.employmentWTSetting.year(), employmentCode: self.employmentWTSetting.employmentCode() };
+                    request = { year: currentSetting.year(), employmentCode: currentSetting.employmentCode() };
                 }
                 $.when(service.findEmploymentSetting(request), self.getStartMonth())
                     .done(function(data, startMonth) {
@@ -250,7 +257,7 @@ module nts.uk.at.view.kmk004.a {
                             self.isNewMode(true);
                             let newSetting = new EmploymentWTSetting();
                             // reserve selected year.
-                            newSetting.year(self.employmentWTSetting.year());
+                            newSetting.year(currentSetting.year());
                             self.employmentWTSetting.updateData(ko.toJS(newSetting));
                         }
                         // Set code + name.
@@ -271,25 +278,37 @@ module nts.uk.at.view.kmk004.a {
              */
             public loadWorkplaceSetting(id?: string): void {
                 let self = this;
+                let currentSetting = self.workplaceWTSetting;
+                let request;
+                // workplaceId changed.
                 if (id) {
-                    let request = { year: self.employmentWTSetting.year(), workplaceId: id };
-                    service.findWorkplaceSetting(request).done(res => {
-                        // update mode.
-                        if (res) {
-                            self.isNewMode(false);
-                            self.workplaceWTSetting.updateData(res);
-                        }
-                        // new mode.
-                        else {
-                            self.isNewMode(true);
-                            let newSetting = ko.toJS(new WorkPlaceWTSetting());
-                            self.workplaceWTSetting.updateData(newSetting);
-                        }
-                        // Set code + name.
-                        self.workplaceWTSetting.workplaceCode('code');
-                        self.workplaceWTSetting.workplaceName('name');
-                    });
+                    request = { year: currentSetting.year(), workplaceId: id };
+                } 
+                // Year changed. workplaceId is unchanged
+                else {
+                    request = { year: currentSetting.year(), workplaceId: currentSetting.workplaceId() };
                 }
+                $.when(service.findWorkplaceSetting(request), self.getStartMonth()).done(function(data, startMonth) {
+                    // update mode.
+                    if (data) {
+                        self.isNewMode(false);
+                        self.workplaceWTSetting.updateData(data);
+                    }
+                    // new mode.
+                    else {
+                        self.isNewMode(true);
+                        let newSetting = new WorkPlaceWTSetting();
+                        // reserve selected year.
+                        newSetting.year(currentSetting.year());
+                        self.workplaceWTSetting.updateData(ko.toJS(newSetting));
+                    }
+                    // Set code + name.
+                    self.workplaceWTSetting.workplaceCode('code');
+                    self.workplaceWTSetting.workplaceName('name');
+                    // Sort month.
+                    self.workplaceWTSetting.sortMonth(startMonth);
+                });
+                self.setAlreadySettingWorkplaceList();
             }
 
             /**
