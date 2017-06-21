@@ -1,7 +1,7 @@
 module nts.uk.sys.view.ccg013.b.viewmodel {
 
     export class ScreenModel {
-        simpleValue: KnockoutObservable<string>;
+        selectCode: KnockoutObservable<any>;
         //Combobox
         listSystemSelect: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
@@ -20,15 +20,23 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         
         items: KnockoutObservableArray<StandardMenu>;
         currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
+        selectCode: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
+            this.selectCode = ko.observable([]);
             self.simpleValue = ko.observable("");
             //Combo box
             self.listSystemSelect = ko.observableArray([
-                new SystemSelect('基本給1', '基本給'),
-                new SystemSelect('基本給2', '役職手当'),
-                new SystemSelect('0003', '基本給')
+                /**  人事郎  :JINJIROU (0) */
+                new SystemSelect('0', '人事郎'),
+                /** 勤次郎  :TIME_SHEET(1) */
+                new SystemSelect('1', '勤次郎'),
+                /** オフィスヘルパー :OFFICE_HELPER(2) */
+                new SystemSelect('2', 'オフィスヘルパー'),
+                /** Ｑ太郎 :KYUYOU(3) */
+                new SystemSelect('3', 'Ｑ太郎'),
+                /** 共通 :COMMON(4) */
+                new SystemSelect('4', '共通')
             ]);
             self.selectedCode = ko.observable('')
             //Radio button
@@ -51,7 +59,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             
             //test
             this.currentCode = ko.observable();
-            this.currentCodeList = ko.observableArray([]);
+            this.selectCode = ko.observableArray([]);
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
         }
@@ -70,14 +78,31 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             });
             return dfd.promise();
         }
+           cancel_Dialog(): any {
+            nts.uk.ui.windows.close();
+        }
+
+        submit() {
+            var self = this;
+            var selectStandardMenu = _.find(self.listStandardMenu(), ['code', self.selectCode()]);
+            if (selectWorkLocation !== undefined) {
+                nts.uk.ui.windows.setShared("KDL010workLocation", selectWorkLocation.workLocationCD);
+            }
+             else {
+                nts.uk.ui.windows.setShared("KDL010workLocation", null, true);
+                }
+            self.cancel_Dialog();
+        }
+
     }
     class SystemSelect {
         code: string;
         name: string;
-
-        constructor(code: string, name: string) {
+        description: string;
+        constructor(code: string, name: string, description: string) {
             this.code = code;
             this.name = name;
+            this.description = description;
         }
     }
     class RadioButton {
