@@ -2627,9 +2627,9 @@ var nts;
                                         result.fail();
                                     }
                                 }
-                            }
-                            if (!result.isValid && this.constraint.valueType === "Time") {
-                                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]));
+                                if (!result.isValid && this.constraint.valueType === "Time") {
+                                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]));
+                                }
                             }
                             return result;
                         }
@@ -2674,9 +2674,9 @@ var nts;
                                         result.fail();
                                     }
                                 }
-                            }
-                            if (!result.isValid && this.constraint.valueType === "Clock") {
-                                result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]));
+                                if (!result.isValid && this.constraint.valueType === "Clock") {
+                                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]));
+                                }
                             }
                         }
                         return result;
