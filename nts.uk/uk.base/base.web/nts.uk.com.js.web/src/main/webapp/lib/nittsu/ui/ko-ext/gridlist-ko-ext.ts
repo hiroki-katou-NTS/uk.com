@@ -23,6 +23,7 @@ module nts.uk.ui.koExtentions {
             var observableColumns = ko.unwrap(data.columns);
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
             var enable: boolean = ko.unwrap(data.enable);
+            var value = ko.unwrap(data.value);
             $grid.data("init", true);
             
             var features = [];
