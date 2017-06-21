@@ -11,31 +11,31 @@ import lombok.AllArgsConstructor;
 public enum StartingMonthType {
 
 	/*
-	 * ‚R‚U‹¦’è‹NZŒ
+	 * ï¼“ï¼–å”å®šèµ·ç®—æœˆ
 	 */
-	// 0: 1Œ
+	// 0: 1æœˆ
 	JANUARY(0),
-	// 1: 2Œ
+	// 1: 2æœˆ
 	FEBRUARY(1),
-	// 2: 3Œ
+	// 2: 3æœˆ
 	MARCH(2),
-	// 3: 4Œ
+	// 3: 4æœˆ
 	APRIL(3),
-	// 4: 5Œ
+	// 4: 5æœˆ
 	MAY(4),
-	// 5: 6Œ
+	// 5: 6æœˆ
 	JUNE(5),
-	// 6: 7Œ
+	// 6: 7æœˆ
 	JULY(6),
-	// 7: 8Œ
+	// 7: 8æœˆ
 	AUGUST(7),
-	// 8: 9Œ
+	// 8: 9æœˆ
 	SEPTEMBER(8),
-	// 9: 10Œ
+	// 9: 10æœˆ
 	OCTOBER(9),
-	// 10: 11Œ
+	// 10: 11æœˆ
 	NOVEMBER(10),
-	// 11: 12Œ
+	// 11: 12æœˆ
 	DECEMBER(11);
 
 	public final int value;
@@ -44,43 +44,43 @@ public enum StartingMonthType {
 		String name;
 		switch (value) {
 		case 0:
-			name = "1Œ";
+			name = "1æœˆ";
 			break;
 		case 1:
-			name = "2Œ";
+			name = "2æœˆ";
 			break;
 		case 2:
-			name = "3Œ";
+			name = "3æœˆ";
 			break;
 		case 3:
-			name = "4Œ";
+			name = "4æœˆ";
 			break;
 		case 4:
-			name = "5Œ";
+			name = "5æœˆ";
 			break;
 		case 5:
-			name = "6Œ";
+			name = "6æœˆ";
 			break;
 		case 6:
-			name = "7Œ";
+			name = "7æœˆ";
 			break;
 		case 7:
-			name = "8Œ";
+			name = "8æœˆ";
 			break;
 		case 8:
-			name = "9Œ";
+			name = "9æœˆ";
 			break;
 		case 9:
-			name = "10Œ";
+			name = "10æœˆ";
 			break;
 		case 10:
-			name = "11Œ";
+			name = "11æœˆ";
 			break;
 		case 11:
-			name = "12Œ";
+			name = "12æœˆ";
 			break;
 		default:
-			name = "1Œ";
+			name = "1æœˆ";
 			break;
 		}
 		return name;
