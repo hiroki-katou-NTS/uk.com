@@ -11,7 +11,13 @@ import java.util.Optional;
  * The Interface EmpSubstVacationRepository.
  */
 public interface Emp60HourVacationRepository {
-
+	
+	/**
+	 * Insert.
+	 *
+	 * @param setting the setting
+	 */
+	void insert(Emp60HourVacation setting);
 	/**
 	 * Update.
 	 *
