@@ -20,7 +20,7 @@ module nts.uk.com.view.ccg001.a {
                             isShowAlreadySet: false,
                             isMultiSelect: self.ccgcomponent.isMultiSelect,
                             listType: ListType.EMPLOYEE,
-                            employeeInputList: self.toUnitModel(dataList),
+                            employeeInputList: new nts.uk.com.view.ccg.share.ccg.ListGroupScreenModel().toUnitModel(dataList),
                             selectType: SelectType.SELECT_BY_SELECTED_CODE,
                             selectedCode: self.selectedCode,
                             isDialog: false,
@@ -38,18 +38,6 @@ module nts.uk.com.view.ccg001.a {
                 let dfd = $.Deferred<any>();
                 dfd.resolve();
                 return dfd.promise();
-            }
-            
-            public toUnitModel(dataList: PersonModel[]): KnockoutObservableArray<UnitModel>{
-                var dataRes: UnitModel[] = [];    
-                
-                for(var item: PersonModel of dataList){
-                    dataRes.push({
-                        code: item.personId,
-                        name: item.personName
-                    }); 
-                }
-                return ko.observableArray(dataRes);
             }
         }
     }
