@@ -102,15 +102,4 @@ public class JpaAcquisitionRuleRepository extends JpaRepository implements Acqui
                 .findFirst();
 	}
 
-	/**
-	 * Find all.
-	 *
-	 * @return the list
-	 */
-	@Override
-	public List<AcquisitionRule> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

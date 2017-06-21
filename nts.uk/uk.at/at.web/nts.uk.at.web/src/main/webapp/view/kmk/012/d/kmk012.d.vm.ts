@@ -105,9 +105,26 @@ module nts.uk.at.view.kmk012.d {
             closeWindowns(): void {
                 nts.uk.ui.windows.close();
             }
+            
+             clearValiate(){
+                $('#inpMonth').ntsError('clear');
+                 
+            }
+            
+            validateClient(): boolean {
+                $("#valueProcessingDate").ntsEditor("validate");
+                
+                if($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
 
             saveChangeClosureDate(): void {
                 var self = this;
+                if(self.validateClient()){
+                    return;    
+                }
                 service.addClosureHistory(self.collectClosureHistoryAddDto()).done(function(){
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         self.closeWindowns();

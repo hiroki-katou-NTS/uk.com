@@ -20,43 +20,45 @@
    			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="../e/kmk004.e.service.js" />
 			<com:scriptfile path="kmk004.a.service.js" />
 			<com:scriptfile path="kmk004.a.vm.js" />
 			<com:scriptfile path="kmk004.a.start.js" />
 		</ui:define>
 		<ui:define name="sidebar">
-			<ul class="navigator" data-bind="with: usageUnitSetting">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="visible: workPlace"><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
-				<li data-bind="visible: employment"><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
-				<li data-bind="visible: employee"><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
+			<ul class="navigator">
+				<li data-bind="click: onSelectCompany"><a tabindex="1" href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
+				<li data-bind="click: onSelectWorkplace, visible: usageUnitSetting.workplace"><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li data-bind="click: onSelectEmployment, visible: usageUnitSetting.employment"><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
+				<li data-bind="visible: usageUnitSetting.employee"><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
 
 			<!-- COMPANY WORK TIME SETTING  START -->
-			<div id="tabpanel-1" role="tabpanel">
+			<div id="tabpanel-1" role="tabpanel" data-bind="visible: true" style="display: none">
 				<ui:include src="a.xhtml" />
 			</div>
 			<!-- COMPANY WORK TIME SETTING END -->
 
 			<!-- WORKPLACE WORK TIME SETTING START -->
 			<div id="tabpanel-2" role="tabpanel">
-				<ui:include src="b.xhtml" />
+				<ui:include src="d.xhtml" />
 			</div>
 			<!-- WORKPLACE WORK TIME SETTING END -->
 
-			<!-- EMPLOYEE WORK TIME SETTING START -->
+			<!-- EMPLOYMENT WORK TIME SETTING START -->
 			<div id="tabpanel-3" role="tabpanel">
 				<ui:include src="c.xhtml" />
 			</div>
-			<!-- EMPLOYEE WORK TIME SETTING END -->
-
-			<!-- EMPLOYMENT WORK TIME SETTING START -->
-			<div id="tabpanel-4" role="tabpanel">
-				<ui:include src="d.xhtml" />
-			</div>
 			<!-- EMPLOYMENT WORK TIME SETTING END -->
+		
+			<!-- EMPLOYEE WORK TIME SETTING START -->
+			<div id="tabpanel-4" role="tabpanel">
+				<ui:include src="b.xhtml" />
+			</div>
+			<!-- EMPLOYEE WORK TIME SETTING END -->
 
 		</ui:define>
 	</ui:composition>

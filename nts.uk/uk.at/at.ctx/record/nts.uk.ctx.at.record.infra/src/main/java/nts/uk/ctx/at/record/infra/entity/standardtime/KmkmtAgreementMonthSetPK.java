@@ -16,9 +16,9 @@ public class KmkmtAgreementMonthSetPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "EMPLOYEE_ID")
+	@Column(name = "SID")
 	public String employeeId;
 	
-	@Column(name = "YEAR_MONTH_VALUE")
+	@Column(name = "YM_K")
 	public BigDecimal yearmonthValue;
 }

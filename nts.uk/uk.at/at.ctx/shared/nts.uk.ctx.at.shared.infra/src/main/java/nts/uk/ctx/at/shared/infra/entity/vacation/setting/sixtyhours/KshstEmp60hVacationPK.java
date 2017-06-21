@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours;
 
 import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

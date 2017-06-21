@@ -3,12 +3,17 @@
 .border-all td{
 	border: solid grey 1px;
 	text-align: center;
-	padding: 5px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 10px;
+	padding-left: 10px;
 	min-width: 60px;
+	max-width: 100px;
 }
 
-.border-all.ntsControl.nts-input {
-	width: 50px;
+.border-all input {
+	width: 80px;
+	text-align: center !important;
 }
 
 .contents-area {
@@ -17,4 +22,7 @@
 }
 .bg-dark-green {
 	background-color: #C7F391;
+}
+#right-content {
+	margin-left: 60px;
 }

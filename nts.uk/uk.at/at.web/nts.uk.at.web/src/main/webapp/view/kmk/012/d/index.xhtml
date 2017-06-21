@@ -22,10 +22,11 @@
 			<ui:define name="content">
 				<div class="processingDate">
 					<div id="valueProcessingDate" 
+						class="nts-input"
 						data-name="#{i18n.getText('KMK012_35')}"
 						tabindex="1"  
 						data-bind="ntsDatePicker: 
-						{value: closureDetailModel.month, dateFormat: 'yearmonth'}">
+						{value: closureDetailModel.month, required: true, dateFormat: 'yearmonth'}">
 					</div>
 					<div id="lableProcessingDate"><label>#{i18n.getText('KMK012_25')}</label></div>
 				</div>

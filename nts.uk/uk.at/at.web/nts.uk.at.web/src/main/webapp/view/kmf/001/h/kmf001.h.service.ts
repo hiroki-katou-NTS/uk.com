@@ -6,11 +6,13 @@ module nts.uk.pr.view.kmf001.h {
         var paths: any = {
             getComSetting: "ctx/at/shared/vacation/setting/substvacation/com/find",
             getEmpSetting: "ctx/at/shared/vacation/setting/substvacation/emp/find",
+            findAllByEmployment: 'ctx/at/shared/vacation/setting/substvacation/emp/findall',
             saveComSetting: "ctx/at/shared/vacation/setting/substvacation/com/save",
             saveEmpSetting: "ctx/at/shared/vacation/setting/substvacation/emp/save",
             vacationExpirationEnum: "ctx/at/shared/vacation/setting/substvacation/enum/vacationexpiration",
             applyPermissionEnum: "ctx/at/shared/vacation/setting/substvacation/enum/applypermission",
             manageDistinctEnum: "ctx/at/shared/vacation/setting/substvacation/enum/managedistinct",
+            
         };
 
         /**
@@ -35,7 +37,12 @@ module nts.uk.pr.view.kmf001.h {
             public findEmpSetting(contractTypeCode: string): JQueryPromise<model.EmpSubstVacationDto> {
                 return nts.uk.request.ajax(paths.getEmpSetting + "/" + contractTypeCode);
             }
-
+            /**
+            *Find all employment.
+             */
+            public findAllByEmployment(): JQueryPromise<any> {
+                return nts.uk.request.ajax(paths.findAllByEmployment);
+            }
             /**
              * Update company's setting
              */

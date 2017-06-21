@@ -73,19 +73,19 @@
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td data-bind="with: currentItem">
 										<div class="radio"
 											 data-bind="ntsRadioBoxGroup: {
-														options: itemList,
+														options: $parent.itemList,
 														optionsValue: 'id',
 														optionsText: 'name',
-														value: selectedId1,
+														value: $parent.agentAppType1,
 														enable: true}">
 										</div>
 									</td>
 									<td>
 									<div class="radio-right">
-											<button id="BTN_A4_003" class="button separate-button">#{i18n.getText('CMM044_19')}</button>
+											<button id="BTN_A4_003" data-bind="enable: displayEmployeeInfo1" class="button separate-button">#{i18n.getText('CMM044_19')}</button>
 											<label id="A4-004" style="display: inline-block;">代行者</label>
 									</div>
 									</td>
@@ -105,19 +105,19 @@
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td  data-bind="with: currentItem">
 										<div class="radio"
 											 data-bind="ntsRadioBoxGroup: {
-														options: itemList,
+														options: $parent.itemList,
 														optionsValue: 'id',
 														optionsText: 'name',
-														value: selectedId2,
+														value: $parent.agentAppType2,
 														enable: true}">
 										</div>
 									</td>
 									<td>
-									<div class="radio-right">
-											<button id="BTN_A5_003" class="button separate-button">#{i18n.getText('CMM044_19')}</button>
+									<div class="radio-right" >
+											<button id="BTN_A5_003" data-bind="enable: displayEmployeeInfo2" class="button separate-button">#{i18n.getText('CMM044_19')}</button>
 											<label id="A5-004" style="display: inline-block;">代行者</label>
 									</div>
 									</td>
@@ -137,19 +137,19 @@
 									</td>
 								</tr>
 								<tr>
-									<td>
+									<td data-bind="with: currentItem">
 										<div class="radio"
 											 data-bind="ntsRadioBoxGroup: {
-														options: itemList,
+														options: $parent.itemList,
 														optionsValue: 'id',
 														optionsText: 'name',
-														value: selectedId3,
+														value: $parent.agentAppType3,
 														enable: true}">
 										</div>
 									</td>
 									<td>
-									<div class="radio-right">
-											<button id="BTN_A6_003" class="button separate-button">#{i18n.getText('CMM044_19')}</button>
+									<div class="radio-right" >
+											<button id="BTN_A6_003" data-bind="enable: displayEmployeeInfo3" class="button separate-button">#{i18n.getText('CMM044_19')}</button>
 											<label id="A4-006" style="display: inline-block;">代行者</label>
 									</div>
 									</td>
@@ -163,25 +163,25 @@
 									<col width="*" />
 								</colgroup>
 								<tr>
-									<td>
+								<td>
 										<div id="label-a4-001"
 											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM044_14')}</div>
 									</td>
-								</tr>
+									</tr>
 								<tr>
-									<td>
+									<td data-bind="with: currentItem">
 										<div class="radio"
 											 data-bind="ntsRadioBoxGroup: {
-														options: itemList,
+														options: $parent.itemList,
 														optionsValue: 'id',
 														optionsText: 'name',
-														value: selectedId4,
+														value: $parent.agentAppType4,
 														enable: true}">
 										</div>
 									</td>
 									<td>
-									<div class="radio-right">
-											<button id="BTN_A7_003" class="button separate-button">#{i18n.getText('CMM044_19')}</button>
+									<div class="radio-right" >
+											<button id="BTN_A7_003" data-bind="enable: displayEmployeeInfo4" class="button separate-button">#{i18n.getText('CMM044_19')}</button>
 											<label id="A4-007" style="display: inline-block;">代行者</label>
 									</div>
 									</td>

@@ -4,13 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find.dto.Emp60HourVacationDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.sixtyhours.find.dto.SixtyHourVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
@@ -46,8 +46,6 @@ public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
 
 		if (!optCom60HVacation.isPresent()) {
 			return null;
-			// TODO: find msg id
-//			throw new BusinessException(new RawErrorMessage(""));
 		}
 
 		SixtyHourVacationSettingDto dto = new SixtyHourVacationSettingDto();
@@ -79,6 +77,13 @@ public class SixtyHourVacationFinderDefault implements SixtyHourVacationFinder {
 		optEmpSubVacation.get().saveToMemento(dto);
 
 		return dto;
+	}
+
+	@Override
+	public List<String> findAllEmployment() {
+		String companyId = AppContexts.user().companyId();
+		return empSvRepository.findAll(companyId).stream().map(item -> item.getEmpContractTypeCode())
+				.collect(Collectors.toList());
 	}
 
 }

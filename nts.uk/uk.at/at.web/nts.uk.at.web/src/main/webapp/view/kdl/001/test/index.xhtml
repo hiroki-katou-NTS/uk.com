@@ -20,12 +20,19 @@
 				</div>
 				<div id="contents-area">
 					<div>
-						<span>Single Selected Code</span>
-						<div data-bind="text: selectedCode"></div>	
-					</div>
-					<div>
-						<span>Multi Selected Code</span>
-						<div data-bind="text: selectedCodeList"></div>
+						<div>
+							<span>Selected Code</span>
+							<textarea class="inputValue" data-bind="ntsMultilineEditor: { value: selectedCodeList }" />
+						</div>
+						<div>
+							<span>Selected Able Code</span>
+							<textarea class="inputValue" data-bind="ntsMultilineEditor: { value: selectedCodeAbleList }" />	
+						</div>	
+						<div>
+							<button data-bind="click: add1000Sample">1000 record sample</button>
+							<button data-bind="click: add10000Sample">10000 record sample</button>
+							<button data-bind="click: removeSample">clear sample</button>
+						</div>
 					</div>
 				</div>
 			</ui:define>

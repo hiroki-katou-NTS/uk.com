@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,5 +27,13 @@ public interface Emp60HourVacationRepository {
 	 * @return the optional
 	 */
 	Optional<Emp60HourVacation> findById(String companyId, String contractTypeCode);
+	
+	/**
+	 * Find all.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<Emp60HourVacation> findAll(String companyId);
 
 }

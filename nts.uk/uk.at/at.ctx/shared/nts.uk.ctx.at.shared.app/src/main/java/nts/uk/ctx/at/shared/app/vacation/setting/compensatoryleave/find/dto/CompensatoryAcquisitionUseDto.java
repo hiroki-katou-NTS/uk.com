@@ -16,12 +16,6 @@ public class CompensatoryAcquisitionUseDto implements CompensatoryAcquisitionUse
 	/** The preemption permit. */
 	public Integer preemptionPermit;
 
-	/** The is manage by time. */
-	public Integer isManageByTime;
-
-	/** The digestive unit. */
-	public Integer digestiveUnit;
-
 	@Override
 	public void setExpirationTime(ExpirationTime expirationTime) {
 		this.expirationTime = expirationTime.value;

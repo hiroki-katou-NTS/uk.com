@@ -12,8 +12,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeVacationSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KalmtAnnualPaidLeave;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeVacationSet;
 
 /**
  * The Class JpaAnnualPaidLeaveSettingGetMemento.
@@ -23,24 +21,13 @@ public class JpaAnnualPaidLeaveSettingGetMemento implements AnnualPaidLeaveSetti
     /** The entity. */
     private KalmtAnnualPaidLeave entity;
     
-    /** The entity annual. */
-    private KmamtMngAnnualSet entityAnnual;
-    
-    /** The entity time. */
-    private KtvmtTimeVacationSet entityTime;
-    
     /**
      * Instantiates a new jpa annual paid leave setting get memento.
      *
      * @param entity the entity
-     * @param entityAnnual the entity annual
-     * @param entityTime the entity time
      */
-    public JpaAnnualPaidLeaveSettingGetMemento(KalmtAnnualPaidLeave entity, KmamtMngAnnualSet entityAnnual,
-            KtvmtTimeVacationSet entityTime) {
+    public JpaAnnualPaidLeaveSettingGetMemento(KalmtAnnualPaidLeave entity) {
         this.entity = entity;
-        this.entityAnnual = entityAnnual;
-        this.entityTime = entityTime;
     }
     /*
      * (non-Javadoc)
@@ -87,7 +74,7 @@ public class JpaAnnualPaidLeaveSettingGetMemento implements AnnualPaidLeaveSetti
      */
     @Override
     public ManageAnnualSetting getManageAnnualSetting() {
-        return new ManageAnnualSetting(new JpaManageAnnualSettingGetMemento(this.entityAnnual));
+        return new ManageAnnualSetting(new JpaManageAnnualSettingGetMemento(this.entity.getKmamtMngAnnualSet()));
     }
 
     /*
@@ -98,7 +85,7 @@ public class JpaAnnualPaidLeaveSettingGetMemento implements AnnualPaidLeaveSetti
      */
     @Override
     public TimeVacationSetting getTimeSetting() {
-        return new TimeVacationSetting(new JpaTimeVacationSettingGetMemento(this.entityTime));
+        return new TimeVacationSetting(new JpaTimeVacationSettingGetMemento(this.entity.getKtvmtTimeVacationSet()));
     }
 
 }

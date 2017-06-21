@@ -4,15 +4,27 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtrPK_;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr_;
+
 
 /**
  * The Class JpaEmploymentSettingRepository.
@@ -42,7 +54,16 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	 */
 	@Override
 	public void update(EmploymentSetting employmentSetting) {
-		KmfmtRetentionEmpCtr entity = new KmfmtRetentionEmpCtr();
+		Optional<KmfmtRetentionEmpCtr> optional = this.queryProxy()
+				.find(new KmfmtRetentionEmpCtrPK(employmentSetting.getCompanyId(),
+						employmentSetting.getEmploymentCode()), KmfmtRetentionEmpCtr.class);
+		KmfmtRetentionEmpCtr entity = null;
+		if(optional.isPresent()) {
+			entity = optional.get();
+		}
+		else {
+			entity = new KmfmtRetentionEmpCtr();
+		}
 		employmentSetting.saveToMemento(new JpaEmploymentSettingSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
@@ -79,5 +100,36 @@ public class JpaEmploymentSettingRepository extends JpaRepository implements Emp
 	private EmploymentSetting toDomain(KmfmtRetentionEmpCtr entity) {
 		return new EmploymentSetting(new JpaEmploymentSettingGetMemento(entity));
 		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
+	 * EmploymentSettingRepository#findAll(java.lang.String)
+	 */
+	@Override
+	public List<EmploymentSetting> findAll(String companyId) {
+		// Get entity manager
+				EntityManager em = this.getEntityManager();
+				CriteriaBuilder bd = em.getCriteriaBuilder();
+				CriteriaQuery<KmfmtRetentionEmpCtr> cq = bd.createQuery(KmfmtRetentionEmpCtr.class);
+				
+				// Root
+				Root<KmfmtRetentionEmpCtr> root = cq.from(KmfmtRetentionEmpCtr.class);
+				cq.select(root);
+				
+				// Predicate where clause
+				List<Predicate> predicateList = new ArrayList<>();
+				predicateList.add(bd.equal(root.get(KmfmtRetentionEmpCtr_.kmfmtRetentionEmpCtrPK)
+						.get(KmfmtRetentionEmpCtrPK_.cid), companyId));
+				
+				// Set Where clause to SQL Query
+				cq.where(predicateList.toArray(new Predicate[] {}));
+				
+				// Create Query
+				TypedQuery<KmfmtRetentionEmpCtr> query = em.createQuery(cq);
+				
+				return query.getResultList().stream()
+						.map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
 }

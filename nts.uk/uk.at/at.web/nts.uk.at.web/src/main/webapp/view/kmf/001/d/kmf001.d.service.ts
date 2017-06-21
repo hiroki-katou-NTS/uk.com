@@ -8,7 +8,8 @@ module nts.uk.pr.view.kmf001.d {
             saveRetentionYearly: 'ctx/at/shared/vacation/setting/retentionyearly/save',
             findByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/find',
             saveByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/save',
-            findIsManaged: 'ctx/at/share/vacation/setting/annualpaidleave/find/setting'
+            findIsManaged: 'ctx/at/share/vacation/setting/annualpaidleave/find/setting',
+            findAllByEmployment: 'ctx/at/shared/vacation/setting/employmentsetting/findAll'
         };
 
         
@@ -32,6 +33,10 @@ module nts.uk.pr.view.kmf001.d {
         
         export function findIsManaged(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findIsManaged);
+        }
+        
+        export function findAllByEmployment(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllByEmployment);
         }
         
 

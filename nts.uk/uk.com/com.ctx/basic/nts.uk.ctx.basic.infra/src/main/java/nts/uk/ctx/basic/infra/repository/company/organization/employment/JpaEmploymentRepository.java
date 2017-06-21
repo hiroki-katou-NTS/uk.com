@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -39,8 +40,8 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 	public List<Employment> findAll(String companyId) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
-		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<CemptEmployment> cq = bd.createQuery(CemptEmployment.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<CemptEmployment> cq = cb.createQuery(CemptEmployment.class);
 		
 		// Root
 		Root<CemptEmployment> root = cq.from(CemptEmployment.class);
@@ -48,11 +49,17 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 		
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(bd.equal(root.get(CemptEmployment_.cemptEmploymentPK)
+		predicateList.add(cb.equal(root.get(CemptEmployment_.cemptEmploymentPK)
 				.get(CemptEmploymentPK_.cid), companyId));
+		
+		List<Order> orderList = new ArrayList<Order>();
+		
+		// Order by employment Code
+		orderList.add(cb.asc(root.get(CemptEmployment_.cemptEmploymentPK).get(CemptEmploymentPK_.code)));
 		
 		// Set Where clause to SQL Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
+		cq.orderBy(orderList);
 		
 		// Create Query
 		TypedQuery<CemptEmployment> query = em.createQuery(cq);

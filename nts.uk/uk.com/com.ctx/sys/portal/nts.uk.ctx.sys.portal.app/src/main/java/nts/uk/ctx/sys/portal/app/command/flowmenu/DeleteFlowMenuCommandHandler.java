@@ -38,8 +38,8 @@ public class DeleteFlowMenuCommandHandler extends CommandHandler<DeleteFlowMenuC
 		String companyID = AppContexts.user().companyId();
 		String topPagePartId = context.getCommand().getToppagePartID();
 		//check topPagePartId is exit
-		Optional<FlowMenu> getFlowMenu = flowMenuRepository.getFlowMenu(companyID, topPagePartId);		
-		if(!getFlowMenu.isPresent()){
+		Optional<FlowMenu> getFlowMenu = flowMenuRepository.findByCode(companyID, topPagePartId);		
+		if(!getFlowMenu.isPresent()){ 
 			throw new BusinessException("ER026");
 		}
 		if(getFlowMenu.get().getDefClassAtr() == DefClassAtr.DEFAULT){
