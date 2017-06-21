@@ -5,11 +5,14 @@ import lombok.AllArgsConstructor;
 /**
  * 
  * @author nampt
- *
+ * 
  */
 @AllArgsConstructor
-public enum ClassificationUseAtr {
+public enum UseClassificationAtr {
 	
+	/*
+	 * 使用区分
+	 */
 	// 0: 使用しない
 	NOT_USE(0),
 	// 1: 使用する
