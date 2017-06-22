@@ -41,7 +41,7 @@
 						]} ">
 					</div>
 				</div>
-				<div class="valign-center control-group">
+				<div class="valign-center control-group div-group-date-setting ">
 					<div class="closing-date-clean">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_33')}</div>
 						<button tabindex="2"
@@ -73,10 +73,49 @@
 						]} ">
 						</div>
 					</div>
-
 				</div>
 
-
+				<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_34')}</div>
+						<button tabindex="5"
+							data-bind="ntsHelpButton: {image: 'img_002.png', position: 'right top', enable: true }">?</button>
+						<div id="cbx-limit-setting" tabindex="6"
+							data-bind="ntsComboBox: {
+							name: '#{i18n.getText('KMK008_34')}',
+							options: limitSettingItemList,
+							optionsValue: 'value',
+							value: selectedLimitSettingItemList,
+							optionsText: 'localizedName',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'localizedName', length: 10 },
+							]} ">
+						</div>
+				</div>
+				<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_35')}</div>
+						<button tabindex="7"
+							data-bind="ntsHelpButton: {image: 'img_003.png', position: 'right top', enable: true }">?</button>
+						<div>
+							<table style="width:100%">
+								 <tr style="background-color: green">
+								    <th>#{i18n.getText('KMK008_36')}</th>
+								    <th>#{i18n.getText('KMK008_35')}</th> 
+								  </tr>
+								  <tr>
+								    <td></td>
+								    <td></td>
+								  </tr>
+								  <tr>
+								    <td></td>
+								    <td></td>
+								  </tr>
+								 
+							</table>	
+						</div>
+				</div>
+				
 			</div>
 		</ui:define>
 	</ui:composition>
