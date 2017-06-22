@@ -903,7 +903,7 @@ var nts;
                 CharType.prototype.validate = function (text) {
                     var result = new uk.ui.validation.ValidationResult();
                     var validateResult = this.validator(text);
-                    if (validateResult.probe) {
+                    if (validateResult === true || validateResult.probe) {
                         result.isValid = true;
                         result.errorMessage = validateResult.messageId;
                     }
@@ -2182,10 +2182,14 @@ var nts;
                         var $functionsArea = $('#functions-area');
                         var $functionsAreaBottom = $('#functions-area-bottom');
                         if ($functionsArea.length > 0) {
-                            $('#func-notifier-errors').position({ my: 'left+5 top-5', at: 'left bottom', of: $('#functions-area') });
+                            _.defer(function () {
+                                $('#func-notifier-errors').position({ my: 'left+5 top-5', at: 'left bottom', of: $('#functions-area') });
+                            });
                         }
                         else if ($functionsAreaBottom.length > 0) {
-                            $('#func-notifier-errors').position({ my: 'left+5 top+48', at: 'left top', of: $('#functions-area-bottom') });
+                            _.defer(function () {
+                                $('#func-notifier-errors').position({ my: 'left+5 top+48', at: 'left top', of: $('#functions-area-bottom') });
+                            });
                         }
                         else {
                             return;
@@ -2204,6 +2208,7 @@ var nts;
         (function (ui) {
             var validation;
             (function (validation) {
+                var util = nts.uk.util;
                 var NoValidator = (function () {
                     function NoValidator() {
                     }
@@ -2241,13 +2246,13 @@ var nts;
                     StringValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
                         if (this.required !== undefined && this.required !== false) {
-                            if (uk.util.isNullOrEmpty(inputText)) {
+                            if (util.isNullOrEmpty(inputText)) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]));
                                 return result;
                             }
                         }
                         var validateResult;
-                        if (this.charType !== null && this.charType !== undefined) {
+                        if (!util.isNullOrUndefined(this.charType)) {
                             if (this.charType.viewName === '半角数字') {
                                 inputText = uk.text.toOneByteAlphaNumberic(inputText);
                             }
@@ -2262,18 +2267,21 @@ var nts;
                             }
                             validateResult = this.charType.validate(inputText);
                             if (!validateResult.isValid) {
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, !uk.util.isNullOrUndefined(this.constraint)
-                                        ? (!uk.util.isNullOrUndefined(this.constraint.maxLength)
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, !util.isNullOrUndefined(this.constraint)
+                                        ? (!util.isNullOrUndefined(this.constraint.maxLength)
                                             ? this.constraint.maxLength : 9999) : 9999]));
                                 return result;
                             }
                         }
                         if (this.constraint !== undefined && this.constraint !== null) {
                             if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, this.constraint.maxLength]));
+                                var maxLength = this.constraint.maxLength;
+                                if (this.constraint.charType == "Any")
+                                    maxLength = maxLength / 2;
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]));
                                 return result;
                             }
-                            if (!uk.util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                            if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
                                 if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
                                     result.fail('This field is not valid with pattern!');
                                     return result;
@@ -2311,7 +2319,7 @@ var nts;
                         }
                         var message = {};
                         var validateFail = false, max = 99999999, min = 0, mantissaMaxLength;
-                        if (!uk.util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {
+                        if (!util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {
                             if (!uk.ntsNumber.isHalfInt(inputText, message))
                                 validateFail = true;
                         }
@@ -2320,18 +2328,18 @@ var nts;
                         }
                         var value = isDecimalNumber ?
                             uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
-                        if (!uk.util.isNullOrUndefined(this.constraint)) {
-                            if (!uk.util.isNullOrUndefined(this.constraint.max)) {
+                        if (!util.isNullOrUndefined(this.constraint)) {
+                            if (!util.isNullOrUndefined(this.constraint.max)) {
                                 max = this.constraint.max;
                                 if (value > this.constraint.max)
                                     validateFail = true;
                             }
-                            if (!uk.util.isNullOrUndefined(this.constraint.min)) {
+                            if (!util.isNullOrUndefined(this.constraint.min)) {
                                 min = this.constraint.min;
                                 if (value < this.constraint.min)
                                     validateFail = true;
                             }
-                            if (!uk.util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
+                            if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
                                 mantissaMaxLength = this.constraint.mantissaMaxLength;
                                 var parts = String(value).split(".");
                                 if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
@@ -2342,7 +2350,7 @@ var nts;
                             result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]));
                         }
                         else {
-                            result.success(inputText === "0" ? inputText : uk.text.removeFromStart(inputText, "0"));
+                            result.success(value.toString() === "0" ? inputText : uk.text.removeFromStart(inputText, "0"));
                         }
                         return result;
                     };
@@ -2360,7 +2368,7 @@ var nts;
                     }
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        if (uk.util.isNullOrEmpty(inputText)) {
+                        if (util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]));
                                 return result;
@@ -2377,28 +2385,28 @@ var nts;
                                 result.success(timeParse.toValue());
                             }
                             else {
-                                result.fail();
+                                result.fail("");
                             }
-                            if (!uk.util.isNullOrUndefined(this.constraint)) {
-                                if (!uk.util.isNullOrUndefined(this.constraint.max)) {
+                            if (!util.isNullOrUndefined(this.constraint)) {
+                                if (!util.isNullOrUndefined(this.constraint.max)) {
                                     maxStr = this.constraint.max;
                                     var max = uk.time.parseTime(this.constraint.max);
                                     if (timeParse.success && (max.hours < timeParse.hours
                                         || (max.hours === timeParse.hours && max.minutes < timeParse.minutes))) {
-                                        result.fail();
+                                        result.fail("");
                                     }
                                 }
-                                if (!uk.util.isNullOrUndefined(this.constraint.min)) {
+                                if (!util.isNullOrUndefined(this.constraint.min)) {
                                     minStr = this.constraint.min;
                                     var min = uk.time.parseTime(this.constraint.min);
                                     if (timeParse.success && (min.hours > timeParse.hours
                                         || (min.hours === timeParse.hours && min.minutes > timeParse.minutes))) {
-                                        result.fail();
+                                        result.fail("");
                                     }
                                 }
-                            }
-                            if (!result.isValid && this.constraint.valueType === "Time") {
-                                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]));
+                                if (!result.isValid && this.constraint.valueType === "Time") {
+                                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]));
+                                }
                             }
                             return result;
                         }
@@ -2423,27 +2431,27 @@ var nts;
                             result.fail(parseResult.getMsg());
                         }
                         if (this.outputFormat === "time") {
-                            if (!uk.util.isNullOrUndefined(this.constraint)) {
+                            if (!util.isNullOrUndefined(this.constraint)) {
                                 var inputMoment = parseResult.toValue();
-                                if (!uk.util.isNullOrUndefined(this.constraint.max)) {
+                                if (!util.isNullOrUndefined(this.constraint.max)) {
                                     maxStr = this.constraint.max;
                                     var maxMoment = moment.duration(maxStr);
                                     if (parseResult.success && (maxMoment.hours() < inputMoment.hours()
                                         || (maxMoment.hours() === inputMoment.hours() && maxMoment.minutes() < inputMoment.minutes()))) {
-                                        result.fail();
+                                        result.fail("");
                                     }
                                 }
-                                if (!uk.util.isNullOrUndefined(this.constraint.min)) {
+                                if (!util.isNullOrUndefined(this.constraint.min)) {
                                     minStr = this.constraint.min;
                                     var minMoment = moment.duration(minStr);
                                     if (parseResult.success && (minMoment.hours() > inputMoment.hours()
                                         || (minMoment.hours() === inputMoment.hours() && minMoment.minutes() > inputMoment.minutes()))) {
-                                        result.fail();
+                                        result.fail("");
                                     }
                                 }
-                            }
-                            if (!result.isValid && this.constraint.valueType === "Clock") {
-                                result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]));
+                                if (!result.isValid && this.constraint.valueType === "Clock") {
+                                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]));
+                                }
                             }
                         }
                         return result;
@@ -4631,7 +4639,9 @@ var nts;
                         var checkBoxText;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
-                        container.addClass("ntsControl ntsCheckBox").attr("tabindex", "0").on("click", function (e) {
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                            container.attr("tabindex", "0");
+                        container.addClass("ntsControl ntsCheckBox").on("click", function (e) {
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
@@ -4697,6 +4707,8 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         container.data("enable", _.clone(enable));
                         container.data("init", true);
+                        container.data("tabindex", container.attr("tabindex"));
+                        container.removeAttr("tabindex");
                         new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
                     NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -4727,7 +4739,11 @@ var nts;
                                         }));
                                 });
                                 var disableOption = option["enable"];
-                                checkBoxLabel.attr("tabindex", "0");
+                                if (nts.uk.util.isNullOrUndefined(container.data("tabindex")))
+                                    checkBoxLabel.attr("tabindex", "0");
+                                else {
+                                    checkBoxLabel.attr("tabindex", container.data("tabindex"));
+                                }
                                 checkBoxLabel.keypress(function (evt, ui) {
                                     var code = evt.which || evt.keyCode;
                                     if (code === 32) {
@@ -6296,7 +6312,7 @@ var nts;
                             }
                         }
                         $grid.data("enable", enable);
-                        if (!($grid.attr("filtered") === true || $grid.attr("filtered") === "true") && $grid.data("ui-changed") !== true) {
+                        if (!($grid.attr("filtered") === true && $grid.attr("filtered") === "true") && $grid.data("ui-changed") !== true) {
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -6683,14 +6699,14 @@ var nts;
                             container.data("options", _.cloneDeep(options));
                         }
                         var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
-                            return _.isEqualWith($(item).data("value"), selectedValue(), function (objVal, othVal, key) { return key === "enable" ? true : undefined; });
+                            return _.isEqual(JSON.parse(ko.toJSON(selectedValue())), $(item).data("value"));
                         });
                         if (checkedRadio !== undefined)
                             $(checkedRadio).prop("checked", true);
                         if (enable === true) {
                             _.forEach(container.find("input[type='radio']"), function (radio) {
                                 var dataOpion = $(radio).data("option");
-                                if (dataOpion["enable"] === true) {
+                                if (dataOpion["enable"] !== false) {
                                     $(radio).removeAttr("disabled");
                                 }
                             });
@@ -6859,7 +6875,6 @@ var nts;
                                 component.igGrid("option", "dataSource", srh.seachBox.getDataSource());
                                 component.igGrid("dataBind");
                                 $container.data("searchKey", null);
-                                $container.data("filteredSrouce", null);
                                 component.attr("filtered", false);
                             });
                         }
@@ -7742,7 +7757,9 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
                         container.data("enable", enable);
-                        container.addClass("ntsControl switchButton-wrapper").attr("tabindex", "0");
+                        container.addClass("ntsControl switchButton-wrapper");
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                            container.attr("tabindex", "0");
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);
                             var btnValue = $(btn).data('swbtn');
