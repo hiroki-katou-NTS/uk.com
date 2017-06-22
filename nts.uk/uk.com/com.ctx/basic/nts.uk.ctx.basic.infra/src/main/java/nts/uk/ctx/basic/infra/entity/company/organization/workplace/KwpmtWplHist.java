@@ -8,15 +8,14 @@ package nts.uk.ctx.basic.infra.entity.company.organization.workplace;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -25,7 +24,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KWPMT_WPL_HIST")
-@XmlRootElement
 
 public class KwpmtWplHist extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -33,11 +31,11 @@ public class KwpmtWplHist extends UkJpaEntity implements Serializable {
     protected KwpmtWplHistPK kwpmtWplHistPK;
     
     @Column(name = "STR_D")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate strD;
     
     @Column(name = "END_D")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endD;
 
     public KwpmtWplHist() {
@@ -53,14 +51,6 @@ public class KwpmtWplHist extends UkJpaEntity implements Serializable {
 
     public KwpmtWplHist(String cid, String histId) {
         this.kwpmtWplHistPK = new KwpmtWplHistPK(cid, histId);
-    }
-
-    public KwpmtWplHistPK getKwpmtWplHistPK() {
-        return kwpmtWplHistPK;
-    }
-
-    public void setKwpmtWplHistPK(KwpmtWplHistPK kwpmtWplHistPK) {
-        this.kwpmtWplHistPK = kwpmtWplHistPK;
     }
 
     @Override

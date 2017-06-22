@@ -16,6 +16,6 @@ public class KwpmtWorkplacePK_ {
 	/** The cid. */
 	public static volatile SingularAttribute<KwpmtWorkplacePK, String> cid;
 	
-	/** The wkpid. */
-	public static volatile SingularAttribute<KwpmtWorkplacePK, String> wkpid;
+	/** The wplid. */
+	public static volatile SingularAttribute<KwpmtWorkplacePK, String> wplid;
 }
