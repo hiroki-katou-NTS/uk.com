@@ -4535,8 +4535,11 @@ var nts;
                                 else {
                                     row = $grid.igGrid("selectedRow");
                                 }
-                                if (row)
-                                    $grid.igGrid("virtualScrollTo", row.index);
+                                //                    if (row) $grid.igGrid("virtualScrollTo", getSelectRowIndex($grid, row.id));
+                                if (row) {
+                                    var index = $(row.element).attr("data-row-idx");
+                                    $grid.igGrid("virtualScrollTo", index === undefined ? getSelectRowIndex($grid, row.id) : parseInt(index));
+                                }
                             });
                         }
                         else {
@@ -4558,6 +4561,11 @@ var nts;
                             });
                         }
                         return $grid;
+                    }
+                    function getSelectRowIndex($grid, selectedValue) {
+                        var dataSource = $grid.igGrid("option", "dataSource");
+                        var primaryKey = $grid.igGrid("option", "primaryKey");
+                        return _.findIndex(dataSource, function (s) { return s[primaryKey].toString() === selectedValue.toString(); });
                     }
                     function setupTreeGridScroll($control, virtualization) {
                         var $treegrid = $control;
@@ -9414,6 +9422,9 @@ var nts;
                             if (event.which == 13) {
                                 event.preventDefault();
                                 nextSearch();
+                                _.defer(function () {
+                                    $input.focus();
+                                });
                             }
                         });
                         $button.click(function () {
@@ -9953,6 +9964,9 @@ var nts;
                         this.$searchBox.keydown(function (evt, ui) {
                             if (evt.which === 13) {
                                 proceedSearch.apply(self);
+                                _.defer(function () {
+                                    $input.focus();
+                                });
                             }
                         });
                     };
