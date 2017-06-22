@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class UpdateWebMenuCommand {
 
-	private String companyId;
-
 	private String webMenuCode;
 
 	private String webMenuName;

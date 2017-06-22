@@ -45,23 +45,6 @@ public class KwpmtWplHierarchy extends UkJpaEntity implements Serializable {
         this.kwpmtWplHierarchyPK = kwpmtWplHierarchyPK;
     }
 
-    public KwpmtWplHierarchy(KwpmtWplHierarchyPK kwpmtWplHierarchyPK, int exclusVer, String wplcd) {
-        this.kwpmtWplHierarchyPK = kwpmtWplHierarchyPK;
-        this.wplcd = wplcd;
-    }
-
-    public KwpmtWplHierarchy(String cid, String wkpid, String hisId) {
-        this.kwpmtWplHierarchyPK = new KwpmtWplHierarchyPK(cid, wkpid, hisId);
-    }
-
-    public KwpmtWplHierarchyPK getKwpmtWplHierarchyPK() {
-        return kwpmtWplHierarchyPK;
-    }
-
-    public void setKwpmtWplHierarchyPK(KwpmtWplHierarchyPK kwpmtWplHierarchyPK) {
-        this.kwpmtWplHierarchyPK = kwpmtWplHierarchyPK;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;

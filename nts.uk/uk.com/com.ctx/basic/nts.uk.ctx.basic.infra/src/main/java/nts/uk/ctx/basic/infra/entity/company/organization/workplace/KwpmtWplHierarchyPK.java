@@ -37,7 +37,7 @@ public class KwpmtWplHierarchyPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 40)
-    @Column(name = "HIS_ID")
+    @Column(name = "HIST_ID")
     private String hisId;
 
     public KwpmtWplHierarchyPK() {
