@@ -9,31 +9,35 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum NumberOfTimeOverLimitType {
-	// 0: 0‰ñ
+	
+	/*
+	 * ï¼“ï¼–å”å®šè¶…éä¸Šé™å›æ•°
+	 */
+	// 0: 0å›
 	ZERO_TIMES(0),
-	// 1: 1‰ñ
+	// 1: 1å›
 	ONCE(1),
-	// 2: 2‰ñ
+	// 2: 2å›
 	TWICE(2),
-	// 3: 3‰ñ
+	// 3: 3å›
 	THREE_TIMES(3),
-	// 4: 4‰ñ
+	// 4: 4å›
 	FOUR_TIMES(4),
-	// 5: 5‰ñ
+	// 5: 5å›
 	FIVE_TIMES(5),
-	// 6: 6‰ñ
+	// 6: 6å›
 	SIX_TIMES(6),
-	// 7: 7‰ñ
+	// 7: 7å›
 	SEVEN_TIMES(7),
-	// 8: 8‰ñ
+	// 8: 8å›
 	EIGHT_TIMES(8),
-	// 9: 9‰ñ
+	// 9: 9å›
 	NINE_TIMES(9),
-	// 10: 10‰ñ
+	// 10: 10å›
 	TEN_TIMES(10),
-	// 11: 11‰ñ
+	// 11: 11å›
 	ELEVEN_TIMES(11),
-	// 12: 12‰ñ
+	// 12: 12å›
 	TWELVE_TIMES(12);
 
 	public final int value;
@@ -42,46 +46,46 @@ public enum NumberOfTimeOverLimitType {
 		String name;
 		switch (value) {
 		case 0:
-			name = "0‰ñ";
+			name = "0å›";
 			break;
 		case 1:
-			name = "1‰ñ";
+			name = "1å›";
 			break;
 		case 2:
-			name = "2‰ñ";
+			name = "2å›";
 			break;
 		case 3:
-			name = "3‰ñ";
+			name = "3å›";
 			break;
 		case 4:
-			name = "4‰ñ";
+			name = "4å›";
 			break;
 		case 5:
-			name = "5‰ñ";
+			name = "5å›";
 			break;
 		case 6:
-			name = "6‰ñ";
+			name = "6å›";
 			break;
 		case 7:
-			name = "7‰ñ";
+			name = "7å›";
 			break;
 		case 8:
-			name = "8‰ñ";
+			name = "8å›";
 			break;
 		case 9:
-			name = "9‰ñ";
+			name = "9å›";
 			break;
 		case 10:
-			name = "10‰ñ";
+			name = "10å›";
 			break;
 		case 11:
-			name = "11‰ñ";
+			name = "11å›";
 			break;
 		case 12:
-			name = "12‰ñ";
+			name = "12å›";
 			break;
 		default:
-			name = "6‰ñ";
+			name = "6å›";
 			break;
 		}
 		return name;

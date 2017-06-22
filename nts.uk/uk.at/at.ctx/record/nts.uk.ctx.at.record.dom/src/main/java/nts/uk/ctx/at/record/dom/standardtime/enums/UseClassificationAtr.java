@@ -5,14 +5,17 @@ import lombok.AllArgsConstructor;
 /**
  * 
  * @author nampt
- *
+ * 
  */
 @AllArgsConstructor
-public enum ClassificationUseAtr {
+public enum UseClassificationAtr {
 	
-	// 0: g—p‚µ‚È‚¢
+	/*
+	 * ä½¿ç”¨åŒºåˆ†
+	 */
+	// 0: ä½¿ç”¨ã—ãªã„
 	NOT_USE(0),
-	// 1: g—p‚·‚é
+	// 1: ä½¿ç”¨ã™ã‚‹
 	USE(1);
 
 	public final int value;
@@ -21,13 +24,13 @@ public enum ClassificationUseAtr {
 		String name;
 		switch (value) {
 		case 0:
-			name = "g—p‚µ‚È‚¢";
+			name = "ä½¿ç”¨ã—ãªã„";
 			break;
 		case 1:
-			name = "g—p‚·‚é";
+			name = "ä½¿ç”¨ã™ã‚‹";
 			break;
 		default:
-			name = "g—p‚·‚é";
+			name = "ä½¿ç”¨ã™ã‚‹";
 			break;
 		}
 		return name;

@@ -15,7 +15,7 @@
 		</div>
 		<div class="contents-area">
 			<div id="list-employment" class="pull-left"></div>
-			<div id="right-content" class="pull-left">
+			<div id="right-content" class="pull-left" data-bind="visible: !isLoading()" style="display: none">
 				<com:ko tag="with" bind="employmentWTSetting">
 				<div class="control-group">
 					<input tabindex="1" id="yearPicker" data-name="#KMK004_31"
