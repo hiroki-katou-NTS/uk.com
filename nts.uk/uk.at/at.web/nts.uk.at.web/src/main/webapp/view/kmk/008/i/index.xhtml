@@ -26,20 +26,54 @@
 				<div class="label">#{i18n.getText('KMK008_5')}</div>
 				<hr />
 				<div class="valign-center control-group">
-					<div data-bind="ntsFormLabel: {}" class="form-label">#{i18n.getText('KMK008_32')}</div>
-					<div id="combo-box-month-setting"
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_32')}</div>
+					<div id="combo-box-month-setting" tabindex="1"
 						data-bind="ntsComboBox: {
+						name: '#{i18n.getText('KMK008_32')}',
 						options: monthSettingItemList,
-						optionsValue: 'code',
+						optionsValue: 'value',
 						value: selectedMonthSettingItemList,
-						optionsText: 'name',
+						optionsText: 'localizedName',
 						editable: false,
 						enable: true,
 						columns: [
-							{ prop: 'code', length: 4 },
-							{ prop: 'name', length: 10 },
+							{ prop: 'localizedName', length: 10 },
 						]} ">
 					</div>
+				</div>
+				<div class="valign-center control-group">
+					<div class="closing-date-clean">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_33')}</div>
+						<button tabindex="2"
+							data-bind="ntsHelpButton: {image: 'img_001.png', position: 'right top', enable: true }">?</button>
+					</div>
+					<div class="closing-date-clean rdb-closing-date-classification">
+						<div id="rdb-closing-date-classification" tabindex="3"
+							data-bind="ntsRadioBoxGroup: {
+							options: closingDateClassificationItemList,
+							optionsValue: 'value',
+							optionsText: 'localizedName',
+							value: selectedClosingDateClassificationItemList,
+							enable: true }">
+						</div>
+					</div>
+
+					<div class="closing-date-clean">
+						<div id="cbx-closing-date-setting" tabindex="4"
+							data-bind="ntsComboBox: {
+						name: '#{i18n.getText('KMK008_33')}',
+						options: closingDateSettingItemList,
+						optionsValue: 'value',
+						value: selectedClosingDateSettingItemList,
+						optionsText: 'localizedName',
+						editable: false,
+						enable: true,
+						columns: [
+							{ prop: 'localizedName', length: 10 },
+						]} ">
+						</div>
+					</div>
+
 				</div>
 
 
