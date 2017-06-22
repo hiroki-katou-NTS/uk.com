@@ -406,7 +406,7 @@ div.popup-panel {
   NtsEditor
 *****************************/
 /* line 154, ../sass/components/_commons.scss */
-.ntsControl.error .nts-editor, .ntsControl.error .ntsDatepicker {
+.ntsControl.error .nts-editor, .ntsControl.error .ntsDatepicker, .ui-igcombo.error  {
   border-color: #ff6666;
 }
 
