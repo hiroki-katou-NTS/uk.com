@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.employee.workplace;
+package nts.uk.ctx.basic.dom.company.organization.workplace.history;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -11,11 +11,11 @@ import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
 
 /**
- * The Class EmployeeWorkplaceHistory.
+ * The Class WorkplaceHistory.
  */
 // 所属職場履歴
 @Getter
-public class EmployeeWorkplaceHistory extends AggregateRoot {
+public class WorkplaceHistory extends AggregateRoot {
 
 	/** The period. */
 	// 期間
@@ -34,11 +34,20 @@ public class EmployeeWorkplaceHistory extends AggregateRoot {
 	 *
 	 * @param memento the memento
 	 */
-	public EmployeeWorkplaceHistory(EmployeeWorkplaceHistoryGetMemento memento) {
+	public WorkplaceHistory(WorkplaceHistoryGetMemento memento) {
 		this.period = memento.getPeriod();
 		this.employeeId = memento.getEmployeeId();
 		this.workplaceId = memento.getWorkplaceId();
 	}
 	
-	
+	/**
+	 * Save to memen to.
+	 *
+	 * @param memento the memen to
+	 */
+	public void saveToMemento(WorkplaceHistorySetMemento memento){
+		memento.setPeriod(this.period);
+		memento.setEmployeeId(this.employeeId);
+		memento.setWorkplaceId(this.workplaceId);
+	}
 }

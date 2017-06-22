@@ -1,8 +1,15 @@
 @CHARSET "UTF-8";
 
-#functions-area{
-	height: 50px;
+#functions-area {
+	height: 60px;
 }
+
+.btnSave {
+	margin-top: 10px;
+	margin-left: 20px;
+	width: 80px;
+}
+
 #contents-left, #contents-right {
 	padding: 20px;
 	vertical-align: top !important;
@@ -18,27 +25,27 @@
 	padding-left: 40px !important;
 }
 
-.contents{
-	margin-top:20px;
+.contents {
+	margin-top: 20px;
 	margin-left: 20px;
-	min-width:800px;
+	min-width: 800px;
 }
 
-.lableData{
+.lableData {
 	width: 170px;
 	float: left;
 }
 
-.lableDataEnd{
+.lableDataEnd {
 	width: 130px;
 	margin-left: 50px;
 	float: left;
 }
 
-.valueData{
+.valueData {
 	float: left;
 }
 
-.nts-editor{
+.nts-editor {
 	width: 180px !important;
 }
