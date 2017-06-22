@@ -193,44 +193,54 @@ module nts.uk.at.view.kmk004.a {
              */
             public removeEmployment(): void {
                 let self = this;
-                let empt = self.employmentWTSetting;
-                let command = { year: empt.year(), employmentCode: empt.employmentCode() }
-                service.removeEmploymentSetting(command).done(() => {
-                    self.isNewMode(true);
-                    self.setAlreadySettingEmploymentList();
-                    // Reserve current code + name + year.
-                    let newEmpt = new EmploymentWTSetting();
-                    newEmpt.employmentCode(empt.employmentCode());
-                    newEmpt.employmentName(empt.employmentName());
-                    newEmpt.year(empt.year());
-                    self.employmentWTSetting.updateData(ko.toJS(newEmpt));
-                    // Sort month.
-                    self.companyWTSetting.sortMonth(self.startMonth());
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                });
-            }
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                        let empt = self.employmentWTSetting;
+                        let command = { year: empt.year(), employmentCode: empt.employmentCode() }
+                        service.removeEmploymentSetting(command).done(() => {
+                            self.isNewMode(true);
+                            self.setAlreadySettingEmploymentList();
+                            // Reserve current code + name + year.
+                            let newEmpt = new EmploymentWTSetting();
+                            newEmpt.employmentCode(empt.employmentCode());
+                            newEmpt.employmentName(empt.employmentName());
+                            newEmpt.year(empt.year());
+                            self.employmentWTSetting.updateData(ko.toJS(newEmpt));
+                            // Sort month.
+                            self.employmentWTSetting.sortMonth(self.startMonth());
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        });
+                    }).ifNo(function() {
+                        nts.uk.ui.block.clear();
+                        return;
+                    })
+                }
 
             /**
              * Remove workplace setting.
              */
             public removeWorkplace(): void {
                 let self = this;
-                let workplace = self.workplaceWTSetting;
-                let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
-                service.removeWorkplaceSetting(command).done(() => {
-                    self.isNewMode(true);
-                    self.setAlreadySettingWorkplaceList();
-                    // Reserve current code + name + year + id.
-                    let newSetting = new WorkPlaceWTSetting();
-                    newSetting.year(workplace.year());
-                    newSetting.workplaceId(workplace.workplaceId());
-                    newSetting.workplaceCode(workplace.workplaceCode());
-                    newSetting.workplaceName(workplace.workplaceName());
-                    self.workplaceWTSetting.updateData(ko.toJS(newSetting));
-                    // Sort month.
-                    self.companyWTSetting.sortMonth(self.startMonth());
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                });
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    let workplace = self.workplaceWTSetting;
+                    let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
+                    service.removeWorkplaceSetting(command).done(() => {
+                        self.isNewMode(true);
+                        self.setAlreadySettingWorkplaceList();
+                        // Reserve current code + name + year + id.
+                        let newSetting = new WorkPlaceWTSetting();
+                        newSetting.year(workplace.year());
+                        newSetting.workplaceId(workplace.workplaceId());
+                        newSetting.workplaceCode(workplace.workplaceCode());
+                        newSetting.workplaceName(workplace.workplaceName());
+                        self.workplaceWTSetting.updateData(ko.toJS(newSetting));
+                        // Sort month.
+                        self.workplaceWTSetting.sortMonth(self.startMonth());
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                })
             }
 
             /**
@@ -238,18 +248,23 @@ module nts.uk.at.view.kmk004.a {
              */
             public removeCompanySetting(): void {
                 let self = this;
-                let selectedYear = self.companyWTSetting.year();
-                let command = { year: selectedYear }
-                service.removeCompanySetting(command).done(() => {
-                    // Reserve current year.
-                    let newSetting = new CompanyWTSetting();
-                    newSetting.year(selectedYear);
-                    self.companyWTSetting.updateData(ko.toJS(newSetting));
-                    // Sort month.
-                    self.companyWTSetting.sortMonth(self.startMonth());
-                    self.isNewMode(true);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                });
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    let selectedYear = self.companyWTSetting.year();
+                    let command = { year: selectedYear }
+                    service.removeCompanySetting(command).done(() => {
+                        // Reserve current year.
+                        let newSetting = new CompanyWTSetting();
+                        newSetting.year(selectedYear);
+                        self.companyWTSetting.updateData(ko.toJS(newSetting));
+                        // Sort month.
+                        self.companyWTSetting.sortMonth(self.startMonth());
+                        self.isNewMode(true);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                })
             }
 
             /**
