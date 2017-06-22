@@ -1,5 +1,9 @@
 include 'com.web:nts.uk.com.web'
 
+include 'shr:nts.uk.shr.com'
+include 'shr:nts.uk.shr.ws'
+include 'shr:nts.uk.shr.find'
+
 include 'com.ctx:basic:nts.uk.ctx.basic.ac'
 include 'com.ctx:basic:nts.uk.ctx.basic.app'
 include 'com.ctx:basic:nts.uk.ctx.basic.dom'
@@ -15,3 +19,8 @@ include 'com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra'
 include 'com.ctx:sys:portal:nts.uk.ctx.sys.portal.pub'
 include 'com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp'
 include 'com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws'
+
+include 'wk.ctx:nts.uk.ctx.workflow.app'
+include 'wk.ctx:nts.uk.ctx.workflow.dom'
+include 'wk.ctx:nts.uk.ctx.workflow.infra'
+include 'wk.ctx:nts.uk.ctx.workflow.ws'

@@ -2253,6 +2253,7 @@ button.nts-switch-button[disabled]:hover {
   font-family: "Meiryo UI";
   font-size: 13px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 /* line 118, ../sass/components/_dialog.scss */
 .ui-dialog #error-board table th,
@@ -2966,6 +2967,18 @@ button.search-btn {
   line-height: 30px;
   right: 10px;
   top: 1px;
+}
+/* line 252, ../sass/components/_datepicker.scss */
+.ntsDateRange_Container .ntsDateRangeComponent{
+  float: left;
+}
+/* line 255, ../sass/components/_datepicker.scss */
+.ntsDateRange_Container .ntsRangeLabel{
+  padding: 6px 5px 6px 5px;
+}
+/* line 255, ../sass/components/_datepicker.scss */
+.ntsDateRange_Container .ntsRangeButton_Container{
+  padding: 2px 2px 2px 2px;
 }
 
 /* line 1, ../sass/components/_contextmenu.scss */

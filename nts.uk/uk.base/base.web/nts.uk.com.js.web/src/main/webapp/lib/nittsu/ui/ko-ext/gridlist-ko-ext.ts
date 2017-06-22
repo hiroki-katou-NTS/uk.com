@@ -23,6 +23,7 @@ module nts.uk.ui.koExtentions {
             var observableColumns = ko.unwrap(data.columns);
             var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
             var enable: boolean = ko.unwrap(data.enable);
+            var value = ko.unwrap(data.value);
             $grid.data("init", true);
             
             var features = [];
@@ -102,6 +103,7 @@ module nts.uk.ui.koExtentions {
             });
 
             $grid.bind('selectionchanged', () => {
+                $grid.data("ui-changed", true);
                 if (data.multiple) {
                     let selected: Array<any> = $grid.ntsGridList('getSelected');
                     if (selected) {
@@ -117,7 +119,6 @@ module nts.uk.ui.koExtentions {
                         data.value('');
                     }
                 }
-                $grid.data("ui-changed", true);
             });
             $grid.setupSearchScroll("igGrid", true); 
         }

@@ -99,36 +99,8 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.20'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.4.5'
-	}
-}
-
-project (':shr:nts.uk.shr.com') {
-	dependencies {
-		compile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
-		compile group: 'aspose', name: 'cells', version: '9.0.0'
-		// Mime Detection Utility
-		compile group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
-		// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-multipart-provider
-		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-multipart-provider', version: '3.1.2.Final'
-		// https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs
-		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.2.Final'
-		
-		// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
-		testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.4.0'
-	}
-}
-
-project (':shr:nts.uk.shr.ws') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':shr:nts.uk.shr.find')
-	}
-}
-
-project (':shr:nts.uk.shr.find') {
-	dependencies {
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.21'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.34.5.1'
 	}
 }
 
@@ -171,7 +143,8 @@ project (':base.web:nts.uk.com.js.web') {
 	}
 	
 	dependencies {
-		compile project(':shr:nts.uk.shr.com')
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.1'
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		
 		// implement eraAdapter
 		compile group: 'com', name: 'nts.uk.ctx.basic.infra', version: '0.1'

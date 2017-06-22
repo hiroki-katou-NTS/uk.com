@@ -424,6 +424,7 @@ var nts;
                     }
                     DefaultValue.prototype.onReset = function ($control, koValue) {
                         var self = this;
+                        $control.addClass("reset-element");
                         $control.on(DefaultValue.RESET_EVT, function (e) {
                             var param = e.detail;
                             self.asDefault($(this), koValue, param.value, param.immediateApply);
