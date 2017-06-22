@@ -55,7 +55,7 @@
 							<!--（優先順位）-->
 							<th class="thInput">#{i18n.getText('KMF001_24')}</th>
 						</tr>
-						<tr>
+						<tr data-bind="visible: paidLeaveSetting">
 							<td>年次有給休暇</td>
 							<td class="inputPriority"><input id="annual-paid-leave"
 								class="nts-input"
@@ -66,7 +66,7 @@
 									required: enableInputPriority,
 									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr>
+						<tr data-bind="visible: retentionYearlySetting">
 							<td>代休</td>
 							<td class="inputPriority"><input id="compensatory-day-off"
 								class="nts-input"
@@ -76,7 +76,7 @@
 									option: textEditorOption,
 									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr>
+						<tr data-bind="visible: compensLeaveComSetSetting">
 							<td>振休</td>
 							<td class="inputPriority"><input id="substitute-holiday"
 								class="nts-input"
@@ -87,7 +87,7 @@
 									required: enableInputPriority,
 									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr>
+						<tr data-bind="visible: comSubtSetting">
 							<td>積立年休</td>
 							<td class="inputPriority"><input id="funded-paid-holiday"
 								class="nts-input"
@@ -98,7 +98,7 @@
 									required: enableInputPriority,
 									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr>
+						<tr data-bind="visible: com60HSetting">
 							<td>60H超休</td>
 							<td class="inputPriority"><input id="exsess-holiday"
 								class="nts-input"
@@ -109,7 +109,7 @@
 									required: enableInputPriority,
 									enable: enableInputPriority}" /></td>
 						</tr>
-						<tr>
+						<tr data-bind="visible: nursingSetting">
 							<td>特別休暇</td>
 							<td class="inputPriority"><input id="special-holiday"
 								class="nts-input"
