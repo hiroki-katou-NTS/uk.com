@@ -1,0 +1,44 @@
+#listTitle {
+	background-color: #E0F59E;
+	height: 470px;
+	width: 400px;
+	padding-left: 20px;
+}
+
+.ui-igcombo-wrapper {
+	vertical-align: middle;
+}
+
+.ntsControl.radio-wrapper.reset-element {
+	padding-top: 40px;
+}
+
+.ntsRadioBox {;
+	margin-bottom: 10px;
+	display: block;
+}
+
+table.control {
+	margin-left: 5px;
+}
+
+.sp-preview {
+	width: 20px;
+}
+
+#contents-area {
+	margin-left: 25px !important
+}
+
+#titleMenu {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.top_left{
+	vertical-align: top !important;
+}
+
+
+
+
