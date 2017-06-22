@@ -20,19 +20,4 @@ public enum ClosingDateAtr {
 
 	public final int value;
 
-	public String toName() {
-		String name;
-		switch (value) {
-		case 0:
-			name = "勤怠の締め日と同じ";
-			break;
-		case 1:
-			name = "締め日を指定";
-			break;
-		default:
-			name = "勤怠の締め日と同じ";
-			break;
-		}
-		return name;
-	}
 }
