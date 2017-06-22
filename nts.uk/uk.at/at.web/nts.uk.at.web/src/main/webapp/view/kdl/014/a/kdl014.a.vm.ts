@@ -26,7 +26,7 @@ module kdl014.a.viewmodel {
             self.employeeCD = '';
             $("#igGridStamp").igGrid({
                 width: '810px',
-                height: '400px',
+                height: '435px',
                 dataSource: self.items(),
                 columns: self.columns()
             });
@@ -81,18 +81,6 @@ module kdl014.a.viewmodel {
             }).fail(function(res) {
                 dfd.reject();
             });
-            //get PersonId
-            let employeeCode:string ='00003       ';
-            service.getPersonByEmpCode(employeeCode).done(function(employeeInfo: any) {
-
-                console.log(employeeInfo);
-                
-                dfd.resolve();
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
-                dfd.reject();
-            });
-            
             return dfd.promise();
 
         }
