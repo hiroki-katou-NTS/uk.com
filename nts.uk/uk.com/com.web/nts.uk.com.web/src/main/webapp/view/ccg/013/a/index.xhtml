@@ -19,8 +19,8 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A_BTN_001">新規</button>
-				<button id="A_BTN_002" class="proceed">登録</button>
+				<button id="A_BTN_001" data-bind="click: cleanForm">新規</button>
+				<button id="A_BTN_002" class="proceed" data-bind="click: addWebMenu">登録</button>
 				<button id="A_BTN_005">コピー</button>
 				<button id="A_BTN_009">職位紐付け設定</button>
 				<button id="A_BTN_006">個人紐付け設定</button>
@@ -37,7 +37,7 @@
 								width: 300,
 								height: 300,
 								dataSource: items,
-								primaryKey: 'code',
+								primaryKey: 'webMenuCode',
 								columns: columns2,
 								multiple: false,
 								value: currentCode
@@ -46,63 +46,81 @@
 				</div>
 				<div class="right-content">
 					<div class="right-content-left">
-						<div class="control-group">
-							<div data-bind="ntsFormLabel: {}">銀行コード/名称</div>
+						<div class="control-group" data-bind="with: currentWebMenu">
+							<div data-bind="ntsFormLabel: {required: true}">コード/名称</div>
 							<span><input style="width: 40px"
-								data-bind="ntsTextEditor: {value: simpleValue}" /></span> <span><input
-								style="width: 180px"
-								data-bind="ntsTextEditor: {value: simpleValue}" /></span>
+								data-bind="ntsTextEditor: {value: webMenuCode,enable: false}" /></span> 
+								<span><input style="width: 180px"
+								data-bind="ntsTextEditor: {value: webMenuName}" /></span>
 							<div class="bg-yellow">
 								<div style="margin-left: 5px;"
-									data-bind="ntsCheckBox: {checked: true, text: '概定のメニューに設定する' }"
+									data-bind="ntsCheckBox: {checked: isDefaultMenu, text: '概定のメニューに設定する' }"
 									class="cf minimalist"></div>
 								<button style="width: 25px; height: 25px; margin-left: 20px;">?</button>
 							</div>
-						</div>
-
+						</div>				
+                           <div class="label warning">※メニューバー、タイトルメニュー、サブ画面の名称変更及び削除は右クリックして操作してください。</div>  
 						<div id="tabs">
 							<ul>
 								<li id="1"><a href="#tabs-1">Nunc tincidunt</a></li>
 								<li id="2"><a href="#tabs-2">Proin dolor</a></li>
 								<li id="3"><a href="#tabs-3">Aenean lacinia</a></li>
+								<li id="3"><a href="#tabs-3">Aenean lacinia</a></li>
 							</ul>
+							<button class="button-add">メニューバーの追加<span style="display: block">+</span>
+							</button>
 							<div id="tabs-1">
-								<div class="table title-menu">
-									<div id="title-menu1" class="cell valign-center">
-										<div class="title-menu">Title Menu</div>
+								<div class="title-menu cf">
+									<div id="title-menu1" class="title-menu-column valign-top">
+										<div class="title-menu-name">Title Menu</div>
 										<ul class="tree-menu">
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
+										</ul>
+										<button class="button-add-treemenu">
+											メニューバーの追加<span style="display: block">+</span>
+										</button>
+									</div>
+									<div id="title-menu2" class="title-menu-column valign-top">
+										<div class="title-menu-name">Title Menu</div>
+										<ul class="tree-menu">
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
 										</ul>
 									</div>
-									<div id="title-menu2" class="cell valign-top">
-										<div class="title-menu">Title Menu</div>
+									<div id="title-menu3" class="title-menu-column valign-top">
+										<div class="title-menu-name">Title Menu</div>
 										<ul class="tree-menu">
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
+											<li class="ui-state-default"><span
+												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
 										</ul>
 									</div>
-									<div id="title-menu3" class="cell valign-bottom">
-										<div class="title-menu">Title Menu</div>
-										<ul class="tree-menu">
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
-											<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
-										</ul>
+									<div class="unsortable">
+										<button class="button-add">
+											メニューバーの追加<span style="display: block">+</span>
+										</button>
 									</div>
 								</div>
 							</div>

@@ -129,6 +129,10 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 	 * @return
 	 */
 	private static List<CcgstMenuBar> toEntityMenuBar(WebMenu domain) {
+		if (domain.getMenuBars() == null) {
+			return null;
+		}
+		
 		List<CcgstMenuBar> menuBars = domain.getMenuBars().stream()
 				.map(mn -> {
 					List<CcgstTitleMenu> titleMenus = toEntityTitleMenu(domain, mn);
@@ -149,7 +153,6 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		List<CcgstTitleMenu> titleMenus = mn.getTitleMenu().stream()
 				.map(tm -> {
 					List<CcgstTreeMenu> treeMenus = toEntityTreeMenu(domain, tm);
-					
 					CcgstTitleMenuPK ccgstTitleMenuPK = new CcgstTitleMenuPK(domain.getCompanyId(), domain.getWebMenuCode().v(), mn.getMenuBarId().toString(), tm.getTitleMenuId().toString());
 					return new CcgstTitleMenu(ccgstTitleMenuPK, tm.getTitleMenuName().v(), tm.getBackgroundColor().v(), tm.getImageFile(), tm.getTextColor().v(), tm.getTitleMenuAtr().value, tm.getTitleMenuCode().v(), tm.getDisplayOrder(), treeMenus);
 				}).collect(Collectors.toList());;

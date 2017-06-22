@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.webmenu;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -18,6 +19,30 @@ public class WebMenuFinder {
 	@Inject
 	private WebMenuRepository webMenuRepository;
 
+	/**
+	 * Find a web menu by code
+	 * @param webMenuCode
+	 * @return
+	 */
+	public WebMenuDto find(String webMenuCode) {
+		String companyId = AppContexts.user().companyId();
+		Optional<WebMenu> webMenuOpt = webMenuRepository.find(companyId, webMenuCode);
+		if (!webMenuOpt.isPresent()) {
+			return null;
+		}
+		
+		return webMenuOpt.map(webMenuItem -> {
+			List<MenuBarDto> menuBars = toMenuBar(webMenuItem);
+			
+			return new WebMenuDto(
+					companyId, 
+					webMenuItem.getWebMenuCode().v(), 
+					webMenuItem.getWebMenuName().v(), 
+					webMenuItem.getDefaultMenu().value,
+					menuBars);
+		}).get();
+	}
+	
 	/**
 	 * 
 	 * @return
