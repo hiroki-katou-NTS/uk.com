@@ -230,6 +230,7 @@ module kcp.share.list {
                 self.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
                     self.addAreadySettingAttr(dataList, newSettings);
                     self.itemList(dataList);
+                    self.addIconToAlreadyCol();
                 })
             }
             
@@ -259,13 +260,7 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
-                
-                // Add icon to column already setting.
-                var iconLink = nts.uk.request.location.siteRoot
-                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
-                .mergeRelativePath('/view/kcp/share/icon/icon78.png').serialize();
-                $('.icon-78').attr('style', "background: url('"+ iconLink +"');width: 20px;height: 20px;background-size: 20px 20px;")
-                
+                self.addIconToAlreadyCol();
             });
             
             // defined function get data list.
@@ -281,6 +276,14 @@ module kcp.share.list {
                     $(".ntsSearchBox").focus();
                 }
             }
+        }
+        
+        private addIconToAlreadyCol() {
+            // Add icon to column already setting.
+            var iconLink = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                .mergeRelativePath('/view/kcp/share/icon/icon78.png').serialize();
+            $('.icon-78').attr('style', "background: url('" + iconLink + "');width: 20px;height: 20px;background-size: 20px 20px;")
         }
         
         private initSelectedValue(data: ComponentOption, dataList: Array<UnitModel>) {
