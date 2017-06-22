@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.infra.entity.company.organization.employee.workplace;
+package nts.uk.ctx.basic.infra.entity.company.organization.workplace.history;
 
 import java.io.Serializable;
 
@@ -22,24 +22,23 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KmnmtEmpWorkplace.
+ * The Class KmnmtWorkplaceHist.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KMNMT_EMP_WORKPLACE")
+@Table(name = "KMNMT_WORKPLACE_HIST")
 @XmlRootElement
-public class KmnmtEmpWorkplace extends UkJpaEntity implements Serializable {
+public class KmnmtWorkplaceHist extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The kmnmt emp workplace PK. */
+    /** The kmnmt workplace hist PK. */
     @EmbeddedId
-    protected KmnmtEmpWorkplacePK kmnmtEmpWorkplacePK;
-
+    protected KmnmtWorkplaceHistPK kmnmtWorkplaceHistPK;
+    
     /** The str D. */
-    @Basic(optional = false)
     @NotNull
     @Column(name = "STR_D")
 	@Convert(converter = GeneralDateToDBConverter.class)
@@ -52,17 +51,19 @@ public class KmnmtEmpWorkplace extends UkJpaEntity implements Serializable {
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate endD;
 
-    public KmnmtEmpWorkplace() {
+    /**
+     * Instantiates a new kmnmt emp workplace hist.
+     */
+    public KmnmtWorkplaceHist() {
     }
 
-    public KmnmtEmpWorkplace(KmnmtEmpWorkplacePK kmnmtEmpWorkplacePK) {
-        this.kmnmtEmpWorkplacePK = kmnmtEmpWorkplacePK;
-    }
 
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
-		return this.kmnmtEmpWorkplacePK;
+		return this.getKmnmtWorkplaceHistPK();
 	}
-    
 }
