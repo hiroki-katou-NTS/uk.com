@@ -80,10 +80,8 @@ module cmm044.a.viewmodel {
                         if (self.histItems().length > 0) {
                             self.histSelectedItem(self.histItems()[0].requestId);
                         } else {
-                            self.currentItem(new model.AgentAppDto(newValue.personId, "", "", "", "", self.agentAppType1(), "", self.agentAppType2(), "", self.agentAppType3(), "", self.agentAppType4()));
+                            self.initAgent();
                         }
-
-
                     });
                 }
             });
@@ -229,6 +227,7 @@ module cmm044.a.viewmodel {
             if (existsItem) {
                 service.updateAgent(agent).done(function() {
                     self.getAllAgen(self.empSelectedItem().personId);
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                 }).fail(function(res) {
                     alert(res.message);
                     dfd.reject(res);
@@ -240,8 +239,9 @@ module cmm044.a.viewmodel {
                         nts.uk.ui.dialog(resObj.message);
                         self.histSelectedItem("");
                     } else {
-//                        self.getAllAgen(self.empSelectedItem().personId);
+                        self.getAllAgen(self.empSelectedItem().personId);
                         self.histSelectedItem(res);
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                     }
                 }).fail(function(res) {
                     alert(res.message);

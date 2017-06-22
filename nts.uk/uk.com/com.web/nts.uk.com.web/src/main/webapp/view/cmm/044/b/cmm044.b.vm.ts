@@ -16,6 +16,7 @@ module cmm044.b.viewmodel {
             self.dateValue = ko.observable({startDate: '', endDate: ''});
             self.inp_endDate = ko.observable(null);
             self.inp_startDate = ko.observable(null);
+            
         }
         start() {
             var self = this;
@@ -25,8 +26,8 @@ module cmm044.b.viewmodel {
             self.inp_endDate(nts.uk.ui.windows.getShared('cmm044EndDate'));
             self.personList = ko.observableArray([
                 { employeeCode: 'A000000001', employeeName: '日通　社員1',workplaceCode:'',workplaceName:'',position:'',startDate: self.inp_endDate(),endDate: self.inp_startDate(),substitutionTarget:'',agentCode:'',agentName:''}
-                ,{ employeeCode: 'A000000002', lastName: 'Charlesforth' },
-                { firstName: 'Denise', lastName: 'Dentiste'} 
+                ,{ employeeCode: 'A000000001', employeeName: '日通　社員1',workplaceCode:'',workplaceName:'',position:'',startDate: self.inp_endDate(),endDate: self.inp_startDate(),substitutionTarget:'',agentCode:'',agentName:'' },
+                { employeeCode: 'A000000001', employeeName: '日通　社員1',workplaceCode:'',workplaceName:'',position:'',startDate: self.inp_endDate(),endDate: self.inp_startDate(),substitutionTarget:'',agentCode:'',agentName:''} 
             ]);
 
             dfd.resolve();

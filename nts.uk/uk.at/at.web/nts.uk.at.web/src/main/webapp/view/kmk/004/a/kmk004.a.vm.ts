@@ -17,19 +17,26 @@ module nts.uk.at.view.kmk004.a {
             employmentCodes: KnockoutObservableArray<any>;
             selectedEmploymentCode: KnockoutObservable<string>;
 
-            // New mode flag.
+            // Flag.
             isNewMode: KnockoutObservable<boolean>;
-            // Sidebar flag.
+            isLoading: KnockoutObservable<boolean>;
             isCompanySelected: KnockoutObservable<boolean>;
             isEmploymentSelected: KnockoutObservable<boolean>;
             isWorkplaceSelected: KnockoutObservable<boolean>;
             isEmployeeSelected: KnockoutObservable<boolean>;
 
+            // Start month.
+            startMonth: KnockoutObservable<number>;
+
             constructor() {
                 let self = this;
 
+                // Set start month.
+                self.setStartMonth();
+
                 // Flag.
                 self.isNewMode = ko.observable(true);
+                self.isLoading = ko.observable(true);
                 self.isCompanySelected = ko.observable(true);
                 self.isEmploymentSelected = ko.observable(false);
                 self.isWorkplaceSelected = ko.observable(false);
@@ -87,8 +94,7 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 $.when(self.loadUsageUnitSetting(),
-                    self.loadCompanySetting(),
-                    $('#list-employment').ntsListComponent(this.listEmploymentOption))
+                    self.loadCompanySetting())
                     .done(() => dfd.resolve());
                 return dfd.promise();
             }
@@ -98,7 +104,7 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectCompany(): void {
                 let self = this;
-                self.companyWTSetting = new CompanyWTSetting();
+                self.isLoading(true);
                 self.loadCompanySetting();
                 self.isCompanySelected(true);
                 self.isEmploymentSelected(false);
@@ -111,16 +117,18 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectEmployment(): void {
                 let self = this;
+                self.isLoading(true);
                 self.isCompanySelected(false);
                 self.isEmploymentSelected(true);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
-                self.setAlreadySettingEmploymentList();
-                // Select first employment.
-                let list = $('#list-employment').getDataList();
-                if (list) {
-                    self.selectedEmploymentCode(list[0].code);
-                }
+                $('#list-employment').ntsListComponent(this.listEmploymentOption).done(() => {
+                    // Select first employment.
+                    let list = $('#list-employment').getDataList();
+                    if (list) {
+                        self.selectedEmploymentCode(list[0].code);
+                    }
+                });
             }
 
             /**
@@ -128,11 +136,11 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectWorkplace(): void {
                 let self = this;
+                self.isLoading(true);
                 self.isCompanySelected(false);
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(true);
-                self.setAlreadySettingWorkplaceList();
                 // mock data.
                 self.loadWorkplaceSetting('1');
             }
@@ -185,40 +193,54 @@ module nts.uk.at.view.kmk004.a {
              */
             public removeEmployment(): void {
                 let self = this;
-                let empt = self.employmentWTSetting;
-                let command = { year: empt.year(), employmentCode: empt.employmentCode() }
-                service.removeEmploymentSetting(command).done(() => {
-                    self.isNewMode(true);
-                    self.setAlreadySettingEmploymentList();
-                    // Reserve current code + name + year.
-                    let newEmpt = new EmploymentWTSetting();
-                    newEmpt.employmentCode(empt.employmentCode());
-                    newEmpt.employmentName(empt.employmentName());
-                    newEmpt.year(empt.year());
-                    self.employmentWTSetting.updateData(ko.toJS(newEmpt));
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                });
-            }
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                        let empt = self.employmentWTSetting;
+                        let command = { year: empt.year(), employmentCode: empt.employmentCode() }
+                        service.removeEmploymentSetting(command).done(() => {
+                            self.isNewMode(true);
+                            self.setAlreadySettingEmploymentList();
+                            // Reserve current code + name + year.
+                            let newEmpt = new EmploymentWTSetting();
+                            newEmpt.employmentCode(empt.employmentCode());
+                            newEmpt.employmentName(empt.employmentName());
+                            newEmpt.year(empt.year());
+                            self.employmentWTSetting.updateData(ko.toJS(newEmpt));
+                            // Sort month.
+                            self.employmentWTSetting.sortMonth(self.startMonth());
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        });
+                    }).ifNo(function() {
+                        nts.uk.ui.block.clear();
+                        return;
+                    })
+                }
 
             /**
              * Remove workplace setting.
              */
             public removeWorkplace(): void {
                 let self = this;
-                let workplace = self.workplaceWTSetting;
-                let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
-                service.removeWorkplaceSetting(command).done(() => {
-                    self.isNewMode(true);
-                    self.setAlreadySettingWorkplaceList();
-                    // Reserve current code + name + year + id.
-                    let newSetting = new WorkPlaceWTSetting();
-                    newSetting.year(workplace.year());
-                    newSetting.workplaceId(workplace.workplaceId());
-                    newSetting.workplaceCode(workplace.workplaceCode());
-                    newSetting.workplaceName(workplace.workplaceName());
-                    self.workplaceWTSetting.updateData(ko.toJS(newSetting));
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                });
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    let workplace = self.workplaceWTSetting;
+                    let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
+                    service.removeWorkplaceSetting(command).done(() => {
+                        self.isNewMode(true);
+                        self.setAlreadySettingWorkplaceList();
+                        // Reserve current code + name + year + id.
+                        let newSetting = new WorkPlaceWTSetting();
+                        newSetting.year(workplace.year());
+                        newSetting.workplaceId(workplace.workplaceId());
+                        newSetting.workplaceCode(workplace.workplaceCode());
+                        newSetting.workplaceName(workplace.workplaceName());
+                        self.workplaceWTSetting.updateData(ko.toJS(newSetting));
+                        // Sort month.
+                        self.workplaceWTSetting.sortMonth(self.startMonth());
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                })
             }
 
             /**
@@ -226,13 +248,23 @@ module nts.uk.at.view.kmk004.a {
              */
             public removeCompanySetting(): void {
                 let self = this;
-                let command = { year: self.companyWTSetting.year() }
-                service.removeCompanySetting(command).done(() => {
-                    let newSetting = ko.toJS(new CompanyWTSetting());
-                    self.companyWTSetting.updateData(newSetting);
-                    self.isNewMode(true);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                });
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    let selectedYear = self.companyWTSetting.year();
+                    let command = { year: selectedYear }
+                    service.removeCompanySetting(command).done(() => {
+                        // Reserve current year.
+                        let newSetting = new CompanyWTSetting();
+                        newSetting.year(selectedYear);
+                        self.companyWTSetting.updateData(ko.toJS(newSetting));
+                        // Sort month.
+                        self.companyWTSetting.sortMonth(self.startMonth());
+                        self.isNewMode(true);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                })
             }
 
             /**
@@ -241,8 +273,8 @@ module nts.uk.at.view.kmk004.a {
             public loadCompanySetting(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                $.when(service.findCompanySetting(self.companyWTSetting.year()), self.getStartMonth())
-                    .done(function(data, startMonth) {
+                service.findCompanySetting(self.companyWTSetting.year())
+                    .done(function(data) {
                         // update mode.
                         if (data) {
                             self.isNewMode(false);
@@ -257,7 +289,8 @@ module nts.uk.at.view.kmk004.a {
                             self.companyWTSetting.updateData(ko.toJS(newSetting));
                         }
                         // Sort month.
-                        self.companyWTSetting.sortMonth(startMonth);
+                        self.companyWTSetting.sortMonth(self.startMonth());
+                        self.isLoading(false);
                         dfd.resolve();
                     });
                 return dfd.promise();
@@ -278,8 +311,8 @@ module nts.uk.at.view.kmk004.a {
                 else {
                     request = { year: currentSetting.year(), employmentCode: currentSetting.employmentCode() };
                 }
-                $.when(service.findEmploymentSetting(request), self.getStartMonth())
-                    .done(function(data, startMonth) {
+                service.findEmploymentSetting(request)
+                    .done(function(data) {
                         // update mode.
                         if (data) {
                             self.isNewMode(false);
@@ -301,7 +334,8 @@ module nts.uk.at.view.kmk004.a {
                             self.employmentWTSetting.employmentName(empt.name);
                         }
                         // Sort month.
-                        self.employmentWTSetting.sortMonth(startMonth);
+                        self.employmentWTSetting.sortMonth(self.startMonth());
+                        self.isLoading(false);
                     });
                 self.setAlreadySettingEmploymentList();
             }
@@ -321,26 +355,28 @@ module nts.uk.at.view.kmk004.a {
                 else {
                     request = { year: currentSetting.year(), workplaceId: currentSetting.workplaceId() };
                 }
-                $.when(service.findWorkplaceSetting(request), self.getStartMonth()).done(function(data, startMonth) {
-                    // update mode.
-                    if (data) {
-                        self.isNewMode(false);
-                        self.workplaceWTSetting.updateData(data);
-                    }
-                    // new mode.
-                    else {
-                        self.isNewMode(true);
-                        let newSetting = new WorkPlaceWTSetting();
-                        // reserve selected year.
-                        newSetting.year(currentSetting.year());
-                        self.workplaceWTSetting.updateData(ko.toJS(newSetting));
-                    }
-                    // Set code + name.
-                    self.workplaceWTSetting.workplaceCode('code');
-                    self.workplaceWTSetting.workplaceName('name');
-                    // Sort month.
-                    self.workplaceWTSetting.sortMonth(startMonth);
-                });
+                service.findWorkplaceSetting(request)
+                    .done(function(data) {
+                        // update mode.
+                        if (data) {
+                            self.isNewMode(false);
+                            self.workplaceWTSetting.updateData(data);
+                        }
+                        // new mode.
+                        else {
+                            self.isNewMode(true);
+                            let newSetting = new WorkPlaceWTSetting();
+                            // reserve selected year.
+                            newSetting.year(currentSetting.year());
+                            self.workplaceWTSetting.updateData(ko.toJS(newSetting));
+                        }
+                        // Set code + name.
+                        self.workplaceWTSetting.workplaceCode('code');
+                        self.workplaceWTSetting.workplaceName('name');
+                        // Sort month.
+                        self.workplaceWTSetting.sortMonth(self.startMonth());
+                        self.isLoading(false);
+                    });
                 self.setAlreadySettingWorkplaceList();
             }
 
@@ -383,16 +419,18 @@ module nts.uk.at.view.kmk004.a {
             }
 
             /**
-             * Get start month.
+             * Set start month.
              */
-            private getStartMonth(): JQueryPromise<number> {
+            private setStartMonth(): JQueryPromise<void> {
                 let self = this;
-                let dfd = $.Deferred<number>();
+                let dfd = $.Deferred<void>();
                 service.getCompany().done(res => {
-                    dfd.resolve(res.startMonth);
+                    self.startMonth = ko.observable(res.startMonth);
+                    dfd.resolve();
                 }).fail(() => {
                     // Default startMonth..
-                    dfd.resolve(1);
+                    self.startMonth = ko.observable(1);
+                    dfd.resolve();
                 });
                 return dfd.promise();
             }

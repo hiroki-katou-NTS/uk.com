@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
@@ -56,6 +58,9 @@ public class EmpSubstVacationSaveCommandHandler
 			SubstVacationSetting setting = optEmpSubstVacation.get().getSetting();
 			command.setAllowPrepaidLeave(setting.getAllowPrepaidLeave().value);
 			command.setExpirationDate(setting.getExpirationDate().value);
+		}else{
+			command.setAllowPrepaidLeave(ApplyPermission.ALLOW.value);
+			command.setExpirationDate(ExpirationTime.THIS_MONTH.value);
 		}
 
 		// Convert data

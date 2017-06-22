@@ -1,8 +1,5 @@
 @CHARSET "UTF-8";
 
-.contents-area {
-	width: 1000px;
-}
 .border-all td {
 	border: solid grey 1px;
 	text-align: center;

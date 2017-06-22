@@ -1,10 +1,10 @@
 module nts.uk.sys.view.ccg013.b.service {
     var paths: any = {
-        getAllStandardMenu: "sys/portal/standardmenu/findAll",
+        getEditMenuBar: "sys/portal/webmenu/edit",
     }
     
-    export function getAllStandardMenu(): JQueryPromise<Array<viewmodel.StandardMenu>>{
-        return nts.uk.request.ajax("com", paths.getAllStandardMenu);    
+    export function getEditMenuBar(): JQueryPromise<Array<any>>{
+        return nts.uk.request.ajax("com", paths.getEditMenuBar);
     }
     
 

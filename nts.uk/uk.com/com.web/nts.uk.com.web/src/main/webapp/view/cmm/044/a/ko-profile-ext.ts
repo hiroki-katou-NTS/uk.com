@@ -27,6 +27,9 @@ class ProfileHandler implements KnockoutBindingHandler {
                 if (option) {
                     params.value(option);
                 } else {
+                    if (params.error) {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7"));
+                    }
                     e.target.value = params.value()[params.code];
                 }
             };
@@ -112,6 +115,7 @@ class ProfileHandler implements KnockoutBindingHandler {
         labelName.classList.add('nts-name');
         labelPerson.classList.add('nts-label');
         labelPerson.classList.add('nts-person');
+
         if (params.searchEvent) {
             searchBtn.setAttribute('data-bind', 'click: ' + params.searchEvent);
         }
