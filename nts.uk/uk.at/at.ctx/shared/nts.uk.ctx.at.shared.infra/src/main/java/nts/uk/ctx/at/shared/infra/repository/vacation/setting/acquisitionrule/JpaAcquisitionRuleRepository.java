@@ -57,9 +57,14 @@ public class JpaAcquisitionRuleRepository extends JpaRepository implements Acqui
 	@Override
 	public void update(AcquisitionRule acquisitionRule) {
 		EntityManager em = this.getEntityManager();
-		KarstAcquisitionRule entity = new KarstAcquisitionRule();
-		acquisitionRule.saveToMemento(new JpaAcquisitionRuleSetMemento(entity));
-		em.merge(entity);
+		Optional<KarstAcquisitionRule> optional = this.queryProxy().find(acquisitionRule.getCompanyId(),
+				KarstAcquisitionRule.class);
+		if (optional.isPresent()) {
+			KarstAcquisitionRule entity = optional.get();
+			acquisitionRule.saveToMemento(new JpaAcquisitionRuleSetMemento(entity));
+			em.merge(entity);
+		}
+		
 	}
 
 	/**

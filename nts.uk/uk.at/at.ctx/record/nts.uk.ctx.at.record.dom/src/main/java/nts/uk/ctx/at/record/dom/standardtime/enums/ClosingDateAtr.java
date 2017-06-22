@@ -9,9 +9,13 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum ClosingDateAtr {
-	// 0:  �Αӂ̒��ߓ��Ɠ���
+	
+	/*
+	 * ３６協定締め日区分
+	 */
+	// 0: 勤怠の締め日と同じ
 	SAME_AS_CLOSING_DATE(0),
-	// 1: ���ߓ����w��
+	// 1: 締め日を指定
 	DESIGNATE_CLOSING_DATE(1);
 
 	public final int value;
@@ -20,13 +24,13 @@ public enum ClosingDateAtr {
 		String name;
 		switch (value) {
 		case 0:
-			name = "�Αӂ̒��ߓ��Ɠ���";
+			name = "勤怠の締め日と同じ";
 			break;
 		case 1:
-			name = "���ߓ����w��";
+			name = "締め日を指定";
 			break;
 		default:
-			name = "�Αӂ̒��ߓ��Ɠ���";
+			name = "勤怠の締め日と同じ";
 			break;
 		}
 		return name;

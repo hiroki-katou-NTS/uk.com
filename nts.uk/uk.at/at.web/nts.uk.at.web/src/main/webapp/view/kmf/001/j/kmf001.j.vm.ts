@@ -38,7 +38,7 @@ module nts.uk.pr.view.kmf001.j {
             constructor() {
                 var self = this;
                 self.service = service.instance;
-                selfself.selectedItem = ko.observable(null);
+                self.selectedItem = ko.observable(null);
                 self.alreadySettingList = ko.observableArray([]);
 
                 self.timeDigestiveUnitEnums = ko.observableArray([]);
@@ -81,8 +81,8 @@ module nts.uk.pr.view.kmf001.j {
                 });
                 //list Emp
                 self.listComponentOption = {
-                    isShowAlreadySet: true, 
-                    isMultiSelect: false, 
+                    isShowAlreadySet: true,
+                    isMultiSelect: false,
                     listType: ListType.EMPLOYMENT,
                     selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: this.selectedItem,
@@ -115,7 +115,7 @@ module nts.uk.pr.view.kmf001.j {
                     if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
                         this.hasEmp(false);
                         nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] });
-                     }
+                    }
                 });
             }
             private loadEmploymentList(): JQueryPromise<any> {
@@ -131,7 +131,7 @@ module nts.uk.pr.view.kmf001.j {
                 });
                 return dfd.promise();
             }
-            
+
             private loadTimeDigestiveUnitEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -193,12 +193,14 @@ module nts.uk.pr.view.kmf001.j {
                 let self = this;
                 let dfd = $.Deferred();
                 self.clearErrorEmpSetting();
-                this.service.findEmpSetting(self.selectedItem()).done(function(res: Emp60HourVacationDto) {
+                this.service.findEmpSetting(contractTypeCode).done(function(res: Emp60HourVacationDto) {
                     if (res) {
-                        self.empSettingModel().contractTypeCode(res.contractTypeCode);
+//                        self.empSettingModel().contractTypeCode(res.contractTypeCode);
                         self.empSettingModel().isManage(res.isManage);
                         self.empSettingModel().digestiveUnit(res.digestiveUnit);
                         self.empSettingModel().sixtyHourExtra(res.sixtyHourExtra);
+                        //re select item
+                        self.selectedItem(contractTypeCode);
                     } else {
                         self.empSettingModel().isManage(self.manageDistinctEnums()[0].value);
                         self.empSettingModel().digestiveUnit(self.timeDigestiveUnitEnums()[0].value);
@@ -223,27 +225,24 @@ module nts.uk.pr.view.kmf001.j {
                 this.service.saveComSetting(self.settingModel().toSixtyHourVacationSettingDto()).done(function() {
                     // Msg_15
                     nts.uk.ui.dialog.alert(nts.uk.ui.dialog.info({ messageId: "Msg_15" }));
-                     dfd.resolve();
+                    dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
             }
             public saveEmpSetting(): void {
                 let self = this;
-                let dfd = $.Deferred();
                 if (!self.validateEmpSetting()) {
                     return;
                 }
+                var backUp = self.selectedItem();
                 this.service.saveEmpSetting(self.empSettingModel().toEmp60HourVacationDto()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.loadEmploymentList().done(() => {
                         //reload list employment
                         $('#left-content').ntsListComponent(self.listComponentOption).done(() => {
-                            self.loadEmpSettingDetails(self.selectedItem);
+                            self.loadEmpSettingDetails(backUp);
                         });
-                        dfd.resolve();
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
                     });
                 }
             }
@@ -271,7 +270,7 @@ module nts.uk.pr.view.kmf001.j {
 
                 $('input').ntsError('clear');
             }
-        
+
 
         // Model class
         export class SixtyHourVacationSettingModel {

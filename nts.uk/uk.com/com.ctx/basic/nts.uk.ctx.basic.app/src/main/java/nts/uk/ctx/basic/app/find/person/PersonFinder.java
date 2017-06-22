@@ -5,12 +5,15 @@
 package nts.uk.ctx.basic.app.find.person;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
+import nts.uk.ctx.basic.dom.person.Person;
 import nts.uk.ctx.basic.dom.person.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -43,6 +46,7 @@ public class PersonFinder {
 		// get company id
 		String companyId = loginUserContext.companyId();
 		
+		
 		// data to dto
 		return this.repository
 				.getPersonByPersonId(this.repositoryEmployee.getAllEmployee(companyId).stream()
@@ -52,6 +56,35 @@ public class PersonFinder {
 					person.saveToMemento(dto);
 					return dto;
 				}).collect(Collectors.toList());
+	}
+	
+	
+	public PersonDto getPersonLogin(){
+
+		// get login user 
+		LoginUserContext loginUserContext = AppContexts.user();
+		
+		// get company id
+		String companyId = loginUserContext.companyId();
+		
+		// get employee code
+		String employeeCode = loginUserContext.employeeCode();
+		
+		
+		// get by employee code
+		Optional<Employee> employee = this.repositoryEmployee.getPersonIdByEmployeeCode(companyId,
+				employeeCode);
+		PersonDto dto = new PersonDto();
+		
+		// check exist data
+		if(employee.isPresent()){
+			Optional<Person> person = this.repository.getByPersonId(employee.get().getPId());
+			if(person.isPresent()){
+				person.get().saveToMemento(dto);
+			}
+		}
+		
+		return dto;
 	}
 
 }

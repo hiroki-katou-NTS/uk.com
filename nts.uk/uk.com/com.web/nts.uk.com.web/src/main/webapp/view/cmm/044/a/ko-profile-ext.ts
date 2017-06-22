@@ -20,6 +20,19 @@ class ProfileHandler implements KnockoutBindingHandler {
             searchBtn.setAttribute('disabled', 'disabled');
             previewBtn.setAttribute('disabled', 'disabled');
             nextBtn.setAttribute('disabled', 'disabled');
+        } else {
+            input.onchange = e => {
+                let options = ko.toJS(params.options),
+                    option = _.find(options, m => m[params.code] == e.target.value);
+                if (option) {
+                    params.value(option);
+                } else {
+                    if (params.error) {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7"));
+                    }
+                    e.target.value = params.value()[params.code];
+                }
+            };
         }
 
         input.setAttribute('type', 'text');
@@ -64,10 +77,11 @@ class ProfileHandler implements KnockoutBindingHandler {
             } else {
                 label.innerText = '';
                 labelName.innerText = '';
-                labelPerson.innerText='';
+                labelPerson.innerText = '';
                 input.setAttribute('value', '');
             }
         });
+
         params.options.subscribe((v) => {
             let options = ko.toJS(params.options);
             if (!options.length) {
@@ -101,6 +115,7 @@ class ProfileHandler implements KnockoutBindingHandler {
         labelName.classList.add('nts-name');
         labelPerson.classList.add('nts-label');
         labelPerson.classList.add('nts-person');
+
         if (params.searchEvent) {
             searchBtn.setAttribute('data-bind', 'click: ' + params.searchEvent);
         }
@@ -117,9 +132,9 @@ class ProfileHandler implements KnockoutBindingHandler {
         container1.appendChild(nextBtn);
         container1.classList.add('left-container');
 
-        
+
         container2.appendChild(labelName);
-        
+
         container2.appendChild(label);
         container2.appendChild(labelPerson);
         container2.appendChild(input);

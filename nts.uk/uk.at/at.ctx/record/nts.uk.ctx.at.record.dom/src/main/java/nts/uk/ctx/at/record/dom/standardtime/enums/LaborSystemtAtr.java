@@ -9,9 +9,13 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum LaborSystemtAtr {
-	//0: ˆê”Ê˜J“­§
+	
+	/*
+	 * ï¼“ï¼–å”å®šåŠ´åƒåˆ¶
+	 */
+	//0: ä¸€èˆ¬åŠ´åƒåˆ¶
 	GENERAL_LABOR_SYSTEM(0),
-	//1: •ÏŒ`˜J“­ŠÔ§
+	//1: å¤‰å½¢åŠ´åƒæ™‚é–“åˆ¶
 	DEFORMATION_WORKING_TIME_SYSTEM(1);
 	
 	public final int value;
@@ -20,13 +24,13 @@ public enum LaborSystemtAtr {
 		String name;
 		switch (value) {
 		case 0:
-			name = "ˆê”Ê˜J“­§";
+			name = "ä¸€èˆ¬åŠ´åƒåˆ¶";
 			break;
 		case 1:
-			name = "Œ`˜J“­ŠÔ§";
+			name = "å¤‰å½¢åŠ´åƒæ™‚é–“åˆ¶";
 			break;
 		default:
-			name = "ˆê”Ê˜J“­§";
+			name = "ä¸€èˆ¬åŠ´åƒåˆ¶";
 			break;
 		}
 		

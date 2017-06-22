@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 
-.border-all td{
+.border-all td {
 	border: solid grey 1px;
 	text-align: center;
 	padding-top: 3px;
@@ -25,4 +25,10 @@
 }
 #right-content {
 	margin-left: 60px;
+}
+#btn-usage-unit {
+	margin-left: 600px;
+}
+.action-bar {
+	margin-left: 30px;
 }

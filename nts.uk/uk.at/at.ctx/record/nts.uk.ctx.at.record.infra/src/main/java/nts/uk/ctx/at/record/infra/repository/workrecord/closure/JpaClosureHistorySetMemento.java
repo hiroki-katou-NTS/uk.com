@@ -18,8 +18,8 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.closure.KclmtClosureHistPK;
 /**
  * The Class JpaClosureHistorySetMemento.
  */
-public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
-	
+public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
+
 	/** The kclmt closure hist. */
 	@Setter
 	private KclmtClosureHist kclmtClosureHist;
@@ -30,10 +30,12 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 * @param kclmtClosureHist the kclmt closure hist
 	 */
 	public JpaClosureHistorySetMemento(KclmtClosureHist kclmtClosureHist) {
+		if (kclmtClosureHist.getKclmtClosureHistPK() == null) {
+			kclmtClosureHist.setKclmtClosureHistPK(new KclmtClosureHistPK());
+		}
 		this.kclmtClosureHist = kclmtClosureHist;
 	}
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -55,9 +57,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setClosureId(ClosureId closureId) {
-		KclmtClosureHistPK pk = new KclmtClosureHistPK();
-		pk.setClosureId(closureId.value);
-		this.kclmtClosureHist.setKclmtClosureHistPK(pk);
+		this.kclmtClosureHist.getKclmtClosureHistPK().setClosureId(closureId.value);
 	}
 
 	/*
@@ -70,11 +70,9 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setClosureHistoryId(ClosureHistoryId closureHistoryId) {
-		KclmtClosureHistPK pk = this.kclmtClosureHist.getKclmtClosureHistPK();
-		pk.setHistId(closureHistoryId.v());
-		this.kclmtClosureHist.setKclmtClosureHistPK(pk);
+		this.kclmtClosureHist.getKclmtClosureHistPK().setHistId(closureHistoryId.v());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -126,13 +124,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento{
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		KclmtClosureHistPK pk = this.kclmtClosureHist.getKclmtClosureHistPK();
-		pk.setCid(companyId.v());
-		this.kclmtClosureHist.setKclmtClosureHistPK(pk);
-		
+		this.kclmtClosureHist.getKclmtClosureHistPK().setCid(companyId.v());
 	}
-
-
-	
 
 }

@@ -545,8 +545,8 @@
 
 
     export function parseMoment(datetime: any, outputFormat?: any, inputFormat?: any): MomentResult {
-        var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
-        var momentObject = moment.utc(datetime, inputFormats, true);
+        var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
+        var momentObject = moment.utc(datetime, inputFormats, true); 
         var result = new MomentResult(momentObject, outputFormat);
         if (momentObject.isValid())
             result.succeeded();
@@ -554,6 +554,18 @@
             result.failed();
         return result;
     }
+     
+    function findFormat (format: string): Array<string>{
+        if(nts.uk.util.isNullOrEmpty(format)){
+            return defaultInputFormat;        
+        }
+        let uniqueFormat = _.uniq(format.split(""));
+        return _.filter(defaultInputFormat, function (dfFormat: string){
+            return _.find(uniqueFormat, function (opFormat: string){
+                return dfFormat.indexOf(opFormat) >= 0;         
+            }) !== undefined;        
+        });        
+    } 
 
     export function UTCDate(year?: number, month?: number, date?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): Date {
         // Return local time in UTC

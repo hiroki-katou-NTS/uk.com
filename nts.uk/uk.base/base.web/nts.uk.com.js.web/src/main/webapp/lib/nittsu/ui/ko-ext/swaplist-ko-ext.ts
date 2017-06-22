@@ -60,16 +60,21 @@ module nts.uk.ui.koExtentions {
             var grid2Id = "#" + elementId + "-grid2";
             if (!util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showEright)) {
                 
-                var initSearchArea = function ($SearchArea, targetId){
+                var initSearchArea = function ($SearchArea, targetId, searchMode){
                     $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                         .append("<div class='ntsSearchButtonContainer'/>");
-                
+                    if(searchMode === "filter"){
+                        $SearchArea.append("<div class='ntsClearButtonContainer'/>");
+                        $SearchArea.find(".ntsClearButtonContainer")
+                            .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn'/>");  
+                        $SearchArea.find(".clear-btn").text("検索");        
+                    }
                     $SearchArea.find(".ntsSearchTextContainer")
                         .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
                     $SearchArea.find(".ntsSearchButtonContainer")
                         .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom'/>");
                     $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
-                    $SearchArea.find(".ntsSearchButton").text("検索");  
+                    $SearchArea.find(".search-btn").text("検索");  
                 }
                 
                 var searchAreaId = elementId + "-search-area";
@@ -84,7 +89,7 @@ module nts.uk.ui.koExtentions {
                     
                     $searchLeftContainer.width(searchAreaWidth).css({position: "absolute", left: 0});
                     
-                    initSearchArea($searchLeftContainer, grid1Id);
+                    initSearchArea($searchLeftContainer, grid1Id, data.searchMode);
                 }
                 
                 if(showSearchBox.showRight){
@@ -92,9 +97,9 @@ module nts.uk.ui.koExtentions {
                     
                     $searchRightContainer.width(gridWidth + CHECKBOX_WIDTH).css({position: "absolute", right: 0});
                     
-                    initSearchArea($searchRightContainer, grid2Id);
+                    initSearchArea($searchRightContainer, grid2Id, data.searchMode);
                 }
-                $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
+                $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                 $searchArea.height(SEARCH_AREA_HEIGHT);
                 gridHeight -= SEARCH_AREA_HEIGHT;
             }
@@ -118,7 +123,8 @@ module nts.uk.ui.koExtentions {
             var criterion = _.map(columns(), c => { return c.key === undefined ? c.prop : c.key; });
             var swapParts: Array<SwapPart> = new Array<SwapPart>();
             swapParts.push(new GridSwapPart().listControl($grid1)
-                                .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton")) 
+                                .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn")) 
+                                .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
                                 .setDataSource(originalSource)
                                 .setSearchCriterion(data.searchCriterion || criterion)
@@ -129,7 +135,8 @@ module nts.uk.ui.koExtentions {
                                 .setOuterDrop((data.outerDrag && data.outerDrag.left !== undefined) ? data.outerDrag.left : true)
                                 .build());
             swapParts.push(new GridSwapPart().listControl($grid2)
-                                .searchControl($swap.find(".ntsSwapSearchRight").find(".ntsSearchButton")) 
+                                .searchControl($swap.find(".ntsSwapSearchRight").find(".search-btn")) 
+                                .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
                                 .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                                 .setDataSource(data.value())
                                 .setSearchCriterion(data.searchCriterion || criterion)
@@ -435,6 +442,7 @@ module nts.uk.ui.koExtentions {
     abstract class SwapPart {
         $listControl: JQuery;
         $searchControl: JQuery;
+        $clearControl: JQuery;
         $searchBox: JQuery;
         searchMode: string = "highlight"; // highlight & filter - Default: highlight
         searchCriterion: Array<string>;
@@ -455,6 +463,11 @@ module nts.uk.ui.koExtentions {
         
         searchControl($searchControl: JQuery) {
             this.$searchControl = $searchControl;
+            return this;
+        }
+        
+        clearControl($clearControl: JQuery) {
+            this.$clearControl = $clearControl;
             return this;
         }
         
@@ -509,9 +522,9 @@ module nts.uk.ui.koExtentions {
         search(): SearchResult {
             var searchContents = this.$searchBox.val();
             var orders: Array<number> = new Array<number>(); 
-            if (searchContents === "") {
-                if (this.originalDataSource === undefined) return null;
-                return new SearchResult(this.originalDataSource, orders);
+            if (nts.uk.util.isNullOrEmpty(searchContents)) {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
+                return null;
             }
             var searchCriterion = this.searchCriterion;
             if (this.originalDataSource === undefined) this.resetOriginalDataSource();
@@ -539,11 +552,16 @@ module nts.uk.ui.koExtentions {
         private bindSearchEvent(): void {
             var self = this;
             var proceedSearch = this.proceedSearch;
+            var clearFilter = this.clearFilter;
             this.$searchControl.click(function(evt, ui) {
                 proceedSearch.apply(self);
             });
             
-            this.$searchBox.keyup(function(evt, ui) {
+            this.$clearControl.click(function(evt, ui) {
+                clearFilter.apply(self);;
+            });
+            
+            this.$searchBox.keydown(function(evt, ui) {
                 if (evt.which === 13) {
                     proceedSearch.apply(self);
                 }
@@ -560,6 +578,12 @@ module nts.uk.ui.koExtentions {
             }
         }
         
+        private clearFilter() {
+            if (this.searchMode === "filter") {
+                this.bindData(this.originalDataSource);
+            }
+        }
+        
         build() {
             this.bindSearchEvent();
             return this;
@@ -573,6 +597,10 @@ module nts.uk.ui.koExtentions {
         
         highlightSearch(): void {
             var value = this.$searchBox.val();
+            if (nts.uk.util.isNullOrEmpty(value)) {
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
+                return;    
+            }
             var source = this.dataSource.slice();
             var selected = this.$listControl.ntsGridList("getSelected");
 
@@ -590,6 +618,11 @@ module nts.uk.ui.koExtentions {
                     return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
                 }) !== undefined;
             });
+            
+            if(searchedValues === undefined){
+                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
+                return;        
+            }
 
             this.$listControl.ntsGridList('setSelected', searchedValues !== undefined ? [searchedValues[this.primaryKey]] : []);
 

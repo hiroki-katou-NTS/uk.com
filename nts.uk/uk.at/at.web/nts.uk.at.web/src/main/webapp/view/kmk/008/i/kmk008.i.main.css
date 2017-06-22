@@ -1,0 +1,36 @@
+#contents-area {
+	width: 500px;
+}
+
+.closing-date-clean {
+	float: left;
+	clear: right;
+}
+
+#combo-box-month-setting {
+	margin-left: 70px;
+}
+
+.rdb-closing-date-classification {
+	margin-left: 45px !important;
+}
+
+#combo-box-month-setting {
+	width: 100px;
+	min-width: 50px !important;
+}
+
+#rdb-closing-date-classification .ntsRadioBox {
+	width: 100% !important;
+}
+
+#rdb-closing-date-classification {
+	width: 150px;
+}
+
+#cbx-closing-date-setting {
+	min-width: 50px !important;
+	width: 100px;
+	margin-top: 20px;
+	margin-left: -30px;
+}

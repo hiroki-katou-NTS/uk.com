@@ -6,6 +6,7 @@ package nts.uk.ctx.basic.infra.repository.person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -75,5 +76,13 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 */
 	private Person toDomain(CcgmtPerson entity) {
 		return new Person(new JpaPersonGetMemento(entity));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.basic.dom.person.PersonRepository#getByPersonId(java.lang.String)
+	 */
+	@Override
+	public Optional<Person> getByPersonId(String personId) {
+		return this.queryProxy().find(personId, CcgmtPerson.class).map(item -> this.toDomain(item));
 	}
 }

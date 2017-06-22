@@ -2,7 +2,7 @@
 
 .processingDate {
 	margin-top: 20px;
-	margin-left: 20px;
+	margin-left: 50px;
 	min-width: 800px;
 }
 
@@ -33,40 +33,14 @@
 	float: left;
 }
 
-.lableChangeDate {
-	margin-left: 20px;
-	width: 60px;
-	float: left;
-}
-
-.valueChangeDate {
-	width: 100px;
-	float: left;
-}
-
 #endClosureDate {
-	width: 780px;
+	width: 765px;
 	margin-left: 40px;
 	margin-top: 20px;
 }
 
 .beginChange {
 	text-align: center;
-}
-
-.changeAfter {
-	margin-top: 40px;
-	margin-left: 20px;
-}
-
-.lableChangeAfter {
-	width: 70px;
-	float: left;
-}
-
-.valueChangeAfter {
-	width: 100px;
-	float: left;
 }
 
 #cobxDayOfMonth {
@@ -76,7 +50,6 @@
 
 .endChangeAfter {
 	margin-top: -20px;
-	margin-left: 60px;
 	float: left;
 }
 
@@ -96,7 +69,6 @@
 
 .bottomChangeAfter {
 	margin-top: 20px;
-	margin-left: 20px;
 	float: left;
 }
 
@@ -109,12 +81,27 @@
 	margin-top: 20px;
 }
 
-.startChangeDate{
+.startChangeDate {
 	width: 40px;
 	float: left;
 }
 
-.endChangeDate{
+.endChangeDate {
 	width: 100px;
 	float: left;
+}
+
+.lableStartChange {
+	width: 160px;
+	float: left;
+	margin-left: 25px;
+}
+
+.valueStartChange {
+	float: right;
+	margin-right: 30px;
+}
+
+.btnAction{
+	width: 85px;
 }

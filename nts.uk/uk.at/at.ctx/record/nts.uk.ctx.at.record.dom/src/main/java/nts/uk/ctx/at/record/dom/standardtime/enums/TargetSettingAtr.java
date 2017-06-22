@@ -9,9 +9,13 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum TargetSettingAtr {
-	// 0: ���ʎ��уf�[�^
+	
+	/*
+	 * 対象区分
+	 */
+	// 0: 月別実績データ
 	MONTHLY_ACTUAL_DATA(0),
-	// 1: �⏕���f�[�^
+	// 1: 補助月データ
 	AUXILIARY_MONTH_DATA(1);
 
 	public final int value;
@@ -20,13 +24,13 @@ public enum TargetSettingAtr {
 		String name;
 		switch (value) {
 		case 0:
-			name = "���ʎ��уf�[�^";
+			name = "月別実績データ";
 			break;
 		case 1:
-			name = "�⏕���f�[�^";
+			name = "補助月データ";
 			break;
 		default:
-			name = "���ʎ��уf�[�^";
+			name = "月別実績データ";
 			break;
 		}
 		return name;

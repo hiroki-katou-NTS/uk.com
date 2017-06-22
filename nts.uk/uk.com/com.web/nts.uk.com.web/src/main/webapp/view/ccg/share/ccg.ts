@@ -1,23 +1,37 @@
 module nts.uk.com.view.ccg.share.ccg {
-    
-    
+
+    import ListType = kcp.share.list.ListType;
+    import TreeType = kcp.share.tree.TreeType;
+    import SelectType = kcp.share.list.SelectType;
+    import UnitModel = kcp.share.list.UnitModel;
+
     export class PersonModel {
         personId: string;
 
         personName: string;
     }
 
-    import ListType = kcp.share.list.ListType;
-    import TreeType = kcp.share.tree.TreeType;
-
-
     export interface GroupOption {
-        /**
-         * is Multi select.
-         */
-        isMultiSelect: boolean;
+        // クイック検索タブ
+        isQuickSearchTab: boolean;
+        // 参照可能な社員すべて
+        isAllReferableEmployee: boolean;
+        //自分だけ
+        isOnlyMe: boolean;
+        //おなじ部門の社員
+        isEmployeeOfDepartment: boolean;
+        //おなじ＋配下部門の社員
+        isEmployeeDepartmentFollow: boolean;
         
-        onSearchAllClicked: (data: any) => void;
+        
+        // 詳細検索タブ
+        isAdvancedSearchTab: boolean;
+        //複数選択 
+        isMutipleCheck: boolean;
+
+        onSearchAllClicked: (data: PersonModel[]) => void;
+
+        onSearchOnlyClicked: (data: PersonModel) => void;
     }
 
 
@@ -34,8 +48,10 @@ module nts.uk.com.view.ccg.share.ccg {
         classifications: any;
         jobtitles: any;
         workplaces: any;
-        onSearchAllClicked: (data: PersonModel) => void;
-        
+        employeeinfo: any;
+        onSearchAllClicked: (data: PersonModel[]) => void;
+        onSearchOnlyClicked: (data: PersonModel) => void;
+
 
         constructor() {
             var self = this;
@@ -103,8 +119,9 @@ module nts.uk.com.view.ccg.share.ccg {
         public init($input: JQuery, data: GroupOption): JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             var self = this;
-            self.isMultiple = data.isMultiSelect;
+            self.isMultiple = data.isMutipleCheck;
             self.onSearchAllClicked = data.onSearchAllClicked;
+            self.onSearchOnlyClicked = data.onSearchOnlyClicked;
             var webserviceLocator = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                 .mergeRelativePath('/view/ccg/share/ccg.xhtml').serialize();
@@ -123,17 +140,59 @@ module nts.uk.com.view.ccg.share.ccg {
 
             return dfd.promise();
         }
-        
-        searchAllEmployee(): void{
+
+        searchAllEmployee(): void {
             var self = this;
-            service.findAllPerson().done(data=>{
-                self.onSearchAllClicked(data);    
+            service.findAllPerson().done(data => {
+                self.onSearchAllClicked(data);
             });
         }
+
+        searchDataEmployee(): void {
+            var self = this;
+            service.findAllPerson().done(data => {
+                self.employeeinfo = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: self.isMultiple,
+                    listType: ListType.EMPLOYEE,
+                    employeeInputList: self.toUnitModelList(data),
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.selectedCode,
+                    isDialog: false,
+                    isShowNoSelectRow: false,
+                }  
+                $('#employeeinfo').ntsListComponent(self.employeeinfo); 
+            });
+            
+        }
         
+        getEmployeeLogin(): void{
+            var self = this;
+            service.getPersonLogin().done(data => {
+                self.onSearchOnlyClicked(data);
+            });    
+        }
+        
+        public toUnitModelList(dataList: PersonModel[]): KnockoutObservableArray<UnitModel> {
+            var dataRes: UnitModel[] = [];
+
+            for (var item: PersonModel of dataList) {
+                dataRes.push({
+                    code: item.personId,
+                    name: item.personName
+                });
+            }
+            return ko.observableArray(dataRes);
+        }
+        
+        public toUnitModel(data: PersonModel): KnockoutObservable<UnitModel> {
+            var dataRes: UnitModel ={code: data.personId, name: data.personName};
+            return ko.observable(dataRes);
+        }
+
 
     }
-    
+
 
     /**
     * Service,
@@ -142,15 +201,21 @@ module nts.uk.com.view.ccg.share.ccg {
 
         // Service paths.
         var servicePath = {
-            findAllPerson: "basic/person/getallperson"
+            findAllPerson: "basic/person/getallperson",
+            getPersonLogin: "basic/person/getpersonlogin"
         }
 
         /**
-         * Find Employment list.
+         * Find person list
          */
         export function findAllPerson(): JQueryPromise<Array<PersonModel>> {
             return nts.uk.request.ajax('com', servicePath.findAllPerson);
         }
+        
+        // get person by login employee code
+        export function getPersonLogin(): JQueryPromise<PersonModel> {
+            return nts.uk.request.ajax('com', servicePath.getPersonLogin);
+        } 
 
     }
 

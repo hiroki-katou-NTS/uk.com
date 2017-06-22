@@ -15,46 +15,46 @@
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button class="proceed" id="D_BTN_001">登録</button>
-				<button id="D_BTN_002" data-bind="click: closeDialog">閉じる</button>
+				<button class="proceed" id="D_BTN_001" >#{i18n.getText('CMM044_4')}</button>
+				<button id="D_BTN_002" data-bind="click: closeDialog">#{i18n.getText('CMM044_23')}</button>
 			</div>
 
 			<div id="contents-area">
 				<div id="label-d1-003" data-bind="ntsFormLabel: {  }"
 					class="form-label">
-					<label>期間</label>
+					<label>#{i18n.getText('CMM044_10')}</label>
 				</div>
-				<div id="date1"
-					data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
-				<span>~</span>
-				<div id="date2"
-					data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div>
-				<button class="caret-bottom">削除</button>
+				<div id="daterangepicker" data-bind="ntsDateRangePicker: { 
+																	enable: true, 
+																	value: dateValue, 
+																	maxRange: 'oneMonth',
+																	required: true}"/>	
+				<button class="caret-bottom" data-bind="click: findAgent">#{i18n.getText('CMM044_30')}</button>
 				<div>
 					<table class="table1">
 						<tbody>
 							<tr>							
-								<th colspan="2">依頼者</th>
-								<th colspan="1">所属職場コード</th>
-								<th colspan="1">所属職場名</th>
-								<th colspan="1">職位</th>
-								<th colspan="1">代行開始日</th>
-								<th colspan="1">代行終了日</th>
-								<th colspan="1">代行対象</th>
-								<th colspan="2">代行者</th>
+								<th colspan="2">#{i18n.getText('CMM044_7')}</th>
+								<th colspan="1">#{i18n.getText('CMM044_31')}</th>
+								<th colspan="1">#{i18n.getText('CMM044_32')}</th>
+								<th colspan="1">#{i18n.getText('職位')}</th>
+								<th colspan="1">#{i18n.getText('CMM044_34')}</th>
+								<th colspan="1">#{i18n.getText('CMM044_35')}</th>
+								<th colspan="1">#{i18n.getText('CMM044_36')}</th>
+								<th colspan="2">#{i18n.getText('CMM044_30')}</th>
 							</tr>
 							<com:ko-foreach bind="personList">
 							<tr>
+								<td data-bind="text: $data.employeeCode"></td>
+								<td data-bind="text: $data.employeeName"></td>
 								<td data-bind="text: $data.firstName"></td>
-								<td data-bind="text: $data.lastName"></td>
-								<td>SAKAE00001</td>
-								<td>100,000</td>
-								<td>50,000</td>
-								<td>30,000</td>
-								<td>100,000</td>
-								<td>50,000</td>
-								<td>30,000</td>
-								<td>100,000</td>
+								<td data-bind="text: $data.firstName"></td>
+								<td data-bind="text: $data.firstName"></td>
+								<td data-bind="text: $data.startDate"></td>
+								<td data-bind="text: $data.endDate"></td>
+								<td data-bind="text: $data.firstName"></td>
+								<td data-bind="text: $data.firstName"></td>
+								<td data-bind="text: $data.firstName"></td>
 							</tr>
 							</com:ko-foreach>
 						</tbody>
