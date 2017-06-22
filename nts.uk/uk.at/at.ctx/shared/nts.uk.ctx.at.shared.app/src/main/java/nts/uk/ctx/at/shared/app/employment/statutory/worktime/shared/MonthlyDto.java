@@ -20,7 +20,7 @@ public class MonthlyDto {
 	private int month;
 
 	/** The time. */
-	private int time;
+	private Long time;
 
 	/**
 	 * From domain.
@@ -32,7 +32,7 @@ public class MonthlyDto {
 		return domain.stream().map(item -> {
 			MonthlyDto dto = new MonthlyDto();
 			dto.setMonth(item.getMonth().getValue());
-			dto.setTime(item.getTime().v());
+			dto.setTime(item.getTime().v()/60);
 			return dto;
 		}).collect(Collectors.toList());
 	}

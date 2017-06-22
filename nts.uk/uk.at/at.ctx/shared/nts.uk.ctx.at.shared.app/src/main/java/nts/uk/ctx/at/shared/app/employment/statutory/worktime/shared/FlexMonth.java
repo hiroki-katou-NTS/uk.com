@@ -11,13 +11,13 @@ import lombok.Data;
  */
 @Data
 public class FlexMonth {
-	
+
 	/** The month. */
 	private int month;
-	
+
 	/** The statutory time. */
-	private int statutoryTime;
-    
-    /** The specified time. */
-    private int specifiedTime;
+	private Long statutoryTime;
+
+	/** The specified time. */
+	private Long specifiedTime;
 }
