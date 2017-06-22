@@ -18,8 +18,8 @@
 			<div class="pull-left">
 				<com:ko tag="with" bind="workplaceWTSetting">
 				<div class="control-group">
-					<input id="yearPicker" data-name="#KMK004_31"  tabindex="1"
-						data-bind="ntsNumberEditor: {
+					<input id="yearPicker" tabindex="1"
+						data-bind="ntsNumberEditor: {name:'#[KMK004_31]',
 													value: year,
 													constraint: 'Year',
 													required: true}"/>
@@ -37,7 +37,7 @@
 							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
 							<div tabindex="3" style="margin-left: 50px; display: inline-flex"
 								id="combo-box"
-								data-bind="ntsComboBox: {
+								data-bind="ntsComboBox: {name:'#[#KMK004_6]',
 												options: $parents[1].itemList,
 												optionsValue: 'code',
 												value: weekStart,
@@ -56,13 +56,13 @@
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
 											<td><input tabindex="5"
-												data-bind="ntsTimeEditor: {value: daily, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[#KMK004_10]', value: daily, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
 											<td><input tabindex="6"
-												data-bind="ntsTimeEditor: {value: weekly, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[#KMK004_12]', value: weekly, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</table>
@@ -80,7 +80,7 @@
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
 												<td><input tabindex="8"
-													data-bind="ntsTimeEditor: {value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+													data-bind="ntsTimeEditor: {name:'#[#KMK004_14]', value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>
@@ -106,10 +106,10 @@
 									<tr data-bind="with: flexDaily">
 										<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
 										<td><input tabindex="11"
-											data-bind="ntsTimeEditor: {value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+											data-bind="ntsTimeEditor: {name:'#[#KMK004_17]', value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 										</td>
 										<td><input tabindex="12"
-											data-bind="ntsTimeEditor: {value: statutoryTime, constraint:'AttendanceTime',inputFormat: 'time', mode: 'time', required: true}" />
+											data-bind="ntsTimeEditor: {name:'#[#KMK004_18]', value: statutoryTime, constraint:'AttendanceTime',inputFormat: 'time', mode: 'time', required: true}" />
 										</td>
 									</tr>
 								</table>
@@ -128,10 +128,10 @@
 												<div data-bind="text: month()+'月度'"></div>
 											</td>
 											<td><input tabindex="16"
-												data-bind="ntsTimeEditor: {value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[#KMK004_21]', value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 											<td><input tabindex="16"
-												data-bind="ntsTimeEditor: {value: statutoryTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[#KMK004_22]', value: statutoryTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</com:ko>
@@ -149,7 +149,7 @@
 							<div id="lblName" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_6')}</div>
 							<div tabindex="18" style="margin-left: 50px; display: inline-flex"
 								id="combo-box"
-								data-bind="ntsComboBox: {
+								data-bind="ntsComboBox: {name:'#[#KMK004_23]',
 												options: $parents[1].itemList,
 												optionsValue: 'code',
 												value: weekStart,
@@ -168,13 +168,13 @@
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_9')}</td>
 											<td><input tabindex="20"
-												data-bind="ntsTimeEditor: {value: daily, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[#KMK004_24]', value: daily, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 										<tr>
 											<td class="bg-green">#{i18n.getText('KMK004_11')}</td>
 											<td><input tabindex="21"
-												data-bind="ntsTimeEditor: {value: weekly, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[#KMK004_25]', value: weekly, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</table>
@@ -192,7 +192,7 @@
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
 												<td><input tabindex="23"
-													data-bind="ntsTimeEditor: {value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+													data-bind="ntsTimeEditor: {name:'#[#KMK004_26]', value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>
