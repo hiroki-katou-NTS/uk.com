@@ -1846,7 +1846,7 @@ var nts;
             }(ParseResult));
             time_1.MomentResult = MomentResult;
             function parseMoment(datetime, outputFormat, inputFormat) {
-                var inputFormats = (inputFormat) ? inputFormat : defaultInputFormat;
+                var inputFormats = (inputFormat) ? inputFormat : findFormat(outputFormat);
                 var momentObject = moment.utc(datetime, inputFormats, true);
                 var result = new MomentResult(momentObject, outputFormat);
                 if (momentObject.isValid())
@@ -1856,6 +1856,17 @@ var nts;
                 return result;
             }
             time_1.parseMoment = parseMoment;
+            function findFormat(format) {
+                if (nts.uk.util.isNullOrEmpty(format)) {
+                    return defaultInputFormat;
+                }
+                var uniqueFormat = _.uniq(format.split(""));
+                return _.filter(defaultInputFormat, function (dfFormat) {
+                    return _.find(uniqueFormat, function (opFormat) {
+                        return dfFormat.indexOf(opFormat) >= 0;
+                    }) !== undefined;
+                });
+            }
             function UTCDate(year, month, date, hours, minutes, seconds, milliseconds) {
                 // Return local time in UTC
                 if (uk.util.isNullOrUndefined(year)) {
@@ -6053,7 +6064,8 @@ var nts;
                             .fiscalMonthsMode(data.fiscalMonthsMode)
                             .setDefaultCss(data.defaultClass || "");
                         name = nts.uk.resource.getControlName(name);
-                        var validator = new ui.validation.TimeValidator(name, constraintName, { required: required, outputFormat: valueFormat, valueType: valueType });
+                        var validator = new ui.validation.TimeValidator(name, constraintName, { required: required,
+                            outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType });
                         $input.on("change", function (e) {
                             var newText = $input.val();
                             var result = validator.validate(newText);
@@ -7392,6 +7404,7 @@ var nts;
                         var observableColumns = ko.unwrap(data.columns);
                         var showNumbering = ko.unwrap(data.showNumbering) === true ? true : false;
                         var enable = ko.unwrap(data.enable);
+                        var value = ko.unwrap(data.value);
                         $grid.data("init", true);
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
@@ -8317,15 +8330,21 @@ var nts;
                         var grid1Id = "#" + elementId + "-grid1";
                         var grid2Id = "#" + elementId + "-grid2";
                         if (!uk.util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showEright)) {
-                            var initSearchArea = function ($SearchArea, targetId) {
+                            var initSearchArea = function ($SearchArea, targetId, searchMode) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                                     .append("<div class='ntsSearchButtonContainer'/>");
+                                if (searchMode === "filter") {
+                                    $SearchArea.append("<div class='ntsClearButtonContainer'/>");
+                                    $SearchArea.find(".ntsClearButtonContainer")
+                                        .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn'/>");
+                                    $SearchArea.find(".clear-btn").text("検索");
+                                }
                                 $SearchArea.find(".ntsSearchTextContainer")
                                     .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
                                 $SearchArea.find(".ntsSearchButtonContainer")
                                     .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom'/>");
                                 $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
-                                $SearchArea.find(".ntsSearchButton").text("検索");
+                                $SearchArea.find(".search-btn").text("検索");
                             };
                             var searchAreaId = elementId + "-search-area";
                             $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
@@ -8337,14 +8356,14 @@ var nts;
                             if (showSearchBox.showLeft) {
                                 var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
                                 $searchLeftContainer.width(searchAreaWidth).css({ position: "absolute", left: 0 });
-                                initSearchArea($searchLeftContainer, grid1Id);
+                                initSearchArea($searchLeftContainer, grid1Id, data.searchMode);
                             }
                             if (showSearchBox.showRight) {
                                 var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
                                 $searchRightContainer.width(gridWidth + CHECKBOX_WIDTH).css({ position: "absolute", right: 0 });
-                                initSearchArea($searchRightContainer, grid2Id);
+                                initSearchArea($searchRightContainer, grid2Id, data.searchMode);
                             }
-                            $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
+                            $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING - (data.searchMode === "filter" ? BUTTON_SEARCH_WIDTH : 0));
                             $searchArea.height(SEARCH_AREA_HEIGHT);
                             gridHeight -= SEARCH_AREA_HEIGHT;
                         }
@@ -8363,7 +8382,8 @@ var nts;
                         var criterion = _.map(columns(), function (c) { return c.key === undefined ? c.prop : c.key; });
                         var swapParts = new Array();
                         swapParts.push(new GridSwapPart().listControl($grid1)
-                            .searchControl($swap.find(".ntsSwapSearchLeft").find(".ntsSearchButton"))
+                            .searchControl($swap.find(".ntsSwapSearchLeft").find(".search-btn"))
+                            .clearControl($swap.find(".ntsSwapSearchLeft").find(".clear-btn"))
                             .searchBox($swap.find(".ntsSwapSearchLeft").find(".ntsSearchBox"))
                             .setDataSource(originalSource)
                             .setSearchCriterion(data.searchCriterion || criterion)
@@ -8374,7 +8394,8 @@ var nts;
                             .setOuterDrop((data.outerDrag && data.outerDrag.left !== undefined) ? data.outerDrag.left : true)
                             .build());
                         swapParts.push(new GridSwapPart().listControl($grid2)
-                            .searchControl($swap.find(".ntsSwapSearchRight").find(".ntsSearchButton"))
+                            .searchControl($swap.find(".ntsSwapSearchRight").find(".search-btn"))
+                            .clearControl($swap.find(".ntsSwapSearchRight").find(".clear-btn"))
                             .searchBox($swap.find(".ntsSwapSearchRight").find(".ntsSearchBox"))
                             .setDataSource(data.value())
                             .setSearchCriterion(data.searchCriterion || criterion)
@@ -8658,6 +8679,10 @@ var nts;
                         this.$searchControl = $searchControl;
                         return this;
                     };
+                    SwapPart.prototype.clearControl = function ($clearControl) {
+                        this.$clearControl = $clearControl;
+                        return this;
+                    };
                     SwapPart.prototype.searchBox = function ($searchBox) {
                         this.$searchBox = $searchBox;
                         return this;
@@ -8699,10 +8724,9 @@ var nts;
                     SwapPart.prototype.search = function () {
                         var searchContents = this.$searchBox.val();
                         var orders = new Array();
-                        if (searchContents === "") {
-                            if (this.originalDataSource === undefined)
-                                return null;
-                            return new SearchResult(this.originalDataSource, orders);
+                        if (nts.uk.util.isNullOrEmpty(searchContents)) {
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
+                            return null;
                         }
                         var searchCriterion = this.searchCriterion;
                         if (this.originalDataSource === undefined)
@@ -8729,10 +8753,15 @@ var nts;
                     SwapPart.prototype.bindSearchEvent = function () {
                         var self = this;
                         var proceedSearch = this.proceedSearch;
+                        var clearFilter = this.clearFilter;
                         this.$searchControl.click(function (evt, ui) {
                             proceedSearch.apply(self);
                         });
-                        this.$searchBox.keyup(function (evt, ui) {
+                        this.$clearControl.click(function (evt, ui) {
+                            clearFilter.apply(self);
+                            ;
+                        });
+                        this.$searchBox.keydown(function (evt, ui) {
                             if (evt.which === 13) {
                                 proceedSearch.apply(self);
                             }
@@ -8747,6 +8776,11 @@ var nts;
                         }
                         else {
                             this.highlightSearch();
+                        }
+                    };
+                    SwapPart.prototype.clearFilter = function () {
+                        if (this.searchMode === "filter") {
+                            this.bindData(this.originalDataSource);
                         }
                     };
                     SwapPart.prototype.build = function () {
@@ -8765,6 +8799,10 @@ var nts;
                     };
                     GridSwapPart.prototype.highlightSearch = function () {
                         var value = this.$searchBox.val();
+                        if (nts.uk.util.isNullOrEmpty(value)) {
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
+                            return;
+                        }
                         var source = this.dataSource.slice();
                         var selected = this.$listControl.ntsGridList("getSelected");
                         if (selected.length > 0) {
@@ -8781,6 +8819,10 @@ var nts;
                                 return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
                             }) !== undefined;
                         });
+                        if (searchedValues === undefined) {
+                            nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
+                            return;
+                        }
                         this.$listControl.ntsGridList('setSelected', searchedValues !== undefined ? [searchedValues[this.primaryKey]] : []);
                         if (searchedValues !== undefined && (selected.length === 0 ||
                             selected[0].id !== searchedValues[this.primaryKey])) {
