@@ -1,6 +1,13 @@
-.ntsRadioBox {display: block;}
-.caret-bottom.outline {font-size: 3rem;; display:block ; margin: 10px 0px 10px 150px;}
-#list{ background-color: #E0F59E; height: 490px ;width: 400px;}
+.caret-bottom.outline {font-size: 3rem;; display:block ; margin: 5px 0px 5px 150px;}
+#list{ background-color: #E0F59E; height: 470px ;width: 400px;padding-left: 15px;}
 .ui-igcombo-wrapper {vertical-align: middle;}
 .caret-bottom.outline:after, .caret-top.outline:after, .caret-left.outline:after, .caret-right.outline:after {color: #97D155;}
-td{border-right-width: 30px; border-style: solid;border-color: #FFFFFF; border-bottom-width: 15px;}
+.ntsControl.radio-wrapper.reset-element {padding-top : 40px; }
+.ntsRadioBox {;margin-bottom: 10px;display: block;}
+td{border-right-width: 30px; border-style: solid;border-color: #FFFFFF;}
+.ntsHelpButton {margin-left: 10px;}
+#contents-area {padding-left: 0px;}
+table.control{margin-left: 5px;}
+.ntsControl.ntsHelpButton{bottom: 30px;}
+.sp-replacer.sp-light.sp-active{width: 40px;}
+.sp-preview{width: 20px;}

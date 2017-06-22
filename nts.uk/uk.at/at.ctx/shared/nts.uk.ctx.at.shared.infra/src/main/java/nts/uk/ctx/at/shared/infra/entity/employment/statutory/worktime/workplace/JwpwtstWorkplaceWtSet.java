@@ -12,7 +12,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -119,12 +118,6 @@ public class JwpwtstWorkplaceWtSet extends UkJpaEntity implements Serializable {
 	@NotNull
 	@Column(name = "DEC_TIME")
 	private int decTime;
-
-	/** The wkp id. */
-	@Basic(optional = false)
-	@Null
-	@Column(name = "WKPID")
-	private String wkpId;
 
 	/**
 	 * Instantiates a new jwpwtst workplace wt set.

@@ -15,6 +15,7 @@ import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.RemoveWebMenuCommandHander;
 import nts.uk.ctx.sys.portal.app.command.webmenu.UpdateWebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.UpdateWebMenuCommandHander;
+import nts.uk.ctx.sys.portal.app.find.webmenu.EditMenuBarDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuFinder;
 
@@ -63,5 +64,11 @@ public class WebMenuWebService extends WebService {
 	public WebMenuDto find(@PathParam("webMenuCode") String webMenuCode) {
 		return this.webMenuFinder.find(webMenuCode);
 	}
-
+	
+	@POST
+	@Path("edit")
+	public EditMenuBarDto editMenuBar() {
+		return this.webMenuFinder.getEditMenuBarDto();
+	}
+	
 }

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface AcquisitionRuleRepository {
@@ -38,12 +37,6 @@ public interface AcquisitionRuleRepository {
 	 */
 	Optional<AcquisitionRule> findById(String companyId);
 	
-	/**
-	 * Find all.
-	 *
-	 * @return the list
-	 */
-	List<AcquisitionRule> findAll();
 	
 	
 }

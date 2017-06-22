@@ -52,16 +52,19 @@ module nts.uk.pr.view.kmf001.f {
             employmentList: KnockoutObservableArray<ItemModel>;
             columnsSetting: KnockoutObservable<nts.uk.ui.NtsGridListColumn>;
             emSelectedCode: KnockoutObservable<string>;
-            
+
             emCompenManage: KnockoutObservable<number>;
             emExpirationTime: KnockoutObservable<number>;
             emPreApply: KnockoutObservable<number>;
             emTimeManage: KnockoutObservable<number>;
             emTimeUnit: KnockoutObservable<number>;
-            
+
             isEmptyEmployment: KnockoutObservable<boolean>;
             isEmManageCompen: KnockoutObservable<boolean>;
             enableDigestiveUnit: KnockoutObservable<boolean>;
+            //for list employment
+            alreadySettingList: KnockoutObservableArray<any>;
+            listComponentOption: KnockoutObservable<any>;
             constructor() {
                 let self = this;
                 self.compenManage = ko.observable(0);
@@ -87,7 +90,7 @@ module nts.uk.pr.view.kmf001.f {
                     fillcharacter: "0",
                     width: "50"
                 }));
-                
+
                 self.backUpData = ko.observable();
                 self.manageDistinctEnums = ko.observableArray([]);
                 self.applyPermissionEnums = ko.observableArray([]);
@@ -131,53 +134,90 @@ module nts.uk.pr.view.kmf001.f {
                 //employment
                 self.employmentBackUpData = ko.observable();
                 self.employmentList = ko.observableArray<ItemModel>([]);
-                for (let i = 1; i < 4; i++) {
-                    self.employmentList.push(new ItemModel('0' + i, '基本給'));
-                }
-                
-                self.columnsSetting = ko.observableArray([
-                {headerText: '設定済', key: 'setting', width: 60 },
-                    { headerText: 'コード', key: 'code', width: 100 },
-                    { headerText: '名称', key: 'name', width: 200 }
-                ]);
                 self.emSelectedCode = ko.observable('');
-                
+
                 self.emCompenManage = ko.observable(0);
                 self.emExpirationTime = ko.observable(0);
                 self.emPreApply = ko.observable(0);
                 self.emTimeManage = ko.observable(0);
                 self.emTimeUnit = ko.observable(0);
-                
+
                 self.isEmptyEmployment = ko.observable(false);
-                self.isEmManageCompen = ko.computed(function(){
-                return self.emCompenManage() == UseDivision.Use&& !self.isEmptyEmployment();    
+                self.isEmManageCompen = ko.computed(function() {
+                    return self.emCompenManage() == UseDivision.Use && !self.isEmptyEmployment();
                 });
-                
+
                 self.enableDigestiveUnit = ko.computed(function() {
                     return self.isEmManageCompen() && !self.isEmptyEmployment() && self.emTimeManage() == UseDivision.Use;
                 });
-                
-                self.emSelectedCode.subscribe(function(employmentCode: string){
+
+                self.emSelectedCode.subscribe(function(employmentCode: string) {
+                    if (employmentCode) {
                         self.loadEmploymentSetting(employmentCode);
+                    }
+                    else {
+                        //not selected item -> disable All
+                        self.isEmptyEmployment(true);
+                    }
                 });
+
+                //for list em
+                this.alreadySettingList = ko.observableArray([]);
+                this.listComponentOption = {
+                    isShowAlreadySet: true,
+                    isMultiSelect: false,
+                    listType: ListType.EMPLOYMENT,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: this.emSelectedCode,
+                    isDialog: false,
+                    alreadySettingList: this.alreadySettingList
+                };
             }
 
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 $.when(self.loadManageDistinctEnums(), self.loadApplyPermissionEnums(), self.loadExpirationTimeEnums(), self.loadTimeVacationDigestiveUnitEnums(),
-                    self.loadCompensatoryOccurrenceDivisionEnums(), self.loadTransferSettingDivisionEnums()).done(function() {
+                    self.loadCompensatoryOccurrenceDivisionEnums(), self.loadTransferSettingDivisionEnums(), self.loadEmploymentList()).done(function() {
                         self.loadSetting().done(function() {
                             dfd.resolve();
                         });
-                        if (self.employmentList().length > 0) {
-                            self.emSelectedCode(self.employmentList()[0].code);
-                        }
-                        else {
-                            dfd.resolve();
-                            self.isEmptyEmployment(true);
-                        }
                     });
+                return dfd.promise();
+            }
+
+            private loadEmploymentList(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                //get list employment
+                self.alreadySettingList([]);
+                service.findAllEmploymentSetting().done((data: Array<string>) => {
+                    for (let emCode of data) {
+                        self.alreadySettingList.push({ code: emCode, isAlreadySetting: true });
+                    }
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            //switch to com tab
+            private switchToCompanyTab() {
+                var self = this;
+                self.loadSetting();
+            }
+            //switch to em tab
+            private switchToEmploymentTab() {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                $.when($('#list-employ-component').ntsListComponent(this.listComponentOption),self.loadEmploymentList()).done(() => {
+                    self.employmentList($('#sample-component').getDataList());
+                    if (!$('#sample-component').getDataList() || $('#sample-component').getDataList().length <= 0) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_146", messageParams: [] });
+                        self.isEmptyEmployment(true);
+                        dfd.resolve();
+                    } else {
+                        self.emSelectedCode(self.employmentList()[0].code);
+                    }
+                });
                 return dfd.promise();
             }
 
@@ -188,7 +228,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.manageDistinctEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -200,7 +240,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.applyPermissionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -212,7 +252,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.expirationTimeEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -224,7 +264,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.timeVacationDigestiveUnitEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -236,7 +276,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.compensatoryOccurrenceDivisionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -251,7 +291,7 @@ module nts.uk.pr.view.kmf001.f {
                     self.transferSettingDivisionEnums(res);
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
@@ -268,11 +308,11 @@ module nts.uk.pr.view.kmf001.f {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
-            
+
             private loadEmploymentSetting(employmentCode: string): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -285,19 +325,20 @@ module nts.uk.pr.view.kmf001.f {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
+                    nts.uk.ui.dialog.alertError(res.message);
                 });
                 return dfd.promise();
             }
-            
+
+            //bind em 
             private loadEmploymentToScreen(data: any) {
                 var self = this;
                 if (data) {
-                    self.emCompenManage(data.employmentManageSetting.isManaged);
-                    self.emExpirationTime(data.employmentManageSetting.expirationTime);
-                    self.emPreApply(data.employmentManageSetting.preemptionPermit);
-                    self.emTimeManage(data.employmentTimeManageSetting.isManaged);
-                    self.emTimeUnit(data.employmentTimeManageSetting.digestiveUnit);
+                    self.emCompenManage(data.isManaged);
+                    self.emExpirationTime(data.compensatoryAcquisitionUse.expirationTime);
+                    self.emPreApply(data.compensatoryAcquisitionUse.preemptionPermit);
+                    self.emTimeManage(data.compensatoryDigestiveTimeUnit.isManageByTime);
+                    self.emTimeUnit(data.compensatoryDigestiveTimeUnit.digestiveUnit);
                 }
                 else {
                     self.emCompenManage(self.manageDistinctEnums()[0].value);
@@ -307,43 +348,46 @@ module nts.uk.pr.view.kmf001.f {
                     self.emTimeUnit(self.timeVacationDigestiveUnitEnums()[0].value);
                 }
             }
-
+            //bind com
             private loadToScreen(data: any) {
                 let self = this;
                 self.compenManage(data.isManaged);
 
-                self.expirationDateCode(data.normalVacationSetting.expirationTime);
-                self.compenPreApply(data.normalVacationSetting.preemptionPermit);
-                self.compenTimeManage(data.normalVacationSetting.isManageByTime);
-                self.timeUnitCode(data.normalVacationSetting.digestiveUnit);
+                self.expirationDateCode(data.compensatoryAcquisitionUse.expirationTime);
+                self.compenPreApply(data.compensatoryAcquisitionUse.preemptionPermit);
 
-                //if check f3
-                if (data.occurrenceVacationSetting.transferSettingDayOffTime.useDivision == true) {
-                    //set check box
-                    self.checkWorkTime(true);
+                self.compenTimeManage(data.compensatoryDigestiveTimeUnit.isManageByTime);
+                self.timeUnitCode(data.compensatoryDigestiveTimeUnit.digestiveUnit);
+
+                if (data.compensatoryOccurrenceSetting[1].occurrenceType == OccurrenceDivision.OverTime) {
+                    self.loadOverTime(data.compensatoryOccurrenceSetting[1].transferSetting);
+                    self.loadWorkTime(data.compensatoryOccurrenceSetting[0].transferSetting);
                 }
                 else {
-                    self.checkWorkTime(false);
+                    self.loadOverTime(data.compensatoryOccurrenceSetting[0].transferSetting);
+                    self.loadWorkTime(data.compensatoryOccurrenceSetting[1].transferSetting);
                 }
-                //set data
-                self.selectedOfWorkTime(data.occurrenceVacationSetting.transferSettingDayOffTime.transferDivision);
-                self.workOneDay(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingDayOffTime.oneDayTime));
-                self.workHalfDay(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingDayOffTime.halfDayTime));
-                self.workAll(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingDayOffTime.certainTime));
-                if (data.occurrenceVacationSetting.transferSettingOverTime.useDivision == true) {
-                    //set check box
-                    self.checkOverTime(true);
-                }
-                else {//if check f13
-                    self.checkOverTime(false);
-                }
-                //set data
-                self.selectedOfOverTime(data.occurrenceVacationSetting.transferSettingOverTime.transferDivision);
-                self.overOneDay(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingOverTime.oneDayTime));
-                self.overHalfDay(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingOverTime.halfDayTime));
-                self.overAll(self.convertTimeToString(data.occurrenceVacationSetting.transferSettingOverTime.certainTime));
             }
 
+            private loadOverTime(data: any) {
+                let self = this;
+                self.checkOverTime(data.useDivision);
+                self.selectedOfOverTime(data.transferDivision);
+                self.overOneDay(self.convertTimeToString(data.oneDayTime));
+                self.overHalfDay(self.convertTimeToString(data.halfDayTime));
+                self.overAll(self.convertTimeToString(data.certainTime));
+            }
+
+            private loadWorkTime(data: any) {
+                let self = this;
+                self.checkWorkTime(data.useDivision);
+                self.selectedOfWorkTime(data.transferDivision);
+                self.workOneDay(self.convertTimeToString(data.oneDayTime));
+                self.workHalfDay(self.convertTimeToString(data.halfDayTime));
+                self.workAll(self.convertTimeToString(data.certainTime));
+            }
+
+            //save com
             private saveData() {
                 let self = this;
                 self.reCallValidate().done(function() {
@@ -354,6 +398,7 @@ module nts.uk.pr.view.kmf001.f {
                         });
                 });
             }
+
             private reCallValidate(): JQueryPromise<void> {
                 var self = this;
                 let dfd = $.Deferred<void>();
@@ -375,69 +420,83 @@ module nts.uk.pr.view.kmf001.f {
                 dfd.resolve();
                 return dfd.promise();
             }
-            
-             private defaultData() {
+
+            private defaultData() {
                 var self = this;
                 return {
                     companyId: "",
                     isManaged: self.compenManage(),
-                    normalVacationSetting: {
+                    compensatoryAcquisitionUse: {
                         expirationTime: self.expirationDateCode(),
-                        preemptionPermit: self.compenPreApply(),
+                        preemptionPermit: self.compenPreApply()
+                    },
+                    compensatoryDigestiveTimeUnit: {
                         isManageByTime: self.compenTimeManage(),
                         digestiveUnit: self.timeUnitCode()
                     },
-                    occurrenceVacationSetting: {
-                        transferSettingOverTime: {
-                            certainTime: self.convertTime(self.overAll()),
-                            useDivision: self.checkOverTime(),
-                            oneDayTime: self.convertTime(self.overOneDay()),
-                            halfDayTime: self.convertTime(self.overHalfDay()),
-                            transferDivision: self.selectedOfOverTime(),
-                            compensatoryOccurrenceDivision: OccurrenceDivision.OverTime
+                    compensatoryOccurrenceSetting: [
+                        {
+                            occurrenceType: OccurrenceDivision.OverTime,
+                            transferSetting: {
+                                certainTime: self.convertTime(self.overAll()),
+                                useDivision: self.checkOverTime(),
+                                oneDayTime: self.convertTime(self.overOneDay()),
+                                halfDayTime: self.convertTime(self.overHalfDay()),
+                                transferDivision: self.selectedOfOverTime()
+                            }
                         },
-                        transferSettingDayOffTime: {
-                            certainTime: self.convertTime(self.workAll()),
-                            useDivision: self.checkWorkTime(),
-                            oneDayTime: self.convertTime(self.workOneDay()),
-                            halfDayTime: self.convertTime(self.workHalfDay()),
-                            transferDivision: self.selectedOfWorkTime(),
-                            compensatoryOccurrenceDivision: OccurrenceDivision.DayOffTime
+                        {
+                            occurrenceType: OccurrenceDivision.DayOffTime,
+                            transferSetting: {
+                                certainTime: self.convertTime(self.workAll()),
+                                useDivision: self.checkWorkTime(),
+                                oneDayTime: self.convertTime(self.workOneDay()),
+                                halfDayTime: self.convertTime(self.workHalfDay()),
+                                transferDivision: self.selectedOfWorkTime()
+                            }
                         }
-                    }
+                    ]
                 };
             }
-            
+
             private collectData() {
                 var self = this;
                 var data = self.backUpData();
+                var overTime = self.backUpData().compensatoryOccurrenceSetting[0].transferSetting;
+                var workTime = self.backUpData().compensatoryOccurrenceSetting[1].transferSetting;
                 return {
                     companyId: "",
                     isManaged: self.compenManage(),
-                    normalVacationSetting: {
-                        expirationTime: self.isManageCompen()?self.expirationDateCode():data.normalVacationSetting.expirationTime,
-                        preemptionPermit: self.isManageCompen()?self.compenPreApply():data.normalVacationSetting.preemptionPermit,
-                        isManageByTime: self.isManageCompen()?self.compenTimeManage():data.normalVacationSetting.isManageByTime,
-                        digestiveUnit: self.isManageTime()?self.timeUnitCode():data.normalVacationSetting.digestiveUnit
+                    compensatoryAcquisitionUse: {
+                        expirationTime: self.isManageCompen() ? self.expirationDateCode() : data.compensatoryAcquisitionUse.expirationTime,
+                        preemptionPermit: self.isManageCompen() ? self.compenPreApply() : data.compensatoryAcquisitionUse.preemptionPermit
                     },
-                    occurrenceVacationSetting: {
-                        transferSettingOverTime: {
-                            certainTime: self.enableOverAll()?self.convertTime(self.overAll()):data.occurrenceVacationSetting.transferSettingOverTime.certainTime,
-                            useDivision: self.isManageCompen()?self.checkOverTime():data.occurrenceVacationSetting.transferSettingOverTime.useDivision,
-                            oneDayTime: self.enableDesignOver()?self.convertTime(self.overOneDay()):data.occurrenceVacationSetting.transferSettingOverTime.oneDayTime,
-                            halfDayTime: self.enableDesignOver()?self.convertTime(self.overHalfDay()):data.occurrenceVacationSetting.transferSettingOverTime.halfDayTime,
-                            transferDivision: self.enableOverArea()?self.selectedOfOverTime():data.occurrenceVacationSetting.transferSettingOverTime.transferDivision,
-                            compensatoryOccurrenceDivision: OccurrenceDivision.OverTime
+                    compensatoryDigestiveTimeUnit: {
+                        isManageByTime: self.isManageCompen() ? self.compenTimeManage() : data.compensatoryDigestiveTimeUnit.isManageByTime,
+                        digestiveUnit: self.isManageTime() ? self.timeUnitCode() : data.compensatoryDigestiveTimeUnit.digestiveUnit
+                    },
+                    compensatoryOccurrenceSetting: [
+                        {
+                            occurrenceType: OccurrenceDivision.OverTime,
+                            transferSetting: {
+                                certainTime: self.enableOverAll() ? self.convertTime(self.overAll()) : overTime.certainTime,
+                                useDivision: self.isManageCompen() ? self.checkOverTime() : overTime.useDivision,
+                                oneDayTime: self.enableDesignOver() ? self.convertTime(self.overOneDay()) : overTime.oneDayTime,
+                                halfDayTime: self.enableDesignOver() ? self.convertTime(self.overHalfDay()) : overTime.halfDayTime,
+                                transferDivision: self.enableOverArea() ? self.selectedOfOverTime() : overTime.transferDivision,
+                            }
                         },
-                        transferSettingDayOffTime: {
-                            certainTime: self.enableWorkAll()?self.convertTime(self.workAll()):data.occurrenceVacationSetting.transferSettingDayOffTime.certainTime,
-                            useDivision: self.isManageCompen()?self.checkWorkTime():data.occurrenceVacationSetting.transferSettingDayOffTime.useDivision,
-                            oneDayTime: self.enableDesignWork()?self.convertTime(self.workOneDay()):data.occurrenceVacationSetting.transferSettingDayOffTime.oneDayTime,
-                            halfDayTime: self.enableDesignWork()?self.convertTime(self.workHalfDay()):data.occurrenceVacationSetting.transferSettingDayOffTime.halfDayTime,
-                            transferDivision: self.enableWorkArea()?self.selectedOfWorkTime():data.occurrenceVacationSetting.transferSettingDayOffTime.transferDivision,
-                            compensatoryOccurrenceDivision: OccurrenceDivision.DayOffTime
+                        {
+                            occurrenceType: OccurrenceDivision.DayOffTime,
+                            transferSetting: {
+                                certainTime: self.enableWorkAll() ? self.convertTime(self.workAll()) : workTime.certainTime,
+                                useDivision: self.isManageCompen() ? self.checkWorkTime() : workTime.useDivision,
+                                oneDayTime: self.enableDesignWork() ? self.convertTime(self.workOneDay()) : workTime.oneDayTime,
+                                halfDayTime: self.enableDesignWork() ? self.convertTime(self.workHalfDay()) : workTime.halfDayTime,
+                                transferDivision: self.enableWorkArea() ? self.selectedOfWorkTime() : workTime.transferDivision,
+                            }
                         }
-                    }
+                    ]
                 };
             }
             private convertTime(time: string) {
@@ -450,51 +509,56 @@ module nts.uk.pr.view.kmf001.f {
                 }
                 return timeString;
             }
-            
+
             //Employment
-            
-            private saveEmployment(){
+            private saveEmployment() {
                 var self = this;
                 service.updateEmploymentSetting(self.collectEmploymentData()).done(function() {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.loadEmploymentSetting(self.emSelectedCode());
+                    self.loadEmploymentList().done(() => {
+                        //reload list employment
+                        $('#list-employ-component').ntsListComponent(self.listComponentOption).done(() => {
+                            self.loadEmploymentSetting(self.emSelectedCode());
+                        });
+                    });
                 });
             }
-            private employmentDefaultData(){
+
+            private employmentDefaultData() {
                 var self = this;
                 return {
                     companyId: '',
                     employmentCode: self.emSelectedCode(),
-                    employmentManageSetting: {
-                        isManaged: self.emCompenManage(),
+                    isManaged: self.emCompenManage(),
+                    compensatoryAcquisitionUse: {
                         expirationTime: self.emExpirationTime(),
                         preemptionPermit: self.emPreApply()
                     },
-                    employmentTimeManageSetting: {
-                        isManaged: self.emTimeManage(),
+                    compensatoryDigestiveTimeUnit: {
+                        isManageByTime: self.emTimeManage(),
                         digestiveUnit: self.emTimeUnit()
                     }
-                };    
+                };
             }
-            
-             private collectEmploymentData() {
+
+            private collectEmploymentData() {
                 var self = this;
                 var data = self.employmentBackUpData();
                 return {
                     companyId: '',
                     employmentCode: self.emSelectedCode(),
-                    employmentManageSetting: {
-                        isManaged: self.emCompenManage(),
-                        expirationTime: self.isEmManageCompen() ? self.emExpirationTime() : data.employmentManageSetting.expirationTime,
-                        preemptionPermit: self.isEmManageCompen() ? self.emPreApply() : data.employmentManageSetting.preemptionPermit
+                    isManaged: self.emCompenManage(),
+                    compensatoryAcquisitionUse: {
+                        expirationTime: self.isEmManageCompen() ? self.emExpirationTime() : data.compensatoryAcquisitionUse.expirationTime,
+                        preemptionPermit: self.isEmManageCompen() ? self.emPreApply() : data.compensatoryAcquisitionUse.preemptionPermit
                     },
-                    employmentTimeManageSetting: {
-                        isManaged: self.isEmManageCompen() ? self.emTimeManage() : data.employmentTimeManageSetting.isManaged,
-                        digestiveUnit: self.enableDigestiveUnit() ? self.emTimeUnit() : data.employmentTimeManageSetting.digestiveUnit
+                    compensatoryDigestiveTimeUnit: {
+                        isManageByTime: self.isEmManageCompen() ? self.emTimeManage() : data.compensatoryDigestiveTimeUnit.isManageByTime,
+                        digestiveUnit: self.enableDigestiveUnit() ? self.emTimeUnit() : data.compensatoryDigestiveTimeUnit.digestiveUnit
                     }
                 };
             }
-            
+
             private gotoVacationSetting() {
                 alert();
             }
@@ -511,6 +575,23 @@ module nts.uk.pr.view.kmf001.f {
                 this.code = code;
                 this.name = name;
             }
+        }
+
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
+        }
+
+        /**
+         * List Type
+         */
+        export class ListType {
+            static EMPLOYMENT = 1;
+            static Classification = 2;
+            static JOB_TITLE = 3;
+            static EMPLOYEE = 4;
         }
 
         export enum OccurrenceDivision {

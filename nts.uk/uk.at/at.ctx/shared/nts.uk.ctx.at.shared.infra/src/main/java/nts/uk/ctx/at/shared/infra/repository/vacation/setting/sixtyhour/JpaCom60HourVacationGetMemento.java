@@ -8,7 +8,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationGet
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.SixtyHourVacationSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstSixtyHourVacationSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
 
 /**
  * The Class JpaComSubstVacationGetMemento.

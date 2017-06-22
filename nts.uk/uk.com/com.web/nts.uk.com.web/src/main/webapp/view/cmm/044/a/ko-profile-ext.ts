@@ -12,20 +12,34 @@ class ProfileHandler implements KnockoutBindingHandler {
             nextBtn: HTMLElement = document.createElement('button'),
             input: HTMLElement = document.createElement('input'),
             label: HTMLElement = document.createElement('label'),
-            labelName: HTMLElement = document.createElement('label');
+            labelName: HTMLElement = document.createElement('label'),
+            labelPerson: HTMLElement = document.createElement('label');
 
         if (!params.enable) {
             input.setAttribute('disabled', 'disabled');
             searchBtn.setAttribute('disabled', 'disabled');
             previewBtn.setAttribute('disabled', 'disabled');
             nextBtn.setAttribute('disabled', 'disabled');
+        } else {
+            input.onchange = e => {
+                let options = ko.toJS(params.options),
+                    option = _.find(options, m => m[params.code] == e.target.value);
+                if (option) {
+                    params.value(option);
+                } else {
+                    if (params.error) {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7"));
+                    }
+                    e.target.value = params.value()[params.code];
+                }
+            };
         }
 
         input.setAttribute('type', 'text');
         //input.setAttribute('readonly', 'readonly');
         input.classList.add("nts-editor");
         input.classList.add("nts-input");
-  
+
 
         previewBtn.onclick = () => {
             let options = ko.toJS(params.options), index = _.findIndex(options, m => m[params.key] == params.value()[params.key]);
@@ -44,6 +58,8 @@ class ProfileHandler implements KnockoutBindingHandler {
         params.value.subscribe((v) => {
             if (v) {
                 label.innerText = v[params.name];
+                labelName.innerText = v[params.code];
+                labelPerson.innerText = '1/3 人';
                 input.setAttribute('value', v[params.code]);
 
                 let options = ko.toJS(params.options), index = _.findIndex(options, m => m[params.key] == v[params.key]);
@@ -60,16 +76,8 @@ class ProfileHandler implements KnockoutBindingHandler {
 
             } else {
                 label.innerText = '';
-                input.setAttribute('value', '');
-            }
-        });
-        
-        params.value.subscribe((v1) => {
-            if (v1) {
-                labelName.innerText = v1[params.code];
-                input.setAttribute('value', v1[params.code]);
-            } else {
                 labelName.innerText = '';
+                labelPerson.innerText = '';
                 input.setAttribute('value', '');
             }
         });
@@ -105,6 +113,9 @@ class ProfileHandler implements KnockoutBindingHandler {
         label.classList.add('nts-label');
         labelName.classList.add('nts-label');
         labelName.classList.add('nts-name');
+        labelPerson.classList.add('nts-label');
+        labelPerson.classList.add('nts-person');
+
         if (params.searchEvent) {
             searchBtn.setAttribute('data-bind', 'click: ' + params.searchEvent);
         }
@@ -120,9 +131,12 @@ class ProfileHandler implements KnockoutBindingHandler {
         container1.appendChild(previewBtn);
         container1.appendChild(nextBtn);
         container1.classList.add('left-container');
-        
+
+
         container2.appendChild(labelName);
+
         container2.appendChild(label);
+        container2.appendChild(labelPerson);
         container2.appendChild(input);
         container2.classList.add('right-container');
 

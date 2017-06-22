@@ -28,11 +28,11 @@ import nts.uk.ctx.at.shared.infra.entity.worktimeset.KwtstWorkTimeSet;
 @Stateless
 public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeSetRepository{
 
-	private final String findWorkTimeSetByList = "SELECT a FROM KwtstWorkTimeSet a "
+	private final String findWorkTimeSetByList = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs";
 	
-	private final String findWorkTimeSetByStart = "SELECT DISTINCT a FROM KwtstWorkTimeSet a, KwtdtWorkTimeDay b "
+	private final String findWorkTimeSetByStart = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
 			+ "AND a.kwtspWorkTimeSetPK.companyID = b.kwtdpWorkTimeDayPK.companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD = b.kwtdpWorkTimeDayPK.siftCD "
@@ -40,7 +40,7 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 			+ "AND b.a_m_StartClock = :a_m_StartClock "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs ";
 	
-	private final String findWorkTimeSetByEnd = "SELECT DISTINCT a FROM KwtstWorkTimeSet a, KwtdtWorkTimeDay b "
+	private final String findWorkTimeSetByEnd = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
 			+ "AND a.kwtspWorkTimeSetPK.companyID = b.kwtdpWorkTimeDayPK.companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD = b.kwtdpWorkTimeDayPK.siftCD "
@@ -48,7 +48,7 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 			+ "AND b.p_m_EndClock = :p_m_EndClock "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD IN :siftCDs ";
 	
-	private final String findWorkTimeSetByStartAndEnd = "SELECT DISTINCT a FROM KwtstWorkTimeSet a, KwtdtWorkTimeDay b "
+	private final String findWorkTimeSetByStartAndEnd = "SELECT DISTINCT a FROM KwtstWorkTimeSet a JOIN FETCH a.kwtdtWorkTimeDay b "
 			+ "WHERE a.kwtspWorkTimeSetPK.companyID = :companyID "
 			+ "AND a.kwtspWorkTimeSetPK.companyID = b.kwtdpWorkTimeDayPK.companyID "
 			+ "AND a.kwtspWorkTimeSetPK.siftCD = b.kwtdpWorkTimeDayPK.siftCD "
@@ -154,13 +154,23 @@ public class JpaWorkTimeSetRepository extends JpaRepository implements WorkTimeS
 	 * @return Work Time Set domain object
 	 */
 	private WorkTimeSet convertToDomainWorkTimeSet(KwtstWorkTimeSet kwtstWorkTimeSet){
+		WorkTimeDay workTimeDay1 = null;
+		WorkTimeDay workTimeDay2 = null;
+		List<WorkTimeDay> workTimeDays = kwtstWorkTimeSet.kwtdtWorkTimeDay.stream().map(x -> convertToDomainWorkTimeDay(x)).collect(Collectors.toList());
+		if(workTimeDays.size()>=2){
+			workTimeDay1 = workTimeDays.get(0);
+			workTimeDay2 = workTimeDays.get(1);
+		} else if(workTimeDays.size()>=1){
+			workTimeDay1 = workTimeDays.get(0);
+		}
 		return new WorkTimeSet(
 				kwtstWorkTimeSet.kwtspWorkTimeSetPK.companyID, 
 				kwtstWorkTimeSet.rangeTimeDay,
 				kwtstWorkTimeSet.kwtspWorkTimeSetPK.siftCD, 
 				kwtstWorkTimeSet.additionSetID, 
 				EnumAdaptor.valueOf(kwtstWorkTimeSet.nightShiftAtr, WorkTimeNightShift.class), 
-				kwtstWorkTimeSet.kwtdtWorkTimeDay.stream().map(x -> convertToDomainWorkTimeDay(x)).collect(Collectors.toList()),
+				workTimeDay1,
+				workTimeDay2,
 				kwtstWorkTimeSet.startDateClock, 
 				kwtstWorkTimeSet.predetermineAtr
 		);

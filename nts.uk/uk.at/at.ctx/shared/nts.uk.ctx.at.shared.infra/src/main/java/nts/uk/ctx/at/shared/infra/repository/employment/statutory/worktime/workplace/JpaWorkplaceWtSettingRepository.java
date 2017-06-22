@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.work
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -18,11 +19,11 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace.WorkPlaceWtSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace.WorkPlaceWtSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSet;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSetPK;
 import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwpwtstWorkplaceWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwpwtstWorkplaceWtSetPK;
 import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwpwtstWorkplaceWtSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwpwtstWorkplaceWtSet_;
+import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
  * The Class JpaWorkplaceWtSettingRepository.
@@ -53,7 +54,8 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	@Override
 	public void update(WorkPlaceWtSetting setting) {
 		List<JwpwtstWorkplaceWtSet> entities = this.toEntity(setting);
-		commandProxy().updateAll(entities);
+		commandProxy()
+				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
 
 	/*
@@ -63,11 +65,15 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	 * CompanySettingRepository#remove(java.lang.String)
 	 */
 	@Override
-	public void remove(String companyId, int year) {
-		this.commandProxy().remove(JcwtstCompanyWtSet.class, new JcwtstCompanyWtSetPK(companyId, year, 0, 0));
-		this.commandProxy().remove(JcwtstCompanyWtSet.class, new JcwtstCompanyWtSetPK(companyId, year, 1, 0));
-		this.commandProxy().remove(JcwtstCompanyWtSet.class, new JcwtstCompanyWtSetPK(companyId, year, 1, 1));
-		this.commandProxy().remove(JcwtstCompanyWtSet.class, new JcwtstCompanyWtSetPK(companyId, year, 2, 0));
+	public void remove(String companyId, int year, String workPlaceId) {
+		this.commandProxy().remove(JwpwtstWorkplaceWtSet.class, new JwpwtstWorkplaceWtSetPK(companyId, year,
+				WtSettingConstant.NORMAL, WtSettingConstant.STATUTORY, workPlaceId));
+		this.commandProxy().remove(JwpwtstWorkplaceWtSet.class, new JwpwtstWorkplaceWtSetPK(companyId, year,
+				WtSettingConstant.FLEX, WtSettingConstant.STATUTORY, workPlaceId));
+		this.commandProxy().remove(JwpwtstWorkplaceWtSet.class, new JwpwtstWorkplaceWtSetPK(companyId, year,
+				WtSettingConstant.FLEX, WtSettingConstant.SPECIFIED, workPlaceId));
+		this.commandProxy().remove(JwpwtstWorkplaceWtSet.class, new JwpwtstWorkplaceWtSetPK(companyId, year,
+				WtSettingConstant.DEFORMED, WtSettingConstant.STATUTORY, workPlaceId));
 	}
 
 	/*
@@ -77,7 +83,36 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	 * CompanySettingRepository#find(java.lang.String)
 	 */
 	@Override
-	public Optional<WorkPlaceWtSetting> find(String companyId, int year) {
+	public Optional<WorkPlaceWtSetting> find(String companyId, int year, String workPlaceId) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<JwpwtstWorkplaceWtSet> cq = cb.createQuery(JwpwtstWorkplaceWtSet.class);
+		Root<JwpwtstWorkplaceWtSet> root = cq.from(JwpwtstWorkplaceWtSet.class);
+
+		// Constructing condition.
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+		predicateList.add(cb.equal(
+				root.get(JwpwtstWorkplaceWtSet_.jwpwtstWorkplaceWtSetPK).get(JwpwtstWorkplaceWtSetPK_.cid), companyId));
+		predicateList.add(cb.equal(
+				root.get(JwpwtstWorkplaceWtSet_.jwpwtstWorkplaceWtSetPK).get(JwpwtstWorkplaceWtSetPK_.yK), year));
+		predicateList.add(
+				cb.equal(root.get(JwpwtstWorkplaceWtSet_.jwpwtstWorkplaceWtSetPK).get(JwpwtstWorkplaceWtSetPK_.wkpId),
+						workPlaceId));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace.
+	 * WorkPlaceWtSettingRepository#findAll(java.lang.String, int)
+	 */
+	@Override
+	public List<String> findAll(String companyId, int year) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -93,7 +128,10 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 				root.get(JwpwtstWorkplaceWtSet_.jwpwtstWorkplaceWtSetPK).get(JwpwtstWorkplaceWtSetPK_.yK), year));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
+		List<JwpwtstWorkplaceWtSet> resultList = em.createQuery(cq).getResultList();
+
+		return resultList.stream().map(item -> item.getJwpwtstWorkplaceWtSetPK().getWkpId()).distinct()
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -117,7 +155,7 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 	 * @return the list
 	 */
 	private List<JwpwtstWorkplaceWtSet> toEntity(WorkPlaceWtSetting domain) {
-		List<JwpwtstWorkplaceWtSet> entities = new ArrayList<>();
+		List<JwpwtstWorkplaceWtSet> entities = new ArrayList<JwpwtstWorkplaceWtSet>();
 		JpaWorkplaceWtSettingSetMemento memento = new JpaWorkplaceWtSettingSetMemento();
 		domain.saveToMemento(memento);
 		entities.add(memento.getDeformed());
@@ -125,6 +163,32 @@ public class JpaWorkplaceWtSettingRepository extends JpaRepository implements Wo
 		entities.add(memento.getFlexStatutory());
 		entities.add(memento.getNormal());
 		return entities;
+	}
+
+	/**
+	 * Update entity.
+	 *
+	 * @param entity the entity
+	 * @return the jwpwtst workplace wt set
+	 */
+	private JwpwtstWorkplaceWtSet updateEntity(JwpwtstWorkplaceWtSet entity) {
+		JwpwtstWorkplaceWtSet updatedEntity = this.queryProxy().find(entity.getJwpwtstWorkplaceWtSetPK(), JwpwtstWorkplaceWtSet.class).get();
+		updatedEntity.setDailyTime(entity.getDailyTime());
+		updatedEntity.setWeeklyTime(entity.getWeeklyTime());
+		updatedEntity.setStrWeek(entity.getStrWeek());
+		updatedEntity.setJanTime(entity.getJanTime());
+		updatedEntity.setFebTime(entity.getFebTime());
+		updatedEntity.setMarTime(entity.getMarTime());
+		updatedEntity.setAprTime(entity.getAprTime());
+		updatedEntity.setMayTime(entity.getMayTime());
+		updatedEntity.setJunTime(entity.getJunTime());
+		updatedEntity.setJulTime(entity.getJulTime());
+		updatedEntity.setAugTime(entity.getAugTime());
+		updatedEntity.setSepTime(entity.getSepTime());
+		updatedEntity.setOctTime(entity.getOctTime());
+		updatedEntity.setNovTime(entity.getNovTime());
+		updatedEntity.setDecTime(entity.getDecTime());
+		return updatedEntity;
 	}
 
 }

@@ -6,9 +6,10 @@ module kcp005.a.viewmodel {
     export class ScreenModel {
         selectedCode: KnockoutObservable<string>;
         selectedCodeNoSetting: KnockoutObservable<string>;
-        multiSelectedCode: KnockoutObservable<any>;
-        multiSelectedCodeNoSetting: KnockoutObservable<any>;
+        multiSelectedCode: KnockoutObservableArray<string>;
+        multiSelectedCodeNoSetting: KnockoutObservableArray<string>;
         selectedCodeUnSelect: KnockoutObservable<string>;
+        copySelectedCode: KnockoutObservableArray<string>;
         
         listComponentOption: ComponentOption;
         listComponentOptionMulti: ComponentOption;
@@ -24,13 +25,14 @@ module kcp005.a.viewmodel {
             this.selectedCodeNoSetting = ko.observable(null);
             this.selectedCodeUnSelect = ko.observable('03');
             this.multiSelectedCodeNoSetting = ko.observableArray([]);
-            this.multiSelectedCode = ko.observableArray([]);
+            this.multiSelectedCode = ko.observableArray(['02', '04']);
             this.employeeList = ko.observableArray<UnitModel>([{code: '01', name: 'Angela Baby', workplaceName: 'HN'},
                     {code: '02', name: 'Angela Phuong Trinh', workplaceName: 'HN'},
                     {code: '03', name: 'Angela Linh Tinh', workplaceName: 'HCM'},
                     {code: '04', name: 'Min', workplaceName: 'HN'}
                 ]);
             this.alreadySettingList = ko.observableArray([{code: '01', isAlreadySetting: true}, , {code: '02', isAlreadySetting: true}]);
+            this.copySelectedCode = ko.observableArray(['02', '04']);
             this.listComponentOption = {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
@@ -41,6 +43,7 @@ module kcp005.a.viewmodel {
                     selectedCode: this.selectedCode,
                     isDialog: false,
                     isShowSelectAllButton: false,
+                    isShowNoSelectRow: false,
                     alreadySettingList: this.alreadySettingList
                     
                 }
@@ -57,6 +60,7 @@ module kcp005.a.viewmodel {
                 selectedCode: this.multiSelectedCode,
                 isDialog: true,
                 isShowSelectAllButton: false,
+                isShowNoSelectRow: false,
                 alreadySettingList: this.alreadySettingList
             }
             $('#employee-multi-setting').ntsListComponent(this.listComponentOptionMulti);
@@ -72,6 +76,7 @@ module kcp005.a.viewmodel {
                 selectedCode: this.multiSelectedCodeNoSetting,
                 isDialog: true,
                 isShowSelectAllButton: true,
+                isShowNoSelectRow: false,
             }
             $('#employee-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
             
@@ -85,6 +90,7 @@ module kcp005.a.viewmodel {
                 selectedCode: this.selectedCodeNoSetting,
                 isDialog: true,
                 isShowSelectAllButton: false,
+                isShowNoSelectRow: false,
             }
             $('#employee-noSetting').ntsListComponent(this.listComponentNoneSetting);
             
@@ -117,19 +123,8 @@ module kcp005.a.viewmodel {
         
         private settingCopiedItem() {
             var self = this;
-            
-            self.listComponentOption = {
-                    isShowAlreadySet: false, // is show already setting column.
-                    isMultiSelect: true, // is multiselect.
-                    listType: ListType.EMPLOYEE,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    employeeInputList: self.employeeList,
-                    isShowWorkPlaceName: false,
-                    selectedCode: self.selectedCode,
-                    isDialog: false,
-                    isShowSelectAllButton: false,
-                    alreadySettingList: self.alreadySettingList
-                }
+            self.listComponentOption.isMultiSelect = true;
+            self.listComponentOption.selectedCode = self.copySelectedCode;
             $('#employee-setting').ntsListComponent(self.listComponentOption);
         }
     }

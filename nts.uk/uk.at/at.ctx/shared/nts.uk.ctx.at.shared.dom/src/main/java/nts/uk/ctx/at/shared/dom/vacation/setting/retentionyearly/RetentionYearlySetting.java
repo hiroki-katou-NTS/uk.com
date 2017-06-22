@@ -26,7 +26,6 @@ public class RetentionYearlySetting extends AggregateRoot {
 	private UpperLimitSetting upperLimitSetting;
 	
 	/** The leave as work days. */
-	// TODO: wait QA 83374.
 	private Boolean leaveAsWorkDays;
 	
 	/**

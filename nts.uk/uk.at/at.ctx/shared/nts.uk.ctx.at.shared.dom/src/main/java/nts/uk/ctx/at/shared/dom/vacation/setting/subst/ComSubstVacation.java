@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
  * The Class CompanyCompensatoryLeave.
@@ -18,6 +19,15 @@ public class ComSubstVacation extends DomainObject {
 
 	/** The setting. */
 	private SubstVacationSetting setting;
+
+	/**
+	 * Checks if is managed.
+	 *
+	 * @return true, if is managed
+	 */
+	public boolean isManaged() {
+		return this.setting.getIsManage().equals(ManageDistinct.YES);
+	}
 
 	/**
 	 * Instantiates a new company compensatory leave.

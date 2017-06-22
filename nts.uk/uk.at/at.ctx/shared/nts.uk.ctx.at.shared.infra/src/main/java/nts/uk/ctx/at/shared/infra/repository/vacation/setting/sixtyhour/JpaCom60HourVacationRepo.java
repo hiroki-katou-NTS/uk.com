@@ -19,13 +19,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation_;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation_;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst.JpaComSubstVacationGetMemento;
-import nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst.JpaComSubstVacationSetMemento;
 
 /**
  * The Class JpaComSubstVacationRepo.
@@ -35,7 +30,14 @@ public class JpaCom60HourVacationRepo extends JpaRepository implements Com60Hour
 
 	@Override
 	public void update(Com60HourVacation setting) {
-		this.commandProxy().update(this.toEntity(setting));
+		EntityManager em = this.getEntityManager();
+		Optional<KshstCom60hVacation> optional = this.queryProxy().find(setting.getCompanyId(),
+				KshstCom60hVacation.class);
+		if (optional.isPresent()) {
+			KshstCom60hVacation entity = optional.get();
+			setting.saveToMemento(new JpaCom60HourVacationSetMemento(entity));
+			em.merge(entity);
+		}
 	}
 
 	@Override
@@ -59,10 +61,5 @@ public class JpaCom60HourVacationRepo extends JpaRepository implements Com60Hour
 		}
 
 		return Optional.of(new Com60HourVacation(new JpaCom60HourVacationGetMemento(results.get(0))));
-	}
-	private KshstCom60hVacation toEntity(Com60HourVacation setting) {
-		KshstCom60hVacation entity = new KshstCom60hVacation();
-		setting.saveToMemento(new JpaCom60HourVacationSetMemento(entity));
-		return entity;
 	}
 }

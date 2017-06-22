@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.standardtime.enums.ClassificationUseAtr;
-import nts.uk.ctx.at.record.dom.standardtime.enums.EmploymentUseAtr;
-import nts.uk.ctx.at.record.dom.standardtime.enums.WorkPlaceUseAtr;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.standardtime.enums.UseClassificationAtr;
 
 /**
  * 
@@ -11,13 +11,28 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.WorkPlaceUseAtr;
  *
  */
 @Getter
-public class AgreementUnitSetting {
+public class AgreementUnitSetting extends AggregateRoot{
 
 	private String companyId;
 
-	private ClassificationUseAtr classificationUseAtr;
+	private UseClassificationAtr classificationUseAtr;
 
-	private EmploymentUseAtr employmentUseAtr;
+	private UseClassificationAtr employmentUseAtr;
 
-	private WorkPlaceUseAtr workPlaceUseAtr;
+	private UseClassificationAtr workPlaceUseAtr;
+
+	public AgreementUnitSetting(String companyId, UseClassificationAtr classificationUseAtr,
+			UseClassificationAtr employmentUseAtr, UseClassificationAtr workPlaceUseAtr) {
+		super();
+		this.companyId = companyId;
+		this.classificationUseAtr = classificationUseAtr;
+		this.employmentUseAtr = employmentUseAtr;
+		this.workPlaceUseAtr = workPlaceUseAtr;
+	}
+	
+	public static AgreementUnitSetting createFromJavaType(String companyId, int classificationUseAtr, int employmentUseAtr, int workPlaceUseAtr){
+		return new AgreementUnitSetting(companyId, EnumAdaptor.valueOf(classificationUseAtr, UseClassificationAtr.class),
+				EnumAdaptor.valueOf(employmentUseAtr, UseClassificationAtr.class),
+				EnumAdaptor.valueOf(workPlaceUseAtr, UseClassificationAtr.class));
+	}
 }

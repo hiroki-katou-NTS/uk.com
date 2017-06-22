@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
-import nts.uk.ctx.at.record.dom.standardtime.enums.NumberOfTimeOverLimitAtr;
-import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthAtr;
-import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingType;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
+import nts.uk.ctx.at.record.dom.standardtime.enums.NumberOfTimeOverLimitType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 
 /**
  * 
@@ -13,17 +15,45 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingType;
  *
  */
 @Getter
-public class AgreementOperationSetting {
-	
+public class AgreementOperationSetting extends AggregateRoot {
+
 	private String companyId;
-	
-	private StartingMonthAtr startingMonth;
-	
-	private NumberOfTimeOverLimitAtr numberOfTimesOverLimitAtr;
-	
-	private ClosingDateAtr closingDateAtr;
-	
+
+	private StartingMonthType startingMonth;
+
+	private NumberOfTimeOverLimitType numberTimesOverLimitType;
+
 	private ClosingDateType closingDateType;
-	
-	private TargetSettingType targetSettingType;
+
+	private ClosingDateAtr closingDateAtr;
+
+	private TargetSettingAtr yearlyWorkTableAtr;
+
+	private TargetSettingAtr alarmListAtr;
+
+	public AgreementOperationSetting(String companyId, StartingMonthType startingMonth,
+			NumberOfTimeOverLimitType numberTimesOverLimitType, ClosingDateType closingDateType,
+			ClosingDateAtr closingDateAtr, TargetSettingAtr yearlyWorkTableAtr, TargetSettingAtr alarmListAtr) {
+		super();
+		this.companyId = companyId;
+		this.startingMonth = startingMonth;
+		this.numberTimesOverLimitType = numberTimesOverLimitType;
+		this.closingDateType = closingDateType;
+		this.closingDateAtr = closingDateAtr;
+		this.yearlyWorkTableAtr = yearlyWorkTableAtr;
+		this.alarmListAtr = alarmListAtr;
+	}
+
+	public static AgreementOperationSetting createFromJavaType(String companyId, int startingMonth,
+			int numberTimesOverLimitType, int closingDateType, int closingDateAtr, int yearlyWorkTableAtr,
+			int alarmListAtr) {
+		return new AgreementOperationSetting(
+				companyId,
+				EnumAdaptor.valueOf(startingMonth, StartingMonthType.class),
+				EnumAdaptor.valueOf(numberTimesOverLimitType, NumberOfTimeOverLimitType.class),
+				EnumAdaptor.valueOf(closingDateType, ClosingDateType.class),
+				EnumAdaptor.valueOf(closingDateAtr, ClosingDateAtr.class),
+				EnumAdaptor.valueOf(yearlyWorkTableAtr, TargetSettingAtr.class),
+				EnumAdaptor.valueOf(alarmListAtr, TargetSettingAtr.class));
+	}
 }

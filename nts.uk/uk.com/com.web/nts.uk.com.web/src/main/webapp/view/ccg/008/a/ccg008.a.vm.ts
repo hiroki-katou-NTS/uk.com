@@ -3,9 +3,13 @@
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
         layoutId: string;
+        topPageName: KnockoutObservable<string>;
+        flowmenu: KnockoutObservable<model.Placement>;
         placements: KnockoutObservableArray<model.Placement>;
         constructor() {
+            this.flowmenu = ko.observable(null);
             var self = this;
+            self.topPageName = ko.observable("");
             var title1 = nts.uk.resource.getText("CCG008_1");
             var title2 = nts.uk.resource.getText("CCG008_4");
             self.placements = ko.observableArray([]);
@@ -20,8 +24,13 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            service.getMyPage("0a03c8bc-574e-49f4-939d-56b96fb39c5e").done((data: model.LayoutDto) => {
+            var code =  nts.uk.ui.windows.getShared("TopPageCode");
+//            service.getTopPageByCode(code).done(function(){
+//                
+//            });
+            service.getMyPage("b137dc10-6f4c-4cda-93a4-207117f111fb").done((data: model.LayoutForMyPageDto) => {
                 console.log(data);
+                self.topPageName('flow-menu');
                 if (data !== undefined) {
                     let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
                         return new model.Placement(item.placementID, item.placementPartDto.name,
@@ -30,19 +39,45 @@
                             item.placementPartDto.topPagePartID, item.placementPartDto.type);
                     });
                     listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
-                    self.placements(listPlacement);
-                    console.log(self.placements());
+//                    self.placements(listPlacement);
+                    console.log(listPlacement);
                     self.changePreviewIframe("0a03c8bc-574e-49f4-939d-56b96fb39c5e");
+                    self.setupPositionAndSizeAll();
+                    if (listPlacement !== undefined)
+                        self.placements(listPlacement);
+                    _.defer(() => { self.setupPositionAndSizeAll(); });
+//            var flowmenu: model.Placement = listPlacement[0];
+//            if (flowmenu !== undefined)
+//                self.flowmenu(flowmenu);
+//            _.defer(() => { self.setupPositionAndSize2(self.flowmenu()); });
+                    
+                    
                 }
                 dfd.resolve();
             });
             return dfd.promise();
         }
                 
+                /** Setup position and size for a Placement */
+//        private setupPositionAndSize2(flowmenu: model.Placement) {
+//            console.log(flowmenu);
+//            $("#preview-flowmenu").css({
+//                width: (flowmenu.width * 150) + ((flowmenu.width - 1) * 10),
+//                height: (flowmenu.height * 150) + ((flowmenu.height - 1) * 10),
+//                
+//            });
+//        }
+        
+        
+        
+        
+        
+        
+        
             //for frame review layout
             private changePreviewIframe(layoutID: string){
 //                $("#preview-iframe-1").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
-                $("#preview-iframe-2").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
+//                $("#preview-iframe-2").attr("src", "/nts.uk.com.web/view/ccg/common/previewWidget/index.xhtml?layoutid=" + layoutID);
             }
             
             //for setting dialog
@@ -101,31 +136,42 @@
         }
     }    
              /** Server LayoutDto */
-    export interface LayoutDto {
-        companyID: string;
-        layoutID: string;
-        pgType: number;
-        placements: Array<PlacementDto>;
-    }
+        export interface LayoutDto {
+            companyID: string;
+            layoutID: string;
+            pgType: number;
+            placements: Array<PlacementDto>;
+        }
              /** Server PlacementDto */
-    export interface PlacementDto {
-        companyID: string,
-        placementID: string;
-        layoutID: string;
-        column: number;
-        row: number;
-        placementPartDto: PlacementPartDto;
-    }
+        export interface PlacementDto {
+            companyID: string,
+            placementID: string;
+            layoutID: string;
+            column: number;
+            row: number;
+            placementPartDto: PlacementPartDto;
+        }
              /** Server PlacementPartDto */
-    export interface PlacementPartDto {
-        companyID: string;
-        width: number;
-        height: number;
-        topPagePartID?: string;
-        code?: string;
-        name?: string;
-        "type"?: number;
-        externalUrl?: string;
-    }
+        export interface PlacementPartDto {
+            companyID: string;
+            width: number;
+            height: number;
+            topPagePartID?: string;
+            code?: string;
+            name?: string;
+            "type"?: number;
+            externalUrl?: string;
+        }
+         export interface LayoutForMyPageDto{
+            companyID: string;
+            layoutID: string;
+            pgType: number;
+            flowMenu: Array<FlowMenu>;
+            placements: Array<PlacementDto>;
+         }
+         export interface FlowMenu{
+            fileID: string;
+         }
+         
      }
 }

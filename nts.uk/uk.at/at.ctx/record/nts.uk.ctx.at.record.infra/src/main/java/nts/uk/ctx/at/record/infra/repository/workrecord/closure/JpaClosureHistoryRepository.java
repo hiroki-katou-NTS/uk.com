@@ -59,7 +59,7 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 	 */
 	@Override
 	public void update(ClosureHistory closureHistory) {
-		this.commandProxy().update(this.toEntity(closureHistory));
+		this.commandProxy().update(this.toEntityUpdate(closureHistory));
 
 	}
 
@@ -144,6 +144,26 @@ public class JpaClosureHistoryRepository extends JpaRepository implements Closur
 	 */
 	private KclmtClosureHist toEntity(ClosureHistory domain){
 		KclmtClosureHist entity = new KclmtClosureHist();
+		domain.saveToMemento(new JpaClosureHistorySetMemento(entity));
+		return entity;
+	}
+	
+	/**
+	 * To entity update.
+	 *
+	 * @param domain the domain
+	 * @return the kclmt closure hist
+	 */
+	private KclmtClosureHist toEntityUpdate(ClosureHistory domain){
+		Optional<KclmtClosureHist> optionalEntity = this
+				.queryProxy().find(
+						new KclmtClosureHistPK(domain.getCompanyId().v(),
+								domain.getClosureId().value, domain.getClosureHistoryId().v()),
+						KclmtClosureHist.class);
+		KclmtClosureHist entity = new KclmtClosureHist();
+		if(optionalEntity.isPresent()){
+			entity = optionalEntity.get();
+		}
 		domain.saveToMemento(new JpaClosureHistorySetMemento(entity));
 		return entity;
 	}

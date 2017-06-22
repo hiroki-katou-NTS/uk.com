@@ -1,68 +1,66 @@
 module nts.uk.sys.view.ccg013.b.viewmodel {
+    import windows = nts.uk.ui.windows;
 
     export class ScreenModel {
-        simpleValue: KnockoutObservable<string>;
+        //Text edittor
+        nameMenuBar: KnockoutObservable<string>;
         //Combobox
-        listSystemSelect: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string>;
+        listSystemSelect: KnockoutObservableArray<SystemSelect>;
+        selectedCodeSystemSelect: KnockoutObservable<string>;
         //colorpicker
         letterColor: KnockoutObservable<string>;
         backgroundColor: KnockoutObservable<string>;
         //Radio button
-        itemRadio: KnockoutObservableArray<any>;
-        selectedIdRadio: KnockoutObservable<number>;
+        itemRadioAtcClass: KnockoutObservableArray<any>;
+        selectedRadioAtcClass: KnockoutObservable<number>;
         //GridList
         listStandardMenu: KnockoutObservableArray<StandardMenu>;
         columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
         currentListStandardMenu: KnockoutObservableArray<any>;
-        
-        
-        items: KnockoutObservableArray<StandardMenu>;
-        currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
+        selectCodeStandardMenu: KnockoutObservable<string>;
+
         constructor() {
             var self = this;
-            self.simpleValue = ko.observable("");
+            self.nameMenuBar = ko.observable("");
             //Combo box
-            self.listSystemSelect = ko.observableArray([
-                new SystemSelect('基本給1', '基本給'),
-                new SystemSelect('基本給2', '役職手当'),
-                new SystemSelect('0003', '基本給')
-            ]);
-            self.selectedCode = ko.observable('')
+            self.listSystemSelect = ko.observableArray([]);
+            self.selectedCodeSystemSelect = ko.observable('')
             //Radio button
-            self.itemRadio = ko.observableArray([
-                new RadioButton(0, 'ツリーメニューから起動'),
-                new RadioButton(1, '直接起動')
-            ]);
-            self.selectedId = ko.observable(1);
+            self.itemRadioAtcClass = ko.observableArray([]);
+            self.selectedRadioAtcClass = ko.observable(1);
             //color picker
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
             //GridList
-            this.listStandardMenu = ko.observableArray([]);
-            this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', key:'code', width: 100 },
-                { headerText: '名称', prop: 'displayName', key:'displayName', width: 230 }
+            self.listStandardMenu = ko.observableArray([]);
+            self.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'code', key: 'code', width: 100 },
+                { headerText: '名称', prop: 'displayName', key: 'displayName', width: 230 }
             ]);
-            this.currentCode = ko.observable();
-            this.currentListStandardMenu = ko.observableArray([]);
-            
+            self.selectCodeStandardMenu = ko.observable('');
+            self.currentListStandardMenu = ko.observableArray([]);
+
             //test
-            this.currentCode = ko.observable();
-            this.currentCodeList = ko.observableArray([]);
-            this.currentCode = ko.observable();
-            this.currentCodeList = ko.observableArray([]);
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            /** Get List StandrdMenu*/
-            service.getAllStandardMenu().done(function(listStandardMenu: Array<viewmodel.StandardMenu>) {
-                listStandardMenu = _.orderBy(listStandardMenu, ["code"], ["asc"]);
-                self.listStandardMenu(listStandardMenu);
+            var data= windows.getShared("CCG013A_StandardMeNu");
+            if (data) {
+                self.nameMenuBar(data.nameMenuBar);
+                self.letterColor(data.pickerLetter);
+                self.backgroundColor(data.pickerBackground);
+                self.selectedRadioAtcClass(data.radioActlass);
+                    
+            }
+            
+            /** Get EditMenuBar*/
+            service.getEditMenuBar().done(function(editMenuBar: any) {
+                self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
+                self.listSystemSelect(editMenuBar.listSystem);
+                let listStandardMenu: Array<StandardMenu> = _.orderBy((editMenuBar.listStandardMenu, ["code"], ["asc"]));
+                self.listStandardMenu(editMenuBar.listStandardMenu);
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -70,33 +68,29 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             });
             return dfd.promise();
         }
-    }
-    class SystemSelect {
-        code: string;
-        name: string;
 
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+        cancel_Dialog(): any {
+            nts.uk.ui.windows.close();
         }
-    }
-    class RadioButton {
-        id: number;
-        name: string;
-        constructor(id, name) {
+
+        submit() {
             var self = this;
-            self.id = id;
-            self.name = name;
+            var menuBar = new MenuBar(self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass());
+            windows.setShared("CCG013B_MenuBar", menuBar);
+            self.cancel_Dialog();
         }
 
-    }
-     export class StandardMenu {
-        code: string;
-        displayName: string;
-        constructor(code: string, name: string, description: string) {
-            this.code = code;
-            this.displayName = displayName;
+    class MenuBar {
+        nameMenuBar: string;
+        letterColor: string;
+        backgroundColor: string;
+        selectedRadioAtcClass: number;
+        
+        constructor(nameMenuBar: string, letterColor: string, backgroundColor: string, selectedRadioAtcClass: number) {
+            this.nameMenuBar = nameMenuBar;
+            this.letterColor = letterColor;
+            this.backgroundColor = backgroundColor;
+            this.selectedRadioAtcClass = selectedRadioAtcClass;
         }
-         
     }
 }

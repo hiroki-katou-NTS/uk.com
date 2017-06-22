@@ -18,6 +18,8 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WeekStart;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.workplace.WorkPlaceWtSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwpwtstWorkplaceWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.workplace.JwpwtstWorkplaceWtSetPK;
+import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
  * The Class JpaWorkplaceWtSettingGetMemento.
@@ -45,29 +47,39 @@ public class JpaWorkplaceWtSettingGetMemento implements WorkPlaceWtSettingGetMem
 	/**
 	 * Instantiates a new jpa workplace wt setting get memento.
 	 *
-	 * @param typeValue the type value
+	 * @param typeValues the type values
 	 */
-	public JpaWorkplaceWtSettingGetMemento(List<JwpwtstWorkplaceWtSet> typeValue) {
-		JwpwtstWorkplaceWtSet commonValue = typeValue.get(0);
-		this.companyId = new CompanyId(commonValue.getJwpwtstWorkplaceWtSetPK().getCid());
-		this.year = new Year(commonValue.getJwpwtstWorkplaceWtSetPK().getYK());
-		this.workplaceId = commonValue.getWkpId();
-		this.flexSetting = new FlexSetting();
+	public JpaWorkplaceWtSettingGetMemento(List<JwpwtstWorkplaceWtSet> typeValues) {
+		// Get pk.
+		JwpwtstWorkplaceWtSetPK pk = typeValues.get(WtSettingConstant.NORMAL).getJwpwtstWorkplaceWtSetPK();
+		this.companyId = new CompanyId(pk.getCid());
+		this.year = new Year(pk.getYK());
+		this.workplaceId = pk.getWkpId();
 
-		typeValue.forEach(item -> {
+		this.setToDomain(typeValues);
+	}
+
+	/**
+	 * Sets the to domain.
+	 *
+	 * @param entities the new to domain
+	 */
+	private void setToDomain(List<JwpwtstWorkplaceWtSet> entities) {
+		this.flexSetting = new FlexSetting();
+		entities.forEach(item -> {
 			switch (item.getJwpwtstWorkplaceWtSetPK().getCtg()) {
-			case 0:
+			case WtSettingConstant.NORMAL:
 				this.normalSetting = new NormalSetting(this.getWorkTimeSetting(item),
 						WeekStart.valueOf(item.getStrWeek()));
 				break;
-			case 1:
-				if (item.getJwpwtstWorkplaceWtSetPK().getType() == 1) {
+			case WtSettingConstant.FLEX:
+				if (item.getJwpwtstWorkplaceWtSetPK().getType() == WtSettingConstant.SPECIFIED) {
 					this.flexSetting.setSpecifiedSetting(this.getWorkTimeSetting(item));
 					break;
 				}
 				this.flexSetting.setStatutorySetting(this.getWorkTimeSetting(item));
 				break;
-			case 2:
+			case WtSettingConstant.DEFORMED:
 				this.deformedSetting = new DeformationLaborSetting(this.getWorkTimeSetting(item),
 						WeekStart.valueOf(item.getStrWeek()));
 				break;
@@ -75,7 +87,6 @@ public class JpaWorkplaceWtSettingGetMemento implements WorkPlaceWtSettingGetMem
 				break;
 			}
 		});
-
 	}
 
 	/**

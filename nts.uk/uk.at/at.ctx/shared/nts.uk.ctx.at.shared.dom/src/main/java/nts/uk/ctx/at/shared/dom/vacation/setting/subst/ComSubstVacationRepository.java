@@ -12,6 +12,13 @@ import java.util.Optional;
 public interface ComSubstVacationRepository {
 
 	/**
+	 * Insert.
+	 *
+	 * @param setting the setting
+	 */
+    void insert(ComSubstVacation setting);
+
+	/**
 	 * Update.
 	 *
 	 * @param setting the setting

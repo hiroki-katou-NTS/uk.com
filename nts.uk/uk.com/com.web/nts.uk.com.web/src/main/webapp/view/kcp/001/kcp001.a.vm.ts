@@ -41,7 +41,7 @@ module kcp001.a.viewmodel {
                      */
                     selectedCode: this.selectedCode,
                     isDialog: true,
-                    isShowNoSelectRow: true,
+                    isShowNoSelectRow: false,
                     alreadySettingList: this.alreadySettingList
                 };
             $('#empt-list-setting').ntsListComponent(this.listComponentOption);
@@ -54,7 +54,7 @@ module kcp001.a.viewmodel {
                 selectType: SelectType.SELECT_ALL,
                 selectedCode: this.multiSelectedCode,
                 isDialog: true,
-                isShowNoSelectRow: true,
+                isShowNoSelectRow: false,
                 alreadySettingList: this.alreadySettingList
             };
             $('#empt-list-multi-setting').ntsListComponent(this.listComponentOptionMulti);
@@ -78,7 +78,7 @@ module kcp001.a.viewmodel {
                 selectType: SelectType.NO_SELECT,
                 selectedCode: this.multiSelectedCodeNoSetting,
                 isDialog: true,
-                isShowNoSelectRow: true
+                isShowNoSelectRow: false
             };
             $('#empt-list-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
             
@@ -98,7 +98,7 @@ module kcp001.a.viewmodel {
         
         private setAlreadyCheck(): void {
             var self = this;
-            self.alreadySettingList.push({"code": "02", "isAlreadySetting": true});
+            self.alreadySettingList.push({"code": self.selectedCode(), "isAlreadySetting": true});
         }
         
         private settingRegistedItem(): void {

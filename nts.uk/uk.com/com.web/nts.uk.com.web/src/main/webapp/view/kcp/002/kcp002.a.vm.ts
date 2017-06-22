@@ -11,12 +11,15 @@ module kcp002.a.viewmodel {
         listComponentOptionMulti: ComponentOption;
         listComponentNoneSetting: ComponentOption;
         listComponentMultiNoneSetting: ComponentOption;
-
+        listComponentUnSelect: ComponentOption;
+        alreadySettingList: KnockoutObservableArray<any>;
         constructor() {
             this.selectedCode = ko.observable('0000000002');
             this.selectedCodeNoSetting = ko.observable(null);
             this.multiSelectedCodeNoSetting = ko.observableArray(['0000000002', '0000000004']);
             this.multiSelectedCode = ko.observableArray([]);
+            this.selectedCodeUnSelect = ko.observable('0000000003');
+            this.alreadySettingList = ko.observableArray([{code: '0000000001', isAlreadySetting: true}, {code: '00000000002', isAlreadySetting: true}]);
             this.listComponentOption = {
                 isShowAlreadySet: true, // is show already setting column.
                 isMultiSelect: false, // is multiselect.
@@ -32,10 +35,12 @@ module kcp002.a.viewmodel {
                  * Return type is Array<string> while multiselect.
                  * Return type is String while select.
                  */
-                selectType : SelectType.SELECT_BY_SELECTED_CODE;
+                selectType: SelectType.SELECT_BY_SELECTED_CODE;
+                isShowNoSelectRow: true,
                 selectedCode: this.selectedCode,
                 isDialog: true,
-                alreadySettingList: ko.observableArray([{ code: '0000000001', isAlreadySetting: true }])
+                isShowNoSelectRow: false,
+                alreadySettingList: this.alreadySettingList
             }
             $('#empt-list-setting').ntsListComponent(this.listComponentOption);
 
@@ -44,10 +49,11 @@ module kcp002.a.viewmodel {
                 isShowAlreadySet: true,
                 isMultiSelect: true,
                 listType: ListType.Classification,
-                selectType : SelectType.SELECT_ALL;
+                selectType: SelectType.SELECT_ALL;
                 selectedCode: this.multiSelectedCode,
                 isDialog: true,
-                alreadySettingList: ko.observableArray([{ code: '0000000001', isAlreadySetting: true }, { code: '0000000002', isAlreadySetting: true }])
+                isShowNoSelectRow: false,
+                alreadySettingList: this.alreadySettingList
             }
             $('#empt-list-multi-setting').ntsListComponent(this.listComponentOptionMulti);
 
@@ -55,9 +61,11 @@ module kcp002.a.viewmodel {
                 isShowAlreadySet: false,
                 isMultiSelect: false,
                 listType: ListType.Classification,
-                selectType : SelectType.SELECT_FIRST_ITEM;
+                selectType: SelectType.SELECT_FIRST_ITEM;
                 selectedCode: this.selectedCodeNoSetting,
-                isDialog: true
+                isDialog: true,
+                isShowNoSelectRow: false,
+
                 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
             $('#empt-list-noSetting').ntsListComponent(this.listComponentNoneSetting);
@@ -67,16 +75,52 @@ module kcp002.a.viewmodel {
                 isShowAlreadySet: false,
                 isMultiSelect: true,
                 listType: ListType.Classification,
-                selectType : SelectType.NO_SELECT;
+                selectType: SelectType.NO_SELECT;
                 selectedCode: this.multiSelectedCodeNoSetting,
                 isDialog: true
+                isShowNoSelectRow: false,
                 //                alreadySettingList: ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}])
             }
             $('#empt-list-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
 
+            this.listComponentUnSelect = {
+                isShowAlreadySet: true,
+                isMultiSelect: false,
+                listType: ListType.Classification,
+                selectType: SelectType.SELECT_FIRST_ITEM;
+                selectedCode: this.selectedCodeNoSetting,
+                isDialog: true,
+                isShowNoSelectRow: true,
+                alreadySettingList: this.alreadySettingList
+            }
+            $('#empt-list-unSelect').ntsListComponent(this.listComponentUnSelect);
+
         }
-        setAlreadyCheck() {
-            this.listComponentOption.alreadySettingList.push({ "code": "0000000002", "isAlreadySetting": true });
+        private settingCopiedItem() {
+            var self = this;
+            
+            self.listComponentOption = {
+                    isShowAlreadySet: false, // is show already setting column.
+                    isMultiSelect: true, // is multiselect.
+                    listType: ListType.Classification,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,                 
+                    selectedCode: self.selectedCode,
+                    isDialog: false,
+                    isShowSelectAllButton: false,
+                    alreadySettingList: self.alreadySettingList
+                }
+            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+        }
+
+        private settingRegistedItem(): void {
+            var self = this;
+            self.alreadySettingList.push({ "code": self.selectedCode(), "isAlreadySetting": true });
+        }
+
+        private settingDeletedItem() {
+            let self = this;
+            self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
+                return item.code == self.selectedCode();
+            })[0]);
         }
     }
-}

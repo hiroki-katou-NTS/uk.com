@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.employmen
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
- * The Class JpaCompanySettingRepository.
+ * The Class JpaEmploymentWtSettingRepository.
  */
 @Stateless
 public class JpaEmploymentWtSettingRepository extends JpaRepository implements EmploymentWtSettingRepository {
@@ -54,7 +54,8 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	@Override
 	public void update(EmploymentWtSetting setting) {
 		List<JewtstEmploymentWtSet> entities = this.toEntity(setting);
-		commandProxy().updateAll(entities);
+		commandProxy()
+				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
 
 	/*
@@ -75,6 +76,9 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 				new JewtstEmploymentWtSetPK(companyId, year, WtSettingConstant.DEFORMED, WtSettingConstant.STATUTORY, employmentCode));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentWtSettingRepository#find(java.lang.String, int, java.lang.String)
+	 */
 	@Override
 	public Optional<EmploymentWtSetting> find(String companyId, int year, String employmentCode) {
 		// Get entity manager
@@ -98,6 +102,9 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentWtSettingRepository#findAll(java.lang.String, int)
+	 */
 	@Override
 	public List<String> findAll(String companyId, int year) {
 		// Get entity manager
@@ -124,12 +131,11 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	/**
 	 * To entity.
 	 *
-	 * @param domain
-	 *            the domain
+	 * @param domain the domain
 	 * @return the list
 	 */
 	private List<JewtstEmploymentWtSet> toEntity(EmploymentWtSetting domain) {
-		List<JewtstEmploymentWtSet> entities = new ArrayList<>();
+		List<JewtstEmploymentWtSet> entities = new ArrayList<JewtstEmploymentWtSet>();
 		JpaEmploymentWtSettingSetMemento memento = new JpaEmploymentWtSettingSetMemento();
 		domain.saveToMemento(memento);
 		entities.add(memento.getDeformed());
@@ -142,8 +148,7 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	/**
 	 * To domain.
 	 *
-	 * @param entities
-	 *            the entities
+	 * @param entities the entities
 	 * @return the employment wt setting
 	 */
 	private EmploymentWtSetting toDomain(List<JewtstEmploymentWtSet> entities) {
@@ -151,6 +156,32 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 			return null;
 		}
 		return new EmploymentWtSetting(new JpaEmploymentWtSettingGetMemento(entities));
+	}
+
+	/**
+	 * Update entity.
+	 *
+	 * @param entity the entity
+	 * @return the jewtst employment wt set
+	 */
+	private JewtstEmploymentWtSet updateEntity(JewtstEmploymentWtSet entity) {
+		JewtstEmploymentWtSet updatedEntity = this.queryProxy().find(entity.getJewtstEmploymentWtSetPK(), JewtstEmploymentWtSet.class).get();
+		updatedEntity.setDailyTime(entity.getDailyTime());
+		updatedEntity.setWeeklyTime(entity.getWeeklyTime());
+		updatedEntity.setStrWeek(entity.getStrWeek());
+		updatedEntity.setJanTime(entity.getJanTime());
+		updatedEntity.setFebTime(entity.getFebTime());
+		updatedEntity.setMarTime(entity.getMarTime());
+		updatedEntity.setAprTime(entity.getAprTime());
+		updatedEntity.setMayTime(entity.getMayTime());
+		updatedEntity.setJunTime(entity.getJunTime());
+		updatedEntity.setJulTime(entity.getJulTime());
+		updatedEntity.setAugTime(entity.getAugTime());
+		updatedEntity.setSepTime(entity.getSepTime());
+		updatedEntity.setOctTime(entity.getOctTime());
+		updatedEntity.setNovTime(entity.getNovTime());
+		updatedEntity.setDecTime(entity.getDecTime());
+		return updatedEntity;
 	}
 
 }

@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 650,
+					width : 550,
 					height : 400
 				};
 			</script>
@@ -20,40 +20,36 @@
 			<com:scriptfile path="kmk004.e.start.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area cf">
 				<div id="description">#{i18n.getText('KMK004_32')}</div>
-				<br />
-				<div class="settingCompany">
-					<div class="company" >#{i18n.getText('Com_Company')}</div>
-					<div class="ntsControlCheckbox" 
-						data-bind="ntsCheckBox: { checked: companySetting }">#{i18n.getText('KMK004_33')}
-					</div>
-					<div class="ntsControlRadio"> 
-						<div class="radioCheck">
-							<label class="ntsRadioBox">
-								<input 
-									type="radio" 
+				<div class="content-center">
+					<div class="pull-left">
+						<div class="company">#{i18n.getText('Com_Company')}</div>
+						<div class="ntsControlCheckbox"
+							data-bind="ntsCheckBox: { checked: companySetting }">#{i18n.getText('KMK004_33')}
+						</div>
+						<div class="ntsControlRadio">
+							<div class="radioCheck pull-left">
+								<label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 1, checked: checkValueCompanySetting, enable: companySetting" /> 
-								<span class="box"></span>
-								<span class="label">#{i18n.getText('Com_Employment')}</span>
-							</label>
+									data-bind="name:'#[KMK004_34]', checkedValue: 1, checked: checkValueCompanySetting, enable: companySetting" />
+									<span class="box"></span> <span class="label">#{i18n.getText('Com_Employment')}</span>
+								</label>
+							</div>
+							<div class="radioCheck pull-left">
+								<label class="ntsRadioBox"> <input type="radio"
+									name="textRadio"
+									data-bind="name:'#[KMK004_34]', checkedValue: 2, checked: checkValueCompanySetting, enable: companySetting" />
+									<span class="box"></span> <span class="label">#{i18n.getText('Com_Workplace')}</span>
+								</label>
+							</div>
 						</div>
-						<div class="radioCheck">
-						 <label class="ntsRadioBox"> 
-						 	<input type="radio"
-								name="textRadio"
-								data-bind="checkedValue: 2, checked: checkValueCompanySetting, enable: companySetting" /> 
-							<span class="box"></span>
-							<span class="label">#{i18n.getText('Com_Workplace')}</span>
-						</label>
-						</div>
-					</div> 
-					<br />
-					<div class="ntsControlCheckbox" data-bind="ntsCheckBox: { checked: usageUnitSettingModel.employee }">#{i18n.getText('Com_Person')}</div>
-				</div>
-				<div class="rightSettingCompany">
-					<label>#{i18n.getText('KMK004_35')}</label>
+						<br />
+						<div class="ntsControlCheckbox"
+							data-bind="ntsCheckBox: { checked: usageUnitSettingModel.employee }">#{i18n.getText('Com_Person')}</div>
+					</div>
+					<img class="arrow-black-down pull-left" src="img/KMK004_1.PNG"></img>
+					<label class="description-right pull-left">#{i18n.getText('KMK004_35')}</label>
 				</div>
 			</div>
 			<div id="functions-area-bottom" class="endButton">

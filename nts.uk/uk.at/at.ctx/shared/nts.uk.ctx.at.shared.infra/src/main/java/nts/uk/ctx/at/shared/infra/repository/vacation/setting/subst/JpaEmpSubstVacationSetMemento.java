@@ -25,6 +25,16 @@ public class JpaEmpSubstVacationSetMemento implements EmpSubstVacationSetMemento
 	 *            the type value
 	 */
 	public JpaEmpSubstVacationSetMemento(KsvstEmpSubstVacation typeValue) {
+
+		KsvstEmpSubstVacationPK empSubstVacationPK = typeValue.getKclstEmpSubstVacationPK();
+
+		// Check PK exist
+		if (empSubstVacationPK == null) {
+			empSubstVacationPK = new KsvstEmpSubstVacationPK();
+		}
+
+		typeValue.setKclstEmpSubstVacationPK(empSubstVacationPK);
+
 		this.typeValue = typeValue;
 	}
 
@@ -36,7 +46,7 @@ public class JpaEmpSubstVacationSetMemento implements EmpSubstVacationSetMemento
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		KsvstEmpSubstVacationPK empSubstVacationPK = new KsvstEmpSubstVacationPK();
+		KsvstEmpSubstVacationPK empSubstVacationPK = this.typeValue.getKclstEmpSubstVacationPK();
 		empSubstVacationPK.setCid(companyId);
 		this.typeValue.setKclstEmpSubstVacationPK(empSubstVacationPK);
 	}

@@ -110,6 +110,11 @@ public class SubstVacationWebService extends WebService {
 		// Return
 		return this.substVacationFinder.findEmpSetting(companyId, contractTypeCode);
 	}
+	@POST
+	@Path("emp/findall")
+	public List<String> getAllEmployment() {
+		return this.substVacationFinder.findAllEmployment();
+	}
 
 	/**
 	 * Gets the vacation expiration enum.

@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemType;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 
 /**
  * 
@@ -9,12 +13,23 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemType;
  *
  */
 @Getter
-public class AgreementTimeOfCompany {
+public class AgreementTimeOfCompany extends AggregateRoot{
 	
 	private String companyId;
 
 	private String basicSettingId;
 	
-	private LaborSystemType laborSystemType;
-
+	private LaborSystemtAtr laborSystemAtr;
+	
+	public AgreementTimeOfCompany(String companyId, String basicSettingId, LaborSystemtAtr laborSystemAtr) {
+		super();
+		this.companyId = companyId;
+		this.basicSettingId = basicSettingId;
+		this.laborSystemAtr = laborSystemAtr;
+	}
+	
+	public static AgreementTimeOfCompany createFromJavaType(String companyId, String basicSettingId, BigDecimal laborSystemAtr){
+		return new AgreementTimeOfCompany(companyId, basicSettingId, EnumAdaptor.valueOf(laborSystemAtr.intValue(), LaborSystemtAtr.class));
+	}
+	
 }

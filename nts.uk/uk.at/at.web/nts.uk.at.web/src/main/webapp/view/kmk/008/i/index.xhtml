@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 860,
+					height : 600
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk008.i.main.css" />
+			<com:scriptfile path="kmk008.i.start.js" />
+			<com:scriptfile path="kmk008.i.vm.js" />
+			<com:scriptfile path="kmk008.i.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="label">#{i18n.getText('KMK008_5')}</div>
+				<hr />
+				<div class="valign-center control-group">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_32')}</div>
+					<div id="combo-box-month-setting" tabindex="1"
+						data-bind="ntsComboBox: {
+						name: '#{i18n.getText('KMK008_32')}',
+						options: monthSettingItemList,
+						optionsValue: 'value',
+						value: selectedMonthSettingItemList,
+						optionsText: 'localizedName',
+						editable: false,
+						enable: true,
+						columns: [
+							{ prop: 'localizedName', length: 10 },
+						]} ">
+					</div>
+				</div>
+				<div class="valign-center control-group">
+					<div class="closing-date-clean">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_33')}</div>
+						<button tabindex="2"
+							data-bind="ntsHelpButton: {image: 'img_001.png', position: 'right top', enable: true }">?</button>
+					</div>
+					<div class="closing-date-clean rdb-closing-date-classification">
+						<div id="rdb-closing-date-classification" tabindex="3"
+							data-bind="ntsRadioBoxGroup: {
+							options: closingDateClassificationItemList,
+							optionsValue: 'value',
+							optionsText: 'localizedName',
+							value: selectedClosingDateClassificationItemList,
+							enable: true }">
+						</div>
+					</div>
+
+					<div class="closing-date-clean">
+						<div id="cbx-closing-date-setting" tabindex="4"
+							data-bind="ntsComboBox: {
+						name: '#{i18n.getText('KMK008_33')}',
+						options: closingDateSettingItemList,
+						optionsValue: 'value',
+						value: selectedClosingDateSettingItemList,
+						optionsText: 'localizedName',
+						editable: false,
+						enable: true,
+						columns: [
+							{ prop: 'localizedName', length: 10 },
+						]} ">
+						</div>
+					</div>
+
+				</div>
+
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
