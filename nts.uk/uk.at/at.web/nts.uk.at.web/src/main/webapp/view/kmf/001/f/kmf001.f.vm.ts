@@ -154,6 +154,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.emSelectedCode.subscribe(function(employmentCode: string) {
                     if (employmentCode) {
                         self.loadEmploymentSetting(employmentCode);
+                        self.isEmptyEmployment(false);
                     }
                     else {
                         //not selected item -> disable All
