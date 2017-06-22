@@ -67,6 +67,7 @@ module nts.uk.at.view.kmk012.a {
                 
                 
                 self.closureModel.useClassification.subscribe(function(val: number){
+                    self.clearValiate();
                     if (val == 0) {
                         self.enableUseClassification(false);
                         self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
@@ -144,22 +145,28 @@ module nts.uk.at.view.kmk012.a {
                 dto = new ClosureSaveDto();
                 dto.closureId = self.closureModel.closureId();
                 dto.useClassification = self.closureModel.useClassification();
-                dto.month = self.closureModel.month();
+                if (dto.useClassification == 1) {
+                    dto.month = self.closureModel.month();
+                }else {
+                    dto.month = 0;
+                }
                 return dto;
             }
             
-            clearValiate(){
-                $('#inpMonth').ntsError('clear');
-                $('#inpname').ntsError('clear');
-                 
+            clearValiate() {
+                $('#inpMonth').ntsError('clear')
+                $('#inpname').ntsError('clear')
             }
             
             validateClient(): boolean {
-                $("#inpMonth").ntsEditor("validate");
-                $("#inpname").ntsEditor("validate");
-                
-                if($('.nts-input').ntsError('hasError')) {
-                    return true;
+                var self = this;
+                self.clearValiate();
+                if (self.closureModel.useClassification() == 1) {
+                    $("#inpMonth").ntsEditor("validate");
+                    $("#inpname").ntsEditor("validate");
+                    if ($('.nts-input').ntsError('hasError')) {
+                        return true;
+                    }
                 }
                 return false;
             }

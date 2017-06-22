@@ -114,13 +114,13 @@ module kcp.share.tree {
             if (data.isShowAlreadySet) {
                 // Add row already setting.
                 self.treeComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'settingType', width: "10%",
+                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'settingType', width: "15%",
                     formatter: function(settingType: number) {
                         if (settingType == SettingType.USE_PARRENT_SETTING) {
-                            return '<div style="text-align: center;"><i class="icon icon-close"></i></div>';
+                            return '<div style="text-align: center;"><i class="icon icon icon-78"></i></div>';
                         }
                         if (settingType == SettingType.ALREADY_SETTING) {
-                            return '<div style="text-align: center;"><i class="icon icon-dot"></i></div>';
+                            return '<div style="text-align: center;"><i class="icon icon icon-84"></i></div>';
                         }
                         return '';
                     }
@@ -142,33 +142,58 @@ module kcp.share.tree {
                 res = self.fake();
                 if (res) {
                     // Set default value when init component.
-                    if (!data.selectedCode() || data.selectedCode().length == 0) {
-                        self.selectedCodes(res.length > 0 ? self.selectData(data, res[0]) : null);
-                    }
+                    self.selectedCodes = data.selectedCode;
                     
                     // Map already setting attr to data list.
-                    if (data.isShowAlreadySet) {
-                        self.addAreadySettingAttr(res, self.alreadySettingList());
-                    }
+                    self.addAlreadySettingAttr(res, self.alreadySettingList());
                     
+                    if (data.isShowAlreadySet) { 
+                        // subscribe when alreadySettingList update => reload component.
+                        self.alreadySettingList.subscribe((newAlreadySettings: any) => {
+                            self.addAlreadySettingAttr(res, newAlreadySettings);
+                            self.itemList(res);
+                            self.backupItemList(res);
+                            self.addIconToAlreadyCol();
+                        });
+                    }
                     // Init component.
                     self.itemList(res);
                     self.backupItemList(res);
                     $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/tree.xhtml', function() {
                         ko.cleanNode($input[0]);
                         ko.applyBindings(self, $input[0]);
+                        
+                        // Add icon to column already setting.
+                        self.addIconToAlreadyCol();
                     });
                     dfd.resolve();
                 }
             });
             
+            // defined function get data list.
+            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                return self.backupItemList();
+            }
+            
             return dfd.promise();
+        }
+        
+        private addIconToAlreadyCol() {
+            var icon84Link = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                .mergeRelativePath('/view/kcp/share/icon/icon84.png').serialize();
+            $('.icon-84').attr('style', "background: url('"+ icon84Link +"');width: 20px;height: 20px;background-size: 20px 20px;")
+            
+            var icon78Link = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                .mergeRelativePath('/view/kcp/share/icon/icon78.png').serialize();
+            $('.icon-78').attr('style', "background: url('"+ icon78Link +"');width: 20px;height: 20px;background-size: 20px 20px;")
         }
         
         /**
          * Add Already Setting Attr into data list.
          */
-        private addAreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitAlreadySettingModel>) {
+        private addAlreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitAlreadySettingModel>) {
             let mapAlreadySetting = _.reduce(alreadySettingList, function(hash, value) {
                 let key = value['code'];
                 hash[key] = value['settingType'];
@@ -199,7 +224,7 @@ module kcp.share.tree {
             service.findWorkplaceTree(self).done(function(res: Array<UnitModel>) {
                 if (res) {
                     if (self.alreadySettingList) {
-                        self.addAreadySettingAttr(res, self.alreadySettingList());
+                        self.addAlreadySettingAttr(res, self.alreadySettingList());
                     }
                     self.itemList(res);
                     self.backupItemList(res);
@@ -238,7 +263,7 @@ module kcp.share.tree {
             let self = this;
             for (let alreadySetting of dataList) {
                 listSubCode.push(alreadySetting.code);
-                if (alreadySetting.childs.length > 0) {
+                if (alreadySetting.childs && alreadySetting.childs.length > 0) {
                     this.findListSubCode(alreadySetting.childs, listSubCode);
                 }
             }
@@ -257,7 +282,8 @@ module kcp.share.tree {
         /**
          * Find UnitModel by code
          */
-        private findUnitModelByCode(dataList: Array<UnitModel>, code: string, listModel: Array<UnitModel>): Array<UnitModel> {
+        private findUnitModelByCode(dataList: Array<UnitModel>, code: string,
+            listModel: Array<UnitModel>) :Array<UnitModel> {
             let self = this;
             for (let item of dataList) {
                 if (item.code == code) {
@@ -293,7 +319,7 @@ module kcp.share.tree {
                 }
                 if (level == 1) {
                     newItem.childs = [];
-                } else if (item.childs.length > 0) {
+                } else if (item.childs && item.childs.length > 0) {
                     let tmpModels = this.filterByLevel(newItem.childs, level, new Array<UnitModel>());
                     newItem.childs = tmpModels;
                 }
@@ -356,6 +382,8 @@ interface JQuery {
      * Nts tree component.
      */
     ntsTreeComponent(option: kcp.share.tree.TreeComponentOption): JQueryPromise<void>;
+    
+    getDataList(): Array<kcp.share.list.UnitModel>;
 }
 
 (function($: any) {
