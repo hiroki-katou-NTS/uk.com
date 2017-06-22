@@ -25,7 +25,9 @@ module nts.uk.ui.koExtentions {
             
             // Container
             var container = $(element);
-            container.addClass("ntsControl ntsCheckBox").attr("tabindex", "0").on("click", (e) => {
+            if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+	            container.attr("tabindex", "0");
+            container.addClass("ntsControl ntsCheckBox").on("click", (e) => {
                 if (container.data("readonly") === true) e.preventDefault();
             });
 
@@ -105,6 +107,9 @@ module nts.uk.ui.koExtentions {
             let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             container.data("enable", _.clone(enable));
             container.data("init", true);
+            container.data("tabindex", container.attr("tabindex"));
+        	container.removeAttr("tabindex");
+
             // Default value
             new nts.uk.util.value.DefaultValue().onReset(container, data.value);
         }
@@ -145,7 +150,12 @@ module nts.uk.ui.koExtentions {
                     });
                     
                     let disableOption = option["enable"];
-                    checkBoxLabel.attr("tabindex", "0");
+                    if (nts.uk.util.isNullOrUndefined(container.data("tabindex")))
+                    	checkBoxLabel.attr("tabindex", "0");
+                    else {
+                    	checkBoxLabel.attr("tabindex", container.data("tabindex"));
+                    }
+                    
                     checkBoxLabel.keypress(function (evt, ui){
                         let code = evt.which || evt.keyCode;
                         if (code === 32) {
