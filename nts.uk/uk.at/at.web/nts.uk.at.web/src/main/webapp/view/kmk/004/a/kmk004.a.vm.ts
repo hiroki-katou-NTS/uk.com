@@ -31,9 +31,6 @@ module nts.uk.at.view.kmk004.a {
             constructor() {
                 let self = this;
 
-                // Set start month.
-                self.setStartMonth();
-
                 // Flag.
                 self.isNewMode = ko.observable(true);
                 self.isLoading = ko.observable(true);
@@ -94,8 +91,13 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 $.when(self.loadUsageUnitSetting(),
-                    self.loadCompanySetting())
-                    .done(() => dfd.resolve());
+                    self.setStartMonth())
+                    .done(() => {
+                        self.loadCompanySetting()
+                            .done(() => {
+                                dfd.resolve();
+                            });
+                    });
                 return dfd.promise();
             }
 
