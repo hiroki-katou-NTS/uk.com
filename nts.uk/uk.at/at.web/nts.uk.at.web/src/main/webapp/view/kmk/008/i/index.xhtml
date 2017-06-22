@@ -73,10 +73,27 @@
 						]} ">
 						</div>
 					</div>
-
 				</div>
 
-
+				<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_34')}</div>
+						<button tabindex="5"
+							data-bind="ntsHelpButton: {image: 'img_001.png', position: 'right top', enable: true }">?</button>
+						<div id="cbx-limit-setting" tabindex="6"
+							data-bind="ntsComboBox: {
+						name: '#{i18n.getText('KMK008_34')}',
+						options: limitSettingItemList,
+						optionsValue: 'value',
+						value: selectedLimitSettingItemList,
+						optionsText: 'localizedName',
+						editable: false,
+						enable: true,
+						columns: [
+							{ prop: 'localizedName', length: 10 },
+						]} ">
+						</div>
+				</div>
+				
 			</div>
 		</ui:define>
 	</ui:composition>
