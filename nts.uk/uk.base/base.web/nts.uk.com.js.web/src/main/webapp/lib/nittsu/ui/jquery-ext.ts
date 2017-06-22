@@ -858,7 +858,11 @@ module nts.uk.ui.jqueryExtentions {
                     } else {
                         row = $grid.igGrid("selectedRow");
                     }
-                    if (row) $grid.igGrid("virtualScrollTo", row.index);
+//                    if (row) $grid.igGrid("virtualScrollTo", getSelectRowIndex($grid, row.id));
+                    if (row) {
+                        let index = $(row.element).attr("data-row-idx");
+                        $grid.igGrid("virtualScrollTo", index === undefined ? getSelectRowIndex($grid, row.id) : parseInt(index));
+                    }
                 });
             } else {
                 $grid.on("selectChange", function() {
@@ -878,6 +882,12 @@ module nts.uk.ui.jqueryExtentions {
                 });
             }
             return $grid;
+        }
+        
+        function getSelectRowIndex($grid: JQuery, selectedValue): number {
+            let dataSource = $grid.igGrid("option", "dataSource");
+            let primaryKey = $grid.igGrid("option", "primaryKey");
+            return _.findIndex(dataSource, s => s[primaryKey].toString() === selectedValue.toString());        
         }
 
         function setupTreeGridScroll($control: JQuery, virtualization?: boolean) {

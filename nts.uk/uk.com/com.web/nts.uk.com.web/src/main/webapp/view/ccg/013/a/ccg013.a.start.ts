@@ -3,18 +3,20 @@ module ccg013.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-        });    
-        
-        var tabs = $( "#tabs" ).tabs();
-        tabs.find( ".ui-tabs-nav" ).sortable({
-          axis: "x"
+        });
+
+        $("#tabs").tabs()
+            .find(".ui-tabs-nav").sortable({
+                axis: "x"
+            }).disableSelection();
+
+        $(".title-menu").sortable({
+            items: ".title-menu-column",
+            axis: "x"
         }).disableSelection();
-        
-        $( ".title-menu" ).sortable({
-            axis: "x"    
+
+        $(".tree-menu").sortable({
+            axis: "y"
         }).disableSelection();
-        $( ".tree-menu" ).sortable({
-            axis: "y"    
-        }).disableSelection();;
     });
 }

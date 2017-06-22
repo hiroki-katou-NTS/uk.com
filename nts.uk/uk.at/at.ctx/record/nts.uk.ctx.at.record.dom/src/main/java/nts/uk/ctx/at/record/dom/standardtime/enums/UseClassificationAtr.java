@@ -20,19 +20,4 @@ public enum UseClassificationAtr {
 
 	public final int value;
 
-	public String toName() {
-		String name;
-		switch (value) {
-		case 0:
-			name = "使用しない";
-			break;
-		case 1:
-			name = "使用する";
-			break;
-		default:
-			name = "使用する";
-			break;
-		}
-		return name;
-	}
 }

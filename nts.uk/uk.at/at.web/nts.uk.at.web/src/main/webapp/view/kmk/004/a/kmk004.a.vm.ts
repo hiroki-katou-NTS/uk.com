@@ -106,12 +106,18 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectCompany(): void {
                 let self = this;
+                // Clear error.
+                self.clearError();
+
+                // Update flag.
                 self.isLoading(true);
-                self.loadCompanySetting();
                 self.isCompanySelected(true);
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
+
+                // Load data.
+                self.loadCompanySetting();
             }
 
             /**
@@ -119,11 +125,17 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectEmployment(): void {
                 let self = this;
+                // Clear error.
+                self.clearError();
+
+                // Update flag.
                 self.isLoading(true);
                 self.isCompanySelected(false);
                 self.isEmploymentSelected(true);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(false);
+
+                // Load data.
                 $('#list-employment').ntsListComponent(this.listEmploymentOption).done(() => {
                     // Select first employment.
                     let list = $('#list-employment').getDataList();
@@ -138,11 +150,16 @@ module nts.uk.at.view.kmk004.a {
              */
             public onSelectWorkplace(): void {
                 let self = this;
+                // Clear error.
+                self.clearError();
+
+                // Update flag.
                 self.isLoading(true);
                 self.isCompanySelected(false);
                 self.isEmploymentSelected(false);
                 self.isEmployeeSelected(false);
                 self.isWorkplaceSelected(true);
+
                 // mock data.
                 self.loadWorkplaceSetting('1');
             }
@@ -160,6 +177,10 @@ module nts.uk.at.view.kmk004.a {
              */
             public saveCompanySetting(): void {
                 let self = this;
+                // Validate
+                if (self.hasError()) {
+                    return;
+                }
                 service.saveCompanySetting(ko.toJS(self.companyWTSetting)).done(() => {
                     self.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -171,6 +192,10 @@ module nts.uk.at.view.kmk004.a {
              */
             public saveEmployment(): void {
                 let self = this;
+                // Validate
+                if (self.hasError()) {
+                    return;
+                }
                 service.saveEmploymentSetting(ko.toJS(self.employmentWTSetting)).done(() => {
                     self.setAlreadySettingEmploymentList();
                     self.isNewMode(false);
@@ -183,6 +208,10 @@ module nts.uk.at.view.kmk004.a {
              */
             public saveWorkplace(): void {
                 let self = this;
+                // Validate
+                if (self.hasError()) {
+                    return;
+                }
                 service.saveWorkplaceSetting(ko.toJS(self.workplaceWTSetting)).done(() => {
                     self.setAlreadySettingWorkplaceList();
                     self.isNewMode(false);
@@ -450,6 +479,22 @@ module nts.uk.at.view.kmk004.a {
                     isDialog: false,
                     alreadySettingList: self.employmentCodes
                 };
+            }
+
+            /**
+             * Clear all errors.
+             */
+            private clearError(): void {
+                if (nts.uk.ui._viewModel) {
+                    $('.nts-editor').ntsError('clear');
+                }
+            }
+
+            /**
+             * Check validate all input.
+             */
+            private hasError(): boolean {
+                return $('.nts-editor').ntsError('hasError');
             }
         }
 

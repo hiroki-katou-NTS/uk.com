@@ -564,6 +564,9 @@ module nts.uk.ui.koExtentions {
             this.$searchBox.keydown(function(evt, ui) {
                 if (evt.which === 13) {
                     proceedSearch.apply(self);
+                    _.defer(() => {
+                        $input.focus();                
+                    });
                 }
             });
         }

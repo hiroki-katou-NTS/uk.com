@@ -20,20 +20,4 @@ public enum LaborSystemtAtr {
 	
 	public final int value;
 	
-	public String toName(){
-		String name;
-		switch (value) {
-		case 0:
-			name = "一般労働制";
-			break;
-		case 1:
-			name = "変形労働時間制";
-			break;
-		default:
-			name = "一般労働制";
-			break;
-		}
-		
-		return name;
-	}
 }
