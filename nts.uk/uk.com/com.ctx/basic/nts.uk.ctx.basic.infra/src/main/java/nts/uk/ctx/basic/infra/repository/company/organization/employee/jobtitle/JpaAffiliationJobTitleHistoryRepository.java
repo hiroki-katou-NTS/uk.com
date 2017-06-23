@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.infra.repository.company.organization.jobtitle.history;
+package nts.uk.ctx.basic.infra.repository.company.organization.employee.jobtitle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +26,10 @@ import nts.uk.ctx.basic.infra.entity.company.organization.employee.jobtitle.Kmnm
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.jobtitle.KmnmtAffiliJobTitleHist_;
 
 /**
- * The Class JpaJobTitleHistoryRepository.
+ * The Class JpaAffiliationJobTitleHistoryRepository.
  */
 @Stateless
-public class JpaJobTitleHistoryRepository extends JpaRepository
+public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
 		implements AffiliationJobTitleHistoryRepository {
 	
 	/**
@@ -39,7 +39,7 @@ public class JpaJobTitleHistoryRepository extends JpaRepository
 	 * @return the job title history
 	 */
 	private AffiliationJobTitleHistory toDomain(KmnmtAffiliJobTitleHist entity){
-		return new AffiliationJobTitleHistory(new JpaJobTitleHistoryGetMemento(entity));
+		return new AffiliationJobTitleHistory(new JpaAffiliationJobTitleHistoryGetMemento(entity));
 	}
 
 	/*
