@@ -15,7 +15,7 @@ module kdl021.a.viewmodel {
             self.items = ko.observableArray([]);
             //header
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'code', width: 70 },
+                { headerText: nts.uk.resource.getText("KDL021_3"), prop: 'code', width: 90 },
                 { headerText: nts.uk.resource.getText("KDL021_4"), prop: 'name', width: 245, formatter: _.escape }
             ]);
             self.currentCodeList = ko.observableArray();
