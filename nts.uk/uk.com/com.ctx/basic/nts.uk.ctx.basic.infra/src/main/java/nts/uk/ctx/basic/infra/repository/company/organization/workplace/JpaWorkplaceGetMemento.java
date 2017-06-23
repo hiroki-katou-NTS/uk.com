@@ -75,7 +75,7 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 */
 	@Override
 	public WorkplaceCode getWorkplaceCode() {
-		return new WorkplaceCode(this.kwpmtWorkplace.getWplcd());
+		return new WorkplaceCode(this.kwpmtWorkplace.getKwpmtWorkplacePK().getWplcd());
 	}
 
 	/**
