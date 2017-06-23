@@ -31,6 +31,7 @@ module nts.uk.pr.view.kmf001.j {
             isComManaged: KnockoutObservable<boolean>;
             hasEmp: KnockoutObservable<boolean>;
             isEmpManaged: KnockoutObservable<boolean>;
+            saveDisable : KnockoutObservable<boolean>;
 
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
@@ -65,19 +66,23 @@ module nts.uk.pr.view.kmf001.j {
                     return self.settingModel().isManage() == 1;
                 }, self);
 
-                self.hasEmp = ko.computed(function() {
-                    // TODO: count emp
-                    return true;
-                }, self);
-
+                self.hasEmp = ko.observable(true);
+                self.saveDisable = ko.observable(true);
                 self.isEmpManaged = ko.computed(function() {
                     return self.hasEmp && self.empSettingModel().isManage() == 1;
                 }, self);
 
                 self.selectedContractTypeCode = ko.observable('');
                 self.selectedItem.subscribe(function(data: string) {
-                    self.empSettingModel().contractTypeCode(data);
-                    self.loadEmpSettingDetails(data);
+                    if (data) {
+                        self.empSettingModel().contractTypeCode(data);
+                        self.loadEmpSettingDetails(data);
+                        self.hasEmp(true);
+                        self.saveDisable(true);
+                    } else {
+                        self.hasEmp(false);
+                        self.saveDisable(false);
+                    }
                 });
                 //list Emp
                 self.listComponentOption = {
@@ -111,10 +116,13 @@ module nts.uk.pr.view.kmf001.j {
             }
 
             private checkComManaged(): void {
+                let self = this;
+                let dfd = $.Deferred<any>();
                 $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
                     if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
-                        this.hasEmp(false);
                         nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] });
+                        self.hasEmp(false);
+                        dfd.resolve();
                     }
                 });
             }

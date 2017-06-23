@@ -75,11 +75,14 @@ module nts.uk.ui.koExtentions {
             var optionText = ko.unwrap(data.optionsText);
             var selectedValue = ko.unwrap(data.value);
             var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            
             // Container.
             var container = $(element);
-            
             container.data("enable", enable);
-            container.addClass("ntsControl switchButton-wrapper").attr("tabindex", "0");
+            container.addClass("ntsControl switchButton-wrapper")
+            if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+	            container.attr("tabindex", "0");
+            
             // Remove deleted button.
             $('button', container).each(function(index, btn) {
                 var $btn = $(btn);

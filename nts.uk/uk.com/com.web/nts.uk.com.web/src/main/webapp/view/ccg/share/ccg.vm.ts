@@ -6,7 +6,6 @@ module nts.uk.com.view.ccg.share.ccg {
     import UnitModel = kcp.share.list.UnitModel;
     import PersonModel = service.model.PersonModel;
     import GroupOption = service.model.GroupOption;
-    import ClassificationHistoryInDto = service.model.ClassificationHistoryInDto;
     import EmployeeSearchDto = service.model.EmployeeSearchDto;
 
 
@@ -18,6 +17,9 @@ module nts.uk.com.view.ccg.share.ccg {
             isMultiple: boolean;
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
+            selectedCodeEmployment: KnockoutObservableArray<string>;
+            selectedCodeClassification: KnockoutObservableArray<string>;
+            selectedCodeJobtitle: KnockoutObservableArray<string>;
             selectedCode: KnockoutObservableArray<string>;
             baseDate: KnockoutObservable<Date>;
             employments: any;
@@ -32,6 +34,9 @@ module nts.uk.com.view.ccg.share.ccg {
             constructor() {
                 var self = this;
                 self.isMultiple = false;
+                self.selectedCodeEmployment = ko.observableArray([]);
+                self.selectedCodeClassification = ko.observableArray([]);
+                self.selectedCodeJobtitle = ko.observableArray([]);
                 self.selectedCode = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
                 self.tabs = ko.observableArray([
@@ -55,7 +60,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.EMPLOYMENT,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.selectedCodeEmployment,
                     isDialog: true
                 };
 
@@ -63,7 +68,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.Classification,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.selectedCodeClassification,
                     isDialog: true
                 }
 
@@ -72,7 +77,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.JOB_TITLE,
-                    selectedCode: this.selectedCode,
+                    selectedCode: this.selectedCodeJobtitle,
                     isDialog: false,
                     baseDate: self.baseDate,
                 }
@@ -104,7 +109,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 $input.load(webserviceLocator, function() {
                     ko.cleanNode($input[0]);
                     ko.applyBindings(self, $input[0]);
-                    $('#employeeList').ntsListComponent(self.employments);
+                    $('#employmentList').ntsListComponent(self.employments);
                     $('#classificationList').ntsListComponent(self.classifications);
                     $('#jobtitleList').ntsListComponent(self.jobtitles);
                     $(".accordion").accordion({
@@ -124,25 +129,12 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
             }
 
-            toClassficationDto(): ClassificationHistoryInDto {
-                var self = this;
-                var dto: ClassificationHistoryInDto = new ClassificationHistoryInDto();
-                dto.baseDate = self.baseDate();
-                var classificationData: UnitModel[] = $('#classificationList').getDataList();
-                console.log(classificationData);
-                var classificationCodes: string[] = [];
-                for (var item: UnitModel of classificationData) {
-                    classificationCodes.push(item.code);
-                }
-                dto.classificationCodes = classificationCodes;
-                console.log(dto);
-                return dto;
-            }
-
             toEmployeeDto(): EmployeeSearchDto {
                 var self = this;
                 var dto: EmployeeSearchDto = new EmployeeSearchDto();
-                dto.classificationHistory = self.toClassficationDto();
+                dto.baseDate = self.baseDate();
+                dto.classificationCodes = self.selectedCodeClassification();
+                dto.employmentCodes = self.selectedCodeEmployment();
                 return dto;
             }
             

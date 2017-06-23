@@ -13,6 +13,7 @@ import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 /**
  * The Class ClassificationHistory.
  */
+// 所属分類履歴
 @Getter
 public class ClassificationHistory extends AggregateRoot {
 

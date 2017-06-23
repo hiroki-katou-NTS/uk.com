@@ -20,5 +20,9 @@ public class EditMenuBarDto {
 	
 	private List<EnumConstant> listSystem;
 	
+	private List<EnumConstant> listMenuClassification;
+	
 	private List<StandardMenuDto> listStandardMenu;
+	
+	
 }

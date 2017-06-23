@@ -10,9 +10,14 @@ module ccg013.a.viewmodel {
         simpleValue: KnockoutObservable<string>;
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
+        currentWebMenu: KnockoutObservable<WebMenu>;
+        isCreated: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
+            
+            self.isCreated = ko.observable(true);
+            self.currentWebMenu = ko.observable(new WebMenu("", "", false, []));
 
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: 'Tab Title 1', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -35,9 +40,9 @@ module ccg013.a.viewmodel {
             ]);
 
             self.columns2 = ko.observableArray([
-                { headerText: '既定', key: 'code', width: 50 },
-                { headerText: 'コード', key: 'name', width: 50 },
-                { headerText: '名称', key: 'description', width: 50 }
+                { headerText: '既定', key: 'icon', width: 50 },
+                { headerText: 'コード', key: 'webMenuCode', width: 50 },
+                { headerText: '名称', key: 'webMenuName', width: 50 }
             ]);
 
             var menu1 = new nts.uk.ui.contextmenu.ContextMenu(".context-menu1", [
@@ -50,41 +55,102 @@ module ccg013.a.viewmodel {
                 new nts.uk.ui.contextmenu.ContextMenuItem("copy", "タイトルメニューの削除(D)", (ui) => { alert("Copy"); })
             ]);
 
-
             var menu3 = new nts.uk.ui.contextmenu.ContextMenu(".context-menu3", [
                 new nts.uk.ui.contextmenu.ContextMenuItem("copy", "ニューの削除(D)", (ui) => { alert("Copy"); })
             ]);
 
-
-
             self.currentCode = ko.observable();
-
+            self.currentCode.subscribe(function(newValue) {
+                self.isCreated(false);
+                self.findWebMenu(newValue);
+            });
 
         }
 
         startPage(): JQueryPromise<void> {
+            var self = this;
             var dfd = $.Deferred<void>();
             service.loadWebMenu().done(function(data) {
+                var list001: Array<ItemModel> = [];
+                _.forEach(data, function(item) {
+                    list001.push(new ItemModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
+                });
+                self.items(list001);
                 dfd.resolve();
             });
             return dfd.promise();
         }
+
+        addWebMenu(): any {
+            var self = this;
+            if (self.currentWebMenu().isDefaultMenu()) {
+                self.currentWebMenu().defaultMenu(0);    
+            } else {
+                self.currentWebMenu().defaultMenu(1);
+            }
+            var webMenu = ko.toJSON(self.currentWebMenu);
+            if (!self.isCreated()) {
+                service.updateWebMenu(webMenu);
+            } else {
+                service.addWebMenu(webMenu);
+            }
+        }
+
+        /**
+         * Find a web menu by web menu code
+         */
+        findWebMenu(webMenuCode: string): any {
+            var self = this;       
+            service.findWebMenu(webMenuCode).done(function(res) {
+                var defaultMenu = true;
+                if (res.defaultMenu == 1) {
+                    defaultMenu = false;
+                }
+                self.currentWebMenu(new WebMenu(res.webMenuCode, res.webMenuName, defaultMenu, res.menuBars));
+            });
+        }
+        
+        /**
+         * Clean all control in form
+         */
+        cleanForm(): void {
+            var self = this;
+            self.isCreated(true);
+            self.currentWebMenu(new WebMenu("", "", false, []));
+            self.currentCode("");
+        }
     }
 
     class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        other1: string;
-        other2: string;
-        deletable: boolean;
-        constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-            this.other1 = other1;
-            this.other2 = other2 || other1;
-            this.deletable = deletable;
+        webMenuCode: string;
+        webMenuName: string;
+        defaultMenu: number;
+        icon: string;
+        constructor(webMenuCode: string, webMenuName: string, defaultMenu: number) {
+            this.webMenuCode = webMenuCode;
+            this.webMenuName = webMenuName;
+            this.defaultMenu = defaultMenu;
+            if (defaultMenu == 1) {
+                this.icon = "";    
+            } else {
+                this.icon = '<i class="icon icon-dot"></i>';
+            }
+        }
+    }
+
+    class WebMenu {
+        webMenuCode: KnockoutObservable<string>;
+        webMenuName: KnockoutObservable<string>;
+        isDefaultMenu: KnockoutObservable<boolean>;
+        defaultMenu: KnockoutObservable<number>;
+        menuBars: KnockoutObservableArray<any>;
+
+        constructor(webMenuCode: string, webMenuName: string, defaultMenu: boolean, menuBars: any) {
+            this.webMenuCode = ko.observable(webMenuCode);
+            this.webMenuName = ko.observable(webMenuName);
+            this.isDefaultMenu = ko.observable(defaultMenu);
+            this.defaultMenu = ko.observable(1); 
+            this.menuBars = ko.observableArray(menuBars);
         }
     }
 }
