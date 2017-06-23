@@ -22,6 +22,7 @@ module kdl021.a.viewmodel {
             self.posibleItems = [];
             self.dataSoure = [];
             self.start();
+            //Fix Bug #84017
             _.defer(() => { $(".ntsSearchBox").focus(); });
         }
         //load data
