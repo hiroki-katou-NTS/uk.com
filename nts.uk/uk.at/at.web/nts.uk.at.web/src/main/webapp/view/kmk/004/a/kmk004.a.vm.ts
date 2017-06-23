@@ -83,6 +83,28 @@ module nts.uk.at.view.kmk004.a {
                         self.loadEmploymentSetting(code);
                     }
                 });
+
+                // Enable/Disable handler.
+                (<any>ko.bindingHandlers).allowEdit = {
+                    update: function(element, valueAccessor) {
+                        console.log(valueAccessor());
+                        if (valueAccessor()) {
+                            element.disabled = false;
+                            element.readOnly = false;
+
+                            if (element.tagName === 'FIELDSET') {
+                                $(':input', element).removeAttr('disabled');
+                            }
+                        } else {
+                            element.disabled = true;
+                            element.readOnly = true;
+
+                            if (element.tagName === 'FIELDSET') {
+                                $(':input', element).attr('disabled', 'disabled');
+                            }
+                        }
+                    }
+                };
             }
 
             /**
