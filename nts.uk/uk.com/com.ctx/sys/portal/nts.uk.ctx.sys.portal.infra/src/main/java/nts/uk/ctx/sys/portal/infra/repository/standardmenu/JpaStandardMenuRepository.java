@@ -4,11 +4,14 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenu;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
+import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageJobSet;
+import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageJobSetPK;
 
 /**
  * The Class JpaStandardMenuRepository.
@@ -26,6 +29,25 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId " + "AND s.ccgmtStandardMenuPK.system = :system "
 			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification AND s.afterLoginDisplay = :afterLoginDisplay "
 			+ "ORDER BY s.ccgmtStandardMenuPK.code ASC";
+
+	private CcgstStandardMenu toEntity(StandardMenu domain) {
+		val entity = new CcgstStandardMenu();
+
+		entity.ccgmtStandardMenuPK = new CcgstStandardMenuPK();
+		entity.ccgmtStandardMenuPK.companyId = domain.getCompanyId();
+		entity.ccgmtStandardMenuPK.code = domain.getCode().v();
+		entity.ccgmtStandardMenuPK.system = domain.getSystem().value;
+		entity.ccgmtStandardMenuPK.classification = domain.getClassification();
+		entity.afterLoginDisplay = domain.getAfterLoginDisplay();
+		entity.displayName = domain.getDisplayName().v();
+		entity.displayOrder = domain.getDisplayOrder();
+		entity.logSettingDisplay = domain.getLogSettingDisplay();
+		entity.menuAtr = domain.getMenuAtr().value;
+		entity.targetItems = domain.getTargetItems();
+		entity.url = domain.getUrl();
+		entity.webMenuSetting = domain.getWebMenuSetting().value;
+		return entity;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -84,20 +106,5 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		return StandardMenu.createFromJavaType(s.ccgmtStandardMenuPK.companyId, s.ccgmtStandardMenuPK.code,
 				s.targetItems, s.displayName, s.displayOrder, s.menuAtr, s.url, s.ccgmtStandardMenuPK.system,
 				s.ccgmtStandardMenuPK.classification, s.webMenuSetting, s.afterLoginDisplay, s.logSettingDisplay);
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain
-	 *            the domain
-	 * @return the ccgmt standard menu
-	 */
-	public CcgstStandardMenu toEntity(StandardMenu domain) {
-		CcgstStandardMenuPK key = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(),
-				domain.getSystem().value, domain.getClassification());
-		return new CcgstStandardMenu(key, domain.getTargetItems(), domain.getDisplayName().v(),
-				domain.getDisplayOrder(), domain.getMenuAtr(), domain.getUrl(), domain.getWebMenuSetting(),
-				domain.getAfterLoginDisplay(), domain.getLogSettingDisplay());
 	}
 }
