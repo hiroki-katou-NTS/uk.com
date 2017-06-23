@@ -6843,7 +6843,9 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         // Container
                         var container = $(element);
-                        container.addClass("ntsControl ntsCheckBox").attr("tabindex", "0").on("click", function (e) {
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                            container.attr("tabindex", "0");
+                        container.addClass("ntsControl ntsCheckBox").on("click", function (e) {
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
@@ -6919,6 +6921,8 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         container.data("enable", _.clone(enable));
                         container.data("init", true);
+                        container.data("tabindex", container.attr("tabindex"));
+                        container.removeAttr("tabindex");
                         // Default value
                         new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
@@ -6954,7 +6958,11 @@ var nts;
                                         }));
                                 });
                                 var disableOption = option["enable"];
-                                checkBoxLabel.attr("tabindex", "0");
+                                if (nts.uk.util.isNullOrUndefined(container.data("tabindex")))
+                                    checkBoxLabel.attr("tabindex", "0");
+                                else {
+                                    checkBoxLabel.attr("tabindex", container.data("tabindex"));
+                                }
                                 checkBoxLabel.keypress(function (evt, ui) {
                                     var code = evt.which || evt.keyCode;
                                     if (code === 32) {
@@ -10413,7 +10421,9 @@ var nts;
                         // Container.
                         var container = $(element);
                         container.data("enable", enable);
-                        container.addClass("ntsControl switchButton-wrapper").attr("tabindex", "0");
+                        container.addClass("ntsControl switchButton-wrapper");
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                            container.attr("tabindex", "0");
                         // Remove deleted button.
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);

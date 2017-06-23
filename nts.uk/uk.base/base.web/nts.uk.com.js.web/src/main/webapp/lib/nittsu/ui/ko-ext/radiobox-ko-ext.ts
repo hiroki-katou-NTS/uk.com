@@ -113,10 +113,10 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             container.addClass("ntsControl radio-wrapper");
             container.data("enable", enable);
-            
             if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
-                container.attr("tabindex", "0");    
+                container.attr("tabindex", "0");
             }
+            
             container.keydown(function (evt, ui) {
                 let code = evt.which || evt.keyCode;
                 if (code === 32) {
@@ -207,7 +207,7 @@ module nts.uk.ui.koExtentions {
                     if(dataOpion["enable"] !== false){
                         $(radio).removeAttr("disabled");        
                     }        
-                }); 
+                });  
             } else if (enable === false){
                 container.find("input[type='radio']").attr("disabled", "disabled");
                 new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
