@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="service.js" />
+			<com:scriptfile path="vm.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+		
+		<ui:define name="content">
+			<div id="functions-area">
+				<button>Open CCG013E</button>
+			</div>
+			<div id="contents-area">
+			<div style="width: 700px" data-bind="ntsSearchBox: {
+							searchMode: 'filter',
+							targetKey: 'code', 
+							comId: 'multi-list', 
+							items: items, 
+							selected: currentCode, 
+							selectedKey: 'codeMenuBar', 
+							fields: ['codeMenuBar', 'nameMenuBar'], 
+							mode: 'igGrid'}" />		
+					<table id="multi-list" data-bind="ntsGridList: {
+							height: 320,
+							options: items,
+							optionsValue: 'codeMenubar',
+							columns: columns,
+							value: currentCode,
+							multiple: true
+						}"></table>	
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

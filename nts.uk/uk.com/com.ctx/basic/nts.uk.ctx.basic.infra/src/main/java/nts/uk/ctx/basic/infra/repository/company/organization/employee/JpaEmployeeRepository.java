@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.basic.infra.repository.company.organization.employee;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.KmnmtEmployee;
@@ -25,6 +27,11 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_WHERE
 			+ " WHERE c.kmnmtEmployeePK.companyId = :companyId"
 			+ " AND c.kmnmtEmployeePK.employeeCode IN :listEmployeeCode";
+	
+	
+	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_WHERE
+			+ " WHERE c.kmnmtEmployeePK.companyId = :companyId"
+			+ " AND c.kmnmtEmployeePK.employeeId IN :employeeIds";
 
 	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE
 			+ " WHERE c.kmnmtEmployeePK.companyId = :companyId";
@@ -48,6 +55,12 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	@Override
 	public List<Employee> getListPersonByListEmployee(String companyId,
 			List<String> listEmployeeCode) {
+		
+		// fix bug empty list
+		if(CollectionUtil.isEmpty(listEmployeeCode)){
+			return new ArrayList<>();
+		}
+		
 		List<Employee> lstPerson = this.queryProxy()
 				.query(SELECT_BY_LIST_EMP_CODE, KmnmtEmployee.class)
 				.setParameter("companyId", companyId)
@@ -67,6 +80,28 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		List<Employee> lstPerson = this.queryProxy()
 				.query(SELECT_BY_COMPANY_ID, KmnmtEmployee.class)
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));
+		return lstPerson;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
+	 * getListPersonByListEmployeeId(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<Employee> getListPersonByListEmployeeId(String companyId,
+			List<String> employeeIds) {
+		// fix bug empty list
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			return new ArrayList<>();
+		}
+
+		List<Employee> lstPerson = this.queryProxy()
+				.query(SELECT_BY_LIST_EMP_ID, KmnmtEmployee.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeIds", employeeIds).getList(c -> toDomain(c));
 		return lstPerson;
 	}
 

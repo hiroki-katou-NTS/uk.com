@@ -10,6 +10,9 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
+import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.SelectedAtr;
@@ -78,11 +81,12 @@ public class WebMenuFinder {
 	public EditMenuBarDto getEditMenuBarDto() {
 		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class);
 		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class);
+		List<EnumConstant> listMenuClassification = EnumAdaptor.convertToValueNameList(MenuClassification.class);
 		String companyID = AppContexts.user().companyId();
-		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findAll(companyID)
+		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)
 				.stream().map(item -> StandardMenuDto.fromDomain(item))
 				.collect(Collectors.toList());
-		return new EditMenuBarDto(listSelectedAtr, listSystem, listStandardMenu);
+		return new EditMenuBarDto(listSelectedAtr, listSystem, listMenuClassification, listStandardMenu);
 	}
 
 	/**

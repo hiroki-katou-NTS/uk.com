@@ -2,7 +2,7 @@
 #list{ background-color: #E0F59E; height: 470px ;width: 400px;padding-left: 15px;}
 .ui-igcombo-wrapper {vertical-align: middle;}
 .caret-bottom.outline:after, .caret-top.outline:after, .caret-left.outline:after, .caret-right.outline:after {color: #97D155;}
-.ntsControl.radio-wrapper.reset-element {padding-top : 40px; }
+.ntsControl.radio-wrapper.reset-element {margin-top : 40px; }
 .ntsRadioBox {;margin-bottom: 10px;display: block;}
 td{border-right-width: 30px; border-style: solid;border-color: #FFFFFF;}
 .ntsHelpButton {margin-left: 10px;}

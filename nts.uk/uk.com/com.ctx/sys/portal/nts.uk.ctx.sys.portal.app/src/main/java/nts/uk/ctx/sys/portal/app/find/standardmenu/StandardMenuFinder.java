@@ -57,4 +57,18 @@ public class StandardMenuFinder {
 				.findByAfterLgDisSysMenuCls(companyId, 0, System.COMMON.value, MenuClassification.TopPage.value)
 				.stream().map(x -> StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
 	}
+	/**
+	 * find all StandardMenu by companyID and webMenuSetting = 0 and menuAtr = 0
+	 * @param conpanyID
+	 * @param webMenuSetting 
+	 * @param menuAtr 
+	 * @return List
+	 */
+	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr) {
+		String companyID = AppContexts.user().companyId();
+		return this.standardMenuRepository.findByAtr(companyID, webMenuSetting, menuAtr).stream().map(item -> StandardMenuDto.fromDomain(item))
+				.collect(Collectors.toList());
+		
+	}
+	
 }
