@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.infra.repository.standardmenu;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -32,6 +33,11 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.webMenuSetting = :webMenuSetting "
 			+ "AND s.menuAtr = :menuAtr"; 
+	//hoatt
+	private final String SELECT_STANDARD_MENU_BY_CODE = "SELECT c FROM CcgstStandardMenu c WHERE c.ccgmtStandardMenuPK.companyId = :companyId "
+			+ " AND c.ccgmtStandardMenuPK.code = :code"
+			+ " AND c.ccgmtStandardMenuPK.system = :system"
+			+ " AND c.ccgmtStandardMenuPK.classification = :menu_classification";
 	
 	private CcgstStandardMenu toEntity(StandardMenu domain) {
 		val entity = new CcgstStandardMenu();
@@ -118,5 +124,23 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		return StandardMenu.createFromJavaType(s.ccgmtStandardMenuPK.companyId, s.ccgmtStandardMenuPK.code,
 				s.targetItems, s.displayName, s.displayOrder, s.menuAtr, s.url, s.ccgmtStandardMenuPK.system,
 				s.ccgmtStandardMenuPK.classification, s.webMenuSetting, s.afterLoginDisplay, s.logSettingDisplay);
+	}
+	/**
+	 * hoatt
+	 * get standard menu
+	 * @param companyId
+	 * @param code
+	 * @param system
+	 * @param classification
+	 * @return
+	 */
+	@Override
+	public Optional<StandardMenu> getStandardMenubyCode(String companyId, String code, int system, int classification) {
+		return this.queryProxy().query(SELECT_STANDARD_MENU_BY_CODE, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("code", code)
+				.setParameter("system", system)
+				.setParameter("classification", classification)
+				.getSingle(c->toDomain(c));
 	}
 }
