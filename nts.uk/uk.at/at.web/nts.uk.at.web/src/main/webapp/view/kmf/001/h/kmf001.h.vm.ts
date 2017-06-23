@@ -62,13 +62,13 @@ module nts.uk.pr.view.kmf001.h {
 
                 self.isComManaged = ko.computed(function() {
                     return self.settingModel().isManage() == 1;
-                }, self);
+                });
 
                 self.hasEmp = ko.observable(true);
                 self.saveDisable = ko.observable(true);
                 self.isEmpManaged = ko.computed(function() {
-                    return self.hasEmp && self.empSettingModel().isManage() == 1;
-                }, self);
+                    return self.hasEmp() && self.empSettingModel().isManage() == 1;
+                });
 
                 self.selectedContractTypeCode = ko.observable('');
                 self.selectedItem.subscribe(function(data: string) {
