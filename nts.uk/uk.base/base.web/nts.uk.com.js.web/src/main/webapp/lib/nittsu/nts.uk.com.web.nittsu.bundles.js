@@ -8684,6 +8684,14 @@ var nts;
                             });
                         }
                         $grid.ntsGridList('setupSelecting');
+                        if (data.multiple) {
+                            $grid.bind('iggridrowselectorscheckboxstatechanging', function (evt, uiX) {
+                                //                console.log(ui);
+                                if ($grid.data("enable") === false) {
+                                    return false;
+                                }
+                            });
+                        }
                         $grid.bind('iggridselectionrowselectionchanging', function (evt, uiX) {
                             //                console.log(ui);
                             if ($grid.data("enable") === false) {
@@ -8737,12 +8745,14 @@ var nts;
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                                 return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
                             });
-                            _.forEach(currentSources, function (s) {
-                                _.forEach(observableColumns, function (c) {
-                                    var key = c["key"] === undefined ? c["prop"] : c["key"];
-                                    s[key] = moment(s[key]).format(c["format"]);
+                            if (!nts.uk.util.isNullOrEmpty(observableColumns)) {
+                                _.forEach(currentSources, function (s) {
+                                    _.forEach(observableColumns, function (c) {
+                                        var key = c["key"] === undefined ? c["prop"] : c["key"];
+                                        s[key] = moment(s[key]).format(c["format"]);
+                                    });
                                 });
-                            });
+                            }
                             $grid.igGrid('option', 'dataSource', currentSources);
                             $grid.igGrid("dataBind");
                         }

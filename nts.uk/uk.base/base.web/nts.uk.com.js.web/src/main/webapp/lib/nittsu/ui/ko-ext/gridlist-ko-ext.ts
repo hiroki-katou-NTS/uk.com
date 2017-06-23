@@ -95,6 +95,14 @@ module nts.uk.ui.koExtentions {
 
             $grid.ntsGridList('setupSelecting');
             
+            if (data.multiple){
+                $grid.bind('iggridrowselectorscheckboxstatechanging', (evt: Event, uiX: any) => {
+//                console.log(ui);
+                if($grid.data("enable") === false){ 
+                    return false;        
+                }
+            }); 
+            }
             $grid.bind('iggridselectionrowselectionchanging', (evt: Event, uiX: any) => {
 //                console.log(ui);
                 if($grid.data("enable") === false){ 
@@ -120,6 +128,7 @@ module nts.uk.ui.koExtentions {
                     }
                 }
             });
+            
             $grid.setupSearchScroll("igGrid", true); 
         }
 
@@ -150,12 +159,14 @@ module nts.uk.ui.koExtentions {
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                     return c["isDateColumn"] !== undefined && c["isDateColumn"] !== null && c["isDateColumn"] === true;
                 });
-                _.forEach(currentSources, function(s){
-                    _.forEach(observableColumns, function(c){
-                        let key = c["key"] === undefined ? c["prop"] : c["key"];
-                        s[key] = moment(s[key]).format(c["format"]);
-                    });
-                });
+                if(!nts.uk.util.isNullOrEmpty(observableColumns)){
+                    _.forEach(currentSources, function(s){
+                        _.forEach(observableColumns, function(c){
+                            let key = c["key"] === undefined ? c["prop"] : c["key"];
+                            s[key] = moment(s[key]).format(c["format"]);
+                        });
+                    });    
+                }
                 $grid.igGrid('option', 'dataSource', currentSources);
                 $grid.igGrid("dataBind");
             }
