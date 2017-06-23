@@ -271,7 +271,7 @@ module kcp.share.list {
             s.id = 'script-for-' + $input.attr('id');
             $("head").append(s);
             $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
-                return window['dataList' + $input.attr('id').replace(/-/gi, '')];
+                return window['dataList' + this.attr('id').replace(/-/gi, '')];
             }
             
             // defined function focus
