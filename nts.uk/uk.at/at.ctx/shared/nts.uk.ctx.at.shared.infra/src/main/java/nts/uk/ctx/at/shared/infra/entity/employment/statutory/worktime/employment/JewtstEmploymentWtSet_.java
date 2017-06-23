@@ -23,45 +23,45 @@ public class JewtstEmploymentWtSet_ {
 	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> strWeek;
 
 	/** The daily time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> dailyTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> dailyTime;
 
 	/** The weekly time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> weeklyTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> weeklyTime;
 
 	/** The jan time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> janTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> janTime;
 
 	/** The feb time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> febTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> febTime;
 
 	/** The mar time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> marTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> marTime;
 
 	/** The apr time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> aprTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> aprTime;
 
 	/** The may time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> mayTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> mayTime;
 
 	/** The jun time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> junTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> junTime;
 
 	/** The jul time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> julTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> julTime;
 
 	/** The aug time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> augTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> augTime;
 
 	/** The sep time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> sepTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> sepTime;
 
 	/** The oct time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> octTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> octTime;
 
 	/** The nov time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> novTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> novTime;
 
 	/** The dec time. */
-	public static volatile SingularAttribute<JewtstEmploymentWtSet, Integer> decTime;
+	public static volatile SingularAttribute<JewtstEmploymentWtSet, Long> decTime;
 
 }

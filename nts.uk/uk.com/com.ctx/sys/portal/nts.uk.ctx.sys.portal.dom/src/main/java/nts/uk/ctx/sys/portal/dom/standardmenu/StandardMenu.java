@@ -4,7 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.enums.System;
+import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
 
 /**
  * The Class StandardMenu.
@@ -28,7 +30,7 @@ public class StandardMenu extends AggregateRoot {
 	private int displayOrder;
 	
 	/** The menuAtr. */
-	private int menuAtr;
+	private MenuAtr menuAtr;
 	
 	/** The url. */
 	private String url;
@@ -40,7 +42,7 @@ public class StandardMenu extends AggregateRoot {
 	private int classification;
 	
 	/** The webMenuSetting. */
-	private int webMenuSetting;
+	private WebMenuSetting webMenuSetting;
 	
 	/** The afterLoginDisplay. */
 	private int afterLoginDisplay;
@@ -65,7 +67,7 @@ public class StandardMenu extends AggregateRoot {
 	 * @param logSettingDisplay the logSettingDisplay
 	 */
 	public StandardMenu(String companyId, MenuCode code, String targetItems, MenuDisplayName displayName, int displayOrder,
-			int menuAtr, String url, System system, int classification, int webMenuSetting,
+			MenuAtr menuAtr, String url, System system, int classification, WebMenuSetting webMenuSetting,
 			int afterLoginDisplay, int logSettingDisplay) {
 		
 		this.companyId = companyId;
@@ -101,8 +103,8 @@ public class StandardMenu extends AggregateRoot {
 	public static StandardMenu createFromJavaType(String companyId, String code, String targetItems, String displayName, 
 			int displayOrder, int menuAtr, String url, int system, int classification, int webMenuSetting,
 			int afterLoginDisplay, int logSettingDisplay) {
-		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName), displayOrder, menuAtr, url,
+		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName), displayOrder, EnumAdaptor.valueOf(menuAtr, MenuAtr.class), url,
 				EnumAdaptor.valueOf(system, System.class), classification, 
-				webMenuSetting,	afterLoginDisplay, logSettingDisplay);
+				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, logSettingDisplay);
 	}	
 }

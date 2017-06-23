@@ -21,4 +21,14 @@ public interface StandardMenuRepository {
 	 * @return the list with afterLoginDisplayIndicator is true
 	 */
 	 List<StandardMenu> findAllWithAfterLoginDisplayIndicatorIsTrue(String companyId);
+	 
+	 /**
+		 * Find all.
+		 *
+		 * @param companyId the company id
+		 * @param webMenuSetting
+		 * @param menuAtr
+		 * @return the list 
+		 */ 
+	 List<StandardMenu> findByAtr(String companyId, int webMenuSetting, int menuAtr);
 }

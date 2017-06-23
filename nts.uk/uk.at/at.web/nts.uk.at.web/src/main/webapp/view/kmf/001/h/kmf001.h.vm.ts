@@ -64,18 +64,23 @@ module nts.uk.pr.view.kmf001.h {
                     return self.settingModel().isManage() == 1;
                 }, self);
 
-                self.hasEmp = ko.computed(function() {
-                    return true;
-                }, self);
-
+                self.hasEmp = ko.observable(true);
+                self.saveDisable = ko.observable(true);
                 self.isEmpManaged = ko.computed(function() {
                     return self.hasEmp && self.empSettingModel().isManage() == 1;
                 }, self);
 
                 self.selectedContractTypeCode = ko.observable('');
                 self.selectedItem.subscribe(function(data: string) {
-                    self.empSettingModel().contractTypeCode(data);
-                    self.loadEmpSettingDetails(data);
+                    if (data) {
+                        self.empSettingModel().contractTypeCode(data);
+                        self.loadEmpSettingDetails(data);
+                        self.hasEmp(true);
+                        self.saveDisable(true);
+                    } else {
+                        self.hasEmp(false);
+                        self.saveDisable(false);
+                    }
                 });
                 
                 //list Emp
@@ -109,10 +114,13 @@ module nts.uk.pr.view.kmf001.h {
                 return dfd.promise();
             }
             private checkComManaged(): void {
+                let self = this;
+                let dfd = $.Deferred();
                 $('#left-content').ntsListComponent(this.listComponentOption).done(function() {
                     if (!$('#left-content').getDataList() || $('#left-content').getDataList().length == 0) {
-                        this.hasEmp(false);
                         nts.uk.ui.dialog.info({ messageId: "Msg_146", messageParams: [] });
+                        self.hasEmp(false);
+                        dfd.resolve();
                     }
                 });
             }

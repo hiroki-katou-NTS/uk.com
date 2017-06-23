@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.webmenu;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -9,6 +10,9 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
+import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuBar;
 import nts.uk.ctx.sys.portal.dom.webmenu.SelectedAtr;
@@ -26,6 +30,30 @@ public class WebMenuFinder {
 	@Inject
 	private StandardMenuRepository standardMenuRepository;
 
+	/**
+	 * Find a web menu by code
+	 * @param webMenuCode
+	 * @return
+	 */
+	public WebMenuDto find(String webMenuCode) {
+		String companyId = AppContexts.user().companyId();
+		Optional<WebMenu> webMenuOpt = webMenuRepository.find(companyId, webMenuCode);
+		if (!webMenuOpt.isPresent()) {
+			return null;
+		}
+		
+		return webMenuOpt.map(webMenuItem -> {
+			List<MenuBarDto> menuBars = toMenuBar(webMenuItem);
+			
+			return new WebMenuDto(
+					companyId, 
+					webMenuItem.getWebMenuCode().v(), 
+					webMenuItem.getWebMenuName().v(), 
+					webMenuItem.getDefaultMenu().value,
+					menuBars);
+		}).get();
+	}
+	
 	/**
 	 * 
 	 * @return
@@ -53,11 +81,12 @@ public class WebMenuFinder {
 	public EditMenuBarDto getEditMenuBarDto() {
 		List<EnumConstant> listSelectedAtr = EnumAdaptor.convertToValueNameList(SelectedAtr.class);
 		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class);
+		List<EnumConstant> listMenuClassification = EnumAdaptor.convertToValueNameList(MenuClassification.class);
 		String companyID = AppContexts.user().companyId();
-		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findAll(companyID)
+		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)
 				.stream().map(item -> StandardMenuDto.fromDomain(item))
 				.collect(Collectors.toList());
-		return new EditMenuBarDto(listSelectedAtr, listSystem, listStandardMenu);
+		return new EditMenuBarDto(listSelectedAtr, listSystem, listMenuClassification, listStandardMenu);
 	}
 
 	/**

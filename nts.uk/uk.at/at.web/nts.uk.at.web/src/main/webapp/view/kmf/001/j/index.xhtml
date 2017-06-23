@@ -117,7 +117,7 @@
 					<button data-bind="click: back">
 						#{i18n.getText('KMF001_27')}</button>
 
-					<button class="proceed" data-bind="click: saveEmpSetting">
+					<button class="proceed" data-bind="click: saveEmpSetting, enable: saveDisable">
 						#{i18n.getText('KMF001_28')}</button>
 
 					<span class="title" style="float: right; font-size: 15px;">
@@ -139,7 +139,7 @@
 									<tr>
 										<td style="width: 50px;"></td>
 										<td style="width: 250px;">#{i18n.getText('KMF001_97')}</td>
-										<td>
+										<td style="padding-left: 5px;">
 											<div tabindex="2" class="btn-switch"
 												data-bind="ntsSwitchButton: {
 																options: $parent.manageDistinctEnums,

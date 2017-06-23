@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDate;
 public class KwpmtWplHist_ {
 
 	/** The kwpmt work hist PK. */
-	public static volatile SingularAttribute<KwpmtWplHist, KwpmtWplHistPK> kwpmtWorkHistPK;
+	public static volatile SingularAttribute<KwpmtWplHist, KwpmtWplHistPK> kwpmtWplHistPK;
 	
 	/** The str D. */
 	public static volatile SingularAttribute<KwpmtWplHist, GeneralDate> strD;
