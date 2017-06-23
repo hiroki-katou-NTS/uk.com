@@ -3,7 +3,7 @@
 	margin-top: 10px;
 }
 
-.add, .proceed, .danger{
+.add, .proceed, .danger, .pdf{
 	width: 80px;
 }
 .add{
@@ -12,11 +12,9 @@
 .proceed, .pdf{
 	margin-left: 10px;
 }
-.pdf{
-	width: 150px
-}
+
 .danger{
-	margin-left: 220px;
+	margin-left: 291px;
 }
 .top-content {
 	margin-left: 100px;

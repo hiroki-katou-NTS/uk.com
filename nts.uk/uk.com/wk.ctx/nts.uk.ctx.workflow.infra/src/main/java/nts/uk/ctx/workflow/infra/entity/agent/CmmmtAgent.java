@@ -67,9 +67,8 @@ public class CmmmtAgent extends UkJpaEntity implements Serializable {
 
 
 	@Override
-	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+	protected CmmmtAgentPK getKey() {
+		return cmmmtAgentPK;
 	}
 
 }

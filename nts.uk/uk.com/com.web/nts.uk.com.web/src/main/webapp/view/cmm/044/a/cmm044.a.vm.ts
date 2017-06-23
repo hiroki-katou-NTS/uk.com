@@ -12,7 +12,7 @@ module cmm044.a.viewmodel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         itemList: KnockoutObservableArray<any>;
         index_of_itemDelete: any;
-
+        isEnableDelete: KnockoutObservable<boolean>;
         displayEmployeeInfo1: KnockoutObservable<boolean>;
         displayEmployeeInfo2: KnockoutObservable<boolean>;
         displayEmployeeInfo3: KnockoutObservable<boolean>;
@@ -48,6 +48,8 @@ module cmm044.a.viewmodel {
             self.displayEmployeeInfo2 = ko.observable(true);
             self.displayEmployeeInfo3 = ko.observable(true);
             self.displayEmployeeInfo4 = ko.observable(true);
+            
+            self.isEnableDelete = ko.observable(true);
 
             self.agentAppType1 = ko.observable(0);
             self.agentAppType2 = ko.observable(0);
@@ -90,6 +92,7 @@ module cmm044.a.viewmodel {
             self.histSelectedItem.subscribe(function(requestId) {
                 if (requestId) {
                     self.getAgen(self.empSelectedItem().personId, requestId);
+                    self.isEnableDelete(true);
                 }
 
 
@@ -126,12 +129,7 @@ module cmm044.a.viewmodel {
 
                 }
             });
-
-            // fix 
-            //self.empSelectedItem(self.empItems()[0]);
-
             dfd.resolve();
-
             return dfd.promise();
         }
 
@@ -229,22 +227,24 @@ module cmm044.a.viewmodel {
                     self.getAllAgen(self.empSelectedItem().personId);
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                 }).fail(function(res) {
-                    alert(res.message);
+                   nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_12"));
                     dfd.reject(res);
                 })
             } else {
                 service.addAgent(agent).done(function(res) {
                     var resObj = ko.toJS(res);
-                    if (resObj.businessException) {
-                        nts.uk.ui.dialog(resObj.message);
-                        self.histSelectedItem("");
+                    if (!self.histSelectedItem) {
+
+                    
+                    self.histSelectedItem("");
                     } else {
                         self.getAllAgen(self.empSelectedItem().personId);
                         self.histSelectedItem(res);
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
+                       
                     }
                 }).fail(function(res) {
-                    alert(res.message);
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_12"));
                     dfd.reject(res);
                 })
             }
@@ -296,6 +296,7 @@ module cmm044.a.viewmodel {
             self.displayEmployeeInfo2(true);
             self.displayEmployeeInfo3(true);
             self.displayEmployeeInfo4(true);
+            self.isEnableDelete(false);
 
             self.agentAppType1(0);
             self.agentAppType2(0);
@@ -307,8 +308,11 @@ module cmm044.a.viewmodel {
         }
         openDDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared('cmm044StartDate', self.currentItem().startDate(), true);
-            nts.uk.ui.windows.setShared('cmm044EndDate', self.currentItem().endDate(), true);
+            nts.uk.ui.windows.setShared('cmm044StartDate', self.currentItem().startDate());
+            nts.uk.ui.windows.setShared('cmm044EndDate', self.currentItem().endDate());
+            nts.uk.ui.windows.setShared('cmm044Data', self.histItems());
+            nts.uk.ui.windows.setShared('cmm044DataPerson', self.empItems());
+            
             nts.uk.ui.windows.sub.modal('/view/cmm/044/b/index.xhtml', { title: '代行リスト', height: 550, width: 1050, dialogClass: 'no-close' }).onClosed(function(): any {
             });
         }
