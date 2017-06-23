@@ -108,7 +108,20 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	 */
 	@Override
 	public void update(Agent agent) {
-		this.commandProxy().update(convertToDbType(agent));
+		CmmmtAgentPK primaryKey = new CmmmtAgentPK(agent.getCompanyId(), agent.getEmployeeId(), agent.getRequestId().toString());
+		CmmmtAgent entity = this.queryProxy().find(primaryKey, CmmmtAgent.class).get();
+		entity.startDate = agent.getStartDate();
+		entity.endDate = agent.getEndDate();
+		entity.agentSid1 = agent.getAgentSid1();
+		entity.agentAppType1 = agent.getAgentAppType1().value;
+		entity.agentSid2 = agent.getAgentSid2();
+		entity.agentAppType2 = agent.getAgentAppType2().value;
+		entity.agentSid3 = agent.getAgentSid3();
+		entity.agentAppType3 = agent.getAgentAppType3().value;
+		entity.agentSid4 = agent.getAgentSid4();
+		entity.agentAppType4 = agent.getAgentAppType4().value;
+		entity.cmmmtAgentPK = primaryKey;
+		this.commandProxy().update(entity);	
 	}
 
 	/**

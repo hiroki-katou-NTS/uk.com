@@ -14,7 +14,6 @@ module cmm044.a.service {
     }
 
     export function findAllAgent(employeeId: string): JQueryPromise<Array<viewmodel.model.AgentDto>> {
-        var dfd = $.Deferred<Array<viewmodel.model.AgentDto>>();
         return nts.uk.request.ajax("com",paths.findAllAgent + employeeId);
     }
 
