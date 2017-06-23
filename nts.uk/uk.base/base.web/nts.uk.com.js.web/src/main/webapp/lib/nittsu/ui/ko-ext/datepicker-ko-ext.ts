@@ -45,18 +45,23 @@ module nts.uk.ui.koExtentions {
             }
 
             var container = $(element);
+            let idString;
             if (!container.attr("id")) {
-                var idString = nts.uk.util.randomId();
-                container.attr("id", idString);
+                idString = nts.uk.util.randomId();
+            } else {
+                idString = container.attr("id");
+                container.removeAttr("id");    
             }
+            let containerClass = container.attr('class');
+            container.removeClass(containerClass);
             container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
             var inputClass: string = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
-            var $input: any = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
-            $input.attr("data-name", container.data("name"));
+            var $input: any = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input' />").addClass(inputClass);
+            $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
             container.append($input);
             if (hasDayofWeek) {
                 var lengthClass: string = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
-                var $label: any = $("<label id='" + container.attr("id") + "-label' for='" + container.attr("id") + "-input' class='dayofweek-label' />");
+                var $label: any = $("<label id='" + idString + "-label' for='" + idString + "' class='dayofweek-label' />");
                 $input.addClass(lengthClass);
                 container.append($label);
             }
@@ -114,6 +119,8 @@ module nts.uk.ui.koExtentions {
                     $input.ntsError('set', "Invalid format");
                 }
             }));
+            
+            new nts.uk.util.value.DefaultValue().onReset($input, data.value);
         }
 
         /**
@@ -157,6 +164,9 @@ module nts.uk.ui.koExtentions {
                $input.prop("disabled", !enable);
             else
                 $input.prop("disabled", disabled);
+            if($input.prop("disabled") === true){
+                new nts.uk.util.value.DefaultValue().applyReset($input, value);
+            }
             if (data.button)
                 container.find('.datepicker-btn').prop("disabled", disabled);
         }

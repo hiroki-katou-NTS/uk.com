@@ -7242,18 +7242,24 @@ var nts;
                             }
                         }
                         var container = $(element);
+                        var idString;
                         if (!container.attr("id")) {
-                            var idString = nts.uk.util.randomId();
-                            container.attr("id", idString);
+                            idString = nts.uk.util.randomId();
                         }
+                        else {
+                            idString = container.attr("id");
+                            container.removeAttr("id");
+                        }
+                        var containerClass = container.attr('class');
+                        container.removeClass(containerClass);
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
                         var inputClass = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
-                        var $input = $("<input id='" + container.attr("id") + "-input' class='ntsDatepicker nts-input' />").addClass(inputClass);
-                        $input.attr("data-name", container.data("name"));
+                        var $input = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input' />").addClass(inputClass);
+                        $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
                         container.append($input);
                         if (hasDayofWeek) {
                             var lengthClass = (dayofWeekFormat.length > 3) ? "long-day" : "short-day";
-                            var $label = $("<label id='" + container.attr("id") + "-label' for='" + container.attr("id") + "-input' class='dayofweek-label' />");
+                            var $label = $("<label id='" + idString + "-label' for='" + idString + "' class='dayofweek-label' />");
                             $input.addClass(lengthClass);
                             container.append($label);
                         }
@@ -7305,6 +7311,7 @@ var nts;
                                 $input.ntsError('set', "Invalid format");
                             }
                         }));
+                        new nts.uk.util.value.DefaultValue().onReset($input, data.value);
                     };
                     /**
                      * Update
@@ -7345,6 +7352,9 @@ var nts;
                             $input.prop("disabled", !enable);
                         else
                             $input.prop("disabled", disabled);
+                        if ($input.prop("disabled") === true) {
+                            new nts.uk.util.value.DefaultValue().applyReset($input, value);
+                        }
                         if (data.button)
                             container.find('.datepicker-btn').prop("disabled", disabled);
                     };
