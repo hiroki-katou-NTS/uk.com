@@ -64,13 +64,28 @@ module nts.uk.at.view.kmk004.a {
 
                 // year subscribe.
                 self.companyWTSetting.year.subscribe(val => {
-                    self.loadCompanySetting();
+                    // Validate
+                    if ($('yearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.loadCompanySetting();
+                    }
                 });
                 self.employmentWTSetting.year.subscribe(val => {
-                    self.loadEmploymentSetting();
+                    // Validate
+                    if ($('yearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.loadEmploymentSetting();
+                    }
                 });
                 self.workplaceWTSetting.year.subscribe(val => {
-                    self.loadWorkplaceSetting();
+                    // Validate
+                    if ($('yearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.loadWorkplaceSetting();
+                    }
                 });
 
                 // Employment list component.
@@ -340,6 +355,7 @@ module nts.uk.at.view.kmk004.a {
                 let dfd = $.Deferred<void>();
                 service.findCompanySetting(self.companyWTSetting.year())
                     .done(function(data) {
+                        self.clearError();
                         // update mode.
                         if (data) {
                             self.isNewMode(false);
@@ -378,6 +394,7 @@ module nts.uk.at.view.kmk004.a {
                 }
                 service.findEmploymentSetting(request)
                     .done(function(data) {
+                        self.clearError();
                         // update mode.
                         if (data) {
                             self.isNewMode(false);
@@ -421,6 +438,7 @@ module nts.uk.at.view.kmk004.a {
                 }
                 service.findWorkplaceSetting(request)
                     .done(function(data) {
+                        self.clearError();
                         // update mode.
                         if (data) {
                             self.isNewMode(false);
