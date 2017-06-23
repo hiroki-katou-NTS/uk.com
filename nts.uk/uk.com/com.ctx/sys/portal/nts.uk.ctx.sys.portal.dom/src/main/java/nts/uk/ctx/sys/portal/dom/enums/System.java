@@ -7,9 +7,9 @@ package nts.uk.ctx.sys.portal.dom.enums;
  */
 public enum System {
 	/**
-	 * 0:人事郎
+	 * 0:共通
 	 */
-	JINJIROU(0),
+	COMMON(0),
 	/**
 	 * 1:勤次郎
 	 */
@@ -23,9 +23,9 @@ public enum System {
 	 */
 	KYUYOU(3),
 	/**
-	 * 4:共通
+	 * 4:人事郎
 	 */
-	COMMON(4);
+	JINJIROU(4);
 
 	public final int value;
 

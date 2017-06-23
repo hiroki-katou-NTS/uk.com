@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.portal.app.command.toppagesetting;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSetting;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,22 +26,27 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateTopPageSettingCommandHandler extends CommandHandler<List<UpdateTopPageSettingCommand>> {
+public class UpdateTopPageJobSetCommandHandler extends CommandHandler<TopPageJobSetBase> {
+
+	@Inject
+	TopPageSettingRepository topPageSettingRepo;
 
 	@Inject
 	TopPageJobSetRepository topPageJobSetRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<UpdateTopPageSettingCommand>> context) {
+	protected void handle(CommandHandlerContext<TopPageJobSetBase> context) {
 		String companyId = AppContexts.user().companyId();
-		List<UpdateTopPageSettingCommand> command = context.getCommand();
+		List<UpdateTopPageJobSetCommand> command = context.getCommand().listTopPageJobSet;
+		
 		// get list jobId from List UpdateTopPageSettingCommand
 		List<String> listJobId = command.stream().map(x -> x.getJobId()).collect(Collectors.toList());
+		
 		// find data in TOPPAGE_JOB_SET base on companyId and list jobId
 		List<TopPageJobSet> listTopPageJobSet = topPageJobSetRepo.findByListJobId(companyId, listJobId);
 		Map<String, TopPageJobSet> topPageJobMap = listTopPageJobSet.stream()
 				.collect(Collectors.toMap(TopPageJobSet::getJobId, x -> x));
-		for (UpdateTopPageSettingCommand updateTopPageSettingCommandObj : command) {
+		for (UpdateTopPageJobSetCommand updateTopPageSettingCommandObj : command) {
 			TopPageJobSet topPageJobSet = topPageJobMap.get(updateTopPageSettingCommandObj.getJobId());
 			TopPageJobSet TopPageJobSetObj = updateTopPageSettingCommandObj.toDomain(companyId);
 			if (topPageJobSet == null) {
@@ -46,6 +54,14 @@ public class UpdateTopPageSettingCommandHandler extends CommandHandler<List<Upda
 			} else {
 				topPageJobSetRepo.update(TopPageJobSetObj);
 			}
+		}
+		
+		// insert/update category setting in to table TOPPAGE_SET
+		Optional<TopPageSetting> topPageSetting = topPageSettingRepo.findByCId(companyId);
+		if (topPageSetting.isPresent()) {
+			topPageSettingRepo.update(TopPageSetting.createFromJavaType(companyId, context.getCommand().ctgSet));
+		} else {
+			topPageSettingRepo.insert(TopPageSetting.createFromJavaType(companyId, context.getCommand().ctgSet));
 		}
 	}
 }

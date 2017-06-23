@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
 
 /**
@@ -31,17 +32,20 @@ public class TopPageJobSet extends AggregateRoot {
 	private PersonPermissionSetting personPermissionSet;
 
 	/** System */
-	private System system;
+	private System loginSystem;
+
+	private MenuClassification menuClassification;
 
 	public TopPageJobSet(String companyId, TopMenuCode topMenuCode, TopMenuCode loginMenuCode, String jobId,
-			PersonPermissionSetting personPermissionSet, System system) {
+			PersonPermissionSetting personPermissionSet, System loginSystem, MenuClassification menuClassification) {
 		super();
 		this.companyId = companyId;
 		this.topMenuCode = topMenuCode;
 		this.loginMenuCode = loginMenuCode;
 		this.jobId = jobId;
 		this.personPermissionSet = personPermissionSet;
-		this.system = system;
+		this.loginSystem = loginSystem;
+		this.menuClassification = menuClassification;
 	}
 
 	/**
@@ -49,10 +53,11 @@ public class TopPageJobSet extends AggregateRoot {
 	 *
 	 */
 	public static TopPageJobSet createFromJavaType(String companyId, String topMenuCode, String loginMenuCode,
-			String jobId, int personPermissionSet, int system) {
+			String jobId, int personPermissionSet, int loginSystem, int menuClassification) {
 		return new TopPageJobSet(companyId, new TopMenuCode(topMenuCode), new TopMenuCode(loginMenuCode), jobId,
 				EnumAdaptor.valueOf(personPermissionSet, PersonPermissionSetting.class),
-				EnumAdaptor.valueOf(system, System.class));
+				EnumAdaptor.valueOf(loginSystem, System.class),
+				EnumAdaptor.valueOf(menuClassification, MenuClassification.class));
 	}
 
 }
