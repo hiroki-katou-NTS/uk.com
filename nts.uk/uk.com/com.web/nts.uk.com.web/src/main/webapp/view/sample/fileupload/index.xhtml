@@ -24,7 +24,7 @@
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
-					
+
 					<h1>file uploading</h1>
 					<h2>binding file upload by knockout</h2>
 					<div id="fileupload1"
@@ -137,6 +137,22 @@ public class FileStereoFactory {
 					nts.uk.request.specials.donwloadFile(fileid); <br></br> <input
 						id="fileid" type="text" /> <input id="download" type="button"
 						value="download" />
+					<h1>live view uploaded file</h1>
+					<pre>
+						<![CDATA[
+//in html file
+<div id="liveview"></div>
+
+//in ts file
+ var liveviewcontainer = $("#liveview");
+ //view image
+ liveviewcontainer.append($("<img/>").attr("src",nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/"+FILEID)));
+ //view html file
+liveviewcontainer.append($("<iframe/>").attr("src",nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/"+FILEID)));
+
+					]]>
+					</pre>
+					<div id="liveview"></div>
 
 				</div>
 
