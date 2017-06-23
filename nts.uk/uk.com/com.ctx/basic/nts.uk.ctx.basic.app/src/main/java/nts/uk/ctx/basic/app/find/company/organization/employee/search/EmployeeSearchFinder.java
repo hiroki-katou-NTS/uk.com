@@ -11,12 +11,16 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.basic.app.find.person.PersonDto;
-import nts.uk.ctx.basic.dom.company.organization.classification.history.ClassificationHistory;
-import nts.uk.ctx.basic.dom.company.organization.classification.history.ClassificationHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
-import nts.uk.ctx.basic.dom.company.organization.employment.history.EmploymentHistory;
-import nts.uk.ctx.basic.dom.company.organization.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffiliationClassificationHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffiliationEmploymentHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffiliationEmploymentHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJobTitleHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJobTitleHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistoryRepository;
 import nts.uk.ctx.basic.dom.person.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -37,12 +41,27 @@ public class EmployeeSearchFinder {
 	
 	/** The repository employment history. */
 	@Inject
-	private EmploymentHistoryRepository repositoryEmploymentHistory;
+	private AffiliationEmploymentHistoryRepository repositoryEmploymentHistory;
 	
 	/** The repository classification history. */
 	@Inject
-	private ClassificationHistoryRepository repositoryClassificationHistory;
+	private AffiliationClassificationHistoryRepository repositoryClassificationHistory;
 	
+	
+	/** The repository job title history. */
+	@Inject
+	private AffiliationJobTitleHistoryRepository repositoryJobTitleHistory;
+	
+	/** The repository workplace history. */
+	@Inject
+	private AffiliationWorkplaceHistoryRepository repositoryWorkplaceHistory;
+	
+	/**
+	 * Search mode employee.
+	 *
+	 * @param input the input
+	 * @return the list
+	 */
 	public List<PersonDto> searchModeEmployee(EmployeeSearchDto input){
 		
 		// get login user
@@ -53,23 +72,35 @@ public class EmployeeSearchFinder {
 		
 		// find by employment
 		
-		List<EmploymentHistory> employmentHistory = this.repositoryEmploymentHistory
+		List<AffiliationEmploymentHistory> employmentHistory = this.repositoryEmploymentHistory
 				.searchEmployee(input.getBaseDate(), input.getEmploymentCodes());
 		
 		// find by classification
-		List<ClassificationHistory> classificationHistorys = this.repositoryClassificationHistory
+		List<AffiliationClassificationHistory> classificationHistorys = this.repositoryClassificationHistory
 				.searchClassification(
 						employmentHistory.stream().map(employment -> employment.getEmployeeId().v())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getClassificationCodes());
 		
+		// find by job title
+		List<AffiliationJobTitleHistory> jobTitleHistory = this.repositoryJobTitleHistory
+				.searchJobTitleHistory(
+						classificationHistorys.stream()
+								.map(classification -> classification.getEmployeeId().v())
+								.collect(Collectors.toList()),
+						input.getBaseDate(), input.getJobTitleCodes());
 		
+		// find by work place
+		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
+				.searchWorkplaceHistory(
+						jobTitleHistory.stream().map(jobtitle -> jobtitle.getEmployeeId().v())
+								.collect(Collectors.toList()),
+						input.getBaseDate(), input.getWorkplaceCodes());
 		// to employees
 		List<Employee> employees = this.repositoryEmployee.getListPersonByListEmployeeId(companyId,
-				classificationHistorys.stream()
-						.map(classification -> classification.getEmployeeId().v())
+				workplaceHistory.stream().map(workplace -> workplace.getEmployeeId().v())
 						.collect(Collectors.toList()));
-		
+
 		// to person info
 		return this.repositoryPerson.getPersonByPersonId(
 				employees.stream().map(employee -> employee.getPId()).collect(Collectors.toList()))
