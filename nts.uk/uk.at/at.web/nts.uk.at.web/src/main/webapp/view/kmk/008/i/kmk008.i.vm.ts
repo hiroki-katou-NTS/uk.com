@@ -2,101 +2,104 @@ module nts.uk.at.view.kmk008.i {
     export module viewmodel {
 
         export class ScreenModel {
-            startingMonth: KnockoutObservableArray<ComboBoxModel>;
-            selectedStartingMonth: KnockoutObservable<string>;
-
-            closingDate: KnockoutObservableArray<ComboBoxModel>;
-            selectedClosingDate: KnockoutObservable<string>;
-
-            closingDateClassification: KnockoutObservableArray<RadioModel>;
-            selectedClosingDateClassification: KnockoutObservable<number>;
-            isEnableClosingDateClassification: KnockoutObservable<boolean>;
-
-            numberOfTimesOverLimit: KnockoutObservableArray<ComboBoxModel>;
-            selectedNumberOfTimesOverLimit: KnockoutObservable<string>;
-
-            targetClassification: KnockoutObservableArray<any>;
-            selectedTargetClassificationAlarm: KnockoutObservable<string>;
-            selectedTargetClassificationWorkSchedule: KnockoutObservable<string>;
-            isEnableTargetClassification: KnockoutObservable<boolean>;
-
+            operationSetting: KnockoutObservable<OperationSettingModel>;
+            selectedClosingDateAtr: KnockoutObservable<number>;
+            isEnableClosingDateType: KnockoutObservable<boolean>;
+            isEnableTargetSetting: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self._init();
-                self.selectedClosingDateClassification.subscribe(function(newValue) {
+                self.selectedClosingDateAtr.subscribe(function(newValue) {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
+                    self.operationSetting().selectedClosingDateAtr = newValue
                     if (newValue == 0) {
-                        self.isEnableClosingDateClassification(false);
-                        self.isEnableTargetClassification(false)
+                        self.isEnableClosingDateType(false);
+                        self.isEnableTargetSetting(false)
                         return;
                     }
-                    self.isEnableClosingDateClassification(true);
-                    self.isEnableTargetClassification(true);
+                    self.isEnableClosingDateType(true);
+                    self.isEnableTargetSetting(true);
                 });
 
             }
             _init(): void {
                 let self = this;
-                self.startingMonth = ko.observableArray([
-                    new ComboBoxModel("1", nts.uk.resource.getText("KMK008_32")),
-                    new ComboBoxModel("2", nts.uk.resource.getText("KMK008_32")),
-                    new ComboBoxModel("3", nts.uk.resource.getText("KMK008_32")),
-                    new ComboBoxModel("4", nts.uk.resource.getText("KMK008_32")),
-                    new ComboBoxModel("5", nts.uk.resource.getText("KMK008_32")),
-                    new ComboBoxModel("6", nts.uk.resource.getText("KMK008_32")),
-                    new ComboBoxModel("7", nts.uk.resource.getText("KMK008_32")),
-                    new ComboBoxModel("8", nts.uk.resource.getText("KMK008_32"))
-
-                ]);
-                self.selectedStartingMonth = ko.observable("1");
-
-                self.closingDate = ko.observableArray([
-                    new ComboBoxModel("1", nts.uk.resource.getText("KMK008_33")),
-                    new ComboBoxModel("2", nts.uk.resource.getText("KMK008_33")),
-                    new ComboBoxModel("3", nts.uk.resource.getText("KMK008_33")),
-                    new ComboBoxModel("4", nts.uk.resource.getText("KMK008_33")),
-                    new ComboBoxModel("5", nts.uk.resource.getText("KMK008_33")),
-                    new ComboBoxModel("6", nts.uk.resource.getText("KMK008_33")),
-                    new ComboBoxModel("7", nts.uk.resource.getText("KMK008_33")),
-                    new ComboBoxModel("8", nts.uk.resource.getText("KMK008_33"))
-                ]);
-                self.selectedClosingDate = ko.observable("1");
-
-                self.closingDateClassification = ko.observableArray([
-                    new RadioModel(0, "勤怠の締め日と同じ"),
-                    new RadioModel(1, "締め日を指定"),
-                ]);
-                self.selectedClosingDateClassification = ko.observable(0);
-
-                self.numberOfTimesOverLimit = ko.observableArray([
-                    new ComboBoxModel("1", nts.uk.resource.getText("KMK008_34")),
-                    new ComboBoxModel("2", nts.uk.resource.getText("KMK008_34")),
-                    new ComboBoxModel("3", nts.uk.resource.getText("KMK008_34")),
-                    new ComboBoxModel("4", nts.uk.resource.getText("KMK008_34")),
-                    new ComboBoxModel("5", nts.uk.resource.getText("KMK008_34")),
-                    new ComboBoxModel("6", nts.uk.resource.getText("KMK008_34")),
-                    new ComboBoxModel("7", nts.uk.resource.getText("KMK008_34")),
-                    new ComboBoxModel("8", nts.uk.resource.getText("KMK008_34"))
-                ]);
-                self.selectedNumberOfTimesOverLimit = ko.observable("1");
-
-                self.targetClassification = ko.observableArray([
-                    new ComboBoxModel("1", nts.uk.resource.getText("KMK008_35")),
-                    new ComboBoxModel("2", nts.uk.resource.getText("KMK008_34")),
-                ]);
-                self.selectedTargetClassificationAlarm = ko.observable("1");
-                self.selectedTargetClassificationWorkSchedule = ko.observable("1");
-
+                self.operationSetting = ko.observable(new OperationSettingModel(null));
+                self.selectedClosingDateAtr = ko.observable(0);
                 //init enable
-                self.isEnableClosingDateClassification = ko.observable(false);
-                self.isEnableTargetClassification = ko.observable(false);
-
+                self.isEnableClosingDateType = ko.observable(false);
+                self.isEnableTargetSetting = ko.observable(false);
             }
+
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 dfd.resolve();
                 return dfd.promise();
+            }
+        }
+
+        export class OperationSettingModel {
+            startingMonth: KnockoutObservableArray<any>;
+            numberTimesOverLimitType: KnockoutObservableArray<any>;
+            closingDateType: KnockoutObservableArray<any>;
+            closingDateAtr: KnockoutObservableArray<any>;
+            yearlyWorkTableAtr: KnockoutObservableArray<any>;
+            alarmListAtr: KnockoutObservableArray<any>;
+            selectedStartingMonth: KnockoutObservable<string>;
+            selectedClosingDateType: KnockoutObservable<string>;
+            selectedClosingDateAtr: number;
+            selectedNumberTimesOverLimitType: KnockoutObservable<string>;
+            selectedAlarmListAtr: KnockoutObservable<string>;
+            selectedYearlyWorkTableAtr: KnockoutObservable<string>;
+            constructor(data: any) {
+                let self = this;
+                if (data) {
+                    self.startingMonth = ko.observableArray(data.startingMonth);
+                    self.numberTimesOverLimitType = ko.observableArray(data.numberTimesOverLimitType);
+                    self.closingDateType = ko.observableArray(data.closingDateType);
+                    self.closingDateAtr = ko.observableArray(data.closingDateAtr);
+                    self.yearlyWorkTableAtr = ko.observableArray(data.yearlyWorkTableAtr);
+                    self.alarmListAtr = ko.observableArray(data.alarmListAtr);
+
+                    self.selectedStartingMonth = ko.observableArray(data.selectedStartingMonth);
+                    self.selectedClosingDateType = ko.observableArray(data.selectedClosingDateType);
+                    self.selectedClosingDateAtr = 0;
+                    self.selectedNumberTimesOverLimitType = ko.observableArray(data.selectedNumberTimesOverLimitType);
+                    self.selectedAlarmListAtr = ko.observableArray(data.selectedAlarmListAtr);
+                    self.selectedYearlyWorkTableAtr = ko.observableArray(data.selectedYearlyWorkTableAtr);
+                } else {
+                    self.startingMonth = ko.observableArray([
+                        new ComboBoxModel("1", nts.uk.resource.getText("KMK008_32")),
+                        new ComboBoxModel("2", nts.uk.resource.getText("KMK008_32")),
+                    ]);
+                    self.closingDateType = ko.observableArray([
+                        new ComboBoxModel("1", nts.uk.resource.getText("KMK008_33")),
+                        new ComboBoxModel("2", nts.uk.resource.getText("KMK008_33")),
+                    ]);
+                    self.closingDateAtr = ko.observableArray([
+                        new RadioModel(0, "勤怠の締め日と同じ"),
+                        new RadioModel(1, "締め日を指定"),
+                    ]);
+                    self.numberTimesOverLimitType = ko.observableArray([
+                        new ComboBoxModel("1", nts.uk.resource.getText("KMK008_34")),
+                        new ComboBoxModel("2", nts.uk.resource.getText("KMK008_34")),
+                    ]);
+                    self.alarmListAtr = ko.observableArray([
+                        new ComboBoxModel("1", nts.uk.resource.getText("KMK008_35")),
+                        new ComboBoxModel("2", nts.uk.resource.getText("KMK008_34")),
+                    ]);
+                    self.yearlyWorkTableAtr = ko.observableArray([
+                        new ComboBoxModel("1", nts.uk.resource.getText("KMK008_35")),
+                        new ComboBoxModel("2", nts.uk.resource.getText("KMK008_34")),
+                    ]);
+                    self.selectedStartingMonth = ko.observable("1");
+                    self.selectedClosingDateType = ko.observable("1");
+                    self.selectedClosingDateAtr = 0;
+                    self.selectedNumberTimesOverLimitType = ko.observable("1");
+                    self.selectedAlarmListAtr = ko.observable("1");
+                    self.selectedYearlyWorkTableAtr = ko.observable("1");
+                }
             }
         }
 
@@ -119,5 +122,6 @@ module nts.uk.at.view.kmk008.i {
                 self.localizedName = localizedName;
             }
         }
+
     }
 }
