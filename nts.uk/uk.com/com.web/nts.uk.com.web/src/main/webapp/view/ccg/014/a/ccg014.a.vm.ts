@@ -76,7 +76,7 @@ module ccg014.a.viewmodel {
                     service.createTitleMenu(titleMenu).done((data) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData().done(() => {
-                            self.selectTitleMenuByIndexByCode(titleMenuCD);
+                            self.selectTitleMenuByCode(titleMenuCD);
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
@@ -86,8 +86,9 @@ module ccg014.a.viewmodel {
                 }
                 else {
                     service.updateTitleMenu(titleMenu).done((data) => {
-                        self.reloadData();
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        console.log(data);
+                        self.reloadData();
                     }).always(() => {
                         block.clear();
                     });
@@ -126,7 +127,7 @@ module ccg014.a.viewmodel {
                 var copiedTitleMenuCD = windows.getShared("copyTitleMenuCD");
                 if (copiedTitleMenuCD) {
                     self.reloadData().done(() => {
-                        self.selectTitleMenuByIndexByCode(copiedTitleMenuCD);
+                        self.selectTitleMenuByCode(copiedTitleMenuCD);
                         nts.uk.ui.dialog.alert({ messageId: "Msg_20" });
                     });
                 }
@@ -207,7 +208,7 @@ module ccg014.a.viewmodel {
         }
 
         /** Select TitleMenu by Code: Create & Update case*/
-        private selectTitleMenuByIndexByCode(code: string) {
+        private selectTitleMenuByCode(code: string) {
             this.selectedTitleMenuCD(code);
             
         }
