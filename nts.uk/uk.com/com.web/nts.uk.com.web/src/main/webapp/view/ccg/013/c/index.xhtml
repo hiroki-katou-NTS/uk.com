@@ -84,6 +84,9 @@
 												onfilenameclick: function(filename){alert(filename);}}">
 										</div>
 									</td>
+									<td><button class="danger"
+										data-bind="click: deleteButtonClick, enable: isDelete()"
+										tabindex="9">#{i18n.getText('CCG030_5')}</button></td>
 								</tr>
 								<tr>
 									<td><label>Size:66k</label></td>

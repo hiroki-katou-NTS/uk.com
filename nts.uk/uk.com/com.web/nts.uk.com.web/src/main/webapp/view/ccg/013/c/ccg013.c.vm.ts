@@ -79,6 +79,10 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             windows.setShared("CCG013C_MenuBar", menuBar);
             self.cancel_Dialog();
         }
+        
+        deleteButtonClick(){
+                
+        }
 
     class MenuBar {
         nameMenuBar: string;
