@@ -12,13 +12,13 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
  *
  */
 public interface BPTimesheetRepository {
-	
-	List<BonusPayTimesheet> getListTimesheet(String companyId, String bonusPaySettingCode);
-	
-	void addListTimesheet(List<BonusPayTimesheet> lstTimesheet);
-	
-	void updateListTimesheet(List<BonusPayTimesheet> lstTimesheet);
 
-	void removeListTimesheet(List<BonusPayTimesheet> lstTimesheet);
-	
+	List<BonusPayTimesheet> getListTimesheet(String companyId, String bonusPaySettingCode);
+
+	void addListTimesheet(String companyId, String bonusPaySettingCode, List<BonusPayTimesheet> lstTimesheet);
+
+	void updateListTimesheet(String companyId, String bonusPaySettingCode, List<BonusPayTimesheet> lstTimesheet);
+
+	void removeListTimesheet(String companyId, String bonusPaySettingCode, List<BonusPayTimesheet> lstTimesheet);
+
 }

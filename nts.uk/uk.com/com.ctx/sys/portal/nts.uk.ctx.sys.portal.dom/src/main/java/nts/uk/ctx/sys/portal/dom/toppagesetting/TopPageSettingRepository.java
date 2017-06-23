@@ -11,13 +11,21 @@ public interface TopPageSettingRepository {
 	/**
 	 * 
 	 * @param companyId
-	 * @return
+	 * @return toppageSetting or null
 	 */
 	Optional<TopPageSetting> findByCId(String companyId);
 
 	/**
+	 * insert data to TOPPAGE_SETTING
 	 * 
 	 * @param topPageSetting
 	 */
-	public void add(TopPageSetting topPageSetting);
+	public void insert(TopPageSetting topPageSetting);
+
+	/**
+	 * update data to TOPPAGE_SETTING
+	 * 
+	 * @param topPageSetting
+	 */
+	public void update(TopPageSetting topPageSetting);
 }

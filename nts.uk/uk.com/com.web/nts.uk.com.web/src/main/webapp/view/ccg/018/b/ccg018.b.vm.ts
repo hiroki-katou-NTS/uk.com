@@ -1,6 +1,7 @@
 module ccg018.b.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel>;
+        items2: KnockoutObservableArray<ItemModel2>;
         currentCode: KnockoutObservable<any>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         itemList: KnockoutObservableArray<ItemModel1>;
@@ -12,8 +13,10 @@ module ccg018.b.viewmodel {
         constructor() {
             var self = this;
             self.items = ko.observableArray([]);
-            for (let i = 1; i < 100; i++) {
-                self.items.push(new ItemModel('A00000' + i, '基本給' + i, "役職手当 " + i, "基本給 " + i));
+            self.items2 = ko.observableArray([]);
+            for (let i = 1; i < 20; i++) {
+                self.items.push(new ItemModel('A00000' + i, '基本給' + i, "役職手当 " + i));
+                self.items2.push(new ItemModel2('A00000' + i, !!(i % 2)));
             }
             self.currentCode = ko.observable(self.items()[0].code);
             self.employeeCode = ko.observable(self.items()[0].code);
@@ -36,11 +39,29 @@ module ccg018.b.viewmodel {
                 self.employeeCode(codeChange);
                 self.employeeName(_.find(self.items(), ['code', codeChange]).name);
             });
+
         }
 
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
+
+            var listComponentOption = {
+                isShowAlreadySet: true,
+                alreadySettingList: self.items2,
+                isMultiSelect: false,
+                listType: 4,
+                isShowWorkPlaceName: true,
+                selectedCode: self.currentCode,
+                isShowNoSelectRow: false,
+                isDialog: false,
+                selectType: 3,
+                isShowSelectAllButton: false,
+                employeeInputList: self.items
+            };
+
+            $('#sample-component').ntsListComponent(listComponentOption);
+
             dfd.resolve();
             return dfd.promise();
         }
@@ -48,18 +69,18 @@ module ccg018.b.viewmodel {
         openDialogC() {
             nts.uk.ui.windows.sub.modal("/view/ccg/018/c/index.xhtml", { dialogClass: "no-close" });
         }
+
+
     }
 
     class ItemModel {
         code: string;
         name: string;
-        description: string;
-        other1: string;
-        constructor(code: string, name: string, description: string, other1: string) {
+        workplaceName: string;
+        constructor(code: string, name: string, workplaceName: string) {
             this.code = code;
             this.name = name;
-            this.description = description;
-            this.other1 = other1;
+            this.workplaceName = workplaceName;
         }
     }
 
@@ -70,6 +91,16 @@ module ccg018.b.viewmodel {
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    class ItemModel2 {
+        code: string;
+        isAlreadySetting: boolean;
+
+        constructor(code: string, isAlreadySetting: boolean) {
+            this.code = code;
+            this.isAlreadySetting = isAlreadySetting;
         }
     }
 }

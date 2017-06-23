@@ -22,38 +22,16 @@
 	</div>
 
 	<div id="part-2">
-		<i class="icon icon-searchbox"></i>
-		<div id="B3_1" class=" caret-right caret-background bg-green">
-			<div style="margin: 30px 0px 10px 20px; float: left"
-				data-bind="ntsSearchBox: {
-											comId: 'single-list',
-											items: items, 
-											selected: currentCode, 
-											selectedKey: 'code', 
-											fields: ['name', 'code']}" />
-			<br />
-			<div style="margin-left: 20px">
-				<table id="single-list"
-					data-bind="ntsGridList: {
-												width: 400,
-												height: 370,
-												options: items,
-												optionsValue: 'code',
-												columns: columns,
-												multiple: false,
-												value: currentCode
-											}"></table>
-			</div>
-		</div>
+		<div id="sample-component"></div>
 	</div>
 	<div id="part-3">
-		<div>
+		<div >
 			<div id="B3_12" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG018_38')}</div>
 			<span id="B3_13" data-bind="text: employeeCode"></span> <span
 				id="B3_14" data-bind="text: employeeName"></span>
 		</div>
 
-		<div id="part-3-1">
+		<div >
 			<table id="table-1">
 				<thead>
 					<tr>

@@ -41,3 +41,29 @@
 .nts-switch-button {
 	width: 90px
 }
+
+
+#table-1 {
+	margin-top: 20px;
+	border-spacing: 15px; 
+}
+
+th {
+	border: 1px solid #999999;
+	background-color: #E0F59E;
+	height: 25px;
+	padding: 0 2px;
+}
+td {
+	padding: 2px	
+}
+
+#table-1 tbody tr td #combo-box {
+	border: none!important
+}
+
+
+.ui-igcombo-button {
+	background-color: white;
+	border: none !important;
+}

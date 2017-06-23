@@ -31,8 +31,11 @@ public class CcgptTopPagePersonSet extends UkJpaEntity {
 	@Column(name = "LOGIN_MENU_NO")
 	public String loginMenuNo;
 
-	@Column(name = "SYSTEM")
-	public int system;
+	@Column(name = "LOGIN_SYSTEM")
+	public int loginSystem;
+	
+	@Column(name = "LOGIN_MENU_CLS")
+	public int loginMenuCls;
 
 	@Override
 	protected CcgptTopPagePersonSetPK getKey() {
