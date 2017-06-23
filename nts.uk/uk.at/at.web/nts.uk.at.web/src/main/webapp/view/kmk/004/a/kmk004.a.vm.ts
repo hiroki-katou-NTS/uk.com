@@ -184,6 +184,8 @@ module nts.uk.at.view.kmk004.a {
                 service.saveCompanySetting(ko.toJS(self.companyWTSetting)).done(() => {
                     self.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(error => {
+                    nts.uk.ui.dialog.alertError(error);
                 });
             }
 
@@ -200,6 +202,8 @@ module nts.uk.at.view.kmk004.a {
                     self.setAlreadySettingEmploymentList();
                     self.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(error => {
+                    nts.uk.ui.dialog.alertError(error);
                 });
             }
 
@@ -216,6 +220,8 @@ module nts.uk.at.view.kmk004.a {
                     self.setAlreadySettingWorkplaceList();
                     self.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                }).fail(error => {
+                    nts.uk.ui.dialog.alertError(error);
                 });
             }
 
@@ -225,26 +231,28 @@ module nts.uk.at.view.kmk004.a {
             public removeEmployment(): void {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                        let empt = self.employmentWTSetting;
-                        let command = { year: empt.year(), employmentCode: empt.employmentCode() }
-                        service.removeEmploymentSetting(command).done(() => {
-                            self.isNewMode(true);
-                            self.setAlreadySettingEmploymentList();
-                            // Reserve current code + name + year.
-                            let newEmpt = new EmploymentWTSetting();
-                            newEmpt.employmentCode(empt.employmentCode());
-                            newEmpt.employmentName(empt.employmentName());
-                            newEmpt.year(empt.year());
-                            self.employmentWTSetting.updateData(ko.toJS(newEmpt));
-                            // Sort month.
-                            self.employmentWTSetting.sortMonth(self.startMonth());
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        });
-                    }).ifNo(function() {
-                        nts.uk.ui.block.clear();
-                        return;
-                    })
-                }
+                    let empt = self.employmentWTSetting;
+                    let command = { year: empt.year(), employmentCode: empt.employmentCode() }
+                    service.removeEmploymentSetting(command).done(() => {
+                        self.isNewMode(true);
+                        self.setAlreadySettingEmploymentList();
+                        // Reserve current code + name + year.
+                        let newEmpt = new EmploymentWTSetting();
+                        newEmpt.employmentCode(empt.employmentCode());
+                        newEmpt.employmentName(empt.employmentName());
+                        newEmpt.year(empt.year());
+                        self.employmentWTSetting.updateData(ko.toJS(newEmpt));
+                        // Sort month.
+                        self.employmentWTSetting.sortMonth(self.startMonth());
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError(error);
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                })
+            }
 
             /**
              * Remove workplace setting.
@@ -267,6 +275,8 @@ module nts.uk.at.view.kmk004.a {
                         // Sort month.
                         self.workplaceWTSetting.sortMonth(self.startMonth());
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 }).ifNo(function() {
                     nts.uk.ui.block.clear();
@@ -291,6 +301,8 @@ module nts.uk.at.view.kmk004.a {
                         self.companyWTSetting.sortMonth(self.startMonth());
                         self.isNewMode(true);
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    }).fail(error => {
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 }).ifNo(function() {
                     nts.uk.ui.block.clear();
