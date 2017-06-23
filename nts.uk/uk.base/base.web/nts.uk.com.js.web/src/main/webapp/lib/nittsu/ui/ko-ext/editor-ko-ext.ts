@@ -1,4 +1,4 @@
-/// <reference path="../../reference.ts"/>
+﻿/// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
     import validation = nts.uk.ui.validation;
@@ -150,7 +150,7 @@ module nts.uk.ui.koExtentions {
                 }
             });
 
-            $input.on("blur", (e) => {
+            $input.on("change", (e) => {
                 if (!$input.attr('readonly')) {
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });

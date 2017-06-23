@@ -195,7 +195,7 @@ module nts.uk.ui.koExtentions {
 
             // Checked
             var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
-                return _.isEqualWith($(item).data("value"), selectedValue(), (objVal, othVal, key) => { return key === "enable" ? true : undefined; });
+                return _.isEqual(JSON.parse(ko.toJSON(selectedValue())), $(item).data("value"));
             });
             if (checkedRadio !== undefined)
                 $(checkedRadio).prop("checked", true);
@@ -204,7 +204,7 @@ module nts.uk.ui.koExtentions {
             if(enable === true) {
                 _.forEach(container.find("input[type='radio']"), function (radio){
                     let dataOpion = $(radio).data("option");
-                    if(dataOpion["enable"] === true){
+                    if(dataOpion["enable"] !== false){
                         $(radio).removeAttr("disabled");        
                     }        
                 });  
