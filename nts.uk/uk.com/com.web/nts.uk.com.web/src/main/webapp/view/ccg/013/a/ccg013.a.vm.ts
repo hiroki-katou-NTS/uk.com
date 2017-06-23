@@ -15,7 +15,7 @@ module ccg013.a.viewmodel {
 
         constructor() {
             var self = this;
-            
+
             self.isCreated = ko.observable(true);
             self.currentWebMenu = ko.observable(new WebMenu("", "", false, []));
 
@@ -70,37 +70,53 @@ module ccg013.a.viewmodel {
         startPage(): JQueryPromise<void> {
             var self = this;
             var dfd = $.Deferred<void>();
+            self.getWebMenu().done(function() {
+                if (self.items().length > 0) {
+                    self.currentCode(self.items()[0].webMenuCode);
+                }
+                else {
+                    self.cleanForm();
+                }
+            });
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+
+        getWebMenu(): any {
+            var self = this;
+            var dfd = $.Deferred();
             service.loadWebMenu().done(function(data) {
                 var list001: Array<ItemModel> = [];
                 _.forEach(data, function(item) {
                     list001.push(new ItemModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
                 });
                 self.items(list001);
-                dfd.resolve();
+                dfd.resolve(data);
+            }).fail(function(res) {
             });
             return dfd.promise();
         }
 
+
         addWebMenu(): any {
             var self = this;
             if (self.currentWebMenu().isDefaultMenu()) {
-                self.currentWebMenu().defaultMenu(0);    
+                self.currentWebMenu().defaultMenu(0);
             } else {
                 self.currentWebMenu().defaultMenu(1);
             }
             var webMenu = ko.toJSON(self.currentWebMenu);
-            if (!self.isCreated()) {
-                service.updateWebMenu(webMenu);
-            } else {
-                service.addWebMenu(webMenu);
-            }
+            service.addWebMenu(self.isCreated(), webMenu).done(function() {
+                self.getWebMenu();
+            });
         }
 
         /**
          * Find a web menu by web menu code
          */
         findWebMenu(webMenuCode: string): any {
-            var self = this;       
+            var self = this;
             service.findWebMenu(webMenuCode).done(function(res) {
                 var defaultMenu = true;
                 if (res.defaultMenu == 1) {
@@ -109,7 +125,7 @@ module ccg013.a.viewmodel {
                 self.currentWebMenu(new WebMenu(res.webMenuCode, res.webMenuName, defaultMenu, res.menuBars));
             });
         }
-        
+
         /**
          * Clean all control in form
          */
@@ -118,6 +134,12 @@ module ccg013.a.viewmodel {
             self.isCreated(true);
             self.currentWebMenu(new WebMenu("", "", false, []));
             self.currentCode("");
+        }
+
+        OpenBdialog(): any {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/b/index.xhtml", { title: "銀行の登録　＞　銀行の統合" }).onClosed(function() {
+            });
         }
     }
 
@@ -131,7 +153,7 @@ module ccg013.a.viewmodel {
             this.webMenuName = webMenuName;
             this.defaultMenu = defaultMenu;
             if (defaultMenu == 1) {
-                this.icon = "";    
+                this.icon = "";
             } else {
                 this.icon = '<i class="icon icon-dot"></i>';
             }
@@ -149,7 +171,7 @@ module ccg013.a.viewmodel {
             this.webMenuCode = ko.observable(webMenuCode);
             this.webMenuName = ko.observable(webMenuName);
             this.isDefaultMenu = ko.observable(defaultMenu);
-            this.defaultMenu = ko.observable(1); 
+            this.defaultMenu = ko.observable(1);
             this.menuBars = ko.observableArray(menuBars);
         }
     }

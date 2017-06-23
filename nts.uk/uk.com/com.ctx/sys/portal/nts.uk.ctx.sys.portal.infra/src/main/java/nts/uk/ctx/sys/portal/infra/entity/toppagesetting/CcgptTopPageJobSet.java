@@ -35,8 +35,11 @@ public class CcgptTopPageJobSet extends UkJpaEntity {
 	@Column(name = "PERSON_PERMISSION_SET")
 	public int personPermissionSet;
 
-	@Column(name = "SYSTEM")
+	@Column(name = "LOGIN_SYSTEM")
 	public int system;
+	
+	@Column(name = "LOGIN_MENU_CLS")
+	public int loginMenuCls;
 
 	@Override
 	protected CcgptTopPageJobSetPK getKey() {

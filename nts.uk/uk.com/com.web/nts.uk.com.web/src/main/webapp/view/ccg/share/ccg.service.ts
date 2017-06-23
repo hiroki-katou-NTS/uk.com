@@ -7,7 +7,6 @@ module nts.uk.com.view.ccg.share.ccg {
         var servicePath = {
             findAllPerson: "basic/person/getallperson",
             getPersonLogin: "basic/person/getpersonlogin",
-            searchDataEmployee: "basic/company/organization/employee/workplace/history/searchData",
             searchModeEmployee: "basic/organization/employee/search/advanced"
         }
 
@@ -23,14 +22,9 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('com', servicePath.getPersonLogin);
         }
 
-        // search data by service
-        export function searchDataEmployee(input: model.WorkplaceHistoryInDto): JQueryPromise<model.WorkplaceHistoryDto[]> {
-            return nts.uk.request.ajax('com', servicePath.searchDataEmployee, input);
-        }
-
 
         export function searchModeEmployee(input: model.EmployeeSearchDto)
-            : JQueryPromise<model.ClassificationHistoryDto[]> {
+            : JQueryPromise<model.PersonModel[]> {
             return nts.uk.request.ajax('com', servicePath.searchModeEmployee, input);
         }
         
@@ -40,47 +34,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 personName: string;
             }
 
-            export class WorkplaceHistoryDto {
-                /** The star date. */
-                starDate: Date;
-
-                /** The end date. */
-                endDate: Date;
-
-                /** The employee id. */
-                employeeId: string;
-
-                /** The work place id. */
-                workplaceId: string;
-            }
-
-            export class WorkplaceHistoryInDto {
-                baseDate: Date;
-
-                workplaceIds: string[];
-            }
-
-
-            export class ClassificationHistoryDto {
-                /** The star date. */
-                starDate: Date;
-
-                /** The end date. */
-                endDate: Date;
-
-                /** The employee id. */
-                employeeId: string;
-
-                classificationCode: string;
-            }
-
-            export class ClassificationHistoryInDto {
-                baseDate: Date;
-                classificationCodes: string[];
-            }
 
             export class EmployeeSearchDto {
-                classificationHistory: ClassificationHistoryInDto;
+                baseDate: Date;
+                employmentCodes: string[];
+                classificationCodes: string[];
             }
 
             export interface GroupOption {

@@ -11,16 +11,17 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
  */
 @Data
 @AllArgsConstructor
-public class UpdateTopPageSettingCommand {
+public class UpdateTopPageJobSetCommand {
 	private String jobId;
 	private String topMenuCd;
 	private String loginMenuCd;
 	private int personPermissionSet;
 	private int system;
+	private int menuClassification;
 
 	public TopPageJobSet toDomain(String companyId) {
 		TopPageJobSet domain = TopPageJobSet.createFromJavaType(companyId, this.topMenuCd, this.loginMenuCd, this.jobId,
-				this.personPermissionSet, this.system);
+				this.personPermissionSet, this.system, this.menuClassification);
 		return domain;
 	}
 }

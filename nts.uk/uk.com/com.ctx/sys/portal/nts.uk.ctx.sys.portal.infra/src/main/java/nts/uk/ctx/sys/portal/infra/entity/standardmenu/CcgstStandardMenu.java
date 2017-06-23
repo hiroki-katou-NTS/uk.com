@@ -57,8 +57,7 @@ public class CcgstStandardMenu extends UkJpaEntity implements Serializable {
 	public int logSettingDisplay;
 
 	@Override
-	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return ccgmtStandardMenuPK;
+	protected CcgstStandardMenuPK getKey() {
+		return this.ccgmtStandardMenuPK;
 	}
 }
