@@ -264,8 +264,14 @@ module kcp.share.list {
             });
             
             // defined function get data list.
+            $('#script-for-' + $input.attr('id')).remove();
+            var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(dataList);
+            s.id = 'script-for-' + $input.attr('id');
+            $("head").append(s);
             $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
-                return dataList;
+                return window['dataList' + $input.attr('id').replace(/-/gi, '')];
             }
             
             // defined function focus
