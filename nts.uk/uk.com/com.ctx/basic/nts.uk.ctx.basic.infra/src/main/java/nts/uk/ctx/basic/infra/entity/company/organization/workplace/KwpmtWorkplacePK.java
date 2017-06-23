@@ -37,42 +37,71 @@ public class KwpmtWorkplacePK implements Serializable {
     @Size(min = 1, max = 5)
     @Column(name = "WPL_ID")
     private String wplid;
+	
+
+	@Basic(optional = false)
+	@NotNull
+	@Size(min = 1, max = 120)
+	@Column(name = "WPL_CD")
+	private String wplcd;
 
     public KwpmtWorkplacePK() {
     }
 
-    public KwpmtWorkplacePK(String cid, String wplid) {
+    public KwpmtWorkplacePK(String cid, String wplid,String wplcd) {
         this.cid = cid;
         this.wplid = wplid;
+        this.wplcd = wplcd;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (wplid != null ? wplid.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KwpmtWorkplacePK)) {
-            return false;
-        }
-        KwpmtWorkplacePK other = (KwpmtWorkplacePK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if ((this.wplid == null && other.wplid != null) || (this.wplid != null && !this.wplid.equals(other.wplid))) {
-            return false;
-        }
-        return true;
-    }
+   
 
     @Override
     public String toString() {
-        return "entity.KwpmtWorkplacePK[ cid=" + cid + ", wkpid=" + wplid + " ]";
+        return "entity.KwpmtWorkplacePK[ cid=" + cid + ", wkpid=" + wplid + ", wplcd=" +wplcd+ " ]";
     }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + ((wplcd == null) ? 0 : wplcd.hashCode());
+		result = prime * result + ((wplid == null) ? 0 : wplid.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof KwpmtWorkplacePK))
+			return false;
+		KwpmtWorkplacePK other = (KwpmtWorkplacePK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
+			return false;
+		if (wplcd == null) {
+			if (other.wplcd != null)
+				return false;
+		} else if (!wplcd.equals(other.wplcd))
+			return false;
+		if (wplid == null) {
+			if (other.wplid != null)
+				return false;
+		} else if (!wplid.equals(other.wplid))
+			return false;
+		return true;
+	}
     
 }
