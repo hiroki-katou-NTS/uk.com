@@ -243,16 +243,12 @@ module nts.uk.pr.view.kmf001.j {
                 if (!self.validateEmpSetting()) {
                     return;
                 }
-                var backUp = self.selectedItem();
                 this.service.saveEmpSetting(self.empSettingModel().toEmp60HourVacationDto()).done(function() {
+                    self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
+                    self.loadEmpSettingDetails(self.selectedItem());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.loadEmploymentList().done(() => {
-                        //reload list employment
-                        $('#left-content').ntsListComponent(self.listComponentOption).done(() => {
-                            self.loadEmpSettingDetails(backUp);
-                        });
-                    });
-                }
+                });
+
             }
 
             private validateComSetting(): boolean {
