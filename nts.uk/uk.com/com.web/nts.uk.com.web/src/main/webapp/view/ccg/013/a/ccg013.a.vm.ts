@@ -12,6 +12,7 @@ module ccg013.a.viewmodel {
         selectedTab: KnockoutObservable<string>;
         currentWebMenu: KnockoutObservable<WebMenu>;
         isCreated: KnockoutObservable<boolean>;
+        menuBars: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
@@ -65,6 +66,8 @@ module ccg013.a.viewmodel {
                 self.findWebMenu(newValue);
             });
 
+            self.menuBars = ko.observableArray([]);          
+            
         }
 
         startPage(): JQueryPromise<void> {
@@ -136,9 +139,16 @@ module ccg013.a.viewmodel {
             self.currentCode("");
         }
 
-        OpenBdialog(): any {
+        openBdialog(): any {
             var self = this;
-            nts.uk.ui.windows.sub.modal("/view/ccg/013/b/index.xhtml", { title: "銀行の登録　＞　銀行の統合" }).onClosed(function() {
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/b/index.xhtml").onClosed(function() {
+                var data = nts.uk.ui.windows.getShared("CCG013B_MenuBar");
+                if (data) {
+                    var id = nts.uk.util.randomId();
+                    self.menuBars.push(new MenuBar(id, data.nameMenuBar, data.selectedRadioAtcClass,1,2, data.backgroundColor, data.letterColor,2, [] ));
+                    $("#tabs").tabs("refresh");
+                    $("#tabs li#"+ id +" a").click();
+                }
             });
         }
     }
@@ -173,6 +183,42 @@ module ccg013.a.viewmodel {
             this.isDefaultMenu = ko.observable(defaultMenu);
             this.defaultMenu = ko.observable(1);
             this.menuBars = ko.observableArray(menuBars);
+        }
+    }
+
+    class MenuBar {
+        code: KnockoutObservable<string>;;
+
+        menuBarName: KnockoutObservable<string>;
+
+        selectedAtr: KnockoutObservable<number>;
+
+        system: KnockoutObservable<number>;
+
+        menuCls: KnockoutObservable<number>;
+
+        backgroundColor: KnockoutObservable<string>;
+
+        textColor: KnockoutObservable<string>;
+
+        displayOrder: KnockoutObservable<number>;
+        
+        titleMenu: KnockoutObservableArray<any>;
+        
+        targetContent: KnockoutObservable<string>;
+
+
+        constructor(code: string, menuBarName: string, selectedAtr: number, system: number, menuCls: number, backgroundColor: string, textColor: string, displayOrder: number, titleMenu: any) {
+            this.code = ko.observable(code);
+            this.menuBarName = ko.observable(menuBarName);
+            this.selectedAtr = ko.observable(selectedAtr);
+            this.system = ko.observable(system);
+            this.menuCls = ko.observable(menuCls);
+            this.backgroundColor = ko.observable(backgroundColor);
+            this.textColor = ko.observable(textColor);
+            this.displayOrder = ko.observable(displayOrder);
+            this.titleMenu = ko.observableArray(titleMenu);
+            this.targetContent = ko.observable("#tab-content-" + code);
         }
     }
 }
