@@ -15,9 +15,9 @@ public interface SpecBPTimesheetRepository {
 
 	List<SpecBonusPayTimesheet> getListTimesheet(String companyId, String bonusPaySettingCode);
 
-	void addListTimesheet(List<SpecBonusPayTimesheet> lstTimesheet);
+	void addListTimesheet(String companyId, String bonusPaySettingCode, List<SpecBonusPayTimesheet> lstTimesheet);
 
-	void updateListTimesheet(List<SpecBonusPayTimesheet> lstTimesheet);
+	void updateListTimesheet(String companyId, String bonusPaySettingCode, List<SpecBonusPayTimesheet> lstTimesheet);
 
-	void removeListTimesheet(List<SpecBonusPayTimesheet> lstTimesheet);
+	void removeListTimesheet(String companyId, String bonusPaySettingCode, List<SpecBonusPayTimesheet> lstTimesheet);
 }

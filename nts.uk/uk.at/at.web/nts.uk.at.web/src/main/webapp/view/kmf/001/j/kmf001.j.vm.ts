@@ -64,13 +64,13 @@ module nts.uk.pr.view.kmf001.j {
 
                 self.isComManaged = ko.computed(function() {
                     return self.settingModel().isManage() == 1;
-                }, self);
+                });
 
                 self.hasEmp = ko.observable(true);
                 self.saveDisable = ko.observable(true);
                 self.isEmpManaged = ko.computed(function() {
-                    return self.hasEmp && self.empSettingModel().isManage() == 1;
-                }, self);
+                    return self.hasEmp() && self.empSettingModel().isManage() == 1;
+                });
 
                 self.selectedContractTypeCode = ko.observable('');
                 self.selectedItem.subscribe(function(data: string) {
@@ -243,16 +243,12 @@ module nts.uk.pr.view.kmf001.j {
                 if (!self.validateEmpSetting()) {
                     return;
                 }
-                var backUp = self.selectedItem();
                 this.service.saveEmpSetting(self.empSettingModel().toEmp60HourVacationDto()).done(function() {
+                    self.alreadySettingList.push({ "code": self.selectedItem(), "isAlreadySetting": true });
+                    self.loadEmpSettingDetails(self.selectedItem());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.loadEmploymentList().done(() => {
-                        //reload list employment
-                        $('#left-content').ntsListComponent(self.listComponentOption).done(() => {
-                            self.loadEmpSettingDetails(backUp);
-                        });
-                    });
-                }
+                });
+
             }
 
             private validateComSetting(): boolean {

@@ -24,17 +24,13 @@ public class BPUnitUseSetting extends AggregateRoot {
 
 	private UseAtr workingTimesheetUseAtr;
 
-	private BPUnitUseSetting(CompanyId companyId, UseAtr workplaceUseAtr, UseAtr personalUseAtr,
+	public BPUnitUseSetting(CompanyId companyId, UseAtr workplaceUseAtr, UseAtr personalUseAtr,
 			UseAtr workingTimesheetUseAtr) {
 		super();
 		this.companyId = companyId;
 		this.workplaceUseAtr = workplaceUseAtr;
 		this.personalUseAtr = personalUseAtr;
 		this.workingTimesheetUseAtr = workingTimesheetUseAtr;
-	}
-
-	private BPUnitUseSetting() {
-		super();
 	}
 
 	public static BPUnitUseSetting createFromJavaType(String companyId, int workplaceUseAtr, int personalUseAtr,

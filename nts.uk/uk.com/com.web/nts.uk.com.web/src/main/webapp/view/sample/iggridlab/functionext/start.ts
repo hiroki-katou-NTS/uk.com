@@ -88,6 +88,7 @@ module nts.uk.ui.gridlist {
                             virtualization: true,
                             virtualizationMode: 'continuous',
                             enter: 'right',
+                            preventEditInError: false,
 //                            avgRowHeight: 36,
 //                            autoAdjustHeight: false,
 //                            adjustVirtualHeights: false,
@@ -222,11 +223,11 @@ module nts.uk.ui.gridlist {
                                             }
                                          ],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
-                                            { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: true, displayMode: 'name', controlType: 'ComboBox', enable: true },
+                                            { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true },
                                             { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true },
                                             { name: 'Button', controlType: 'Button', text: 'Warn me', enable: true, click: function() { alert("Oops!!"); } },
-                                            { name: 'Combobox2', options: comboItems2, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: true, displayMode: 'name', controlType: 'ComboBox', enable: true },
-                                            { name: 'Combobox3', options: comboItems3, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: true, displayMode: 'name', controlType: 'ComboBox', enable: true },
+                                            { name: 'Combobox2', options: comboItems2, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'name', controlType: 'ComboBox', enable: true },
+                                            { name: 'Combobox3', options: comboItems3, optionsValue: 'code', optionsText: 'name', columns: comboColumns, editable: false, displayMode: 'name', controlType: 'ComboBox', enable: true },
                                             { name: 'Link1', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' },
                                             { name: 'Link2', click: function() { alert('Do something.'); }, controlType: 'LinkLabel' } ]
                             });
