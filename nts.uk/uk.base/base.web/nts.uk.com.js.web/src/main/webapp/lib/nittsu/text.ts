@@ -398,7 +398,7 @@
             validate(text: string) {
                 var result = new ui.validation.ValidationResult();
                 let validateResult = this.validator(text);
-                if (validateResult.probe) {
+                if (validateResult === true || validateResult.probe) {
                     result.isValid = true;
                     result.errorMessage = validateResult.messageId;
                 } else {

@@ -188,8 +188,10 @@ module nts.uk.ui.koExtentions {
                     component.igGrid("option", "dataSource", srh.seachBox.getDataSource());  
                     component.igGrid("dataBind"); 
                     $container.data("searchKey", null);    
-                    $container.data("filteredSrouce",null);
-                    component.attr("filtered", false);          
+                    component.attr("filtered", false);     
+                    _.defer(function() {
+                        component.trigger("selectChange");    
+                    });     
                 });      
                 
             }
@@ -217,7 +219,7 @@ module nts.uk.ui.koExtentions {
                     let srh: SearchPub= $container.data("searchObject");
                     let result = srh.search(searchKey, selectedItems);
                     if(nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight"){
-                        nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOHIT");
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
                         return;        
                     }
                     let isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection') 
@@ -259,7 +261,7 @@ module nts.uk.ui.koExtentions {
             var nextSearch = function() {
                 let searchKey = $input.val();
                 if(nts.uk.util.isNullOrEmpty(searchKey)) {
-                    nts.uk.ui.dialog.alert("#FND_E_SEARCH_NOWORD");
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
                     return;        
                 }
                 search(searchKey);    
@@ -296,7 +298,7 @@ module nts.uk.ui.koExtentions {
             }
             let srhX: SearchPub= $searchBox.data("searchObject");
             
-            if(searchMode === "filter"){
+            if(searchMode === "filter" && (component.attr("filtered") === true || component.attr("filtered") === "true")){
                 let filteds: Array<any> = $searchBox.data("filteredSrouce");   
                 if(!nts.uk.util.isNullOrUndefined(filteds)) {
                     let source = _.filter(arr, function (item: any){
