@@ -14,7 +14,7 @@
 			<button tabindex="4" id="btn-usage-unit" class="" data-bind="click: gotoE">#{i18n.getText('KMK004_30')}</button>
 			</span>
 		</div>
-		<div class="contents-area" data-bind="visible: !isLoading()" style="display: none">
+		<div class="contents-area">
 			<com:ko tag="with" bind="companyWTSetting">
 				<div class="control-group">
 					<input tabindex="1" id="yearPicker"
@@ -76,7 +76,7 @@
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
 												<td><input tabindex="8"
-													data-bind="ntsTimeEditor: {name: normal, value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+													data-bind="ntsTimeEditor: {value: time, name:'#[KMK004_14]', constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>
@@ -124,10 +124,10 @@
 												<div data-bind="text: month()+'月度'"></div>
 											</td>
 											<td><input tabindex="16"
-												data-bind="ntsTimeEditor: {name: speName, value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[KMK004_21]', value: specifiedTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 											<td><input tabindex="16"
-												data-bind="ntsTimeEditor: {name: staName, value: statutoryTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+												data-bind="ntsTimeEditor: {name:'#[KMK004_22]', value: statutoryTime, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 											</td>
 										</tr>
 									</com:ko>
@@ -188,7 +188,7 @@
 													<div data-bind="text: month()+'月度'"></div>
 												</td>
 												<td><input tabindex="23"
-													data-bind="ntsTimeEditor: {name: deformed, value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
+													data-bind="ntsTimeEditor: {name:'#[KMK004_26]', value: time, constraint:'AttendanceTime', inputFormat: 'time', mode: 'time', required: true}" />
 												</td>
 											</tr>
 										</com:ko>

@@ -42,14 +42,11 @@ module kcp004.a.viewmodel {
             
             // Control component
             self.baseDate = ko.observable(new Date());
-            self.selectedCode = ko.observable('001');
-            self.multiSelectedCode = ko.observableArray(['001', '002']);
+            self.selectedCode = ko.observable('A001');
+            self.multiSelectedCode = ko.observableArray(['A001', 'B002']);
             self.alreadySettingList = ko.observableArray([
-                    {code: '001', settingType: SettingType.NO_SETTING},
-                    {code: '001001', settingType: SettingType.ALREADY_SETTING},
-                    {code: '002002', settingType: SettingType.USE_PARRENT_SETTING},
-                    {code: '001001001', settingType: SettingType.ALREADY_SETTING},
-                    {code: '003002001', settingType: SettingType.USE_PARRENT_SETTING}
+                    {code: 'A001', settingType: SettingType.NO_SETTING},
+                    {code: 'A005', settingType: SettingType.ALREADY_SETTING},
             ]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),

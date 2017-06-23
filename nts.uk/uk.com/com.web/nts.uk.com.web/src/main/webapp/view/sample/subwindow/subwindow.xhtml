@@ -24,22 +24,39 @@
 						<h2>Overview</h2>
 						<p>A SubWindow is a control which open another page with given URL. Basically it's a dialog with &lt;iframe&gt; inside.</p>
 						<br/>
-						<button onclick="OpenModalSubWindow({height: 900, width: 900})">Modal Window</button>
-						<button onclick="OpenModelessSubWindow({height: 900, width: 900})">Modeless Window</button>
-						<button onclick="openDialog()">Functions Area on Top Dialog</button>
-						<button onclick="openDialogB()">Functions Area on Bottom Dialog</button>
+						<button onclick="OpenModalSubWindow()">Modal Window</button>
+						<button onclick="OpenModelessSubWindow()">Modeless Window</button>
+						<br/><br/>
+						<button onclick="openDialog()">Functions Area on Top</button>
+						<button onclick="openDialogB()">Functions Area on Bottom</button>
+						<br/><br/>
+						<div class="cf">
+							<note class="pull-left" style="width:400px;"><b>Don't style functions-area on your own</b><br/>
+							- Use id="functions-area" for function area on top<br/>
+							- Use id="functions-area-bottom" for function area on bottom
+							</note>
+							<note class="pull-left" style="width:400px;"><b>Close button and Title!</b><br/>
+							- Hide or show close button is decided by Kiban team so don't try to change it. Please ignore design document if there is any different<br/> 
+							- Dialog title will be auto display by Kiban team so don't mind about that too 
+							</note>
+						</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-call">Javascript Call</a></li>
+									<li><a href="#tabs-call">Usage</a></li>
 									<li><a href="#tabs-api">API</a></li>
 								</ol>
 								<div id="tabs-call" class="cf">
-									<h2>Modal</h2>
-									<pre><![CDATA[nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml");]]></pre>
-									<br/>
-									<h2>Modeless</h2>
-									<pre><![CDATA[nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml");]]></pre>
+									<h3>Modal</h3>
+<pre><![CDATA[nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml");
+nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml").onClosed(() => {
+	alert("OK");
+});]]></pre>
+									<h3>Modeless</h3>
+<pre><![CDATA[nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml");
+nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml").onClosed(() => {
+	alert("OK");
+});]]></pre>
 								</div>
 								<div id="tabs-api" class="cf">
 									<article>
@@ -47,16 +64,15 @@
 										<b>Module:</b> nts.uk.ui.windows.sub<br/>
 										<b>File:</b> /lib/nittsu/ui/ui.ts<br/>
 									</article>
-									<br/>
 									<article>
-										<h2>API</h2>
-										<table>
+										<h2>Methods</h2>
+										<table class="table">
 											<colgroup>
 												<col width="200px" />
 											</colgroup>
 											<thead>
 												<tr>
-													<th><h4>Function</h4></th>
+													<th><h4>Name</h4></th>
 													<th><h4>Description</h4></th>
 												</tr>
 											</thead>
@@ -64,74 +80,28 @@
 												<tr>
 													<td>modal(url, option?)</td>
 													<td>
-														<b>Return:</b> ScreenWindow<br/>
-														<b class="color">url: string</b> Relative URL usually start with "/view"<br/>
-														<b class="color">option: object</b> Dialog option extend from <a href="http://api.jqueryui.com/dialog">JqueryUI Dialog option</a><br/>
 														Open a modal sub-window, which you can't interact with parent window.<br/>
+														<b>Return:</b> ScreenWindow<br/>
+														<b>Agruments:</b><br/>
+														<i>url: string</i> Relative URL usually start with "/view"<br/>
+														<i>option: object (optional)</i> Dialog option extend from <a class="color" href="http://api.jqueryui.com/dialog">JqueryUI Dialog option</a><br/>
 													</td>
 												</tr>
 												<tr>
 													<td>modeless(url, option?)</td>
 													<td>
-														<b>Return:</b> ScreenWindow<br/>
-														<b class="color">url: string</b> Relative URL usually start with "/view"<br/>
-														<b class="color">option: object</b> Dialog option extend from <a href="http://api.jqueryui.com/dialog">JqueryUI Dialog option</a><br/>
 														Open a modal sub-window, which you can interact with parent window.<br/>
+														<b>Return:</b> ScreenWindow<br/>
+														<b>Agruments:</b><br/>
+														<i>url: string</i> Relative URL usually start with "/view"<br/>
+														<i>option: object (optional)</i> Dialog option extend from <a class="color" href="http://api.jqueryui.com/dialog">JqueryUI Dialog option</a><br/>
 													</td>
 												</tr>
 											</tbody>
 										</table>
-									</article>
-									<br/>
-									<article>
-										<h2>ScreenWindow class</h2>
-										<table>
-											<colgroup>
-												<col width="200px" />
-											</colgroup>
-											<thead>
-												<tr>
-													<th><h4>API</h4></th>
-													<th><h4>Description</h4></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>setTitle(newTitle)</td>
-													<td>
-														<b class="color">newTitle: string</b><br/>
-														Change title of SubWindow<br/>
-													</td>
-												</tr>
-												<tr>
-													<td>onClosed(callback)</td>
-													<td>
-														<b class="color">callback: () => void</b><br/>
-														A callback function will be executed after closed<br/>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-										<h2>Demo</h2>
-										<h3>Javascript</h3>
-<pre><![CDATA[nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml").onClosed(function(){
-	alert("OK");
-});]]></pre>
-										<h3>TypeScript</h3>
-<pre><![CDATA[nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml").onClosed(() => {
-	alert("OK");
-});]]></pre>
-
 									</article>
 								</div>
 							</div>
-						</article>
-						<article>
-							<note style="width:770px;"><b>No close button!</b><br/>
-							Because everyone often ask about how to hide dialog close button so I'll write it here:<br/>
-							nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml", <b>{dialogClass: "no-close"}</b>);
-							</note>
-							<h2>In next step we'll learn how to pass parameter bettween Window and SubWindow</h2>
 						</article>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>

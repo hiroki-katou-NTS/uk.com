@@ -78,6 +78,10 @@
 	text-align: center;
 }
 
-.function-button-class > button {
+.function-button-class>button {
 	margin-right: 15px;
+}
+
+#table-target-data-td-label {
+	background-color: #F7EFD4l;
 }

@@ -39,6 +39,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 baseDate: Date;
                 employmentCodes: string[];
                 classificationCodes: string[];
+                jobTitleCodes: string[];
+                workplaceCodes: string[];
             }
 
             export interface GroupOption {
