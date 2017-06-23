@@ -15,6 +15,8 @@ public interface BPTimeItemRepository {
 
 	List<BonusPayTimeItem> getListBonusPayTimeItem();
 
+	List<BonusPayTimeItem> getListSpecialBonusPayTimeItem();
+
 	void addListBonusPayTimeItem(List<BonusPayTimeItem> lstTimeItem);
 
 	void updateListBonusPayTimeItem(List<BonusPayTimeItem> lstTimeItem);
