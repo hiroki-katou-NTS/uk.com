@@ -29,7 +29,10 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId " + "AND s.ccgmtStandardMenuPK.system = :system "
 			+ "AND s.ccgmtStandardMenuPK.classification = :menu_classification AND s.afterLoginDisplay = :afterLoginDisplay "
 			+ "ORDER BY s.ccgmtStandardMenuPK.code ASC";
-
+	private final String GET_ALL_STANDARD_MENU_BY_ATR = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND s.webMenuSetting = :webMenuSetting "
+			+ "AND s.menuAtr = :menuAtr"; 
+	
 	private CcgstStandardMenu toEntity(StandardMenu domain) {
 		val entity = new CcgstStandardMenu();
 
@@ -93,6 +96,15 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("companyId", companyId).setParameter("afterLoginDisplay", afterLoginDisplay)
 				.setParameter("system", system).setParameter("menu_classification", menu_classification)
 				.getList(t -> toDomain(t));
+	}
+	
+	@Override
+	public List<StandardMenu> findByAtr(String companyId, int webMenuSetting , int menuAtr) {
+		return this.queryProxy().query(GET_ALL_STANDARD_MENU_BY_ATR, CcgstStandardMenu.class)
+				 .setParameter("companyId", companyId)
+				 .setParameter("webMenuSetting", webMenuSetting)
+				 .setParameter("menuAtr", menuAtr)
+				 .getList(t -> toDomain(t));
 	}
 
 	/**
