@@ -54,18 +54,18 @@
 									data-bind="ntsSearchBox: {searchMode: 'filter',
 											targetKey: 'code', 
 											comId: 'multi-list', 
-											items: listStandardMenu, 
-											selected: currentListStandardMenu, 
+											items: listTitleMenu, 
+											selected: currentListTitleMenu, 
 											selectedKey: 'code', 
 											fields: ['displayName', 'code'], 
 											mode: 'igGrid'}" />	
 								<table id="multi-list"
 									data-bind="ntsGridList: {
 											height: 350,
-											options: listStandardMenu,
+											options: listTitleMenu,
 											optionsValue: 'code',
 											columns: columns,
-											value: currentListStandardMenu}">
+											value: currentListTitleMenu}">
 								</table>
 							</div>		
 						</td>
@@ -73,23 +73,31 @@
 							<table>
 								<tr>
 									<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_41')}</div></td>
-									<td><button>#{i18n.getText('CCG013_42')}</button></td>
-								</tr>
-								<tr>
-									<td colspan="3">
-										<div id="fileupload1" 
-											data-bind="ntsFileUpload:{filename: filename,
+									<td>
+										<div id="file_upload" 
+											data-bind="ntsFileUpload:{
+												filename: filename,
 												accept: accept,
 												text :textId, 
-												onfilenameclick: function(filename){alert(filename);}}">
+												onchange: uploadFile.bind($data)}">
 										</div>
 									</td>
-									<td><button class="danger"
-										data-bind="click: deleteButtonClick, enable: isDelete()"
-										tabindex="9">#{i18n.getText('CCG030_5')}</button></td>
 								</tr>
 								<tr>
-									<td><label>Size:66k</label></td>
+									<td></td>
+									<td><span id="imageName" data-bind="text:imageName"></span></td>
+									<td><button class="danger" data-bind="click: deleteFile, enable: isDelete()" tabindex="9">#{i18n.getText('CCG030_5')}</button></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>
+										<label>サイズ:</label>
+										<label data-bind="text: imageSize"></label>
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td id="liveview"></td>
 								</tr>
 							</table>
 						</td>

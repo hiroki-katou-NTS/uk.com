@@ -35,10 +35,19 @@ table.control {
 	padding-bottom: 10px;
 }
 
-.top_left{
+.top_left {
 	vertical-align: top !important;
 }
 
-
-
-
+img {
+	width: 350px;
+	height: 200px;
+}
+#imageName{
+	cursor: pointer;
+  	color: blue;
+  	text-decoration: underline;
+}
+table tr td{
+	padding : 5px;
+}
