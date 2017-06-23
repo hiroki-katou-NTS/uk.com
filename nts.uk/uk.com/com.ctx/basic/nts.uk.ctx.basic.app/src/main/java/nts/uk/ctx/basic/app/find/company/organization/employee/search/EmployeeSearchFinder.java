@@ -15,6 +15,8 @@ import nts.uk.ctx.basic.dom.company.organization.classification.history.Classifi
 import nts.uk.ctx.basic.dom.company.organization.classification.history.ClassificationHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
+import nts.uk.ctx.basic.dom.company.organization.employment.history.EmploymentHistory;
+import nts.uk.ctx.basic.dom.company.organization.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.basic.dom.person.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -33,6 +35,10 @@ public class EmployeeSearchFinder {
 	@Inject
 	private EmployeeRepository repositoryEmployee;
 	
+	/** The repository employment history. */
+	@Inject
+	private EmploymentHistoryRepository repositoryEmploymentHistory;
+	
 	/** The repository classification history. */
 	@Inject
 	private ClassificationHistoryRepository repositoryClassificationHistory;
@@ -45,13 +51,21 @@ public class EmployeeSearchFinder {
 		// get company id
 		String companyId = loginUserContext.companyId();
 		
+		// find by employment
+		
+		List<EmploymentHistory> employmentHistory = this.repositoryEmploymentHistory
+				.searchEmployee(input.getBaseDate(), input.getEmploymentCodes());
+		
 		// find by classification
 		List<ClassificationHistory> classificationHistorys = this.repositoryClassificationHistory
-				.searchClassification(input.getClassificationHistory().getBaseDate(),
-						input.getClassificationHistory().getClassificationCodes());
+				.searchClassification(
+						employmentHistory.stream().map(employment -> employment.getEmployeeId().v())
+								.collect(Collectors.toList()),
+						input.getBaseDate(), input.getClassificationCodes());
+		
 		
 		// to employees
-		List<Employee> employees = this.repositoryEmployee.getListPersonByListEmployee(companyId,
+		List<Employee> employees = this.repositoryEmployee.getListPersonByListEmployeeId(companyId,
 				classificationHistorys.stream()
 						.map(classification -> classification.getEmployeeId().v())
 						.collect(Collectors.toList()));
