@@ -9039,6 +9039,92 @@ var nts;
         (function (ui_6) {
             var koExtentions;
             (function (koExtentions) {
+                var NtsRadioBoxBindingHandler = (function () {
+                    function NtsRadioBoxBindingHandler() {
+                    }
+                    /**
+                     * Init
+                     */
+                    NtsRadioBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var optionValue = ko.unwrap(data.optionValue);
+                        var optionText = ko.unwrap(data.optionText);
+                        var dataName = ko.unwrap(data.name);
+                        var option = ko.unwrap(data.option);
+                        var group = ko.unwrap(data.group);
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var selectedValue = ko.unwrap(data.checked);
+                        var container = $(element);
+                        container.addClass("ntsControl radio-wrapper");
+                        container.data("enable", enable);
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
+                            container.attr("tabindex", "0");
+                        }
+                        container.keydown(function (evt, ui) {
+                            var code = evt.which || evt.keyCode;
+                            if (code === 32) {
+                                evt.preventDefault();
+                            }
+                        });
+                        container.keyup(function (evt, ui) {
+                            if (container.data("enable") !== false) {
+                                var code = evt.which || evt.keyCode;
+                                if (code === 32) {
+                                    var checkitem = container.find("input[type='radio']");
+                                    if (!container.find("input[type='radio']").is(":checked")) {
+                                        checkitem.prop("checked", true);
+                                        data.checked(true);
+                                    }
+                                    else {
+                                        checkitem.prop("checked", false);
+                                        data.checked(false);
+                                    }
+                                    container.focus();
+                                }
+                            }
+                        });
+                        var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, true);
+                        radioBoxLabel.appendTo(container);
+                        var radio = container.find("input[type='radio']");
+                        radio.attr("name", group).bind('selectionchanged', function () {
+                            data.checked(radio.is(":checked"));
+                        });
+                        // Default value
+                        new nts.uk.util.value.DefaultValue().onReset(container, data.value);
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsRadioBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var option = data.option === undefined ? [] : ko.unwrap(data.option);
+                        var optionValue = ko.unwrap(data.optionValue);
+                        var optionText = ko.unwrap(data.optionText);
+                        var selectedValue = data.checked;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        // Container
+                        var container = $(element);
+                        container.data("enable", enable);
+                        container.find(".label").text(nts.uk.util.isNullOrUndefined(option) ? optionText : option[optionText]);
+                        if (selectedValue() === true) {
+                            container.find("input[type='radio']").prop("checked", true);
+                        }
+                        else {
+                            container.find("input[type='radio']").prop("checked", false);
+                        }
+                        // Enable
+                        if (enable === true) {
+                            container.find("input[type='radio']").removeAttr("disabled");
+                        }
+                        else if (enable === false) {
+                            container.find("input[type='radio']").attr("disabled", "disabled");
+                            new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                        }
+                        //            }
+                    };
+                    return NtsRadioBoxBindingHandler;
+                }());
                 /**
                  * RadioBoxGroup binding handler
                  */
@@ -9118,29 +9204,13 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         // Container
                         var container = $(element);
-                        var getOptionValue = function (item) {
-                            return (optionValue === undefined) ? item : item[optionValue];
-                        };
                         container.data("enable", enable);
                         // Render
                         if (!_.isEqual(container.data("options"), options)) {
                             var radioName = uk.util.randomId();
                             container.empty();
                             _.forEach(options, function (option) {
-                                var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
-                                var radioBox = $('<input type="radio">').data("option", option).attr("name", radioName).data("value", getOptionValue(option)).on("change", function () {
-                                    var self = $(this);
-                                    if (self.is(":checked"))
-                                        selectedValue(self.data("value"));
-                                });
-                                var disableOption = option["enable"];
-                                if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
-                                    radioBox.attr("disabled", "disabled");
-                                }
-                                radioBox.appendTo(radioBoxLabel);
-                                var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
-                                if (option[optionText] && option[optionText].length > 0)
-                                    var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
+                                var radioBoxLabel = drawRadio(selectedValue, option, radioName, optionValue, option["enable"], optionText, false);
                                 radioBoxLabel.appendTo(container);
                             });
                             // Save a clone
@@ -9169,6 +9239,43 @@ var nts;
                     };
                     return NtsRadioBoxGroupBindingHandler;
                 }());
+                function getOptionValue(item, optionValue) {
+                    if (nts.uk.util.isNullOrUndefined(item)) {
+                        return optionValue;
+                    }
+                    return (optionValue === undefined) ? item : item[optionValue];
+                }
+                ;
+                function drawRadio(selectedValue, option, radioName, optionValue, disableOption, optionText, booleanValue) {
+                    var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
+                    var radioBox = $('<input type="radio">').data("option", option).attr("name", radioName).data("value", getOptionValue(option, optionValue)).on("change", function () {
+                        var self = $(this);
+                        if (self.is(":checked") && !booleanValue) {
+                            selectedValue(self.data("value"));
+                        }
+                        else if (booleanValue) {
+                            var name_1 = self.attr("name");
+                            if (nts.uk.util.isNullOrUndefined(name_1)) {
+                                selectedValue(self.is(":checked"));
+                            }
+                            else {
+                                var selector = 'input[name=' + name_1 + ']';
+                                $(selector).each(function (idx, e) {
+                                    $(e).triggerHandler('selectionchanged');
+                                });
+                            }
+                        }
+                    });
+                    if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
+                        radioBox.attr("disabled", "disabled");
+                    }
+                    radioBox.appendTo(radioBoxLabel);
+                    var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
+                    //        if (option[optionText] && option[optionText].length > 0)
+                    var label = $("<span class='label'></span>").text(nts.uk.util.isNullOrUndefined(option) ? optionText : option[optionText]).appendTo(radioBoxLabel);
+                    return radioBoxLabel;
+                }
+                ko.bindingHandlers['ntsRadioButton'] = new NtsRadioBoxBindingHandler();
                 ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
             })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
