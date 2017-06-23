@@ -2,15 +2,15 @@ package nts.uk.ctx.sys.portal.dom.enums;
 
 public enum MenuClassification {
 	
-	OfficeHelper(0),
-	Customize(1),
-	GroupCompanyMenu(2),
-	CodeName(3),
-	Tablet(4),
-	TopPage(5),
-	MobilePhone(6),
-	OptionalItemApplication(7),
-	Standard(7);
+	Standard(0),
+	OptionalItemApplication(1),
+	Mobile(2),
+	Tablet(3),
+	CodeName(4),
+	GroupCompanyMenu(5),
+	Customize(6),
+	OfficeHelper(7),
+	TopPage(8);
 
 	public int value;
 
