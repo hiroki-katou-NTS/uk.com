@@ -19,16 +19,22 @@ import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuFinder;
 public class StandardMenuWebService extends WebService {
 	@Inject
 	private StandardMenuFinder finder;
-	
+
 	@POST
 	@Path("findAll")
 	public List<StandardMenuDto> findAll() {
 		return finder.findAll();
 	}
-	
+
 	@POST
-	@Path("findAll")
-	public List<StandardMenuDto> findAllWithAfterLoginDisplayIndicatorIsTrue() {
-		return finder.findAllWithAfterLoginDisplayIndicatorIsTrue();
+	@Path("findByAfterLoginDisplay")
+	public List<StandardMenuDto> findByAfterLoginDisplay() {
+		return finder.findByAfterLoginDisplay(0);
+	}
+
+	@POST
+	@Path("findByAfterLgDisSysMenuCls")
+	public List<StandardMenuDto> findByAfterLgDisSysMenuCls() {
+		return finder.findByAfterLgDisSysMenuCls();
 	}
 }

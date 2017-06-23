@@ -9,16 +9,45 @@ public interface StandardMenuRepository {
 	/**
 	 * Find all.
 	 *
-	 * @param companyId the company id
+	 * @param companyId
+	 *            the company id
 	 * @return the list
 	 */
-	 List<StandardMenu> findAll(String companyId);
-	 
+	List<StandardMenu> findAll(String companyId);
+
 	/**
-	 * Find all with afterLoginDisplayIndicator is true.
-	 *
-	 * @param companyId the company id
-	 * @return the list with afterLoginDisplayIndicator is true
+	 * added by sonnh1
+	 * 
+	 * find by COMPANYID and SYSTEM and MENU_CLASSIFICATION
+	 * 
+	 * @param companyId
+	 * @param system
+	 * @param menu_classification
+	 * @return
 	 */
-	 List<StandardMenu> findAllWithAfterLoginDisplayIndicatorIsTrue(String companyId);
+	List<StandardMenu> findBySystemMenuClassification(String companyId, int system, int menu_classification);
+
+	/**
+	 * find by COMPANYID and AFTER_LOGIN_DISPLAY
+	 * 
+	 * @param companyId
+	 * @param afterLoginDisplay
+	 * @return
+	 */
+	List<StandardMenu> findByAfterLoginDisplay(String companyId, int afterLoginDisplay);
+
+	/**
+	 * added by sonnh1
+	 * 
+	 * find by COMPANYID and AFTER_LOGIN_DISPLAY and SYSTEM and
+	 * MENU_CLASSIFICATION
+	 * 
+	 * @param companyId
+	 * @param afterLoginDisplay
+	 * @param system
+	 * @param menu_classification
+	 * @return
+	 */
+	List<StandardMenu> findByAfterLgDisSysMenuCls(String companyId, int afterLoginDisplay, int system,
+			int menu_classification);
 }
