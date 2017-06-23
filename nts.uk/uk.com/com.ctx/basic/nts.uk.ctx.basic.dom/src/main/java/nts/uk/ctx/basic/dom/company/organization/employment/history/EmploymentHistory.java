@@ -2,25 +2,25 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.classification.history;
+package nts.uk.ctx.basic.dom.company.organization.employment.history;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.basic.dom.common.history.Period;
-import nts.uk.ctx.basic.dom.company.organization.classification.ClassificationCode;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
+import nts.uk.ctx.basic.dom.company.organization.employment.EmploymentCode;
 
 /**
- * The Class ClassificationHistory.
+ * The Class EmploymentHistory.
  */
-// 所属分類履歴
+// 所属雇用履歴
 @Getter
-public class ClassificationHistory extends AggregateRoot {
+public class EmploymentHistory extends AggregateRoot{
 
-	/** The classification code. */
-	// 分類コード
-	private ClassificationCode classificationCode;
-
+	/** The employment code. */
+	// 雇用コード
+	private EmploymentCode employmentCode;
+	
 	/** The period. */
 	// 期間
 	private Period period;
@@ -31,12 +31,12 @@ public class ClassificationHistory extends AggregateRoot {
 	
 	
 	/**
-	 * Instantiates a new classification history.
+	 * Instantiates a new employment history.
 	 *
 	 * @param memento the memento
 	 */
-	public ClassificationHistory(ClassificationHistoryGetMemento memento) {
-		this.classificationCode = memento.getClassificationCode();
+	public EmploymentHistory(EmploymentHistoryGetMemento memento) {
+		this.employmentCode = memento.getEmploymentCode();
 		this.period = memento.getPeriod();
 		this.employeeId = memento.getEmployeeId();
 	}
@@ -47,8 +47,8 @@ public class ClassificationHistory extends AggregateRoot {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(ClassificationHistorySetMemento memento){
-		memento.setClassificationCode(this.classificationCode);
+	public void saveToMemento(EmploymentHistorySetMemento memento){
+		memento.setEmploymentCode(this.employmentCode);
 		memento.setPeriod(this.period);
 		memento.setEmployeeId(this.employeeId);
 	}

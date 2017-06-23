@@ -20,6 +20,18 @@ public interface ClassificationHistoryRepository {
 	 * @param classificationCodes the classification codes
 	 * @return the list
 	 */
-	List<ClassificationHistory> searchClassification(GeneralDate baseDate, List<String> classificationCodes);
+	List<ClassificationHistory> searchClassification(GeneralDate baseDate, 
+			List<String> classificationCodes);
+
+	/**
+	 * Search classification.
+	 *
+	 * @param employeeIds the employee ids
+	 * @param baseDate the base date
+	 * @param classificationCodes the classification codes
+	 * @return the list
+	 */
+	List<ClassificationHistory> searchClassification(List<String> employeeIds, 
+			GeneralDate baseDate, List<String> classificationCodes);
 
 }

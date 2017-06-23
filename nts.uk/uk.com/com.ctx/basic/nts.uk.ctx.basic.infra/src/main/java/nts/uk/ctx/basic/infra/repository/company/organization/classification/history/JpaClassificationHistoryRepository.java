@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.company.organization.classification.history.ClassificationHistory;
 import nts.uk.ctx.basic.dom.company.organization.classification.history.ClassificationHistoryRepository;
 import nts.uk.ctx.basic.infra.entity.company.organization.classification.history.KmnmtClassificationHist;
@@ -41,6 +42,10 @@ public class JpaClassificationHistoryRepository extends JpaRepository
 	@Override
 	public List<ClassificationHistory> searchClassification(GeneralDate baseDate,
 			List<String> classificationCodes) {
+		
+		if(CollectionUtil.isEmpty(classificationCodes)){
+			return new ArrayList<>();
+		}
 
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -91,6 +96,68 @@ public class JpaClassificationHistoryRepository extends JpaRepository
 	 */
 	private ClassificationHistory toDomain(KmnmtClassificationHist entity) {
 		return new ClassificationHistory(new JpaClassificationHistoryGetMemento(entity));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.basic.dom.company.organization.classification.history.
+	 * ClassificationHistoryRepository#searchClassification(java.util.List,
+	 * nts.arc.time.GeneralDate, java.util.List)
+	 */
+	@Override
+	public List<ClassificationHistory> searchClassification(List<String> employeeIds,
+			GeneralDate baseDate, List<String> classificationCodes) {
+
+		// check not data 
+		if(CollectionUtil.isEmpty(classificationCodes) || CollectionUtil.isEmpty(employeeIds)){
+			return new ArrayList<>();
+		}
+		
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMNMT_CLASSIFICATION_HIST (KmnmtClassificationHist SQL)
+		CriteriaQuery<KmnmtClassificationHist> cq = criteriaBuilder
+				.createQuery(KmnmtClassificationHist.class);
+
+		// root data
+		Root<KmnmtClassificationHist> root = cq.from(KmnmtClassificationHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// employee id in data employee id
+		lstpredicateWhere.add(
+				criteriaBuilder.and(root.get(KmnmtClassificationHist_.kmnmtClassificationHistPK)
+						.get(KmnmtClassificationHistPK_.sid).in(employeeIds)));
+		
+		// classification in data classification
+		lstpredicateWhere.add(
+				criteriaBuilder.and(root.get(KmnmtClassificationHist_.kmnmtClassificationHistPK)
+						.get(KmnmtClassificationHistPK_.clscd).in(classificationCodes)));
+
+		// start date <= base date
+		lstpredicateWhere.add(criteriaBuilder
+				.lessThanOrEqualTo(root.get(KmnmtClassificationHist_.strD), baseDate));
+
+		// endDate >= base date
+		lstpredicateWhere.add(criteriaBuilder
+				.greaterThanOrEqualTo(root.get(KmnmtClassificationHist_.endD), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KmnmtClassificationHist> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(category -> toDomain(category))
+				.collect(Collectors.toList());
 	}
 
 }
