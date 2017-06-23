@@ -10,7 +10,10 @@ module nts.uk.at.view.kmk008.i {
 
             closingDateClassificationItemList: KnockoutObservableArray<RadioModel>;
             selectedClosingDateClassificationItemList: KnockoutObservable<number>;
-            
+
+            limitSettingItemList: KnockoutObservableArray<ComboBoxModel>;
+            selectedLimitSettingItemList: KnockoutObservable<string>;
+
             constructor() {
                 let self = this;
                 self._init();
@@ -48,6 +51,19 @@ module nts.uk.at.view.kmk008.i {
                     new RadioModel("1", "締め日を指定"),
                 ]);
                 self.selectedClosingDateClassificationItemList = ko.observable(0);
+
+                self.limitSettingItemList = ko.observableArray([
+                    new ComboBoxModel("1", nts.uk.resource.getText("KMK008_34")),
+                    new ComboBoxModel("2", nts.uk.resource.getText("KMK008_34")),
+                    new ComboBoxModel("3", nts.uk.resource.getText("KMK008_34")),
+                    new ComboBoxModel("4", nts.uk.resource.getText("KMK008_34")),
+                    new ComboBoxModel("5", nts.uk.resource.getText("KMK008_34")),
+                    new ComboBoxModel("6", nts.uk.resource.getText("KMK008_34")),
+                    new ComboBoxModel("7", nts.uk.resource.getText("KMK008_34")),
+                    new ComboBoxModel("8", nts.uk.resource.getText("KMK008_34"))
+                ]);
+                self.selectedLimitSettingItemList = ko.observable("1");
+
             }
             startPage(): JQueryPromise<any> {
                 let self = this;

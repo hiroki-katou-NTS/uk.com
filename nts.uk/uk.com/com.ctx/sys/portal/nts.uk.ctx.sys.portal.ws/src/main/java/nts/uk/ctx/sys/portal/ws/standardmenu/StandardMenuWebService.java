@@ -31,4 +31,10 @@ public class StandardMenuWebService extends WebService {
 	public List<StandardMenuDto> findAllWithAfterLoginDisplayIndicatorIsTrue() {
 		return finder.findAllWithAfterLoginDisplayIndicatorIsTrue();
 	}
+	
+	@POST
+	@Path("findByAtr")
+	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr  ) {
+		return finder.findByAtr(webMenuSetting, menuAtr);
+	}
 }

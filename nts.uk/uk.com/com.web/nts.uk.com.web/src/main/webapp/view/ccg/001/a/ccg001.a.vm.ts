@@ -3,7 +3,7 @@ module nts.uk.com.view.ccg001.a {
     import ListType = kcp.share.list.ListType;
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
-    import PersonModel = nts.uk.com.view.ccg.share.ccg.PersonModel;
+    import PersonModel = nts.uk.com.view.ccg.share.ccg.service.model.PersonModel;
     export module viewmodel {
         export class ScreenModel {
            
@@ -23,7 +23,7 @@ module nts.uk.com.view.ccg001.a {
                             isShowAlreadySet: false,
                             isMultiSelect: self.ccgcomponent.isMutipleCheck,
                             listType: ListType.EMPLOYEE,
-                            employeeInputList: new nts.uk.com.view.ccg.share.ccg.ListGroupScreenModel().toUnitModelList(dataList),
+                            employeeInputList: new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toUnitModelList(dataList),
                             selectType: SelectType.SELECT_BY_SELECTED_CODE,
                             selectedCode: self.selectedCode,
                             isDialog: false,

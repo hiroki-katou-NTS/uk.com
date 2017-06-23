@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
+import nts.gul.util.Time;
 import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Monthly;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
@@ -15,17 +16,21 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTime
 /**
  * The Class WorkingTimeSettingDto.
  */
+
+/**
+ * Instantiates a new working time setting dto.
+ */
 @Data
 public class WorkingTimeSettingDto {
 
 	/** The daily. */
-	private int daily;
+	private Long daily;
 
 	/** The monthly. */
 	private List<MonthlyDto> monthly;
 
 	/** The weekly. */
-	private int weekly;
+	private Long weekly;
 
 	/**
 	 * From domain.
@@ -35,8 +40,8 @@ public class WorkingTimeSettingDto {
 	 */
 	public static WorkingTimeSettingDto fromDomain(WorkingTimeSetting domain) {
 		WorkingTimeSettingDto dto = new WorkingTimeSettingDto();
-		dto.setDaily(domain.getDaily().v());
-		dto.setWeekly(domain.getWeekly().v());
+		dto.setDaily(domain.getDaily().v() / Time.STEP);
+		dto.setWeekly(domain.getWeekly().v() / Time.STEP);
 		dto.setMonthly(MonthlyDto.fromDomain(domain.getMonthly()));
 		return dto;
 	}
@@ -49,11 +54,11 @@ public class WorkingTimeSettingDto {
 	 */
 	public static WorkingTimeSetting toDomain(WorkingTimeSettingDto dto) {
 		List<Monthly> monthly = dto.getMonthly().stream().map(item -> {
-			return new Monthly(new AttendanceTime(item.getTime()), java.time.Month.of(item.getMonth()));
+			return new Monthly(new AttendanceTime(item.getTime() * Time.STEP), java.time.Month.of(item.getMonth()));
 		}).collect(Collectors.toList());
 		WorkingTimeSetting domain = new WorkingTimeSetting();
-		domain.setDaily(new AttendanceTime(dto.getDaily()));
-		domain.setWeekly(new AttendanceTime(dto.getWeekly()));
+		domain.setDaily(new AttendanceTime(dto.getDaily() * Time.STEP));
+		domain.setWeekly(new AttendanceTime(dto.getWeekly() * Time.STEP));
 		domain.setMonthly(monthly);
 		return domain;
 	}

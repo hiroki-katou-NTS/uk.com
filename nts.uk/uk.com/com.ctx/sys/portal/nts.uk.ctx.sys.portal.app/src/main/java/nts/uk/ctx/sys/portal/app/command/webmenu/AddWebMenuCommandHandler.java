@@ -26,32 +26,35 @@ public class AddWebMenuCommandHandler extends CommandHandler<AddWebMenuCommand> 
 	@Override
 	protected void handle(CommandHandlerContext<AddWebMenuCommand> context) {
 		
-		AddWebMenuCommand command = context.getCommand();
+ 		AddWebMenuCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
-		List<MenuBar> menuBars = command.getMenuBars().stream()
-				.map(mn -> { 
-					String menuBarId = MenuBar.createMenuBarId().toString();
-					
-					List<TitleMenu> titleMenu = mn.getTitleMenu().stream()
-							.map(ti -> {
-								String titleMenuId = TitleMenu.createTitleMenuId().toString();
-								List<TreeMenu> treeMenu = ti.getTreeMenu().stream()
-										.map(tr -> {									
-											TreeMenu domainTreeMenu = TreeMenu.createFromJavaType(titleMenuId,tr.getCode(), tr.getDisplayOrder(), tr.getClassification(), tr.getSystem());
-											return domainTreeMenu;
-										}).collect(Collectors.toList());							
-								TitleMenu domainTitleMenu = TitleMenu.createFromJavaType(menuBarId,titleMenuId, ti.getTitleMenuName(), ti.getBackgroundColor(),ti.getImageFile(),ti.getTextColor(),ti.getTitleMenuAtr(),ti.getTitleMenuCode(),ti.getDisplayOrder(), treeMenu);
-								return domainTitleMenu;
-							}).collect(Collectors.toList());
-							
-					MenuBar domainMenuBar = MenuBar.createFromJavaType(menuBarId, mn.getMenuBarName(), mn.getSelectedAtr(), mn.getSystem(), mn.getMenuCls(),mn.getCode(), mn.getBackgroundColor(), mn.getTextColor(),mn.getDisplayOrder(), titleMenu);
-					
-					return domainMenuBar;				
-				}).collect(Collectors.toList());
-		
-		WebMenu domain =  WebMenu.createFromJavaType(companyId, command.getWebMenuCode(), command.getWebMenuName(), command.getDefaultMenu(), menuBars);
-		
+		WebMenu domain = null;
+		if (command.getMenuBars() != null) {
+			List<MenuBar> menuBars = command.getMenuBars().stream()
+					.map(mn -> { 
+						String menuBarId = MenuBar.createMenuBarId().toString();
+						
+						List<TitleMenu> titleMenu = mn.getTitleMenu().stream()
+								.map(ti -> {
+									String titleMenuId = TitleMenu.createTitleMenuId().toString();
+									List<TreeMenu> treeMenu = ti.getTreeMenu().stream()
+											.map(tr -> {									
+												TreeMenu domainTreeMenu = TreeMenu.createFromJavaType(titleMenuId,tr.getCode(), tr.getDisplayOrder(), tr.getClassification(), tr.getSystem());
+												return domainTreeMenu;
+											}).collect(Collectors.toList());							
+									TitleMenu domainTitleMenu = TitleMenu.createFromJavaType(menuBarId,titleMenuId, ti.getTitleMenuName(), ti.getBackgroundColor(),ti.getImageFile(),ti.getTextColor(),ti.getTitleMenuAtr(),ti.getTitleMenuCode(),ti.getDisplayOrder(), treeMenu);
+									return domainTitleMenu;
+								}).collect(Collectors.toList());
+								
+						MenuBar domainMenuBar = MenuBar.createFromJavaType(menuBarId, mn.getMenuBarName(), mn.getSelectedAtr(), mn.getSystem(), mn.getMenuCls(),mn.getCode(), mn.getBackgroundColor(), mn.getTextColor(),mn.getDisplayOrder(), titleMenu);
+						
+						return domainMenuBar;				
+					}).collect(Collectors.toList());
+			domain =  WebMenu.createFromJavaType(companyId, command.getWebMenuCode(), command.getWebMenuName(), command.getDefaultMenu(), menuBars);
+		} else {
+			domain =  WebMenu.createFromJavaType(companyId, command.getWebMenuCode(), command.getWebMenuName(), command.getDefaultMenu(), null);
+		}
 		
 		webMenuRepository.add(domain);
 		

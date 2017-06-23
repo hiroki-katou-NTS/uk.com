@@ -41,83 +41,83 @@ public class JewtstEmploymentWtSet extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "DAILY_TIME")
-	private int dailyTime;
+	private Long dailyTime;
 
 	/** The weekly time. */
 	@Column(name = "WEEKLY_TIME")
-	private int weeklyTime;
+	private Long weeklyTime;
 
 	/** The jan time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "JAN_TIME")
-	private int janTime;
+	private Long janTime;
 
 	/** The feb time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "FEB_TIME")
-	private int febTime;
+	private Long febTime;
 
 	/** The mar time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "MAR_TIME")
-	private int marTime;
+	private Long marTime;
 
 	/** The apr time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "APR_TIME")
-	private int aprTime;
+	private Long aprTime;
 
 	/** The may time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "MAY_TIME")
-	private int mayTime;
+	private Long mayTime;
 
 	/** The jun time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "JUN_TIME")
-	private int junTime;
+	private Long junTime;
 
 	/** The jul time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "JUL_TIME")
-	private int julTime;
+	private Long julTime;
 
 	/** The aug time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "AUG_TIME")
-	private int augTime;
+	private Long augTime;
 
 	/** The sep time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "SEP_TIME")
-	private int sepTime;
+	private Long sepTime;
 
 	/** The oct time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "OCT_TIME")
-	private int octTime;
+	private Long octTime;
 
 	/** The nov time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "NOV_TIME")
-	private int novTime;
+	private Long novTime;
 
 	/** The dec time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "DEC_TIME")
-	private int decTime;
+	private Long decTime;
 
 	/**
 	 * Instantiates a new jewtst employment wt set.

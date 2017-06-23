@@ -81,7 +81,9 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setWorkplaceCode(WorkplaceCode workplaceCode) {
-		this.kwpmtWorkplace.setWplcd(workplaceCode.v());;
+		KwpmtWorkplacePK pk = this.kwpmtWorkplace.getKwpmtWorkplacePK();
+		pk.setWplid(workplaceCode.v());
+		this.kwpmtWorkplace.setKwpmtWorkplacePK(pk);
 	}
 
 	/*

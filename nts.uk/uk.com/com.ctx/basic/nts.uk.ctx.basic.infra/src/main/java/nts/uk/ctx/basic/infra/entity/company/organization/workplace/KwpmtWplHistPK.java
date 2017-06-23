@@ -10,8 +10,6 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,14 +24,10 @@ public class KwpmtWplHistPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
     @Column(name = "CID")
     private String cid;
 	
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 40)
     @Column(name = "HIST_ID")
     private String histId;
 
@@ -55,7 +49,6 @@ public class KwpmtWplHistPK implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof KwpmtWplHistPK)) {
             return false;
         }
