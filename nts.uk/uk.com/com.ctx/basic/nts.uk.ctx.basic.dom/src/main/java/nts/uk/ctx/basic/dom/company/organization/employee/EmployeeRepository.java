@@ -21,4 +21,15 @@ public interface EmployeeRepository {
 	 * @return the all employee
 	 */
 	List<Employee> getAllEmployee(String companyId);
+	
+	
+	/**
+	 * Gets the list person by list employee.
+	 *
+	 * @param companyId the company id
+	 * @param employeeIds the employee ids
+	 * @return the list person by list employee
+	 */
+	//Get List Person ID
+	List<Employee> getListPersonByListEmployeeId(String companyId, List<String> employeeIds);
 }

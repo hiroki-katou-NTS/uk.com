@@ -33,7 +33,7 @@ public class WorkPlaceWs {
 	 * @param inDto the in dto
 	 * @return the list
 	 */
-	@Path("findall")
+	@Path("findAll")
 	@POST
 	public List<WorkplaceFindDto> findAll(WorkplaceInDto inDto) {
 		inDto = new WorkplaceInDto();

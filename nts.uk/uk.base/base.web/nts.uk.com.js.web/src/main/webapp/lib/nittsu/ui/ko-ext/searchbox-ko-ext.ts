@@ -268,6 +268,9 @@ module nts.uk.ui.koExtentions {
                 if (event.which == 13) {
                     event.preventDefault();
                     nextSearch();
+                    _.defer(() => {
+                        $input.focus();                
+                    });
                 }
             });
             $button.click(function() {

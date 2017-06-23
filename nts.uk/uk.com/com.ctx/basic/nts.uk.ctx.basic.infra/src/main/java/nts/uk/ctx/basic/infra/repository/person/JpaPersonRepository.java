@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.dom.person.Person;
 import nts.uk.ctx.basic.dom.person.PersonRepository;
 import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson;
@@ -38,6 +39,12 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 */
 	@Override
 	public List<Person> getPersonByPersonId(List<String> personIds) {
+		
+		// check exist input
+		if(CollectionUtil.isEmpty(personIds)){
+			return new ArrayList<>();
+		}
+		
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();

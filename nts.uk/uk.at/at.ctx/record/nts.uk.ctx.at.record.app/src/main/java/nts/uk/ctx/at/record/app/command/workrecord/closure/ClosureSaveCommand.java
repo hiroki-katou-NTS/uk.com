@@ -18,6 +18,9 @@ import nts.uk.ctx.at.record.dom.workrecord.closure.UseClassification;
 @Getter
 @Setter
 public class ClosureSaveCommand {
+	
+	/** The Constant MIN_YEAR_MONTH. */
+	public static final int MIN_YEAR_MONTH = 190001;
 	/** The closure id. */
 	// 締めＩＤ
 	private int closureId;
@@ -86,7 +89,10 @@ public class ClosureSaveCommand {
 		 */
 		@Override
 		public ClosureMonth getMonth() {
-			return new ClosureMonth(command.getMonth());
+			if (command.getUseClassification() == 1) {
+				return new ClosureMonth(command.getMonth());
+			}
+			return new ClosureMonth(MIN_YEAR_MONTH);
 		}
 
 		/* (non-Javadoc)

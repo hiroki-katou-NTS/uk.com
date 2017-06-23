@@ -73,10 +73,12 @@
 										<div 
 											class="nts-input"
 											id="inpMonth"
-											data-name="#{i18n.getText('KMK012_5')}" 
 											tabindex="2"  
 											data-bind="ntsDatePicker: 
-											{value: closureModel.month, required: true, enable: enableUseClassification, dateFormat: 'yearmonth'}">
+											{	value: closureModel.month, name:'#[KMK012_5]', 
+												required: true, 
+												enable: enableUseClassification, 
+												dateFormat: 'yearmonth'}">
 										</div>
 									</div>
 								</div>
@@ -87,9 +89,11 @@
 									<hr/>	
 								</div>
 								
-								
 								<div class="contents" >
-									<button tabindex="3" data-bind="click: openConfirmClosingPeriodDialog, enable: enableUseClassification">#{i18n.getText('KMK012_6')}</button>
+									<button tabindex="3" 
+										data-bind="click: openConfirmClosingPeriodDialog, 
+										enable: enableUseClassification">#{i18n.getText('KMK012_6')}
+									</button>
 								</div>
 								
 								<div class="contents">
@@ -106,17 +110,19 @@
 										rows: 10  }">
 									</div>	
 										<div class="contents">
-											<div class="lableDataEnd" data-bind="ntsFormLabel: {required: true, constraint: 'CloseName'}">
+											<div class="lableDataEnd" 
+												data-bind="ntsFormLabel: {required: true, 
+												constraint: 'CloseName'}">
 												<label>#{i18n.getText('KMK012_9')}</label>
 											</div>
 											<div class="valueData">
 												<input class="nts-input" 
 													id="inpname"
 													tabindex="7"   
-													data-name="#{i18n.getText('KMK012_9')}"
 													data-bind="ntsTextEditor:{
 			                                        value: closureHistoryModel.closureName,
 			                                        required: false,
+			                                        name:'#[KMK012_9]', 
 			                                        enable: enableUseClassification,
 			                                       	option: textEditorOption,
 			                                        constraint: 'CloseName'}" />
@@ -126,7 +132,8 @@
 										<br />
 										<br />
 										<div class="contents">
-											<div class="lableDataEnd" data-bind="ntsFormLabel: {required: true}">
+											<div class="lableDataEnd" 
+												data-bind="ntsFormLabel: {required: true}">
 												<label>#{i18n.getText('KMK012_10')}</label>
 											</div>
 											<div class="valueData">

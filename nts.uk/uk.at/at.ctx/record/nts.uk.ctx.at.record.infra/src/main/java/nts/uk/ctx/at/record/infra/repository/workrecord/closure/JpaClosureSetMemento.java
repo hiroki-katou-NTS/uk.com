@@ -80,7 +80,9 @@ public class JpaClosureSetMemento implements ClosureSetMemento{
 	 */
 	@Override
 	public void setMonth(ClosureMonth month) {
-		this.kclmtClosure.setMonth(month.getProcessingDate().v());
+		if (this.kclmtClosure.getUseClass() == 1) {
+			this.kclmtClosure.setMonth(month.getProcessingDate().v());
+		}
 	}
 
 	/*

@@ -43,6 +43,7 @@ module kcp005.a.viewmodel {
                     selectedCode: this.selectedCode,
                     isDialog: false,
                     isShowSelectAllButton: false,
+                    isShowNoSelectRow: false,
                     alreadySettingList: this.alreadySettingList
                     
                 }
@@ -59,6 +60,7 @@ module kcp005.a.viewmodel {
                 selectedCode: this.multiSelectedCode,
                 isDialog: true,
                 isShowSelectAllButton: false,
+                isShowNoSelectRow: false,
                 alreadySettingList: this.alreadySettingList
             }
             $('#employee-multi-setting').ntsListComponent(this.listComponentOptionMulti);
@@ -74,6 +76,7 @@ module kcp005.a.viewmodel {
                 selectedCode: this.multiSelectedCodeNoSetting,
                 isDialog: true,
                 isShowSelectAllButton: true,
+                isShowNoSelectRow: false,
             }
             $('#employee-multiSelect-noSetting').ntsListComponent(this.listComponentMultiNoneSetting);
             
@@ -87,6 +90,7 @@ module kcp005.a.viewmodel {
                 selectedCode: this.selectedCodeNoSetting,
                 isDialog: true,
                 isShowSelectAllButton: false,
+                isShowNoSelectRow: false,
             }
             $('#employee-noSetting').ntsListComponent(this.listComponentNoneSetting);
             
@@ -119,19 +123,8 @@ module kcp005.a.viewmodel {
         
         private settingCopiedItem() {
             var self = this;
-            
-            self.listComponentOption = {
-                    isShowAlreadySet: false, // is show already setting column.
-                    isMultiSelect: true, // is multiselect.
-                    listType: ListType.EMPLOYEE,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    employeeInputList: self.employeeList,
-                    isShowWorkPlaceName: false,
-                    selectedCode: self.copySelectedCode,
-                    isDialog: false,
-                    isShowSelectAllButton: false,
-                    alreadySettingList: self.alreadySettingList
-                }
+            self.listComponentOption.isMultiSelect = true;
+            self.listComponentOption.selectedCode = self.copySelectedCode;
             $('#employee-setting').ntsListComponent(self.listComponentOption);
         }
     }

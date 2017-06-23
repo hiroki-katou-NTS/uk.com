@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 860,
-					height : 600
+					width : 660,
+					height : 550
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -25,14 +25,14 @@
 			<div id="contents-area">
 				<div class="label">#{i18n.getText('KMK008_5')}</div>
 				<hr />
-				<div class="valign-center control-group">
+				<div class="valign-center control-group control-group-margin">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_32')}</div>
 					<div id="combo-box-month-setting" tabindex="1"
 						data-bind="ntsComboBox: {
 						name: '#{i18n.getText('KMK008_32')}',
-						options: monthSettingItemList,
+						options: startingMonth,
 						optionsValue: 'value',
-						value: selectedMonthSettingItemList,
+						value: selectedStartingMonth,
 						optionsText: 'localizedName',
 						editable: false,
 						enable: true,
@@ -41,7 +41,7 @@
 						]} ">
 					</div>
 				</div>
-				<div class="valign-center control-group">
+				<div class="valign-center control-group div-group-date-setting">
 					<div class="closing-date-clean">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_33')}</div>
 						<button tabindex="2"
@@ -50,10 +50,10 @@
 					<div class="closing-date-clean rdb-closing-date-classification">
 						<div id="rdb-closing-date-classification" tabindex="3"
 							data-bind="ntsRadioBoxGroup: {
-							options: closingDateClassificationItemList,
+							options: closingDateClassification,
 							optionsValue: 'value',
 							optionsText: 'localizedName',
-							value: selectedClosingDateClassificationItemList,
+							value: selectedClosingDateClassification,
 							enable: true }">
 						</div>
 					</div>
@@ -62,21 +62,84 @@
 						<div id="cbx-closing-date-setting" tabindex="4"
 							data-bind="ntsComboBox: {
 						name: '#{i18n.getText('KMK008_33')}',
-						options: closingDateSettingItemList,
+						options: closingDate,
 						optionsValue: 'value',
-						value: selectedClosingDateSettingItemList,
+						value: selectedClosingDate,
 						optionsText: 'localizedName',
 						editable: false,
-						enable: true,
+						enable: isEnableClosingDateClassification,
 						columns: [
 							{ prop: 'localizedName', length: 10 },
 						]} ">
 						</div>
 					</div>
-
 				</div>
 
-
+				<div class="valign-center control-group control-group-margin">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_34')}</div>
+						<button tabindex="5"
+							data-bind="ntsHelpButton: {image: 'img_002.png', position: 'right top', enable: true }">?</button>
+						<div id="cbx-limit-setting" tabindex="6"
+							data-bind="ntsComboBox: {
+							name: '#{i18n.getText('KMK008_34')}',
+							options: numberOfTimesOverLimit,
+							optionsValue: 'value',
+							value: selectedNumberOfTimesOverLimit,
+							optionsText: 'localizedName',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'localizedName', length: 10 },
+							]} ">
+						</div>
+				</div>
+				<div class="valign-center control-group control-group-margin" id = "target-data-content">
+						<div class="target-data-content">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_35')}</div>
+							<button tabindex="7"
+								data-bind="ntsHelpButton: {image: 'img_003.png', position: 'right top', enable: true }">?</button>
+						</div>
+						<div class="target-data-content">
+							<table id="table-target-data">
+								 <tr style="background-color: #E0F59E">
+								    <th style="width: 30%">#{i18n.getText('KMK008_36')}</th>
+								    <th  style="width: 70%">#{i18n.getText('KMK008_35')}</th> 
+								  </tr>
+								  <tr>
+								    <td>アラームリスト</td>
+								    <td>
+								    	<div tabindex="8" class="target-classification" data-bind="ntsSwitchButton: {
+								    		name: '#{i18n.getText('KMK008_35')}',
+											options: targetClassification,
+											optionsValue: 'value',
+											optionsText: 'localizedName',
+											value: selectedTargetClassificationAlarm,
+											enable: isEnableTargetClassification }">
+										</div>
+								    </td>
+								  </tr>
+								  <tr>
+								    <td>年間勤務表</td>
+								    <td>
+								    	<div tabindex="8" class="target-classification" data-bind="ntsSwitchButton: {
+								    		name: '#{i18n.getText('KMK008_35')}',
+											options: targetClassification,
+											optionsValue: 'value',
+											optionsText: 'localizedName',
+											value: selectedTargetClassificationWorkSchedule,
+											enable: isEnableTargetClassification }">
+										</div>
+								    </td>
+								  </tr>
+							</table>	
+						</div>
+				</div>
+				<HR />
+				<div class="valign-center control-group function-button-class">
+						<button class="proceed x-large" data-bind = "">#{i18n.getText('KMK008_37')}</button>
+						<button class="small"  data-bind = "">#{i18n.getText('KMK008_38')}</button>
+				</div>
+				
 			</div>
 		</ui:define>
 	</ui:composition>

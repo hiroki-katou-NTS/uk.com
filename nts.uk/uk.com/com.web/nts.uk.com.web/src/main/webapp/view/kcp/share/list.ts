@@ -230,7 +230,6 @@ module kcp.share.list {
                 self.alreadySettingList.subscribe((newSettings: Array<UnitModel>) => {
                     self.addAreadySettingAttr(dataList, newSettings);
                     self.itemList(dataList);
-                    self.addIconToAlreadyCol();
                 })
             }
             
@@ -242,12 +241,12 @@ module kcp.share.list {
             if (data.isShowNoSelectRow) {
                 self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
-            this.searchOption = {
+            self.searchOption = {
                 searchMode: 'filter',
                 targetKey: 'code',
-                comId: this.componentGridId,
-                items: this.itemList,
-                selected: this.selectedCodes,
+                comId: self.componentGridId,
+                items: self.itemList,
+                selected: self.selectedCodes,
                 selectedKey: 'code',
                 fields: ['name', 'code'],
                 mode: 'igGrid'
@@ -260,12 +259,22 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
+                
+            });
+            
+            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
                 self.addIconToAlreadyCol();
             });
             
             // defined function get data list.
+            $('#script-for-' + $input.attr('id')).remove();
+            var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(dataList);
+            s.id = 'script-for-' + $input.attr('id');
+            $("head").append(s);
             $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
-                return dataList;
+                return window['dataList' + this.attr('id').replace(/-/gi, '')];
             }
             
             // defined function focus

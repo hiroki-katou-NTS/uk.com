@@ -10,12 +10,13 @@ import javax.ws.rs.Produces;
  *
  */
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSettingDto;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSettingFinder;
 
 @Path("sys/portal/toppagesetting")
 @Produces("application/json")
-public class TopPageSettingWebService {
+public class TopPageSettingWebService extends WebService {
 	@Inject
 	TopPageSettingFinder topPageSettingFinder;
 

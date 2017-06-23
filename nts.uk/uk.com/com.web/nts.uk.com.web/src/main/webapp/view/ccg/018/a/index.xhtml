@@ -4,7 +4,9 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
+<ui:define name="htmlHead">
+	<com:scriptfile set="IGNITE" />
+</ui:define>
 <div class="sidebar-content-header">
 	<span class="title">#{i18n.getText('CCG018_1')}</span>
 	<button id="A1-4" class="proceed" data-bind="click: update">#{i18n.getText('CCG018_3')}</button>
@@ -22,16 +24,56 @@
 		<button id="A2-3" class="caret-bottom">#{i18n.getText('CCG018_7')}</button>
 	</div>
 	<div id="A2-4">
-		<table id="single-list"
-			data-bind="ntsGridList: {								
-			height: 350,
-			dataSource: items,
-			primaryKey: 'code',
-			columns: columns2,
-			features: [{name: 'Switch', options: switchOptions, optionsValue: 'code', optionsText: 'name'}],
-			multiple: false,
-			value: currentCode
-	}"></table>
+		<table id="table-1">
+			<thead>
+				<tr>
+					<th>#{i18n.getText('CCG018_8')}</th>
+					<th>#{i18n.getText('CCG018_9')}</th>
+					<th>#{i18n.getText('CCG018_10')}</th>
+					<th>#{i18n.getText('CCG018_11')}</th>
+					<th>#{i18n.getText('CCG018_12')}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr><td></td>
+					<td></td>
+					<td>
+						<div id="combo-box"
+							data-bind="ntsComboBox: {
+								options: itemList,
+								optionsValue: 'code',
+								value: selectedCode1,
+								optionsText: 'name',
+								editable: false,
+								enable: true,
+								columns: [
+									{ prop: 'name', length: 10 },
+								]}"></div>
+					</td>
+					<td>
+						<div id="combo-box"
+							data-bind="ntsComboBox: {
+							options: itemList,
+							optionsValue: 'code',
+							value: selectedCode2,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 10 },
+							]}"></div>
+					</td>
+					<td>
+						<div class="cf" data-bind="ntsSwitchButton: {
+							options: roundingRules,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedRuleCode,
+							enable: true  }"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </div>
 
