@@ -5,7 +5,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         //Text edittor
         nameMenuBar: KnockoutObservable<string>;
         //Combobox
-        listSystemSelect: KnockoutObservableArray<SystemSelect>;
+        listSystemSelect: KnockoutObservableArray<any>;
         selectedCodeSystemSelect: KnockoutObservable<string>;
         //colorpicker
         letterColor: KnockoutObservable<string>;
@@ -14,11 +14,12 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         itemRadioAtcClass: KnockoutObservableArray<any>;
         selectedRadioAtcClass: KnockoutObservable<number>;
         //GridList
-        listStandardMenu: KnockoutObservableArray<StandardMenu>;
+        listStandardMenu: KnockoutObservableArray<any>;
         columns: KnockoutObservableArray<any>;
         currentListStandardMenu: KnockoutObservableArray<any>;
         selectCodeStandardMenu: KnockoutObservable<string>;
-
+        allPart: KnockoutObservableArray<any>;
+        selectedSystemID: KnockoutObservable<string>;
         constructor() {
             var self = this;
             self.nameMenuBar = ko.observable("");
@@ -32,6 +33,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
             //GridList
+            self.allPart = ko.observableArray([]);
             self.listStandardMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', key: 'code', width: 100 },
@@ -39,27 +41,31 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             ]);
             self.selectCodeStandardMenu = ko.observable('');
             self.currentListStandardMenu = ko.observableArray([]);
-
-            //test
+            //Follow SystemSelect
+            self.selectedSystemID = ko.observable(null);
+            self.selectedCodeSystemSelect.subscribe((value) => { self.changeSystem(value); });
+                
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var data= windows.getShared("CCG013A_StandardMeNu");
+            var data = windows.getShared("CCG013A_StandardMeNu");
             if (data) {
                 self.nameMenuBar(data.nameMenuBar);
                 self.letterColor(data.pickerLetter);
                 self.backgroundColor(data.pickerBackground);
                 self.selectedRadioAtcClass(data.radioActlass);
-                    
+
             }
-            
+
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function(editMenuBar: any) {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
                 self.listSystemSelect(editMenuBar.listSystem);
-                let listStandardMenu: Array<StandardMenu> = _.orderBy((editMenuBar.listStandardMenu, ["code"], ["asc"]));
+                console.log(editMenuBar);
+                self.allPart(editMenuBar.listStandardMenu);
+                let listStandardMenu: Array<any> = _.orderBy((editMenuBar.listStandardMenu, ["code"], ["asc"]));
                 self.listStandardMenu(editMenuBar.listStandardMenu);
                 dfd.resolve();
             }).fail(function(error) {
@@ -80,12 +86,22 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.cancel_Dialog();
         }
 
+        /** Change System */
+        private changeSystem(value): void {
+            var self = this;
+            var standardMenus =  _.chain(self.allPart()).filter(['system', value]).value();
+            self.listStandardMenu(standardMenus);
+        }
+
+
+    }
+
     class MenuBar {
         nameMenuBar: string;
         letterColor: string;
         backgroundColor: string;
         selectedRadioAtcClass: number;
-        
+
         constructor(nameMenuBar: string, letterColor: string, backgroundColor: string, selectedRadioAtcClass: number) {
             this.nameMenuBar = nameMenuBar;
             this.letterColor = letterColor;
