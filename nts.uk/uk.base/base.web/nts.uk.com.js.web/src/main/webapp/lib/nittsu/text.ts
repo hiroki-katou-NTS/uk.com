@@ -124,6 +124,13 @@
                         return katakanaMap[match];
                     }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
         }
+        
+        export function anyChar(text: string) {
+            return {
+                        probe: true,
+                        messageId: 'FND_E_ANY'
+                   }
+        }
 
         /**
          * 文字列が半角数字のみで構成された1文字以上の文字列かどうか判断する
@@ -391,7 +398,7 @@
             validate(text: string) {
                 var result = new ui.validation.ValidationResult();
                 let validateResult = this.validator(text);
-                if (validateResult.probe) {
+                if (validateResult === true || validateResult.probe) {
                     result.isValid = true;
                     result.errorMessage = validateResult.messageId;
                 } else {
@@ -429,7 +436,7 @@
             Any: new CharType(
                 '全角',
                 1,
-                nts.uk.util.alwaysTrue),
+                nts.uk.text.anyChar),
             Kana: new CharType(
                 'カナ',
                 1,

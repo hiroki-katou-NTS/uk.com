@@ -146,7 +146,17 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 */
 	@Override
 	public void updateDivTime(DivergenceTime divTime) {
-		this.commandProxy().update(toEntityDivTime(divTime));
+		KmkmtDivergenceTime a = toEntityDivTime(divTime);
+		KmkmtDivergenceTime x = this.queryProxy().find(a.kmkmtDivergenceTimePK, KmkmtDivergenceTime.class).get();
+		x.setDivTimeName(a.divTimeName);
+		x.setDivTimeUseSet(a.divTimeUseSet);
+		x.setAlarmTime(a.alarmTime);
+		x.setErrTime(a.errTime);
+		x.setSelectUseSet(x.selectUseSet);
+		x.setCancelErrSelReason(a.cancelErrSelReason);
+		x.setInputUseSet(a.inputUseSet);
+		x.setCancelErrInputReason(a.cancelErrInputReason);
+		this.commandProxy().update(x);
 	}
 	/**
 	 * add divergence reason
@@ -162,7 +172,11 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 */
 	@Override
 	public void updateDivReason(DivergenceReason divReason) {
-		this.commandProxy().update(toEntityDivReason(divReason));
+		KmkmtDivergenceReason a = toEntityDivReason(divReason);
+		KmkmtDivergenceReason x =  this.queryProxy().find(a.kmkmtDivergenceReasonPK, KmkmtDivergenceReason.class).get();
+		x.setDivReason(a.divReason);
+		x.setRequiredAtr(a.requiredAtr);
+		this.commandProxy().update(x);
 	}
 	/**
 	 * delete divergence reason
