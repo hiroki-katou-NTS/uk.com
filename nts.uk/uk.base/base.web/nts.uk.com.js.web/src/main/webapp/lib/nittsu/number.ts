@@ -13,7 +13,7 @@
             value = isDecimal(value) || seperator === undefined ? value : text.replaceAll(value.toString(), seperator, '');
         }
         return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
-    }
+    } 
 
     export function isNumber(value: any, isDecimalValue?: boolean, option?: any, message?: any) {
         if (isDecimalValue) {

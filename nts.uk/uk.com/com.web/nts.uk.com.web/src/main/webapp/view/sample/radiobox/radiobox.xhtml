@@ -50,15 +50,20 @@
 							<span data-bind="ntsCheckBox: {checked: true, enable: (selectedValue() == 2)}">Select me!</span>
 						</div>
 						<br/>
+						<div data-bind="ntsRadioButton: {checked: selectedValue2, enable: enable, option: option, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"></div>
+						<div data-bind="ntsRadioButton: {checked: selectedValue3, enable: enable, optionText: 'No Option', group: 'ntsControl' }"></div>
+						<br/>
 						<div data-bind="ntsCheckBox: { checked: enable }" class="cf">Enable</div>
-						<div>Selected Value: <span data-bind="text: ko.toJSON(selectedValue())"></span></div>
+						<div>Selected Value: <span data-bind="text: ko.toJSON(selectedValue())"></span>
+							<br/><span data-bind="text: ko.toJSON(selectedValue2())"></span>
+							<br/><span data-bind="text: ko.toJSON(selectedValue3())"></span></div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 									<li><a href="#tabs-css">CSS</a></li>
-								</ol>
+								</ol> 
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
 <pre><![CDATA[<!-- Manual Binding -->
@@ -77,7 +82,9 @@
 			<span class="box"></span><span class="label" data-bind="text: text"></span>
 		</label>
 	</span>
-</div>]]></pre>
+</div>
+<div data-bind="ntsRadioButton: {checked: selectedValue2, enable: enable, option: option, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"></div>
+<div data-bind="ntsRadioButton: {checked: selectedValue3, enable: enable, optionText: 'No Option', group: 'ntsControl' }"></div>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -98,10 +105,52 @@
 												</td>
 											</tr>
 											<tr>
-												<td>checkedValue<br/><i>(optional)</i></td>
+												<td>checkedValue<br/><i>(optional, not apply with ntsRadioButton)</i></td>
 												<td>
 													<b>Type:</b> any<br/>
 													Set value for RadioBox
+												</td>
+											</tr>
+											<tr>
+												<td>option<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> any<br/>
+													Set option for RadioBox
+												</td>
+											</tr>
+											<tr>
+												<td>enable<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													Set enable for RadioBox
+												</td>
+											</tr>
+											<tr>
+												<td>name<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Set data name for RadioBox
+												</td>
+											</tr>
+											<tr>
+												<td>optionValue<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Set value for RadioBox
+												</td>
+											</tr>
+											<tr>
+												<td>optionText<br/><i>(required)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Set text (if option is not defined, use optionText, if option is defined, use optionText property from option) for RadioBox
+												</td>
+											</tr>
+											<tr>
+												<td>group<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Set group for RadioBox
 												</td>
 											</tr>
 										</tbody>
@@ -114,7 +163,10 @@
 <pre><![CDATA[class ScreenModel {
     enable: KnockoutObservable<boolean>;
     selectedValue: KnockoutObservable<any>;
+    selectedValue2: KnockoutObservable<any>;
+    selectedValue3: KnockoutObservable<any>;
     items: KnockoutObservableArray<any>;
+    option: KnockoutObservable<any>;
     
     constructor() {
         var self = this;
@@ -124,7 +176,11 @@
             {value: 2, text: 'Two'},
             {value: 3, text: 'Three'}
         ]);
-        self.selectedValue = ko.observable(2);
+        self.selectedValue = ko.observable(1);
+        self.selectedValue2 = ko.observable(false);
+        self.selectedValue3 = ko.observable(false);
+        
+        self.option = ko.observable({value: 1, text: 'Radio button'});
     }
 }]]></pre>
 								</div>
