@@ -43,9 +43,9 @@ public class TopPagePersonSet extends AggregateRoot {
 	}
 
 	public static TopPagePersonSet createFromJavaType(String companyId, String employeeId, String topMenuCode,
-			String loginMenuCode, int system, int menuClassification) {
+			String loginMenuCode, int loginSystem, int menuClassification) {
 		return new TopPagePersonSet(companyId, employeeId, new TopMenuCode(topMenuCode), new TopMenuCode(loginMenuCode),
-				EnumAdaptor.valueOf(system, System.class),
+				EnumAdaptor.valueOf(loginSystem, System.class),
 				EnumAdaptor.valueOf(menuClassification, MenuClassification.class));
 	}
 }
