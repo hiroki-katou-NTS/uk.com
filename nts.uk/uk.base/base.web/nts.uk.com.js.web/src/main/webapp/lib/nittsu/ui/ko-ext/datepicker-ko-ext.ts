@@ -75,7 +75,8 @@ module nts.uk.ui.koExtentions {
                                 .setDefaultCss(data.defaultClass || "");
 
             name = nts.uk.resource.getControlName(name);
-            var validator = new validation.TimeValidator(name, constraintName, {required: required, outputFormat: valueFormat, valueType: valueType});
+            var validator = new validation.TimeValidator(name, constraintName, {required: required, 
+                outputFormat: nts.uk.util.isNullOrEmpty(valueFormat) ? ISOFormat : valueFormat, valueType: valueType});
             $input.on("change", (e) => {
                 var newText = $input.val();
                 var result = validator.validate(newText);

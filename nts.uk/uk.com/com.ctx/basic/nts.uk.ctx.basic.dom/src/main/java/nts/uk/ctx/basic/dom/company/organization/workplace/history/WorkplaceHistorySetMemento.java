@@ -2,16 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.employee.workplace;
+package nts.uk.ctx.basic.dom.company.organization.workplace.history;
 
 import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeId;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceId;
 
 /**
- * The Interface EmployeeWorkplaceHistoryGetMemento.
+ * The Interface WorkplaceHistorySetMemento.
  */
-public interface EmployeeWorkplaceHistorySetMemento {
+public interface WorkplaceHistorySetMemento {
 	
 	/**
 	 * Sets the.

@@ -152,7 +152,14 @@ module nts.uk.pr.view.kmf001.f {
                 });
 
                 self.emSelectedCode.subscribe(function(employmentCode: string) {
-                    self.loadEmploymentSetting(employmentCode);
+                    if (employmentCode) {
+                        self.loadEmploymentSetting(employmentCode);
+                        self.isEmptyEmployment(false);
+                    }
+                    else {
+                        //not selected item -> disable All
+                        self.isEmptyEmployment(true);
+                    }
                 });
 
                 //for list em

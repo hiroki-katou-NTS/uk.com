@@ -21,10 +21,10 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             container.addClass("ntsControl radio-wrapper");
             container.data("enable", enable);
-            
             if(nts.uk.util.isNullOrUndefined(container.attr("tabindex"))){
-                container.attr("tabindex", "0");    
+                container.attr("tabindex", "0");
             }
+            
             container.keydown(function (evt, ui) {
                 let code = evt.which || evt.keyCode;
                 if (code === 32) {

@@ -19,20 +19,4 @@ public enum TargetSettingAtr {
 	AUXILIARY_MONTH_DATA(1);
 
 	public final int value;
-
-	public String toName() {
-		String name;
-		switch (value) {
-		case 0:
-			name = "月別実績データ";
-			break;
-		case 1:
-			name = "補助月データ";
-			break;
-		default:
-			name = "月別実績データ";
-			break;
-		}
-		return name;
-	}
 }

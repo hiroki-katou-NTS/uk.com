@@ -13,6 +13,7 @@ module nts.uk.pr.view.kmf001.d {
             selectedItem: KnockoutObservable<string>;
             listComponentOption: KnockoutObservable<any>;
             alreadySettingList: KnockoutObservableArray<any>;
+            enableRegister: KnockoutObservable<boolean>;
             
             retentionYearsAmount: KnockoutObservable<number>;
             maxDaysCumulation: KnockoutObservable<number>;
@@ -63,11 +64,10 @@ module nts.uk.pr.view.kmf001.d {
                 ]);
                 self.selectedManagement = ko.observable(1);
                 self.hasSelectedEmp = ko.observable(false);
+                
                 self.isManaged = ko.computed(function() {
                     return self.selectedManagement() == 1;
                 }, self);
-                
-                
                 
                 self.annualManage = ko.observable(1);
                 self.isManaged = ko.computed(function() {
@@ -78,6 +78,9 @@ module nts.uk.pr.view.kmf001.d {
                     new LeaveAsWorkDaysModel(false, '管理しない')
                 ]);
                 self.leaveAsWorkDays = ko.observable(null);
+                self.enableRegister = ko.computed(function() {
+                    return self.isManaged() && self.hasSelectedEmp();
+                }, self);
             }
             
             public startPage(): JQueryPromise<void> {
@@ -172,30 +175,37 @@ module nts.uk.pr.view.kmf001.d {
                 // Already Setting List
                 service.findAllByEmployment().done(function(data: any) {
                     for (var i = 0; i < data.length; i++) {
-                        self.alreadySettingList.push({"code": data[i].employmentCode, "isAlreadySetting": true});
+                        self.alreadySettingList.push({ "code": data[i].employmentCode, "isAlreadySetting": true });
                     }
                 });
                 // Selected Item subscribe
                 self.selectedItem.subscribe(function(data: string) {
-                    service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
+                    
+                    if(data) {
+                        service.findByEmployment(data).done(function(data1: EmploymentSettingFindDto) {
+                            //                        self.hasSelectedEmp(true);
+                            $('#switch-btn').focus();
+                            self.bindEmploymentSettingData(data1);
+                        });
                         self.hasSelectedEmp(true);
-                        $('#switch-btn').focus();
-                        self.bindEmploymentSettingData(data1);
-                    });
-                    
-                });
-                // employmentList...
-                $('#left-content').ntsListComponent(self.listComponentOption).done(function() {
-                    self.employmentList($('#left-content').getDataList());
-                    
-                    // Selected Item
-                    self.selectedItem(self.employmentList()[0].code);
-                    if((self.employmentList() == undefined) || (self.employmentList().length <= 0)) {
-                        self.hasSelectedEmp(false);
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_146"});
                     }
                     else {
-                        self.hasSelectedEmp(true);
+                        self.hasSelectedEmp(false);
+                    }
+                });
+                
+                // employmentList...
+                $('#left-content').ntsListComponent(self.listComponentOption).done(function() {
+                    if (($('#left-content').getDataList() == undefined) || ($('#left-content').getDataList().length <= 0)) {
+//                        self.hasSelectedEmp(false);
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
+                    }
+                    else {
+                        // Employment List
+                        self.employmentList($('#left-content').getDataList());
+                        // Selected Item
+                        self.selectedItem(self.employmentList()[0].code);
+                        //                        self.hasSelectedEmp(true);
                     }
                 });
             }
