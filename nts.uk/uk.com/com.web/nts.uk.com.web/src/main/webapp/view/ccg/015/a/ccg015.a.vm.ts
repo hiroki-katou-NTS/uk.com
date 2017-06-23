@@ -106,7 +106,7 @@ module nts.uk.com.view.ccg015.a {
             private collectData(): TopPageDto {
                 var self = this;
                 //mock data
-                var data: TopPageDto = { topPageCode: _.escape(self.topPageModel().topPageCode()), topPageName: _.escape(self.topPageModel().topPageName()), languageNumber: 0, layoutId: self.topPageModel().layoutId() };
+                var data: TopPageDto = { topPageCode: _.escape(nts.uk.text.padLeft(self.topPageModel().topPageCode(), '0', 4)), topPageName: _.escape(self.topPageModel().topPageName()), languageNumber: 0, layoutId: self.topPageModel().layoutId() };
                 return data;
             }
 
