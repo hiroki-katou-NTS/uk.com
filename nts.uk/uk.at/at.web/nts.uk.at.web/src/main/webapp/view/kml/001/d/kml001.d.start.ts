@@ -3,5 +3,10 @@ module nts.uk.at.view.kml001.d {
         var screenModel = new nts.uk.at.view.kml001.d.viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
         if(screenModel.isUpdate()) $('#startDateInput-input').focus();
+        $("* input").attr('tabindex', -1);
+        $("#radioBox").attr('tabindex', 1);
+        $("#startDateInput").attr('tabindex', 2);
+        $("#functions-area-bottom > button:NTH-CHILD(1)").attr('tabindex', 3);
+        $("#functions-area-bottom > button:NTH-CHILD(2)").attr('tabindex', 4);
     });
 }
