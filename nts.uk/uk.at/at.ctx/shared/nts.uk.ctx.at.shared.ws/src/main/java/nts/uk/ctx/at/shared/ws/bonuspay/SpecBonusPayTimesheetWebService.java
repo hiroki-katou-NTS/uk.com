@@ -31,10 +31,10 @@ public class SpecBonusPayTimesheetWebService extends WebService {
 	private SpecBPTimesheetUpdateCommandHandler specBPTimesheetUpdateCommandHandler;
 
 	@POST
-	@Path("getListTimesheet/{companyId}/{bonusPaySettingCode}")
-	List<SpecBPTimesheetDto> getListTimesheet(@PathParam("companyId") String companyId,
+	@Path("getListTimesheet/{bonusPaySettingCode}")
+	List<SpecBPTimesheetDto> getListTimesheet(
 			@PathParam("bonusPaySettingCode") String bonusPaySettingCode) {
-		return this.specBPTimesheetFinder.getListTimesheet(companyId, bonusPaySettingCode);
+		return this.specBPTimesheetFinder.getListTimesheet(bonusPaySettingCode);
 	}
 
 	@POST

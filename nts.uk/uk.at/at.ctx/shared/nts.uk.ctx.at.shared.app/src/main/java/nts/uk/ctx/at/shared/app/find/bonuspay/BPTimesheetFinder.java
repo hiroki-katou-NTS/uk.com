@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -16,7 +17,8 @@ public class BPTimesheetFinder {
 	@Inject
 	private BPTimesheetRepository bpTimesheetRepository;
 
-	public List<BPTimesheetDto> getListTimesheet(String companyId, String bonusPaySettingCode) {
+	public List<BPTimesheetDto> getListTimesheet(String bonusPaySettingCode) {
+		String companyId = AppContexts.user().companyId();
 		List<BonusPayTimesheet> lstBonusPayTimesheet = bpTimesheetRepository.getListTimesheet(companyId,
 				bonusPaySettingCode);
 		return lstBonusPayTimesheet.stream().map(c -> toBPTimesheetDto(companyId, bonusPaySettingCode, c))

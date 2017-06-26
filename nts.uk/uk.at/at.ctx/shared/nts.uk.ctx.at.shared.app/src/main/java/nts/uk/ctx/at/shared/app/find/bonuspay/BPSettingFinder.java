@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.services.BonusPaySettingService;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -18,7 +19,8 @@ public class BPSettingFinder {
 	@Inject
 	private BonusPaySettingService bonusPaySettingService;
 
-	public List<BPSettingDto> getAllBonusPaySetting(String companyId) {
+	public List<BPSettingDto> getAllBonusPaySetting() {
+		String companyId = AppContexts.user().companyId();
 		List<BonusPaySetting> lst = bonusPaySettingService.getAllBonusPaySetting(companyId);
 		return lst.stream().map(c -> toBPSettingDto(c)).collect(Collectors.toList());
 	}
