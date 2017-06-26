@@ -7,7 +7,9 @@ module nts.uk.com.view.ccg.share.ccg {
         var servicePath = {
             findAllPerson: "basic/person/getallperson",
             getPersonLogin: "basic/person/getpersonlogin",
-            searchModeEmployee: "basic/organization/employee/search/advanced"
+            searchModeEmployee: "basic/organization/employee/search/advanced",
+            searchOfWorkplace: "basic/organization/employee/search/ofworkplace",
+            searchWorkplaceChild: "basic/organization/employee/search/workplacechild"
         }
 
         /**
@@ -22,11 +24,18 @@ module nts.uk.com.view.ccg.share.ccg {
             return nts.uk.request.ajax('com', servicePath.getPersonLogin);
         }
 
+        export function searchOfWorkplace(baseDate: Date): JQueryPromise<model.PersonModel[]> {
+            return nts.uk.request.ajax('com', servicePath.searchOfWorkplace, baseDate);
+        }
+        export function searchWorkplaceChild(baseDate: Date): JQueryPromise<model.PersonModel[]> {
+            return nts.uk.request.ajax('com', servicePath.searchWorkplaceChild, baseDate);
+        }
 
         export function searchModeEmployee(input: model.EmployeeSearchDto)
             : JQueryPromise<model.PersonModel[]> {
             return nts.uk.request.ajax('com', servicePath.searchModeEmployee, input);
         }
+        
         
         export module model{
             export class PersonModel {
@@ -64,6 +73,10 @@ module nts.uk.com.view.ccg.share.ccg {
                 onSearchAllClicked: (data: PersonModel[]) => void;
 
                 onSearchOnlyClicked: (data: PersonModel) => void;
+                
+                onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
+                
+                onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
             }
     
         }

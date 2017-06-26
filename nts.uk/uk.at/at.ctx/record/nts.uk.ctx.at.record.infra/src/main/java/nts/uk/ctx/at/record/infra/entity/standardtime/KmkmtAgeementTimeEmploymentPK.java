@@ -7,6 +7,8 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.query.DBCharPaddingAs;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Embeddable
 @AllArgsConstructor
@@ -22,5 +24,6 @@ public class KmkmtAgeementTimeEmploymentPK implements Serializable {
 	public String basicSettingId;
 
 	@Column(name = "EMP_CTG_CODE")
+	@DBCharPaddingAs(EmploymentCode.class)
 	public String employmentCategoryCode;
 }

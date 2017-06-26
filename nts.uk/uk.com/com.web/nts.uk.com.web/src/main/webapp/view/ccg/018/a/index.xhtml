@@ -24,7 +24,7 @@
 		<button id="A2-3" class="caret-bottom">#{i18n.getText('CCG018_7')}</button>
 	</div>
 	<div id="A2-4">
-		<table id="table-1">
+		<table class="table1">
 			<thead>
 				<tr>
 					<th>#{i18n.getText('CCG018_8')}</th>
@@ -35,43 +35,47 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr><td></td>
-					<td></td>
-					<td>
-						<div id="combo-box"
-							data-bind="ntsComboBox: {
-								options: itemList,
-								optionsValue: 'code',
-								value: selectedCode1,
-								optionsText: 'name',
-								editable: false,
-								enable: true,
-								columns: [
-									{ prop: 'name', length: 10 },
-								]}"></div>
-					</td>
-					<td>
-						<div id="combo-box"
-							data-bind="ntsComboBox: {
-							options: itemList,
-							optionsValue: 'code',
-							value: selectedCode2,
-							optionsText: 'name',
-							editable: false,
-							enable: true,
-							columns: [
-								{ prop: 'name', length: 10 },
-							]}"></div>
-					</td>
-					<td>
-						<div class="cf" data-bind="ntsSwitchButton: {
-							options: roundingRules,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: selectedRuleCode,
-							enable: true  }"></div>
-					</td>
-				</tr>
+				<com:ko-foreach bind="items">
+					<tr>
+						<td data-bind="text: $data.code"></td>
+						<td data-bind="text: $data.name"></td>
+						<td>
+							<div id="combo-box"
+								data-bind="ntsComboBox: {
+												options: $parent.itemList,
+												optionsValue: 'code',
+												value: $parent.selectedCode1,
+												optionsText: 'name',
+												editable: false,
+												enable: true,
+												columns: [
+													{ prop: 'name', length: 10 },
+												]}"></div>
+						</td>
+						<td>
+							<div id="combo-box"
+								data-bind="ntsComboBox: {
+												options: $parent.itemList,
+												optionsValue: 'code',
+												value: $parent.selectedCode2,
+												optionsText: 'name',
+												editable: false,
+												enable: true,
+												columns: [
+													{ prop: 'name', length: 10 },
+												]}"></div>
+						</td>
+						<td>
+							<div
+								data-bind="ntsSwitchButton: {
+												options: $parent.roundingRules,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: $parent.selectedRuleCode,
+												enable: true  }"></div>
+						</td>
+					</tr>
+				</com:ko-foreach>
 			</tbody>
 		</table>
 	</div>

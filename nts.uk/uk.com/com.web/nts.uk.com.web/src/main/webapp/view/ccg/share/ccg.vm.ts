@@ -31,6 +31,8 @@ module nts.uk.com.view.ccg.share.ccg {
             employeeinfo: any;
             onSearchAllClicked: (data: PersonModel[]) => void;
             onSearchOnlyClicked: (data: PersonModel) => void;
+            onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
+            onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
 
 
             constructor() {
@@ -107,6 +109,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isMultiple = data.isMutipleCheck;
                 self.onSearchAllClicked = data.onSearchAllClicked;
                 self.onSearchOnlyClicked = data.onSearchOnlyClicked;
+                self.onSearchOfWorkplaceClicked = data.onSearchOfWorkplaceClicked;
+                self.onSearchWorkplaceChildClicked = data.onSearchWorkplaceChildClicked;
                 var webserviceLocator = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                     .mergeRelativePath('/view/ccg/share/ccg.xhtml').serialize();
@@ -142,7 +146,6 @@ module nts.uk.com.view.ccg.share.ccg {
                 dto.employmentCodes = self.selectedCodeEmployment();
                 dto.jobTitleCodes = self.selectedCodeJobtitle();
                 dto.workplaceCodes = self.selectedCodeWorkplace();
-                dto.
                 return dto;
             }
             
@@ -172,6 +175,24 @@ module nts.uk.com.view.ccg.share.ccg {
                 service.getPersonLogin().done(data => {
                     self.onSearchOnlyClicked(data);
                 });
+            }
+            
+            searchOfWorkplace(): void{
+                var self = this;
+                service.searchOfWorkplace(self.baseDate()).done(data=>{
+                   self.onSearchOfWorkplaceClicked(data); 
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError(error);
+                });    
+            }
+            
+            searchWorkplaceChild(): void{
+                var self = this;
+                service.searchWorkplaceChild(self.baseDate()).done(data=>{
+                   self.onSearchOfWorkplaceClicked(data); 
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError(error);
+                });    
             }
 
             public toUnitModelList(dataList: PersonModel[]): KnockoutObservableArray<UnitModel> {

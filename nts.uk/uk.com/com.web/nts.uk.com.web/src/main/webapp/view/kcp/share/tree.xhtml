@@ -5,20 +5,20 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<div id="nts-component-tree"
 		class="caret-right caret-background bg-green" 
-		style="padding: 20px; border-radius: 5px;">
+		style="padding: 20px; border-radius: 5px; min-width: 440px">
 		<com:ko tag="if" bind="!isDialog">
 			<i class="icon icon-searchbox"></i>
 		</com:ko>
 		<div data-bind="visible: !isMultiple">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KCP004_2')}</div>
-			<div class="base-date-editor" style="margin-left: 20px; margin-right: 5px;"
+			<div class="base-date-editor" style="margin-left: 20px; margin-right: 5px;" tabindex="1"
 				data-bind="ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, name:'#[KCP004_2]'}"></div>
-			<button data-bind="click: reload" style="width: 100px">#{i18n.getText('KCP004_3')}</button>
+			<button data-bind="click: reload" style="width: 100px" tabindex="2">#{i18n.getText('KCP004_3')}</button>
 		</div>
 		
 		<div style="margin-top: 10px;margin-bottom: 10px;">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KCP004_4')}</div>
-			<div id="combo-box" style="width: 100px;margin-left: 34px;"
+			<div id="combo-box" style="width: 107px;margin-left: 34px;" tabindex="3"
 				data-bind="ntsComboBox: {
 					options: levelList,
 					optionsValue: 'level',
@@ -32,7 +32,7 @@
 		</div>
 		
 		<div>
-			<div style="margin-bottom: 10px;display: inline-block;"
+			<div style="margin-bottom: 10px;display: inline-block;" tabindex="4"
 				data-bind="ntsSearchBox: {
 					targetKey: 'code',
 					mode: 'igTree',
@@ -43,14 +43,14 @@
 					childField: 'childs',
 					fields: ['name', 'code']}">
 			</div>
-			<com:ko tag="if" bind="isMultiple">
-				<button data-bind="click: selectAll" style="display: inline-block;">#{i18n.getText('KCP004_7')}</button>
-				<button  data-bind="click: selectSubParent" style="display: inline-block;">#{i18n.getText('KCP004_8')}</button>
+			<com:ko tag="if" bind="isShowSelectButton">
+				<button data-bind="click: selectAll" style="display: inline-block;" tabindex="5">#{i18n.getText('KCP004_7')}</button>
+				<button  data-bind="click: selectSubParent" style="display: inline-block;" tabindex="6">#{i18n.getText('KCP004_8')}</button>
 			</com:ko>
 		</div>
 		
 		<com:ko tag="if" bind="!isMultiple" >
-			<table id="single-tree-grid" class="cf"
+			<table id="single-tree-grid" class="cf" tabindex="7"
 				data-bind="ntsTreeGridView:{
 					height: 315,
 					dataSource: itemList,
@@ -65,7 +65,7 @@
 			</table>
 		</com:ko>
 		<com:ko tag="if" bind="isMultiple" >
-			<table id="multiple-tree-grid" class="cf"
+			<table id="multiple-tree-grid" class="cf" tabindex="7"
 				data-bind="ntsTreeGridView:{
 					height: 315,
 					options: itemList,

@@ -23,10 +23,7 @@ public class KwpmtWorkplace_ {
 	
 	/** The end D. */
 	public static volatile SingularAttribute<KwpmtWorkplace, GeneralDate> endD;
-	
-	/** The wplcd. */
-	public static volatile SingularAttribute<KwpmtWorkplace, String> wplcd;
-	
+		
 	/** The wplname. */
 	public static volatile SingularAttribute<KwpmtWorkplace, String> wplname;
 	
