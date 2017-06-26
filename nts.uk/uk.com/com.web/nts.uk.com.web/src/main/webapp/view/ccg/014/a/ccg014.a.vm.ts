@@ -40,6 +40,9 @@ module ccg014.a.viewmodel {
             self.enableCopy = ko.computed(() => {
                 return (!self.isCreate() && !util.isNullOrEmpty(self.selectedTitleMenuCD()));
             });
+            $("iframe").on("load", () => {
+                _.delay(() => {$("#titleMenuName").focus(); console.log("focus");}, 100);
+            });
         }
 
         /** Start Page */
@@ -49,6 +52,7 @@ module ccg014.a.viewmodel {
             dfd.done(() => {
                 block.clear();
                 this.selectTitleMenuByIndex(0);
+                $("#titleMenuName").focus();
             });
             return dfd;
         }
@@ -61,6 +65,7 @@ module ccg014.a.viewmodel {
             self.selectedTitleMenu(new model.TitleMenu("", "", ""));
             errors.clearAll();
             $(".nts-input").ntsError("clear");
+            $("#titleMenuName").focus();
         }
 
         /** Registry Button Click */
@@ -76,7 +81,7 @@ module ccg014.a.viewmodel {
                     service.createTitleMenu(titleMenu).done((data) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                         self.reloadData().done(() => {
-                            self.selectTitleMenuByIndexByCode(titleMenuCD);
+                            self.selectTitleMenuByCode(titleMenuCD);
                         });
                     }).fail((res) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_3" });
@@ -86,8 +91,9 @@ module ccg014.a.viewmodel {
                 }
                 else {
                     service.updateTitleMenu(titleMenu).done((data) => {
-                        self.reloadData();
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        console.log(data);
+                        self.reloadData();
                     }).always(() => {
                         block.clear();
                     });
@@ -126,7 +132,7 @@ module ccg014.a.viewmodel {
                 var copiedTitleMenuCD = windows.getShared("copyTitleMenuCD");
                 if (copiedTitleMenuCD) {
                     self.reloadData().done(() => {
-                        self.selectTitleMenuByIndexByCode(copiedTitleMenuCD);
+                        self.selectTitleMenuByCode(copiedTitleMenuCD);
                         nts.uk.ui.dialog.alert({ messageId: "Msg_20" });
                     });
                 }
@@ -168,6 +174,7 @@ module ccg014.a.viewmodel {
                 self.isCreate(true);
                 self.selectedTitleMenu(new model.TitleMenu("","",""));
             }
+            $("#titleMenuName").focus();
         }
 
         /** Init Mode */
@@ -199,6 +206,7 @@ module ccg014.a.viewmodel {
                     self.isCreate(true);
                 }
                 dfd.resolve();
+                $("#titleMenuName").focus();
             }).fail(function(error) {
                 dfd.fail();
                 alert(error.message);
@@ -207,9 +215,8 @@ module ccg014.a.viewmodel {
         }
 
         /** Select TitleMenu by Code: Create & Update case*/
-        private selectTitleMenuByIndexByCode(code: string) {
+        private selectTitleMenuByCode(code: string) {
             this.selectedTitleMenuCD(code);
-            
         }
 
         /** Select TitleMenu by Index: Start & Delete case */

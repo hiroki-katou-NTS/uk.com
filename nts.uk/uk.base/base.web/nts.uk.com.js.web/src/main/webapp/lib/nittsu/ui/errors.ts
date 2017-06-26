@@ -10,7 +10,7 @@ module nts.uk.ui.errors {
         allResolved: JQueryCallback;
 
         constructor() {
-            this.title = "エラー一覧"
+            this.title = "エラー一覧"; 
             this.errors = ko.observableArray([]);
             this.errors.extend({ rateLimit: 1 });
             this.option = ko.mapping.fromJS(new option.ErrorDialogOption());
@@ -90,6 +90,12 @@ module nts.uk.ui.errors {
                 return error.$control.is($element);
             });
         }
+        
+        getErrorByElement($element: JQuery): ErrorListItem {
+            return _.find(this.errors(), e => { 
+                return e.$control.is($element)
+            });
+        }
     }
 
     export interface ErrorListItem {
@@ -143,5 +149,9 @@ module nts.uk.ui.errors {
 
     export function removeByElement($control: JQuery): void {
         errorsViewModel().removeErrorByElement($control);
+    }
+    
+    export function getErrorByElement($element: JQuery): ErrorListItem{
+        return errorsViewModel().getErrorByElement($element);    
     }
 }

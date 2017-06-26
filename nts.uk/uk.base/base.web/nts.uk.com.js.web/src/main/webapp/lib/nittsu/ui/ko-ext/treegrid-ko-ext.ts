@@ -25,13 +25,15 @@ module nts.uk.ui.koExtentions {
 
             var optionsChild = ko.unwrap(data.childDataKey !== undefined ? data.childDataKey : data.optionsChild);
             var extColumns: Array<any> = ko.unwrap(data.columns !== undefined ? data.columns : data.extColumns);
+            var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
+            var singleValue = ko.unwrap(data.value);
 
             // Default.
             var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
 
             var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
 
-            var height = ko.unwrap(data.height !== undefined ? data.height : '100%');
+            var height = ko.unwrap(data.height !== undefined ? data.height : '100%'); 
             var width = ko.unwrap(data.width !== undefined ? data.width : '100%');
 
             if (extColumns !== undefined && extColumns !== null) {
@@ -53,6 +55,7 @@ module nts.uk.ui.koExtentions {
                 columns: displayColumns,
                 childDataKey: optionsChild,
                 initialExpandDepth: 10,
+                tabIndex: -1,
                 features: [
                     {
                         name: "Selection",
@@ -80,7 +83,7 @@ module nts.uk.ui.koExtentions {
                     }]
             });
             var treeGridId = $treegrid.attr('id');
-            $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
+            $(element).closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", "0");
             $treegrid.setupSearchScroll("igTreeGrid");
         }
 

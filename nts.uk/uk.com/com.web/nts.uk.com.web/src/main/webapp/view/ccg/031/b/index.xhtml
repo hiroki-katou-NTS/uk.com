@@ -44,7 +44,7 @@
 							<div class="cf">
 								<div class="col-1 pull-left">
 									<div class="toppage-part-list-placeholder placeholder">
-										<table data-name="#{i18n.getText('CCG031_15')}" id="toppage-part-list" data-bind="ntsGridList: {								
+										<table data-name="#{i18n.getText('CCG031_15')}" id="toppage-part-list" tabindex="1" data-bind="ntsGridList: {								
 											height: 340,
 											width: '100%',
 											dataSource: listPart,
@@ -62,7 +62,7 @@
 									<div class="widget-panel" data-bind="with: selectedPart">
 										<div class="panel-header">
 											<span class="square green"></span>
-											<span class="title" data-bind="text: name"></span>
+											<span class="title" data-bind="text: codeName"></span>
 										</div>
 										<div class="panel-content">
 											<div class="valign-center control-group">
@@ -89,18 +89,18 @@
 										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG031_20')}</div>
 										<label class="label-width">
 											<span>#{i18n.getText('CCG031_21')}</span>
-											<input class="nts-validate input-width" data-bind="ntsNumberEditor: {value: urlWidth, name: '#[CCG031_30]', constraint: 'Width', required: true}" />
+											<input class="nts-validate input-width" tabindex="2" data-bind="ntsNumberEditor: {value: urlWidth, name: '#[CCG031_30]', constraint: 'Width', required: true}" />
 											<span>#{i18n.getText('CCG031_23')}</span>
 										</label>
 										<label class="label-height">
 											<span>#{i18n.getText('CCG031_22')}</span>
-											<input class="nts-validate input-height" data-bind="ntsNumberEditor: {value: urlHeight, name: '#[CCG031_31]', constraint: 'Height', required: true}" />
+											<input class="nts-validate input-height" tabindex="3" data-bind="ntsNumberEditor: {value: urlHeight, name: '#[CCG031_31]', constraint: 'Height', required: true}" />
 											<span>#{i18n.getText('CCG031_23')}</span>
 										</label>
 									</div>
 									<div class="valign-center control-group">
 										<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CCG031_29')}</div>
-										<input class="nts-validate input-url" data-bind="ntsTextEditor: {value: url, name: '#[CCG031_14]', constraint: 'Url', required: true}" />
+										<input class="nts-validate input-url" tabindex="4" data-bind="ntsTextEditor: {value: url, name: '#[CCG031_14]', constraint: 'Url', required: true}" />
 									</div>
 								</div>
 							</div>
@@ -109,8 +109,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="btn x-large btn-register proceed" data-bind="click: submitDialog, enable: $root.errors.isEmpty">#{i18n.getText('CCG031_25')}</button>
-				<button class="btn large btn-close" data-bind="click: closeDialog">#{i18n.getText('CCG031_26')}</button>
+				<button class="btn x-large btn-register proceed" tabindex="5" data-bind="click: submitDialog, enable: $root.errors.isEmpty">#{i18n.getText('CCG031_25')}</button>
+				<button class="btn large btn-close" tabindex="6" data-bind="click: closeDialog">#{i18n.getText('CCG031_26')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

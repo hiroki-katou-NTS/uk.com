@@ -101,7 +101,7 @@
 											name: '#[CCG015_43]',
 											value: topPageName,
 											enable: true,
-											required:false,
+											required: true,
 											constraint: 'TopPageName'}" />
 									</td>
 								</tr>
@@ -112,19 +112,10 @@
 											class="btn_margin_top x-large">#{i18n.getText('CCG015_14')}</button></td>
 								</tr>
 								<tr>
-									<td colspan="3" data-bind="visible: !$parent.isNewMode()">
+									<td colspan="3" data-bind="visible: true">
 										<div class="preview-area">
 											<div class="preview-container">
 												<iframe id="preview-iframe"></iframe>
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3" data-bind="visible: $parent.isNewMode()">
-										<div class="preview-area">
-											<div class="preview-container">
-												<iframe id="nodata-iframe"></iframe>
 											</div>
 										</div>
 									</td>

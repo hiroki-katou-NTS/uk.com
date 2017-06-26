@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 300, height: 210 };</script>
+			<script>var dialogSize = { width: 300, height: 310 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.sys.portal.dom.titlemenu.TitleMenuCD
 					nts.uk.ctx.sys.portal.dom.titlemenu.Name
@@ -47,6 +47,7 @@
 				<div class="container">
 					<div id="left-content" 
 						class="bg-green caret-right caret-background">
+						<i class="icon icon-searchbox"></i>
 						<div class="container" style="float: left ; width: 320px; margin-bottom: 10px;"
 							data-bind="ntsSearchBox: {
 								searchMode: 'filter',
@@ -79,7 +80,7 @@
 								tabindex="7" />
 						</div>
 						<div class="row2">
-							<button class="x-large fixbtn"
+							<button class="x-large"
 								data-bind="click : open031_1Dialog,enable: !isCreate()"
 								tabindex="8">#{i18n.getText('CCG014_14')}</button>
 						</div>

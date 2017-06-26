@@ -31,11 +31,15 @@ module nts.uk.ui.koExtentions {
                 var newText = $input.val();
                 let validator = this.getValidator(data);
                 var result = validator.validate(newText);
-                $input.ntsError('clear');
                 if (result.isValid) {
+                    $input.ntsError('clear');
                     value(result.parsedValue);
                 } else {
-                    $input.ntsError('set', result.errorMessage);
+                    let error = $input.ntsError('getError');
+                    if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+                        $input.ntsError('clear');
+                        $input.ntsError('set', result.errorMessage);
+                    }
                     value(newText);
                 }
             });
@@ -47,12 +51,16 @@ module nts.uk.ui.koExtentions {
                     var newText = $input.val();
                     let validator = self.getValidator(data);
                     var result = validator.validate(newText);
-                    $input.ntsError('clear');
                     if (result.isValid) {
+                        $input.ntsError('clear');
                         $input.val(formatter.format(result.parsedValue));
                     }
                     else {
-                        $input.ntsError('set', result.errorMessage);
+                        let error = $input.ntsError('getError');
+                        if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {
+                            $input.ntsError('clear');
+                            $input.ntsError('set', result.errorMessage);
+                        }
                         value(newText);
                     }
                 }
@@ -142,7 +150,7 @@ module nts.uk.ui.koExtentions {
                 }
             });
 
-            $input.on("blur", (e) => {
+            $input.on("change", (e) => {
                 if (!$input.attr('readonly')) {
                     var newText = $input.val();
                     var result = validator.validate(newText, { isCheckExpression: true });

@@ -53,8 +53,8 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             ];
             // External Url
             self.isExternalUrl = ko.observable(false);
-            self.urlWidth = ko.observable(1);
-            self.urlHeight = ko.observable(1);
+            self.urlWidth = ko.observable(null);
+            self.urlHeight = ko.observable(null);
             self.url = ko.observable(null);
             // UI Binding
             self.instructionText = ko.observable('');
@@ -123,7 +123,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
             if (partType === 0)
                 this.instructionText(resource.getText("CCG031_17"));
             if (partType === 1)
-                this.instructionText(resource.getText("CCG031_24"));
+                this.instructionText(resource.getText("CCG031_18"));
             if (partType === 2)
                 this.instructionText(resource.getText("CCG031_19"));
         }
@@ -131,6 +131,7 @@ module nts.uk.com.view.ccg031.b.viewmodel {
         /** Change Selected Part */
         private changeSelectedPart(partID: string): void {
             var selectedPart: model.TopPagePartDto = _.find(this.allPart(), ['topPagePartID', partID]);
+            selectedPart.codeName = nts.uk.text.padLeft(selectedPart.code, '0', 4) + ' ' + selectedPart.name;
             this.selectedPart(selectedPart);
         }
 
