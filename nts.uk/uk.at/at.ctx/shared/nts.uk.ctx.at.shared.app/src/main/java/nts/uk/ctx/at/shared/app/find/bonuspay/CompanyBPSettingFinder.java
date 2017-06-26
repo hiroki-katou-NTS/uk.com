@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.CPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
@@ -15,7 +16,8 @@ public class CompanyBPSettingFinder {
 	@Inject
 	private CPBonusPaySettingRepository cpBonusPaySettingRepository;
 
-	public CompanyBPSettingDto getSetting(String companyId) {
+	public CompanyBPSettingDto getSetting() {
+		String companyId = AppContexts.user().companyId();
 		Optional<CompanyBonusPaySetting> companyBonusPaySetting = cpBonusPaySettingRepository.getSetting(companyId);
 		return this.toCompanyBPSettingDto(companyBonusPaySetting.get());
 

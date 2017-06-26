@@ -6,7 +6,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         nameMenuBar: KnockoutObservable<string>;
         //Combobox
         listSystemSelect: KnockoutObservableArray<any>;
-        selectedCodeSystemSelect: KnockoutObservable<string>;
+        selectedCodeSystemSelect: KnockoutObservable<number>;
         //colorpicker
         letterColor: KnockoutObservable<string>;
         backgroundColor: KnockoutObservable<string>;

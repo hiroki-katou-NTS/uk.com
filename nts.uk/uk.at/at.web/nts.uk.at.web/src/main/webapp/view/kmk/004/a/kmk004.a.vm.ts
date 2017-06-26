@@ -65,7 +65,7 @@ module nts.uk.at.view.kmk004.a {
                 // year subscribe.
                 self.companyWTSetting.year.subscribe(val => {
                     // Validate
-                    if ($('yearPicker').ntsError('hasError')) {
+                    if ($('#companyYearPicker').ntsError('hasError')) {
                         return;
                     } else {
                         self.loadCompanySetting();
@@ -73,7 +73,7 @@ module nts.uk.at.view.kmk004.a {
                 });
                 self.employmentWTSetting.year.subscribe(val => {
                     // Validate
-                    if ($('yearPicker').ntsError('hasError')) {
+                    if ($('#employmentYearPicker').ntsError('hasError')) {
                         return;
                     } else {
                         self.loadEmploymentSetting();
@@ -81,7 +81,7 @@ module nts.uk.at.view.kmk004.a {
                 });
                 self.workplaceWTSetting.year.subscribe(val => {
                     // Validate
-                    if ($('yearPicker').ntsError('hasError')) {
+                    if ($('#workplaceYearPicker').ntsError('hasError')) {
                         return;
                     } else {
                         self.loadWorkplaceSetting();
@@ -534,7 +534,19 @@ module nts.uk.at.view.kmk004.a {
              * Clear all errors.
              */
             private clearError(): void {
+                let self = this;
                 if (nts.uk.ui._viewModel) {
+                    // Reset year if has error.
+                    if ($('#companyYearPicker').ntsError('hasError')) {
+                        self.companyWTSetting.year(new Date().getFullYear());
+                    }
+                    if ($('#employmentYearPicker').ntsError('hasError')) {
+                        self.employmentWTSetting.year(new Date().getFullYear());
+                    }
+                    if ($('#workplaceYearPicker').ntsError('hasError')) {
+                        self.workplaceWTSetting.year(new Date().getFullYear());
+                    }
+                    // Clear error inputs
                     $('.nts-editor').ntsError('clear');
                 }
             }
