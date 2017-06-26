@@ -534,7 +534,19 @@ module nts.uk.at.view.kmk004.a {
              * Clear all errors.
              */
             private clearError(): void {
+                let self = this;
                 if (nts.uk.ui._viewModel) {
+                    // Reset year if has error.
+                    if ($('#companyYearPicker').ntsError('hasError')) {
+                        self.companyWTSetting.year(new Date().getFullYear());
+                    }
+                    if ($('#employmentYearPicker').ntsError('hasError')) {
+                        self.employmentWTSetting.year(new Date().getFullYear());
+                    }
+                    if ($('#workplaceYearPicker').ntsError('hasError')) {
+                        self.workplaceWTSetting.year(new Date().getFullYear());
+                    }
+                    // Clear error inputs
                     $('.nts-editor').ntsError('clear');
                 }
             }
