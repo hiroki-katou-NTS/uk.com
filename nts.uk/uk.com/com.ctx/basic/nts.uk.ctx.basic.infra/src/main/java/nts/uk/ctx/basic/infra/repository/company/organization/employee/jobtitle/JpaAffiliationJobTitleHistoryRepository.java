@@ -63,7 +63,8 @@ public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_JOB_TITLE_HIST (KmnmtJobTitleHist SQL)
-		CriteriaQuery<KmnmtAffiliJobTitleHist> cq = criteriaBuilder.createQuery(KmnmtAffiliJobTitleHist.class);
+		CriteriaQuery<KmnmtAffiliJobTitleHist> cq = criteriaBuilder
+				.createQuery(KmnmtAffiliJobTitleHist.class);
 
 		// root data
 		Root<KmnmtAffiliJobTitleHist> root = cq.from(KmnmtAffiliJobTitleHist.class);
@@ -75,16 +76,17 @@ public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// position id in data position id
-		lstpredicateWhere.add(criteriaBuilder.and(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
-				.get(KmnmtAffiliJobTitleHistPK_.posId).in(positionIds)));
+		lstpredicateWhere
+				.add(criteriaBuilder.and(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
+						.get(KmnmtAffiliJobTitleHistPK_.posId).in(positionIds)));
 
 		// start date <= base date
-		lstpredicateWhere.add(
-				criteriaBuilder.lessThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder
+				.lessThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.strD), baseDate));
 
 		// endDate >= base date
-		lstpredicateWhere.add(
-				criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.endD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder
+				.greaterThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -117,7 +119,8 @@ public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call KMNMT_JOB_TITLE_HIST (KmnmtJobTitleHist SQL)
-		CriteriaQuery<KmnmtAffiliJobTitleHist> cq = criteriaBuilder.createQuery(KmnmtAffiliJobTitleHist.class);
+		CriteriaQuery<KmnmtAffiliJobTitleHist> cq = criteriaBuilder
+				.createQuery(KmnmtAffiliJobTitleHist.class);
 
 		// root data
 		Root<KmnmtAffiliJobTitleHist> root = cq.from(KmnmtAffiliJobTitleHist.class);
@@ -129,20 +132,22 @@ public class JpaAffiliationJobTitleHistoryRepository extends JpaRepository
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// position id in data position id
-		lstpredicateWhere.add(criteriaBuilder.and(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
-				.get(KmnmtAffiliJobTitleHistPK_.posId).in(positionIds)));
-		
+		lstpredicateWhere
+				.add(criteriaBuilder.and(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
+						.get(KmnmtAffiliJobTitleHistPK_.posId).in(positionIds)));
+
 		// employee id in data employee id
-		lstpredicateWhere.add(criteriaBuilder.and(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
-				.get(KmnmtAffiliJobTitleHistPK_.sid).in(employeeIds)));
+		lstpredicateWhere
+				.add(criteriaBuilder.and(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
+						.get(KmnmtAffiliJobTitleHistPK_.sid).in(employeeIds)));
 
 		// start date <= base date
-		lstpredicateWhere.add(
-				criteriaBuilder.lessThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.strD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder
+				.lessThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.strD), baseDate));
 
 		// endDate >= base date
-		lstpredicateWhere.add(
-				criteriaBuilder.greaterThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.endD), baseDate));
+		lstpredicateWhere.add(criteriaBuilder
+				.greaterThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.endD), baseDate));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

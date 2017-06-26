@@ -45,6 +45,15 @@ public interface WorkplaceRepository {
 	List<WorkPlaceHierarchy> findAllHierarchy(String historyId);
 	
 	/**
+	 * Find all hierarchy child.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @return the list
+	 */
+	List<WorkPlaceHierarchy> findAllHierarchyChild(String companyId, String workplaceId);
+	
+	/**
 	 * Find all workplace.
 	 *
 	 * @param workplaceId the workplace id
