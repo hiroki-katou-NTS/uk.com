@@ -16,7 +16,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         //GridList
         listStandardMenu: KnockoutObservableArray<any>;
         columns: KnockoutObservableArray<any>;
-        currentListStandardMenu: KnockoutObservableArray<any>;
+        currentListStandardMenu: KnockoutObservable<string>;
         selectCodeStandardMenu: KnockoutObservable<string>;
         allPart: KnockoutObservableArray<any>;
         selectedSystemID: KnockoutObservable<string>;
@@ -67,6 +67,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 self.allPart(editMenuBar.listStandardMenu);
                 let listStandardMenu: Array<any> = _.orderBy((editMenuBar.listStandardMenu, ["code"], ["asc"]));
                 self.listStandardMenu(editMenuBar.listStandardMenu);
+                self.selectedRadioAtcClass(editMenuBar.listSelectedAtr[0].value);
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -81,7 +82,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
 
         submit() {
             var self = this;
-            var menuBar = new MenuBar(self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass());
+            var menuBar = new MenuBar(self.currentListStandardMenu(), self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass(), self.selectedCodeSystemSelect());
             windows.setShared("CCG013B_MenuBar", menuBar);
             self.cancel_Dialog();
         }
@@ -97,16 +98,20 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
     }
 
     class MenuBar {
+        code: string;
         nameMenuBar: string;
         letterColor: string;
         backgroundColor: string;
         selectedRadioAtcClass: number;
+        system: number;
 
-        constructor(nameMenuBar: string, letterColor: string, backgroundColor: string, selectedRadioAtcClass: number) {
+        constructor(code: string, nameMenuBar: string, letterColor: string, backgroundColor: string, selectedRadioAtcClass: number, system: number) {
+            this.code = code;
             this.nameMenuBar = nameMenuBar;
             this.letterColor = letterColor;
             this.backgroundColor = backgroundColor;
             this.selectedRadioAtcClass = selectedRadioAtcClass;
+            this.system = system;
         }
     }
 }
