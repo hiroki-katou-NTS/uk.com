@@ -2,129 +2,88 @@ module cmm044.b.viewmodel {
     export class ScreenModel {
         date: KnockoutObservable<string>;
         yearMonth: KnockoutObservable<number>;
-        //        agentData: KnockoutObservable<AgentData>;
         inp_startDate: KnockoutObservable<string>;
         inp_endDate: KnockoutObservable<string>;
-        personList: KnockoutObservableArray<AgentData>;
         dateValue: KnockoutObservable<any>;
-        currentItem: KnockoutObservable<model.AgentAppDto>;
-        dataHist: any;
+        histItems: KnockoutObservableArray<model.AgentDto>;
+        personList: KnockoutObservableArray<AgentData>;
         dataPerson: any;
-        empItems: KnockoutObservableArray<PersonModel>;
-
 
         constructor() {
             var self = this;
             self.date = ko.observable('20000101');
             self.yearMonth = ko.observable(200001);
-            self.dateValue = ko.observable({});
-            self.dateValue = ko.observable({ startDate: '', endDate: '' });
-            self.inp_endDate = ko.observable(null);
-            self.inp_startDate = ko.observable(null);
-            self.currentItem = ko.observable(null);
-            self.dataHist = nts.uk.ui.windows.getShared('cmm044Data');
-            self.dataPerson = nts.uk.ui.windows.getShared('cmm044DataPerson');
-            self.empItems = ko.observableArray([]);
-            self.personList = ko.observableArray([]);
 
+            self.dateValue = ko.observable({ startDate: '', endDate: '' });
+            self.histItems = ko.observableArray([]);
+
+            self.personList = ko.observableArray([]);
+            self.dataPerson = nts.uk.ui.windows.getShared('cmm044DataPerson');
+            //self.findAgentByDate();
 
 
         }
         start() {
-            var self = this;
-            var dfd = $.Deferred();
+            var self = this,
+                dfd = $.Deferred();
 
-            self.inp_startDate(nts.uk.ui.windows.getShared('cmm044StartDate'));
-            self.inp_endDate(nts.uk.ui.windows.getShared('cmm044EndDate'));
-            var obj;
-            for (var i = 0; i < self.dataPerson.length; i++) {
-                obj = _.find(self.dataHist, function(o) { return o.employeeId == self.dataPerson[i].personId; });
-                self.personList().push(new AgentData(self.dataPerson[i].code, self.dataPerson[i].name, '', '', '',
-                obj != undefined? obj.startDate : '', obj != undefined? obj.endDate : '','','',''));
-            }
-     
-
-            _.range(3).map(i => {
-                i++;
-                if (i < 10) {
-                    self.empItems.push(new PersonModel({
-                        personId: '99900000-0000-0000-0000-00000000000' + i,
-                        code: 'A00000000' + i,
-                        name: '日通　社員' + i,
-                    }));
-                } else {
-                    self.empItems.push(new PersonModel({
-                        personId: '99900000-0000-0000-0000-00000000000' + i,
-                        code: 'A0000000' + i,
-                        name: '日通　社員' + i,
-                    }));
-
-                }
+            self.personList.removeAll();
+            $.when(self.findAgent()).done(function() {
+                _.each(ko.toJS(self.histItems), x => {
+                    let obj = _.find(self.dataPerson, (p: any) => p.personId == x.employeeId);
+                    if (obj) {
+                        self.personList.push(new AgentData(obj.code, obj.name, '', '', '', x.startDate, x.endDate, '', '', ''));
+                    }
+                });
             });
+
 
             dfd.resolve();
             return dfd.promise();
         }
+
         closeDialog(): void {
             nts.uk.ui.windows.close();
         }
-        findAgentByDate(employeeId, startDate, endDate): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            service.findAgentByDate(employeeId, startDate, endDate).done(function(agent_arr: Array<model.AgentDto>) {
+
+
+        findAgent(): JQueryPromise<any> {
+            var self = this,
+                dfd = $.Deferred();
+            service.findAgent().done(function(agent_arr: Array<model.AgentDto>) {
+                for (var i = 0; i < agent_arr.length; i++) {
+                    self.histItems.push(new model.AgentDto(agent_arr[i].companyId, agent_arr[i].employeeId, agent_arr[i].requestId, agent_arr[i].startDate, agent_arr[i].endDate));
+                }
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
                 dfd.reject(error);
             });
-
             return dfd.promise();
         }
 
-        getAgen(employeeId: string, requestId: string): JQueryPromise<any> {
-
+        findAgentByDate(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            if (!requestId) {
-                return;
-            }
-            var param = {
-                employeeId: employeeId,
-                requestId: requestId
-            };
-            service.findAgent(param).done(function(agent: model.AgentDto) {
-                self.currentItem(new model.AgentAppDto(employeeId, requestId, agent.startDate, agent.endDate));
+            self.personList.removeAll();
+            service.findAgentByDate(self.dateValue().startDate, self.dateValue().endDate).done(function(agent_arr: Array<model.AgentDto>) {
+                
+                _.each(agent_arr, x => {
+                    let obj = _.find(self.dataPerson, (p: any) => p.personId == x.employeeId);
+                    if (obj) {
+                        
+                        self.personList.push(new AgentData(obj.code, obj.name, '', '', '', x.startDate, x.endDate, '', '', ''));
+                    }
+                });
+                                
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
                 dfd.reject(error);
             });
-
-
             return dfd.promise();
         }
-    }
 
-    interface IPersonModel {
-        personId: string;
-        code: string;
-        name: string;
-        baseDate?: number;
-    }
-
-
-    class PersonModel {
-        personId: string;
-        code: string;
-        name: string;
-        baseDate: number;
-
-        constructor(param: IPersonModel) {
-            this.personId = param.personId;
-            this.code = param.code;
-            this.name = param.name;
-            this.baseDate = param.baseDate || 20170104;
-        }
     }
 
     export module model {
@@ -143,18 +102,7 @@ module cmm044.b.viewmodel {
                 this.endDate = endDate;
             }
         }
-        export class AgentAppDto {
-            employeeId: KnockoutObservable<string>;
-            requestId: KnockoutObservable<string>;
-            startDate: KnockoutObservable<string>;
-            endDate: KnockoutObservable<string>;
-            constructor(employeeId: string, requestId: string, startDate: string, endDate: string) {
-                this.employeeId = ko.observable(employeeId);
-                this.requestId = ko.observable(requestId);
-                this.startDate = ko.observable(startDate);
-                this.endDate = ko.observable(endDate);
-            }
-        }
+
 
     }
 

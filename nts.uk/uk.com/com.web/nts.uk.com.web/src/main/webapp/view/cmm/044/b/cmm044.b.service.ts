@@ -1,18 +1,16 @@
 module cmm044.b.service {
     var paths: any = {
-        findAgentByDate: "workflow/agent/find/",
-        findAgent: "workflow/agent/findAll"
-        
+        findAgentByDate: "workflow/agent/findByDate",
+        findAgent: "workflow/agent/findByCid"
     }
-    export function findAgentByDate(employeeId: string,startDate: string, endDate: string): JQueryPromise<Array<viewmodel.model.AgentDto>> {
-        return nts.uk.request.ajax("com",paths.findAgentByDate + employeeId + startDate + endDate);
+    export function findAgentByDate(startDate: string, endDate: string): JQueryPromise<Array<viewmodel.model.AgentDto>> {
+        var option = {
+            startDate: new Date(startDate),
+            endDate: new Date(endDate) 
+        }
+        return nts.uk.request.ajax("com",paths.findAgentByDate, option);
     }
-    
- export function findAgent(parameter: any): JQueryPromise<viewmodel.model.AgentDto> {
-        return nts.uk.request.ajax("com",paths.findAgent, parameter);
+    export function findAgent(): JQueryPromise<Array<viewmodel.model.AgentDto>> {
+        return nts.uk.request.ajax("com",paths.findAgent);
     }
-    export function findAllAgent(employeeId: string): JQueryPromise<Array<viewmodel.model.AgentDto>> {
-        return nts.uk.request.ajax("com",paths.findAllAgent + employeeId);
-    }
- 
 }
