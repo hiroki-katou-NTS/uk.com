@@ -65,7 +65,7 @@ module nts.uk.at.view.kmk004.a {
                 // year subscribe.
                 self.companyWTSetting.year.subscribe(val => {
                     // Validate
-                    if ($('yearPicker').ntsError('hasError')) {
+                    if ($('#companyYearPicker').ntsError('hasError')) {
                         return;
                     } else {
                         self.loadCompanySetting();
@@ -73,7 +73,7 @@ module nts.uk.at.view.kmk004.a {
                 });
                 self.employmentWTSetting.year.subscribe(val => {
                     // Validate
-                    if ($('yearPicker').ntsError('hasError')) {
+                    if ($('#employmentYearPicker').ntsError('hasError')) {
                         return;
                     } else {
                         self.loadEmploymentSetting();
@@ -81,7 +81,7 @@ module nts.uk.at.view.kmk004.a {
                 });
                 self.workplaceWTSetting.year.subscribe(val => {
                     // Validate
-                    if ($('yearPicker').ntsError('hasError')) {
+                    if ($('#workplaceYearPicker').ntsError('hasError')) {
                         return;
                     } else {
                         self.loadWorkplaceSetting();
