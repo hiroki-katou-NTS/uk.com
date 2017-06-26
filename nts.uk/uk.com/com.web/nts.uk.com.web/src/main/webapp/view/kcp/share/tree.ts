@@ -42,6 +42,12 @@ module kcp.share.tree {
         baseDate: KnockoutObservable<Date>;
         
         /**
+         * isShowSelectButton
+         * Show/hide button select all and selected sub parent
+         */
+        isShowSelectButton: boolean;
+        
+        /**
          * is dialog, if is main screen, set false,
          */
         isDialog: boolean;
@@ -67,6 +73,7 @@ module kcp.share.tree {
         itemList: KnockoutObservableArray<UnitModel>;
         backupItemList: KnockoutObservableArray<UnitModel>;
         selectedCodes: KnockoutObservable<any>;
+        isShowSelectButton: boolean;
         treeComponentColumn: Array<any>;
         isMultiple: boolean;
         isDialog: boolean;
@@ -110,6 +117,7 @@ module kcp.share.tree {
             self.isMultiple = data.isMultiSelect;
             self.hasBaseDate(!self.isMultiple);
             self.selectedCodes = data.selectedCode;
+            self.isShowSelectButton = data.isShowSelectButton;
             self.isDialog = data.isDialog;
             if (self.hasBaseDate()) {
                 self.baseDate = data.baseDate;
