@@ -29,7 +29,7 @@ public class JpaWorkplaceHierarchyGetMemento implements WorkPlaceHierarchyGetMem
 
 	@Override
 	public HierarchyCode getHierarchyCode() {
-		return new HierarchyCode(this.kwpmtWplHierarchy.getWplcd());
+		return new HierarchyCode(this.kwpmtWplHierarchy.getHierarchyCd());
 	}
 
 }
