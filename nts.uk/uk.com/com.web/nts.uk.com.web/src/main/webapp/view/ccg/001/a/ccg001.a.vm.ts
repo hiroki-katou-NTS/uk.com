@@ -17,6 +17,12 @@ module nts.uk.com.view.ccg001.a {
                 self.selectedCode = ko.observableArray([]);
                 self.personLoginInfo = new PersonModel();
                 self.ccgcomponent = {
+                    isQuickSearchTab: true,
+                    isAdvancedSearchTab: true,
+                    isAllReferableEmployee: true,
+                    isOnlyMe: true,
+                    isEmployeeOfDepartment: true,
+                    isEmployeeDepartmentFollow: true,
                     isMutipleCheck: true,
                     onSearchAllClicked: function(dataList: PersonModel[]) {
                         self.personinfo = {

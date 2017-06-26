@@ -322,6 +322,7 @@ module nts.uk.pr.view.kmf001.f {
                         self.loadEmploymentToScreen(data);
                         self.employmentBackUpData(data);
                     } else {
+                        self.loadEmploymentToScreen(self.employmentDefaultData());
                         self.employmentBackUpData(self.employmentDefaultData());
                     }
                     dfd.resolve();
@@ -530,18 +531,18 @@ module nts.uk.pr.view.kmf001.f {
                 return {
                     companyId: '',
                     employmentCode: self.emSelectedCode(),
-                    isManaged: self.emCompenManage(),
+                    isManaged: self.manageDistinctEnums()[0].value,
                     compensatoryAcquisitionUse: {
-                        expirationTime: self.emExpirationTime(),
-                        preemptionPermit: self.emPreApply()
+                        expirationTime: self.expirationTimeEnums()[0].value,
+                        preemptionPermit: self.applyPermissionEnums()[0].value
                     },
                     compensatoryDigestiveTimeUnit: {
-                        isManageByTime: self.emTimeManage(),
-                        digestiveUnit: self.emTimeUnit()
+                        isManageByTime: self.manageDistinctEnums()[0].value,
+                        digestiveUnit: self.timeVacationDigestiveUnitEnums()[0].value
                     }
                 };
             }
-
+            
             private collectEmploymentData() {
                 var self = this;
                 var data = self.employmentBackUpData();

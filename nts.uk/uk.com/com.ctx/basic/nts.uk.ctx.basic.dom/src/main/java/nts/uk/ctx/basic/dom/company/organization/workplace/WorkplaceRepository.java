@@ -60,4 +60,14 @@ public interface WorkplaceRepository {
 	 * @return the list
 	 */
 	List<Workplace> findAllWorkplace(String workplaceId);
+	
+	
+	/**
+	 * Convert to work place.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceCode the workplace code
+	 * @return the list
+	 */
+	List<Workplace> convertToWorkplace(String companyId, List<String>workplaceCode);
 }

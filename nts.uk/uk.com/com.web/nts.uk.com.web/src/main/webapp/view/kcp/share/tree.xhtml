@@ -18,7 +18,7 @@
 		
 		<div style="margin-top: 10px;margin-bottom: 10px;">
 			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KCP004_4')}</div>
-			<div id="combo-box" style="width: 100px;margin-left: 34px;" tabindex="3"
+			<div id="combo-box" style="width: 107px;margin-left: 34px;" tabindex="3"
 				data-bind="ntsComboBox: {
 					options: levelList,
 					optionsValue: 'level',
@@ -43,7 +43,7 @@
 					childField: 'childs',
 					fields: ['name', 'code']}">
 			</div>
-			<com:ko tag="if" bind="isMultiple">
+			<com:ko tag="if" bind="isShowSelectButton">
 				<button data-bind="click: selectAll" style="display: inline-block;" tabindex="5">#{i18n.getText('KCP004_7')}</button>
 				<button  data-bind="click: selectSubParent" style="display: inline-block;" tabindex="6">#{i18n.getText('KCP004_8')}</button>
 			</com:ko>
