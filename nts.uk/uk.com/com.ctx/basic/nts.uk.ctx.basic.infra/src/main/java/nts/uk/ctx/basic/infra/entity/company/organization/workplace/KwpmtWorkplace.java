@@ -7,14 +7,12 @@ package nts.uk.ctx.basic.infra.entity.company.organization.workplace;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -35,12 +33,6 @@ public class KwpmtWorkplace extends UkJpaEntity implements Serializable {
 	
 	@EmbeddedId
 	protected KwpmtWorkplacePK kwpmtWorkplacePK;
-
-	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 120)
-	@Column(name = "WPL_CD")
-	private String wplcd;
 	
 	@Size(max = 120)
 	@Column(name = "WPL_NAME")
@@ -63,11 +55,10 @@ public class KwpmtWorkplace extends UkJpaEntity implements Serializable {
 
 	public KwpmtWorkplace(KwpmtWorkplacePK kwpmtWorkplacePK, String wkpcd) {
 		this.kwpmtWorkplacePK = kwpmtWorkplacePK;
-		this.wplcd = wkpcd;
 	}
 
-	public KwpmtWorkplace(String cid, String wkpid) {
-		this.kwpmtWorkplacePK = new KwpmtWorkplacePK(cid, wkpid);
+	public KwpmtWorkplace(String cid, String wplid, String wplcd) {
+		this.kwpmtWorkplacePK = new KwpmtWorkplacePK(cid, wplid,wplcd);
 	}
 
 	public KwpmtWorkplacePK getKwpmtWorkplacePK() {

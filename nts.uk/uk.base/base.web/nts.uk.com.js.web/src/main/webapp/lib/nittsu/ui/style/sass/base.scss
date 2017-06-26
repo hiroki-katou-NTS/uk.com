@@ -2,6 +2,7 @@
 @import "compass-for-vs2013-master/compass/_reset.scss";
 @import "base/_base_def.scss";
 @import "base/_clearfix.scss";
+@import "components/_color.scss";
 @import "components/_commons.scss";
 @import "components/_ignitecommons.scss";
 @import "components/_accordion.scss";
@@ -32,6 +33,7 @@
 @import "frame/_functions.scss";
 @import "frame/_contents.scss";
 @import "frame/_sidebar.scss";
+@import "components/_monthdays.scss";
 
 
 html { 

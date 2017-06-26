@@ -27,14 +27,37 @@ public interface WorkplaceRepository {
 	 */
 	void update(Workplace workplace);
 	
-	
 	/**
-	 * Find all.
+	 * Find all history.
 	 *
 	 * @param companyId the company id
 	 * @param generalDate the general date
 	 * @return the list
 	 */
-	List<Workplace> findAll(String companyId, GeneralDate generalDate);
-
+	List<WorkPlaceHistory> findAllHistory(String companyId,GeneralDate generalDate);
+	
+	/**
+	 * Find all hierarchy.
+	 *
+	 * @param historyId the history id
+	 * @return the list
+	 */
+	List<WorkPlaceHierarchy> findAllHierarchy(String historyId);
+	
+	/**
+	 * Find all hierarchy child.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @return the list
+	 */
+	List<WorkPlaceHierarchy> findAllHierarchyChild(String companyId, String workplaceId);
+	
+	/**
+	 * Find all workplace.
+	 *
+	 * @param workplaceId the workplace id
+	 * @return the list
+	 */
+	List<Workplace> findAllWorkplace(String workplaceId);
 }

@@ -645,7 +645,7 @@
             if (hashIdx !== 0) return name;
             var names = name.substring(hashIdx + 2, name.length -　1).split(",");
             if (names.length > 1) {
-                let params: Array<string> = new Array<string>();  
+                let params: Array<string> = new Array<string>(); 
                 _.forEach(names, function(n: string, idx: number) {
                     if (idx === 0) return true;
                     params.push(getText(n.trim()));

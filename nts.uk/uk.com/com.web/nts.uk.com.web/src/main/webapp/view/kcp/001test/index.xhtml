@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../sample/catalog/catalog.css" />
+			<com:scriptfile path="../../sample/catalog/catalog.js" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			<com:scriptfile path="kcp001test.a.vm.js" />
+			<com:scriptfile path="kcp001test.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="detail-content">
+
+					<div id="function-area" style="margin: 40px">
+						<h1>KCP001 Component </h1>
+						<h2>Overview</h2>
+						
+						<div style="margin-left: 30px; padding-top: 10px">
+							<p><b>Single/Multiple Selection</b></p><br></br>
+							<div class="cf" data-bind="ntsSwitchButton: {
+														options: selectionOption,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectedOption,
+														enable: true }"></div>
+						</div>
+						<div style="margin-left: 30px; padding-top: 10px">
+							<div data-bind="ntsCheckBox:{checked: isAlreadySetting}">Show Already Setting</div>
+							<!-- <div data-bind="ntsCheckBox:{checked: isShowMultiSelect}">Single/Multi Selection</div> -->
+							<div data-bind="ntsCheckBox:{checked: isDialog}">Show As Dialog</div>
+							<div data-bind="ntsCheckBox:{checked: isShowNoSelectionItem}">Show NoSelection Item</div>
+							
+							
+						</div><br></br>
+
+						<div style="margin-left: 30px; padding-top: 10px">
+							<p>
+								<b>Selection Type:</b>
+							</p>
+							<br></br>
+							<div id="selection-type" data-bind="ntsRadioBoxGroup: {
+											options: selectionTypeList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedType,
+											enable: true}"></div>
+											
+
+						</div>
+
+						<div style="margin-left: 30px; padding-top: 10px">
+							<p>
+								<b>Save/Delete</b>
+							</p>
+							<br></br>
+							<BUTTON id="test-button" data-bind="click: setAlreadyCheck"
+								style="margin-right: 10px">Copy</BUTTON>
+							<BUTTON id="test-button"
+								data-bind="click: settingSavedItem, enable: hasSelectedEmp()"
+								style="margin-right: 10px">Save</BUTTON>
+							<BUTTON id="test-button" data-bind="click: settingDeletedItem"
+								style="margin-right: 10px">Delete</BUTTON>
+						</div>
+					</div>
+					
+					<br></br>
+					<table style="margin: 30px;">
+						<tr>
+							<td style="width: 640px;">
+								<div style="margin-bottom: 30px; padding-left: 20px">
+									<p style="font-size: 30px">KCP001-雇用リスト</p>
+								</div>
+								<div id="empt-list-setting"></div>
+							</td>
+							<td>
+								<table style="margin-left: 40px; margin-top: 20px;">
+									<tr>
+										<td style="width: 200px; padding-left: 40px; height: 60px;">
+											<div>
+												<span>Code</span>
+											</div>
+										</td>
+										<td style="padding-left: 5px;">
+											<div>
+												<input id='code'
+													data-bind="ntsTextEditor: {
+													value: code,
+													option: codeEditorOption,
+													required: true,
+													enable: hasSelectedEmp,
+													readonly: false}" />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td style="width: 200px; padding-left: 40px; height: 60px;">
+											<div>
+												<span>Name</span>
+											</div>
+										</td>
+										<td style="padding-left: 5px;">
+											<div>
+												<input id='name'
+													data-bind="ntsTextEditor: {
+													value: name,
+													option: nameEditorOption,
+													required: true,
+													enable: hasSelectedEmp,
+													readonly: false}" />
+											</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

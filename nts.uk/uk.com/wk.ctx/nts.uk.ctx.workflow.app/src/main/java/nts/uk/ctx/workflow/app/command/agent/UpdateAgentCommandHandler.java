@@ -63,7 +63,7 @@ public class UpdateAgentCommandHandler extends CommandHandler<AgentCommandBase> 
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
 				.collect(Collectors.toList());
 		
-		//agentInfor.validateDate(rangeDateList);
+//		agentInfor.validateDate(rangeDateList);
 		
 		agentRepository.update(agentInfor);
 	}

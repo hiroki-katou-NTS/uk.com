@@ -55,7 +55,7 @@ module nts.uk.pr.view.kmf001.b {
                 self.com60HSetting = ko.observable(false);
                 self.nursingSetting = ko.observable(false);
 
-                self.enableHelpButton = ko.observable(false);
+                self.enableHelpButton = ko.observable(true);
             }
 
             public startPage(): JQueryPromise<any> {

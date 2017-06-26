@@ -1,82 +1,43 @@
 @CHARSET "UTF-8";
 
+#part-1, #part-2, #part-3 {
+	float: left;
+}
+
 #image {
-	float: left;
-	margin-left: 5px;
-	margin-top: 10px;
+	width: 200px;
 	height: 600px;
+	margin-top: 10px;
 }
 
-#B3_1 {
-	float: left;
-	margin-top: 50px;
-	margin-left: 50px;
-	width: 440px;
-	height: 470px;
-}
-
-#part-3 {
-	float: left;
-	margin: 70px 0 0 30px;
-}
-
-#B1_7 {
-	margin-left: 32px;
-}
-
-#B1_6 {
-	margin-left: 270px;
-	margin-right: 35px
-}
-
-#B1_4 {
-	margin: 0 20px 0 50px;
-}
-
-#B1_7 {
-	margin-left: 2px;
-	vertical-align: middle;
-}
-
-#B3_13 {
-	margin: 0px 20px;
-}
-
-.sidebar-content-header button {
-	width: 110px;
-}
-
-#link-icon {
-	width: 30px;
-	vertical-align: middle;
-}
-
-.icon-searchbox {
-	margin: 140px 0px 0px 410px !important;
-	z-index: 1000;
-}
-
-.ntsSearchBox {
-	width: 300px !important
+#nts-component-list {
+	margin: 50px 0 0 20px;
 }
 
 th {
 	border: 1px solid #999999;
 	background-color: #E0F59E;
 	height: 25px;
-	padding-left: 2px;
-	padding-right: 2px;
+}
+
+td {
+	border: 1px solid #999999;
+}
+
+#part-3 {
+	margin: 70px 0 0 22px;
+}
+
+#table-1 {
+	margin-top: 20px;
+	border-spacing: 15px;
 }
 
 #table-1 tbody tr td #combo-box {
-	width: 180px;
 	padding: 2px;
-	border: 1px solid #999999;
 	height: 25px;
-}
-
-#part-3-1 {
-	margin-top: 25px
+	min-width: 150px !important;
+	width: 150px !important
 }
 
 .ui-igcombo-button {
@@ -84,14 +45,15 @@ th {
 	border: none !important;
 }
 
-.ui-igcombo-fieldholder {
-	background-color: white;
+#B1_4 {
+	margin: 0 20px 0 50px;
 }
 
-.search-btn {
-	padding: 7px 18px;
+#B1_6 {
+	margin-left: 270px;
+	margin-right: 55px
 }
 
-#table-1 {
-	border-spacing: 15px;
+#B3_13 {
+	margin: 0px 20px;
 }

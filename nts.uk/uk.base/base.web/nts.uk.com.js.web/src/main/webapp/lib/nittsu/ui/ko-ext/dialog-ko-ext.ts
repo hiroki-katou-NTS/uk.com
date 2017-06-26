@@ -175,6 +175,9 @@ module nts.uk.ui.koExtentions {
                 errors.forEach(function(error, index) {
                     // Row
                     let $row = $("<tr></tr>");
+                    $row.click(function(){
+                        error.$control[0].focus();    
+                    });
                     $row.append("<td style='display:none;'>" + (index + 1) + "</td>");
                     headers.forEach(function(header) {
                         if (ko.unwrap(header.visible))

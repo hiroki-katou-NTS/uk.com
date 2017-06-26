@@ -18,7 +18,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	
 	private static final String SELECT_ALL_AGENT;
 	
-	private static final String QUERY_IS_EXISTED;
+	private static final String SELECT_AGENT_BY_DATE;
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -39,9 +39,9 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
-		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
-		builderString.append(" AND e.cmmmtAgentPK.requestId = :requestId");
-		QUERY_IS_EXISTED = builderString.toString();
+		builderString.append(" AND e.startDate >= :startDate");
+		builderString.append(" AND e.endDate <= :endDate");
+		SELECT_AGENT_BY_DATE = builderString.toString(); 
 		
 		}
 	
@@ -94,6 +94,13 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.setParameter("companyId", companyId).setParameter("employeeId", employeeId)
 				.getList(c -> convertToDomain(c));
 	}
+	
+	@Override
+	public List<Agent> findByCid(String companyId) {
+		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.getList(c -> convertToDomain(c));
+	}
 
 	/**
 	 * add Agent
@@ -108,7 +115,20 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	 */
 	@Override
 	public void update(Agent agent) {
-		this.commandProxy().update(convertToDbType(agent));
+		CmmmtAgentPK primaryKey = new CmmmtAgentPK(agent.getCompanyId(), agent.getEmployeeId(), agent.getRequestId().toString());
+		CmmmtAgent entity = this.queryProxy().find(primaryKey, CmmmtAgent.class).get();
+		entity.startDate = agent.getStartDate();
+		entity.endDate = agent.getEndDate();
+		entity.agentSid1 = agent.getAgentSid1();
+		entity.agentAppType1 = agent.getAgentAppType1().value;
+		entity.agentSid2 = agent.getAgentSid2();
+		entity.agentAppType2 = agent.getAgentAppType2().value;
+		entity.agentSid3 = agent.getAgentSid3();
+		entity.agentAppType3 = agent.getAgentAppType3().value;
+		entity.agentSid4 = agent.getAgentSid4();
+		entity.agentAppType4 = agent.getAgentAppType4().value;
+		entity.cmmmtAgentPK = primaryKey;
+		this.commandProxy().update(entity);	
 	}
 
 	/**
@@ -128,12 +148,13 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.map(x -> convertToDomain(x));
 	}
 	@Override
-	public List<Agent> findAll(String companyId,String employeeId, GeneralDate startDate, GeneralDate endDate) {
-		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
+	public List<Agent> findAll(String companyId,GeneralDate startDate, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_AGENT_BY_DATE, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
-				.setParameter("companyId", employeeId)
-				.setParameter("companyId", startDate)
-				.setParameter("companyId", endDate)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));
 	}
+
+
 }

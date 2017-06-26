@@ -11,6 +11,11 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageJobSet;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageJobSetPK;
 
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 @Stateless
 public class JpaTopPageJobSetRepository extends JpaRepository implements TopPageJobSetRepository {
 
@@ -20,7 +25,8 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 
 	public static TopPageJobSet toDomain(CcgptTopPageJobSet entity) {
 		TopPageJobSet domain = TopPageJobSet.createFromJavaType(entity.ccgptTopPageJobSetPK.companyId, entity.topMenuCd,
-				entity.loginMenuCd, entity.ccgptTopPageJobSetPK.jobId, entity.personPermissionSet, entity.system);
+				entity.loginMenuCd, entity.ccgptTopPageJobSetPK.jobId, entity.personPermissionSet, entity.system,
+				entity.loginMenuCls);
 		return domain;
 	}
 
@@ -33,7 +39,8 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 		entity.loginMenuCd = domain.getLoginMenuCode().v();
 		entity.topMenuCd = domain.getTopMenuCode().v();
 		entity.personPermissionSet = domain.getPersonPermissionSet().value;
-		entity.system = domain.getSystem().value;
+		entity.system = domain.getLoginSystem().value;
+		entity.loginMenuCls = domain.getMenuClassification().value;
 		return entity;
 	}
 
@@ -52,5 +59,4 @@ public class JpaTopPageJobSetRepository extends JpaRepository implements TopPage
 	public void update(TopPageJobSet topPageJobSet) {
 		this.commandProxy().update(toEntity(topPageJobSet));
 	}
-
 }

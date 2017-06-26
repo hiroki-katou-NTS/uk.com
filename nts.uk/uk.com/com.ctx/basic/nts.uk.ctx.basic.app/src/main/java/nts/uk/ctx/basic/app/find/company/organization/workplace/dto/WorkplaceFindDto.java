@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.basic.app.find.company.organization.workplace.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.basic.dom.common.history.Period;
@@ -26,6 +28,13 @@ public class WorkplaceFindDto implements WorkplaceSetMemento{
 	
 	/** The name. */
 	private String name;
+	
+	/** The level. */
+	private String heirarchyCode;
+	
+	/** The childs. */
+	private List<WorkplaceFindDto> childs;
+	
 
 	/*
 	 * (non-Javadoc)

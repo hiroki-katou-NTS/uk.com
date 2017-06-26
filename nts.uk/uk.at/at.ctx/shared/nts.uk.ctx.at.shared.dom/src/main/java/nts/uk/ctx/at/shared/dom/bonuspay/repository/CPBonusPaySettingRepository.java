@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
 
 /**
@@ -11,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.CompanyBonusPaySetting;
  */
 public interface CPBonusPaySettingRepository {
 	
-	CompanyBonusPaySetting getSetting(String companyId);
+	Optional<CompanyBonusPaySetting> getSetting(String companyId);
 	
 	void addSetting(CompanyBonusPaySetting setting);
 	

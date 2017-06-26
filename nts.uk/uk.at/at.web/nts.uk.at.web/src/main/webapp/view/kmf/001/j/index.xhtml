@@ -117,7 +117,7 @@
 					<button data-bind="click: back">
 						#{i18n.getText('KMF001_27')}</button>
 
-					<button class="proceed" data-bind="click: saveEmpSetting">
+					<button class="proceed" data-bind="click: saveEmpSetting, enable: saveDisable">
 						#{i18n.getText('KMF001_28')}</button>
 
 					<span class="title" style="float: right; font-size: 15px;">
@@ -132,13 +132,8 @@
 
 							<td id="right-content">
 								<table class="form-default" data-bind="with: empSettingModel" style="margin-left: 87px;">
-									<tr class="row_head">
-										<td colspan="3"><div data-bind="ntsFormLabel: {}">
-												#{i18n.getText('KMF001_96')}</div></td>
-									</tr>
-									<tr>
-										<td style="width: 50px;"></td>
-										<td style="width: 250px;">#{i18n.getText('KMF001_97')}</td>
+								<tr>
+										<td colspan="3" > <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF001_97')}</div></td>
 										<td>
 											<div tabindex="2" class="btn-switch"
 												data-bind="ntsSwitchButton: {
@@ -150,8 +145,25 @@
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 50px;"></td>
-										<td style="width: 250px;">#{i18n.getText('KMF001_102')}</td>
+										<td colspan="4">
+											<div style="margin-top: -17px;">
+												<hr />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td style="padding-left: 40px;"><div data-bind="ntsFormLabel: {}">
+												#{i18n.getText('KMF001_96')}</div></td>
+									</tr>
+									<tr>
+										<td colspan="4" style="padding-left: 40px;">
+											<div style="margin-top: -17px;">
+												<hr />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_102')}</td>
 										<td>
 											<div style="margin-left: 5px;" tabindex=""
 												data-bind="ntsComboBox: {
@@ -167,8 +179,7 @@
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 50px;"></td>
-										<td style="width: 250px;">#{i18n.getText('KMF001_98')}</td>
+										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_98')}</td>
 										<td>
 											<div style="margin-left: 5px;" tabindex=""
 												data-bind="ntsComboBox: {

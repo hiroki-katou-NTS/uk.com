@@ -1,4 +1,4 @@
-module nts.uk.at.view.kmk008.b {  
+module nts.uk.at.view.kmk008.c {  
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
