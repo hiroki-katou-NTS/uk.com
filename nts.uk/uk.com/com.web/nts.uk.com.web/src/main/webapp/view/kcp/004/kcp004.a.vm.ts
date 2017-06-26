@@ -14,6 +14,7 @@ module kcp004.a.viewmodel {
         isMultipleTreeGrid: KnockoutObservable<boolean>;
         isShowAlreadySet: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean>;
+        isShowSelectButton: KnockoutObservable<boolean>;
         
         // Control component
         selectedCode: KnockoutObservable<string>;
@@ -39,6 +40,7 @@ module kcp004.a.viewmodel {
             });
             self.isDialog = ko.observable(false);
             self.isShowAlreadySet = ko.observable(true);
+            self.isShowSelectButton = ko.observable(true);
             
             // Control component
             self.baseDate = ko.observable(new Date());
@@ -54,6 +56,7 @@ module kcp004.a.viewmodel {
                 treeType: TreeType.WORK_PLACE,
                 selectedCode: self.getSelectedCode(),
                 baseDate: self.baseDate,
+                isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
@@ -71,6 +74,9 @@ module kcp004.a.viewmodel {
             self.alreadySettingList.subscribe(function() {
                 self.reloadTreeGrid();
             });
+            self.isShowSelectButton.subscribe(function() {
+                self.reloadTreeGrid();
+            })
         }
         
         private copy() {
@@ -121,6 +127,7 @@ module kcp004.a.viewmodel {
                 treeType: TreeType.WORK_PLACE,
                 selectedCode: self.getSelectedCode(),
                 baseDate: self.baseDate,
+                isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
