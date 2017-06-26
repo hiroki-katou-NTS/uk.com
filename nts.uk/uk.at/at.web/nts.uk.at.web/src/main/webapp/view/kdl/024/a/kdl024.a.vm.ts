@@ -115,6 +115,8 @@ module kdl024.a.viewmodel {
                         self.listBudget.push(updateItem);
                     }
                     self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
+                    //Fix bug #83990
+                    $('#inpName').focus();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                     self.start();
