@@ -22,7 +22,7 @@
 			<div id="functions-area" class="divHeader">
 				<button tabindex="5" data-bind="click: newTopPage" id="btn_new"
 					class="btnStyle">#{i18n.getText('CCG015_4')}</button>
-				<button tabindex="6" data-bind="click: saveTopPage ,enable: !isProcess()"
+				<button tabindex="6" data-bind="click: saveTopPage ,enable: $root.errors.isEmpty"
 					class="proceed btnStyle" id="btn_save">#{i18n.getText('CCG015_5')}</button>
 				<button tabindex="7"
 					data-bind=" click: copyTopPage ,enable: !isNewMode()"
