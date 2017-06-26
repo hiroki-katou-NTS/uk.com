@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.ws.bonuspay;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -29,9 +28,9 @@ public class CPBonusPaySettingWebService extends WebService {
 	private CBPSettingUpdateCommandHandler cbPSettingUpdateCommandHandler;
 
 	@POST
-	@Path("getCBPSettingSetting/{companyId}")
-	CompanyBPSettingDto getCBPSettingSetting(@PathParam("companyId") String companyId) {
-		return this.companyBPSettingFinder.getSetting(companyId);
+	@Path("getCBPSettingSetting")
+	CompanyBPSettingDto getCBPSettingSetting() {
+		return this.companyBPSettingFinder.getSetting();
 	}
 
 	@POST

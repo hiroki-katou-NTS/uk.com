@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -31,9 +30,9 @@ public class BonusPaySettingWebService extends WebService {
 	private BPSettingUpdateCommandHandler bpSettingUpdateCommandHandler;
 
 	@POST
-	@Path("getAllBonusPaySetting/{companyId}")
-	public List<BPSettingDto> getAllBonusPaySetting(@PathParam("companyId") String companyId) {
-		return this.bpSettingFinder.getAllBonusPaySetting(companyId);
+	@Path("getAllBonusPaySetting")
+	public List<BPSettingDto> getAllBonusPaySetting() {
+		return this.bpSettingFinder.getAllBonusPaySetting();
 	}
 
 	@POST

@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.standardmenu;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface StandardMenuRepository.
@@ -60,4 +61,14 @@ public interface StandardMenuRepository {
 	 * @return the list 
 	 */ 
 	List<StandardMenu> findByAtr(String companyId, int webMenuSetting, int menuAtr);
+	/**
+	 * hoatt
+	 * get standard menu
+	 * @param companyId
+	 * @param code
+	 * @param system
+	 * @param classification
+	 * @return
+	 */
+	Optional<StandardMenu> getStandardMenubyCode(String companyId,String code, int system,int classification);
 }

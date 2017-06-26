@@ -14,7 +14,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceFindDto;
-import nts.uk.ctx.basic.app.find.company.organization.workplace.dto.WorkplaceInDto;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchy;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
@@ -27,6 +26,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class WorkplaceFinder {
+	
 	/** The repository. */
 	@Inject
 	private WorkplaceRepository repository;
@@ -40,7 +40,7 @@ public class WorkplaceFinder {
 	 *            the format
 	 * @return the list
 	 */
-	public List<WorkplaceFindDto> findAll(WorkplaceInDto inDto) {
+	public List<WorkplaceFindDto> findAll(GeneralDate generalDate) {
 
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -48,7 +48,6 @@ public class WorkplaceFinder {
 		// get company id
 		String companyId = loginUserContext.companyId();
 		// format date => general date
-		GeneralDate generalDate = GeneralDate.fromString(inDto.getDate(), inDto.getFormat());
 		List<WorkPlaceHierarchy> lstHierarchy = new ArrayList<>();
 		List<Workplace> lstWorkplace = new ArrayList<>();
 		List<WorkplaceFindDto> lstReturn = new ArrayList<>();
