@@ -148,6 +148,8 @@ module nts.uk.at.view.kml001.a {
             saveData(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;
+                $("#startDateInput-input").trigger("validate");
+                $("#memo").trigger("validate");
                 $(".premiumPercent").trigger("validate");
                 if (!nts.uk.ui.errors.hasError())
                 {
