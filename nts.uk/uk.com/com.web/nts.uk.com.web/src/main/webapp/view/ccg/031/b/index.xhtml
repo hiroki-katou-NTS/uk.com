@@ -31,7 +31,7 @@
 					<label class="label-lg label-column"><span>#{i18n.getText('CCG031_11')}</span> <span data-bind="text: positionColumn"></span><span>#{i18n.getText('CCG031_12')}</span></label>
 				</div>
 				<div class="part-area">
-					<div id="combo-box" class="animated-background" data-bind="ntsComboBox: {
+					<div id="combo-box" class="animated-background" tabindex="1" data-bind="ntsComboBox: {
 						options: listPartType,
 						optionsValue: 'value',
 						value: selectedPartType,
@@ -44,7 +44,7 @@
 							<div class="cf">
 								<div class="col-1 pull-left">
 									<div class="toppage-part-list-placeholder placeholder">
-										<table data-name="#{i18n.getText('CCG031_15')}" id="toppage-part-list" tabindex="1" data-bind="ntsGridList: {								
+										<table data-name="#{i18n.getText('CCG031_15')}" id="toppage-part-list" data-bind="ntsGridList: {								
 											height: 340,
 											width: '100%',
 											dataSource: listPart,
