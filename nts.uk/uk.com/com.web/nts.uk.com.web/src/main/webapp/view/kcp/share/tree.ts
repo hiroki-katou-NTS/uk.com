@@ -70,11 +70,11 @@ module kcp.share.tree {
         treeComponentColumn: Array<any>;
         isMultiple: boolean;
         isDialog: boolean;
-        hasBaseDate: boolean;
+        hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
         levelSelected: KnockoutObservable<number>;
-        listCode: KnockoutObservableArray<string>;
+        listCode: Array<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         constructor() {
@@ -82,7 +82,8 @@ module kcp.share.tree {
             self.itemList = ko.observableArray([]);
             self.backupItemList = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());
-            self.listCode = ko.observableArray([]);
+            self.listCode = [];
+            self.hasBaseDate = ko.observable(false);
             self.alreadySettingList = ko.observableArray([]);
             self.treeComponentColumn = [
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'code', dataType: "string", hidden: true },
@@ -107,9 +108,12 @@ module kcp.share.tree {
             let self = this;
             let dfd = $.Deferred<void>();
             self.isMultiple = data.isMultiSelect;
+            self.hasBaseDate(!self.isMultiple);
             self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
-            self.baseDate = data.baseDate;
+            if (self.hasBaseDate()) {
+                self.baseDate = data.baseDate;
+            }
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
             }
@@ -160,22 +164,33 @@ module kcp.share.tree {
                     // Init component.
                     self.itemList(res);
                     self.backupItemList(res);
-                    $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/tree.xhtml', function() {
+                    var webserviceLocator = nts.uk.request.location.siteRoot
+                        .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                        .mergeRelativePath('/view/kcp/share/tree.xhtml').serialize();
+                    $input.load(webserviceLocator, function() {
                         ko.cleanNode($input[0]);
                         ko.applyBindings(self, $input[0]);
+                        dfd.resolve();
                     });
                     
                     $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
                        self.addIconToAlreadyCol();
                     });
-                    dfd.resolve();
+                    // defined function focus
+                    $.fn.focusComponent = function() {
+                        if (self.hasBaseDate()) {
+                            $('.base-date-editor').first().focus();
+                        } else {
+                            $(".ntsSearchBox").focus();
+                        }
+                    }
                 }
             });
             
             // defined function get data list.
-//            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
-//                return self.backupItemList();
-//            }
+            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                return self.backupItemList();
+            }
             
             return dfd.promise();
         }
@@ -211,7 +226,7 @@ module kcp.share.tree {
             let self = this;
             for (let alreadySetting of dataList) {
                 // add code work place
-                self.listCode().push(alreadySetting.code);
+                self.listCode.push(alreadySetting.code);
                 
                 // set level
                 alreadySetting.level = alreadySetting.heirarchyCode.length / 3;
@@ -246,7 +261,7 @@ module kcp.share.tree {
          * Select all
          */
         private selectAll() {
-            this.selectedCodes(this.listCode());
+            this.selectedCodes(this.listCode);
         }
         
         /**
@@ -364,7 +379,15 @@ interface JQuery {
      */
     ntsTreeComponent(option: kcp.share.tree.TreeComponentOption): JQueryPromise<void>;
     
-//    getDataList(): Array<kcp.share.list.UnitModel>;
+    /**
+     * Get Data List
+     */
+    getDataList(): Array<kcp.share.list.UnitModel>;
+    
+    /**
+     * Focus component.
+     */
+    focusComponent(): void;
 }
 
 (function($: any) {

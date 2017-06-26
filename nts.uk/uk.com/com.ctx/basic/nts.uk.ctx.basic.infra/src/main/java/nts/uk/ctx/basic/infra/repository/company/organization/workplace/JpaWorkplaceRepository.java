@@ -114,7 +114,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-		cq.orderBy(criteriaBuilder.asc(root.get(KwpmtWplHierarchy_.wplcd)));
+		cq.orderBy(criteriaBuilder.asc(root.get(KwpmtWplHierarchy_.hierarchyCd)));
 		// create query
 		TypedQuery<KwpmtWplHierarchy> query = em.createQuery(cq);
 		

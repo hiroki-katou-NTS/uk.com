@@ -129,7 +129,9 @@ module kcp004.a.viewmodel {
         private reloadTreeGrid() {
             let self = this;
             self.setTreeData();
-            $('#tree-grid').ntsTreeComponent(self.treeGrid);
+            $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
+                $('#tree-grid').focusComponent();
+            });
         }
     }
 }
