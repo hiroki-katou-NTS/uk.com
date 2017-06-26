@@ -1,12 +1,23 @@
 /*!
- * Datepicker v0.5.1
+ * Datepicker v@VERSION
  * https://github.com/fengyuanchen/datepicker
  *
- * Copyright (c) 2014-2017 Fengyuan Chen
+ * Copyright (c) 2014-@YEAR Fengyuan Chen
  * Released under the MIT license
  *
- * Date: 2017-03-25T10:09:27.989Z
+ * Date: @DATE
  */
+
+
+// Variables
+// -----------------------------------------------------------------------------
+
+$brand-color: #39f;
+
+
+// Container
+// -----------------------------------------------------------------------------
+
 .datepicker-container {
   font-size: 12px;
   line-height: 30px;
@@ -18,32 +29,28 @@
 
   width: 210px;
 
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
 
   background-color: #fff;
 
-  direction: ltr !important;
-  -ms-touch-action: none;
-      touch-action: none;
+  direction: ltr !important; // Ignore global rtl
+  touch-action: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
-}
 
-.datepicker-container:before,
-.datepicker-container:after {
-  position: absolute;
+  &:before,
+  &:after {
+    position: absolute;
 
-  display: block;
+    display: block;
 
-  width: 0;
-  height: 0;
+    width: 0;
+    height: 0;
 
-  content: ' ';
+    content: ' ';
 
-  border: 5px solid transparent;
+    border: 5px solid transparent;
+  }
 }
 
 .datepicker-dropdown {
@@ -55,8 +62,7 @@
           box-sizing: content-box;
 
   border: 1px solid #ccc;
-  -webkit-box-shadow: 0 3px 6px #ccc;
-          box-shadow: 0 3px 6px #ccc;
+  box-shadow: 0 3px 6px #ccc;
 }
 
 .datepicker-inline {
@@ -65,164 +71,170 @@
 
 .datepicker-top-left,
 .datepicker-top-right {
-  border-top-color: #39f;
-}
+  border-top-color: $brand-color;
 
-.datepicker-top-left:before,
-.datepicker-top-left:after,
-.datepicker-top-right:before,
-.datepicker-top-right:after {
-  top: -5px;
-  left: 10px;
+  &:before,
+  &:after {
+    top: -5px;
+    left: 10px;
 
-  border-top: 0;
-}
+    border-top: 0;
+  }
 
-.datepicker-top-left:before,
-.datepicker-top-right:before {
-  border-bottom-color: #39f;
-}
+  &:before {
+    border-bottom-color: $brand-color;
+  }
 
-.datepicker-top-left:after,
-.datepicker-top-right:after {
-  top: -4px;
+  &:after {
+    top: -4px;
 
-  border-bottom-color: #fff;
+    border-bottom-color: #fff;
+  }
 }
 
 .datepicker-bottom-left,
 .datepicker-bottom-right {
-  border-bottom-color: #39f;
+  border-bottom-color: $brand-color;
+
+  &:before,
+  &:after {
+    bottom: -5px;
+    left: 10px;
+
+    border-bottom: 0;
+  }
+
+  &:before {
+    border-top-color: $brand-color;
+  }
+
+  &:after {
+    bottom: -4px;
+
+    border-top-color: #fff;
+  }
 }
 
-.datepicker-bottom-left:before,
-.datepicker-bottom-left:after,
-.datepicker-bottom-right:before,
-.datepicker-bottom-right:after {
-  bottom: -5px;
-  left: 10px;
-
-  border-bottom: 0;
+.datepicker-top-right,
+.datepicker-bottom-right {
+  &:before,
+  &:after {
+    right: 10px;
+    left: auto;
+  }
 }
 
-.datepicker-bottom-left:before,
-.datepicker-bottom-right:before {
-  border-top-color: #39f;
+
+// Panels
+// -----------------------------------------------------------------------------
+
+.datepicker-panel {
+  > ul:before,
+  > ul:after {
+    display: table;
+
+    content: ' ';
+  }
+
+  > ul:after {
+    clear: both;
+  }
+
+  > ul {
+    width: 102%;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      float: left;
+
+      width: 30px;
+      height: 30px;
+      margin: 0;
+      padding: 0;
+
+      list-style: none;
+
+      cursor: pointer;
+      text-align: center;
+
+      background-color: #fff;
+
+      &:hover {
+        background-color: lighten($brand-color, 35%);
+      }
+
+      &.muted,
+      &.muted:hover {
+        color: #999;
+      }
+
+      &.highlighted {
+        background-color: lighten($brand-color, 35%);
+      }
+
+      &.highlighted:hover {
+        background-color: lighten($brand-color, 30%);
+      }
+
+      &.picked,
+      &.picked:hover {
+        color: $brand-color;
+      }
+
+      &.disabled,
+      &.disabled:hover {
+        cursor: default;
+
+        color: #ccc;
+        background-color: #fff;
+
+        &.highlighted {
+          background-color: lighten($brand-color, 35%);
+        }
+      }
+
+      &[data-view='years prev'],
+      &[data-view='year prev'],
+      &[data-view='month prev'],
+      &[data-view='years next'],
+      &[data-view='year next'],
+      &[data-view='month next'],
+      &[data-view='next'] {
+        font-size: 18px;
+      }
+
+      &[data-view='years current'],
+      &[data-view='year current'],
+      &[data-view='month current'] {
+        width: 150px;
+      }
+    }
+
+    &[data-view='years'],
+    &[data-view='months'] {
+      > li {
+        line-height: 52.5px;
+
+        width: 52.5px;
+        height: 52.5px;
+      }
+    }
+
+    &[data-view='week'] {
+      > li,
+      > li:hover {
+        cursor: default;
+
+        background-color: #fff;
+      }
+    }
+  }
 }
 
-.datepicker-bottom-left:after,
-.datepicker-bottom-right:after {
-  bottom: -4px;
 
-  border-top-color: #fff;
-}
-
-.datepicker-top-right:before,
-.datepicker-top-right:after,
-.datepicker-bottom-right:before,
-.datepicker-bottom-right:after {
-  right: 10px;
-  left: auto;
-}
-
-.datepicker-panel > ul:before,
-.datepicker-panel > ul:after {
-  display: table;
-
-  content: ' ';
-}
-
-.datepicker-panel > ul:after {
-  clear: both;
-}
-
-.datepicker-panel > ul {
-  width: 102%;
-  margin: 0;
-  padding: 0;
-}
-
-.datepicker-panel > ul > li {
-  float: left;
-
-  width: 30px;
-  height: 30px;
-  margin: 0;
-  padding: 0;
-
-  list-style: none;
-
-  cursor: pointer;
-  text-align: center;
-
-  background-color: #fff;
-}
-
-.datepicker-panel > ul > li:hover {
-  background-color: #e6f2ff;
-}
-
-.datepicker-panel > ul > li.muted,
-.datepicker-panel > ul > li.muted:hover {
-  color: #999;
-}
-
-.datepicker-panel > ul > li.highlighted {
-  background-color: #e6f2ff;
-}
-
-.datepicker-panel > ul > li.highlighted:hover {
-  background-color: #cce6ff;
-}
-
-.datepicker-panel > ul > li.picked,
-.datepicker-panel > ul > li.picked:hover {
-  color: #39f;
-}
-
-.datepicker-panel > ul > li.disabled,
-.datepicker-panel > ul > li.disabled:hover {
-  cursor: default;
-
-  color: #ccc;
-  background-color: #fff;
-}
-
-.datepicker-panel > ul > li.disabled.highlighted,
-.datepicker-panel > ul > li.disabled:hover.highlighted {
-  background-color: #e6f2ff;
-}
-
-.datepicker-panel > ul > li[data-view='years prev'],
-.datepicker-panel > ul > li[data-view='year prev'],
-.datepicker-panel > ul > li[data-view='month prev'],
-.datepicker-panel > ul > li[data-view='years next'],
-.datepicker-panel > ul > li[data-view='year next'],
-.datepicker-panel > ul > li[data-view='month next'],
-.datepicker-panel > ul > li[data-view='next'] {
-  font-size: 18px;
-}
-
-.datepicker-panel > ul > li[data-view='years current'],
-.datepicker-panel > ul > li[data-view='year current'],
-.datepicker-panel > ul > li[data-view='month current'] {
-  width: 150px;
-}
-
-.datepicker-panel > ul[data-view='years'] > li,
-.datepicker-panel > ul[data-view='months'] > li {
-  line-height: 52.5px;
-
-  width: 52.5px;
-  height: 52.5px;
-}
-
-.datepicker-panel > ul[data-view='week'] > li,
-.datepicker-panel > ul[data-view='week'] > li:hover {
-  cursor: default;
-
-  background-color: #fff;
-}
+// Utilities
+// -----------------------------------------------------------------------------
 
 .datepicker-hide {
   display: none;
@@ -247,3 +259,17 @@
 		top: 1px;
 	}
 }
+
+.ntsDateRange_Container{
+	.ntsDateRangeComponent{
+	  float: left;
+	}
+	.ntsRangeLabel{
+	  padding: 6px 5px 6px 5px;
+	}
+	
+	.ntsRangeButton_Container {
+	    padding: 2px 2px 2px 2px;
+    }
+}
+

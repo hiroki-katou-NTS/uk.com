@@ -7,12 +7,12 @@ __viewContext.ready(function () {
     this.bind(new ScreenModel());
 });
 
-function OpenModalSubWindow(option?: any){
-    nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml", option);
+function OpenModalSubWindow(){
+    nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml");
 }
 
-function OpenModelessSubWindow(option?: any){
-    nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml", option);
+function OpenModelessSubWindow(){
+    nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml");
 }
 
 function openDialog() {
