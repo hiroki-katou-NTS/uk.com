@@ -1,10 +1,10 @@
 @CHARSET "UTF-8";
 
-#tab-panel{
-	max-width: 570px;
+#tab-panel {
+	max-width: 600px;
 }
 
-.ntsSearchBox{
+.ntsSearchBox {
 	width: 230px !important;
 }
 
@@ -16,9 +16,21 @@
 .contentkcp {
 	min-height: 550px;
 	max-width: 550px;
+	/* Firefox */
+	display: -moz-box;
+	-moz-box-pack: center;
+	-moz-box-align: center;
+	/* Safari and Chrome */
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	/* W3C */
+	display: box;
+	box-pack: center;
+	box-align: center;
 }
 
-.accordion{
+.accordion {
 	max-width: 550px;
 }
 
@@ -47,7 +59,8 @@
 }
 
 .btn_apply {
-	width: 200px;
+	width: 550px;
+	height: 25px;
 	text-align: center;
 	background-color: #2ECC71;
 	padding-top: 5px;
@@ -59,8 +72,8 @@
 }
 
 .caret-background.caret-bottom:after {
-	left: 30%;
+	left: 39%;
 	color: #AEEE60;
-	border-width: 10px 40px;
-	margin-top: 3px;
+	border-width: 18px 52px;
+	margin-top: 4px;
 }

@@ -58,106 +58,38 @@
 									class="cf minimalist"></div>
 								<button style="width: 25px; height: 25px; margin-left: 20px;">?</button>
 							</div>
-						</div>				
-                           <div class="label warning">※メニューバー、タイトルメニュー、サブ画面の名称変更及び削除は右クリックして操作してください。</div>  
+						</div>				                   
+                        <div class="label warning">#{i18n.getText('CCG013_13')}</div>      
+						
 						<div id="tabs">
-							<ul>
-								<li id="1"><a href="#tabs-1">Nunc tincidunt</a></li>
-								<li id="2"><a href="#tabs-2">Proin dolor</a></li>
-								<li id="3"><a href="#tabs-3">Aenean lacinia</a></li>
-								<li id="3"><a href="#tabs-3">Aenean lacinia</a></li>
+							<ul data-bind="foreach: menuBars">
+								<li data-bind="attr:{id:code}"><a data-bind="attr: {href: targetContent}, text: menuBarName"></a></li>
 							</ul>
-							<button class="button-add">メニューバーの追加<span style="display: block">+</span>
+							<button class="button-add" data-bind="click: openBdialog">メニューバーの追加<span style="display: block">+</span>
 							</button>
-							<div id="tabs-1">
-								<div class="title-menu cf">
-									<div id="title-menu1" class="title-menu-column valign-top">
-										<div class="title-menu-name">Title Menu</div>
-										<ul class="tree-menu">
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
-										</ul>
-										<button class="button-add-treemenu">
-											メニューバーの追加<span style="display: block">+</span>
-										</button>
-									</div>
-									<div id="title-menu2" class="title-menu-column valign-top">
-										<div class="title-menu-name">Title Menu</div>
-										<ul class="tree-menu">
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
-										</ul>
-									</div>
-									<div id="title-menu3" class="title-menu-column valign-top">
-										<div class="title-menu-name">Title Menu</div>
-										<ul class="tree-menu">
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
-											<li class="ui-state-default"><span
-												class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
-										</ul>
-									</div>
-									<div class="unsortable">
-										<button class="button-add">
-											メニューバーの追加<span style="display: block">+</span>
-										</button>
+							<com:ko-foreach bind="menuBars">
+								<div data-bind="attr: {id: 'tab-content-' + code()}">
+									<div class="title-menu cf">
+										<com:ko-foreach bind="$parent.titleMenus">
+										<div id="title-menu1" class="title-menu-column valign-top">
+											<div class="title-menu-name" data-bind="text: menuBarName">Title Menu</div>
+											<ul class="tree-menu">
+												<li class="ui-state-default"><span
+													class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
+											</ul>
+											<button class="button-add-treemenu">
+												メニューバーの追加<span style="display: block">+</span>
+											</button>
+										</div>		
+										</com:ko-foreach>				
+										<div class="unsortable">
+											<button class="button-add" data-bind="click: $parent.openCdialog.bind($parent)">
+												メニューバーの追加<span style="display: block">+</span>
+											</button>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div id="tabs-2">
-								<p>Morbi tincidunt, dui sit amet facilisis feugiat, odio
-									metus gravida ante, ut pharetra massa metus id nunc. Duis
-									scelerisque molestie turpis. Sed fringilla, massa eget luctus
-									malesuada, metus eros molestie lectus, ut tempus eros massa ut
-									dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in
-									ligula suscipit aliquam. Praesent in eros vestibulum mi
-									adipiscing adipiscing. Morbi facilisis. Curabitur ornare
-									consequat nunc. Aenean vel metus. Ut posuere viverra nulla.
-									Aliquam erat volutpat. Pellentesque convallis. Maecenas
-									feugiat, tellus pellentesque pretium posuere, felis lorem
-									euismod felis, eu ornare leo nisi vel felis. Mauris consectetur
-									tortor et purus.</p>
-							</div>
-							<div id="tabs-3">
-								<p>Mauris eleifend est et turpis. Duis id erat. Suspendisse
-									potenti. Aliquam vulputate, pede vel vehicula accumsan, mi
-									neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum
-									non ante. Class aptent taciti sociosqu ad litora torquent per
-									conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque
-									eu urna vel enim commodo pellentesque. Praesent eu risus
-									hendrerit ligula tempus pretium. Curabitur lorem enim, pretium
-									nec, feugiat nec, luctus a, lacus.</p>
-								<p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra
-									at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent
-									viverra justo vitae neque. Praesent blandit adipiscing velit.
-									Suspendisse potenti. Donec mattis, pede vel pharetra blandit,
-									magna ligula faucibus eros, id euismod lacus dolor eget odio.
-									Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut
-									sagittis. Donec nisi lectus, feugiat porttitor, tempor ac,
-									tempor vitae, pede. Aenean vehicula velit eu tellus interdum
-									rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in
-									lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
-							</div>
+							</com:ko-foreach>
 						</div>
 					</div>
 					<div class="right-content-right"></div>

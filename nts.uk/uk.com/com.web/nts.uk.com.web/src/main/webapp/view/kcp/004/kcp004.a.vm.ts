@@ -14,6 +14,7 @@ module kcp004.a.viewmodel {
         isMultipleTreeGrid: KnockoutObservable<boolean>;
         isShowAlreadySet: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean>;
+        isShowSelectButton: KnockoutObservable<boolean>;
         
         // Control component
         selectedCode: KnockoutObservable<string>;
@@ -39,17 +40,15 @@ module kcp004.a.viewmodel {
             });
             self.isDialog = ko.observable(false);
             self.isShowAlreadySet = ko.observable(true);
+            self.isShowSelectButton = ko.observable(true);
             
             // Control component
             self.baseDate = ko.observable(new Date());
-            self.selectedCode = ko.observable('001');
-            self.multiSelectedCode = ko.observableArray(['001', '002']);
+            self.selectedCode = ko.observable('A001');
+            self.multiSelectedCode = ko.observableArray(['A001', 'B002']);
             self.alreadySettingList = ko.observableArray([
-                    {code: '001', settingType: SettingType.NO_SETTING},
-                    {code: '001001', settingType: SettingType.ALREADY_SETTING},
-                    {code: '002002', settingType: SettingType.USE_PARRENT_SETTING},
-                    {code: '001001001', settingType: SettingType.ALREADY_SETTING},
-                    {code: '003002001', settingType: SettingType.USE_PARRENT_SETTING}
+                    {code: 'A001', settingType: SettingType.NO_SETTING},
+                    {code: 'A005', settingType: SettingType.ALREADY_SETTING},
             ]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
@@ -57,6 +56,7 @@ module kcp004.a.viewmodel {
                 treeType: TreeType.WORK_PLACE,
                 selectedCode: self.getSelectedCode(),
                 baseDate: self.baseDate,
+                isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
@@ -74,11 +74,14 @@ module kcp004.a.viewmodel {
             self.alreadySettingList.subscribe(function() {
                 self.reloadTreeGrid();
             });
+            self.isShowSelectButton.subscribe(function() {
+                self.reloadTreeGrid();
+            })
         }
         
         private copy() {
-            // TODO: pending issue #84074
-            nts.uk.ui.dialog.alert('Pending issue #84074');
+            // issue #84074
+            nts.uk.ui.dialog.info('複写時の処理については現状対象外となります。');
         }
         
         private register() {
@@ -124,6 +127,7 @@ module kcp004.a.viewmodel {
                 treeType: TreeType.WORK_PLACE,
                 selectedCode: self.getSelectedCode(),
                 baseDate: self.baseDate,
+                isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
@@ -132,7 +136,9 @@ module kcp004.a.viewmodel {
         private reloadTreeGrid() {
             let self = this;
             self.setTreeData();
-            $('#tree-grid').ntsTreeComponent(self.treeGrid);
+            $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
+                $('#tree-grid').focusComponent();
+            });
         }
     }
 }

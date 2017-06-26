@@ -6,14 +6,8 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 860,
-					height : 600
-				};
-			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk008.c.main.css" />
 			<com:scriptfile path="kmk008.c.start.js" />
@@ -24,7 +18,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div id = "functions-area-content">
-				
+					
 				</div>
 			</div>
 			<div id="contents-area">

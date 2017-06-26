@@ -18,14 +18,9 @@ module ccg013.a.service {
         return nts.uk.request.ajax(path);
     }  
     
-    export function addWebMenu(webMenu: any): JQueryPromise<any> {
-        var path = servicePath.addWebMenu;
-        return nts.uk.request.ajax(path, webMenu);
-    }
-    
-    export function updateWebMenu(webMenu: any): JQueryPromise<any> {
-        var path = servicePath.updateWebMenu;
-        return nts.uk.request.ajax("com", path, webMenu);
-    }
+    export function addWebMenu( isCreated, webMenu: any): JQueryPromise<any> {
+        var path = isCreated ? servicePath.addWebMenu : servicePath.updateWebMenu;
+        return nts.uk.request.ajax("com",path, webMenu);
+    }  
     
 }

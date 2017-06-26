@@ -4,25 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.basic.app.find.company.organization.workplace.dto;
 
-import java.io.Serializable;
-
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class WorkplaceInDto.
  */
 @Setter
 @Getter
-public class WorkplaceInDto implements Serializable{
+public class WorkplaceInDto {
 	
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1934239969905395571L;
-	
-	/** The date. */
-	private String date;
-	
-	/** The format. */
-	private String format;
+	/** The base date. */
+	private GeneralDate baseDate;
 
 }

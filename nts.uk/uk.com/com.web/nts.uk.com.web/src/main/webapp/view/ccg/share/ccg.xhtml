@@ -15,9 +15,9 @@
 					class="controlSetting caret-right"></span> <br /> <span
 					class="btn_big" data-bind="click: getEmployeeLogin">#{i18n.getText('CCG001_11')}</span> <span
 					class="controlSetting caret-right"></span> <br /> <span
-					class="btn_small">#{i18n.getText('CCG001_12')}</span> <span
+					class="btn_small" data-bind="click: searchOfWorkplace">#{i18n.getText('CCG001_12')}</span> <span
 					class="controlSetting caret-right"></span> <br /> <span
-					class="btn_small">#{i18n.getText('CCG001_13')}</span> <span
+					class="btn_small" data-bind="click: searchWorkplaceChild">#{i18n.getText('CCG001_13')}</span> <span
 					class="controlSetting caret-right"></span> <br />
 			</div>
 			<div class="tab-content-2">
@@ -28,7 +28,7 @@
 					<h3>
 						<label>#{i18n.getText('CCG001_5')}</label>
 					</h3>
-					<div class="contentkcp" id="employeeList"></div>
+					<div class="contentkcp" id="employmentList"></div>
 					<h3>
 						<label>#{i18n.getText('CCG001_6')}</label>
 					</h3>
@@ -40,20 +40,14 @@
 					<h3>
 						<label>#{i18n.getText('CCG001_8')}</label>
 					</h3>
-					<div class="contentkcp" id="workplaces"></div>
+					<div class="contentkcp" id="workplaceList"></div>
 				</div>
-
 				<hr />
-				<div>雇用でしぼり込む</div>
-				<div>分類でしぼり込む</div>
-				<div>職位でしぼり込む</div>
-				<div>職場でしぼり込む</div>
-				<hr />
-				<span class="caret-background caret-bottom btn_apply" data-bind="click: searchDataEmployee">選んだ条件で社員をしぼり込む</span>
+				<span class="caret-background caret-bottom btn_apply" data-bind="click: searchDataEmployee">#{i18n.getText('CCG001_18')}</span>
 				<br />
 				<br />
 				<div class="contentkcp" id="employeeinfo"></div>
-				<span class="btn_apply">選んだ社員を表示する</span>
+				<span class="btn_apply">#{i18n.getText('CCG001_18')}</span>
 			</div>
 		</div>
 	</div>

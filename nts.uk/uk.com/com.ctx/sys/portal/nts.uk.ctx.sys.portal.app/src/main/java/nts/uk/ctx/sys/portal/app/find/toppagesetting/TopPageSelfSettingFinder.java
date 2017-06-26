@@ -1,17 +1,25 @@
 package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.JobPosition;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSetRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author hoatt
+ *
+ */
 @Stateless
 public class TopPageSelfSettingFinder {
 	@Inject
@@ -55,5 +63,20 @@ public class TopPageSelfSettingFinder {
 			return lst.get();
 		}
 		
+	}
+	/**
+	 * get job position
+	 * @param employeeId
+	 * @return
+	 */
+	public JobPositionDto getJobPosition(String employeeId){
+		Date date = new Date();
+		GeneralDate systemDate = GeneralDate.legacyDate(date);
+		Optional<JobPosition> jp = repository.getJobPosition(employeeId, systemDate);
+		JobPositionDto jobPosition = null;
+		if(jp.isPresent()){
+			jobPosition = JobPositionDto.fromDomain(jp.get());
+		}
+		return jobPosition;
 	}
 }

@@ -1,12 +1,12 @@
 module nts.uk.com.view.ccg.share.ccg {
 
     import ListType = kcp.share.list.ListType;
+    import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import TreeType = kcp.share.tree.TreeType;
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import PersonModel = service.model.PersonModel;
     import GroupOption = service.model.GroupOption;
-    import ClassificationHistoryInDto = service.model.ClassificationHistoryInDto;
     import EmployeeSearchDto = service.model.EmployeeSearchDto;
 
 
@@ -18,21 +18,31 @@ module nts.uk.com.view.ccg.share.ccg {
             isMultiple: boolean;
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
-            selectedCode: KnockoutObservableArray<string>;
+            selectedCodeEmployment: KnockoutObservableArray<string>;
+            selectedCodeClassification: KnockoutObservableArray<string>;
+            selectedCodeJobtitle: KnockoutObservableArray<string>;
+            selectedCodeWorkplace: KnockoutObservableArray<string>;
+            selectedCodeEmployee: KnockoutObservableArray<string>;
             baseDate: KnockoutObservable<Date>;
             employments: any;
             classifications: any;
             jobtitles: any;
-            workplaces: any;
+            workplaces: TreeComponentOption;
             employeeinfo: any;
             onSearchAllClicked: (data: PersonModel[]) => void;
             onSearchOnlyClicked: (data: PersonModel) => void;
+            onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
+            onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
 
 
             constructor() {
                 var self = this;
                 self.isMultiple = false;
-                self.selectedCode = ko.observableArray([]);
+                self.selectedCodeEmployment = ko.observableArray([]);
+                self.selectedCodeClassification = ko.observableArray([]);
+                self.selectedCodeJobtitle = ko.observableArray([]);
+                self.selectedCodeWorkplace = ko.observableArray([]);
+                self.selectedCodeEmployee = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
                 self.tabs = ko.observableArray([
                     {
@@ -51,11 +61,12 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
+                
                 self.employments = {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.EMPLOYMENT,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.selectedCodeEmployment,
                     isDialog: true
                 };
 
@@ -63,7 +74,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.Classification,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.selectedCodeClassification,
                     isDialog: true
                 }
 
@@ -72,18 +83,18 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.JOB_TITLE,
-                    selectedCode: this.selectedCode,
-                    isDialog: false,
+                    selectedCode: self.selectedCodeJobtitle,
+                    isDialog: true,
                     baseDate: self.baseDate,
                 }
 
                 self.workplaces = {
                     isShowAlreadySet: false,
-                    isMultiSelect: false,
+                    isMultiSelect: true,
                     treeType: TreeType.WORK_PLACE,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.selectedCodeWorkplace,
                     baseDate: self.baseDate,
-                    isDialog: false
+                    isDialog: true
                 }
 
 
@@ -98,15 +109,18 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isMultiple = data.isMutipleCheck;
                 self.onSearchAllClicked = data.onSearchAllClicked;
                 self.onSearchOnlyClicked = data.onSearchOnlyClicked;
+                self.onSearchOfWorkplaceClicked = data.onSearchOfWorkplaceClicked;
+                self.onSearchWorkplaceChildClicked = data.onSearchWorkplaceChildClicked;
                 var webserviceLocator = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                     .mergeRelativePath('/view/ccg/share/ccg.xhtml').serialize();
                 $input.load(webserviceLocator, function() {
                     ko.cleanNode($input[0]);
                     ko.applyBindings(self, $input[0]);
-                    $('#employeeList').ntsListComponent(self.employments);
+                    $('#employmentList').ntsListComponent(self.employments);
                     $('#classificationList').ntsListComponent(self.classifications);
                     $('#jobtitleList').ntsListComponent(self.jobtitles);
+                    $('#workplaceList').ntsTreeComponent(self.workplaces);
                     $(".accordion").accordion({
                         active: false,
                         collapsible: true
@@ -124,25 +138,14 @@ module nts.uk.com.view.ccg.share.ccg {
                 });
             }
 
-            toClassficationDto(): ClassificationHistoryInDto {
-                var self = this;
-                var dto: ClassificationHistoryInDto = new ClassificationHistoryInDto();
-                dto.baseDate = self.baseDate();
-                var classificationData: UnitModel[] = $('#classificationList').getDataList();
-                console.log(classificationData);
-                var classificationCodes: string[] = [];
-                for (var item: UnitModel of classificationData) {
-                    classificationCodes.push(item.code);
-                }
-                dto.classificationCodes = classificationCodes;
-                console.log(dto);
-                return dto;
-            }
-
             toEmployeeDto(): EmployeeSearchDto {
                 var self = this;
                 var dto: EmployeeSearchDto = new EmployeeSearchDto();
-                dto.classificationHistory = self.toClassficationDto();
+                dto.baseDate = self.baseDate();
+                dto.classificationCodes = self.selectedCodeClassification();
+                dto.employmentCodes = self.selectedCodeEmployment();
+                dto.jobTitleCodes = self.selectedCodeJobtitle();
+                dto.workplaceCodes = self.selectedCodeWorkplace();
                 return dto;
             }
             
@@ -156,8 +159,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         listType: ListType.EMPLOYEE,
                         employeeInputList: self.toUnitModelList(data),
                         selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        selectedCode: self.selectedCode,
-                        isDialog: false,
+                        selectedCode: self.selectedCodeEmployee,
+                        isDialog: true,
                         isShowNoSelectRow: false,
                     }
                     $('#employeeinfo').ntsListComponent(self.employeeinfo);
@@ -172,6 +175,24 @@ module nts.uk.com.view.ccg.share.ccg {
                 service.getPersonLogin().done(data => {
                     self.onSearchOnlyClicked(data);
                 });
+            }
+            
+            searchOfWorkplace(): void{
+                var self = this;
+                service.searchOfWorkplace(self.baseDate()).done(data=>{
+                   self.onSearchOfWorkplaceClicked(data); 
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError(error);
+                });    
+            }
+            
+            searchWorkplaceChild(): void{
+                var self = this;
+                service.searchWorkplaceChild(self.baseDate()).done(data=>{
+                   self.onSearchOfWorkplaceClicked(data); 
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError(error);
+                });    
             }
 
             public toUnitModelList(dataList: PersonModel[]): KnockoutObservableArray<UnitModel> {

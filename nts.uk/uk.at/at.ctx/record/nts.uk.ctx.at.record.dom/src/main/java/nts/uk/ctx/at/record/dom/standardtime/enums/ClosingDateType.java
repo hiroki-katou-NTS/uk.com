@@ -40,7 +40,7 @@ public enum ClosingDateType {
 	// 12: 13日
 	THIRTEENTH(12),
 	// 13: 14日
-	FOURTHTEENTH(13),
+	FOURTEENTH(13),
 	// 14: 15日
 	FIFTEENTH(14),
 	// 15: 16日

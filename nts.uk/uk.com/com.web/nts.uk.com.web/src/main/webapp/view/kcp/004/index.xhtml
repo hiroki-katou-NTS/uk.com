@@ -22,10 +22,11 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
+				<div id="side-menu" class="cf"></div>
 				<div style="margin-left: 30px">
 					<!-- BEGIN ORVERVIEW -->
 					<div>
-						<h1>KCP004 Component </h1>
+						<h1>KCP004 職場リスト（共通部品）Workplace List</h1>
 						<h2>Overview</h2>
 						<div>
 							<button data-bind="click: copy">Copy</button>
@@ -42,9 +43,10 @@
 							</div>
 							<div data-bind="ntsCheckBox:{checked: isDialog}">Dialog</div>
 							<div data-bind="ntsCheckBox:{checked: isShowAlreadySet}">Show Already Setting</div>
+							<div data-bind="ntsCheckBox:{checked: isShowSelectButton}">Show SelectAll/SelectSubParent button</div>
 							<hr></hr>
 						</div>
-						<div id="tree-grid" style="width: 640px;margin-top: 30px;"></div>
+						<div id="tree-grid" style="width: 500px;margin-top: 30px;"></div>
 						<div style="margin-top: 10px;">
 							<label style="margin-right: 10px;font-size: 17px;">Selected code:</label>
 							<span style="font-size: 20px;" data-bind='text: getSelectedData()'></span>
@@ -65,7 +67,7 @@
 									<pre><![CDATA[<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE" />
 </ui:define>]]></pre>
-									<pre><![CDATA[<div id="tree-grid" style="width: 640px;"></div>]]></pre>
+									<pre><![CDATA[<div id="tree-grid" style="width: 500px;"></div>]]></pre>
 								</div><!-- END TAB HTML -->
 								
 								<!-- BEGIN TABS VIEWMODEL -->

@@ -22,11 +22,21 @@
 					<div id="function-area" style="margin: 40px">
 						<h1>KCP001 Component </h1>
 						<h2>Overview</h2>
+						
+						<div style="margin-left: 30px; padding-top: 10px">
+							<p><b>Single/Multiple Selection</b></p><br></br>
+							<div class="cf" data-bind="ntsSwitchButton: {
+														options: selectionOption,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectedOption,
+														enable: true }"></div>
+						</div>
 						<div style="margin-left: 30px; padding-top: 10px">
 							<div data-bind="ntsCheckBox:{checked: isAlreadySetting}">Show Already Setting</div>
-							<div data-bind="ntsCheckBox:{checked: isShowMultiSelect}">Single/Multi Selection</div>
-							<div data-bind="ntsCheckBox:{checked: isShowAsDialog}">Show As Dialog</div>
-							<div data-bind="ntsCheckBox:{checked: isShowNoSelectionItem}">Show UnSelect Item</div>
+							<!-- <div data-bind="ntsCheckBox:{checked: isShowMultiSelect}">Single/Multi Selection</div> -->
+							<div data-bind="ntsCheckBox:{checked: isDialog}">Show As Dialog</div>
+							<div data-bind="ntsCheckBox:{checked: isShowNoSelectionItem}">Show NoSelection Item</div>
 							
 							
 						</div><br></br>
@@ -66,7 +76,7 @@
 						<tr>
 							<td style="width: 640px;">
 								<div style="margin-bottom: 30px; padding-left: 20px">
-									<p style="font-size: 30px">KCP001</p>
+									<p style="font-size: 30px">KCP001-雇用リスト</p>
 								</div>
 								<div id="empt-list-setting"></div>
 							</td>

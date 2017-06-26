@@ -12,10 +12,12 @@ module ccg013.a.viewmodel {
         selectedTab: KnockoutObservable<string>;
         currentWebMenu: KnockoutObservable<WebMenu>;
         isCreated: KnockoutObservable<boolean>;
+        menuBars: KnockoutObservableArray<any>;
+        titleMenus: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
-            
+
             self.isCreated = ko.observable(true);
             self.currentWebMenu = ko.observable(new WebMenu("", "", false, []));
 
@@ -65,42 +67,60 @@ module ccg013.a.viewmodel {
                 self.findWebMenu(newValue);
             });
 
+            self.menuBars = ko.observableArray([]);          
+            self.titleMenus = ko.observableArray([]);
         }
 
         startPage(): JQueryPromise<void> {
             var self = this;
             var dfd = $.Deferred<void>();
+            self.getWebMenu().done(function() {
+                if (self.items().length > 0) {
+                    self.currentCode(self.items()[0].webMenuCode);
+                }
+                else {
+                    self.cleanForm();
+                }
+            });
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+
+        getWebMenu(): any {
+            var self = this;
+            var dfd = $.Deferred();
             service.loadWebMenu().done(function(data) {
                 var list001: Array<ItemModel> = [];
                 _.forEach(data, function(item) {
                     list001.push(new ItemModel(item.webMenuCode, item.webMenuName, item.defaultMenu));
                 });
                 self.items(list001);
-                dfd.resolve();
+                dfd.resolve(data);
+            }).fail(function(res) {
             });
             return dfd.promise();
         }
 
+
         addWebMenu(): any {
             var self = this;
             if (self.currentWebMenu().isDefaultMenu()) {
-                self.currentWebMenu().defaultMenu(0);    
+                self.currentWebMenu().defaultMenu(0);
             } else {
                 self.currentWebMenu().defaultMenu(1);
             }
             var webMenu = ko.toJSON(self.currentWebMenu);
-            if (!self.isCreated()) {
-                service.updateWebMenu(webMenu);
-            } else {
-                service.addWebMenu(webMenu);
-            }
+            service.addWebMenu(self.isCreated(), webMenu).done(function() {
+                self.getWebMenu();
+            });
         }
 
         /**
          * Find a web menu by web menu code
          */
         findWebMenu(webMenuCode: string): any {
-            var self = this;       
+            var self = this;
             service.findWebMenu(webMenuCode).done(function(res) {
                 var defaultMenu = true;
                 if (res.defaultMenu == 1) {
@@ -109,7 +129,7 @@ module ccg013.a.viewmodel {
                 self.currentWebMenu(new WebMenu(res.webMenuCode, res.webMenuName, defaultMenu, res.menuBars));
             });
         }
-        
+
         /**
          * Clean all control in form
          */
@@ -118,6 +138,31 @@ module ccg013.a.viewmodel {
             self.isCreated(true);
             self.currentWebMenu(new WebMenu("", "", false, []));
             self.currentCode("");
+        }
+
+        openBdialog(): any {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/b/index.xhtml").onClosed(function() {
+                var data = nts.uk.ui.windows.getShared("CCG013B_MenuBar");
+                if (data) {
+                    var id = nts.uk.util.randomId();
+                    self.menuBars.push(new MenuBar(id, data.code, data.nameMenuBar, data.selectedRadioAtcClass,1,2, data.backgroundColor, data.letterColor,2, [] ));
+                    $("#tabs").tabs("refresh");
+                    $("#tabs li#"+ id +" a").click();
+                }
+            });
+        }
+        
+        openCdialog(): any {
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/b/index.xhtml").onClosed(function(){
+                var data = nts.uk.ui.windows.getShared("CCG013B_MenuBar");
+                if (data) {
+                    var id = nts.uk.util.randomId();
+                    self.titleMenus.push(new MenuBar(id, data.code, data.nameMenuBar, data.selectedRadioAtcClass,1,2, data.backgroundColor, data.letterColor,2, [] ));
+                    $(".title-menu").sortable("refreshPositions");
+                }
+            });    
         }
     }
 
@@ -131,7 +176,7 @@ module ccg013.a.viewmodel {
             this.webMenuName = webMenuName;
             this.defaultMenu = defaultMenu;
             if (defaultMenu == 1) {
-                this.icon = "";    
+                this.icon = "";
             } else {
                 this.icon = '<i class="icon icon-dot"></i>';
             }
@@ -149,8 +194,66 @@ module ccg013.a.viewmodel {
             this.webMenuCode = ko.observable(webMenuCode);
             this.webMenuName = ko.observable(webMenuName);
             this.isDefaultMenu = ko.observable(defaultMenu);
-            this.defaultMenu = ko.observable(1); 
+            this.defaultMenu = ko.observable(1);
             this.menuBars = ko.observableArray(menuBars);
         }
+    }
+
+    class MenuBar {
+        menuBarId: KnockoutObservable<string>;
+        code: KnockoutObservable<string>;
+        menuBarName: KnockoutObservable<string>;
+        selectedAtr: KnockoutObservable<number>;
+        system: KnockoutObservable<number>;
+        menuCls: KnockoutObservable<number>;
+        backgroundColor: KnockoutObservable<string>;
+        textColor: KnockoutObservable<string>;
+        displayOrder: KnockoutObservable<number>;    
+        titleMenu: KnockoutObservableArray<any>;      
+        targetContent: KnockoutObservable<string>;
+
+        constructor(menuBarId: string, code: string, menuBarName: string, selectedAtr: number, system: number, menuCls: number, backgroundColor: string, textColor: string, displayOrder: number, titleMenu: any) {
+            this.menuBarId = ko.observable(menuBarId);
+            this.code = ko.observable(code);
+            this.menuBarName = ko.observable(menuBarName);
+            this.selectedAtr = ko.observable(selectedAtr);
+            this.system = ko.observable(system);
+            this.menuCls = ko.observable(menuCls);
+            this.backgroundColor = ko.observable(backgroundColor);
+            this.textColor = ko.observable(textColor);
+            this.displayOrder = ko.observable(displayOrder);
+            this.titleMenu = ko.observableArray(titleMenu);
+            this.targetContent = ko.observable("#tab-content-" + code);
+        }
+    }
+    
+    class TitleMenu {
+        menuBarId: KnockoutObservable<string>;
+        titleMenuId: KnockoutObservable<string>;
+        titleMenuName: KnockoutObservable<string>;
+        backgroundColor: KnockoutObservable<string>;
+        imageFile: KnockoutObservable<string>;
+        textColor: KnockoutObservable<string>;
+        titleMenuAtr: KnockoutObservable<number>;
+        titleMenuCode: KnockoutObservable<string>;
+        displayOrder: KnockoutObservable<number>;
+        treeMenu: KnockoutObservableArray<any>;
+        
+        constructor(menuBarId: string,titleMenuId: string,titleMenuName: string,backgroundColor: string,imageFile: string,textColor: string,titleMenuAtr: number,titleMenuCode: string,displayOrder: number,treeMenu: any) {
+            this.menuBarId  = ko.observable(menuBarId);
+            this.titleMenuId = ko.observable(titleMenuId);
+            this.titleMenuName = ko.observable(titleMenuName);
+            this.backgroundColor = ko.observable(backgroundColor);
+            this.imageFile = ko.observable(imageFile);
+            this.textColor = ko.observable(textColor);
+            this.titleMenuAtr = ko.observable(titleMenuAtr);
+            this.titleMenuCode = ko.observable(titleMenuCode);
+            this.displayOrder = ko.observable(displayOrder);
+            this.treeMenu = ko.observableArray(treeMenu);
+        }
+    }
+    
+    class TreeMenu {
+        
     }
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.standardtime;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentRepostitory;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeEmployment;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeEmploymentPK;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Stateless
 public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
@@ -19,7 +21,9 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 
 	private static final String DELETE_BY_TWO_KEYS;
 
-	private static final String FIND;
+	private static final String FIND_EMPLOYMENT_DETAIL;
+
+	private static final String FIND_EMPLOYMENT_SETTING;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -34,8 +38,17 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 		builderString.append("SELECT a ");
 		builderString.append("FROM KmkmtAgeementTimeEmployment a ");
 		builderString.append("WHERE a.kmkmtAgeementTimeEmploymentPK.companyId = :companyId ");
+		builderString.append("AND a.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode = :employmentCategoryCode ");
 		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
-		FIND = builderString.toString();
+		FIND_EMPLOYMENT_DETAIL = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgeementTimeEmployment a ");
+		builderString.append("WHERE a.kmkmtAgeementTimeEmploymentPK.companyId = :companyId ");
+		builderString.append("AND a.kmkmtAgeementTimeEmploymentPK.basicSettingId != NULL ");
+		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
+		FIND_EMPLOYMENT_SETTING = builderString.toString();
 	}
 
 	@Override
@@ -51,9 +64,19 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 	}
 
 	@Override
-	public List<AgreementTimeOfEmployment> find(String companyId, LaborSystemtAtr laborSystemAtr) {
-		return this.queryProxy().query(FIND, KmkmtAgeementTimeEmployment.class).setParameter("companyId", companyId)
-				.setParameter("laborSystemAtr", laborSystemAtr.value).getList(f -> toDomain(f));
+	public Optional<String> findEmploymentBasicSettingId(String companyId, String employmentCategoryCode,
+			LaborSystemtAtr laborSystemAtr) {
+		return this.queryProxy().query(FIND_EMPLOYMENT_DETAIL, KmkmtAgeementTimeEmployment.class)
+				.setParameter("companyId", companyId).setParameter("laborSystemAtr", laborSystemAtr.value)
+				.setParameter("employmentCategoryCode", employmentCategoryCode, EmploymentCode.class)
+				.getSingle(f -> f.kmkmtAgeementTimeEmploymentPK.basicSettingId);
+	}
+
+	@Override
+	public List<String> findEmploymentSetting(String companyId, LaborSystemtAtr laborSystemAtr) {
+		return this.queryProxy().query(FIND_EMPLOYMENT_SETTING, KmkmtAgeementTimeEmployment.class)
+				.setParameter("companyId", companyId).setParameter("laborSystemAtr", laborSystemAtr.value)
+				.getList(f -> f.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode);
 	}
 
 	private KmkmtAgeementTimeEmployment toEntity(AgreementTimeOfEmployment agreementTimeOfEmployment) {
@@ -72,10 +95,10 @@ public class JpaAgreementTimeOfEmploymentRepostitory extends JpaRepository
 	private static AgreementTimeOfEmployment toDomain(KmkmtAgeementTimeEmployment kmkmtAgeementTimeEmployment) {
 		AgreementTimeOfEmployment agreementTimeOfEmployment = AgreementTimeOfEmployment.createJavaType(
 				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.companyId,
-				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.basicSettingId, 
+				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.basicSettingId,
 				kmkmtAgeementTimeEmployment.laborSystemAtr,
 				kmkmtAgeementTimeEmployment.kmkmtAgeementTimeEmploymentPK.employmentCategoryCode);
-		
+
 		return agreementTimeOfEmployment;
 	}
 }

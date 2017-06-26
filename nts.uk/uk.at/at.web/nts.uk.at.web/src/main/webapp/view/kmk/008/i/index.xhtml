@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 860,
-					height : 600
+					width : 660,
+					height : 550
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -22,17 +22,17 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area">
+			<div id="contents-area" data-bind="with: operationSetting">
 				<div class="label">#{i18n.getText('KMK008_5')}</div>
 				<hr />
-				<div class="valign-center control-group">
+				<div class="valign-center control-group control-group-margin">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_32')}</div>
 					<div id="combo-box-month-setting" tabindex="1"
 						data-bind="ntsComboBox: {
 						name: '#{i18n.getText('KMK008_32')}',
-						options: monthSettingItemList,
+						options: startingMonth,
 						optionsValue: 'value',
-						value: selectedMonthSettingItemList,
+						value: selectedStartingMonth,
 						optionsText: 'localizedName',
 						editable: false,
 						enable: true,
@@ -41,7 +41,7 @@
 						]} ">
 					</div>
 				</div>
-				<div class="valign-center control-group div-group-date-setting ">
+				<div class="valign-center control-group div-group-date-setting">
 					<div class="closing-date-clean">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_33')}</div>
 						<button tabindex="2"
@@ -50,10 +50,10 @@
 					<div class="closing-date-clean rdb-closing-date-classification">
 						<div id="rdb-closing-date-classification" tabindex="3"
 							data-bind="ntsRadioBoxGroup: {
-							options: closingDateClassificationItemList,
+							options: closingDateAtr,
 							optionsValue: 'value',
 							optionsText: 'localizedName',
-							value: selectedClosingDateClassificationItemList,
+							value: $parent.selectedClosingDateAtr,
 							enable: true }">
 						</div>
 					</div>
@@ -62,12 +62,12 @@
 						<div id="cbx-closing-date-setting" tabindex="4"
 							data-bind="ntsComboBox: {
 						name: '#{i18n.getText('KMK008_33')}',
-						options: closingDateSettingItemList,
+						options: closingDateType,
 						optionsValue: 'value',
-						value: selectedClosingDateSettingItemList,
+						value: selectedClosingDateType,
 						optionsText: 'localizedName',
 						editable: false,
-						enable: true,
+						enable: $parent.isEnableClosingDateType,
 						columns: [
 							{ prop: 'localizedName', length: 10 },
 						]} ">
@@ -75,16 +75,16 @@
 					</div>
 				</div>
 
-				<div class="valign-center control-group">
+				<div class="valign-center control-group control-group-margin">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_34')}</div>
 						<button tabindex="5"
 							data-bind="ntsHelpButton: {image: 'img_002.png', position: 'right top', enable: true }">?</button>
 						<div id="cbx-limit-setting" tabindex="6"
 							data-bind="ntsComboBox: {
 							name: '#{i18n.getText('KMK008_34')}',
-							options: limitSettingItemList,
+							options: numberTimesOverLimitType,
 							optionsValue: 'value',
-							value: selectedLimitSettingItemList,
+							value: selectedNumberTimesOverLimitType,
 							optionsText: 'localizedName',
 							editable: false,
 							enable: true,
@@ -93,27 +93,51 @@
 							]} ">
 						</div>
 				</div>
-				<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_35')}</div>
-						<button tabindex="7"
-							data-bind="ntsHelpButton: {image: 'img_003.png', position: 'right top', enable: true }">?</button>
-						<div>
-							<table style="width:100%">
-								 <tr style="background-color: green">
-								    <th>#{i18n.getText('KMK008_36')}</th>
-								    <th>#{i18n.getText('KMK008_35')}</th> 
+				<div class="valign-center control-group control-group-margin" id = "target-data-content">
+						<div class="target-data-content">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_35')}</div>
+							<button tabindex="7"
+								data-bind="ntsHelpButton: {image: 'img_003.png', position: 'right top', enable: true }">?</button>
+						</div>
+						<div class="target-data-content">
+							<table id="table-target-data">
+								 <tr style="background-color: #E0F59E">
+								    <th style="width: 30%">#{i18n.getText('KMK008_36')}</th>
+								    <th  style="width: 70%">#{i18n.getText('KMK008_35')}</th> 
 								  </tr>
 								  <tr>
-								    <td></td>
-								    <td></td>
+								    <td class="table-target-data-td-label">アラームリスト</td>
+								    <td>
+								    	<div tabindex="8" class="target-classification" data-bind="ntsSwitchButton: {
+								    		name: '#{i18n.getText('KMK008_35')}',
+											options: alarmListAtr,
+											optionsValue: 'value',
+											optionsText: 'localizedName',
+											value: selectedAlarmListAtr,
+											enable: $parent.isEnableTargetSetting }">
+										</div>
+								    </td>
 								  </tr>
 								  <tr>
-								    <td></td>
-								    <td></td>
+								    <td class="table-target-data-td-label">年間勤務表</td>
+								    <td>
+								    	<div tabindex="8" class="target-classification" data-bind="ntsSwitchButton: {
+								    		name: '#{i18n.getText('KMK008_35')}',
+											options: yearlyWorkTableAtr,
+											optionsValue: 'value',
+											optionsText: 'localizedName',
+											value: selectedYearlyWorkTableAtr,
+											enable: $parent.isEnableTargetSetting }">
+										</div>
+								    </td>
 								  </tr>
-								 
 							</table>	
 						</div>
+				</div>
+				<HR />
+				<div class="valign-center control-group function-button-class">
+						<button class="proceed x-large" data-bind = "">#{i18n.getText('KMK008_37')}</button>
+						<button class="small"  data-bind = "">#{i18n.getText('KMK008_38')}</button>
 				</div>
 				
 			</div>
