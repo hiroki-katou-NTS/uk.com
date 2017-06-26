@@ -99,7 +99,8 @@ module nts.uk.at.view.kml001.shr {
             name: KnockoutObservable<string>;
             displayNumber: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
-            constructor(companyID: string, iD: number, attendanceID: number, name: string, displayNumber: number, useAtr: number) {
+            isChange: KnockoutObservable<boolean>;
+            constructor(companyID: string, iD: number, attendanceID: number, name: string, displayNumber: number, useAtr: number, isChange: boolean) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
                 self.iD = ko.observable(iD);
@@ -107,6 +108,7 @@ module nts.uk.at.view.kml001.shr {
                 self.name = ko.observable(name);
                 self.displayNumber = ko.observable(displayNumber);
                 self.useAtr = ko.observable(useAtr);
+                self.isChange = ko.observable(isChange);
             }
         }
         
