@@ -390,6 +390,8 @@ module nts.uk.at.view.kmk004.a {
                 // Year changed. Code is unchanged
                 else {
                     request = { year: currentSetting.year(), employmentCode: currentSetting.employmentCode() };
+                    // Reload alreadySetting list.
+                    self.setAlreadySettingEmploymentList();
                 }
                 service.findEmploymentSetting(request)
                     .done(function(data) {
