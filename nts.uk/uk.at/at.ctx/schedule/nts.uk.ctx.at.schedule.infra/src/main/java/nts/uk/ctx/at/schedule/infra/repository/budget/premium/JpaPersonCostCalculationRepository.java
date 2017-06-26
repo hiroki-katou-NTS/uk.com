@@ -45,6 +45,12 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	
 	private final String SEL_ITEM_AFTER = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.kmlmpPersonCostCalculationPK.companyID = :companyID AND a.startDate > :startDate";
 	
+	private final String SEL_PRE_ATTEND = "SELECT a FROM KmldtPremiumAttendance a "
+			+ "WHERE a.kmldpPremiumAttendancePK.companyID = :companyID "
+			+ "AND a.kmldpPremiumAttendancePK.historyID = :historyID "
+			+ "AND a.kmldpPremiumAttendancePK.premiumID = :premiumID "
+			+ "AND a.kmldpPremiumAttendancePK.attendanceID = :attendanceID ";
+	
 	@Override
 	public void add(PersonCostCalculation personCostCalculation) {
 		this.commandProxy().insert(toPersonCostCalculationEntity(personCostCalculation));
@@ -86,7 +92,28 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
 	@Override
 	public void update(PersonCostCalculation personCostCalculation) {
-		this.commandProxy().update(toPersonCostCalculationEntity(personCostCalculation));
+		KmlmtPersonCostCalculation currentEntity = this.queryProxy()
+				.find(new KmlmpPersonCostCalculationPK(personCostCalculation.getCompanyID(), personCostCalculation.getHistoryID()), KmlmtPersonCostCalculation.class)
+				.get();
+		currentEntity.setStartDate(personCostCalculation.getStartDate());
+		currentEntity.setEndDate(personCostCalculation.getEndDate());
+		currentEntity.setUnitPrice(personCostCalculation.getUnitPrice().value);
+		currentEntity.setMemo(personCostCalculation.getMemo().v());
+		for(int i=0; i<10; i++){
+			currentEntity.kmlstPremiumSets.get(i).setPremiumRate(personCostCalculation.getPremiumSettings().get(i).getRate().v());
+			Integer premiumID = personCostCalculation.getPremiumSettings().get(i).getPremiumID();
+			currentEntity.kmlstPremiumSets.get(i).setKmldtPremiumAttendances( 
+					personCostCalculation.getPremiumSettings().get(i).getAttendanceItems()
+					.stream()
+					.map(x -> toPremiumAttendanceEntity(
+							personCostCalculation.getCompanyID(), 
+							personCostCalculation.getHistoryID(), 
+							premiumID, 
+							x))
+					.collect(Collectors.toList())
+			);
+		}
+		this.commandProxy().update(currentEntity);
 	}
 
 	@Override
@@ -180,9 +207,23 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	 * @return PremiumAttendance Entity Object
 	 */
 	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, Integer premiumID, Integer attendanceID){
-		return new KmldtPremiumAttendance(
-				new KmldpPremiumAttendancePK(companyID, historyID, premiumID, attendanceID),
-				null);
+		Optional<KmldtPremiumAttendance> kmldtPremiumAttendance = this.queryProxy().query(SEL_PRE_ATTEND, KmldtPremiumAttendance.class)
+				.setParameter("companyID", companyID)
+				.setParameter("historyID", historyID)
+				.setParameter("premiumID", premiumID)
+				.setParameter("attendanceID", attendanceID)
+				.getSingle();
+		if(kmldtPremiumAttendance.isPresent()){
+			return kmldtPremiumAttendance.get();
+		} else {
+			return new KmldtPremiumAttendance(
+					new KmldpPremiumAttendancePK(
+							companyID, 
+							historyID, 
+							premiumID, 
+							attendanceID), 
+					null);
+		}
 	}
 	
 	/**
