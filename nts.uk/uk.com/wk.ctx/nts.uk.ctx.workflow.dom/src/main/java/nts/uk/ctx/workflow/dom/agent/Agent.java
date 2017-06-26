@@ -129,14 +129,18 @@ public class Agent extends AggregateRoot {
 			throw new RuntimeException("Start date must before End date");
 		}
 		
+		GeneralDate toDay = GeneralDate.today();
+		
+		if (this.endDate.before(toDay)) {
+			throw new BusinessException("Msg_11");
+		}
+		
 		if (rangeDateList == null) {
 			return;
 		}
 		
-		GeneralDate toDay = GeneralDate.today();
-		
 		rangeDateList.stream().forEach(rangeDate -> {
-			if (!checkStartDate(toDay, rangeDate) || !checkEndDate(toDay, rangeDate)) {
+			if (!checkStartDate(rangeDate) || !checkEndDate(rangeDate)) {
 				throw new BusinessException("Msg_12");
 			}
 		});
@@ -147,7 +151,7 @@ public class Agent extends AggregateRoot {
 	 * @param rangeDateLatest range date latest
 	 * @return false if start date before end date in range date latest, else true
 	 */
-	private boolean checkStartDate(GeneralDate toDay, RangeDate rangeDate) {		
+	private boolean checkStartDate(RangeDate rangeDate) {		
 		if (this.startDate.before(rangeDate.getStartDate()) && this.startDate.after(rangeDate.getEndDate())) {
 			return false;
 		}
@@ -160,8 +164,8 @@ public class Agent extends AggregateRoot {
 	 * @param rangeDateLast range date last
 	 * @return false if end date after end date in range date latest, else true
 	 */
-	private boolean checkEndDate(GeneralDate toDay, RangeDate rangeDate) {	
-		if (this.endDate.before(toDay) ||  this.endDate.before(rangeDate.getStartDate()) && this.endDate.after(rangeDate.getEndDate())) {
+	private boolean checkEndDate(RangeDate rangeDate) {	
+		if (this.endDate.before(rangeDate.getStartDate()) && this.endDate.after(rangeDate.getEndDate())) {
 			return false;
 		}
 		
