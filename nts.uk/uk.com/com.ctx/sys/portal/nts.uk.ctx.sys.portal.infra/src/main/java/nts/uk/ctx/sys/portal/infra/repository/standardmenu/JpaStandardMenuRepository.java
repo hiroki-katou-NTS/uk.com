@@ -21,6 +21,8 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageJobSetPK;
 public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository {
 	private final String SEL = "SELECT s FROM CcgstStandardMenu s ";
 	private final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
+	private final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1"; 
 	private final String FIND_BY_AFTER_LOGIN_DISPLAY = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.afterLoginDisplay = :afterLoginDisplay ";
 	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
@@ -142,5 +144,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("system", system)
 				.setParameter("classification", classification)
 				.getSingle(c->toDomain(c));
+	}
+
+	@Override
+	public List<StandardMenu> findBySystem(String companyId, int system) {
+		return this.queryProxy().query(GET_ALL_STANDARD_MENU_BY_SYSTEM, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId).setParameter("system", system)
+				.getList(t -> toDomain(t));
 	}
 }
