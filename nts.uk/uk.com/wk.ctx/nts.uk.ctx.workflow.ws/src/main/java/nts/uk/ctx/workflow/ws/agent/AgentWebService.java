@@ -48,6 +48,12 @@ public class AgentWebService extends WebService {
 
 	}
 
+	@Path("findByCid")
+	@POST
+	public List<AgentDto> findByCid() {
+		return agentFinder.findByCid();
+
+	}
 	@Path("add")
 	@POST
 	@Produces("text/plain")
@@ -67,10 +73,10 @@ public class AgentWebService extends WebService {
 		this.deleteAgentCommandHandler.handle(command);
 	}
 
-	@Path("findAll")
+	@Path("findByDate")
 	@POST
 	public List<AgentDto> findAllDate(DateParam dateParam) {
-		return agentFinder.findAll(dateParam.getEmployeeId(),dateParam.getStartDate(),dateParam.getEndDate());
+		return agentFinder.findAll(dateParam.getStartDate(),dateParam.getEndDate());
 
 	}
 }

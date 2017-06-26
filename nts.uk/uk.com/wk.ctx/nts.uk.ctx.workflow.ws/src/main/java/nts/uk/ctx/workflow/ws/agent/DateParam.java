@@ -8,8 +8,6 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 public class DateParam {
 	
-	private String employeeId;
-	
 	private GeneralDate startDate;
 	
 	private GeneralDate endDate;

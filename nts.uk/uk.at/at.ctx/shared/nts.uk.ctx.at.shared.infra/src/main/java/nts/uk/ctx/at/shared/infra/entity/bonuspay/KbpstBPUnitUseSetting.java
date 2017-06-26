@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KbpstBPUnitUseSetting extends UkJpaEntity implements Serializable {
 	public static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KbpstBPUnitUseSettingPK companyId;
+	public KbpstBPUnitUseSettingPK kbpstBPUnitUseSettingPK;
 	@Column(name = "WORKPLACE_USE_ATR")
 	public BigDecimal workplaceUseAtr;
 	@Column(name = "PERSONAL_USE_ATR")
@@ -32,6 +32,6 @@ public class KbpstBPUnitUseSetting extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return companyId;
+		return kbpstBPUnitUseSettingPK;
 	}
 }

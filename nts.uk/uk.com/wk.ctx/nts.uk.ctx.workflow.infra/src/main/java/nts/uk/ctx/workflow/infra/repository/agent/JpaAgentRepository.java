@@ -18,7 +18,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	
 	private static final String SELECT_ALL_AGENT;
 	
-	private static final String QUERY_IS_EXISTED;
+	private static final String SELECT_AGENT_BY_DATE;
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -39,9 +39,9 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
-		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
-		builderString.append(" AND e.cmmmtAgentPK.requestId = :requestId");
-		QUERY_IS_EXISTED = builderString.toString();
+		builderString.append(" AND e.startDate >= :startDate");
+		builderString.append(" AND e.endDate <= :endDate");
+		SELECT_AGENT_BY_DATE = builderString.toString(); 
 		
 		}
 	
@@ -94,6 +94,13 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.setParameter("companyId", companyId).setParameter("employeeId", employeeId)
 				.getList(c -> convertToDomain(c));
 	}
+	
+	@Override
+	public List<Agent> findByCid(String companyId) {
+		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.getList(c -> convertToDomain(c));
+	}
 
 	/**
 	 * add Agent
@@ -141,12 +148,13 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.map(x -> convertToDomain(x));
 	}
 	@Override
-	public List<Agent> findAll(String companyId,String employeeId, GeneralDate startDate, GeneralDate endDate) {
-		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
+	public List<Agent> findAll(String companyId,GeneralDate startDate, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_AGENT_BY_DATE, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
-				.setParameter("companyId", employeeId)
-				.setParameter("companyId", startDate)
-				.setParameter("companyId", endDate)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));
 	}
+
+
 }
