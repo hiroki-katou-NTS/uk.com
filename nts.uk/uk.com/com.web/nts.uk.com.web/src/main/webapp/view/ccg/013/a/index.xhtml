@@ -70,20 +70,20 @@
 							<com:ko-foreach bind="menuBars">
 								<div data-bind="attr: {id: 'tab-content-' + code()}">
 									<div class="title-menu cf">
+										<com:ko-foreach bind="$parent.titleMenus">
 										<div id="title-menu1" class="title-menu-column valign-top">
-											<div class="title-menu-name">Title Menu</div>
+											<div class="title-menu-name" data-bind="text: menuBarName">Title Menu</div>
 											<ul class="tree-menu">
 												<li class="ui-state-default"><span
 													class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-												<li class="ui-state-default"><span
-													class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
 											</ul>
 											<button class="button-add-treemenu">
 												メニューバーの追加<span style="display: block">+</span>
 											</button>
-										</div>						
+										</div>		
+										</com:ko-foreach>				
 										<div class="unsortable">
-											<button class="button-add">
+											<button class="button-add" data-bind="click: $parent.openCdialog.bind($parent)">
 												メニューバーの追加<span style="display: block">+</span>
 											</button>
 										</div>
