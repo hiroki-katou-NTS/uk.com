@@ -155,7 +155,6 @@ module kcp.share.tree {
                             self.addAlreadySettingAttr(res, newAlreadySettings);
                             self.itemList(res);
                             self.backupItemList(res);
-//                            self.addIconToAlreadyCol();
                         });
                     }
                     // Init component.
@@ -164,9 +163,6 @@ module kcp.share.tree {
                     $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/tree.xhtml', function() {
                         ko.cleanNode($input[0]);
                         ko.applyBindings(self, $input[0]);
-                        
-                        // Add icon to column already setting.
-//                        self.addIconToAlreadyCol();
                     });
                     
                     $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
@@ -177,9 +173,9 @@ module kcp.share.tree {
             });
             
             // defined function get data list.
-            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
-                return self.backupItemList();
-            }
+//            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+//                return self.backupItemList();
+//            }
             
             return dfd.promise();
         }
@@ -341,33 +337,6 @@ module kcp.share.tree {
             return listModel;
         }
         
-        /**
-         * Fake list work place
-         */
-        private fake(): Array<UnitModel> {
-            return [
-                {code: '001', name: 'Name001', nodeText: '001 Name001', level: 1, settingType: null, childs: [
-                    {code: '001001', name: 'Name001001', nodeText: '001001 Name001001', level: 2, settingType: null, childs: [
-                        {code: '001001001', name: 'Name001001001', nodeText: '001001001 Name001001001', level: 3, settingType: null, childs: []}
-                    ]},
-                    {code: '001002', name: 'Name001002', nodeText: '001002 Name001002', level: 2, settingType: null, childs: []}
-                ]},
-                {code: '002', name: 'Name002', nodeText: '002 Name002', level: 1, settingType: null, childs: [
-                    {code: '002001', name: 'Name002001', nodeText: '002001 Name002001', level: 2, settingType: null, childs: []},
-                    {code: '002002', name: 'Name002002', nodeText: '002002 Name002002', level: 2, settingType: null, childs: [
-                        {code: '002002001', name: 'Name002002001', nodeText: '002002001 Name002002001', level: 3, settingType: null, childs: []}
-                    ]}
-                ]},
-                {code: '003', name: 'Name003', nodeText: '003 Name003', level: 1, settingType: null, childs: [
-                    {code: '003001', name: 'Name003001', nodeText: '003001 Name003001', level: 2, settingType: null, childs: []},
-                    {code: '003002', name: 'Name003002', nodeText: '003002 Name003002', level: 2, settingType: null, childs: [
-                        {code: '003002001', name: 'Name003002001', nodeText: '003002001 Name003002001', level: 3, settingType: null, childs: []}
-                    ]}
-                ]},
-                {code: '004', name: 'Name004', nodeText: '004 Name004', level: 1, settingType: null, childs: []}
-            ];
-        }
-        
     }
      export module service {
         
@@ -395,7 +364,7 @@ interface JQuery {
      */
     ntsTreeComponent(option: kcp.share.tree.TreeComponentOption): JQueryPromise<void>;
     
-    getDataList(): Array<kcp.share.list.UnitModel>;
+//    getDataList(): Array<kcp.share.list.UnitModel>;
 }
 
 (function($: any) {
