@@ -124,6 +124,7 @@ public class Agent extends AggregateRoot {
 		RangeDate rangeDateLastest = null;
 		RangeDate rangeDateLast = null;
 		
+		
 		if (rangeDateList == null) {
 			return;
 		}
@@ -141,10 +142,19 @@ public class Agent extends AggregateRoot {
 			return;
 		}
 		
+//		if ((this.startDate.before(rangeDateLastest.getEndDate()) && this.startDate.after(rangeDateLast.getEndDate())) 
+//				|| this.endDate.after(rangeDateLast.getStartDate())) {
+//			throw new BusinessException("Msg_012"); // had error
+//		}
+
+		
 		// check start date and end date
 		if (!checkDateLatest(rangeDateLastest) || !checkDateLast(rangeDateLast)) {
 			throw new BusinessException("Msg_012"); // had error
 		}
+	
+
+		
 	}
 	
 	/**

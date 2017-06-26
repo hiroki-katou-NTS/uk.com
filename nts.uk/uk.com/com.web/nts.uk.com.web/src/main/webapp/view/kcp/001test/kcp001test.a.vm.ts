@@ -9,12 +9,12 @@ module kcp001test.a.viewmodel {
         selectedCode: KnockoutObservable<string>;
         bySelectedCode: KnockoutObservable<string>;
         isAlreadySetting: KnockoutObservable<boolean>;
-        isShowMultiSelect: KnockoutObservable<boolean>;
-        isShowAsDialog: KnockoutObservable<boolean>;
+        isDialog: KnockoutObservable<boolean>;
         isShowNoSelectionItem: KnockoutObservable<boolean>;
+//        isShowNoSelectRow: KnockoutObservable<boolean>;
         
+        multiSelectionCode: KnockoutObservableArray<any>;
         multiSelectedCode: KnockoutObservableArray<any>;
-        multiSelectAllItems: KnockoutObservableArray<any>;
         
         listComponentOption: ComponentOption;
         alreadySettingList: KnockoutObservableArray<any>;
@@ -26,6 +26,8 @@ module kcp001test.a.viewmodel {
         
         selectionTypeList: KnockoutObservableArray<any>;
         selectedType: KnockoutObservable<number>;
+        selectionOption: KnockoutObservableArray<any>;
+        selectedOption: KnockoutObservable<number>;
         
         constructor() {
             var self = this;
@@ -39,8 +41,8 @@ module kcp001test.a.viewmodel {
                 textmode: "text",
                 textalign: "left"
             }));
-            self.selectedCode = ko.observable('02');
-            self.bySelectedCode = ko.observable('02');
+            self.selectedCode = ko.observable('1');
+            self.bySelectedCode = ko.observable('1');
             // Selected Item subscribe
             self.selectedCode.subscribe(function(data: string) {
                 self.bindEmploymentSettingData(self.employmentList().filter((item) => {
@@ -52,13 +54,8 @@ module kcp001test.a.viewmodel {
                 self.showAlreadySet();
             });
             
-            self.isShowMultiSelect = ko.observable(false);
-            self.isShowMultiSelect.subscribe(function() {
-                self.showMultiSelect();
-            });
-            
-            self.isShowAsDialog = ko.observable(false);
-            self.isShowAsDialog.subscribe(function() {
+            self.isDialog = ko.observable(false);
+            self.isDialog.subscribe(function(value: boolean) {
                 self.showAsDialog();
             });
             
@@ -67,10 +64,10 @@ module kcp001test.a.viewmodel {
                 self.showNoSelectionItem();
             });
             
+            self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+            self.multiSelectionCode = ko.observableArray([]);
             
-            self.multiSelectAllItems = ko.observableArray([]);
-            self.multiSelectedCode = ko.observableArray(['02', '04']);
-            self.alreadySettingList = ko.observableArray([{code: '01', isAlreadySetting: true}, {code: '02', isAlreadySetting: true}]);
+            self.alreadySettingList = ko.observableArray([{code: '1', isAlreadySetting: true}, {code: '2', isAlreadySetting: true}]);
 
             self.code = ko.observable(null);
             self.name = ko.observable(null);
@@ -110,7 +107,6 @@ module kcp001test.a.viewmodel {
                     self.bindEmploymentSettingData(self.employmentList().filter((item) => {
                         return item.code == self.selectedCode();
                     })[0]);
-                    //                    self.hasSelectedEmp(true);
                 }
             });
             
@@ -132,6 +128,23 @@ module kcp001test.a.viewmodel {
                     case 2:
                         self.selectFirstItems();
                         break;
+                    case 3:
+                        self.selectNone();
+                        break;
+                }
+            });
+            self.selectionOption = ko.observableArray([
+                {code : 0, name: 'Single Selection'},
+                {code : 1, name: 'Multiple Selection'},
+            ]);
+            self.selectedOption = ko.observable(0);
+            self.selectedOption.subscribe(function(data: number) {
+                if (data == 0) {
+                    self.showSingleSelect();
+                }
+                else {
+                    self.showMultiSelect();
+                    
                 }
             });
         }
@@ -152,22 +165,43 @@ module kcp001test.a.viewmodel {
             if ($('.nts-input').ntsError('hasError')) {
                 return;
             }
-            var item = self.alreadySettingList().filter((item) => {
-                return item.code == self.selectedCode();
-            })[0];
-            if (!item) {
-                self.alreadySettingList.push({ "code": self.selectedCode(), "isAlreadySetting": true });
+
+            if (self.listComponentOption.isMultiSelect) {
+                self.multiSelectedCode().forEach((selected) => {
+                    var existItem = self.alreadySettingList().filter((item) => {
+                        return item.code == selected;
+                    })[0];
+                    if (!existItem) {
+                        self.alreadySettingList.push({"code": selected, "isAlreadySetting": true});
+                    }
+                });
+            } else {
+                var existItem = self.alreadySettingList().filter((item) => {
+                    return item.code == self.selectedCode();
+                })[0];
+                if (!existItem) {
+                    self.alreadySettingList.push({ "code": self.selectedCode(), "isAlreadySetting": true });
+                }
             }
             
             self.listComponentOption.isShowAlreadySet = true;
+            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
         
         private settingDeletedItem() {
             let self = this;
-            self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                return item.code == self.selectedCode();
-            })[0]);
-            self.listComponentOption.isShowAlreadySet = true;
+            if (self.listComponentOption.isMultiSelect) {
+                self.multiSelectedCode().forEach((selected) => {
+                    self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
+                        return item.code == selected;
+                    })[0]);
+                });
+            } else {
+                self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
+                    return item.code == self.selectedCode();
+                })[0]);
+            }
+            self.isShowAsDialog(true);
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
         
@@ -181,48 +215,45 @@ module kcp001test.a.viewmodel {
         // Show Already Setting
         private showAlreadySet(): void {
             var self = this;
-            if (!self.listComponentOption.isShowAlreadySet) {
-                self.listComponentOption.isShowAlreadySet = true;
-            }
-            else {
-                self.listComponentOption.isShowAlreadySet = false;
-            }
+            self.listComponentOption.isShowAlreadySet = self.isAlreadySetting();
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
         // Show MultiSelection
         private showMultiSelect(): void {
             var self = this;
-            if (self.listComponentOption.isMultiSelect) {
-                self.listComponentOption.isMultiSelect = false;
-                self.listComponentOption.selectedCode = self.selectedCode;
-            }
-            else {
-                self.listComponentOption.isMultiSelect = true;
+            self.listComponentOption.isMultiSelect = true;
+            //                self.code(null);
+            //                self.name(null);
+            self.listComponentOption.selectedCode = self.multiSelectionCode;
+            if (self.listComponentOption.selectType == SelectType.SELECT_BY_SELECTED_CODE) {
                 self.listComponentOption.selectedCode = self.multiSelectedCode;
+            } else {
+                self.listComponentOption.selectedCode = self.multiSelectionCode;
             }
-
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+        }
+        private showSingleSelect(): void {
+            var self = this;
+            self.listComponentOption.isMultiSelect = false;
+            self.listComponentOption.selectedCode = self.selectedCode;
+            // Binding Data to right content
+            //                self.bindEmploymentSettingData(self.employmentList().filter((item) => {
+            //                    return item.code == self.selectedCode();
+            //                })[0]);
+            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+
         }
         // Show KCP as Dialog
         private showAsDialog(): void {
             var self = this;
-            if (!self.listComponentOption.isDialog) {
-                self.listComponentOption.isDialog = true;
-            }
-            else {
-                self.listComponentOption.isDialog = false;
-            }
+            self.listComponentOption.isDialog = self.isDialog();
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
         
         // show No Selection Item
         private showNoSelectionItem(): void {
             var self = this;
-            if (!self.listComponentOption.isShowNoSelectRow) {
-                self.listComponentOption.isShowNoSelectRow = true;
-            } else {
-                self.listComponentOption.isShowNoSelectRow = false;
-            }
+            self.listComponentOption.isShowNoSelectRow = self.isShowNoSelectionItem();
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
         
@@ -235,7 +266,7 @@ module kcp001test.a.viewmodel {
             }
             else {
                 self.listComponentOption.selectType = SelectType.SELECT_BY_SELECTED_CODE;
-                self.listComponentOption.selectedCode = self.selectedCode;
+                self.listComponentOption.selectedCode = self.bySelectedCode;
             }
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
@@ -245,7 +276,8 @@ module kcp001test.a.viewmodel {
             var self = this;
             self.listComponentOption.isMultiSelect = true;
             self.listComponentOption.selectType = SelectType.SELECT_ALL;
-            self.listComponentOption.selectedCode = self.multiSelectAllItems;
+            self.listComponentOption.selectedCode = self.multiSelectionCode;
+            self.selectedOption(1);
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
 
@@ -254,15 +286,29 @@ module kcp001test.a.viewmodel {
             var self = this;
             if (self.listComponentOption.isMultiSelect) {
                 self.listComponentOption.selectType = SelectType.SELECT_FIRST_ITEM;
-                self.listComponentOption.selectedCode = self.multiSelectedCode;
+                self.listComponentOption.selectedCode = self.multiSelectionCode;
             }
             else {
                 self.listComponentOption.selectType = SelectType.SELECT_FIRST_ITEM;
-                self.listComponentOption.selectedCode = self.bySelectedCode;
+                self.listComponentOption.selectedCode = self.selectedCode;
             }
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
 
+        
+        
+        // Selection Type: Select None
+        private selectNone(): void {
+            var self = this;
+            if (!self.listComponentOption.isMultiSelect) {
+                self.listComponentOption.selectedCode = self.selectedCode;
+            } else {
+                self.listComponentOption.selectedCode = self.multiSelectionCode;
+            }
+            self.listComponentOption.selectType = SelectType.NO_SELECT;
+            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+        }
+        
         private bindEmploymentSettingData(data: UnitModel): void {
             var self = this;
             self.clearErrors();
@@ -273,8 +319,8 @@ module kcp001test.a.viewmodel {
                 self.code(data.code);
                 self.name(data.name);
             }
-
         }
+        
         private resetComponent() {
             var self = this;
             

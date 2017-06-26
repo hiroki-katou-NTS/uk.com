@@ -1,0 +1,7 @@
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+
+
+
+

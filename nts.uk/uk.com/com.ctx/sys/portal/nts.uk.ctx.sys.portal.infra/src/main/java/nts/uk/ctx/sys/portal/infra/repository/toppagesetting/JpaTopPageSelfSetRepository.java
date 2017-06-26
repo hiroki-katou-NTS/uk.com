@@ -1,17 +1,21 @@
 package nts.uk.ctx.sys.portal.infra.repository.toppagesetting;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
+import nts.uk.ctx.sys.portal.dom.toppagesetting.JobPosition;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSet;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSetRepository;
 import nts.uk.ctx.sys.portal.infra.entity.layout.CcgmtLayout;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageSelfSet;
 import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CcgptTopPageSelfSetPK;
+import nts.uk.ctx.sys.portal.infra.entity.toppagesetting.CjpmtJobPosition;
 /**
  * 
  * @author hoatt
@@ -22,6 +26,8 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 	private final String SELECT_TOPPAGE_SELFSET = "SELECT c FROM CcgptTopPageSelfSet c"
 			+ " WHERE c.ccgptTopPageSelfSetPK.employeeId = :employeeId";
 	private final String SELECT_SINGLE = "SELECT c FROM CcgmtLayout c WHERE c.ccgmtLayoutPK.layoutID = :layoutID AND c.pgType = :pgType";
+	private final String SELECT_JOB_POSITION = "SELECT c FROM CjpmtJobPosition c"
+			+ " WHERE c.employeeId = :employeeId" + " AND c.startDate <= :date" + " AND c.endDate >= :date";
 	
 	private static TopPageSelfSet toDomain(CcgptTopPageSelfSet entity){
 		val domain = TopPageSelfSet.createFromJavaType(
@@ -43,6 +49,13 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 	 */
 	private Layout toDomainLayout(CcgmtLayout entity) {
 		return Layout.createFromJavaType(entity.ccgmtLayoutPK.companyID, entity.ccgmtLayoutPK.layoutID, entity.pgType);
+	}
+	private JobPosition toDomainJobPosition(CjpmtJobPosition entity){
+		return JobPosition.createSimpleFromJavaType(entity.getCjpmtJobPositionPK().id,
+				entity.getEmployeeId(), 
+				entity.getJobId(),
+				entity.getStartDate(),
+				entity.getEndDate());
 	}
  	/**
  	 * get top page self set
@@ -78,5 +91,17 @@ public class JpaTopPageSelfSetRepository extends JpaRepository implements TopPag
 				.setParameter("layoutID", layoutID)
 				.setParameter("pgType", pgType)
 				.getSingle(c -> toDomainLayout(c));
+	}
+	@Override
+	public Optional<JobPosition> getJobPosition(String employeeId, GeneralDate date) {
+		List<JobPosition> lst = this.queryProxy().query(SELECT_JOB_POSITION, CjpmtJobPosition.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("date", date)
+				.getList(c->toDomainJobPosition(c));
+		if(lst.isEmpty()){
+			return Optional.empty();
+		}else{
+			return Optional.of(lst.get(0));
+		}
 	}
 }

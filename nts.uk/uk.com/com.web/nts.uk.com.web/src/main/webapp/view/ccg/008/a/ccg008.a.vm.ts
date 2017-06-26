@@ -24,9 +24,12 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var code =  nts.uk.ui.windows.getShared("TopPageCode");
-//            service.getTopPageByCode(code).done(function(){
-//                
+            var liveviewcontainer = $("#liveview");
+             liveviewcontainer.append($("<img/>").attr("src",nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/"+'636a50eb-f1e4-4142-a9f8-0ea0d45c52cc')));
+//            var code =  nts.uk.ui.windows.getShared("TopPageCode");
+            var code = '1';
+//            service.getTopPageByCode(code).done((data: model.LayoutForMyPageDto) => {
+//                console.log(data);
 //            });
             service.getMyPage("b137dc10-6f4c-4cda-93a4-207117f111fb").done((data: model.LayoutForMyPageDto) => {
                 console.log(data);
@@ -38,41 +41,27 @@
                             item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
                             item.placementPartDto.topPagePartID, item.placementPartDto.type);
                     });
+                    if(data.flowMenu != null){
+                        _.map(data.flowMenu, (items) => {
+                            listPlacement.push( new model.Placement(items.fileID, items.fileName,
+                            items.row, items.column,
+                            items.widthSize, items.heightSize, null,
+                            items.toppagePartID, 2));
+                        });
+                    }
                     listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
-//                    self.placements(listPlacement);
                     console.log(listPlacement);
                     self.changePreviewIframe("0a03c8bc-574e-49f4-939d-56b96fb39c5e");
                     self.setupPositionAndSizeAll();
                     if (listPlacement !== undefined)
                         self.placements(listPlacement);
                     _.defer(() => { self.setupPositionAndSizeAll(); });
-//            var flowmenu: model.Placement = listPlacement[0];
-//            if (flowmenu !== undefined)
-//                self.flowmenu(flowmenu);
-//            _.defer(() => { self.setupPositionAndSize2(self.flowmenu()); });
-                    
                     
                 }
                 dfd.resolve();
             });
             return dfd.promise();
         }
-                
-                /** Setup position and size for a Placement */
-//        private setupPositionAndSize2(flowmenu: model.Placement) {
-//            console.log(flowmenu);
-//            $("#preview-flowmenu").css({
-//                width: (flowmenu.width * 150) + ((flowmenu.width - 1) * 10),
-//                height: (flowmenu.height * 150) + ((flowmenu.height - 1) * 10),
-//                
-//            });
-//        }
-        
-        
-        
-        
-        
-        
         
             //for frame review layout
             private changePreviewIframe(layoutID: string){
@@ -166,11 +155,22 @@
             companyID: string;
             layoutID: string;
             pgType: number;
-            flowMenu: Array<FlowMenu>;
+            flowMenu: Array<FlowMenuPlusDto>;
             placements: Array<PlacementDto>;
          }
-         export interface FlowMenu{
+         export interface FlowMenuPlusDto{
+            widthSize: number;
+            heightSize: number;
+            toppagePartID: string;
             fileID: string;
+            fileName: string;
+            fileType: string;
+            mimeType: string;
+            originalSize: number;
+            storedAt: string;
+            row: number;
+            column: number;
+             
          }
          
      }

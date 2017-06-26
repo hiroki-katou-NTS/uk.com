@@ -1,6 +1,7 @@
 module nts.uk.com.view.ccg.share.ccg {
 
     import ListType = kcp.share.list.ListType;
+    import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import TreeType = kcp.share.tree.TreeType;
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
@@ -20,12 +21,13 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedCodeEmployment: KnockoutObservableArray<string>;
             selectedCodeClassification: KnockoutObservableArray<string>;
             selectedCodeJobtitle: KnockoutObservableArray<string>;
-            selectedCode: KnockoutObservableArray<string>;
+            selectedCodeWorkplace: KnockoutObservableArray<string>;
+            selectedCodeEmployee: KnockoutObservableArray<string>;
             baseDate: KnockoutObservable<Date>;
             employments: any;
             classifications: any;
             jobtitles: any;
-            workplaces: any;
+            workplaces: TreeComponentOption;
             employeeinfo: any;
             onSearchAllClicked: (data: PersonModel[]) => void;
             onSearchOnlyClicked: (data: PersonModel) => void;
@@ -37,7 +39,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.selectedCodeEmployment = ko.observableArray([]);
                 self.selectedCodeClassification = ko.observableArray([]);
                 self.selectedCodeJobtitle = ko.observableArray([]);
-                self.selectedCode = ko.observableArray([]);
+                self.selectedCodeWorkplace = ko.observableArray([]);
+                self.selectedCodeEmployee = ko.observableArray([]);
                 self.baseDate = ko.observable(new Date());
                 self.tabs = ko.observableArray([
                     {
@@ -56,6 +59,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
+                
                 self.employments = {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
@@ -77,18 +81,18 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.JOB_TITLE,
-                    selectedCode: this.selectedCodeJobtitle,
-                    isDialog: false,
+                    selectedCode: self.selectedCodeJobtitle,
+                    isDialog: true,
                     baseDate: self.baseDate,
                 }
 
                 self.workplaces = {
                     isShowAlreadySet: false,
-                    isMultiSelect: false,
+                    isMultiSelect: true,
                     treeType: TreeType.WORK_PLACE,
-                    selectedCode: self.selectedCode,
+                    selectedCode: self.selectedCodeWorkplace,
                     baseDate: self.baseDate,
-                    isDialog: false
+                    isDialog: true
                 }
 
 
@@ -112,6 +116,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     $('#employmentList').ntsListComponent(self.employments);
                     $('#classificationList').ntsListComponent(self.classifications);
                     $('#jobtitleList').ntsListComponent(self.jobtitles);
+                    $('#workplaceList').ntsTreeComponent(self.workplaces);
                     $(".accordion").accordion({
                         active: false,
                         collapsible: true
@@ -135,6 +140,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 dto.baseDate = self.baseDate();
                 dto.classificationCodes = self.selectedCodeClassification();
                 dto.employmentCodes = self.selectedCodeEmployment();
+                dto.jobTitleCodes = self.selectedCodeJobtitle();
+                dto.workplaceCodes = self.selectedCodeWorkplace();
+                dto.
                 return dto;
             }
             
@@ -148,8 +156,8 @@ module nts.uk.com.view.ccg.share.ccg {
                         listType: ListType.EMPLOYEE,
                         employeeInputList: self.toUnitModelList(data),
                         selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        selectedCode: self.selectedCode,
-                        isDialog: false,
+                        selectedCode: self.selectedCodeEmployee,
+                        isDialog: true,
                         isShowNoSelectRow: false,
                     }
                     $('#employeeinfo').ntsListComponent(self.employeeinfo);

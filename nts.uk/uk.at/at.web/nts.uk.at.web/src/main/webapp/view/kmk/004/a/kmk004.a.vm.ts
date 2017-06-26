@@ -14,7 +14,7 @@ module nts.uk.at.view.kmk004.a {
 
             // Employment list component.
             listEmploymentOption: any;
-            employmentCodes: KnockoutObservableArray<any>;
+            alreadySettingEmployments: KnockoutObservableArray<any>;
             selectedEmploymentCode: KnockoutObservable<string>;
 
             // Flag.
@@ -64,24 +64,61 @@ module nts.uk.at.view.kmk004.a {
 
                 // year subscribe.
                 self.companyWTSetting.year.subscribe(val => {
-                    self.loadCompanySetting();
+                    // Validate
+                    if ($('#companyYearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.loadCompanySetting();
+                    }
                 });
                 self.employmentWTSetting.year.subscribe(val => {
-                    self.loadEmploymentSetting();
+                    // Validate
+                    if ($('#employmentYearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.loadEmploymentSetting();
+                    }
                 });
                 self.workplaceWTSetting.year.subscribe(val => {
-                    self.loadWorkplaceSetting();
+                    // Validate
+                    if ($('#workplaceYearPicker').ntsError('hasError')) {
+                        return;
+                    } else {
+                        self.loadWorkplaceSetting();
+                    }
                 });
 
                 // Employment list component.
-                self.employmentCodes = ko.observableArray([]);
+                self.alreadySettingEmployments = ko.observableArray([]);
                 self.selectedEmploymentCode = ko.observable('');
                 self.setListComponentOption();
                 self.selectedEmploymentCode.subscribe(code => {
+                    self.isLoading(false);
                     if (code) {
                         self.loadEmploymentSetting(code);
                     }
                 });
+
+                // Enable/Disable handler.
+                (<any>ko.bindingHandlers).allowEdit = {
+                    update: function(element, valueAccessor) {
+                        if (valueAccessor()) {
+                            element.disabled = false;
+                            element.readOnly = false;
+
+                            if (element.tagName === 'FIELDSET') {
+                                $(':input', element).removeAttr('disabled');
+                            }
+                        } else {
+                            element.disabled = true;
+                            element.readOnly = true;
+
+                            if (element.tagName === 'FIELDSET') {
+                                $(':input', element).attr('disabled', 'disabled');
+                            }
+                        }
+                    }
+                };
             }
 
             /**
@@ -141,6 +178,7 @@ module nts.uk.at.view.kmk004.a {
                     let list = $('#list-employment').getDataList();
                     if (list) {
                         self.selectedEmploymentCode(list[0].code);
+                        self.setAlreadySettingEmploymentList();
                     }
                 });
             }
@@ -199,8 +237,8 @@ module nts.uk.at.view.kmk004.a {
                     return;
                 }
                 service.saveEmploymentSetting(ko.toJS(self.employmentWTSetting)).done(() => {
-                    self.setAlreadySettingEmploymentList();
                     self.isNewMode(false);
+                    self.addAlreadySetting(self.employmentWTSetting.employmentCode());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
@@ -217,7 +255,6 @@ module nts.uk.at.view.kmk004.a {
                     return;
                 }
                 service.saveWorkplaceSetting(ko.toJS(self.workplaceWTSetting)).done(() => {
-                    self.setAlreadySettingWorkplaceList();
                     self.isNewMode(false);
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 }).fail(error => {
@@ -235,7 +272,7 @@ module nts.uk.at.view.kmk004.a {
                     let command = { year: empt.year(), employmentCode: empt.employmentCode() }
                     service.removeEmploymentSetting(command).done(() => {
                         self.isNewMode(true);
-                        self.setAlreadySettingEmploymentList();
+                        self.removeAlreadySetting(empt.employmentCode());
                         // Reserve current code + name + year.
                         let newEmpt = new EmploymentWTSetting();
                         newEmpt.employmentCode(empt.employmentCode());
@@ -264,7 +301,6 @@ module nts.uk.at.view.kmk004.a {
                     let command = { year: workplace.year(), workplaceId: workplace.workplaceId() }
                     service.removeWorkplaceSetting(command).done(() => {
                         self.isNewMode(true);
-                        self.setAlreadySettingWorkplaceList();
                         // Reserve current code + name + year + id.
                         let newSetting = new WorkPlaceWTSetting();
                         newSetting.year(workplace.year());
@@ -318,6 +354,7 @@ module nts.uk.at.view.kmk004.a {
                 let dfd = $.Deferred<void>();
                 service.findCompanySetting(self.companyWTSetting.year())
                     .done(function(data) {
+                        self.clearError();
                         // update mode.
                         if (data) {
                             self.isNewMode(false);
@@ -356,6 +393,7 @@ module nts.uk.at.view.kmk004.a {
                 }
                 service.findEmploymentSetting(request)
                     .done(function(data) {
+                        self.clearError();
                         // update mode.
                         if (data) {
                             self.isNewMode(false);
@@ -380,7 +418,6 @@ module nts.uk.at.view.kmk004.a {
                         self.employmentWTSetting.sortMonth(self.startMonth());
                         self.isLoading(false);
                     });
-                self.setAlreadySettingEmploymentList();
             }
 
             /**
@@ -400,6 +437,7 @@ module nts.uk.at.view.kmk004.a {
                 }
                 service.findWorkplaceSetting(request)
                     .done(function(data) {
+                        self.clearError();
                         // update mode.
                         if (data) {
                             self.isNewMode(false);
@@ -420,7 +458,6 @@ module nts.uk.at.view.kmk004.a {
                         self.workplaceWTSetting.sortMonth(self.startMonth());
                         self.isLoading(false);
                     });
-                self.setAlreadySettingWorkplaceList();
             }
 
             /**
@@ -445,8 +482,8 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 service.findAllEmploymentSetting(self.employmentWTSetting.year()).done(listCode => {
                     if (listCode) {
-                        self.employmentCodes.removeAll();
-                        listCode.forEach(item => self.employmentCodes.push({ code: item, isAlreadySetting: true }));
+                        self.alreadySettingEmployments.removeAll();
+                        listCode.forEach(item => self.alreadySettingEmployments.push({ code: item, isAlreadySetting: true }));
                     }
                 });
             }
@@ -489,7 +526,7 @@ module nts.uk.at.view.kmk004.a {
                     listType: 1, // employment list.
                     selectedCode: this.selectedEmploymentCode,
                     isDialog: false,
-                    alreadySettingList: self.employmentCodes
+                    alreadySettingList: self.alreadySettingEmployments
                 };
             }
 
@@ -497,7 +534,19 @@ module nts.uk.at.view.kmk004.a {
              * Clear all errors.
              */
             private clearError(): void {
+                let self = this;
                 if (nts.uk.ui._viewModel) {
+                    // Reset year if has error.
+                    if ($('#companyYearPicker').ntsError('hasError')) {
+                        self.companyWTSetting.year(new Date().getFullYear());
+                    }
+                    if ($('#employmentYearPicker').ntsError('hasError')) {
+                        self.employmentWTSetting.year(new Date().getFullYear());
+                    }
+                    if ($('#workplaceYearPicker').ntsError('hasError')) {
+                        self.workplaceWTSetting.year(new Date().getFullYear());
+                    }
+                    // Clear error inputs
                     $('.nts-editor').ntsError('clear');
                 }
             }
@@ -508,6 +557,28 @@ module nts.uk.at.view.kmk004.a {
             private hasError(): boolean {
                 return $('.nts-editor').ntsError('hasError');
             }
+
+            /**
+             * ...
+             */
+            private addAlreadySetting(code: string): void {
+                let self = this;
+                let l = self.alreadySettingEmployments().filter(i => code == i.code);
+                if (l[0]) {
+                    return;
+                }
+                self.alreadySettingEmployments.push({ code: code, isAlreadySetting: true });
+            }
+
+            /**
+             * ...
+             */
+            private removeAlreadySetting(code: string): void {
+                let self = this;
+                let ase = self.alreadySettingEmployments().filter(i => code == i.code)[0];
+                self.alreadySettingEmployments.remove(ase);
+            }
+
         }
 
         export class ItemModel {
@@ -655,6 +726,8 @@ module nts.uk.at.view.kmk004.a {
                 self.flexMonthly = new ko.observableArray<FlexMonth>([]);
                 for (let i = 1; i < 13; i++) {
                     let flm = new FlexMonth();
+                    flm.speName(nts.uk.resource.getText("KMK004_21",[i]));
+                    flm.staName(nts.uk.resource.getText("KMK004_22",[i]));
                     flm.month(i);
                     flm.statutoryTime(0);
                     flm.specifiedTime(0);
@@ -664,13 +737,9 @@ module nts.uk.at.view.kmk004.a {
             public updateData(dto: any): void {
                 let self = this;
                 self.flexDaily.updateData(dto.flexDaily);
-                self.flexMonthly.removeAll();
-                dto.flexMonthly.forEach(item => {
-                    let m = new FlexMonth();
-                    m.month(item.month);
-                    m.statutoryTime(item.statutoryTime);
-                    m.specifiedTime(item.specifiedTime);
-                    self.flexMonthly.push(m);
+                self.flexMonthly().forEach(i => {
+                    let updatedData = dto.flexMonthly.filter(j => i.month() == j.month)[0];
+                    i.updateData(updatedData.statutoryTime, updatedData.specifiedTime);
                 });
             }
             public sortMonth(startMonth: number): void {
@@ -706,13 +775,22 @@ module nts.uk.at.view.kmk004.a {
         }
         export class FlexMonth {
             month: KnockoutObservable<number>;
+            speName: KnockoutObservable<string>;
+            staName: KnockoutObservable<string>;
             statutoryTime: KnockoutObservable<number>;
             specifiedTime: KnockoutObservable<number>;
             constructor() {
                 let self = this;
                 self.month = ko.observable(0);
+                self.speName = ko.observable('');
+                self.staName = ko.observable('');
                 self.statutoryTime = ko.observable(0);
                 self.specifiedTime = ko.observable(0);
+            }
+            public updateData(statutoryTime: number, specifiedTime: number): void {
+                let self = this;
+                self.statutoryTime(statutoryTime);
+                self.specifiedTime(specifiedTime);
             }
         }
         export class NormalSetting {
@@ -744,6 +822,8 @@ module nts.uk.at.view.kmk004.a {
                 for (let i = 1; i < 13; i++) {
                     let m = new Monthly();
                     m.month(i);
+                    m.normal(nts.uk.resource.getText("KMK004_14",[i]));
+                    m.deformed(nts.uk.resource.getText("KMK004_26",[i]));
                     self.monthly.push(m);
                 }
             }
@@ -751,16 +831,12 @@ module nts.uk.at.view.kmk004.a {
                 let self = this;
                 self.daily(dto.daily);
                 self.weekly(dto.weekly);
-                self.monthly.removeAll();
-                dto.monthly.forEach(item => {
-                    let m = new Monthly();
-                    m.month(item.month);
-                    m.time(item.time);
-                    self.monthly.push(m);
+                self.monthly().forEach(i => {
+                    let updatedData = dto.monthly.filter(j => i.month() == j.month)[0];
+                    i.updateData(updatedData.time);
                 });
             }
             public sortMonth(startMonth: number): void {
-                let self = this;
                 let self = this;
                 let month = startMonth;
                 let sortedList: Array<any> = new Array<any>();
@@ -780,11 +856,20 @@ module nts.uk.at.view.kmk004.a {
         export class Monthly {
             month: KnockoutObservable<number>;
             time: KnockoutObservable<number>;
+            normal: KnockoutObservable<string>;
+            deformed: KnockoutObservable<string>;
 
             constructor() {
                 let self = this;
                 self.time = ko.observable(0);
                 self.month = ko.observable(0);
+                self.normal = ko.observable('');
+                self.deformed = ko.observable('');
+            }
+
+            public updateData(time: number): void {
+                let self = this;
+                self.time(time);
             }
         }
         export class UsageUnitSetting {
