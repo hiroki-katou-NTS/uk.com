@@ -3,17 +3,17 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
     export class ScreenModel {
         //Text edittor
-        nameMenuBar: KnockoutObservable<string>;
+        nameTitleBar: KnockoutObservable<string>;
         //colorpicker
         letterColor: KnockoutObservable<string>;
         backgroundColor: KnockoutObservable<string>;
         //Radio button
-        itemRadioAtcClass: KnockoutObservableArray<any>;
-        selectedRadioAtcClass: KnockoutObservable<number>;
+        itemTitleAtr: KnockoutObservableArray<any>;
+        selectedTitleAtr: KnockoutObservable<number>;
         //GridList
         listTitleMenu: KnockoutObservableArray<TitleMenu>;
         columns: KnockoutObservableArray<any>;
-        currentListTitleMenu: KnockoutObservableArray<any>;
+        currentTitleMenu: KnockoutObservableArray<any>;
         selectCodeTitleMenu: KnockoutObservable<string>;
 
         //file Upload
@@ -28,21 +28,23 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         constructor() {
             var self = this;
-            self.nameMenuBar = ko.observable("");
+            self.nameTitleBar = ko.observable("");
             //Radio button
-            self.itemRadioAtcClass = ko.observableArray([]);
-            self.selectedRadioAtcClass = ko.observable(1);
+            self.itemTitleAtr = ko.observableArray([
+                { value: 1, titleAtrName: resource.getText('CCG013_34') },
+                { value: 2, titleAtrName: resource.getText('CCG013_35') }]);
+            self.selectedTitleAtr = ko.observable(1);
             //color picker
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
             //GridList
             self.listTitleMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', key: 'code', width: 100 },
-                { headerText: '名称', prop: 'displayName', key: 'displayName', width: 230 }
+                { headerText: 'コード', key: 'titleCode', width: 100 },
+                { headerText: '名称', key: 'titleName', width: 230 }
             ]);
             self.selectCodeTitleMenu = ko.observable('');
-            self.currentListTitleMenu = ko.observableArray([]);
+            self.currentTitleMenu = ko.observableArray([]);
             //delete button 
             self.isDelete = ko.observable(false);
             //image upload
@@ -64,25 +66,15 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-//            var data = windows.getShared("CCG013A_StandardMeNu");
-//            if (data) {
-//                self.nameMenuBar(data.nameMenuBar);
-//                self.letterColor(data.pickerLetter);
-//                self.backgroundColor(data.pickerBackground);
-//                self.selectedRadioAtcClass(data.radioActlass);
-//            }
-
             /** Get TitleBar*/
             service.getTitleMenu().done(function(titleMenu: any) {
-                let lstSource : Array<TitleMenu> = [];
-                if(titleMenu.length>0){
-                    _.forEach(titleMenu, function(item){
-                            lstSource.push(new TitleMenu(item.titleMenuCD,item.name));
-                    })   
+                let lstSource: Array<TitleMenu> = [];
+                if (titleMenu.length > 0) {
+                    _.forEach(titleMenu, function(item) {
+                        lstSource.push(new TitleMenu(item.titleMenuCD, item.name));
+                    })
                 }
                 self.listTitleMenu(lstSource);
-//                let listTitleMenu: Array<TitleMenu> = _.orderBy((titleMenu.listStandardMenu, ["code"], ["asc"]));
-//                self.listStandardMenu(editMenuBar.listStandardMenu);
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -101,21 +93,20 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             var self = this;
             var option = {
                 stereoType: "any",
-                onSuccess: function() {alert('upload Fail'); },
-                onFail: function() { }
+                onSuccess: function() { alert('upload Success'); },
+                onFail: function() { alert('upload Fails')}
             }
             $("#file_upload").ntsFileUpload({ stereoType: "any" }).done(function(res) {
                 self.fileID(res[0].id);
                 self.filename('');
                 self.imageName(res[0].originalName);
-                self.imageSize(res[0].originalSize);
+                self.imageSize(res[0].originalSize+'KB');
                 self.isDelete(true);
-                //console.log(res);
             }).fail(function(err) {
                 nts.uk.ui.dialog.alertError({ messageId: err.messageId });
             });
         }
-        
+
         private deleteFile(): void {
             var self = this;
             self.imageName('');
@@ -130,35 +121,34 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         submit() {
             var self = this;
-            var menuBar = new MenuBar(self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass());
-            windows.setShared("CCG013C_MenuBar", menuBar);
+            var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID());
+            windows.setShared("CCG013C_TitleBar", titleBar);
+            console.log(titleBar);
             self.cancel_Dialog();
         }
 
-        deleteButtonClick() {
-
-        }
-
-    class MenuBar {
-        nameMenuBar: string;
+    class TitleBar {
+        nameTitleBar: string;
         letterColor: string;
         backgroundColor: string;
-        selectedRadioAtcClass: number;
+        selectedTitleAtr: number;
+        imageId:string;
 
-        constructor(nameMenuBar: string, letterColor: string, backgroundColor: string, selectedRadioAtcClass: number) {
-            this.nameMenuBar = nameMenuBar;
+        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, selectedTitleAtr: number,imageId:string) {
+            this.nameTitleBar = nameTitleBar;
             this.letterColor = letterColor;
             this.backgroundColor = backgroundColor;
-            this.selectedRadioAtcClass = selectedRadioAtcClass;
+            this.selectedTitleAtr = selectedTitleAtr;
+            this.imageId = imageId;
         }
     }
-    class TitleMenu{
-        titleCode:string;
-        titleName:string;
-        constructor(titleCode:string,titleName:string){
+    class TitleMenu {
+        titleCode: string;
+        titleName: string;
+        constructor(titleCode: string, titleName: string) {
             var self = this;
             self.titleCode = titleCode;
-            self.titleName = titleName;    
-        }    
+            self.titleName = titleName;
+        }
     }
 }

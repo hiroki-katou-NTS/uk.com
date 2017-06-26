@@ -7,35 +7,41 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1000, height: 820 };</script>
+			<script>var dialogSize = { width: 820, height: 820 };</script>
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.PersonId
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ccg013.c.style.css" />
 			<com:scriptfile path="ccg013.c.start.js" />
-			<com:scriptfile path="ccg013.c.service.js" />	
+			<com:scriptfile path="ccg013.c.service.js" />
 			<com:scriptfile path="ccg013.c.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<span>#{i18n.getText('CCG013_30')}</span>
+
 			<div id="contents-area">
 				<table class="control">
 					<tr>
+						<td colspan="5" id="description"><span>#{i18n.getText('CCG013_30')}</span></td>
+					</tr>
+					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_31')}</div></td>
-						<td><input data-bind="ntsTextEditor: {value: nameMenuBar}" /></td>
+						<td><input data-bind="ntsTextEditor: {value: nameTitleBar}" /></td>
 						<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG013_19')}</div></td>
-						<td><div id="colorpicker" data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50}" /></td>
+						<td><div id="colorpicker"
+								data-bind="ntsColorPicker: {value: letterColor, enable: true, width: 50}" /></td>
+						<td></td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CCG013_33')}</div></td>
 						<td>
-							<div data-bind="ntsRadioBoxGroup: {
-										options: itemRadioAtcClass,
+							<div
+								data-bind="ntsRadioBoxGroup: {
+										options: itemTitleAtr,
 										optionsValue: 'value',
-										optionsText: 'localizedName',
-										value: selectedRadioAtcClass,	
+										optionsText: 'titleAtrName',
+										value: selectedTitleAtr,	
 										enable: true}">
 							</div>
 						</td>
@@ -43,64 +49,62 @@
 							<div data-bind="ntsFormLabel: { requiselectedRadioAtcClassred: true }">#{i18n.getText('CCG013_23')}</div>
 						</td>
 						<td>
-							<div id="colorpicker" data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50}" />
-						</td> 
+							<div id="colorpicker"
+								data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50}" />
+						</td>
+						<td></td>
 					</tr>
 					<tr>
 						<td colspan="2" rowspan="10">
 							<div id="listTitle">
 								<div id="titleMenu" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_37')}</div>
-								<div style="width: 350px; margin-bottom: 10px;"
-									data-bind="ntsSearchBox: {searchMode: 'filter',
-											targetKey: 'code', 
+								<div style="width: 340px; margin-bottom: 10px;"
+									data-bind="ntsSearchBox: {
+											searchMode: 'filter',
+											targetKey: 'titleCode', 
 											comId: 'multi-list', 
 											items: listTitleMenu, 
-											selected: currentListTitleMenu, 
-											selectedKey: 'code', 
-											fields: ['displayName', 'code'], 
-											mode: 'igGrid'}" />	
+											selected: currentTitleMenu, 
+											selectedKey: 'titleCode', 
+											fields: ['titleName', 'titleCode'], 
+											mode: 'igGrid'}" />
 								<table id="multi-list"
 									data-bind="ntsGridList: {
 											height: 350,
 											options: listTitleMenu,
-											optionsValue: 'code',
+											optionsValue: 'titleCode',
 											columns: columns,
-											value: currentListTitleMenu}">
+											value: currentTitleMenu}">
 								</table>
-							</div>		
+							</div>
 						</td>
-						<td class="top_left" colspan="2">
-							<table>
-								<tr>
-									<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_41')}</div></td>
-									<td>
-										<div id="file_upload" 
-											data-bind="ntsFileUpload:{
-												filename: filename,
-												accept: accept,
-												text :textId, 
-												onchange: uploadFile.bind($data)}">
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td></td>
-									<td><span id="imageName" data-bind="text:imageName"></span></td>
-									<td><button class="danger" data-bind="click: deleteFile, enable: isDelete()" tabindex="9">#{i18n.getText('CCG030_5')}</button></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td>
-										<label>サイズ:</label>
-										<label data-bind="text: imageSize"></label>
-									</td>
-								</tr>
-								<tr>
-									<td></td>
-									<td id="liveview"></td>
-								</tr>
-							</table>
+						<td>
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG013_41')}</div>
 						</td>
+						<td colspan="2">
+							<div id="file_upload"
+								data-bind="ntsFileUpload:{
+								filename: filename,
+								accept: accept,
+								text :textId, 
+								onchange: uploadFile.bind($data)}">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td class="col2"><span id="imageName" data-bind="text:imageName"></span></td>
+						<td class="pull-right"><button id="delBtn" class="danger"
+												data-bind="click: deleteFile, enable: isDelete()"
+												tabindex="9">#{i18n.getText('CCG030_5')}</button></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td colspan="2"><label>サイズ:</label> <label data-bind="text: imageSize"></label></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td id="liveview" colspan="2"></td>
 					</tr>
 				</table>
 			</div>

@@ -1,8 +1,13 @@
+.ntsControl.radio-wrapper.reset-element {
+	padding-top: 20px !important;
+}
+
 #listTitle {
 	background-color: #E0F59E;
 	height: 470px;
-	width: 400px;
+	width: 365px;
 	padding-left: 20px;
+	padding-bottom: 15px;
 }
 
 .ui-igcombo-wrapper {
@@ -27,27 +32,38 @@ table.control {
 }
 
 #contents-area {
-	margin-left: 25px !important
-}
-
-#titleMenu {
-	padding-top: 10px;
-	padding-bottom: 10px;
-}
-
-.top_left {
-	vertical-align: top !important;
+	margin-left: 10px;
 }
 
 img {
-	width: 350px;
-	height: 200px;
+	width: 270px;
+	height: 150px;
 }
-#imageName{
+
+#imageName {
 	cursor: pointer;
-  	color: blue;
-  	text-decoration: underline;
+	color: blue;
+	text-decoration: underline;
 }
-table tr td{
-	padding : 5px;
+
+table tr td {
+	padding: 5px;
 }
+
+#description {
+	height: 50px;
+}
+
+#titleMenu {
+	margin: 15px 0px 15px 0px;
+}
+
+.col2{
+	width: 180px;
+}
+#delBtn{
+	position: relative;
+    width: 80px;
+}
+
+.pull-right {text-align: right;}
