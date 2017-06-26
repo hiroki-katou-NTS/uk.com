@@ -64,7 +64,7 @@ module ccg030.a.viewmodel {
             $(".nts-input").ntsError("clear");
             self.isCreate(true);
             self.selectedFlowMenuCD(null);
-            self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 1, 1));
+            self.selectedFlowMenu(new model.FlowMenu("", "", "", "", "", 0, 4, 4));
         }
 
         /** Click Registry button */
@@ -74,8 +74,8 @@ module ccg030.a.viewmodel {
             var flowMenu = ko.mapping.toJS(self.selectedFlowMenu);
             var topPageCode = flowMenu.topPageCode;
             $(".nts-input").trigger("validate");
-            if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
-                $('#file_upload').ntsError('set', '選択されていないファイル');
+           if (util.isNullOrEmpty(self.selectedFlowMenu().fileID()))
+                $('#file_upload').ntsError('set', '選択されていないファイル'); 
             if (!errors.hasError()) {
                 nts.uk.ui.block.invisible();
                 if (self.isCreate() === true) {
@@ -151,9 +151,7 @@ module ccg030.a.viewmodel {
                 onSuccess: function() { },
                 onFail: function() { }
             }
-            /*if (!util.isNullOrEmpty(self.selectedFlowMenu().toppagePartID())) {
-                self.deleteFile();
-            }*/
+         
             $("#file_upload").ntsFileUpload(option).done(function(res) {
                 self.tempFileID(res[0].id);
                 self.selectedFlowMenu().fileID(res[0].id);
