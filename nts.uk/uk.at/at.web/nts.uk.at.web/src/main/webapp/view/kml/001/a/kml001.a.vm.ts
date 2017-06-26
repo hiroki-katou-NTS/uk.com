@@ -42,7 +42,8 @@ module nts.uk.at.view.kml001.a {
                                 item.attendanceID,
                                 item.name,
                                 item.displayNumber,
-                                item.useAtr
+                                item.useAtr, 
+                                false
                             ));
                     });
                     let sum = 0;
@@ -229,7 +230,8 @@ module nts.uk.at.view.kml001.a {
                                         item.attendanceID,
                                         item.name,
                                         item.displayNumber,
-                                        item.useAtr
+                                        item.useAtr,
+                                        false
                                     ));
                             });
                             // PersonCostCalculationSelect: Done
