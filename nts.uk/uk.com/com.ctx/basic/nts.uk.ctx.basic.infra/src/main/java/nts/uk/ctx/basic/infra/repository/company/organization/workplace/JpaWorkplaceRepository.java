@@ -356,4 +356,41 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		return workPlaceHierarchieRes;
 	}
 
+	@Override
+	public List<Workplace> convertToWorkplace(String companyId, List<String> workplaceCode) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KWPMT_WORK_PLACE (KwpmtWorkPlace SQL)
+		CriteriaQuery<KwpmtWorkplace> cq = criteriaBuilder.createQuery(KwpmtWorkplace.class);
+
+		// root data
+		Root<KwpmtWorkplace> root = cq.from(KwpmtWorkplace.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equals workplaceId
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.cid), companyId));
+		
+		// and work place code
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(KwpmtWorkplace_.kwpmtWorkplacePK)
+				.get(KwpmtWorkplacePK_.wplcd).in(workplaceCode)));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KwpmtWorkplace> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+	}
+
 }
