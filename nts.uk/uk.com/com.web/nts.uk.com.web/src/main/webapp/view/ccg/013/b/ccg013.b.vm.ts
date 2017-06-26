@@ -6,7 +6,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         nameMenuBar: KnockoutObservable<string>;
         //Combobox
         listSystemSelect: KnockoutObservableArray<any>;
-        selectedCodeSystemSelect: KnockoutObservable<string>;
+        selectedCodeSystemSelect: KnockoutObservable<number>;
         //colorpicker
         letterColor: KnockoutObservable<string>;
         backgroundColor: KnockoutObservable<string>;
@@ -25,7 +25,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.nameMenuBar = ko.observable("");
             //Combo box
             self.listSystemSelect = ko.observableArray([]);
-            self.selectedCodeSystemSelect = ko.observable('')
+            self.selectedCodeSystemSelect = ko.observable(0);
             //Radio button
             self.itemRadioAtcClass = ko.observableArray([]);
             self.selectedRadioAtcClass = ko.observable(1);
@@ -40,7 +40,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 { headerText: '名称', prop: 'displayName', key: 'displayName', width: 230 }
             ]);
             self.selectCodeStandardMenu = ko.observable('');
-            self.currentListStandardMenu = ko.observableArray([]);
+            self.currentListStandardMenu = ko.observable('');
             //Follow SystemSelect
             self.selectedSystemID = ko.observable(null);
             self.selectedCodeSystemSelect.subscribe((value) => { self.changeSystem(value); });
@@ -82,7 +82,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
 
         submit() {
             var self = this;
-            var menuBar = new MenuBar(self.currentListStandardMenu(), self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass(), self.selectedCodeSystemSelect());
+            var standMenu = _.find(self.listStandardMenu(), 'code', self.currentListStandardMenu());
+            var menuBar = new MenuBar(self.currentListStandardMenu(), self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass(), self.selectedCodeSystemSelect(), standMenu.classification);
             windows.setShared("CCG013B_MenuBar", menuBar);
             self.cancel_Dialog();
         }
@@ -104,14 +105,16 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         backgroundColor: string;
         selectedRadioAtcClass: number;
         system: number;
+        menuCls: number;
 
-        constructor(code: string, nameMenuBar: string, letterColor: string, backgroundColor: string, selectedRadioAtcClass: number, system: number) {
+        constructor(code: string, nameMenuBar: string, letterColor: string, backgroundColor: string, selectedRadioAtcClass: number, system: number, menuCls: number) {
             this.code = code;
             this.nameMenuBar = nameMenuBar;
             this.letterColor = letterColor;
             this.backgroundColor = backgroundColor;
             this.selectedRadioAtcClass = selectedRadioAtcClass;
             this.system = system;
+            this.menuCls = menuCls;
         }
     }
 }

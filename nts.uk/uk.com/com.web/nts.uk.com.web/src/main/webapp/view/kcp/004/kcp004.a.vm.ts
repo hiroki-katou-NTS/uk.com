@@ -74,8 +74,8 @@ module kcp004.a.viewmodel {
         }
         
         private copy() {
-            // TODO: pending issue #84074
-            nts.uk.ui.dialog.alert('Pending issue #84074');
+            // issue #84074
+            nts.uk.ui.dialog.info('複写時の処理については現状対象外となります。');
         }
         
         private register() {

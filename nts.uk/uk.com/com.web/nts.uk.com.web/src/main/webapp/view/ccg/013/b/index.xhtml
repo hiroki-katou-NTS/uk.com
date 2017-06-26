@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 550, height: 800 };</script>	
+			<script>var dialogSize = { width: 550, height: 600 };</script>	
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -62,7 +62,7 @@
 						<div style="width: 350px ; margin-bottom: 10px;" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
 							items: listStandardMenu, selected: currentListStandardMenu, selectedKey: 'code', fields: ['displayName', 'code'], mode: 'igGrid'}" />		
 						<table id="multi-list" data-bind="ntsGridList: {
-								height: 320,
+								height: 200,
 								options: listStandardMenu,
 								optionsValue: 'code',
 								columns: columns,
