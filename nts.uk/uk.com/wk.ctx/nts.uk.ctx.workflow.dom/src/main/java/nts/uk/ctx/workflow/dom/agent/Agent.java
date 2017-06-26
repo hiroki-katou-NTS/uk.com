@@ -140,7 +140,7 @@ public class Agent extends AggregateRoot {
 		}
 		
 		rangeDateList.stream().forEach(rangeDate -> {
-			if (!checkStartDate(rangeDate) || !checkEndDate(rangeDate)) {
+			if (!checkStartDate(rangeDate)) {
 				throw new BusinessException("Msg_12");
 			}
 		});
@@ -152,20 +152,15 @@ public class Agent extends AggregateRoot {
 	 * @return false if start date before end date in range date latest, else true
 	 */
 	private boolean checkStartDate(RangeDate rangeDate) {		
-		if (this.startDate.before(rangeDate.getStartDate()) && this.startDate.after(rangeDate.getEndDate())) {
+		if ((this.startDate.afterOrEquals(rangeDate.getStartDate()) && this.endDate.beforeOrEquals(rangeDate.getEndDate()))) {
+			return false;
+		}
+				
+		if ((this.startDate.after(rangeDate.getStartDate()) && this.startDate.before(rangeDate.getEndDate()))) {
 			return false;
 		}
 		
-		return true;
-	}
-	
-	/**
-	 * check end date by range date latest
-	 * @param rangeDateLast range date last
-	 * @return false if end date after end date in range date latest, else true
-	 */
-	private boolean checkEndDate(RangeDate rangeDate) {	
-		if (this.endDate.before(rangeDate.getStartDate()) && this.endDate.after(rangeDate.getEndDate())) {
+		if ((this.endDate.after(rangeDate.getStartDate()) && this.endDate.before(rangeDate.getEndDate()))) {
 			return false;
 		}
 		
