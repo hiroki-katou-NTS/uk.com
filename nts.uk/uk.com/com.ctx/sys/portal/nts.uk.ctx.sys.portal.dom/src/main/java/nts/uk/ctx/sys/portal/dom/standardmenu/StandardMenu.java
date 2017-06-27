@@ -14,6 +14,8 @@ import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class StandardMenu extends AggregateRoot {
+	
+
 	/** The company id. */
 	private String companyId;
 	
@@ -82,7 +84,9 @@ public class StandardMenu extends AggregateRoot {
 		this.webMenuSetting = webMenuSetting;
 		this.afterLoginDisplay = afterLoginDisplay;
 		this.logSettingDisplay = logSettingDisplay;
-	}	
+	}
+	
+	
 	
 	/**
 	 * Creates the from java type.
@@ -107,4 +111,5 @@ public class StandardMenu extends AggregateRoot {
 				EnumAdaptor.valueOf(system, System.class), classification, 
 				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, logSettingDisplay);
 	}	
+	
 }
