@@ -2509,11 +2509,8 @@ var nts;
                         var validateResult;
                         // Check CharType
                         if (!util.isNullOrUndefined(this.charType)) {
-                            if (this.charType.viewName === '半角数字') {
-                                inputText = uk.text.toOneByteAlphaNumberic(inputText);
-                            }
-                            else if (this.charType.viewName === '半角英数字') {
-                                inputText = uk.text.toOneByteAlphaNumberic(uk.text.toUpperCase(inputText));
+                            if (this.charType.viewName === '半角英数字') {
+                                inputText = uk.text.toUpperCase(inputText);
                             }
                             else if (this.charType.viewName === 'カタカナ') {
                                 inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
