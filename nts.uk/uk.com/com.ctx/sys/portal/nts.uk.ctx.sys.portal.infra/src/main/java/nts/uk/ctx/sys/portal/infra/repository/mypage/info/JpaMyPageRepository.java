@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.MyPage;
 import nts.uk.ctx.sys.portal.dom.mypage.MyPageRepository;
 import nts.uk.ctx.sys.portal.infra.entity.mypage.CcgptMyPage;
+import nts.uk.ctx.sys.portal.infra.entity.mypage.CcgptMyPagePK;
 /**
  * 
  * @author hoatt
@@ -25,6 +26,7 @@ public class JpaMyPageRepository extends JpaRepository implements MyPageReposito
 	}
 	private static CcgptMyPage toEntity(MyPage domain){
 		val entity = new CcgptMyPage();
+		entity.ccgptMyPagePK = new CcgptMyPagePK();
 		entity.ccgptMyPagePK.employeeId = domain.getEmployeeId();
 		entity.layoutId = domain.getLayoutId();
 		return entity;
@@ -34,7 +36,7 @@ public class JpaMyPageRepository extends JpaRepository implements MyPageReposito
 		Optional<MyPage> myPage =  this.queryProxy().query(SELECT_MYPAGE, CcgptMyPage.class)
 				.setParameter("employeeId", employeeId)
 				.getSingle(c->toDomain(c));
-		if(myPage.isPresent()){
+		if(!myPage.isPresent()){
 			return null;
 		}else{
 			return myPage.get();
