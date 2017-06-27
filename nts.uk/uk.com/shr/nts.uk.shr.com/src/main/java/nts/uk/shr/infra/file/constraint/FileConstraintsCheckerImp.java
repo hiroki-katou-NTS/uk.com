@@ -34,26 +34,29 @@ public class FileConstraintsCheckerImp implements FileConstraintsChecker {
 			// check size
 			if (fileInfor.getOriginalSize() > fileStereo.getLimitedSize()) {
 				throw new BusinessException(
-						I18NText.main("Msg_70").addRaw(fileStereo.getLimitedSize() / (1024.0*1024.0)).build());
+						I18NText.main("Msg_70").addRaw(fileStereo.getLimitedSize() / (1024.0 * 1024.0)).build());
 			}
 			// authorization
 			// TODO:
 			// check extension
-			if (!fileStereo.getSupportedExtension().isEmpty()
-					&& !fileStereo.getSupportedExtension().contains(getFileExtension(fileInfor.getOriginalName()))) {
-				throw new BusinessException(I18NText.main("Msg_77")
-						.addRaw(fileStereo.getSupportedExtension().stream().collect(Collectors.joining(","))).build());
+			if (!fileStereo.getSupportedExtension().isEmpty()) {
+				if (fileStereo.getSupportedExtension().stream().map(x -> x.toLowerCase())
+						.filter(x -> x.equals(getFileExtension(fileInfor.getOriginalName()))).count() == 0)
+					throw new BusinessException(I18NText.main("Msg_77")
+							.addRaw(fileStereo.getSupportedExtension().stream().collect(Collectors.joining(",")))
+							.build());
 			}
 		}
 	}
 
+	// ignore case sensitive
 	private String getFileExtension(String fileName) {
 		int index = fileName.lastIndexOf('.');
 		if (index == -1 || index == fileName.length() - 1) {
 			return Strings.EMPTY;
 		}
 
-		return fileName.substring(index + 1);
+		return fileName.substring(index + 1).toLowerCase();
 	}
 
 	@Override
