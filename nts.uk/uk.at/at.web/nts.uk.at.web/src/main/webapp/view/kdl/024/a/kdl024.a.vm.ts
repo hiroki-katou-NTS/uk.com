@@ -118,7 +118,6 @@ module kdl024.a.viewmodel {
                         self.listBudget.push(updateItem);
                     }
                     self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
-                    //Fix bug #83990
                     $('#inpName').focus();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
@@ -194,6 +193,7 @@ module kdl024.a.viewmodel {
             if (currentItem !== undefined) {
                 self.isNew(false);
                 self.currentItem(new BudgetItem(currentItem.externalBudgetCode, currentItem.externalBudgetName, currentItem.budgetAtr, currentItem.unitAtr));
+                $('#inpName').focus();
             }
             else {
                 self.isNew(true);
