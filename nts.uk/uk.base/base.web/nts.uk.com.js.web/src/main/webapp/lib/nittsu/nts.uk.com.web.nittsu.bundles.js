@@ -4081,7 +4081,7 @@ var nts;
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
-                                if (deleteField === true && primaryKey !== null && !uk.util.isNullOrUndefined(row[primaryKey])) {
+                                if (deleteField === true && primaryKey !== null && !uk.util.isNullOrUndefined(row[primaryKey]) && $grid.data("enable") !== false) {
                                     return result[0].outerHTML;
                                 }
                                 else {
@@ -8896,6 +8896,9 @@ var nts;
                                             var value = opt[switchValue_1];
                                             var text = opt[switchText_1];
                                             var btn = $('<button class="nts-switch-button" tabindex="-1"/>').text(text);
+                                            if ($grid.data("enable") === false) {
+                                                btn.attr("disabled", "disabled");
+                                            }
                                             btn.attr('data-value', value);
                                             if (val == value) {
                                                 btn.addClass('selected');

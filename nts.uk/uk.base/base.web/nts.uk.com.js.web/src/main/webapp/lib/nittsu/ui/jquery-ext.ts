@@ -323,7 +323,7 @@ module nts.uk.ui.jqueryExtentions {
                     var primaryKey = $grid.igGrid("option", "primaryKey");
                     var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                     result.attr("data-value", row[primaryKey]);
-                    if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey])) {
+                    if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey]) && $grid.data("enable") !== false) {
                         return result[0].outerHTML;
                     } else {
                         return result.attr("disabled", "disabled")[0].outerHTML;

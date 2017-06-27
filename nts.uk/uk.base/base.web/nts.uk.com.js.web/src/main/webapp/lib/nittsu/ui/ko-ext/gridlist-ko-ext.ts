@@ -53,7 +53,9 @@ module nts.uk.ui.koExtentions {
                                 let value = opt[switchValue];
                                 let text = opt[switchText]; 
                                 let btn = $('<button class="nts-switch-button" tabindex="-1"/>').text(text);
-                                
+                                if ($grid.data("enable") === false){
+                                    btn.attr("disabled", "disabled");      
+                                }
                                 btn.attr('data-value', value);
                                 if (val == value) {
                                     btn.addClass('selected');
