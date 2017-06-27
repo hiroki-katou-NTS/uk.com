@@ -198,7 +198,8 @@ module nts.uk.ui.validation {
                 if (timeParse.success) {
                     result.success(timeParse.toValue());
                 } else {
-                    result.fail(""); 
+                    result.fail(timeParse.getMsg()); 
+                    return result;
                 }
                 
                 if (!util.isNullOrUndefined(this.constraint)) {
@@ -207,6 +208,7 @@ module nts.uk.ui.validation {
                         let max = time.parseTime(this.constraint.max);
                         if (timeParse.success && (max.toValue() < timeParse.toValue())) {
                             result.fail("");
+                            return result;
                         }
                     }
                     
@@ -215,6 +217,7 @@ module nts.uk.ui.validation {
                         let min = time.parseTime(this.constraint.min);
                         if (timeParse.success && (min.toValue() > timeParse.toValue())) {
                             result.fail("");
+                            return result;
                         }
                     }
                     
@@ -250,6 +253,7 @@ module nts.uk.ui.validation {
             }
             else {
                 result.fail(parseResult.getMsg());
+                return result;
             }
             
             // Time clock
@@ -261,6 +265,7 @@ module nts.uk.ui.validation {
                         let maxMoment = moment.duration(maxStr);
                         if (parseResult.success && (maxMoment.hours()*60 + maxMoment.minutes()) < inputMoment) {
                             result.fail("");
+                            return result;
                         } 
                     } 
                     if (!util.isNullOrUndefined(this.constraint.min)) {
@@ -268,6 +273,7 @@ module nts.uk.ui.validation {
                         let minMoment = moment.duration(minStr);
                         if (parseResult.success && (minMoment.hours()*60 + minMoment.minutes()) > inputMoment) {
                             result.fail("");
+                            return result;
                         }
                     }
                     

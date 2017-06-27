@@ -2625,7 +2625,8 @@ var nts;
                                 result.success(timeParse.toValue());
                             }
                             else {
-                                result.fail("");
+                                result.fail(timeParse.getMsg());
+                                return result;
                             }
                             if (!util.isNullOrUndefined(this.constraint)) {
                                 if (!util.isNullOrUndefined(this.constraint.max)) {
@@ -2633,6 +2634,7 @@ var nts;
                                     var max = uk.time.parseTime(this.constraint.max);
                                     if (timeParse.success && (max.toValue() < timeParse.toValue())) {
                                         result.fail("");
+                                        return result;
                                     }
                                 }
                                 if (!util.isNullOrUndefined(this.constraint.min)) {
@@ -2640,6 +2642,7 @@ var nts;
                                     var min = uk.time.parseTime(this.constraint.min);
                                     if (timeParse.success && (min.toValue() > timeParse.toValue())) {
                                         result.fail("");
+                                        return result;
                                     }
                                 }
                                 if (!result.isValid && this.constraint.valueType === "Time") {
@@ -2672,6 +2675,7 @@ var nts;
                         }
                         else {
                             result.fail(parseResult.getMsg());
+                            return result;
                         }
                         // Time clock
                         if (this.outputFormat === "time") {
@@ -2682,6 +2686,7 @@ var nts;
                                     var maxMoment = moment.duration(maxStr);
                                     if (parseResult.success && (maxMoment.hours() * 60 + maxMoment.minutes()) < inputMoment) {
                                         result.fail("");
+                                        return result;
                                     }
                                 }
                                 if (!util.isNullOrUndefined(this.constraint.min)) {
@@ -2689,6 +2694,7 @@ var nts;
                                     var minMoment = moment.duration(minStr);
                                     if (parseResult.success && (minMoment.hours() * 60 + minMoment.minutes()) > inputMoment) {
                                         result.fail("");
+                                        return result;
                                     }
                                 }
                                 if (!result.isValid && this.constraint.valueType === "Clock") {
