@@ -59,8 +59,8 @@ module kdl024.a.viewmodel {
                     self.isNew(false);
                     self.listBudget(lstBudget);
                     self.findItemByIndex(0);
-                }
-                else {
+                    _.defer(() => { $("#inpName").focus(); });
+                } else {
                     self.isNew(true);
                     self.newMode();
                 }
