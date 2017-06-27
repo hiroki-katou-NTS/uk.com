@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.infra.entity.mypage;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,6 +18,9 @@ public class CcgptMyPage extends UkJpaEntity {
 	@EmbeddedId
 	public CcgptMyPagePK ccgptMyPagePK;	
 
+	/** The layout id. */
+	@Column(name = "LAYOUT_ID")
+	public String layoutId;
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub

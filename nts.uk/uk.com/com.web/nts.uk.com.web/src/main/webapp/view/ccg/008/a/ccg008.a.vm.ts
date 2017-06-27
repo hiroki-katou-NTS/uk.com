@@ -6,9 +6,11 @@
         topPageName: KnockoutObservable<string>;
         flowmenu: KnockoutObservable<model.Placement>;
         placements: KnockoutObservableArray<model.Placement>;
+        checkMypage: boolean;
         constructor() {
-            this.flowmenu = ko.observable(null);
             var self = this;
+            self.flowmenu = ko.observable(null);
+            self.checkMypage = true
             self.topPageName = ko.observable("");
             var title1 = nts.uk.resource.getText("CCG008_1");
             var title2 = nts.uk.resource.getText("CCG008_4");
@@ -24,40 +26,45 @@
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            var liveviewcontainer = $("#liveview");
-             liveviewcontainer.append($("<img/>").attr("src",nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/"+'636a50eb-f1e4-4142-a9f8-0ea0d45c52cc')));
-//            var code =  nts.uk.ui.windows.getShared("TopPageCode");
+//            var liveviewcontainer = $("#liveview");
+//             liveviewcontainer.append($("<img/>").attr("src",nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/"+'636a50eb-f1e4-4142-a9f8-0ea0d45c52cc')));
+//            var code =  nts.uk.ui.windows.getShared("TopPageCode"); 
             var code = '1';
-//            service.getTopPageByCode(code).done((data: model.LayoutForMyPageDto) => {
-//                console.log(data);
-//            });
-            service.getMyPage("b137dc10-6f4c-4cda-93a4-207117f111fb").done((data: model.LayoutForMyPageDto) => {
+            service.getTopPageByCode(code).done((data: model.LayoutAllDto) => {
                 console.log(data);
-                self.topPageName('flow-menu');
-                if (data !== undefined) {
-                    let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
-                        return new model.Placement(item.placementID, item.placementPartDto.name,
-                            item.row, item.column,
-                            item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
-                            item.placementPartDto.topPagePartID, item.placementPartDto.type);
-                    });
-                    if(data.flowMenu != null){
-                        _.map(data.flowMenu, (items) => {
-                            listPlacement.push( new model.Placement(items.fileID, items.fileName,
-                            items.row, items.column,
-                            items.widthSize, items.heightSize, null,
-                            items.toppagePartID, 2));
-                        });
-                    }
-                    listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
-                    console.log(listPlacement);
-                    self.changePreviewIframe("0a03c8bc-574e-49f4-939d-56b96fb39c5e");
-                    self.setupPositionAndSizeAll();
-                    if (listPlacement !== undefined)
-                        self.placements(listPlacement);
-                    _.defer(() => { self.setupPositionAndSizeAll(); });
-                    
+                if(data.topPage!=null && data.topPage.standardMenuUrl!=null){//hien thi standardmenu
+                    nts.uk.ui.windows.sub.modeless(data.topPage.standardMenuUrl);
                 }
+                if(data.checkMyPage == false ){//k hien thi my page
+                    self.checkMypage = false;
+                }
+                
+                
+                self.topPageName('flow-menu');
+//                if (data !== undefined) {
+//                    let listPlacement: Array<model.Placement> = _.map(data.placements, (item) => {
+//                        return new model.Placement(item.placementID, item.placementPartDto.name,
+//                            item.row, item.column,
+//                            item.placementPartDto.width, item.placementPartDto.height, item.placementPartDto.externalUrl,
+//                            item.placementPartDto.topPagePartID, item.placementPartDto.type);
+//                    });
+//                    if(data.flowMenu != null){
+//                        _.map(data.flowMenu, (items) => {
+//                            listPlacement.push( new model.Placement(items.fileID, items.fileName,
+//                            items.row, items.column,
+//                            items.widthSize, items.heightSize, null,
+//                            items.toppagePartID, 2));
+//                        });
+//                    }
+//                    listPlacement = _.orderBy(listPlacement, ['row', 'column'], ['asc', 'asc']);
+//                    console.log(listPlacement);
+//                    self.changePreviewIframe("0a03c8bc-574e-49f4-939d-56b96fb39c5e");
+//                    self.setupPositionAndSizeAll();
+//                    if (listPlacement !== undefined)
+//                        self.placements(listPlacement);
+//                    _.defer(() => { self.setupPositionAndSizeAll(); });
+//                    
+//                }
                 dfd.resolve();
             });
             return dfd.promise();
@@ -158,6 +165,14 @@
             flowMenu: Array<FlowMenuPlusDto>;
             placements: Array<PlacementDto>;
          }
+         export interface LayoutForTopPageDto{
+            companyID: string;
+            layoutID: string;
+            pgType: number;
+            flowMenu: Array<FlowMenuPlusDto>;
+            placements: Array<PlacementDto>;
+            standardMenuUrl: string;
+         }
          export interface FlowMenuPlusDto{
             widthSize: number;
             heightSize: number;
@@ -172,6 +187,14 @@
             column: number;
              
          }
-         
+         export interface LayoutAllDto{
+            /**my page*/
+            myPage: LayoutForMyPageDto;
+            /**top page*/
+            topPage: LayoutForTopPageDto;
+            /**check xem hien thi toppage hay mypage truoc*/
+            check: boolean;//check = true (hien thi top page truoc)||check = false (hien thi my page truoc)
+            /**check my page co duoc hien khong*/
+            checkMyPage: boolean;
      }
 }

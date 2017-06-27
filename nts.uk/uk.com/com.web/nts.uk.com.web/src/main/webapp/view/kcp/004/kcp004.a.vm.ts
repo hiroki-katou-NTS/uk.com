@@ -1,5 +1,5 @@
 module kcp004.a.viewmodel {
-    
+    import UnitModel = kcp.share.tree.UnitModel;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import TreeType = kcp.share.tree.TreeType;
     import SettingType = kcp.share.tree.SettingType;
@@ -25,6 +25,8 @@ module kcp004.a.viewmodel {
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         treeGrid: TreeComponentOption;
+        
+        jsonData: KnockoutObservable<string>;
         
         constructor() {
             let self = this;
@@ -61,6 +63,8 @@ module kcp004.a.viewmodel {
                 alreadySettingList: self.alreadySettingList
             };
             
+            self.jsonData = ko.observable('');
+            
             // Subscribe
             self.selectedTreeType.subscribe(function(code) {
                 self.reloadTreeGrid();
@@ -76,7 +80,7 @@ module kcp004.a.viewmodel {
             });
             self.isShowSelectButton.subscribe(function() {
                 self.reloadTreeGrid();
-            })
+            });
         }
         
         private copy() {

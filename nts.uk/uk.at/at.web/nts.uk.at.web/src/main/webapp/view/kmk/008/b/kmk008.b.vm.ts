@@ -1,10 +1,11 @@
-module nts.uk.at.view.kmk008.c {
+module nts.uk.at.view.kmk008.b {
     export module viewmodel {
         export class ScreenModel {
             show: KnockoutObservable<boolean>;
             enable: KnockoutObservable<boolean>;
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
+            viewmodelC: any = new kmk008.c.viewmodel.ScreenModel();;
             constructor() {
                 let self = this;
                 self.show = ko.observable(true);
