@@ -17,6 +17,12 @@ module nts.uk.ui.koExtentions {
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
+            var container = $(element);
+            
+            if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                container.attr("tabindex", "0");
+            
+            container.data("tabindex", container.attr("tabindex"));
             
             var container = $(element);
             container.keydown(function (evt, ui) {
@@ -80,8 +86,6 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             container.data("enable", enable);
             container.addClass("ntsControl switchButton-wrapper")
-            if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
-	            container.attr("tabindex", "0");
             
             // Remove deleted button.
             $('button', container).each(function(index, btn) {
@@ -130,9 +134,11 @@ module nts.uk.ui.koExtentions {
             
             if (enable === true) {
                 $('button', container).prop("disabled", false);
+                container.attr("tabindex", container.data("tabindex"));
             } else {
                 $('button', container).prop("disabled", true);
                 new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                container.attr("tabindex", "-1");
             }
         }
         
