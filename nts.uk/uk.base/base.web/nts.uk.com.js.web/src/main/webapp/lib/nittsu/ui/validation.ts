@@ -154,8 +154,18 @@ module nts.uk.ui.validation {
             }
             if (validateFail) {
                 result.fail(nts.uk.resource.getMessage(message.id, [ this.name, min, max, mantissaMaxLength ]));
-            } else {
-                result.success(value.toString() === "0" ? inputText : text.removeFromStart(inputText, "0"));
+            } else { 
+                let formated = value.toString() === "0" ? inputText : text.removeFromStart(inputText, "0"); 
+                if (formated.indexOf(".") >= 0) {
+                    formated = text.removeFromEnd(formated, "0");    
+                }
+                if(formated.charAt(0) === "."){
+                    formated = "0" + formated;           
+                }
+                if (formated.charAt(formated.length - 1) === ".") {
+                    formated = formated.substr(0, formated.length - 1);            
+                }
+                result.success(formated);
             }
             return result; 
         } 
