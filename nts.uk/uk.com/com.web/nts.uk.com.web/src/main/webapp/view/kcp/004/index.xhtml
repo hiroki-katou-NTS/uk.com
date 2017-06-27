@@ -11,6 +11,7 @@
 			<com:stylefile path="../../sample/catalog/catalog.css" />
 			<com:scriptfile path="../../sample/catalog/catalog.js" />
 			<com:scriptfile path="../../../../nts.uk.com.web/view/kcp/share/tree.js" />
+			<com:scriptfile path="../../../../nts.uk.com.web/view/kcp/share/tree.js" />
 			<com:scriptfile path="kcp004.a.vm.js" />
 			<com:scriptfile path="kcp004.a.start.js" />
 			<style>
@@ -43,6 +44,7 @@
 							</div>
 							<div data-bind="ntsCheckBox:{checked: isDialog}">Dialog</div>
 							<div data-bind="ntsCheckBox:{checked: isShowAlreadySet}">Show Already Setting</div>
+							<div data-bind="ntsCheckBox:{checked: isShowSelectButton}">Show SelectAll/SelectSubParent button</div>
 							<hr></hr>
 						</div>
 						<div id="tree-grid" style="width: 500px;margin-top: 30px;"></div>
@@ -57,6 +59,7 @@
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-data">Data</a></li>
 									<li><a href="#tabs-method">Methods</a></li>
 								</ol>
 								<!-- BEGIN TAB HTML -->
@@ -98,6 +101,7 @@ export class ScreenModel {
 		        treeType: TreeType.WORK_PLACE,
 		        selectedCode: self.multiSelectedCode,
 		        baseDate: self.baseDate,
+		        isShowSelectButton: true,
 		        isDialog: false,
 		        alreadySettingList: self.alreadySettingList
 		    };
@@ -156,6 +160,13 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 											</td>
 										</tr>
 										<tr>
+											<td>isShowSelectButton</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<label>Show/hide button select all and selected sub parent.</label>
+											</td>
+										</tr>
+										<tr>
 											<td>isDialog</td>
 											<td>
 												<b>Type:</b> boolean<br/>
@@ -185,6 +196,12 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 									</table>
 								</div><!-- END TABS VIEWMODEL -->
 								
+								<!-- BEGIN TABS DATA -->
+								<div id="tabs-data" class="cf">
+									<pre data-bind="text: jsonData">
+									</pre>
+								</div><!-- END TABS DATA -->
+								
 								<!-- BEGIN TABS METHOD -->
 								<div id="tabs-method" class="cf">
 									<table style="width: 500px">
@@ -195,6 +212,10 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 										<tr>
 											<td>$('#tree-grid').getDataList()</td>
 											<td>Get list data tree</td>
+										</tr>
+										<tr>
+											<td>$('#tree-grid').focusComponent();</td>
+											<td>Focus input control in tree grid.</td>
 										</tr>
 									</table>
 								</div><!-- END TABS METHOD -->

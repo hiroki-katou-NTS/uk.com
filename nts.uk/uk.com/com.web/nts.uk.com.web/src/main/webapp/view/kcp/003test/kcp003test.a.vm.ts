@@ -1,10 +1,11 @@
-module kcp001test.a.viewmodel {
+module kcp003test.a.viewmodel {
     import ComponentOption = kcp.share.list.ComponentOption;
     import ListType = kcp.share.list.ListType;
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import UnitAlreadySettingModel = kcp.share.list.UnitAlreadySettingModel;
     export class ScreenModel {
+        baseDate: KnockoutObservable<Date>;
         codeEditorOption: KnockoutObservable<any>;
         nameEditorOption: KnockoutObservable<any>;
         selectedCode: KnockoutObservable<string>;
@@ -19,8 +20,8 @@ module kcp001test.a.viewmodel {
         listComponentOption: ComponentOption;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
-        hasSelectedEmp: KnockoutObservable<boolean>;
-        employmentList: KnockoutObservableArray<UnitModel>;
+        hasSelectedJobTitle: KnockoutObservable<boolean>;
+        jobTitleList: KnockoutObservableArray<UnitModel>;
         code: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
         
@@ -41,11 +42,12 @@ module kcp001test.a.viewmodel {
                 textmode: "text",
                 textalign: "left"
             }));
+            self.baseDate = ko.observable(new Date());
             self.selectedCode = ko.observable('1');
             self.bySelectedCode = ko.observable('1');
             // Selected Item subscribe
             self.selectedCode.subscribe(function(data: string) {
-                self.bindEmploymentSettingData(self.employmentList().filter((item) => {
+                self.bindJobTitleSettingData(self.jobTitleList().filter((item) => {
                     return item.code == self.selectedCode();
                 })[0]);
             });
@@ -71,36 +73,39 @@ module kcp001test.a.viewmodel {
 
             self.code = ko.observable(null);
             self.name = ko.observable(null);
-            self.employmentList = ko.observableArray<UnitModel>([]);
+            self.jobTitleList = ko.observableArray<UnitModel>([]);
             
-            self.hasSelectedEmp = ko.computed(function() {
+            self.hasSelectedJobTitle = ko.computed(function() {
                 return (self.selectedCode != undefined);
             });
-
+            
             self.listComponentOption = {
+                baseDate: self.baseDate,
                 isShowAlreadySet: self.isAlreadySetting(),
                 isMultiSelect: false,
-                listType: ListType.EMPLOYMENT,
+                listType: ListType.JOB_TITLE,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
                 selectedCode: self.selectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList
             };
-            // employmentList...
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
+            // Job Title List...
+            $('#component-items-list').ntsListComponent(self.listComponentOption).done(function() {
+                
+                
+                
                 // Selected Item
-//                self.selectedCode(self.employmentList()[0].code);
-                if (($('#empt-list-setting').getDataList() == undefined) || ($('#empt-list-setting').getDataList().length <= 0)) {
-                    self.hasSelectedEmp(false);
+                if (($('#component-items-list').getDataList() == undefined) || ($('#component-items-list').getDataList().length <= 0)) {
+                    self.hasSelectedJobTitle(false);
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
                 }
                 else {
-                    // Employment List
-                    self.employmentList($('#empt-list-setting').getDataList());
+                    // Job Title List
+                    self.jobTitleList($('#component-items-list').getDataList());
                     
-                    // Bind Employment Setting Data
-                    self.bindEmploymentSettingData(self.employmentList().filter((item) => {
+                    // Bind Job Title Setting Data
+                    self.bindJobTitleSettingData(self.jobTitleList().filter((item) => {
                         return item.code == self.selectedCode();
                     })[0]);
                 }
@@ -174,7 +179,7 @@ module kcp001test.a.viewmodel {
             }
             
             self.isAlreadySetting(true);
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
         
         private settingDeletedItem() {
@@ -190,7 +195,7 @@ module kcp001test.a.viewmodel {
                     return item.code == self.listComponentOption.selectedCode();
                 })[0]);
             }
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
         
         private clearErrors(): void {
@@ -210,17 +215,17 @@ module kcp001test.a.viewmodel {
             } else {
                 self.listComponentOption.selectedCode = self.multiSelectionCode;
             }
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
         private showSingleSelect(): void {
             var self = this;
             self.listComponentOption.isMultiSelect = false;
             self.listComponentOption.selectedCode = self.selectedCode;
             // Binding Data to right content
-            //                self.bindEmploymentSettingData(self.employmentList().filter((item) => {
+            //                self.bindJobTitleSettingData(self.jobTitleList().filter((item) => {
             //                    return item.code == self.selectedCode();
             //                })[0]);
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
         // Selection Type: By Selected code
@@ -233,7 +238,7 @@ module kcp001test.a.viewmodel {
                 self.listComponentOption.selectedCode = self.bySelectedCode;
             }
             self.listComponentOption.selectType = SelectType.SELECT_BY_SELECTED_CODE;
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
         // Selection Type: Select All Items
@@ -243,7 +248,7 @@ module kcp001test.a.viewmodel {
             self.listComponentOption.selectType = SelectType.SELECT_ALL;
             self.listComponentOption.selectedCode = self.multiSelectionCode;
             self.selectedOption(1);
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
         // Selection Type: Select First Item
@@ -256,7 +261,7 @@ module kcp001test.a.viewmodel {
                 self.listComponentOption.selectedCode = self.selectedCode;
             }
             self.listComponentOption.selectType = SelectType.SELECT_FIRST_ITEM;
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
         // Selection Type: Select None
@@ -268,10 +273,10 @@ module kcp001test.a.viewmodel {
                 self.listComponentOption.selectedCode = self.multiSelectionCode;
             }
             self.listComponentOption.selectType = SelectType.NO_SELECT;
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
         
-        private bindEmploymentSettingData(data: UnitModel): void {
+        private bindJobTitleSettingData(data: UnitModel): void {
             var self = this;
             self.clearErrors();
             if (data == undefined) {
@@ -286,12 +291,12 @@ module kcp001test.a.viewmodel {
         private reloadComponent() {
             var self = this;
                 self.listComponentOption.isShowAlreadySet = self.isAlreadySetting();
-                self.listComponentOption.listType = ListType.EMPLOYMENT;
+                self.listComponentOption.listType = ListType.JOB_TITLE;
                 self.listComponentOption.isDialog = self.isDialog();
                 self.listComponentOption.isShowNoSelectRow = self.isShowNoSelectionItem();
                 self.listComponentOption.alreadySettingList = self.alreadySettingList;
             
-            $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
     }
 }

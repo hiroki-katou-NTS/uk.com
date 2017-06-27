@@ -26,6 +26,7 @@ import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJob
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchy;
+import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
 import nts.uk.ctx.basic.dom.person.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -100,12 +101,16 @@ public class EmployeeSearchFinder {
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getJobTitleCodes());
 
+		List<Workplace> workplaces = this.repositoryWorkplace.convertToWorkplace(companyId,
+				input.getWorkplaceCodes());
 		// find by work place
 		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
 				.searchWorkplaceHistory(
 						jobTitleHistory.stream().map(jobtitle -> jobtitle.getEmployeeId().v())
 								.collect(Collectors.toList()),
-						input.getBaseDate(), input.getWorkplaceCodes());
+						input.getBaseDate(),
+						workplaces.stream().map(workplace -> workplace.getWorkplaceId().v())
+								.collect(Collectors.toList()));
 		// to employees
 		List<Employee> employees = this.repositoryEmployee.getListPersonByListEmployeeId(companyId,
 				workplaceHistory.stream().map(workplace -> workplace.getEmployeeId().v())

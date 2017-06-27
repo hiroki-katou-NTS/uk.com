@@ -42,6 +42,12 @@ module kcp.share.tree {
         baseDate: KnockoutObservable<Date>;
         
         /**
+         * isShowSelectButton
+         * Show/hide button select all and selected sub parent
+         */
+        isShowSelectButton: boolean;
+        
+        /**
          * is dialog, if is main screen, set false,
          */
         isDialog: boolean;
@@ -67,6 +73,7 @@ module kcp.share.tree {
         itemList: KnockoutObservableArray<UnitModel>;
         backupItemList: KnockoutObservableArray<UnitModel>;
         selectedCodes: KnockoutObservable<any>;
+        isShowSelectButton: boolean;
         treeComponentColumn: Array<any>;
         isMultiple: boolean;
         isDialog: boolean;
@@ -110,6 +117,7 @@ module kcp.share.tree {
             self.isMultiple = data.isMultiSelect;
             self.hasBaseDate(!self.isMultiple);
             self.selectedCodes = data.selectedCode;
+            self.isShowSelectButton = data.isShowSelectButton;
             self.isDialog = data.isDialog;
             if (self.hasBaseDate()) {
                 self.baseDate = data.baseDate;
@@ -170,6 +178,17 @@ module kcp.share.tree {
                     $input.load(webserviceLocator, function() {
                         ko.cleanNode($input[0]);
                         ko.applyBindings(self, $input[0]);
+                        
+                        // defined function get data list.
+                        $('#script-for-' + $input.attr('id')).remove();
+                        var s = document.createElement("script");
+                        s.type = "text/javascript";
+                        s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(self.backupItemList());
+                        s.id = 'script-for-' + $input.attr('id');
+                        $("head").append(s);
+                        $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                            return window['dataList' + this.attr('id').replace(/-/gi, '')];
+                        }
                         dfd.resolve();
                     });
                     

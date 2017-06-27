@@ -1,11 +1,15 @@
 module nts.uk.at.view.kmk008.c {
     export module viewmodel {
         export class ScreenModel {
-          
+            time: KnockoutObservable<string>;
+            time34: KnockoutObservable<string>;
             constructor() {
                 let self = this;
-                
+                self.time = ko.observable("12:00");
+                self.time34 = ko.observable("1200");
+
             }
+            
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -13,16 +17,6 @@ module nts.uk.at.view.kmk008.c {
                 return dfd.promise();
             }
 
-        }
-
-        export class ItemModel {
-            code: number;
-            name: string;
-            constructor(code: number, name: string) {
-                let self = this;
-                self.code = code;
-                self.name = name;
-            }
         }
     }
 }
