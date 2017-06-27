@@ -41,18 +41,23 @@ module ccg014.a.viewmodel {
                 return (!self.isCreate() && !util.isNullOrEmpty(self.selectedTitleMenuCD()));
             });
             $("iframe").on("load", () => {
-                _.delay(() => {$("#titleMenuName").focus(); console.log("focus");}, 100);
+                _.delay(() => {
+                    if (self.isCreate() == true)
+                        $("#titleMenuCD").focus();
+                    else
+                        $("#titleMenuName").focus();
+                }, 100);
             });
         }
 
         /** Start Page */
         startPage(): JQueryPromise<any> {
             var dfd = this.reloadData();
+            var self = this;
             block.invisible();
             dfd.done(() => {
                 block.clear();
                 this.selectTitleMenuByIndex(0);
-                $("#titleMenuName").focus();
             });
             return dfd;
         }
@@ -63,20 +68,20 @@ module ccg014.a.viewmodel {
             self.isCreate(true);
             self.selectedTitleMenuCD(null);
             self.selectedTitleMenu(new model.TitleMenu("", "", ""));
+            $("#titleMenuCD").focus();
             errors.clearAll();
             $(".nts-input").ntsError("clear");
-            $("#titleMenuName").focus();
-        }
+         }
 
         /** Registry Button Click */
         registryButtonClick() {
             var self = this;
-            self.selectedTitleMenu().titleMenuCD(nts.uk.text.padLeft(self.selectedTitleMenu().titleMenuCD(), '0', 4));
-            var titleMenu = ko.mapping.toJS(self.selectedTitleMenu);
-            var titleMenuCD = titleMenu.titleMenuCD;
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
-                block.invisible();
+                self.selectedTitleMenu().titleMenuCD(nts.uk.text.padLeft(self.selectedTitleMenu().titleMenuCD(), '0', 4));
+                var titleMenu = ko.mapping.toJS(self.selectedTitleMenu);
+                var titleMenuCD = titleMenu.titleMenuCD;
+                 block.invisible();
                 if (self.isCreate() === true) {
                     service.createTitleMenu(titleMenu).done((data) => {
                         nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
@@ -169,12 +174,11 @@ module ccg014.a.viewmodel {
             if (selectedTitleMenu !== undefined) {
                 self.isCreate(false);
                 self.selectedTitleMenu(new model.TitleMenu(selectedTitleMenu.titleMenuCD, selectedTitleMenu.name, selectedTitleMenu.layoutID));
-            }
+             }
             else {
                 self.isCreate(true);
-                self.selectedTitleMenu(new model.TitleMenu("","",""));
+                self.selectedTitleMenu(new model.TitleMenu("" ,"" ,""));
             }
-            $("#titleMenuName").focus();
         }
 
         /** Init Mode */
@@ -200,13 +204,12 @@ module ccg014.a.viewmodel {
                 self.listTitleMenu(listTitleMenu);
                 if (listTitleMenu.length > 0) {
                     self.isCreate(false);
-                }
+                 }
                 else {
                     self.findSelectedTitleMenu(null);
                     self.isCreate(true);
                 }
                 dfd.resolve();
-                $("#titleMenuName").focus();
             }).fail(function(error) {
                 dfd.fail();
                 alert(error.message);

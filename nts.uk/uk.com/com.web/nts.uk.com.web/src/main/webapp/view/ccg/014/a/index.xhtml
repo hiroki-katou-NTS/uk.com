@@ -74,7 +74,7 @@
 							<div class="pull-left"
 								data-bind="ntsFormLabel: { constraint: ['TitleMenuCD' , 'Name'], required: true }">#{i18n.getText('CCG014_13')}</div>
 							<input id="titleMenuCD"
-								data-bind="ntsTextEditor: {value: titleMenuCD, constraint: 'TitleMenuCD', enable: $parent.isCreate , immediate: true , required: true ,name: '#[CCG014_21]' }"
+								data-bind="ntsTextEditor: {value: titleMenuCD, constraint: 'TitleMenuCD', enable: $parent.isCreate , immediate: true ,option: {autofill:true, filldirection:'left'}, required: true ,name: '#[CCG014_21]' }"
 								tabindex="6" /> <input id="titleMenuName"
 								data-bind="ntsTextEditor: {value: name, constraint: 'Name' , required: true , immediate: true ,name: '#[CCG014_22]'}"
 								tabindex="7" />
