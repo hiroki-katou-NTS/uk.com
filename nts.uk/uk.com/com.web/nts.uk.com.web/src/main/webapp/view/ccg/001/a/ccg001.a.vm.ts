@@ -24,6 +24,7 @@ module nts.uk.com.view.ccg001.a {
                     isEmployeeOfDepartment: true,
                     isEmployeeDepartmentFollow: true,
                     isMutipleCheck: true,
+                    baseDate: ko.observable(new Date()),
                     onSearchAllClicked: function(dataList: PersonModel[]) {
                         self.personinfo = {
                             isShowAlreadySet: false,
