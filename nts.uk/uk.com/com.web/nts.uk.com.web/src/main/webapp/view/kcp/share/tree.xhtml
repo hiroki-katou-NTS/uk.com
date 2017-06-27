@@ -38,8 +38,8 @@
 					mode: 'igTree',
 					comId: getComIdSearchBox(),
 					items: itemList, 
-					selected: selectedCodes,
-					selectedKey: 'code',
+					selected: selectedWorkplaceIds,
+					selectedKey: 'workplaceId',
 					childField: 'childs',
 					fields: ['name', 'code']}">
 			</div>
@@ -54,8 +54,8 @@
 				data-bind="ntsTreeGridView:{
 					height: 315,
 					dataSource: itemList,
-					value: selectedCodes,
-					primaryKey: 'code',
+					value: selectedWorkplaceIds,
+					primaryKey: 'workplaceId',
 					childDataKey: 'childs',
 					primaryText: 'nodeText',
 					multiple: isMultiple,
@@ -69,8 +69,8 @@
 				data-bind="ntsTreeGridView:{
 					height: 315,
 					options: itemList,
-					selectedValues: selectedCodes,
-					optionsValue: 'code',
+					selectedValues: selectedWorkplaceIds,
+					optionsValue: 'workplaceId',
 					optionsChild: 'childs',
 					optionsText: 'nodeText',
 					multiple: isMultiple,

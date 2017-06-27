@@ -141,6 +141,30 @@ public class ClosureDateFinder {
 		int month = this.month % ONE_HUNDRED_COUNT;
 		return this.previousDay(this.toDate(year, month + NEXT_DAY_MONTH, NEXT_DAY_MONTH));
 	}
+
+	/**
+	 * Last month next month.
+	 *
+	 * @return the date
+	 */
+	public Date lastMonthNextMonth() {
+		int year = this.month / ONE_HUNDRED_COUNT;
+		int month = this.month % ONE_HUNDRED_COUNT;
+		return this.previousDay(
+				this.toDate(year, month + NEXT_DAY_MONTH + NEXT_DAY_MONTH, NEXT_DAY_MONTH));
+	}
+	
+	/**
+	 * Last month next month next.
+	 *
+	 * @return the date
+	 */
+	public Date lastMonthNextMonthNext() {
+		int year = this.month / ONE_HUNDRED_COUNT;
+		int month = this.month % ONE_HUNDRED_COUNT;
+		return this.previousDay(this.toDate(year,
+				month + NEXT_DAY_MONTH + NEXT_DAY_MONTH + NEXT_DAY_MONTH, NEXT_DAY_MONTH));
+	}
 	
 	
 	/**
@@ -152,6 +176,28 @@ public class ClosureDateFinder {
 		int year = this.month / ONE_HUNDRED_COUNT;
 		int month = this.month % ONE_HUNDRED_COUNT;
 		return this.toDate(year, month, NEXT_DAY_MONTH);
+	}
+	
+	/**
+	 * Begin month next month.
+	 *
+	 * @return the date
+	 */
+	public Date beginMonthNextMonth(){
+		int year = this.month / ONE_HUNDRED_COUNT;
+		int month = this.month % ONE_HUNDRED_COUNT;
+		return this.toDate(year, month+NEXT_DAY_MONTH, NEXT_DAY_MONTH);
+	}
+	
+	/**
+	 * Begin month next month next.
+	 *
+	 * @return the date
+	 */
+	public Date beginMonthNextMonthNext() {
+		int year = this.month / ONE_HUNDRED_COUNT;
+		int month = this.month % ONE_HUNDRED_COUNT;
+		return this.toDate(year, month + NEXT_DAY_MONTH + NEXT_DAY_MONTH, NEXT_DAY_MONTH);
 	}
 	
 	/**
@@ -174,10 +220,10 @@ public class ClosureDateFinder {
 	 * @param date the date
 	 * @return the month day
 	 */
-	public int getMonthDay(Date date){
+	public int getMonthDay(Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
-		return cal.get(Calendar.MONTH) + NEXT_DAY_MONTH;
+		return (cal.get(Calendar.MONTH) + NEXT_DAY_MONTH) % TOTAL_MONTH_OF_YEAR;
 	}
 
 	/**
@@ -187,17 +233,33 @@ public class ClosureDateFinder {
 	 * @return the day month
 	 */
 	public DayMonthDto getDayMonth(DayMonthInDto input){
+		
 		this.setBeginClosureDate(input.getClosureDate());
 		this.setMonth(input.getMonth());
 		Date today = this.toDay(input.getClosureDate());
 		DayMonthDto dto = new DayMonthDto();
-		if (this.getMonthDay(today) == this.getMonth() % ONE_HUNDRED_COUNT) {
-			dto.setBeginDay(this.formatDate(this.previousMonth(this.nextDay(today))));
-			dto.setEndDay(this.formatDate(today));
-		} else {
+
+		// check last month
+		if(input.getClosureDate() == ZERO_DAY_MONTH){
 			dto.setBeginDay(this.formatDate(this.beginMonth()));
 			dto.setEndDay(this.formatDate(this.lastMonth()));
+			return dto;
 		}
+		
+		if (this.getMonthDay(today) == this.getMonthDate(this.getMonth())) {
+			dto.setBeginDay(this.formatDate(this.nextDay(this.previousMonth(today))));
+			dto.setEndDay(this.formatDate(today));
+		} else {
+			this.setMonth(this.getMonth() - NEXT_DAY_MONTH);
+			today = this.toDay(input.getClosureDate());
+			if (this.getMonthDay(this.nextDay(today)) == this.getMonthDate(this.getMonth())) {
+				dto.setBeginDay(this.formatDate(this.nextDay(today)));
+			}else {
+				dto.setBeginDay(this.formatDate(this.beginMonthNextMonth()));
+			}
+			dto.setEndDay(this.formatDate(this.lastMonthNextMonth()));
+		}
+		
 		return dto;
 	}
 	
@@ -209,62 +271,150 @@ public class ClosureDateFinder {
 	 */
 	public DayMonthChangeDto getDayMonthChange(DayMonthChangeInDto input){
 		this.setMonth(input.getMonth());
-		Date today = this.toDay(input.getClosureDate());
+		Date todayChange = this.toDay(input.getChangeClosureDate());
 		DayMonthChangeDto changeDto = new DayMonthChangeDto();
 		DayMonthDto beforeClosureDate = new DayMonthDto();
 		DayMonthDto afterClosureDate = new DayMonthDto();
-		if (input.getChangeClosureDate() == input.getClosureDate()) {
-			if (this.getMonthDay(today) == this.getMonth() % ONE_HUNDRED_COUNT) {
-				beforeClosureDate
-						.setBeginDay(this.formatDate(this.previousMonth(this.nextDay(today))));
-				beforeClosureDate.setEndDay(this.formatDate(today));
-				afterClosureDate
-						.setBeginDay(this.formatDate(this.previousMonth(this.nextDay(today))));
-				afterClosureDate.setEndDay(this.formatDate(today));
-			} else {
-				beforeClosureDate.setBeginDay(this.formatDate(this.beginMonth()));
+		if(input.getChangeClosureDate() == 0  && input.getClosureDate() == 0){
+			beforeClosureDate.setBeginDay(this.formatDate(this.beginMonth()));
+			beforeClosureDate.setEndDay(this.formatDate(this.lastMonth()));
+			afterClosureDate.setBeginDay(this.formatDate(this.beginMonthNextMonth()));
+			afterClosureDate.setEndDay(this.formatDate(this.lastMonthNextMonth()));
+			changeDto.setBeforeClosureDate(beforeClosureDate);
+			changeDto.setAfterClosureDate(afterClosureDate);
+			return changeDto;
+		}
+		
+		// check last month
+		if(input.getClosureDate() == 0){
+			beforeClosureDate.setBeginDay(this.formatDate(this.beginMonth()));
+			if (this.getMonthDay(todayChange) != this.getMonthDate(this.getMonth())) {
 				beforeClosureDate.setEndDay(this.formatDate(this.lastMonth()));
-				afterClosureDate.setBeginDay(this.formatDate(this.beginMonth()));
-				afterClosureDate.setEndDay(this.formatDate(this.lastMonth()));
-			}
-		}else {
-			 Date todayChange = this.toDay(input.getChangeClosureDate());
-			if (this.getMonthDay(today) == this.getMonth() % ONE_HUNDRED_COUNT) {
-				beforeClosureDate
-						.setBeginDay(this.formatDate(this.previousMonth(this.nextDay(today))));
-			} else {
-				beforeClosureDate.setBeginDay(this.formatDate(this.beginMonth()));
-			}
-			
-			if(input.getClosureDate() > input.getChangeClosureDate()){
-				if (this.getMonthDay(todayChange) == this.getMonth() % ONE_HUNDRED_COUNT) {
-					beforeClosureDate.setEndDay(this.formatDate(todayChange));
-				} else {
-					beforeClosureDate.setEndDay(this.formatDate(this.lastMonth()));
-				}
-			}else {
-				beforeClosureDate.setEndDay(this.formatDate(this.previousMonth(todayChange)));
-			}
-			
-			if (this.getMonthDay(todayChange) == this.getMonth() % ONE_HUNDRED_COUNT) {
-				afterClosureDate.setBeginDay(this.formatDate(this.nextDay(todayChange)));
-				if (this.getMonthDay(this.nextMonth(
-						todayChange)) == (this.getMonth() % ONE_HUNDRED_COUNT + NEXT_DAY_MONTH)
-								% TOTAL_MONTH_OF_YEAR) {
-					afterClosureDate.setEndDay(this.formatDate(this.nextMonth(todayChange)));
+				afterClosureDate.setBeginDay(this.formatDate(this.nextDay(this.lastMonth())));
+				this.setMonth(this.getMonth() + 1);
+				todayChange = this.toDay(input.getChangeClosureDate());
+				if(this.getMonthDay(todayChange) != this.getMonthDate(this.getMonth())) {
+					afterClosureDate.setEndDay(this.formatDate(this.lastMonth()));	
 				}
 				else {
-					afterClosureDate.setEndDay(this.formatDate(this.nextMonth(this.lastMonth())));
+					afterClosureDate.setEndDay(this.formatDate(todayChange));
 				}
+			} else {
+				beforeClosureDate.setEndDay(this.formatDate(todayChange));
+				afterClosureDate.setBeginDay(this.formatDate(this.nextDay(todayChange)));
+				afterClosureDate.setEndDay(this.formatDate(this.nextMonth(todayChange)));
+			}
+			changeDto.setBeforeClosureDate(beforeClosureDate);
+			changeDto.setAfterClosureDate(afterClosureDate);
+			return changeDto;
+		}
+		
+		// check last date
+		if(input.getChangeClosureDate() == 0){
+			this.setMonth(this.getMonth() - 1);
+			Date today = this.toDay(input.getClosureDate());
+			if (this.getMonthDay(this.nextDay(today)) == this.getMonthDate(this.getMonth())) {
+				beforeClosureDate.setBeginDay(this.formatDate(this.nextDay(today)));
+				beforeClosureDate.setEndDay(this.formatDate(this.lastMonth()));
+				afterClosureDate.setBeginDay(this.formatDate(this.beginMonthNextMonth()));
+				afterClosureDate.setEndDay(this.formatDate(this.lastMonthNextMonth()));
 			}else {
-				afterClosureDate.setBeginDay(this.formatDate(this.nextMonth(this.beginMonth())));
-				afterClosureDate.setEndDay(this.formatDate(this.nextMonth(this.lastMonth())));
+				beforeClosureDate.setBeginDay(this.formatDate(this.beginMonthNextMonth()));
+				beforeClosureDate.setEndDay(this.formatDate(this.lastMonthNextMonth()));
+				afterClosureDate.setBeginDay(this.formatDate(this.beginMonthNextMonthNext()));
+				afterClosureDate.setEndDay(this.formatDate(this.lastMonthNextMonthNext()));
+			}
+			changeDto.setBeforeClosureDate(beforeClosureDate);
+			changeDto.setAfterClosureDate(afterClosureDate);
+			return changeDto;
+		}
+		
+		
+		// change equal 
+		if (input.getChangeClosureDate() == input.getClosureDate()) {
+			this.setMonth(this.getMonth() - NEXT_DAY_MONTH);
+			todayChange = this.toDay(input.getClosureDate());
+			if (this.getMonthDay(nextDay(todayChange)) == this.getMonthDate(this.getMonth())) {
+				beforeClosureDate.setBeginDay(this.formatDate(this.nextDay(todayChange)));
+				beforeClosureDate.setEndDay(this.formatDate(this.nextMonth(todayChange)));
+				afterClosureDate
+						.setBeginDay(this.formatDate(this.nextDay(this.nextMonth(todayChange))));
+				this.setMonth(this.getMonth() + NEXT_DAY_MONTH + NEXT_DAY_MONTH);
+				todayChange = this.toDay(input.getClosureDate());
+				if (this.getMonthDay(todayChange) == this.getMonthDate(this.getMonth())) {
+					afterClosureDate.setEndDay(this.formatDate(todayChange));
+				} else {
+					afterClosureDate.setEndDay(this.formatDate(this.lastMonth()));
+				}
+			} else {
+				this.setMonth(this.getMonth() + NEXT_DAY_MONTH);
+				todayChange = this.toDay(input.getClosureDate());
+				beforeClosureDate.setBeginDay(this.formatDate(this.beginMonth()));
+				if (this.getMonthDay(todayChange) == this.getMonthDate(this.getMonth())) {
+					beforeClosureDate.setEndDay(this.formatDate(todayChange));
+					afterClosureDate.setBeginDay(this.formatDate(this.nextDay(todayChange)));
+				}
+				else {
+					beforeClosureDate.setEndDay(this.formatDate(this.lastMonth()));
+					afterClosureDate.setBeginDay(this.formatDate(this.nextDay(this.lastMonth())));
+				}
+				this.setMonth(this.getMonth() + NEXT_DAY_MONTH);
+				todayChange = this.toDay(input.getClosureDate());
+				if(this.getMonthDay(todayChange) == this.getMonthDate(this.getMonth())){
+					afterClosureDate.setEndDay(this.formatDate(todayChange));
+				}
+				else {
+					afterClosureDate.setEndDay(this.formatDate(this.lastMonth()));
+				}
+			}
+		}else {
+			
+			this.setMonth(this.getMonth() - NEXT_DAY_MONTH);
+			Date today = this.toDay(input.getClosureDate());
+			todayChange = this.toDay(input.getChangeClosureDate());
+			
+			if (this.getMonthDay(this.nextDay(today)) == this.getMonthDate(this.getMonth())) {
+				beforeClosureDate.setBeginDay(this.formatDate(this.nextDay(today)));
+			} else {
+				beforeClosureDate.setBeginDay(this.formatDate(this.beginMonth()));
 			}
 			
+			if (input.getClosureDate() > input.getChangeClosureDate()) {
+				this.setMonth(this.getMonth() + NEXT_DAY_MONTH);
+				todayChange = this.toDay(input.getChangeClosureDate());
+			}
+			
+			if (this.getMonthDay(todayChange) == this.getMonthDate(this.getMonth())) {
+				beforeClosureDate.setEndDay(this.formatDate(todayChange));
+				afterClosureDate.setBeginDay(this.formatDate(this.nextDay(todayChange)));
+			} else {
+				beforeClosureDate.setEndDay(this.formatDate(this.lastMonth()));
+				afterClosureDate.setBeginDay(this.formatDate(this.nextDay(this.lastMonth())));
+			}
+			
+			this.setMonth(this.getMonth() + NEXT_DAY_MONTH);
+			todayChange = this.toDay(input.getChangeClosureDate());
+			
+			
+			if (this.getMonthDay(todayChange) == this.getMonthDate(this.getMonth())) {
+				afterClosureDate.setEndDay(this.formatDate(todayChange));
+			}else {
+				afterClosureDate.setEndDay(this.formatDate(this.lastMonth()));
+			}
 		}
 		changeDto.setBeforeClosureDate(beforeClosureDate);
 		changeDto.setAfterClosureDate(afterClosureDate);
 		return changeDto;
+	}
+	
+	/**
+	 * Gets the month date.
+	 *
+	 * @param month the month
+	 * @return the month date
+	 */
+	private int getMonthDate(int month){
+		return (month % ONE_HUNDRED_COUNT) % TOTAL_MONTH_OF_YEAR;
 	}
 	
 	/**

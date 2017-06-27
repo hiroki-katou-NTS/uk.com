@@ -1,0 +1,43 @@
+#functions-area {
+	height: 70px !important;
+}
+#btnSave{
+	font-size: 15px;
+	height: 30px;
+	margin-left: 10px;
+}
+
+#btnCancel{
+	font-size: 15px;
+	height: 30px;
+	margin-left: 15px;
+}
+
+#process{
+	padding-bottom: 20px;
+	padding-top: 15px;
+}
+
+#table{
+	margin-top:20px;
+	margin-left:50px;
+}
+
+#gridlist{
+	margin-left:30px;
+	margin-top: 10px;
+}
+
+#caret-bottom{
+	margin-left: 170px;
+	margin-top: 10px;
+}
+
+#search{
+	margin-bottom: 10px;
+}
+
+
+
+
+

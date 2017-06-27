@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 
 /**
  * @author nampt
@@ -13,10 +12,8 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 @Data
 @NoArgsConstructor
 public class AddAgreementTimeOfCompanyCommand {
-
-	private String basicSettingId;
 	
-	private LaborSystemtAtr laborSystemAtr;
+	private int laborSystemAtr;
 	
 	private BigDecimal alarmWeek;
 

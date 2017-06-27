@@ -24,8 +24,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class ComSubstVacationSaveCommandHandler.
  */
 @Stateless
-public class Emp60HourVacationSaveCommandHandler
-		extends CommandHandler<Emp60HourVacationSaveCommand> {
+public class Emp60HourVacationSaveCommandHandler extends CommandHandler<Emp60HourVacationSaveCommand> {
 
 	/** The repository. */
 	@Inject
@@ -54,13 +53,17 @@ public class Emp60HourVacationSaveCommandHandler
 				command.getContractTypeCode());
 
 		// Check is managed, keep old values when is not managed
-		if (optEmp60HVacation.isPresent() && command.getIsManage() == ManageDistinct.NO.value) {
-			SixtyHourVacationSetting setting = optEmp60HVacation.get().getSetting();
-			command.setSixtyHourExtra(setting.getSixtyHourExtra().value);
-			command.setDigestiveUnit(setting.getDigestiveUnit().value);
-		}else{
-			command.setSixtyHourExtra( SixtyHourExtra.ALLWAYS.value);
-			command.setDigestiveUnit(TimeDigestiveUnit.ONE_MINUTE.value);	
+		if (optEmp60HVacation.isPresent()) {
+			if (command.getIsManage() == ManageDistinct.NO.value) {
+				SixtyHourVacationSetting setting = optEmp60HVacation.get().getSetting();
+				command.setSixtyHourExtra(setting.getSixtyHourExtra().value);
+				command.setDigestiveUnit(setting.getDigestiveUnit().value);
+			}
+		} else {
+			if (command.getIsManage() == ManageDistinct.NO.value) {
+				command.setSixtyHourExtra(SixtyHourExtra.ALLWAYS.value);
+				command.setDigestiveUnit(TimeDigestiveUnit.ONE_MINUTE.value);
+			}
 		}
 
 		// Convert data
