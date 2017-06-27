@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 820, height: 820 };</script>
+			<script>var dialogSize = { width: 820, height: 650 };</script>
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.PersonId
 			</com:ValidatorScript>
@@ -70,7 +70,7 @@
 											mode: 'igGrid'}" />
 								<table id="multi-list"
 									data-bind="ntsGridList: {
-											height: 350,
+											height: 200,
 											options: listTitleMenu,
 											optionsValue: 'titleCode',
 											columns: columns,

@@ -1,12 +1,13 @@
 package nts.uk.ctx.at.record.app.command.standardtime;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
@@ -38,11 +39,11 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
- * @author nampt 全社 screen add
+ * @author nampt 全社 screen update
  *
  */
 @Stateless
-public class AddAgreementTimeOfCompanyCommandHandler extends CommandHandler<AddAgreementTimeOfCompanyCommand> {
+public class UpdateAgreementTimeOfCompanyCommandHandler extends CommandHandler<UpdateAgreementTimeOfCompanyCommand> {
 
 	@Inject
 	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
@@ -51,25 +52,30 @@ public class AddAgreementTimeOfCompanyCommandHandler extends CommandHandler<AddA
 	private BasicAgreementSettingRepository basicAgreementSettingRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddAgreementTimeOfCompanyCommand> context) {
-		AddAgreementTimeOfCompanyCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<UpdateAgreementTimeOfCompanyCommand> context) {
+		UpdateAgreementTimeOfCompanyCommand command = context.getCommand();
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
-		String basicSettingId = IdentifierUtil.randomUniqueId();
 
-		AgreementTimeOfCompany agreementTimeOfCompany = new AgreementTimeOfCompany(companyId, basicSettingId,
+		Optional<AgreementTimeOfCompany> agreementTimeOfCompany = this.agreementTimeCompanyRepository.find(companyId,
 				EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
-		this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
 
-		BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId,
-				new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()), 
-				new AlarmTwoWeeks(command.getAlarmTwoWeeks()), new ErrorTwoWeeks(command.getErrorTwoWeeks()), new LimitTwoWeeks(command.getLimitTwoWeeks()),
-				new AlarmFourWeeks(command.getAlarmFourWeeks()), new ErrorFourWeeks(command.getErrorFourWeeks()), new LimitFourWeeks(command.getLimitFourWeeks()),
-				new AlarmOneMonth(command.getAlarmOneMonth()), new ErrorOneMonth(command.getErrorOneMonth()), new LimitOneMonth(command.getLimitOneMonth()),
-				new AlarmTwoMonths(command.getAlarmTwoMonths()), new ErrorTwoMonths(command.getErrorTwoMonths()), new LimitTwoMonths(command.getLimitTwoMonths()),
-				new AlarmThreeMonths(command.getAlarmThreeMonths()), new ErrorThreeMonths(command.getErrorThreeMonths()), new LimitThreeMonths(command.getErrorThreeMonths()),
-				new AlarmOneYear(command.getAlarmOneYear()), new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
-		this.basicAgreementSettingRepository.add(basicAgreementSetting);
+		if (agreementTimeOfCompany.isPresent()) {
+			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(
+					agreementTimeOfCompany.get().getBasicSettingId(), new AlarmWeek(command.getAlarmWeek()),
+					new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()),
+					new AlarmTwoWeeks(command.getAlarmTwoWeeks()), new ErrorTwoWeeks(command.getErrorTwoWeeks()),
+					new LimitTwoWeeks(command.getLimitTwoWeeks()), new AlarmFourWeeks(command.getAlarmFourWeeks()),
+					new ErrorFourWeeks(command.getErrorFourWeeks()), new LimitFourWeeks(command.getLimitFourWeeks()),
+					new AlarmOneMonth(command.getAlarmOneMonth()), new ErrorOneMonth(command.getErrorOneMonth()),
+					new LimitOneMonth(command.getLimitOneMonth()), new AlarmTwoMonths(command.getAlarmTwoMonths()),
+					new ErrorTwoMonths(command.getErrorTwoMonths()), new LimitTwoMonths(command.getLimitTwoMonths()),
+					new AlarmThreeMonths(command.getAlarmThreeMonths()),
+					new ErrorThreeMonths(command.getErrorThreeMonths()),
+					new LimitThreeMonths(command.getErrorThreeMonths()), new AlarmOneYear(command.getAlarmOneYear()),
+					new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
+
+			this.basicAgreementSettingRepository.update(basicAgreementSetting);
+		}
 	}
-
 }

@@ -4,7 +4,7 @@
 
 #listTitle {
 	background-color: #E0F59E;
-	height: 470px;
+	height: 350px;
 	width: 365px;
 	padding-left: 20px;
 	padding-bottom: 15px;
@@ -15,7 +15,7 @@
 }
 
 .ntsControl.radio-wrapper.reset-element {
-	padding-top: 40px;
+	padding-top: 20px;
 }
 
 .ntsRadioBox {;
@@ -51,11 +51,11 @@ table tr td {
 }
 
 #description {
-	height: 50px;
+	height: 20px;
 }
 
 #titleMenu {
-	margin: 15px 0px 15px 0px;
+	margin: 5px 0px 5px 0px;
 }
 
 .col2{
