@@ -14,7 +14,7 @@
 				};
 			</script>
 			<com:stylefile path="../../../sample/catalog/catalog.css" />
-			<com:stylefile path="style.css" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
@@ -31,6 +31,13 @@
 				<div id="content" class="cf">
 					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
 					<h2>Overview</h2>
+					<div data-bind="ntsCheckBox:{checked: isQuickSearchTab}">Show/hide tab クイック検索</div><br/>
+					<div data-bind="ntsCheckBox:{checked: isAdvancedSearchTab}">Show/hide tab 詳細検索タブ</div><br/>
+					<div data-bind="ntsCheckBox:{checked: isAllReferableEmployee}">Show/hide button 参照可能な社員すべて</div><br/>
+					<div data-bind="ntsCheckBox:{checked: isOnlyMe}">Show/hide button 自分だけ</div><br/>
+					<div data-bind="ntsCheckBox:{checked: isEmployeeOfDepartment}">Show/hide button おなじ職場の社員</div><br/>
+					<div data-bind="ntsCheckBox:{checked: isEmployeeDepartmentFollow}">Show/hide button おなじ＋配下の職場の社員</div><br/>
+					<div data-bind="ntsCheckBox:{checked: isMutipleCheck}">Enable/disable multiple selection</div>
 					<div id="ccgcomponent"></div>
 					<div id="personinfo"></div>
 					<div data-bind="if : visiblePersonInfo()">
@@ -46,15 +53,19 @@
 							</ol>
 							<div id="tabs-html" class="cf">
 								<h2>HTML</h2>
+								<p>To use this component, you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
 								<pre><![CDATA[<ui:define name="htmlHead">
+		<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 		<com:scriptfile set="IGNITE" />
 		<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 		<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 		<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 		<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 </ui:define>]]></pre>
-								<pre><![CDATA[<div id="ccgcomponent"></div>
-<div id="personinfo"></div>
+								<p>The component.</p>
+								<pre><![CDATA[<div id="ccgcomponent"></div>]]></pre>
+								<p>The data to display.</p>
+<pre><![CDATA[<div id="personinfo"></div>
 <div data-bind="if : visiblePersonInfo()">
 	<label data-bind="text: personLoginInfo.personId"></label> 
 	<label data-bind="text: personLoginInfo.personName"></label>
@@ -75,6 +86,12 @@
                 self.personLoginInfo = new PersonModel();
 
                 self.ccgcomponent = {
+                    isQuickSearchTab: true,
+                    isAdvancedSearchTab: true,
+                    isAllReferableEmployee: true,
+                    isOnlyMe: true,
+                    isEmployeeOfDepartment: true,
+                    isEmployeeDepartmentFollow: true,
                     isMutipleCheck: true,
                     onSearchAllClicked: function(dataList: PersonModel[]) {
                         self.personinfo = {
@@ -141,7 +158,7 @@
 											<td><b>Type:</b> boolean<br /> Show/hide button 自分だけ </td>
 										</tr>
 										<tr>
-											<td>isEmployeeOfWorkplace
+											<td>isEmployeeOfDepartment
 											</td>
 											<td><b>Type:</b> boolean<br /> Show/hide button おなじ職場の社員</td>
 										</tr>
@@ -154,7 +171,7 @@
 										<tr>
 											<td>isAdvancedSearchTab
 											</td>
-											<td><b>Type:</b> boolean<br /> Show/hide tab クイック検索</td>
+											<td><b>Type:</b> boolean<br /> Show/hide tab 詳細検索タブ</td>
 										</tr>
 										<tr>
 											<td>isMutipleCheck

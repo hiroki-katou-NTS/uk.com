@@ -12,19 +12,39 @@ module nts.uk.com.view.ccg001.a {
             selectedCode: KnockoutObservableArray<string>;
             visiblePersonInfo: KnockoutObservable<boolean>;
             personLoginInfo: PersonModel;
+
+            // Options
+            isQuickSearchTab: KnockoutObservable<boolean>;
+            isAdvancedSearchTab: KnockoutObservable<boolean>;
+            isAllReferableEmployee: KnockoutObservable<boolean>;
+            isOnlyMe: KnockoutObservable<boolean>;
+            isEmployeeOfDepartment: KnockoutObservable<boolean>;
+            isEmployeeDepartmentFollow: KnockoutObservable<boolean>;
+            isMutipleCheck: KnockoutObservable<boolean>;
+
             constructor() {
                 var self = this;
                 self.selectedCode = ko.observableArray([]);
                 self.personLoginInfo = new PersonModel();
+
+                // Options
+                self.isQuickSearchTab = ko.observable(true);
+                self.isAdvancedSearchTab = ko.observable(true);
+                self.isAllReferableEmployee = ko.observable(true);
+                self.isOnlyMe = ko.observable(true);
+                self.isEmployeeOfDepartment = ko.observable(true);
+                self.isEmployeeDepartmentFollow = ko.observable(true);
+                self.isMutipleCheck = ko.observable(true);
+
+                // Init component.
                 self.ccgcomponent = {
-                    isQuickSearchTab: true,
-                    isAdvancedSearchTab: true,
-                    isAllReferableEmployee: true,
-                    isOnlyMe: true,
-                    isEmployeeOfDepartment: true,
-                    isEmployeeDepartmentFollow: true,
-                    isMutipleCheck: true,
-                    baseDate: ko.observable(new Date()),
+                    isQuickSearchTab: self.isQuickSearchTab(),
+                    isAdvancedSearchTab: self.isAdvancedSearchTab(),
+                    isAllReferableEmployee: self.isAllReferableEmployee(),
+                    isOnlyMe: self.isOnlyMe(),
+                    isEmployeeOfDepartment: self.isEmployeeOfDepartment(),
+                    isEmployeeDepartmentFollow: self.isEmployeeDepartmentFollow(),
+                    isMutipleCheck: self.isMutipleCheck(),
                     onSearchAllClicked: function(dataList: PersonModel[]) {
                         self.personinfo = {
                             isShowAlreadySet: false,
