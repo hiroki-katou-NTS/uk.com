@@ -1837,6 +1837,9 @@ var nts;
                     else if (yearMonthFormats.indexOf(outputFormat) != -1) {
                         return this.momentObject.year() * 100 + (this.momentObject.month() + 1);
                     }
+                    else if (outputFormat === "time") {
+                        return this.momentObject.hours() * 60 + this.momentObject.minutes();
+                    }
                     else {
                         return parseInt(this.momentObject.format(outputFormat).replace(/[^\d]/g, ""));
                     }
@@ -2622,23 +2625,24 @@ var nts;
                                 result.success(timeParse.toValue());
                             }
                             else {
-                                result.fail("");
+                                result.fail(timeParse.getMsg());
+                                return result;
                             }
                             if (!util.isNullOrUndefined(this.constraint)) {
                                 if (!util.isNullOrUndefined(this.constraint.max)) {
                                     maxStr = this.constraint.max;
                                     var max = uk.time.parseTime(this.constraint.max);
-                                    if (timeParse.success && (max.hours < timeParse.hours
-                                        || (max.hours === timeParse.hours && max.minutes < timeParse.minutes))) {
+                                    if (timeParse.success && (max.toValue() < timeParse.toValue())) {
                                         result.fail("");
+                                        return result;
                                     }
                                 }
                                 if (!util.isNullOrUndefined(this.constraint.min)) {
                                     minStr = this.constraint.min;
                                     var min = uk.time.parseTime(this.constraint.min);
-                                    if (timeParse.success && (min.hours > timeParse.hours
-                                        || (min.hours === timeParse.hours && min.minutes > timeParse.minutes))) {
+                                    if (timeParse.success && (min.toValue() > timeParse.toValue())) {
                                         result.fail("");
+                                        return result;
                                     }
                                 }
                                 if (!result.isValid && this.constraint.valueType === "Time") {
@@ -2646,6 +2650,10 @@ var nts;
                                 }
                             }
                             return result;
+                        }
+                        var isMinuteTime = this.outputFormat === "time" ? inputText.charAt(0) === "-" : false;
+                        if (isMinuteTime) {
+                            inputText = inputText.substring(1, inputText.length);
                         }
                         var parseResult = uk.time.parseMoment(inputText, this.outputFormat);
                         // Parse
@@ -2667,25 +2675,26 @@ var nts;
                         }
                         else {
                             result.fail(parseResult.getMsg());
+                            return result;
                         }
                         // Time clock
                         if (this.outputFormat === "time") {
                             if (!util.isNullOrUndefined(this.constraint)) {
-                                var inputMoment = parseResult.toValue();
+                                var inputMoment = parseResult.toNumber(this.outputFormat) * (isMinuteTime ? -1 : 1);
                                 if (!util.isNullOrUndefined(this.constraint.max)) {
                                     maxStr = this.constraint.max;
                                     var maxMoment = moment.duration(maxStr);
-                                    if (parseResult.success && (maxMoment.hours() < inputMoment.hours()
-                                        || (maxMoment.hours() === inputMoment.hours() && maxMoment.minutes() < inputMoment.minutes()))) {
+                                    if (parseResult.success && (maxMoment.hours() * 60 + maxMoment.minutes()) < inputMoment) {
                                         result.fail("");
+                                        return result;
                                     }
                                 }
                                 if (!util.isNullOrUndefined(this.constraint.min)) {
                                     minStr = this.constraint.min;
                                     var minMoment = moment.duration(minStr);
-                                    if (parseResult.success && (minMoment.hours() > inputMoment.hours()
-                                        || (minMoment.hours() === inputMoment.hours() && minMoment.minutes() > inputMoment.minutes()))) {
+                                    if (parseResult.success && (minMoment.hours() * 60 + minMoment.minutes()) > inputMoment) {
                                         result.fail("");
+                                        return result;
                                     }
                                 }
                                 if (!result.isValid && this.constraint.valueType === "Clock") {
