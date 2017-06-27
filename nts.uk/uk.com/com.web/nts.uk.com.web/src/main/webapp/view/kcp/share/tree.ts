@@ -1,5 +1,6 @@
 module kcp.share.tree {
     export interface UnitModel {
+        workplaceId: string;
         code: string;
         name: string;
         nodeText?: string;
@@ -10,7 +11,7 @@ module kcp.share.tree {
     }
     
     export interface UnitAlreadySettingModel {
-        code: string;
+        workplaceId: string;
         settingType: SettingType;
     }
     
@@ -34,7 +35,7 @@ module kcp.share.tree {
          * selected value.
          * May be string or Array<string>
          */
-        selectedCode: KnockoutObservable<any>;
+        selectedWorkplaceId: KnockoutObservable<any>;
         
         /**
          * Base date.
@@ -53,7 +54,7 @@ module kcp.share.tree {
         isDialog: boolean;
         
         /**
-         * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
+         * Already setting list code. structure: {workplaceId: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -72,7 +73,7 @@ module kcp.share.tree {
     export class TreeComponentScreenModel {
         itemList: KnockoutObservableArray<UnitModel>;
         backupItemList: KnockoutObservableArray<UnitModel>;
-        selectedCodes: KnockoutObservable<any>;
+        selectedWorkplaceIds: KnockoutObservable<any>;
         isShowSelectButton: boolean;
         treeComponentColumn: Array<any>;
         isMultiple: boolean;
@@ -81,19 +82,18 @@ module kcp.share.tree {
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
         levelSelected: KnockoutObservable<number>;
-        listCode: Array<string>;
+        listWorkplaceId: Array<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([]);
             self.backupItemList = ko.observableArray([]);
-            self.baseDate = ko.observable(new Date());
-            self.listCode = [];
+            self.listWorkplaceId = [];
             self.hasBaseDate = ko.observable(false);
             self.alreadySettingList = ko.observableArray([]);
             self.treeComponentColumn = [
-                { headerText: nts.uk.resource.getText("KCP004_5"), key: 'code', dataType: "string", hidden: true },
+                { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: "90%", dataType: "string" }
             ];
             self.levelList = [
@@ -116,12 +116,10 @@ module kcp.share.tree {
             let dfd = $.Deferred<void>();
             self.isMultiple = data.isMultiSelect;
             self.hasBaseDate(!self.isMultiple);
-            self.selectedCodes = data.selectedCode;
+            self.selectedWorkplaceIds = data.selectedWorkplaceId;
             self.isShowSelectButton = data.isShowSelectButton;
             self.isDialog = data.isDialog;
-            if (self.hasBaseDate()) {
-                self.baseDate = data.baseDate;
-            }
+            self.baseDate = data.baseDate;
             if (data.alreadySettingList) {
                 self.alreadySettingList = data.alreadySettingList;
             }
@@ -156,7 +154,7 @@ module kcp.share.tree {
             service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
                 if (res) {
                     // Set default value when init component.
-                    self.selectedCodes = data.selectedCode;
+                    self.selectedWorkplaceIds = data.selectedWorkplaceId;
                     
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
@@ -231,7 +229,7 @@ module kcp.share.tree {
          */
         private addAlreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitAlreadySettingModel>) {
             let mapAlreadySetting = _.reduce(alreadySettingList, function(hash, value) {
-                let key = value['code'];
+                let key = value['workplaceId'];
                 hash[key] = value['settingType'];
                 return hash;
             }, {});
@@ -243,19 +241,20 @@ module kcp.share.tree {
          */
         private mapAlreadySetting(dataList: Array<UnitModel>, mapAlreadySetting: any) {
             let self = this;
-            for (let alreadySetting of dataList) {
-                // add code work place
-                self.listCode.push(alreadySetting.code);
+            for (let unitModel of dataList) {
+                
+                // add workplaceId work place
+                self.listWorkplaceId.push(unitModel.workplaceId);
                 
                 // set level
-                alreadySetting.level = alreadySetting.heirarchyCode.length / 3;
+                unitModel.level = unitModel.heirarchyCode.length / 3;
                 
                 // set node text
-                alreadySetting.nodeText = alreadySetting.code + ' ' + alreadySetting.name; 
+                unitModel.nodeText = unitModel.code + ' ' + unitModel.name; 
                 
-                alreadySetting.settingType = mapAlreadySetting[alreadySetting.code];
-                if (alreadySetting.childs.length > 0) {
-                    this.mapAlreadySetting(alreadySetting.childs, mapAlreadySetting);
+                unitModel.settingType = mapAlreadySetting[unitModel.workplaceId];
+                if (unitModel.childs.length > 0) {
+                    this.mapAlreadySetting(unitModel.childs, mapAlreadySetting);
                 }
             }
         }
@@ -280,7 +279,7 @@ module kcp.share.tree {
          * Select all
          */
         private selectAll() {
-            this.selectedCodes(this.listCode);
+            this.selectedWorkplaceIds(this.listWorkplaceId);
         }
         
         /**
@@ -288,27 +287,35 @@ module kcp.share.tree {
          */
         private selectSubParent() {
             let self = this;
-            let listSubCode: Array<string> = [];
+            let listSubWorkplaceId: Array<string> = [];
             
-            for (let code of self.selectedCodes()) {
-                let listModel: Array<UnitModel> = [];
-                listModel = self.findUnitModelByCode(self.itemList(), code, listModel);
-                self.findListSubCode(listModel, listSubCode);
+            let listModel = self.findUnitModelByListWorkplaceId();
+            self.findListSubWorkplaceId(listModel, listSubWorkplaceId);
+            if (listSubWorkplaceId.length > 0) {
+                self.selectedWorkplaceIds(listSubWorkplaceId);
             }
-            if (listSubCode.length > 0) {
-                self.selectedCodes(listSubCode);
+        }
+        /**
+         * Find UnitModel By ListWorkplaceId
+         */
+        private findUnitModelByListWorkplaceId(): Array<UnitModel>  {
+            let self = this;
+            let listModel: Array<UnitModel> = [];
+            for (let workplaceId of self.selectedWorkplaceIds()) {
+                listModel = self.findUnitModelByWorkplaceId(self.itemList(), workplaceId, listModel);
             }
+            return listModel;
         }
         
         /**
-         * Find list sub code of parent
+         * Find list sub workplaceId of parent
          */
-        private findListSubCode(dataList: Array<UnitModel>, listSubCode: Array<string>) {
+        private findListSubWorkplaceId(dataList: Array<UnitModel>, listSubWorkplaceId: Array<string>) {
             let self = this;
             for (let alreadySetting of dataList) {
-                listSubCode.push(alreadySetting.code);
+                listSubWorkplaceId.push(alreadySetting.workplaceId);
                 if (alreadySetting.childs && alreadySetting.childs.length > 0) {
-                    this.findListSubCode(alreadySetting.childs, listSubCode);
+                    this.findListSubWorkplaceId(alreadySetting.childs, listSubWorkplaceId);
                 }
             }
         }
@@ -318,23 +325,27 @@ module kcp.share.tree {
          */
         private selectData(option: TreeComponentOption, data: UnitModel) :any {
             if (this.isMultiple) {
-                return [data.code];
+                return [data.workplaceId];
             }
-            return data.code;
+            return data.workplaceId;
         }
         
         /**
-         * Find UnitModel by code
+         * Find UnitModel by workplaceId
          */
-        private findUnitModelByCode(dataList: Array<UnitModel>, code: string,
+        private findUnitModelByWorkplaceId(dataList: Array<UnitModel>, workplaceId: string,
             listModel: Array<UnitModel>) :Array<UnitModel> {
             let self = this;
             for (let item of dataList) {
-                if (item.code == code) {
-                    listModel.push(item); 
+                if (item.workplaceId == workplaceId) {
+                    let modelString = JSON.stringify(listModel);
+                    // Check item existed
+                    if (modelString.indexOf(item.workplaceId) < 0) {
+                        listModel.push(item); 
+                    }
                 }
                 if (item.childs.length > 0) {
-                    this.findUnitModelByCode(item.childs, code, listModel);
+                    this.findUnitModelByWorkplaceId(item.childs, workplaceId, listModel);
                 }
             }
             return listModel;

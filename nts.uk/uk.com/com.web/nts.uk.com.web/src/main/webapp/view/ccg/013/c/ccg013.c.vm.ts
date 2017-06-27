@@ -92,11 +92,11 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         private uploadFileProcess(): void {
             var self = this;
             var option = {
-                stereoType: "any",
+                stereoType: "titleBar",
                 onSuccess: function() { alert('upload Success'); },
                 onFail: function() { alert('upload Fails')}
             }
-            $("#file_upload").ntsFileUpload({ stereoType: "any" }).done(function(res) {
+            $("#file_upload").ntsFileUpload({ stereoType: "titleBar" }).done(function(res) {
                 self.fileID(res[0].id);
                 self.filename('');
                 self.imageName(res[0].originalName);
@@ -121,7 +121,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         submit() {
             var self = this;
-            var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID());
+            var titleBar = new TitleBar(self.nameTitleBar(), self.letterColor(), self.backgroundColor(), self.selectedTitleAtr(),self.fileID(),self.currentTitleMenu());
             windows.setShared("CCG013C_TitleBar", titleBar);
             console.log(titleBar);
             self.cancel_Dialog();
@@ -133,22 +133,24 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         backgroundColor: string;
         selectedTitleAtr: number;
         imageId:string;
+        titleMenuCode:string;
 
-        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, selectedTitleAtr: number,imageId:string) {
+        constructor(nameTitleBar: string, letterColor: string, backgroundColor: string, selectedTitleAtr: number,imageId:string,titleMenuCode:string) {
             this.nameTitleBar = nameTitleBar;
             this.letterColor = letterColor;
             this.backgroundColor = backgroundColor;
             this.selectedTitleAtr = selectedTitleAtr;
             this.imageId = imageId;
+            this.titleMenuCode = titleMenuCode;
         }
     }
+    
     class TitleMenu {
         titleCode: string;
         titleName: string;
         constructor(titleCode: string, titleName: string) {
-            var self = this;
-            self.titleCode = titleCode;
-            self.titleName = titleName;
+            this.titleCode = titleCode;
+            this.titleName = titleName;
         }
     }
 }

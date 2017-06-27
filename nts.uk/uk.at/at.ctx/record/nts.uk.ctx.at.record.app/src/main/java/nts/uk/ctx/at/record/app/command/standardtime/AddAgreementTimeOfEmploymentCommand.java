@@ -7,7 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
@@ -31,35 +31,36 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitThreeMonths;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoMonths;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentRepostitory;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
- * @author nampt 全社 screen add
+ * @author nampt 雇用 screen add
  *
  */
 @Stateless
-public class AddAgreementTimeOfCompanyCommandHandler extends CommandHandler<AddAgreementTimeOfCompanyCommand> {
-
-	@Inject
-	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
+public class AddAgreementTimeOfEmploymentCommand extends CommandHandler<AddAgreementTimeOfEmploymentCommandHandler> {
 
 	@Inject
 	private BasicAgreementSettingRepository basicAgreementSettingRepository;
 
+	@Inject
+	private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepostitory;
+
 	@Override
-	protected void handle(CommandHandlerContext<AddAgreementTimeOfCompanyCommand> context) {
-		AddAgreementTimeOfCompanyCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<AddAgreementTimeOfEmploymentCommandHandler> context) {
+		AddAgreementTimeOfEmploymentCommandHandler command = context.getCommand();
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 		String basicSettingId = IdentifierUtil.randomUniqueId();
 
-		AgreementTimeOfCompany agreementTimeOfCompany = new AgreementTimeOfCompany(companyId, basicSettingId,
-				EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
-		this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
+		AgreementTimeOfEmployment agreementTimeOfEmployment = new AgreementTimeOfEmployment(companyId, basicSettingId,
+				EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
+				command.getEmploymentCategoryCode());
+		this.agreementTimeOfEmploymentRepostitory.add(agreementTimeOfEmployment);
 
 		BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId,
 				new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()), 
