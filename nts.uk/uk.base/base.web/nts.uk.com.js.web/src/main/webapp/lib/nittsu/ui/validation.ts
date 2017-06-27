@@ -56,11 +56,9 @@ module nts.uk.ui.validation {
             }
             let validateResult;
             // Check CharType
-            if (!util.isNullOrUndefined(this.charType)) {
-                if (this.charType.viewName === '半角数字') {
-                    inputText = text.toOneByteAlphaNumberic(inputText);        
-                } else if (this.charType.viewName === '半角英数字') {
-                    inputText = text.toOneByteAlphaNumberic(text.toUpperCase(inputText));
+            if (!util.isNullOrUndefined(this.charType)) { 
+                if (this.charType.viewName === '半角英数字') {
+                    inputText = text.toUpperCase(inputText);
                 } else if (this.charType.viewName === 'カタカナ') {
                     inputText = text.oneByteKatakanaToTwoByte(inputText);    
                 } else if (this.charType.viewName === 'カナ') {
