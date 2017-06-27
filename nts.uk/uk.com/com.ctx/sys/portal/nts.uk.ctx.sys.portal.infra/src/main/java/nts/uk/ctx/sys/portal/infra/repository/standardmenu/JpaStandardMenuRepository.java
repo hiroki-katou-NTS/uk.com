@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -38,6 +39,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ " AND c.ccgmtStandardMenuPK.code = :code"
 			+ " AND c.ccgmtStandardMenuPK.system = :system"
 			+ " AND c.ccgmtStandardMenuPK.classification = :menu_classification";
+	//yennth
+	private final String UPDATE_STANDARD_MENU_BY_CODE = "UPDATE CcgstStandardMenu c SET c.displayName = :displayName WHERE "
+			+ "c.ccgmtStandardMenuPK.companyId = :companyId"
+			+ " AND c.ccgmtStandardMenuPK.code = :code"
+			+ " AND c.ccgmtStandardMenuPK.system = :system"
+			+ " AND c.ccgmtStandardMenuPK.classification = :classification";
 	
 	private CcgstStandardMenu toEntity(StandardMenu domain) {
 		val entity = new CcgstStandardMenu();
@@ -143,4 +150,22 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("classification", classification)
 				.getSingle(c->toDomain(c));
 	}
+	
+	/**
+	 * yennth
+	 * update list standard menu
+	 * @param list standard menu
+	 */
+	@Override
+	public void update(List<StandardMenu> StandardMenu) {
+		EntityManager manager = this.getEntityManager();
+		CcgstStandardMenuPK pk;
+		for (StandardMenu obj : StandardMenu){
+			pk = new CcgstStandardMenuPK(obj.getCompanyId(), obj.getCode().v(), obj.getSystem().value, obj.getClassification());
+			CcgstStandardMenu o = manager.find(CcgstStandardMenu.class, pk);
+			o.setDisplayName(obj.getDisplayName().v());
+		}		
+		
+	};
+	
 }
