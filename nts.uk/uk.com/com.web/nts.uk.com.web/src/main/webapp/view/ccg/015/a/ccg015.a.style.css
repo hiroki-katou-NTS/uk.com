@@ -4,12 +4,10 @@
 }
 
 .btnStyle {
-	width: 70px;
 	margin-right: 5px;
 }
 
 .btnStyle2 {
-	width: 150px;
 	margin-right: 5px;
 }
 
@@ -55,7 +53,7 @@
 }
 
 #btn_delete {
-	margin-left: 200px;
+	margin-right: 5px;
 }
 
 #lbl_registrationOfLaborInsurancePlant {
@@ -153,4 +151,12 @@ button.nts-switch-button {
 }
 .pad_left_20{
 	padding-left: 20px;
+}
+.drop_links{
+	max-height: 50px;
+	float: left;
+	margin-left: 500px;
+}
+.float_left{
+	float: left;
 }

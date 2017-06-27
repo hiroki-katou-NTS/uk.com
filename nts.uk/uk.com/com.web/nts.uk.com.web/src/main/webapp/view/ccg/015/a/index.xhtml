@@ -20,6 +20,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
+			<div class="float_left">
 				<button tabindex="5" data-bind="click: newTopPage" id="btn_new"
 					class="btnStyle">#{i18n.getText('CCG015_4')}</button>
 				<button tabindex="6" data-bind="click: saveTopPage ,enable: $root.errors.isEmpty"
@@ -34,7 +35,8 @@
 				<button tabindex="10"
 					data-bind="click: removeTopPage,enable: !isNewMode()"
 					class="danger btnStyle" id="btn_delete">#{i18n.getText('CCG015_7')}</button>
-				<div tabindex="11" class="float_right" data-bind="ntsFunctionPanel: {width: 200, headerText: '#{i18n.getText('CCG015_16')}', dataSource: listLinkScreen}"></div>
+					</div>
+				<div class="drop_links" tabindex="11"  data-bind="ntsFunctionPanel: {width: 200, headerText: '#{i18n.getText('CCG015_16')}', dataSource: listLinkScreen}"></div>
 			</div>
 			<div id="contents-area" data-bind="visible: true"
 				style="display: none">
