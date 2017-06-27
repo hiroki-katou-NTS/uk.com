@@ -19,6 +19,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	private static final String SELECT_ALL_AGENT;
 	
 	private static final String SELECT_AGENT_BY_DATE;
+
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -43,10 +44,15 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" AND e.endDate <= :endDate");
 		SELECT_AGENT_BY_DATE = builderString.toString(); 
 		
+		
 		}
 	
 		
-	
+	/**
+	 * Convert Data to Domain
+	 * @param cmmmtAgent
+	 * @return
+	 */
 	private Agent convertToDomain(CmmmtAgent cmmmtAgent){
 		Agent agent = Agent.createFromJavaType(
 				cmmmtAgent.cmmmtAgentPK.companyId,
@@ -65,6 +71,11 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		return agent;
 	}
 	
+	/**
+	 * Convert Data to Database Type
+	 * @param agent
+	 * @return
+	 */
 	private CmmmtAgent convertToDbType(Agent agent) {
 		CmmmtAgent cmmmtAgent = new CmmmtAgent();
 		CmmmtAgentPK cmmmtAgentPK = new CmmmtAgentPK(
@@ -86,7 +97,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	}
 	
 	/**
-	 * find all Agent
+	 * Find all Agent
 	 */
 	@Override
 	public List<Agent> findAllAgent(String companyId, String employeeId) {
@@ -95,6 +106,9 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.getList(c -> convertToDomain(c));
 	}
 	
+	/**
+	 * Find all Agent by CompanyId
+	 */
 	@Override
 	public List<Agent> findByCid(String companyId) {
 		return this.queryProxy().query(SELECT_ALL, CmmmtAgent.class)
@@ -103,7 +117,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	}
 
 	/**
-	 * add Agent
+	 * Add Agent
 	 */
 	@Override
 	public void add(Agent agent) {
@@ -111,7 +125,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	}
 
 	/**
-	 * update Agent
+	 * Update Agent
 	 */
 	@Override
 	public void update(Agent agent) {
@@ -132,7 +146,7 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	}
 
 	/**
-	 * delete Agent
+	 * Delete Agent
 	 */
 	@Override
 	public void delete(String companyId, String employeeId, String requestId) {
@@ -140,13 +154,19 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		this.commandProxy().remove(CmmmtAgent.class, cmmmtAgentPK);
 	}
 
-
+	/**
+	 * Find Agent by Request Id
+	 */
 	@Override
 	public Optional<Agent> find(String companyId, String employeeId, String requestId) {
 		CmmmtAgentPK primaryKey = new CmmmtAgentPK(companyId, employeeId, requestId);
 		return this.queryProxy().find(primaryKey, CmmmtAgent.class)
 				.map(x -> convertToDomain(x));
 	}
+	
+	/**
+	 * Find All Agent by Date
+	 */
 	@Override
 	public List<Agent> findAll(String companyId,GeneralDate startDate, GeneralDate endDate) {
 		return this.queryProxy().query(SELECT_AGENT_BY_DATE, CmmmtAgent.class)
@@ -155,6 +175,5 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));
 	}
-
 
 }

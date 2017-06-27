@@ -31,8 +31,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.nameTitleBar = ko.observable("");
             //Radio button
             self.itemTitleAtr = ko.observableArray([
-                { value: 1, titleAtrName: resource.getText('CCG013_34') },
-                { value: 2, titleAtrName: resource.getText('CCG013_35') }]);
+                { value: 0, titleAtrName: resource.getText('CCG013_34') },
+                { value: 1, titleAtrName: resource.getText('CCG013_35') }]);
             self.selectedTitleAtr = ko.observable(1);
             //color picker
             self.letterColor = ko.observable('');

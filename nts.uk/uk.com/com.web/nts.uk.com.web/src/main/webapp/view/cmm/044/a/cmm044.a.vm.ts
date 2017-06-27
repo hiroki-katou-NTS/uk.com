@@ -9,10 +9,12 @@ module cmm044.a.viewmodel {
     export class ScreenModel {
         empItems: KnockoutObservableArray<PersonModel>;
         empSelectedItem: KnockoutObservable<any>;
+        
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         itemList: KnockoutObservableArray<any>;
         index_of_itemDelete: any;
         isEnableDelete: KnockoutObservable<boolean>;
+        
         displayEmployeeInfo1: KnockoutObservable<boolean>;
         displayEmployeeInfo2: KnockoutObservable<boolean>;
         displayEmployeeInfo3: KnockoutObservable<boolean>;
@@ -22,6 +24,7 @@ module cmm044.a.viewmodel {
         currentAgent: KnockoutObservable<model.AgentDto>;
         histSelectedItem: KnockoutObservable<any>;
         currentItem: KnockoutObservable<model.AgentAppDto>;
+        
         agentAppType1: KnockoutObservable<number>;
         agentAppType2: KnockoutObservable<number>;
         agentAppType3: KnockoutObservable<number>;
@@ -94,9 +97,8 @@ module cmm044.a.viewmodel {
                     self.getAgen(self.empSelectedItem().personId, requestId);
                     self.isEnableDelete(true);
                 }
-
-
             });
+            
             self.itemList = ko.observableArray([
                 new BoxModel(0, nts.uk.resource.getText("CMM044_16")),
                 new BoxModel(1, nts.uk.resource.getText("CMM044_17")),
@@ -111,7 +113,10 @@ module cmm044.a.viewmodel {
             var dfd = $.Deferred();
             self.empItems.removeAll();
 
-            //Demo EmployeeCode & EmployeeId 
+            /**
+             * Demo EmployeeCode & EmployeeId
+             */
+             
             _.range(3).map(i => {
                 i++;
                 if (i < 10) {
@@ -126,7 +131,6 @@ module cmm044.a.viewmodel {
                         code: 'A0000000' + i,
                         name: '日通　社員' + i,
                     }));
-
                 }
             });
             dfd.resolve();
@@ -156,6 +160,9 @@ module cmm044.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * find agent by requestId
+         */
         getAgen(employeeId: string, requestId: string): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -191,7 +198,7 @@ module cmm044.a.viewmodel {
         }
 
         /**
-         * 
+         * Find agent
          */
         findInHistItem(employeeId: string, requestId: string): model.AgentDto {
             var self = this;
@@ -237,14 +244,17 @@ module cmm044.a.viewmodel {
 
                     
                     self.histSelectedItem("");
-                    } else {
+                    } else if (resObj.businessException){
+                        
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_12"));
+                    }else {
                         self.getAllAgen(self.empSelectedItem().personId);
                         self.histSelectedItem(res);
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                        
                     }
                 }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_12"));
+                    
                     dfd.reject(res);
                 })
             }

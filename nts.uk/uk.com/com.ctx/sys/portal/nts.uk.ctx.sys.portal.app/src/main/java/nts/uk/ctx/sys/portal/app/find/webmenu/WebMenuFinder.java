@@ -97,9 +97,9 @@ public class WebMenuFinder {
 	 */
 	private static List<MenuBarDto> toMenuBar(WebMenu domain) {
 		List<MenuBarDto> menuBars = domain.getMenuBars().stream().map(mn -> {
-			List<TitleMenuDto> titleMenus = toTitleMenu(domain, mn);
+			List<TitleBarDto> titleMenus = toTitleMenu(domain, mn);
 
-			return new MenuBarDto(mn.getCode().v(), mn.getMenuBarName().v(),
+			return new MenuBarDto(mn.getMenuBarId().toString(), mn.getCode().v(), mn.getMenuBarName().v(),
 					mn.getSelectedAtr().value, mn.getSystem().value, mn.getMenuCls().value,
 					mn.getBackgroundColor().v(), mn.getTextColor().v(), mn.getDisplayOrder(), titleMenus);
 		}).collect(Collectors.toList());
@@ -113,11 +113,11 @@ public class WebMenuFinder {
 	 * @param mn
 	 * @return
 	 */
-	private static List<TitleMenuDto> toTitleMenu(WebMenu domain, MenuBar mn) {
-		List<TitleMenuDto> titleMenus = mn.getTitleMenu().stream().map(tm -> {
+	private static List<TitleBarDto> toTitleMenu(WebMenu domain, MenuBar mn) {
+		List<TitleBarDto> titleMenus = mn.getTitleMenu().stream().map(tm -> {
 			List<TreeMenuDto> treeMenus = toTreeMenu(domain, tm);
 
-			return new TitleMenuDto(tm.getTitleMenuName().v(), tm.getBackgroundColor().v(),
+			return new TitleBarDto(tm.getTitleMenuId().toString(), tm.getTitleMenuName().v(), tm.getBackgroundColor().v(),
 					tm.getImageFile(), tm.getTextColor().v(), tm.getTitleMenuAtr().value, tm.getTitleMenuCode().v(),
 					tm.getDisplayOrder(), treeMenus);
 		}).collect(Collectors.toList());

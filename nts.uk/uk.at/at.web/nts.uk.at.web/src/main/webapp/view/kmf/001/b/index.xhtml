@@ -56,7 +56,9 @@
 							<th class="thInput">#{i18n.getText('KMF001_24')}</th>
 						</tr>
 						<tr data-bind="visible: paidLeaveSetting">
-							<td>年次有給休暇</td>
+							<td data-bind="text: acquisitionTypeEnums()[0].localizedName">
+								<!-- 年次有給休暇 -->
+							</td>
 							<td class="inputPriority"><input id="annual-paid-leave"
 								class="nts-input"
 								data-bind="ntsNumberEditor: {
@@ -67,7 +69,9 @@
 									enable: enableInputPriority}" /></td>
 						</tr>
 						<tr data-bind="visible: retentionYearlySetting">
-							<td>代休</td>
+							<td data-bind="text: acquisitionTypeEnums()[1].localizedName">
+								<!-- 代休 -->
+							</td>
 							<td class="inputPriority"><input id="compensatory-day-off"
 								class="nts-input"
 								data-bind="ntsNumberEditor: {
@@ -77,7 +81,9 @@
 									enable: enableInputPriority}" /></td>
 						</tr>
 						<tr data-bind="visible: compensLeaveComSetSetting">
-							<td>振休</td>
+							<td data-bind="text: acquisitionTypeEnums()[2].localizedName">
+								<!-- 振休 -->
+							</td>
 							<td class="inputPriority"><input id="substitute-holiday"
 								class="nts-input"
 								data-bind="ntsNumberEditor: {
@@ -88,7 +94,9 @@
 									enable: enableInputPriority}" /></td>
 						</tr>
 						<tr data-bind="visible: comSubtSetting">
-							<td>積立年休</td>
+							<td data-bind="text: acquisitionTypeEnums()[3].localizedName">
+								<!-- 積立年休 -->
+							</td>
 							<td class="inputPriority"><input id="funded-paid-holiday"
 								class="nts-input"
 								data-bind="ntsNumberEditor: {
@@ -99,7 +107,9 @@
 									enable: enableInputPriority}" /></td>
 						</tr>
 						<tr data-bind="visible: com60HSetting">
-							<td>60H超休</td>
+							<td data-bind="text: acquisitionTypeEnums()[4].localizedName">
+								<!-- 60H超休 -->
+							</td>
 							<td class="inputPriority"><input id="exsess-holiday"
 								class="nts-input"
 								data-bind="ntsNumberEditor: {
@@ -110,7 +120,9 @@
 									enable: enableInputPriority}" /></td>
 						</tr>
 						<tr data-bind="visible: nursingSetting">
-							<td>特別休暇</td>
+							<td data-bind="text: acquisitionTypeEnums()[5].localizedName">
+								<!-- 特別休暇 -->
+							</td>
 							<td class="inputPriority"><input id="special-holiday"
 								class="nts-input"
 								data-bind="ntsNumberEditor: {
