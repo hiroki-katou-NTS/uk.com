@@ -1,5 +1,6 @@
 module kcp.share.tree {
     export interface UnitModel {
+        workplaceId: string;
         code: string;
         name: string;
         nodeText?: string;
@@ -10,7 +11,7 @@ module kcp.share.tree {
     }
     
     export interface UnitAlreadySettingModel {
-        code: string;
+        workplaceId: string;
         settingType: SettingType;
     }
     
@@ -34,7 +35,7 @@ module kcp.share.tree {
          * selected value.
          * May be string or Array<string>
          */
-        selectedCode: KnockoutObservable<any>;
+        selectedWorkplaceId: KnockoutObservable<any>;
         
         /**
          * Base date.
@@ -42,12 +43,18 @@ module kcp.share.tree {
         baseDate: KnockoutObservable<Date>;
         
         /**
+         * isShowSelectButton
+         * Show/hide button select all and selected sub parent
+         */
+        isShowSelectButton: boolean;
+        
+        /**
          * is dialog, if is main screen, set false,
          */
         isDialog: boolean;
         
         /**
-         * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
+         * Already setting list code. structure: {workplaceId: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -66,26 +73,27 @@ module kcp.share.tree {
     export class TreeComponentScreenModel {
         itemList: KnockoutObservableArray<UnitModel>;
         backupItemList: KnockoutObservableArray<UnitModel>;
-        selectedCodes: KnockoutObservable<any>;
+        selectedWorkplaceIds: KnockoutObservable<any>;
+        isShowSelectButton: boolean;
         treeComponentColumn: Array<any>;
         isMultiple: boolean;
         isDialog: boolean;
-        hasBaseDate: boolean;
+        hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
         levelSelected: KnockoutObservable<number>;
-        listCode: KnockoutObservableArray<string>;
+        listWorkplaceId: Array<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([]);
             self.backupItemList = ko.observableArray([]);
-            self.baseDate = ko.observable(new Date());
-            self.listCode = ko.observableArray([]);
+            self.listWorkplaceId = [];
+            self.hasBaseDate = ko.observable(false);
             self.alreadySettingList = ko.observableArray([]);
             self.treeComponentColumn = [
-                { headerText: nts.uk.resource.getText("KCP004_5"), key: 'code', dataType: "string", hidden: true },
+                { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: "90%", dataType: "string" }
             ];
             self.levelList = [
@@ -107,7 +115,9 @@ module kcp.share.tree {
             let self = this;
             let dfd = $.Deferred<void>();
             self.isMultiple = data.isMultiSelect;
-            self.selectedCodes = data.selectedCode;
+            self.hasBaseDate(!self.isMultiple);
+            self.selectedWorkplaceIds = data.selectedWorkplaceId;
+            self.isShowSelectButton = data.isShowSelectButton;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
             if (data.alreadySettingList) {
@@ -144,7 +154,7 @@ module kcp.share.tree {
             service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
                 if (res) {
                     // Set default value when init component.
-                    self.selectedCodes = data.selectedCode;
+                    self.selectedWorkplaceIds = data.selectedWorkplaceId;
                     
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
@@ -155,24 +165,42 @@ module kcp.share.tree {
                             self.addAlreadySettingAttr(res, newAlreadySettings);
                             self.itemList(res);
                             self.backupItemList(res);
-//                            self.addIconToAlreadyCol();
                         });
                     }
                     // Init component.
                     self.itemList(res);
                     self.backupItemList(res);
-                    $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/tree.xhtml', function() {
+                    var webserviceLocator = nts.uk.request.location.siteRoot
+                        .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                        .mergeRelativePath('/view/kcp/share/tree.xhtml').serialize();
+                    $input.load(webserviceLocator, function() {
                         ko.cleanNode($input[0]);
                         ko.applyBindings(self, $input[0]);
                         
-                        // Add icon to column already setting.
-//                        self.addIconToAlreadyCol();
+                        // defined function get data list.
+                        $('#script-for-' + $input.attr('id')).remove();
+                        var s = document.createElement("script");
+                        s.type = "text/javascript";
+                        s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(self.backupItemList());
+                        s.id = 'script-for-' + $input.attr('id');
+                        $("head").append(s);
+                        $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                            return window['dataList' + this.attr('id').replace(/-/gi, '')];
+                        }
+                        dfd.resolve();
                     });
                     
                     $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
                        self.addIconToAlreadyCol();
                     });
-                    dfd.resolve();
+                    // defined function focus
+                    $.fn.focusComponent = function() {
+                        if (self.hasBaseDate()) {
+                            $('.base-date-editor').first().focus();
+                        } else {
+                            $(".ntsSearchBox").focus();
+                        }
+                    }
                 }
             });
             
@@ -201,7 +229,7 @@ module kcp.share.tree {
          */
         private addAlreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitAlreadySettingModel>) {
             let mapAlreadySetting = _.reduce(alreadySettingList, function(hash, value) {
-                let key = value['code'];
+                let key = value['workplaceId'];
                 hash[key] = value['settingType'];
                 return hash;
             }, {});
@@ -213,19 +241,20 @@ module kcp.share.tree {
          */
         private mapAlreadySetting(dataList: Array<UnitModel>, mapAlreadySetting: any) {
             let self = this;
-            for (let alreadySetting of dataList) {
-                // add code work place
-                self.listCode().push(alreadySetting.code);
+            for (let unitModel of dataList) {
+                
+                // add workplaceId work place
+                self.listWorkplaceId.push(unitModel.workplaceId);
                 
                 // set level
-                alreadySetting.level = alreadySetting.heirarchyCode.length / 3;
+                unitModel.level = unitModel.heirarchyCode.length / 3;
                 
                 // set node text
-                alreadySetting.nodeText = alreadySetting.code + ' ' + alreadySetting.name; 
+                unitModel.nodeText = unitModel.code + ' ' + unitModel.name; 
                 
-                alreadySetting.settingType = mapAlreadySetting[alreadySetting.code];
-                if (alreadySetting.childs.length > 0) {
-                    this.mapAlreadySetting(alreadySetting.childs, mapAlreadySetting);
+                unitModel.settingType = mapAlreadySetting[unitModel.workplaceId];
+                if (unitModel.childs.length > 0) {
+                    this.mapAlreadySetting(unitModel.childs, mapAlreadySetting);
                 }
             }
         }
@@ -250,7 +279,7 @@ module kcp.share.tree {
          * Select all
          */
         private selectAll() {
-            this.selectedCodes(this.listCode());
+            this.selectedWorkplaceIds(this.listWorkplaceId);
         }
         
         /**
@@ -258,27 +287,35 @@ module kcp.share.tree {
          */
         private selectSubParent() {
             let self = this;
-            let listSubCode: Array<string> = [];
+            let listSubWorkplaceId: Array<string> = [];
             
-            for (let code of self.selectedCodes()) {
-                let listModel: Array<UnitModel> = [];
-                listModel = self.findUnitModelByCode(self.itemList(), code, listModel);
-                self.findListSubCode(listModel, listSubCode);
+            let listModel = self.findUnitModelByListWorkplaceId();
+            self.findListSubWorkplaceId(listModel, listSubWorkplaceId);
+            if (listSubWorkplaceId.length > 0) {
+                self.selectedWorkplaceIds(listSubWorkplaceId);
             }
-            if (listSubCode.length > 0) {
-                self.selectedCodes(listSubCode);
+        }
+        /**
+         * Find UnitModel By ListWorkplaceId
+         */
+        private findUnitModelByListWorkplaceId(): Array<UnitModel>  {
+            let self = this;
+            let listModel: Array<UnitModel> = [];
+            for (let workplaceId of self.selectedWorkplaceIds()) {
+                listModel = self.findUnitModelByWorkplaceId(self.itemList(), workplaceId, listModel);
             }
+            return listModel;
         }
         
         /**
-         * Find list sub code of parent
+         * Find list sub workplaceId of parent
          */
-        private findListSubCode(dataList: Array<UnitModel>, listSubCode: Array<string>) {
+        private findListSubWorkplaceId(dataList: Array<UnitModel>, listSubWorkplaceId: Array<string>) {
             let self = this;
             for (let alreadySetting of dataList) {
-                listSubCode.push(alreadySetting.code);
+                listSubWorkplaceId.push(alreadySetting.workplaceId);
                 if (alreadySetting.childs && alreadySetting.childs.length > 0) {
-                    this.findListSubCode(alreadySetting.childs, listSubCode);
+                    this.findListSubWorkplaceId(alreadySetting.childs, listSubWorkplaceId);
                 }
             }
         }
@@ -288,23 +325,27 @@ module kcp.share.tree {
          */
         private selectData(option: TreeComponentOption, data: UnitModel) :any {
             if (this.isMultiple) {
-                return [data.code];
+                return [data.workplaceId];
             }
-            return data.code;
+            return data.workplaceId;
         }
         
         /**
-         * Find UnitModel by code
+         * Find UnitModel by workplaceId
          */
-        private findUnitModelByCode(dataList: Array<UnitModel>, code: string,
+        private findUnitModelByWorkplaceId(dataList: Array<UnitModel>, workplaceId: string,
             listModel: Array<UnitModel>) :Array<UnitModel> {
             let self = this;
             for (let item of dataList) {
-                if (item.code == code) {
-                    listModel.push(item); 
+                if (item.workplaceId == workplaceId) {
+                    let modelString = JSON.stringify(listModel);
+                    // Check item existed
+                    if (modelString.indexOf(item.workplaceId) < 0) {
+                        listModel.push(item); 
+                    }
                 }
                 if (item.childs.length > 0) {
-                    this.findUnitModelByCode(item.childs, code, listModel);
+                    this.findUnitModelByWorkplaceId(item.childs, workplaceId, listModel);
                 }
             }
             return listModel;
@@ -341,33 +382,6 @@ module kcp.share.tree {
             return listModel;
         }
         
-        /**
-         * Fake list work place
-         */
-        private fake(): Array<UnitModel> {
-            return [
-                {code: '001', name: 'Name001', nodeText: '001 Name001', level: 1, settingType: null, childs: [
-                    {code: '001001', name: 'Name001001', nodeText: '001001 Name001001', level: 2, settingType: null, childs: [
-                        {code: '001001001', name: 'Name001001001', nodeText: '001001001 Name001001001', level: 3, settingType: null, childs: []}
-                    ]},
-                    {code: '001002', name: 'Name001002', nodeText: '001002 Name001002', level: 2, settingType: null, childs: []}
-                ]},
-                {code: '002', name: 'Name002', nodeText: '002 Name002', level: 1, settingType: null, childs: [
-                    {code: '002001', name: 'Name002001', nodeText: '002001 Name002001', level: 2, settingType: null, childs: []},
-                    {code: '002002', name: 'Name002002', nodeText: '002002 Name002002', level: 2, settingType: null, childs: [
-                        {code: '002002001', name: 'Name002002001', nodeText: '002002001 Name002002001', level: 3, settingType: null, childs: []}
-                    ]}
-                ]},
-                {code: '003', name: 'Name003', nodeText: '003 Name003', level: 1, settingType: null, childs: [
-                    {code: '003001', name: 'Name003001', nodeText: '003001 Name003001', level: 2, settingType: null, childs: []},
-                    {code: '003002', name: 'Name003002', nodeText: '003002 Name003002', level: 2, settingType: null, childs: [
-                        {code: '003002001', name: 'Name003002001', nodeText: '003002001 Name003002001', level: 3, settingType: null, childs: []}
-                    ]}
-                ]},
-                {code: '004', name: 'Name004', nodeText: '004 Name004', level: 1, settingType: null, childs: []}
-            ];
-        }
-        
     }
      export module service {
         
@@ -395,7 +409,15 @@ interface JQuery {
      */
     ntsTreeComponent(option: kcp.share.tree.TreeComponentOption): JQueryPromise<void>;
     
+    /**
+     * Get Data List
+     */
     getDataList(): Array<kcp.share.list.UnitModel>;
+    
+    /**
+     * Focus component.
+     */
+    focusComponent(): void;
 }
 
 (function($: any) {

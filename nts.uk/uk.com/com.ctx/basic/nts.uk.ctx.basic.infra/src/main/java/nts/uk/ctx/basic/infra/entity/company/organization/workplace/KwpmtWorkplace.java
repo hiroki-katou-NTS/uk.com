@@ -12,15 +12,12 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -40,27 +37,17 @@ public class KwpmtWorkplace extends UkJpaEntity implements Serializable {
 	@Column(name = "WPL_NAME")
 	private String wplname;
 	
-	@Column(name = "STR_D")
-	@Temporal(TemporalType.TIMESTAMP)
-	private GeneralDate strD;
+	@Basic(optional = false)
+	@NotNull
+	@Size(min = 1, max = 120)
+	@Column(name = "WPL_CD")
+	private String wplcd;
 	
-	@Column(name = "END_D")
-	@Temporal(TemporalType.TIMESTAMP)
-	private GeneralDate endD;
-
 	public KwpmtWorkplace() {
 	}
 
 	public KwpmtWorkplace(KwpmtWorkplacePK kwpmtWorkplacePK) {
 		this.kwpmtWorkplacePK = kwpmtWorkplacePK;
-	}
-
-	public KwpmtWorkplace(KwpmtWorkplacePK kwpmtWorkplacePK, String wkpcd) {
-		this.kwpmtWorkplacePK = kwpmtWorkplacePK;
-	}
-
-	public KwpmtWorkplace(String cid, String wplid, String wplcd) {
-		this.kwpmtWorkplacePK = new KwpmtWorkplacePK(cid, wplid,wplcd);
 	}
 
 	public KwpmtWorkplacePK getKwpmtWorkplacePK() {
@@ -80,7 +67,6 @@ public class KwpmtWorkplace extends UkJpaEntity implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
 		if (!(object instanceof KwpmtWorkplace)) {
 			return false;
@@ -91,11 +77,6 @@ public class KwpmtWorkplace extends UkJpaEntity implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "entity.KwpmtWorkplace[ kwpmtWorkplacePK=" + kwpmtWorkplacePK + " ]";
 	}
 
 	@Override

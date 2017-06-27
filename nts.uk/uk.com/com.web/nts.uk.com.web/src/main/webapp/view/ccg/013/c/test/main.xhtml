@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+<!-- 				<script>var dialogSize = { width: 300, height: 350 };</script> -->
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				</com:ValidatorScript>
+				<com:stylefile path="main.style.css" />
+				<com:scriptfile path="main.vm.js" />
+				<com:scriptfile path="main.start.js" />
+				<com:scriptfile path="main.service.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+				<button data-bind ="click : openDialog">Open_CCG013C</button>
+				</div>
+				<div id="contents-area">
+				
+				<p>Name MenuBar</p>
+				<input data-bind="ntsTextEditor: {value: nameMenuBar}" />
+				<p>Coler picker Letter </p>
+				<input data-bind="ntsTextEditor: {value: pickerLetter}" />
+				<p>radioActlass </p>
+				<input data-bind="ntsTextEditor: {value: radioActlass}" />
+				<p>Color picker Background </p>
+				<input data-bind="ntsTextEditor: {value: pickerBackground}" />
+				<p>Select Setting </p>
+				<input data-bind="ntsTextEditor: {value: selectSetting}" />
+				<p>Code StandardMenu</p>
+				<input data-bind="ntsTextEditor: {value: codeStandardMenu}" />
+				<p>Name StandardMenu</p>
+				<input data-bind="ntsTextEditor: {value: nameStandardMenu}" />
+				
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

@@ -1,5 +1,5 @@
 module kcp004.a.viewmodel {
-    
+    import UnitModel = kcp.share.tree.UnitModel;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import TreeType = kcp.share.tree.TreeType;
     import SettingType = kcp.share.tree.SettingType;
@@ -14,16 +14,16 @@ module kcp004.a.viewmodel {
         isMultipleTreeGrid: KnockoutObservable<boolean>;
         isShowAlreadySet: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean>;
+        isShowSelectButton: KnockoutObservable<boolean>;
         
         // Control component
-        selectedCode: KnockoutObservable<string>;
+        selectedWorkplaceId: KnockoutObservable<string>;
         baseDate: KnockoutObservable<Date>;
-        multiSelectedCode: KnockoutObservable<any>;
-        multiSelectedCodeNoDisp: KnockoutObservable<any>;
-        
+        multiSelectedWorkplaceId: KnockoutObservableArray<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-        
         treeGrid: TreeComponentOption;
+        
+        jsonData: KnockoutObservable<string>;
         
         constructor() {
             let self = this;
@@ -39,24 +39,28 @@ module kcp004.a.viewmodel {
             });
             self.isDialog = ko.observable(false);
             self.isShowAlreadySet = ko.observable(true);
+            self.isShowSelectButton = ko.observable(true);
             
             // Control component
             self.baseDate = ko.observable(new Date());
-            self.selectedCode = ko.observable('A001');
-            self.multiSelectedCode = ko.observableArray(['A001', 'B002']);
+            self.selectedWorkplaceId = ko.observable('wpl1');
+            self.multiSelectedWorkplaceId = ko.observableArray(['wpl1', 'wpl3']);
             self.alreadySettingList = ko.observableArray([
-                    {code: 'A001', settingType: SettingType.NO_SETTING},
-                    {code: 'A005', settingType: SettingType.ALREADY_SETTING},
+                    {workplaceId: 'wpl1', settingType: SettingType.NO_SETTING},
+                    {workplaceId: 'wpl3', settingType: SettingType.ALREADY_SETTING},
             ]);
             self.treeGrid = {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultiSelect: self.isMultipleTreeGrid(),
                 treeType: TreeType.WORK_PLACE,
-                selectedCode: self.getSelectedCode(),
+                selectedWorkplaceId: self.getSelectedWorkplaceId(),
                 baseDate: self.baseDate,
+                isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
+            
+            self.jsonData = ko.observable('');
             
             // Subscribe
             self.selectedTreeType.subscribe(function(code) {
@@ -71,46 +75,49 @@ module kcp004.a.viewmodel {
             self.alreadySettingList.subscribe(function() {
                 self.reloadTreeGrid();
             });
+            self.isShowSelectButton.subscribe(function() {
+                self.reloadTreeGrid();
+            });
         }
         
         private copy() {
-            // TODO: pending issue #84074
-            nts.uk.ui.dialog.alert('Pending issue #84074');
+            // issue #84074
+            nts.uk.ui.dialog.info('複写時の処理については現状対象外となります。');
         }
         
         private register() {
             let self = this;
             if (self.isMultipleTreeGrid()) {
-                for (let code of self.multiSelectedCode()) {
-                    self.alreadySettingList.push({code: code, settingType: SettingType.USE_PARRENT_SETTING});
+                for (let workplaceId of self.multiSelectedWorkplaceId()) {
+                    self.alreadySettingList.push({workplaceId: workplaceId, settingType: SettingType.USE_PARRENT_SETTING});
                 }
             } else {
-                self.alreadySettingList.push({code: self.selectedCode(), settingType: SettingType.USE_PARRENT_SETTING});
+                self.alreadySettingList.push({workplaceId: self.selectedWorkplaceId(), settingType: SettingType.USE_PARRENT_SETTING});
             }
         }
         
         private remove() {
             let self = this;
-            let selecetdCode = self.getSelectedData();
+            let selecetdWorkplaceId = self.getSelectedData();
             self.alreadySettingList(self.alreadySettingList().filter((item) => {
-                return selecetdCode.indexOf(item.code) < 0;
+                return selecetdWorkplaceId.indexOf(item.workplaceId) < 0;
             }));
         }
         
-        private getSelectedCode() : any {
+        private getSelectedWorkplaceId() : any {
             let self = this;
             if (self.isMultipleTreeGrid()) {
-                return self.multiSelectedCode;
+                return self.multiSelectedWorkplaceId;
             }
-            return self.selectedCode;
+            return self.selectedWorkplaceId;
         }
         
         private getSelectedData() : string {
             let self = this;
             if (self.isMultipleTreeGrid()) {
-                return self.multiSelectedCode().join(", ");
+                return self.multiSelectedWorkplaceId().join(", ");
             }
-            return self.selectedCode();
+            return self.selectedWorkplaceId();
         }
         
         private setTreeData() {
@@ -119,8 +126,9 @@ module kcp004.a.viewmodel {
                 isShowAlreadySet: self.isShowAlreadySet(),
                 isMultiSelect: self.isMultipleTreeGrid(),
                 treeType: TreeType.WORK_PLACE,
-                selectedCode: self.getSelectedCode(),
+                selectedWorkplaceId: self.getSelectedWorkplaceId(),
                 baseDate: self.baseDate,
+                isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
@@ -129,7 +137,9 @@ module kcp004.a.viewmodel {
         private reloadTreeGrid() {
             let self = this;
             self.setTreeData();
-            $('#tree-grid').ntsTreeComponent(self.treeGrid);
+            $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
+                $('#tree-grid').focusComponent();
+            });
         }
     }
 }

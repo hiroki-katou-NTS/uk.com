@@ -121,40 +121,29 @@ public class Agent extends AggregateRoot {
 	 * @param rangeDateList list range date ordered
 	 */
 	public void validateDate(List<RangeDate> rangeDateList) {
-		RangeDate rangeDateLastest = null;
-		RangeDate rangeDateLast = null;
+		if (this.startDate == null || this.endDate == null) {
+			throw new RuntimeException("Start date and End date are required");
+		}
 		
+		if (this.startDate.after(this.endDate)) {
+			throw new RuntimeException("Start date must before End date");
+		}
+		
+		GeneralDate toDay = GeneralDate.today();
+		
+		if (this.endDate.before(toDay)) {
+			throw new BusinessException("Msg_11");
+		}
 		
 		if (rangeDateList == null) {
 			return;
 		}
 		
-		if (rangeDateList.size() == 1) {
-			rangeDateLastest = rangeDateList.get(0);
-			rangeDateLast = rangeDateList.get(0);
-		} else if (rangeDateList.size() > 1) {
-			// lastest
-			rangeDateLastest = rangeDateList.get(0);
-			// last
-			rangeDateLast = rangeDateList.get(rangeDateList.size() - 1);
-		} else {
-			// if rangeDateList == 0 then 
-			return;
-		}
-		
-//		if ((this.startDate.before(rangeDateLastest.getEndDate()) && this.startDate.after(rangeDateLast.getEndDate())) 
-//				|| this.endDate.after(rangeDateLast.getStartDate())) {
-//			throw new BusinessException("Msg_012"); // had error
-//		}
-
-		
-		// check start date and end date
-		if (!checkDateLatest(rangeDateLastest) || !checkDateLast(rangeDateLast)) {
-			throw new BusinessException("Msg_012"); // had error
-		}
-	
-
-		
+		rangeDateList.stream().forEach(rangeDate -> {
+			if (!checkStartDate(rangeDate)) {
+				throw new BusinessException("Msg_12");
+			}
+		});
 	}
 	
 	/**
@@ -162,21 +151,8 @@ public class Agent extends AggregateRoot {
 	 * @param rangeDateLatest range date latest
 	 * @return false if start date before end date in range date latest, else true
 	 */
-	private boolean checkDateLatest(RangeDate rangeDateLatest) {		
-		if (this.startDate.before(rangeDateLatest.getEndDate()) && this.endDate.after(rangeDateLatest.getStartDate())) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * check end date by range date latest
-	 * @param rangeDateLast range date last
-	 * @return false if end date after end date in range date latest, else true
-	 */
-	private boolean checkDateLast(RangeDate rangeDateLast) {	
-		if (this.startDate.before(rangeDateLast.getEndDate()) && this.endDate.after(rangeDateLast.getStartDate())) {
+	private boolean checkStartDate(RangeDate rangeDate) {		
+		if (!(this.endDate.before(rangeDate.getStartDate()) || rangeDate.getEndDate().before(this.startDate))) {
 			return false;
 		}
 		

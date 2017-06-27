@@ -36,12 +36,32 @@ public class AgentFinder {
 		}).collect(Collectors.toList());
 	}
 	
-	public List<AgentDto> findAll(String employeeId,GeneralDate startDate, GeneralDate endDate) {
+	
+	/**
+	 * Find all agent by Date
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<AgentDto> findAll(GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		return agentRepository.findAll(companyId,employeeId, startDate,endDate).stream().map(e -> {
+		return agentRepository.findAll(companyId, startDate,endDate).stream().map(e -> {
+			return convertToDbType(e);
+		}).collect(Collectors.toList()); 
+	}
+	
+	/**
+	 * Find all agent by Company Id
+	 * @return
+	 */
+	public List<AgentDto> findByCid() {
+		String companyId = AppContexts.user().companyId();
+		return agentRepository.findByCid(companyId).stream().map(e -> {
 			return convertToDbType(e);
 		}).collect(Collectors.toList());
 	}
+	
+
 		
 	/**
 	 * 
@@ -80,8 +100,5 @@ public class AgentFinder {
 		agentDto.setRequestId(agent.getRequestId().toString());
 	
 		return agentDto;
-	}
-
-	
-	
+	}	
 }

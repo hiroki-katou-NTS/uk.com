@@ -14,29 +14,58 @@
 	margin-top: 20px;
 	margin-left: 40px;
 }
-th{
-	background-color: #E0F59E;
-	padding: 5px 0;	
-}
-.table1 td,
-.table1 th {border: 1px solid #ccc;} 
-
-.table1 {
+.table-container {
 	margin-top: 42px;
 	margin-left: 35px;
-	width: 950px;
+	height: 350px;
+	float:left;
+	overflow: auto;
 }
-.table1 tr:FIRST-CHILD th {
+.table1 .fixed-width-1{
+	width: 16px;
+}
+.table1 .fixed-width-3{
+	width: 190px;
+}
+.table1 {
+	margin-left: 40px;
+    margin-top: 30px;
+}
+.table1 thead{display:block;}
+/*.table1 thead tr{display:block;}*/
+.table1 th{
+	background-color: #E0F59E;
+	padding: 5px 0;	
+	width: 95px;
+	border: 1px solid #ccc;
 	text-align: center;
-	
+	box-sizing:border-box;
 }
+.table1 tbody {
+	display:block;
+    max-height: 320px;
+    overflow-y: scroll;
+}
+/*.table1 tbody tr {
+	display:block;
+}*/
+.table1 td{
+	border: 1px solid #ccc;
+	padding: 5px 0;
+	width: 94px;
+}
+.table1 .fixed-width{
+}
+.table1 .fixed-width-2{
+	width: 190px;
+}
+
 .ntsDateRange_Container{
 	margin-left: 95px;
     margin-top: -34px;
 }
+
 .caret-bottom{
 	margin-left: 10px;
 }
-td{padding: 5px 0}
 
-	

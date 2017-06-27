@@ -3,8 +3,6 @@ package nts.uk.ctx.sys.portal.dom.standardmenu;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
-
 /**
  * The Interface StandardMenuRepository.
  */
@@ -79,4 +77,12 @@ public interface StandardMenuRepository {
 	 * @param List StandardMenu
 	 */
 	void update(List<StandardMenu> StandardMenu);
+
+	/** Find all by system.
+	 *
+	 * @param companyId the company id
+	 * @param system
+	 * @return the list 
+	 */ 
+	List<StandardMenu> findBySystem(String companyId, int system);
 }

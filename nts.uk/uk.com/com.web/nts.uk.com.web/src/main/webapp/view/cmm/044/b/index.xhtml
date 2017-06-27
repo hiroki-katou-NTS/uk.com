@@ -10,12 +10,13 @@
 			<com:stylefile path="cmm044.b.main.css" />
 			<com:scriptfile path="cmm044.b.start.js" />
 			<com:scriptfile path="cmm044.b.vm.js" />
+			<com:scriptfile path="cmm044.b.service.js" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button class="proceed" id="D_BTN_001" >#{i18n.getText('CMM044_4')}</button>
+				<button class="proceed" id="D_BTN_001">#{i18n.getText('CMM044_4')}</button>
 				<button id="D_BTN_002" data-bind="click: closeDialog">#{i18n.getText('CMM044_23')}</button>
 			</div>
 
@@ -24,41 +25,41 @@
 					class="form-label">
 					<label>#{i18n.getText('CMM044_10')}</label>
 				</div>
-				<div id="daterangepicker" data-bind="ntsDateRangePicker: { 
+				<div id="daterangepicker"
+					data-bind="ntsDateRangePicker: { 
 																	enable: true, 
 																	value: dateValue, 
-																	maxRange: 'oneMonth'}"/>	
-				<button class="caret-bottom" >#{i18n.getText('CMM044_30')}</button>
-				<div>
-					<table class="table1">
-						<tbody>
-							<tr>							
-								<th colspan="2">#{i18n.getText('CMM044_7')}</th>
-								<th colspan="1">#{i18n.getText('CMM044_31')}</th>
-								<th colspan="1">#{i18n.getText('CMM044_32')}</th>
-								<th colspan="1">#{i18n.getText('職位')}</th>
-								<th colspan="1">#{i18n.getText('CMM044_34')}</th>
-								<th colspan="1">#{i18n.getText('CMM044_35')}</th>
-								<th colspan="1">#{i18n.getText('CMM044_36')}</th>
-								<th colspan="2">#{i18n.getText('CMM044_30')}</th>
-							</tr>
-							<com:ko-foreach bind="personList">
-							<tr>
-								<td data-bind="text: $data.employeeCode"></td>
-								<td data-bind="text: $data.employeeName"></td>
-								<td data-bind="text: $data.firstName"></td>
-								<td data-bind="text: $data.firstName"></td>
-								<td data-bind="text: $data.firstName"></td>
-								<td data-bind="text: $data.startDate"></td>
-								<td data-bind="text: $data.endDate"></td>
-								<td data-bind="text: $data.firstName"></td>
-								<td data-bind="text: $data.firstName"></td>
-								<td data-bind="text: $data.firstName"></td>
-							</tr>
-							</com:ko-foreach>
-						</tbody>
-					</table>
-				</div>
+																	maxRange: 'oneMonth'}" />
+				<button class="caret-bottom" data-bind="click : findAgentByDate">#{i18n.getText('CMM044_30')}</button>
+				<table class="table1">
+					<thead>
+						<tr>
+							<th class="fixed-width-2" colspan="2">#{i18n.getText('CMM044_7')}</th>
+							<th class="fixed-width" colspan="1">#{i18n.getText('CMM044_31')}</th>
+							<th class="fixed-width" colspan="1">#{i18n.getText('CMM044_32')}</th>
+							<th class="fixed-width" colspan="1">#{i18n.getText('職位')}</th>
+							<th class="fixed-width" colspan="1">#{i18n.getText('CMM044_34')}</th>
+							<th class="fixed-width" colspan="1">#{i18n.getText('CMM044_35')}</th>
+							<th class="fixed-width" colspan="1">#{i18n.getText('CMM044_36')}</th>
+							<th class="fixed-width-3" colspan="2">#{i18n.getText('CMM044_30')}</th>
+							<th class="fixed-width-1" colspan="1"></th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: personList">
+						<tr>
+							<td class="fixed-width" data-bind="text: $data.employeeCode"></td>
+							<td class="fixed-width" data-bind="text: $data.employeeName"></td>
+							<td class="fixed-width" data-bind="text: $data.workPlaceCode"></td>
+							<td class="fixed-width" data-bind="text: $data.workPlaceName"></td>
+							<td class="fixed-width" data-bind="text: $data.position"></td>
+							<td class="fixed-width" data-bind="text: $data.startDate"></td>
+							<td class="fixed-width" data-bind="text: $data.endDate"></td>
+							<td class="fixed-width" data-bind="text: $data.agentTarget"></td>
+							<td class="fixed-width" data-bind="text: $data.agentCode"></td>
+							<td class="fixed-width" data-bind="text: $data.agentName"></td>
+						</tr>
+					</tbody>
+				</table>
 
 			</div>
 		</ui:define>
