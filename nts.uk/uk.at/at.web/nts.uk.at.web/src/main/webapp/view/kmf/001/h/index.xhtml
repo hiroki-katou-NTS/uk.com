@@ -28,7 +28,7 @@
 		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">会社</span>
+					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<button tabindex="2" data-bind="click: back">#{i18n.getText('KMF001_27')}</button>
 
 					<button tabindex="3" class="proceed"
@@ -111,7 +111,7 @@
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">雇用</span>
+					<span class="title">#{i18n.getText('Com_Employment')}</span>
 					<button data-bind="click: back">
 						#{i18n.getText('KMF001_27')}</button>
 
@@ -154,8 +154,9 @@
 									</tr>
 									<tr>
 										<td colspan="4" style="padding-left: 40px;">
-										<div data-bind="ntsFormLabel: {}">
-												#{i18n.getText('KMF001_92')}</div></td>
+											<div data-bind="ntsFormLabel: {}">
+												#{i18n.getText('KMF001_92')}</div>
+										</td>
 									</tr>
 									<tr>
 										<td colspan="4" style="padding-left: 40px;">
@@ -167,9 +168,9 @@
 									<tr>
 										<td colspan="3" style="padding-left: 90px;">#{i18n.getText('KMF001_94')}</td>
 										<td>
-										<div>
-											<div tabindex="3"
-												data-bind="ntsComboBox: {
+											<div>
+												<div tabindex="3"
+													data-bind="ntsComboBox: {
 																			options: $parent.vacationExpirationEnums,
 																			optionsValue: 'value',
 																			value: expirationDate,
@@ -178,7 +179,8 @@
 																			enable: $parent.isEmpManaged,
 																			columns: [
 																				{ prop: 'localizedName', length: 10 }
-																			]}"></div></div>
+																			]}"></div>
+											</div>
 										</td>
 									</tr>
 									<tr>
