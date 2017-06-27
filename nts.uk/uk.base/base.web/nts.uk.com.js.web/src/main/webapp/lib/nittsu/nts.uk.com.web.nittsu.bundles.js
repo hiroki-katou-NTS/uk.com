@@ -2308,10 +2308,17 @@ var nts;
                 }
                 specials.getAsyncTaskInfo = getAsyncTaskInfo;
                 function donwloadFile(fileId) {
-                    $('<iframe/>')
-                        .attr('id', 'download-frame')
-                        .appendTo('body')
-                        .attr('src', resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId));
+                    var dfd = $.Deferred();
+                    $.fileDownload(resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId), {
+                        successCallback: function (url) {
+                            dfd.resolve();
+                        },
+                        failCallback: function (responseHtml, url) {
+                            var responseError = $(responseHtml);
+                            var error = JSON.parse(responseError.text());
+                            dfd.reject(error);
+                        } });
+                    return dfd.promise();
                 }
                 specials.donwloadFile = donwloadFile;
             })(specials = request.specials || (request.specials = {}));
@@ -2331,6 +2338,18 @@ var nts;
                 return destination.rawUrl;
             }
             request.resolvePath = resolvePath;
+            function liveView(webAppId, fileId) {
+                var liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
+                if (typeof arguments[1] !== 'string') {
+                    return resolvePath(liveViewPath) + _.concat(location.currentAppId, arguments)[1];
+                }
+                var webserviceLocator = location.siteRoot
+                    .mergeRelativePath(request.WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(liveViewPath);
+                var fullPath = webserviceLocator.serialize() + fileId;
+                return fullPath;
+            }
+            request.liveView = liveView;
             var location;
             (function (location) {
                 location.current = new Locator(window.location.href);

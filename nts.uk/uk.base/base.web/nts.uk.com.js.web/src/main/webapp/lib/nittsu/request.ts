@@ -191,13 +191,13 @@ module nts.uk.request {
                 if (option.onSuccess) {
                     option.onSuccess();
                 }
-                
+
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 if (option.onFail) {
                     option.onFail();
                 }
-               
+
             }
         }).done(function(res) {
             if (res !== undefined && res.businessException) {
@@ -205,12 +205,12 @@ module nts.uk.request {
             } else {
                 dfd.resolve(res);
             }
-        }).fail(function(res){
-              dfd.reject(res);
+        }).fail(function(res) {
+            dfd.reject(res);
         });
         return dfd.promise();
     }
-    
+
     export function exportFile(path: string, data?: any, options?: any) {
         let dfd = $.Deferred();
 
@@ -222,7 +222,7 @@ module nts.uk.request {
                     .pause(1000));
             })
             .done((res: any) => {
-                if (res.failed||res.status == "ABORTED") {
+                if (res.failed || res.status == "ABORTED") {
                     dfd.reject(res.error);
                 } else {
                     specials.donwloadFile(res.id);
@@ -276,7 +276,20 @@ module nts.uk.request {
 
         return destination.rawUrl;
     }
+    export function liveView(fileId: string);
+    export function liveView(webAppId: WebAppId, fileId: string): string {
+        let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";
+        if (typeof arguments[1] !== 'string') {
+            return  resolvePath(liveViewPath) + _.concat(location.currentAppId,arguments)[1];
+        }
 
+        var webserviceLocator = location.siteRoot
+            .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
+            .mergeRelativePath(liveViewPath);
+
+        let fullPath =  webserviceLocator.serialize() + fileId;
+        return fullPath;
+    }
     export module location {
         export var current = new Locator(window.location.href);
         export var appRoot = current.mergeRelativePath(__viewContext.rootPath);
