@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -24,8 +23,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class ComSubstVacationSaveCommandHandler.
  */
 @Stateless
-public class EmpSubstVacationSaveCommandHandler
-		extends CommandHandler<EmpSubstVacationSaveCommand> {
+public class EmpSubstVacationSaveCommandHandler extends CommandHandler<EmpSubstVacationSaveCommand> {
 
 	/** The repository. */
 	@Inject
@@ -54,13 +52,17 @@ public class EmpSubstVacationSaveCommandHandler
 				command.getContractTypeCode());
 
 		// Check is managed, keep old values when is not managed
-		if (optEmpSubstVacation.isPresent() && command.getIsManage() == ManageDistinct.NO.value) {
-			SubstVacationSetting setting = optEmpSubstVacation.get().getSetting();
-			command.setAllowPrepaidLeave(setting.getAllowPrepaidLeave().value);
-			command.setExpirationDate(setting.getExpirationDate().value);
-		}else{
-			command.setAllowPrepaidLeave(ApplyPermission.ALLOW.value);
-			command.setExpirationDate(ExpirationTime.THIS_MONTH.value);
+		if (optEmpSubstVacation.isPresent()) {
+			EmpSubstVacation empSubstVacationDb = optEmpSubstVacation.get();
+			if (command.getIsManage() == ManageDistinct.NO.value) {
+				command.setExpirationDate(empSubstVacationDb.getSetting().getExpirationDate().value);
+				command.setAllowPrepaidLeave(empSubstVacationDb.getSetting().getAllowPrepaidLeave().value);
+			}
+		} else {
+			if (command.getIsManage() == ManageDistinct.NO.value) {
+				command.setAllowPrepaidLeave(ApplyPermission.ALLOW.value);
+				command.setExpirationDate(ExpirationTime.THIS_MONTH.value);
+			}
 		}
 
 		// Convert data
