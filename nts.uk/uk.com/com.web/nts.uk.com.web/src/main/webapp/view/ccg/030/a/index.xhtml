@@ -77,7 +77,7 @@
 								<td><div
 										data-bind="ntsFormLabel: { constraint: 'TopPagePartCode',constraint: ['TopPagePartCode','TopPagePartName'], required: true }">#{i18n.getText('CCG030_11')}</div></td>
 								<td colspan="2"><input id="inpCode"
-									data-bind="ntsTextEditor: { value: topPageCode, constraint: 'TopPagePartCode', required: true, enable: $parent.isCreate , name: '#[CCG030_21]'}"
+									data-bind="ntsTextEditor: { value: topPageCode, constraint: 'TopPagePartCode', required: true, enable: $parent.isCreate, option: {autofill:true, filldirection:'left'}, name: '#[CCG030_21]'}"
 									tabindex="5" /> <input id="inpName"
 									data-bind="ntsTextEditor: { value: topPageName, constraint: 'TopPagePartName', required: true , name: '#[CCG030_22]'}"
 									tabindex="6" /></td>
@@ -100,9 +100,11 @@
 							</tr>
 							<tr>
 								<td></td>
-								<td><button class="btn-download"
+								<td>
+									<button class="btn-download"
 										data-bind="click: downloadFile, enable: isDelete()"
-										tabindex="">#{i18n.getText('CCG030_14')}</button></td>
+										tabindex="">#{i18n.getText('CCG030_14')}</button>
+								</td>
 								<td></td>
 							</tr>
 							<tr data-bind="with: selectedFlowMenu">
@@ -119,7 +121,7 @@
 							</tr>
 							<tr>
 								<td><button id="preview"
-										data-bind="click : open030B_Dialog" tabindex="13"
+										data-bind="click : open030B_Dialog, enable: isDelete" tabindex="13"
 										style="margin-top: 25px;">#{i18n.getText('CCG030_4')}</button></td>
 								<td></td>
 								<td></td>
