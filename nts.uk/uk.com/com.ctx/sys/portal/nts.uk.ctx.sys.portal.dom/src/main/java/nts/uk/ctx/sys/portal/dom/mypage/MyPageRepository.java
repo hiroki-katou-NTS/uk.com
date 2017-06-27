@@ -11,5 +11,6 @@ public interface MyPageRepository {
 	 * @param layoutId
 	 * @return
 	 */
-	MyPage getMyPage(String employeeId, String layoutId);
+	MyPage getMyPage(String employeeId);
+	void addMyPage(MyPage myPage);
 }

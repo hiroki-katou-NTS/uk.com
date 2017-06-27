@@ -2,11 +2,9 @@ package nts.uk.ctx.sys.portal.app.find.toppagesetting;
 
 import java.util.List;
 
-import nts.uk.ctx.sys.portal.app.find.mypage.setting.MyPageSettingDto;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSet;
 /**
  * 
  * @author hoatt
@@ -14,10 +12,9 @@ import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPagePersonSet;
  */
 public interface TopPageSetFactory {
 	/**
-	 * build layout
+	 * build layout my page
 	 * @param layout
 	 * @param placements
-	 * @param myPage
 	 * @return
 	 */
 	LayoutForMyPageDto buildLayoutDto(Layout layout, List<Placement> placements);
@@ -27,20 +24,20 @@ public interface TopPageSetFactory {
 	 * @param placements
 	 * @return
 	 */
-	LayoutForMyPageDto buildLayoutTopPage(Layout layout, List<Placement> placements);
+	LayoutForTopPageDto buildLayoutTopPage(Layout layout, List<Placement> placements);
 	/**
 	 * get top page for position
 	 * @param jobPosition
 	 * @param topPageJob
 	 * @return
 	 */
-	LayoutForMyPageDto getTopPageForPosition(JobPositionDto jobPosition,TopPageJobSet topPageJob);
+	LayoutAllDto getTopPageForPosition(JobPositionDto jobPosition,TopPageJobSet topPageJob);
 	/**
 	 * get top page not position
 	 * @param tpPerson
 	 * @return
 	 */
-	LayoutForMyPageDto getTopPageNotPosition(TopPagePersonSet tpPerson);
+	LayoutAllDto getTopPageNotPosition();
 	/**
 	 * get top page by code
 	 * @param companyId
@@ -49,5 +46,5 @@ public interface TopPageSetFactory {
 	 * @param classification
 	 * @return
 	 */
-	LayoutForMyPageDto getTopPageByCode(String companyId, String code, int system, int classification);
+	LayoutForTopPageDto getTopPageByCode(String companyId, String code, int system, int classification, boolean check);
 }

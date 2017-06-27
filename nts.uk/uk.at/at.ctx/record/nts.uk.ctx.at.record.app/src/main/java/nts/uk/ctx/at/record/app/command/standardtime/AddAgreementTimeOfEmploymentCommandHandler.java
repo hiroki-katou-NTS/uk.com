@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class AddAgreementTimeOfCompanyCommand {
-	
+public class AddAgreementTimeOfEmploymentCommandHandler {
+
 	private int laborSystemAtr;
+
+	private String employmentCategoryCode;
 	
 	private BigDecimal alarmWeek;
 
