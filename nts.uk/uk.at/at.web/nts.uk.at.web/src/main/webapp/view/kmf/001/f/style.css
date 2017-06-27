@@ -124,3 +124,6 @@ table#table tr td.title {
 	width: 80px;
 	float: left;
 }
+.em_table_with{
+	min-width: 600px;
+}
