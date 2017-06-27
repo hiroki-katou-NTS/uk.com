@@ -114,11 +114,15 @@ module nts.uk.com.view.ccg.share.ccg {
             
             applyDataSearch(): void{
                 var self = this;
-                self.reloadDataSearch();
-                $('#employmentList').ntsListComponent(self.employments);
-                $('#classificationList').ntsListComponent(self.classifications);
-                $('#jobtitleList').ntsListComponent(self.jobtitles);
-                $('#workplaceList').ntsTreeComponent(self.workplaces);
+                service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data){
+                    self.selectedCodeWorkplace(data);
+                    self.reloadDataSearch();
+                    $('#employmentList').ntsListComponent(self.employments);
+                    $('#classificationList').ntsListComponent(self.classifications);
+                    $('#jobtitleList').ntsListComponent(self.jobtitles);
+                    $('#workplaceList').ntsTreeComponent(self.workplaces);    
+                });
+                
             }
             
             searchDataEmployee(): void {
