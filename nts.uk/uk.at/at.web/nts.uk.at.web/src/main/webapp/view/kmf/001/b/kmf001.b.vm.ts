@@ -6,6 +6,7 @@ module nts.uk.pr.view.kmf001.b {
         export class ScreenModel {
             textEditorOption: KnockoutObservable<any>;
             categoryEnums: KnockoutObservableArray<Enum>;
+            acquisitionTypeEnums: KnockoutObservableArray<Enum>;
             selectedPriority: KnockoutObservable<number>;
             enableInputPriority: KnockoutObservable<boolean>;
 
@@ -35,6 +36,8 @@ module nts.uk.pr.view.kmf001.b {
                 }));
 
                 self.categoryEnums = ko.observableArray([]);
+                
+                self.acquisitionTypeEnums = ko.observableArray([]);
 
                 self.selectedPriority = ko.observable(1);
                 self.enableInputPriority = ko.computed(function() {
@@ -61,12 +64,13 @@ module nts.uk.pr.view.kmf001.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(self.loadApplySetting(),self.loadCategoryEnums()).done(function(res) {
+                $.when(self.loadApplySetting(),self.loadCategoryEnums(), self.loadAcquisitionTypeEnums()).done(function(res) {
                     self.loadAcquisitionRule();
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
+            
             private loadApplySetting() : JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -94,6 +98,7 @@ module nts.uk.pr.view.kmf001.b {
                     nts.uk.ui.dialog.alertError(res.message);
                 });
             }
+            
             private loadCategoryEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
 
@@ -107,6 +112,21 @@ module nts.uk.pr.view.kmf001.b {
 
                 return dfd.promise();
             }
+            
+            private loadAcquisitionTypeEnums(): JQueryPromise<Array<Enum>> {
+                let self = this;
+
+                let dfd = $.Deferred();
+                service.acquisitionTypeEnum().done(function(res: Array<Enum>) {
+                    self.acquisitionTypeEnums(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+
+                return dfd.promise();
+            }
+            
             //CLOSE DIALOG
             public closeDialog(): void {
                 nts.uk.ui.windows.close();
@@ -216,6 +236,7 @@ module nts.uk.pr.view.kmf001.b {
 
                 }
             }
+            
             //GET DATA
             private setList(): void {
                 let self = this;
@@ -302,6 +323,7 @@ module nts.uk.pr.view.kmf001.b {
                 $('#special-holiday').ntsEditor('validate');
                 return $('.nts-input').ntsError('hasError');
             }
+            
             private clearError(): void {
                 if (!$('.nts-input').ntsError('hasError')) {
                     return;
@@ -315,6 +337,7 @@ module nts.uk.pr.view.kmf001.b {
             }
 
         }
+        
         export class AcquisitionOrder {
             vacationType: number;
             priority: number;

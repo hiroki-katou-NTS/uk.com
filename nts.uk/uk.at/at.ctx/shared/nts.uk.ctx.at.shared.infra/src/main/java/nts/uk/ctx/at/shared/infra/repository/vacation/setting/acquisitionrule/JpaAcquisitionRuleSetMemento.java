@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.acquisitionrule;
 import java.util.List;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionType;
@@ -49,8 +50,8 @@ public class JpaAcquisitionRuleSetMemento implements AcquisitionRuleSetMemento {
 	 * vacation.setting.acquisitionrule.Settingclassification)
 	 */
 	@Override
-	public void setCategory(int category) {
-		this.typeValue.setCategory(category);
+	public void setCategory(ManageDistinct category) {
+		this.typeValue.setCategory(category.value);
 	}
 
 	/*
