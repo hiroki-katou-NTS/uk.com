@@ -262,14 +262,20 @@ module nts.uk.ui.jqueryExtentions {
                     return selectedValue.toString() === $(e).attr('data-value').toString();
                 });
                 if (element !== undefined) {
+                    let scrollTop = $("#" + $grid.attr("id") + "_scrollContainer").scrollTop();
                     $(element).addClass('selected');
                     $parent.attr('data-value', selectedValue);
                     $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
                     $grid.igGrid("commit");
                     if ($grid.igGrid("hasVerticalScrollbar")) {
-                        let current = $grid.ntsGridList("getSelected");
-                        if(current !== undefined){
-                            $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);        
+//                        let current = $grid.ntsGridList("getSelected");
+//                        if(current !== undefined){
+//                            $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);        
+//                        }
+                        if(!nts.uk.util.isNullOrUndefined(scrollTop) && scrollTop !== 0){
+                            setTimeout(function (){
+                                $("#" + $grid.attr("id") + "_scrollContainer").scrollTop(scrollTop);        
+                            }, 10);
                         }
                     }
                 }
