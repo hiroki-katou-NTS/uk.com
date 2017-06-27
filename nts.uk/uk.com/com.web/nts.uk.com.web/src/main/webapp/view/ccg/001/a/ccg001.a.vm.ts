@@ -91,6 +91,20 @@ module nts.uk.com.view.ccg001.a {
                             isShowNoSelectRow: false,
                         }
                         $('#personinfo').ntsListComponent(self.personinfo);  
+                    },
+                    onApplyEmployee: function(dataEmployee: string[]) {
+                        console.log(dataEmployee);
+                        self.personinfo = {
+                            isShowAlreadySet: false,
+                            isMultiSelect: self.ccgcomponent.isMutipleCheck,
+                            listType: ListType.EMPLOYEE,
+                            employeeInputList: dataEmployee,
+                            selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                            selectedCode: self.selectedCode,
+                            isDialog: false,
+                            isShowNoSelectRow: false,
+                        }
+                        $('#personinfo').ntsListComponent(self.personinfo);
                     }
                     
                 }

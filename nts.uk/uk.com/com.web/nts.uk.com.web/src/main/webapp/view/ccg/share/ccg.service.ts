@@ -83,6 +83,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
                 
                 onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
+                
+                onApplyEmployee: (data: string[]) => void;
             }
     
         }
