@@ -7,7 +7,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TitleMenuDto {
+public class TitleBarDto {
+	
+	private String titleMenuId;
 	
 	private String titleMenuName;
 
