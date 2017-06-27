@@ -386,8 +386,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.cid), companyId));
 		
 		// and work place code
-		lstpredicateWhere.add(criteriaBuilder.and(root.get(KwpmtWorkplace_.kwpmtWorkplacePK)
-				.get(KwpmtWorkplacePK_.wplcd).in(workplaceCode)));
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(KwpmtWorkplace_.wplcd).in(workplaceCode)));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
