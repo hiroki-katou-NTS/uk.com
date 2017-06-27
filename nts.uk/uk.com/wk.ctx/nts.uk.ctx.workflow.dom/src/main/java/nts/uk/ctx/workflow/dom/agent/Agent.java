@@ -140,9 +140,9 @@ public class Agent extends AggregateRoot {
 		}
 		
 		rangeDateList.stream().forEach(rangeDate -> {
-			if (!checkStartDate(rangeDate) || !checkEndDate(rangeDate)) {
+			if (!checkStartDate(rangeDate)) {
 				throw new BusinessException("Msg_12");
-			}else {throw new BusinessException("Msg_15");}
+			}
 		});
 	}
 	
@@ -152,35 +152,10 @@ public class Agent extends AggregateRoot {
 	 * @return false if start date before end date in range date latest, else true
 	 */
 	private boolean checkStartDate(RangeDate rangeDate) {		
-		if (this.startDate.before(rangeDate.getStartDate()) && this.startDate.after(rangeDate.getEndDate())) {
+		if (!(this.endDate.before(rangeDate.getStartDate()) || rangeDate.getEndDate().before(this.startDate))) {
 			return false;
 		}
-		return true;
-	}
-	
-	/**
-	 * check end date by range date latest
-	 * @param rangeDateLast range date last
-	 * @return false if end date after end date in range date latest, else true
-	 */
-	private boolean checkEndDate(RangeDate rangeDate) {	
-		if (this.endDate.before(rangeDate.getStartDate()) && this.endDate.after(rangeDate.getEndDate())) {
-			return false;
-		}
-		return true;
-	}
-	
-	public void agentOfApp(List<AgentType> agentTypeList) {
-		if (this.agentAppType1.value == 0 || this.agentAppType2.value == 0 || this.agentAppType3.value == 0 || this.agentAppType4.value == 0) {
-			
-		}
-		return;
-		
-	}
-	
-	private boolean checkAgentType(AgentType agentType) {	
 		
 		return true;
-	}	
-	
+	}
 }

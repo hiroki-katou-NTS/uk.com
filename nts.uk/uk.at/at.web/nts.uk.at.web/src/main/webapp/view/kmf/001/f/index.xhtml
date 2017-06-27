@@ -95,7 +95,8 @@
 						<tr>
 							<td colspan="6">
 								<div data-bind="ntsFormLabel: {}">
-									#{i18n.getText('KMF001_78')} <span class="pad_left_50"
+									#{i18n.getText('KMF001_78')}</div> 
+									<span class="pad_left_50"
 										tabindex="8"
 										data-bind="ntsSwitchButton: {
 										options: manageDistinctEnums,
@@ -103,8 +104,7 @@
 										optionsText: 'localizedName',
 										value: compenTimeManage,
 										enable: isManageCompen }">
-									</span>
-								</div>
+							</span>
 								<div class="hr_width">
 									<hr />
 								</div>
@@ -132,7 +132,7 @@
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_79')}</div>
 								<div class="float_right">
 									<button tabindex="6"
-										data-bind="ntsHelpButton: {image: 'KMF001_2.png', position: 'right top', enable: true }">?</button>
+										data-bind="ntsHelpButton: {image: 'KMF001_2.png', position: 'left top', enable: true }">?</button>
 								</div>
 								<div class="hr_width">
 									<hr />
@@ -144,7 +144,7 @@
 									data-bind="ntsCheckBox: { checked: checkWorkTime, enable: isManageCompen}">#{i18n.getText('KMF001_80')}</div></td>
 						</tr>
 						<tr>
-							<td class="pad_left_60" rowspan="2">
+							<td class="radio_group_width pad_left_60" rowspan="2">
 								<div id="radio_group_work" tabindex="8"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
@@ -153,32 +153,37 @@
 											value: selectedOfWorkTime,
 											enable: enableWorkArea}"></div>
 							</td>
-							<td class="pad_left_70"><label>#{i18n.getText('KMF001_81')}</label></td>
-							<td class="inp_time"><input id="workOneDay"
+							<td colspan = "2" class="pad_left_70">
+							<div class="text_width" ><label>#{i18n.getText('KMF001_81')}</label></div>
+							<div class="input_width pad_left_30"><input id="workOneDay"
 								class="check_error float_right" tabindex="9"
-								data-bind="ntsTimeEditor: {name:'#[KMF001_81]', value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
+								data-bind="ntsTimeEditor: {name:'#[KMF001_81]', value: workOneDay,option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
-							<td class="pad_left_70"><label>#{i18n.getText('KMF001_82')}</label></td>
-							<td class="inp_time"><input id="workHalfDay"
+							<td colspan = "2" class="pad_left_70">
+							<div class = "text_width"><label>#{i18n.getText('KMF001_82')}</label></div>
+							<div class="input_width pad_left_30">
+							<input id="workHalfDay"
 								class="check_error" tabindex="10"
-								data-bind="ntsTimeEditor: {name:'#[KMF001_82]', value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" />
+								data-bind="ntsTimeEditor: {name:'#[KMF001_82]', value: workHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignWork, required: true}" /></div>
 							</td>
 						</tr>
 						<tr>
-							<td class="inp_time">
-								<div class="float_right">
+							<td colspan="2" class="pad_left_70">
+								<div class="input_width">
 									<input id="workAll" class="check_error" tabindex="11"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: workAll, option: inputOption, inputFormat: 'time', enable: enableWorkAll, required: true}" />
 								</div>
+								<div class="text_width">
+									<label>#{i18n.getText('KMF001_83')}</label>
+								</div>
 							</td>
-							<td><label>#{i18n.getText('KMF001_83')}</label></td>
 						</tr>
 						<tr>
 							<td class="pad_left_30"><div tabindex="12"
 									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div></td>
 						</tr>
 						<tr>
-							<td class="pad_left_60" rowspan="2">
+							<td class=" radio_group_width pad_left_60" rowspan="2">
 								<div id="radio_group_over" tabindex="13"
 									data-bind="ntsRadioBoxGroup: {
 											options: transferSettingDivisionEnums,
@@ -187,25 +192,35 @@
 											value: selectedOfOverTime,
 											enable: enableOverArea}"></div>
 							</td>
-							<td class="pad_left_70"><label>#{i18n.getText('KMF001_81')}</label></td>
-							<td class="inp_time"><input id="overOneDay"
-								class="check_error" tabindex="14"
-								data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+							<td colspan="2" class="pad_left_70">
+								<div class="text_width">
+									<label>#{i18n.getText('KMF001_81')}</label>
+								</div>
+								<div class="input_width pad_left_30">
+									<input id="overOneDay" class="check_error" tabindex="14"
+										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+								</div>
 							</td>
-							<td class="pad_left_70"><label>#{i18n.getText('KMF001_82')}</label></td>
-							<td class="inp_time"><input id="overHalfDay"
-								class="check_error" tabindex="15"
-								data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+							<td colspan="2" class="pad_left_70">
+								<div class="text_width">
+									<label>#{i18n.getText('KMF001_82')}</label>
+								</div>
+								<div class="input_width pad_left_30">
+									<input id="overHalfDay" class="check_error" tabindex="15"
+										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
+								</div>
 							</td>
 						</tr>
 						<tr>
-							<td class="inp_time">
-								<div class="float_right">
+							<td colspan="2" class="pad_left_70">
+								<div class="input_width">
 									<input id="overAll" class="check_error" tabindex="16"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
 								</div>
+								<div class="text_width">
+									<label>#{i18n.getText('KMF001_83')}</label>
+								</div>
 							</td>
-							<td><label>#{i18n.getText('KMF001_83')}</label></td>
 						</tr>
 					</table>
 				</div>
@@ -236,7 +251,7 @@
 							</td>
 							<td id="main-scr-tbl-right">
 								<!-- right -->
-								<table>
+								<table class="em_table_with">
 									<tr>
 										<td colspan="3">
 											<div data-bind="ntsFormLabel: {required: true}"

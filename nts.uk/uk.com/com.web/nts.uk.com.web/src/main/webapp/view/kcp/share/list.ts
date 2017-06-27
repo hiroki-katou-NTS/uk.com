@@ -237,8 +237,10 @@ module kcp.share.list {
             
             // Init component.
             self.itemList(dataList);
+            // Remove No select row.
+            self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
             // Check is show no select row.
-            if (data.isShowNoSelectRow) {
+            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1) {
                 self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
             self.searchOption = {

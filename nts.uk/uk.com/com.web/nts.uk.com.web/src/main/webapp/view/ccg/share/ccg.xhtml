@@ -7,7 +7,7 @@
 		<div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG001_1')}</div>
 		<div
 			data-bind="ntsDatePicker: {value: baseDate, dateFormat: 'YYYY/MM/DD'}"></div>
-		<button id="btn_apply" data-bind="">#{i18n.getText('CCG001_2')}</button>
+		<button id="btn_apply" data-bind="click: applyDataSearch">#{i18n.getText('CCG001_2')}</button>
 		<div id="tab-panel"
 			data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 			<div class="tab-content-1">
