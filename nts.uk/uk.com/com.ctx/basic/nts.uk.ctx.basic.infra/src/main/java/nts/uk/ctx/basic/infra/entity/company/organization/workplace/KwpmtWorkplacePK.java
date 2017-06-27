@@ -10,11 +10,14 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
@@ -38,27 +41,22 @@ public class KwpmtWorkplacePK implements Serializable {
     @Column(name = "WPL_ID")
     private String wplid;
 	
-
-	@Basic(optional = false)
-	@NotNull
-	@Size(min = 1, max = 120)
-	@Column(name = "WPL_CD")
-	private String wplcd;
+	@Column(name = "STR_D")
+	@Temporal(TemporalType.TIMESTAMP)
+	private GeneralDate strD;
+	
+	@Column(name = "END_D")
+	@Temporal(TemporalType.TIMESTAMP)
+	private GeneralDate endD;
 
     public KwpmtWorkplacePK() {
     }
 
-    public KwpmtWorkplacePK(String cid, String wplid,String wplcd) {
+    public KwpmtWorkplacePK(String cid, String wplid,GeneralDate strD,GeneralDate endD) {
         this.cid = cid;
         this.wplid = wplid;
-        this.wplcd = wplcd;
-    }
-
-   
-
-    @Override
-    public String toString() {
-        return "entity.KwpmtWorkplacePK[ cid=" + cid + ", wkpid=" + wplid + ", wplcd=" +wplcd+ " ]";
+        this.strD = strD;
+        this.endD = endD;
     }
 
 	/* (non-Javadoc)
@@ -69,7 +67,8 @@ public class KwpmtWorkplacePK implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
-		result = prime * result + ((wplcd == null) ? 0 : wplcd.hashCode());
+		result = prime * result + ((endD == null) ? 0 : endD.hashCode());
+		result = prime * result + ((strD == null) ? 0 : strD.hashCode());
 		result = prime * result + ((wplid == null) ? 0 : wplid.hashCode());
 		return result;
 	}
@@ -91,10 +90,15 @@ public class KwpmtWorkplacePK implements Serializable {
 				return false;
 		} else if (!cid.equals(other.cid))
 			return false;
-		if (wplcd == null) {
-			if (other.wplcd != null)
+		if (endD == null) {
+			if (other.endD != null)
 				return false;
-		} else if (!wplcd.equals(other.wplcd))
+		} else if (!endD.equals(other.endD))
+			return false;
+		if (strD == null) {
+			if (other.strD != null)
+				return false;
+		} else if (!strD.equals(other.strD))
 			return false;
 		if (wplid == null) {
 			if (other.wplid != null)
@@ -103,5 +107,6 @@ public class KwpmtWorkplacePK implements Serializable {
 			return false;
 		return true;
 	}
+
     
 }

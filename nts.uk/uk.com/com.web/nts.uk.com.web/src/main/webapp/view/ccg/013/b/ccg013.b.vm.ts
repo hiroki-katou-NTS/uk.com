@@ -36,8 +36,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.allPart = ko.observableArray([]);
             self.listStandardMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', key: 'code', width: 100 },
-                { headerText: '名称', prop: 'displayName', key: 'displayName', width: 230 }
+                { headerText: 'コード', prop: 'code', key: 'code', width: '60px' },
+                { headerText: '名称', prop: 'displayName', key: 'displayName', width: '200px' }
             ]);
             self.selectCodeStandardMenu = ko.observable('');
             self.currentListStandardMenu = ko.observable('');

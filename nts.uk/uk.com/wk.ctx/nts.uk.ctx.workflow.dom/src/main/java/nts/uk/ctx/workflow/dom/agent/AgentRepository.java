@@ -14,13 +14,15 @@ public interface AgentRepository {
 	 * @return
 	 */
 	List<Agent> findAllAgent(String companyId, String employeeId);
-
+	
+	
 	/**
 	 * add Agent
 	 * 
 	 * @param agent
 	 */
 	void add(Agent agent);
+	
 
 	/**
 	 * update Agent
@@ -28,6 +30,7 @@ public interface AgentRepository {
 	 * @param agent
 	 */
 	void update(Agent agent);
+	
 
 	/**
 	 * delete Agent
@@ -37,6 +40,8 @@ public interface AgentRepository {
 	 * @param requestId
 	 */
 	void delete(String companyId, String employeeId, String requestId);
+	
+	
 	/**
 	 * get agent by requestId
 	 * 
@@ -46,6 +51,8 @@ public interface AgentRepository {
 	 * @return
 	 */
 	Optional<Agent> find(String companyId, String employeeId, String requestId);
+	
+	
 
 	/**
 	 * get agent by Date
@@ -55,6 +62,14 @@ public interface AgentRepository {
 	 * @return
 	 */
 	List<Agent> findAll(String companyId, GeneralDate startDate, GeneralDate endDate);
+	
 
+	/**
+	 * get agent by companyId
+	 * @param companyId
+	 * @return
+	 */
 	List<Agent> findByCid(String companyId);
+	
+
 }

@@ -7,8 +7,6 @@ package nts.uk.ctx.basic.infra.entity.company.organization.workplace;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-import nts.arc.time.GeneralDate;
-
 /**
  * The Class KwpmtWorkPlace_.
  */
@@ -18,11 +16,8 @@ public class KwpmtWorkplace_ {
 	/** The kwpmt workplace PK. */
 	public static volatile SingularAttribute<KwpmtWorkplace, KwpmtWorkplacePK> kwpmtWorkplacePK;
 	
-	/** The str D. */
-	public static volatile SingularAttribute<KwpmtWorkplace, GeneralDate> strD;
-	
-	/** The end D. */
-	public static volatile SingularAttribute<KwpmtWorkplace, GeneralDate> endD;
+	/** The wplcd. */
+	public static volatile SingularAttribute<KwpmtWorkplace, String> wplcd;
 		
 	/** The wplname. */
 	public static volatile SingularAttribute<KwpmtWorkplace, String> wplname;
