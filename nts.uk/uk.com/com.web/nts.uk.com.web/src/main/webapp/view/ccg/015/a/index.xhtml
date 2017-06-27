@@ -34,7 +34,7 @@
 				<button tabindex="10"
 					data-bind="click: removeTopPage,enable: !isNewMode()"
 					class="danger btnStyle" id="btn_delete">#{i18n.getText('CCG015_7')}</button>
-				<div class="float_right" data-bind="ntsFunctionPanel: {width: 200, headerText: '#{i18n.getText('CCG015_16')}', dataSource: listLinkScreen}"></div>
+				<div tabindex="11" class="float_right" data-bind="ntsFunctionPanel: {width: 200, headerText: '#{i18n.getText('CCG015_16')}', dataSource: listLinkScreen}"></div>
 			</div>
 			<div id="contents-area" data-bind="visible: true"
 				style="display: none">
@@ -44,7 +44,7 @@
 							class="bg-green caret-right caret-background"><i
 							class="icon icon-searchbox"></i>
 							<div id="searchlaborInsuranceOffice">
-								<div id="box_search"
+								<div id="box_search" tabindex="12"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list', 
 									items: listTopPage, selected: toppageSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 								<table id="single-list"
@@ -67,7 +67,7 @@
 										</div>
 									</td>
 									<td colspan = "2">
-										<div id="combo-box"
+										<div id="combo-box" tabindex="1"
 											data-bind="ntsComboBox: {
 												options: $parent.languageListOption,
 												optionsValue: 'code',
