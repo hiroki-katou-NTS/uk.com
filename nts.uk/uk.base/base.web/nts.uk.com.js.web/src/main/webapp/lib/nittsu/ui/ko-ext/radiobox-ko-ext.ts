@@ -86,11 +86,10 @@ module nts.uk.ui.koExtentions {
             // Enable
             if(enable === true) {
                 container.find("input[type='radio']").removeAttr("disabled");   
-            } else if (enable === false){
+            } else if (enable === false) {
                 container.find("input[type='radio']").attr("disabled", "disabled");
                 new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
-            }    
-//            }
+            }  
         }
     }
 
