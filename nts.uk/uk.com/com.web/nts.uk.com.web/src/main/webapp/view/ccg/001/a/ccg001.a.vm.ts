@@ -17,6 +17,12 @@ module nts.uk.com.view.ccg001.a {
                 self.selectedCode = ko.observableArray([]);
                 self.personLoginInfo = new PersonModel();
                 self.ccgcomponent = {
+                    isQuickSearchTab: true,
+                    isAdvancedSearchTab: true,
+                    isAllReferableEmployee: true,
+                    isOnlyMe: true,
+                    isEmployeeOfDepartment: true,
+                    isEmployeeDepartmentFollow: true,
                     isMutipleCheck: true,
                     onSearchAllClicked: function(dataList: PersonModel[]) {
                         self.personinfo = {
@@ -34,12 +40,24 @@ module nts.uk.com.view.ccg001.a {
                     onSearchOnlyClicked: function(data: PersonModel){
                         self.personLoginInfo = data;
                         self.visiblePersonInfo(true);
+                    },
+                    onSearchOfWorkplaceClicked: function(dataList: PersonModel[]){
+                          self.personinfo = {
+                            isShowAlreadySet: false,
+                            isMultiSelect: self.ccgcomponent.isMutipleCheck,
+                            listType: ListType.EMPLOYEE,
+                            employeeInputList: new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toUnitModelList(dataList),
+                            selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                            selectedCode: self.selectedCode,
+                            isDialog: false,
+                            isShowNoSelectRow: false,
+                        }
+                        $('#personinfo').ntsListComponent(self.personinfo);  
                     }
                 }
                 self.visiblePersonInfo = ko.observable(false);
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                
-                
             }
 
             public startPage(): JQueryPromise<any> {

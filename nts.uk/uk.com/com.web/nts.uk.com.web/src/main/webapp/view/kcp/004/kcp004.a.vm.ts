@@ -1,5 +1,5 @@
 module kcp004.a.viewmodel {
-    
+    import UnitModel = kcp.share.tree.UnitModel;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import TreeType = kcp.share.tree.TreeType;
     import SettingType = kcp.share.tree.SettingType;
@@ -14,6 +14,7 @@ module kcp004.a.viewmodel {
         isMultipleTreeGrid: KnockoutObservable<boolean>;
         isShowAlreadySet: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean>;
+        isShowSelectButton: KnockoutObservable<boolean>;
         
         // Control component
         selectedCode: KnockoutObservable<string>;
@@ -24,6 +25,8 @@ module kcp004.a.viewmodel {
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         treeGrid: TreeComponentOption;
+        
+        jsonData: KnockoutObservable<string>;
         
         constructor() {
             let self = this;
@@ -39,6 +42,7 @@ module kcp004.a.viewmodel {
             });
             self.isDialog = ko.observable(false);
             self.isShowAlreadySet = ko.observable(true);
+            self.isShowSelectButton = ko.observable(true);
             
             // Control component
             self.baseDate = ko.observable(new Date());
@@ -54,9 +58,12 @@ module kcp004.a.viewmodel {
                 treeType: TreeType.WORK_PLACE,
                 selectedCode: self.getSelectedCode(),
                 baseDate: self.baseDate,
+                isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
+            
+            self.jsonData = ko.observable('');
             
             // Subscribe
             self.selectedTreeType.subscribe(function(code) {
@@ -69,6 +76,9 @@ module kcp004.a.viewmodel {
                 self.reloadTreeGrid();
             });
             self.alreadySettingList.subscribe(function() {
+                self.reloadTreeGrid();
+            });
+            self.isShowSelectButton.subscribe(function() {
                 self.reloadTreeGrid();
             });
         }
@@ -121,6 +131,7 @@ module kcp004.a.viewmodel {
                 treeType: TreeType.WORK_PLACE,
                 selectedCode: self.getSelectedCode(),
                 baseDate: self.baseDate,
+                isShowSelectButton: self.isShowSelectButton(),
                 isDialog: self.isDialog(),
                 alreadySettingList: self.alreadySettingList
             };
@@ -129,7 +140,9 @@ module kcp004.a.viewmodel {
         private reloadTreeGrid() {
             let self = this;
             self.setTreeData();
-            $('#tree-grid').ntsTreeComponent(self.treeGrid);
+            $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
+                $('#tree-grid').focusComponent();
+            });
         }
     }
 }

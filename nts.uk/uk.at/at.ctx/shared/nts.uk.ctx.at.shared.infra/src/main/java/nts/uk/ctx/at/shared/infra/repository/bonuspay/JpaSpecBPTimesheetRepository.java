@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtSpecBPTimesheetPK;
 
 @Stateless
 public class JpaSpecBPTimesheetRepository extends JpaRepository implements SpecBPTimesheetRepository {
-	private final String SELECT_BY_COMPANYID_AND_BPCODE = "SELECT c FROM KbpmtSpecBPTimesheet c JOIN KbpstBonusPayTimeItem k  ON c.KbpmtSpecBPTimesheetPK.timeItemId = k.KbpmtSpecBPTimesheetPK.timeItemId WHERE c.KbpmtSpecBPTimesheetPK.companyId = :companyId AND c.bonusPaySettingCode = :bonusPaySettingCode AND k.timeItemTypeAtr = 1 AND AND K.useAtr=0  ORDER BY k.timeItemNo";
+	private final String SELECT_BY_COMPANYID_AND_BPCODE = "SELECT c FROM KbpmtSpecBPTimesheet c JOIN KbpstBonusPayTimeItem k  ON c.kbpstSpecBPTimesheetPK.timeItemId = k.kbpstBonusPayTimeItemPK.timeItemId WHERE c.kbpstSpecBPTimesheetPK.companyId = :companyId AND c.kbpstSpecBPTimesheetPK.bonusPaySettingCode = :bonusPaySettingCode AND k.timeItemTypeAtr = 1 AND AND K.useAtr=0  ORDER BY k.timeItemNo";
 
 	@Override
 	public List<SpecBonusPayTimesheet> getListTimesheet(String companyId, String bonusPaySettingCode) {

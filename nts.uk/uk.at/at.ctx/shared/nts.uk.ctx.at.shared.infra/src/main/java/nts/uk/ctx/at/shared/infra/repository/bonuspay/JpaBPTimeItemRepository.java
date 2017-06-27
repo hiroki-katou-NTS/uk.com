@@ -15,8 +15,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItemRepository {
-	private final String SELECT_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.KbpstBonusPayTimeItem.companyId = :companyId AND  c.timeItemTypeAtr = 0";
-	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.KbpstBonusPayTimeItem.companyId = :companyId AND  c.timeItemTypeAtr = 1";
+	private final String SELECT_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 0";
+	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 1";
 
 	@Override
 	public List<BonusPayTimeItem> getListBonusPayTimeItem() {

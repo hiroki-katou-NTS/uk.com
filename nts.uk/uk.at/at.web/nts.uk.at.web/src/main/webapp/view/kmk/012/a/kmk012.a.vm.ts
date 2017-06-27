@@ -67,14 +67,15 @@ module nts.uk.at.view.kmk012.a {
                 
                 
                 self.closureModel.useClassification.subscribe(function(val: number){
-                    self.clearValiate();
                     if (val == 0) {
-                        self.enableUseClassification(false);
                         self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
+                        self.enableUseClassification(false);
+                        self.clearValiate();
                     }
                     else {
-                        self.enableUseClassification(true);
                         self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
+                        self.enableUseClassification(true);
+                        self.clearValiate();
                     }
                 });
             }

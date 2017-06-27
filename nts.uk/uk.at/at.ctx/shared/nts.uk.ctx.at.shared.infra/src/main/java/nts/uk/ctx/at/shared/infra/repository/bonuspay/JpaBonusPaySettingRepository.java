@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySettingPK;
 
 @Stateless
 public class JpaBonusPaySettingRepository extends JpaRepository implements BPSettingRepository {
-	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpmtBonusPaySetting c WHERE c.KbpmtBonusPaySettingPK.companyId = :companyId";
+	private final String SELECT_BY_COMPANYID = "SELECT c FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId";
 
 	@Override
 	public List<BonusPaySetting> getAllBonusPaySetting(String companyId) {

@@ -9,13 +9,14 @@
 		<div class="sidebar-content-header">
 			<span class="title">#{i18n.getText('Com_Workplace')}</span>
 			<span class="action-bar">
-			<button tabindex="1" data-bind="click: saveWorkplace" class="proceed">#{i18n.getText('KMK004_27')}</button>
+			<button tabindex="1" data-bind="click: saveWorkplace, enable: (selectedWorkplaceCode())" class="proceed">#{i18n.getText('KMK004_27')}</button>
 			<button tabindex="3" class="danger" data-bind="click: removeWorkplace, disable: isNewMode">#{i18n.getText('KMK004_29')}</button>
 			</span>
 		</div>
 		<div class="contents-area">
 			<div id="list-workplace" class="pull-left"></div>
-			<div class="pull-left">
+			<div class="right-content pull-left">
+			<fieldset data-bind="allowEdit: (selectedWorkplaceCode())">
 				<com:ko tag="with" bind="workplaceWTSetting">
 				<div class="control-group">
 					<input id="workplaceYearPicker" tabindex="1"
@@ -204,6 +205,7 @@
 					<!-- DEFORMATION LABOR WORK TIME SETTING END -->
 				</div>
 			</com:ko>
+			</fieldset>
 			</div>
 		</div>
 	</ui:composition>

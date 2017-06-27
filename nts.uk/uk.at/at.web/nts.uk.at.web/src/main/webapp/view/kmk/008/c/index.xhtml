@@ -1,94 +1,262 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html>
 
 <body>
-	<ui:composition template="../../../../master/sidebar.xhtml">
-		<ui:define name="sidebar-head">
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kmk008.c.main.css" />
-			<com:scriptfile path="kmk008.c.start.js" />
-			<com:scriptfile path="kmk008.c.vm.js" />
-			<com:scriptfile path="kmk008.c.service.js" />
-		</ui:define>
-		<ui:define name="sidebar" tabindex="1">
-			<ul class="navigator">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
-				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
-				<li><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('Com_Class')}</a></li>
-			</ul>
-		</ui:define>
-
-		<ui:define name="sidebar-content">
-			<div id="tabpanel-1" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
-						'#Com_Company'])}</span> <a tabindex="2"
-						data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-					<button class="proceed" tabindex="3">#{i18n.getText('KMK008_14')}</button>
-				</div>
-				<div class="contents-area">
-					<div class="tabpanel-1-contents-area-left">
-						<div class="label" >#{i18n.getText('KMK008_6')}</div>
-						<HR />
-						
-					</div>
-				</div>
-			</div>
-			<div id="tabpanel-2" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span tabindex="2" class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
-						'#Com_Employment'])}</span> <a
-						data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-					<button class="proceed" tabindex="3">#{i18n.getText('KMK008_14')}</button>
-					<button tabindex="4">#{i18n.getText('KMK008_15')}</button>
-					<button class="danger" tabindex="5">#{i18n.getText('KMK008_16')}</button>
-				</div>
-				<div class="contents-area">
-					<div id="tab-panel"
-						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-						<div class="tab-content-1">
-							<span>Tab Content 1</span><br />
-						</div>
-						<div class="tab-content-2">
-							<span>Tab Content 2</span><br />
-						</div>
-						<div class="tab-content-3">
-							<span>Tab Content 3</span><br />
-						</div>
-						<div class="tab-content-4">
-							<span>Tab Content 4</span><br />
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="tabpanel-3" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
-						'#Com_Workplace'])}</span> <a tabindex="2"
-						data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-					<button class="proceed" tabindex="3">#{i18n.getText('KMK008_14')}</button>
-					<button tabindex="4">#{i18n.getText('KMK008_15')}</button>
-					<button class="danger" tabindex="5">#{i18n.getText('KMK008_16')}</button>
-				</div>
-				<div class="contents-area">Content 3</div>
-			</div>
-			<div id="tabpanel-4" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
-						'#Com_Class'])}</span> <a tabindex="2"
-						data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-					<button class="proceed" tabindex="3">#{i18n.getText('KMK008_14')}</button>
-					<button tabindex="4">#{i18n.getText('KMK008_15')}</button>
-					<button class="danger" tabindex="5">#{i18n.getText('KMK008_16')}</button>
-				</div>
-				<div class="contents-area">Content 4</div>
-			</div>
-		</ui:define>
-	</ui:composition>
+	<div class="sidebar-content-header">
+		<span class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
+			'#Com_Company'])}</span> <a tabindex="2"
+			data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KMK008_13')}</a>
+		<button class="proceed" tabindex="3">#{i18n.getText('KMK008_14')}</button>
+	</div>
+	<div class="contents-area">
+		<div class="tabpanel-1-contents-area-left">
+			<div class="label">#{i18n.getText('KMK008_6')}</div>
+			<HR />
+			<table class="table-basic-setting-list">
+				<tr style="background-color: #E0F59E">
+					<th style="width: 25%">#{i18n.getText('KMK008_18')}</th>
+					<th style="width: 25%">#{i18n.getText('KMK008_19')}</th>
+					<th style="width: 25%">#{i18n.getText('KMK008_20')}</th>
+					<th style="width: 25%">#{i18n.getText('KMK008_21')}</th>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_22')}</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_22, KMK008_42]',
+						constraint: 'SampleTimeDuration',
+						value: time,
+						inputFormat: 'time',
+						mode: 'time',
+						enable: true,
+						readonly: false,
+						required: false }" />
+					</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_22, KMK008_43]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" />
+					</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_22, KMK008_44]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" />
+					</td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_23')}</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_23, KMK008_42]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" />
+					</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_23, KMK008_43]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_23, KMK008_44]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_24')}</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_24, KMK008_42]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_24, KMK008_43]',
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td> 
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_24, KMK008_44]',
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_25')}</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_25, KMK008_42]',
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_25, KMK008_43]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_25, KMK008_44]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_26')}</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_26, KMK008_42]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_26, KMK008_43]',
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_26, KMK008_44]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_27')}</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_27, KMK008_42]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_27, KMK008_43]',
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_27, KMK008_44]',
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+				<tr>
+					<td class="table-basic-setting-list-td-label">#{i18n.getText('KMK008_28')}</td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_28, KMK008_42]', 
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time',
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_28, KMK008_43]',  
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+					<td><input data-name="Time Editor" class= "time-editor-custom-width"
+						data-bind="ntsTimeEditor: {
+						name: '#[KMK008_28, KMK008_44]',  
+						constraint: 'SampleTimeDuration', 
+						value: time, 
+						inputFormat: 'time', 
+						mode: 'time', 
+						enable: true, 
+						readonly: false, 
+						required: false }" /></td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </body>
 </html>

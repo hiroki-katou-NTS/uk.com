@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPUnitUseSettingPK;
 
 @Stateless
 public class JpaBPUnitUseSettingRepository extends JpaRepository implements BPUnitUseSettingRepository {
-	private final String SELECT_BY_COMPANYID = "SELECT c FROM KBPSTBPUnitUseSetting c WHERE c.KBPSTBPUnitUseSetting.companyId = :companyId";
+	private final String SELECT_BY_COMPANYID = "SELECT c FROM KBPSTBPUnitUseSetting c WHERE c.kbpstBPUnitUseSettingPK.companyId = :companyId";
 
 	@Override
 	public Optional<BPUnitUseSetting> getSetting(String companyId) {
@@ -42,7 +42,7 @@ public class JpaBPUnitUseSettingRepository extends JpaRepository implements BPUn
 	}
 
 	private BPUnitUseSetting toUnitUseSettingDomain(KbpstBPUnitUseSetting kbpstBPUnitUseSetting) {
-		return BPUnitUseSetting.createFromJavaType(kbpstBPUnitUseSetting.companyId.companyId,
+		return BPUnitUseSetting.createFromJavaType(kbpstBPUnitUseSetting.kbpstBPUnitUseSettingPK.companyId,
 				kbpstBPUnitUseSetting.workplaceUseAtr.intValue(), kbpstBPUnitUseSetting.personalUseAtr.intValue(),
 				kbpstBPUnitUseSetting.workingTimesheetUseAtr.intValue());
 	}

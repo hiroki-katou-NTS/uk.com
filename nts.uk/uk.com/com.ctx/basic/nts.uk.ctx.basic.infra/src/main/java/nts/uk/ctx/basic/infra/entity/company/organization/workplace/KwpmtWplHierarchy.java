@@ -13,7 +13,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Getter;
@@ -34,9 +33,8 @@ public class KwpmtWplHierarchy extends UkJpaEntity implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 10)
-    @Column(name = "WPL_CD")
-    private String wplcd;
+    @Column(name = "HIERARCHY_CD")
+    private String hierarchyCd;
 
     public KwpmtWplHierarchy() {
     }
