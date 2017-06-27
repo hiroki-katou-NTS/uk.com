@@ -75,6 +75,9 @@ module kdl024.a.viewmodel {
         //Register Data
         register() {
             var self = this;
+            $(".nts-checkvalue").trigger("validate");
+            if (nts.uk.ui.errors.hasError())
+                return;
             //Mode INSERT
             nts.uk.ui.block.invisible();
             if (self.isNew()) {
