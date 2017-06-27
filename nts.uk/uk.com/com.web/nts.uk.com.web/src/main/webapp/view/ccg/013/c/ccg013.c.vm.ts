@@ -92,11 +92,11 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         private uploadFileProcess(): void {
             var self = this;
             var option = {
-                stereoType: "any",
+                stereoType: "titleBar",
                 onSuccess: function() { alert('upload Success'); },
                 onFail: function() { alert('upload Fails')}
             }
-            $("#file_upload").ntsFileUpload({ stereoType: "any" }).done(function(res) {
+            $("#file_upload").ntsFileUpload({ stereoType: "titleBar" }).done(function(res) {
                 self.fileID(res[0].id);
                 self.filename('');
                 self.imageName(res[0].originalName);
