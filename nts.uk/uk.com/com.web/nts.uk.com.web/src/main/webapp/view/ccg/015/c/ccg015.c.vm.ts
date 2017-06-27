@@ -34,7 +34,7 @@ module nts.uk.pr.view.ccg015.c {
 
                 }
                 else {
-                    nts.uk.ui.windows.setShared("codeOfNewTopPage", self.newTopPageCode());
+                    nts.uk.ui.windows.setShared("codeOfNewTopPage", _.escape(nts.uk.text.padLeft(self.newTopPageCode(), '0', 4)));
                     var data: service.TopPageDto = {
                         topPageCode: _.escape(nts.uk.text.padLeft(self.newTopPageCode(), '0', 4)),
                         topPageName: _.escape(self.newTopPageName()),
