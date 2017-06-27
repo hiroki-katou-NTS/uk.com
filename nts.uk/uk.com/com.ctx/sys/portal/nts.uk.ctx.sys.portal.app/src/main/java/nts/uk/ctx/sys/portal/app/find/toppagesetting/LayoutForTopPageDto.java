@@ -4,10 +4,8 @@ import java.util.List;
 
 import lombok.Value;
 import nts.uk.ctx.sys.portal.app.find.placement.PlacementDto;
-
 @Value
-public class LayoutForMyPageDto {
-
+public class LayoutForTopPageDto {
 	/** Company ID */
 	private String companyID;
 
@@ -20,4 +18,6 @@ public class LayoutForMyPageDto {
 	private List<FlowMenuPlusDto> flowMenu;
 	/**placement*/
 	private List<PlacementDto> placements;
+	/**standard menu url*/
+	private String standardMenuUrl;
 }
