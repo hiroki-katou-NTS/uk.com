@@ -1,15 +1,13 @@
 package nts.uk.ctx.at.record.app.command.standardtime;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
@@ -33,34 +31,38 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitThreeMonths;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoMonths;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * 
- * @author nampt 雇用 screen add
+ * @author nampt 分類 screen add
  *
  */
 @Stateless
-public class AddAgreementTimeOfEmploymentCommandHandler extends CommandHandlerWithResult<AddAgreementTimeOfEmploymentCommand, List<String>> {
-	
-	@Inject
-	private AgreementTimeOfEmploymentDomainService agreementTimeDomainService;
+public class AddAgreementTimeOfClassificationCommandHandler
+		extends CommandHandler<AddAgreementTimeOfClassificationCommand> {
 
+	@Inject
+	private BasicAgreementSettingRepository basicAgreementSettingRepository;
+
+	@Inject
+	private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepository;
 
 	@Override
-	protected List<String> handle(CommandHandlerContext<AddAgreementTimeOfEmploymentCommand> context) {
-		AddAgreementTimeOfEmploymentCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<AddAgreementTimeOfClassificationCommand> context) {
+		AddAgreementTimeOfClassificationCommand command = context.getCommand();
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 		String basicSettingId = IdentifierUtil.randomUniqueId();
 
-		AgreementTimeOfEmployment agreementTimeOfEmployment = new AgreementTimeOfEmployment(companyId, basicSettingId,
-				EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
+		AgreementTimeOfClassification agreementTimeOfClassification = new AgreementTimeOfClassification(companyId,
+				basicSettingId, EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
 				command.getEmploymentCategoryCode());
+		this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);
 		
-
 		BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId,
 				new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()), 
 				new AlarmTwoWeeks(command.getAlarmTwoWeeks()), new ErrorTwoWeeks(command.getErrorTwoWeeks()), new LimitTwoWeeks(command.getLimitTwoWeeks()),
@@ -69,8 +71,7 @@ public class AddAgreementTimeOfEmploymentCommandHandler extends CommandHandlerWi
 				new AlarmTwoMonths(command.getAlarmTwoMonths()), new ErrorTwoMonths(command.getErrorTwoMonths()), new LimitTwoMonths(command.getLimitTwoMonths()),
 				new AlarmThreeMonths(command.getAlarmThreeMonths()), new ErrorThreeMonths(command.getErrorThreeMonths()), new LimitThreeMonths(command.getErrorThreeMonths()),
 				new AlarmOneYear(command.getAlarmOneYear()), new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
-		
-		return this.agreementTimeDomainService.add(basicAgreementSetting, agreementTimeOfEmployment);
+		this.basicAgreementSettingRepository.add(basicAgreementSetting);
 	}
 
 }

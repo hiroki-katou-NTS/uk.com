@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class AddAgreementTimeOfEmploymentCommand {
+public class UpdateAgreementTimeOfEmploymentCommand {
 
 	private int laborSystemAtr;
 
@@ -58,5 +58,4 @@ public class AddAgreementTimeOfEmploymentCommand {
 	private BigDecimal errorOneYear;
 
 	private BigDecimal limitOneYear;
-
 }
