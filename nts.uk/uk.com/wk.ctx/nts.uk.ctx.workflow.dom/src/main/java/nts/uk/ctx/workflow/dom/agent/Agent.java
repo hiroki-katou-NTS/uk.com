@@ -142,7 +142,7 @@ public class Agent extends AggregateRoot {
 		rangeDateList.stream().forEach(rangeDate -> {
 			if (!checkStartDate(rangeDate) || !checkEndDate(rangeDate)) {
 				throw new BusinessException("Msg_12");
-			}
+			}else {throw new BusinessException("Msg_15");}
 		});
 	}
 	
@@ -155,7 +155,6 @@ public class Agent extends AggregateRoot {
 		if (this.startDate.before(rangeDate.getStartDate()) && this.startDate.after(rangeDate.getEndDate())) {
 			return false;
 		}
-		
 		return true;
 	}
 	
@@ -168,7 +167,20 @@ public class Agent extends AggregateRoot {
 		if (this.endDate.before(rangeDate.getStartDate()) && this.endDate.after(rangeDate.getEndDate())) {
 			return false;
 		}
-		
 		return true;
 	}
+	
+	public void agentOfApp(List<AgentType> agentTypeList) {
+		if (this.agentAppType1.value == 0 || this.agentAppType2.value == 0 || this.agentAppType3.value == 0 || this.agentAppType4.value == 0) {
+			
+		}
+		return;
+		
+	}
+	
+	private boolean checkAgentType(AgentType agentType) {	
+		
+		return true;
+	}	
+	
 }

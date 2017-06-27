@@ -68,7 +68,7 @@ public class CmmmtAgent extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected CmmmtAgentPK getKey() {
-		return cmmmtAgentPK;
+		return this.cmmmtAgentPK;
 	}
 
 }
