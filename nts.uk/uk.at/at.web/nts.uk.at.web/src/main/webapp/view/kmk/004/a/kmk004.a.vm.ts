@@ -19,7 +19,7 @@ module nts.uk.at.view.kmk004.a {
 
             // Workplace list component.
             workplaceComponentOption: any;
-            selectedWorkplaceCode: KnockoutObservable<string>;
+            selectedWorkplaceId: KnockoutObservable<string>;
             alreadySettingWorkplaces: KnockoutObservableArray<any>;
             baseDate: KnockoutObservable<Date>;
 
@@ -108,9 +108,9 @@ module nts.uk.at.view.kmk004.a {
 
                 // Workplace list component.
                 self.alreadySettingWorkplaces = ko.observableArray([]);
-                self.selectedWorkplaceCode = ko.observable('');
+                self.selectedWorkplaceId = ko.observable('');
                 self.setWorkplaceComponentOption();
-                self.selectedWorkplaceCode.subscribe(code => {
+                self.selectedWorkplaceId.subscribe(code => {
                     self.isLoading(false);
                     if (code) {
                         self.loadWorkplaceSetting(code);
@@ -219,7 +219,7 @@ module nts.uk.at.view.kmk004.a {
                 // Load component.
                 $('#list-workplace').ntsTreeComponent(this.workplaceComponentOption).done(() => {
                     // Select first workplace.
-                    self.selectedWorkplaceCode('');
+                    self.selectedWorkplaceId('');
                     self.setAlreadySettingWorkplaceList();
                 });
             }
@@ -525,10 +525,10 @@ module nts.uk.at.view.kmk004.a {
              */
             private setAlreadySettingWorkplaceList(): void {
                 let self = this;
-                service.findAllWorkplaceSetting(self.workplaceWTSetting.year()).done(listCode => {
+                service.findAllWorkplaceSetting(self.workplaceWTSetting.year()).done(listId => {
                     self.alreadySettingWorkplaces.removeAll();
-                    listCode.forEach(item => {
-                        self.alreadySettingWorkplaces.push({ code: item, settingType: 2 })
+                    listId.forEach(id => {
+                        self.alreadySettingWorkplaces.push({ workplaceId: id, settingType: 2 })
                     });
                 });
             }
@@ -574,7 +574,7 @@ module nts.uk.at.view.kmk004.a {
                     isShowAlreadySet: true, // is show already setting column.
                     isMultiSelect: false, // is multiselect.
                     treeType: 1, // workplace tree.
-                    selectedCode: self.selectedWorkplaceCode,
+                    selectedWorkplaceId: self.selectedWorkplaceId,
                     baseDate: self.baseDate,
                     isDialog: false,
                     alreadySettingList: self.alreadySettingWorkplaces
@@ -624,13 +624,13 @@ module nts.uk.at.view.kmk004.a {
             /**
              * Add alreadySetting workplace.
              */
-            private addAlreadySettingWorkplace(code: string): void {
+            private addAlreadySettingWorkplace(id: string): void {
                 let self = this;
-                let l = self.alreadySettingWorkplaces().filter(i => code == i.code);
+                let l = self.alreadySettingWorkplaces().filter(i => id == i.workplaceId);
                 if (l[0]) {
                     return;
                 }
-                self.alreadySettingWorkplaces.push({ code: code, settingType: 2 });
+                self.alreadySettingWorkplaces.push({ workplaceId: id, settingType: 2 });
             }
 
             /**
@@ -645,9 +645,9 @@ module nts.uk.at.view.kmk004.a {
             /**
              * Remove alreadySetting workplace.
              */
-            private removeAlreadySettingWorkplace(code: string): void {
+            private removeAlreadySettingWorkplace(id: string): void {
                 let self = this;
-                let asw = self.alreadySettingWorkplaces().filter(i => code == i.code)[0];
+                let asw = self.alreadySettingWorkplaces().filter(i => id == i.workplaceId)[0];
                 self.alreadySettingWorkplaces.remove(asw);
             }
 

@@ -11,9 +11,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -40,19 +40,19 @@ public class SaveAcquisitionRuleCommandHandler extends CommandHandler<Acquisitio
 		// Get command.
 		AcquisitionRuleCommand command = context.getCommand();
 		AcquisitionRule acquisitionRuleCommand = command.toDomain(companyId);
-		
+
 		// Update VacationAcquisitionRule
 		Optional<AcquisitionRule> optVaAcRule = this.vaRepo.findById(companyId);
-		
+
 		if (optVaAcRule.isPresent()) {
-			if(acquisitionRuleCommand.getCategory() == Category.NoSetting.value){
+			if (acquisitionRuleCommand.getCategory().equals(ManageDistinct.NO)) {
 				AcquisitionRule acquisitionRuleDB = optVaAcRule.get();
 				acquisitionRuleDB.setCategory(acquisitionRuleCommand.getCategory());
 				this.vaRepo.update(acquisitionRuleDB);
-			}else{
+			} else {
 				this.vaRepo.update(acquisitionRuleCommand);
 			}
-			
+
 		} else {
 			this.vaRepo.create(acquisitionRuleCommand);
 		}

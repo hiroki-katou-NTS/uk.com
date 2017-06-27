@@ -73,7 +73,12 @@ public interface StandardMenuRepository {
 	Optional<StandardMenu> getStandardMenubyCode(String companyId,String code, int system,int classification);
 	
 	/**
-	 * Find all by system.
+	 * yennth
+	 * @param List StandardMenu
+	 */
+	void update(List<StandardMenu> StandardMenu);
+
+	/** Find all by system.
 	 *
 	 * @param companyId the company id
 	 * @param system
