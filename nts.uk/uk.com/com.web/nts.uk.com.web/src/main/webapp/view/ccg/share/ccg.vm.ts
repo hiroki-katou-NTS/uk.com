@@ -216,7 +216,8 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     treeType: TreeType.WORK_PLACE,
-                    selectedCode: self.selectedCodeWorkplace,
+                    isShowSelectButton: true,
+                    selectedWorkplaceId: self.selectedCodeWorkplace,
                     baseDate: self.baseDate,
                     isDialog: true
                 }
