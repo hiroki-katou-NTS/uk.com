@@ -1,0 +1,47 @@
+#d1_25{
+	padding: 0 40px;
+}
+
+.left-contents{
+	float: left;
+    padding: 25px 12px 0px 15px;
+}
+
+.right-contents{
+	float: left;
+    margin: -42px 10px;
+}
+
+.cbb-system-data{
+	position: fixed;	
+}
+
+.top-left-contents {
+    padding: 0 15px;
+}
+
+#d1_13{
+	margin: 38px 30px;
+    width: 260px;
+    height: 50px;
+}
+
+.move-function{
+	float: left;
+    margin-top: 200px;
+    width: 60px;
+}
+
+.move-function button{
+	margin-bottom: 50px;
+}
+
+.chane-position-function{
+	float: left;
+    margin-top: 180px;
+    width: 30px;
+}
+
+.chane-position-function button{
+	margin-bottom: 50px;
+}

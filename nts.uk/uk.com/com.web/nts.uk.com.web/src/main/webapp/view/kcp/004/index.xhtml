@@ -11,6 +11,7 @@
 			<com:stylefile path="../../sample/catalog/catalog.css" />
 			<com:scriptfile path="../../sample/catalog/catalog.js" />
 			<com:scriptfile path="../../../../nts.uk.com.web/view/kcp/share/tree.js" />
+			<com:scriptfile path="../../../../nts.uk.com.web/view/kcp/share/tree.js" />
 			<com:scriptfile path="kcp004.a.vm.js" />
 			<com:scriptfile path="kcp004.a.start.js" />
 			<style>
@@ -26,7 +27,7 @@
 				<div style="margin-left: 30px">
 					<!-- BEGIN ORVERVIEW -->
 					<div>
-						<h1>KCP004 Component </h1>
+						<h1>KCP004 職場リスト（共通部品）Workplace List</h1>
 						<h2>Overview</h2>
 						<div>
 							<button data-bind="click: copy">Copy</button>
@@ -43,9 +44,10 @@
 							</div>
 							<div data-bind="ntsCheckBox:{checked: isDialog}">Dialog</div>
 							<div data-bind="ntsCheckBox:{checked: isShowAlreadySet}">Show Already Setting</div>
+							<div data-bind="ntsCheckBox:{checked: isShowSelectButton}">Show SelectAll/SelectSubParent button</div>
 							<hr></hr>
 						</div>
-						<div id="tree-grid" style="width: 640px;margin-top: 30px;"></div>
+						<div id="tree-grid" style="width: 500px;margin-top: 30px;"></div>
 						<div style="margin-top: 10px;">
 							<label style="margin-right: 10px;font-size: 17px;">Selected code:</label>
 							<span style="font-size: 20px;" data-bind='text: getSelectedData()'></span>
@@ -57,7 +59,8 @@
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
-									<!-- <li><a href="#tabs-method">Methods</a></li> -->
+									<li><a href="#tabs-data">Data</a></li>
+									<li><a href="#tabs-method">Methods</a></li>
 								</ol>
 								<!-- BEGIN TAB HTML -->
 								<div id="tabs-html" class="cf">
@@ -66,7 +69,7 @@
 									<pre><![CDATA[<ui:define name="htmlHead">
 		<com:scriptfile set="IGNITE" />
 </ui:define>]]></pre>
-									<pre><![CDATA[<div id="tree-grid" style="width: 640px;"></div>]]></pre>
+									<pre><![CDATA[<div id="tree-grid" style="width: 500px;"></div>]]></pre>
 								</div><!-- END TAB HTML -->
 								
 								<!-- BEGIN TABS VIEWMODEL -->
@@ -98,6 +101,7 @@ export class ScreenModel {
 		        treeType: TreeType.WORK_PLACE,
 		        selectedCode: self.multiSelectedCode,
 		        baseDate: self.baseDate,
+		        isShowSelectButton: true,
 		        isDialog: false,
 		        alreadySettingList: self.alreadySettingList
 		    };
@@ -156,6 +160,13 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 											</td>
 										</tr>
 										<tr>
+											<td>isShowSelectButton</td>
+											<td>
+												<b>Type:</b> boolean<br/>
+												<label>Show/hide button select all and selected sub parent.</label>
+											</td>
+										</tr>
+										<tr>
 											<td>isDialog</td>
 											<td>
 												<b>Type:</b> boolean<br/>
@@ -185,8 +196,14 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 									</table>
 								</div><!-- END TABS VIEWMODEL -->
 								
+								<!-- BEGIN TABS DATA -->
+								<div id="tabs-data" class="cf">
+									<pre data-bind="text: jsonData">
+									</pre>
+								</div><!-- END TABS DATA -->
+								
 								<!-- BEGIN TABS METHOD -->
-								<!-- <div id="tabs-method" class="cf">
+								<div id="tabs-method" class="cf">
 									<table style="width: 500px">
 										<thead>
 											<td style="text-align: center;"><h4>Method</h4></td>
@@ -196,8 +213,12 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 											<td>$('#tree-grid').getDataList()</td>
 											<td>Get list data tree</td>
 										</tr>
+										<tr>
+											<td>$('#tree-grid').focusComponent();</td>
+											<td>Focus input control in tree grid.</td>
+										</tr>
 									</table>
-								</div> --><!-- END TABS METHOD -->
+								</div><!-- END TABS METHOD -->
 							</div>
 						</article><!-- END DESCRIPTION -->
 					</div>

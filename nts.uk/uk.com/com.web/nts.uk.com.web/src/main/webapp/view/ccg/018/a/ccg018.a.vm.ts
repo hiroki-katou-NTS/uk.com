@@ -1,7 +1,7 @@
 module ccg018.a.viewmodel {
     export class ScreenModel {
         date: KnockoutObservable<string>;
-        items: KnockoutObservableArray<GridItem>;
+        items: KnockoutObservableArray<TopPageJobSet>;
         switchOptions: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         isHidden: KnockoutObservable<boolean>;
@@ -15,7 +15,7 @@ module ccg018.a.viewmodel {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
 
-        constructor() { 
+        constructor() {
             var self = this;
             self.date = ko.observable(new Date().toISOString());
             self.items = ko.observableArray([]);
@@ -35,8 +35,8 @@ module ccg018.a.viewmodel {
             self.selectedCode2 = ko.observable('3');
 
             self.roundingRules = ko.observableArray([
-                { code: '1', name: '四捨五入' },
-                { code: '2', name: '切り上げ' }
+                { code: '1', name: nts.uk.resource.getText("CCG018_13") },
+                { code: '2', name: nts.uk.resource.getText("CCG018_14") }
             ]);
             self.selectedRuleCode = ko.observable(1);
 
@@ -49,39 +49,39 @@ module ccg018.a.viewmodel {
                     }).fail();
                 }).fail();
             }).fail();
- 
+
             for (let i = 1; i < 50; i++) {
-                self.items.push(new GridItem('00' + i, 'アルバイト', 'A002', 'A002', '0'));
+                self.items.push(new TopPageJobSet('00' + i, 'アルバイト', 'A001', 'A002', 0, 'A0000000', 1));
             }
             self.currentCode = ko.observable();
         }
 
         //        bindGrid(widthGrid: string) {
-            //            var self = this;
-            //            var comboColumns = [
-                //                { prop: 'name', length: 8 }];
-            //            $("#grid").ntsGrid({
-                //                width: widthGrid,
-                //                height: '565px',
-                //                dataSource: self.items(),
-                //                autoCommit: true,
-                //                primaryKey: 'code',
-                //                virtualization: true,
-                //                virtualizationMode: 'continuous',
-                //                columns: [
-                    //                    { headerText: nts.uk.resource.getText("CCG018_8"), key: 'code', dataType: 'number', width: '50px' },
-                    //                    { headerText: nts.uk.resource.getText("CCG018_9"), key: 'name', dataType: 'string', width: '120px' },
-                    //                    { headerText: nts.uk.resource.getText("CCG018_10"), key: 'afterLogin', dataType: 'string', width: '205px', ntsControl: 'Combobox1', hidden: self.isHidden() },
-                    //                    { headerText: nts.uk.resource.getText("CCG018_11"), key: 'asTopPage', dataType: 'string', width: '205px', ntsControl: 'Combobox2' },
-                    //                    { headerText: nts.uk.resource.getText("CCG018_12"), key: 'personPermissionSet', dataType: 'string', width: '185px', ntsControl: 'SwitchButtons' }
-                    //                ],
-                //                features: [{ name: 'Sorting', type: 'local' }],
-                //                ntsControls: [
-                    //                    { name: 'Combobox1', options: self.comboItemsAfterLogin(), optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                    //                    { name: 'Combobox2', options: self.comboItemsAsTopPage(), optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                    //                    { name: 'SwitchButtons', options: self.switchOptions(), optionsValue: 'code', optionsText: 'name', controlType: 'SwitchButtons', enable: true },
-//            });
-            //        }
+        //            var self = this;
+        //            var comboColumns = [
+        //                { prop: 'name', length: 8 }];
+        //            $("#grid").ntsGrid({
+        //                width: widthGrid,
+        //                height: '565px',
+        //                dataSource: self.items(),
+        //                autoCommit: true,
+        //                primaryKey: 'code',
+        //                virtualization: true,
+        //                virtualizationMode: 'continuous',
+        //                columns: [
+        //                    { headerText: nts.uk.resource.getText("CCG018_8"), key: 'code', dataType: 'number', width: '50px' },
+        //                    { headerText: nts.uk.resource.getText("CCG018_9"), key: 'name', dataType: 'string', width: '120px' },
+        //                    { headerText: nts.uk.resource.getText("CCG018_10"), key: 'afterLogin', dataType: 'string', width: '205px', ntsControl: 'Combobox1', hidden: self.isHidden() },
+        //                    { headerText: nts.uk.resource.getText("CCG018_11"), key: 'asTopPage', dataType: 'string', width: '205px', ntsControl: 'Combobox2' },
+        //                    { headerText: nts.uk.resource.getText("CCG018_12"), key: 'personPermissionSet', dataType: 'string', width: '185px', ntsControl: 'SwitchButtons' }
+        //                ],
+        //                features: [{ name: 'Sorting', type: 'local' }],
+        //                ntsControls: [
+        //                    { name: 'Combobox1', options: self.comboItemsAfterLogin(), optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
+        //                    { name: 'Combobox2', options: self.comboItemsAsTopPage(), optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
+        //                    { name: 'SwitchButtons', options: self.switchOptions(), optionsValue: 'code', optionsText: 'name', controlType: 'SwitchButtons', enable: true },
+        //            });
+        //        }
 
         /**
          * Find data in DB TOPPAGE_SET base on companyId
@@ -138,7 +138,7 @@ module ccg018.a.viewmodel {
                 }).fail();
             return dfd.promise();
         }
- 
+
         /**
          * Find data in DB TOPPAGE_JOB_SET
          */
@@ -180,19 +180,17 @@ module ccg018.a.viewmodel {
                 if (nts.uk.ui.windows.getShared('divideOrNot') != undefined) {
                     if (self.categorySet() != nts.uk.ui.windows.getShared('divideOrNot')) {
                         self.categorySet(nts.uk.ui.windows.getShared('divideOrNot'));
-                        if (self.categorySet() === '1') {
+                        if (self.categorySet() === 1) {
                             self.isHidden(true);
-                            self.bindGrid('580px');
                         } else {
                             self.isHidden(false);
-                            self.bindGrid('785px');
                         }
                     }
                 }
             });
         }
     }
- 
+
     class TopPageJobSet {
         code: string;
         name: string;
@@ -209,25 +207,6 @@ module ccg018.a.viewmodel {
             this.personPermissionSet = personPermissionSet;
             this.jobId = jobId;
             this.system = system;
-        }
-    }
-
-    class GridItem {
-        code: number;
-        name: string;
-        afterLogin: string;
-        asTopPage: string;
-        personPermissionSet: number;
-        constructor(code: number,
-            name: string,
-            afterLogin: string,
-            asTopPage: string,
-            personPermissionSet: number) {
-            this.code = code;
-            this.name = name;
-            this.afterLogin = afterLogin;
-            this.asTopPage = asTopPage;
-            this.personPermissionSet = personPermissionSet;
         }
     }
 

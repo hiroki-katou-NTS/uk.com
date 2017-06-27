@@ -7,22 +7,184 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
+			<script>
+				var dialogSize = {
+					width : 300,
+					height : 200
+				};
+			</script>
+			<com:stylefile path="../../../sample/catalog/catalog.css" />
 			<com:stylefile path="style.css" />
+			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="ccg001.a.vm.js" />
 			<com:scriptfile path="ccg001.a.start.js" />
+			<com:scriptfile path="../../../sample/catalog/catalog.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="ccgcomponent"></div>
-			<div id="personinfo"></div>
-			<div data-bind="if : visiblePersonInfo()">
-				<label data-bind="text: personLoginInfo.personId"></label>
-				<label data-bind="text: personLoginInfo.personName"></label>
+			<div id="contents-area">
+				<div id="side-menu" class="cf"></div>
+				<div id="content" class="cf">
+					<h1>CCG001 社員範囲選択 （共通部品） Employee range selection</h1>
+					<h2>Overview</h2>
+					<div id="ccgcomponent"></div>
+					<div id="personinfo"></div>
+					<div data-bind="if : visiblePersonInfo()">
+						<label data-bind="text: personLoginInfo.personId"></label> <label
+							data-bind="text: personLoginInfo.personName"></label>
+					</div>
+
+					<article class="cf">
+						<div class="tabs">
+							<ol>
+								<li><a href="#tabs-html">HTML Binding</a></li>
+								<li><a href="#tabs-viewmodel">ViewModel</a></li>
+							</ol>
+							<div id="tabs-html" class="cf">
+								<h2>HTML</h2>
+								<pre><![CDATA[<ui:define name="htmlHead">
+		<com:scriptfile set="IGNITE" />
+		<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+		<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+		<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+		<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+</ui:define>]]></pre>
+								<pre><![CDATA[<div id="ccgcomponent"></div>
+<div id="personinfo"></div>
+<div data-bind="if : visiblePersonInfo()">
+	<label data-bind="text: personLoginInfo.personId"></label> 
+	<label data-bind="text: personLoginInfo.personName"></label>
+</div>]]></pre>
+							</div>
+							<div id="tabs-viewmodel" class="cf">
+								<h2>TypeScript</h2>
+								<pre><![CDATA[export class ScreenModel {
+            ccgcomponent: any;
+            personinfo: any;
+            selectedCode: KnockoutObservableArray<string>;
+            visiblePersonInfo: KnockoutObservable<boolean>;
+            personLoginInfo: PersonModel;
+
+            constructor() {
+                var self = this;
+                self.selectedCode = ko.observableArray([]);
+                self.personLoginInfo = new PersonModel();
+
+                self.ccgcomponent = {
+                    isMutipleCheck: true,
+                    onSearchAllClicked: function(dataList: PersonModel[]) {
+                        self.personinfo = {
+                            isShowAlreadySet: false,
+                            isMultiSelect: self.ccgcomponent.isMutipleCheck,
+                            listType: ListType.EMPLOYEE,
+                            employeeInputList: new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toUnitModelList(dataList),
+                            selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                            selectedCode: self.selectedCode,
+                            isDialog: false,
+                            isShowNoSelectRow: false,
+                        }
+
+                        $('#personinfo').ntsListComponent(self.personinfo);
+                    },
+                    onSearchOnlyClicked: function(data: PersonModel){
+                        self.personLoginInfo = data;
+                        self.visiblePersonInfo(true);
+                    },
+                    onSearchOfWorkplaceClicked: function(dataList: PersonModel[]){
+                          self.personinfo = {
+                            isShowAlreadySet: false,
+                            isMultiSelect: self.ccgcomponent.isMutipleCheck,
+                            listType: ListType.EMPLOYEE,
+                            employeeInputList: new nts.uk.com.view.ccg.share.ccg.viewmodel.ListGroupScreenModel().toUnitModelList(dataList),
+                            selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                            selectedCode: self.selectedCode,
+                            isDialog: false,
+                            isShowNoSelectRow: false,
+                        }
+
+                        $('#personinfo').ntsListComponent(self.personinfo);  
+                    }
+                }
+
+                self.visiblePersonInfo = ko.observable(false);
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+            }
+        }]]></pre>
+								<h2>API</h2>
+								<table>
+									<colgroup>
+										<col width="200px" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th><h4>Binding</h4></th>
+											<th><h4>Description</h4></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>isQuickSearchTab</td>
+											<td><b>Type:</b> boolean<br /> Show/hide tab クイック検索 </td>
+										</tr>
+										<tr>
+											<td>isAllReferableEmployee
+											</td>
+											<td><b>Type:</b> boolean<br />Show/hide button 参照可能な社員すべて </td>
+										</tr>
+										<tr>
+											<td>isOnlyMe
+											</td>
+											<td><b>Type:</b> boolean<br /> Show/hide button 自分だけ </td>
+										</tr>
+										<tr>
+											<td>isEmployeeOfWorkplace
+											</td>
+											<td><b>Type:</b> boolean<br /> Show/hide button おなじ職場の社員</td>
+										</tr>
+										<tr>
+											<td>isEmployeeDepartmentFollow
+											</td>
+											<td><b>Type:</b> boolean<br /> Show/hide button おなじ＋配下の職場の社員
+											</td>
+										</tr>
+										<tr>
+											<td>isAdvancedSearchTab
+											</td>
+											<td><b>Type:</b> boolean<br /> Show/hide tab クイック検索</td>
+										</tr>
+										<tr>
+											<td>isMutipleCheck
+											</td>
+											<td><b>Type:</b> boolean<br /> Enable/disable multiple selection</td>
+										</tr>
+										<tr>
+											<td>onSearchAllClicked</td>
+											<td><b>Type:</b> function<br /> Event on click button 参照可能な社員すべて </td>
+										</tr>
+										<tr>
+											<td>onSearchOfWorkplaceClicked
+											</td>
+											<td><b>Type:</b> function<br /> Event on click button おなじ職場の社員</td>
+										</tr>
+										<tr>
+											<td>onSearchWorkplaceChildClicked
+											</td>
+											<td><b>Type:</b> function<br /> Event on click button おなじ＋配下の職場の社員</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</article>
+					<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
