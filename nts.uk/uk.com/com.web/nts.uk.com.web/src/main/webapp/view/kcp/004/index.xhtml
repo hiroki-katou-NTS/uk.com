@@ -15,8 +15,8 @@
 			<com:scriptfile path="kcp004.a.vm.js" />
 			<com:scriptfile path="kcp004.a.start.js" />
 			<style>
-				#first-list {
-					display: inline-grid
+				.table-tree-sample tr td {
+					border: none;
 				}
 			</style>
 		</ui:define>
@@ -47,10 +47,30 @@
 							<div data-bind="ntsCheckBox:{checked: isShowSelectButton}">Show SelectAll/SelectSubParent button</div>
 							<hr></hr>
 						</div>
-						<div id="tree-grid" style="width: 500px;margin-top: 30px;"></div>
-						<div style="margin-top: 10px;">
-							<label style="margin-right: 10px;font-size: 17px;">Selected code:</label>
-							<span style="font-size: 20px;" data-bind='text: getSelectedData()'></span>
+						<div>
+							<table class="table-tree-sample">
+								<tr>
+									<td><div id="tree-grid" style="width: 500px;margin-top: 30px;"></div></td>
+									<td>
+										<div style="margin-left: 50px;">
+											<table class="table-tree-sample">
+												<tr>
+													<td><label style="margin-right: 10px;font-size: 17px;">Workplace id:</label></td>
+													<td><span style="font-size: 20px;" data-bind='text: getSelectedData()'></span></td>
+												</tr>
+												<tr>
+													<td><label style="margin-right: 10px;font-size: 17px;">Workplace code:</label></td>
+													<td><span style="font-size: 20px;" data-bind='text: getSelectedData()'></span></td>
+												</tr>
+												<tr>
+													<td><label style="margin-right: 10px;font-size: 17px;">Workplace name:</label></td>
+													<td><span style="font-size: 20px;" data-bind='text: getSelectedData()'></span></td>
+												</tr>
+											</table>
+										</div>
+									</td>
+								</tr>
+							</table>
 						</div><!-- END ORVERVIEW -->
 						
 						<!-- BEGIN DESCRIPTION -->
@@ -78,34 +98,32 @@
 									<h3>ViewModel</h3>
 									<pre><![CDATA[<!--MULTIPLE TREE GRID-->
 export class ScreenModel {
-		multiSelectedCode: KnockoutObservable<string>;
+
+		multiSelectedWorkplaceId: KnockoutObservable<string>;
 		baseDate: KnockoutObservable<Date>;
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
 		treeGrid: TreeComponentOption;
 		
 		constructor() {
-		    let self = this;
-		    
-		    self.baseDate = ko.observable(new Date());
-		    self.multiSelectedCode = ko.observableArray(['001', '002']);
-		    self.alreadySettingList = ko.observableArray([
-		            {code: '001', settingType: SettingType.NO_SETTING},
-		            {code: '001001', settingType: SettingType.ALREADY_SETTING},
-		            {code: '002002', settingType: SettingType.USE_PARRENT_SETTING},
-		            {code: '001001001', settingType: SettingType.ALREADY_SETTING},
-		            {code: '003002001', settingType: SettingType.USE_PARRENT_SETTING}
-		    ]);
-		    self.treeGrid = {
-		        isShowAlreadySet: true,
-		        isMultiSelect: true,
-		        treeType: TreeType.WORK_PLACE,
-		        selectedCode: self.multiSelectedCode,
-		        baseDate: self.baseDate,
-		        isShowSelectButton: true,
-		        isDialog: false,
-		        alreadySettingList: self.alreadySettingList
-		    };
-	   }
+				let self = this;
+				
+				self.baseDate = ko.observable(new Date());
+				self.multiSelectedWorkplaceId = ko.observableArray(['wpl1', 'wpl3']);
+				self.alreadySettingList = ko.observableArray([
+						{workplaceId: 'wpl1', settingType: SettingType.NO_SETTING},
+						{workplaceId: 'wpl3', settingType: SettingType.ALREADY_SETTING},
+				]);
+				self.treeGrid = {
+						isShowAlreadySet: true,
+						isMultiSelect: true,
+						treeType: TreeType.WORK_PLACE,
+						selectedWorkplaceId: self.multiSelectedWorkplaceId,
+						baseDate: self.baseDate,
+						isShowSelectButton: true,
+						isDialog: false,
+						alreadySettingList: self.alreadySettingList
+				};
+		}
 }
 								]]></pre>
 								<pre><![CDATA[<!--It is called after apply binding done.-->
@@ -146,10 +164,10 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 											</td>
 										</tr>
 										<tr>
-											<td>selectedCode</td>
+											<td>selectedWorkplaceId</td>
 											<td>
 												<b>Type:</b> string | Array[string] <br/>
-												<label>Selected code in tree grid</label>
+												<label>Selected code that has workplaceId = selectedWorkplaceId in tree grid</label>
 											</td>
 										</tr>
 										<tr>
@@ -182,7 +200,7 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 												<b>Type:</b>Array[UnitAlreadySettingModel]<br/>
 												<b>Default:</b><i>empty</i><br/>
 												<pre><![CDATA[UnitAlreadySettingModel {
-    code: string;
+    workplaceId: string;
     settingType: SettingType;
 }]]></pre>
 												<pre><![CDATA[SettingType {
@@ -190,7 +208,6 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
     static ALREADY_SETTING = 1;
     static USE_PARRENT_SETTING =2;
 }]]></pre>
-												<!-- <pre><![CDATA[]]></pre> -->
 											</td>
 										</tr>
 									</table>
@@ -198,8 +215,7 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 								
 								<!-- BEGIN TABS DATA -->
 								<div id="tabs-data" class="cf">
-									<pre data-bind="text: jsonData">
-									</pre>
+									<pre data-bind="text: jsonData"><![CDATA[]]></pre>
 								</div><!-- END TABS DATA -->
 								
 								<!-- BEGIN TABS METHOD -->
@@ -211,10 +227,10 @@ $('#tree-grid').ntsTreeComponent(self.treeGrid);
 										</thead>
 										<tr>
 											<td>$('#tree-grid').getDataList()</td>
-											<td>Get list data tree</td>
+											<td>Get list data tree.</td>
 										</tr>
 										<tr>
-											<td>$('#tree-grid').focusComponent();</td>
+											<td>$('#tree-grid').focusComponent()</td>
 											<td>Focus input control in tree grid.</td>
 										</tr>
 									</table>
