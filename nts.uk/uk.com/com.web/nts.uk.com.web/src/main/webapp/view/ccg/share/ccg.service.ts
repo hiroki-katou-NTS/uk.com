@@ -53,6 +53,7 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             export interface GroupOption {
+                baseDate?: KnockoutObservable<Date>;
                 // クイック検索タブ
                 isQuickSearchTab: boolean;
                 // 参照可能な社員すべて

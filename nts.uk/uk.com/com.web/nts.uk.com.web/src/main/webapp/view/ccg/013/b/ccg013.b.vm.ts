@@ -82,8 +82,12 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
 
         submit() {
             var self = this;
+            var menuCls = "";
             var standMenu = _.find(self.listStandardMenu(), 'code', self.currentListStandardMenu());
-            var menuBar = new MenuBar(self.currentListStandardMenu(), self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass(), self.selectedCodeSystemSelect(), standMenu.classification);
+            if (standMenu) {
+                menuCls = standMenu.classification;
+            }            
+            var menuBar = new MenuBar(self.currentListStandardMenu(), self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass(), self.selectedCodeSystemSelect(), menuCls);
             windows.setShared("CCG013B_MenuBar", menuBar);
             self.cancel_Dialog();
         }
