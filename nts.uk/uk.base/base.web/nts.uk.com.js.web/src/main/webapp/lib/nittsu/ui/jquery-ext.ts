@@ -262,14 +262,20 @@ module nts.uk.ui.jqueryExtentions {
                     return selectedValue.toString() === $(e).attr('data-value').toString();
                 });
                 if (element !== undefined) {
+                    let scrollTop = $("#" + $grid.attr("id") + "_scrollContainer").scrollTop();
                     $(element).addClass('selected');
                     $parent.attr('data-value', selectedValue);
                     $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
                     $grid.igGrid("commit");
                     if ($grid.igGrid("hasVerticalScrollbar")) {
-                        let current = $grid.ntsGridList("getSelected");
-                        if(current !== undefined){
-                            $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);        
+//                        let current = $grid.ntsGridList("getSelected");
+//                        if(current !== undefined){
+//                            $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);        
+//                        }
+                        if(!nts.uk.util.isNullOrUndefined(scrollTop) && scrollTop !== 0){
+                            setTimeout(function (){
+                                $("#" + $grid.attr("id") + "_scrollContainer").scrollTop(scrollTop);        
+                            }, 10);
                         }
                     }
                 }
@@ -323,7 +329,7 @@ module nts.uk.ui.jqueryExtentions {
                     var primaryKey = $grid.igGrid("option", "primaryKey");
                     var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                     result.attr("data-value", row[primaryKey]);
-                    if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey])) {
+                    if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey]) && $grid.data("enable") !== false) {
                         return result[0].outerHTML;
                     } else {
                         return result.attr("disabled", "disabled")[0].outerHTML;
