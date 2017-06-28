@@ -21,8 +21,8 @@ public class KbpmtBonusPaySetting extends UkJpaEntity implements Serializable {
 	public KbpmtBonusPaySettingPK kbpmtBonusPaySettingPK;
 	@Column(name = "BONUS_PAY_SET_NAME")
 	public String name;
-//	public List<KbpmtBPTimesheet> lstBonusPayTimesheet;
-//	public List<KbpmtSpecBPTimesheet> lstSpecBonusPayTimesheet;
+	// public List<KbpmtBPTimesheet> lstBonusPayTimesheet;
+	// public List<KbpmtSpecBPTimesheet> lstSpecBonusPayTimesheet;
 
 	@Override
 	protected Object getKey() {

@@ -21,6 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class CompensatoryLeaveEmploymentFinder {
 
+	/** The compens leave em set repository. */
 	@Inject
 	CompensLeaveEmSetRepository compensLeaveEmSetRepository;
 

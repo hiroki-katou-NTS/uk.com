@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -31,25 +32,30 @@ public class WTBonusPaySettingWebService extends WebService {
 
 	@POST
 	@Path("getListWTBonusPaySettingSetting")
-	List<WTBonusPaySettingDto> getListWTBonusPaySettingSetting(String companyId) {
-		return this.wtBonusPaySettingFinder.getListSetting(companyId);
+	List<WTBonusPaySettingDto> getListWTBonusPaySettingSetting() {
+		return this.wtBonusPaySettingFinder.getListSetting();
+	}
+	@POST
+	@Path("getWTBPSetting/{workingTimesheetCode}")
+	WTBonusPaySettingDto getWTBPSetting(@PathParam("workingTimesheetCode") String workingTimesheetCode){
+		return this.wtBonusPaySettingFinder.getWTBPSetting(workingTimesheetCode);
 	}
 
 	@POST
-	@Path("addListWTBonusPaySettingSetting")
-	void addListWTBonusPaySettingSetting(List<WTBonusPaySettingAddCommand> lstSetting) {
-		this.wtBonusPaySettingAddCommandHandler.handle(lstSetting);
+	@Path("addWTBonusPaySettingSetting")
+	void addWTBonusPaySettingSetting(WTBonusPaySettingAddCommand wtBonusPaySettingAddCommand) {
+		this.wtBonusPaySettingAddCommandHandler.handle(wtBonusPaySettingAddCommand);
 	}
 
 	@POST
-	@Path("updateListWTBonusPaySettingSetting")
-	void updateListWTBonusPaySettingSetting(List<WTBonusPaySettingUpdateCommand> lstSetting) {
-		this.wtBonusPaySettingUpdateCommandHandler.handle(lstSetting);
+	@Path("updateWTBonusPaySettingSetting")
+	void updateWTBonusPaySettingSetting(WTBonusPaySettingUpdateCommand wtBonusPaySettingUpdateCommand) {
+		this.wtBonusPaySettingUpdateCommandHandler.handle(wtBonusPaySettingUpdateCommand);
 	}
 
 	@POST
-	@Path("removeListWTBonusPaySettingSetting")
-	void removeListWTBonusPaySettingSetting(List<WTBonusPaySettingDeleteCommand> lstSetting) {
-		this.wtBonusPaySettingDeleteCommandHandler.handle(lstSetting);
+	@Path("removeWTBonusPaySettingSetting")
+	void removeWTBonusPaySettingSetting(WTBonusPaySettingDeleteCommand wtBonusPaySettingDeleteCommand) {
+		this.wtBonusPaySettingDeleteCommandHandler.handle(wtBonusPaySettingDeleteCommand);
 	}
 }

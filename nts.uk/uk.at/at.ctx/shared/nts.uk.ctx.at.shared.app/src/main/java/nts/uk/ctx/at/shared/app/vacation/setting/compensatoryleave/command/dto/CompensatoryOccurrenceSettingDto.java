@@ -11,13 +11,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
 
-@Getter
-
 /**
- * Sets the transfer setting.
- *
- * @param transferSetting the new transfer setting
+ * The Class CompensatoryOccurrenceSettingDto.
  */
+@Getter
 @Setter
 public class CompensatoryOccurrenceSettingDto {
 

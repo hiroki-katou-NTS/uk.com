@@ -9,15 +9,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfEmploymentCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfEmploymentCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementTimeOfEmploymentCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementTimeOfEmploymentCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementTimeOfEmploymentCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementTimeOfEmploymentCommandHandler;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfEmploymentDetailDto;
+import nts.uk.ctx.at.record.app.command.standardtime.employment.AddAgreementTimeOfEmploymentCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.employment.AddAgreementTimeOfEmploymentCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.employment.RemoveAgreementTimeOfEmploymentCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.employment.RemoveAgreementTimeOfEmploymentCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.employment.UpdateAgreementTimeOfEmploymentCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.employment.UpdateAgreementTimeOfEmploymentCommandHandler;
 import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfEmploymentFinder;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfEmploymentListDto;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfEmploymentDetailDto;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfEmploymentListDto;
 
 @Path("at/record/agreementTimeOfEmployment")
 @Produces("application/json")

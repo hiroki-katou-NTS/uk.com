@@ -34,14 +34,14 @@
 		<div>
 			<div style="margin-bottom: 10px;display: inline-block;" tabindex="4"
 				data-bind="ntsSearchBox: {
-					targetKey: 'code',
+					targetKey: 'workplaceId',
 					mode: 'igTree',
 					comId: getComIdSearchBox(),
 					items: itemList, 
 					selected: selectedWorkplaceIds,
 					selectedKey: 'workplaceId',
 					childField: 'childs',
-					fields: ['name', 'code']}">
+					fields: ['nodeText', 'code']}">
 			</div>
 			<com:ko tag="if" bind="isShowSelectButton">
 				<button data-bind="click: selectAll" style="display: inline-block;" tabindex="5">#{i18n.getText('KCP004_7')}</button>

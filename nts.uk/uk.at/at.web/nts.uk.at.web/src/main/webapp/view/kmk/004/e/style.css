@@ -1,9 +1,9 @@
 @CHARSET "UTF-8";
 
-#description {
-	width: 320px;
+.description-top {
 	margin-top: 20px;
 	margin-left: 40px;
+	white-space: pre-line;
 }
 
 .content-center {
@@ -13,7 +13,7 @@
 .description-right {
 	margin-left: 20px;
 	margin-top: 50px;
-	width: 155px;
+	white-space: pre-line;
 }
 
 .arrow-black-down {

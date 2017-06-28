@@ -11,5 +11,5 @@ public interface AgreementTimeOfClassificationDomainService {
 	
 	List<String> update(BasicAgreementSetting basicAgreementSetting);
 	
-	void remove(String companyId, int laborSystemAtr, String classificationCode);
+	void remove(String companyId, int laborSystemAtr, String classificationCode, String basicSettingId);
 }
