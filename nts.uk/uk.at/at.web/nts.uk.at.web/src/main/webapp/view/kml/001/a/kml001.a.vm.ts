@@ -317,7 +317,7 @@ module nts.uk.at.view.kml001.a {
                                         '',
                                         newStartDate,
                                         "9999/12/31",
-                                        1,
+                                        0,
                                         '',
                                         [],
                                         self.premiumItems()));
@@ -348,7 +348,7 @@ module nts.uk.at.view.kml001.a {
                                     '',
                                     newStartDate,
                                     "9999/12/31",
-                                    1,
+                                    0,
                                     '',
                                     [],
                                     self.premiumItems()));
