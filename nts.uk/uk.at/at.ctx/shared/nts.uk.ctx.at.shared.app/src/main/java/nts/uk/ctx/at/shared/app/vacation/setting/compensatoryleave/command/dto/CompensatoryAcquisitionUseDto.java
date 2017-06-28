@@ -11,23 +11,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUseGetMemento;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CompensatoryAcquisitionUseDto.
  */
-
-/**
- * Gets the preemption permit.
- *
- * @return the preemption permit
- */
 @Getter
-
-/**
- * Sets the preemption permit.
- *
- * @param preemptionPermit the new preemption permit
- */
 @Setter
 public class CompensatoryAcquisitionUseDto {
 

@@ -12,9 +12,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class CompensatoryLeaveFinder.
+ */
 @Stateless
 public class CompensatoryLeaveFinder {
 
+	/** The compens leave com set repository. */
 	@Inject
 	CompensLeaveComSetRepository compensLeaveComSetRepository;
 

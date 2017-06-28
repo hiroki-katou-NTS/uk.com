@@ -10,6 +10,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryD
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
+/**
+ * The Class CompensatoryLeaveEmSettingDto.
+ */
 public class CompensatoryLeaveEmSettingDto implements CompensatoryLeaveEmSettingSetMemento {
 
 	// 会社ID
