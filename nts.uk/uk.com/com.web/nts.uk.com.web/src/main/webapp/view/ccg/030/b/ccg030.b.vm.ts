@@ -11,10 +11,16 @@ module ccg030.b.viewmodel {
         /** Start Page */
         startPage(): void {
             var self = this;
+            var liveviewcontainer = $("#liveview");
             var flowmenu: flowmenuModel.FlowMenu = nts.uk.ui.windows.getShared("flowmenu");
+             var fileID: string = nts.uk.ui.windows.getShared("fileID");
+            
+            
             if (flowmenu !== undefined)
                 self.flowmenu(flowmenu);
             _.defer(() => { self.setupPositionAndSize(self.flowmenu()); });
+            //view image
+            liveviewcontainer.append($("<img/>").attr("src", nts.uk.request.resolvePath("/webapi/shr/infra/file/storage/liveview/" + fileID)));
         }
 
         /** Close Dialog */

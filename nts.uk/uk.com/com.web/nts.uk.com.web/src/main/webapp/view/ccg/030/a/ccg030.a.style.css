@@ -12,3 +12,7 @@ button.clear-btn {padding-left:10px; padding-right:10px ; margin-left : 10px;}
 button#btnRegistry.proceed.btnSetting{margin-left: 20px; margin-right: 35px;}
 button#btnDelete.danger.btnSetting{margin-right: 30px;}
 #btn_new{margin-left: 25px; }
+#btn_new{width: 70px;}
+#btnRegistry{width: 70px;}
+#btnDelete{width: 70px;}
+#btn004{width: 70px;}
