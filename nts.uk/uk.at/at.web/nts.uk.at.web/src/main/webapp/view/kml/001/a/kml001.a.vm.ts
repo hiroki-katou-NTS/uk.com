@@ -65,7 +65,7 @@ module nts.uk.at.view.kml001.a {
                             if(value!=null) {
                                 self.currentPersonCost(self.clonePersonCostCalculation(_.find(self.personCostList(), function(o) { return o.startDate() == _.split(value, ' ', 1)[0]; })));
                                 self.newStartDate(self.currentPersonCost().startDate());
-                                _.defer(() => {$("#startDateInput-input").ntsError('clear');}); 
+                                _.defer(() => {$("#startDateInput").ntsError('clear');}); 
                                 nts.uk.ui.errors.clearAll();
                                 ko.utils.arrayForEach(self.currentPersonCost().premiumSets(), function(premiumSet, index) {
                                     let iDList = [];
@@ -77,7 +77,7 @@ module nts.uk.at.view.kml001.a {
                                 self.isInsert(false);
                                 $("#memo").focus(); 
                             } else {
-                                $("#startDateInput-input").focus();    
+                                $("#startDateInput").focus();    
                             }
                         });
                         self.isInsert(false);
@@ -151,7 +151,6 @@ module nts.uk.at.view.kml001.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 $("#startDateInput").trigger("validate");
-                $("#startDateInput-input").trigger("validate");
                 $("#memo").trigger("validate");
                 $(".premiumPercent").trigger("validate");
                 if (!nts.uk.ui.errors.hasError())
@@ -180,7 +179,7 @@ module nts.uk.at.view.kml001.a {
                                 });
                             
                         } else {
-                            $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"});
+                            $("#startDateInput").ntsError('set', {messageId:"Msg_65"});
                             nts.uk.ui.block.clear();
                         }
                     } else {
@@ -245,7 +244,7 @@ module nts.uk.at.view.kml001.a {
                                             new vmbase.PremiumSetting("", "", item.iD(), 1, item.attendanceID(), item.name(), item.displayNumber(), item.useAtr(), []));
                                     }
                                 });    
-                                $("#startDateInput-input").focus(); 
+                                $("#startDateInput").focus(); 
                             } else {
                                 if(self.isInsert()){
                                     self.currentPersonCost().premiumSets.removeAll();
@@ -255,7 +254,7 @@ module nts.uk.at.view.kml001.a {
                                                 new vmbase.PremiumSetting("", "", item.iD(), 1, item.attendanceID(), item.name(), item.displayNumber(), item.useAtr(), []));
                                         }
                                     });    
-                                    $("#startDateInput-input").focus();
+                                    $("#startDateInput").focus();
                                 } else {
                                     self.personCostList.removeAll();
                                     self.gridPersonCostList.removeAll();
@@ -373,10 +372,10 @@ module nts.uk.at.view.kml001.a {
                             self.newStartDate(self.currentPersonCost().startDate());
                         }
                         self.currentGridPersonCost(null);
-                        $("#startDateInput-input").focus(); 
+                        $("#startDateInput").focus(); 
                     } else {
                         if(self.isInsert()){
-                            $("#startDateInput-input").focus();       
+                            $("#startDateInput").focus();       
                         } else {
                             $("#memo").focus(); 
                         }    
