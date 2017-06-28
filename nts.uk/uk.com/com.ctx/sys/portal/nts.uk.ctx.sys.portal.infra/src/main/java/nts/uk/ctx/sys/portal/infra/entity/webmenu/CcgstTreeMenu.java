@@ -28,7 +28,7 @@ public class CcgstTreeMenu extends UkJpaEntity implements Serializable {
 	@Column(name = "CODE")
 	public String code;
 	
-	@Column(name = "CLASSIFICATION")
+	@Column(name = "MENU_CLS")
 	public int classification;
 	
 	@Column(name = "SYSTEM")

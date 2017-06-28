@@ -36,7 +36,6 @@ public class AgentFinder {
 		}).collect(Collectors.toList());
 	}
 	
-	
 	/**
 	 * Find all agent by Date
 	 * @param startDate
@@ -60,9 +59,7 @@ public class AgentFinder {
 			return convertToDbType(e);
 		}).collect(Collectors.toList());
 	}
-	
 
-		
 	/**
 	 * 
 	 * @param employeeId

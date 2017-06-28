@@ -15,6 +15,14 @@ public interface AgentRepository {
 	 */
 	List<Agent> findAllAgent(String companyId, String employeeId);
 	
+	/**
+	 * get agent by agentSid
+	 * @param companyId
+	 * @param agentSid
+	 * @return
+	 */
+	List<Agent> findByAgentSid(String companyId, String agentSid);
+	
 	
 	/**
 	 * add Agent

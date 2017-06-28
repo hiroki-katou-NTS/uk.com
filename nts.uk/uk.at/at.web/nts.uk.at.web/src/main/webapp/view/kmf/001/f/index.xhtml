@@ -253,11 +253,11 @@
 								<!-- right -->
 								<table class="em_table_with">
 									<tr>
-										<td colspan="3">
+										<td colspan="2">
 											<div data-bind="ntsFormLabel: {required: true}"
 												class="margin_right_50">#{i18n.getText('KMF001_88')}</div>
 										</td>
-										<td class="padding_over"><span tabindex="2"
+										<td class="padding_over" style="width:160px;"><span tabindex="2"
 											data-bind="ntsSwitchButton: {
 												options: manageDistinctEnums,
 												optionsValue: 'value',
@@ -265,6 +265,7 @@
 												value: emCompenManage,
 												enable: !isEmptyEmployment() }">
 										</span></td>
+										<td style="width:200px;"></td>
 									</tr>
 									<tr>
 										<td colspan="4">

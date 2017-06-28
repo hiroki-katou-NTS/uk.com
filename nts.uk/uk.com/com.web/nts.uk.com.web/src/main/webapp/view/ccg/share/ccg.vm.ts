@@ -34,6 +34,7 @@ module nts.uk.com.view.ccg.share.ccg {
             onSearchOnlyClicked: (data: PersonModel) => void;
             onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
             onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
+            onApplyEmployee: (data: string[]) => void;
 
 
             constructor() {
@@ -76,6 +77,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.onSearchOnlyClicked = data.onSearchOnlyClicked;
                 self.onSearchOfWorkplaceClicked = data.onSearchOfWorkplaceClicked;
                 self.onSearchWorkplaceChildClicked = data.onSearchWorkplaceChildClicked;
+                self.onApplyEmployee = data.onApplyEmployee;
                 self.baseDate = data.baseDate;
                 var webserviceLocator = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
@@ -114,11 +116,15 @@ module nts.uk.com.view.ccg.share.ccg {
             
             applyDataSearch(): void{
                 var self = this;
-                self.reloadDataSearch();
-                $('#employmentList').ntsListComponent(self.employments);
-                $('#classificationList').ntsListComponent(self.classifications);
-                $('#jobtitleList').ntsListComponent(self.jobtitles);
-                $('#workplaceList').ntsTreeComponent(self.workplaces);
+                service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data){
+                    self.selectedCodeWorkplace(data);
+                    self.reloadDataSearch();
+                    $('#employmentList').ntsListComponent(self.employments);
+                    $('#classificationList').ntsListComponent(self.classifications);
+                    $('#jobtitleList').ntsListComponent(self.jobtitles);
+                    $('#workplaceList').ntsTreeComponent(self.workplaces);    
+                });
+                
             }
             
             searchDataEmployee(): void {
@@ -165,6 +171,11 @@ module nts.uk.com.view.ccg.share.ccg {
                 }).fail(function(error){
                     nts.uk.ui.dialog.alertError(error);
                 });    
+            }
+            
+            applyEmployee(): void {
+                var self = this;
+                self.onApplyEmployee(self.selectedCodeEmployee());
             }
 
             public toUnitModelList(dataList: PersonModel[]): KnockoutObservableArray<UnitModel> {
