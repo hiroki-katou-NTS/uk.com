@@ -88,6 +88,7 @@ module nts.uk.com.view.ccg015.a {
                         self.topPageModel(new TopPageModel());
                         self.isNewMode(true);
                         $("#inp_code").focus();
+                        self.changePreviewIframe(null);
                     }
                     dfd.resolve();
                 });

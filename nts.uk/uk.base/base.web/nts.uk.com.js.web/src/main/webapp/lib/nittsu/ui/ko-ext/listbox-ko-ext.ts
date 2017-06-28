@@ -32,7 +32,11 @@ module nts.uk.ui.koExtentions {
             // Container
             let $element = $(element);
             let elementId = $element.addClass("listbox-wrapper").attr("id");
-            $element.attr("tabindex", "0");
+            if(nts.uk.util.isNullOrUndefined($element.attr("tabindex"))){
+                $element.attr("tabindex", "0");    
+            }
+            
+            $element.data("tabindex", $element.attr("tabindex"));
             let gridId = elementId;
             if(nts.uk.util.isNullOrUndefined(gridId)){
                 gridId = nts.uk.util.randomId();        
@@ -200,9 +204,11 @@ module nts.uk.ui.koExtentions {
                 if(!enable){
                     container.ntsGridList('unsetupSelecting');
                     container.addClass("disabled");     
+                    $(element).attr("tabindex", "-1");
                 } else {
                     container.ntsGridList('setupSelecting');
                     container.removeClass("disabled");    
+                    $(element).attr("tabindex", $(element).data("tabindex"));
                 }    
             }
             

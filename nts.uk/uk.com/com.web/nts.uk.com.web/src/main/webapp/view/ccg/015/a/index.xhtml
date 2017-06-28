@@ -45,13 +45,13 @@
 						<td id="contents-left"
 							class="bg-green caret-right caret-background"><i
 							class="icon icon-searchbox"></i>
-							<div id="searchlaborInsuranceOffice">
+							<div id="searchTopPage">
 								<div id="box_search" tabindex="12"
 									data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'single-list', 
 									items: listTopPage, selected: toppageSelectedCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 								<table id="single-list"
 									data-bind="ntsGridList: {
-										height: 650,
+										height: 430,
 										options: listTopPage,
 										optionsValue: 'code',
 										columns: columns,
@@ -68,7 +68,7 @@
 											<label>言語<br /></label>
 										</div>
 									</td>
-									<td colspan = "2">
+									<td colspan = "2" class="pad_left_20">
 										<div id="combo-box" tabindex="1"
 											data-bind="ntsComboBox: {
 												options: $parent.languageListOption,
@@ -88,7 +88,7 @@
 											<label>#{i18n.getText('CCG015_13')}<br /></label>
 										</div>
 									</td>
-									<td class="contentsRR"><input tabindex="2" id="inp_code"
+									<td class="contentsRR pad_left_20"><input tabindex="2" id="inp_code"
 										class="nts-input tr40 save-error"
 										data-bind="ntsTextEditor: {
 											name: '#[CCG015_42]',
