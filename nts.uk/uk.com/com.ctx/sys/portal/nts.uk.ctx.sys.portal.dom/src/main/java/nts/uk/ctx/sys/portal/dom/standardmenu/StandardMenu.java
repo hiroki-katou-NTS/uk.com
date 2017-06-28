@@ -1,11 +1,16 @@
 package nts.uk.ctx.sys.portal.dom.standardmenu;
 
+import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class StandardMenu.
  */
+@Value
 public class StandardMenu extends AggregateRoot {
+	/** The company id. */
+	private String companyId;
+	
 	/** The Url. */
 	private String url;
 	
@@ -36,6 +41,7 @@ public class StandardMenu extends AggregateRoot {
 	/**
 	 * Instantiates a new Standard Menu.
 	 *
+	 * @param companyId the company Id
 	 * @param url the url
 	 * @param webMenuSettingDisplayIndicator the webMenuSettingDisplayIndicator
 	 * @param code the menu code
@@ -46,10 +52,10 @@ public class StandardMenu extends AggregateRoot {
 	 * @param targetItems the target items
 	 * @param displayName the display name
 	 */
-	public StandardMenu(String url, int webMenuSettingDisplayIndicator, String code, String system,
+	public StandardMenu(String companyId, String url, int webMenuSettingDisplayIndicator, String code, String system,
 			String classification, int afterLoginDisplayIndicator, int logSettingDisplayIndicator, String targetItems,
 			String displayName) {
-		
+		this.companyId = companyId;
 		this.url = url;
 		this.webMenuSettingDisplayIndicator = webMenuSettingDisplayIndicator;
 		this.code = code;
@@ -64,6 +70,7 @@ public class StandardMenu extends AggregateRoot {
 	/**
 	 * Creates the from java type.
 	 *
+	 * @param companyId the company Id
 	 * @param url the url
 	 * @param webMenuSettingDisplayIndicator the webMenuSettingDisplayIndicator
 	 * @param code the menu code
@@ -74,10 +81,10 @@ public class StandardMenu extends AggregateRoot {
 	 * @param targetItems the target items
 	 * @param displayName the display name
 	 */
-	public static StandardMenu createFromJavaType(String url, int webMenuSettingDisplayIndicator, String code, String system,
+	public static StandardMenu createFromJavaType(String companyId, String url, int webMenuSettingDisplayIndicator, String code, String system,
 			String classification, int afterLoginDisplayIndicator, int logSettingDisplayIndicator, String targetItems,
 			String displayName) {
-		return new StandardMenu(url, webMenuSettingDisplayIndicator, code, system,
+		return new StandardMenu(companyId, url, webMenuSettingDisplayIndicator, code, system,
 				classification, afterLoginDisplayIndicator, logSettingDisplayIndicator, targetItems,
 				displayName);
 	}

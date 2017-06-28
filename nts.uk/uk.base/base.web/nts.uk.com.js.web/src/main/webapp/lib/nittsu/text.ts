@@ -362,18 +362,23 @@
             if (originalString.length === charSet.length) {
                 return (originalString === charSet) ? "" : originalString;
             }
-            var i = findLastContinousIndex(originalString, charSet, 0);
+            var i = findLastContinousIndex(originalString, charSet, 0, true);
             return originalString.substr(i, originalString.length - i);
         }
 
-        function findLastContinousIndex(originalString: string, charSet: string, startIndex: number) {
-            if (startIndex >= originalString.length - 1) {
-                return startIndex;
+        export function removeFromEnd(originalString: string, charSet: string) {
+            if (originalString.length === charSet.length) {
+                return (originalString === charSet) ? "" : originalString;
             }
-            if (originalString.substr(startIndex, charSet.length) !== charSet) {
+            var i = findLastContinousIndex(originalString, charSet, originalString.length, false);
+            return originalString.substr(0, i);
+        }
+        
+        function findLastContinousIndex(originalString: string, charSet: string, startIndex: number, fromStart: boolean) {
+            if (originalString.substring(startIndex, fromStart ? (startIndex + charSet.length) : (startIndex - charSet.length)) !== charSet) {
                 return startIndex;
             } else {
-                return findLastContinousIndex(originalString, charSet, startIndex + charSet.length);
+                return findLastContinousIndex(originalString, charSet, fromStart ? (startIndex + charSet.length) : (startIndex - charSet.length), fromStart);
             }
         }
 

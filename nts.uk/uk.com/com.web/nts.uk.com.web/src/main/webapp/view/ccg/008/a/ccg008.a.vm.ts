@@ -13,7 +13,7 @@ module nts.uk.com.view.ccg008.a {
                     {id: 'tab-1', title: title1, content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
                     {id: 'tab-2', title: title2, content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)}
                 ]);
-                self.selectedTab = ko.observable('tab-2');
+                self.selectedTab = ko.observable('tab-1');
                 self.changePreviewIframe("8dc3b29c-e75b-4cd0-8263-bb4564aa4d4a");
             }
             

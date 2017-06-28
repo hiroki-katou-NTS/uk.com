@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class CcgmtStandardMenuPK {
 	@Column(name = "CID")
-	private String companyId;
+	public String companyId;
 }
