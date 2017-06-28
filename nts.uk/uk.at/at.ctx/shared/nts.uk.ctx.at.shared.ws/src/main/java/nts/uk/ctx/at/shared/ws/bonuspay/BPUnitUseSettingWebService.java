@@ -17,20 +17,25 @@ public class BPUnitUseSettingWebService extends WebService {
 	@Inject
 	private BPUnitUseSettingFinder bpUnitUseSettingFinder;
 	@Inject
-	private BPUnitUseSettingUpdateCommandHandler  bpUnitUseSettingCommandHandler;
-	
+	private BPUnitUseSettingUpdateCommandHandler bpUnitUseSettingCommandHandler;
+
 	@POST
 	@Path("getSetting")
-	public BPUnitUseSettingDto getSetting(){
+	public BPUnitUseSettingDto getSetting() {
 		return this.bpUnitUseSettingFinder.getSetting();
-		
+
 	}
+
 	@POST
-	@Path("update")
-	void updateSetting(BPUnitUseSettingUpdateCommand bpUnitUseSettingUpdateCommand){
+	@Path("updateSetting")
+	public void updateSetting(BPUnitUseSettingUpdateCommand bpUnitUseSettingUpdateCommand) {
 		this.bpUnitUseSettingCommandHandler.handle(bpUnitUseSettingUpdateCommand);
 	}
 	
+	@POST
+	@Path("getABC")
+	public void getABC() {
+		String a="";
+	}
+
 }
-
-
