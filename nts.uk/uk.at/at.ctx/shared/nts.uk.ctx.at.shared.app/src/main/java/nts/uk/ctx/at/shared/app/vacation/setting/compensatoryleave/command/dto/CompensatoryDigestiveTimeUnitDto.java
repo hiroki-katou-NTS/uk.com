@@ -11,13 +11,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnitGetMemento;
 
-@Getter
-
 /**
- * Sets the digestive unit.
- *
- * @param digestiveUnit the new digestive unit
+ * The Class CompensatoryDigestiveTimeUnitDto.
  */
+@Getter
 @Setter
 public class CompensatoryDigestiveTimeUnitDto {
 

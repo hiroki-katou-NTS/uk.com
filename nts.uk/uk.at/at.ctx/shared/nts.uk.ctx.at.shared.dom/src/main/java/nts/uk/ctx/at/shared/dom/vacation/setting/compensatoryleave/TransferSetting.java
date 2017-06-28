@@ -6,6 +6,9 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
 import lombok.Getter;
 
+/**
+ * The Class TransferSetting.
+ */
 @Getter
 public class TransferSetting {
     

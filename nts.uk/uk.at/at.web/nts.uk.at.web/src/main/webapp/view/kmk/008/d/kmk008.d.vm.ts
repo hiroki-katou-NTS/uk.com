@@ -4,12 +4,44 @@ module nts.uk.at.view.kmk008.d {
             timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
+
+            listComponentOption: any;
+            selectedCode: KnockoutObservable<string>;
+            isShowAlreadySet: KnockoutObservable<boolean>;
+            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+            isDialog: KnockoutObservable<boolean>;
+            isShowNoSelectRow: KnockoutObservable<boolean>;
+            isMultiSelect: KnockoutObservable<boolean>;
+            employmentList: KnockoutObservableArray<UnitModel>;
             constructor(laborSystemAtr: number) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
                 self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
                 self.startPage();
+
+                self.selectedCode = ko.observable('1');
+                self.isShowAlreadySet = ko.observable(true);
+                self.alreadySettingList = ko.observableArray([
+                    { code: '1', isAlreadySetting: true },
+                    { code: '10', isAlreadySetting: true },
+                    { code: '11', isAlreadySetting: true },
+                ]);
+                self.isDialog = ko.observable(false);
+                self.isShowNoSelectRow = ko.observable(false);
+                self.isMultiSelect = ko.observable(false);
+                self.listComponentOption = {
+                    isShowAlreadySet: self.isShowAlreadySet(),
+                    isMultiSelect: self.isMultiSelect(),
+                    listType: ListType.EMPLOYMENT,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.selectedCode,
+                    isDialog: self.isDialog(),
+                    isShowNoSelectRow: self.isShowNoSelectRow(),
+                    alreadySettingList: self.alreadySettingList
+                };
+                self.employmentList = ko.observableArray<UnitModel>([]);
+                $('#empt-list-setting').ntsListComponent(self.listComponentOption);
             }
 
             startPage(): JQueryPromise<any> {
@@ -42,7 +74,6 @@ module nts.uk.at.view.kmk008.d {
                     self.startPage();
                 });
             }
-
         }
 
         export class TimeOfCompanyModel {
@@ -144,5 +175,33 @@ module nts.uk.at.view.kmk008.d {
                 self.limitOneYear = data.limitOneYear() || 0;
             }
         }
+
+        export class ListType {
+            static EMPLOYMENT = 1;
+            static Classification = 2;
+            static JOB_TITLE = 3;
+            static EMPLOYEE = 4;
+        }
+
+        export interface UnitModel {
+            code: string;
+            name?: string;
+            workplaceName?: string;
+            isAlreadySetting?: boolean;
+        }
+
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
+        }
+
+        export interface UnitAlreadySettingModel {
+            code: string;
+            isAlreadySetting: boolean;
+        }
+        
+        
     }
 }

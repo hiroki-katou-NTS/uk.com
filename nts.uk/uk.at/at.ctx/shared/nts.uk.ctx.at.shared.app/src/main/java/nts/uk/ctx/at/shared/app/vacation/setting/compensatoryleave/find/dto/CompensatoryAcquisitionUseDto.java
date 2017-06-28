@@ -8,6 +8,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUseSetMemento;
 
+/**
+ * The Class CompensatoryAcquisitionUseDto.
+ */
 public class CompensatoryAcquisitionUseDto implements CompensatoryAcquisitionUseSetMemento {
 
 	/** The expiration time. */
