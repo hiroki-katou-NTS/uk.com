@@ -2509,8 +2509,11 @@ var nts;
                         var validateResult;
                         // Check CharType
                         if (!util.isNullOrUndefined(this.charType)) {
-                            if (this.charType.viewName === '半角英数字') {
-                                inputText = uk.text.toUpperCase(inputText);
+                            if (this.charType.viewName === '半角数字') {
+                                inputText = uk.text.toOneByteAlphaNumberic(inputText);
+                            }
+                            else if (this.charType.viewName === '半角英数字') {
+                                inputText = uk.text.toOneByteAlphaNumberic(uk.text.toUpperCase(inputText));
                             }
                             else if (this.charType.viewName === 'カタカナ') {
                                 inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
@@ -4043,14 +4046,20 @@ var nts;
                                 return selectedValue.toString() === $(e).attr('data-value').toString();
                             });
                             if (element !== undefined) {
+                                var scrollTop_1 = $("#" + $grid.attr("id") + "_scrollContainer").scrollTop();
                                 $(element).addClass('selected');
                                 $parent.attr('data-value', selectedValue);
                                 $grid.igGridUpdating("setCellValue", rowKey, columnKey, selectedValue);
                                 $grid.igGrid("commit");
                                 if ($grid.igGrid("hasVerticalScrollbar")) {
-                                    var current = $grid.ntsGridList("getSelected");
-                                    if (current !== undefined) {
-                                        $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);
+                                    //                        let current = $grid.ntsGridList("getSelected");
+                                    //                        if(current !== undefined){
+                                    //                            $grid.igGrid("virtualScrollTo", (typeof current === 'object' ? current.index : current[0].index) + 1);        
+                                    //                        }
+                                    if (!nts.uk.util.isNullOrUndefined(scrollTop_1) && scrollTop_1 !== 0) {
+                                        setTimeout(function () {
+                                            $("#" + $grid.attr("id") + "_scrollContainer").scrollTop(scrollTop_1);
+                                        }, 10);
                                     }
                                 }
                             }
@@ -7560,6 +7569,7 @@ var nts;
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
+                        container.data("init", false);
                     };
                     /**
                      * Update
@@ -7582,17 +7592,18 @@ var nts;
                         var $input = container.find(".nts-input");
                         var $label = container.find(".dayofweek-label");
                         // Value Binding
-                        var dateFormatValue = (value() !== "") ? uk.time.formatPattern(value(), valueFormat, ISOFormat) : "";
-                        if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
-                            // Check equals to avoid multi datepicker with same value
-                            $input.datepicker('setDate', dateFormatValue);
-                            $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                        if (value() !== $input.val()) {
+                            var dateFormatValue = (value() !== "") ? uk.text.removeFromStart(uk.time.formatPattern(value(), valueFormat, ISOFormat), "0") : "";
+                            if (dateFormatValue !== "" && dateFormatValue !== "Invalid date") {
+                                // Check equals to avoid multi datepicker with same value
+                                $input.datepicker('setDate', dateFormatValue);
+                                $label.text("(" + uk.time.formatPattern(value(), valueFormat, dayofWeekFormat) + ")");
+                            }
+                            else {
+                                $input.val("");
+                                $label.text("");
+                            }
                         }
-                        else {
-                            $input.val("");
-                            $label.text("");
-                        }
-                        container.data("init", false);
                         // Properties Binding
                         $input.datepicker('setStartDate', startDate);
                         $input.datepicker('setEndDate', endDate);
