@@ -30,6 +30,8 @@ public class AddAgreementMonthSettingCommandHandler extends CommandHandler<AddAg
 				new YearMonth(command.getYearMonthValue().intValue()),
 				new ErrorOneMonth(command.getErrorOneMonth()),
 				new AlarmOneMonth(command.getAlarmOneMonth()));
+		
+		agreementMonthSetting.validate();
 
 		this.agreementMonthSettingRepository.add(agreementMonthSetting);
 	}

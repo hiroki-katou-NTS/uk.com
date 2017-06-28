@@ -6,23 +6,26 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 
+/**
+ * 
+ * @author nampt
+ *
+ */
 @Stateless
-public class AgreementTimeOfEmploymentDomainServiceIml implements AgreementTimeOfEmploymentDomainService {
+public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCompanyDomainService{
+
+	@Inject
+	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
 
 	@Inject
 	private BasicAgreementSettingRepository basicAgreementSettingRepository;
 
-	@Inject
-	private AgreementTimeOfEmploymentRepostitory agreementTimeOfEmploymentRepostitory;
-
 	@Override
-	public List<String> add(BasicAgreementSetting basicAgreementSetting,
-			AgreementTimeOfEmployment agreementTimeOfEmployment) {
+	public List<String> add(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfCompany agreementTimeOfCompany) {
+		
 		List<String> errors = new ArrayList<>();
 		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
 			/**
@@ -40,20 +43,11 @@ public class AgreementTimeOfEmploymentDomainServiceIml implements AgreementTimeO
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 
-		this.agreementTimeOfEmploymentRepostitory.add(agreementTimeOfEmployment);
+		this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
 
 		this.basicAgreementSettingRepository.add(basicAgreementSetting);
-
-		return errors;
-	}
-
-	@Override
-	public void remove(String companyId, String employmentCategoryCode, int laborSystemtAtr, String basicSettingId) {
-
-		this.basicAgreementSettingRepository.remove(basicSettingId);
 		
-		this.agreementTimeOfEmploymentRepostitory.remove(companyId, employmentCategoryCode,
-				EnumAdaptor.valueOf(laborSystemtAtr, LaborSystemtAtr.class));
+		return errors;
 	}
 
 	@Override

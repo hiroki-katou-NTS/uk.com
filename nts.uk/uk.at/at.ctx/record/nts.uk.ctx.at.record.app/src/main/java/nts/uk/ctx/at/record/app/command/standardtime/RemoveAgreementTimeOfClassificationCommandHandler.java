@@ -9,8 +9,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -24,10 +24,10 @@ public class RemoveAgreementTimeOfClassificationCommandHandler
 		extends CommandHandler<RemoveAgreementTimeOfClassificationCommand> {
 
 	@Inject
-	private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepository;
+	private AgreementTimeOfClassificationDomainService agreementTimeOfClassificationDomainService;
 
 	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
+	private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<RemoveAgreementTimeOfClassificationCommand> context) {
@@ -38,13 +38,11 @@ public class RemoveAgreementTimeOfClassificationCommandHandler
 		Optional<String> basicSettingId = this.agreementTimeOfClassificationRepository.findEmploymentBasicSettingID(
 				companyId, EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
 				command.getClassificationCode());
-		
+
 		if (basicSettingId.isPresent()) {
-			this.basicAgreementSettingRepository.remove(basicSettingId.get());
-			
-			this.agreementTimeOfClassificationRepository.remove(companyId,
-					EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class),
-					command.getClassificationCode());
+
+			this.agreementTimeOfClassificationDomainService.remove(companyId, command.getLaborSystemAtr(),
+					command.getClassificationCode(), basicSettingId.get());
 		}
 	}
 

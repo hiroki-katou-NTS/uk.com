@@ -17,7 +17,7 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 		implements AgreementOperationSettingRepository {
 
 	private static final String FIND;
-	
+
 	private static final String UPDATE_BY_KEY;
 
 	static {
@@ -26,12 +26,13 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 		builderString.append("FROM KmkmtAgeementOperationSetting a ");
 		builderString.append("WHERE a.kmkmtAgeementOperationSettingPK.companyId = :companyId ");
 		FIND = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KmkmtAgeementOperationSetting a ");
-		builderString.append("SET a.startingMonthType = :startingMonthType , a.numberTimesOverLimitType = :numberTimesOverLimitType, "
-				+ " a.closingDateType = :closingDateType, a.closingDateAtr = :closingDateAtr, "
-				+ " a.yearlyWorkTableAtr = :yearlyWorkTableAtr, a.alarmListAtr = :alarmListAtr ");
+		builderString
+				.append("SET a.startingMonthType = :startingMonthType , a.numberTimesOverLimitType = :numberTimesOverLimitType, "
+						+ " a.closingDateType = :closingDateType, a.closingDateAtr = :closingDateAtr, "
+						+ " a.yearlyWorkTableAtr = :yearlyWorkTableAtr, a.alarmListAtr = :alarmListAtr ");
 		builderString.append("WHERE a.kmkmtAgeementOperationSettingPK.companyId = :companyId ");
 		UPDATE_BY_KEY = builderString.toString();
 
@@ -49,16 +50,15 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 	}
 
 	@Override
-	public void update(String companyId, int startingMonth, int numberTimesOverLimitType, int closingDateType,
-			int closingDateAtr, int yearlyWorkTableAtr, int alarmListAtr) {
+	public void update(AgreementOperationSetting agreementOperationSetting) {
 		this.getEntityManager().createQuery(UPDATE_BY_KEY)
-				.setParameter("companyId", companyId)
-				.setParameter("startingMonthType", startingMonth)
-				.setParameter("numberTimesOverLimitType", numberTimesOverLimitType)
-				.setParameter("closingDateType", closingDateType)
-				.setParameter("closingDateAtr", closingDateAtr)
-				.setParameter("yearlyWorkTableAtr", yearlyWorkTableAtr)
-				.setParameter("alarmListAtr", alarmListAtr).executeUpdate();
+				.setParameter("companyId", agreementOperationSetting.getCompanyId())
+				.setParameter("startingMonthType", agreementOperationSetting.getStartingMonth().value)
+				.setParameter("numberTimesOverLimitType", agreementOperationSetting.getNumberTimesOverLimitType().value)
+				.setParameter("closingDateType", agreementOperationSetting.getClosingDateType().value)
+				.setParameter("closingDateAtr", agreementOperationSetting.getClosingDateAtr().value)
+				.setParameter("yearlyWorkTableAtr", agreementOperationSetting.getYearlyWorkTableAtr().value)
+				.setParameter("alarmListAtr", agreementOperationSetting.getAlarmListAtr().value).executeUpdate();
 	}
 
 	private static AgreementOperationSetting toDomain(KmkmtAgeementOperationSetting kmkmtAgeementOperationSetting) {
@@ -70,13 +70,13 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 				kmkmtAgeementOperationSetting.closingDateAtr.intValue(),
 				kmkmtAgeementOperationSetting.yearlyWorkTableAtr.intValue(),
 				kmkmtAgeementOperationSetting.alarmListAtr.intValue());
-		
+
 		return agreementOperationSetting;
 	}
-	
-	private KmkmtAgeementOperationSetting toEntity(AgreementOperationSetting agreementOperationSetting){
+
+	private KmkmtAgeementOperationSetting toEntity(AgreementOperationSetting agreementOperationSetting) {
 		val entity = new KmkmtAgeementOperationSetting();
-		
+
 		entity.kmkmtAgeementOperationSettingPK = new KmkmtAgeementOperationSettingPK();
 		entity.kmkmtAgeementOperationSettingPK.companyId = agreementOperationSetting.getCompanyId();
 		entity.alarmListAtr = new BigDecimal(agreementOperationSetting.getAlarmListAtr().value);
@@ -85,7 +85,7 @@ public class JpaAgreementOperationSettingRepository extends JpaRepository
 		entity.numberTimesOverLimitType = new BigDecimal(agreementOperationSetting.getNumberTimesOverLimitType().value);
 		entity.startingMonthType = new BigDecimal(agreementOperationSetting.getStartingMonth().value);
 		entity.yearlyWorkTableAtr = new BigDecimal(agreementOperationSetting.getYearlyWorkTableAtr().value);
-		
+
 		return entity;
 	}
 

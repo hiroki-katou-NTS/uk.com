@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfEmploymentCommand;
 import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfEmploymentCommandHandler;
@@ -49,7 +50,7 @@ public class AgreementTimeOfEmploymentWebservice extends WebService {
 	
 	@POST
 	@Path("addAgreementTimeOfEmployment")
-	public List<String> addAgreementTimeOfEmployment(AddAgreementTimeOfEmploymentCommand command) {
+	public JavaTypeResult<List<String>> addAgreementTimeOfEmployment(AddAgreementTimeOfEmploymentCommand command) {
 		return this.addAgreementTimeOfEmploymentCommandHandler.handle(command);
 	}
 	
@@ -61,7 +62,7 @@ public class AgreementTimeOfEmploymentWebservice extends WebService {
 	
 	@POST
 	@Path("updateAgreementTimeOfEmployment")
-	public List<String> updateAgreementTimeOfEmployment(UpdateAgreementTimeOfEmploymentCommand command) {
+	public JavaTypeResult<List<String>> updateAgreementTimeOfEmployment(UpdateAgreementTimeOfEmploymentCommand command) {
 		return this.updateAgreementTimeOfEmploymentCommandHandler.handle(command);
 	}
 }

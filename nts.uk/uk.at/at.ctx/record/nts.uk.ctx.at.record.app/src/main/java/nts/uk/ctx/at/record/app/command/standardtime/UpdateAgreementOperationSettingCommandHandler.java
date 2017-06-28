@@ -3,8 +3,15 @@ package nts.uk.ctx.at.record.app.command.standardtime;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
+import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.NumberOfTimeOverLimitType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
+import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -26,9 +33,15 @@ public class UpdateAgreementOperationSettingCommandHandler
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		this.agreementOperationSettingRepository.update(companyId, command.getStartingMonth(),
-				command.getNumberTimesOverLimitType(), command.getClosingDateType(), command.getClosingDateAtr(),
-				command.getYearlyWorkTableAtr(), command.getAlarmListAtr());
+		AgreementOperationSetting agreementOperationSetting = new AgreementOperationSetting(companyId,
+				EnumAdaptor.valueOf(command.getStartingMonth(), StartingMonthType.class) ,
+				EnumAdaptor.valueOf(command.getNumberTimesOverLimitType(), NumberOfTimeOverLimitType.class),
+				EnumAdaptor.valueOf(command.getClosingDateType(), ClosingDateType.class),
+				EnumAdaptor.valueOf(command.getClosingDateAtr(), ClosingDateAtr.class),
+				EnumAdaptor.valueOf(command.getYearlyWorkTableAtr(), TargetSettingAtr.class),
+				EnumAdaptor.valueOf(command.getAlarmListAtr(), TargetSettingAtr.class));
+
+		this.agreementOperationSettingRepository.update(agreementOperationSetting);
 	}
 
 }

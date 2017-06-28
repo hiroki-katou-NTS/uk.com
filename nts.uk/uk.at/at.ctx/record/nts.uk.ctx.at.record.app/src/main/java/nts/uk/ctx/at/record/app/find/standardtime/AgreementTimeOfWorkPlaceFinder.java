@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  * @author nampt 雇用 screen
  */
 @Stateless
-public class AgreementTimeOfWorkPlaceDetailFinder {
+public class AgreementTimeOfWorkPlaceFinder {
 
 	@Inject
 	private AgreementTimeOfWorkPlaceRepository agreementTimeOfWorkPlaceRepository;

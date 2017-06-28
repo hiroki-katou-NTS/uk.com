@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.standardtime;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 
+@Stateless
 public class RemoveAgreementTimeOfWorkPlaceCommandHandler
 		extends CommandHandler<RemoveAgreementTimeOfWorkPlaceCommand> {
 	

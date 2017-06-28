@@ -12,8 +12,8 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 /**
  * The Class PositionId.
  */
-@StringCharType(CharType.NUMERIC)
-@StringMaxLength(5)
+@StringCharType(CharType.ALPHA_NUMERIC)
+@StringMaxLength(36)
 public class PositionId extends CodePrimitiveValue<PositionId> {
 
 	/** The Constant serialVersionUID. */

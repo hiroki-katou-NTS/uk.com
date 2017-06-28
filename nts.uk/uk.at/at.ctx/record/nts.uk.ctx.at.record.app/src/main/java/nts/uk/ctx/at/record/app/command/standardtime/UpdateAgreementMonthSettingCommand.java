@@ -15,7 +15,7 @@ public class UpdateAgreementMonthSettingCommand {
 	
 	private String employeeId;
 
-	private BigDecimal yearMonthValue;
+	private int yearMonthValue;
 
 	private BigDecimal errorOneMonth;
 
