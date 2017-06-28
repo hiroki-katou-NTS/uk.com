@@ -37,10 +37,11 @@ module nts.uk.at.view.kml001.d {
                 var self = this;
                 if(self.isUpdate()) {
                     if(!vmbase.ProcessHandler.validateDateRange(self.newStartDate(),vmbase.ProcessHandler.getOneDayAfter(self.beforeStartDate()),self.currentEndDate())) {
-                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_65"}); 
+                        $("#startDateInput").ntsError('set', {messageId:"Msg_65"}); 
                         nts.uk.ui.block.clear();
                     } else {
                         self.currentPersonCost().startDate(self.newStartDate());
+                        self.currentPersonCost().premiumSets([]);
                         servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                             .done(function(res: Array<any>) {
                                 nts.uk.ui.windows.setShared('isEdited', 0);
@@ -67,7 +68,7 @@ module nts.uk.at.view.kml001.d {
                             nts.uk.ui.block.clear();        
                         });
                     } else{ 
-                        $("#startDateInput-input").ntsError('set', {messageId:"Msg_128"});
+                        $("#startDateInput").ntsError('set', {messageId:"Msg_128"});
                         nts.uk.ui.block.clear();
                     }
                 }
@@ -77,7 +78,7 @@ module nts.uk.at.view.kml001.d {
              * close dialog and do nothing
              */
             closeDialog(): void {
-                $("#startDateInput-input").ntsError('clear');
+                $("#startDateInput").ntsError('clear');
                 nts.uk.ui.windows.close();   
             }
         }

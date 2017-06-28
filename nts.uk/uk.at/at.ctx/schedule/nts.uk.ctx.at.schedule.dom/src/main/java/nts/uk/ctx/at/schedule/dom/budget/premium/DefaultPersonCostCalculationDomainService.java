@@ -62,7 +62,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 						personCostCalculation.getStartDate().addDays(-1), 
 						beforePersonCostResult.get().getUnitPrice(),
 						beforePersonCostResult.get().getMemo(),
-						beforePersonCostResult.get().getPremiumSettings()));
+						null));
 		}
 		this.personCostCalculationRepository.add(
 				createPersonCostCalculationFromJavaType(
@@ -92,9 +92,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 						personCostCalculation.getStartDate().addDays(-1), 
 						beforePersonCostResult.get().getUnitPrice(), 
 						beforePersonCostResult.get().getMemo(),
-						beforePersonCostResult.get().getPremiumSettings()));
+						null));
 		}
 		this.personCostCalculationRepository.update(personCostCalculation);
+		
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
 				GeneralDate.fromString("9999/12/31", "yyyy/MM/dd"), 
 				beforePersonCostResult.get().getUnitPrice(), 
 				beforePersonCostResult.get().getMemo(), 
-				beforePersonCostResult.get().getPremiumSettings()));
+				null));
 		this.personCostCalculationRepository.delete(personCostCalculation);
 	}
 }

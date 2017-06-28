@@ -59,8 +59,8 @@ module kdl024.a.viewmodel {
                     self.isNew(false);
                     self.listBudget(lstBudget);
                     self.findItemByIndex(0);
-                }
-                else {
+                    _.defer(() => { $("#inpName").focus(); });
+                } else {
                     self.isNew(true);
                     self.newMode();
                 }
@@ -75,6 +75,9 @@ module kdl024.a.viewmodel {
         //Register Data
         register() {
             var self = this;
+            $(".nts-checkvalue").trigger("validate");
+            if (nts.uk.ui.errors.hasError())
+                return;
             //Mode INSERT
             nts.uk.ui.block.invisible();
             if (self.isNew()) {
@@ -115,6 +118,7 @@ module kdl024.a.viewmodel {
                         self.listBudget.push(updateItem);
                     }
                     self.listBudget(_.orderBy(self.listBudget(), ['externalBudgetCode'], ['asc']));
+                    $('#inpName').focus();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                     self.start();
@@ -189,6 +193,7 @@ module kdl024.a.viewmodel {
             if (currentItem !== undefined) {
                 self.isNew(false);
                 self.currentItem(new BudgetItem(currentItem.externalBudgetCode, currentItem.externalBudgetName, currentItem.budgetAtr, currentItem.unitAtr));
+                $('#inpName').focus();
             }
             else {
                 self.isNew(true);

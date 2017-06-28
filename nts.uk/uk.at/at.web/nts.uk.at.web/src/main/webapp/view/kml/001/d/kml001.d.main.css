@@ -1,9 +1,9 @@
 body {
-	overflow: hidden;
+	overflow-x: hidden;
 }
 
 .column1 {
-	width: 140px;
+	width: 150px;
 }
 .ntsControl {
 	margin-top: 10px;
@@ -29,14 +29,7 @@ body {
 .column1 > div {
 	margin-left: 10px;
 }
-hr { margin-top: 20px; }  
-#center-bottom {
-	margin-left: 135px;
-    margin-top: 10px;
-    margin-bottom: 0px;
-}
-
-#center-bottom > button {
+#functions-area-bottom > button {
 	margin-right: 10px;
 }
 #dateTime-input {
@@ -61,6 +54,7 @@ hr { margin-top: 20px; }
 	color: #999999;
 	border-color: #999999 !important;
 }
-#func-notifier-errors{
-    margin-top: -255px;	
+.datepicker-container.datepicker-dropdown {
+	margin-top: -163px;
+    margin-left: 115px;
 }

@@ -14,7 +14,7 @@
 			<com:scriptfile path="kdl024.a.start.js" />
 			<com:scriptfile path="kdl024.a.service.js" />
 			<com:scriptfile path="kdl024.a.vm.js" />
-			<script>var dialogSize = { width: 785 , height: 430};</script>
+			<script>var dialogSize = { width: 795 , height: 430};</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd
 				nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetName
@@ -77,8 +77,7 @@
 								<div id="divAttribute" data-bind="name: '#[KDL024_8]',ntsFormLabel:{required: true }">#{i18n.getText('KDL024_8')}</div>
 							</td>
 							<td>
-								<div id="cmbAttribute"
-									data-bind="ntsComboBox: {
+								<div id="cmbAttribute" data-bind="ntsComboBox: {
 										options: $parent.itemListCbb,
 										optionsValue: 'codeCbb',
 										value: budgetAtr,
@@ -86,8 +85,7 @@
 										enable: true,
 										columns: [
 											{ prop: 'nameCbb', length: 2 }
-										]}"
-									tabindex="7">
+										]}">
 								</div>
 							</td>
 						</tr>

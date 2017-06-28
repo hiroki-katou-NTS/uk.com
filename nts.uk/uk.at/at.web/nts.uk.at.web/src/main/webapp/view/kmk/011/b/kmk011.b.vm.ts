@@ -77,6 +77,7 @@ module kmk011.b.viewmodel {
                     self.dataSource([]);
                     self.enableCode(true);
                     self.checkModel(false);
+                    self.enableDel(false);
                 } else {
                     self.dataSource(lstDivReason);
                     let reasonFirst = _.first(lstDivReason);
