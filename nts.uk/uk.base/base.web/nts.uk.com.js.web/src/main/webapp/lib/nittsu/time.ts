@@ -535,7 +535,9 @@
             else if (yearMonthFormats.indexOf(outputFormat) != -1) {
                 return this.momentObject.year() * 100 + (this.momentObject.month() + 1);
             }
-            else {
+            else if (outputFormat === "time") {
+                return this.momentObject.hours()*60 + this.momentObject.minutes();
+            } else {
                 return parseInt(this.momentObject.format(outputFormat).replace(/[^\d]/g, ""));
             }
         }
