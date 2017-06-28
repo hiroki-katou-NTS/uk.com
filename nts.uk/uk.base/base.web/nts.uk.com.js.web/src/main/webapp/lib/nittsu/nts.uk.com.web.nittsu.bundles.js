@@ -4009,23 +4009,6 @@ var nts;
                         RATIO: 0.2,
                         MAX: 30
                     };
-                    $.fn.ntsGridList = function (action, param) {
-                        var $grid = $(this);
-                        switch (action) {
-                            case 'setupSelecting':
-                                return setupSelecting($grid);
-                            case 'unsetupSelecting':
-                                return unsetupSelecting($grid);
-                            case 'getSelected':
-                                return getSelected($grid);
-                            case 'setSelected':
-                                return setSelected($grid, param);
-                            case 'deselectAll':
-                                return deselectAll($grid);
-                            case 'setupDeleteButton':
-                                return setupDeleteButton($grid, param);
-                        }
-                    };
                     $.fn.ntsGridListFeature = function (feature, action) {
                         var params = [];
                         for (var _i = 2; _i < arguments.length; _i++) {
@@ -4076,6 +4059,52 @@ var nts;
                                 }
                             }
                         }
+                    }
+                    $.fn.ntsGridList = function (action, param) {
+                        var $grid = $(this);
+                        switch (action) {
+                            case 'setupSelecting':
+                                return setupSelecting($grid);
+                            case 'unsetupSelecting':
+                                return unsetupSelecting($grid);
+                            case 'getSelected':
+                                return getSelected($grid);
+                            case 'setSelected':
+                                return setSelected($grid, param);
+                            case 'deselectAll':
+                                return deselectAll($grid);
+                            case 'setupDeleteButton':
+                                return setupDeleteButton($grid, param);
+                            case 'setupScrollWhenBinding':
+                                return setupScrollWhenBinding($grid);
+                        }
+                    };
+                    function setupScrollWhenBinding($grid) {
+                        var gridId = "#" + $grid.attr("id");
+                        $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
+                            var scrollTop = $grid.data("scrollTop");
+                            if (scrollTop > 0) {
+                                _.defer(function () {
+                                    if ($grid.igGrid("scrollContainer").length > 0) {
+                                        $grid.igGrid("scrollContainer").scrollTop(scrollTop);
+                                    }
+                                    else {
+                                        $(gridId + "_scrollContainer").scrollTop(scrollTop);
+                                    }
+                                });
+                            }
+                        });
+                        //Delegate
+                        $(document).delegate(gridId, "iggriddatabinding", function (evt, ui) {
+                            var scrollTop;
+                            if ($grid.igGrid("scrollContainer").length > 0) {
+                                scrollTop = $grid.igGrid("scrollContainer").scrollTop();
+                            }
+                            else {
+                                scrollTop = $(gridId + "_scrollContainer").scrollTop();
+                            }
+                            $grid.data("scrollTop", scrollTop);
+                        });
                     }
                     function getSelected($grid) {
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
@@ -9013,6 +9042,7 @@ var nts;
                             }
                         });
                         $grid.setupSearchScroll("igGrid", true);
+                        $grid.ntsGridList("setupScrollWhenBinding");
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
@@ -9033,7 +9063,7 @@ var nts;
                         }
                         $grid.data("enable", enable);
                         if (!($grid.attr("filtered") === true || $grid.attr("filtered") === "true") && $grid.data("ui-changed") !== true) {
-                            var scrollTop_2 = $("#" + $grid.attr("id") + "_scrollContainer").scrollTop();
+                            //                let scrollTop = $("#" + $grid.attr("id") + "_scrollContainer").scrollTop();
                             var currentSources = sources.slice();
                             var observableColumns = _.filter(ko.unwrap(data.columns), function (c) {
                                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -9049,11 +9079,6 @@ var nts;
                             }
                             $grid.igGrid('option', 'dataSource', currentSources);
                             $grid.igGrid("dataBind");
-                            if (!nts.uk.util.isNullOrUndefined(scrollTop_2) && scrollTop_2 !== 0) {
-                                setTimeout(function () {
-                                    $("#" + $grid.attr("id") + "_scrollContainer").scrollTop(scrollTop_2);
-                                }, 10);
-                            }
                         }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function (current, newVal) {
@@ -9244,6 +9269,7 @@ var nts;
                             }
                         });
                         container.setupSearchScroll("igGrid", true);
+                        container.ntsGridList("setupScrollWhenBinding");
                         container.data("multiple", isMultiSelect);
                         $("#" + gridId + "_container").find("#" + gridId + "_headers").closest("tr").hide();
                         $("#" + gridId + "_container").height($("#" + gridId + "_container").height() - gridHeaderHeight);
