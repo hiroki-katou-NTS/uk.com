@@ -4,7 +4,9 @@
 package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.util.List;
+import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 
 /**
@@ -13,12 +15,14 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
  */
 public interface WPBonusPaySettingRepository {
 
-	List<WorkplaceBonusPaySetting> getListSetting(List<String> lstWorkplace);
+	List<WorkplaceBonusPaySetting> getListSetting(List<WorkplaceId> lstWorkplace);
 
-	void addListSetting(List<WorkplaceBonusPaySetting> lstSetting);
+	void addWPBPSetting(WorkplaceBonusPaySetting workplaceBonusPaySetting);
 
-	void updateListSetting(List<WorkplaceBonusPaySetting> lstSetting);
+	void updateWPBPSetting(WorkplaceBonusPaySetting workplaceBonusPaySetting);
 
-	void removeListSetting(List<WorkplaceBonusPaySetting> lstSetting);
+	void removeWPBPSetting(WorkplaceBonusPaySetting workplaceBonusPaySetting);
+	
+	Optional<WorkplaceBonusPaySetting> getWPBPSetting(WorkplaceId WorkplaceId);
 
 }
