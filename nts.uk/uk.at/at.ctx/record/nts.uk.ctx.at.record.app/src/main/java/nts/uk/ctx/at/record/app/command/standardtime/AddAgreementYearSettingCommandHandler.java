@@ -29,6 +29,8 @@ public class AddAgreementYearSettingCommandHandler extends CommandHandler<AddAgr
 				command.getYearValue(), 
 				new ErrorOneYear(command.getErrorOneYear()),
 				new AlarmOneYear(command.getAlarmOneYear()));
+		
+		agreementYearSetting.validate();
 
 		this.agreementYearSettingRepository.add(agreementYearSetting);
 	}

@@ -5,6 +5,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
+import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 
 /**
@@ -22,8 +26,13 @@ public class UpdateAgreementMonthSettingCommandHandler extends CommandHandler<Up
 	protected void handle(CommandHandlerContext<UpdateAgreementMonthSettingCommand> context) {
 		UpdateAgreementMonthSettingCommand command = context.getCommand();
 
-		this.agreementMonthSettingRepository.update(command.getEmployeeId(), command.getYearMonthValue(),
-				command.getErrorOneMonth(), command.getAlarmOneMonth());
+		AgreementMonthSetting agreementMonthSetting = new AgreementMonthSetting(command.getEmployeeId(),
+				new YearMonth(command.getYearMonthValue()), new ErrorOneMonth(command.getErrorOneMonth()),
+				new AlarmOneMonth(command.getAlarmOneMonth()));
+		
+		agreementMonthSetting.validate();
+
+		this.agreementMonthSettingRepository.update(agreementMonthSetting);
 	}
 
 }

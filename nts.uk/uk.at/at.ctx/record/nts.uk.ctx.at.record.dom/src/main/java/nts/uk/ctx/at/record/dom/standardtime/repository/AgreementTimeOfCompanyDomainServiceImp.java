@@ -6,10 +6,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 
 /**
  * 
@@ -17,18 +15,17 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
  *
  */
 @Stateless
-public class AgreementTimeOfClassificationDomainServiceImp implements AgreementTimeOfClassificationDomainService {
+public class AgreementTimeOfCompanyDomainServiceImp implements AgreementTimeOfCompanyDomainService{
+
+	@Inject
+	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
 
 	@Inject
 	private BasicAgreementSettingRepository basicAgreementSettingRepository;
 
-	@Inject
-	private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepository;
-
 	@Override
-	public List<String> add(AgreementTimeOfClassification agreementTimeOfClassification,
-			BasicAgreementSetting basicAgreementSetting) {
-
+	public List<String> add(BasicAgreementSetting basicAgreementSetting, AgreementTimeOfCompany agreementTimeOfCompany) {
+		
 		List<String> errors = new ArrayList<>();
 		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
 			/**
@@ -46,16 +43,16 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 
-		this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);
+		this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
 
 		this.basicAgreementSettingRepository.add(basicAgreementSetting);
-
+		
 		return errors;
 	}
 
 	@Override
 	public List<String> update(BasicAgreementSetting basicAgreementSetting) {
-
+		
 		List<String> errors = new ArrayList<>();
 		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
 			/**
@@ -72,19 +69,10 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 			 */
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
+		
 		this.basicAgreementSettingRepository.update(basicAgreementSetting);
-
+		
 		return errors;
-	}
-
-	@Override
-	public void remove(String companyId, int laborSystemAtr, String classificationCode, String basicSettingId) {
-
-		this.basicAgreementSettingRepository.remove(basicSettingId);
-
-		this.agreementTimeOfClassificationRepository.remove(companyId,
-				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode);
-
 	}
 
 	private boolean checkLimitTimeAndErrorTime(BasicAgreementSetting setting) {
@@ -112,5 +100,4 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 		}
 		return false;
 	}
-
 }

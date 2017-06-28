@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.app.command.standardtime;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
@@ -31,8 +33,7 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitThreeMonths;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoMonths;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfCompanyDomainService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -42,16 +43,13 @@ import nts.uk.shr.com.context.LoginUserContext;
  *
  */
 @Stateless
-public class AddAgreementTimeOfCompanyCommandHandler extends CommandHandler<AddAgreementTimeOfCompanyCommand> {
-
+public class AddAgreementTimeOfCompanyCommandHandler extends CommandHandlerWithResult<AddAgreementTimeOfCompanyCommand, List<String>> {
+	
 	@Inject
-	private AgreementTimeCompanyRepository agreementTimeCompanyRepository;
-
-	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
+	private AgreementTimeOfCompanyDomainService agreementTimeOfCompanyDomainService;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddAgreementTimeOfCompanyCommand> context) {
+	protected List<String> handle(CommandHandlerContext<AddAgreementTimeOfCompanyCommand> context) {
 		AddAgreementTimeOfCompanyCommand command = context.getCommand();
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -59,7 +57,6 @@ public class AddAgreementTimeOfCompanyCommandHandler extends CommandHandler<AddA
 
 		AgreementTimeOfCompany agreementTimeOfCompany = new AgreementTimeOfCompany(companyId, basicSettingId,
 				EnumAdaptor.valueOf(command.getLaborSystemAtr(), LaborSystemtAtr.class));
-		this.agreementTimeCompanyRepository.add(agreementTimeOfCompany);
 
 		BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId,
 				new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()), new LimitWeek(command.getLimitWeek()), 
@@ -69,7 +66,8 @@ public class AddAgreementTimeOfCompanyCommandHandler extends CommandHandler<AddA
 				new AlarmTwoMonths(command.getAlarmTwoMonths()), new ErrorTwoMonths(command.getErrorTwoMonths()), new LimitTwoMonths(command.getLimitTwoMonths()),
 				new AlarmThreeMonths(command.getAlarmThreeMonths()), new ErrorThreeMonths(command.getErrorThreeMonths()), new LimitThreeMonths(command.getErrorThreeMonths()),
 				new AlarmOneYear(command.getAlarmOneYear()), new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
-		this.basicAgreementSettingRepository.add(basicAgreementSetting);
+		
+		return this.agreementTimeOfCompanyDomainService.add(basicAgreementSetting, agreementTimeOfCompany);
 	}
 
 }

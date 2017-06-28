@@ -1,13 +1,14 @@
 package nts.uk.ctx.at.record.app.command.standardtime;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
@@ -31,8 +32,8 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitThreeMonths;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoMonths;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitTwoWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -43,16 +44,16 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class UpdateAgreementTimeOfClassificationCommandHandler
-		extends CommandHandler<UpdateAgreementTimeOfClassificationCommand> {
-
+		extends CommandHandlerWithResult<UpdateAgreementTimeOfClassificationCommand, List<String>> {
+	
 	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepository;
+	private AgreementTimeOfClassificationDomainService agreementTimeOfClassificationDomainService;
 
 	@Inject
 	private AgreementTimeOfClassificationRepository agreementTimeOfClassificationRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateAgreementTimeOfClassificationCommand> context) {
+	protected List<String> handle(CommandHandlerContext<UpdateAgreementTimeOfClassificationCommand> context) {
 		UpdateAgreementTimeOfClassificationCommand command = context.getCommand();
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
@@ -75,7 +76,9 @@ public class UpdateAgreementTimeOfClassificationCommandHandler
 					new LimitThreeMonths(command.getErrorThreeMonths()), new AlarmOneYear(command.getAlarmOneYear()),
 					new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
 
-			this.basicAgreementSettingRepository.update(basicAgreementSetting);
+			return this.agreementTimeOfClassificationDomainService.update(basicAgreementSetting);
+		} else {
+			return null;
 		}
 	}
 
