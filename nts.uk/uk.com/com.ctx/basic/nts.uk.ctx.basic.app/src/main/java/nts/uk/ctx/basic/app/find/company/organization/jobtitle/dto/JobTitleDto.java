@@ -5,6 +5,7 @@
 package nts.uk.ctx.basic.app.find.company.organization.jobtitle.dto;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.common.history.Period;
 import nts.uk.ctx.basic.dom.company.organization.jobtitle.CompanyId;
 import nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleSetMemento;
@@ -25,7 +26,17 @@ public class JobTitleDto implements JobTitleSetMemento {
 	/** The name. */
 	private String name;
 
+	/** The sequence code. */
 	private String sequenceCode;
+
+	/** The id. */
+	private String id;
+
+	/** The start date. */
+	private GeneralDate startDate;
+
+	/** The end date. */
+	private GeneralDate endDate;
 
 	/*
 	 * (non-Javadoc)
@@ -37,8 +48,7 @@ public class JobTitleDto implements JobTitleSetMemento {
 	 */
 	@Override
 	public void setPositionId(PositionId positionId) {
-		// TODO Auto-generated method stub
-
+		this.id = positionId.v();
 	}
 
 	/*
@@ -77,8 +87,8 @@ public class JobTitleDto implements JobTitleSetMemento {
 	 */
 	@Override
 	public void setPeriod(Period period) {
-		// TODO Auto-generated method stub
-
+		this.startDate = period.getStartDate();
+		this.endDate = period.getEndDate();
 	}
 
 	/*
