@@ -10,6 +10,5 @@ public interface AgreementOperationSettingRepository {
 
 	void add(AgreementOperationSetting agreementOperationSetting);
 
-	void update(String companyId, int startingMonth, int numberTimesOverLimitType, int closingDateType,
-			int closingDateAtr, int yearlyWorkTableAtr, int alarmListAtr);
+	void update(AgreementOperationSetting agreementOperationSetting);
 }

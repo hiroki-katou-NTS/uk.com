@@ -68,12 +68,14 @@ module nts.uk.at.view.kmk012.a {
                 
                 self.closureModel.useClassification.subscribe(function(val: number){
                     if (val == 0) {
-                        self.enableUseClassification(false);
                         self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
+                        self.enableUseClassification(false);
+                        self.clearValiate();
                     }
                     else {
-                        self.enableUseClassification(true);
                         self.enableChangeClosureDateAnd(self.enableChangeClosureDate() && self.enableUseClassification());
+                        self.enableUseClassification(true);
+                        self.clearValiate();
                     }
                 });
             }
@@ -144,41 +146,61 @@ module nts.uk.at.view.kmk012.a {
                 dto = new ClosureSaveDto();
                 dto.closureId = self.closureModel.closureId();
                 dto.useClassification = self.closureModel.useClassification();
-                dto.month = self.closureModel.month();
+                if (dto.useClassification == 1) {
+                    dto.month = self.closureModel.month();
+                }else {
+                    dto.month = 0;
+                }
                 return dto;
             }
             
-            clearValiate(){
-                $('#inpMonth').ntsError('clear');
-                 
+            clearValiate() {
+                $('#inpMonth').ntsError('clear')
+                $('#inpname').ntsError('clear')
             }
             
             validateClient(): boolean {
-                $("#inpMonth").ntsEditor("validate");
-                $("#inpname").ntsEditor("validate");
-                
-                if($('.nts-input').ntsError('hasError')) {
-                    return true;
+                var self = this;
+                self.clearValiate();
+                if (self.closureModel.useClassification() == 1) {
+                    $("#inpMonth").ntsEditor("validate");
+                    $("#inpname").ntsEditor("validate");
+                    if ($('.nts-input').ntsError('hasError')) {
+                        return true;
+                    }
                 }
                 return false;
             }
             
             saveClosureHistory(): void {
                 var self = this;
-                if(self.validateClient()){
-                    return;    
+                if (self.closureModel.useClassification() == 1 && self.validateClient()) {
+                    return;
                 }
+                self.clearValiate();
                 service.saveClosure(self.collectData()).done(function() {
-                    service.saveClosureHistory(self.collectDataHistory()).done(function() {
+                    if (self.closureModel.useClassification() == 1) {
+                        service.saveClosureHistory(self.collectDataHistory()).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                self.reloadPage(self.selectCodeLstClosure().id,
+                                    self.selectCodeLstClosureHistory().historyId);
+                            });
+                        }).fail(function(error) {
+                            nts.uk.ui.dialog.alertError(error).then(function() {
+                                self.reloadPage(self.selectCodeLstClosure().id,
+                                    self.selectCodeLstClosureHistory().historyId);
+                            });
+                        });
+                    } else {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             self.reloadPage(self.selectCodeLstClosure().id,
                                 self.selectCodeLstClosureHistory().historyId);
                         });
-                    }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError(error).then(function() {
-                            self.reloadPage(self.selectCodeLstClosure().id,
-                                self.selectCodeLstClosureHistory().historyId);
-                        });
+                    }
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error).then(function() {
+                        self.reloadPage(self.selectCodeLstClosure().id,
+                            self.selectCodeLstClosureHistory().historyId);
                     });
                 });
             }

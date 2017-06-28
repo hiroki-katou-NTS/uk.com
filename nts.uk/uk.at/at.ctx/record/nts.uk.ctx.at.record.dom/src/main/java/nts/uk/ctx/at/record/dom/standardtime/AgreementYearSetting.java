@@ -1,11 +1,10 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
 import java.math.BigDecimal;
-import java.time.Year;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
 
@@ -36,6 +35,12 @@ public class AgreementYearSetting extends AggregateRoot{
 	
 	public static AgreementYearSetting createFromJavaType(String employeeId, int yearvalue, BigDecimal errorOneYear, BigDecimal alarmOneYear){
 		return new AgreementYearSetting(employeeId, yearvalue, new ErrorOneYear(errorOneYear), new AlarmOneYear(alarmOneYear));
+	}
+	
+	public void validate(){
+		if(alarmOneYear.v().compareTo(errorOneYear.v()) > 0){
+			throw new BusinessException("Msg_59");
+		}
 	}
 	
 }

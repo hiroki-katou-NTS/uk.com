@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+
 /**
  * The Interface VaAcRuleGetMemento.
  */
@@ -17,14 +19,14 @@ public interface AcquisitionRuleGetMemento {
 	 * @return the company id
 	 */
 	String getCompanyId();
-	
+
 	/**
 	 * Gets the settingclassification.
 	 *
 	 * @return the settingclassification
 	 */
-	int getCategory();
-	
+	ManageDistinct getCategory();
+
 	/**
 	 * Gets the acquisition order.
 	 *

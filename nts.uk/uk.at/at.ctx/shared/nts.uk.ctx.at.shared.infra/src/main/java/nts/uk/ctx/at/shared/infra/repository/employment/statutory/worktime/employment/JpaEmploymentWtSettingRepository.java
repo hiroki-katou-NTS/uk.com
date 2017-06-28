@@ -54,7 +54,8 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 	@Override
 	public void update(EmploymentWtSetting setting) {
 		List<JewtstEmploymentWtSet> entities = this.toEntity(setting);
-		commandProxy().updateAll(entities);
+		commandProxy()
+				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
 
 	/*
@@ -155,6 +156,32 @@ public class JpaEmploymentWtSettingRepository extends JpaRepository implements E
 			return null;
 		}
 		return new EmploymentWtSetting(new JpaEmploymentWtSettingGetMemento(entities));
+	}
+
+	/**
+	 * Update entity.
+	 *
+	 * @param entity the entity
+	 * @return the jewtst employment wt set
+	 */
+	private JewtstEmploymentWtSet updateEntity(JewtstEmploymentWtSet entity) {
+		JewtstEmploymentWtSet updatedEntity = this.queryProxy().find(entity.getJewtstEmploymentWtSetPK(), JewtstEmploymentWtSet.class).get();
+		updatedEntity.setDailyTime(entity.getDailyTime());
+		updatedEntity.setWeeklyTime(entity.getWeeklyTime());
+		updatedEntity.setStrWeek(entity.getStrWeek());
+		updatedEntity.setJanTime(entity.getJanTime());
+		updatedEntity.setFebTime(entity.getFebTime());
+		updatedEntity.setMarTime(entity.getMarTime());
+		updatedEntity.setAprTime(entity.getAprTime());
+		updatedEntity.setMayTime(entity.getMayTime());
+		updatedEntity.setJunTime(entity.getJunTime());
+		updatedEntity.setJulTime(entity.getJulTime());
+		updatedEntity.setAugTime(entity.getAugTime());
+		updatedEntity.setSepTime(entity.getSepTime());
+		updatedEntity.setOctTime(entity.getOctTime());
+		updatedEntity.setNovTime(entity.getNovTime());
+		updatedEntity.setDecTime(entity.getDecTime());
+		return updatedEntity;
 	}
 
 }

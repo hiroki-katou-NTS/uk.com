@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
+/**
+ * The Interface TransferSettingSetMemento.
+ */
 public interface TransferSettingSetMemento {
 	 
  	/**

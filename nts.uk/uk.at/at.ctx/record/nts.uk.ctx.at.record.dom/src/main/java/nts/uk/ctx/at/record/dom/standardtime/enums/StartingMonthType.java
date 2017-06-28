@@ -10,77 +10,34 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum StartingMonthType {
 
-	// 0: 1Œ
+	/*
+	 * ï¼“ï¼–å”å®šèµ·ç®—æœˆ
+	 */
+	// 0: 1æœˆ
 	JANUARY(0),
-	// 1: 2Œ
+	// 1: 2æœˆ
 	FEBRUARY(1),
-	// 2: 3Œ
+	// 2: 3æœˆ
 	MARCH(2),
-	// 3: 4Œ
+	// 3: 4æœˆ
 	APRIL(3),
-	// 4: 5Œ
+	// 4: 5æœˆ
 	MAY(4),
-	// 5: 6Œ
+	// 5: 6æœˆ
 	JUNE(5),
-	// 6: 7Œ
+	// 6: 7æœˆ
 	JULY(6),
-	// 7: 8Œ
+	// 7: 8æœˆ
 	AUGUST(7),
-	// 8: 9Œ
+	// 8: 9æœˆ
 	SEPTEMBER(8),
-	// 9: 10Œ
+	// 9: 10æœˆ
 	OCTOBER(9),
-	// 10: 11Œ
+	// 10: 11æœˆ
 	NOVEMBER(10),
-	// 11: 12Œ
+	// 11: 12æœˆ
 	DECEMBER(11);
 
 	public final int value;
-
-	public String toName() {
-		String name;
-		switch (value) {
-		case 0:
-			name = "1Œ";
-			break;
-		case 1:
-			name = "2Œ";
-			break;
-		case 2:
-			name = "3Œ";
-			break;
-		case 3:
-			name = "4Œ";
-			break;
-		case 4:
-			name = "5Œ";
-			break;
-		case 5:
-			name = "6Œ";
-			break;
-		case 6:
-			name = "7Œ";
-			break;
-		case 7:
-			name = "8Œ";
-			break;
-		case 8:
-			name = "9Œ";
-			break;
-		case 9:
-			name = "10Œ";
-			break;
-		case 10:
-			name = "11Œ";
-			break;
-		case 11:
-			name = "12Œ";
-			break;
-		default:
-			name = "1Œ";
-			break;
-		}
-		return name;
-	}
 
 }

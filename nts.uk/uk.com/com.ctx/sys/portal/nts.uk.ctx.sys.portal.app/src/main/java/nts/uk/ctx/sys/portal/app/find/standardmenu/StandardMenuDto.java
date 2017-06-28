@@ -67,11 +67,11 @@ public class StandardMenuDto {
 		standardMenuDto.targetItems = standardMenu.getTargetItems();
 		standardMenuDto.displayName = standardMenu.getDisplayName().v();
 		standardMenuDto.displayOrder = standardMenu.getDisplayOrder();
-		standardMenuDto.menuAtr = standardMenu.getMenuAtr();
+		standardMenuDto.menuAtr = standardMenu.getMenuAtr().value;
 		standardMenuDto.url = standardMenu.getUrl();
 		standardMenuDto.system = standardMenu.getSystem().value;
 		standardMenuDto.classification = standardMenu.getClassification();
-		standardMenuDto.webMenuSetting = standardMenu.getWebMenuSetting();
+		standardMenuDto.webMenuSetting = standardMenu.getWebMenuSetting().value;
 		standardMenuDto.afterLoginDisplay = standardMenu.getAfterLoginDisplay();
 		standardMenuDto.logSettingDisplay = standardMenu.getLogSettingDisplay();
 		return standardMenuDto;

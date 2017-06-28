@@ -30,15 +30,17 @@ module nts.uk.ui.koExtentions {
 //            var required = ko.unwrap(data.required) || false;
             var columns: Array<any> = data.columns;
             // Container
-            let elementId = $(element).addClass("listbox-wrapper").attr("id");
+            let $element = $(element);
+            let elementId = $element.addClass("listbox-wrapper").attr("id");
+            $element.attr("tabindex", "0");
             let gridId = elementId;
             if(nts.uk.util.isNullOrUndefined(gridId)){
                 gridId = nts.uk.util.randomId();        
             } else {
                 gridId += "_grid";    
             }
-            $(element).append("<table id='" + gridId + "' class='ntsListBox ntsControl'/>");
-            var container = $(element).find("#" + gridId);
+            $element.append("<table id='" + gridId + "' class='ntsListBox ntsControl'/>");
+            var container = $element.find("#" + gridId);
             container.data("options", options.slice());
             container.data("init", true);
             container.data("enable", enable);
@@ -88,7 +90,8 @@ module nts.uk.ui.koExtentions {
                 columns: iggridColumns,
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                features: features
+                features: features,
+                tabIndex: -1
             });
             
             container.ntsGridList('setupSelecting');
@@ -205,7 +208,7 @@ module nts.uk.ui.koExtentions {
             
             container.data("enable", enable);
             
-            if (!((container.attr("filtered") === true && container.attr("filtered") === "true") || container.data("ui-changed") === true)) {
+            if (!((container.attr("filtered") === true || container.attr("filtered") === "true") || container.data("ui-changed") === true)) {
                 let currentSources = options.slice();
                 var observableColumns = _.filter(ko.unwrap(data.columns), function(c){
                     c["key"] = c["key"] === undefined ? c["prop"] : c["key"];

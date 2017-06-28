@@ -4,7 +4,9 @@
 package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.util.List;
+import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.EmployeeId;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 
 /**
@@ -12,12 +14,14 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
  *
  */
 public interface PSBonusPaySettingRepository {
-	
-	List<PersonalBonusPaySetting> getListSetting(List<String> lstEmployeeId);
-	
-	void addListSetting(List<PersonalBonusPaySetting> lstSetting);
-	
-	void updateListSetting(List<PersonalBonusPaySetting> lstSetting);
-	
-	void removeListSetting(List<PersonalBonusPaySetting> lstSetting);
+
+	List<PersonalBonusPaySetting> getListSetting(List<EmployeeId> lstEmployeeId);
+
+	Optional<PersonalBonusPaySetting> getPersonalBonusPaySetting(EmployeeId employeeId);
+
+	void addPBPSetting(PersonalBonusPaySetting personalBonusPaySetting);
+
+	void updatePBPSetting(PersonalBonusPaySetting personalBonusPaySetting);
+
+	void removePBPSetting(PersonalBonusPaySetting personalBonusPaySetting);
 }

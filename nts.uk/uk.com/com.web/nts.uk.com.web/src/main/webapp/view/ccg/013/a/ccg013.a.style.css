@@ -75,7 +75,8 @@ button.search-btn {
 	width: 200px;
 	height: 28px;
 	display: inline;
-	margin-left: 30px
+	margin-left: 30px;
+	padding: 7px 7px 9px 0px;
 }
 
 .control-group {
@@ -91,7 +92,9 @@ button.search-btn {
 }
 
 .ui-widget.ui-tabs .ui-tabs-nav {
-	padding: 0px !important
+	padding: 0px !important;
+	display: block;
+	float: left;
 }
 
 .ui-widget.ui-tabs .ui-tabs-nav li a {
@@ -108,20 +111,53 @@ button.search-btn {
 }
 
 .ui-widget.ui-tabs .ui-tabs-panel {
-    border-radius: 0px !important;
-    border: 1px solid #B1B1B1 !important;
-    background-color: rgb(226, 239, 218) !important;
+	margin-top: 9px;
+	border-radius: 0px !important;
+	border: 1px solid #B1B1B1 !important;
+	background-color: rgb(226, 239, 218) !important;
+}
+
+ul.tree-menu {
+	width: 135px !important;
 }
 
 ul.tree-menu li {
-   	height: 35px;
-    width: 135px;
-    border-top: 1px solid rgb(128, 164, 104) !important;
-    border-left: 1px solid rgb(128, 164, 104) !important;
-    border-right: 1px solid rgb(128, 164, 104) !important;
-    border-bottom: none !important;
+	height: 35px;
+	width: 135px;
+	border: 1px solid rgb(128, 164, 104) !important;
+	margin-top:-1px;
 }
 
-.title-menu div.cell {
+ul.tree-menu li:last-child {
+	border-bottom: 1px solid rgb(128, 164, 104) !important;
+}
+
+.title-menu div.title-menu-column {
 	padding-right: 21px !important;
+	float:left;
+}
+
+.title-menu div.title-menu-name {
+	width: 100px !important;
+	margin-bottom: 25px !important;
+	padding: 15px !important;
+	border-radius: 10px !important;
+}
+
+.button-add {
+	border-radius: 5px !important;
+	height: 40px !important;
+}
+
+.button-add-treemenu {
+	border-radius: 5px !important;
+	height: 40px !important;
+	margin-top: 4px !important;
+	width: 137px;
+}
+
+.label.warning {
+    padding: 5px 10px !important;
+    margin-bottom: 10px !important;
+    color: black !important;
 }

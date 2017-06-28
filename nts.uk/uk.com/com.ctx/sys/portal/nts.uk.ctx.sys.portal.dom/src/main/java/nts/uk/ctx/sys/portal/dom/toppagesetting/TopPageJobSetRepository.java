@@ -8,8 +8,10 @@ import java.util.List;
  *
  */
 public interface TopPageJobSetRepository {
+
 	/**
-	 *  find by list jobId
+	 * find by list jobId
+	 * 
 	 * @param companyId
 	 * @param jobId
 	 * @return

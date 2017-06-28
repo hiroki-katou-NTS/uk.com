@@ -1,1 +1,15 @@
-/.gradle/
+build/
+bin/
+taskArtifacts/
+.nb-gradle/
+.gradle/
+.classpath
+.project
+.settings/
+.sass-cache/
+.metadata/
+*.class
+*.js.map
+*.orig
+*.js
+*.launch

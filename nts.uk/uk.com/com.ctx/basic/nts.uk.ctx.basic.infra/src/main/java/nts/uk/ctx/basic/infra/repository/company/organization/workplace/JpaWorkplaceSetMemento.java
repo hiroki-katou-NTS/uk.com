@@ -51,9 +51,10 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setPeriod(Period period) {
-		this.kwpmtWorkplace.setStrD(period.getStartDate());
-		this.kwpmtWorkplace.setEndD(period.getEndDate());
-		
+		KwpmtWorkplacePK pk = this.kwpmtWorkplace.getKwpmtWorkplacePK();
+		pk.setStrD(period.getStartDate());
+		pk.setEndD(period.getEndDate());
+		this.kwpmtWorkplace.setKwpmtWorkplacePK(pk);
 	}
 
 	/*
@@ -81,7 +82,9 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setWorkplaceCode(WorkplaceCode workplaceCode) {
-		this.kwpmtWorkplace.setWplcd(workplaceCode.v());;
+		KwpmtWorkplacePK pk = this.kwpmtWorkplace.getKwpmtWorkplacePK();
+		pk.setWplid(workplaceCode.v());
+		this.kwpmtWorkplace.setKwpmtWorkplacePK(pk);
 	}
 
 	/*

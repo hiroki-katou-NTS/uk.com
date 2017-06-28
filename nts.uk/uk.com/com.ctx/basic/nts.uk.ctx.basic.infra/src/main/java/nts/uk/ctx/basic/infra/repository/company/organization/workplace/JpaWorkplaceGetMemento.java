@@ -55,7 +55,7 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 */
 	@Override
 	public Period getPeriod() {
-		return new Period(this.kwpmtWorkplace.getStrD(), this.kwpmtWorkplace.getEndD());
+		return new Period(this.kwpmtWorkplace.getKwpmtWorkplacePK().getStrD(), this.kwpmtWorkplace.getKwpmtWorkplacePK().getEndD());
 	}
 
 	/**

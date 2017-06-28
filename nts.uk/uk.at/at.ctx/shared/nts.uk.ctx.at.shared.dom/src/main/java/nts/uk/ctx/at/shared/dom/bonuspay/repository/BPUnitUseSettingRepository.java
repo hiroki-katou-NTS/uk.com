@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
 
 /**
@@ -11,8 +13,10 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
  */
 public interface BPUnitUseSettingRepository {
 
-	BPUnitUseSetting getSetting(String companyId);
+	Optional<BPUnitUseSetting> getSetting(String companyId);
 
 	void updateSetting(BPUnitUseSetting setting);
+	
+	void insertSetting(BPUnitUseSetting setting);
 
 }

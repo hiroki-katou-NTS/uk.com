@@ -37,4 +37,16 @@ public class PersonWs extends WebService{
 	public List<PersonDto> getAllPerson(){
 		return this.finder.getAllPerson();
 	}
+	
+	
+	/**
+	 * Gets the person login.
+	 *
+	 * @return the person login
+	 */
+	@POST
+	@Path("getpersonlogin")
+	public PersonDto getPersonLogin(){
+		return this.finder.getPersonLogin();
+	}
 }

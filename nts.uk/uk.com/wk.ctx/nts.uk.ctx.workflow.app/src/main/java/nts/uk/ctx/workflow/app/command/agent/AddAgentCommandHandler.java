@@ -51,16 +51,21 @@ public class AddAgentCommandHandler extends CommandHandlerWithResult<AgentComman
 				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType3(), AgentAppType.class),
 				agentCommandBase.getAgentSid4(),
 				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType4(), AgentAppType.class));
-		
-		//Validate Date
+	
+		//validate date
 		List<AgentDto> agents = finder.findAllEmploy(employeeId);
-		
 		List<RangeDate> rangeDateList = agents.stream()
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
 				.collect(Collectors.toList());
-		
+
 		agentInfor.validateDate(rangeDateList);
 		
+		//validate agent of approval
+		List<Agent> agentSidList = agentRepository.findByCid(companyId);
+		
+		agentInfor.checkAgentSid(agentSidList);
+		
+		//add agent
 		agentRepository.add(agentInfor);
 		
 		return requestId.toString();

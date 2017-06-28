@@ -10,171 +10,72 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ClosingDateType {
 	
-	// 0: 1“ú
+	/*
+	 * ï¼“ï¼–å”å®šç· ã‚æ—¥
+	 */
+	// 0: 1æ—¥
 	FIRST(0),
-	// 1: 2“ú
+	// 1: 2æ—¥
 	SECOND(1),
-	// 2: 3“ú
+	// 2: 3æ—¥
 	THIRD(2),
-	// 3: 4“ú
+	// 3: 4æ—¥
 	FOURTH(3),
-	// 4: 5“ú
+	// 4: 5æ—¥
 	FIFTH(4),
-	// 5: 6“ú
+	// 5: 6æ—¥
 	SIXTH(5),
-	// 6: 7“ú
+	// 6: 7æ—¥
 	SEVENTH(6),
-	// 7: 8“ú
+	// 7: 8æ—¥
 	EIGHTH(7),
-	// 8: 9“ú
+	// 8: 9æ—¥
 	NINTH(8),
-	// 9: 10“ú
+	// 9: 10æ—¥
 	TENTH(9),
-	// 10: 11“ú
+	// 10: 11æ—¥
 	ELEVENTH(10),
-	// 11: 12“ú
+	// 11: 12æ—¥
 	TWELFTH(11),
-	// 12: 13“ú
+	// 12: 13æ—¥
 	THIRTEENTH(12),
-	// 13: 14“ú
-	FOURTHTEENTH(13),
-	// 14: 15“ú
+	// 13: 14æ—¥
+	FOURTEENTH(13),
+	// 14: 15æ—¥
 	FIFTEENTH(14),
-	// 15: 16“ú
+	// 15: 16æ—¥
 	SIXTEENTH(15),
-	// 16: 17“ú
+	// 16: 17æ—¥
 	SEVENTEENTH(16),
-	// 17: 18“ú
+	// 17: 18æ—¥
 	EIGHTEENTH(17),
-	// 18: 19“ú
+	// 18: 19æ—¥
 	NINETEENTH(18),
-	// 19: 20“ú
+	// 19: 20æ—¥
 	TWENTIETH(19),
-	// 20: 21“ú
+	// 20: 21æ—¥
 	TWENTY_FIRST(20),
-	// 21: 22“ú
+	// 21: 22æ—¥
 	TWENTY_SECOND(21),
-	// 22: 23“ú
+	// 22: 23æ—¥
 	TWENTY_THIRD(22),
-	// 23: 24“ú
+	// 23: 24æ—¥
 	TWENTY_FOURTH(23),
-	// 24: 25“ú
+	// 24: 25æ—¥
 	TWENTY_FIFTH(24),
-	// 25: 26“ú
+	// 25: 26æ—¥
 	TWENTY_SIXTH(25),
-	// 26: 27“ú
+	// 26: 27æ—¥
 	TWENTY_SEVENTH(26),
-	// 27: 28“ú
+	// 27: 28æ—¥
 	TWENTY_EIGHTH(27),
-	// 28: 29“ú
+	// 28: 29æ—¥
 	TWENTY_NINTH(28),
-	// 29: 30“ú
+	// 29: 30æ—¥
 	THIRTIETH(29),
-	// 30: ––“ú
+	// 30: æœ«æ—¥
 	LASTDAY(30);
 
 	public final int value;
 
-	public String toName() {
-		String name;
-		switch (value) {
-		case 0:
-			name = "1“ú";
-			break;
-		case 1:
-			name = "2“ú";
-			break;
-		case 2:
-			name = "3“ú";
-			break;
-		case 3:
-			name = "4“ú";
-			break;
-		case 4:
-			name = "5“ú";
-			break;
-		case 5:
-			name = "6“ú";
-			break;
-		case 6:
-			name = "7“ú";
-			break;
-		case 7:
-			name = "8“ú";
-			break;
-		case 8:
-			name = "9“ú";
-			break;
-		case 9:
-			name = "10“ú";
-			break;
-		case 10:
-			name = "11“ú";
-			break;
-		case 11:
-			name = "12“ú";
-			break;
-		case 12:
-			name = "13“ú";
-			break;
-		case 13:
-			name = "14“ú";
-			break;
-		case 14:
-			name = "15“ú";
-			break;
-		case 15:
-			name = "16“ú";
-			break;
-		case 16:
-			name = "17“ú";
-			break;
-		case 17:
-			name = "18“ú";
-			break;
-		case 18:
-			name = "19“ú";
-			break;
-		case 19:
-			name = "20“ú";
-			break;
-		case 20:
-			name = "21“ú";
-			break;
-		case 21:
-			name = "22“ú";
-			break;
-		case 22:
-			name = "23“ú";
-			break;
-		case 23:
-			name = "24“ú";
-			break;
-		case 24:
-			name = "25“ú";
-			break;
-		case 25:
-			name = "26“ú";
-			break;
-		case 26:
-			name = "27“ú";
-			break;
-		case 27:
-			name = "28“ú";
-			break;
-		case 28:
-			name = "29“ú";
-			break;
-		case 29:
-			name = "30“ú";
-			break;
-		case 30:
-			name = "––“ú";
-			break;
-		default:
-			name = "1“ú";
-			break;
-		}
-		return name;
-	}
 }

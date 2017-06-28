@@ -8,6 +8,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSetting;
 
+/**
+ * The Class CompensatoryOccurrenceSettingDto.
+ */
 public class CompensatoryOccurrenceSettingDto implements CompensatoryOccurrenceSettingSetMemento {
 
 	/** The occurrence type. */

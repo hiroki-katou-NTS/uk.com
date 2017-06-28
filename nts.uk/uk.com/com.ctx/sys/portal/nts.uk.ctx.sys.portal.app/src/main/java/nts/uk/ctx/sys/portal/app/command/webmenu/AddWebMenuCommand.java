@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class AddWebMenuCommand {
 
-	private String companyId;
-
 	private String webMenuCode;
 
 	private String webMenuName;

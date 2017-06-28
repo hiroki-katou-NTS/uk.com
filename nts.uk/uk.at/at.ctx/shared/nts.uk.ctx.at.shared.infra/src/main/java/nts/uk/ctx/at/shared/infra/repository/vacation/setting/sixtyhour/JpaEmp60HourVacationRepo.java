@@ -21,6 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRepository;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacation;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacationPK;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacationPK_;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60hVacation_;
 
@@ -30,17 +31,29 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstEmp60h
 @Stateless
 public class JpaEmp60HourVacationRepo extends JpaRepository implements Emp60HourVacationRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacation)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.
+	 * Emp60HourVacationRepository#update(nts.uk.ctx.at.shared.dom.vacation.
+	 * setting.sixtyhours.Emp60HourVacation)
 	 */
 	@Override
 	public void update(Emp60HourVacation setting) {
-		this.commandProxy().update(this.toEntity(setting));
-		
+		Optional<KshstEmp60hVacation> optional = this.queryProxy().find(
+				new KshstEmp60hVacationPK(setting.getCompanyId(), setting.getEmpContractTypeCode()),
+				KshstEmp60hVacation.class);
+
+		KshstEmp60hVacation entity = optional.get();
+		setting.saveToMemento(new JpaEmp60HourVacationSetMemento(entity));
+		this.commandProxy().update(entity);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRepository#findById(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.
+	 * Emp60HourVacationRepository#findById(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Optional<Emp60HourVacation> findById(String companyId, String contractTypeCode) {
@@ -52,10 +65,11 @@ public class JpaEmp60HourVacationRepo extends JpaRepository implements Emp60Hour
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		predicateList.add(builder.equal(root.get(KshstEmp60hVacation_.kshstEmp60hVacationPK)
-				.get(KshstEmp60hVacationPK_.cid), companyId));
-		predicateList.add(builder.equal(root.get(KshstEmp60hVacation_.kshstEmp60hVacationPK)
-				.get(KshstEmp60hVacationPK_.contractTypeCd), contractTypeCode));
+		predicateList.add(builder.equal(
+				root.get(KshstEmp60hVacation_.kshstEmp60hVacationPK).get(KshstEmp60hVacationPK_.cid), companyId));
+		predicateList.add(builder.equal(
+				root.get(KshstEmp60hVacation_.kshstEmp60hVacationPK).get(KshstEmp60hVacationPK_.contractTypeCd),
+				contractTypeCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
@@ -67,9 +81,12 @@ public class JpaEmp60HourVacationRepo extends JpaRepository implements Emp60Hour
 
 		return Optional.of(new Emp60HourVacation(new JpaEmp60HourVacationGetMemento(results.get(0))));
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Emp60HourVacationRepository#findAll(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.
+	 * Emp60HourVacationRepository#findAll(java.lang.String)
 	 */
 	@Override
 	public List<Emp60HourVacation> findAll(String companyId) {
@@ -81,24 +98,21 @@ public class JpaEmp60HourVacationRepo extends JpaRepository implements Emp60Hour
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		predicateList.add(builder.equal(root.get(KshstEmp60hVacation_.kshstEmp60hVacationPK)
-				.get(KshstEmp60hVacationPK_.cid), companyId));
+		predicateList.add(builder.equal(
+				root.get(KshstEmp60hVacation_.kshstEmp60hVacationPK).get(KshstEmp60hVacationPK_.cid), companyId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return em.createQuery(cq).getResultList().stream()
 				.map(entity -> new Emp60HourVacation(new JpaEmp60HourVacationGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
-	
-	/**
-	 * To entity.
-	 *
-	 * @param setting the setting
-	 * @return the kshst emp 60 h vacation
-	 */
-	private KshstEmp60hVacation toEntity(Emp60HourVacation setting) {
+
+	@Override
+	public void insert(Emp60HourVacation setting) {
 		KshstEmp60hVacation entity = new KshstEmp60hVacation();
+
 		setting.saveToMemento(new JpaEmp60HourVacationSetMemento(entity));
-		return entity;
+
+		this.commandProxy().insert(entity);
 	}
 
 }

@@ -22,8 +22,8 @@ module kdl014.b.viewmodel {
             startDate = '';
             endDate = '';
             $("#igGridStamp").igGrid({
-                width: '1005px',
-                height: '400px',
+                width: '1010px',
+                height: '395px',
                 dataSource: self.items(),
                 columns: self.columns()
             });

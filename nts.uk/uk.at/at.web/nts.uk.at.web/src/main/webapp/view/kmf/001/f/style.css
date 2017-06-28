@@ -66,8 +66,8 @@ table#table tr td.title {
 }
 
 .pad_left_70 {
-	padding-left: 70px;
-	text-align: right;
+	padding-left: 80px;
+	/* text-align: right; */
 }
 
 .inp_time {
@@ -111,4 +111,25 @@ table#table tr td.title {
 }
 .padding_head {
 	width: 40px;
+}
+.radio_group_width{
+	width : 230px;
+}
+.text_width {
+	width: 50px;
+	float: left;
+	padding-top: 5px;
+}
+.input_width {
+	width: 80px;
+	float: left;
+}
+.em_table_with{
+	min-width: 600px;
+}
+.margin_right_125{
+	margin-right: 125px;
+}
+.pad_over_left_80{
+	padding: 10px 0px 10px 80px;
 }

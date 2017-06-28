@@ -6,6 +6,7 @@ module nts.uk.pr.view.kmf001.b {
         export class ScreenModel {
             textEditorOption: KnockoutObservable<any>;
             categoryEnums: KnockoutObservableArray<Enum>;
+            acquisitionTypeEnums: KnockoutObservableArray<Enum>;
             selectedPriority: KnockoutObservable<number>;
             enableInputPriority: KnockoutObservable<boolean>;
 
@@ -15,6 +16,13 @@ module nts.uk.pr.view.kmf001.b {
             fundedPaidHoliday: KnockoutObservable<number>;
             exsessHoliday: KnockoutObservable<number>;
             specialHoliday: KnockoutObservable<number>;
+            
+            paidLeaveSetting: KnockoutObservable<boolean>;
+            retentionYearlySetting: KnockoutObservable<boolean>;
+            compensLeaveComSetSetting: KnockoutObservable<boolean>;
+            comSubtSetting: KnockoutObservable<boolean>;
+            com60HSetting: KnockoutObservable<boolean>;
+            nursingSetting: KnockoutObservable<boolean>;
 
             enableHelpButton: KnockoutObservable<boolean>;
 
@@ -28,6 +36,8 @@ module nts.uk.pr.view.kmf001.b {
                 }));
 
                 self.categoryEnums = ko.observableArray([]);
+                
+                self.acquisitionTypeEnums = ko.observableArray([]);
 
                 self.selectedPriority = ko.observable(1);
                 self.enableInputPriority = ko.computed(function() {
@@ -40,6 +50,13 @@ module nts.uk.pr.view.kmf001.b {
                 self.fundedPaidHoliday = ko.observable(null);
                 self.exsessHoliday = ko.observable(null);
                 self.specialHoliday = ko.observable(null);
+                
+                self.paidLeaveSetting = ko.observable(false);
+                self.retentionYearlySetting = ko.observable(false);
+                self.compensLeaveComSetSetting = ko.observable(false);
+                self.comSubtSetting = ko.observable(false);
+                self.com60HSetting = ko.observable(false);
+                self.nursingSetting = ko.observable(false);
 
                 self.enableHelpButton = ko.observable(true);
             }
@@ -47,12 +64,41 @@ module nts.uk.pr.view.kmf001.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(self.loadCategoryEnums()).done(function(res) {
+                $.when(self.loadApplySetting(),self.loadCategoryEnums(), self.loadAcquisitionTypeEnums()).done(function(res) {
                     self.loadAcquisitionRule();
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
+            
+            private loadApplySetting() : JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findSettingAll().done(function(res: any){
+                     if(res.paidLeaveSetting){
+                         self.paidLeaveSetting(true);
+                     }
+                    if(res.paidLeaveSetting){
+                         self.retentionYearlySetting(true);
+                     }
+                    if(res.compensLeaveComSetSetting){
+                         self.compensLeaveComSetSetting(true);
+                     }
+                    if(res.comSubtSetting){
+                         self.comSubtSetting(true);
+                     }
+                    if(res.com60HSetting){
+                         self.com60HSetting(true);
+                     }
+                    if(res.nursingSetting){
+                         self.nursingSetting(true);
+                     }
+                     dfd.resolve();
+                }).fail(function(res){
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+            }
+            
             private loadCategoryEnums(): JQueryPromise<Array<Enum>> {
                 let self = this;
 
@@ -66,6 +112,21 @@ module nts.uk.pr.view.kmf001.b {
 
                 return dfd.promise();
             }
+            
+            private loadAcquisitionTypeEnums(): JQueryPromise<Array<Enum>> {
+                let self = this;
+
+                let dfd = $.Deferred();
+                service.acquisitionTypeEnum().done(function(res: Array<Enum>) {
+                    self.acquisitionTypeEnums(res);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                });
+
+                return dfd.promise();
+            }
+            
             //CLOSE DIALOG
             public closeDialog(): void {
                 nts.uk.ui.windows.close();
@@ -175,6 +236,7 @@ module nts.uk.pr.view.kmf001.b {
 
                 }
             }
+            
             //GET DATA
             private setList(): void {
                 let self = this;
@@ -190,37 +252,61 @@ module nts.uk.pr.view.kmf001.b {
                 //Set data Acquisition Annua lPaid Leave
                 let acquisitionAnnualPaidLeave: any = {};
                 acquisitionAnnualPaidLeave.vacationType = "AnnualPaidLeave";
-                acquisitionAnnualPaidLeave.priority = +self.annualPaidLeave();
+                if (self.paidLeaveSetting()) {
+                    acquisitionAnnualPaidLeave.priority = +self.annualPaidLeave();
+                } else {
+                    acquisitionAnnualPaidLeave.priority = 1;
+                }
                 acquisitionOrderList.push(acquisitionAnnualPaidLeave);
 
                 //Set data Acquisition Compensatory Day Off
                 let acquisitionCompensatoryDayOff: any = {};
                 acquisitionCompensatoryDayOff.vacationType = "CompensatoryDayOff";
-                acquisitionCompensatoryDayOff.priority = +self.compensatoryDayOff();
+                if (self.retentionYearlySetting()) {
+                    acquisitionCompensatoryDayOff.priority = +self.compensatoryDayOff();
+                } else {
+                    acquisitionCompensatoryDayOff.priority = 1;
+                }
                 acquisitionOrderList.push(acquisitionCompensatoryDayOff);
 
                 //Set data Acquisition Substitute Holiday
                 let acquisitionSubstituteHoliday: any = {};
                 acquisitionSubstituteHoliday.vacationType = "SubstituteHoliday";
-                acquisitionSubstituteHoliday.priority = +self.substituteHoliday();
+                if (self.compensLeaveComSetSetting()) {
+                    acquisitionSubstituteHoliday.priority = +self.substituteHoliday();
+                } else {
+                    acquisitionSubstituteHoliday.priority = 1;
+                }
                 acquisitionOrderList.push(acquisitionSubstituteHoliday);
 
                 //Set data Acquisition Funded Paid Holiday
                 let acquisitionFundedPaidHoliday: any = {};
                 acquisitionFundedPaidHoliday.vacationType = "FundedPaidHoliday";
-                acquisitionFundedPaidHoliday.priority = +self.fundedPaidHoliday();
+                if (self.comSubtSetting()) {
+                    acquisitionFundedPaidHoliday.priority = +self.fundedPaidHoliday();
+                } else {
+                    acquisitionFundedPaidHoliday.priority = 1;
+                }
                 acquisitionOrderList.push(acquisitionFundedPaidHoliday);
 
                 //Set data Acquisition Exsess Holiday
                 let acquisitionExsessHoliday: any = {};
                 acquisitionExsessHoliday.vacationType = "ExsessHoliday";
-                acquisitionExsessHoliday.priority = +self.exsessHoliday();
+                if (self.com60HSetting()) {
+                    acquisitionExsessHoliday.priority = +self.exsessHoliday();
+                } else {
+                    acquisitionExsessHoliday.priority = 1;
+                }
                 acquisitionOrderList.push(acquisitionExsessHoliday);
 
                 //Set data Acquisition Special Holiday
                 let acquisitionSpecialHoliday: any = {};
                 acquisitionSpecialHoliday.vacationType = "SpecialHoliday";
-                acquisitionSpecialHoliday.priority = +self.specialHoliday();
+                if (self.nursingSetting()) {
+                    acquisitionSpecialHoliday.priority = +self.specialHoliday();
+                } else {
+                    acquisitionSpecialHoliday.priority = 1;
+                }
                 acquisitionOrderList.push(acquisitionSpecialHoliday);
 
                 command.vaAcRule = acquisitionOrderList;
@@ -237,6 +323,7 @@ module nts.uk.pr.view.kmf001.b {
                 $('#special-holiday').ntsEditor('validate');
                 return $('.nts-input').ntsError('hasError');
             }
+            
             private clearError(): void {
                 if (!$('.nts-input').ntsError('hasError')) {
                     return;
@@ -250,6 +337,7 @@ module nts.uk.pr.view.kmf001.b {
             }
 
         }
+        
         export class AcquisitionOrder {
             vacationType: number;
             priority: number;

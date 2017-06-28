@@ -1,0 +1,100 @@
+@CHARSET "UTF-8";
+
+#tab-panel {
+	max-width: 600px;
+}
+
+.ntsSearchBox {
+	width: 230px !important;
+}
+
+.controlSetting {
+	color: #2ECC71;
+	margin-left: 5px
+}
+
+.contentkcp {
+	min-height: 550px;
+	max-width: 550px;
+}
+
+.centerkcp {
+	/* Firefox */
+	display: -moz-box;
+	-moz-box-pack: center;
+	-moz-box-align: center;
+	/* Safari and Chrome */
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	/* W3C */
+	display: box;
+	box-pack: center;
+	box-align: center;
+}
+
+.accordion {
+	max-width: 550px;
+}
+
+.btn_big {
+	width: 200px;
+	background-color: #2ECC71;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	color: white;
+	border-radius: 5px;
+	display: inline-block;
+}
+
+.btn_small {
+	width: 200px;
+	background-color: #2ECC71;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	color: white;
+	border-radius: 5px;
+	display: inline-block;
+}
+
+.btn_apply {
+	width: 550px;
+	height: 25px;
+	text-align: center;
+	background-color: #2ECC71;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	color: white;
+	display: inline-block;
+}
+
+.caret-background.caret-bottom:after {
+	left: 39%;
+	color: #AEEE60;
+	border-width: 18px 52px;
+	margin-top: 4px;
+}
+
+.lableselect {
+	margin-right: 10px;
+	font-size: 17px;
+}
+
+#btn_apply {
+	margin-left: 15px;
+	width: 70px;
+}
+
+#workplaceList{
+	float: left;
+}
+
+#btnDetailWorkplace{
+	margin-top: 30px;
+}

@@ -5,6 +5,7 @@ package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 
 /**
@@ -13,11 +14,11 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
  */
 public interface SpecBPTimesheetRepository {
 
-	List<SpecBonusPayTimesheet> getListTimesheet(String companyId, String bonusPaySettingCode);
+	List<SpecBonusPayTimesheet> getListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode);
 
-	void addListTimesheet(List<SpecBonusPayTimesheet> lstTimesheet);
+	void addListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode, List<SpecBonusPayTimesheet> lstTimesheet);
 
-	void updateListTimesheet(List<SpecBonusPayTimesheet> lstTimesheet);
+	void updateListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode, List<SpecBonusPayTimesheet> lstTimesheet);
 
-	void removeListTimesheet(List<SpecBonusPayTimesheet> lstTimesheet);
+	void removeListTimesheet(String companyId, BonusPaySettingCode bonusPaySettingCode, List<SpecBonusPayTimesheet> lstTimesheet);
 }

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.basic.app.find.company.organization.workplace.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.basic.dom.common.history.Period;
@@ -21,11 +23,21 @@ import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceSetMemento;
 @Setter
 public class WorkplaceFindDto implements WorkplaceSetMemento{
 	
+	/** The workplace id. */
+	private String workplaceId;
+	
 	/** The code. */
 	private String code;
 	
 	/** The name. */
 	private String name;
+	
+	/** The level. */
+	private String heirarchyCode;
+	
+	/** The childs. */
+	private List<WorkplaceFindDto> childs;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -62,8 +74,7 @@ public class WorkplaceFindDto implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setWorkplaceId(WorkplaceId workplaceId) {
-		// No thing code
-
+		this.workplaceId = workplaceId.v();
 	}
 
 	/*

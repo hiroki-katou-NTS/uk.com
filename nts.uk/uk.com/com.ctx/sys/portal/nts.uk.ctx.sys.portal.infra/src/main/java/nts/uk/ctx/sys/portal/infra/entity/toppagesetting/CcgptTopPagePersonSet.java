@@ -24,15 +24,18 @@ public class CcgptTopPagePersonSet extends UkJpaEntity {
 	public CcgptTopPagePersonSetPK ccgptTopPagePersonSetPK;
 
 	/** The top menu no. */
-	@Column(name = "TOP_MENU_NO")
+	@Column(name = "TOP_MENU_CD")
 	public String topMenuNo;
 
 	/** The login menu no. */
-	@Column(name = "LOGIN_MENU_NO")
+	@Column(name = "LOGIN_MENU_CD")
 	public String loginMenuNo;
 
-	@Column(name = "SYSTEM")
-	public int system;
+	@Column(name = "LOGIN_SYSTEM")
+	public int loginSystem;
+	
+	@Column(name = "LOGIN_MENU_CLS")
+	public int loginMenuCls;
 
 	@Override
 	protected CcgptTopPagePersonSetPK getKey() {

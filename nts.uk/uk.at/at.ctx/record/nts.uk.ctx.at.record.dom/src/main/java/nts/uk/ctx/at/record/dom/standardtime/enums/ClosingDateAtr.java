@@ -9,26 +9,15 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum ClosingDateAtr {
-	// 0:  ‹Î‘Ó‚Ì’÷‚ß“ú‚Æ“¯‚¶
+	
+	/*
+	 * ï¼“ï¼–å”å®šç· ã‚æ—¥åŒºåˆ†
+	 */
+	// 0: å‹¤æ€ ã®ç· ã‚æ—¥ã¨åŒã˜
 	SAME_AS_CLOSING_DATE(0),
-	// 1: ’÷‚ß“ú‚ğw’è
+	// 1: ç· ã‚æ—¥ã‚’æŒ‡å®š
 	DESIGNATE_CLOSING_DATE(1);
 
 	public final int value;
 
-	public String toName() {
-		String name;
-		switch (value) {
-		case 0:
-			name = "‹Î‘Ó‚Ì’÷‚ß“ú‚Æ“¯‚¶";
-			break;
-		case 1:
-			name = "’÷‚ß“ú‚ğw’è";
-			break;
-		default:
-			name = "‹Î‘Ó‚Ì’÷‚ß“ú‚Æ“¯‚¶";
-			break;
-		}
-		return name;
-	}
 }

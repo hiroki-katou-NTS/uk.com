@@ -9,26 +9,14 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum TargetSettingAtr {
-	// 0: 月別実績データ
+	
+	/*
+	 * 蟇ｾ雎｡蛹ｺ蛻�
+	 */
+	// 0: 譛亥挨螳溽ｸｾ繝�繝ｼ繧ｿ
 	MONTHLY_ACTUAL_DATA(0),
-	// 1: 補助月データ
+	// 1: 陬懷勧譛医ョ繝ｼ繧ｿ
 	AUXILIARY_MONTH_DATA(1);
 
 	public final int value;
-
-	public String toName() {
-		String name;
-		switch (value) {
-		case 0:
-			name = "月別実績データ";
-			break;
-		case 1:
-			name = "補助月データ";
-			break;
-		default:
-			name = "月別実績データ";
-			break;
-		}
-		return name;
-	}
 }

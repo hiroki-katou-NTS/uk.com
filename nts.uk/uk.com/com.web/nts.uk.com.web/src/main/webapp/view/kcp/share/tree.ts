@@ -1,16 +1,23 @@
 module kcp.share.tree {
     export interface UnitModel {
+        workplaceId: string;
         code: string;
         name: string;
         nodeText?: string;
         level: number;
+        heirarchyCode: string;
         settingType: SettingType;
         childs: Array<UnitModel>;
     }
     
     export interface UnitAlreadySettingModel {
-        code: string;
+        workplaceId: string;
         settingType: SettingType;
+    }
+    
+    export interface RowSelection {
+        workplaceId: string;
+        workplaceCode: string;
     }
     
     export interface TreeComponentOption {
@@ -33,7 +40,7 @@ module kcp.share.tree {
          * selected value.
          * May be string or Array<string>
          */
-        selectedCode: KnockoutObservable<any>;
+        selectedWorkplaceId: KnockoutObservable<any>;
         
         /**
          * Base date.
@@ -41,12 +48,23 @@ module kcp.share.tree {
         baseDate: KnockoutObservable<Date>;
         
         /**
+         * Select mode
+         */
+        selectType: SelectionType; 
+        
+        /**
+         * isShowSelectButton
+         * Show/hide button select all and selected sub parent
+         */
+        isShowSelectButton: boolean;
+        
+        /**
          * is dialog, if is main screen, set false,
          */
         isDialog: boolean;
         
         /**
-         * Already setting list code. structure: {code: string, isAlreadySetting: boolean}
+         * Already setting list code. structure: {workplaceId: string, isAlreadySetting: boolean}
          * ignore when isShowAlreadySet = false.
          */
         alreadySettingList?: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -62,28 +80,37 @@ module kcp.share.tree {
         static WORK_PLACE = 1;
     }
     
+    export class SelectionType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+    
     export class TreeComponentScreenModel {
         itemList: KnockoutObservableArray<UnitModel>;
         backupItemList: KnockoutObservableArray<UnitModel>;
-        selectedCodes: KnockoutObservable<any>;
+        selectedWorkplaceIds: KnockoutObservable<any>;
+        isShowSelectButton: boolean;
         treeComponentColumn: Array<any>;
         isMultiple: boolean;
         isDialog: boolean;
-        hasBaseDate: boolean;
+        hasBaseDate: KnockoutObservable<boolean>;
         baseDate: KnockoutObservable<Date>;
         levelList: Array<any>;
         levelSelected: KnockoutObservable<number>;
-        listCode: KnockoutObservableArray<string>;
+        listWorkplaceId: Array<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         
         constructor() {
             let self = this;
             self.itemList = ko.observableArray([]);
             self.backupItemList = ko.observableArray([]);
-            self.baseDate = ko.observable(new Date());
-            self.listCode = ko.observableArray([]);
+            self.listWorkplaceId = [];
+            self.hasBaseDate = ko.observable(false);
+            self.alreadySettingList = ko.observableArray([]);
             self.treeComponentColumn = [
-                { headerText: nts.uk.resource.getText("KCP004_5"), key: 'code', dataType: "string", hidden: true },
+                { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                 { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: "90%", dataType: "string" }
             ];
             self.levelList = [
@@ -105,22 +132,26 @@ module kcp.share.tree {
             let self = this;
             let dfd = $.Deferred<void>();
             self.isMultiple = data.isMultiSelect;
-            self.selectedCodes = data.selectedCode;
+            self.hasBaseDate(!self.isMultiple);
+            self.selectedWorkplaceIds = data.selectedWorkplaceId;
+            self.isShowSelectButton = data.isShowSelectButton;
             self.isDialog = data.isDialog;
             self.baseDate = data.baseDate;
-            self.alreadySettingList = data.alreadySettingList;
+            if (data.alreadySettingList) {
+                self.alreadySettingList = data.alreadySettingList;
+            }
             
             // If show Already setting.
             if (data.isShowAlreadySet) {
                 // Add row already setting.
                 self.treeComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'settingType', width: "10%",
+                    headerText: nts.uk.resource.getText('KCP004_6'), key: 'settingType', width: "15%",
                     formatter: function(settingType: number) {
                         if (settingType == SettingType.USE_PARRENT_SETTING) {
-                            return '<div style="text-align: center;"><i class="icon icon-close"></i></div>';
+                            return '<div style="text-align: center;"><i class="icon icon icon-78"></i></div>';
                         }
                         if (settingType == SettingType.ALREADY_SETTING) {
-                            return '<div style="text-align: center;"><i class="icon icon-dot"></i></div>';
+                            return '<div style="text-align: center;"><i class="icon icon icon-84"></i></div>';
                         }
                         return '';
                     }
@@ -128,49 +159,128 @@ module kcp.share.tree {
             }
             // subscribe change selected level
             self.levelSelected.subscribe(function(level) {
-                if (self.backupItemList().length > 0) {
-                    let subItemList = self.filterByLevel(self.backupItemList(), level, new Array<UnitModel>());
-                    if (subItemList.length > 0) {
-                        self.itemList(subItemList);
+                self.filterData();
+            });
+            
+            // Find data.
+            service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
+                // Map already setting attr to data list.
+                self.addAlreadySettingAttr(res, self.alreadySettingList());
+                
+                // Set default value when initial component.
+                self.initSelectedValue(data, res);
+                
+                if (data.isShowAlreadySet) { 
+                    // subscribe when alreadySettingList update => reload component.
+                    self.alreadySettingList.subscribe((newAlreadySettings: any) => {
+                        self.addAlreadySettingAttr(res, newAlreadySettings);
+                        self.itemList(res);
+                        self.backupItemList(res);
+                    });
+                }
+                
+                // Init component.
+                self.itemList(res);
+                self.backupItemList(res);
+                
+                var webserviceLocator = nts.uk.request.location.siteRoot
+                    .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                    .mergeRelativePath('/view/kcp/share/tree.xhtml').serialize();
+                $input.load(webserviceLocator, function() {
+                    ko.cleanNode($input[0]);
+                    ko.applyBindings(self, $input[0]);
+                    
+                    // defined function get data list.
+                    $('#script-for-' + $input.attr('id')).remove();
+                    var s = document.createElement("script");
+                    s.type = "text/javascript";
+                    s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(self.backupItemList());
+                    s.id = 'script-for-' + $input.attr('id');
+                    $("head").append(s);
+                    $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                        return window['dataList' + this.attr('id').replace(/-/gi, '')];
+                    }
+                    dfd.resolve();
+                });
+                
+                $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
+                   self.addIconToAlreadyCol();
+                });
+                // defined function focus
+                $.fn.focusComponent = function() {
+                    if (self.hasBaseDate()) {
+                        $('.base-date-editor').first().focus();
+                    } else {
+                        $(".ntsSearchBox").focus();
                     }
                 }
             });
             
-            // Find data.
-            service.findWorkplaceTree(self).done(function(res: Array<UnitModel>) {
-                // fake data
-                res = self.fake();
-                if (res) {
-                    // Set default value when init component.
-                    if (!data.selectedCode() || data.selectedCode().length == 0) {
-                        self.selectedCodes(res.length > 0 ? self.selectData(data, res[0]) : null);
-                    }
-                    
-                    // Map already setting attr to data list.
-                    if (data.isShowAlreadySet) {
-                        self.addAreadySettingAttr(res, self.alreadySettingList());
-                    }
-                    
-                    // Init component.
-                    self.itemList(res);
-                    self.backupItemList(res);
-                    $input.load(nts.uk.request.location.appRoot.rawUrl + '/view/kcp/share/tree.xhtml', function() {
-                        ko.cleanNode($input[0]);
-                        ko.applyBindings(self, $input[0]);
-                    });
-                    dfd.resolve();
-                }
-            });
+            // defined function get data list.
+            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                return self.backupItemList();
+            }
+            
+            // define function get row selected
+            $.fn.getRowSelected = function(): Array<any> {
+                let listModel = self.findUnitModelByListWorkplaceId();
+                let listRowSelected: Array<RowSelection> = [];
+                self.findSelectionRowData(listModel, listRowSelected);
+                return listRowSelected;
+            }
             
             return dfd.promise();
         }
         
         /**
+         * Initial select mode
+         */
+        private initSelectedValue(data: TreeComponentOption, dataList: Array<UnitModel>) {
+            let self = this;
+            switch(data.selectType) {
+                case SelectionType.SELECT_BY_SELECTED_CODE:
+                    if (self.isMultiple) {
+                        self.selectedWorkplaceIds = data.selectedWorkplaceId;
+                    }
+                    break;
+                case SelectionType.SELECT_ALL:
+                    if (self.isMultiple) { 
+                        self.selectAll();
+                    }
+                    break;
+                case SelectionType.SELECT_FIRST_ITEM:
+                    self.selectedWorkplaceIds(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+                    break;
+                case SelectionType.NO_SELECT:
+                    self.selectedWorkplaceIds(data.isMultiSelect ? [] : '');
+                    break;
+                default:
+                    self.selectedWorkplaceIds(data.isMultiSelect ? [] : '');
+                    break
+            }
+        }
+        
+        /**
+         * add icon by already setting
+         */
+        private addIconToAlreadyCol() {
+            var icon84Link = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                .mergeRelativePath('/view/kcp/share/icon/icon84.png').serialize();
+            $('.icon-84').attr('style', "background: url('"+ icon84Link +"');width: 20px;height: 20px;background-size: 20px 20px;")
+            
+            var icon78Link = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                .mergeRelativePath('/view/kcp/share/icon/icon78.png').serialize();
+            $('.icon-78').attr('style', "background: url('"+ icon78Link +"');width: 20px;height: 20px;background-size: 20px 20px;")
+        }
+        
+        /**
          * Add Already Setting Attr into data list.
          */
-        private addAreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitAlreadySettingModel>) {
+        private addAlreadySettingAttr(dataList: Array<UnitModel>, alreadySettingList: Array<UnitAlreadySettingModel>) {
             let mapAlreadySetting = _.reduce(alreadySettingList, function(hash, value) {
-                let key = value['code'];
+                let key = value['workplaceId'];
                 hash[key] = value['settingType'];
                 return hash;
             }, {});
@@ -182,11 +292,34 @@ module kcp.share.tree {
          */
         private mapAlreadySetting(dataList: Array<UnitModel>, mapAlreadySetting: any) {
             let self = this;
-            for (let alreadySetting of dataList) {
-                self.listCode().push(alreadySetting.code);
-                alreadySetting.settingType = mapAlreadySetting[alreadySetting.code];
-                if (alreadySetting.childs.length > 0) {
-                    this.mapAlreadySetting(alreadySetting.childs, mapAlreadySetting);
+            for (let unitModel of dataList) {
+                
+                // add workplaceId work place
+                self.listWorkplaceId.push(unitModel.workplaceId);
+                
+                // set level
+                unitModel.level = unitModel.heirarchyCode.length / 3;
+                
+                // set node text
+                unitModel.nodeText = unitModel.code + ' ' + unitModel.name; 
+                
+                unitModel.settingType = mapAlreadySetting[unitModel.workplaceId];
+                if (unitModel.childs.length > 0) {
+                    this.mapAlreadySetting(unitModel.childs, mapAlreadySetting);
+                }
+            }
+        }
+        
+        /**
+         * Filter data by level
+         */
+        private filterData() {
+            let self = this;
+            if (self.backupItemList().length > 0) {
+                let subItemList = self.filterByLevel(self.backupItemList(), self.levelSelected(), new Array<UnitModel>());
+                if (subItemList.length > 0) {
+                    self.itemList(subItemList);
+                    self.selectedWorkplaceIds([subItemList[0].workplaceId]);
                 }
             }
         }
@@ -196,14 +329,15 @@ module kcp.share.tree {
          */
         private reload() {
             let self = this;
-            service.findWorkplaceTree(self).done(function(res: Array<UnitModel>) {
-                if (res) {
-                    if (self.alreadySettingList) {
-                        self.addAreadySettingAttr(res, self.alreadySettingList());
-                    }
-                    self.itemList(res);
-                    self.backupItemList(res);
+            service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
+                if (self.alreadySettingList) {
+                    self.addAlreadySettingAttr(res, self.alreadySettingList());
                 }
+                self.itemList(res);
+                self.backupItemList(res);
+                
+                // Filter data
+                self.filterData();
             });
         }
         
@@ -211,7 +345,7 @@ module kcp.share.tree {
          * Select all
          */
         private selectAll() {
-            this.selectedCodes(this.listCode());
+            this.selectedWorkplaceIds(this.listWorkplaceId);
         }
         
         /**
@@ -219,27 +353,39 @@ module kcp.share.tree {
          */
         private selectSubParent() {
             let self = this;
-            let listSubCode: Array<string> = [];
+            let listSubWorkplaceId: Array<string> = [];
             
-            for (let code of self.selectedCodes()) {
-                let listModel: Array<UnitModel> = [];
-                listModel = self.findUnitModelByCode(self.itemList(), code, listModel);
-                self.findListSubCode(listModel, listSubCode);
+            let listModel = self.findUnitModelByListWorkplaceId();
+            self.findListSubWorkplaceId(listModel, listSubWorkplaceId);
+            if (listSubWorkplaceId.length > 0) {
+                self.selectedWorkplaceIds(listSubWorkplaceId);
             }
-            if (listSubCode.length > 0) {
-                self.selectedCodes(listSubCode);
+        }
+        /**
+         * Find UnitModel By ListWorkplaceId
+         */
+        private findUnitModelByListWorkplaceId(): Array<UnitModel>  {
+            let self = this;
+            let listModel: Array<UnitModel> = [];
+            
+            // get selected work place
+            let listWorkplaceId = self.getSelectedWorkplace();
+            
+            for (let workplaceId of listWorkplaceId) {
+                listModel = self.findUnitModelByWorkplaceId(self.itemList(), workplaceId, listModel);
             }
+            return listModel;
         }
         
         /**
-         * Find list sub code of parent
+         * Find list sub workplaceId of parent
          */
-        private findListSubCode(dataList: Array<UnitModel>, listSubCode: Array<string>) {
+        private findListSubWorkplaceId(dataList: Array<UnitModel>, listSubWorkplaceId: Array<string>) {
             let self = this;
             for (let alreadySetting of dataList) {
-                listSubCode.push(alreadySetting.code);
-                if (alreadySetting.childs.length > 0) {
-                    this.findListSubCode(alreadySetting.childs, listSubCode);
+                listSubWorkplaceId.push(alreadySetting.workplaceId);
+                if (alreadySetting.childs && alreadySetting.childs.length > 0) {
+                    this.findListSubWorkplaceId(alreadySetting.childs, listSubWorkplaceId);
                 }
             }
         }
@@ -249,25 +395,58 @@ module kcp.share.tree {
          */
         private selectData(option: TreeComponentOption, data: UnitModel) :any {
             if (this.isMultiple) {
-                return [data.code];
+                return [data.workplaceId];
             }
-            return data.code;
+            return data.workplaceId;
         }
         
         /**
-         * Find UnitModel by code
+         * Get selected work place id
          */
-        private findUnitModelByCode(dataList: Array<UnitModel>, code: string, listModel: Array<UnitModel>): Array<UnitModel> {
+        private getSelectedWorkplace() :any {
+            if (this.isMultiple) {
+                return this.selectedWorkplaceIds();
+            }
+            return [this.selectedWorkplaceIds()];
+        }
+        
+        /**
+         * Find UnitModel by workplaceId
+         */
+        private findUnitModelByWorkplaceId(dataList: Array<UnitModel>, workplaceId: string,
+            listModel: Array<UnitModel>) :Array<UnitModel> {
             let self = this;
             for (let item of dataList) {
-                if (item.code == code) {
-                    listModel.push(item); 
+                if (item.workplaceId == workplaceId) {
+                    let modelString = JSON.stringify(listModel);
+                    // Check item existed
+                    if (modelString.indexOf(item.workplaceId) < 0) {
+                        listModel.push(item); 
+                    }
                 }
                 if (item.childs.length > 0) {
-                    this.findUnitModelByCode(item.childs, code, listModel);
+                    this.findUnitModelByWorkplaceId(item.childs, workplaceId, listModel);
                 }
             }
             return listModel;
+        }
+        
+        /**
+         * Find selected row data
+         */
+        private findSelectionRowData(dataList: Array<UnitModel>, listRowData: Array<RowSelection>) {
+            let self = this;
+            for (let unitModel of dataList) {
+                if (self.getSelectedWorkplace().contains(unitModel.workplaceId)) {
+                    listRowData.push({
+                        workplaceId: unitModel.workplaceId,
+                        workplaceCode: unitModel.code
+                    });
+                }
+                if (unitModel.childs.length > 0) {
+                    this.findSelectionRowData(unitModel.childs, listRowData);
+                }
+            }
         }
         
         /**
@@ -286,46 +465,19 @@ module kcp.share.tree {
         private filterByLevel(dataList: Array<UnitModel>, level: number, listModel: Array<UnitModel>): Array<UnitModel> {
             let self = this;
             for (let item of dataList) {
-                let newItem: any = null;
+                let newItem: any = {};
                 if (item.level <= level) {
                     newItem = JSON.parse(JSON.stringify(item));
                     listModel.push(newItem);
-                }
-                if (level == 1) {
-                    newItem.childs = [];
-                } else if (item.childs.length > 0) {
-                    let tmpModels = this.filterByLevel(newItem.childs, level, new Array<UnitModel>());
-                    newItem.childs = tmpModels;
+                    if (level == 1) {
+                        newItem.childs = [];
+                    } else if (item.childs && item.childs.length > 0) {
+                        let tmpModels = this.filterByLevel(newItem.childs, level, new Array<UnitModel>());
+                        newItem.childs = tmpModels;
+                    }
                 }
             }
             return listModel;
-        }
-        
-        /**
-         * Fake list work place
-         */
-        private fake(): Array<UnitModel> {
-            return [
-                {code: '001', name: 'Name001', nodeText: '001 Name001', level: 1, settingType: null, childs: [
-                    {code: '001001', name: 'Name001001', nodeText: '001001 Name001001', level: 2, settingType: null, childs: [
-                        {code: '001001001', name: 'Name001001001', nodeText: '001001001 Name001001001', level: 3, settingType: null, childs: []}
-                    ]},
-                    {code: '001002', name: 'Name001002', nodeText: '001002 Name001002', level: 2, settingType: null, childs: []}
-                ]},
-                {code: '002', name: 'Name002', nodeText: '002 Name002', level: 1, settingType: null, childs: [
-                    {code: '002001', name: 'Name002001', nodeText: '002001 Name002001', level: 2, settingType: null, childs: []},
-                    {code: '002002', name: 'Name002002', nodeText: '002002 Name002002', level: 2, settingType: null, childs: [
-                        {code: '002002001', name: 'Name002002001', nodeText: '002002001 Name002002001', level: 3, settingType: null, childs: []}
-                    ]}
-                ]},
-                {code: '003', name: 'Name003', nodeText: '003 Name003', level: 1, settingType: null, childs: [
-                    {code: '003001', name: 'Name003001', nodeText: '003001 Name003001', level: 2, settingType: null, childs: []},
-                    {code: '003002', name: 'Name003002', nodeText: '003002 Name003002', level: 2, settingType: null, childs: [
-                        {code: '003002001', name: 'Name003002001', nodeText: '003002001 Name003002001', level: 3, settingType: null, childs: []}
-                    ]}
-                ]},
-                {code: '004', name: 'Name004', nodeText: '004 Name004', level: 1, settingType: null, childs: []}
-            ];
         }
         
     }
@@ -333,17 +485,15 @@ module kcp.share.tree {
         
         // Service paths.
         var servicePath = {
-            findWorkplaceTree: "basic/company/organization/employment/findAll/",
+            findWorkplaceTree: "basic/company/organization/workplace/find",
         }
         
         /**
-         * Find Employment list.
+         * Find workplace list.
          */
-        export function findWorkplaceTree(screenModel: TreeComponentScreenModel): JQueryPromise<Array<UnitModel>> {
-            // TODO: find list work place by base date
-            return nts.uk.request.ajax(servicePath.findWorkplaceTree);
+        export function findWorkplaceTree(baseDate: Date): JQueryPromise<Array<UnitModel>> {
+            return nts.uk.request.ajax('com', servicePath.findWorkplaceTree, { baseDate: baseDate });
         }
-        
     }
 }
 
@@ -356,6 +506,21 @@ interface JQuery {
      * Nts tree component.
      */
     ntsTreeComponent(option: kcp.share.tree.TreeComponentOption): JQueryPromise<void>;
+    
+    /**
+     * Get Data List
+     */
+    getDataList(): Array<kcp.share.list.UnitModel>;
+    
+    /**
+     * Get row selected 
+     */
+    getRowSelected(): Array<any>;
+    
+    /**
+     * Focus component.
+     */
+    focusComponent(): void;
 }
 
 (function($: any) {

@@ -8,9 +8,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -57,8 +59,7 @@ public class CcgstStandardMenu extends UkJpaEntity implements Serializable {
 	public int logSettingDisplay;
 
 	@Override
-	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return ccgmtStandardMenuPK;
+	protected CcgstStandardMenuPK getKey() {
+		return this.ccgmtStandardMenuPK;
 	}
 }

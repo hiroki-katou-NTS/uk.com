@@ -192,7 +192,7 @@ module kcp.share.list {
                     headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 70,
                     formatter: function(isAlreadySet: string) {
                         if (isAlreadySet == 'true') {
-                            return '<div style="text-align: center;"><i class="icon icon-dot"></i></div>';
+                            return '<div style="text-align: center;"><i class="icon icon-78"></i></div>';
                         }
                         return '';
                     }
@@ -237,16 +237,18 @@ module kcp.share.list {
             
             // Init component.
             self.itemList(dataList);
+            // Remove No select row.
+            self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
             // Check is show no select row.
-            if (data.isShowNoSelectRow) {
+            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1) {
                 self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
-            this.searchOption = {
+            self.searchOption = {
                 searchMode: 'filter',
                 targetKey: 'code',
-                comId: this.componentGridId,
-                items: this.itemList,
-                selected: this.selectedCodes,
+                comId: self.componentGridId,
+                items: self.itemList,
+                selected: self.selectedCodes,
                 selectedKey: 'code',
                 fields: ['name', 'code'],
                 mode: 'igGrid'
@@ -259,17 +261,40 @@ module kcp.share.list {
                 ko.cleanNode($input[0]);
                 ko.applyBindings(self, $input[0]);
                 $('.base-date-editor').find('.nts-input').width(133);
+                
+            });
+            
+            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
+                self.addIconToAlreadyCol();
+            });
+            
+            // defined function get data list.
+            $('#script-for-' + $input.attr('id')).remove();
+            var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.innerHTML = 'var dataList' + $input.attr('id').replace(/-/gi, '') + ' = ' + JSON.stringify(dataList);
+            s.id = 'script-for-' + $input.attr('id');
+            $("head").append(s);
+            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
+                return window['dataList' + this.attr('id').replace(/-/gi, '')];
+            }
+            
+            // defined function focus
+            $.fn.focusComponent = function() {
                 if (self.hasBaseDate) {
                     $('.base-date-editor').find('.nts-input').first().focus();
                 } else {
                     $(".ntsSearchBox").focus();
                 }
-            });
-            
-            // defined function get data list.
-            $.fn.getDataList = function(): Array<kcp.share.list.UnitModel> {
-                return dataList;
             }
+        }
+        
+        private addIconToAlreadyCol() {
+            // Add icon to column already setting.
+            var iconLink = nts.uk.request.location.siteRoot
+                .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
+                .mergeRelativePath('/view/kcp/share/icon/icon78.png').serialize();
+            $('.icon-78').attr('style', "background: url('" + iconLink + "');width: 20px;height: 20px;background-size: 20px 20px;")
         }
         
         private initSelectedValue(data: ComponentOption, dataList: Array<UnitModel>) {
@@ -461,7 +486,15 @@ interface JQuery {
      */
     ntsListComponent(option: kcp.share.list.ComponentOption): JQueryPromise<void>;
     
+    /**
+     * Get data list in component.
+     */
     getDataList(): Array<kcp.share.list.UnitModel>;
+    
+    /**
+     * Focus component.
+     */
+    focusComponent(): void;
 }
 
 (function($: any) {

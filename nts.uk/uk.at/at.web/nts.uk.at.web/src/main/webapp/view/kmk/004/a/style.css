@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 
-.border-all td{
+.border-all td {
 	border: solid grey 1px;
 	text-align: center;
 	padding-top: 3px;
@@ -23,6 +23,15 @@
 .bg-dark-green {
 	background-color: #C7F391;
 }
-#right-content {
-	margin-left: 60px;
+.right-content {
+	margin-left: 50px;
+}
+#btn-usage-unit {
+	margin-left: 600px;
+}
+#list-workplace {
+	width: 480px;
+}
+.action-bar {
+	margin-left: 30px;
 }

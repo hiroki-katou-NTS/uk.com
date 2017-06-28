@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.standardtime;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -19,6 +20,8 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 	private static final String DELETE_BY_ONE_KEY;
 
 	private static final String FIND_BY_KEY;
+	
+	private static final String FIND_WORKPLACE_SETTING;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -34,6 +37,13 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 		builderString.append("WHERE a.kmkmtAgeementTimeWorkPlacePK.workPlaceId = :workPlaceId ");
 		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
 		FIND_BY_KEY = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgeementTimeWorkPlace a ");
+		builderString.append("WHERE a.kmkmtAgeementTimeWorkPlacePK.basicSettingId != NULL ");
+		builderString.append("AND a.laborSystemAtr = :laborSystemAtr ");
+		FIND_WORKPLACE_SETTING = builderString.toString();
 	}
 
 	@Override
@@ -48,11 +58,17 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public List<AgreementTimeOfWorkPlace> find(String workplaceId, LaborSystemtAtr laborSystemAtr) {
+	public List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr) {
+		return this.queryProxy().query(FIND_WORKPLACE_SETTING, KmkmtAgeementTimeWorkPlace.class)
+				.setParameter("laborSystemAtr", laborSystemAtr.value).getList(f -> f.kmkmtAgeementTimeWorkPlacePK.workPlaceId);
+	}
+
+	@Override
+	public Optional<String> find(String workplaceId, LaborSystemtAtr laborSystemAtr) {
 		return this.queryProxy().query(FIND_BY_KEY, KmkmtAgeementTimeWorkPlace.class)
 				.setParameter("workPlaceId", workplaceId)
 				.setParameter("laborSystemAtr", laborSystemAtr.value)
-				.getList(f -> toDomain(f));
+				.getSingle(f -> f.kmkmtAgeementTimeWorkPlacePK.basicSettingId);
 	}
 
 	private KmkmtAgeementTimeWorkPlace toEntity(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace) {
@@ -73,5 +89,4 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 				kmkmtAgeementTimeWorkPlace.laborSystemAtr);
 		return agreementTimeOfWorkPlace;
 	}
-
 }

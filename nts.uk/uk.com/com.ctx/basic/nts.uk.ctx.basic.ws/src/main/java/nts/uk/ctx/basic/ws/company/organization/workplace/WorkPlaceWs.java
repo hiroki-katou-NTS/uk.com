@@ -28,17 +28,14 @@ public class WorkPlaceWs {
 	private WorkplaceFinder finder;
 
 	/**
-	 * Find all.
+	 * Find.
 	 *
 	 * @param inDto the in dto
 	 * @return the list
 	 */
-	@Path("findall")
+	@Path("find")
 	@POST
-	public List<WorkplaceFindDto> findAll(WorkplaceInDto inDto) {
-		inDto = new WorkplaceInDto();
-		inDto.setDate("2017/06/02");
-		inDto.setFormat("yyyy/MM/dd");
-		return this.finder.findAll(inDto);
+	public List<WorkplaceFindDto> find(WorkplaceInDto dto) {
+		return this.finder.findAll(dto.getBaseDate());
 	}
 }

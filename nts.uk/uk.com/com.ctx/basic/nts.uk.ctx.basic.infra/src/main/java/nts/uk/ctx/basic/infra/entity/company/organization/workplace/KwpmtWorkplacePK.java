@@ -10,11 +10,14 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
@@ -37,42 +40,73 @@ public class KwpmtWorkplacePK implements Serializable {
     @Size(min = 1, max = 5)
     @Column(name = "WPL_ID")
     private String wplid;
+	
+	@Column(name = "STR_D")
+	@Temporal(TemporalType.TIMESTAMP)
+	private GeneralDate strD;
+	
+	@Column(name = "END_D")
+	@Temporal(TemporalType.TIMESTAMP)
+	private GeneralDate endD;
 
     public KwpmtWorkplacePK() {
     }
 
-    public KwpmtWorkplacePK(String cid, String wplid) {
+    public KwpmtWorkplacePK(String cid, String wplid,GeneralDate strD,GeneralDate endD) {
         this.cid = cid;
         this.wplid = wplid;
+        this.strD = strD;
+        this.endD = endD;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (wplid != null ? wplid.hashCode() : 0);
-        return hash;
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + ((endD == null) ? 0 : endD.hashCode());
+		result = prime * result + ((strD == null) ? 0 : strD.hashCode());
+		result = prime * result + ((wplid == null) ? 0 : wplid.hashCode());
+		return result;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KwpmtWorkplacePK)) {
-            return false;
-        }
-        KwpmtWorkplacePK other = (KwpmtWorkplacePK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if ((this.wplid == null && other.wplid != null) || (this.wplid != null && !this.wplid.equals(other.wplid))) {
-            return false;
-        }
-        return true;
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof KwpmtWorkplacePK))
+			return false;
+		KwpmtWorkplacePK other = (KwpmtWorkplacePK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
+			return false;
+		if (endD == null) {
+			if (other.endD != null)
+				return false;
+		} else if (!endD.equals(other.endD))
+			return false;
+		if (strD == null) {
+			if (other.strD != null)
+				return false;
+		} else if (!strD.equals(other.strD))
+			return false;
+		if (wplid == null) {
+			if (other.wplid != null)
+				return false;
+		} else if (!wplid.equals(other.wplid))
+			return false;
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        return "entity.KwpmtWorkplacePK[ cid=" + cid + ", wkpid=" + wplid + " ]";
-    }
     
 }

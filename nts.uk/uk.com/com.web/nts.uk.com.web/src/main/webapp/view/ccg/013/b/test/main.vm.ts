@@ -1,6 +1,6 @@
 module nts.uk.sys.view.ccg013.b.test.viewmodel {
     export class ScreenModel {
-        nameB1_3: KnockoutObservable<string>;
+        nameMenuBar: KnockoutObservable<string>;
         pickerLetter: KnockoutObservable<string>;
         radioActlass: KnockoutObservable<string>;
         pickerBackground: KnockoutObservable<string>;
@@ -10,7 +10,7 @@ module nts.uk.sys.view.ccg013.b.test.viewmodel {
 
         constructor() {
             var self = this;
-            self.nameB1_3 = ko.observable("");
+            self.nameMenuBar = ko.observable("");
             self.pickerLetter = ko.observable("");
             self.radioActlass = ko.observable("");
             self.pickerBackground = ko.observable("");
@@ -26,40 +26,38 @@ module nts.uk.sys.view.ccg013.b.test.viewmodel {
 
             return dfd.promise();
         }
-        clickDialog() {
+        openDialog() {
             var self = this;
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.setShared('Share',
-                self.nameB1_3(),
-                self.pickerLetter(),
-                self.radioActlass(),
-                self.pickerBackground(),
-                self.selectSetting(),
-                self.codeStandardMenu(),
-                self.nameStandardMenu());
-           nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+            var menuBar = new MenuBar(self.nameMenuBar(), self.pickerLetter() ,self.pickerBackground() , self.radioActlass())
+            nts.uk.ui.windows.setShared('CCG013A_StandardMeNu', menuBar);
+            nts.uk.ui.windows.sub.modal("/view/ccg/013/b/index.xhtml").onClosed(() => {
                 var self = this;
-                var returnItem = nts.uk.ui.windows.getShared("GetCCG_013");
+                var returnItem = nts.uk.ui.windows.getShared("CCG013B_MenuBar");
                 if (returnItem !== undefined) {
-                    self.pickerLetter(return
-                    self.nameB1_3(returnItem);Item);
-                    self.radioActlass(returnItem);
-                    self.pickerBackground(returnItem);
-                    self.selectSetting(returnItem);
-                    self.codeStandardMenu(returnItem);
-                    self.nameStandardMenu(returnItem);
-                    nts.uk.ui.block.clear();
+                    self.nameMenuBar(returnItem.nameMenuBar);
+                    self.pickerLetter(returnItem.letterColor);
+                    self.radioActlass(returnItem.selectedRadioAtcClass);
+                    self.pickerBackground(returnItem.backgroundColor);
+                    self.selectSetting(returnItem.selectSetting);
+                    self.codeStandardMenu(returnItem.codeStandardMenu);
+                    self.nameStandardMenu(returnItem.nameStandardMenu);
                 }
                 else{
-                    self.nameB1_3 = ko.observable("");
-                    self.pickerLetter = ko.observable("");
-                    self.radioActlass = ko.observable("");
-                    self.pickerBackground = ko.observable("");
-                    self.selectSetting = ko.observable("");
-                    self.codeStandardMenu = ko.observable("");
-                    self.nameStandardMenu = ko.observable("");
                     nts.uk.ui.block.clear();}
-            }); 
+            });
         }
     }
+    class MenuBar{
+       nameMenuBar : string;
+       pickerLetter : string;
+       pickerBackground :string; 
+       radioActlass : string 
+       constructor(nameMenuBar: string, pickerLetter: string, pickerBackground: string, radioActlass: number) {
+            this.nameMenuBar = nameMenuBar;
+            this.pickerLetter = pickerLetter;
+            this.pickerBackground = pickerBackground;
+            this.radioActlass = radioActlass;
+        }
+        
+     }
 }

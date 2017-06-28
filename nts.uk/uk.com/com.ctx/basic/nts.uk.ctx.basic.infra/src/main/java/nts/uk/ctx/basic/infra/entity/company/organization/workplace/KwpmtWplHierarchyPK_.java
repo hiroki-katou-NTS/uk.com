@@ -16,8 +16,8 @@ public class KwpmtWplHierarchyPK_ {
 	/** The ccid. */
 	public static volatile SingularAttribute<KwpmtWplHierarchyPK, String> cid;
 
-	/** The wkpid. */
-	public static volatile SingularAttribute<KwpmtWplHierarchyPK, String> wkpid;
+	/** The wplid. */
+	public static volatile SingularAttribute<KwpmtWplHierarchyPK, String> wplid;
 	
 	/** The his id. */
 	public static volatile SingularAttribute<KwpmtWplHierarchyPK, String> hisId;

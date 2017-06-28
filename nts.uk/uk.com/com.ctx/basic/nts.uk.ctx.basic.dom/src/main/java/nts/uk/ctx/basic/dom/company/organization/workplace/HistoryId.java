@@ -9,6 +9,9 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
+/**
+ * The Class HistoryId.
+ */
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(40)
 public class HistoryId extends StringPrimitiveValue<HistoryId> {

@@ -14,8 +14,10 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BPTimeItemSetting;
 public interface BPTimeItemSettingRepository {
 
 	List<BPTimeItemSetting> getListSetting(String companyId);
-	
+
+	List<BPTimeItemSetting> getListSpecialSetting(String companyId);
+
 	void addListSetting(List<BPTimeItemSetting> lstSetting);
-	
+
 	void updateListSetting(List<BPTimeItemSetting> lstSetting);
 }

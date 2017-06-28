@@ -28,7 +28,7 @@
 						data-bind="ntsDatePicker: 
 						{value: closureDetailModel.month, required: true, dateFormat: 'yearmonth'}">
 					</div>
-					<div id="lableProcessingDate"><label>#{i18n.getText('KMK012_25')}</label></div>
+					<label id="lableProcessingDate">#{i18n.getText('KMK012_25')}</label>
 				</div>
 				<br />
 				<div class="changeBefore">
@@ -36,10 +36,20 @@
 					<div class="valueChangeBefore"><label data-bind="text: closureDetailModel.closureName()"></label></div>
 					<div class="lableChangeBefore"><label>#{i18n.getText('KMK012_27')}</label></div>
 					<div class="valueChangeBefore"><label data-bind="text: closureDetailModel.getDayClosureDate()"></label></div>
-					<div class="lableChangeDate"><label>#{i18n.getText('KMK012_28')}</label></div>
-					<div class="valueChangeDate"><label data-bind="text: dayMonthModel.beginDay()"></label></div>
-					<div class="startChangeDate"><label>#{i18n.getText('KMK012_8')}</label></div>
-					<div class="endChangeDate"><label data-bind="text: dayMonthModel.endDay()"></label></div>
+					<div class="bottomChangeBefor">
+						<div class="lableStartChange">
+							<label class="valueStartChange">#{i18n.getText('KMK012_28')}</label>
+						</div>
+						<div class="valueChangeBefore">
+							<label data-bind="text: dayMonthModel.beginDay()"></label>
+						</div>
+						<div class="startChangeDate">
+							<label>#{i18n.getText('KMK012_8')}</label>
+						</div>
+						<div class="valueChangeBefore">
+							<label data-bind="text: dayMonthModel.endDay()"></label>
+						</div>
+					</div>
 				</div>
 				<br/>
 				<div id="endClosureDate">
@@ -50,11 +60,11 @@
 					<span class="caret-bottom outline"></span>
 				</div>
 				
-				<div class="changeAfter">
-					<div class="lableChangeAfter"><label>#{i18n.getText('KMK012_29')}</label></div>
-					<div class="valueChangeAfter"><label data-bind="text: closureDetailModel.closureName()"></label></div>
-					<div class="lableChangeAfter"><label>#{i18n.getText('KMK012_27')}</label></div>
-					<div class="valueChangeAfter">
+				<div class="changeBefore">
+					<div class="lableChangeBefore"><label>#{i18n.getText('KMK012_29')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: closureDetailModel.closureName()"></label></div>
+					<div class="lableChangeBefore"><label>#{i18n.getText('KMK012_27')}</label></div>
+					<div class="valueChangeBefore">
 						<div id="cobxDayOfMonth" 
 							tabindex="2"  
 							data-name="#{i18n.getText('KMK012_10')}"
@@ -71,17 +81,17 @@
 					</div>
 				</div>
 				<div class="endChangeAfter">
-					<div class="lableEndChangeAfter"><label>#{i18n.getText('KMK012_30')}</label></div>
-					<div class="valueChangeAfter"><label data-bind="text: dayMonthChangeModel.beforeClosureDate.beginDay()"></label></div>
-					<div class="startChangeDate"><label>#{i18n.getText('KMK012_8')}</label></div>
-					<div class="endChangeDate"><label data-bind="text: dayMonthChangeModel.beforeClosureDate.endDay()"></label></div>
+					<div class="lableStartChange"><label class="valueStartChange">#{i18n.getText('KMK012_30')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.beforeClosureDate.beginDay()"></label></div>
+					<div class="startChangeDate"><label class="valueStartChange">#{i18n.getText('KMK012_8')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.beforeClosureDate.endDay()"></label></div>
 				</div>
 				
 				<div class="bottomChangeAfter">
-					<div class="lableBottomChangeAfter"><label>#{i18n.getText('KMK012_36')}</label></div>
-					<div class="valueChangeAfter"><label data-bind="text: dayMonthChangeModel.afterClosureDate.beginDay()"></label></div>
-					<div class="startChangeDate"><label>#{i18n.getText('KMK012_8')}</label></div>
-					<div class="endChangeDate"><label data-bind="text: dayMonthChangeModel.afterClosureDate.endDay()"></label></div>
+					<div class="lableStartChange"><label class="valueStartChange">#{i18n.getText('KMK012_36')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.afterClosureDate.beginDay()"></label></div>
+					<div class="startChangeDate"><label class="valueStartChange">#{i18n.getText('KMK012_8')}</label></div>
+					<div class="valueChangeBefore"><label data-bind="text: dayMonthChangeModel.afterClosureDate.endDay()"></label></div>
 				</div>
 				
 				<br/>
@@ -91,8 +101,8 @@
 				
 				<center>
 					<div class="endAction">
-						<button tabindex="3" class="proceed large" data-bind="click: saveChangeClosureDate">#{i18n.getText('KMK012_32')}</button>
-						<button tabindex="4" class="large btnclose"  data-bind="click: closeWindowns">#{i18n.getText('KMK012_33')}</button>
+						<button tabindex="3" class="proceed large btnAction" data-bind="click: saveChangeClosureDate">#{i18n.getText('KMK012_32')}</button>
+						<button tabindex="4" class="large btnclose btnAction"  data-bind="click: closeWindowns">#{i18n.getText('KMK012_33')}</button>
 					</div>
 				</center>
 			</ui:define>

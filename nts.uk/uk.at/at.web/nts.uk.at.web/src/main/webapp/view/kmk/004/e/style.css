@@ -1,41 +1,26 @@
 @CHARSET "UTF-8";
 
-#description {
+.description-top {
 	margin-top: 20px;
 	margin-left: 40px;
+	white-space: pre-line;
 }
 
-.company {
-	margin-top: 10px;
-	margin-left: 70px;
+.content-center {
+	margin-top: 30px;
 }
 
-.ntsControlCheckbox {
-	margin-top: 15px;
-	margin-left: 40px;
-}
-
-.ntsControlRadio {
-	margin-top: 10px;
-	margin-left: 60px;
-}
-
-.settingCompany {
-	float: left;
-}
-
-.radioCheck {
-	float: left;
+.description-right {
 	margin-left: 20px;
-	margin-top: 10px;
+	margin-top: 50px;
+	white-space: pre-line;
 }
 
-.rightSettingCompany {
-	float: left;
-	margin-left: 70px;
-	margin-top: 45px;
+.arrow-black-down {
+	margin-left: 30px;
+	height: 150px;
 }
 
-.endButton {
-	margin-top: 20px;
+.control-group {
+	margin-bottom: 20px;
 }

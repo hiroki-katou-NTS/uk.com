@@ -13,9 +13,9 @@ import lombok.Data;
 public class FlexDaily {
 
 	/** The statutory time. */
-	private int statutoryTime;
+	private Long statutoryTime;
 
 	/** The specified time. */
-	private int specifiedTime;
+	private Long specifiedTime;
 	
 }

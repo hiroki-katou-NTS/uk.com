@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSetting;
 import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSettingRepository;
@@ -19,6 +20,15 @@ public class JpaTopPageSettingRepository extends JpaRepository implements TopPag
 		return domain;
 	}
 
+	private CcgptTopPageSetting toEntity(TopPageSetting domain) {
+		val entity = new CcgptTopPageSetting();
+
+		entity.ccgptTopPageSettingPK = new CcgptTopPageSettingPK();
+		entity.ccgptTopPageSettingPK.companyId = domain.getCompanyId();
+		entity.ctgSet = domain.getCtgSet().value;
+		return entity;
+	}
+
 	@Override
 	public Optional<TopPageSetting> findByCId(String companyId) {
 		CcgptTopPageSettingPK ccgptTopPageSettingPK = new CcgptTopPageSettingPK(companyId);
@@ -26,7 +36,12 @@ public class JpaTopPageSettingRepository extends JpaRepository implements TopPag
 	}
 
 	@Override
-	public void add(TopPageSetting topPageSetting) {
-		this.commandProxy().insert(topPageSetting);
+	public void insert(TopPageSetting topPageSetting) {
+		this.commandProxy().insert(toEntity(topPageSetting));
+	}
+
+	@Override
+	public void update(TopPageSetting topPageSetting) {
+		this.commandProxy().update(toEntity(topPageSetting));
 	}
 }
