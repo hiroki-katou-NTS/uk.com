@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.shared.app.command;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,15 +9,14 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 
 @Stateless
-public class WPBonusPaySettingAddCommandHandler extends CommandHandler<List<WPBonusPaySettingAddCommand>> {
+public class WPBonusPaySettingAddCommandHandler extends CommandHandler<WPBonusPaySettingAddCommand> {
 	@Inject
 	private WPBonusPaySettingRepository wpBonusPaySettingRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<WPBonusPaySettingAddCommand>> context) {
-		List<WPBonusPaySettingAddCommand> lstWPBonusPaySettingAddCommand = context.getCommand();
-		this.wpBonusPaySettingRepository.addListSetting(lstWPBonusPaySettingAddCommand.stream()
-				.map(c -> toWPBonusPaySettingDomain(c)).collect(Collectors.toList()));
+	protected void handle(CommandHandlerContext<WPBonusPaySettingAddCommand> context) {
+		WPBonusPaySettingAddCommand wpBonusPaySettingAddCommand = context.getCommand();
+		this.wpBonusPaySettingRepository.addWPBPSetting(this.toWPBonusPaySettingDomain(wpBonusPaySettingAddCommand));
 	}
 
 	private WorkplaceBonusPaySetting toWPBonusPaySettingDomain(

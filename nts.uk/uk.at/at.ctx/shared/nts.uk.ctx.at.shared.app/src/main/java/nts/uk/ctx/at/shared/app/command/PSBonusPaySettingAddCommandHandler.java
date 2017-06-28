@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.shared.app.command;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,15 +9,15 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
 
 @Stateless
-public class PSBonusPaySettingAddCommandHandler extends CommandHandler<List<PSBonusPaySettingAddCommand>> {
+public class PSBonusPaySettingAddCommandHandler extends CommandHandler<PSBonusPaySettingAddCommand> {
 	@Inject
 	private PSBonusPaySettingRepository psBonusPaySettingRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<PSBonusPaySettingAddCommand>> context) {
-		List<PSBonusPaySettingAddCommand> lstPSBonusPaySettingAddCommand = context.getCommand();
-		this.psBonusPaySettingRepository.addListSetting(lstPSBonusPaySettingAddCommand.stream()
-				.map(c -> toPersonalBonusPaySettingDomain(c)).collect(Collectors.toList()));
+	protected void handle(CommandHandlerContext<PSBonusPaySettingAddCommand> context) {
+		PSBonusPaySettingAddCommand psBonusPaySettingAddCommand = context.getCommand();
+		this.psBonusPaySettingRepository
+				.addPBPSetting(this.toPersonalBonusPaySettingDomain(psBonusPaySettingAddCommand));
 
 	}
 

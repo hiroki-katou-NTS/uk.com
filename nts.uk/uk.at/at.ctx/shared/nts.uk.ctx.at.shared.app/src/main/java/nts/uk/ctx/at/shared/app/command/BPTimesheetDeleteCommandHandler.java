@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 
@@ -20,7 +21,7 @@ public class BPTimesheetDeleteCommandHandler extends CommandHandler<List<BPTimes
 	protected void handle(CommandHandlerContext<List<BPTimesheetDeleteCommand>> context) {
 		List<BPTimesheetDeleteCommand> lstBPTimesheetDeleteCommand = context.getCommand();
 		bpTimesheetRepository.removeListTimesheet(lstBPTimesheetDeleteCommand.get(0).companyId,
-				lstBPTimesheetDeleteCommand.get(0).bonusPaySettingCode,
+			new BonusPaySettingCode(lstBPTimesheetDeleteCommand.get(0).bonusPaySettingCode),
 				lstBPTimesheetDeleteCommand.stream().map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList()));
 	}
 	
