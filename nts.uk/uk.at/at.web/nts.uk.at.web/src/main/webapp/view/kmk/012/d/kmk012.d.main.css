@@ -6,15 +6,9 @@
 	min-width: 800px;
 }
 
-#valueProcessingDate {
-	width: 100px;
-	float: left;
-}
 
 #lableProcessingDate {
-	width: 220px;
-	float: left;
-	margin-top: 3px;
+	margin-top: 6px;
 }
 
 .changeBefore {

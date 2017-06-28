@@ -1,13 +1,18 @@
-module nts.uk.at.view.kmk008.c {
+module nts.uk.at.view.kmk008.b {
     export module viewmodel {
         export class ScreenModel {
             show: KnockoutObservable<boolean>;
             enable: KnockoutObservable<boolean>;
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
+            viewmodelC: any;
+            viewmodelD: any;
+            laborSystemAtr: number = 0;
             constructor() {
                 let self = this;
                 self.show = ko.observable(true);
+                self.viewmodelC = new kmk008.c.viewmodel.ScreenModel(self.laborSystemAtr);
+                self.viewmodelD = new kmk008.d.viewmodel.ScreenModel(self.laborSystemAtr);
                 self.show.subscribe(function(newVal) {
                     if (newVal)
                         $("#sidebar").ntsSideBar("show", 1);

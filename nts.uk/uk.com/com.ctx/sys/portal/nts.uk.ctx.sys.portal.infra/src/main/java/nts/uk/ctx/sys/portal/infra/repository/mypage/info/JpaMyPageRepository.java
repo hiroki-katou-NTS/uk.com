@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.MyPage;
 import nts.uk.ctx.sys.portal.dom.mypage.MyPageRepository;
 import nts.uk.ctx.sys.portal.infra.entity.mypage.CcgptMyPage;
+import nts.uk.ctx.sys.portal.infra.entity.mypage.CcgptMyPagePK;
 /**
  * 
  * @author hoatt
@@ -18,23 +19,32 @@ import nts.uk.ctx.sys.portal.infra.entity.mypage.CcgptMyPage;
 public class JpaMyPageRepository extends JpaRepository implements MyPageRepository {
 
 	private final String SELECT_MYPAGE = "SELECT c FROM CcgptMyPage c"
-			+ " WHERE c.ccgptMyPagePK.employeeId = :employeeId"
-			+ " AND c.ccgptMyPagePK.layoutId = :layoutId";
+			+ " WHERE c.ccgptMyPagePK.employeeId = :employeeId";
 	private static MyPage toDomain(CcgptMyPage entity){
-		val domain = MyPage.createFromJavaType(entity.ccgptMyPagePK.employeeId, entity.ccgptMyPagePK.layoutId);
+		val domain = MyPage.createFromJavaType(entity.ccgptMyPagePK.employeeId, entity.layoutId);
 		return domain;
 	}
+	private static CcgptMyPage toEntity(MyPage domain){
+		val entity = new CcgptMyPage();
+		entity.ccgptMyPagePK = new CcgptMyPagePK();
+		entity.ccgptMyPagePK.employeeId = domain.getEmployeeId();
+		entity.layoutId = domain.getLayoutId();
+		return entity;
+	}
 	@Override
-	public MyPage getMyPage(String employeeId, String layoutId) {
+	public MyPage getMyPage(String employeeId) {
 		Optional<MyPage> myPage =  this.queryProxy().query(SELECT_MYPAGE, CcgptMyPage.class)
 				.setParameter("employeeId", employeeId)
-				.setParameter("layoutId", layoutId)
 				.getSingle(c->toDomain(c));
-		if(myPage.isPresent()){
+		if(!myPage.isPresent()){
 			return null;
 		}else{
 			return myPage.get();
 		}
+	}
+	@Override
+	public void addMyPage(MyPage myPage) {
+		this.commandProxy().insert(toEntity(myPage));
 	}
 
 }

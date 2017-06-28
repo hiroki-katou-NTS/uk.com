@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -19,6 +20,8 @@ import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenuPK;
 public class JpaStandardMenuRepository extends JpaRepository implements StandardMenuRepository {
 	private final String SEL = "SELECT s FROM CcgstStandardMenu s ";
 	private final String GET_ALL_STANDARD_MENU = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId";
+	private final String GET_ALL_STANDARD_MENU_BY_SYSTEM = "SELECT s FROM CcgstStandardMenu s WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
+			+ "AND s.ccgmtStandardMenuPK.system = :system AND s.menuAtr = 1"; 
 	private final String FIND_BY_AFTER_LOGIN_DISPLAY = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.afterLoginDisplay = :afterLoginDisplay ";
 	private final String FIND_BY_SYSTEM_MENUCLASSIFICATION = SEL + "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
@@ -36,6 +39,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ " AND c.ccgmtStandardMenuPK.code = :code"
 			+ " AND c.ccgmtStandardMenuPK.system = :system"
 			+ " AND c.ccgmtStandardMenuPK.classification = :menu_classification";
+	//yennth
+	private final String UPDATE_STANDARD_MENU_BY_CODE = "UPDATE CcgstStandardMenu c SET c.displayName = :displayName WHERE "
+			+ "c.ccgmtStandardMenuPK.companyId = :companyId"
+			+ " AND c.ccgmtStandardMenuPK.code = :code"
+			+ " AND c.ccgmtStandardMenuPK.system = :system"
+			+ " AND c.ccgmtStandardMenuPK.classification = :classification";
 	
 	private CcgstStandardMenu toEntity(StandardMenu domain) {
 		val entity = new CcgstStandardMenu();
@@ -141,4 +150,29 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("classification", classification)
 				.getSingle(c->toDomain(c));
 	}
+	
+	/**
+	 * yennth
+	 * update list standard menu
+	 * @param list standard menu
+	 */
+	@Override
+	public void update(List<StandardMenu> StandardMenu) {
+		EntityManager manager = this.getEntityManager();
+		CcgstStandardMenuPK pk;
+		for (StandardMenu obj : StandardMenu){
+			pk = new CcgstStandardMenuPK(obj.getCompanyId(), obj.getCode().v(), obj.getSystem().value, obj.getClassification());
+			CcgstStandardMenu o = manager.find(CcgstStandardMenu.class, pk);
+			o.setDisplayName(obj.getDisplayName().v());
+		}		
+		
+	};
+	
+	@Override
+	public List<StandardMenu> findBySystem(String companyId, int system) {
+		return this.queryProxy().query(GET_ALL_STANDARD_MENU_BY_SYSTEM, CcgstStandardMenu.class)
+				.setParameter("companyId", companyId).setParameter("system", system)
+				.getList(t -> toDomain(t));
+	}
+
 }

@@ -9,10 +9,12 @@ module cmm044.a.viewmodel {
     export class ScreenModel {
         empItems: KnockoutObservableArray<PersonModel>;
         empSelectedItem: KnockoutObservable<any>;
+        
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         itemList: KnockoutObservableArray<any>;
         index_of_itemDelete: any;
         isEnableDelete: KnockoutObservable<boolean>;
+        
         displayEmployeeInfo1: KnockoutObservable<boolean>;
         displayEmployeeInfo2: KnockoutObservable<boolean>;
         displayEmployeeInfo3: KnockoutObservable<boolean>;
@@ -22,6 +24,7 @@ module cmm044.a.viewmodel {
         currentAgent: KnockoutObservable<model.AgentDto>;
         histSelectedItem: KnockoutObservable<any>;
         currentItem: KnockoutObservable<model.AgentAppDto>;
+        
         agentAppType1: KnockoutObservable<number>;
         agentAppType2: KnockoutObservable<number>;
         agentAppType3: KnockoutObservable<number>;
@@ -81,6 +84,7 @@ module cmm044.a.viewmodel {
                     $.when(self.getAllAgen(newValue.personId)).done(function() {
                         if (self.histItems().length > 0) {
                             self.histSelectedItem(self.histItems()[0].requestId);
+                            
                         } else {
                             self.initAgent();
                         }
@@ -94,9 +98,8 @@ module cmm044.a.viewmodel {
                     self.getAgen(self.empSelectedItem().personId, requestId);
                     self.isEnableDelete(true);
                 }
-
-
             });
+            
             self.itemList = ko.observableArray([
                 new BoxModel(0, nts.uk.resource.getText("CMM044_16")),
                 new BoxModel(1, nts.uk.resource.getText("CMM044_17")),
@@ -111,7 +114,10 @@ module cmm044.a.viewmodel {
             var dfd = $.Deferred();
             self.empItems.removeAll();
 
-            //Demo EmployeeCode & EmployeeId 
+            /**
+             * Demo EmployeeCode & EmployeeId
+             */
+             
             _.range(3).map(i => {
                 i++;
                 if (i < 10) {
@@ -126,7 +132,6 @@ module cmm044.a.viewmodel {
                         code: 'A0000000' + i,
                         name: '日通　社員' + i,
                     }));
-
                 }
             });
             dfd.resolve();
@@ -146,6 +151,7 @@ module cmm044.a.viewmodel {
                     for (var i = 0; i < agent_arr.length; i++) {
                         self.histItems.push(new model.AgentDto(agent_arr[i].companyId, agent_arr[i].employeeId, agent_arr[i].requestId, agent_arr[i].startDate, agent_arr[i].endDate, agent_arr[i].agentSid1, agent_arr[i].agentAppType1, agent_arr[i].agentSid2, agent_arr[i].agentAppType2, agent_arr[i].agentSid3, agent_arr[i].agentAppType3, agent_arr[i].agentSid4, agent_arr[i].agentAppType4));
                     }
+                   
                 }
                 dfd.resolve();
             }).fail(function(error) {
@@ -156,6 +162,9 @@ module cmm044.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * find agent by requestId
+         */
         getAgen(employeeId: string, requestId: string): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -191,7 +200,7 @@ module cmm044.a.viewmodel {
         }
 
         /**
-         * 
+         * Find agent
          */
         findInHistItem(employeeId: string, requestId: string): model.AgentDto {
             var self = this;
@@ -234,17 +243,18 @@ module cmm044.a.viewmodel {
                 service.addAgent(agent).done(function(res) {
                     var resObj = ko.toJS(res);
                     if (!self.histSelectedItem) {
-
-                    
                     self.histSelectedItem("");
-                    } else {
+                        
+                    } else if (resObj.businessException){
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_12"));
+                        
+                    }else {
                         self.getAllAgen(self.empSelectedItem().personId);
                         self.histSelectedItem(res);
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                        
                     }
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_12"));
+                }).fail(function(res) {            
                     dfd.reject(res);
                 })
             }

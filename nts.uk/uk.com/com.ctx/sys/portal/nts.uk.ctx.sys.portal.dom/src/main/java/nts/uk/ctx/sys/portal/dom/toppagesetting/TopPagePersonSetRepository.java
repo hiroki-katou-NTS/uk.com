@@ -15,4 +15,5 @@ public interface TopPagePersonSetRepository {
 	 * @return 
 	 */
 	Optional<TopPagePersonSet> findBySid(String companyId, String sId);
+	TopPagePersonSet getbyCode(String companyId, String employeeId);
 }

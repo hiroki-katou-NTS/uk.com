@@ -21,7 +21,12 @@
 	float:left;
 	overflow: auto;
 }
-
+.table1 .fixed-width-1{
+	width: 16px;
+}
+.table1 .fixed-width-3{
+	width: 190px;
+}
 .table1 {
 	margin-left: 40px;
     margin-top: 30px;
@@ -38,7 +43,7 @@
 }
 .table1 tbody {
 	display:block;
-    height: 320px;
+    max-height: 320px;
     overflow-y: scroll;
 }
 /*.table1 tbody tr {

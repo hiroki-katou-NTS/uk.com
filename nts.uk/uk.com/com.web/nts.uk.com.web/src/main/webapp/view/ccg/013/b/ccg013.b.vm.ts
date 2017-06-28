@@ -36,8 +36,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.allPart = ko.observableArray([]);
             self.listStandardMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', key: 'code', width: 100 },
-                { headerText: '名称', prop: 'displayName', key: 'displayName', width: 230 }
+                { headerText: 'コード', prop: 'code', key: 'code', width: '60px' },
+                { headerText: '名称', prop: 'displayName', key: 'displayName', width: '200px' }
             ]);
             self.selectCodeStandardMenu = ko.observable('');
             self.currentListStandardMenu = ko.observable('');
@@ -82,8 +82,12 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
 
         submit() {
             var self = this;
+            var menuCls = "";
             var standMenu = _.find(self.listStandardMenu(), 'code', self.currentListStandardMenu());
-            var menuBar = new MenuBar(self.currentListStandardMenu(), self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass(), self.selectedCodeSystemSelect(), standMenu.classification);
+            if (standMenu) {
+                menuCls = standMenu.classification;
+            }            
+            var menuBar = new MenuBar(self.currentListStandardMenu(), self.nameMenuBar(), self.letterColor(), self.backgroundColor(), self.selectedRadioAtcClass(), self.selectedCodeSystemSelect(), menuCls);
             windows.setShared("CCG013B_MenuBar", menuBar);
             self.cancel_Dialog();
         }

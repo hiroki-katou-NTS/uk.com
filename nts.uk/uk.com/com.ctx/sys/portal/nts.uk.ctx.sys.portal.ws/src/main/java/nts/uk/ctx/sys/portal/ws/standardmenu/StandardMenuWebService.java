@@ -8,7 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.junit.runners.Parameterized.Parameter;
+
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.portal.app.command.standardmenu.StandardMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.standardmenu.UpdateStandardMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.standardmenu.UpdateStandardMenuCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.titlemenu.UpdateTitleMenuCommand;
+import nts.uk.ctx.sys.portal.app.command.titlemenu.UpdateTitleMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuFinder;
 
@@ -20,6 +27,9 @@ import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuFinder;
 public class StandardMenuWebService extends WebService {
 	@Inject
 	private StandardMenuFinder finder;
+	
+	@Inject
+	private UpdateStandardMenuCommandHandler updateStandardMenu;
 
 	@POST
 	@Path("findAll")
@@ -43,5 +53,22 @@ public class StandardMenuWebService extends WebService {
 	@Path("findByAtr")
 	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr) {
 		return finder.findByAtr(webMenuSetting, menuAtr);
+	}
+	
+	@POST
+	@Path("update")
+	public void updateStandardMenu(List<StandardMenuCommand>  command) {
+		// List<StandardMenuCommand> 
+		//UpdateStandardMenuCommand
+		UpdateStandardMenuCommand  obj = new UpdateStandardMenuCommand();
+		obj.setStandardMenus(command);
+		this.updateStandardMenu.handle(obj);
+	}
+
+	@POST
+	@Path("findBySystem/{system}")
+	public List<StandardMenuDto> findBySystem(@PathParam("system") int system) {
+		return finder.findBySystem(system);
+
 	}
 }

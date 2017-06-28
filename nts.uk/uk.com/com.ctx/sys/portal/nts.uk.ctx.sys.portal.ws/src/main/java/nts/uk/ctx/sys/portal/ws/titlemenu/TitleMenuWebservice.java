@@ -50,7 +50,6 @@ public class TitleMenuWebservice extends WebService {
 	@Path("findbycode/{titleMenuCD}")
 	public void getByCode(@PathParam("titleMenuCD") String titleMenuCD) {
 		this.finder.getTitleMenu(titleMenuCD);
-
 	}
 
 	@POST
