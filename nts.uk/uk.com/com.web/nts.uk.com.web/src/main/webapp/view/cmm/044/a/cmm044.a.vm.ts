@@ -84,6 +84,7 @@ module cmm044.a.viewmodel {
                     $.when(self.getAllAgen(newValue.personId)).done(function() {
                         if (self.histItems().length > 0) {
                             self.histSelectedItem(self.histItems()[0].requestId);
+                            
                         } else {
                             self.initAgent();
                         }
@@ -150,6 +151,7 @@ module cmm044.a.viewmodel {
                     for (var i = 0; i < agent_arr.length; i++) {
                         self.histItems.push(new model.AgentDto(agent_arr[i].companyId, agent_arr[i].employeeId, agent_arr[i].requestId, agent_arr[i].startDate, agent_arr[i].endDate, agent_arr[i].agentSid1, agent_arr[i].agentAppType1, agent_arr[i].agentSid2, agent_arr[i].agentAppType2, agent_arr[i].agentSid3, agent_arr[i].agentAppType3, agent_arr[i].agentSid4, agent_arr[i].agentAppType4));
                     }
+                   
                 }
                 dfd.resolve();
             }).fail(function(error) {
@@ -241,20 +243,18 @@ module cmm044.a.viewmodel {
                 service.addAgent(agent).done(function(res) {
                     var resObj = ko.toJS(res);
                     if (!self.histSelectedItem) {
-
-                    
                     self.histSelectedItem("");
-                    } else if (resObj.businessException){
                         
+                    } else if (resObj.businessException){
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_12"));
+                        
                     }else {
                         self.getAllAgen(self.empSelectedItem().personId);
                         self.histSelectedItem(res);
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                        
                     }
-                }).fail(function(res) {
-                    
+                }).fail(function(res) {            
                     dfd.reject(res);
                 })
             }

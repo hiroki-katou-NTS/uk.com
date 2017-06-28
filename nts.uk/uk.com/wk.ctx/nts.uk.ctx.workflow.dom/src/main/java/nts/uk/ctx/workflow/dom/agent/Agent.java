@@ -8,6 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 
 @Getter
 
@@ -155,7 +156,53 @@ public class Agent extends AggregateRoot {
 		if (!(this.endDate.before(rangeDate.getStartDate()) || rangeDate.getEndDate().before(this.startDate))) {
 			return false;
 		}
-		
 		return true;
+	}
+	
+	/**
+	 * check agentSid with RageDate
+	 * @param rangeDateList1
+	 * @param rangeDateList2
+	 * @param rangeDateList3
+	 * @param rangeDateList4
+	 */
+	public void checkAgentSid(
+			List<RangeDate> rangeDateList1,
+			List<RangeDate> rangeDateList2,
+			List<RangeDate> rangeDateList3,
+			List<RangeDate> rangeDateList4){
+		
+		if (this.agentAppType1 == AgentAppType.SUBSTITUTE_DESIGNATION ) {
+			validateAgentRequest(this.agentSid1, rangeDateList1);
+		}
+		
+		if (this.agentAppType2 == AgentAppType.SUBSTITUTE_DESIGNATION) {
+			validateAgentRequest(this.agentSid2, rangeDateList2);
+		}
+		
+		if (this.agentAppType3 == AgentAppType.SUBSTITUTE_DESIGNATION) {
+			validateAgentRequest(this.agentSid3, rangeDateList3);
+		}
+		
+		if (this.agentAppType4 == AgentAppType.SUBSTITUTE_DESIGNATION) {
+			validateAgentRequest(this.agentSid4, rangeDateList4);
+		}
+	}
+	
+	/**
+	 * validate agent of approval
+	 * @param sid
+	 * @param rangeDateList
+	 */
+	private void validateAgentRequest(String sid, List<RangeDate> rangeDateList) {
+		if (CollectionUtil.isEmpty(rangeDateList)) {
+			return;
+		}
+		
+		rangeDateList.stream().forEach(rangeDate -> {
+			if (!checkStartDate(rangeDate)) {
+				throw new BusinessException("Msg_13");
+			}
+		});
 	}
 }
