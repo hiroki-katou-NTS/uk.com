@@ -56,7 +56,6 @@ public class UpdateAgentCommandHandler extends CommandHandler<AgentCommandBase> 
 				(agentCommandBase.getAgentSid4()),
 				EnumAdaptor.valueOf(agentCommandBase.getAgentAppType4(), AgentAppType.class));
 		
-		//Validate Date
 		List<AgentDto> agents = finder.findAllEmploy(employeeId);
 		
 		List<RangeDate> rangeDateList = agents.stream()

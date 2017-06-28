@@ -9,6 +9,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class MenuBarDto {
 	
+	private String menuBarId;
+	
 	private String code;
 
 	private String menuBarName;
@@ -25,7 +27,7 @@ public class MenuBarDto {
 
 	private int displayOrder;
 
-	private List<TitleMenuDto> titleMenu;
+	private List<TitleBarDto> titleMenu;
 
 
 }

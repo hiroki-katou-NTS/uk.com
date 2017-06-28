@@ -12,7 +12,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGMT_MY_PAGE_SET")
+@Table(name = "CCGPT_MYPAGE")
 public class CcgptMyPage extends UkJpaEntity {
 	
 	@EmbeddedId

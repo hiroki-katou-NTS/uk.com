@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
-import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -51,12 +49,14 @@ public class StandardMenuFinder {
 	 * 
 	 * @return List StandardMenuDto
 	 */
-	public List<StandardMenuDto> findByAfterLgDisSysMenuCls() {
-		String companyId = AppContexts.user().companyId();
-		return this.standardMenuRepository
-				.findByAfterLgDisSysMenuCls(companyId, 0, System.COMMON.value, MenuClassification.TopPage.value)
-				.stream().map(x -> StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
-	}
+	// public List<StandardMenuDto> findByAfterLgDisSysMenuCls() {
+	// String companyId = AppContexts.user().companyId();
+	// return this.standardMenuRepository
+	// .findByAfterLgDisSysMenuCls(companyId, 0, System.COMMON.value,
+	// MenuClassification.TopPage.value)
+	// .stream().map(x ->
+	// StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
+	// }
 	/**
 	 * find all StandardMenu by companyID and webMenuSetting = 0 and menuAtr = 0
 	 * @param conpanyID

@@ -38,20 +38,20 @@ public class StandardMenuWebService extends WebService {
 	}
 
 	@POST
-	@Path("findByAfterLoginDisplay")
-	public List<StandardMenuDto> findByAfterLoginDisplay() {
-		return finder.findByAfterLoginDisplay(0);
+	@Path("findByAfterLoginDisplay/{afterLoginDisplay}")
+	public List<StandardMenuDto> findByAfterLoginDisplay(@PathParam("afterLoginDisplay") int afterLoginDisplay) {
+		return finder.findByAfterLoginDisplay(afterLoginDisplay);
 	}
 
 	@POST
-	@Path("findByAfterLgDisSysMenuCls")
-	public List<StandardMenuDto> findByAfterLgDisSysMenuCls() {
-		return finder.findByAfterLgDisSysMenuCls();
+	@Path("findBySystemMenuCls")
+	public List<StandardMenuDto> findBySystemMenuCls() {
+		return finder.findBySystemMenuCls();
 	}
-	
+
 	@POST
 	@Path("findByAtr")
-	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr  ) {
+	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr) {
 		return finder.findByAtr(webMenuSetting, menuAtr);
 	}
 	

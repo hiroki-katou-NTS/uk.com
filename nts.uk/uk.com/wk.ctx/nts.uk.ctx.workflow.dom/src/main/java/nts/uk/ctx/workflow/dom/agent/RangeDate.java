@@ -5,6 +5,7 @@ import nts.arc.time.GeneralDate;
 
 @Value
 public class RangeDate {
+	
 	private GeneralDate startDate;
 
 	private GeneralDate endDate;

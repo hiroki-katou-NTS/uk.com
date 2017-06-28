@@ -65,4 +65,16 @@ public class EmployeeSearchWs extends WebService {
 	public List<PersonDto> searchWorkplaceChild(GeneralDate baseDate){
 		return this.finder.searchWorkplaceChild(baseDate);
 	}
+	
+	/**
+	 * Search work place of employee.
+	 *
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	@POST
+	@Path("workplaceemp")
+	public List<String> searchWorkplaceOfEmployee(GeneralDate baseDate){
+		return this.finder.searchWorkplaceOfEmployee(baseDate);
+	}
 }

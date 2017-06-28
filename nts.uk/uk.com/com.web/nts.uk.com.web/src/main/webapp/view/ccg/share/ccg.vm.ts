@@ -1,6 +1,7 @@
 module nts.uk.com.view.ccg.share.ccg {
 
     import ListType = kcp.share.list.ListType;
+    import ComponentOption = kcp.share.list.ComponentOption;
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import TreeType = kcp.share.tree.TreeType;
     import SelectType = kcp.share.list.SelectType;
@@ -24,15 +25,16 @@ module nts.uk.com.view.ccg.share.ccg {
             selectedCodeWorkplace: KnockoutObservableArray<string>;
             selectedCodeEmployee: KnockoutObservableArray<string>;
             baseDate: KnockoutObservable<Date>;
-            employments: any;
-            classifications: any;
-            jobtitles: any;
+            employments: ComponentOption;
+            classifications: ComponentOption;
+            jobtitles: ComponentOption;
             workplaces: TreeComponentOption;
-            employeeinfo: any;
+            employeeinfo: ComponentOption;
             onSearchAllClicked: (data: PersonModel[]) => void;
             onSearchOnlyClicked: (data: PersonModel) => void;
             onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
             onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
+            onApplyEmployee: (data: string[]) => void;
 
 
             constructor() {
@@ -75,6 +77,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.onSearchOnlyClicked = data.onSearchOnlyClicked;
                 self.onSearchOfWorkplaceClicked = data.onSearchOfWorkplaceClicked;
                 self.onSearchWorkplaceChildClicked = data.onSearchWorkplaceChildClicked;
+                self.onApplyEmployee = data.onApplyEmployee;
                 self.baseDate = data.baseDate;
                 var webserviceLocator = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
@@ -113,11 +116,15 @@ module nts.uk.com.view.ccg.share.ccg {
             
             applyDataSearch(): void{
                 var self = this;
-                self.reloadDataSearch();
-                $('#employmentList').ntsListComponent(self.employments);
-                $('#classificationList').ntsListComponent(self.classifications);
-                $('#jobtitleList').ntsListComponent(self.jobtitles);
-                $('#workplaceList').ntsTreeComponent(self.workplaces);
+                service.searchWorkplaceOfEmployee(self.baseDate()).done(function(data){
+                    self.selectedCodeWorkplace(data);
+                    self.reloadDataSearch();
+                    $('#employmentList').ntsListComponent(self.employments);
+                    $('#classificationList').ntsListComponent(self.classifications);
+                    $('#jobtitleList').ntsListComponent(self.jobtitles);
+                    $('#workplaceList').ntsTreeComponent(self.workplaces);    
+                });
+                
             }
             
             searchDataEmployee(): void {
@@ -165,6 +172,11 @@ module nts.uk.com.view.ccg.share.ccg {
                     nts.uk.ui.dialog.alertError(error);
                 });    
             }
+            
+            applyEmployee(): void {
+                var self = this;
+                self.onApplyEmployee(self.selectedCodeEmployee());
+            }
 
             public toUnitModelList(dataList: PersonModel[]): KnockoutObservableArray<UnitModel> {
                 var dataRes: UnitModel[] = [];
@@ -185,10 +197,10 @@ module nts.uk.com.view.ccg.share.ccg {
 
             reloadDataSearch(){
                 var self = this;
-                console.log(self.baseDate());
                  self.employments = {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
+                    selectType: SelectType.SELECT_ALL,
                     listType: ListType.EMPLOYMENT,
                     selectedCode: self.selectedCodeEmployment,
                     isDialog: true
@@ -198,6 +210,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.Classification,
+                    selectType: SelectType.SELECT_ALL,
                     selectedCode: self.selectedCodeClassification,
                     isDialog: true
                 }
@@ -207,6 +220,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     isShowAlreadySet: false,
                     isMultiSelect: true,
                     listType: ListType.JOB_TITLE,
+                    selectType: SelectType.SELECT_ALL,
                     selectedCode: self.selectedCodeJobtitle,
                     isDialog: true,
                     baseDate: self.baseDate,
