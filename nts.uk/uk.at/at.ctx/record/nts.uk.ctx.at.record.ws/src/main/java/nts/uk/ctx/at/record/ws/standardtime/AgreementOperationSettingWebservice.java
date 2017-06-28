@@ -5,12 +5,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementOperationSettingCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementOperationSettingCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementOperationSettingCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementOperationSettingCommandHandler;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementOperationSettingDto;
+import nts.uk.ctx.at.record.app.command.standardtime.operationsetting.AddAgreementOperationSettingCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.operationsetting.AddAgreementOperationSettingCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.operationsetting.UpdateAgreementOperationSettingCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.operationsetting.UpdateAgreementOperationSettingCommandHandler;
 import nts.uk.ctx.at.record.app.find.standardtime.AgreementOperationSettingFinder;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementOperationSettingDto;
 
 @Path("at/record/agreementOperationSetting")
 @Produces("application/json")

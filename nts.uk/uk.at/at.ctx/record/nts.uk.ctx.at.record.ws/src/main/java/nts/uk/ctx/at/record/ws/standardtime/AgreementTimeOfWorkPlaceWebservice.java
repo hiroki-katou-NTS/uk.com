@@ -9,15 +9,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfWorkPlaceCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfWorkPlaceCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementTimeOfWorkPlaceCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementTimeOfWorkPlaceCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementTimeOfWorkPlaceCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementTimeOfWorkPlaceCommandHandler;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfWorkPlaceDetailDto;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.AddAgreementTimeOfWorkPlaceCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.AddAgreementTimeOfWorkPlaceCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.RemoveAgreementTimeOfWorkPlaceCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.RemoveAgreementTimeOfWorkPlaceCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.UpdateAgreementTimeOfWorkPlaceCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.UpdateAgreementTimeOfWorkPlaceCommandHandler;
 import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfWorkPlaceFinder;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfWorkPlaceListDto;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfWorkPlaceDetailDto;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfWorkPlaceListDto;
 
 @Path("at/record/agreementTimeOfWorkPlace")
 @Produces("application/json")
@@ -49,13 +49,13 @@ public class AgreementTimeOfWorkPlaceWebservice {
 	
 	@POST
 	@Path("addAgreementTimeOfWorkPlace")
-	public JavaTypeResult<List<String>> addAgreementTimeOfWorkPlace(AddAgreementTimeOfWorkPlaceCommand command) {
+	public List<String> addAgreementTimeOfWorkPlace(AddAgreementTimeOfWorkPlaceCommand command) {
 		return this.addAgreementTimeOfWorkPlaceCommandHandler.handle(command);
 	}
 	
 	@POST
 	@Path("updateAgreementTimeOfWorkplace")
-	public JavaTypeResult<List<String>> updateAgreementTimeOfWorkPlace(UpdateAgreementTimeOfWorkPlaceCommand command) {
+	public List<String> updateAgreementTimeOfWorkPlace(UpdateAgreementTimeOfWorkPlaceCommand command) {
 		return this.updateAgreementTimeOfWorkPlaceCommandHandler.handle(command);
 	}
 	
