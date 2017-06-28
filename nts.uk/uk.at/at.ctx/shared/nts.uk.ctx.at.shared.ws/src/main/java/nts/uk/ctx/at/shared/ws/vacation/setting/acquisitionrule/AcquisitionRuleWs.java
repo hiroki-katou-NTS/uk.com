@@ -19,7 +19,8 @@ import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.command.SaveAcq
 import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find.AcquisitionRuleDto;
 import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find.AcquisitionRuleFinder;
 import nts.uk.ctx.at.shared.app.vacation.setting.acquisitionrule.find.ApplySettingDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionType;
 
 /**
  * The Class AcquisitionRuleWs.
@@ -47,6 +48,11 @@ public class AcquisitionRuleWs extends WebService {
 		return this.finder.find();
 	}
 
+	/**
+	 * Find by setting.
+	 *
+	 * @return the apply setting dto
+	 */
 	@POST
 	@Path("find/setting")
 	public ApplySettingDto findBySetting() {
@@ -73,6 +79,17 @@ public class AcquisitionRuleWs extends WebService {
 	@POST
 	@Path("enum/category")
 	public List<EnumConstant> getVacationExpirationEnum() {
-		return EnumAdaptor.convertToValueNameList(Category.class);
+		return EnumAdaptor.convertToValueNameList(ManageDistinct.class);
+	}
+
+	/**
+	 * Gets the acquisition type enum.
+	 *
+	 * @return the acquisition type enum
+	 */
+	@POST
+	@Path("enum/type")
+	public List<EnumConstant> getAcquisitionTypeEnum() {
+		return EnumAdaptor.convertToValueNameList(AcquisitionType.class);
 	}
 }

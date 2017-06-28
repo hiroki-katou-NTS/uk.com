@@ -63,28 +63,28 @@
 						
 						<div id="tabs">
 							<ul data-bind="foreach: menuBars">
-								<li data-bind="attr:{id:code}"><a data-bind="attr: {href: targetContent}, text: menuBarName"></a></li>
+								<li data-bind="attr:{id:menuBarId}" class="context-menu-bar"><a data-bind="attr: {href: targetContent}, style: {color: textColor, 'background-color': backgroundColor}, text: menuBarName"></a></li>
 							</ul>
 							<button class="button-add" data-bind="click: openBdialog">メニューバーの追加<span style="display: block">+</span>
 							</button>
 							<com:ko-foreach bind="menuBars">
-								<div data-bind="attr: {id: 'tab-content-' + code()}">
+								<div data-bind="attr: {id: 'tab-content-' + menuBarId()}">
 									<div class="title-menu cf">
-										<com:ko-foreach bind="$parent.titleMenus">
-										<div id="title-menu1" class="title-menu-column valign-top">
-											<div class="title-menu-name" data-bind="text: menuBarName">Title Menu</div>
-											<ul class="tree-menu">
-												<li class="ui-state-default"><span
-													class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-											</ul>
-											<button class="button-add-treemenu">
-												メニューバーの追加<span style="display: block">+</span>
-											</button>
-										</div>		
+										<com:ko-foreach bind="titleMenu">
+											<div class="title-menu-column valign-top" data-bind="attr:{id: titleMenuId}">
+												<div class="title-menu-name context-menu-title" data-bind="style: {color: textColor, 'background-color': backgroundColor}, text: titleMenuName"></div>
+												<ul class="tree-menu">
+													<!-- <li class="ui-state-default">
+													<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li> -->
+												</ul>
+												<button class="button-add-treemenu">
+													画面の追加<span style="display: block">+</span>
+												</button>
+											</div>	
 										</com:ko-foreach>				
 										<div class="unsortable">
-											<button class="button-add" data-bind="click: $parent.openCdialog.bind($parent)">
-												メニューバーの追加<span style="display: block">+</span>
+											<button class="button-add" data-bind="click: $parent.openCdialog.bind($parent, $data)">
+												タイトルバーの追加<span style="display: block">+</span>
 											</button>
 										</div>
 									</div>

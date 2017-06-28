@@ -26,6 +26,7 @@ import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJob
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchy;
+import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
 import nts.uk.ctx.basic.dom.person.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -99,7 +100,6 @@ public class EmployeeSearchFinder {
 								.map(classification -> classification.getEmployeeId().v())
 								.collect(Collectors.toList()),
 						input.getBaseDate(), input.getJobTitleCodes());
-
 		// find by work place
 		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
 				.searchWorkplaceHistory(
@@ -241,5 +241,26 @@ public class EmployeeSearchFinder {
 		}
 
 		return persons;
+	}
+	
+	/**
+	 * Search workplace of employee.
+	 *
+	 * @return the list
+	 */
+	public List<String> searchWorkplaceOfEmployee(GeneralDate baseDate) {
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get employee id
+		String employeeId = loginUserContext.employeeId();
+
+		// get data work place history
+		List<AffiliationWorkplaceHistory> workplaceHistory = this.repositoryWorkplaceHistory
+				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
+
+		// return data
+		return workplaceHistory.stream().map(workplace -> workplace.getWorkplaceId().v())
+				.collect(Collectors.toList());
 	}
 }

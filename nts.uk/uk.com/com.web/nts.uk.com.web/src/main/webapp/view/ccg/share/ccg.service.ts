@@ -9,7 +9,8 @@ module nts.uk.com.view.ccg.share.ccg {
             getPersonLogin: "basic/person/getpersonlogin",
             searchModeEmployee: "basic/organization/employee/search/advanced",
             searchOfWorkplace: "basic/organization/employee/search/ofworkplace",
-            searchWorkplaceChild: "basic/organization/employee/search/workplacechild"
+            searchWorkplaceChild: "basic/organization/employee/search/workplacechild",
+            searchWorkplaceOfEmployee: "basic/organization/employee/search/workplaceemp"
         }
 
         /**
@@ -35,6 +36,10 @@ module nts.uk.com.view.ccg.share.ccg {
             : JQueryPromise<model.PersonModel[]> {
             return nts.uk.request.ajax('com', servicePath.searchModeEmployee, input);
         }
+
+        export function searchWorkplaceOfEmployee(baseDate: Date): JQueryPromise<string[]> {
+            return nts.uk.request.ajax('com', servicePath.searchWorkplaceOfEmployee, baseDate);
+        }
         
         
         export module model{
@@ -53,6 +58,7 @@ module nts.uk.com.view.ccg.share.ccg {
             }
 
             export interface GroupOption {
+                baseDate?: KnockoutObservable<Date>;
                 // クイック検索タブ
                 isQuickSearchTab: boolean;
                 // 参照可能な社員すべて
@@ -77,6 +83,8 @@ module nts.uk.com.view.ccg.share.ccg {
                 onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
                 
                 onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
+                
+                onApplyEmployee: (data: string[]) => void;
             }
     
         }

@@ -72,6 +72,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 	 */
 	@Override
 	public List<WorkPlaceHistory> findAllHistory(String companyId, GeneralDate generalDate) {
+		
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -86,10 +87,10 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(KwpmtWplHist_.kwpmtWplHistPK).get(KwpmtWplHistPK_.cid), companyId));
-		// // >= general date
+		// >= general date
 		lstpredicateWhere
 				.add(criteriaBuilder.lessThanOrEqualTo(root.get(KwpmtWplHist_.strD), generalDate));
-		// // <= general date
+		 // <= general date
 		lstpredicateWhere.add(
 				criteriaBuilder.greaterThanOrEqualTo(root.get(KwpmtWplHist_.endD), generalDate));
 
@@ -354,6 +355,48 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 		});
 
 		return workPlaceHierarchieRes;
+	}
+
+	@Override
+	public List<Workplace> convertToWorkplace(String companyId, List<String> workplaceCode) {
+		
+		// check exist data
+		if (CollectionUtil.isEmpty(workplaceCode)) {
+			return new ArrayList<>();
+		}
+		
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KWPMT_WORK_PLACE (KwpmtWorkPlace SQL)
+		CriteriaQuery<KwpmtWorkplace> cq = criteriaBuilder.createQuery(KwpmtWorkplace.class);
+
+		// root data
+		Root<KwpmtWorkplace> root = cq.from(KwpmtWorkplace.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equals workplaceId
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KwpmtWorkplace_.kwpmtWorkplacePK).get(KwpmtWorkplacePK_.cid), companyId));
+		
+		// and work place code
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(KwpmtWorkplace_.wplcd).in(workplaceCode)));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KwpmtWorkplace> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
 	}
 
 }

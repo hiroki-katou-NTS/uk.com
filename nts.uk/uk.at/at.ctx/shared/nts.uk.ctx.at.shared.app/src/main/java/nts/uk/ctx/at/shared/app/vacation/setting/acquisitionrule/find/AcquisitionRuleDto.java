@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionOrder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleSetMemento;
-import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.Category;
 
 /**
  * The Class VacationAcquisitionRuleDto.
@@ -21,7 +21,6 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	/** The company id. */
 	public String companyId;
 
-	
 	/** The category. */
 	public int category;
 
@@ -48,8 +47,8 @@ public class AcquisitionRuleDto implements AcquisitionRuleSetMemento {
 	 * Settingclassification)
 	 */
 	@Override
-	public void setCategory(int category) {
-		this.category = category;
+	public void setCategory(ManageDistinct category) {
+		this.category = category.value;
 	}
 
 	/*

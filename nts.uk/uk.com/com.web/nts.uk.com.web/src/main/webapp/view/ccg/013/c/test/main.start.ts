@@ -1,6 +1,6 @@
-module nts.uk.at.view.kmk008.c {  
+module nts.uk.sys.view.ccg013.c.test {
     __viewContext.ready(function() {
-        let screenModel = new viewmodel.ScreenModel();
+        var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
         });

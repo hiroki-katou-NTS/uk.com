@@ -96,7 +96,17 @@ public class WorkplaceFinder {
 		String searchCode = preCode+hierarchyCode.substring(0,3);
 		dto.setChilds(new ArrayList<>());
 		if (hierarchyCode.length() == 3) {
-			lstReturn.add(dto);
+			//check duplicate code 
+			if (lstReturn.isEmpty()) {
+				lstReturn.add(dto);
+			} else {
+				for (WorkplaceFindDto item : lstReturn) {
+					if (!item.getCode().equals(dto.getCode())) {
+						lstReturn.add(dto);
+						break;
+					}
+				}
+			}
 		} else {
 			List<WorkplaceFindDto> currentItemChilds = lstReturn.stream()
 					.filter(item -> item.getHeirarchyCode().equals(searchCode)).findFirst().get().getChilds();

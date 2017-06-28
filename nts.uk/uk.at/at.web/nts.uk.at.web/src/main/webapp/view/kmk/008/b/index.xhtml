@@ -8,13 +8,26 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
+
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.SampleTimeDuration
+			</com:ValidatorScript>
+
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk008.b.main.css" />
 			<com:scriptfile path="kmk008.b.start.js" />
 			<com:scriptfile path="kmk008.b.vm.js" />
 			<com:scriptfile path="kmk008.b.service.js" />
+
+			<com:stylefile path="../c/kmk008.c.main.css" />
+			<com:scriptfile path="../c/kmk008.c.vm.js" />
+			<com:scriptfile path="../c/kmk008.c.service.js" />
 			
+			<com:stylefile path="../d/kmk008.d.main.css" />
+			<com:scriptfile path="../d/kmk008.d.vm.js" />
+			<com:scriptfile path="../d/kmk008.d.service.js" />
 		</ui:define>
+
 		<ui:define name="sidebar" tabindex="1">
 			<ul class="navigator">
 				<li><a href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
@@ -25,47 +38,11 @@
 		</ui:define>
 
 		<ui:define name="sidebar-content">
-			<div id="tabpanel-1" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
-						'#Com_Company'])}</span> <a tabindex="2"
-						data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-					<button class="proceed" tabindex="3">#{i18n.getText('KMK008_14')}</button>
-				</div>
-				<div class="contents-area">
-					<div class="tabpanel-1-contents-area-left">
-						<div class="label" >#{i18n.getText('KMK008_6')}</div>
-						<HR />
-						
-					</div>
-				</div>
+			<div id="tabpanel-1" role="tabpanel" data-bind="with: viewmodelC">
+				<ui:include src="../c/index.xhtml" />
 			</div>
-			<div id="tabpanel-2" role="tabpanel">
-				<div class="sidebar-content-header">
-					<span tabindex="2" class="title">#{i18n.getText('KMK008_12',['#KMK008_8',
-						'#Com_Employment'])}</span> <a
-						data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KMK008_13')}</a>
-					<button class="proceed" tabindex="3">#{i18n.getText('KMK008_14')}</button>
-					<button tabindex="4">#{i18n.getText('KMK008_15')}</button>
-					<button class="danger" tabindex="5">#{i18n.getText('KMK008_16')}</button>
-				</div>
-				<div class="contents-area">
-					<div id="tab-panel"
-						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-						<div class="tab-content-1">
-							<span>Tab Content 1</span><br />
-						</div>
-						<div class="tab-content-2">
-							<span>Tab Content 2</span><br />
-						</div>
-						<div class="tab-content-3">
-							<span>Tab Content 3</span><br />
-						</div>
-						<div class="tab-content-4">
-							<span>Tab Content 4</span><br />
-						</div>
-					</div>
-				</div>
+			<div id="tabpanel-2" role="tabpanel" data-bind="with: viewmodelD">
+				<ui:include src="../d/index.xhtml" />
 			</div>
 			<div id="tabpanel-3" role="tabpanel">
 				<div class="sidebar-content-header">

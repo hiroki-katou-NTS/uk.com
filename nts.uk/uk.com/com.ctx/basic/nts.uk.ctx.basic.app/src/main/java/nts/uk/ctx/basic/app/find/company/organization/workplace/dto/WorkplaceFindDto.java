@@ -23,6 +23,9 @@ import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceSetMemento;
 @Setter
 public class WorkplaceFindDto implements WorkplaceSetMemento{
 	
+	/** The workplace id. */
+	private String workplaceId;
+	
 	/** The code. */
 	private String code;
 	
@@ -71,8 +74,7 @@ public class WorkplaceFindDto implements WorkplaceSetMemento{
 	 */
 	@Override
 	public void setWorkplaceId(WorkplaceId workplaceId) {
-		// No thing code
-
+		this.workplaceId = workplaceId.v();
 	}
 
 	/*
