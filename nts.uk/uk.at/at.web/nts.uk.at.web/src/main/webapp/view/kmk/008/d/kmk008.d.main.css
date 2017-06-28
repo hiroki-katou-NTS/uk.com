@@ -14,38 +14,3 @@ button {
 .title {
 	margin-right: 15px;
 }
-.tabpanel-1-contents-area-left {
-	width: 500px;
-	margin-left: 30px;
-	margin-top: 20px;
-	float: left;
-	clean: right;
-}
-
-.tabpanel-1-contents-area-right {
-	width: 400px;
-	margin-top: 20px;
-	float: left;
-	clean: right;
-}
-
-.table-basic-setting-list-td-label {
-	background-color: #F7EFD4 !important;
-}
-
-.table-basic-setting-list {
-	width: 400px;
-}
-
-.table-basic-setting-list, th, td {
-	border: 1px solid gray;
-}
-
-.time-editor-custom-width {
-	width: 75px !important;
-	margin: 5px !important;
-}
-
-.table-basic-setting-list th {
-	height: 35px;
-}
