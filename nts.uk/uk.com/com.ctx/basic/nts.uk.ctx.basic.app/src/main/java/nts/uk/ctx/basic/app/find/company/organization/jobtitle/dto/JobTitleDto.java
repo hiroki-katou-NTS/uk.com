@@ -25,7 +25,11 @@ public class JobTitleDto implements JobTitleSetMemento {
 	/** The name. */
 	private String name;
 
+	/** The sequence code. */
 	private String sequenceCode;
+
+	/** The id. */
+	private String id;
 
 	/*
 	 * (non-Javadoc)
@@ -37,8 +41,7 @@ public class JobTitleDto implements JobTitleSetMemento {
 	 */
 	@Override
 	public void setPositionId(PositionId positionId) {
-		// TODO Auto-generated method stub
-
+		this.id = positionId.v();
 	}
 
 	/*
