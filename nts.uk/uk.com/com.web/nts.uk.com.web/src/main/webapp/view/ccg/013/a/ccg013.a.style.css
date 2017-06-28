@@ -44,7 +44,7 @@
 }
 
 .link-button {
-	margin-left: 270px;
+	margin-left: 195px;
 }
 
 #A_LBL_002, #A_LBL_003, #A_LBL_005, #A_LBL_006, #A_LBL_010 {
@@ -161,3 +161,5 @@ ul.tree-menu li:last-child {
     margin-bottom: 10px !important;
     color: black !important;
 }
+
+.icon_link {width: 30px; vertical-align: middle; }

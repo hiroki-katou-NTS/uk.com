@@ -66,10 +66,9 @@ module nts.uk.com.view.ccg.share.ccg {
                 //自分だけ
                 isOnlyMe: boolean;
                 //おなじ部門の社員
-                isEmployeeOfDepartment: boolean;
+                isEmployeeOfWorkplace: boolean;
                 //おなじ＋配下部門の社員
-                isEmployeeDepartmentFollow: boolean;
-
+                isEmployeeWorkplaceFollow: boolean;
 
                 // 詳細検索タブ
                 isAdvancedSearchTab: boolean;

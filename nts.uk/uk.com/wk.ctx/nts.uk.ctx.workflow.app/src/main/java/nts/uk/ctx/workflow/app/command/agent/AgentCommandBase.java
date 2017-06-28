@@ -3,7 +3,11 @@ package nts.uk.ctx.workflow.app.command.agent;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Value
 public class AgentCommandBase {
 	
