@@ -9,7 +9,7 @@
 			<ui:define name="htmlHead">
 				<com:ValidatorScript>
 					nts.uk.ctx.at.schedule.dom.budget.premium.PremiumRate
-					nts.uk.shr.com.primitive.Memo
+					nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostMemo
    				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="../shr/kml001.shr.servicebase.js" />
@@ -105,12 +105,12 @@
 								</div>
 							</div>
 							<div class="table">
-								<div class="item-valign-top" data-bind="ntsFormLabel: { constraint: 'Memo' }">#{i18n.getText('KML001_11')}</div>
+								<div class="item-valign-top" data-bind="ntsFormLabel: { constraint: 'PersonCostMemo' }">#{i18n.getText('KML001_11')}</div>
 								<a data-bind="with: currentPersonCost">
 									<textarea id="memo" data-bind="ntsMultilineEditor: {
 										name: '#[KML001_11]',
 										value: memo,
-										constraint: 'Memo'}" />
+										constraint: 'PersonCostMemo'}" />
 								</a>
 							</div>
 							<div class="table" id="premium-set-div">
@@ -124,7 +124,7 @@
 									</thead>
 									<tbody data-bind="foreach: currentPersonCost().premiumSets">
 										<tr data-bind="css: { notUse: useAtr() == 0 }">
-											<td data-bind="text: (name()=='')?'ITEM'+($index()+1):name()"></td>
+											<td style="word-wrap: break-word;" data-bind="text: (name()=='')?'ITEM'+($index()+1):name()"></td>
 											<td>
 												<span>
 													<input class="premiumInput premiumPercent" data-bind="ntsNumberEditor: {
