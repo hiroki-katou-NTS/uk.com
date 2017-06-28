@@ -1122,19 +1122,24 @@ var nts;
                 if (originalString.length === charSet.length) {
                     return (originalString === charSet) ? "" : originalString;
                 }
-                var i = findLastContinousIndex(originalString, charSet, 0);
+                var i = findLastContinousIndex(originalString, charSet, 0, true);
                 return originalString.substr(i, originalString.length - i);
             }
             text_3.removeFromStart = removeFromStart;
-            function findLastContinousIndex(originalString, charSet, startIndex) {
-                if (startIndex >= originalString.length - 1) {
-                    return startIndex;
+            function removeFromEnd(originalString, charSet) {
+                if (originalString.length === charSet.length) {
+                    return (originalString === charSet) ? "" : originalString;
                 }
-                if (originalString.substr(startIndex, charSet.length) !== charSet) {
+                var i = findLastContinousIndex(originalString, charSet, originalString.length, false);
+                return originalString.substr(0, i);
+            }
+            text_3.removeFromEnd = removeFromEnd;
+            function findLastContinousIndex(originalString, charSet, startIndex, fromStart) {
+                if (originalString.substring(startIndex, fromStart ? (startIndex + charSet.length) : (startIndex - charSet.length)) !== charSet) {
                     return startIndex;
                 }
                 else {
-                    return findLastContinousIndex(originalString, charSet, startIndex + charSet.length);
+                    return findLastContinousIndex(originalString, charSet, fromStart ? (startIndex + charSet.length) : (startIndex - charSet.length), fromStart);
                 }
             }
             /**
@@ -2604,7 +2609,17 @@ var nts;
                             result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]));
                         }
                         else {
-                            result.success(value.toString() === "0" ? inputText : uk.text.removeFromStart(inputText, "0"));
+                            var formated = value.toString() === "0" ? inputText : uk.text.removeFromStart(inputText, "0");
+                            if (formated.indexOf(".") >= 0) {
+                                formated = uk.text.removeFromEnd(formated, "0");
+                            }
+                            if (formated.charAt(0) === ".") {
+                                formated = "0" + formated;
+                            }
+                            if (formated.charAt(formated.length - 1) === ".") {
+                                formated = formated.substr(0, formated.length - 1);
+                            }
+                            result.success(formated);
                         }
                         return result;
                     };
