@@ -29,12 +29,12 @@ public class CjtmtJobTitlePK implements Serializable {
 
 	/** The job id. */
 	@Basic(optional = false)
-	@Column(name = "POS_ID")
+	@Column(name = "JOB_ID")
 	private String jobId;
 
 	/** The job code. */
 	@Basic(optional = false)
-	@Column(name = "POS_CODE")
+	@Column(name = "JOB_CD")
 	private String jobCode;
 
 	/**
