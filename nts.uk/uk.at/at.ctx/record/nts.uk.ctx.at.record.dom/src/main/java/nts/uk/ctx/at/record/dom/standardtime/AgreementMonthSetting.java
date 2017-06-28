@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.standardtime;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
@@ -37,6 +38,12 @@ public class AgreementMonthSetting extends AggregateRoot {
 			BigDecimal errorOneMonth, BigDecimal alarmOneMonth) {
 		return new AgreementMonthSetting(employeeId, new YearMonth(yearMonthValue.intValue()),
 				new ErrorOneMonth(errorOneMonth), new AlarmOneMonth(alarmOneMonth));
+	}
+	
+	public void validate(){
+		if(alarmOneMonth.v().compareTo(errorOneMonth.v()) > 0){
+			throw new BusinessException("Msg_59");
+		}
 	}
 
 }

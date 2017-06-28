@@ -8,22 +8,23 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfWorkPlaceCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfWorkPlaceCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementTimeOfWorkPlaceCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementTimeOfWorkPlaceCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementTimeOfWorkPlaceCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementTimeOfWorkPlaceCommandHandler;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfWorkPlaceDetailDto;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfWorkPlaceDetailFinder;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfWorkPlaceListDto;
+import nts.arc.layer.app.command.JavaTypeResult;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.AddAgreementTimeOfWorkPlaceCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.AddAgreementTimeOfWorkPlaceCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.RemoveAgreementTimeOfWorkPlaceCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.RemoveAgreementTimeOfWorkPlaceCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.UpdateAgreementTimeOfWorkPlaceCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.workplace.UpdateAgreementTimeOfWorkPlaceCommandHandler;
+import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfWorkPlaceFinder;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfWorkPlaceDetailDto;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfWorkPlaceListDto;
 
 @Path("at/record/agreementTimeOfWorkPlace")
 @Produces("application/json")
 public class AgreementTimeOfWorkPlaceWebservice {
 	
 	@Inject
-	private AgreementTimeOfWorkPlaceDetailFinder agreementTimeOfWorkPlaceDetailFinder;
+	private AgreementTimeOfWorkPlaceFinder agreementTimeOfWorkPlaceDetailFinder;
 	
 	@Inject
 	private AddAgreementTimeOfWorkPlaceCommandHandler addAgreementTimeOfWorkPlaceCommandHandler;
@@ -41,7 +42,7 @@ public class AgreementTimeOfWorkPlaceWebservice {
 	}
 	
 	@POST
-	@Path("getAgreementTimeOfWorkPlace/{laborSystemAtr}")
+	@Path("getAgreementTimeOfWorkPlace/{laborSystemAtr}/{workplaceId}")
 	public AgreementTimeOfWorkPlaceDetailDto getDetail(@PathParam("laborSystemAtr") int laborSystemAtr,@PathParam("workplaceId") String workplaceId) {
 		return this.agreementTimeOfWorkPlaceDetailFinder.findDetail(laborSystemAtr, workplaceId);
 	}

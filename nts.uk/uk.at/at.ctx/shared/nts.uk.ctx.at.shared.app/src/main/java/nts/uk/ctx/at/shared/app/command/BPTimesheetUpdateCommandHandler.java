@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 @Stateless
@@ -18,7 +19,7 @@ public class BPTimesheetUpdateCommandHandler  extends CommandHandler<List<BPTime
 	protected void handle(CommandHandlerContext<List<BPTimesheetUpdateCommand>> context) {
 		 List<BPTimesheetUpdateCommand> lstBPTimesheetUpdateCommand = context.getCommand();
 		bpTimesheetRepository.updateListTimesheet(lstBPTimesheetUpdateCommand.get(0).companyId,
-				lstBPTimesheetUpdateCommand.get(0).bonusPaySettingCode,
+			new BonusPaySettingCode(lstBPTimesheetUpdateCommand.get(0).bonusPaySettingCode),
 				lstBPTimesheetUpdateCommand.stream().map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList()));
 	}
 	

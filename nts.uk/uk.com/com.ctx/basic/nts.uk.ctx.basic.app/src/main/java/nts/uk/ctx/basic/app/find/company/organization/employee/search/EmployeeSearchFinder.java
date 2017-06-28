@@ -26,7 +26,6 @@ import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffiliationJob
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffiliationWorkplaceHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkPlaceHierarchy;
-import nts.uk.ctx.basic.dom.company.organization.workplace.Workplace;
 import nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository;
 import nts.uk.ctx.basic.dom.person.PersonRepository;
 import nts.uk.shr.com.context.AppContexts;

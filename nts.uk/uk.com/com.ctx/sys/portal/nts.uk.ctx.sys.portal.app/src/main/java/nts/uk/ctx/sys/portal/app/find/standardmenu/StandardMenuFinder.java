@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -44,33 +46,32 @@ public class StandardMenuFinder {
 	}
 
 	/**
-	 * find by companyId, afterLoginDisplay = 0, system = common,
-	 * menuClassification = toppage
+	 * find by companyId, system = common, menuClassification = top page
 	 * 
 	 * @return List StandardMenuDto
 	 */
-	// public List<StandardMenuDto> findByAfterLgDisSysMenuCls() {
-	// String companyId = AppContexts.user().companyId();
-	// return this.standardMenuRepository
-	// .findByAfterLgDisSysMenuCls(companyId, 0, System.COMMON.value,
-	// MenuClassification.TopPage.value)
-	// .stream().map(x ->
-	// StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
-	// }
+	public List<StandardMenuDto> findBySystemMenuCls() {
+		String companyId = AppContexts.user().companyId();
+		return this.standardMenuRepository
+				.findBySystemMenuClassification(companyId, System.COMMON.value, MenuClassification.TopPage.value)
+				.stream().map(x -> StandardMenuDto.fromDomain(x)).collect(Collectors.toList());
+	}
+
 	/**
 	 * find all StandardMenu by companyID and webMenuSetting = 0 and menuAtr = 0
+	 * 
 	 * @param conpanyID
-	 * @param webMenuSetting 
-	 * @param menuAtr 
+	 * @param webMenuSetting
+	 * @param menuAtr
 	 * @return List
 	 */
 	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr) {
 		String companyID = AppContexts.user().companyId();
-		return this.standardMenuRepository.findByAtr(companyID, webMenuSetting, menuAtr).stream().map(item -> StandardMenuDto.fromDomain(item))
-				.collect(Collectors.toList());
-		
+		return this.standardMenuRepository.findByAtr(companyID, webMenuSetting, menuAtr).stream()
+				.map(item -> StandardMenuDto.fromDomain(item)).collect(Collectors.toList());
+
 	}
-	
+
 	/**
 	 * find all StandardMenu by companyID and system
 	 * 
@@ -80,7 +81,7 @@ public class StandardMenuFinder {
 	 */
 	public List<StandardMenuDto> findBySystem(int system) {
 		String companyID = AppContexts.user().companyId();
-		return this.standardMenuRepository.findBySystem(companyID, system).stream().map(item -> StandardMenuDto.fromDomain(item))
-				.collect(Collectors.toList());
+		return this.standardMenuRepository.findBySystem(companyID, system).stream()
+				.map(item -> StandardMenuDto.fromDomain(item)).collect(Collectors.toList());
 	}
 }

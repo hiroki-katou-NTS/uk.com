@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.layer.infra.data.query.DBCharPaddingAs;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 @Setter
 @Getter
 @Embeddable
@@ -20,6 +22,7 @@ public class KbpmtBPTimesheetPK implements Serializable {
 	public String companyId;
 	@Column(name = "BONUS_PAY_TIMESHEET_NO")
 	public int timeSheetNO;
+	@DBCharPaddingAs(BonusPaySettingCode.class)
 	@Column(name = "BONUS_PAY_SET_CD")
 	public String bonusPaySettingCode;
 }

@@ -40,13 +40,13 @@ public class JewtstEmploymentWtSetPK implements Serializable {
 	/** The ctg. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CTG")
+	@Column(name = "WT_CTG")
 	private int ctg;
 
 	/** The type. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "TYPE")
+	@Column(name = "WT_TYPE")
 	private int type;
 
 	/** The empt cd. */

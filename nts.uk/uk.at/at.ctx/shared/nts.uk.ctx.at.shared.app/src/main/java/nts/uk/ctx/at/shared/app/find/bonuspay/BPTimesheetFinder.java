@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.shr.com.context.AppContexts;
@@ -20,7 +22,7 @@ public class BPTimesheetFinder {
 	public List<BPTimesheetDto> getListTimesheet(String bonusPaySettingCode) {
 		String companyId = AppContexts.user().companyId();
 		List<BonusPayTimesheet> lstBonusPayTimesheet = bpTimesheetRepository.getListTimesheet(companyId,
-				bonusPaySettingCode);
+				new BonusPaySettingCode(bonusPaySettingCode) );
 		return lstBonusPayTimesheet.stream().map(c -> toBPTimesheetDto(companyId, bonusPaySettingCode, c))
 				.collect(Collectors.toList());
 	}

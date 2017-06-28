@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstWTBonusPaySetting;
@@ -22,24 +23,18 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 	}
 
 	@Override
-	public void addListSetting(List<WorkingTimesheetBonusPaySetting> lstSetting) {
-		List<KbpstWTBonusPaySetting> lstKbpstWTBonusPaySetting = lstSetting.stream().map(c -> toWTBPSettingEntity(c))
-				.collect(Collectors.toList());
-		this.commandProxy().insertAll(lstKbpstWTBonusPaySetting);
+	public void addWTBPSetting(WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
+		this.commandProxy().insert(this.toWTBPSettingEntity(workingTimesheetBonusPaySetting));
 	}
 
 	@Override
-	public void updateListSetting(List<WorkingTimesheetBonusPaySetting> lstSetting) {
-		List<KbpstWTBonusPaySetting> lstKbpstWTBonusPaySetting = lstSetting.stream().map(c -> toWTBPSettingEntity(c))
-				.collect(Collectors.toList());
-		this.commandProxy().updateAll(lstKbpstWTBonusPaySetting);
+	public void updateWTBPSetting(WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
+		this.commandProxy().update(this.toWTBPSettingEntity(workingTimesheetBonusPaySetting));
 	}
 
 	@Override
-	public void removeListSetting(List<WorkingTimesheetBonusPaySetting> lstSetting) {
-		List<KbpstWTBonusPaySetting> lstKbpstWTBonusPaySetting = lstSetting.stream().map(c -> toWTBPSettingEntity(c))
-				.collect(Collectors.toList());
-		this.commandProxy().removeAll(lstKbpstWTBonusPaySetting);
+	public void removeWTBPSetting(WorkingTimesheetBonusPaySetting workingTimesheetBonusPaySetting) {
+		this.commandProxy().remove(this.toWTBPSettingEntity(workingTimesheetBonusPaySetting));
 	}
 
 	private KbpstWTBonusPaySetting toWTBPSettingEntity(
@@ -56,6 +51,12 @@ public class JpaWTBPSettingRepository extends JpaRepository implements WTBonusPa
 				kbpstWTBonusPaySetting.kbpstWTBonusPaySettingPK.companyId,
 				kbpstWTBonusPaySetting.kbpstWTBonusPaySettingPK.workingTimesheetCode,
 				kbpstWTBonusPaySetting.bonusPaySettingCode);
+	}
+
+	@Override
+	public Optional<WorkingTimesheetBonusPaySetting> getWTBPSetting(String companyId, WorkingTimesheetCode workingTimesheetCode) {
+		return Optional.ofNullable(this.toWTBPSettingDomain(this.queryProxy()
+		.find(new KbpstWTBonusPaySettingPK(companyId, workingTimesheetCode.v()), KbpstWTBonusPaySetting.class).get()));
 	}
 
 }

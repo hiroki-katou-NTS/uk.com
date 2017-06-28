@@ -2,32 +2,33 @@ package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBonusPayTimeItem;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBonusPayTimeItemPK;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItemRepository {
 	private final String SELECT_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 0";
 	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND  c.timeItemTypeAtr = 1";
+	private final String SELECT_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId  AND c.kbpstBonusPayTimeItemPK.timeItemId = :timeItemId   AND  c.timeItemTypeAtr = 0";
+	private final String SELECT_SPEC_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID = "SELECT c FROM KbpstBonusPayTimeItem c WHERE c.kbpstBonusPayTimeItemPK.companyId = :companyId AND c.kbpstBonusPayTimeItemPK.timeItemId = :timeItemId AND  c.timeItemTypeAtr = 1";
 
 	@Override
-	public List<BonusPayTimeItem> getListBonusPayTimeItem() {
-		String companyId = AppContexts.user().companyId();
+	public List<BonusPayTimeItem> getListBonusPayTimeItem(String companyId) {
 		return this.queryProxy().query(SELECT_BPTIMEITEM_BY_COMPANYID, KbpstBonusPayTimeItem.class)
 				.setParameter("companyId", companyId).getList(x -> this.toBonusPayTimeItemDomain(x));
 	}
 
 	@Override
-	public List<BonusPayTimeItem> getListSpecialBonusPayTimeItem() {
-		String companyId = AppContexts.user().companyId();
+	public List<BonusPayTimeItem> getListSpecialBonusPayTimeItem(String companyId) {
 		return this.queryProxy().query(SELECT_SPEC_BPTIMEITEM_BY_COMPANYID, KbpstBonusPayTimeItem.class)
 				.setParameter("companyId", companyId).getList(x -> this.toBonusPayTimeItemDomain(x));
 	}
@@ -60,6 +61,22 @@ public class JpaBPTimeItemRepository extends JpaRepository implements BPTimeItem
 						bonusPayTimeItem.getTimeItemId().toString()),
 				new BigDecimal(bonusPayTimeItem.getUseAtr().value), bonusPayTimeItem.getTimeItemName().toString(),
 				new BigDecimal(bonusPayTimeItem.getId()), new BigDecimal(bonusPayTimeItem.getTimeItemTypeAtr().value));
+	}
+
+	@Override
+	public Optional<BonusPayTimeItem> getBonusPayTimeItem(String companyId, TimeItemId timeItemId) {
+		return Optional.ofNullable(this.toBonusPayTimeItemDomain(
+				this.queryProxy().query(SELECT_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID, KbpstBonusPayTimeItem.class)
+						.setParameter("companyId", companyId).setParameter("timeItemId", timeItemId, TimeItemId.class)
+						.getSingle().get()));
+	}
+
+	@Override
+	public Optional<BonusPayTimeItem> getSpecialBonusPayTimeItem(String companyId, TimeItemId timeItemId) {
+		return Optional.ofNullable(this.toBonusPayTimeItemDomain(
+				this.queryProxy().query(SELECT_SPEC_BPTIMEITEM_BY_COMPANYID_AND_TIMEITEMID, KbpstBonusPayTimeItem.class)
+						.setParameter("companyId", companyId).setParameter("timeItemId", timeItemId, TimeItemId.class)
+						.getSingle().get()));
 	}
 
 }

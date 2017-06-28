@@ -6,11 +6,18 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 
+/**
+ * 
+ * @author nampt
+ *
+ */
 @Stateless
-public class AgreementTimeOfClassificationDomainServiceImp implements AgreementTimeOfClassificationDomainService{	
+public class AgreementTimeOfClassificationDomainServiceImp implements AgreementTimeOfClassificationDomainService {
 
 	@Inject
 	private BasicAgreementSettingRepository basicAgreementSettingRepository;
@@ -21,7 +28,7 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 	@Override
 	public List<String> add(AgreementTimeOfClassification agreementTimeOfClassification,
 			BasicAgreementSetting basicAgreementSetting) {
-		
+
 		List<String> errors = new ArrayList<>();
 		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
 			/**
@@ -39,23 +46,47 @@ public class AgreementTimeOfClassificationDomainServiceImp implements AgreementT
 			errors.add("Msg_59, #KMK008_67, #KMK008_66");
 		}
 
-		this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);		
+		this.agreementTimeOfClassificationRepository.add(agreementTimeOfClassification);
 
 		this.basicAgreementSettingRepository.add(basicAgreementSetting);
-		
+
 		return errors;
 	}
 
 	@Override
 	public List<String> update(BasicAgreementSetting basicAgreementSetting) {
-		return null;
+
+		List<String> errors = new ArrayList<>();
+		if (checkLimitTimeAndErrorTime(basicAgreementSetting)) {
+			/**
+			 * パラメータ parameters {0}：#KMK008_66 {1}：#KMK008_68
+			 */
+			errors.add("Msg_59, #KMK008_66, #KMK008_68");
+			// throw new BusinessException("Msg_59","#KMK008_66", "#KMK008_68");
+		}
+
+		if (checkAlarmTimeAndErrorTime(basicAgreementSetting)) {
+			/**
+			 * パラメータ parameters {0}：#KMK008_67 {1}：#KMK008_66
+			 * 
+			 */
+			errors.add("Msg_59, #KMK008_67, #KMK008_66");
+		}
+		this.basicAgreementSettingRepository.update(basicAgreementSetting);
+
+		return errors;
 	}
 
 	@Override
-	public void remove(String companyId, int laborSystemAtr, String classificationCode) {
-		
+	public void remove(String companyId, int laborSystemAtr, String classificationCode, String basicSettingId) {
+
+		this.basicAgreementSettingRepository.remove(basicSettingId);
+
+		this.agreementTimeOfClassificationRepository.remove(companyId,
+				EnumAdaptor.valueOf(laborSystemAtr, LaborSystemtAtr.class), classificationCode);
+
 	}
-	
+
 	private boolean checkLimitTimeAndErrorTime(BasicAgreementSetting setting) {
 		if (setting.getErrorWeek().v().compareTo(setting.getLimitWeek().v()) > 0
 				|| setting.getErrorTwoWeeks().v().compareTo(setting.getLimitTwoWeeks().v()) > 0

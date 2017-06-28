@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 
@@ -19,7 +20,7 @@ public class SpecBPTimesheetDeleteCommandHandler extends CommandHandler<List<Spe
 	protected void handle(CommandHandlerContext<List<SpecBPTimesheetDeleteCommand>> context) {
 		List<SpecBPTimesheetDeleteCommand> lstSpecBPTimesheetDeleteCommand = context.getCommand();
 		 specBPTimesheetRepository.removeListTimesheet(lstSpecBPTimesheetDeleteCommand.get(0).companyId,
-					lstSpecBPTimesheetDeleteCommand.get(0).bonusPaySettingCode,
+				new BonusPaySettingCode(lstSpecBPTimesheetDeleteCommand.get(0).bonusPaySettingCode),
 					lstSpecBPTimesheetDeleteCommand.stream().map(c -> toSpecBonusPayTimesheetDomain(c)).collect(Collectors.toList()));
 	}
 	private SpecBonusPayTimesheet toSpecBonusPayTimesheetDomain(SpecBPTimesheetDeleteCommand specBPTimesheetDeleteCommand) {

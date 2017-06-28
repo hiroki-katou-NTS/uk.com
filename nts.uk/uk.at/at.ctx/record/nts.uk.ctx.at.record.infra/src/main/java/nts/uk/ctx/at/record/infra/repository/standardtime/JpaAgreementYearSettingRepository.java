@@ -55,10 +55,12 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public void update(String employeeId, int yearvalue, BigDecimal errorOneYear, BigDecimal alarmOneYear) {
-		this.getEntityManager().createQuery(UPDATE_BY_KEY).setParameter("employeeId", employeeId)
-				.setParameter("yearValue", new BigDecimal(yearvalue)).setParameter("errorOneYear", errorOneYear)
-				.setParameter("alarmOneYear", alarmOneYear).executeUpdate();
+	public void update(AgreementYearSetting agreementYearSetting) {
+		this.getEntityManager().createQuery(UPDATE_BY_KEY)
+				.setParameter("employeeId", agreementYearSetting.getEmployeeId())
+				.setParameter("yearValue", agreementYearSetting.getYearValue())
+				.setParameter("errorOneYear", agreementYearSetting.getErrorOneYear().v())
+				.setParameter("alarmOneYear", agreementYearSetting.getAlarmOneYear().v()).executeUpdate();
 	}
 
 	@Override

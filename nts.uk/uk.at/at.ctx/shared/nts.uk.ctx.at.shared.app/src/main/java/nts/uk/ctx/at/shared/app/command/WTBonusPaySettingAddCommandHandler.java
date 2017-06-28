@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.shared.app.command;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,15 +9,14 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 
 @Stateless
-public class WTBonusPaySettingAddCommandHandler extends CommandHandler<List<WTBonusPaySettingAddCommand>> {
+public class WTBonusPaySettingAddCommandHandler extends CommandHandler<WTBonusPaySettingAddCommand> {
 	@Inject
 	private WTBonusPaySettingRepository wtBonusPaySettingRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<WTBonusPaySettingAddCommand>> context) {
-		List<WTBonusPaySettingAddCommand> lstWTBonusPaySettingAddCommand = context.getCommand();
-		this.wtBonusPaySettingRepository.addListSetting(lstWTBonusPaySettingAddCommand.stream()
-				.map(c -> toWorkingTimesheetBonusPaySettingDomain(c)).collect(Collectors.toList()));
+	protected void handle(CommandHandlerContext<WTBonusPaySettingAddCommand> context) {
+	 WTBonusPaySettingAddCommand wtBonusPaySettingAddCommand = context.getCommand();
+		this.wtBonusPaySettingRepository.addWTBPSetting(this.toWorkingTimesheetBonusPaySettingDomain(wtBonusPaySettingAddCommand));
 	}
 
 	private WorkingTimesheetBonusPaySetting toWorkingTimesheetBonusPaySettingDomain(

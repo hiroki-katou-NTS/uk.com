@@ -8,6 +8,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.OneDayTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TransferSettingSetMemento;
 
+/**
+ * The Class CompensatoryTransferSettingDto.
+ */
 public class CompensatoryTransferSettingDto implements TransferSettingSetMemento {
 
 	/** The certain time. */
