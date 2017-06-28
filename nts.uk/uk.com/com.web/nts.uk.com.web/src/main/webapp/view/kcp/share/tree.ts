@@ -43,6 +43,11 @@ module kcp.share.tree {
         baseDate: KnockoutObservable<Date>;
         
         /**
+         * Select mode
+         */
+        selectType: SelectionType; 
+        
+        /**
          * isShowSelectButton
          * Show/hide button select all and selected sub parent
          */
@@ -68,6 +73,13 @@ module kcp.share.tree {
     
     export class TreeType {
         static WORK_PLACE = 1;
+    }
+    
+    export class SelectionType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
     }
     
     export class TreeComponentScreenModel {
@@ -146,6 +158,7 @@ module kcp.share.tree {
                     let subItemList = self.filterByLevel(self.backupItemList(), level, new Array<UnitModel>());
                     if (subItemList.length > 0) {
                         self.itemList(subItemList);
+                        self.selectedWorkplaceIds([subItemList[0].workplaceId]);
                     }
                 }
             });
@@ -153,11 +166,11 @@ module kcp.share.tree {
             // Find data.
             service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
                 if (res) {
-                    // Set default value when init component.
-                    self.selectedWorkplaceIds = data.selectedWorkplaceId;
-                    
                     // Map already setting attr to data list.
                     self.addAlreadySettingAttr(res, self.alreadySettingList());
+                    
+                    // Set default value when initial component.
+                    self.initSelectedValue(data, res);
                     
                     if (data.isShowAlreadySet) { 
                         // subscribe when alreadySettingList update => reload component.
@@ -209,9 +222,46 @@ module kcp.share.tree {
                 return self.backupItemList();
             }
             
+            // define function get row selected
+            $.fn.getRowSelected = function(): Array<any> {
+                let listModel = self.findUnitModelByListWorkplaceId();
+                let listRowSelected: Array<any> = [];
+                for (let unitModel of listModel) {
+                    listRowSelected.push({workplaceId: unitModel.workplaceId, workplaceCode: unitModel.code});
+                }
+                return listRowSelected;
+            }
+            
             return dfd.promise();
         }
         
+        /**
+         * Initial select mode
+         */
+        private initSelectedValue(data: TreeComponentOption, dataList: Array<UnitModel>) {
+            let self = this;
+            switch(data.selectType) {
+                case SelectionType.SELECT_BY_SELECTED_CODE:
+                    self.selectedWorkplaceIds = data.selectedWorkplaceId;
+                    break;
+                case SelectionType.SELECT_ALL:
+                    self.selectAll();
+                    break;
+                case SelectionType.SELECT_FIRST_ITEM:
+                    self.selectedWorkplaceIds(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+                    break;
+                case SelectionType.NO_SELECT:
+                    self.selectedWorkplaceIds(data.isMultiSelect ? [] : null);
+                    break;
+                default:
+                    self.selectedWorkplaceIds(data.isMultiSelect ? [] : null);
+                    break
+            }
+        }
+        
+        /**
+         * add icon by already setting
+         */
         private addIconToAlreadyCol() {
             var icon84Link = nts.uk.request.location.siteRoot
                 .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
@@ -413,6 +463,11 @@ interface JQuery {
      * Get Data List
      */
     getDataList(): Array<kcp.share.list.UnitModel>;
+    
+    /**
+     * Get row selected 
+     */
+    getRowSelected(): Array<any>;
     
     /**
      * Focus component.
