@@ -26,7 +26,8 @@ module nts.uk.at.view.kml001.shr {
             unitPrice: KnockoutObservable<number>;
             memo: KnockoutObservable<string>;
             premiumSets : KnockoutObservableArray<PremiumSetting>;
-            constructor(companyID: string, historyID: string, startDate: string, endDate: string, unitPrice: number, memo: string, premiumSets: Array<PremiumSettingInterface>) {
+            constructor(companyID: string, historyID: string, startDate: string, endDate: string, unitPrice: number, memo: string, 
+                premiumSets: Array<PremiumSettingInterface>, premiumItems: Array<PremiumItem>) {
                 var self = this;
                 self.companyID = ko.observable(companyID);
                 self.historyID = ko.observable(historyID);
@@ -35,7 +36,20 @@ module nts.uk.at.view.kml001.shr {
                 self.unitPrice = ko.observable(unitPrice);
                 self.memo = ko.observable(memo);
                 let koPremiumSets = [];
-                premiumSets.forEach(function(premiumSet){koPremiumSets.push(ProcessHandler.fromObjectPremiumSet(premiumSet));});
+                premiumItems.forEach(function(premiumItem, index){
+                    if(premiumItem.useAtr()){
+                        let premiumSet = _.find(premiumSets, function(o) { 
+                            return o.premiumID == index+1; 
+                        })
+                        if(premiumSet) {
+                            koPremiumSets.push(ProcessHandler.fromObjectPremiumSet(premiumSet));        
+                        } else {
+                            koPremiumSets.push(
+                                new vmbase.PremiumSetting("", "", premiumItem.iD(), 1, premiumItem.attendanceID(), premiumItem.name(), premiumItem.displayNumber(), premiumItem.useAtr(), [])
+                            );    
+                        }
+                    }
+                });
                 self.premiumSets = ko.observableArray(koPremiumSets);
             }
         }
@@ -117,7 +131,7 @@ module nts.uk.at.view.kml001.shr {
             /**
              * convert PersonCostCalculation JS object to PersonCostCalculation knockoutJS object 
              */
-            static fromObjectPerconCost(object: PersonCostCalculationInterface): PersonCostCalculation {
+            static fromObjectPerconCost(object: PersonCostCalculationInterface, premiumItems: Array<PremiumItem>): PersonCostCalculation {
                 return new PersonCostCalculation(
                     object.companyID, 
                     object.historyID, 
@@ -125,7 +139,8 @@ module nts.uk.at.view.kml001.shr {
                     object.endDate,
                     object.unitPrice,
                     object.memo,
-                    object.premiumSets);
+                    object.premiumSets, 
+                    premiumItems);
             }
             
             /**

@@ -99,19 +99,34 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		currentEntity.setEndDate(personCostCalculation.getEndDate());
 		currentEntity.setUnitPrice(personCostCalculation.getUnitPrice().value);
 		currentEntity.setMemo(personCostCalculation.getMemo().v());
-		for(int i=0; i<10; i++){
-			currentEntity.kmlstPremiumSets.get(i).setPremiumRate(personCostCalculation.getPremiumSettings().get(i).getRate().v());
-			Integer premiumID = personCostCalculation.getPremiumSettings().get(i).getPremiumID();
-			currentEntity.kmlstPremiumSets.get(i).setKmldtPremiumAttendances( 
-					personCostCalculation.getPremiumSettings().get(i).getAttendanceItems()
-					.stream()
-					.map(x -> toPremiumAttendanceEntity(
-							personCostCalculation.getCompanyID(), 
-							personCostCalculation.getHistoryID(), 
-							premiumID, 
-							x))
-					.collect(Collectors.toList())
-			);
+		for(int i=0; i < personCostCalculation.getPremiumSettings().size(); i++){
+			int id = personCostCalculation.getPremiumSettings().get(i).getPremiumID();
+			Optional<KmlstPremiumSet> premiumSet = currentEntity.kmlstPremiumSets.stream().filter(x -> x.kmlspPremiumSet.premiumID == id).findFirst();
+			if(premiumSet.isPresent()){
+				premiumSet.get().setPremiumRate(personCostCalculation.getPremiumSettings().get(i).getRate().v());
+				premiumSet.get().setKmldtPremiumAttendances( 
+						personCostCalculation.getPremiumSettings().get(i).getAttendanceItems()
+						.stream()
+						.map(x -> toPremiumAttendanceEntity(
+								personCostCalculation.getCompanyID(), 
+								personCostCalculation.getHistoryID(), 
+								id, 
+								x))
+						.collect(Collectors.toList())
+				);
+			} else {
+				PremiumSetting premiumSetting = new PremiumSetting(
+						currentEntity.kmlmpPersonCostCalculationPK.companyID, 
+						currentEntity.kmlmpPersonCostCalculationPK.historyID, 
+						personCostCalculation.getPremiumSettings().get(i).getPremiumID(), 
+						personCostCalculation.getPremiumSettings().get(i).getRate(), 
+						personCostCalculation.getPremiumSettings().get(i).getAttendanceID(), 
+						personCostCalculation.getPremiumSettings().get(i).getName(), 
+						personCostCalculation.getPremiumSettings().get(i).getDisplayNumber(), 
+						personCostCalculation.getPremiumSettings().get(i).getUseAtr(), 
+						personCostCalculation.getPremiumSettings().get(i).getAttendanceItems());
+				currentEntity.kmlstPremiumSets.add(toPremiumSetEntity(premiumSetting)); 
+			}
 		}
 		this.commandProxy().update(currentEntity);
 	}
