@@ -51,13 +51,15 @@ public class WorkplaceFinder {
 		List<WorkPlaceHierarchy> lstHierarchy = new ArrayList<>();
 		List<Workplace> lstWorkplace = new ArrayList<>();
 		List<WorkplaceFindDto> lstReturn = new ArrayList<>();
+		//find all history by generalDate
 		List<WorkPlaceHistory> lstHistory = this.repository.findAllHistory(companyId, generalDate);
+		//find all Hierarchy by list History
 		lstHistory.stream()
 				.forEach(item -> lstHierarchy.addAll(this.repository.findAllHierarchy(item.getHistoryId().v())));
 
 		Collections.sort(lstHierarchy,
 				(left, right) -> left.getHierarchyCode().v().compareTo(right.getHierarchyCode().v()));
-
+		//find all workplace from list hierarchy
 		lstHierarchy.stream()
 				.forEach(item -> lstWorkplace.addAll(this.repository.findAllWorkplace(item.getWorkplaceId().v())));
 
@@ -67,8 +69,8 @@ public class WorkplaceFinder {
 	}
 
 	private List<WorkplaceFindDto> convertToTree(List<Workplace> workplaces, List<WorkPlaceHierarchy> lstHierarchy) {
+		//define convert tree function
 		Function<Workplace, WorkplaceFindDto> convertFunction = e -> {
-			// update convert
 			WorkplaceFindDto dto = new WorkplaceFindDto();
 			e.saveToMemento(dto);
 			return dto;
@@ -80,13 +82,16 @@ public class WorkplaceFinder {
 	private List<WorkplaceFindDto> createTree(List<Workplace> workplaces,
 			Function<Workplace, WorkplaceFindDto> convertFunction, List<WorkPlaceHierarchy> lstHierarchy,
 			List<WorkplaceFindDto> lstReturn) {
-		// while have element
+		// while have workplace
 		while (!workplaces.isEmpty()) {
+			//pop 1 item
 			Workplace workplace = workplaces.remove(0);
+			//convert
 			WorkplaceFindDto dto = convertFunction.apply(workplace);
 			WorkPlaceHierarchy hierarchy = lstHierarchy.stream()
 					.filter(c -> c.getWorkplaceId().v().equals(workplace.getWorkplaceId().v())).findFirst().get();
 			dto.setHeirarchyCode(hierarchy.getHierarchyCode().v());
+			//build List
 			this.pushToList(lstReturn, dto, hierarchy.getHierarchyCode().v(),"");
 		}
 		return lstReturn;
