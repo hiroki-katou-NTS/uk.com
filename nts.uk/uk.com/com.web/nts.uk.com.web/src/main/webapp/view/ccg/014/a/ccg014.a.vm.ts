@@ -189,11 +189,11 @@ module ccg014.a.viewmodel {
             }
         }
 
-        clearError(): any {
+     /*   clearError(): any {
             var self = this;
             if (self.selectedTitleMenu().titleMenuCD !== null) { errors.clearAll(); }
             if (self.selectedTitleMenu().name !== null) { errors.clearAll(); }
-        }
+        } */
 
         /** Reload data from server */
         private reloadData(): JQueryPromise<any> {
