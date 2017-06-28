@@ -4114,7 +4114,7 @@ var nts;
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
-                                if (deleteField === true && primaryKey !== null && !uk.util.isNullOrUndefined(row[primaryKey])) {
+                                if (deleteField === true && primaryKey !== null && !uk.util.isNullOrUndefined(row[primaryKey]) && $grid.data("enable") !== false) {
                                     return result[0].outerHTML;
                                 }
                                 else {
@@ -7112,6 +7112,7 @@ var nts;
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });
+                        container.data("tabindex", container.attr("tabindex"));
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -7164,7 +7165,14 @@ var nts;
                         // Checked
                         $checkBox.prop("checked", checked);
                         // Enable
-                        (enable === true) ? $checkBox.removeAttr("disabled") : $checkBox.attr("disabled", "disabled");
+                        if (enable === true) {
+                            $checkBox.removeAttr("disabled");
+                            container.attr("tabindex", container.data("tabindex"));
+                        }
+                        else if (enable === false) {
+                            $checkBox.attr("disabled", "disabled");
+                            container.attr("tabindex", "-1");
+                        }
                     };
                     return NtsCheckboxBindingHandler;
                 }());
@@ -7249,6 +7257,7 @@ var nts;
                                 });
                                 if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
                                     checkBox.attr("disabled", "disabled");
+                                    checkBox.attr("tabindex", "-1");
                                 }
                                 checkBox.appendTo(checkBoxLabel);
                                 var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
@@ -7313,6 +7322,10 @@ var nts;
                      */
                     ComboBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var container = $(element);
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
+                            container.attr("tabindex", "0");
+                        }
+                        container.data("tabindex", container.attr("tabindex"));
                         container.keypress(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -7405,6 +7418,7 @@ var nts;
                                 mode: comboMode,
                                 disabled: !enable,
                                 placeHolder: '',
+                                tabIndex: -1,
                                 enableClearButton: false,
                                 initialSelectedItems: [
                                     { value: selectedValue }
@@ -7420,8 +7434,13 @@ var nts;
                         else {
                             container.igCombo("option", "disabled", !enable);
                         }
-                        if (!enable)
+                        if (!enable) {
                             defVal.applyReset(container, data.value);
+                            container.attr("tabindex", "-1");
+                        }
+                        else {
+                            container.attr("tabindex", container.data("tabindex"));
+                        }
                         if (isChangeOptions && !isInitCombo) {
                             container.igCombo("option", "dataSource", options);
                             container.igCombo("dataBind");
@@ -8910,6 +8929,9 @@ var nts;
                                             var value = opt[switchValue_1];
                                             var text = opt[switchText_1];
                                             var btn = $('<button class="nts-switch-button" tabindex="-1"/>').text(text);
+                                            if ($grid.data("enable") === false) {
+                                                btn.attr("disabled", "disabled");
+                                            }
                                             btn.attr('data-value', value);
                                             if (val == value) {
                                                 btn.addClass('selected');
@@ -9075,7 +9097,10 @@ var nts;
                         // Container
                         var $element = $(element);
                         var elementId = $element.addClass("listbox-wrapper").attr("id");
-                        $element.attr("tabindex", "0");
+                        if (nts.uk.util.isNullOrUndefined($element.attr("tabindex"))) {
+                            $element.attr("tabindex", "0");
+                        }
+                        $element.data("tabindex", $element.attr("tabindex"));
                         var gridId = elementId;
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
                             gridId = nts.uk.util.randomId();
@@ -9231,10 +9256,12 @@ var nts;
                             if (!enable) {
                                 container.ntsGridList('unsetupSelecting');
                                 container.addClass("disabled");
+                                $(element).attr("tabindex", "-1");
                             }
                             else {
                                 container.ntsGridList('setupSelecting');
                                 container.removeClass("disabled");
+                                $(element).attr("tabindex", $(element).data("tabindex"));
                             }
                         }
                         container.data("enable", enable);
@@ -9351,6 +9378,7 @@ var nts;
                         if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
                             container.attr("tabindex", "0");
                         }
+                        container.data("tabindex", container.attr("tabindex"));
                         container.keydown(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -9407,10 +9435,14 @@ var nts;
                         // Enable
                         if (enable === true) {
                             container.find("input[type='radio']").removeAttr("disabled");
+                            container.attr("tabindex", container.data("tabindex"));
                         }
                         else if (enable === false) {
                             container.find("input[type='radio']").attr("disabled", "disabled");
-                            new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                            if (!nts.uk.util.isNullOrUndefined(data.value)) {
+                                new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                            }
+                            container.attr("tabindex", "-1");
                         }
                         //            }
                     };
@@ -9435,6 +9467,7 @@ var nts;
                         if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
                             container.attr("tabindex", "0");
                         }
+                        container.data("tabindex", container.attr("tabindex"));
                         container.keydown(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -9521,10 +9554,12 @@ var nts;
                                     $(radio).removeAttr("disabled");
                                 }
                             });
+                            container.attr("tabindex", container.data("tabindex"));
                         }
                         else if (enable === false) {
                             container.find("input[type='radio']").attr("disabled", "disabled");
                             new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                            container.attr("tabindex", "-1");
                         }
                         //            }
                     };
@@ -10649,6 +10684,10 @@ var nts;
                     NtsSwitchButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
+                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
+                            container.attr("tabindex", "0");
+                        container.data("tabindex", container.attr("tabindex"));
+                        var container = $(element);
                         container.keydown(function (evt, ui) {
                             var code = evt.which || evt.keyCode;
                             if (code === 32) {
@@ -10705,8 +10744,6 @@ var nts;
                         var container = $(element);
                         container.data("enable", enable);
                         container.addClass("ntsControl switchButton-wrapper");
-                        if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
-                            container.attr("tabindex", "0");
                         // Remove deleted button.
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);
@@ -10749,10 +10786,12 @@ var nts;
                         });
                         if (enable === true) {
                             $('button', container).prop("disabled", false);
+                            container.attr("tabindex", container.data("tabindex"));
                         }
                         else {
                             $('button', container).prop("disabled", true);
                             new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
+                            container.attr("tabindex", "-1");
                         }
                     };
                     NtsSwitchButtonBindingHandler.setSelectedClass = function ($container, selectedCssClass, selectedValue, optValue) {
