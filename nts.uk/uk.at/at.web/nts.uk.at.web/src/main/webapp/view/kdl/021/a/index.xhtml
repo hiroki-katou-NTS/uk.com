@@ -31,16 +31,6 @@
 									fields: ['name', 'code'],
 									mode: 'igGrid'}" />
 <!-- 							Fix Bug #83874	 -->
-<!-- 						<table id="multi-list" tabindex="2" -->
-<!-- 							data-bind="ntsGridList: { -->
-<!-- 										height: 390, -->
-<!-- 										options: items, -->
-<!-- 										optionsValue: 'code', -->
-<!-- 										columns: columns, -->
-<!-- 										multiple: isMulti, -->
-<!-- 										value: currentCodeList -->
-<!-- 									}"> -->
-<!-- 						</table> -->
 						<table id="multi-list" tabindex="2"
 							data-bind="ntsGridList: {
 										height: 390,
@@ -52,8 +42,6 @@
 										value: currentCodeList
 									}">
 						</table>
-<!-- 						Fix Bug #83874 -->
-					
 				</div>
 				<div id="functions-area-bottom">
 					<button id="btnSetting" class="x-large proceed" data-bind="click: register" tabindex="3">#{i18n.getText('KDL021_5')}</button>

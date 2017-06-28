@@ -48,7 +48,8 @@ module kdl021.a.viewmodel {
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
-
+            }else{
+                nts.uk.ui.block.clear();
             }
             //勤怠項目の指定が0件の場合
             //set source
