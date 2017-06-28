@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KMKST_BASIC_AGREEMENT_SET")
+@Table(name = "KMKMT_BASIC_AGREEMENT_SET")
 public class KmkmtBasicAgreementSetting extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

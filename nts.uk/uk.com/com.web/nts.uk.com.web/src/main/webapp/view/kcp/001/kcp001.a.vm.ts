@@ -28,6 +28,7 @@ module kcp001.a.viewmodel {
         selectedType: KnockoutObservable<number>;
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
+        selectedValue: KnockoutObservable<any>;
         
         constructor() {
             var self = this;
@@ -44,11 +45,11 @@ module kcp001.a.viewmodel {
             self.selectedCode = ko.observable('1');
             self.bySelectedCode = ko.observable('1');
             // Selected Item subscribe
-            self.selectedCode.subscribe(function(data: string) {
-                self.bindEmploymentSettingData(self.employmentList().filter((item) => {
-                    return item.code == self.selectedCode();
-                })[0]);
-            });
+//            self.selectedCode.subscribe(function(data: string) {
+//                self.bindEmploymentSettingData(self.employmentList().filter((item) => {
+//                    return item.code == self.selectedCode();
+//                })[0]);
+//            });
             self.isAlreadySetting = ko.observable(false);
             self.isAlreadySetting.subscribe(function() {
                 self.reloadComponent();
@@ -100,9 +101,9 @@ module kcp001.a.viewmodel {
                     self.employmentList($('#empt-list-setting').getDataList());
                     
                     // Bind Employment Setting Data
-                    self.bindEmploymentSettingData(self.employmentList().filter((item) => {
-                        return item.code == self.selectedCode();
-                    })[0]);
+//                    self.bindEmploymentSettingData(self.employmentList().filter((item) => {
+//                        return item.code == self.selectedCode();
+//                    })[0]);
                 }
             });
             
@@ -143,6 +144,7 @@ module kcp001.a.viewmodel {
                     
                 }
             });
+            self.selectedValue = self.selectedCode;
         }
         
         private setAlreadyCheck(): void {
@@ -152,9 +154,6 @@ module kcp001.a.viewmodel {
         
         private settingSavedItem(): void {
             var self = this;
-            // Clear errors
-            self.clearErrors();
-
             if (self.listComponentOption.isMultiSelect) {
                 self.listComponentOption.selectedCode().forEach((selected) => {
                     var existItem = self.alreadySettingList().filter((item) => {
@@ -192,19 +191,11 @@ module kcp001.a.viewmodel {
             }
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
-        
-        private clearErrors(): void {
-            // Clear errors
-            $('#code').ntsError('clear');
-            $('#name').ntsError('clear');
-        }
 
         // Show MultiSelection
         private showMultiSelect(): void {
             var self = this;
             self.listComponentOption.isMultiSelect = true;
-            //                self.code(null);
-            //                self.name(null);
             if (self.listComponentOption.selectType == SelectType.SELECT_BY_SELECTED_CODE) {
                 self.listComponentOption.selectedCode = self.multiSelectedCode;
             } else {
@@ -216,10 +207,6 @@ module kcp001.a.viewmodel {
             var self = this;
             self.listComponentOption.isMultiSelect = false;
             self.listComponentOption.selectedCode = self.selectedCode;
-            // Binding Data to right content
-            //                self.bindEmploymentSettingData(self.employmentList().filter((item) => {
-            //                    return item.code == self.selectedCode();
-            //                })[0]);
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
 
@@ -271,17 +258,26 @@ module kcp001.a.viewmodel {
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
         
-        private bindEmploymentSettingData(data: UnitModel): void {
+        private getSelectedItemCode(): string {
             var self = this;
-            self.clearErrors();
-            if (data == undefined) {
-                self.code(null);
-                self.name(null);
+            if(self.listComponentOption.isMultiSelect) {
+                return self.listComponentOption.selectedCode().join(", ");
             } else {
-                self.code(data.code);
-                self.name(data.name);
+                return self.listComponentOption.selectedCode();
             }
+            
         }
+        
+//        private bindEmploymentSettingData(data: UnitModel): void {
+//            var self = this;
+//            if (data == undefined) {
+//                self.code(null);
+//                self.name(null);
+//            } else {
+//                self.code(data.code);
+//                self.name(data.name);
+//            }
+//        }
         
         private reloadComponent() {
             var self = this;

@@ -19,6 +19,9 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 	private static final String SELECT_ALL_AGENT;
 	
 	private static final String SELECT_AGENT_BY_DATE;
+	
+	private static final String SELECT_AGENT_SID;
+
 
 	
 	static {
@@ -44,6 +47,12 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" AND e.endDate <= :endDate");
 		SELECT_AGENT_BY_DATE = builderString.toString(); 
 		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmmmtAgent e");
+		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
+		builderString.append(" AND e.agentSid = :agentSid");
+		SELECT_AGENT_SID = builderString.toString();
 		
 		}
 	
@@ -173,6 +182,17 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
+				.getList(c -> convertToDomain(c));
+	}
+	
+	/**
+	 * Find All Agent by Agent Sid
+	 */
+	@Override
+	public List<Agent> findByAgentSid(String companyId, String agentSid) {
+		return this.queryProxy().query(SELECT_AGENT_SID, CmmmtAgent.class)
+				.setParameter("companyId", companyId)
+				.setParameter("agentSid", agentSid)
 				.getList(c -> convertToDomain(c));
 	}
 

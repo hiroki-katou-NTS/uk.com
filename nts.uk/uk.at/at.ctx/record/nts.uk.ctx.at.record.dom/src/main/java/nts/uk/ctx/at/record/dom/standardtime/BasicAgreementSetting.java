@@ -125,4 +125,5 @@ public class BasicAgreementSetting extends AggregateRoot {
 				new AlarmThreeMonths(alarmThreeMonths),new ErrorThreeMonths(errorThreeMonths), new LimitThreeMonths(limitThreeMonths),
 				new AlarmOneYear(alarmOneYear),new ErrorOneYear(errorOneYear), new LimitOneYear(limitOneYear));
 	}
+
 }

@@ -8,11 +8,6 @@ module ccg013.a {
             .find(".ui-tabs-nav").sortable({
                 axis: "x"
             }).disableSelection();
-
-            $(".title-menu").sortable({
-                items: ".title-menu-column",
-                axis: "x"
-            }).disableSelection();
     
             $(".tree-menu").sortable({
                 axis: "y"
@@ -21,4 +16,12 @@ module ccg013.a {
 
         
     });
+}
+
+
+function initTitleBar() {
+    $(".title-menu").sortable({
+                items: ".title-menu-column",
+                axis: "x"
+            }).disableSelection();    
 }
