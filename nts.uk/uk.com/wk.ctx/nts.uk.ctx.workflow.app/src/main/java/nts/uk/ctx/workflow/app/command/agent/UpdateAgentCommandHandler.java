@@ -20,7 +20,11 @@ import nts.uk.ctx.workflow.dom.agent.AgentAppType;
 import nts.uk.ctx.workflow.dom.agent.AgentRepository;
 import nts.uk.ctx.workflow.dom.agent.RangeDate;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 @Transactional
 public class UpdateAgentCommandHandler extends CommandHandler<AgentCommandBase> {
@@ -59,11 +63,18 @@ public class UpdateAgentCommandHandler extends CommandHandler<AgentCommandBase> 
 		List<AgentDto> agents = finder.findAllEmploy(employeeId);
 		
 		List<RangeDate> rangeDateList = agents.stream()
+				.filter(x -> !requestId.equals(x.getRequestId()))
 				.map(a -> new RangeDate(a.getStartDate(), a.getEndDate()))
 				.collect(Collectors.toList());
 		
 		agentInfor.validateDate(rangeDateList);
 		
+		//validate agent of approval
+		List<Agent> agentSidList = agentRepository.findByCid(companyId);
+				
+		agentInfor.checkAgentSid(agentSidList);
+		
+		//update agent
 		agentRepository.update(agentInfor);
 	}
 }
