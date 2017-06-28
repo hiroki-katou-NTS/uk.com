@@ -12,13 +12,14 @@
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         newCurrentCodeList: KnockoutObservableArray<any>;
+        titleBar: KnockoutObservable<any>;
+        dataItems: KnockoutObservableArray<DataModel>;
         
         //Dropdownlist contain System data
         systemList: KnockoutObservableArray<SystemModel>;
         systemName: KnockoutObservable<string>;
         currentSystemCode: KnockoutObservable<number>
         selectedSystemCode: KnockoutObservable<string>;
-        titleBar: KnockoutObservable<any>;
         
         constructor() {
             var self = this;         
@@ -31,6 +32,7 @@
             
             this.items = ko.observableArray([]);
             this.newItems = ko.observableArray([]);
+            this.dataItems = ko.observableArray([]);
             
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', key:'code', width: 60 },
@@ -83,6 +85,9 @@
             return dfd.promise();
         }
         
+        /**
+         * Get data by system id from db
+         */
         findBySystem(systemValue):JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -105,6 +110,9 @@
             return dfd.promise();
         }
         
+        /**
+         * Add items selected from left grid list to right grid list
+         */
         add(): void{
             var self = this;
             
@@ -121,6 +129,9 @@
             self.newCurrentCodeList([]);
         }
         
+        /**
+         * Remove items selected in right grid list
+         */
         remove(): void{
             var self = this;
             var newItems = self.newItems();
@@ -134,58 +145,24 @@
                 self.newItems.push(item);
             })            
         }
-        
-        up(): void{
-            var self = this;
-            var currentSelectedCode = self.newCurrentCodeList();
-            var newItems = self.newItems();
-            var beforeCode = "";
-            
-            _.forEach(newItems, function(item) {                
-                if(item.primaryKey == currentSelectedCode[0]){
-                    item.order = item.order - 1;
-                    
-                    _.forEach(newItems, function(item) {
-                        if(item.primaryKey == beforeCode){
-                            item.order = item.order + 1;
-                        }
-                    })
-                }
                 
-                beforeCode = item.primaryKey;
-            })
-            
-            var resorted = _.sortBy(self.newItems(), ['order']);
-            self.newItems(resorted);
-        }
-        
-        down(): void{
-            var self = this;
-            var currentSelectedCode = self.newCurrentCodeList();
-            var newItems = self.newItems();
-            var beforeCode = "";
-            
-            _.forEach(newItems, function(item) {                
-                if(item.primaryKey == currentSelectedCode[0]){
-                    item.order = item.order + 1;
-                    
-                    _.forEach(newItems, function(item) {
-                        if(item.primaryKey == beforeCode){
-                            item.order = item.order - 1;
-                        }
-                    })
-                }
-                
-                beforeCode = item.primaryKey;
-            })
-            
-            var resorted = _.sortBy(self.newItems(), ['order']);
-            self.newItems(resorted);
-        }
-        
+        /**
+         * Pass data to main screen
+         * Close the popup
+         */
         submit() {
             var self = this;
-            nts.uk.ui.windows.setShared("CCG013D_TREE_MENU", {});
+            var index = 0;
+            var currentData = self.newItems();
+            var currentSystem = self.selectedSystemCode();
+            
+            _.forEach(currentData, function(item) {
+                var pk = item.code + index;
+                self.dataItems.push(new DataModel(pk, Number(currentSystem), item.code, item.targetItem, item.name, index));
+                index++;
+            })
+            
+            nts.uk.ui.windows.setShared("CCG013D_MENUS", self.dataItems());
             
             self.closeDialog();
         }
@@ -205,8 +182,27 @@
         targetItem: string;
         name: string;
         order: number;
+        
         constructor(id: string, code: string, targetItem: string, name: string, order: number) {
             this.primaryKey = code + order;
+            this.code = code;
+            this.targetItem = targetItem;
+            this.name = name;
+            this.order = order;       
+        }
+    } 
+     
+    export class DataModel {
+        primaryKey: string;
+        system: number;
+        code: string;
+        targetItem: string;
+        name: string;
+        order: number;
+        
+        constructor(primaryKey: string, system: number, code: string, targetItem: string, name: string, order: number) {
+            this.primaryKey = primaryKey;
+            this.system = system;
             this.code = code;
             this.targetItem = targetItem;
             this.name = name;
