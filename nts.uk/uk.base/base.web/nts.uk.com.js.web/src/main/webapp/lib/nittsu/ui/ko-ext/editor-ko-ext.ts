@@ -149,6 +149,18 @@ module nts.uk.ui.koExtentions {
                     }
                 }
             });
+            
+            // Format on blur
+            $input.blur(() => {
+                if (!$input.attr('readonly')) {
+                    var newText = $input.val();
+                    var result = validator.validate(newText);
+                    $input.ntsError('clear');
+                    if (!result.isValid) {
+                        $input.ntsError('set', result.errorMessage);
+                    }
+                }
+            });
 
             $input.on("change", (e) => {
                 if (!$input.attr('readonly')) {
@@ -183,6 +195,9 @@ module nts.uk.ui.koExtentions {
         update($input: JQuery, data: any) {
             super.update($input, data);
             var textmode: string = this.editorOption.textmode;
+            if(data.value() !== $input.val()){
+                $input.triggerHandler('change');        
+            }
             $input.attr('type', textmode);
         }
 
