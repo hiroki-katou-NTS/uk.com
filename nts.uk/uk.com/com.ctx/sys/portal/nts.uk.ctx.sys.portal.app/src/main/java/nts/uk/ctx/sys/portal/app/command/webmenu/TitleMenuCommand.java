@@ -8,10 +8,6 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class TitleMenuCommand {
-	
-	//private UUID menuBarId;
-
-	//private UUID titleMenuId;
 
 	private String titleMenuName;
 

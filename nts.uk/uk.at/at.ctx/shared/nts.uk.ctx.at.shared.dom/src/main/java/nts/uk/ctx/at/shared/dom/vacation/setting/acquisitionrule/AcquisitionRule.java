@@ -6,11 +6,14 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule;
 
 import java.util.List;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 @Getter
+@EqualsAndHashCode(callSuper = false, of = { "companyId" })
 public class AcquisitionRule extends DomainObject {
 
 	/** The company id. */
@@ -18,7 +21,7 @@ public class AcquisitionRule extends DomainObject {
 
 	/** The setting classification. */
 	@Setter
-	private int category;
+	private ManageDistinct category;
 
 	/** The acquisition order. */
 	@Setter
@@ -48,42 +51,6 @@ public class AcquisitionRule extends DomainObject {
 		memento.setCompanyId(this.companyId);
 		memento.setCategory(this.category);
 		memento.setAcquisitionOrder(this.acquisitionOrder);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AcquisitionRule other = (AcquisitionRule) obj;
-		if (companyId == null) {
-			if (other.companyId != null)
-				return false;
-		} else if (!companyId.equals(other.companyId))
-			return false;
-		return true;
 	}
 
 }

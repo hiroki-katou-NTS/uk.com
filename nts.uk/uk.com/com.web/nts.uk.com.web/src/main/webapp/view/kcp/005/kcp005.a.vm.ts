@@ -173,9 +173,6 @@ module kcp005.a.viewmodel {
         
         private settingSavedItem(): void {
             var self = this;
-            // Clear errors
-//            self.clearErrors();
-
             if (self.listComponentOption.isMultiSelect) {
                 self.listComponentOption.selectedCode().forEach((selected) => {
                     var existItem = self.alreadySettingList().filter((item) => {
@@ -213,13 +210,7 @@ module kcp005.a.viewmodel {
             }
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
-        
-//        private clearErrors(): void {
-//            // Clear errors
-//            $('#code').ntsError('clear');
-//            $('#name').ntsError('clear');
-//        }
-        
+
         private showSelectAllButton(): void {
             var self = this;
             self.selectedOption(1);
@@ -243,10 +234,6 @@ module kcp005.a.viewmodel {
             var self = this;
             self.listComponentOption.isMultiSelect = false;
             self.listComponentOption.selectedCode = self.selectedCode;
-            // Binding Data to right content
-            //                self.bindEmployeeSettingData(self.employeeList().filter((item) => {
-            //                    return item.code == self.selectedCode();
-            //                })[0]);
             $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
 
@@ -300,7 +287,6 @@ module kcp005.a.viewmodel {
         
         private bindEmployeeSettingData(data: UnitModel): void {
             var self = this;
-//            self.clearErrors();
             if (data == undefined) {
                 self.code(null);
                 self.name(null);
