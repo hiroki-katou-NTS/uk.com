@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -27,20 +28,20 @@ public class StandardMenuWebService extends WebService {
 	}
 
 	@POST
-	@Path("findByAfterLoginDisplay")
-	public List<StandardMenuDto> findByAfterLoginDisplay() {
-		return finder.findByAfterLoginDisplay(0);
+	@Path("findByAfterLoginDisplay/{afterLoginDisplay}")
+	public List<StandardMenuDto> findByAfterLoginDisplay(@PathParam("afterLoginDisplay") int afterLoginDisplay) {
+		return finder.findByAfterLoginDisplay(afterLoginDisplay);
 	}
 
 	@POST
-	@Path("findByAfterLgDisSysMenuCls")
-	public List<StandardMenuDto> findByAfterLgDisSysMenuCls() {
-		return finder.findByAfterLgDisSysMenuCls();
+	@Path("findBySystemMenuCls")
+	public List<StandardMenuDto> findBySystemMenuCls() {
+		return finder.findBySystemMenuCls();
 	}
-	
+
 	@POST
 	@Path("findByAtr")
-	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr  ) {
+	public List<StandardMenuDto> findByAtr(int webMenuSetting, int menuAtr) {
 		return finder.findByAtr(webMenuSetting, menuAtr);
 	}
 }
