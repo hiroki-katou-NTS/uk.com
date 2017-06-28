@@ -38,11 +38,11 @@ public class CjtmtJobTitle extends UkJpaEntity implements Serializable {
 	protected CjtmtJobTitlePK cjtmtJobTitlePK;
 
 	/** The job name. */
-	@Column(name = "POS_NAME")
+	@Column(name = "JOB_NAME")
 	private String jobName;
 
 	/** The sequence code. */
-	@Column(name = "SEQ_CODE")
+	@Column(name = "SEQ_CD")
 	private String sequenceCode;
 
 	/** The start date. */
@@ -57,7 +57,7 @@ public class CjtmtJobTitle extends UkJpaEntity implements Serializable {
 
 	/** The csqmt sequence master. */
 	@JoinColumns({
-			@JoinColumn(name = "SEQ_CODE", referencedColumnName = "SEQ_CODE", insertable = false, updatable = false),
+			@JoinColumn(name = "SEQ_CD", referencedColumnName = "SEQ_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false), })
 	@ManyToOne(optional = false)
 	private CsqmtSequenceMaster csqmtSequenceMaster;

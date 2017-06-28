@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.standardtime.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -10,7 +11,8 @@ import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 
-public class AgreementTimeOfWorkPlaceDomainServiceIml implements AgreementTimeOfWorkPlaceDomainService {
+@Stateless
+public class AgreementTimeOfWorkPlaceDomainServiceImp implements AgreementTimeOfWorkPlaceDomainService {
 
 	@Inject
 	private BasicAgreementSettingRepository basicAgreementSettingRepository;

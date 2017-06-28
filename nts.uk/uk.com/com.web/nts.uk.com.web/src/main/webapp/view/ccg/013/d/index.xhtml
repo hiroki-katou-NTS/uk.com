@@ -44,10 +44,10 @@
 						<div style="width: 332px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
 							items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />	
 						<br/>	
-						<table class="left-data" id="multi-list" data-bind="ntsGridList: {
+						<table class="left-data" id="multi-list1" data-bind="ntsGridList: {
 								height: 320,
 								options: items,
-								optionsValue: 'code',
+								optionsValue: 'primaryKey',
 								columns: columns,
 								multiple: true,
 								value: currentCodeList}">
@@ -55,16 +55,16 @@
 					</div>
 					
 					<div class="move-function">
-						<button data-bind="click: remove"><i class="icon icon-button-arrow-right"></i></button>
-						<button data-bind="click: add"><i class="icon icon-button-arrow-left"></i></button>	
+						<button data-bind="click: add"><i class="icon icon-button-arrow-right"></i></button>
+						<button data-bind="click: remove"><i class="icon icon-button-arrow-left"></i></button>	
 					</div>
 					
 					<div class="right-contents">
-						<button id="d1_13" class="large" data-bind="click: closeDialog" >#{i18n.getText('CCG013_55')}</button>
-						<table id="multi-list" data-bind="ntsGridList: {
+						<span id="d1_13" class="label" data-bind="style: {color: titleBar().textColor, 'background-color': titleBar().backgroundColor},text: titleBar().name"></span>
+						<table id="multi-list2" data-bind="ntsGridList: {
 								height: 320,
 								options: newItems,
-								optionsValue: 'code',
+								optionsValue: 'primaryKey',
 								columns: newColumns,
 								multiple: true,
 								value: newCurrentCodeList}">
