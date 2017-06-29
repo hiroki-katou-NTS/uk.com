@@ -67,8 +67,10 @@ public class JpaTopPagePersonSetRepository extends JpaRepository implements TopP
 	}
 
 	@Override
-	public void remove(TopPagePersonSet topPagePersonSet) {
-		this.commandProxy().remove(toEntity(topPagePersonSet));
+	public void remove(String companyId, String Sid) {
+		CcgptTopPagePersonSetPK pk = new CcgptTopPagePersonSetPK(companyId, Sid);
+		this.commandProxy().remove(CcgptTopPagePersonSet.class, pk);
+		;
 	}
 
 	@Override
