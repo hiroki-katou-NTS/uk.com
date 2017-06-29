@@ -275,7 +275,7 @@ module nts.uk.pr.view.kmf001.j {
                 $('input').ntsError('clear');
             }
 
-
+        }
         // Model class
         export class SixtyHourVacationSettingModel {
             isManage: KnockoutObservable<number>;

@@ -10,11 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearsA
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingGetMemento;
 
-/**
- * Sets the max days cumulation.
- *
- * @param maxDaysCumulation the new max days cumulation
- */
+
 @Setter
 public class UpperLimitSettingDto {
 

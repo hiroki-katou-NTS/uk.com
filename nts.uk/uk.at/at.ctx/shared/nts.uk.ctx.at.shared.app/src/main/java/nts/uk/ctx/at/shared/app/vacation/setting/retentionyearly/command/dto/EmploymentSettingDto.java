@@ -13,32 +13,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetti
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.ManagementCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 
-/**
- * Gets the management category.
- *
- * @return the management category
- */
 @Getter
-
-/**
- * Sets the management category.
- *
- * @param managementCategory the new management category
- */
 @Setter
-
-/**
- * Instantiates a new employment setting dto.
- */
 @NoArgsConstructor
-
-/**
- * Instantiates a new employment setting dto.
- *
- * @param employmentCode the employment code
- * @param upperLimitSetting the upper limit setting
- * @param managementCategory the management category
- */
 @AllArgsConstructor
 public class EmploymentSettingDto{
 	
