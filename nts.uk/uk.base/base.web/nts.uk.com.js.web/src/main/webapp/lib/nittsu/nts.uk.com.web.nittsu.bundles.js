@@ -9882,7 +9882,7 @@ var nts;
                         $button.click(function () {
                             nextSearch();
                         });
-                        $swap.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
+                        $container.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
                     };
                     NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $searchBox = $(element);

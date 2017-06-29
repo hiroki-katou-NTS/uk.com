@@ -280,7 +280,7 @@ module nts.uk.ui.koExtentions {
                 nextSearch();    
             });
             
-            $swap.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
+            $container.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
         }
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var $searchBox = $(element);
