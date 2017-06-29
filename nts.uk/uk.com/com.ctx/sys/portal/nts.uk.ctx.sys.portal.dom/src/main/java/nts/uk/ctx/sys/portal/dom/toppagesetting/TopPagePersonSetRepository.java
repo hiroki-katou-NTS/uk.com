@@ -24,4 +24,25 @@ public interface TopPagePersonSetRepository {
 	 * @return
 	 */
 	TopPagePersonSet getbyCode(String companyId, String employeeId);
+	
+	/**
+	 * add data in table TOPPAGE_PERSON_SET
+	 * 
+	 * @param topPagePersonSet
+	 */
+	void add(TopPagePersonSet topPagePersonSet);
+
+	/**
+	 * update data in table TOPPAGE_PERSON_SET
+	 * 
+	 * @param topPagePersonSet
+	 */
+	void update(TopPagePersonSet topPagePersonSet);
+
+	/**
+	 * remove data in table TOPPAGE_PERSON_SET
+	 * 
+	 * @param topPagePersonSet
+	 */
+	void remove(TopPagePersonSet topPagePersonSet);
 }
