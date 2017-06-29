@@ -8,7 +8,7 @@ module kdl014.a.service {
      * get list List Stamp by Code
      */
     export function getStampByCode(arrCardNumber: Array<string>, startDate, endDate): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getStampByEmployeeCode, startDate, endDate), arrCardNumber));
+        return nts.uk.request.ajax("at", nts.uk.text.format(paths.getStampByEmployeeCode, startDate, endDate), arrCardNumber);
     }
 
     /**

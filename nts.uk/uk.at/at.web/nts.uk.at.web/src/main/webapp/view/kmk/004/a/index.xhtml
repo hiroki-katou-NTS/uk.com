@@ -38,6 +38,7 @@
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
+			<div data-bind="visible: true" style="display: none">
 				<!-- COMPANY WORK TIME SETTING  START -->
 				<div id="tabpanel-1" role="tabpanel">
 					<com:ko tag="if" bind="isCompanySelected">
@@ -69,6 +70,7 @@
 					</com:ko>
 				</div>
 				<!-- EMPLOYEE WORK TIME SETTING END -->
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
