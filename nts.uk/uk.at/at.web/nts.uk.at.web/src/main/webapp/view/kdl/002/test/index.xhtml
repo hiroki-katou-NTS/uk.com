@@ -21,10 +21,16 @@
 				<div id="label">
 					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog002" >002</button>
 					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog0022" >002Multiple</button>
-					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog007" >007</button>
-					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog0072" >007Multiple</button>
+					<!-- <button id="btnNew" class="btnMenu" data-bind="click: OpenDialog007" >007</button>
+					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog0072" >007Multiple</button> -->
 				</div>
 				<!-- A1_2 -->
+				<!-- B3_2: Divergence Reason Code -->
+				<input class="nts-input" id="inpCode"
+					data-bind="ntsTextEditor: {
+                                   value: Code,
+                                   enable: true, 
+                                   required: false}"/>
 				<div style="float: left; margin-bottom: 20px;">
 					<div>
 						<!-- A1_3 -->
