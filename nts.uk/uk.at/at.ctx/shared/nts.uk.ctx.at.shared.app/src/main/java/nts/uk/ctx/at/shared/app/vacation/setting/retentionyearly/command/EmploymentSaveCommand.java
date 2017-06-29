@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.app.vacation.setting.retentionyearly.command.dto.EmploymentSettingDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 
 @Getter
 @Setter
@@ -22,7 +22,7 @@ public class EmploymentSaveCommand {
 	 * @param companyId the company id
 	 * @return the employment setting
 	 */
-	public EmploymentSetting toDomain(String companyId) {
+	public EmptYearlyRetentionSetting toDomain(String companyId) {
 		return this.employmentSetting.toDomain(companyId);
 	}
 }

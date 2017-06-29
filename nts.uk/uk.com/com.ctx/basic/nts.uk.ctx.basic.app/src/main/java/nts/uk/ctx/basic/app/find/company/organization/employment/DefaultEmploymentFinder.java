@@ -22,7 +22,7 @@ import nts.uk.shr.find.employment.EmploymentFinder;
  * The Class DefaultEmploymentFinder.
  */
 @Stateless
-public class DefaultEmploymentFinder implements EmploymentFinder{
+public class DefaultEmploymentFinder implements EmploymentFinder {
 
 	/** The repository. */
 	@Inject
@@ -61,11 +61,11 @@ public class DefaultEmploymentFinder implements EmploymentFinder{
 		String companyId = AppContexts.user().companyId();
 		EmploymentDto dto = new EmploymentDto();
 		Optional<Employment> employment = this.repository.findEmployment(companyId, employmentCode);
-		if (employment.isPresent()) {
-			dto.setCode(employmentCode);
-			dto.setName(employment.get().toString());
-			return dto;
+		if (!employment.isPresent()) {
+			return null;
 		}
-		return null;
+		dto.setCode(employmentCode);
+		dto.setName(employment.get().toString());
+		return dto;
 	}
 }

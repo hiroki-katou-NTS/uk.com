@@ -6,12 +6,13 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
- * The Class EmploymentSetting.
+ * The Class EmptYearlyRetentionSetting.
  */
 @Getter
-public class EmploymentSetting extends AggregateRoot{
+public class EmptYearlyRetentionSetting extends AggregateRoot {
 	
 	/** The company id. */
 	private String companyId;
@@ -23,14 +24,14 @@ public class EmploymentSetting extends AggregateRoot{
 	private UpperLimitSetting upperLimitSetting;
 	
 	/** The management category. */
-	private ManagementCategory managementCategory;
+	private ManageDistinct managementCategory;
 	
 	/**
 	 * Instantiates a new employment setting.
 	 *
 	 * @param memento the memento
 	 */
-	public EmploymentSetting(EmploymentSettingGetMemento memento) {
+	public EmptYearlyRetentionSetting(EmptYearlyRetentionGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.employmentCode = memento.getEmploymentCode();
 		this.upperLimitSetting = memento.getUpperLimitSetting();
@@ -42,7 +43,7 @@ public class EmploymentSetting extends AggregateRoot{
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(EmploymentSettingSetMemento memento) {
+	public void saveToMemento(EmptYearlyRetentionSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setEmploymentCode(this.employmentCode);
 		memento.setUpperLimitSetting(this.upperLimitSetting);
@@ -72,7 +73,7 @@ public class EmploymentSetting extends AggregateRoot{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EmploymentSetting other = (EmploymentSetting) obj;
+		EmptYearlyRetentionSetting other = (EmptYearlyRetentionSetting) obj;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;

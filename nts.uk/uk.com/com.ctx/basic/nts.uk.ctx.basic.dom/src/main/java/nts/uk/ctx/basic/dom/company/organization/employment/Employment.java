@@ -12,7 +12,7 @@ import nts.uk.ctx.basic.dom.company.organization.CompanyId;
  * 雇用.
  */
 @Getter
-public class Employment extends AggregateRoot{
+public class Employment extends AggregateRoot {
 	
 	/** 会社ID. */
 	private CompanyId companyId;

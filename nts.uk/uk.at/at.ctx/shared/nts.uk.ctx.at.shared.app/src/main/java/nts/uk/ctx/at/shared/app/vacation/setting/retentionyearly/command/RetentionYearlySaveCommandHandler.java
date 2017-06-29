@@ -47,8 +47,6 @@ public class RetentionYearlySaveCommandHandler extends CommandHandler<RetentionY
 
 		// validate domain
 		retentionYearlySetting.validate();
-
-//		this.repository.update(retentionYearlySetting);
 		
 		Optional<RetentionYearlySetting> data = this.repository.findByCompanyId(retentionYearlySetting.getCompanyId());
 		if (data.isPresent()) {
