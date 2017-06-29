@@ -5,6 +5,7 @@ package nts.uk.ctx.at.shared.dom.bonuspay.repository;
 
 import java.util.List;
 
+import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 
 /**
@@ -19,5 +20,5 @@ public interface BPSettingRepository {
 
 	void updateBonusPaySetting(BonusPaySetting domain);
 
-	void removeBonusPaySetting(String companyId, String bonusPaySettingCode);
+	void removeBonusPaySetting(String companyId, BonusPaySettingCode bonusPaySettingCode);
 }

@@ -25,9 +25,6 @@ public class BPSettingAddCommandHandler extends CommandHandler<BPSettingAddComma
 	}
 
 	private BonusPaySetting ToBonusPaySettingDomain(BPSettingAddCommand bpSettingAddCommand) {
-
-		BonusPaySetting bonusPaySetting = BonusPaySetting.createFromJavaType(bpSettingAddCommand.getCompanyId(),
-				bpSettingAddCommand.getCode(), bpSettingAddCommand.getName());
 		List<BPTimesheetAddCommand> lstBPTimesheetAddCommand = bpSettingAddCommand.getLstBonusPayTimesheet();
 		List<BonusPayTimesheet> lstBonusPayTimesheet = lstBPTimesheetAddCommand.stream()
 				.map(c -> toBonusPayTimesheetDomain(c)).collect(Collectors.toList());
@@ -35,9 +32,10 @@ public class BPSettingAddCommandHandler extends CommandHandler<BPSettingAddComma
 				.getLstSpecBonusPayTimesheet();
 		List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet = lstSpecBPTimesheetAddCommand.stream()
 				.map(c -> toSpecBonusPayTimesheetDomain(c)).collect(Collectors.toList());
-		bonusPaySetting.setListTimesheet(lstBonusPayTimesheet);
-		bonusPaySetting.setListSpecialTimesheet(lstSpecBonusPayTimesheet);
-		return bonusPaySetting;
+		return BonusPaySetting.createFromJavaType(bpSettingAddCommand.getCompanyId(), bpSettingAddCommand.getCode(),
+				bpSettingAddCommand.getName(), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);
+		// bonusPaySetting.setListTimesheet(lstBonusPayTimesheet);
+		// bonusPaySetting.setListSpecialTimesheet(lstSpecBonusPayTimesheet);
 
 	}
 

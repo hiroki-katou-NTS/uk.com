@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import nts.gul.util.Time;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Monthly;
 
 /**
@@ -37,7 +36,7 @@ public class MonthlyDto {
 		return domain.stream().map(item -> {
 			MonthlyDto dto = new MonthlyDto();
 			dto.setMonth(item.getMonth().getValue());
-			dto.setTime(item.getTime().v() / Time.STEP);
+			dto.setTime((long)item.getTime().minutes());
 			return dto;
 		}).collect(Collectors.toList());
 	}

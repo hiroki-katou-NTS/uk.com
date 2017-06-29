@@ -18,9 +18,9 @@ public class BPUnitUseSettingDomainService implements BPUnitUseSettingService {
 		Optional<BPUnitUseSetting> pbUnitUseSetting = pbUnitUseSettingRepository
 				.getSetting(String.valueOf(setting.getCompanyId()));
 		if (pbUnitUseSetting.isPresent()) {
-			pbUnitUseSettingRepository.updateSetting(pbUnitUseSetting.get());
-		} else {
 			pbUnitUseSettingRepository.insertSetting(setting);
+		} else {
+			pbUnitUseSettingRepository.updateSetting(setting);
 		}
 	}
 

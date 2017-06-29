@@ -9,15 +9,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.command.JavaTypeResult;
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfClassificationCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementTimeOfClassificationCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementTimeOfClassificationCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementTimeOfClassificationCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementTimeOfClassificationCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementTimeOfClassificationCommandHandler;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfClassificationDetail;
+import nts.uk.ctx.at.record.app.command.standardtime.classification.AddAgreementTimeOfClassificationCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.classification.AddAgreementTimeOfClassificationCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.classification.RemoveAgreementTimeOfClassificationCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.classification.RemoveAgreementTimeOfClassificationCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.classification.UpdateAgreementTimeOfClassificationCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.classification.UpdateAgreementTimeOfClassificationCommandHandler;
 import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfClassificationFinder;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementTimeOfClassificationListDto;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfClassificationDetailDto;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementTimeOfClassificationListDto;
 
 @Path("at/record/agreementTimeOfClassification")
 @Produces("application/json")
@@ -37,13 +37,13 @@ public class AgreementTimeOfClassificationWebservice {
 	
 	@POST
 	@Path("addAgreementTimeOfClassification")
-	public JavaTypeResult<List<String>> addAgreementTimeOfClassification(AddAgreementTimeOfClassificationCommand command) {
+	public List<String> addAgreementTimeOfClassification(AddAgreementTimeOfClassificationCommand command) {
 		return this.addAgreementTimeOfClassificationCommandHandler.handle(command);
 	}
 	
 	@POST
 	@Path("updateAgreementTimeOfClassification")
-	public JavaTypeResult<List<String>> updateAgreementTimeOfClassification(UpdateAgreementTimeOfClassificationCommand command) {
+	public List<String> updateAgreementTimeOfClassification(UpdateAgreementTimeOfClassificationCommand command) {
 		return this.updateAgreementTimeOfClassificationCommandHandler.handle(command);
 	}
 	
@@ -62,7 +62,7 @@ public class AgreementTimeOfClassificationWebservice {
 	
 	@POST
 	@Path("getAgreementTimeOfClassification/{laborSystemAtr}/{classificationCode}")
-	public AgreementTimeOfClassificationDetail getDetail(@PathParam("laborSystemAtr") int laborSystemAtr, @PathParam("employmentCategoryCode") String classificationCode) {
+	public AgreementTimeOfClassificationDetailDto getDetail(@PathParam("laborSystemAtr") int laborSystemAtr, @PathParam("employmentCategoryCode") String classificationCode) {
 		return this.agreementTimeOfClassificationFinder.findDetail(laborSystemAtr, classificationCode);
 	}
 

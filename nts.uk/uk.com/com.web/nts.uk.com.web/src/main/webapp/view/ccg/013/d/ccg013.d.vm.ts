@@ -35,13 +35,13 @@
             this.dataItems = ko.observableArray([]);
             
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', key:'code', width: 60 },
-                { headerText: '名称', prop: 'name', key:'name', width: 200 },
+                { headerText: 'コード', prop: 'code', key:'code', width: 55 },
+                { headerText: '名称', prop: 'name', key:'name', width: 167 },
                 { headerText: 'pk', prop: 'primaryKey', key:'primaryKey', width: 1, hidden: true }
             ]);
             
             this.newColumns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 60 },
+                { headerText: 'コード', prop: 'code', width: 55 },
                 { headerText: '対象メニュー', prop: 'targetItem', width: 160 },
                 { headerText: '表示名称', prop: 'name', width: 160 },
                 { headerText: 'pk', prop: 'primaryKey', key:'primaryKey', width: 1, hidden: true }

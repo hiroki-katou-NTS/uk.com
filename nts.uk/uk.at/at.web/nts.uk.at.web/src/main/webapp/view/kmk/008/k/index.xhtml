@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 860,
+					height : 600
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk008.k.main.css" />
+			<com:scriptfile path="kmk008.k.start.js" />
+			<com:scriptfile path="kmk008.k.vm.js" />
+			<com:scriptfile path="kmk008.k.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+		
+			<div id="functions-area">
+				<div id = "functions-area-content">
+					<button id="button1" class="large">#{i18n.getText('KMK008_40')}</button>
+					<button id="button2" class="large proceed">#{i18n.getText('KMK008_14')}</button>
+					<button id="button3" class="large danger">#{i18n.getText('KMK008_16')}</button>
+					<button id="button4" class="large">#{i18n.getText('KMK008_41')}</button>
+				</div>
+			</div>
+			
+			<div id="contents-area">
+					<div id="label">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('Com_Person')}#{i18n.getText('KMK008_17')}</div>
+						<span id="label2">社員コード</span>
+						<span id="label3">社員名</span>
+					</div>
+					
+					<div id="panel" data-bind="ntsPanel:{width: '156px', height: '280px', direction: 'right', showIcon: false, visible: true}">
+						<table id="single-list" data-bind="ntsGridList: {
+						width: 142,								
+						height: 265,
+						dataSource: items,
+						primaryKey: 'code',
+						columns: columns2,
+						value: currentCode
+						}"></table>
+					</div>
+					
+					<div id="label4">
+						<div id="ntsFormLabel2" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_29')}</div>
+						<div id="ntsDatePicker" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div><br></br>
+						<div id="ntsFormLabel3" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_19')}</div>
+						<input id="ntsTimeEditor1" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+						<br></br>
+						<div id="ntsFormLabel4" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK008_20')}</div>
+						<input id="ntsTimeEditor2" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+					</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

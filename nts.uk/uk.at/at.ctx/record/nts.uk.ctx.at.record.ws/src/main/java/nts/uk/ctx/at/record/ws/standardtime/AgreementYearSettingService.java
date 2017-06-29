@@ -8,14 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementYearSettingCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.AddAgreementYearSettingCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementYearSettingCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.RemoveAgreementYearSettingCommandHandler;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementYearSettingCommand;
-import nts.uk.ctx.at.record.app.command.standardtime.UpdateAgreementYearSettingCommandHandler;
-import nts.uk.ctx.at.record.app.find.standardtime.AgreementYearSettingDto;
+import nts.uk.ctx.at.record.app.command.standardtime.yearsetting.AddAgreementYearSettingCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.yearsetting.AddAgreementYearSettingCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.yearsetting.RemoveAgreementYearSettingCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.yearsetting.RemoveAgreementYearSettingCommandHandler;
+import nts.uk.ctx.at.record.app.command.standardtime.yearsetting.UpdateAgreementYearSettingCommand;
+import nts.uk.ctx.at.record.app.command.standardtime.yearsetting.UpdateAgreementYearSettingCommandHandler;
 import nts.uk.ctx.at.record.app.find.standardtime.AgreementYearSettingFinder;
+import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementYearSettingDto;
 
 @Path("at/record/agreementYearSetting")
 @Produces("application/json")

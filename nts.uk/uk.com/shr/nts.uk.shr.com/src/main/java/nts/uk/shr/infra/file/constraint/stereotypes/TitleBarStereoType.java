@@ -20,6 +20,11 @@ public class TitleBarStereoType implements FileStereo {
 		supportedExtensions.add("bmp");
 		supportedExtensions.add("jpeg");
 		supportedExtensions.add("png");
+		supportedExtensions.add("JPG");
+		supportedExtensions.add("GIF");
+		supportedExtensions.add("BMP");
+		supportedExtensions.add("JPEG");
+		supportedExtensions.add("PNG");
 		return supportedExtensions;
 	}
 

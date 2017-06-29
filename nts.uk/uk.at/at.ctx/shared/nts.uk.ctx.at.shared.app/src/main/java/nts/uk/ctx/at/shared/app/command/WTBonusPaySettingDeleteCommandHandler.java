@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.shared.app.command;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,17 +9,15 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.WTBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkingTimesheetBonusPaySetting;
 
 @Stateless
-public class WTBonusPaySettingDeleteCommandHandler extends CommandHandler<List<WTBonusPaySettingDeleteCommand>> {
+public class WTBonusPaySettingDeleteCommandHandler extends CommandHandler<WTBonusPaySettingDeleteCommand> {
 	@Inject
 	private WTBonusPaySettingRepository wtBonusPaySettingRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<WTBonusPaySettingDeleteCommand>> context) {
-		List<WTBonusPaySettingDeleteCommand> lstWTBonusPaySettingDeleteCommand = context.getCommand();
-		this.wtBonusPaySettingRepository.removeListSetting(lstWTBonusPaySettingDeleteCommand.stream()
-				.map(c -> toWorkingTimesheetBonusPaySettingDomain(c)).collect(Collectors.toList()));
+	protected void handle(CommandHandlerContext<WTBonusPaySettingDeleteCommand> context) {
+		 WTBonusPaySettingDeleteCommand wtBonusPaySettingDeleteCommand = context.getCommand();
+		this.wtBonusPaySettingRepository.removeWTBPSetting(this.toWorkingTimesheetBonusPaySettingDomain(wtBonusPaySettingDeleteCommand));
 	}
-
 	private WorkingTimesheetBonusPaySetting toWorkingTimesheetBonusPaySettingDomain(
 			WTBonusPaySettingDeleteCommand wtBonusPaySettingDeleteCommand) {
 		return WorkingTimesheetBonusPaySetting.createFromJavaType(

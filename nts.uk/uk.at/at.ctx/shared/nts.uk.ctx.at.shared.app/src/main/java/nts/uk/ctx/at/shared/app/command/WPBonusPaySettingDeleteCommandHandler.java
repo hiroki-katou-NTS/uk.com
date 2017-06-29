@@ -1,8 +1,5 @@
 package nts.uk.ctx.at.shared.app.command;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -12,17 +9,17 @@ import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 
 @Stateless
-public class WPBonusPaySettingDeleteCommandHandler extends CommandHandler<List<WPBonusPaySettingDeleteCommand>> {
+public class WPBonusPaySettingDeleteCommandHandler extends CommandHandler<WPBonusPaySettingDeleteCommand> {
 	@Inject
 	private WPBonusPaySettingRepository wpBonusPaySettingRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<List<WPBonusPaySettingDeleteCommand>> context) {
-		List<WPBonusPaySettingDeleteCommand> lstWPBonusPaySettingDeleteCommand = context.getCommand();
-		this.wpBonusPaySettingRepository.removeListSetting(lstWPBonusPaySettingDeleteCommand.stream()
-				.map(c -> toWPBonusPaySettingDomain(c)).collect(Collectors.toList()));
+	protected void handle(CommandHandlerContext<WPBonusPaySettingDeleteCommand> context) {
+		WPBonusPaySettingDeleteCommand wpBonusPaySettingDeleteCommand = context.getCommand();
+		this.wpBonusPaySettingRepository
+				.removeWPBPSetting(this.toWPBonusPaySettingDomain(wpBonusPaySettingDeleteCommand));
 	}
-	
+
 	private WorkplaceBonusPaySetting toWPBonusPaySettingDomain(
 			WPBonusPaySettingDeleteCommand wpBonusPaySettingDeleteCommand) {
 		return WorkplaceBonusPaySetting.createFromJavaType(wpBonusPaySettingDeleteCommand.getWorkplaceId().toString(),

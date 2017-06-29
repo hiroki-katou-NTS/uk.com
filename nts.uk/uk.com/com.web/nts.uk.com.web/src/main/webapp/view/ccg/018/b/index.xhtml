@@ -25,26 +25,26 @@
 		<div id="sample-component"></div>
 	</div>
 	<div id="part-3">
-		<div >
+		<div>
 			<div id="B3_12" data-bind="ntsFormLabel: {}">#{i18n.getText('CCG018_38')}</div>
 			<span id="B3_13" data-bind="text: employeeCode"></span> <span
 				id="B3_14" data-bind="text: employeeName"></span>
 		</div>
 
-		<div >
+		<div>
 			<table id="table-1">
 				<thead>
 					<tr>
-						<th>#{i18n.getText('CCG018_22')}</th>
+						<th data-bind="visible: isVisible">#{i18n.getText('CCG018_22')}</th>
 						<th>#{i18n.getText('CCG018_23')}</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>
+						<td data-bind="visible: isVisible">
 							<div id="combo-box"
 								data-bind="ntsComboBox: {
-								options: itemList,
+								options: comboItemsAfterLogin,
 								optionsValue: 'code',
 								value: selectedCode1,
 								optionsText: 'name',
@@ -57,7 +57,7 @@
 						<td>
 							<div id="combo-box"
 								data-bind="ntsComboBox: {
-							options: itemList,
+							options: comboItemsAsTopPage,
 							optionsValue: 'code',
 							value: selectedCode2,
 							optionsText: 'name',
