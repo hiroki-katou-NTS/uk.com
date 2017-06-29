@@ -72,28 +72,201 @@
 							<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 								<div class="tab-content-1">
 									<div id="gridlist-div">
-										<table id="gridlist-tbl" data-bind="ntsGridList: {
-												width: 280,
-												height: 420,
-												options: ko.observableArray([]),
-												optionsValue: 'code',
-												columns: ko.observableArray([]),
-												multiple: false,
-												value: ko.observable()
-											}"></table>
+										<table id="table-panel-1">
+											<thead>
+												<tr>
+													<th>#{i18n.getText('KMK005_20')}</th>
+													<th>	
+														<span style="float: left;">#{i18n.getText('KMK005_65')}</span> 
+														<span style="float: right;">#{i18n.getText('KMK005_66')}</span>
+													</th>
+													<th>#{i18n.getText('KMK005_67')}</th>
+													<th>#{i18n.getText('KMK005_68')}</th>
+													<th>#{i18n.getText('KMK005_69')}</th>
+												</tr>
+											</thead>
+											<tbody data-bind="foreach: [1,2,3,4,5,6,7,8,9,10]">
+												<tr>
+													<td>
+														<div class="cf" data-bind="ntsSwitchButton: {
+																name: '#[KMK005_20]',
+																options: ko.observableArray([
+																	{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
+														            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
+														        ]),
+																optionsValue: 'code',
+																optionsText: 'name',
+																value: '',
+																enable: true }"></div>	
+													</td>
+													<td>
+														<span>
+															<input data-bind="ntsTimeEditor: {name: '#[KDL001_21]', value: ko.observable(''), inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+														</span>
+														<span><!-- #{i18n.getText('KMK005_55')} -->~</span>
+														<span>
+															<input data-bind="ntsTimeEditor: {name: '#[KDL001_21]', value: ko.observable(''), inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />	
+														</span>
+													</td>
+													<td>
+														<div class="combo-box1" data-bind="ntsComboBox: {
+																name: '#[KML001_27]',
+																options: ko.observableArray([
+													                { code: 0, name: '#{i18n.getText('KML001_22')}' },
+													                { code: 1, name: '#{i18n.getText('KML001_23')}' },
+													                { code: 2, name: '#{i18n.getText('KML001_24')}' },
+													                { code: 3, name: '#{i18n.getText('KML001_25')}' },
+													                { code: 4, name: '#{i18n.getText('KML001_26')}' }
+													            ]),
+																optionsValue: 'code',
+																value: ko.observable(1),
+																optionsText: 'name',
+																enable: true }">
+														</div>	
+													</td>
+													<td>
+														<div class="combo-box2" data-bind="ntsComboBox: {
+																name: '#[KML001_27]',
+																options: ko.observableArray([
+													                { code: 0, name: '#{i18n.getText('KML001_22')}' },
+													                { code: 1, name: '#{i18n.getText('KML001_23')}' },
+													                { code: 2, name: '#{i18n.getText('KML001_24')}' },
+													                { code: 3, name: '#{i18n.getText('KML001_25')}' },
+													                { code: 4, name: '#{i18n.getText('KML001_26')}' }
+													            ]),
+																optionsValue: 'code',
+																value: ko.observable(1),
+																optionsText: 'name',
+																enable: true }">
+														</div>				
+													</td>
+													<td>
+														<div class="combo-box3" data-bind="ntsComboBox: {
+																name: '#[KML001_27]',
+																options: ko.observableArray([
+													                { code: 0, name: '#{i18n.getText('KML001_22')}' },
+													                { code: 1, name: '#{i18n.getText('KML001_23')}' },
+													                { code: 2, name: '#{i18n.getText('KML001_24')}' },
+													                { code: 3, name: '#{i18n.getText('KML001_25')}' },
+													                { code: 4, name: '#{i18n.getText('KML001_26')}' }
+													            ]),
+																optionsValue: 'code',
+																value: ko.observable(1),
+																optionsText: 'name',
+																enable: true }">
+														</div>				
+													</td>
+												</tr>
+											</tbody>
+										</table>
 									</div>
 								</div>
 								<div class="tab-content-2">
 									<div id="gridlist-div">
-										<table id="gridlist-tbl" data-bind="ntsGridList: {
-												width: 280,
-												height: 420,
-												options: ko.observableArray([]),
-												optionsValue: 'code',
-												columns: ko.observableArray([]),
-												multiple: false,
-												value: ko.observable()
-											}"></table>
+										<table id="table-panel-2">
+											<thead>
+												<tr>
+													<th>#{i18n.getText('KMK005_20')}</th>
+													<th>#{i18n.getText('KMK005_67')}</th>
+													<th>	
+														<span style="float: left;">#{i18n.getText('KMK005_65')}</span> 
+														<span style="float: right;">#{i18n.getText('KMK005_66')}</span>
+													</th>
+													<th>#{i18n.getText('KMK005_67')}</th>
+													<th>#{i18n.getText('KMK005_68')}</th>
+													<th>#{i18n.getText('KMK005_69')}</th>
+												</tr>
+											</thead>
+											<tbody data-bind="foreach: [1,2,3,4,5,6,7,8,9,10]">
+												<tr>
+													<td>
+														<div class="cf" data-bind="ntsSwitchButton: {
+																name: '#[KMK005_20]',
+																options: ko.observableArray([
+																	{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
+														            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
+														        ]),
+																optionsValue: 'code',
+																optionsText: 'name',
+																value: '',
+																enable: true }"></div>	
+													</td>
+													<td>
+														<div class="combo-box4" data-bind="ntsComboBox: {
+																name: '#[KML001_27]',
+																options: ko.observableArray([
+													                { code: 0, name: '#{i18n.getText('KML001_22')}' },
+													                { code: 1, name: '#{i18n.getText('KML001_23')}' },
+													                { code: 2, name: '#{i18n.getText('KML001_24')}' },
+													                { code: 3, name: '#{i18n.getText('KML001_25')}' },
+													                { code: 4, name: '#{i18n.getText('KML001_26')}' }
+													            ]),
+																optionsValue: 'code',
+																value: ko.observable(1),
+																optionsText: 'name',
+																enable: true }">
+														</div>	
+													</td>
+													<td>
+														<span>
+															<input data-bind="ntsTimeEditor: {name: '#[KDL001_21]', value: ko.observable(''), inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />
+														</span>
+														<span><!-- #{i18n.getText('KMK005_55')} -->~</span>
+														<span>
+															<input data-bind="ntsTimeEditor: {name: '#[KDL001_21]', value: ko.observable(''), inputFormat: 'time', mode: 'time', option: { width: '50px' }}" />	
+														</span>
+													</td>
+													<td>
+														<div class="combo-box1" data-bind="ntsComboBox: {
+																name: '#[KML001_27]',
+																options: ko.observableArray([
+													                { code: 0, name: '#{i18n.getText('KML001_22')}' },
+													                { code: 1, name: '#{i18n.getText('KML001_23')}' },
+													                { code: 2, name: '#{i18n.getText('KML001_24')}' },
+													                { code: 3, name: '#{i18n.getText('KML001_25')}' },
+													                { code: 4, name: '#{i18n.getText('KML001_26')}' }
+													            ]),
+																optionsValue: 'code',
+																value: ko.observable(1),
+																optionsText: 'name',
+																enable: true }">
+														</div>	
+													</td>
+													<td>
+														<div class="combo-box2" data-bind="ntsComboBox: {
+																name: '#[KML001_27]',
+																options: ko.observableArray([
+													                { code: 0, name: '#{i18n.getText('KML001_22')}' },
+													                { code: 1, name: '#{i18n.getText('KML001_23')}' },
+													                { code: 2, name: '#{i18n.getText('KML001_24')}' },
+													                { code: 3, name: '#{i18n.getText('KML001_25')}' },
+													                { code: 4, name: '#{i18n.getText('KML001_26')}' }
+													            ]),
+																optionsValue: 'code',
+																value: ko.observable(1),
+																optionsText: 'name',
+																enable: true }">
+														</div>				
+													</td>
+													<td>
+														<div class="combo-box3" data-bind="ntsComboBox: {
+																name: '#[KML001_27]',
+																options: ko.observableArray([
+													                { code: 0, name: '#{i18n.getText('KML001_22')}' },
+													                { code: 1, name: '#{i18n.getText('KML001_23')}' },
+													                { code: 2, name: '#{i18n.getText('KML001_24')}' },
+													                { code: 3, name: '#{i18n.getText('KML001_25')}' },
+													                { code: 4, name: '#{i18n.getText('KML001_26')}' }
+													            ]),
+																optionsValue: 'code',
+																value: ko.observable(1),
+																optionsText: 'name',
+																enable: true }">
+														</div>				
+													</td>
+												</tr>
+											</tbody>
+										</table>
 									</div>
 								</div>
 							</div>

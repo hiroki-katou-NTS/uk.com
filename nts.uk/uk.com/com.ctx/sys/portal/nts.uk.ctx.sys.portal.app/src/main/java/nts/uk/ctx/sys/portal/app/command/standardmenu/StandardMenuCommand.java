@@ -12,5 +12,4 @@ public class StandardMenuCommand {
 	private String code;
 	private String displayName;
 	private int system;
-	private String targetItems;
 }

@@ -93,7 +93,7 @@ public interface StandardMenuRepository {
 	 * @param List
 	 *            StandardMenu
 	 */
-	void update(List<StandardMenu> StandardMenu);
+	void changeName(List<StandardMenu> StandardMenu);
 
 	/**
 	 * Find all by system.
@@ -104,4 +104,14 @@ public interface StandardMenuRepository {
 	 * @return the list
 	 */
 	List<StandardMenu> findBySystem(String companyId, int system);
+	/**
+	 * yennth
+	 * @param companyId
+	 * @param code
+	 * @param system
+	 * @param classification
+	 * @param displayName
+	 * @return
+	 */
+	boolean isExistDisplayName(List<StandardMenu> StandardMenu);
 }

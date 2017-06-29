@@ -7,8 +7,9 @@ module nts.uk.com.view.ccg.share.ccg {
     import SelectType = kcp.share.list.SelectType;
     import UnitModel = kcp.share.list.UnitModel;
     import PersonModel = service.model.PersonModel;
-    import GroupOption = service.model.GroupOption;
     import EmployeeSearchDto = service.model.EmployeeSearchDto;
+    import GroupOption = service.model.GroupOption;
+    import EmployeeSearchInDto = service.model.EmployeeSearchInDto;
 
 
     export module viewmodel {
@@ -23,6 +24,7 @@ module nts.uk.com.view.ccg.share.ccg {
             isOnlyMe: boolean;
             isEmployeeOfWorkplace: boolean;
             isEmployeeWorkplaceFollow: boolean;
+            isSelectAllEmployee: boolean;
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             selectedTab: KnockoutObservable<string>;
             selectedCodeEmployment: KnockoutObservableArray<string>;
@@ -36,8 +38,8 @@ module nts.uk.com.view.ccg.share.ccg {
             jobtitles: ComponentOption;
             workplaces: TreeComponentOption;
             employeeinfo: ComponentOption;
-            onSearchAllClicked: (data: PersonModel[]) => void;
-            onSearchOnlyClicked: (data: PersonModel) => void;
+            onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
+            onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
             onSearchOfWorkplaceClicked: (data: PersonModel[]) => void;
             onSearchWorkplaceChildClicked: (data: PersonModel[]) => void;
             onApplyEmployee: (data: string[]) => void;
@@ -119,6 +121,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 self.isOnlyMe = data.isOnlyMe;
                 self.isEmployeeOfWorkplace = data.isEmployeeOfWorkplace;
                 self.isEmployeeWorkplaceFollow = data.isEmployeeWorkplaceFollow;
+                self.isSelectAllEmployee = data.isSelectAllEmployee;
                 self.onSearchAllClicked = data.onSearchAllClicked;
                 self.onSearchOnlyClicked = data.onSearchOnlyClicked;
                 self.onSearchOfWorkplaceClicked = data.onSearchOfWorkplaceClicked;
@@ -146,14 +149,16 @@ module nts.uk.com.view.ccg.share.ccg {
 
             searchAllEmployee(): void {
                 var self = this;
-                service.findAllPerson().done(data => {
+                service.searchAllEmployee(self.baseDate()).done(data => {
                     self.onSearchAllClicked(data);
-                });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                });  
             }
 
-            toEmployeeDto(): EmployeeSearchDto {
+            toEmployeeDto(): EmployeeSearchInDto {
                 var self = this;
-                var dto: EmployeeSearchDto = new EmployeeSearchDto();
+                var dto: EmployeeSearchInDto = new EmployeeSearchInDto();
                 dto.baseDate = self.baseDate();
                 dto.classificationCodes = self.selectedCodeClassification();
                 dto.employmentCodes = self.selectedCodeEmployment();
@@ -211,7 +216,7 @@ module nts.uk.com.view.ccg.share.ccg {
 
             getEmployeeLogin(): void {
                 var self = this;
-                service.getPersonLogin().done(data => {
+                service.searchEmployeeByLogin(self.baseDate()).done(data => {
                     self.onSearchOnlyClicked(data);
                 });
             }
@@ -236,7 +241,13 @@ module nts.uk.com.view.ccg.share.ccg {
             
             applyEmployee(): void {
                 var self = this;
-                self.onApplyEmployee(self.selectedCodeEmployee());
+                if (self.isSelectAllEmployee) {
+                    service.searchModeEmployee(self.toEmployeeDto()).done(data => {
+                        self.onApplyEmployee(self.toPersonCodeList(data));
+                    });
+                } else {
+                    self.onApplyEmployee(self.selectedCodeEmployee());
+                }
             }
 
             public toUnitModelList(dataList: PersonModel[]): KnockoutObservableArray<UnitModel> {

@@ -20,6 +20,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         selectCodeStandardMenu: KnockoutObservable<string>;
         allPart: KnockoutObservableArray<any>;
         selectedSystemID: KnockoutObservable<string>;
+        textOption:KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
+        
         constructor() {
             var self = this;
             self.nameMenuBar = ko.observable("");
@@ -48,7 +50,10 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                  if (value == 0) {
                     self.currentListStandardMenu('');    
                  }
-            });   
+            });
+            self.textOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                width: "160px"
+            })); 
         }
 
         startPage(): JQueryPromise<any> {
@@ -68,7 +73,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
                 self.listSystemSelect(editMenuBar.listSystem);
                 self.allPart(editMenuBar.listStandardMenu);
-                let listStandardMenu: Array<any> = _.orderBy((editMenuBar.listStandardMenu, "code", "asc"));
+                let listStandardMenu: Array<any> = _.orderBy(editMenuBar.listStandardMenu, "code", "asc");
                 self.listStandardMenu(editMenuBar.listStandardMenu);
                 self.selectedRadioAtcClass(editMenuBar.listSelectedAtr[0].value);
                 dfd.resolve();
@@ -80,12 +85,16 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         }
 
         cancel_Dialog(): any {
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.windows.close();
         }
 
         submit() {
             var self = this;
             var menuCls = "";
+            if (nts.uk.ui.errors.hasError()) {
+                return;    
+            }
             var standMenu = _.find(self.listStandardMenu(), 'code', self.currentListStandardMenu());
             if (standMenu) {
                 menuCls = standMenu.classification;

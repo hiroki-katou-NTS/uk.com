@@ -27,6 +27,7 @@ module kcp005.a.viewmodel {
         selectedType: KnockoutObservable<number>;
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
+        jsonData: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -116,8 +117,6 @@ module kcp005.a.viewmodel {
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton()
             };
-            // Load listComponent
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
 
             self.selectionTypeList = ko.observableArray([
                 { code: 1, name: 'By Selected Code' },
@@ -176,6 +175,7 @@ module kcp005.a.viewmodel {
                     self.isMultiSelect(true);
                 }
             });
+            self.jsonData = ko.observable('');
         }
         
         // Setting Item(s) which Registed/Saved from main screen

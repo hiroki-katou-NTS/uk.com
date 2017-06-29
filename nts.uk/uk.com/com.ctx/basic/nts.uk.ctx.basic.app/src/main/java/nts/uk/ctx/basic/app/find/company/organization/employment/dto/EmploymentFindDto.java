@@ -11,18 +11,8 @@ import nts.uk.ctx.basic.dom.company.organization.employment.EmploymentCode;
 import nts.uk.ctx.basic.dom.company.organization.employment.EmploymentName;
 import nts.uk.ctx.basic.dom.company.organization.employment.EmploymentSetMemento;
 
-/**
- * Gets the name.
- *
- * @return the name
- */
-@Getter
 
-/**
- * Sets the name.
- *
- * @param name the new name
- */
+@Getter
 @Setter
 public class EmploymentFindDto implements EmploymentSetMemento{
 	

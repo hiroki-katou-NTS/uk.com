@@ -13,6 +13,11 @@
 	margin-left: 5px
 }
 
+.controlSetting.caret-right:after {
+	border-width: 30px 14px;
+	margin-top: -10px;
+}
+
 .contentkcp {
 	min-height: 550px;
 	max-width: 550px;
@@ -38,11 +43,12 @@
 }
 
 .btn_big {
-	width: 200px;
+	width: 255px;
 	background-color: #2ECC71;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 9px;
+	padding-bottom: 19px;
 	margin-top: 5px;
+	padding-left: 8px;
 	margin-bottom: 5px;
 	color: white;
 	border-radius: 5px;
@@ -97,4 +103,16 @@
 
 #btnDetailWorkplace{
 	margin-top: 30px;
+}
+
+.icon-28-allemployee {
+	background:
+		url('icon/28_AllEmployee.png');
+	width: 44px;
+    height: 35px;
+    background-size: 45px 42px;
+}
+
+.lableBigButton {
+	font-size: 14pt;
 }

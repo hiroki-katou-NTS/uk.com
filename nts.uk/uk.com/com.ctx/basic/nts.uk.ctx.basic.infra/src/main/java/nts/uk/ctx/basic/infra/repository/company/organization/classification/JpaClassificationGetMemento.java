@@ -55,7 +55,7 @@ public class JpaClassificationGetMemento implements ClassificationGetMemento{
 	@Override
 	public ClassificationCode getClassificationCode() {
 		return new ClassificationCode(
-			this.cclmtClassification.getCclmtClassificationPK().getCode());
+				this.cclmtClassification.getCclmtClassificationPK().getCode());
 	}
 
 	/*
