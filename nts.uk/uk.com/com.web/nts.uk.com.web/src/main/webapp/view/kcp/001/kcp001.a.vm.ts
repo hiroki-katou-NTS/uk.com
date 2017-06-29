@@ -5,64 +5,53 @@ module kcp001.a.viewmodel {
     import UnitModel = kcp.share.list.UnitModel;
     import UnitAlreadySettingModel = kcp.share.list.UnitAlreadySettingModel;
     export class ScreenModel {
-        codeEditorOption: KnockoutObservable<any>;
-        nameEditorOption: KnockoutObservable<any>;
         selectedCode: KnockoutObservable<string>;
         bySelectedCode: KnockoutObservable<string>;
         isAlreadySetting: KnockoutObservable<boolean>;
         isDialog: KnockoutObservable<boolean>;
         isShowNoSelectionItem: KnockoutObservable<boolean>;
         isMultiSelect: KnockoutObservable<boolean>;
-        
+
         multiSelectedCode: KnockoutObservableArray<string>;
         multiBySelectedCode: KnockoutObservableArray<string>;
-        
+
         listComponentOption: ComponentOption;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-        
+
         hasSelectedEmp: KnockoutObservable<boolean>;
         employmentList: KnockoutObservableArray<UnitModel>;
-        
+
         selectionTypeList: KnockoutObservableArray<any>;
         selectedType: KnockoutObservable<number>;
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
-        
+
         constructor() {
             var self = this;
-            self.codeEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                width: "50px",
-                textmode: "text",
-                textalign: "left"
-            }));
-            self.nameEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                width: "150px",
-                textmode: "text",
-                textalign: "left"
-            }));
             self.selectedCode = ko.observable(null);
             self.bySelectedCode = ko.observable('1');
             self.isAlreadySetting = ko.observable(false);
             self.isAlreadySetting.subscribe(function() {
                 self.reloadComponent();
             });
-            
+
             self.isDialog = ko.observable(false);
             self.isDialog.subscribe(function(value: boolean) {
                 self.reloadComponent();
             });
-            
+
             self.isShowNoSelectionItem = ko.observable(false);
             self.isShowNoSelectionItem.subscribe(function(data: boolean) {
                 self.reloadComponent();
             });
-            
+
             self.multiBySelectedCode = ko.observableArray(['0', '1', '2']);
             self.multiSelectedCode = ko.observableArray([]);
-            
+
             self.isMultiSelect = ko.observable(false);
+            // isMultiSelect Subscribe
             self.isMultiSelect.subscribe(function(data: boolean) {
-                if(data) {
+                if (data) {
                     if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
                         self.listComponentOption.selectedCode = self.multiBySelectedCode;
                     } else {
@@ -71,6 +60,8 @@ module kcp001.a.viewmodel {
                 } else {
                     if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
                         self.listComponentOption.selectedCode = self.bySelectedCode;
+                    } else if (self.selectedType() == SelectType.SELECT_ALL) {
+                        self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
                     } else {
                         self.listComponentOption.selectedCode = self.selectedCode;
                     }
@@ -78,12 +69,14 @@ module kcp001.a.viewmodel {
                 self.reloadComponent();
             });
             
-            self.alreadySettingList = ko.observableArray([{code: '1', isAlreadySetting: true}, {code: '2', isAlreadySetting: true}]);
+            self.alreadySettingList = ko.observableArray([{ code: '1', isAlreadySetting: true }, { code: '2', isAlreadySetting: true }]);
             self.employmentList = ko.observableArray<UnitModel>([]);
             self.hasSelectedEmp = ko.computed(function() {
                 return (self.selectedCode != undefined);
             });
             self.selectedType = ko.observable(1);
+            
+            // Initial listComponentOption
             self.listComponentOption = {
                 isShowAlreadySet: self.isAlreadySetting(),
                 isMultiSelect: self.isMultiSelect(),
@@ -94,7 +87,7 @@ module kcp001.a.viewmodel {
                 isShowNoSelectRow: self.isShowNoSelectionItem(),
                 alreadySettingList: self.alreadySettingList
             };
-            // employmentList...
+            // Load Component
             $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
                 if (($('#empt-list-setting').getDataList() == undefined) || ($('#empt-list-setting').getDataList().length <= 0)) {
                     self.hasSelectedEmp(false);
@@ -107,14 +100,14 @@ module kcp001.a.viewmodel {
             });
             
             self.selectionTypeList = ko.observableArray([
-                {code : 1, name: 'By Selected Code'},
-                {code : 2, name: 'Select All Items'},
-                {code : 3, name: 'Select First Item'},
-                {code : 4, name: 'Select None'}
+                { code: 1, name: 'By Selected Code' },
+                { code: 2, name: 'Select All Items' },
+                { code: 3, name: 'Select First Item' },
+                { code: 4, name: 'Select None' }
             ]);
-            
+            // Selected Type Subscribe
             self.selectedType.subscribe(function(data: number) {
-                switch(data) {
+                switch (data) {
                     case 1:
                         if (self.isMultiSelect()) {
                             self.listComponentOption.selectedCode = self.multiBySelectedCode;
@@ -163,76 +156,85 @@ module kcp001.a.viewmodel {
                     self.isMultiSelect(true);
                 }
             });
-
         }
-
+        // Setting Item(s) which Registed/Saved from main screen
         private settingSavedItem(): void {
             var self = this;
             if (self.listComponentOption.selectedCode() != undefined) {
-                if (self.listComponentOption.isMultiSelect) {
-                    self.listComponentOption.selectedCode().forEach((selected) => {
+                if (self.listComponentOption.selectedCode().length < 1) {
+                    nts.uk.ui.dialog.alert("Select Item to Save ! ");
+                } else {
+                    if (self.listComponentOption.isMultiSelect) {
+                        self.listComponentOption.selectedCode().forEach((selected) => {
+                            var existItem = self.alreadySettingList().filter((item) => {
+                                return item.code == selected;
+                            })[0];
+                            if (!existItem) {
+                                self.alreadySettingList.push({ "code": selected, "isAlreadySetting": true });
+                            }
+                        });
+                    } else {
                         var existItem = self.alreadySettingList().filter((item) => {
-                            return item.code == selected;
+                            return item.code == self.listComponentOption.selectedCode();
                         })[0];
                         if (!existItem) {
-                            self.alreadySettingList.push({ "code": selected, "isAlreadySetting": true });
+                            self.alreadySettingList.push({ "code": self.listComponentOption.selectedCode(), "isAlreadySetting": true });
                         }
-                    });
-                } else {
-                    var existItem = self.alreadySettingList().filter((item) => {
-                        return item.code == self.listComponentOption.selectedCode();
-                    })[0];
-                    if (!existItem) {
-                        self.alreadySettingList.push({ "code": self.listComponentOption.selectedCode(), "isAlreadySetting": true });
                     }
+                    self.isAlreadySetting(true);
+                    nts.uk.ui.dialog.alert("Saved Successfully ! ");
                 }
-                self.isAlreadySetting(true);
-                nts.uk.ui.dialog.alert("Saved Successfully ! ");
             } else {
                 nts.uk.ui.dialog.alert("Select Item to Save ! ");
             }
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
-        
+        // Setting Item(s) which deleted from main Screen
         private settingDeletedItem() {
             let self = this;
             if (self.listComponentOption.selectedCode() != undefined) {
-                if (self.listComponentOption.isMultiSelect) {
-                    self.listComponentOption.selectedCode().forEach((selected) => {
-                        self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                            return item.code == selected;
-                        })[0]);
-                    });
+                if (self.listComponentOption.selectedCode().length < 1) {
+                    nts.uk.ui.dialog.alert("Select Item to Delete ! ");
                 } else {
-                    self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
-                        return item.code == self.listComponentOption.selectedCode();
-                    })[0]);
+                    if (self.listComponentOption.isMultiSelect) {
+                        self.listComponentOption.selectedCode().forEach((selected) => {
+                            self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
+                                return item.code == selected;
+                            })[0]);
+                        });
+                    } else {
+                        self.alreadySettingList.remove(self.alreadySettingList().filter((item) => {
+                            return item.code == self.listComponentOption.selectedCode();
+                        })[0]);
+                    }
+                    self.isAlreadySetting(true);
+                    nts.uk.ui.dialog.alert("Deleted Successfully ! ");
                 }
-                self.isAlreadySetting(true);
-                nts.uk.ui.dialog.alert("Deleted Successfully ! ");
             } else {
                 nts.uk.ui.dialog.alert("Select Item to Delete ! ");
             }
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
 
+        // Get Code of Selected Item(s)
         private getSelectedItemCode(): string {
             var self = this;
             if (self.isMultiSelect()) {
-                    if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
-                        return self.multiBySelectedCode().join(', ');
-                    } else {
-                        return self.multiSelectedCode().join(', ');
-                    }
+                if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
+                    return self.multiBySelectedCode().join(', ');
                 } else {
-                    if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
-                        return self.bySelectedCode();
-                    } else {
-                        return self.selectedCode();
-                    }
+                    return self.multiSelectedCode().join(', ');
                 }
+            } else {
+                if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
+                    return self.bySelectedCode();
+                } else {
+                    return self.selectedCode();
+                }
+            }
         }
 
+        // Reload component Method
         private reloadComponent() {
             var self = this;
             self.listComponentOption.isShowAlreadySet = self.isAlreadySetting();
@@ -242,7 +244,6 @@ module kcp001.a.viewmodel {
             self.listComponentOption.alreadySettingList = self.alreadySettingList;
             self.listComponentOption.isMultiSelect = self.isMultiSelect();
             self.listComponentOption.selectType = self.selectedType();
-            
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
         }
     }
