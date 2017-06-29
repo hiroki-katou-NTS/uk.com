@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.portal.app.command.layout;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.shr.com.context.AppContexts;
@@ -11,6 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class PortalLayoutCommand {
 
@@ -20,7 +22,7 @@ public class PortalLayoutCommand {
 	/** Layout GUID */
 	private String layoutID;
 
-	/** Enum PG Type */
+	/** Enum PG Type */ 
 	private int pgType;
 
 	/** Convert to Domain  */
