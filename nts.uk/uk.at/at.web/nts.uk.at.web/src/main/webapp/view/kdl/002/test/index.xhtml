@@ -18,13 +18,19 @@
 		<ui:define name="content">
 			<div id="total">
 				<!-- A1_1 -->
-				<div id="label">
-					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog002" >002</button>
-					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog0022" >002Multiple</button>
-					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog007" >007</button>
-					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog0072" >007Multiple</button>
+				<div>
+					<button class="btnMenu" data-bind="click: OpenDialog002" >002 Single</button>
+					<button class="btnMenu" data-bind="click: OpenDialog0022" >002 Multiple</button>
+					<!-- <button id="btnNew" class="btnMenu" data-bind="click: OpenDialog007" >007</button>
+					<button id="btnNew" class="btnMenu" data-bind="click: OpenDialog0072" >007Multiple</button> -->
 				</div>
 				<!-- A1_2 -->
+				<input class="nts-input" id="inpCode"
+					data-bind="ntsTextEditor: {
+                                   value: Code,
+                                   enable: true, 
+                                   required: false}"/>
+                 <div>(Eg: Single: 001 | Multiple: 001,002,003,...)</div>
 				<div style="float: left; margin-bottom: 20px;">
 					<div>
 						<!-- A1_3 -->

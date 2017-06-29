@@ -28,7 +28,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.selectedCodeSystemSelect = ko.observable(0);
             //Radio button
             self.itemRadioAtcClass = ko.observableArray([]);
-            self.selectedRadioAtcClass = ko.observable(1);
+            self.selectedRadioAtcClass = ko.observable(0);
             //color picker
             self.letterColor = ko.observable('');
             self.backgroundColor = ko.observable('');
@@ -44,7 +44,11 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             //Follow SystemSelect
             self.selectedSystemID = ko.observable(null);
             self.selectedCodeSystemSelect.subscribe((value) => { self.changeSystem(value); });
-                
+            self.selectedRadioAtcClass.subscribe(function(value){
+                 if (value == 0) {
+                    self.currentListStandardMenu('');    
+                 }
+            });   
         }
 
         startPage(): JQueryPromise<any> {
@@ -63,9 +67,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             service.getEditMenuBar().done(function(editMenuBar: any) {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
                 self.listSystemSelect(editMenuBar.listSystem);
-                console.log(editMenuBar);
                 self.allPart(editMenuBar.listStandardMenu);
-                let listStandardMenu: Array<any> = _.orderBy((editMenuBar.listStandardMenu, ["code"], ["asc"]));
+                let listStandardMenu: Array<any> = _.orderBy((editMenuBar.listStandardMenu, "code", "asc"));
                 self.listStandardMenu(editMenuBar.listStandardMenu);
                 self.selectedRadioAtcClass(editMenuBar.listSelectedAtr[0].value);
                 dfd.resolve();
