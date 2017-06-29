@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.standardtime.employment;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,17 +66,17 @@ public class UpdateAgreementTimeOfEmploymentCommandHandler
 		if (basicSettingId.isPresent()) {
 			BasicAgreementSetting basicAgreementSetting = new BasicAgreementSetting(basicSettingId.get(),
 					new AlarmWeek(command.getAlarmWeek()), new ErrorWeek(command.getErrorWeek()),
-					new LimitWeek(command.getLimitWeek()), new AlarmTwoWeeks(command.getAlarmTwoWeeks()),
-					new ErrorTwoWeeks(command.getErrorTwoWeeks()), new LimitTwoWeeks(command.getLimitTwoWeeks()),
+					null, new AlarmTwoWeeks(command.getAlarmTwoWeeks()),
+					new ErrorTwoWeeks(command.getErrorTwoWeeks()), null,
 					new AlarmFourWeeks(command.getAlarmFourWeeks()), new ErrorFourWeeks(command.getErrorFourWeeks()),
-					new LimitFourWeeks(command.getLimitFourWeeks()), new AlarmOneMonth(command.getAlarmOneMonth()),
-					new ErrorOneMonth(command.getErrorOneMonth()), new LimitOneMonth(command.getLimitOneMonth()),
+					null, new AlarmOneMonth(command.getAlarmOneMonth()),
+					new ErrorOneMonth(command.getErrorOneMonth()), null,
 					new AlarmTwoMonths(command.getAlarmTwoMonths()), new ErrorTwoMonths(command.getErrorTwoMonths()),
-					new LimitTwoMonths(command.getLimitTwoMonths()),
+					null,
 					new AlarmThreeMonths(command.getAlarmThreeMonths()),
 					new ErrorThreeMonths(command.getErrorThreeMonths()),
-					new LimitThreeMonths(command.getErrorThreeMonths()), new AlarmOneYear(command.getAlarmOneYear()),
-					new ErrorOneYear(command.getErrorOneYear()), new LimitOneYear(command.getLimitOneYear()));
+					null, new AlarmOneYear(command.getAlarmOneYear()),
+					new ErrorOneYear(command.getErrorOneYear()), null);
 
 			return this.agreementTimeOfEmploymentDomainService.update(basicAgreementSetting);
 		} else {

@@ -27,9 +27,7 @@ public class JpaBasicAgreementSettingRepository extends JpaRepository implements
 				.append("SET a.alarmWeek = :alarmWeek , a.alarmTwoWeeks = :alarmTwoWeeks , a.alarmFourWeeks = :alarmFourWeeks , a.alarmOneMonth = :alarmOneMonth ,"
 						+ " a.alarmTwoMonths = :alarmTwoMonths , a.alarmThreeMonths = :alarmThreeMonths , a.alarmOneYear = :alarmOneYear , a.errorWeek = :errorWeek ,"
 						+ " a.errorTwoWeeks = :errorTwoWeeks , a.errorFourWeeks = :errorFourWeeks , a.errorOneMonth = :errorOneMonth , a.errorTwoMonths = :errorTwoMonths , "
-						+ " a.errorThreeMonths = :errorThreeMonths , a.errorOneYear = :errorOneYear , a.limitWeek = :limitWeek , a.limitTwoWeeks = :limitTwoWeeks , "
-						+ " a.limitFourWeeks = :limitFourWeeks , a.limitOneMonth = :limitOneMonth , a.limitTwoMonths = :limitTwoMonths ,"
-						+ " a.limitThreeMonths = :limitThreeMonths , a.limitOneYear = :limitOneYear ");
+						+ " a.errorThreeMonths = :errorThreeMonths , a.errorOneYear = :errorOneYear ");
 		builderString.append("WHERE a.kmkmtBasicAgreementSettingPK.basicSettingId = :basicSettingId ");
 		UPDATE_BY_KEY = builderString.toString();
 
@@ -62,14 +60,7 @@ public class JpaBasicAgreementSettingRepository extends JpaRepository implements
 				.setParameter("errorOneMonth", basicAgreementSetting.getErrorOneMonth().v())
 				.setParameter("errorTwoMonths", basicAgreementSetting.getErrorTwoMonths().v())
 				.setParameter("errorThreeMonths", basicAgreementSetting.getErrorThreeMonths().v())
-				.setParameter("errorOneYear", basicAgreementSetting.getErrorOneYear().v())
-				.setParameter("limitWeek", basicAgreementSetting.getLimitWeek().v())
-				.setParameter("limitTwoWeeks", basicAgreementSetting.getLimitTwoWeeks().v())
-				.setParameter("limitFourWeeks", basicAgreementSetting.getLimitFourWeeks().v())
-				.setParameter("limitOneMonth", basicAgreementSetting.getLimitOneMonth().v())
-				.setParameter("limitTwoMonths", basicAgreementSetting.getLimitTwoMonths().v())
-				.setParameter("limitThreeMonths", basicAgreementSetting.getLimitThreeMonths().v())
-				.setParameter("limitOneYear", basicAgreementSetting.getLimitOneYear().v()).executeUpdate();
+				.setParameter("errorOneYear", basicAgreementSetting.getErrorOneYear().v()).executeUpdate();
 	}
 
 	@Override
