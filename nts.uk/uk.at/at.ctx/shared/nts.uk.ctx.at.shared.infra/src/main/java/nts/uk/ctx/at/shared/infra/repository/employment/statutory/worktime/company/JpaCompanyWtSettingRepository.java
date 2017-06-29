@@ -19,10 +19,10 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.company.CompanyWtSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.company.CompanyWtSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSet;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSetPK;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSetPK_;
-import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwtstCompanyWtSet_;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwstCompanyWtSet;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwstCompanyWtSetPK;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwstCompanyWtSetPK_;
+import nts.uk.ctx.at.shared.infra.entity.employment.statutory.worktime.company.JcwstCompanyWtSet_;
 import nts.uk.ctx.at.shared.infra.repository.employment.statutory.worktime.WtSettingConstant;
 
 /**
@@ -40,7 +40,7 @@ public class JpaCompanyWtSettingRepository extends JpaRepository implements Comp
 	 */
 	@Override
 	public void create(CompanyWtSetting setting) {
-		List<JcwtstCompanyWtSet> entities = this.toEntity(setting);
+		List<JcwstCompanyWtSet> entities = this.toEntity(setting);
 		commandProxy().insertAll(entities);
 	}
 
@@ -53,7 +53,7 @@ public class JpaCompanyWtSettingRepository extends JpaRepository implements Comp
 	 */
 	@Override
 	public void update(CompanyWtSetting setting) {
-		List<JcwtstCompanyWtSet> entities = this.toEntity(setting);
+		List<JcwstCompanyWtSet> entities = this.toEntity(setting);
 		commandProxy()
 				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
@@ -66,14 +66,14 @@ public class JpaCompanyWtSettingRepository extends JpaRepository implements Comp
 	 */
 	@Override
 	public void remove(String companyId, int year) {
-		this.commandProxy().remove(JcwtstCompanyWtSet.class,
-				new JcwtstCompanyWtSetPK(companyId, year, WtSettingConstant.NORMAL, WtSettingConstant.STATUTORY));
-		this.commandProxy().remove(JcwtstCompanyWtSet.class,
-				new JcwtstCompanyWtSetPK(companyId, year, WtSettingConstant.FLEX, WtSettingConstant.STATUTORY));
-		this.commandProxy().remove(JcwtstCompanyWtSet.class,
-				new JcwtstCompanyWtSetPK(companyId, year, WtSettingConstant.FLEX, WtSettingConstant.SPECIFIED));
-		this.commandProxy().remove(JcwtstCompanyWtSet.class,
-				new JcwtstCompanyWtSetPK(companyId, year, WtSettingConstant.DEFORMED, WtSettingConstant.STATUTORY));
+		this.commandProxy().remove(JcwstCompanyWtSet.class,
+				new JcwstCompanyWtSetPK(companyId, year, WtSettingConstant.NORMAL, WtSettingConstant.STATUTORY));
+		this.commandProxy().remove(JcwstCompanyWtSet.class,
+				new JcwstCompanyWtSetPK(companyId, year, WtSettingConstant.FLEX, WtSettingConstant.STATUTORY));
+		this.commandProxy().remove(JcwstCompanyWtSet.class,
+				new JcwstCompanyWtSetPK(companyId, year, WtSettingConstant.FLEX, WtSettingConstant.SPECIFIED));
+		this.commandProxy().remove(JcwstCompanyWtSet.class,
+				new JcwstCompanyWtSetPK(companyId, year, WtSettingConstant.DEFORMED, WtSettingConstant.STATUTORY));
 	}
 
 	/*
@@ -88,15 +88,15 @@ public class JpaCompanyWtSettingRepository extends JpaRepository implements Comp
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<JcwtstCompanyWtSet> cq = cb.createQuery(JcwtstCompanyWtSet.class);
-		Root<JcwtstCompanyWtSet> root = cq.from(JcwtstCompanyWtSet.class);
+		CriteriaQuery<JcwstCompanyWtSet> cq = cb.createQuery(JcwstCompanyWtSet.class);
+		Root<JcwstCompanyWtSet> root = cq.from(JcwstCompanyWtSet.class);
 
 		// Constructing condition.
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		predicateList.add(
-				cb.equal(root.get(JcwtstCompanyWtSet_.jcwtstCompanyWtSetPK).get(JcwtstCompanyWtSetPK_.cid), companyId));
+				cb.equal(root.get(JcwstCompanyWtSet_.jcwstCompanyWtSetPK).get(JcwstCompanyWtSetPK_.cid), companyId));
 		predicateList
-				.add(cb.equal(root.get(JcwtstCompanyWtSet_.jcwtstCompanyWtSetPK).get(JcwtstCompanyWtSetPK_.yK), year));
+				.add(cb.equal(root.get(JcwstCompanyWtSet_.jcwstCompanyWtSetPK).get(JcwstCompanyWtSetPK_.yK), year));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		return Optional.ofNullable(this.toDomain(em.createQuery(cq).getResultList()));
@@ -108,7 +108,7 @@ public class JpaCompanyWtSettingRepository extends JpaRepository implements Comp
 	 * @param entities the entities
 	 * @return the company wt setting
 	 */
-	private CompanyWtSetting toDomain(List<JcwtstCompanyWtSet> entities) {
+	private CompanyWtSetting toDomain(List<JcwstCompanyWtSet> entities) {
 		if (entities.isEmpty()) {
 			return null;
 		}
@@ -122,8 +122,8 @@ public class JpaCompanyWtSettingRepository extends JpaRepository implements Comp
 	 * @param domain the domain
 	 * @return the list
 	 */
-	private List<JcwtstCompanyWtSet> toEntity(CompanyWtSetting domain) {
-		List<JcwtstCompanyWtSet> entities = new ArrayList<JcwtstCompanyWtSet>();
+	private List<JcwstCompanyWtSet> toEntity(CompanyWtSetting domain) {
+		List<JcwstCompanyWtSet> entities = new ArrayList<JcwstCompanyWtSet>();
 		JpaCompanyWtSettingSetMemento memento = new JpaCompanyWtSettingSetMemento();
 		domain.saveToMemento(memento);
 		entities.add(memento.getDeformed());
@@ -139,8 +139,8 @@ public class JpaCompanyWtSettingRepository extends JpaRepository implements Comp
 	 * @param entity the entity
 	 * @return the jcwtst company wt set
 	 */
-	private JcwtstCompanyWtSet updateEntity(JcwtstCompanyWtSet entity) {
-		JcwtstCompanyWtSet updatedEntity = this.queryProxy().find(entity.getJcwtstCompanyWtSetPK(), JcwtstCompanyWtSet.class).get();
+	private JcwstCompanyWtSet updateEntity(JcwstCompanyWtSet entity) {
+		JcwstCompanyWtSet updatedEntity = this.queryProxy().find(entity.getJcwstCompanyWtSetPK(), JcwstCompanyWtSet.class).get();
 		updatedEntity.setDailyTime(entity.getDailyTime());
 		updatedEntity.setWeeklyTime(entity.getWeeklyTime());
 		updatedEntity.setStrWeek(entity.getStrWeek());
