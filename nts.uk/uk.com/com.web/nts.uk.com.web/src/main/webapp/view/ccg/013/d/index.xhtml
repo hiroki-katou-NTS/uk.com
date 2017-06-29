@@ -45,7 +45,7 @@
 					</div>
 						
 					<div class="left-contents">
-						<div style="width: 332px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list1', 
+						<div style="width: 295px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list1', 
 							items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />	
 						<br/>	
 						<table class="left-data" id="multi-list1" data-bind="ntsGridList: {
@@ -64,8 +64,7 @@
 					</div>
 					
 					<div class="right-contents">
-						<span id="d1_13" class="label caret-bottom caret-background" data-bind="style: {color: titleBar().textColor, 'background-color': titleBar().backgroundColor},text: titleBar().name"></span>						
-						
+						<button id="d1_13" class="label caret-bottom" data-bind="style: {color: titleBar().textColor, 'background-color': titleBar().backgroundColor},text: titleBar().name">Button</button>
 						<table id="multi-list2" data-bind="ntsGridList: {
 								height: 320,
 								options: newItems,
