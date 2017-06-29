@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1100, height: 580 };</script>
+			<script>var dialogSize = { width: 1150, height: 580 };</script>
 			<com:ValidatorScript>
 					nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode
 					nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName
@@ -68,11 +68,6 @@
 					</div>
 					<div id="right-content">
 						<table class="right-layout">
-							<colgroup>
-								<col width="270px" />
-								<col width="350px" />
-								<col width="*" />
-							</colgroup>
 							<tr data-bind="with: selectedFlowMenu">
 								<td><div
 										data-bind="ntsFormLabel: { constraint: 'TopPagePartCode',constraint: ['TopPagePartCode','TopPagePartName'], required: true }">#{i18n.getText('CCG030_11')}</div></td>
