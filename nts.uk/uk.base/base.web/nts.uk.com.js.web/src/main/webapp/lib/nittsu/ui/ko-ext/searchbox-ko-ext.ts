@@ -169,15 +169,16 @@ module nts.uk.ui.koExtentions {
             }
             
             var $container = $(element);
-            
-            $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor' type='text' /></span>");  
-            $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>"); 
+            let tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+            $container.attr("tabindex", "-1");
+            $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span>");  
+            $container.append("<button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button>"); 
             
             var $button = $container.find("button.search-btn");
             var $input = $container.find("input.ntsSearchBox");
             let buttonWidth = $button.outerWidth(true);
             if(searchMode === "filter"){
-                $container.append("<button class='clear-btn'>解除</button>"); 
+                $container.append("<button class='clear-btn ntsSearchBox_Component'>解除</button>"); 
                 let $clearButton = $container.find("button.clear-btn");  
                 buttonWidth +=  $clearButton.outerWidth(true);
                 $clearButton.click(function(evt: Event, ui: any) {
@@ -278,6 +279,8 @@ module nts.uk.ui.koExtentions {
             $button.click(function() {
                 nextSearch();    
             });
+            
+            $swap.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
         }
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var $searchBox = $(element);

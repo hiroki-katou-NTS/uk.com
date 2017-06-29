@@ -7538,11 +7538,13 @@ var nts;
                             idString = container.attr("id");
                             container.removeAttr("id");
                         }
+                        var tabIndex = nts.uk.util.isNullOrEmpty(container.attr("tabindex")) ? "0" : container.attr("tabindex");
+                        container.attr("tabindex", "-1");
                         var containerClass = container.attr('class');
                         container.removeClass(containerClass);
                         container.addClass("ntsControl nts-datepicker-wrapper").data("init", true);
                         var inputClass = (ISOFormat.length < 10) ? "yearmonth-picker" : "";
-                        var $input = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' />").addClass(inputClass);
+                        var $input = $("<input id='" + container.attr("id") + "' class='ntsDatepicker nts-input reset-element' tabindex='" + tabIndex + "'/>").addClass(inputClass);
                         $input.addClass(containerClass).attr("id", idString).attr("data-name", container.data("name"));
                         container.append($input);
                         if (hasDayofWeek) {
@@ -8917,6 +8919,7 @@ var nts;
                         }
                         var tabIndex = $grid.attr("tabindex");
                         $grid.data("tabindex", nts.uk.util.isNullOrEmpty(tabIndex) ? "0" : tabIndex);
+                        $grid.attr("tabindex", "-1");
                         var gridFeatures = ko.unwrap(data.features);
                         var iggridColumns = _.map(observableColumns, function (c) {
                             c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
@@ -9774,13 +9777,15 @@ var nts;
                             component = $("#" + ko.unwrap(data.comId));
                         }
                         var $container = $(element);
-                        $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor' type='text' /></span>");
-                        $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
+                        var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+                        $container.attr("tabindex", "-1");
+                        $container.append("<span class='nts-editor-wrapped ntsControl'><input class='ntsSearchBox nts-editor ntsSearchBox_Component' type='text' /></span>");
+                        $container.append("<button class='search-btn caret-bottom ntsSearchBox_Component'>" + searchText + "</button>");
                         var $button = $container.find("button.search-btn");
                         var $input = $container.find("input.ntsSearchBox");
                         var buttonWidth = $button.outerWidth(true);
                         if (searchMode === "filter") {
-                            $container.append("<button class='clear-btn'>解除</button>");
+                            $container.append("<button class='clear-btn ntsSearchBox_Component'>解除</button>");
                             var $clearButton = $container.find("button.clear-btn");
                             buttonWidth += $clearButton.outerWidth(true);
                             $clearButton.click(function (evt, ui) {
@@ -9877,6 +9882,7 @@ var nts;
                         $button.click(function () {
                             nextSearch();
                         });
+                        $swap.find(".ntsSearchBox_Component").attr("tabindex", tabIndex);
                     };
                     NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $searchBox = $(element);
@@ -9951,6 +9957,9 @@ var nts;
                         if (nts.uk.util.isNullOrUndefined(elementId)) {
                             throw new Error('the element NtsSwapList must have id attribute.');
                         }
+                        var tabIndex = nts.uk.util.isNullOrEmpty($swap.attr("tabindex")) ? "0" : $swap.attr("tabindex");
+                        $swap.data("tabindex", tabIndex);
+                        $swap.attr("tabindex", "-1");
                         var data = valueAccessor();
                         var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         //            var selectedValues = ko.unwrap(data.value);
@@ -9959,7 +9968,7 @@ var nts;
                         var showSearchBox = ko.unwrap(data.showSearchBox);
                         var primaryKey = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var columns = data.columns;
-                        $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container'/>");
+                        $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
                         if (totalWidth !== undefined) {
                             $swap.parent().width(totalWidth);
                         }
@@ -9983,13 +9992,13 @@ var nts;
                                 if (searchMode === "filter") {
                                     $SearchArea.append("<div class='ntsClearButtonContainer'/>");
                                     $SearchArea.find(".ntsClearButtonContainer")
-                                        .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn'/>");
-                                    $SearchArea.find(".clear-btn").text("検索");
+                                        .append("<button id = " + searchAreaId + "-clear-btn" + " class='ntsSearchButton clear-btn ntsSwap_Component'/>");
+                                    $SearchArea.find(".clear-btn").text("解除");
                                 }
                                 $SearchArea.find(".ntsSearchTextContainer")
-                                    .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
+                                    .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox ntsSwap_Component'/>");
                                 $SearchArea.find(".ntsSearchButtonContainer")
-                                    .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom'/>");
+                                    .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
                                 $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
                                 $SearchArea.find(".search-btn").text("検索");
                             };
@@ -10060,11 +10069,13 @@ var nts;
                             columns: iggridColumns,
                             virtualization: true,
                             virtualizationMode: 'continuous',
-                            features: features
+                            features: features,
+                            tabIndex: -1
                         });
                         $grid1.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
-                            .height(gridHeight);
+                            .height(gridHeight)
+                            .attr("tabindex", tabIndex);
                         $grid1.ntsGridList('setupSelecting');
                         $grid2.igGrid({
                             width: gridWidth + CHECKBOX_WIDTH,
@@ -10073,7 +10084,8 @@ var nts;
                             columns: iggridColumns,
                             virtualization: true,
                             virtualizationMode: 'continuous',
-                            features: features
+                            features: features,
+                            tabIndex: -1
                         });
                         if (data.draggable === true) {
                             this.swapper.enableDragDrop(data.value);
@@ -10086,11 +10098,12 @@ var nts;
                         }
                         $grid2.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
-                            .height(gridHeight);
+                            .height(gridHeight)
+                            .attr("tabindex", tabIndex);
                         $grid2.ntsGridList('setupSelecting');
                         var $moveArea = $swap.find("#" + elementId + "-move-data")
-                            .append("<button class = 'move-button move-forward'><i class='icon icon-button-arrow-right'></i></button>")
-                            .append("<button class = 'move-button move-back'><i class='icon icon-button-arrow-left'></i></button>");
+                            .append("<button class = 'move-button move-forward ntsSwap_Component'><i class='icon icon-button-arrow-right'></i></button>")
+                            .append("<button class = 'move-button move-back ntsSwap_Component'><i class='icon icon-button-arrow-left'></i></button>");
                         var $moveForward = $moveArea.find(".move-forward");
                         var $moveBack = $moveArea.find(".move-back");
                         var swapper = this.swapper;
@@ -10100,6 +10113,7 @@ var nts;
                         $moveBack.click(function () {
                             swapper.Model.move(false, data.value);
                         });
+                        $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
                     };
                     /**
                      * Update
@@ -11030,9 +11044,11 @@ var nts;
                                 { headerText: "コード／名称", key: optionsText, dataType: "string" }
                             ];
                         }
-                        // Init ig grid.
                         var $treegrid = $(element);
-                        $(element).igTreeGrid({
+                        var tabIndex = nts.uk.util.isNullOrEmpty($treegrid.attr("tabindex")) ? "0" : $treegrid.attr("tabindex");
+                        $treegrid.attr("tabindex", "-1");
+                        // Init ig grid.
+                        $treegrid.igTreeGrid({
                             width: width,
                             height: height,
                             dataSource: _.cloneDeep(options),
@@ -11069,7 +11085,7 @@ var nts;
                                 }]
                         });
                         var treeGridId = $treegrid.attr('id');
-                        $(element).closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", "0");
+                        $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
                         $treegrid.setupSearchScroll("igTreeGrid");
                     };
                     /**
@@ -11160,6 +11176,8 @@ var nts;
                             throw new Error('The element must be a div');
                         }
                         var data = valueAccessor();
+                        var tabIndex = nts.uk.util.isNullOrEmpty($upDown.attr("tabindex")) ? "0" : $upDown.attr("tabindex");
+                        $upDown.attr("tabindex", "-1");
                         var elementId = $upDown.attr('id');
                         var comId = ko.unwrap(data.comId);
                         var childField = ko.unwrap(data.childDataKey);
@@ -11368,6 +11386,7 @@ var nts;
                                 move(1, $(comId + swapTargetGrid));
                             }
                         });
+                        $upDown.find(".ntsUpDownButton").attr("tabindex", tabIndex);
                     };
                     /**
                      * Update
@@ -11790,10 +11809,13 @@ var nts;
                         var value = ko.unwrap(data.value);
                         var dataName = ko.unwrap(data.name);
                         var enable = data.enable === undefined ? true : ko.unwrap(data.enable);
+                        var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+                        $container.attr("tabindex", "-1");
                         $container.addClass("ntsControl ntsMonthDays_Container");
                         $container.append("<div class='ntsMonthDays'/>");
                         var $control = $container.find(".ntsMonthDays");
-                        $control.append("<div class='ntsMonthPicker ntsComboBox ntsMonthDays_Component'/><div class='ntsMonthLabel ntsLabel ntsMonthDays_Component'/><div class='ntsDayPicker ntsComboBox ntsMonthDays_Component'/><div class='ntsDayLabel ntsLabel ntsMonthDays_Component'/>");
+                        $control.append("<div class='ntsMonthPicker ntsComboBox ntsMonthDays_Component' /><div class='ntsMonthLabel ntsLabel ntsMonthDays_Component'/>" +
+                            "<div class='ntsDayPicker ntsComboBox ntsMonthDays_Component' /><div class='ntsDayLabel ntsLabel ntsMonthDays_Component'/>");
                         var $monthPicker = $control.find(".ntsMonthPicker");
                         var $dayPicker = $control.find(".ntsDayPicker");
                         var $monthLabel = $control.find(".ntsMonthLabel");
@@ -11829,6 +11851,7 @@ var nts;
                                 data.value(currentMonth * 100 + currentDay);
                             }
                         });
+                        $control.find("input").attr("tabindex", tabIndex);
                     };
                     /**
                      * Update
@@ -11915,6 +11938,8 @@ var nts;
                         var showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious);
                         var required = ko.unwrap(data.required);
                         var id = nts.uk.util.randomId();
+                        var tabIndex = nts.uk.util.isNullOrEmpty($container.attr("tabindex")) ? "0" : $container.attr("tabindex");
+                        $container.attr("tabindex", "-1");
                         $container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
                         var $datePickerArea = $container.find(".ntsDateRange_Container");
                         $datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" +
@@ -11925,8 +11950,10 @@ var nts;
                         var ISOFormat = uk.text.getISOFormat(dateFormat);
                         ISOFormat = ISOFormat.replace(/d/g, "").trim();
                         if (showNextPrevious === true) {
-                            $datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'><button class = 'ntsDateNextButton ntsButton ntsDateRangeButton auto-height'/></div>");
-                            $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'><button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton auto-height'/></div>");
+                            $datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'>" +
+                                "<button class = 'ntsDateNextButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
+                            $datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'>" +
+                                "<button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
                             var $nextButton = $container.find(".ntsDateNextButton");
                             var $prevButton = $container.find(".ntsDatePrevButton");
                             $nextButton.text("next").click(function (evt, ui) {
@@ -11992,8 +12019,8 @@ var nts;
                         }
                         var $startDateArea = $datePickerArea.find(".ntsStartDate");
                         var $endDateArea = $datePickerArea.find(".ntsEndDate");
-                        $startDateArea.append("<input id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker' />");
-                        $endDateArea.append("<input id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker' />");
+                        $startDateArea.append("<input id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRange_Component' />");
+                        $endDateArea.append("<input id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRange_Component' />");
                         var $input = $container.find(".ntsDatepicker");
                         // Init Datepicker
                         $input.datepicker({
@@ -12079,6 +12106,7 @@ var nts;
                                 }
                             }
                         }));
+                        $container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
                     };
                     /**
                      * Update

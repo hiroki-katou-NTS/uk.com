@@ -34,6 +34,7 @@ module nts.uk.ui.koExtentions {
             }
             let tabIndex = $grid.attr("tabindex");
             $grid.data("tabindex", nts.uk.util.isNullOrEmpty(tabIndex) ? "0" : tabIndex);
+            $grid.attr("tabindex", "-1");
             var gridFeatures = ko.unwrap(data.features);
             var iggridColumns = _.map(observableColumns, c => {
                 c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
