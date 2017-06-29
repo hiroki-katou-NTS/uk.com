@@ -5,36 +5,33 @@
 package nts.uk.ctx.basic.app.find.company.organization.employee.search;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class EmployeeSearchDto.
  */
 @Getter
 @Setter
-public class EmployeeSearchDto implements Serializable{
+public class EmployeeSearchInDto implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
-	/** The employee id. */
-	private String employeeId;
+	/** The base date. */
+	private GeneralDate baseDate;
 
-	/** The employee code. */
-	private String employeeCode;
+	/** The employment codes. */
+	private List<String> employmentCodes;
+
+	/** The classification codes. */
+	private List<String> classificationCodes;
+
+	/** The job title codes. */
+	private List<String> jobTitleCodes;
 	
-	/** The employee name. */
-	private String employeeName;
-	
-	/** The work place code. */
-	private String workplaceCode;
-	
-	/** The work place id. */
-	private String workplaceId;
-	
-	/** The work place name. */
-	private String workplaceName;
-	
+	/** The workplace codes. */
+	private List<String> workplaceCodes;
 }

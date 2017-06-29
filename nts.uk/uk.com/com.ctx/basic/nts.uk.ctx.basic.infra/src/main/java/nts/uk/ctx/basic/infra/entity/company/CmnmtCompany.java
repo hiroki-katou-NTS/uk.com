@@ -20,7 +20,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class CmnmtCompany.
  */
-
 @Getter
 @Setter
 @Entity
@@ -53,6 +52,7 @@ public class CmnmtCompany extends UkJpaEntity implements Serializable {
      * Instantiates a new cmnmt company.
      */
     public CmnmtCompany() {
+    	super();
     }
 
     /**
@@ -94,16 +94,6 @@ public class CmnmtCompany extends UkJpaEntity implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.CmnmtCompany[ cid=" + cid + " ]";
 	}
 
 	/*

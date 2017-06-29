@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.infra.entity.standardmenu.CcgstStandardMenu;
@@ -33,11 +34,6 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	private final String SELECT_STANDARD_MENU_BY_CODE = "SELECT c FROM CcgstStandardMenu c WHERE c.ccgmtStandardMenuPK.companyId = :companyId "
 			+ " AND c.ccgmtStandardMenuPK.code = :code" + " AND c.ccgmtStandardMenuPK.system = :system"
 			+ " AND c.ccgmtStandardMenuPK.classification = :menu_classification";
-	// yennth
-	private final String UPDATE_STANDARD_MENU_BY_CODE = "UPDATE CcgstStandardMenu c SET c.displayName = :displayName WHERE "
-			+ "c.ccgmtStandardMenuPK.companyId = :companyId" + " AND c.ccgmtStandardMenuPK.code = :code"
-			+ " AND c.ccgmtStandardMenuPK.system = :system"
-			+ " AND c.ccgmtStandardMenuPK.classification = :classification";
 
 	private CcgstStandardMenu toEntity(StandardMenu domain) {
 		val entity = new CcgstStandardMenu();
@@ -90,6 +86,20 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("menu_classification", menu_classification).getList(t -> toDomain(t));
 	}
 
+	/**
+	 * added by sonnh1
+	 * 
+	 * find by COMPANYID and AFTER_LOGIN_DISPLAY
+	 */
+//	@Override
+//	public List<StandardMenu> findByAfterLgDisSysMenuCls(String companyId, int afterLoginDisplay, int system,
+//			int menu_classification) {
+//		return this.queryProxy().query(FIND_BY_AFTERLOGINDISPLAY_SYSTEM_MENUCLASSIFICATION, CcgstStandardMenu.class)
+//				.setParameter("companyId", companyId).setParameter("afterLoginDisplay", afterLoginDisplay)
+//				.setParameter("system", system).setParameter("menu_classification", menu_classification)
+//				.getList(t -> toDomain(t));
+//	}
+
 	@Override
 	public List<StandardMenu> findByAtr(String companyId, int webMenuSetting, int menuAtr) {
 		return this.queryProxy().query(GET_ALL_STANDARD_MENU_BY_ATR, CcgstStandardMenu.class)
@@ -133,7 +143,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	 *            standard menu
 	 */
 	@Override
-	public void update(List<StandardMenu> StandardMenu) {
+	public void changeName(List<StandardMenu> StandardMenu) {
 		EntityManager manager = this.getEntityManager();
 		CcgstStandardMenuPK pk;
 		for (StandardMenu obj : StandardMenu) {
@@ -142,13 +152,27 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			CcgstStandardMenu o = manager.find(CcgstStandardMenu.class, pk);
 			o.setDisplayName(obj.getDisplayName().v());
 		}
-
-	};
+	}
 
 	@Override
 	public List<StandardMenu> findBySystem(String companyId, int system) {
 		return this.queryProxy().query(GET_ALL_STANDARD_MENU_BY_SYSTEM, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId).setParameter("system", system).getList(t -> toDomain(t));
+	}
+
+	/**
+	 * yennth
+	 * @param list standardMenu
+	 */
+	@Override
+	public boolean isExistDisplayName(List<StandardMenu> StandardMenu) {
+		boolean isExist = false;
+		for (StandardMenu obj : StandardMenu) {
+			if (obj.getDisplayName() != null || !obj.getDisplayName().v().equals(""))
+				isExist = true;
+			break;
+		}
+		return isExist;
 	}
 
 }
