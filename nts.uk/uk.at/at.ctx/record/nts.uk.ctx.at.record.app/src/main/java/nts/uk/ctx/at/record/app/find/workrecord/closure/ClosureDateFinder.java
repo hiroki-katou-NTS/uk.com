@@ -246,6 +246,7 @@ public class ClosureDateFinder {
 			return dto;
 		}
 		
+		// check equal month
 		if (this.getMonthDay(today) == this.getMonthDate(this.getMonth())) {
 			dto.setBeginDay(this.formatDate(this.nextDay(this.previousMonth(today))));
 			dto.setEndDay(this.formatDate(today));
