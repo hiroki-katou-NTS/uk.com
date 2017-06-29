@@ -207,6 +207,7 @@ module ccg014.a.viewmodel {
                  }
                 else {
                     self.findSelectedTitleMenu(null);
+                    self.changePreviewIframe(null);
                     self.isCreate(true);
                 }
                 dfd.resolve();
