@@ -11,8 +11,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import nts.gul.util.Time;
-import nts.uk.ctx.at.shared.dom.common.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.DailyTime;
+import nts.uk.ctx.at.shared.dom.common.MonthlyTime;
+import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.FlexSetting;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.Monthly;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTimeSetting;
@@ -52,19 +53,23 @@ public class FlexSettingDto {
 	 * @param domain the domain
 	 * @return the flex monthly
 	 */
+	// Get flexMonthly dto from domain.
 	private static List<FlexMonth> getFlexMonthly(FlexSetting domain) {
 		List<FlexMonth> flexMonthly = new ArrayList<FlexMonth>();
 
+		// Convert to map.
 		Map<Month, Double> statutoryMonthly = domain.getStatutorySetting().getMonthly().stream()
 				.collect(Collectors.toMap(Monthly::getMonth, x -> x.getTime().minutes()));
 
+		// Set specified work time.
 		domain.getSpecifiedSetting().getMonthly().forEach(item -> {
 			FlexMonth fm = new FlexMonth();
 			fm.setMonth(item.getMonth().getValue());
-			fm.setSpecifiedTime(item.getTime().v() / Time.STEP);
+			fm.setSpecifiedTime((long)item.getTime().minutes());
 			flexMonthly.add(fm);
 		});
 
+		// Set statutory work time.
 		flexMonthly.forEach(month -> {
 			month.setStatutoryTime(statutoryMonthly.get(Month.of(month.getMonth())).longValue());
 		});
@@ -78,10 +83,11 @@ public class FlexSettingDto {
 	 * @param domain the domain
 	 * @return the flex daily
 	 */
+	// Get flexDaily dto from domain.
 	private static FlexDaily getFlexDaily(FlexSetting domain) {
 		FlexDaily flexDaily = new FlexDaily();
-		flexDaily.setSpecifiedTime(domain.getSpecifiedSetting().getDaily().v() / Time.STEP);
-		flexDaily.setStatutoryTime(domain.getStatutorySetting().getDaily().v() / Time.STEP);
+		flexDaily.setSpecifiedTime((long)domain.getSpecifiedSetting().getDaily().minutes());
+		flexDaily.setStatutoryTime((long)domain.getStatutorySetting().getDaily().minutes());
 		return flexDaily;
 	}
 
@@ -92,15 +98,15 @@ public class FlexSettingDto {
 	 * @return the flex setting
 	 */
 	public static FlexSetting toDomain(FlexSettingDto dto) {
-		AttendanceTime speDaily = new AttendanceTime(dto.getFlexDaily().getSpecifiedTime() * Time.STEP);
-		AttendanceTime staDaily = new AttendanceTime(dto.getFlexDaily().getStatutoryTime() * Time.STEP);
+		DailyTime speDaily = DailyTime.ofMinutes(dto.getFlexDaily().getSpecifiedTime());
+		DailyTime staDaily = DailyTime.ofMinutes(dto.getFlexDaily().getStatutoryTime());
 		List<Monthly> speMonthly = new ArrayList<Monthly>();
 		List<Monthly> staMonthly = new ArrayList<Monthly>();
 
 		dto.getFlexMonthly().forEach(item -> {
 			Month m = java.time.Month.of(item.getMonth());
-			Monthly spe = new Monthly(new AttendanceTime(item.getSpecifiedTime() * Time.STEP), m);
-			Monthly sta = new Monthly(new AttendanceTime(item.getStatutoryTime() * Time.STEP), m);
+			Monthly spe = new Monthly(MonthlyTime.ofMinutes(item.getSpecifiedTime()), m);
+			Monthly sta = new Monthly(MonthlyTime.ofMinutes(item.getStatutoryTime()), m);
 			speMonthly.add(spe);
 			staMonthly.add(sta);
 		});
@@ -108,12 +114,12 @@ public class FlexSettingDto {
 		WorkingTimeSetting specifiedSetting = new WorkingTimeSetting();
 		specifiedSetting.setDaily(speDaily);
 		specifiedSetting.setMonthly(speMonthly);
-		specifiedSetting.setWeekly(new AttendanceTime(0L));// default.
+		specifiedSetting.setWeekly(WeeklyTime.defaultValue());
 
 		WorkingTimeSetting statutorySetting = new WorkingTimeSetting();
 		statutorySetting.setDaily(staDaily);
 		statutorySetting.setMonthly(staMonthly);
-		statutorySetting.setWeekly(new AttendanceTime(0L));// default.
+		statutorySetting.setWeekly(WeeklyTime.defaultValue());
 
 		FlexSetting domain = new FlexSetting();
 		domain.setSpecifiedSetting(specifiedSetting);

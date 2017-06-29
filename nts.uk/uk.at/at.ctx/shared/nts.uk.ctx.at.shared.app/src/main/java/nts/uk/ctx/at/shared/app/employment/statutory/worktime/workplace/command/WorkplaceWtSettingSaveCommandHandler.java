@@ -44,9 +44,6 @@ public class WorkplaceWtSettingSaveCommandHandler extends CommandHandler<Workpla
 
 		WorkPlaceWtSetting workPlaceWtSetting = new WorkPlaceWtSetting(command);
 
-		// Validate
-		workPlaceWtSetting.validate();
-
 		// Update
 		Optional<WorkPlaceWtSetting> optCompanySetting = this.repository.find(companyId, command.getYear().v(),
 				command.getWorkPlaceId());
