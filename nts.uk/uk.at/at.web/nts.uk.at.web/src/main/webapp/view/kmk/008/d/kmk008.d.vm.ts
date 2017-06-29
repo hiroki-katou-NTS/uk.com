@@ -1,10 +1,11 @@
 module nts.uk.at.view.kmk008.d {
     export module viewmodel {
         export class ScreenModel {
-            timeOfCompany: KnockoutObservable<TimeOfCompanyModel>;
+            timeOfCompany: KnockoutObservable<TimeOfEmploymentModel>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
-
+            currentEmpName:  KnockoutObservable<string>;
+            
             listComponentOption: any;
             selectedCode: KnockoutObservable<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
@@ -17,16 +18,17 @@ module nts.uk.at.view.kmk008.d {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
-                self.timeOfCompany = ko.observable(new TimeOfCompanyModel(null));
-                self.startPage();
-
-                self.selectedCode = ko.observable('1');
+                self.timeOfCompany = ko.observable(new TimeOfEmploymentModel(null));
+                self.currentEmpName = ko.observable("");
+                
+                self.selectedCode = ko.observable("");
                 self.isShowAlreadySet = ko.observable(true);
                 self.alreadySettingList = ko.observableArray([
                     { code: '1', isAlreadySetting: true },
                     { code: '10', isAlreadySetting: true },
                     { code: '11', isAlreadySetting: true },
                 ]);
+                
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
@@ -41,42 +43,69 @@ module nts.uk.at.view.kmk008.d {
                     alreadySettingList: self.alreadySettingList
                 };
                 self.employmentList = ko.observableArray<UnitModel>([]);
-                $('#empt-list-setting').ntsListComponent(self.listComponentOption);
+                self.selectedCode.subscribe(newValue => {
+                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
+                    self.getDetail(newValue);
+                    let empSelect = _.find(self.employmentList(), emp => {
+                        return emp.code == newValue;
+                    });
+                    if(empSelect){ self.currentEmpName(empSelect.name);}
+                   
+                });
+                
+                self.startPage();
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                new service.Service().getAgreementTimeOfCompany(self.laborSystemAtr).done(data => {
-                    if (data) {
-                        self.timeOfCompany(new TimeOfCompanyModel(data));
-                        self.isUpdate = true;
-                    } else {
-                        self.isUpdate = false;
+                self.alreadySettingList([]);
+                new service.Service().getList(self.laborSystemAtr).done(data => {
+                    if (data.length > 0) {
+                        self.alreadySettingList(_.map(data, item => { return { code: item, isAlreadySetting: true } }));
+                    }
+                })       
+                $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function(){
+                    self.employmentList($('#empt-list-setting').getDataList());
+                    if(self.employmentList().length > 0){
+                         self.selectedCode(self.employmentList()[0].code);
                     }
                     dfd.resolve();
-                }).fail(error => {
-
-                });
+                });             
                 return dfd.promise();
             }
 
             addUpdateData() {
                 let self = this;
-                let timeOfCompanyNew = new UpdateInsertTimeOfCompanyModel(self.timeOfCompany(), self.laborSystemAtr);
-                if (self.isUpdate) {
-                    new service.Service().updateAgreementTimeOfCompany(timeOfCompanyNew).done(function() {
-                        self.startPage();
+                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), code => { return code == self.selectedCode() });
+                let timeOfCompanyNew = new UpdateInsertTimeOfEmploymentModel(self.timeOfCompany(), self.laborSystemAtr, self.selectedCode());
+
+                if (indexCodealreadySetting != -1) {
+                    new service.Service().updateAgreementTimeOfEmployment(timeOfCompanyNew).done(function() {
+                        self.getDetail();
                     });
                     return;
                 }
-                new service.Service().addAgreementTimeOfCompany(timeOfCompanyNew).done(function() {
-                    self.startPage();
+                new service.Service().addAgreementTimeOfEmployment(timeOfCompanyNew).done(function() {
+                    self.getDetail();
+                });
+            }
+
+            removeData() {
+
+            }
+
+            getDetail(employmentCategoryCode: string) {
+                let self = this;
+                new service.Service().getDetail(self.laborSystemAtr, employmentCategoryCode).done(data => {
+                    self.timeOfCompany(new TimeOfEmploymentModel(data));
+                }).fail(error => {
+
                 });
             }
         }
 
-        export class TimeOfCompanyModel {
+        export class TimeOfEmploymentModel {
             alarmWeek: KnockoutObservable<string> = ko.observable(null);
             errorWeek: KnockoutObservable<string> = ko.observable(null);
             limitWeek: KnockoutObservable<string> = ko.observable(null);
@@ -125,8 +154,9 @@ module nts.uk.at.view.kmk008.d {
             }
         }
 
-        export class UpdateInsertTimeOfCompanyModel {
+        export class UpdateInsertTimeOfEmploymentModel {
             laborSystemAtr: number = 0;
+            employmentCategoryCode: string = "";
             alarmWeek: number = 0;
             errorWeek: number = 0;
             limitWeek: number = 0;
@@ -148,9 +178,10 @@ module nts.uk.at.view.kmk008.d {
             alarmOneYear: number = 0;
             errorOneYear: number = 0;
             limitOneYear: number = 0;
-            constructor(data: TimeOfCompanyModel, laborSystemAtr: number) {
+            constructor(data: TimeOfEmploymentModel, laborSystemAtr: number, employmentCategoryCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
+                self.employmentCategoryCode = employmentCategoryCode;
                 if (!data) return;
                 self.alarmWeek = data.alarmWeek() || 0;
                 self.errorWeek = data.errorWeek() || 0;
@@ -173,6 +204,16 @@ module nts.uk.at.view.kmk008.d {
                 self.alarmOneYear = data.alarmOneYear() || 0;
                 self.errorOneYear = data.errorOneYear() || 0;
                 self.limitOneYear = data.limitOneYear() || 0;
+            }
+        }
+
+        export class DeleteTimeOfEmploymentModel {
+            laborSystemAtr: number = 0;
+            employmentCategoryCode: string;
+            constructor(laborSystemAtr: number, employmentCategoryCode: string) {
+                let self = this;
+                self.laborSystemAtr = laborSystemAtr;
+                self.employmentCategoryCode = employmentCategoryCode;
             }
         }
 
@@ -201,7 +242,7 @@ module nts.uk.at.view.kmk008.d {
             code: string;
             isAlreadySetting: boolean;
         }
-        
-        
+
+
     }
 }

@@ -164,25 +164,26 @@ module kcp.share.tree {
             
             // Find data.
             service.findWorkplaceTree(self.baseDate()).done(function(res: Array<UnitModel>) {
-                // Map already setting attr to data list.
-                self.addAlreadySettingAttr(res, self.alreadySettingList());
-                
-                // Set default value when initial component.
-                self.initSelectedValue(data, res);
-                
-                if (data.isShowAlreadySet) { 
-                    // subscribe when alreadySettingList update => reload component.
-                    self.alreadySettingList.subscribe((newAlreadySettings: any) => {
-                        self.addAlreadySettingAttr(res, newAlreadySettings);
-                        self.itemList(res);
-                        self.backupItemList(res);
-                    });
+                if (res != null) {
+                    // Map already setting attr to data list.
+                    self.addAlreadySettingAttr(res, self.alreadySettingList());
+                    
+                    // Set default value when initial component.
+                    self.initSelectedValue(data, res);
+                    
+                    if (data.isShowAlreadySet) { 
+                        // subscribe when alreadySettingList update => reload component.
+                        self.alreadySettingList.subscribe((newAlreadySettings: any) => {
+                            self.addAlreadySettingAttr(res, newAlreadySettings);
+                            self.itemList(res);
+                            self.backupItemList(res);
+                        });
+                    }
+                    
+                    // Init component.
+                    self.itemList(res);
+                    self.backupItemList(res);
                 }
-                
-                // Init component.
-                self.itemList(res);
-                self.backupItemList(res);
-                
                 var webserviceLocator = nts.uk.request.location.siteRoot
                     .mergeRelativePath(nts.uk.request.WEB_APP_NAME["com"] + '/')
                     .mergeRelativePath('/view/kcp/share/tree.xhtml').serialize();
@@ -405,7 +406,7 @@ module kcp.share.tree {
          */
         private getSelectedWorkplace() :any {
             if (this.isMultiple) {
-                return this.selectedWorkplaceIds();
+                return this.selectedWorkplaceIds() ? this.selectedWorkplaceIds() : [];
             }
             return [this.selectedWorkplaceIds()];
         }
