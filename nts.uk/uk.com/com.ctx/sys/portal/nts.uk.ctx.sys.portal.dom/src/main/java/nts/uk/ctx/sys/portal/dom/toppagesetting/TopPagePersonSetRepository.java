@@ -43,7 +43,8 @@ public interface TopPagePersonSetRepository {
 	/**
 	 * remove data in to table TOPPAGE_PERSON_SET
 	 * 
-	 * @param topPagePersonSet
+	 * @param companyId
+	 * @param Sid
 	 */
-	void remove(TopPagePersonSet topPagePersonSet);
+	void remove(String companyId, String Sid);
 }
