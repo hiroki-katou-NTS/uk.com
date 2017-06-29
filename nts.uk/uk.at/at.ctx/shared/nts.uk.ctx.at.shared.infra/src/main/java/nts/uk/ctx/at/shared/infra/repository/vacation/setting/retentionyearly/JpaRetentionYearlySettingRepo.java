@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
  * The Class JpaRetentionYearlySettingRepo.
  */
 @Stateless
-public class JpaRetentionYearlySettingRepo extends JpaRepository implements RetentionYearlySettingRepository{
+public class JpaRetentionYearlySettingRepo extends JpaRepository implements RetentionYearlySettingRepository {
 
 	/*
 	 * (non-Javadoc)

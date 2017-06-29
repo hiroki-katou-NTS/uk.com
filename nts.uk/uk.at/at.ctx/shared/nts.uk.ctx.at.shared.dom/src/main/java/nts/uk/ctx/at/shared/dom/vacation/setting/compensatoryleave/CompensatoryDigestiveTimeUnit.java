@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeVacationDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
  * The Class CompensatoryDigestiveTimeUnit.
@@ -20,7 +20,7 @@ public class CompensatoryDigestiveTimeUnit {
 	
 	// 消化単位
 	/** The digestive unit. */
-	private TimeVacationDigestiveUnit digestiveUnit;
+	private TimeDigestiveUnit digestiveUnit;
 
 	/**
 	 * Instantiates a new compensatory digestive time unit.
