@@ -65,8 +65,8 @@ module nts.uk.at.view.kml001.b {
                 var self = this;
                 let premiumItemListCommand = [];
                 let rootLists = self.rootList;
+                $(".premiumName").trigger("validate");
                 ko.utils.arrayForEach(self.premiumItemList(), function(item, index) { 
-                    if(item.useAtr()==1) $(".premiumName").eq(index).trigger("validate");
                     if(ko.mapping.toJSON(item)!=ko.mapping.toJSON(rootLists[index])){
                         item.isChange(true);        
                     }
