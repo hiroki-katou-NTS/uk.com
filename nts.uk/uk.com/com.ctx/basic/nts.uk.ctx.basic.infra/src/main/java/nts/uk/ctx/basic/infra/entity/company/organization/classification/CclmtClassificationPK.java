@@ -32,11 +32,11 @@ public class CclmtClassificationPK implements Serializable {
 	@Column(name = "CCID")
 	private String ccid;
 
-	/** The code. */
+	/** The classification code. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CODE")
-	private String code;
+	@Column(name = "CLSCD")
+	private String classificationCode;
 
 	/**
 	 * Instantiates a new cclmt classification PK.
@@ -50,91 +50,9 @@ public class CclmtClassificationPK implements Serializable {
 	 * @param ccid the ccid
 	 * @param code the code
 	 */
-	public CclmtClassificationPK(String ccid, String code) {
+	public CclmtClassificationPK(String ccid, String classificationCode) {
 		this.ccid = ccid;
-		this.code = code;
-	}
-
-	/**
-	 * Gets the ccid.
-	 *
-	 * @return the ccid
-	 */
-	public String getCcid() {
-		return ccid;
-	}
-
-	/**
-	 * Sets the ccid.
-	 *
-	 * @param ccid the new ccid
-	 */
-	public void setCcid(String ccid) {
-		this.ccid = ccid;
-	}
-
-	/**
-	 * Gets the code.
-	 *
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
-
-	/**
-	 * Sets the code.
-	 *
-	 * @param code the new code
-	 */
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		hash += (ccid != null ? ccid.hashCode() : 0);
-		hash += (code != null ? code.hashCode() : 0);
-		return hash;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		// not set
-		if (!(object instanceof CclmtClassificationPK)) {
-			return false;
-		}
-		CclmtClassificationPK other = (CclmtClassificationPK) object;
-		if ((this.ccid == null && other.ccid != null)
-			|| (this.ccid != null && !this.ccid.equals(other.ccid))) {
-			return false;
-		}
-		if ((this.code == null && other.code != null)
-			|| (this.code != null && !this.code.equals(other.code))) {
-			return false;
-		}
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.CclmtManagementCategoryPK[ ccid=" + ccid + ", code=" + code + " ]";
+		this.classificationCode = classificationCode;
 	}
 
 }

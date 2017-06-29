@@ -31,9 +31,9 @@ public class CclmtClassification extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	protected CclmtClassificationPK cclmtClassificationPK;
 
-	/** The name. */
-	@Column(name = "NAME")
-	private String name;
+	/** The classification name. */
+	@Column(name = "CLSNAME")
+	private String classificationName;
 
 	/**
 	 * Instantiates a new cclmt classification.
